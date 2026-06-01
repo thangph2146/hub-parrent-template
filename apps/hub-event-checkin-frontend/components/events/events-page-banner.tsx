@@ -1,12 +1,15 @@
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { Container } from "@ui/components/layout"
-import { STORE_CONTAINER_INSET_WIDE } from "@ui/lib/layout-shell"
+import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
 
 export function EventsPageBanner() {
   return (
     <section className="border-b border-white/10 bg-secondary text-secondary-foreground">
-      <Container max={"full"} className={`${STORE_CONTAINER_INSET_WIDE} py-8 sm:py-10`}>
+      <Container
+        max={STORE_CONTAINER_MAX_DEFAULT}
+        className={`${STORE_CONTAINER_INSET_WIDE} py-8 sm:py-10`}
+      >
         <nav className="mb-3 flex flex-wrap items-center gap-1 text-sm text-white/70">
           <Link href="/" className="transition-colors hover:text-white">
             Trang chủ

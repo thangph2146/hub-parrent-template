@@ -30,7 +30,7 @@ function SpeakersList({ speakers }: { speakers: PublicEventSpeaker[] }) {
           >
             <div
               className={cn(
-                "flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full",
+                "flex aspect-[3/4] w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl",
                 "bg-primary/10 text-sm font-bold text-primary ring-2 ring-primary/15",
               )}
             >
@@ -39,7 +39,7 @@ function SpeakersList({ speakers }: { speakers: PublicEventSpeaker[] }) {
                 <img
                   src={avatarUrl}
                   alt=""
-                  className="size-full object-cover"
+                  className="size-full object-cover object-top"
                   loading="lazy"
                 />
               ) : (

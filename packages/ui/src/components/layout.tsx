@@ -66,7 +66,7 @@ export function PageContent({
   return (
     <div
       className={cn(
-        "flex flex-1 flex-col",
+        "flex flex-1 flex-col justify-between",
         className
       )}
     >
