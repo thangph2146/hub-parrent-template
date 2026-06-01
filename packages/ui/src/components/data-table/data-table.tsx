@@ -40,9 +40,9 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, Download } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Button } from "@ui/components/button";
-import { Checkbox } from "@ui/components/checkbox";
-import { Input } from "@ui/components/input";
+import { Button } from "../button";
+import { Checkbox } from "../checkbox";
+import { Input } from "../input";
 import {
   DatePicker,
   DateRangePicker,
@@ -50,7 +50,7 @@ import {
   SelectPicker,
   TreeMultiSelectPicker,
   TreePicker,
-} from "@ui/components/pickers";
+} from "../pickers";
 import {
   Table,
   TableBody,
@@ -58,17 +58,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ui/components/table";
-import { cn } from "@ui/lib/utils";
-import "@/components/admin-data-table/table-meta";
-import { buildCsvFromColumns } from "@/lib/build-table-csv";
-import { downloadCsvFile } from "@/lib/export-csv";
+} from "../table";
+import { cn } from "../../lib/utils";
+import "./table-meta";
+import { buildCsvFromColumns } from "../../lib/build-table-csv";
+import { downloadCsvFile } from "../../lib/export-csv";
 import {
   csvBaseToXlsxFilename,
   downloadXlsxFile,
-} from "@/lib/export-xlsx";
-import { Separator } from "@ui/components/separator";
-import { TypographyPSmall } from "@ui/components/typography";
+} from "../../lib/export-xlsx";
+import { Separator } from "../separator";
+import { TypographyPSmall } from "../typography";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,7 +78,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@ui/components/alert-dialog";
+} from "../alert-dialog";
 
 export type AdminDataTableBulkAction<TData> = {
   id: string;
@@ -98,6 +98,8 @@ export type AdminDataTableBulkAction<TData> = {
     destructive?: boolean;
   };
 };
+
+export type DataTableBulkAction<TData> = AdminDataTableBulkAction<TData>;
 
 export type AdminDataTableProps<TData> = {
   data: TData[];
@@ -138,6 +140,8 @@ export type AdminDataTableProps<TData> = {
   /** localStorage key để lưu trạng thái hiển thị filter cột (mặc định: không lưu) */
   filterColumnVisibilityKey?: string;
 };
+
+export type DataTableProps<TData> = AdminDataTableProps<TData>;
 
 function includesText(a: unknown, q: string): boolean {
   if (!q) return true;
@@ -859,6 +863,8 @@ export function AdminDataTable<TData>({
     </div>
   );
 }
+
+export const DataTable = AdminDataTable;
 
 // Extracted component for bulk action confirmation dialog
 type BulkActionConfirmDialogProps<TData> = {

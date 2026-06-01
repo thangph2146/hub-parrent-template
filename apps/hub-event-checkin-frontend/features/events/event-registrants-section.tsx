@@ -5,7 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { UserRound } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Badge } from "@ui/components/badge";
-import { AdminDataTable } from "@ui/components/data-table";
+import { DataTable } from "@ui/components/data-table";
 import type { PublicEventRegistrant } from "@/lib/public-events";
 import { formatEventDateTime } from "@/lib/public-events";
 
@@ -41,6 +41,7 @@ function RegistrantsList({
       {
         accessorKey: "fullName",
         header: "Sinh viên",
+        enableColumnFilter: false,
         cell: ({ row }) => (
           <span className="inline-flex max-w-full items-center gap-2">
             <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">
@@ -53,6 +54,7 @@ function RegistrantsList({
       {
         accessorKey: "registeredAt",
         header: "Thời gian đăng ký",
+        enableColumnFilter: false,
         cell: ({ getValue }) => formatEventDateTime(getValue() as string | null) ?? "—",
       },
     ],
@@ -64,7 +66,7 @@ function RegistrantsList({
       <p className="text-sm text-muted-foreground">
         Danh sách hiển thị công khai — không bao gồm email hoặc số điện thoại.
       </p>
-      <AdminDataTable
+      <DataTable
         data={registrants}
         columns={columns}
         emptyLabel={

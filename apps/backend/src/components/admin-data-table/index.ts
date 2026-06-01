@@ -1,2 +1,7 @@
-export { AdminDataTable } from "./admin-data-table";
-export type { AdminDataTableProps } from "./admin-data-table";
+export { AdminDataTable, DataTable } from "@ui/components/data-table";
+export type {
+  AdminDataTableBulkAction,
+  AdminDataTableProps,
+  DataTableBulkAction,
+  DataTableProps,
+} from "@ui/components/data-table";
