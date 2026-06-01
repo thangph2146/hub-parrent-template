@@ -9,6 +9,7 @@ import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard } from "@/components/admin-page-guard";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, useEventDetailQuery, buildEventPayload } from "../../_component";
+import { getPosterUrlFromValue } from "../../_component/utils";
 import type { EventDetail, EventFormValues, EventFormSpeaker } from "../../_component";
 
 function toDatetimeLocal(value: string | null | undefined): string {
@@ -54,6 +55,7 @@ function buildFormValues(entity: EventDetail, speakers: EventFormSpeaker[]): Eve
   return {
     title: entity.title ?? "",
     slug: entity.slug ?? "",
+    posterUrl: getPosterUrlFromValue(entity.poster),
     description: entity.description ?? "",
     startDate: toDatetimeLocal(entity.startDate),
     endDate: toDatetimeLocal(entity.endDate),
@@ -65,6 +67,8 @@ function buildFormValues(entity: EventDetail, speakers: EventFormSpeaker[]): Eve
     location: entity.location ?? "",
     address: entity.address ?? "",
     status: entity.status ?? 1,
+    isFeatured: entity.isFeatured === true,
+    featuredOrder: Number(entity.featuredOrder) || 0,
     allowCheckin: entity.allowCheckin ?? true,
     allowCheckout: entity.allowCheckout ?? true,
     requireFaceId: entity.requireFaceId ?? false,

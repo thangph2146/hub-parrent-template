@@ -12,6 +12,7 @@ export interface EventSpeakerRowDto {
   speakerName: string;
   speakerTitle: string | null;
   speakerOrganization: string | null;
+  speakerAvatar: string | null;
   sortOrder: number;
   role: string | null;
   presentationTitle: string | null;
@@ -60,6 +61,7 @@ function mapRow(r: EventSpeaker): EventSpeakerRowDto {
     speakerName: r.speaker.name,
     speakerTitle: r.speaker.title ?? null,
     speakerOrganization: r.speaker.organization ?? null,
+    speakerAvatar: r.speaker.avatar ?? null,
     sortOrder: r.sortOrder,
     role: r.role ?? null,
     presentationTitle: r.presentationTitle ?? null,

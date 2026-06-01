@@ -5,9 +5,13 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:checkin": "turbo dev --filter=hub-event-checkin-frontend --filter=@backend --filter=@api",
     "predev": "pnpm kill",
+    "predev:checkin": "pnpm kill:checkin",
     "dev:fresh": "pnpm kill && turbo dev",
+    "dev:checkin:fresh": "pnpm kill:checkin && turbo dev --filter=hub-event-checkin-frontend --filter=@backend --filter=@api",
     "kill": "node scripts/kill-ports.mjs 3000 3001 3002 3100 3101",
+    "kill:checkin": "node scripts/kill-ports.mjs 3000 3001 3002",
     "kill:web": "node scripts/kill-ports.mjs 3000 3001 3100 3101",
     "kill:api": "node scripts/kill-ports.mjs 3002",
     "lint": "turbo lint",

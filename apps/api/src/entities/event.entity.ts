@@ -65,6 +65,14 @@ export class Event extends BaseEntity {
   @Property({ default: 1 })
   status: number = 1;
 
+  /** Hiển thị ở khu vực "Sự kiện nổi bật" trên storefront. */
+  @Property({ default: false })
+  isFeatured: boolean = false;
+
+  /** Thứ tự trong carousel nổi bật (nhỏ hơn = trước). */
+  @Property({ default: 0 })
+  featuredOrder: number = 0;
+
   @Property({ default: 0 })
   totalRegistrations: number = 0;
 

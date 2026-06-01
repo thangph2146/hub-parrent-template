@@ -3,7 +3,6 @@ import {
   EntityManager,
   type EntityName,
   type EntityProperty,
-  serialize,
   wrap,
 } from '@mikro-orm/core';
 import { hashSync } from 'bcryptjs';
@@ -12,7 +11,15 @@ import * as ExcelJS from 'exceljs';
 import { Category } from '../entities/category.entity';
 import { Comment } from '../entities/comment.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
+import { Event } from '../entities/event.entity';
+import { EventCheckin } from '../entities/event-checkin.entity';
+import { EventRegistration } from '../entities/event-registration.entity';
+import { EventSpeaker } from '../entities/event-speaker.entity';
+import { Group } from '../entities/group.entity';
+import { GroupMember } from '../entities/group-member.entity';
 import { Message } from '../entities/message.entity';
+import { MessageRead } from '../entities/message-read.entity';
+import { Speaker } from '../entities/speaker.entity';
 import { Notification } from '../entities/notification.entity';
 import { PageContent } from '../entities/page-content.entity';
 import { PostCategory } from '../entities/post-category.entity';
@@ -30,6 +37,7 @@ import {
 import type { SuperadminBootstrapResult } from '../seeds/superadmin-bootstrap.runner';
 import {
   orderCategoryRowsForImport,
+  pivotFk,
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
@@ -39,6 +47,47 @@ const EXCEL_META_SHEET = '__meta';
 const EXCEL_NULL_MARKER = '__HUB_NULL__';
 const EXCEL_MAX_CELL_CHARS = 32767;
 type ExcelWorkbookLoadInput = Parameters<ExcelJS.Workbook['xlsx']['load']>[0];
+
+/**
+ * Thứ tự xóa/import an toàn FK (cha trước con khi xóa; import dùng reverse).
+ * Bổ sung khi thêm entity mới có quan hệ rõ ràng.
+ */
+const PREFERRED_MIDDLE_MODEL_ORDER: readonly string[] = [
+  'setting',
+  'seoMeta',
+  'template',
+  'trainingLevel',
+  'trainingSystem',
+  'academicYear',
+  'department',
+  'major',
+  'course',
+  'location',
+  'camera',
+  'screen',
+  'faceData',
+  'speaker',
+  'importedUser',
+  'category',
+  'tag',
+  'post',
+  'comment',
+  'contactRequest',
+  'student',
+  'parentStudent',
+  'group',
+  'groupMember',
+  'message',
+  'messageRead',
+  'notification',
+  'pageContent',
+  'event',
+  'eventSpeaker',
+  'eventRegistration',
+  'eventCheckin',
+  'account',
+  'session',
+];
 
 /** Xoá ký tự điều khiển XML (0x00–0x08, 0x0B–0x0C, 0x0E–0x1F) có thể làm hỏng XLSX. */
 function sanitizeExcelString(raw: string): string {
@@ -135,6 +184,20 @@ function isTemporalColumn(prop: EntityProperty): boolean {
     return true;
   }
   return IMPORT_DATE_SCALAR_PROP_NAMES.has(prop.name);
+}
+
+function isManyToOneImportProperty(prop: EntityProperty): boolean {
+  const kind = String((prop as { kind?: string }).kind ?? '');
+  return kind === 'm:1' || (kind === '1:1' && !(prop as { mappedBy?: string }).mappedBy);
+}
+
+function coerceManyToOneScalar(raw: unknown): unknown {
+  if (raw === null || raw === undefined) return raw;
+  if (typeof raw === 'string' || typeof raw === 'number') return raw;
+  if (typeof raw === 'object' && raw !== null && 'id' in raw) {
+    return (raw as { id: unknown }).id;
+  }
+  return raw;
 }
 
 function normalizeImportScalar(prop: EntityProperty, raw: unknown): unknown {
@@ -278,31 +341,219 @@ function parseExcelCellValue(value: unknown): unknown {
 export class SystemService {
   private readonly logger = new Logger(SystemService.name);
 
-  /** model names được sort alphabetically; user/role/userRole luôn ở cuối vì có special import handler. */
+  /** Thứ tự xóa bảng: con trước cha. Import full dùng thứ tự đảo lại: cha trước con. */
   private readonly modelOrder: string[];
 
   constructor(private readonly em: EntityManager) {
     this.modelOrder = this.buildModelOrder();
   }
 
+  private getEntityName(entity: EntityName<any>): string {
+    return typeof entity === 'string'
+      ? entity
+      : typeof entity === 'function'
+        ? entity.name
+        : String(entity as unknown as string);
+  }
+
+  private resolveModelName(name?: string | null): string | undefined {
+    const key = name?.trim();
+    if (!key) return undefined;
+    if (entityByModelName[key]) return key;
+
+    const lower = key.toLowerCase();
+    for (const [modelName, entity] of Object.entries(entityByModelName)) {
+      const entityName = this.getEntityName(entity);
+      const meta = this.em.getMetadata().find(entityName);
+      const aliases = [
+        modelName,
+        entityName,
+        meta?.className,
+        meta?.tableName,
+        meta?.collection,
+      ]
+        .filter((v): v is string => Boolean(v))
+        .map((v) => v.toLowerCase());
+      if (aliases.includes(lower)) return modelName;
+    }
+    return undefined;
+  }
+
+  private normalizeImportBundle(
+    data: Record<string, any[]>,
+  ): Record<string, any[]> {
+    const normalized: Record<string, any[]> = {};
+    for (const [key, rows] of Object.entries(data)) {
+      const modelName = this.resolveModelName(key) ?? key;
+      if (!Array.isArray(rows)) continue;
+      normalized[modelName] = [...(normalized[modelName] ?? []), ...rows];
+    }
+    return normalized;
+  }
+
+  /**
+   * Backup hợp lệ phải có dữ liệu field thật. File export lỗi trước đây có dạng
+   * `{ settings: [{}, {}, ...] }` hoặc row thiếu `id`; nếu cho import sẽ rất dễ
+   * xóa dữ liệu cũ rồi nạp bản ghi rỗng.
+   */
+  private assertRestorableImportBundle(data: Record<string, any[]>): void {
+    const modelsWithoutId = new Set(['postCategory', 'postTag']);
+
+    for (const [modelName, rows] of Object.entries(data)) {
+      if (!Array.isArray(rows) || rows.length === 0) continue;
+
+      const emptyRows = rows.filter(
+        (row) =>
+          row != null &&
+          typeof row === 'object' &&
+          !Array.isArray(row) &&
+          Object.keys(row as Record<string, unknown>).length === 0,
+      ).length;
+
+      if (emptyRows > 0) {
+        throw new Error(
+          `File import không hợp lệ: bảng/model "${modelName}" có ${emptyRows}/${rows.length} dòng rỗng. Vui lòng export lại bằng phiên bản mới trước khi import.`,
+        );
+      }
+
+      if (modelsWithoutId.has(modelName)) continue;
+
+      const missingIdRows = rows.filter((row) => {
+        if (row == null || typeof row !== 'object' || Array.isArray(row)) {
+          return true;
+        }
+        const record = row as Record<string, unknown>;
+        return record.id == null || String(record.id).trim() === '';
+      }).length;
+
+      if (missingIdRows > 0) {
+        throw new Error(
+          `File import không hợp lệ: bảng/model "${modelName}" có ${missingIdRows}/${rows.length} dòng thiếu khóa chính "id". Vui lòng export lại bằng phiên bản mới trước khi import.`,
+        );
+      }
+    }
+  }
+
+  private getModelTableName(modelName: string): string {
+    const entity = entityByModelName[modelName];
+    if (!entity) return modelName;
+    const meta = this.em.getMetadata().find(this.getEntityName(entity));
+    return meta?.tableName ?? modelName;
+  }
+
+  private toTableKeyedExport(
+    data: Record<string, any[]>,
+  ): Record<string, any[]> {
+    const tableData: Record<string, any[]> = {};
+    for (const [modelName, rows] of Object.entries(data)) {
+      tableData[this.getModelTableName(modelName)] = rows;
+    }
+    return tableData;
+  }
+
   private buildModelOrder(): string[] {
     const all = Object.keys(entityByModelName);
-    const last = new Set(['user', 'role', 'userRole']);
-    const first = new Set([
-      'admissionResult',
-      'verificationToken',
-      'postCategory',
-      'postTag',
-    ]);
-    const middle = all.filter((m) => !first.has(m) && !last.has(m)).sort();
-    return [...first, ...middle, ...last];
+    const dependencies = new Map<string, Set<string>>();
+
+    for (const modelName of all) {
+      dependencies.set(modelName, new Set());
+    }
+
+    for (const [modelName, entity] of Object.entries(entityByModelName)) {
+      const meta = this.em.getMetadata().find(this.getEntityName(entity));
+      if (!meta) continue;
+
+      for (const prop of Object.values(meta.properties)) {
+        if (!isManyToOneImportProperty(prop)) continue;
+        const targetClassName = (prop as { targetMeta?: { className?: string } })
+          .targetMeta?.className;
+        if (!targetClassName) continue;
+
+        const targetModel = this.resolveModelName(targetClassName);
+        if (targetModel && targetModel !== modelName) {
+          dependencies.get(modelName)?.add(targetModel);
+        }
+      }
+    }
+
+    const parentFirst: string[] = [];
+    const visiting = new Set<string>();
+    const visited = new Set<string>();
+    const preferred = [
+      ...PREFERRED_MIDDLE_MODEL_ORDER,
+      ...all.filter((m) => !PREFERRED_MIDDLE_MODEL_ORDER.includes(m)).sort(),
+    ];
+
+    const visit = (modelName: string) => {
+      if (visited.has(modelName)) return;
+      if (visiting.has(modelName)) return;
+      visiting.add(modelName);
+      for (const dep of dependencies.get(modelName) ?? []) {
+        visit(dep);
+      }
+      visiting.delete(modelName);
+      visited.add(modelName);
+      parentFirst.push(modelName);
+    };
+
+    for (const modelName of preferred) {
+      if (entityByModelName[modelName]) visit(modelName);
+    }
+
+    // Clear/delete cần con trước cha; import dùng reverse của mảng này.
+    return parentFirst.reverse();
+  }
+
+  /**
+   * Export theo field DB thực tế:
+   * - scalar dùng `fieldName` nếu có (`ten_dien_gia`, `created_at`, ...)
+   * - ManyToOne dùng FK column (`eventId`, `createdById`, ...)
+   */
+  private flattenEntityRowForExport(
+    entityKey: string,
+    row: object,
+  ): Record<string, unknown> {
+    const meta = this.em.getMetadata().get(entityKey);
+    const entityRow = row as Record<string, unknown>;
+    const out: Record<string, unknown> = {};
+
+    for (const prop of Object.values(meta.properties)) {
+      if (shouldSkipImportProperty(prop)) continue;
+      const fieldName = prop.fieldNames?.[0] ?? prop.name;
+
+      if (isManyToOneImportProperty(prop)) {
+        const rel = entityRow[prop.name] ?? entityRow[fieldName];
+        let pk: unknown = null;
+        if (typeof rel === 'string' || typeof rel === 'number') {
+          pk = rel;
+        } else if (rel && typeof rel === 'object') {
+          pk =
+            'id' in rel
+              ? (rel as { id: unknown }).id
+              : wrap(rel as object, true).getPrimaryKey();
+        }
+        out[fieldName] = pk;
+        continue;
+      }
+
+      const val = entityRow[prop.name] ?? entityRow[fieldName];
+      if (val === undefined) continue;
+      const encoded = val instanceof Date ? val.toISOString() : (val as unknown);
+      out[fieldName] = encoded;
+    }
+
+    return out;
   }
 
   private getWorkbookSheetName(modelName: string): string {
-    return modelName.slice(0, 31);
+    const tableName = this.getModelTableName(
+      this.resolveModelName(modelName) ?? modelName,
+    );
+    return tableName.slice(0, 31);
   }
 
-  private getDefaultExcelColumns(modelName: string): string[] {
+  private getDefaultExcelColumns(inputModelName: string): string[] {
+    const modelName = this.resolveModelName(inputModelName) ?? inputModelName;
     if (modelName === 'postCategory') return ['postId', 'categoryId'];
     if (modelName === 'postTag') return ['postId', 'tagId'];
 
@@ -317,9 +568,12 @@ export class SystemService {
     const meta = this.em.getMetadata().find(entityName);
     if (!meta) return [];
 
-    return Object.values(meta.properties)
-      .filter((prop) => !shouldSkipImportProperty(prop))
-      .map((prop) => prop.name);
+    const columns: string[] = [];
+    for (const prop of Object.values(meta.properties)) {
+      if (shouldSkipImportProperty(prop)) continue;
+      columns.push(prop.fieldNames?.[0] ?? prop.name);
+    }
+    return columns;
   }
 
   private getExcelColumns(
@@ -350,14 +604,18 @@ export class SystemService {
     sheet.columns = [
       { header: 'modelName', key: 'modelName', width: 24 },
       { header: 'sheetName', key: 'sheetName', width: 24 },
+      { header: 'tableName', key: 'tableName', width: 28 },
       { header: 'rowCount', key: 'rowCount', width: 12 },
     ];
     sheet.getRow(1).font = { bold: true };
 
-    for (const [modelName, rows] of Object.entries(data)) {
+    for (const [key, rows] of Object.entries(data)) {
+      const modelName = this.resolveModelName(key) ?? key;
+      const tableName = this.getModelTableName(modelName);
       sheet.addRow({
         modelName,
-        sheetName: this.getWorkbookSheetName(modelName),
+        sheetName: this.getWorkbookSheetName(tableName),
+        tableName,
         rowCount: rows.length,
       });
     }
@@ -426,14 +684,17 @@ export class SystemService {
         if (rowNumber === 1) return;
         const modelName = row.getCell(1).text?.trim();
         const sheetName = row.getCell(2).text?.trim();
+        const tableName = row.getCell(3).text?.trim();
         if (modelName && sheetName) {
           sheetMap.set(modelName, sheetName);
+          if (tableName) sheetMap.set(tableName, sheetName);
         }
       });
     }
 
-    const modelNames = targetModel
-      ? [targetModel]
+    const resolvedTargetModel = this.resolveModelName(targetModel) ?? targetModel;
+    const modelNames = resolvedTargetModel
+      ? [resolvedTargetModel]
       : sheetMap.size > 0
         ? [...sheetMap.keys()]
         : workbook.worksheets
@@ -442,9 +703,11 @@ export class SystemService {
 
     const data: Record<string, any[]> = {};
 
-    for (const modelName of modelNames) {
+    for (const rawModelName of modelNames) {
+      const modelName = this.resolveModelName(rawModelName) ?? rawModelName;
       const worksheet =
-        workbook.getWorksheet(sheetMap.get(modelName) ?? modelName) ??
+        workbook.getWorksheet(sheetMap.get(rawModelName) ?? rawModelName) ??
+        workbook.getWorksheet(rawModelName) ??
         workbook.getWorksheet(modelName);
       if (!worksheet) continue;
 
@@ -481,7 +744,7 @@ export class SystemService {
       data[modelName] = rows;
     }
 
-    return this.importData(data, targetModel, skipClear);
+    return this.importData(data, resolvedTargetModel, skipClear);
   }
 
   /** Bỏ pivot trỏ tới post/category không tồn tại (tránh lỗi FK / file export lệch). */
@@ -492,15 +755,15 @@ export class SystemService {
     const postIds = [
       ...new Set(
         sanitized
-          .map((r) => r.post as string)
-          .filter((id): id is string => Boolean(id)),
+          .map((r) => pivotFk(r, 'postId', 'post'))
+          .filter(Boolean),
       ),
     ];
     const categoryIds = [
       ...new Set(
         sanitized
-          .map((r) => r.category as string)
-          .filter((id): id is string => Boolean(id)),
+          .map((r) => pivotFk(r, 'categoryId', 'category'))
+          .filter(Boolean),
       ),
     ];
     const [existingPosts, existingCats] = await Promise.all([
@@ -513,9 +776,11 @@ export class SystemService {
     ]);
     const pSet = new Set(existingPosts.map((p) => p.id));
     const cSet = new Set(existingCats.map((c) => c.id));
-    const out = sanitized.filter(
-      (r) => pSet.has(r.post as string) && cSet.has(r.category as string),
-    );
+    const out = sanitized.filter((r) => {
+      const pid = pivotFk(r, 'postId', 'post');
+      const cid = pivotFk(r, 'categoryId', 'category');
+      return pid && cid && pSet.has(pid) && cSet.has(cid);
+    });
     if (out.length < sanitized.length) {
       this.logger.warn(
         `postCategory: bỏ qua ${sanitized.length - out.length} dòng (post hoặc category không có trong DB).`,
@@ -558,16 +823,12 @@ export class SystemService {
   ): Promise<Record<string, unknown>[]> {
     const userIds = [
       ...new Set(
-        sanitized
-          .map((r) => r.user as string)
-          .filter((id): id is string => Boolean(id)),
+        sanitized.map((r) => pivotFk(r, 'userId', 'user')).filter(Boolean),
       ),
     ];
     const roleIds = [
       ...new Set(
-        sanitized
-          .map((r) => r.role as string)
-          .filter((id): id is string => Boolean(id)),
+        sanitized.map((r) => pivotFk(r, 'roleId', 'role')).filter(Boolean),
       ),
     ];
     const [users, roles] = await Promise.all([
@@ -580,9 +841,11 @@ export class SystemService {
     ]);
     const uSet = new Set(users.map((u) => u.id));
     const rSet = new Set(roles.map((ro) => ro.id));
-    const out = sanitized.filter(
-      (row) => uSet.has(row.user as string) && rSet.has(row.role as string),
-    );
+    const out = sanitized.filter((row) => {
+      const uid = pivotFk(row, 'userId', 'user');
+      const rid = pivotFk(row, 'roleId', 'role');
+      return uid && rid && uSet.has(uid) && rSet.has(rid);
+    });
     if (out.length < sanitized.length) {
       this.logger.warn(
         `userRole: bỏ qua ${sanitized.length - out.length} dòng (userId hoặc roleId không tồn tại — import user và role trước).`,
@@ -591,9 +854,143 @@ export class SystemService {
     return out;
   }
 
+  private async filterSanitizedFkPivot(
+    em: EntityManager,
+    sanitized: Record<string, unknown>[],
+    options: {
+      leftKey: string;
+      leftRel: string;
+      leftEntity: EntityName<any>;
+      rightKey: string;
+      rightRel: string;
+      rightEntity: EntityName<any>;
+      label: string;
+    },
+  ): Promise<Record<string, unknown>[]> {
+    const leftIds = [
+      ...new Set(
+        sanitized
+          .map((r) => pivotFk(r, options.leftKey, options.leftRel))
+          .filter(Boolean),
+      ),
+    ];
+    const rightIds = [
+      ...new Set(
+        sanitized
+          .map((r) => pivotFk(r, options.rightKey, options.rightRel))
+          .filter(Boolean),
+      ),
+    ];
+    const [leftRows, rightRows] = await Promise.all([
+      leftIds.length
+        ? em.find(
+            options.leftEntity,
+            { id: { $in: leftIds } },
+            { fields: ['id'] },
+          )
+        : [],
+      rightIds.length
+        ? em.find(
+            options.rightEntity,
+            { id: { $in: rightIds } },
+            { fields: ['id'] },
+          )
+        : [],
+    ]);
+    const leftSet = new Set(leftRows.map((r) => String((r as { id: unknown }).id)));
+    const rightSet = new Set(
+      rightRows.map((r) => String((r as { id: unknown }).id)),
+    );
+    const out = sanitized.filter((row) => {
+      const left = pivotFk(row, options.leftKey, options.leftRel);
+      const right = pivotFk(row, options.rightKey, options.rightRel);
+      return (
+        Boolean(left && right && leftSet.has(left) && rightSet.has(right))
+      );
+    });
+    if (out.length < sanitized.length) {
+      this.logger.warn(
+        `${options.label}: bỏ qua ${sanitized.length - out.length} dòng (FK không tồn tại trong DB).`,
+      );
+    }
+    return out;
+  }
+
+  /**
+   * Lọc FK theo metadata thật của entity: fieldName DB (`createdById`) hoặc
+   * property relation (`createdBy`) đều được hiểu. Cách này tự bắt các bảng
+   * liên kết mới mà không cần bổ sung hard-code từng bảng.
+   */
+  private async filterRowsByExistingManyToOneRefs(
+    em: EntityManager,
+    modelName: string,
+    rows: Record<string, unknown>[],
+  ): Promise<Record<string, unknown>[]> {
+    const entity = entityByModelName[modelName];
+    if (!entity || rows.length === 0) return rows;
+
+    const meta = em.getMetadata().find(this.getEntityName(entity));
+    if (!meta) return rows;
+
+    let filtered = rows;
+    for (const prop of Object.values(meta.properties)) {
+      if (!isManyToOneImportProperty(prop)) continue;
+
+      const targetClassName = (prop as { targetMeta?: { className?: string } })
+        .targetMeta?.className;
+      if (!targetClassName) continue;
+      if (targetClassName === meta.className) continue;
+
+      const fieldName = prop.fieldNames?.[0] ?? `${prop.name}Id`;
+      const nullable = Boolean(prop.nullable);
+      const ids = [
+        ...new Set(
+          filtered
+            .map((row) => pivotFk(row, fieldName, prop.name))
+            .filter(Boolean),
+        ),
+      ];
+
+      const existingRows = ids.length
+        ? await em.find(
+            targetClassName as EntityName<any>,
+            { id: { $in: ids } },
+            { fields: ['id'] },
+          )
+        : [];
+      const existingIds = new Set(
+        existingRows.map((row) => String((row as { id: unknown }).id)),
+      );
+
+      const before = filtered.length;
+      filtered = filtered.filter((row) => {
+        const id = pivotFk(row, fieldName, prop.name);
+        if (!id) return nullable;
+        return existingIds.has(id);
+      });
+
+      if (filtered.length < before) {
+        this.logger.warn(
+          `${modelName}: bỏ qua ${before - filtered.length} dòng vì FK ${fieldName} -> ${targetClassName}.id không tồn tại.`,
+        );
+      }
+      if (filtered.length === 0) break;
+    }
+
+    return filtered;
+  }
+
   private sanitizeExportedPivotTables(data: Record<string, unknown>): void {
-    const { droppedPostCategory, droppedPostTag } =
-      sanitizePivotRowsInExportJson(data);
+    const {
+      droppedPostCategory,
+      droppedPostTag,
+      droppedEventSpeaker,
+      droppedEventRegistration,
+      droppedEventCheckin,
+      droppedGroupMember,
+      droppedMessageRead,
+      droppedUserRole,
+    } = sanitizePivotRowsInExportJson(data);
     if (droppedPostCategory > 0) {
       this.logger.warn(
         `Export: loại ${droppedPostCategory} postCategory trỏ tới post/category không có trong cùng file export.`,
@@ -602,6 +999,36 @@ export class SystemService {
     if (droppedPostTag > 0) {
       this.logger.warn(
         `Export: loại ${droppedPostTag} postTag trỏ tới post/tag không có trong cùng file export.`,
+      );
+    }
+    if (droppedEventSpeaker > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedEventSpeaker} eventSpeaker trỏ tới event/speaker không có trong cùng file export.`,
+      );
+    }
+    if (droppedEventRegistration > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedEventRegistration} eventRegistration trỏ tới event không có trong cùng file export.`,
+      );
+    }
+    if (droppedEventCheckin > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedEventCheckin} eventCheckin trỏ tới event không có trong cùng file export.`,
+      );
+    }
+    if (droppedGroupMember > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedGroupMember} groupMember trỏ tới group/user không có trong cùng file export.`,
+      );
+    }
+    if (droppedMessageRead > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedMessageRead} messageRead trỏ tới message/user không có trong cùng file export.`,
+      );
+    }
+    if (droppedUserRole > 0) {
+      this.logger.warn(
+        `Export: loại ${droppedUserRole} userRole trỏ tới user/role không có trong cùng file export.`,
       );
     }
   }
@@ -644,8 +1071,11 @@ export class SystemService {
     if (!entity || sanitized.length === 0) return;
 
     let rows = sanitized;
+    rows = await this.filterRowsByExistingManyToOneRefs(em, mName, rows);
+    if (rows.length === 0) return;
+
     if (mName === 'postCategory') {
-      rows = await this.filterSanitizedPostCategories(em, sanitized);
+      rows = await this.filterSanitizedPostCategories(em, rows);
       if (rows.length === 0) return;
     }
 
@@ -655,6 +1085,68 @@ export class SystemService {
 
     if (mName === 'userRole') {
       rows = await this.filterSanitizedUserRoles(em, rows);
+      if (rows.length === 0) return;
+    }
+
+    if (mName === 'eventSpeaker') {
+      rows = await this.filterSanitizedFkPivot(em, rows, {
+        leftKey: 'eventId',
+        leftRel: 'event',
+        leftEntity: Event,
+        rightKey: 'speakerId',
+        rightRel: 'speaker',
+        rightEntity: Speaker,
+        label: 'eventSpeaker',
+      });
+      if (rows.length === 0) return;
+    }
+
+    if (mName === 'groupMember') {
+      rows = await this.filterSanitizedFkPivot(em, rows, {
+        leftKey: 'groupId',
+        leftRel: 'group',
+        leftEntity: Group,
+        rightKey: 'userId',
+        rightRel: 'user',
+        rightEntity: User,
+        label: 'groupMember',
+      });
+      if (rows.length === 0) return;
+    }
+
+    if (mName === 'messageRead') {
+      rows = await this.filterSanitizedFkPivot(em, rows, {
+        leftKey: 'messageId',
+        leftRel: 'message',
+        leftEntity: Message,
+        rightKey: 'userId',
+        rightRel: 'user',
+        rightEntity: User,
+        label: 'messageRead',
+      });
+      if (rows.length === 0) return;
+    }
+
+    if (mName === 'eventRegistration' || mName === 'eventCheckin') {
+      const eventIds = [
+        ...new Set(
+          rows.map((r) => pivotFk(r, 'eventId', 'event')).filter(Boolean),
+        ),
+      ];
+      const events = eventIds.length
+        ? await em.find(Event, { id: { $in: eventIds } }, { fields: ['id'] })
+        : [];
+      const eventSet = new Set(events.map((e) => e.id));
+      const filtered = rows.filter((row) => {
+        const eid = pivotFk(row, 'eventId', 'event');
+        return Boolean(eid && eventSet.has(eid));
+      });
+      if (filtered.length < rows.length) {
+        this.logger.warn(
+          `${mName}: bỏ qua ${rows.length - filtered.length} dòng (eventId không tồn tại).`,
+        );
+      }
+      rows = filtered;
       if (rows.length === 0) return;
     }
 
@@ -829,11 +1321,23 @@ export class SystemService {
           raw = row[col];
         }
       }
+      if (
+        raw === undefined &&
+        isManyToOneImportProperty(prop) &&
+        Object.prototype.hasOwnProperty.call(row, `${prop.name}Id`)
+      ) {
+        raw = row[`${prop.name}Id`];
+      }
       if (raw === undefined) continue;
       let val = normalizeImportScalar(prop, raw);
+      if (isManyToOneImportProperty(prop)) {
+        val = coerceManyToOneScalar(val);
+      }
       if (
         prop.name === 'content' &&
-        (entityKey === 'Post' || entityKey === 'PageContent')
+        (entityKey === 'Post' ||
+          entityKey === 'PageContent' ||
+          entityKey === 'Event')
       ) {
         val = normalizeContentJsonForImport(val);
       }
@@ -1094,20 +1598,21 @@ export class SystemService {
   private async exportUserRows(): Promise<Record<string, unknown>[]> {
     const rows = await this.em.find(User, {});
     return rows.map((u) => {
-      const obj = wrap(u).toObject() as Record<string, unknown>;
+      const obj = this.flattenEntityRowForExport(User.name, u);
       obj.password = u.password;
       return obj;
     });
   }
 
   async exportData(modelName?: string) {
+    const resolvedModelName = this.resolveModelName(modelName) ?? modelName;
     this.logger.log(
-      `Starting data export ${modelName ? `for ${modelName}` : 'all models'}...`,
+      `Starting data export ${resolvedModelName ? `for ${resolvedModelName}` : 'all models'}...`,
     );
     const data: Record<string, any[]> = {};
 
-    const exportOrder = modelName
-      ? [modelName]
+    const exportOrder = resolvedModelName
+      ? [resolvedModelName]
       : [...this.modelOrder].reverse();
 
     for (const mName of exportOrder) {
@@ -1123,7 +1628,15 @@ export class SystemService {
             data[mName] = await this.exportUserRows();
           } else {
             const rows = await this.em.find(entity, {});
-            data[mName] = serialize(rows) as object[];
+            const entityKey =
+              typeof entity === 'string'
+                ? entity
+                : typeof entity === 'function'
+                  ? entity.name
+                  : mName;
+            data[mName] = rows.map((row) =>
+              this.flattenEntityRowForExport(entityKey, row),
+            );
           }
           this.logger.debug(
             `Exported ${data[mName].length} records from ${mName}`,
@@ -1137,11 +1650,11 @@ export class SystemService {
       }
     }
 
-    if (!modelName) {
+    if (!resolvedModelName) {
       this.sanitizeExportedPivotTables(data);
     }
 
-    return data;
+    return this.toTableKeyedExport(data);
   }
 
   async importData(
@@ -1149,8 +1662,11 @@ export class SystemService {
     targetModel?: string,
     skipClear: boolean = false,
   ) {
+    const resolvedTargetModel = this.resolveModelName(targetModel) ?? targetModel;
+    data = this.normalizeImportBundle(data);
+    this.assertRestorableImportBundle(data);
     this.logger.log(
-      `Starting data import ${targetModel ? `for ${targetModel}` : 'all models'} (skipClear: ${skipClear})...`,
+      `Starting data import ${resolvedTargetModel ? `for ${resolvedTargetModel}` : 'all models'} (skipClear: ${skipClear})...`,
     );
 
     const droppedHero = stripLegacyHeroSlideFromBundle(
@@ -1163,12 +1679,12 @@ export class SystemService {
     }
 
     // Nếu import tất cả models, chia nhỏ và import từng model riêng
-    if (!targetModel && Object.keys(data).length > 1) {
+    if (!resolvedTargetModel && Object.keys(data).length > 1) {
       return this.importDataByModels(data, skipClear);
     }
 
     if (
-      targetModel === 'user' &&
+      resolvedTargetModel === 'user' &&
       Object.prototype.hasOwnProperty.call(data, 'userRole') &&
       Object.prototype.hasOwnProperty.call(data, 'user')
     ) {
@@ -1194,7 +1710,7 @@ export class SystemService {
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
       try {
-        const clearOrder = targetModel ? [targetModel] : this.modelOrder;
+        const clearOrder = resolvedTargetModel ? [resolvedTargetModel] : this.modelOrder;
 
         // Chỉ clear nếu skipClear=false
         if (!skipClear) {
@@ -1223,8 +1739,8 @@ export class SystemService {
           }
         }
 
-        const importOrder = targetModel
-          ? [targetModel]
+        const importOrder = resolvedTargetModel
+          ? [resolvedTargetModel]
           : [...this.modelOrder].reverse();
 
         for (const mName of importOrder) {
@@ -1253,7 +1769,7 @@ export class SystemService {
         }
 
         // Xóa `roles` CASCADE xóa `user_roles` — request kế (import user) mất quyền → 403.
-        if (!skipClear && targetModel === 'role') {
+        if (!skipClear && resolvedTargetModel === 'role') {
           this.logger.debug(
             'Sau import role: bổ sung lại user_roles seed (nếu user + role tồn tại).',
           );

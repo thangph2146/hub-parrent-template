@@ -1,0 +1,33 @@
+{
+  "name": "hub-event-checkin-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "predev": "node ../../scripts/kill-ports.mjs 3000",
+    "kill": "node ../../scripts/kill-ports.mjs 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@thangph2146/lexical-editor": "workspace:*",
+    "@tanstack/react-table": "8.21.3",
+    "@workspace/api-client": "workspace:*",
+    "lucide-react": "^1.14.0",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -67,5 +67,7 @@ export const PUBLIC_ROUTES = {
   PAGE_CONTENTS: 'public/page-contents',
   ADMISSION_RESULTS_LOOKUP: 'public/admission-results/lookup',
   SERVE_UPLOADS: 'uploads',
+  EVENTS: 'public/events',
+  EVENT_CATEGORIES: 'public/event-categories',
   PARENT_MY_STUDENTS: 'parent/my-students',
 } as const;

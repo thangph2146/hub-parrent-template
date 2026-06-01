@@ -47,6 +47,12 @@ export interface ListEventRegistrationsResult {
   };
 }
 
+/** Dữ liệu công khai trên storefront — không lộ email/SĐT. */
+export interface PublicEventRegistrantDto {
+  fullName: string;
+  registeredAt: string | null;
+}
+
 function toIsoString(
   value: Date | string | number | undefined | null,
 ): string | null {
@@ -63,9 +69,14 @@ function toIsoString(
 }
 
 function mapRow(r: EventRegistration): EventRegistrationRowDto {
+  const eventRef = r.event as Event | { id?: string };
+  const eventId =
+    eventRef && typeof eventRef === 'object' && 'id' in eventRef
+      ? String(eventRef.id)
+      : '';
   return {
     id: r.id,
-    eventId: r.event.id,
+    eventId,
     email: r.email,
     fullName: r.fullName,
     phone: r.phone ?? null,
@@ -88,6 +99,68 @@ function mapRow(r: EventRegistration): EventRegistrationRowDto {
 export class EventRegistrationsService {
   constructor(private readonly em: EntityManager) {}
 
+  /** Đếm đăng ký còn hiệu lực (không soft-delete, không hủy). */
+  async countActiveForEvent(eventId: string): Promise<number> {
+    const id = eventId?.trim();
+    if (!id) return 0;
+    return this.em.count(EventRegistration, {
+      eventId: id,
+      deletedAt: null,
+      status: { $ne: RegistrationStatus.CANCELLED },
+    } as FilterQuery<EventRegistration>);
+  }
+
+  /** Đồng bộ `events.totalRegistrations` với số bản ghi thực tế. */
+  async syncEventRegistrationCount(eventId: string): Promise<number> {
+    const id = eventId?.trim();
+    if (!id) return 0;
+    const count = await this.countActiveForEvent(id);
+    await this.em.nativeUpdate(Event, { id }, { totalRegistrations: count });
+    return count;
+  }
+
+  async listPublicForEvent(
+    eventId: string,
+    limit = 100,
+  ): Promise<PublicEventRegistrantDto[]> {
+    const id = eventId?.trim();
+    if (!id) return [];
+    const cap = Math.min(200, Math.max(1, limit));
+    const rows = await this.em.find(
+      EventRegistration,
+      {
+        eventId: id,
+        deletedAt: null,
+        status: { $ne: RegistrationStatus.CANCELLED },
+      } as FilterQuery<EventRegistration>,
+      {
+        orderBy: { registeredAt: 'DESC', createdAt: 'DESC' },
+        limit: cap,
+        fields: ['fullName', 'registeredAt'],
+      },
+    );
+    return rows.map((r) => ({
+      fullName: r.fullName,
+      registeredAt: toIsoString(r.registeredAt),
+    }));
+  }
+
+  async findActiveByEventAndEmail(
+    eventId: string,
+    email: string,
+  ): Promise<EventRegistrationRowDto | null> {
+    const eid = eventId?.trim();
+    const normalizedEmail = email?.trim().toLowerCase();
+    if (!eid || !normalizedEmail) return null;
+    const row = await this.em.findOne(EventRegistration, {
+      eventId: eid,
+      email: normalizedEmail,
+      deletedAt: null,
+      status: { $ne: RegistrationStatus.CANCELLED },
+    } as FilterQuery<EventRegistration>);
+    return row ? mapRow(row) : null;
+  }
+
   async list(
     params: ListEventRegistrationsParams,
   ): Promise<ListEventRegistrationsResult> {
@@ -97,7 +170,7 @@ export class EventRegistrationsService {
       100,
     );
     const where: Record<string, unknown> = {};
-    where.event = params.eventId;
+    where.eventId = params.eventId;
     where.deletedAt = null;
     if (params.search?.trim()) {
       const q = params.search.trim();

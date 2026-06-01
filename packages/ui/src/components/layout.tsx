@@ -66,7 +66,7 @@ export function PageContent({
   return (
     <div
       className={cn(
-        "flex flex-1 flex-col space-y-8 p-4 sm:p-6 md:space-y-12 md:p-12 lg:p-16",
+        "flex flex-1 flex-col",
         className
       )}
     >

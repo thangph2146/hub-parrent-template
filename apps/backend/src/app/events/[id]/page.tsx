@@ -18,6 +18,7 @@ import {
   ClipboardList,
   Mic,
   Link,
+  ImageIcon,
 } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Divider, PageSection } from "@ui/components/layout"
@@ -37,6 +38,7 @@ import {
   useEventCheckoutsQuery,
   useEventSpeakersQuery,
 } from "../_component"
+import { getPosterUrlFromValue } from "../_component/utils"
 import { TypographyH1 } from "@ui/components/typography"
 import {
   ADMIN_PAGE_SUBTITLE_CLASS,
@@ -77,6 +79,8 @@ function EventDetailInner() {
       </PageSection>
     )
   if (!entity) return null
+
+  const posterUrl = getPosterUrlFromValue(entity.poster)
 
   return (
     <PageSection max="full" className="min-w-0 space-y-6">
@@ -146,6 +150,19 @@ function EventDetailInner() {
               <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
                 <CardContent className="space-y-0">
                   <Divider label="Thông tin sự kiện" className="my-6" />
+                  {posterUrl ? (
+                    <div className="mb-4 overflow-hidden rounded-lg border border-border/70">
+                      <p className="flex items-center gap-1.5 border-b border-border/70 bg-muted/30 px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                        <ImageIcon className="size-3" /> Hình đại diện
+                      </p>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={posterUrl}
+                        alt={entity.title}
+                        className="aspect-[16/10] w-full object-cover"
+                      />
+                    </div>
+                  ) : null}
                   <div className="grid gap-4">
                     <div>
                       <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">

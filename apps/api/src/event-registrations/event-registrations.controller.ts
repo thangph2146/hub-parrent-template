@@ -66,8 +66,10 @@ export class EventRegistrationsController {
       });
       return res.status(statusCode).json(body);
     }
+    const trimmedEventId = eventId.trim();
+    await this.eventRegistrationsService.syncEventRegistrationCount(trimmedEventId);
     const result = await this.eventRegistrationsService.list({
-      eventId: eventId.trim(),
+      eventId: trimmedEventId,
       page: Math.max(1, parseInt(String(page), 10) || 1),
       limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
       search: search?.trim(),

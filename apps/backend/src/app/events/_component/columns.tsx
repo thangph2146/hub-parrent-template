@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
-import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin } from "lucide-react";
+import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin, Star } from "lucide-react";
 import type { EventRow, EventConfirmAction } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
@@ -19,12 +19,14 @@ function formatDate(value: string | null | undefined): string {
 }
 
 export function getEventColumns({
-  openDetail, openEdit, setConfirmAction, canWrite,
+  openDetail, openEdit, setConfirmAction, canWrite, onToggleFeatured, isTogglingFeaturedId,
 }: {
   openDetail: (row: EventRow) => void;
   openEdit: (row: EventRow) => void;
   setConfirmAction: (action: EventConfirmAction) => void;
   canWrite: boolean;
+  onToggleFeatured?: (row: EventRow) => void;
+  isTogglingFeaturedId?: string | null;
 }): ColumnDef<EventRow>[] {
   return [
     {
@@ -96,6 +98,36 @@ export function getEventColumns({
           <Badge variant={fmt === 1 ? "secondary" : fmt === 2 ? "outline" : "default"} className="text-[10px]">
             {fmt === 1 ? "Online" : fmt === 2 ? "Hybrid" : "Offline"}
           </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "isFeatured",
+      header: "Nổi bật",
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        const featured = row.original.isFeatured;
+        const busy = isTogglingFeaturedId === row.original.id;
+        if (!canWrite || !onToggleFeatured) {
+          return featured ? (
+            <Badge className="bg-amber-500/15 text-amber-800 dark:text-amber-300 text-[10px]">Nổi bật</Badge>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          );
+        }
+        return (
+          <Button
+            type="button"
+            variant={featured ? "default" : "outline"}
+            size="sm"
+            className="h-8 gap-1 rounded-md px-2"
+            disabled={busy}
+            onClick={() => onToggleFeatured(row.original)}
+            title={featured ? "Bỏ đánh dấu nổi bật" : "Đánh dấu nổi bật"}
+          >
+            <Star className={featured ? "size-3.5 fill-current" : "size-3.5"} />
+            {featured ? "Đang bật" : "Đánh dấu"}
+          </Button>
         );
       },
     },

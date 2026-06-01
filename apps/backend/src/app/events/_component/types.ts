@@ -32,6 +32,8 @@ export type EventRow = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  isFeatured: boolean;
+  featuredOrder: number;
 };
 
 export interface EventConfirmAction {
@@ -42,6 +44,7 @@ export interface EventConfirmAction {
 export const eventFormSchema = z.object({
   title: z.string().min(1, "Tiêu đề không được để trống"),
   slug: z.string().optional(),
+  posterUrl: z.string().optional(),
   description: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
@@ -53,6 +56,8 @@ export const eventFormSchema = z.object({
   location: z.string().optional(),
   address: z.string().optional(),
   status: z.coerce.number(),
+  isFeatured: z.coerce.boolean(),
+  featuredOrder: z.coerce.number().int().min(0).optional(),
   allowCheckin: z.coerce.boolean(),
   allowCheckout: z.coerce.boolean(),
   requireFaceId: z.coerce.boolean(),

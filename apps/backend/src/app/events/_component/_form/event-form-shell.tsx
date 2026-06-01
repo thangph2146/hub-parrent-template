@@ -32,10 +32,11 @@ import {
   CheckSquare,
   Monitor,
   FileText,
-  Search, Mic,
+  Search, Mic, Star,
 } from "lucide-react"
 import { slugify } from "@workspace/api-client"
 import type { EventFormValues, EventFormSpeaker } from "../types"
+import { EventPosterField } from "./event-poster-field"
 import { Divider } from "@ui/components/layout"
 import { api } from "@/lib/api"
 
@@ -247,7 +248,9 @@ export function EventFormShell({
   onBack,
   onReset,
 }: EventFormShellProps) {
-  const { control } = form
+  const { control, setValue, watch } = form
+  const watchedTitle = watch("title")
+  const watchedPosterUrl = watch("posterUrl") ?? ""
 
   return (
     <>
@@ -338,6 +341,24 @@ export function EventFormShell({
                 <CardDescription>Thông tin cơ bản của sự kiện.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <Controller
+                  name="posterUrl"
+                  control={control}
+                  render={({ field }) => (
+                    <EventPosterField
+                      value={watchedPosterUrl || field.value || ""}
+                      onChange={(url) => {
+                        field.onChange(url)
+                        setValue("posterUrl", url, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: false,
+                        })
+                      }}
+                      eventTitle={watchedTitle}
+                    />
+                  )}
+                />
                 <Controller
                   name="title"
                   control={control}
@@ -509,6 +530,86 @@ export function EventFormShell({
                           { value: "0", label: "Khóa" },
                         ]}
                         placeholder="Chọn trạng thái"
+                      />
+                    </FormFieldCol>
+                  )}
+                />
+              </CardContent>
+
+              <Divider label="Hiển thị công khai" />
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Star className="size-5 text-primary" /> Sự kiện nổi bật
+                </CardTitle>
+                <CardDescription>
+                  Sự kiện được đánh dấu sẽ hiển thị trên trang chủ và carousel &quot;Sự kiện nổi bật&quot; tại /su-kien.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Controller
+                  name="isFeatured"
+                  control={control}
+                  render={({ field }) => {
+                    const checked = Boolean(field.value)
+                    const toggleFeatured = () => {
+                      const next = !checked
+                      field.onChange(next)
+                      setValue("isFeatured", next, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      })
+                    }
+                    return (
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        className="relative z-10 flex cursor-pointer items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        onClick={toggleFeatured}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault()
+                            toggleFeatured()
+                          }
+                        }}
+                      >
+                        <div className="pr-3">
+                          <p className="text-sm font-medium">Đánh dấu nổi bật</p>
+                          <p className="text-xs text-muted-foreground">
+                            {checked
+                              ? "Đang hiển thị trên landing và carousel /su-kien."
+                              : "Bấm để hiển thị trên landing và strip nổi bật."}
+                          </p>
+                        </div>
+                        <Switch
+                          checked={checked}
+                          onCheckedChange={(value) => {
+                            field.onChange(value)
+                            setValue("isFeatured", value, {
+                              shouldDirty: true,
+                              shouldTouch: true,
+                              shouldValidate: true,
+                            })
+                          }}
+                          onClick={(event) => event.stopPropagation()}
+                          onKeyDown={(event) => event.stopPropagation()}
+                          aria-label="Đánh dấu sự kiện nổi bật"
+                        />
+                      </div>
+                    )
+                  }}
+                />
+                <Controller
+                  name="featuredOrder"
+                  control={control}
+                  render={({ field }) => (
+                    <FormFieldCol label="Thứ tự carousel (số nhỏ = trước)">
+                      <Input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={field.value ?? 0}
+                        onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                       />
                     </FormFieldCol>
                   )}

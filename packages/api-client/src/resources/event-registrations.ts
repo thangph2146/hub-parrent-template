@@ -8,7 +8,7 @@ export class EventRegistrationsApi {
 
   async list<T = unknown>(params?: RequestQuery): Promise<{ items: T[]; total: number }> {
     const payload = await this.http.get<unknown>("/admin/event-registrations", {
-      query: { page: 1, limit: 20, status: "active", ...params },
+      query: { page: 1, limit: 20, ...params },
     });
     const normalized = normalizePagedResult<T>(payload);
     return { items: normalized.items, total: normalized.total };

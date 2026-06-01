@@ -6,12 +6,18 @@ import {
   Body,
   Res,
   Param,
+  Headers,
   Logger,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { PublicPostsService } from './public-posts.service';
 import { PublicCategoriesService } from './public-categories.service';
 import { PublicContactRequestsService } from './public-contact-requests.service';
+import {
+  PublicEventsService,
+  type EventTimeFilter,
+} from './public-events.service';
+import { PublicEventCategoriesService } from './public-event-categories.service';
 import {
   PublicAuthService,
   type CreatePublicRegisterDto,
@@ -25,7 +31,8 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
-import { PUBLIC_ROUTES } from '../config/constants';
+import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
+import { PublicEventRegistrationService } from './public-event-registration.service';
 
 function setCacheControl(res: Response, ttl = 60): void {
   res.setHeader(
@@ -58,10 +65,13 @@ export class PublicController {
     private readonly publicCategoriesService: PublicCategoriesService,
     private readonly publicContactRequestsService: PublicContactRequestsService,
     private readonly publicAuthService: PublicAuthService,
+    private readonly publicEventsService: PublicEventsService,
+    private readonly publicEventCategoriesService: PublicEventCategoriesService,
     private readonly admissionResultsService: AdmissionResultsService,
     private readonly pageContentsService: PageContentsService,
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
+    private readonly publicEventRegistrationService: PublicEventRegistrationService,
   ) {}
 
   private logApiError(api: string, error: unknown, metadata?: unknown): void {
@@ -325,6 +335,94 @@ export class PublicController {
     }
   }
 
+  @Post('auth/login')
+  async publicLogin(
+    @Body() body: { email?: string; password?: string },
+    @Res() res: Response,
+  ) {
+    this.logger.log(`publicLogin email=${body?.email ?? '-'}`);
+    try {
+      const email = body?.email?.trim();
+      const password = body?.password;
+      if (!email || !password) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Vui lòng nhập email và mật khẩu.',
+          { status: 400 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const user = await this.authService.login({ email, password });
+      if (!user) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Email hoặc mật khẩu không đúng.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/login', error, {
+        email: body?.email ?? null,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập. Vui lòng thử lại.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  @Post('auth/dev-login')
+  async publicDevLogin(
+    @Body() body: { userId?: string },
+    @Res() res: Response,
+  ) {
+    if (process.env.NODE_ENV !== 'development') {
+      const { statusCode, body: errBody } = createErrorResponse('Not Found', {
+        status: 404,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+
+    const userId = body?.userId?.trim();
+    this.logger.log(`publicDevLogin userId=${userId ?? '-'}`);
+    if (!userId) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu userId.',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const user = await this.authService.loginAsDevelopmentUser(userId);
+      if (!user) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Không tìm thấy tài khoản development.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập development thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/dev-login', error, { userId });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập development.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
   @Post('register')
   async register(@Body() body: CreatePublicRegisterDto, @Res() res: Response) {
     this.logger.log(`register email=${body?.email ?? '-'}`);
@@ -433,6 +531,139 @@ export class PublicController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('POST /api/public/posts/:slug/view', error, { slug });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Get('events')
+  async getEvents(
+    @Query() query: Record<string, string | undefined>,
+    @Res() res: Response,
+  ) {
+    setCacheControl(res, 60);
+    this.logger.log(
+      `getEvents page=${query?.page ?? 1} filter=${query?.filter ?? 'all'}`,
+    );
+    try {
+      const page = Math.max(1, parseInt(String(query.page), 10) || 1);
+      const limit = Math.min(
+        50,
+        Math.max(1, parseInt(String(query.limit), 10) || 12),
+      );
+      const filter = (query.filter as EventTimeFilter) ?? 'all';
+      const categorySlug = query.categorySlug?.trim() || undefined;
+      const result = await this.publicEventsService.list({
+        page,
+        limit,
+        filter: ['upcoming', 'ongoing', 'past', 'featured'].includes(filter)
+          ? filter
+          : 'all',
+        categorySlug,
+      });
+      const { statusCode, body } = createSuccessResponse(result);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/events', error, { query });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Post('events/:slug/register')
+  async registerForEvent(
+    @Param('slug') slug: string,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { phone?: string },
+    @Res() res: Response,
+  ) {
+    const userId = headers[APP_HEADERS.USER_ID]?.trim();
+    this.logger.log(`registerForEvent slug=${slug} userId=${userId ?? '-'}`);
+    if (!userId) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Vui lòng đăng nhập trước khi đăng ký sự kiện.',
+        { status: 401 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const result = await this.publicEventRegistrationService.register(
+        slug,
+        userId,
+        body?.phone,
+      );
+      const { statusCode, body: okBody } = createSuccessResponse(result, {
+        status: 201,
+        message: 'Đăng ký sự kiện thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Không thể đăng ký sự kiện.';
+      this.logApiError('POST /api/public/events/:slug/register', error, {
+        slug,
+        userId,
+      });
+      const status = message.includes('đã đăng ký') ? 409 : 400;
+      const { statusCode, body: errBody } = createErrorResponse(message, {
+        status,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  @Get('events/:slug')
+  async getEventBySlug(
+    @Param('slug') slug: string,
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+  ) {
+    setCacheControl(res, 60);
+    const viewerUserId = headers[APP_HEADERS.USER_ID]?.trim();
+    this.logger.log(`getEventBySlug slug=${slug} viewer=${viewerUserId ?? '-'}`);
+    try {
+      const event = await this.publicEventsService.getBySlug(slug, viewerUserId);
+      if (!event) {
+        const { statusCode, body } = createErrorResponse('Not Found', {
+          status: 404,
+        });
+        return res.status(statusCode).json(body);
+      }
+      const { statusCode, body } = createSuccessResponse(event);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/events/:slug', error, { slug });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Get('event-categories')
+  async getEventCategories(
+    @Query('slug') slug: string | undefined,
+    @Res() res: Response,
+  ) {
+    setCacheControl(res, 120);
+    this.logger.log(`getEventCategories slug=${slug ?? 'all'}`);
+    try {
+      const categories =
+        await this.publicEventCategoriesService.getCategories(slug);
+      const { statusCode, body } = createSuccessResponse(categories);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/event-categories', error, { slug });
       const { statusCode, body } = createErrorResponse(
         'Internal Server Error',
         { status: 500 },

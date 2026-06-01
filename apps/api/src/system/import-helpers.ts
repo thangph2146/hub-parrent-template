@@ -22,7 +22,7 @@ export function stripHeroSlidesPermissions(permissions: unknown): unknown {
 }
 
 /** FK pivot: file cũ dùng postId/categoryId; export MikroORM serialize dùng post/category/tag (scalar hoặc { id }). */
-function pivotFk(row: ImportRow, idProp: string, relProp: string): string {
+export function pivotFk(row: ImportRow, idProp: string, relProp: string): string {
   const direct = row[idProp];
   if (direct != null && direct !== '') return String(direct as string | number);
   const rel = row[relProp];
@@ -35,53 +35,162 @@ function pivotFk(row: ImportRow, idProp: string, relProp: string): string {
   return '';
 }
 
-/** Lọc postCategory / postTag trỏ tới id không có trong cùng bundle (export/import JSON tự nhất quán). */
+function collectIds(rows: unknown): Set<string> {
+  const ids = new Set<string>();
+  if (!Array.isArray(rows)) return ids;
+  for (const row of rows) {
+    const id = (row as ImportRow).id;
+    if (id != null && id !== '') ids.add(String(id as string | number));
+  }
+  return ids;
+}
+
+function filterPivotRows(
+  pivotRows: unknown,
+  checks: Array<(row: ImportRow) => boolean>,
+): { next: ImportRow[]; dropped: number } {
+  if (!Array.isArray(pivotRows)) return { next: [], dropped: 0 };
+  const before = pivotRows.length;
+  const next = pivotRows.filter((row) =>
+    checks.every((check) => check(row as ImportRow)),
+  );
+  return { next: next as ImportRow[], dropped: before - next.length };
+}
+
+/** Lọc pivot / bảng liên kết trỏ tới id không có trong cùng bundle (export/import JSON tự nhất quán). */
 export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
   droppedPostCategory: number;
   droppedPostTag: number;
+  droppedEventSpeaker: number;
+  droppedEventRegistration: number;
+  droppedEventCheckin: number;
+  droppedGroupMember: number;
+  droppedMessageRead: number;
+  droppedUserRole: number;
 } {
-  const posts = data.post;
-  const categories = data.category;
-  const tags = data.tag;
   let droppedPostCategory = 0;
   let droppedPostTag = 0;
-  if (!Array.isArray(posts) || !Array.isArray(categories)) {
-    return { droppedPostCategory: 0, droppedPostTag: 0 };
-  }
-  const postIds = new Set(
-    posts.map((p) => String((p as ImportRow).id)).filter(Boolean),
-  );
-  const categoryIds = new Set(
-    categories.map((c) => String((c as ImportRow).id)).filter(Boolean),
-  );
-  const pcIn = data.postCategory;
-  if (Array.isArray(pcIn)) {
-    const before = pcIn.length;
-    const next = pcIn.filter((pc) => {
-      const row = pc as ImportRow;
-      const pid = pivotFk(row, 'postId', 'post');
-      const cid = pivotFk(row, 'categoryId', 'category');
-      return pid && cid && postIds.has(pid) && categoryIds.has(cid);
-    });
+  let droppedEventSpeaker = 0;
+  let droppedEventRegistration = 0;
+  let droppedEventCheckin = 0;
+  let droppedGroupMember = 0;
+  let droppedMessageRead = 0;
+  let droppedUserRole = 0;
+
+  const postIds = collectIds(data.post);
+  const categoryIds = collectIds(data.category);
+  const tagIds = collectIds(data.tag);
+  const eventIds = collectIds(data.event);
+  const speakerIds = collectIds(data.speaker);
+  const groupIds = collectIds(data.group);
+  const userIds = collectIds(data.user);
+  const messageIds = collectIds(data.message);
+  const roleIds = collectIds(data.role);
+
+  if (postIds.size > 0 && categoryIds.size > 0 && Array.isArray(data.postCategory)) {
+    const { next, dropped } = filterPivotRows(data.postCategory, [
+      (row) => {
+        const pid = pivotFk(row, 'postId', 'post');
+        const cid = pivotFk(row, 'categoryId', 'category');
+        return Boolean(pid && cid && postIds.has(pid) && categoryIds.has(cid));
+      },
+    ]);
     data.postCategory = next;
-    droppedPostCategory = before - next.length;
+    droppedPostCategory = dropped;
   }
-  const ptIn = data.postTag;
-  if (Array.isArray(tags) && Array.isArray(ptIn)) {
-    const tagIds = new Set(
-      tags.map((t) => String((t as ImportRow).id)).filter(Boolean),
-    );
-    const before = ptIn.length;
-    const next = ptIn.filter((pt) => {
-      const row = pt as ImportRow;
-      const pid = pivotFk(row, 'postId', 'post');
-      const tid = pivotFk(row, 'tagId', 'tag');
-      return pid && tid && postIds.has(pid) && tagIds.has(tid);
-    });
+
+  if (postIds.size > 0 && tagIds.size > 0 && Array.isArray(data.postTag)) {
+    const { next, dropped } = filterPivotRows(data.postTag, [
+      (row) => {
+        const pid = pivotFk(row, 'postId', 'post');
+        const tid = pivotFk(row, 'tagId', 'tag');
+        return Boolean(pid && tid && postIds.has(pid) && tagIds.has(tid));
+      },
+    ]);
     data.postTag = next;
-    droppedPostTag = before - next.length;
+    droppedPostTag = dropped;
   }
-  return { droppedPostCategory, droppedPostTag };
+
+  if (eventIds.size > 0 && speakerIds.size > 0 && Array.isArray(data.eventSpeaker)) {
+    const { next, dropped } = filterPivotRows(data.eventSpeaker, [
+      (row) => {
+        const eid = pivotFk(row, 'eventId', 'event');
+        const sid = pivotFk(row, 'speakerId', 'speaker');
+        return Boolean(eid && sid && eventIds.has(eid) && speakerIds.has(sid));
+      },
+    ]);
+    data.eventSpeaker = next;
+    droppedEventSpeaker = dropped;
+  }
+
+  if (eventIds.size > 0 && Array.isArray(data.eventRegistration)) {
+    const { next, dropped } = filterPivotRows(data.eventRegistration, [
+      (row) => {
+        const eid = pivotFk(row, 'eventId', 'event');
+        return Boolean(eid && eventIds.has(eid));
+      },
+    ]);
+    data.eventRegistration = next;
+    droppedEventRegistration = dropped;
+  }
+
+  if (eventIds.size > 0 && Array.isArray(data.eventCheckin)) {
+    const { next, dropped } = filterPivotRows(data.eventCheckin, [
+      (row) => {
+        const eid = pivotFk(row, 'eventId', 'event');
+        return Boolean(eid && eventIds.has(eid));
+      },
+    ]);
+    data.eventCheckin = next;
+    droppedEventCheckin = dropped;
+  }
+
+  if (groupIds.size > 0 && userIds.size > 0 && Array.isArray(data.groupMember)) {
+    const { next, dropped } = filterPivotRows(data.groupMember, [
+      (row) => {
+        const gid = pivotFk(row, 'groupId', 'group');
+        const uid = pivotFk(row, 'userId', 'user');
+        return Boolean(gid && uid && groupIds.has(gid) && userIds.has(uid));
+      },
+    ]);
+    data.groupMember = next;
+    droppedGroupMember = dropped;
+  }
+
+  if (messageIds.size > 0 && userIds.size > 0 && Array.isArray(data.messageRead)) {
+    const { next, dropped } = filterPivotRows(data.messageRead, [
+      (row) => {
+        const mid = pivotFk(row, 'messageId', 'message');
+        const uid = pivotFk(row, 'userId', 'user');
+        return Boolean(mid && uid && messageIds.has(mid) && userIds.has(uid));
+      },
+    ]);
+    data.messageRead = next;
+    droppedMessageRead = dropped;
+  }
+
+  if (userIds.size > 0 && roleIds.size > 0 && Array.isArray(data.userRole)) {
+    const { next, dropped } = filterPivotRows(data.userRole, [
+      (row) => {
+        const uid = pivotFk(row, 'userId', 'user');
+        const rid = pivotFk(row, 'roleId', 'role');
+        return Boolean(uid && rid && userIds.has(uid) && roleIds.has(rid));
+      },
+    ]);
+    data.userRole = next;
+    droppedUserRole = dropped;
+  }
+
+  return {
+    droppedPostCategory,
+    droppedPostTag,
+    droppedEventSpeaker,
+    droppedEventRegistration,
+    droppedEventCheckin,
+    droppedGroupMember,
+    droppedMessageRead,
+    droppedUserRole,
+  };
 }
 
 export function orderCategoryRowsForImport(rows: ImportRow[]): ImportRow[] {

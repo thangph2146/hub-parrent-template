@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { normalizePosterField } from '../common/poster-normalize';
 
 export interface EventRowDto {
   id: string;
@@ -35,6 +36,8 @@ export interface EventRowDto {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  isFeatured: boolean;
+  featuredOrder: number;
 }
 
 export interface ListEventsParams {
@@ -79,7 +82,7 @@ function mapRow(r: Event): EventRowDto {
     id: r.id,
     title: r.title,
     slug: r.slug ?? null,
-    poster: r.poster ?? null,
+    poster: normalizePosterField(r.poster),
     description: r.description ?? null,
     content:
       r.content != null
@@ -112,6 +115,8 @@ function mapRow(r: Event): EventRowDto {
     createdAt: toIso(r.createdAt) ?? '',
     updatedAt: toIso(r.updatedAt) ?? '',
     deletedAt: toIso(r.deletedAt),
+    isFeatured: r.isFeatured ?? false,
+    featuredOrder: r.featuredOrder ?? 0,
   };
 }
 
@@ -184,7 +189,10 @@ export class EventsService {
     Object.assign(created, {
       title: data.title,
       slug: data.slug ?? null,
-      poster: data.poster ?? null,
+      poster:
+        data.poster === undefined || data.poster === null
+          ? null
+          : normalizePosterField(data.poster),
       description: data.description ?? null,
       content: data.content ?? null,
       startDate: data.startDate ?? null,
@@ -208,6 +216,11 @@ export class EventsService {
       format: data.format ?? 'offline',
       onlineLink: data.onlineLink ?? null,
       schedule: data.schedule ?? null,
+      isFeatured: Boolean(data.isFeatured),
+      featuredOrder:
+        typeof data.featuredOrder === 'number'
+          ? data.featuredOrder
+          : Number(data.featuredOrder) || 0,
     });
     await this.em.persistAndFlush(created);
     return mapRow(created);
@@ -243,10 +256,30 @@ export class EventsService {
       'format',
       'onlineLink',
       'schedule',
+      'isFeatured',
+      'featuredOrder',
     ] as const;
     for (const f of fields) {
-      if (data[f] !== undefined)
-        (existing as unknown as Record<string, unknown>)[f] = data[f];
+      if (data[f] === undefined) continue;
+      if (f === 'isFeatured') {
+        existing.isFeatured = Boolean(data.isFeatured);
+        continue;
+      }
+      if (f === 'featuredOrder') {
+        existing.featuredOrder =
+          typeof data.featuredOrder === 'number'
+            ? data.featuredOrder
+            : Number(data.featuredOrder) || 0;
+        continue;
+      }
+      if (f === 'poster') {
+        existing.poster =
+          data.poster === null || data.poster === undefined
+            ? null
+            : normalizePosterField(data.poster);
+        continue;
+      }
+      (existing as unknown as Record<string, unknown>)[f] = data[f];
     }
     await this.em.persistAndFlush(existing);
     return mapRow(existing);

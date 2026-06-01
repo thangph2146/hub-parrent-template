@@ -127,6 +127,23 @@ function EventsPageInner() {
       await invalidateAll()
     },
   })
+  const [togglingFeaturedId, setTogglingFeaturedId] = useState<string | null>(null)
+  const featuredMutation = useMutation({
+    mutationFn: async ({ id, isFeatured }: { id: string; isFeatured: boolean }) =>
+      api.events.update(id, { isFeatured }),
+    onSuccess: async (_data, variables) => {
+      await invalidateAll()
+      toast.success(
+        variables.isFeatured
+          ? "Đã đánh dấu sự kiện nổi bật"
+          : "Đã bỏ đánh dấu nổi bật",
+      )
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : "Không thể cập nhật nổi bật")
+    },
+    onSettled: () => setTogglingFeaturedId(null),
+  })
 
   useEffect(() => {
     setTrashPage(1)
@@ -163,8 +180,18 @@ function EventsPageInner() {
         openEdit: (row) => router.push(`/events/${row.id}/edit`),
         setConfirmAction,
         canWrite,
+        isTogglingFeaturedId: togglingFeaturedId,
+        onToggleFeatured: canWrite
+          ? (row) => {
+              setTogglingFeaturedId(row.id)
+              void featuredMutation.mutate({
+                id: row.id,
+                isFeatured: !row.isFeatured,
+              })
+            }
+          : undefined,
       }),
-    [setConfirmAction, router, canWrite]
+    [setConfirmAction, router, canWrite, togglingFeaturedId, featuredMutation]
   )
 
   const trashColumns = useMemo<ColumnDef<EventRow>[]>(

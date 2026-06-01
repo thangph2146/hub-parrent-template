@@ -4,6 +4,7 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { EventConfirmAction, EventFormValues } from "../types";
 import { eventFormSchema } from "../types";
+import { buildPosterPayload } from "../utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const EMPTY_EDITOR_STATE = {
@@ -27,11 +28,12 @@ const EMPTY_EDITOR_STATE = {
 }
 
 const EMPTY_VALUES: EventFormValues = {
-  title: "", slug: "", description: "",
+  title: "", slug: "", posterUrl: "", description: "",
   startDate: "", endDate: "", checkinStart: "", checkinEnd: "",
   registrationStart: "", registrationEnd: "",
   organizer: "", location: "", address: "",
-  status: 1, allowCheckin: true, allowCheckout: true, requireFaceId: false,
+  status: 1, isFeatured: false, featuredOrder: 0,
+  allowCheckin: true, allowCheckout: true, requireFaceId: false,
   maxParticipants: 0, format: 0, onlineLink: "", content: EMPTY_EDITOR_STATE, speakers: [],
 };
 
@@ -39,6 +41,7 @@ export function buildEventPayload(values: EventFormValues): Record<string, unkno
   return {
     title: values.title.trim(),
     slug: values.slug?.trim() || null,
+    poster: buildPosterPayload(values.posterUrl),
     description: values.description?.trim() || null,
     startDate: values.startDate || null,
     endDate: values.endDate || null,
@@ -50,6 +53,8 @@ export function buildEventPayload(values: EventFormValues): Record<string, unkno
     location: values.location?.trim() || null,
     address: values.address?.trim() || null,
     status: values.status,
+    isFeatured: values.isFeatured ?? false,
+    featuredOrder: values.featuredOrder ?? 0,
     allowCheckin: values.allowCheckin,
     allowCheckout: values.allowCheckout,
     requireFaceId: values.requireFaceId,
