@@ -18,6 +18,7 @@ export function usePostDetailQuery(
     queryFn: async (): Promise<PostDetail> =>
       api.posts.get<PostDetail>(postId),
     enabled: !!postId,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -46,6 +47,8 @@ export function usePostsQuery({
         status: "active",
         ...toFilterQuery(postColumnFilterQuery),
       }),
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -69,6 +72,7 @@ export function useTrashQuery({
   return useQuery({
     queryKey: ["media", "posts", "trash", trashPage, trashPageSize, debouncedTrashQ, trashColumnFilterQuery],
     enabled,
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<PagedResult<PostListRow>> =>
       api.posts.list<PostListRow>({
         page: trashPage,
@@ -77,6 +81,7 @@ export function useTrashQuery({
         status: "deleted",
         ...toFilterQuery(trashColumnFilterQuery ?? {}),
       }),
+    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -102,6 +107,7 @@ export function usePostsByAuthor({
         status: "active",
         ...toFilterQuery({ authorId }),
       }),
+    staleTime: 2 * 60 * 1000,
     enabled: !!authorId,
   });
 }

@@ -27,6 +27,13 @@ import {
 } from '../common/api-response';
 import { PUBLIC_ROUTES } from '../config/constants';
 
+function setCacheControl(res: Response, ttl = 60): void {
+  res.setHeader(
+    'Cache-Control',
+    `public, max-age=${ttl}, s-maxage=${ttl * 2}, stale-while-revalidate=${Math.floor(ttl / 2)}`,
+  );
+}
+
 function parseQuery(query: Record<string, string | undefined>) {
   const page = Math.max(1, parseInt(String(query.page), 10) || 1);
   const limit = Math.min(
@@ -147,6 +154,7 @@ export class PublicController {
     @Query('slug') slug: string | undefined,
     @Res() res: Response,
   ) {
+    setCacheControl(res, 120);
     this.logger.log(`getCategories slug=${slug ?? 'all'}`);
     try {
       const categories = await this.publicCategoriesService.getCategories(slug);
@@ -168,6 +176,7 @@ export class PublicController {
     @Query('sectionKey') sectionKey: string,
     @Res() res: Response,
   ) {
+    setCacheControl(res, 120);
     this.logger.log(`getPageContent: ${pageKey}, section: ${sectionKey}`);
     try {
       if (sectionKey) {
@@ -356,6 +365,7 @@ export class PublicController {
     @Query() query: Record<string, string | undefined>,
     @Res() res: Response,
   ) {
+    setCacheControl(res, 60);
     this.logger.log(
       `getPosts page=${query?.page ?? 1} limit=${query?.limit ?? 10}`,
     );
@@ -379,6 +389,7 @@ export class PublicController {
     @Query() query: Record<string, string | undefined>,
     @Res() res: Response,
   ) {
+    setCacheControl(res, 60);
     this.logger.log('getHomeAdmissionPosts');
     try {
       const latestLimit = query.latestLimit
@@ -436,6 +447,7 @@ export class PublicController {
     @Query('track') track: string | undefined,
     @Res() res: Response,
   ) {
+    setCacheControl(res, 60);
     this.logger.log(`getPostBySlug slug=${slug}`);
     try {
       const shouldTrack = track !== 'false';

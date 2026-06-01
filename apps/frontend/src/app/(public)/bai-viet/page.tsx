@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { CalendarDays, Eye, Filter, ImageIcon, Search } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@ui/components/badge"
@@ -314,12 +315,12 @@ export default async function PostsPage({
                         >
                           {post.image?.trim() ? (
                             <div className="relative aspect-[16/9] w-full bg-muted">
-                              <img
+                              <Image
                                 src={post.image}
                                 alt={post.title}
-                                className="absolute inset-0 h-full w-full object-cover"
-                                loading={postIndex < 3 ? "eager" : "lazy"}
-                                decoding="async"
+                                fill
+                                className="object-cover"
+                                priority={postIndex < 3}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                               />
                             </div>

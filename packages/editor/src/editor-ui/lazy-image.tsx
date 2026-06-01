@@ -122,7 +122,7 @@ export function LazyImage({
         onError={onError}
         draggable={false}
         priority={fetchPriority === "high"}
-        loading="eager"
+        loading={fetchPriority === "high" ? "eager" : "lazy"}
         decoding="async"
         onLoad={(e) => {
           const img = e.currentTarget

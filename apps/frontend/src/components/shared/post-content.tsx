@@ -1,7 +1,7 @@
 "use client"
 
-import { LexicalEditor } from "@thangph2146/lexical-editor"
+import { PostContentRenderer } from "./post-content-renderer"
 
 export function PostContent({ content }: { content?: unknown | null }) {
-  return <LexicalEditor value={content} readOnly className="max-w-6xl mx-auto" />
+  return <PostContentRenderer content={content} />
 }

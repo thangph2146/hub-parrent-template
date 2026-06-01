@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { UploadsService } from './uploads.service';
 import { PUBLIC_ROUTES } from '../config/constants';
@@ -6,6 +6,41 @@ import { PUBLIC_ROUTES } from '../config/constants';
 @Controller(PUBLIC_ROUTES.SERVE_UPLOADS)
 export class PublicUploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
+
+  @Get('resized/*path')
+  async serveResized(
+    @Param('path') relativePath: string | string[],
+    @Query('w') widthStr: string | undefined,
+    @Query('q') qualityStr: string | undefined,
+    @Res() res: Response,
+  ) {
+    const pathStr = Array.isArray(relativePath)
+      ? relativePath.join('/')
+      : (relativePath ?? '');
+    if (!pathStr) {
+      return res.status(404).json({ success: false, message: 'Not found' });
+    }
+    const width = widthStr ? parseInt(widthStr, 10) : undefined;
+    const quality = qualityStr ? parseInt(qualityStr, 10) : undefined;
+    if (!width || width < 50 || width > 2500) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid width (50-2500)' });
+    }
+    try {
+      const { stream, contentType } = await this.uploadsService.serveResized(
+        pathStr.replace(/\\/g, '/'),
+        Math.round(width),
+        quality ?? 80,
+      );
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      stream.pipe(res);
+    } catch {
+      return res.status(404).json({ success: false, message: 'Not found' });
+    }
+  }
 
   @Get('*path')
   async serve(

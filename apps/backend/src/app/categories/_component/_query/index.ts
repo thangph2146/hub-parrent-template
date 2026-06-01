@@ -12,6 +12,7 @@ export function useCategoryDetailQuery(
     queryFn: async (): Promise<CategoryDetail> =>
       api.categories.rawGet<CategoryDetail>(categoryId),
     enabled: !!categoryId,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -36,6 +37,8 @@ export function useCategoriesQuery({
         status: "active",
         filters: columnFilterQuery,
       }),
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -59,6 +62,8 @@ export function useTrashQuery({
   return useQuery({
     queryKey: ["categories", "trash", trashPage, trashPageSize, debouncedTrashQ, trashColumnFilterQuery],
     enabled,
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
     queryFn: async (): Promise<PagedResult<CategoryRow>> =>
       api.categories.rawList<CategoryRow>({
         page: trashPage,
@@ -83,5 +88,7 @@ export function useCategoriesOptionsQuery(
       });
       return paged.items;
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 }

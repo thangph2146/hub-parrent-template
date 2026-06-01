@@ -10,6 +10,7 @@ import {
 import type { SerializedEditorState } from "lexical";
 import { ImageLightboxDialog, type LightboxImage } from "@thangph2146/lexical-editor";
 import { Text } from "@ui/components/typography";
+import { DEFAULT_API_URL } from "@workspace/api-client";
 
 type SerializedNode = {
   type?: string;
@@ -128,11 +129,19 @@ function extractAttribute(tag: string, attribute: string): string {
   return "";
 }
 
-/** Thêm lazy/async cho <img> trong HTML legacy (tránh tải hàng loạt ảnh dưới fold). */
+/** Rewrite API image src to resized + thêm lazy/async cho <img> trong HTML legacy. */
 function addLazyLoadingToHtmlImages(html: string): string {
   return html.replace(/<img\b([^>]*?)>/gi, (full, inner: string) => {
-    if (/\bloading\s*=/i.test(inner)) return full;
-    return `<img${inner} decoding="async" loading="lazy">`;
+    let attrs = inner;
+
+    const srcMatch = attrs.match(/\ssrc="([^"]*)"/i);
+    if (srcMatch) {
+      const newSrc = optimizeImageUrl(srcMatch[1], 800);
+      attrs = attrs.replace(srcMatch[0], ` src="${newSrc}"`);
+    }
+
+    if (/\bloading\s*=/i.test(attrs)) return `<img${attrs}>`;
+    return `<img${attrs} decoding="async" loading="lazy">`;
   });
 }
 
@@ -170,6 +179,25 @@ function collectSerializedImages(nodes: SerializedNode[], images: LightboxImage[
   }
 
   return images;
+}
+
+const API_RE = /^(\/api\/)?uploads\//;
+
+function getApiBase(): string {
+  return (
+    process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
+  ).replace(/\/+$/, "");
+}
+
+/** Rewrite API upload image URLs to the resized endpoint for optimal bandwidth. */
+function optimizeImageUrl(src: string, width = 800, quality = 80): string {
+  const trimmed = src.trim();
+  if (!trimmed || !API_RE.test(trimmed.replace(/^https?:\/\/[^/]+/, "")))
+    return trimmed;
+  const pathOnly = trimmed.replace(/^https?:\/\/[^/]+/, "").replace("/api/", "");
+  const hasQuery = pathOnly.includes("?");
+  const sep = hasQuery ? "&" : "?";
+  return `${getApiBase()}/api/uploads/resized/${pathOnly.replace(/^uploads\//, "")}${sep}w=${width}&q=${quality}`;
 }
 
 function applyTextFormatting(node: SerializedNode, content: ReactNode): ReactNode {
@@ -374,7 +402,7 @@ function renderSerializedNodes(
               onClick={() => options.onImageClick(imageSrc)}
             >
               <img
-                src={imageSrc}
+                src={optimizeImageUrl(imageSrc, 800)}
                 alt={imageAlt}
                 title={imageAlt}
                 className="h-auto max-w-full rounded-lg"

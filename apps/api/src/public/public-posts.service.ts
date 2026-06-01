@@ -130,6 +130,16 @@ export class PublicPostsService {
         orderBy: { publishedAt: 'DESC' },
         offset: skip,
         limit,
+        fields: [
+          'id',
+          'title',
+          'slug',
+          'excerpt',
+          'image',
+          'publishedAt',
+          'eventStartAt',
+          'eventEndAt',
+        ] as any,
       }),
       this.em.count(Post, whereQuery),
     ]);
@@ -265,25 +275,30 @@ export class PublicPostsService {
       publishedAt: { $lte: new Date() },
     };
 
+    const listFields: any = ['id', 'title', 'slug', 'publishedAt'];
     const [latestNews, admissionNews] = await Promise.all([
       this.em.find(Post, baseWhere as FilterQuery<Post>, {
         orderBy: { publishedAt: 'DESC' },
         limit: latestLimit,
+        fields: listFields,
       }),
       categoryId
         ? this.em.find(
             Post,
-            Object.assign({}, baseWhere, {
+            {
+              ...baseWhere,
               categories: { category: { id: categoryId } },
-            }) as FilterQuery<Post>,
+            } as FilterQuery<Post>,
             {
               orderBy: { publishedAt: 'DESC' },
               limit: admissionLimit,
+              fields: listFields,
             },
           )
         : this.em.find(Post, baseWhere as FilterQuery<Post>, {
             orderBy: { publishedAt: 'DESC' },
             limit: admissionLimit,
+            fields: listFields,
           }),
     ]);
 

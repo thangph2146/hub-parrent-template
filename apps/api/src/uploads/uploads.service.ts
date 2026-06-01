@@ -7,16 +7,23 @@
  * VD: STORAGE_DIR=D:/HUB/data hoặc STORAGE_DIR=../shared-data
  */
 import { Injectable } from '@nestjs/common';
-import { createReadStream } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { stat, readdir, mkdir, unlink, rmdir } from 'fs/promises';
 import type { ReadStream } from 'fs';
 import * as path from 'path';
+import sharp from 'sharp';
 import { appConfig } from '../config/app.config';
+import {
+  isImageMime,
+  isImageExt,
+  processImageBuffer,
+} from '../common/image-processor';
 
 const STORAGE_DIR = path.normalize(appConfig.storageDir);
 const UPLOADS_DIR = path.normalize(path.join(STORAGE_DIR, 'uploads'));
 const IMAGES_DIR = path.normalize(path.join(UPLOADS_DIR, 'images'));
 const FILES_DIR = path.normalize(path.join(UPLOADS_DIR, 'files'));
+const IMAGE_RESIZE_CACHE_DIR = 'cache/resized';
 
 // Allow list cho cả ảnh + file đính kèm (phục vụ download trong editor).
 // Lưu ý: chỉ dựa theo ext để tránh trường hợp browser trả về mimeType trống/không chuẩn.
@@ -575,7 +582,36 @@ export class UploadsService {
     const baseName = path
       .basename(file.originalname, stripForBase || undefined)
       .replace(/[^a-zA-Z0-9-_]/g, '_');
-    const uniqueName = `${baseName}_${Date.now()}${ext}`;
+
+    // Xử lý ảnh: resize + chuyển WebP để giảm dung lượng
+    let writeBuffer = file.buffer;
+    let finalExt = ext;
+    let finalMime =
+      ALLOWED_MIME[ext] ||
+      mimePrimary ||
+      file.mimetype ||
+      'application/octet-stream';
+    let finalSize = file.buffer.length;
+    let isImage = false;
+
+    if (
+      uploadKind === 'images' &&
+      isImageExt(ext) &&
+      isImageMime(file.mimetype)
+    ) {
+      try {
+        const processed = await processImageBuffer(file.buffer);
+        writeBuffer = processed.webpBuffer;
+        finalExt = '.webp';
+        finalMime = 'image/webp';
+        finalSize = writeBuffer.length;
+        isImage = true;
+      } catch {
+        // fallback: lưu file gốc nếu xử lý ảnh thất bại
+      }
+    }
+
+    const uniqueName = `${baseName}_${Date.now()}${isImage ? '.webp' : finalExt}`;
 
     const { fullPath, relativePath, urlPath } = this.generateFilePath(
       uniqueName,
@@ -592,7 +628,7 @@ export class UploadsService {
     const existingFile = await this.findFileWithSameBaseName(
       targetDir,
       baseName,
-      ext,
+      finalExt,
     );
     if (existingFile) {
       const existingRelative = path
@@ -604,31 +640,21 @@ export class UploadsService {
       return {
         fileName: existingFile,
         originalName: file.originalname,
-        size: file.buffer.length,
-        mimeType:
-          ALLOWED_MIME[ext] ||
-          mimePrimary ||
-          file.mimetype ||
-          'application/octet-stream',
+        size: finalSize,
+        mimeType: finalMime,
         url: existingUrl,
         relativePath: existingRelative,
       };
     }
 
     const { writeFile } = await import('fs/promises');
-    await writeFile(fullPath, file.buffer);
-
-    const resolvedMime =
-      ALLOWED_MIME[ext] ||
-      mimePrimary ||
-      file.mimetype ||
-      'application/octet-stream';
+    await writeFile(fullPath, writeBuffer);
 
     return {
       fileName: uniqueName,
       originalName: file.originalname,
-      size: file.buffer.length,
-      mimeType: resolvedMime,
+      size: finalSize,
+      mimeType: finalMime,
       url: urlPath,
       relativePath,
     };
@@ -739,5 +765,52 @@ export class UploadsService {
     const contentType = ALLOWED_MIME[ext] || 'application/octet-stream';
     const stream = createReadStream(fullPath);
     return { stream, contentType };
+  }
+
+  /**
+   * Serve ảnh đã resize theo chiều rộng yêu cầu. Cache file trên đĩa để tránh xử lý lại.
+   */
+  async serveResized(
+    relativePath: string,
+    width: number,
+    quality: number,
+  ): Promise<{ stream: ReadStream; contentType: string }> {
+    const { fullPath, baseDir } = this.resolvePath(relativePath);
+    if (!fullPath.startsWith(baseDir)) {
+      throw new Error('Invalid path');
+    }
+    const st = await stat(fullPath).catch(() => null);
+    if (!st?.isFile()) throw new Error('Not a file');
+
+    const cacheDir = path.join(STORAGE_DIR, IMAGE_RESIZE_CACHE_DIR);
+    const relPathWithoutPrefix = relativePath.replace(
+      /^(images\/|files\/)/,
+      '',
+    );
+    const cachePath = path.join(
+      cacheDir,
+      `${relPathWithoutPrefix}_w${width}_q${quality}.webp`,
+    );
+
+    // Trả về cached nếu có
+    if (existsSync(cachePath)) {
+      return { stream: createReadStream(cachePath), contentType: 'image/webp' };
+    }
+
+    // Resize và cache
+    await mkdir(path.dirname(cachePath), { recursive: true });
+    try {
+      await sharp(fullPath)
+        .resize(width, undefined, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality })
+        .toFile(cachePath);
+    } catch {
+      // Nếu resize thất bại, trả về file gốc
+      const ext = path.extname(fullPath).toLowerCase();
+      const contentType = ALLOWED_MIME[ext] || 'application/octet-stream';
+      return { stream: createReadStream(fullPath), contentType };
+    }
+
+    return { stream: createReadStream(cachePath), contentType: 'image/webp' };
   }
 }

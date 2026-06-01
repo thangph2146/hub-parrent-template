@@ -13,33 +13,23 @@ export function useTagDetailQuery(
     queryKey: ["media", "tags", "detail", tagId],
     queryFn: async (): Promise<TagDetail> =>
       api.tags.get<TagDetail>(tagId),
+    staleTime: 2 * 60 * 1000,
     enabled: !!tagId,
   });
 }
 
 export function useTagsListQuery(
-  apiParam: StoreSyncSdk,
   enabled: boolean,
   filters?: Record<string, string>,
 ): UseQueryResult<TagRow[]> {
   return useQuery({
     queryKey: ["media", "tags", "tree", filters],
     queryFn: async (): Promise<TagRow[]> => {
-      const limit = 100;
-      const items: TagRow[] = [];
-      let page = 1;
-      let total = Number.POSITIVE_INFINITY;
-
-      while (items.length < total) {
-        const result = await api.tags.list<TagRow>({ page, limit, status: "active", ...filters });
-        items.push(...result.items);
-        total = result.total;
-        if (result.items.length === 0) break;
-        page += 1;
-      }
-
-      return items;
+      const result = await api.tags.list<TagRow>({ page: 1, limit: 500, status: "active", ...filters });
+      return result.items;
     },
+    staleTime: 5 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
     enabled,
   });
 }
@@ -75,6 +65,8 @@ export function useTrashQuery({
       filters,
     ],
     enabled,
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
     queryFn: async (): Promise<PagedResult<TagRow>> => {
       return api.tags.list<TagRow>({
         page: trashPage,

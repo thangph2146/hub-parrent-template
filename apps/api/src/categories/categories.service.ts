@@ -189,6 +189,93 @@ export class CategoriesService {
     });
   }
 
+  private async batchCountPostsByCategoryTree(
+    categoryIds: string[],
+  ): Promise<Map<string, number>> {
+    if (categoryIds.length === 0) return new Map();
+
+    // Single BFS traversal collecting all descendant IDs keyed by root
+    const allRootIds = [
+      ...new Set(
+        categoryIds.map((id) => String(id ?? '').trim()).filter(Boolean),
+      ),
+    ];
+    if (allRootIds.length === 0) return new Map();
+
+    const rootSet = new Set(allRootIds);
+    const rootToDescendants = new Map<string, Set<string>>();
+    for (const rootId of allRootIds) {
+      rootToDescendants.set(rootId, new Set([rootId]));
+    }
+
+    let frontier = allRootIds;
+    const visited = new Set<string>(allRootIds);
+    let safety = 0;
+
+    while (frontier.length > 0 && safety < 50 && visited.size < 10000) {
+      safety += 1;
+
+      const children = await this.em.find(
+        Category,
+        {
+          parent: { id: { $in: frontier } },
+          deletedAt: null,
+        },
+        { fields: ['id', 'parent'] },
+      );
+
+      const next: string[] = [];
+      for (const child of children) {
+        if (visited.has(child.id)) continue;
+        visited.add(child.id);
+        next.push(child.id);
+
+        const p = child.parent as Category | null;
+        const parentId = p?.id;
+        if (!parentId) continue;
+        // Add child to all root sets that contain this parent
+        if (rootSet.has(parentId)) {
+          rootToDescendants.get(parentId)!.add(child.id);
+        } else {
+          for (const [, descSet] of rootToDescendants) {
+            if (descSet.has(parentId)) {
+              descSet.add(child.id);
+            }
+          }
+        }
+      }
+      frontier = next;
+    }
+
+    // Single grouped count query
+    const allDescendantIds = [...visited];
+    const conn = this.em.getConnection();
+    const countRows = (await conn.execute(
+      `SELECT pc.category_id AS id, COUNT(*) AS cnt
+       FROM post_categories pc
+       JOIN posts p ON p.id = pc.post_id AND p.deleted_at IS NULL
+       WHERE pc.category_id IN (?)
+       GROUP BY pc.category_id`,
+      [allDescendantIds],
+    )) as Array<{ id: string; cnt: number }>;
+    const postCounts = new Map<string, number>(
+      countRows.map((r) => [r.id, Number(r.cnt)]),
+    );
+
+    const result = new Map<string, number>();
+    for (const rootId of allRootIds) {
+      let total = 0;
+      const descSet = rootToDescendants.get(rootId);
+      if (!descSet) continue;
+      for (const descId of descSet) {
+        total += postCounts.get(descId) ?? 0;
+      }
+      result.set(rootId, total);
+    }
+
+    return result;
+  }
+
   async list(params: ListCategoriesParams): Promise<ListCategoriesResult> {
     const { page, limit, skip } = normalizePageLimit(
       params.page,
@@ -212,14 +299,12 @@ export class CategoriesService {
     ]);
 
     const counts = shouldResolveTreePostCount
-      ? await Promise.all(
-          rows.map((row) => this.countPostsByCategoryTree(row.id)),
-        )
-      : rows.map(() => 0);
+      ? await this.batchCountPostsByCategoryTree(rows.map((row) => row.id))
+      : new Map<string, number>();
 
-    const data = rows.map((row, index) => {
+    const data = rows.map((row) => {
       const dto = mapRow(row as CategoryWithParent);
-      dto.postCount = counts[index] ?? 0;
+      dto.postCount = counts.get(row.id) ?? 0;
       return dto;
     });
 
@@ -290,15 +375,17 @@ export class CategoriesService {
         ),
       ]);
 
-    const children = await Promise.all(
-      childrenRows.map(async (child) => ({
-        id: child.id,
-        name: child.name,
-        slug: child.slug,
-        _count: { children: child.children.length },
-        postCount: await this.countPostsByCategoryTree(child.id),
-      })),
+    const childPostCounts = await this.batchCountPostsByCategoryTree(
+      childrenRows.map((c) => c.id),
     );
+
+    const children = childrenRows.map((child) => ({
+      id: child.id,
+      name: child.name,
+      slug: child.slug,
+      _count: { children: child.children.length },
+      postCount: childPostCounts.get(child.id) ?? 0,
+    }));
 
     const posts = postPivotRows.map((pc) => {
       const p = pc.post;

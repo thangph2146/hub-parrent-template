@@ -1,8 +1,4 @@
-import {
-  EntityManager,
-  type EntityName,
-  type FilterQuery,
-} from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { AdmissionResult } from '../entities/admission-result.entity';
 import { Category } from '../entities/category.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
@@ -48,23 +44,57 @@ export interface RelationFilterConfig {
 
 export type RelationFiltersConfig = Record<string, RelationFilterConfig>;
 
-async function findByEntity(
+async function batchFindByEntity(
   em: EntityManager,
   rel: RelationFilterConfig,
-  value: string,
-  field: string,
-): Promise<{ id: string } | null> {
+  values: string[],
+): Promise<Map<string, string>> {
   const entity = entityByModelName[rel.model as keyof typeof entityByModelName];
-  if (!entity) return null;
+  if (!entity) return new Map();
 
-  const repo = em.getRepository(entity as EntityName<object>);
-  const where = { [field]: value } as FilterQuery<object>;
+  const result = new Map<string, string>();
+  const cols: string[] = [];
+
   if (rel.softDelete) {
-    (where as Record<string, unknown>).deletedAt = null;
+    cols.push('deletedAt IS NULL');
   }
 
-  const result = (await repo.findOne(where)) as { id?: unknown } | null;
-  return result && typeof result.id === 'string' ? { id: result.id } : null;
+  const uuidValues = values.filter((v) => isUuid(v));
+  if (uuidValues.length > 0) {
+    const idCols = cols.length ? cols.join(' AND ') : '1=1';
+    const idRows = (await em
+      .getConnection()
+      .execute(
+        `SELECT id FROM ${em.getMetadata(entity).tableName} WHERE id IN (?) AND ${idCols}`,
+        [uuidValues],
+      )) as Array<{ id: string }>;
+    const idSet = new Set(idRows.map((r) => r.id));
+    for (const val of uuidValues) {
+      if (idSet.has(val)) {
+        result.set(val, val);
+      }
+    }
+  }
+
+  const nameValues = values.filter((v) => !result.has(v));
+  if (nameValues.length > 0 && rel.nameField) {
+    const nameCols = cols.length ? cols.join(' AND ') : '1=1';
+    const nameRows = (await em
+      .getConnection()
+      .execute(
+        `SELECT id, \`${rel.nameField}\` FROM ${em.getMetadata(entity).tableName} WHERE \`${rel.nameField}\` IN (?) AND ${nameCols}`,
+        [nameValues],
+      )) as Array<{ id: string; [key: string]: unknown }>;
+
+    for (const row of nameRows) {
+      const inputVal = String(row[rel.nameField] ?? '');
+      if (inputVal && !result.has(inputVal)) {
+        result.set(inputVal, String(row.id));
+      }
+    }
+  }
+
+  return result;
 }
 
 export async function resolveRelationFilters(
@@ -87,23 +117,10 @@ export async function resolveRelationFilters(
           .filter(Boolean)
       : [value];
 
-    const resolved: string[] = [];
-    for (const part of parts) {
-      const byId = await findByEntity(em, rel, part, 'id');
-      if (byId) {
-        resolved.push(byId.id);
-        continue;
-      }
-
-      if (isUuid(part)) {
-        continue;
-      }
-
-      const byName = await findByEntity(em, rel, part, rel.nameField);
-      if (byName) {
-        resolved.push(byName.id);
-      }
-    }
+    const resolvedMap = await batchFindByEntity(em, rel, parts);
+    const resolved = parts
+      .map((p) => resolvedMap.get(p))
+      .filter((id): id is string => typeof id === 'string' && id.length > 0);
 
     if (resolved.length > 0) {
       output = { ...output, [key]: resolved.join(',') };

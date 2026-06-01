@@ -101,7 +101,7 @@ export class TagsService {
     const { page, limit, skip } = normalizePageLimit(
       params.page,
       params.limit,
-      100,
+      1000,
     );
 
     const where: Record<string, unknown> = {};

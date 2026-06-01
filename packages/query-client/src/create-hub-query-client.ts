@@ -21,8 +21,11 @@ export function hubDefaultQueryRetry(failureCount: number, error: unknown): bool
 export const hubQueryClientDefaultOptions: DefaultOptions = {
   queries: {
     staleTime: 30_000,
+    gcTime: 10 * 60 * 1000,
     retry: hubDefaultQueryRetry,
     refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
   },
   mutations: {
     retry: false,

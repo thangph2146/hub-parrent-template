@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -26,7 +27,10 @@ import { useAuth } from "@/providers/auth-provider";
 import { AdminPageGuard } from "@/components/admin-page-guard";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
-import { LexicalEditor } from "@thangph2146/lexical-editor";
+const LexicalEditor = dynamic(
+  () => import("@thangph2146/lexical-editor").then((mod) => ({ default: mod.LexicalEditor })),
+  { ssr: false },
+);
 import {
   normalizeContentForEditor,
   formatDateTime,

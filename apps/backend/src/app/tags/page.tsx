@@ -102,7 +102,7 @@ function TagsPageInner() {
     return params;
   }, [trashColumnFilters]);
 
-  const listQuery = useTagsListQuery(api, canWriteTags || true, listFilterParams);
+  const listQuery = useTagsListQuery(canWriteTags || true, listFilterParams);
 
   const trashQuery = useTrashQuery({
     api,

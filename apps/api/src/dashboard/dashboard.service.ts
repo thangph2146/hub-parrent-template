@@ -153,96 +153,77 @@ export class DashboardService {
 
   private async getMonthlyData(): Promise<DashboardMonthlyItemDto[]> {
     const now = new Date();
-    const months: DashboardMonthlyItemDto[] = [];
+    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-    for (let i = 11; i >= 0; i -= 1) {
-      const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const end = new Date(
-        now.getFullYear(),
-        now.getMonth() - i + 1,
-        0,
-        23,
-        59,
-        59,
-      );
-      const monthKey = `${start.getFullYear()}-${String(
-        start.getMonth() + 1,
-      ).padStart(2, '0')}`;
-
-      const [
-        users,
-        posts,
-        comments,
-        categories,
-        tags,
-        messages,
-        notifications,
-      ] = await Promise.all([
-        this.em.count(User, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Post, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Comment, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Category, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Tag, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Message, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Notification, {
-          createdAt: { $gte: start, $lte: end },
-        }),
-      ]);
-
-      const [contactRequests, students, sessions, roles] = await Promise.all([
-        this.em.count(ContactRequest, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Student, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-        this.em.count(Session, {
-          createdAt: { $gte: start, $lte: end },
-          isActive: true,
-        }),
-        this.em.count(Role, {
-          createdAt: { $gte: start, $lte: end },
-          deletedAt: null,
-        }),
-      ]);
-
-      months.push({
-        month: monthKey,
-        users,
-        posts,
-        comments,
-        categories,
-        tags,
-        messages,
-        notifications,
-        contactRequests,
-        students,
-        sessions,
-        roles,
-      });
+    interface MonthlyRow {
+      month: string;
+      users: number;
+      posts: number;
+      comments: number;
+      categories: number;
+      tags: number;
+      messages: number;
+      notifications: number;
+      contactRequests: number;
+      students: number;
+      sessions: number;
+      roles: number;
     }
 
-    return months;
+    const raw = (await this.em.getConnection().execute(
+      `
+      WITH RECURSIVE months AS (
+        SELECT DATE_FORMAT(?, '%Y-%m') AS month
+        UNION ALL
+        SELECT DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(month, '-01'), '%Y-%m-%d'), INTERVAL 1 MONTH), '%Y-%m')
+        FROM months
+        WHERE month < DATE_FORMAT(?, '%Y-%m')
+      )
+      SELECT
+        m.month,
+        COALESCE(u.cnt, 0) AS users,
+        COALESCE(p.cnt, 0) AS posts,
+        COALESCE(co.cnt, 0) AS comments,
+        COALESCE(ca.cnt, 0) AS categories,
+        COALESCE(t.cnt, 0) AS tags,
+        COALESCE(me.cnt, 0) AS messages,
+        COALESCE(n.cnt, 0) AS notifications,
+        COALESCE(cr.cnt, 0) AS contactRequests,
+        COALESCE(s.cnt, 0) AS students,
+        COALESCE(se.cnt, 0) AS sessions,
+        COALESCE(r.cnt, 0) AS roles
+      FROM months m
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM users WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) u ON u.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM posts WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) p ON p.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM comments WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) co ON co.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM categories WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) ca ON ca.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM tags WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) t ON t.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM messages WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) me ON me.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM notifications WHERE createdAt >= ? GROUP BY month) n ON n.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM contact_requests WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) cr ON cr.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM students WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) s ON s.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM sessions WHERE isActive = true AND createdAt >= ? GROUP BY month) se ON se.month = m.month
+      LEFT JOIN (SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS cnt FROM roles WHERE deletedAt IS NULL AND createdAt >= ? GROUP BY month) r ON r.month = m.month
+      ORDER BY m.month ASC
+      `,
+      [
+        twelveMonthsAgo,
+        now,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+        twelveMonthsAgo,
+      ],
+    )) as MonthlyRow[];
+
+    return raw;
   }
 
   private async getCategoryData(): Promise<DashboardCategoryItemDto[]> {

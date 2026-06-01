@@ -390,6 +390,23 @@ export class PostsService {
       ids.length > 0
         ? await this.em.find(Post, { id: { $in: ids } } as FilterQuery<Post>, {
             populate: POST_POPULATE,
+            fields: [
+              'id',
+              'title',
+              'slug',
+              'excerpt',
+              'image',
+              'published',
+              'publishedAt',
+              'eventStartAt',
+              'eventEndAt',
+              'createdAt',
+              'updatedAt',
+              'deletedAt',
+              'author',
+              'categories',
+              'tags',
+            ],
           })
         : [];
 

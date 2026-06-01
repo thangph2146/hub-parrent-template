@@ -135,16 +135,33 @@ export async function getPublicCategories(params?: { slug?: string }) {
   return fetchPublicApi<PublicCategoryItem[]>("/public/categories", params);
 }
 
+// Request-level dedup cache: identical slug calls within same render pass share one fetch
+const _slugFetchCache = new Map<string, Promise<PublicPostDetail | null>>();
+
 export async function getPublicPostBySlug(slug: string) {
+  const cached = _slugFetchCache.get(slug);
+  if (cached) return cached;
+
+  const promise = (async () => {
+    try {
+      return await fetchPublicApi<PublicPostDetail>(
+        `/public/posts/${encodeURIComponent(slug)}`,
+        { track: "false" },
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (/not found/i.test(message)) return null;
+      throw error;
+    }
+  })();
+
+  if (_slugFetchCache.size > 50) _slugFetchCache.clear();
+  _slugFetchCache.set(slug, promise);
+
   try {
-    return await fetchPublicApi<PublicPostDetail>(
-      `/public/posts/${encodeURIComponent(slug)}`,
-      { track: "false" },
-    );
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/not found/i.test(message)) return null;
-    throw error;
+    return await promise;
+  } finally {
+    _slugFetchCache.delete(slug);
   }
 }
 
