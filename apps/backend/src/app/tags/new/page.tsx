@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   TagFormShell,
@@ -45,7 +45,7 @@ function NewTagPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <TagFormShell
         form={form}
         onSubmit={handleSubmit}
@@ -54,7 +54,7 @@ function NewTagPageInner() {
         onBack={() => router.push("/tags")}
         onReset={() => { form.reset(); }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

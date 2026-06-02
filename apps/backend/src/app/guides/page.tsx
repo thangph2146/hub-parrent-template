@@ -12,7 +12,7 @@ import {
   ADMIN_PAGE_TITLE_ICON_CLASS,
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
@@ -101,7 +101,7 @@ function GuidesPageInner() {
   }, [refetch]);
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex items-start justify-between gap-4">
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -150,7 +150,7 @@ function GuidesPageInner() {
           void handlePurgeConfirm();
         }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

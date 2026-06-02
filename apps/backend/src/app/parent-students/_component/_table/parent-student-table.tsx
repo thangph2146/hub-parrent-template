@@ -7,7 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { ParentStudent } from "../types"
 
 export interface ParentStudentTableProps {

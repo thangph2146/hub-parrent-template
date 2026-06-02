@@ -22,15 +22,13 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { PageSection } from "@ui/components/layout";
-import { TypographyH1 } from "@ui/components/typography";
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   CategoriesTable,
@@ -208,36 +206,32 @@ function CategoriesPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <Tags className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Danh mục dùng chung
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý danh mục dùng chung để gắn cho bài viết, thẻ và các nội dung
-            truyền thông
-          </p>
-          {user && !canWriteCategories && (
-            <p className="mt-2 text-sm font-medium text-amber-800 dark:text-amber-200/90">
+    <AdminPageSection>
+      <AdminListPageHeader
+        title="Danh mục dùng chung"
+        subtitle="Quản lý danh mục dùng chung để gắn cho bài viết, thẻ và các nội dung
+            truyền thông"
+        icon={Tags}
+        readOnlyHint={
+          user && !canWriteCategories ? (
+            <AdminReadOnlyHint>
               Chỉ xem: cần quyền{" "}
               <span className="font-mono">categories.write</span> để
               thêm/sửa/xoá.
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {canWriteCategories && (
-            <Button
+            </AdminReadOnlyHint>
+          ) : undefined
+        }
+        actions={
+          <>{canWriteCategories && (
+            <AdminPageHeaderPrimaryButton
               type="button"
               onClick={() => router.push("/categories/new")}
             >
               <Plus className="size-5" aria-hidden /> Thêm danh mục
-            </Button>
-          )}
-        </div>
-      </div>
+            </AdminPageHeaderPrimaryButton>
+          )}</>
+        }
+      />
 
       <Tabs
         value={mainTab}
@@ -246,10 +240,10 @@ function CategoriesPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
+        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger
             value="list"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
           >
             Danh sách
             <Badge
@@ -262,7 +256,7 @@ function CategoriesPageInner() {
           {canWriteCategories ? (
             <TabsTrigger
               value="trash"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
               <Badge
@@ -384,7 +378,7 @@ function CategoriesPageInner() {
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

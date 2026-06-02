@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@/lib/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 import type { StaffRow } from "./types";
 

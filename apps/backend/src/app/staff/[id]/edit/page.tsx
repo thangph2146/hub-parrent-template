@@ -6,7 +6,7 @@ import { useStaffForm, useStaffMutations } from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
 import { useRbacCatalog, useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { PageSection } from "@ui/components/layout"
 import {
   ADMIN_PAGE_TITLE_FORM_CLASS,
@@ -70,7 +70,7 @@ function EditStaffPageInner() {
 
   if (!session || !canManageUsers) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
@@ -89,13 +89,13 @@ function EditStaffPageInner() {
             <p className="text-muted-foreground">Không có quyền truy cập</p>
           </CardContent>
         </Card>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   if (userQuery.isLoading || !user) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
@@ -112,12 +112,12 @@ function EditStaffPageInner() {
         <div className="py-12 text-center">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <StaffFormShell
         isEdit={true}
         form={form}
@@ -126,7 +126,7 @@ function EditStaffPageInner() {
         onCancel={handleCancel}
         submitting={updateMutation.isPending}
       />
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

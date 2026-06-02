@@ -10,7 +10,7 @@ import type {
 import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@ui/components/data-table"
 import type { CategoryRow } from "../types"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 export interface CategoriesTableProps {
   data: CategoryRow[]

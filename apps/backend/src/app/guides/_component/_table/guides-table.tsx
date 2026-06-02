@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
 import type { GuideGroup } from "../types";
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 export interface GuidesTableProps {
   data: GuideGroup[];

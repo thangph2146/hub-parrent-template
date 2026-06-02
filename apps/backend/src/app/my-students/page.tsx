@@ -37,7 +37,8 @@ import {
 import { Badge } from "@ui/components/badge"
 import { Skeleton } from "@ui/components/skeleton"
 import { cn } from "@ui/lib/utils"
-import { PageSection } from "@ui/components/layout"
+import {  } from "@ui/components/layout"
+import { AdminPageSection } from "@ui/components/admin"
 import { TypographyH1 } from "@ui/components/typography"
 import {
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
@@ -513,7 +514,7 @@ export default function MyStudentsPage() {
   const displayName = user?.name?.trim() || user?.email || "Phụ huynh"
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex items-start justify-between gap-4">
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -715,6 +716,6 @@ export default function MyStudentsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </PageSection>
+    </AdminPageSection>
   )
 }

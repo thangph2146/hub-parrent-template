@@ -18,7 +18,7 @@ packages/ui/
     └── components/
         ├── index.ts      # barrel primitives + domain (tránh import cả package nếu chỉ cần 1 file)
         ├── *.tsx         # shadcn / primitive — MỘT file MỘT component (flat)
-        ├── admin/        # layout + shell quản trị (xem admin/README.md)
+        ├── admin/        # layout + shell + presets VI (xem admin/README.md)
         ├── data-table/   # bảng TanStack + pagination + row actions
         ├── dialogs/      # dialog xác nhận generic
         ├── pickers/      # date, select, tree pickers

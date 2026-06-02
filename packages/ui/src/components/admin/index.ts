@@ -4,7 +4,7 @@ export * from "./shell/layout-context"
 export * from "./shell/sidebar"
 export * from "./shell/shell"
 export * from "./shell/page-guard"
-export * from "./shell/scroll-to-top"
+export { ScrollToTop } from "../scroll-to-top"
 export {
   AdminLayoutBridge,
   type AdminLayoutBridgeProps,
@@ -20,3 +20,5 @@ export {
 } from "./integration/create-admin-metadata"
 export { fetchAdminSettingsBranding } from "./integration/fetch-settings-branding"
 export { useAdminSiteBranding } from "./integration/use-admin-site-branding"
+export * from "./presets"
+export * from "./pages"

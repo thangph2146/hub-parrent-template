@@ -6,7 +6,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { PageSection } from "@ui/components/layout"
 import { cn } from "@ui/lib/utils"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { api } from "@/lib/api"
 
 type ColumnKind = "pk" | "fk" | "field"
@@ -328,30 +328,30 @@ function DatabaseSchemaPageInner() {
 
   if (loading) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-center py-20">
           <p className="text-muted-foreground">Đang tải sơ đồ CSDL...</p>
         </div>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   if (error || !schema) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-center py-20">
           <p className="text-destructive">{error || 'Không thể tải dữ liệu'}</p>
         </div>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   const { tables: schemaTables, relations: schemaRelations } = schema
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <SchemaCanvas tables={schemaTables} relations={schemaRelations} />
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

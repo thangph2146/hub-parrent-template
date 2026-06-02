@@ -36,7 +36,7 @@ import { Button } from "@ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildEventDetailXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildEventDetailXlsxExport, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin"
 import { AdminPageGuard } from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
@@ -85,49 +85,23 @@ function EventDetailInner() {
 
   if (isLoading)
     return (
-      <PageSection
-        max="full"
-        className="flex min-w-0 items-center justify-center py-24"
-      >
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     )
   if (!entity) return null
 
   const posterUrl = getPosterUrlFromValue(entity.poster)
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="gap-1"
-            onClick={() => router.push("/events")}
-          >
-            <ArrowLeft className="size-4" /> Quay lại
-          </Button>
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              Chi tiết sự kiện
-            </TypographyH1>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              Quản lý sự kiện check-in.
-            </p>
-          </div>
-        </div>
-        {canUpdate && (
-          <Button
-            type="button"
-            variant="default"
-            className="gap-2 rounded-lg px-5 font-semibold"
-            onClick={() => router.push(`/events/${id}/edit`)}
-          >
-            <Pencil className="size-4" /> Chỉnh sửa
-          </Button>
-        )}
-      </div>
+    <AdminPageSection>
+      <AdminDetailPageHeader
+        title="Chi tiết sự kiện"
+        subtitle="Quản lý sự kiện check-in."
+        variant="module"
+        onBack={() => router.push("/events")}
+        onEdit={
+          canUpdate ? () => router.push(`/events/${id}/edit`) : undefined
+        }
+      />
 
       <Tabs defaultValue="info" className="my-6">
         <TabsList className="w-full">
@@ -517,7 +491,7 @@ function EventDetailInner() {
           </Tabs>
         </TabsContent>
       </Tabs>
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@/lib/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";

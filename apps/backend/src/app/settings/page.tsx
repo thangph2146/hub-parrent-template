@@ -15,7 +15,7 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
   TypographyH1,
   TypographyPLargeMuted,
@@ -177,7 +177,7 @@ export default function SettingsPage() {
 
   return (
     <AdminPageGuard roles={["super_admin", "admin"]}>
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
             <Settings2 className={ADMIN_PAGE_TITLE_ICON_CLASS} />
@@ -270,7 +270,7 @@ export default function SettingsPage() {
             Lưu thay đổi
           </Button>
         </div>
-      </PageSection>
+      </AdminPageSection>
     </AdminPageGuard>
   )
 }

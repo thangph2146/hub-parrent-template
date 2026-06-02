@@ -5,7 +5,7 @@ import { AdminDataTable } from "@ui/components/data-table";
 import { getTrashColumns } from "../columns";
 import type { ContactRequest } from "../types";
 import { downloadXlsxFile } from "@ui/lib/export-xlsx";
-import { buildContactRequestsXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildContactRequestsXlsxExport } from "@ui/components/admin";
 
 function parseStructuredContent(content: string | undefined): Record<string, string> {
   if (!content) return {};

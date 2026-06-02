@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useContactRequestDetail } from "@/hooks/queries";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import {
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
@@ -49,7 +49,7 @@ function ContactRequestDetailPageInner() {
 
   if (contactQuery.isLoading || !contact) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
           <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
           Chi tiết yêu cầu liên hệ
@@ -59,7 +59,7 @@ function ContactRequestDetailPageInner() {
             <p className="text-muted-foreground">Đang tải...</p>
           </CardContent>
         </Card>
-      </PageSection>
+      </AdminPageSection>
     );
   }
 
@@ -137,7 +137,7 @@ function ContactRequestDetailPageInner() {
   const { structured, messageContent } = parseStructuredContent(contact.content || contact.message || "");
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="mb-6 flex items-center justify-between">
         <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
           <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
@@ -317,7 +317,7 @@ function ContactRequestDetailPageInner() {
           </CardContent>
         </Card>
       </div>
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

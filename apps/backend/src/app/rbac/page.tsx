@@ -32,7 +32,7 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -47,9 +47,9 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
+import { AdminConfirmActionDialog } from "@ui/components/admin";
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"
 import { api, type RbacPermission } from "@/lib/api"
@@ -621,7 +621,7 @@ export default function RbacPage() {
 
   return (
     <AdminPageGuard roles={["super_admin"]}>
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -1159,7 +1159,7 @@ export default function RbacPage() {
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         />
-      </PageSection>
+      </AdminPageSection>
     </AdminPageGuard>
   )
 }

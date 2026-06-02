@@ -6,7 +6,7 @@ import { PageSection } from "@ui/components/layout";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
@@ -42,17 +42,17 @@ function SeoMetaDetailInner() {
 
   if (isError || !detail) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <p className="text-destructive">Không tìm thấy SEO metadata.</p>
         <Button type="button" variant="outline" onClick={() => router.push("/seo-metas")}>
           <ArrowLeft className="size-4" /> Quay lại
         </Button>
-      </PageSection>
+      </AdminPageSection>
     );
   }
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <Button type="button" variant="outline" size="sm" className="h-10 gap-2 rounded-lg" onClick={() => router.push("/seo-metas")}>
@@ -159,7 +159,7 @@ function SeoMetaDetailInner() {
           </div>
         </CardContent>
       </Card>
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

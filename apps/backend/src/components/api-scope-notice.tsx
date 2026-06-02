@@ -21,7 +21,7 @@ export function ApiScopeNotice(props: {
   const Icon = props.icon
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <PageSection>
       <div>
         <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
           <Icon className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />

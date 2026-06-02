@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   CategoryFormShell,
@@ -45,7 +45,7 @@ function NewCategoryPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <CategoryFormShell
         form={form}
         onSubmit={handleSubmit}
@@ -55,7 +55,7 @@ function NewCategoryPageInner() {
         onBack={() => router.push("/categories")}
         onReset={() => { form.reset(); }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

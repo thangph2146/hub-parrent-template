@@ -3,7 +3,7 @@
 import {
   ConfirmActionDialog,
   type ConfirmActionDialogProps,
-} from "@ui/components/dialogs"
+} from "../../dialogs"
 
 export type AdminConfirmActionDialogProps = Omit<
   ConfirmActionDialogProps,

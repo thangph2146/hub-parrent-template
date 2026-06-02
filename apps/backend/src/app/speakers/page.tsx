@@ -21,12 +21,11 @@ import { PageSection } from "@ui/components/layout"
 import { TypographyH1 } from "@ui/components/typography"
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 import { cn } from "@ui/lib/utils"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import {
   SpeakersTable,
@@ -190,35 +189,31 @@ function SpeakersPageInner() {
   )
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <User className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Diễn giả
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý diễn giả trong hệ thống
-          </p>
-          {user && !canWrite && (
-            <p className="mt-2 text-sm font-medium text-amber-800 dark:text-amber-200/90">
+    <AdminPageSection>
+      <AdminListPageHeader
+        title="Diễn giả"
+        subtitle="Quản lý diễn giả trong hệ thống"
+        icon={User}
+        readOnlyHint={
+          user && !canWrite ? (
+            <AdminReadOnlyHint>
               Chỉ xem: cần quyền{" "}
               <span className="font-mono">speakers:manage</span> để
               thêm/sửa/xoá.
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {canWrite && (
-            <Button
+            </AdminReadOnlyHint>
+          ) : undefined
+        }
+        actions={
+          <>{canWrite && (
+            <AdminPageHeaderPrimaryButton
               type="button"
               onClick={() => router.push("/speakers/new")}
             >
               <Plus className="size-5" aria-hidden /> Thêm diễn giả
-            </Button>
-          )}
-        </div>
-      </div>
+            </AdminPageHeaderPrimaryButton>
+          )}</>
+        }
+      />
 
       <Tabs
         value={mainTab}
@@ -227,10 +222,10 @@ function SpeakersPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
+        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger
             value="list"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
           >
             Danh sách
             <Badge
@@ -243,7 +238,7 @@ function SpeakersPageInner() {
           {canWrite && (
             <TabsTrigger
               value="trash"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
               <Badge
@@ -362,7 +357,7 @@ function SpeakersPageInner() {
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
       />
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

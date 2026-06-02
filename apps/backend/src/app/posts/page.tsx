@@ -18,7 +18,12 @@ import {
   Plus,
 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard } from "@ui/components/admin";
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageHeaderPrimaryButton,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { PostsTable, PostsTrashTable } from "./_component/_table";
@@ -42,9 +47,8 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import type {
   PostListRow,
@@ -57,9 +61,6 @@ import {
   getTrashColumns,
   formatDateTime,
 } from "./_component";
-import { PageSection } from "@ui/components/layout";
-import { TypographyH1 } from "@ui/components/typography";
-
 function PostsPageInner() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -194,40 +195,35 @@ function PostsPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Bài viết
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý bài viết truyền thông, gắn danh mục và thẻ dùng chung
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {canCreate && (
-            <Button
-              type="button"
-              onClick={() => router.push("/posts/new")}
-            >
-              <Plus className="size-5" />
-              Thêm bài viết
-            </Button>
-          )}
-        </div>
-      </div>
+    <AdminPageSection>
+      <AdminListPageHeader
+        title="Bài viết"
+        subtitle="Quản lý bài viết truyền thông, gắn danh mục và thẻ dùng chung"
+        icon={FileText}
+        actions={
+          <>
+            {canCreate && (
+              <AdminPageHeaderPrimaryButton
+                onClick={() => router.push("/posts/new")}
+              >
+                <Plus className="size-5" aria-hidden />
+                Thêm bài viết
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
+        }
+      />
 
       <Tabs value={mainTab} onValueChange={(v) => v === "list" || v === "trash" ? setMainTab(v) : null}>
-        <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
-          <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
               {postsQuery.data?.total ?? 0}
             </Badge>
           </TabsTrigger>
           {canRestore && (
-            <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
               Thùng rác
               <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
                 {trashQuery.data?.total ?? 0}
@@ -331,7 +327,7 @@ function PostsPageInner() {
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

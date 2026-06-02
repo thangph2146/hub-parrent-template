@@ -24,7 +24,7 @@ import { TypographyH1, TypographyH2 } from "@ui/components/typography";
 import { ADMIN_PAGE_TITLE_DOCUMENT_CLASS } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { readAdminSession } from "@/lib/auth-session";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { DEFAULT_API_URL, canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
 import {
@@ -238,7 +238,7 @@ function DataBackupPageInner() {
   const exportBusy = exporting !== null;
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       {/* Tiêu đề + bối cảnh ngay khi mở trang */}
       <header className="space-y-3">
         <div className="flex flex-wrap items-start gap-4">
@@ -499,7 +499,7 @@ function DataBackupPageInner() {
           )}
         </CardContent>
       </Card>
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

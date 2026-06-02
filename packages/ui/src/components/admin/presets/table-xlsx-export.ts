@@ -1,4 +1,4 @@
-import type { AdminDataTableXlsxExportConfig } from "@ui/components/data-table";
+import type { AdminDataTableXlsxExportConfig } from "../../data-table"
 
 const ADMIN_EXPORT_SUBTITLE = "Hệ thống quản trị HUB";
 

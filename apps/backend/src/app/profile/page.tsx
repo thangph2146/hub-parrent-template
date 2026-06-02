@@ -32,7 +32,7 @@ import {
 import { ApiError } from "@/lib/api"
 import { patchAdminSessionProfile } from "@/lib/auth-session"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { TypographyH1 } from "@ui/components/typography"
 import { ADMIN_PAGE_TITLE_PROFILE_CLASS } from "@ui/lib/layout-shell"
 
@@ -194,7 +194,7 @@ function AdminProfilePageInner() {
   }
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div>
         <TypographyH1 className={ADMIN_PAGE_TITLE_PROFILE_CLASS}>
           Hồ sơ tài khoản
@@ -462,7 +462,7 @@ function AdminProfilePageInner() {
           </Card>
         </div>
       </div>
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

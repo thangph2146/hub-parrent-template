@@ -6,12 +6,16 @@ import { FieldError } from "@ui/components/field";
 import { Input } from "@ui/components/input";
 import { Textarea } from "@ui/components/textarea";
 import { FormFieldCol } from "@ui/components/typing";
+import {
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormPageHeader,
+  AdminFormSidebar,
+} from "@ui/components/admin";
 import { TreePicker } from "@ui/components/pickers";
-import { TypographyH1 } from "@ui/components/typography";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { cn } from "@ui/lib/utils";
-import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";
-import { ArrowLeft, MapPin, Hash, Globe } from "lucide-react";
+import { MapPin, Hash, Globe } from "lucide-react";
 import type { LocationFormValues } from "../types";
 
 export interface LocationFormShellProps {
@@ -35,34 +39,21 @@ export function LocationFormShell({
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button type="button" variant="outline" size="sm" className="h-10 gap-2 rounded-lg" onClick={onBack}>
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              {editingId ? "Chỉnh sửa địa điểm" : "Thêm địa điểm"}
-            </TypographyH1>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              Quản lý địa điểm trong hệ thống.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button type="button" variant="outline" className="h-10 rounded-lg" onClick={onReset} disabled={submitting}>
-            Đặt lại
-          </Button>
-          <Button type="submit" form="location-form" className="h-10 rounded-lg font-bold" disabled={submitting}>
-            {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Lưu"}
-          </Button>
-        </div>
-      </div>
+      <AdminFormPageHeader
+        title={editingId ? "Chỉnh sửa địa điểm" : "Thêm địa điểm"}
+        subtitle={"Quản lý địa điểm trong hệ thống."}
+        onBack={onBack}
+        onReset={onReset}
+        formId="location-form"
+        submitting={submitting}
+        isEdit={Boolean(editingId)}
+      />
 
-      <form id="location-form" onSubmit={form.handleSubmit(onSubmit)} className="my-6">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
+      <AdminFormLayout
+        id="location-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <AdminFormMain>
             <Card className="border border-border/70 shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -126,9 +117,9 @@ export function LocationFormShell({
                 />
               </CardContent>
             </Card>
-          </div>
+        </AdminFormMain>
 
-          <div className="space-y-6">
+        <AdminFormSidebar>
             <Card className="border border-border/70 shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
@@ -161,9 +152,8 @@ export function LocationFormShell({
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </form>
+        </AdminFormSidebar>
+      </AdminFormLayout>
     </>
   );
 }

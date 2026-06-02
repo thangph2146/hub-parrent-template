@@ -5,8 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   PostFormShell,
@@ -91,16 +90,14 @@ function EditPostPageInner() {
 
   if (isLoading) {
     return (
-      <PageSection max="full" className="min-w-0 flex items-center justify-center py-24">
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     );
   }
 
   if (!post) return null;
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <PostFormShell
         form={form}
         onSubmit={handleSubmit}
@@ -113,7 +110,7 @@ function EditPostPageInner() {
           await refetch();
         }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

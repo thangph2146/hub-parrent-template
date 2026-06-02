@@ -5,7 +5,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { Loader2 } from "lucide-react"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { YearAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 

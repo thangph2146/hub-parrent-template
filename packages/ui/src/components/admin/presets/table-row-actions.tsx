@@ -7,7 +7,7 @@ import {
   DataTableRowActions,
   TABLE_ACTIONS_COLUMN_META,
   type DataTableRowActionItem,
-} from "@ui/components/data-table"
+} from "../../data-table"
 
 /** @deprecated Dùng `TABLE_ACTIONS_COLUMN_META` từ `@ui/components/data-table`. */
 export const ADMIN_TABLE_ACTIONS_COLUMN_META = TABLE_ACTIONS_COLUMN_META
@@ -212,5 +212,3 @@ export function AdminTableTrashRowActions({
 
   return <DataTableRowActions actions={actions} />
 }
-
-export type { DataTableRowActionItem }

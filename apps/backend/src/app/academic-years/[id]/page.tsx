@@ -8,7 +8,7 @@ import { PageSection } from "@ui/components/layout";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
@@ -49,46 +49,26 @@ function AcademicYearDetailInner() {
 
   if (isLoading) {
     return (
-      <PageSection max="full" className="min-w-0 flex items-center justify-center py-24">
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     );
   }
 
   if (!entity) return null;
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button type="button" variant="outline" className="gap-1" onClick={() => router.push("/academic-years")}>
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              {entity.name}
-            </TypographyH1>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              <span className="text-muted-foreground/60">Niên khóa</span>
-            </p>
-          </div>
-        </div>
-        {canUpdate && (
-        <Button
-          type="button"
-          variant="default"
-          className="gap-2 rounded-lg px-5 font-semibold"
-          onClick={() => router.push(`/academic-years/${id}/edit`)}
-        >
-          <Pencil className="size-4" />
-          Chỉnh sửa
-        </Button>
-        )}
-      </div>
+    <AdminPageSection>
+      <AdminDetailPageHeader
+        title={entity.name}
+        subtitle={<span className="text-muted-foreground/60">Niên khóa</span>}
+        variant="module"
+        onBack={() => router.push("/academic-years")}
+        onEdit={
+          canUpdate ? () => router.push(`/academic-years/${id}/edit`) : undefined
+        }
+      />
 
-      <div className="grid gap-6 lg:grid-cols-3 my-6">
-        <div className="space-y-6 lg:col-span-2">
+      <AdminDetailLayout>
+        <AdminDetailMain>
           <Card className="border border-border/70 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -128,9 +108,9 @@ function AcademicYearDetailInner() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </AdminDetailMain>
 
-        <div className="space-y-6">
+        <AdminDetailSidebar>
           <Card className="border border-border/70 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -159,9 +139,9 @@ function AcademicYearDetailInner() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </PageSection>
+        </AdminDetailSidebar>
+      </AdminDetailLayout>
+    </AdminPageSection>
   );
 }
 

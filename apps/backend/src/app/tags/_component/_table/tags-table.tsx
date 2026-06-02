@@ -3,7 +3,7 @@
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
 import type { TagTreeRow } from "../types";
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 export interface TagsTableProps {
   data: TagTreeRow[];

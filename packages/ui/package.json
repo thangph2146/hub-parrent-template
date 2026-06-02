@@ -62,6 +62,7 @@
     "./components/dialogs": "./src/components/dialogs/index.ts",
     "./components/*": "./src/components/*.tsx",
     "./components/admin": "./src/components/admin/index.ts",
+    "./components/site": "./src/components/site/index.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./data/*": "./src/data/*.json"
   }

@@ -18,7 +18,7 @@ import {
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { TermAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"

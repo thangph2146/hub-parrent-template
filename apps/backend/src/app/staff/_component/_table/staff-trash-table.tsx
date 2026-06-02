@@ -8,7 +8,7 @@ import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 interface StaffTrashTableProps {
   data: StaffRow[]

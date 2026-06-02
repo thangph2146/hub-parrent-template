@@ -26,7 +26,7 @@ import {
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
 import { cn } from "@ui/lib/utils"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import {
   MajorsTable,
@@ -186,7 +186,7 @@ function MajorsPageInner() {
   )
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -355,7 +355,7 @@ function MajorsPageInner() {
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
       />
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

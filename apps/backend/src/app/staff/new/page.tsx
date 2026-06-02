@@ -5,7 +5,7 @@ import { useStaffForm, useStaffMutations } from "../_component";
 import { StaffFormShell } from "../_component/_form";
 import { useRbacCatalog } from "@/hooks/queries";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { PageSection } from "@ui/components/layout";
 import { ADMIN_PAGE_TITLE_FORM_CLASS, ADMIN_PAGE_TITLE_ICON_SM_CLASS } from "@ui/lib/layout-shell";
 import { TypographyH1 } from "@ui/components/typography";
@@ -30,7 +30,7 @@ function NewStaffPageInner() {
 
   if (!session || !canManageUsers) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <TypographyH1 className={ADMIN_PAGE_TITLE_FORM_CLASS}>
           <UserPlus className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
           Thêm nhân sự mới
@@ -40,7 +40,7 @@ function NewStaffPageInner() {
             <p className="text-muted-foreground">Không có quyền truy cập</p>
           </CardContent>
         </Card>
-      </PageSection>
+      </AdminPageSection>
     );
   }
 
@@ -65,7 +65,7 @@ function NewStaffPageInner() {
   };
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <StaffFormShell
         isEdit={false}
         form={form}
@@ -74,7 +74,7 @@ function NewStaffPageInner() {
         onCancel={handleCancel}
         submitting={createMutation.isPending}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

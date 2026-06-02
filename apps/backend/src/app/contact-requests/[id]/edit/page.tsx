@@ -7,7 +7,7 @@ import { ContactFormShell } from "../../_component/_form/contact-form-shell";
 import { useContactRequestDetail } from "@/hooks/queries";
 import { useUpdateContactRequest } from "../../_component/_query/use-contact-queries";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@ui/components/button";
 import type { UpdateContactRequestInput } from "@workspace/api-client";
@@ -77,7 +77,7 @@ function EditContactRequestPageInner() {
 
   if (contactQuery.isLoading || !contact) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="mb-4 flex items-center gap-2">
           <Button
             type="button"
@@ -93,12 +93,12 @@ function EditContactRequestPageInner() {
         <div className="py-12 text-center">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>
-      </PageSection>
+      </AdminPageSection>
     );
   }
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="mb-4 flex items-center gap-2">
         <Button
           type="button"
@@ -118,7 +118,7 @@ function EditContactRequestPageInner() {
         onCancel={handleCancel}
         submitting={updateMutation.isPending}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

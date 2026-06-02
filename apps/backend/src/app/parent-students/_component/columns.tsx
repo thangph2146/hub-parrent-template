@@ -7,7 +7,7 @@ import {
 } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { CheckCircle2, Clock, User, XCircle } from "lucide-react";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTablePurgeButton, AdminTableRowActions } from "@/lib/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTablePurgeButton, AdminTableRowActions } from "@ui/components/admin";
 import type { ParentStudent } from "./types";
 
 const actionButtonClass = "h-8 gap-1.5";

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { CameraFormShell, useCameraForm, useCameraDetailQuery, buildCameraPayload } from "../../_component";
 import type { CameraFormValues } from "../../_component";
@@ -17,8 +17,8 @@ function EditCameraPageInner() {
   const inv = async () => { await qc.invalidateQueries({ queryKey: ["cameras"] }); };
   const mut = useMutation({ mutationFn: (i: Record<string, unknown>) => api.cameras.update(id, i), onSuccess: async (_d, v) => { await inv(); toast.success(`Đã cập nhật "${v.name}"`); router.push(`/cameras/${id}`); }, onError: (e: Error) => toast.error(e.message || "Lỗi") });
   const h = useCallback(async (v: CameraFormValues) => { await mut.mutateAsync(buildCameraPayload(v)); }, [mut]);
-  if (isLoading) return <PageSection max="full" className="min-w-0 flex items-center justify-center py-24"><Loader2 className="size-8 animate-spin text-muted-foreground" /></PageSection>;
+  if (isLoading) return <AdminPageLoading />;
   if (!e) return null;
-  return (<PageSection max="full" className="min-w-0 space-y-6"><CameraFormShell form={form} onSubmit={h} submitting={mut.isPending} editingId={id} onBack={() => router.push(`/cameras/${id}`)} onReset={async () => { await refetch(); }} /></PageSection>);
+  return (<AdminPageSection><CameraFormShell form={form} onSubmit={h} submitting={mut.isPending} editingId={id} onBack={() => router.push(`/cameras/${id}`)} onReset={async () => { await refetch(); }} /></AdminPageSection>);
 }
 export default function EditCameraPage() { return <AdminPageGuard roles={["super_admin", "admin", "manager"]}><EditCameraPageInner /></AdminPageGuard>; }

@@ -15,7 +15,8 @@ import {
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
-import { PageSection } from "@ui/components/layout"
+import {  } from "@ui/components/layout"
+import { AdminPageSection } from "@ui/components/admin"
 import { Skeleton } from "@ui/components/skeleton"
 import { TypographyH1 } from "@ui/components/typography"
 import {
@@ -217,7 +218,7 @@ export default function AdminDashboardPage() {
   const stats = buildStats(data?.overview, isLoading)
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       {/* Header */}
       <div>
         <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -312,6 +313,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
-    </PageSection>
+    </AdminPageSection>
   )
 }

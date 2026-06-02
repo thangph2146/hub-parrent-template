@@ -2,16 +2,16 @@
 
 import { GraphifyPage } from "@ui/components/graphify/graphify-page";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 
 function GraphPageInner() {
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <GraphifyPage apiPath="/admin/api/graphify" classes={{
         sidebar: "w-72 xl:w-80 shrink-0 border-r border-border/50 bg-card flex flex-col",
         scrollArea: "max-h-[calc(100vh-188px)]",
       }} />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

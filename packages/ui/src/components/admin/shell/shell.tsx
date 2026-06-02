@@ -36,7 +36,7 @@ import { Page, PageContent } from "../../layout";
 import { TypographyH2 } from "../../typography";
 import { useTextSize } from "../../text-size-provider";
 import { useTheme } from "../../theme-provider";
-import { ScrollToTop } from "./scroll-to-top";
+import { ScrollToTop } from "../../scroll-to-top";
 import { useAdminLayout } from "./layout-context";
 import {
   ADMIN_HEADER_ROLE_LINE_CLASS,
@@ -114,6 +114,9 @@ export function AdminShell({
     sessionEventName,
     mobileHeaderTitle = "B2B Admin",
     fullWidthPaths = ["/graph"],
+    homePath = "/",
+    profilePath = "/profile",
+    accessDeniedReason = "staff_only",
   } = useAdminLayout();
   const { theme, setTheme } = useTheme();
   const { size, setSize } = useTextSize();
@@ -162,13 +165,13 @@ export function AdminShell({
 
     if (onAuthRoute) {
       if (user && canAccessApp(user)) {
-        router.replace("/");
+        router.replace(homePath);
         return;
       }
       if (user && !canAccessApp(user)) {
         clearSession();
         window.dispatchEvent(new Event(sessionEventName));
-        router.replace(`${loginPath}?reason=staff_only`);
+        router.replace(`${loginPath}?reason=${accessDeniedReason}`);
       }
       return;
     }
@@ -180,12 +183,14 @@ export function AdminShell({
     if (!canAccessApp(user)) {
       clearSession();
       window.dispatchEvent(new Event(sessionEventName));
-      router.replace(`${loginPath}?reason=staff_only`);
+      router.replace(`${loginPath}?reason=${accessDeniedReason}`);
     }
   }, [
+    accessDeniedReason,
     canAccessApp,
     clearSession,
     clientReady,
+    homePath,
     loginPath,
     onAuthRoute,
     router,
@@ -329,7 +334,7 @@ export function AdminShell({
                   <DropdownMenuGroup>
                     <DropdownMenuItem
                       className="cursor-pointer rounded-md px-2 py-2"
-                      onClick={() => router.push("/profile")}
+                      onClick={() => router.push(profilePath)}
                     >
                       <UserCircle2 className="size-4 text-muted-foreground" />
                       Hồ sơ và tài khoản

@@ -5,9 +5,6 @@ import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import {
-  Loader2,
-  ArrowLeft,
-  Pencil,
   Calendar,
   Clock,
   User,
@@ -17,19 +14,13 @@ import {
   Tags,
   Globe,
 } from "lucide-react";
-import { Divider, PageSection } from "@ui/components/layout";
+import { Divider } from "@ui/components/layout";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
-import { TypographyH1 } from "@ui/components/typography";
-import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-} from "@ui/lib/layout-shell";
 import { normalizeContentForEditor, formatDateTime } from "../_component";
 import { usePostDetailQuery } from "../_component/_query";
 
@@ -81,12 +72,7 @@ function PostDetailInner() {
 
   if (isLoading) {
     return (
-      <PageSection
-        max="full"
-        className="flex min-w-0 items-center justify-center py-24"
-      >
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     );
   }
 
@@ -96,40 +82,19 @@ function PostDetailInner() {
   const previewPath = post.slug ? `/bai-viet/${post.slug}` : "—";
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="gap-1"
-            onClick={() => router.push("/posts")}
-          >
-            <ArrowLeft className="size-4" /> Quay lại
-          </Button>
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              Chi tiết bài viết
-            </TypographyH1>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              Quản lý bài viết và nội dung xuất bản.
-            </p>
-          </div>
-        </div>
-        {canUpdate && (
-          <Button
-            type="button"
-            variant="default"
-            className="gap-2 rounded-lg px-5 font-semibold"
-            onClick={() => router.push(`/posts/${postId}/edit`)}
-          >
-            <Pencil className="size-4" /> Chỉnh sửa
-          </Button>
-        )}
-      </div>
+    <AdminPageSection>
+      <AdminDetailPageHeader
+        title="Chi tiết bài viết"
+        subtitle="Quản lý bài viết và nội dung xuất bản."
+        variant="module"
+        onBack={() => router.push("/posts")}
+        onEdit={
+          canUpdate ? () => router.push(`/posts/${postId}/edit`) : undefined
+        }
+      />
 
-      <div className="my-6 grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <AdminDetailLayout className="my-6">
+        <AdminDetailMain>
           {content ? (
             <Card className="border border-border/70 shadow-sm">
               <CardHeader className="pb-2">
@@ -157,9 +122,9 @@ function PostDetailInner() {
               </CardContent>
             </Card>
           )}
-        </div>
+        </AdminDetailMain>
 
-        <div className="space-y-6 lg:col-span-1">
+        <AdminDetailSidebar>
           <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
             <CardContent className="space-y-0">
               <Divider label="Hình ảnh đại diện" className="my-6" />
@@ -289,9 +254,9 @@ function PostDetailInner() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </PageSection>
+        </AdminDetailSidebar>
+      </AdminDetailLayout>
+    </AdminPageSection>
   );
 }
 

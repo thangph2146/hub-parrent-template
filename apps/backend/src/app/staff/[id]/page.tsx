@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
   ADMIN_PAGE_TITLE_COMPACT_CLASS,
   ADMIN_PAGE_TITLE_ICON_CLASS,
@@ -36,7 +36,7 @@ import { usePostsByAuthor } from "@/app/posts/_component/_query/use-posts-querie
 import Link from "next/link"
 import { api } from "@/lib/api"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { PostListRow } from "@/app/posts/_component/types"
 
@@ -117,7 +117,7 @@ function StaffDetailPageInner() {
 
   if (!session || !canManageUsers) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-between">
           <Button variant="outline" onClick={() => router.push(`/staff`)}>
             <ArrowLeft className="size-4" aria-hidden />
@@ -133,13 +133,13 @@ function StaffDetailPageInner() {
             <p className="text-muted-foreground">Không có quyền truy cập</p>
           </CardContent>
         </Card>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   if (userQuery.isLoading || !user) {
     return (
-      <PageSection max="full" className="min-w-0 space-y-6">
+      <AdminPageSection>
         <div className="flex items-center justify-between">
           <Button variant="outline" onClick={() => router.push(`/staff`)}>
             <ArrowLeft className="size-4" aria-hidden />
@@ -155,12 +155,12 @@ function StaffDetailPageInner() {
             <p className="text-muted-foreground">Đang tải...</p>
           </CardContent>
         </Card>
-      </PageSection>
+      </AdminPageSection>
     )
   }
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-start gap-2">
           <Button variant="outline" onClick={() => router.push(`/staff`)}>
@@ -349,7 +349,7 @@ function StaffDetailPageInner() {
           />
         </CardContent>
       </Card>
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

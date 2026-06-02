@@ -43,6 +43,12 @@ export type AdminLayoutContextValue = {
   sessionEventName: string
   mobileHeaderTitle?: string
   fullWidthPaths?: string[]
+  /** Sau đăng nhập trên trang auth — mặc định `/`. */
+  homePath?: string
+  /** Liên kết hồ sơ trong shell — mặc định `/profile`. */
+  profilePath?: string
+  /** Query `reason` khi từ chối quyền — mặc định `staff_only`. */
+  accessDeniedReason?: string
 }
 
 /** Cấu hình cố định mỗi app admin (menu, auth routes, …). */

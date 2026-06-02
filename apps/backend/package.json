@@ -27,6 +27,7 @@
     "@workspace/api-client": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/query-client": "workspace:*",
+    "@workspace/ui": "workspace:*",
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

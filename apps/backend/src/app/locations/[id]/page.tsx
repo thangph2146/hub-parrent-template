@@ -28,7 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ui/components/card"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"
@@ -65,51 +65,27 @@ function LocationDetailInner() {
 
   if (isLoading) {
     return (
-      <PageSection
-        max="full"
-        className="flex min-w-0 items-center justify-center py-24"
-      >
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     )
   }
 
   if (!entity) return null
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/locations")}
-          >
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
-          <div className="flex flex-col">
-            <TypographyH2 className={ADMIN_PAGE_TITLE_COMPACT_CLASS}>
-              {entity.name || "Địa điểm"}
-            </TypographyH2>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              <span className="text-muted-foreground/60">Địa điểm</span>
-            </p>
-          </div>
-        </div>
-        {canUpdate && (
-          <Button
-            type="button"
-            variant="default"
-            onClick={() => router.push(`/locations/${id}/edit`)}
-          >
-            <Pencil className="size-4" />
-            Chỉnh sửa
-          </Button>
-        )}
-      </div>
+    <AdminPageSection>
+      <AdminDetailPageHeader
+        title={entity.name || "Địa điểm"}
+        subtitle={<span className="text-muted-foreground/60">Địa điểm</span>}
+        variant="entity"
+        onBack={() => router.push("/locations")}
+        onEdit={
+          canUpdate ? () => router.push(`/locations/${id}/edit`) : undefined
+        }
+      />
 
-      <Card className="border border-border/70 shadow-sm">
+      <AdminDetailLayout>
+        <AdminDetailMain>
+                <Card className="border border-border/70 shadow-sm">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <MapPin className="size-5 text-primary" />
@@ -196,7 +172,9 @@ function LocationDetailInner() {
           </div>
         </CardContent>
       </Card>
-    </PageSection>
+        </AdminDetailMain>
+      </AdminDetailLayout>
+    </AdminPageSection>
   )
 }
 

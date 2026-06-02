@@ -6,15 +6,19 @@ import { FieldError } from "@ui/components/field";
 import { Input } from "@ui/components/input";
 import { Textarea } from "@ui/components/textarea";
 import { FormFieldCol } from "@ui/components/typing";
+import {
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormPageHeader,
+  AdminFormSidebar,
+} from "@ui/components/admin";
 import { SelectPicker, TreePicker, type TreeOption, type SelectPickerOption } from "@ui/components/pickers";
 import { Badge } from "@ui/components/badge";
-import { TypographyH1 } from "@ui/components/typography";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import type { CategoryTreeOption } from "../types";
 import { CATEGORY_ICON_OPTIONS, resolveCategoryIcon } from "@/lib/category-icons";
 import { cn } from "@ui/lib/utils";
-import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";
-import { ArrowLeft, FolderTree, Globe, Layers, ListOrdered, Tag } from "lucide-react";
+import { FolderTree, Globe, Layers, ListOrdered, Tag } from "lucide-react";
 import type { CategoryFormValues } from "../_hooks";
 
 const ROOT_PARENT_VALUE = "__root__";
@@ -84,51 +88,21 @@ export function CategoryFormShell({
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-10 gap-2 rounded-lg"
-            onClick={onBack}
-          >
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              {editingId ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}
-            </TypographyH1>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              Slug được tự động sinh từ tên. Cập nhật slug sẽ tự động đồng bộ lại tham chiếu trên các nội dung liên quan.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-10 rounded-lg"
-            onClick={onReset}
-            disabled={submitting}
-          >
-            Đặt lại
-          </Button>
-          <Button
-            type="submit"
-            form="category-form"
-            className="h-10 rounded-lg font-bold"
-            disabled={submitting}
-          >
-            {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Lưu"}
-          </Button>
-        </div>
-      </div>
+      <AdminFormPageHeader
+        title={editingId ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}
+        subtitle={"Slug được tự động sinh từ tên. Cập nhật slug sẽ tự động đồng bộ lại tham chiếu trên các nội dung liên quan."}
+        onBack={onBack}
+        onReset={onReset}
+        formId="category-form"
+        submitting={submitting}
+        isEdit={Boolean(editingId)}
+      />
 
-      <form id="category-form" onSubmit={form.handleSubmit(onSubmit)} className="my-6">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
+      <AdminFormLayout
+        id="category-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <AdminFormMain>
             <Card className="border border-border/70 shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -268,9 +242,9 @@ export function CategoryFormShell({
                 </div>
               </CardContent>
             </Card>
-          </div>
+        </AdminFormMain>
 
-          <div className="space-y-6">
+        <AdminFormSidebar>
             <Card className="border border-border/70 shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
@@ -300,9 +274,8 @@ export function CategoryFormShell({
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </form>
+        </AdminFormSidebar>
+      </AdminFormLayout>
     </>
   );
 }

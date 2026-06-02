@@ -297,7 +297,14 @@ export function SidebarNavLinks({
 
 /** Menu dạng drawer cho màn hình nhỏ (Sheet). */
 export function MobileSidebarPanel({ onNavigate }: { onNavigate: () => void }) {
-  const { user, logout, siteName, siteDescription } = useAdminLayout()
+  const {
+    user,
+    logout,
+    siteName,
+    siteDescription,
+    homePath = "/",
+    profilePath = "/profile",
+  } = useAdminLayout()
   const displayName = displayNameOf(user)
   const roleText = roleSummaryOf(user)
   const avatarUrl = user?.image?.trim() || null
@@ -306,7 +313,7 @@ export function MobileSidebarPanel({ onNavigate }: { onNavigate: () => void }) {
     <div className="flex h-full flex-col bg-primary text-white">
       <div className="shrink-0 px-4 pt-5 pb-4">
         <Link
-          href="/"
+          href={homePath}
           className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-all duration-200 hover:bg-white/15"
           onClick={onNavigate}
         >
@@ -325,7 +332,7 @@ export function MobileSidebarPanel({ onNavigate }: { onNavigate: () => void }) {
       <div className="mt-auto shrink-0 p-4">
         <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/6 px-3 py-3 shadow-[0_8px_20px_rgba(7,16,48,0.18)]">
           <Link
-            href="/profile"
+            href={profilePath}
             onClick={onNavigate}
             className="flex min-w-0 flex-1 items-center gap-3"
           >
@@ -372,7 +379,12 @@ type SidebarProps = {
 }
 
 export function Sidebar({ collapsed }: SidebarProps) {
-  const { logout, siteName, siteDescription } = useAdminLayout()
+  const {
+    logout,
+    siteName,
+    siteDescription,
+    homePath = "/",
+  } = useAdminLayout()
 
   return (
     <aside
@@ -388,14 +400,14 @@ export function Sidebar({ collapsed }: SidebarProps) {
         )}
       >
         <Link
-          href="/"
+          href={homePath}
           className={cn(
             "group flex transition-all duration-200 hover:bg-white/15",
             collapsed
               ? "justify-center rounded-lg p-2.5"
               : "items-center gap-3 rounded-lg px-2 py-2"
           )}
-          title="Tổng quan"
+          title="Trang chủ"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white/12 ring-1 ring-white/12 transition-transform duration-200 group-hover:scale-[1.03]">
             <ShieldCheck className="size-5 text-white" />

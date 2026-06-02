@@ -8,7 +8,7 @@ import type {
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
 import type { TrainingSystemRow } from "../types"
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 export interface TrainingSystemsTrashTableProps {
   data: TrainingSystemRow[]

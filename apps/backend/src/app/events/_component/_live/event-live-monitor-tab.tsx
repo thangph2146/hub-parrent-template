@@ -16,7 +16,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { api } from "@/lib/api"
-import { buildEventDetailXlsxExport } from "@/lib/admin-table-xlsx-export"
+import { buildEventDetailXlsxExport } from "@ui/components/admin"
 import type { EventDetail } from "../types"
 import {
   useEventDetailQuery,

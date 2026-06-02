@@ -24,7 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ui/components/card"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { useScreenDetailQuery } from "../_component"
 import { TypographyH1, TypographyH2 } from "@ui/components/typography"
@@ -61,51 +61,27 @@ function DetailInner() {
 
   if (isLoading) {
     return (
-      <PageSection
-        max="full"
-        className="flex min-w-0 items-center justify-center py-24"
-      >
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </PageSection>
+      <AdminPageLoading />
     )
   }
 
   if (!e) return null
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/screens")}
-          >
-            <ArrowLeft className="size-4" />
-            Quay lại
-          </Button>
-          <div className="flex flex-col">
-            <TypographyH2 className={ADMIN_PAGE_TITLE_COMPACT_CLASS}>
-              {e.name || "Màn hình"}
-            </TypographyH2>
-            <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              <span className="text-muted-foreground/60">Màn hình</span>
-            </p>
-          </div>
-        </div>
-        {canUpdate && (
-          <Button
-            type="button"
-            variant="default"
-            onClick={() => router.push(`/screens/${id}/edit`)}
-          >
-            <Pencil className="size-4" />
-            Chỉnh sửa
-          </Button>
-        )}
-      </div>
+    <AdminPageSection>
+      <AdminDetailPageHeader
+        title={e.name || "Màn hình"}
+        subtitle={<span className="text-muted-foreground/60">Màn hình</span>}
+        variant="entity"
+        onBack={() => router.push("/screens")}
+        onEdit={
+          canUpdate ? () => router.push(`/screens/${id}/edit`) : undefined
+        }
+      />
 
-      <Card className="border border-border/70 shadow-sm">
+      <AdminDetailLayout>
+        <AdminDetailMain>
+                <Card className="border border-border/70 shadow-sm">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Monitor className="size-5 text-primary" />
@@ -212,7 +188,9 @@ function DetailInner() {
           </div>
         </CardContent>
       </Card>
-    </PageSection>
+        </AdminDetailMain>
+      </AdminDetailLayout>
+    </AdminPageSection>
   )
 }
 

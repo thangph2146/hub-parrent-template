@@ -11,7 +11,7 @@ import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { useContactRequests } from "@/hooks/queries"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { useAuth } from "@/providers/auth-provider"
@@ -226,7 +226,7 @@ function ContactRequestsPageInner() {
     bulkPurgeMutation.isPending
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="mb-6 flex items-center justify-between">
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -380,7 +380,7 @@ function ContactRequestsPageInner() {
         onConfirm={handleConfirmBulkPurge}
         loading={bulkPurgeMutation.isPending}
       />
-    </PageSection>
+    </AdminPageSection>
   )
 }
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, buildEventPayload } from "../_component";
 import type { EventFormValues } from "../_component";
@@ -44,10 +44,10 @@ function NewEventPageInner() {
   }, [createMutation]);
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <EventFormShell form={form} onSubmit={handleSubmit} submitting={createMutation.isPending} editingId={null}
         onBack={() => router.push("/events")} onReset={() => { form.reset(); }} />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

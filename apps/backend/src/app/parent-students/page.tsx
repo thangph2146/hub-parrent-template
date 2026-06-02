@@ -18,7 +18,7 @@ import {
 } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
+import { AdminConfirmActionDialog, AdminPageSection } from "@ui/components/admin";
 import { AdminPageGuard } from "@ui/components/admin";
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 import { api } from "@/lib/api";
@@ -143,7 +143,7 @@ function AdminParentStudentsPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <div className="flex items-start justify-between gap-4">
         <div>
           <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
@@ -252,7 +252,7 @@ function AdminParentStudentsPageInner() {
           });
         }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

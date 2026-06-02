@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { ScreenFormShell, useScreenForm, useScreenDetailQuery, buildScreenPayload } from "../../_component";
 import type { ScreenFormValues } from "../../_component";
@@ -21,8 +21,8 @@ function EditScreenPageInner() {
   const inv = async () => { await qc.invalidateQueries({ queryKey: ["screens"] }); };
   const mut = useMutation({ mutationFn: (i: Record<string, unknown>) => api.screens.update(id, i), onSuccess: async (_d, v) => { await inv(); toast.success(`Đã cập nhật "${v.name}"`); router.push(`/screens/${id}`); }, onError: (e: Error) => toast.error(e.message || "Lỗi") });
   const h = useCallback(async (v: ScreenFormValues) => { await mut.mutateAsync(buildScreenPayload(v)); }, [mut]);
-  if (isLoading) return <PageSection max="full" className="min-w-0 flex items-center justify-center py-24"><Loader2 className="size-8 animate-spin text-muted-foreground" /></PageSection>;
+  if (isLoading) return <AdminPageLoading />;
   if (!e) return null;
-  return (<PageSection max="full" className="min-w-0 space-y-6"><ScreenFormShell form={form} onSubmit={h} submitting={mut.isPending} editingId={id} cameraOptions={cameraOptions} templateOptions={templateOptions} onBack={() => router.push(`/screens/${id}`)} onReset={async () => { await refetch(); }} /></PageSection>);
+  return (<AdminPageSection><ScreenFormShell form={form} onSubmit={h} submitting={mut.isPending} editingId={id} cameraOptions={cameraOptions} templateOptions={templateOptions} onBack={() => router.push(`/screens/${id}`)} onReset={async () => { await refetch(); }} /></AdminPageSection>);
 }
 export default function EditScreenPage() { return <AdminPageGuard roles={["super_admin", "admin", "manager"]}><EditScreenPageInner /></AdminPageGuard>; }

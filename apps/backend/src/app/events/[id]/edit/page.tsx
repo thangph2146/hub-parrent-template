@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, useEventDetailQuery, buildEventPayload } from "../../_component";
 import { getPosterUrlFromValue } from "../../_component/utils";
@@ -159,14 +159,14 @@ function EditEventPageInner() {
     ]);
   }, [updateMutation, existingSpeakers, id]);
 
-  if (isLoading) return <PageSection max="full" className="min-w-0 flex items-center justify-center py-24"><Loader2 className="size-8 animate-spin text-muted-foreground" /></PageSection>;
+  if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <EventFormShell form={form} onSubmit={handleSubmit} submitting={updateMutation.isPending} editingId={id}
         onBack={() => router.push(`/events/${id}`)} onReset={async () => { await refetch(); }} />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

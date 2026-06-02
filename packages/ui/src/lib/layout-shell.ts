@@ -176,3 +176,36 @@ export const ADMIN_DIALOG_CONTENT_POST_CLASS = "max-w-[90vw]"
 /** Dialog toàn màn hình kho (bảng chi tiết). */
 export const ADMIN_DIALOG_CONTENT_INVENTORY_FULL_CLASS =
   "flex-col gap-0 p-0 sm:max-w-7xl"
+
+/** Lưới form/chi tiết admin: nội dung chính 2 cột + sidebar 1 cột. */
+export const ADMIN_PAGE_GRID_CLASS = "grid gap-6 lg:grid-cols-3"
+
+export const ADMIN_PAGE_GRID_MAIN_CLASS = "space-y-6 lg:col-span-2"
+
+export const ADMIN_PAGE_GRID_SIDEBAR_CLASS = "space-y-6 lg:col-span-1"
+
+/** Tabs danh sách / thùng rác trên trang list. */
+export const ADMIN_LIST_TABS_LIST_CLASS =
+  "h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1"
+
+export const ADMIN_LIST_TABS_TRIGGER_CLASS =
+  "flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+
+/** Toolbar header module (list / chi tiết / form). */
+export const ADMIN_PAGE_HEADER_TOOLBAR_CLASS =
+  "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+
+export const ADMIN_PAGE_HEADER_LEADING_CLASS = "flex items-center gap-3"
+
+export const ADMIN_PAGE_HEADER_ACTIONS_CLASS =
+  "flex flex-wrap items-center gap-2"
+
+/** Nút Quay lại trên header admin. */
+export const ADMIN_PAGE_HEADER_BACK_BUTTON_CLASS = "h-10 gap-2 rounded-lg"
+
+/** Nút outline (Đặt lại, phụ) trên header admin. */
+export const ADMIN_PAGE_HEADER_OUTLINE_BUTTON_CLASS = "h-10 rounded-lg"
+
+/** Nút primary (Chỉnh sửa, Lưu/Cập nhật, Thêm mới) trên header admin. */
+export const ADMIN_PAGE_HEADER_PRIMARY_BUTTON_CLASS =
+  "h-10 gap-1.5 rounded-lg font-bold"

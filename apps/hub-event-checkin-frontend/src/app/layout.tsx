@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@ui/globals.css";
 import "./globals.css";
-import { TextSizeProvider } from "@ui/components/text-size-provider";
-import { Toaster } from "@ui/components/sonner";
+import { SiteRootProviders } from "@ui/components/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +35,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <TextSizeProvider>
+        <SiteRootProviders>
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-background focus:px-4 focus:py-2 focus:shadow-lg"
@@ -46,8 +45,7 @@ export default function RootLayout({
           <main id="main-content" className="flex min-h-0 flex-1 flex-col">
             {children}
           </main>
-          <Toaster richColors position="top-center" />
-        </TextSizeProvider>
+        </SiteRootProviders>
       </body>
     </html>
   );

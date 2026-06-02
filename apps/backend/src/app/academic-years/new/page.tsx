@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   AcademicYearFormShell,
@@ -45,7 +45,7 @@ function NewAcademicYearPageInner() {
   );
 
   return (
-    <PageSection max="full" className="min-w-0 space-y-6">
+    <AdminPageSection>
       <AcademicYearFormShell
         form={form}
         onSubmit={handleSubmit}
@@ -54,7 +54,7 @@ function NewAcademicYearPageInner() {
         onBack={() => router.push("/academic-years")}
         onReset={() => { form.reset(); }}
       />
-    </PageSection>
+    </AdminPageSection>
   );
 }
 

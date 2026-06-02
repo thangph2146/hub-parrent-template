@@ -2,7 +2,7 @@ import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstac
 import { AdminDataTable } from "@ui/components/data-table";
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
-import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
+import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 interface StaffTableProps {
   data: StaffRow[];
