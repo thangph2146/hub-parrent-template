@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@ui/globals.css": ["../../packages/ui/src/styles/globals.css"],
       "@ui/components/*": ["../../packages/ui/src/components/*"],
       "@ui/*": ["../../packages/ui/src/*"]

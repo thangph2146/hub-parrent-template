@@ -8,7 +8,7 @@ import type {
 } from "@tanstack/react-table"
 import { RefreshCw, FilterX } from "lucide-react"
 import { Button } from "@ui/components/button"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import type { ParentStudent } from "../types"

@@ -1,7 +1,7 @@
 import type { ColumnFiltersState, RowSelectionState, OnChangeFn } from "@tanstack/react-table";
 import { Download } from "lucide-react";
 import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@/components/admin-data-table";
+import { AdminDataTable } from "@ui/components/data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getContactRequestColumns } from "../columns";
 import type { ContactRequest } from "../types";

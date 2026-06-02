@@ -1,6 +1,7 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  reactCompiler: true,
   async headers() {
     return [
       {
@@ -36,7 +37,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ["@workspace/api-client", "@thangph2146/lexical-editor"],
+  transpilePackages: [
+    "@ui",
+    "@workspace/api-client",
+    "@workspace/query-client",
+    "@thangph2146/lexical-editor",
+  ],
 }
 
 export default nextConfig

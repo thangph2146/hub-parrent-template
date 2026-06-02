@@ -2,7 +2,7 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { RefreshCw } from "lucide-react";

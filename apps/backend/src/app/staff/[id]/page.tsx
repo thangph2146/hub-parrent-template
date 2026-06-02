@@ -34,7 +34,7 @@ import {
 import { usePostsByAuthor } from "@/app/posts/_component/_query/use-posts-queries"
 import Link from "next/link"
 import { api } from "@/lib/api"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { PostListRow } from "@/app/posts/_component/types"
 

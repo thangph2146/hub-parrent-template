@@ -8,7 +8,7 @@ import type {
   Row,
 } from "@tanstack/react-table"
 import { Button } from "@ui/components/button"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { CategoryRow } from "../types"

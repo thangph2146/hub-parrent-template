@@ -8,7 +8,8 @@
     "kill": "node ../../scripts/kill-ports.mjs 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings=0"
   },
   "dependencies": {
     "@thangph2146/lexical-editor": "workspace:*",
@@ -25,6 +26,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@workspace/eslint-config": "workspace:*",
+    "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import type { DetailedScore } from "@/types/student-scores"
 import { formatScore, formatGrade } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"

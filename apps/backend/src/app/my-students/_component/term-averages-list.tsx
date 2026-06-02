@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import type { TermAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"

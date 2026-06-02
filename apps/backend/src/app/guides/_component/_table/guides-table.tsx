@@ -2,7 +2,7 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn } from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { RefreshCw } from "lucide-react";
 import type { GuideGroup } from "../types";

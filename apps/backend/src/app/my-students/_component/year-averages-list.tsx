@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { type ColumnDef } from "@tanstack/react-table"
 import { Loader2 } from "lucide-react"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import type { YearAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 

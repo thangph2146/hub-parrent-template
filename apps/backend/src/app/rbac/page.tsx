@@ -49,7 +49,7 @@ import {
   PERMISSION_CODES,
 } from "@workspace/api-client"
 import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog"
-import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"

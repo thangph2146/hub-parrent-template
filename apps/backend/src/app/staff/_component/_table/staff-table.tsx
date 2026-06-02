@@ -1,5 +1,5 @@
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable } from "@/components/admin-data-table";
+import { AdminDataTable } from "@ui/components/data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
