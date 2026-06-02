@@ -1,9 +1,17 @@
 import type { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import { normalizeAdminFilterValue, normalizeAdminFilterValues } from "@/lib";
+import { uploadAdminImage } from "@/lib/admin-upload";
 import type {
   EditorParagraphNodeShape,
   EditorStateShape,
 } from "./types";
+
+export function uploadPostImage(file: File): Promise<string> {
+  return uploadAdminImage(file, {
+    folderPath: "posts",
+    isExistingFolder: true,
+  });
+}
 
 export {
   slugify,
