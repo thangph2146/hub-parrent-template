@@ -7,7 +7,7 @@ import { ContactFormShell } from "../../_component/_form/contact-form-shell";
 import { useContactRequestDetail } from "@/hooks/queries";
 import { useUpdateContactRequest } from "../../_component/_query/use-contact-queries";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@ui/components/button";
 import type { UpdateContactRequestInput } from "@workspace/api-client";

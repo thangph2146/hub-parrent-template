@@ -18,7 +18,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { PostsTable, PostsTrashTable } from "./_component/_table";

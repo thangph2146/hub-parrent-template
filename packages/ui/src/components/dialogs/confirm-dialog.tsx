@@ -1,6 +1,7 @@
-"use client";
+"use client"
 
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
+import { Loader2 } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,34 +11,33 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@ui/components/alert-dialog";
-import { Loader2 } from "lucide-react";
+} from "../alert-dialog"
 
-type AdminConfirmActionDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description?: ReactNode;
-  icon?: ReactNode;
-  confirmLabel: string;
-  cancelLabel?: string;
-  confirmDestructive?: boolean;
-  confirmDisabled?: boolean;
-  confirmLoading?: boolean;
-  onConfirm: () => void;
-  contentClassName?: string;
-  footerClassName?: string;
-  titleClassName?: string;
-};
+export type ConfirmActionDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  confirmLabel: string
+  cancelLabel: string
+  onConfirm: () => void
+  description?: ReactNode
+  icon?: ReactNode
+  confirmDestructive?: boolean
+  confirmDisabled?: boolean
+  confirmLoading?: boolean
+  contentClassName?: string
+  footerClassName?: string
+  titleClassName?: string
+}
 
-export function AdminConfirmActionDialog({
+export function ConfirmActionDialog({
   open,
   onOpenChange,
   title,
   description,
   icon,
   confirmLabel,
-  cancelLabel = "Huỷ",
+  cancelLabel,
   confirmDestructive = false,
   confirmDisabled = false,
   confirmLoading = false,
@@ -45,16 +45,20 @@ export function AdminConfirmActionDialog({
   contentClassName,
   footerClassName,
   titleClassName,
-}: AdminConfirmActionDialogProps) {
+}: ConfirmActionDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className={contentClassName}>
         <AlertDialogHeader>
-          <AlertDialogTitle className={titleClassName ?? "flex items-center gap-2 text-left"}>
+          <AlertDialogTitle
+            className={titleClassName ?? "flex items-center gap-2 text-left"}
+          >
             {icon}
             {title}
           </AlertDialogTitle>
-          {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
+          {description ? (
+            <AlertDialogDescription>{description}</AlertDialogDescription>
+          ) : null}
         </AlertDialogHeader>
         <AlertDialogFooter className={footerClassName}>
           <AlertDialogCancel className="rounded-lg">{cancelLabel}</AlertDialogCancel>
@@ -65,15 +69,19 @@ export function AdminConfirmActionDialog({
                 : "rounded-lg"
             }
             onClick={(event) => {
-              event.preventDefault();
-              onConfirm();
+              event.preventDefault()
+              onConfirm()
             }}
             disabled={confirmDisabled}
           >
-            {confirmLoading ? <Loader2 className="size-4 animate-spin" /> : confirmLabel}
+            {confirmLoading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              confirmLabel
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

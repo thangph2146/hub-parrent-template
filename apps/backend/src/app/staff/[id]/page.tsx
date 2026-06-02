@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import {
   ADMIN_PAGE_TITLE_COMPACT_CLASS,
   ADMIN_PAGE_TITLE_ICON_CLASS,

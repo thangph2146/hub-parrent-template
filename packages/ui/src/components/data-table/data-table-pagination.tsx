@@ -94,7 +94,6 @@ export function AdminDataTablePagination({
   total,
   onPageChange,
   onPageSizeChange,
-  pageSizeOptions = ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
   maxPageSize = ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
   emptySummary = "Không có dữ liệu",
   itemLabel,
@@ -120,13 +119,6 @@ export function AdminDataTablePagination({
       : itemLabel
         ? `Hiển thị ${from}–${to} / ${total} ${itemLabel}`
         : `Hiển thị ${from}–${to} / ${total}`
-
-  const sizeChoices = useMemo(() => {
-    const set = new Set<number>([...pageSizeOptions, pageSize])
-    return [...set]
-      .filter((n) => n >= ADMIN_DATA_TABLE_MIN_PAGE_SIZE && n <= maxPageSize)
-      .sort((a, b) => a - b)
-  }, [maxPageSize, pageSize, pageSizeOptions])
 
   const visiblePages = useMemo(
     () => buildVisiblePages(safePage, totalPages),

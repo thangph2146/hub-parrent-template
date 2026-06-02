@@ -334,7 +334,6 @@ export function AdminDataTable<TData>({
   globalFilter: globalFilterControlled,
   onGlobalFilterChange,
   onClearFilters,
-  clearFiltersVariant = "outline",
   filterToolbarExtra,
   footer,
   pagination,

@@ -24,7 +24,7 @@ import { TypographyH1, TypographyH2 } from "@ui/components/typography";
 import { ADMIN_PAGE_TITLE_DOCUMENT_CLASS } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { readAdminSession } from "@/lib/auth-session";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { DEFAULT_API_URL, canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
 import {

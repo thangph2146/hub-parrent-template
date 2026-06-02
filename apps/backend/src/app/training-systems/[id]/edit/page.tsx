@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   TrainingSystemFormShell,

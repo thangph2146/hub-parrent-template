@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ui/components/card"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { useCameraDetailQuery } from "../_component"
 import { TypographyH1, TypographyH2 } from "@ui/components/typography"

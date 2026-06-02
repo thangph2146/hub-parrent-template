@@ -1,6 +1,6 @@
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
 import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell";
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog";
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import type { StaffRow } from "../types";
 
 interface StaffConfirmDialogProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog";
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import type { LocationConfirmAction } from "../types";
 
 export interface LocationsConfirmDialogProps {

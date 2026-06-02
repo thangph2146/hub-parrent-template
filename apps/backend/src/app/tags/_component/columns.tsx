@@ -2,11 +2,7 @@
 
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
-import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableCrudRowActions,
-  AdminTableTrashRowActions,
-} from "@/components/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@/lib/admin-table-row-actions";
 import type { TagRow, TagTreeRow, TagConfirmAction } from "./types";
 import { formatDateTime } from "./utils";
 

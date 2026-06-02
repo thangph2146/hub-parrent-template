@@ -2,7 +2,7 @@
 
 import { GraphifyPage } from "@ui/components/graphify/graphify-page";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 
 function GraphPageInner() {
   return (

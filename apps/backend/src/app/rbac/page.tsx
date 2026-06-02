@@ -32,7 +32,7 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin";
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -47,9 +47,8 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog"
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"
@@ -722,18 +721,16 @@ export default function RbacPage() {
                 pageCount: listItems.length,
                 total: listQuery.data?.total ?? 0,
               })}
-              footer={
-                <AdminTablePaginationFooter
-                  page={page}
-                  pageSize={pageSize}
-                  total={listQuery.data?.total ?? 0}
-                  isLoading={listQuery.isLoading}
-                  onPageChange={setPage}
-                  onPageSizeChange={setPageSize}
-                  emptySummary="Không có vai trò"
-                  itemLabel="vai trò"
-                />
-              }
+              pagination={{
+        page,
+        pageSize,
+        total: listQuery.data?.total ?? 0,
+        isLoading: listQuery.isLoading,
+        onPageChange: setPage,
+        onPageSizeChange: setPageSize,
+        emptySummary: "Không có vai trò",
+        itemLabel: "vai trò",
+      }}
             />
           </TabsContent>
 
@@ -785,18 +782,16 @@ export default function RbacPage() {
                 pageCount: trashItems.length,
                 total: trashQuery.data?.total ?? 0,
               })}
-              footer={
-                <AdminTablePaginationFooter
-                  page={trashPage}
-                  pageSize={trashPageSize}
-                  total={trashQuery.data?.total ?? 0}
-                  isLoading={trashQuery.isLoading}
-                  onPageChange={setTrashPage}
-                  onPageSizeChange={setTrashPageSize}
-                  emptySummary="Không có vai trò trong thùng rác"
-                  itemLabel="vai trò"
-                />
-              }
+              pagination={{
+        page: trashPage,
+        pageSize: trashPageSize,
+        total: trashQuery.data?.total ?? 0,
+        isLoading: trashQuery.isLoading,
+        onPageChange: setTrashPage,
+        onPageSizeChange: setTrashPageSize,
+        emptySummary: "Không có vai trò trong thùng rác",
+        itemLabel: "vai trò",
+      }}
             />
           </TabsContent>
         </Tabs>

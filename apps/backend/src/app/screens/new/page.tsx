@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageSection } from "@ui/components/layout";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { ScreenFormShell, useScreenForm, buildScreenPayload } from "../_component";
 import type { ScreenFormValues } from "../_component";

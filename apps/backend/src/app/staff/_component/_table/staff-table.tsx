@@ -1,6 +1,5 @@
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table";
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
@@ -68,19 +67,6 @@ export function StaffTable(props: StaffTableProps) {
     roleOptions,
   });
 
-  const paginationFooter = (
-    <AdminTablePaginationFooter
-      page={page}
-      pageSize={pageSize}
-      total={total}
-      isLoading={isLoading}
-      onPageChange={onPageChange}
-      onPageSizeChange={onPageSizeChange}
-      emptySummary="Không có nhân sự"
-      itemLabel="tài khoản"
-    />
-  );
-
   return (
     <AdminDataTable<StaffRow>
       data={data}
@@ -127,7 +113,16 @@ export function StaffTable(props: StaffTableProps) {
         },
       ]}
       xlsxExport={buildAdminTableXlsxExport("staff", { pageCount: data.length, total })}
-      footer={paginationFooter}
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Không có nhân sự",
+        itemLabel: "tài khoản",
+      }}
     />
   );
 }

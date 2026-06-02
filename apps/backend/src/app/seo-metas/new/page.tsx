@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/c
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";
 import { ArrowLeft, Search } from "lucide-react";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { TypographyH1 } from "@ui/components/typography";
 import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";

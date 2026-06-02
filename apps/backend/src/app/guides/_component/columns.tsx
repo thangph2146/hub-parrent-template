@@ -3,10 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@ui/components/badge"
 import { Eye, EyeOff } from "lucide-react"
-import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableCrudRowActions,
-} from "@/components/admin-table-row-actions"
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions } from "@/lib/admin-table-row-actions";
 import type { GuideGroup } from "./types"
 import { parseContent } from "./utils"
 

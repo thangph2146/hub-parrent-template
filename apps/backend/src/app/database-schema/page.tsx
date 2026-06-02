@@ -6,7 +6,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { PageSection } from "@ui/components/layout"
 import { cn } from "@ui/lib/utils"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import { api } from "@/lib/api"
 
 type ColumnKind = "pk" | "fk" | "field"

@@ -2,7 +2,6 @@ import type { ColumnFiltersState, RowSelectionState, OnChangeFn } from "@tanstac
 import { Download } from "lucide-react";
 import { Button } from "@ui/components/button";
 import { AdminDataTable } from "@ui/components/data-table";
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getTrashColumns } from "../columns";
 import type { ContactRequest } from "../types";
 import { downloadXlsxFile } from "@ui/lib/export-xlsx";
@@ -128,19 +127,6 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
     );
   };
 
-  const paginationFooter = (
-    <AdminTablePaginationFooter
-      page={page}
-      pageSize={pageSize}
-      total={total}
-      isLoading={isLoading}
-      onPageChange={onPageChange}
-      onPageSizeChange={onPageSizeChange}
-      emptySummary="Không có yêu cầu trong thùng rác"
-      itemLabel="yêu cầu"
-    />
-  );
-
   return (
     <AdminDataTable<ContactRequest>
       data={data}
@@ -202,7 +188,16 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
         </Button>
       }
       xlsxExport={false}
-      footer={paginationFooter}
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Không có yêu cầu trong thùng rác",
+        itemLabel: "yêu cầu",
+      }}
     />
   );
 }

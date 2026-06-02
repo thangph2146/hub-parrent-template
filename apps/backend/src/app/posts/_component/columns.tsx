@@ -2,13 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableCrudRowActions,
-  AdminTablePurgeButton,
-  AdminTableRestoreButton,
-  AdminTableRowActions,
-} from "@/components/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions } from "@/lib/admin-table-row-actions";
 import type { PostListRow, TaxonomyOption, CategoryTreeOption } from "./types";
 import { SummaryBadges } from "./summary-badges";
 

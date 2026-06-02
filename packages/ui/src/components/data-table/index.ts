@@ -1,4 +1,10 @@
 export {
+  TABLE_ACTIONS_COLUMN_META,
+  DataTableRowActions,
+  DataTableRowActionButton,
+  type DataTableRowActionItem,
+} from "./table-row-actions";
+export {
   AdminDataTable,
   DataTable,
   AdminDataTablePagination,

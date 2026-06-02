@@ -1,5 +1,5 @@
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog";
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell";
 import type { ContactRequest } from "../types";
 

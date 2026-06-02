@@ -7,7 +7,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import type { TrainingLevelRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -97,18 +96,16 @@ export function TrainingLevelsTrashTable({
           onAction: onBulkPurge,
         },
       ]}
-      footer={
-        <AdminTablePaginationFooter
-          page={page}
-          pageSize={pageSize}
-          total={total}
-          isLoading={isLoading}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          emptySummary="Không có bậc học trong thùng rác"
-          itemLabel="bậc học"
-        />
-      }
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Không có bậc học trong thùng rác",
+        itemLabel: "bậc học",
+      }}
     />
   )
 }

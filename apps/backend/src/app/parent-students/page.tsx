@@ -18,8 +18,8 @@ import {
 } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
+import { AdminPageGuard } from "@ui/components/admin";
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 import { api } from "@/lib/api";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";

@@ -12,7 +12,7 @@ import {
   ADMIN_PAGE_TITLE_ICON_CLASS,
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";

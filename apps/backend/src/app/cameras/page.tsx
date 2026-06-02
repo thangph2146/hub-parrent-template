@@ -25,7 +25,7 @@ import {
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
 import { cn } from "@ui/lib/utils"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import {
   CamerasTable,

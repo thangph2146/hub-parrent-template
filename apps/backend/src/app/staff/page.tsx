@@ -21,7 +21,7 @@ import { TypographyH1, TypographyH3 } from "@ui/components/typography";
 import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_ICON_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { queryKeys, useRbacCatalog, useStaffUserList, useTrashedStaffUsers } from "@/hooks/queries";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { api } from "@/lib/api";

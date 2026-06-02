@@ -27,7 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ui/components/card"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"

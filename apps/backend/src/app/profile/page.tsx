@@ -32,7 +32,7 @@ import {
 import { ApiError } from "@/lib/api"
 import { patchAdminSessionProfile } from "@/lib/auth-session"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import { TypographyH1 } from "@ui/components/typography"
 import { ADMIN_PAGE_TITLE_PROFILE_CLASS } from "@ui/lib/layout-shell"
 

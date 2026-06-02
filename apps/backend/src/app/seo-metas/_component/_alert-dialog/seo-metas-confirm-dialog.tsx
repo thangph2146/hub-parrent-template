@@ -1,7 +1,7 @@
 "use client"
 
 import type { UseMutationResult } from "@tanstack/react-query"
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog"
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import type { SeoMetaConfirmAction, SeoMetaRow } from "../types"
 
 export interface SeoMetasConfirmDialogProps {

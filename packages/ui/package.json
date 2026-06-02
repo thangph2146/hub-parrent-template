@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@workspace/api-client": "workspace:*",
     "@base-ui/react": "^1.4.1",
     "@tanstack/react-table": "8.21.3",
     "class-variance-authority": "^0.7.1",
@@ -56,7 +57,9 @@
     "./lib/*": "./src/lib/*.ts",
     "./components": "./src/components/index.ts",
     "./components/data-table": "./src/components/data-table/index.ts",
+    "./components/dialogs": "./src/components/dialogs/index.ts",
     "./components/*": "./src/components/*.tsx",
+    "./components/admin": "./src/components/admin/index.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./data/*": "./src/data/*.json"
   }

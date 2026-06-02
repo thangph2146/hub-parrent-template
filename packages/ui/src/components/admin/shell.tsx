@@ -12,8 +12,8 @@ import {
   Sun,
   UserCircle2,
 } from "lucide-react";
-import { Button } from "@ui/components/button";
-import { cn } from "@ui/lib/utils";
+import { Button } from "../button";
+import { cn } from "../../lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,37 +23,27 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@ui/components/dropdown-menu";
+} from "../dropdown-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@ui/components/sheet";
-import { MobileSidebarPanel, Sidebar } from "@/components/sidebar";
-import { ThemeToggle } from "@ui/components/theme-toggle";
-import { Page, PageContent } from "@ui/components/layout";
-import { TypographyH2 } from "@ui/components/typography";
-import { useTextSize } from "@ui/components/text-size-provider";
-import { useTheme } from "@ui/components/theme-provider";
-import { canAccessStaffAdmin } from "@workspace/api-client";
-import { useAuth, useClientReady } from "@/providers/auth-provider";
-import { AdminNotificationBell } from "@/components/admin-notification-bell";
-import { ScrollToTop } from "@/components/scroll-to-top";
-import {
-  ADMIN_SESSION_EVENT,
-  clearAdminSession,
-} from "@/lib/auth-session";
-import {
-  AUTH_LOGIN_PATH,
-  isAuthPath,
-} from "@/lib/auth-routes";
+} from "../sheet";
+import { MobileSidebarPanel, Sidebar } from "./sidebar";
+import { ThemeToggle } from "../theme-toggle";
+import { Page, PageContent } from "../layout";
+import { TypographyH2 } from "../typography";
+import { useTextSize } from "../text-size-provider";
+import { useTheme } from "../theme-provider";
+import { ScrollToTop } from "./scroll-to-top";
+import { useAdminLayout } from "./layout-context";
 import {
   ADMIN_HEADER_ROLE_LINE_CLASS,
   ADMIN_MAIN_SCROLL_CLASS,
   ADMIN_PAGE_CONTENT_CLASS,
   ADMIN_SHEET_NAV_CLASS,
-} from "@ui/lib/layout-shell";
+} from "../../lib/layout-shell";
 
 const SIDEBAR_COLLAPSED_KEY = "admin-sidebar-collapsed";
 
@@ -84,11 +74,13 @@ const HEADER_PROFILE_AVATAR = cn(
 function initials(name: string): string {
   const p = name.trim().split(/\s+/).filter(Boolean);
   if (p.length === 0) return "?";
-  if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
-  return (p[0][0] + p[p.length - 1][0]).toUpperCase();
+  if (p.length === 1) return p[0]!.slice(0, 2).toUpperCase();
+  return `${p[0]![0] ?? ""}${p[p.length - 1]![0] ?? ""}`.toUpperCase();
 }
 
-function roleSummary(user: { roles: { name: string; displayName: string }[] }): string {
+function roleSummary(user: {
+  roles: { name: string; displayName?: string }[]
+}): string {
   if (!user.roles.length) return "Chưa gán vai trò";
   return user.roles.map((r) => r.displayName || r.name).join(" · ");
 }
@@ -101,11 +93,28 @@ function AuthLoadingScreen({ message }: { message: string }) {
   );
 }
 
-export function AdminShell({ children, classMain, isSidebar }: { children: ReactNode, classMain?: string, isSidebar?: boolean }) {
+export function AdminShell({
+  children,
+  classMain,
+  isSidebar = true,
+}: {
+  children: ReactNode
+  classMain?: string
+  isSidebar?: boolean
+}) {
   const pathname = usePathname();
   const router = useRouter();
-  const clientReady = useClientReady();
-  const { user } = useAuth();
+  const {
+    user,
+    clientReady,
+    loginPath,
+    isAuthPath,
+    canAccessApp,
+    clearSession,
+    sessionEventName,
+    mobileHeaderTitle = "B2B Admin",
+    fullWidthPaths = ["/graph"],
+  } = useAdminLayout();
   const { theme, setTheme } = useTheme();
   const { size, setSize } = useTextSize();
   const displayName = user?.name?.trim() || user?.email || "Người dùng HUB";
@@ -152,34 +161,43 @@ export function AdminShell({ children, classMain, isSidebar }: { children: React
     if (!clientReady) return;
 
     if (onAuthRoute) {
-      if (user && canAccessStaffAdmin(user)) {
+      if (user && canAccessApp(user)) {
         router.replace("/");
         return;
       }
-      if (user && !canAccessStaffAdmin(user)) {
-        clearAdminSession();
-        window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
-        router.replace(`${AUTH_LOGIN_PATH}?reason=staff_only`);
+      if (user && !canAccessApp(user)) {
+        clearSession();
+        window.dispatchEvent(new Event(sessionEventName));
+        router.replace(`${loginPath}?reason=staff_only`);
       }
       return;
     }
 
     if (!user) {
-      router.replace(AUTH_LOGIN_PATH);
+      router.replace(loginPath);
       return;
     }
-    if (!canAccessStaffAdmin(user)) {
-      clearAdminSession();
-      window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
-      router.replace(`${AUTH_LOGIN_PATH}?reason=staff_only`);
+    if (!canAccessApp(user)) {
+      clearSession();
+      window.dispatchEvent(new Event(sessionEventName));
+      router.replace(`${loginPath}?reason=staff_only`);
     }
-  }, [clientReady, onAuthRoute, user, router]);
+  }, [
+    canAccessApp,
+    clearSession,
+    clientReady,
+    loginPath,
+    onAuthRoute,
+    router,
+    sessionEventName,
+    user,
+  ]);
 
   if (onAuthRoute) {
     if (!clientReady) {
       return <AuthLoadingScreen message="Đang tải…" />;
     }
-    if (user && canAccessStaffAdmin(user)) {
+    if (user && canAccessApp(user)) {
       return <AuthLoadingScreen message="Đang chuyển về bảng điều khiển…" />;
     }
     return (
@@ -233,7 +251,7 @@ export function AdminShell({ children, classMain, isSidebar }: { children: React
                 <Menu aria-hidden className="size-5" />
               </Button>
               <TypographyH2 className="shrink-0 truncate text-lg font-bold text-primary sm:text-xl md:hidden">
-                B2B Admin
+                {mobileHeaderTitle}
               </TypographyH2>
               <Button
                 type="button"
@@ -254,7 +272,6 @@ export function AdminShell({ children, classMain, isSidebar }: { children: React
             </div>
             <div className="flex-1" />
             <div className="flex items-center gap-2 sm:gap-3">
-              <AdminNotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
@@ -384,7 +401,7 @@ export function AdminShell({ children, classMain, isSidebar }: { children: React
             </div>
           </header>
           <main className={cn(ADMIN_MAIN_SCROLL_CLASS, classMain)}>
-            {pathname === "/admin/graph" ? (
+            {fullWidthPaths.includes(pathname) ? (
               children
             ) : (
               <Page as="div">

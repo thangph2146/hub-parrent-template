@@ -8,7 +8,8 @@ import { ThemeProvider } from "@ui/components/theme-provider"
 import { TextSizeProvider } from "@ui/components/text-size-provider"
 import { QueryProvider } from "@/providers/query-provider"
 import { AuthProvider } from "@/providers/auth-provider"
-import { AdminShell } from "@/components/admin-shell"
+import { BackendAdminLayoutProvider } from "@/providers/backend-admin-layout"
+import { AdminShell } from "@ui/components/admin"
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -66,7 +67,9 @@ export default function RootLayout({
           <TextSizeProvider>
             <QueryProvider>
               <AuthProvider>
-                <AdminShell isSidebar={true}>{children}</AdminShell>
+                <BackendAdminLayoutProvider>
+                  <AdminShell isSidebar>{children}</AdminShell>
+                </BackendAdminLayoutProvider>
               </AuthProvider>
               <Toaster position="top-right" richColors />
             </QueryProvider>

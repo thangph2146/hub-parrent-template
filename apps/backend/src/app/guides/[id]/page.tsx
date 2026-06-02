@@ -21,7 +21,7 @@ import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Separator } from "@ui/components/separator";
-import { AdminPageGuard } from "@/components/admin-page-guard";
+import { AdminPageGuard } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { api } from "@/lib/api";
 import { formatDateTime, PERMISSION_CODES, canUserAccess } from "@workspace/api-client";

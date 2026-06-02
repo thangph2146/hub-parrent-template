@@ -2,7 +2,6 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import type { TagRow } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -92,18 +91,16 @@ export function TagsTrashTable({
           onAction: onBulkPurge,
         },
       ]}
-      footer={
-        <AdminTablePaginationFooter
-          page={page}
-          pageSize={pageSize}
-          total={total}
-          isLoading={isLoading}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          emptySummary="Không có thẻ trong thùng rác"
-          itemLabel="thẻ"
-        />
-      }
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Không có thẻ trong thùng rác",
+        itemLabel: "thẻ",
+      }}
     />
   );
 }

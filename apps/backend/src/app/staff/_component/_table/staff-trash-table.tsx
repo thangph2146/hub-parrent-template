@@ -6,7 +6,6 @@ import type {
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
@@ -58,19 +57,6 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
 
   const columns = getTrashColumns({ onRestore, onPurge, busy })
 
-  const paginationFooter = (
-    <AdminTablePaginationFooter
-      page={page}
-      pageSize={pageSize}
-      total={total}
-      isLoading={isLoading}
-      onPageChange={onPageChange}
-      onPageSizeChange={onPageSizeChange}
-      emptySummary="Thùng rác trống hoặc không khớp tìm kiếm."
-      itemLabel="tài khoản"
-    />
-  )
-
   return (
     <AdminDataTable<StaffRow>
       data={data}
@@ -112,7 +98,16 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
       ]}
       onClearFilters={onClearFilters}
       xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}
-      footer={paginationFooter}
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Thùng rác trống hoặc không khớp tìm kiếm.",
+        itemLabel: "tài khoản",
+      }}
     />
   )
 }

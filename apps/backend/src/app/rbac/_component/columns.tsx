@@ -5,13 +5,7 @@ import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { Lock } from "lucide-react";
-import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableEditButton,
-  AdminTablePurgeButton,
-  AdminTableRowActions,
-  AdminTableSoftDeleteButton,
-} from "@/components/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRowActions, AdminTableSoftDeleteButton } from "@/lib/admin-table-row-actions";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 
 type RoleRow = {

@@ -1,6 +1,6 @@
 "use client";
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
-import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog";
+import { AdminConfirmActionDialog } from "@/lib/admin-confirm-dialog";
 import type { ScreenConfirmAction } from "../types";
 export function ScreensConfirmDialog({ confirmAction, deleteMutation, restoreMutation, purgeMutation, onOpenChange, onConfirm, contentClassName }: {
   confirmAction: ScreenConfirmAction | null; deleteMutation: { isPending: boolean }; restoreMutation: { isPending: boolean }; purgeMutation: { isPending: boolean }; onOpenChange: (o: boolean) => void; onConfirm: () => void; contentClassName?: string;

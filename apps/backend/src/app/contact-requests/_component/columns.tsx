@@ -6,15 +6,7 @@ import {
   UsageStatusBadge,
   type UsageStatusTone,
 } from "@ui/components/usage-status-badge";
-import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableEditButton,
-  AdminTablePurgeButton,
-  AdminTableRestoreButton,
-  AdminTableRowActions,
-  AdminTableSoftDeleteButton,
-  AdminTableViewButton,
-} from "@/components/admin-table-row-actions";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@/lib/admin-table-row-actions";
 import type { ContactRequest } from "./types";
 import { CONTACT_REQUEST_STATUS_LABELS } from "./types";
 import { formatPhoneNumber } from "./utils";

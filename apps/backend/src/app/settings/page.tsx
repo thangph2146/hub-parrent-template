@@ -15,7 +15,7 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard } from "@/components/admin-page-guard"
+import { AdminPageGuard } from "@ui/components/admin"
 import {
   TypographyH1,
   TypographyPLargeMuted,

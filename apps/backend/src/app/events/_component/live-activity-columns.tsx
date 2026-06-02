@@ -111,7 +111,7 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
     },
     {
       id: "avatar",
-      header: "",
+      header: "Avatar",
       enableColumnFilter: false,
       size: 56,
       meta: {
