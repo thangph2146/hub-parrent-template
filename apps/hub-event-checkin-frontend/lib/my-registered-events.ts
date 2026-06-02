@@ -1,5 +1,6 @@
 import { DEFAULT_API_URL } from "@workspace/api-client"
 import { readEventSession } from "./event-auth"
+import { getEventStatus } from "./public-events"
 
 type ApiEnvelope<T> = {
   success: boolean
@@ -16,6 +17,13 @@ function authHeaders(): HeadersInit {
   const session = readEventSession()
   return session?.id ? { "X-User-Id": session.id } : {}
 }
+
+/** Khớp `RegistrationStatus` trên API (`event-registration.entity.ts`). */
+export const MY_REGISTRATION_STATUS = {
+  PENDING: 0,
+  CONFIRMED: 1,
+  CANCELLED: 2,
+} as const
 
 export type MyRegisteredEvent = {
   id: string
@@ -45,14 +53,70 @@ export type MyRegisteredEvent = {
   }
 }
 
+export type MyRegisteredEventStats = {
+  /** Tất cả bản ghi trả về từ API (gồm đã hủy). */
+  total: number
+  /** Đăng ký chưa hủy (PENDING + CONFIRMED). */
+  active: number
+  /** Đăng ký đã hủy (CANCELLED). */
+  cancelled: number
+  /** Đăng ký còn hiệu lực cho sự kiện chưa bắt đầu. */
+  upcoming: number
+  /** Đăng ký còn hiệu lực đã check-in. */
+  checkedIn: number
+}
+
 export type CancelRegistrationState =
   | { allowed: true }
   | { allowed: false; reason: string }
 
+export function isActiveMyRegistration(row: MyRegisteredEvent): boolean {
+  return row.status !== MY_REGISTRATION_STATUS.CANCELLED
+}
+
+export function isCheckedInMyRegistration(row: MyRegisteredEvent): boolean {
+  return isActiveMyRegistration(row) && row.hasCheckin === true
+}
+
+export function isUpcomingMyRegistration(row: MyRegisteredEvent): boolean {
+  if (!isActiveMyRegistration(row)) return false
+  const { startDate } = row.event
+  if (!startDate) return false
+  if (Number.isNaN(Date.parse(startDate))) return false
+  return getEventStatus(row.event) === "upcoming"
+}
+
+export function computeMyRegisteredEventStats(
+  rows: MyRegisteredEvent[]
+): MyRegisteredEventStats {
+  let active = 0
+  let cancelled = 0
+  let upcoming = 0
+  let checkedIn = 0
+
+  for (const row of rows) {
+    if (isActiveMyRegistration(row)) {
+      active += 1
+      if (isCheckedInMyRegistration(row)) checkedIn += 1
+      if (isUpcomingMyRegistration(row)) upcoming += 1
+    } else {
+      cancelled += 1
+    }
+  }
+
+  return {
+    total: rows.length,
+    active,
+    cancelled,
+    upcoming,
+    checkedIn,
+  }
+}
+
 export function getCancelRegistrationState(
   row: MyRegisteredEvent
 ): CancelRegistrationState {
-  if (row.status === 2) {
+  if (row.status === MY_REGISTRATION_STATUS.CANCELLED) {
     return { allowed: false, reason: "Đăng ký đã được hủy trước đó." }
   }
   if (row.hasCheckin) {

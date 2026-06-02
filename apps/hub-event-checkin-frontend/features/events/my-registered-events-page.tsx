@@ -10,10 +10,10 @@ import {
   ExternalLink,
   Loader2,
   LogIn,
-  MapPin,
   RotateCcw,
   ShieldCheck,
   Ticket,
+  UserCheck,
   XCircle,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -43,8 +43,10 @@ import { buildLoginHref } from "@/lib/event-auth"
 import {
   cancelMyEventRegistration,
   canCancelMyRegistration,
+  computeMyRegisteredEventStats,
   fetchMyRegisteredEvents,
   getCancelRegistrationState,
+  MY_REGISTRATION_STATUS,
   type MyRegisteredEvent,
 } from "@/lib/my-registered-events"
 import {
@@ -61,9 +63,9 @@ import { FORMAT_LABELS } from "@/lib/registration-format"
 import { useSyncExternalStore } from "react"
 
 const REGISTRATION_STATUS_LABELS: Record<number, string> = {
-  0: "Chờ xử lý",
-  1: "Đã xác nhận",
-  2: "Đã hủy",
+  [MY_REGISTRATION_STATUS.PENDING]: "Chờ xử lý",
+  [MY_REGISTRATION_STATUS.CONFIRMED]: "Đã xác nhận",
+  [MY_REGISTRATION_STATUS.CANCELLED]: "Đã hủy",
 }
 
 const ATTENDANCE_STATUS_LABELS: Record<number, string> = {
@@ -164,7 +166,7 @@ function EventScheduleTableCell({
 }
 
 function statusBadge(row: MyRegisteredEvent) {
-  if (row.status === 2) {
+  if (row.status === MY_REGISTRATION_STATUS.CANCELLED) {
     return <Badge variant="outline">Đã hủy</Badge>
   }
   if (row.hasCheckin) {
@@ -174,7 +176,7 @@ function statusBadge(row: MyRegisteredEvent) {
       </Badge>
     )
   }
-  if (row.status === 1) {
+  if (row.status === MY_REGISTRATION_STATUS.CONFIRMED) {
     return (
       <Badge className="bg-primary text-primary-foreground hover:bg-primary">
         Đã xác nhận
@@ -228,21 +230,10 @@ export function MyRegisteredEventsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.id])
 
-  const stats = useMemo(() => {
-    const active = rows.filter((row) => row.status !== 2)
-    const checkedIn = active.filter((row) => row.hasCheckin)
-    const upcoming = active.filter((row) => {
-      if (!row.event.startDate) return false
-      const start = Date.parse(row.event.startDate)
-      return !Number.isNaN(start) && start > Date.now()
-    })
-    return {
-      total: rows.length,
-      active: active.length,
-      checkedIn: checkedIn.length,
-      upcoming: upcoming.length,
-    }
-  }, [rows])
+  const stats = useMemo(
+    () => computeMyRegisteredEventStats(rows),
+    [rows]
+  )
 
   const cancelRegistration = async (row: MyRegisteredEvent) => {
     if (!canCancel(row)) return
@@ -643,24 +634,28 @@ export function MyRegisteredEventsPage() {
               icon={Ticket}
               label="Tổng đăng ký"
               value={stats.total}
+              loading={loading}
               tone="primary"
             />
             <StatCard
               icon={CheckCircle2}
               label="Còn hiệu lực"
               value={stats.active}
+              loading={loading}
               tone="success"
             />
             <StatCard
               icon={Clock}
               label="Sắp diễn ra"
               value={stats.upcoming}
+              loading={loading}
               tone="warning"
             />
             <StatCard
-              icon={MapPin}
+              icon={UserCheck}
               label="Đã check-in"
               value={stats.checkedIn}
+              loading={loading}
               tone="secondary"
             />
           </div>
@@ -739,11 +734,13 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  loading = false,
   tone = "primary",
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   value: number
+  loading?: boolean
   tone?: "primary" | "success" | "warning" | "secondary"
 }) {
   const toneClass = {
@@ -766,7 +763,14 @@ function StatCard({
         </div>
         <div>
           <p className="text-xs font-medium text-muted-foreground">{label}</p>
-          <p className="text-2xl font-bold tabular-nums">{value}</p>
+          {loading ? (
+            <div
+              aria-hidden
+              className="mt-1 h-8 w-12 animate-pulse rounded-md bg-muted"
+            />
+          ) : (
+            <p className="text-2xl font-bold tabular-nums">{value}</p>
+          )}
         </div>
       </CardContent>
     </Card>
