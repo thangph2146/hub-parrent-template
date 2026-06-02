@@ -14,10 +14,14 @@ type EventRowCardProps = {
   className?: string
 }
 
-export function EventRowCard({ event, compact = false, className }: EventRowCardProps) {
+export function EventRowCard({
+  event,
+  compact = false,
+  className,
+}: EventRowCardProps) {
   const timeLine = formatEventTimeDateLine(event.startDate)
   const location = getEventLocationLabel(event)
-  const href = `/${event.slug ?? event.id}`
+  const href = `/su-kien/${event.slug ?? event.id}`
 
   return (
     <Link
@@ -25,13 +29,16 @@ export function EventRowCard({ event, compact = false, className }: EventRowCard
       prefetch={false}
       className={cn(
         "group flex gap-4 rounded-lg border border-border bg-card p-3 transition-colors hover:border-primary/30 hover:bg-muted/30 sm:p-4",
-        className,
+        className
       )}
     >
       <EventPoster
         poster={event.poster}
         alt={event.title}
-        className={cn("shrink-0 rounded-md", compact ? "h-20 w-28" : "h-24 w-32 sm:h-28 sm:w-36")}
+        className={cn(
+          "shrink-0 rounded-md",
+          compact ? "h-20 w-28" : "h-24 w-32 sm:h-28 sm:w-36"
+        )}
         aspectClassName="size-full"
         placeholderClassName="size-8 text-muted-foreground/40"
         imageClassName="transition-transform group-hover:scale-105"
@@ -39,20 +46,29 @@ export function EventRowCard({ event, compact = false, className }: EventRowCard
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
         <h3
           className={cn(
-            "font-semibold leading-snug text-foreground group-hover:text-primary",
-            compact ? "line-clamp-2 text-sm" : "line-clamp-2 text-base sm:text-lg",
+            "leading-snug font-semibold text-foreground group-hover:text-primary",
+            compact
+              ? "line-clamp-2 text-sm"
+              : "line-clamp-2 text-base sm:text-lg"
           )}
         >
           {event.title}
         </h3>
         {timeLine ? (
-          <p className={cn("font-medium text-primary", compact ? "text-xs" : "text-sm")}>{timeLine}</p>
+          <p
+            className={cn(
+              "font-medium text-primary",
+              compact ? "text-xs" : "text-sm"
+            )}
+          >
+            {timeLine}
+          </p>
         ) : null}
         {location ? (
           <p
             className={cn(
               "flex items-start gap-1 text-muted-foreground",
-              compact ? "text-xs" : "text-sm",
+              compact ? "text-xs" : "text-sm"
             )}
           >
             <MapPin className="mt-0.5 size-3.5 shrink-0" />

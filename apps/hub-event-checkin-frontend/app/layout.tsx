@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Hệ thống Sự kiện HUB",
   },
   description:
-    "Giới thiệu và quản lý sự kiện tại Trường Đại học Ngân hàng TP. HCM — đăng ký, check-in và tra cứu vé.",
+    "Giới thiệu và quản lý sự kiện tại Trường Đại học Ngân hàng TP. HCM — đăng ký, check-in.",
 };
 
 export default function RootLayout({

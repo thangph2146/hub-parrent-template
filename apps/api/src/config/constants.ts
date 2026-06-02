@@ -6,6 +6,7 @@ export const APP_HEADERS = {
 export const AUTH_ROLE_NAMES = {
   USER: 'user',
   PARENT: 'parent',
+  STUDENT: 'student',
   ADMIN: 'admin',
   SUPER_ADMIN: 'super_admin',
 } as const;

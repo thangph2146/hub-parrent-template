@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
-import { randomBytes } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { OAuth2Client } from 'google-auth-library';
-import { EntityManager } from '@mikro-orm/core';
+import { Collection, EntityManager } from '@mikro-orm/core';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
@@ -27,6 +27,16 @@ export interface AuthUserPayload {
   image: string | null;
   permissions: string[];
   roles: Array<{ id: string; name: string; displayName: string }>;
+}
+
+/** MikroORM populate trả Collection — chuẩn hóa về mảng trước khi dùng .some/.filter. */
+function listUserRoles(
+  userRoles: UserRole[] | Collection<UserRole> | undefined,
+): UserRole[] {
+  if (!userRoles) return [];
+  if (Array.isArray(userRoles)) return userRoles;
+  if (userRoles instanceof Collection) return userRoles.getItems();
+  return Array.from(userRoles as Iterable<UserRole>);
 }
 
 @Injectable()
@@ -97,8 +107,21 @@ export class AuthService {
     return { name: AUTH_ROLE_NAMES.PARENT, displayName: 'Phụ huynh' };
   }
 
+  private async assignRoleIfMissing(
+    userId: string,
+    roleId: string,
+  ): Promise<void> {
+    await this.em
+      .getConnection()
+      .execute(
+        'insert ignore into `user_roles` (`id`, `userId`, `roleId`) values (?, ?, ?)',
+        [randomUUID(), userId, roleId],
+      );
+    this.em.clear();
+  }
+
   private mapUserToPayload(user: User): AuthUserPayload {
-    const activeUserRoles = (user.userRoles || []).filter(
+    const activeUserRoles = listUserRoles(user.userRoles).filter(
       (ur) => ur.role && ur.role.deletedAt == null,
     );
     const permissions = activeUserRoles.flatMap((ur) => {
@@ -165,7 +188,7 @@ export class AuthService {
       return null;
     }
 
-    if (!user.userRoles?.length) {
+    if (!listUserRoles(user.userRoles).length) {
       this.logger.warn(
         `Login failed: user has no roles assigned for email=${email}`,
       );
@@ -206,7 +229,7 @@ export class AuthService {
 
     if (user) {
       if (!user.isActive || user.deletedAt != null) return null;
-      const hasAnyRole = (user.userRoles?.length ?? 0) > 0;
+      const hasAnyRole = listUserRoles(user.userRoles).length > 0;
       if (!hasAnyRole) {
         const ur = new UserRole();
         ur.user = user;
@@ -219,7 +242,7 @@ export class AuthService {
           { populate: ['userRoles', 'userRoles.role'] },
         );
       }
-      if (!user?.userRoles?.length) return null;
+      if (!user || !listUserRoles(user.userRoles).length) return null;
       return this.mapUserToPayload(user);
     }
 
@@ -247,6 +270,61 @@ export class AuthService {
     return created ? this.mapUserToPayload(created) : null;
   }
 
+  async loginWithGoogleAsStudent(
+    profile: GoogleProfileDto,
+  ): Promise<AuthUserPayload | null> {
+    const email = profile.email?.trim()?.toLowerCase();
+    if (!email) return null;
+
+    const studentRole = await this.getOrCreateRole(
+      AUTH_ROLE_NAMES.STUDENT,
+      'Sinh viên',
+    );
+
+    let user = await this.em.findOne(
+      User,
+      { email },
+      { populate: ['userRoles', 'userRoles.role'] },
+    );
+
+    if (user) {
+      if (!user.isActive || user.deletedAt != null) return null;
+      const hasStudentRole = listUserRoles(user.userRoles).some(
+        (ur) => ur.role?.name === AUTH_ROLE_NAMES.STUDENT,
+      );
+      if (!hasStudentRole) {
+        await this.assignRoleIfMissing(user.id, studentRole.id);
+        user = await this.em.findOne(
+          User,
+          { email },
+          { populate: ['userRoles', 'userRoles.role'] },
+        );
+      }
+      if (!user || !listUserRoles(user.userRoles).length) return null;
+      return this.mapUserToPayload(user);
+    }
+
+    const password = await hash(randomBytes(16).toString('hex'), 10);
+    const newUserObj = new User();
+    newUserObj.email = email;
+    newUserObj.name = profile.name ?? null;
+    // không set avatar từ Google — sinh viên tự upload một lần ở hồ sơ
+    newUserObj.password = password;
+    newUserObj.isActive = true;
+    this.em.persist(newUserObj);
+    await this.em.flush();
+
+    const newUserId = newUserObj.id;
+    await this.assignRoleIfMissing(newUserId, studentRole.id);
+
+    const created = await this.em.findOne(
+      User,
+      { id: newUserId },
+      { populate: ['userRoles', 'userRoles.role'] },
+    );
+    return created ? this.mapUserToPayload(created) : null;
+  }
+
   async loginWithGoogle(
     profile: GoogleProfileDto,
   ): Promise<AuthUserPayload | null> {
@@ -262,7 +340,7 @@ export class AuthService {
 
     if (user) {
       if (!user.isActive || user.deletedAt != null) return null;
-      if (!user.userRoles?.length) {
+      if (!listUserRoles(user.userRoles).length) {
         const role = await this.getOrCreateRole(
           defaultRole.name,
           defaultRole.displayName,
@@ -278,7 +356,7 @@ export class AuthService {
           { populate: ['userRoles', 'userRoles.role'] },
         );
       }
-      if (!user?.userRoles?.length) return null;
+      if (!user || !listUserRoles(user.userRoles).length) return null;
       return this.mapUserToPayload(user);
     }
 
@@ -342,7 +420,7 @@ export class AuthService {
       return { payload: null, reason: 'inactive' };
     }
 
-    const activeUserRoles = (user.userRoles || []).filter(
+    const activeUserRoles = listUserRoles(user.userRoles).filter(
       (ur) => ur.role && ur.role.deletedAt == null,
     );
     if (!activeUserRoles.length) {

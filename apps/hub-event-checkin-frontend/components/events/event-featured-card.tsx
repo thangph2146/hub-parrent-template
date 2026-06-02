@@ -22,7 +22,7 @@ export function EventFeaturedCard({ event }: EventFeaturedCardProps) {
 
   return (
     <Link
-      href={`/${event.slug ?? event.id}`}
+      href={`/su-kien/${event.slug ?? event.id}`}
       prefetch={false}
       className="group block h-full w-[min(100vw-3rem,300px)] shrink-0 sm:w-[300px]"
     >
@@ -36,13 +36,13 @@ export function EventFeaturedCard({ event }: EventFeaturedCardProps) {
             imageClassName="transition-transform duration-500 group-hover:scale-105"
             overlay={
               <>
-                <Badge className="absolute left-3 top-3 gap-1 rounded-md bg-primary text-primary-foreground shadow-sm">
+                <Badge className="absolute top-3 left-3 gap-1 rounded-md bg-primary text-primary-foreground shadow-sm">
                   <Star className="size-3 fill-current" />
                   Nổi bật
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="absolute right-3 top-3 rounded-md bg-card/95 text-foreground backdrop-blur-sm"
+                  className="absolute top-3 right-3 rounded-md bg-card/95 text-foreground backdrop-blur-sm"
                 >
                   {EVENT_STATUS_LABELS[status]}
                 </Badge>
@@ -51,10 +51,12 @@ export function EventFeaturedCard({ event }: EventFeaturedCardProps) {
           />
         </div>
         <div className="flex flex-1 flex-col gap-2 p-4">
-          <h3 className="line-clamp-2 text-base font-bold leading-snug text-foreground group-hover:text-primary">
+          <h3 className="line-clamp-2 text-base leading-snug font-bold text-foreground group-hover:text-primary">
             {event.title}
           </h3>
-          {timeLine ? <p className="text-sm font-semibold text-primary">{timeLine}</p> : null}
+          {timeLine ? (
+            <p className="text-sm font-semibold text-primary">{timeLine}</p>
+          ) : null}
           {location ? (
             <p className="mt-auto flex items-start gap-1.5 text-xs text-muted-foreground">
               <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary/70" />

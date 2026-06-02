@@ -1,12 +1,18 @@
 import type { LucideIcon } from "lucide-react"
-import { CalendarDays, Home, QrCode, Search, Sparkles, Ticket } from "lucide-react"
+import {
+  CalendarDays,
+  Home,
+  QrCode,
+  Search,
+  Sparkles,
+} from "lucide-react"
 
 export const SITE_BRAND = {
   name: "HUB Events",
   tagline: "Sự kiện · Đăng ký · Check-in",
   school: "Trường Đại học Ngân hàng TP. HCM",
   description:
-    "Nền tảng sự kiện chính thức của HUB — khám phá hội thảo, workshop và hoạt động sinh viên; đăng ký, tra cứu vé và check-in QR tại một nơi.",
+    "Nền tảng sự kiện chính thức của HUB — khám phá hội thảo, workshop và hoạt động sinh viên; đăng ký, check-in QR tại một nơi.",
 } as const
 
 export type NavItem = {
@@ -17,19 +23,18 @@ export type NavItem = {
 }
 
 export const MAIN_NAV: NavItem[] = [
-  { href: "/", label: "Trang chủ", icon: Home, description: "Giới thiệu HUB Events" },
+  {
+    href: "/",
+    label: "Trang chủ",
+    icon: Home,
+    description: "Giới thiệu HUB Events",
+  },
   {
     href: "/su-kien",
     label: "Hội nghị - Sự kiện",
     icon: CalendarDays,
     description: "Danh mục & lịch sự kiện",
-  },
-  {
-    href: "/tra-cuu",
-    label: "Tra cứu vé",
-    icon: Search,
-    description: "Tìm vé và mã tham dự",
-  },
+  }
 ]
 
 export const FOOTER_EVENT_LINKS = [
@@ -37,11 +42,6 @@ export const FOOTER_EVENT_LINKS = [
   { href: "/su-kien?filter=upcoming", label: "Sắp diễn ra" },
   { href: "/su-kien?filter=ongoing", label: "Đang diễn ra" },
   { href: "/su-kien?filter=past", label: "Đã kết thúc" },
-] as const
-
-export const FOOTER_PARTICIPATE_LINKS = [
-  { href: "/tra-cuu", label: "Tra cứu vé" },
-  { href: "/su-kien", label: "Nhập mã sự kiện" },
 ] as const
 
 export const FOOTER_RESOURCE_LINKS = [
@@ -54,12 +54,6 @@ export const LANDING_QUICK_ACTIONS = [
     label: "Khám phá sự kiện",
     description: "Xem lịch, danh mục và đăng ký",
     icon: Sparkles,
-  },
-  {
-    href: "/tra-cuu",
-    label: "Tra cứu vé",
-    description: "Tìm vé bằng mã hoặc thông tin",
-    icon: Ticket,
   },
   {
     href: "/su-kien",

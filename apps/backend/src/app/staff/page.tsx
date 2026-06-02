@@ -262,6 +262,7 @@ function StaffPageInner() {
     await bulkStaffMutation.mutateAsync({ action: "hard-delete", ids: bulkPurgeTarget });
     toast.success(`Đã xóa vĩnh viễn ${bulkPurgeTarget.length} tài khoản`);
     setBulkPurgeTarget(null);
+    setListStaffSelection({});
     setTrashStaffSelection({});
   }, [bulkPurgeTarget, session?.id, bulkStaffMutation]);
 
@@ -402,9 +403,11 @@ function StaffPageInner() {
                 onView={handleView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onPurge={handlePurge}
                 busy={busy}
                 currentUserId={session?.id}
                 onBulkDelete={handleBulkDelete}
+                onBulkPurge={handleBulkPurge}
                 onClearFilters={clearStaffFilters}
                 roleOptions={[
                   { value: "none", label: "Chưa gán vai trò" },

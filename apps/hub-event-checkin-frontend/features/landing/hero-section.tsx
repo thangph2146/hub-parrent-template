@@ -100,16 +100,6 @@ export function LandingHeroSection({ featuredEvent = null }: LandingHeroSectionP
                     <ArrowRight className="size-4" />
                   </Button>
                 </Link>
-                <Link href={LANDING_ROUTES.ticketLookup}>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="h-11 rounded-lg border-white/35 bg-white/5 px-6 font-semibold text-white backdrop-blur-sm hover:bg-white/15"
-                  >
-                    <Search className="size-4" />
-                    Tra cứu vé
-                  </Button>
-                </Link>
               </div>
             </div>
 

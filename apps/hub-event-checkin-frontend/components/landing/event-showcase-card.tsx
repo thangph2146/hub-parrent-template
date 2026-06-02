@@ -20,7 +20,7 @@ export function EventShowcaseCard({ event }: EventShowcaseCardProps) {
 
   return (
     <Link
-      href={`/${event.slug ?? event.id}`}
+      href={`/su-kien/${event.slug ?? event.id}`}
       prefetch={false}
       className="group flex h-full min-h-[320px] flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-md transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10 sm:min-h-[340px]"
     >
@@ -32,7 +32,7 @@ export function EventShowcaseCard({ event }: EventShowcaseCardProps) {
         placeholderClassName="size-10 text-primary/30"
         imageClassName="transition-transform duration-500 group-hover:scale-105"
         overlay={
-          <Badge className="absolute left-3 top-3 rounded-full bg-primary/95 text-primary-foreground">
+          <Badge className="absolute top-3 left-3 rounded-full bg-primary/95 text-primary-foreground">
             {EVENT_STATUS_LABELS[status]}
           </Badge>
         }
@@ -40,11 +40,13 @@ export function EventShowcaseCard({ event }: EventShowcaseCardProps) {
 
       <div className="flex flex-1 flex-col justify-between gap-4 p-5">
         <div className="space-y-2">
-          <h3 className="line-clamp-2 text-lg font-bold leading-snug text-foreground group-hover:text-primary">
+          <h3 className="line-clamp-2 text-lg leading-snug font-bold text-foreground group-hover:text-primary">
             {event.title}
           </h3>
           {event.description?.trim() ? (
-            <p className="line-clamp-2 text-sm text-muted-foreground">{event.description}</p>
+            <p className="line-clamp-2 text-sm text-muted-foreground">
+              {event.description}
+            </p>
           ) : null}
           {dateLabel ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">

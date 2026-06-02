@@ -23,9 +23,11 @@ interface StaffTableProps {
   onView: (user: StaffRow) => void;
   onEdit: (user: StaffRow) => void;
   onDelete: (user: StaffRow) => void;
+  onPurge: (user: StaffRow) => void;
   busy: boolean;
   currentUserId?: string;
   onBulkDelete: (ids: string[]) => void;
+  onBulkPurge: (ids: string[]) => void;
   onClearFilters: () => void;
   roleOptions?: { value: string; label: string }[];
 }
@@ -48,14 +50,24 @@ export function StaffTable(props: StaffTableProps) {
     onView,
     onEdit,
     onDelete,
+    onPurge,
     busy,
     currentUserId,
     onBulkDelete,
+    onBulkPurge,
     onClearFilters,
     roleOptions,
   } = props;
 
-  const columns = getStaffColumns({ onView, onEdit, onDelete, busy, currentUserId, roleOptions });
+  const columns = getStaffColumns({
+    onView,
+    onEdit,
+    onDelete,
+    onPurge,
+    busy,
+    currentUserId,
+    roleOptions,
+  });
 
   const paginationFooter = (
     <AdminTablePaginationFooter
@@ -99,6 +111,18 @@ export function StaffTable(props: StaffTableProps) {
               .map((u) => String(u.id));
             if (!ids.length) return;
             await onBulkDelete(ids);
+          },
+        },
+        {
+          id: "bulk-staff-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          onAction: async (rows) => {
+            const ids = rows
+              .filter((u) => String(u.id) !== String(currentUserId ?? ""))
+              .map((u) => String(u.id));
+            if (!ids.length) return;
+            await onBulkPurge(ids);
           },
         },
       ]}

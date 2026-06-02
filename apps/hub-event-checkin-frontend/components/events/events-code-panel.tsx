@@ -23,19 +23,6 @@ export function EventsCodePanel() {
     <section className="border-t border-border bg-gradient-to-br from-secondary/90 via-secondary to-secondary/95 py-12 sm:py-14">
       <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
-          <div className="text-white">
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/70">
-              <QrCode className="size-4" />
-              Tham gia nhanh
-            </p>
-            <h2 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">
-              Có mã sự kiện?
-            </h2>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-white/85 sm:text-base">
-              Nhập mã để tra cứu vé, đặt câu hỏi hoặc tham gia phiên tương tác — không cần tài khoản phức tạp.
-            </p>
-          </div>
-
           <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-xl sm:p-8">
             <Ticket className="size-9 text-primary" aria-hidden />
             <p className="mt-3 text-base font-semibold text-foreground">Nhập mã sự kiện</p>

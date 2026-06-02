@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { CalendarDays, Menu } from "lucide-react"
@@ -15,20 +16,39 @@ import {
 import { cn } from "@ui/lib/utils"
 import { Logo } from "@/components/icons/logo"
 import { HeaderAuth } from "@/components/shared/header-auth"
+import {
+  isStudentSession,
+  readEventSession,
+  subscribeEventSession,
+} from "@/lib/event-auth"
 import { MAIN_NAV, SITE_BRAND, isNavActive } from "@/lib/site-nav"
+
+function useEventSession() {
+  return useSyncExternalStore(
+    subscribeEventSession,
+    readEventSession,
+    () => null
+  )
+}
 
 export function Header() {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
+  const session = useEventSession()
+  const navItems = isStudentSession(session)
+    ? MAIN_NAV
+    : MAIN_NAV.filter((link) => link.href !== "/student/events")
 
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="border-b border-white/10 bg-secondary text-xs text-white/80">
         <div className="mx-auto flex h-8 max-w-[1440px] items-center justify-between px-6 md:px-12">
-          <span className="truncate">Nền tảng sự kiện chính thức · {SITE_BRAND.school}</span>
+          <span className="truncate">
+            Nền tảng sự kiện chính thức · {SITE_BRAND.school}
+          </span>
           <span className="hidden items-center gap-1.5 sm:inline-flex">
             <CalendarDays className="size-3.5" />
-            Đăng ký · Check-in QR · Tra cứu vé
+            Đăng ký · Check-in QR
           </span>
         </div>
       </div>
@@ -38,13 +58,20 @@ export function Header() {
           <Link href="/" className="flex min-w-0 shrink-0 items-center gap-3">
             <Logo className="h-9 w-9 sm:h-10 sm:w-10" />
             <div className="min-w-0 leading-tight">
-              <div className="truncate text-sm font-bold text-foreground">{SITE_BRAND.name}</div>
-              <div className="truncate text-[11px] text-muted-foreground">{SITE_BRAND.tagline}</div>
+              <div className="truncate text-sm font-bold text-foreground">
+                {SITE_BRAND.name}
+              </div>
+              <div className="truncate text-[11px] text-muted-foreground">
+                {SITE_BRAND.tagline}
+              </div>
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Điều hướng chính">
-            {MAIN_NAV.map((link) => {
+          <nav
+            className="hidden items-center gap-1 md:flex"
+            aria-label="Điều hướng chính"
+          >
+            {navItems.map((link) => {
               const active = isNavActive(pathname, link.href)
               const Icon = link.icon
               return (
@@ -55,7 +82,7 @@ export function Header() {
                     "inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     active
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   <Icon className="size-4" />
@@ -67,13 +94,6 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <HeaderAuth />
-            <Link href="/su-kien" className="hidden sm:block">
-              <Button size="sm" className="h-9 rounded-lg px-4 font-semibold">
-                <CalendarDays className="size-4" />
-                Xem sự kiện
-              </Button>
-            </Link>
-
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger
                 className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-muted md:hidden"
@@ -85,8 +105,11 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle>{SITE_BRAND.name}</SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col gap-1 px-4" aria-label="Menu di động">
-                  {MAIN_NAV.map((link) => {
+                <nav
+                  className="flex flex-col gap-1 px-4"
+                  aria-label="Menu di động"
+                >
+                  {navItems.map((link) => {
                     const active = isNavActive(pathname, link.href)
                     const Icon = link.icon
                     return (
@@ -96,14 +119,18 @@ export function Header() {
                         onClick={() => setMenuOpen(false)}
                         className={cn(
                           "flex items-start gap-3 rounded-lg px-3 py-3 transition-colors",
-                          active ? "bg-primary/10 text-primary" : "hover:bg-muted",
+                          active
+                            ? "bg-primary/10 text-primary"
+                            : "hover:bg-muted"
                         )}
                       >
                         <Icon className="mt-0.5 size-5 shrink-0" />
                         <div>
                           <p className="font-semibold">{link.label}</p>
                           {link.description ? (
-                            <p className="text-xs text-muted-foreground">{link.description}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {link.description}
+                            </p>
                           ) : null}
                         </div>
                       </Link>
@@ -111,8 +138,14 @@ export function Header() {
                   })}
                 </nav>
                 <div className="mt-4 border-t border-border px-4 pt-4">
-                  <Link href="/su-kien" onClick={() => setMenuOpen(false)} className="block">
-                    <Button className="w-full rounded-lg">Xem tất cả sự kiện</Button>
+                  <Link
+                    href="/su-kien"
+                    onClick={() => setMenuOpen(false)}
+                    className="block"
+                  >
+                    <Button className="w-full rounded-lg">
+                      Xem tất cả sự kiện
+                    </Button>
                   </Link>
                 </div>
               </SheetContent>

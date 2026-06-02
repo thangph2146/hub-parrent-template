@@ -21,13 +21,14 @@ export interface StaffColumnsProps {
   onView: (user: StaffRow) => void;
   onEdit: (user: StaffRow) => void;
   onDelete: (user: StaffRow) => void;
+  onPurge: (user: StaffRow) => void;
   busy: boolean;
   currentUserId?: string;
   roleOptions?: { value: string; label: string }[];
 }
 
 export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[] {
-  const { onView, onEdit, onDelete, busy, currentUserId, roleOptions } = props;
+  const { onView, onEdit, onDelete, onPurge, busy, currentUserId, roleOptions } = props;
 
   return [
     {
@@ -194,6 +195,20 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
               }
             >
               <Trash2 className="size-3.5" aria-hidden /> Xóa tạm
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => onPurge(u)}
+              disabled={busy || String(u.id) === String(currentUserId ?? "")}
+              title={
+                String(u.id) === String(currentUserId ?? "")
+                  ? "Không xoá vĩnh viễn tài khoản đang đăng nhập"
+                  : "Xóa vĩnh viễn khỏi cơ sở dữ liệu"
+              }
+            >
+              <Trash2 className="size-3.5" aria-hidden />
+              Xóa vĩnh viễn
             </Button>
           </div>
         );

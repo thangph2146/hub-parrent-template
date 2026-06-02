@@ -20,7 +20,8 @@ const FORMAT_LABELS: Record<number, string> = {
 
 const STATUS_COLORS: Record<EventStatus, string> = {
   upcoming: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
-  ongoing: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
+  ongoing:
+    "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
   past: "bg-gray-100 text-gray-600 dark:bg-gray-800/40 dark:text-gray-400",
 }
 
@@ -82,7 +83,7 @@ export function EventListCard({ event }: EventListCardProps) {
           ) : (
             <span />
           )}
-          <Link href={`/${event.slug ?? event.id}`} prefetch={false}>
+          <Link href={`/su-kien/${event.slug ?? event.id}`} prefetch={false}>
             <Button variant="outline" size="sm" className="rounded-lg">
               Chi tiết
             </Button>

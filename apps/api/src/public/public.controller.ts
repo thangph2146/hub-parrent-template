@@ -26,12 +26,14 @@ import { AdmissionResultsService } from '../admission-results/admission-results.
 import { PageContentsService } from '../page-contents/page-contents.service';
 import type { CreateContactRequestDto } from './public-contact-requests.service';
 import { AuthService } from '../auth/auth.service';
+import type { AuthUserPayload } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
+import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 
 function setCacheControl(res: Response, ttl = 60): void {
@@ -91,6 +93,14 @@ export class PublicController {
             metadata: metadata ?? null,
           };
     this.logger.error(JSON.stringify(details));
+  }
+
+  private isStudentPayload(
+    user: AuthUserPayload | null,
+  ): user is AuthUserPayload {
+    return Boolean(
+      user?.roles?.some((role) => role.name === AUTH_ROLE_NAMES.STUDENT),
+    );
   }
 
   @Get('dev-login-options')
@@ -307,10 +317,9 @@ export class PublicController {
         return res.status(statusCode).json(errBody);
       }
 
-      const user = await this.authService.loginWithGoogleAsParent({
+      const user = await this.authService.loginWithGoogleAsStudent({
         email: profile.email,
         name: profile.name ?? null,
-        image: profile.image ?? null,
       });
 
       if (!user) {
@@ -327,8 +336,13 @@ export class PublicController {
       return res.status(statusCode).json(okBody);
     } catch (error) {
       this.logApiError('POST /api/public/auth/google', error);
+      const detail =
+        error instanceof Error ? error.message : 'Unknown Google login error';
+      const isDevelopment = process.env.NODE_ENV !== 'production';
       const { statusCode, body } = createErrorResponse(
-        'Đã xảy ra lỗi khi đăng nhập Google.',
+        isDevelopment
+          ? `Đã xảy ra lỗi khi đăng nhập Google: ${detail}`
+          : 'Đã xảy ra lỗi khi đăng nhập Google.',
         { status: 500 },
       );
       return res.status(statusCode).json(body);
@@ -353,9 +367,11 @@ export class PublicController {
       }
 
       const user = await this.authService.login({ email, password });
-      if (!user) {
+      if (!user || !this.isStudentPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
-          'Email hoặc mật khẩu không đúng.',
+          user
+            ? 'Chỉ tài khoản sinh viên mới được đăng nhập cổng sự kiện.'
+            : 'Email hoặc mật khẩu không đúng.',
           { status: 401 },
         );
         return res.status(statusCode).json(errBody);
@@ -401,9 +417,11 @@ export class PublicController {
 
     try {
       const user = await this.authService.loginAsDevelopmentUser(userId);
-      if (!user) {
+      if (!user || !this.isStudentPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
-          'Không tìm thấy tài khoản development.',
+          user
+            ? 'Tài khoản development được chọn không có role student.'
+            : 'Không tìm thấy tài khoản development.',
           { status: 401 },
         );
         return res.status(statusCode).json(errBody);
@@ -606,9 +624,7 @@ export class PublicController {
       return res.status(statusCode).json(okBody);
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : 'Không thể đăng ký sự kiện.';
+        error instanceof Error ? error.message : 'Không thể đăng ký sự kiện.';
       this.logApiError('POST /api/public/events/:slug/register', error, {
         slug,
         userId,
@@ -621,6 +637,85 @@ export class PublicController {
     }
   }
 
+  @Get('me/events')
+  async getMyRegisteredEvents(
+    @Headers() headers: Record<string, string | undefined>,
+    @Res() res: Response,
+  ) {
+    const userId = headers[APP_HEADERS.USER_ID]?.trim();
+    this.logger.log(`getMyRegisteredEvents userId=${userId ?? '-'}`);
+    if (!userId) {
+      const { statusCode, body } = createErrorResponse(
+        'Vui lòng đăng nhập trước khi xem sự kiện đã đăng ký.',
+        { status: 401 },
+      );
+      return res.status(statusCode).json(body);
+    }
+
+    try {
+      const result =
+        await this.publicEventRegistrationService.listMyEvents(userId);
+      const { statusCode, body } = createSuccessResponse(result);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Không thể tải danh sách sự kiện đã đăng ký.';
+      this.logApiError('GET /api/public/me/events', error, { userId });
+      const { statusCode, body } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Post('me/event-registrations/:id/cancel')
+  async cancelMyEventRegistration(
+    @Param('id') id: string,
+    @Headers() headers: Record<string, string | undefined>,
+    @Res() res: Response,
+  ) {
+    const userId = headers[APP_HEADERS.USER_ID]?.trim();
+    this.logger.log(
+      `cancelMyEventRegistration id=${id} userId=${userId ?? '-'}`,
+    );
+    if (!userId) {
+      const { statusCode, body } = createErrorResponse(
+        'Vui lòng đăng nhập trước khi hủy đăng ký.',
+        { status: 401 },
+      );
+      return res.status(statusCode).json(body);
+    }
+
+    try {
+      const result =
+        await this.publicEventRegistrationService.cancelMyRegistration(
+          userId,
+          id,
+        );
+      const { statusCode, body } = createSuccessResponse(result, {
+        message: 'Đã hủy đăng ký sự kiện.',
+      });
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Không thể hủy đăng ký.';
+      this.logApiError(
+        'POST /api/public/me/event-registrations/:id/cancel',
+        error,
+        {
+          id,
+          userId,
+        },
+      );
+      const { statusCode, body } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+  }
+
   @Get('events/:slug')
   async getEventBySlug(
     @Param('slug') slug: string,
@@ -629,9 +724,14 @@ export class PublicController {
   ) {
     setCacheControl(res, 60);
     const viewerUserId = headers[APP_HEADERS.USER_ID]?.trim();
-    this.logger.log(`getEventBySlug slug=${slug} viewer=${viewerUserId ?? '-'}`);
+    this.logger.log(
+      `getEventBySlug slug=${slug} viewer=${viewerUserId ?? '-'}`,
+    );
     try {
-      const event = await this.publicEventsService.getBySlug(slug, viewerUserId);
+      const event = await this.publicEventsService.getBySlug(
+        slug,
+        viewerUserId,
+      );
       if (!event) {
         const { statusCode, body } = createErrorResponse('Not Found', {
           status: 404,

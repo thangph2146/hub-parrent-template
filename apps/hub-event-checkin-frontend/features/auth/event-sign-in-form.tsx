@@ -1,51 +1,74 @@
-"use client";
+"use client"
 
-import { Suspense, useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  CalendarDays,
-  Eye,
-  EyeOff,
-  QrCode,
-  Sparkles,
-} from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@ui/components/button";
-import { Card, CardContent } from "@ui/components/card";
+import { Suspense, useEffect, useRef, useState } from "react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { CalendarDays, Eye, EyeOff, QrCode, Sparkles } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "@ui/components/button"
+import { Card, CardContent } from "@ui/components/card"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { PointerHighlight } from "@ui/components/pointer-highlight";
-import { TypographyH2 } from "@ui/components/typography";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { PointerHighlight } from "@ui/components/pointer-highlight"
+import { TypographyH2 } from "@ui/components/typography"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@ui/components/select";
-import { Logo } from "@/components/icons/logo";
+} from "@ui/components/select"
+import { Logo } from "@/components/icons/logo"
 import {
   fetchDevLoginOptions,
+  fetchGoogleClientId,
+  loginEventUserGoogle,
   loginEventUser,
   loginEventUserDevelopment,
   readEventSession,
   type DevLoginOption,
-} from "@/lib/event-auth";
-import { safeRelativeNext } from "@/lib/auth-routes";
+} from "@/lib/event-auth"
+import { safeRelativeNext } from "@/lib/auth-routes"
 
 const HUB_CAMPUS_IMAGE =
-  "https://hub.edu.vn/DATA/IMAGES/2024/12/31/20241231235033-1vehub.jpg";
+  "https://hub.edu.vn/DATA/IMAGES/2024/12/31/20241231235033-1vehub.jpg"
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        id?: {
+          initialize: (options: {
+            client_id: string
+            callback: (response: { credential?: string }) => void
+          }) => void
+          renderButton: (
+            element: HTMLElement,
+            options: {
+              type?: "standard" | "icon"
+              theme?: "outline" | "filled_blue" | "filled_black"
+              size?: "large" | "medium" | "small"
+              text?: "signin_with" | "signup_with" | "continue_with"
+              shape?: "rectangular" | "pill" | "circle" | "square"
+              width?: number
+            }
+          ) => void
+        }
+      }
+    }
+  }
+}
 
 function LoginVisualPanel() {
   return (
-    <div className="relative hidden min-h-[520px] overflow-hidden md:block md:min-h-0 md:h-full">
+    <div className="relative hidden min-h-[520px] overflow-hidden md:block md:h-full md:min-h-0">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={HUB_CAMPUS_IMAGE}
         alt="Khuôn viên Trường Đại học Ngân hàng TP. HCM"
@@ -66,16 +89,18 @@ function LoginVisualPanel() {
             <Logo className="size-9" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+            <p className="text-xs font-semibold tracking-widest text-white/70 uppercase">
               Banking University HCMC
             </p>
-            <p className="text-lg font-bold leading-tight text-white">HUB Events</p>
+            <p className="text-lg leading-tight font-bold text-white">
+              HUB Events
+            </p>
           </div>
         </div>
 
         <div className="space-y-5">
           <div className="max-w-sm rounded-2xl border border-white/15 bg-white/10 p-5 shadow-xl backdrop-blur-md">
-            <p className="text-sm font-medium leading-relaxed text-white/90">
+            <p className="text-sm leading-relaxed font-medium text-white/90">
               Đăng nhập để đọc đầy đủ lưu ý sự kiện, đăng ký tham gia và nhận mã
               check-in tại chỗ.
             </p>
@@ -104,85 +129,164 @@ function LoginVisualPanel() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function EventSignInFormInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = safeRelativeNext(searchParams.get("next"), "/");
-  const isDevelopment = process.env.NODE_ENV === "development";
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const next = safeRelativeNext(searchParams.get("next"), "/")
+  const isDevelopment = process.env.NODE_ENV === "development"
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [devLoginOptions, setDevLoginOptions] = useState<DevLoginOption[]>([]);
-  const [selectedDevLoginId, setSelectedDevLoginId] = useState("");
-  const [devLoginOptionsLoading, setDevLoginOptionsLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [devLoginOptions, setDevLoginOptions] = useState<DevLoginOption[]>([])
+  const [selectedDevLoginId, setSelectedDevLoginId] = useState("")
+  const [devLoginOptionsLoading, setDevLoginOptionsLoading] = useState(false)
+  const [googleClientId, setGoogleClientId] = useState("")
+  const [googleBusy, setGoogleBusy] = useState(false)
+  const [currentOrigin, setCurrentOrigin] = useState("")
+  const googleBtnRef = useRef<HTMLDivElement>(null)
+  const googleInitializedRef = useRef(false)
 
   useEffect(() => {
-    const existing = readEventSession();
+    const existing = readEventSession()
     if (existing) {
-      router.replace(next);
+      router.replace(next)
     }
-  }, [router, next]);
+    setCurrentOrigin(window.location.origin)
+  }, [router, next])
 
   useEffect(() => {
-    if (!isDevelopment) return;
+    if (!isDevelopment) return
 
-    let cancelled = false;
-    setDevLoginOptionsLoading(true);
+    let cancelled = false
+    setDevLoginOptionsLoading(true)
 
     void fetchDevLoginOptions()
       .then((options) => {
-        if (!cancelled) setDevLoginOptions(options);
+        if (!cancelled) setDevLoginOptions(options)
       })
       .finally(() => {
-        if (!cancelled) setDevLoginOptionsLoading(false);
-      });
+        if (!cancelled) setDevLoginOptionsLoading(false)
+      })
 
     return () => {
-      cancelled = true;
-    };
-  }, [isDevelopment]);
+      cancelled = true
+    }
+  }, [isDevelopment])
+
+  useEffect(() => {
+    let cancelled = false
+    void fetchGoogleClientId().then((clientId) => {
+      if (!cancelled) setGoogleClientId(clientId)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!googleClientId || googleInitializedRef.current) return
+    if (!googleBtnRef.current) return
+
+    const renderGoogleButton = () => {
+      const google = window.google?.accounts?.id
+      if (!googleBtnRef.current || !google || googleInitializedRef.current)
+        return
+
+      googleInitializedRef.current = true
+      googleBtnRef.current.innerHTML = ""
+      google.initialize({
+        client_id: googleClientId,
+        callback: (response) => {
+          if (!response.credential) {
+            toast.error("Không nhận được credential Google.")
+            return
+          }
+
+          setGoogleBusy(true)
+          void loginEventUserGoogle(response.credential)
+            .then(() => {
+              toast.success("Đăng nhập Google thành công.")
+              router.push(next)
+              router.refresh()
+            })
+            .catch((err) => {
+              const message =
+                err instanceof Error
+                  ? err.message
+                  : "Đăng nhập Google thất bại."
+              setError(message)
+              toast.error(message)
+            })
+            .finally(() => setGoogleBusy(false))
+        },
+      })
+      google.renderButton(googleBtnRef.current, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "signin_with",
+        shape: "rectangular",
+        width: googleBtnRef.current.clientWidth || 360,
+      })
+    }
+
+    if (window.google?.accounts?.id) {
+      renderGoogleButton()
+      return
+    }
+
+    const script = document.createElement("script")
+    script.src = "https://accounts.google.com/gsi/client"
+    script.async = true
+    script.defer = true
+    script.onload = renderGoogleButton
+    document.head.appendChild(script)
+
+    return () => {
+      script.onload = null
+    }
+  }, [googleClientId, next, router])
 
   const onSelectDevLogin = (value: string | null) => {
-    const nextValue = value ?? "";
-    setSelectedDevLoginId(nextValue);
-    if (!nextValue) return;
-    const picked = devLoginOptions.find((option) => option.id === nextValue);
-    if (!picked) return;
-    setEmail(picked.email);
-    setPassword("");
-    setError(null);
-  };
+    const nextValue = value ?? ""
+    setSelectedDevLoginId(nextValue)
+    if (!nextValue) return
+    const picked = devLoginOptions.find((option) => option.id === nextValue)
+    if (!picked) return
+    setEmail(picked.email)
+    setPassword("")
+    setError(null)
+  }
 
   const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError(null);
-    setBusy(true);
+    event.preventDefault()
+    setError(null)
+    setBusy(true)
 
     try {
       if (isDevelopment && selectedDevLoginId) {
-        await loginEventUserDevelopment(selectedDevLoginId);
-        toast.success("Đăng nhập development thành công.");
+        await loginEventUserDevelopment(selectedDevLoginId)
+        toast.success("Đăng nhập development thành công.")
       } else {
-        await loginEventUser(email, password);
-        toast.success("Đăng nhập thành công.");
+        await loginEventUser(email, password)
+        toast.success("Đăng nhập thành công.")
       }
-      router.push(next);
-      router.refresh();
+      router.push(next)
+      router.refresh()
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Đăng nhập thất bại.";
-      setError(message);
-      toast.error(message);
+      const message = err instanceof Error ? err.message : "Đăng nhập thất bại."
+      setError(message)
+      toast.error(message)
     } finally {
-      setBusy(false);
+      setBusy(false)
     }
-  };
+  }
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-muted p-4 sm:p-6 md:p-10">
@@ -191,7 +295,7 @@ function EventSignInFormInner() {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35] [background-image:linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] [background-size:48px_48px]"
+        className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] [background-size:48px_48px] opacity-[0.35]"
         aria-hidden
       />
 
@@ -206,7 +310,7 @@ function EventSignInFormInner() {
           </div>
         </div>
 
-        <Card className="overflow-hidden rounded-2xl border-0 p-0 shadow-2xl shadow-secondary/10 ring-1 ring-border/60">
+        <Card className="overflow-hidden rounded-2xl border-0 p-0 shadow-2xl ring-1 shadow-secondary/10 ring-border/60">
           <CardContent className="grid min-h-0 p-0 md:grid-cols-[1fr_minmax(340px,440px)] md:items-stretch">
             <form
               onSubmit={(e) => void onSubmit(e)}
@@ -217,7 +321,7 @@ function EventSignInFormInner() {
                   <Logo className="size-8" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                     Hệ thống Sự kiện
                   </p>
                   <p className="font-bold text-secondary">HUB Events</p>
@@ -247,7 +351,7 @@ function EventSignInFormInner() {
                     <Select
                       value={selectedDevLoginId}
                       onValueChange={onSelectDevLogin}
-                      disabled={busy || devLoginOptionsLoading}
+                      disabled={busy || googleBusy || devLoginOptionsLoading}
                     >
                       <SelectTrigger className="h-11 w-full rounded-lg bg-background">
                         <SelectValue
@@ -261,7 +365,8 @@ function EventSignInFormInner() {
                       <SelectContent>
                         {devLoginOptions.map((option) => (
                           <SelectItem key={option.id} value={option.id}>
-                            {option.name?.trim() || option.email} — {option.email}
+                            {option.name?.trim() || option.email} —{" "}
+                            {option.email}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -273,7 +378,10 @@ function EventSignInFormInner() {
                 ) : null}
 
                 <Field>
-                  <FieldLabel htmlFor="email" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="email"
+                    className="font-medium text-primary"
+                  >
                     Email
                   </FieldLabel>
                   <Input
@@ -282,18 +390,21 @@ function EventSignInFormInner() {
                     autoComplete="username"
                     value={email}
                     onChange={(e) => {
-                      if (selectedDevLoginId) setSelectedDevLoginId("");
-                      setEmail(e.target.value);
+                      if (selectedDevLoginId) setSelectedDevLoginId("")
+                      setEmail(e.target.value)
                     }}
                     required
-                    disabled={busy}
+                    disabled={busy || googleBusy}
                     placeholder="sinhvien@hub.edu.vn"
                     className="h-11 rounded-lg bg-background"
                   />
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="password" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="password"
+                    className="font-medium text-primary"
+                  >
                     Mật khẩu
                   </FieldLabel>
                   <div className="relative">
@@ -303,11 +414,15 @@ function EventSignInFormInner() {
                       autoComplete="current-password"
                       value={password}
                       onChange={(e) => {
-                        if (selectedDevLoginId) setSelectedDevLoginId("");
-                        setPassword(e.target.value);
+                        if (selectedDevLoginId) setSelectedDevLoginId("")
+                        setPassword(e.target.value)
                       }}
                       required={!isDevelopment || !selectedDevLoginId}
-                      disabled={busy || (isDevelopment && !!selectedDevLoginId)}
+                      disabled={
+                        busy ||
+                        googleBusy ||
+                        (isDevelopment && !!selectedDevLoginId)
+                      }
                       placeholder={
                         isDevelopment && selectedDevLoginId
                           ? "Bỏ qua mật khẩu khi chọn tài khoản development"
@@ -321,8 +436,10 @@ function EventSignInFormInner() {
                       size="icon"
                       className="absolute top-1/2 right-1 size-9 -translate-y-1/2 hover:bg-transparent"
                       onClick={() => setShowPassword((v) => !v)}
-                      disabled={busy}
-                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      disabled={busy || googleBusy}
+                      aria-label={
+                        showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                      }
                     >
                       {showPassword ? (
                         <EyeOff className="size-4 text-muted-foreground" />
@@ -337,7 +454,7 @@ function EventSignInFormInner() {
                   <Button
                     type="submit"
                     className="min-h-[48px] w-full rounded-lg bg-destructive text-base font-bold text-destructive-foreground shadow-md shadow-destructive/20 hover:bg-destructive/90"
-                    disabled={busy}
+                    disabled={busy || googleBusy}
                   >
                     {busy
                       ? isDevelopment && selectedDevLoginId
@@ -346,7 +463,36 @@ function EventSignInFormInner() {
                       : "Đăng nhập"}
                   </Button>
                 </Field>
-
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Hoặc dùng tài khoản Google
+                    </span>
+                  </div>
+                </div>
+                <Field>
+                  <div
+                    ref={googleBtnRef}
+                    className="flex min-h-11 w-full items-center justify-center"
+                  >
+                    {!googleClientId ? (
+                      <span className="text-sm text-muted-foreground">
+                        Chưa cấu hình Google Client ID.
+                      </span>
+                    ) : null}
+                  </div>
+                  {currentOrigin ? (
+                    <FieldDescription className="text-center text-xs">
+                      Origin hiện tại:{" "}
+                      <code className="rounded bg-muted px-1">
+                        {currentOrigin}
+                      </code>
+                    </FieldDescription>
+                  ) : null}
+                </Field>
                 {error ? <FieldError>{error}</FieldError> : null}
 
                 <FieldDescription className="text-center text-sm md:text-left">
@@ -366,7 +512,7 @@ function EventSignInFormInner() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
 export function EventSignInForm() {
@@ -380,5 +526,5 @@ export function EventSignInForm() {
     >
       <EventSignInFormInner />
     </Suspense>
-  );
+  )
 }

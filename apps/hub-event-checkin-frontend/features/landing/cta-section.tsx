@@ -16,7 +16,7 @@ export function LandingCtaSection() {
               Sẵn sàng cho sự kiện tiếp theo?
             </Heading>
             <Text variant="muted" className="mx-auto mt-3 max-w-xl text-base">
-              Khám phá lịch sự kiện, đăng ký tham dự và tra cứu vé — mọi thứ trong một nền tảng
+              Khám phá lịch sự kiện, đăng ký tham dự và check-in QR — mọi thứ trong một nền tảng
               dành cho sinh viên HUB.
             </Text>
             <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
@@ -25,16 +25,6 @@ export function LandingCtaSection() {
                   <Ticket className="size-4" />
                   Danh sách sự kiện
                   <ArrowRight className="size-4" />
-                </Button>
-              </Link>
-              <Link href={LANDING_ROUTES.ticketLookup} className="sm:min-w-[180px]">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-11 w-full rounded-lg border-primary/40 px-6 font-semibold text-foreground hover:bg-primary/5 sm:w-auto"
-                >
-                  <Search className="size-4 text-primary" />
-                  Tra cứu vé
                 </Button>
               </Link>
             </div>

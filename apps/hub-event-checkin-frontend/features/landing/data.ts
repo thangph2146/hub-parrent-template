@@ -36,7 +36,6 @@ export const LANDING_STATS = [
   { value: "200+", label: "Sự kiện mỗi năm", suffix: "" },
   { value: "20K", label: "Sinh viên HUB", suffix: "+" },
   { value: "3", label: "Bước tham gia", suffix: "" },
-  { value: "24/7", label: "Tra cứu vé", suffix: "" },
 ] as const
 
 export const LANDING_MARQUEE_TAGS = [
@@ -76,13 +75,6 @@ export const LANDING_FEATURES: LandingFeature[] = [
     title: "Check-in siêu tốc",
     description: "Quét QR tại cổng — không xếp hàng, không giấy tờ.",
     accent: "secondary",
-  },
-  {
-    icon: Search,
-    title: "Tra cứu vé",
-    description: "Tìm vé và thông tin đăng ký chỉ với vài thao tác.",
-    href: LANDING_ROUTES.ticketLookup,
-    accent: "navy",
   },
   {
     icon: PartyPopper,

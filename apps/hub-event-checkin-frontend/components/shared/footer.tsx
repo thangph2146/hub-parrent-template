@@ -4,7 +4,6 @@ import { Separator } from "@ui/components/separator"
 import { Logo } from "@/components/icons/logo"
 import {
   FOOTER_EVENT_LINKS,
-  FOOTER_PARTICIPATE_LINKS,
   FOOTER_RESOURCE_LINKS,
   SITE_BRAND,
 } from "@/lib/site-nav"
@@ -15,7 +14,7 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-primary/15 bg-secondary text-secondary-foreground">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 md:px-12 md:py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-4 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-3">
               <span className="rounded-lg border border-white/15 bg-white p-2">
@@ -38,22 +37,6 @@ export function Footer() {
               {FOOTER_EVENT_LINKS.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
-                  className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
-                >
-                  <ArrowRight className="size-3.5 shrink-0 opacity-70" />
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wide text-white">Tham gia</h3>
-            <nav className="space-y-2.5">
-              {FOOTER_PARTICIPATE_LINKS.map((link) => (
-                <Link
-                  key={link.href + link.label}
                   href={link.href}
                   className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
                 >
