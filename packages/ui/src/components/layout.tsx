@@ -221,16 +221,20 @@ export function Divider({
   label,
   className,
 }: {
-  label?: string
+  label?: string | React.ReactNode
   className?: string
 }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <div className="h-px flex-1 bg-border" />
       {label && (
-        <span className="text-caption font-medium tracking-wider text-muted-foreground uppercase">
-          {label}
-        </span>
+        typeof label === "string" ? (
+          <span className="text-caption font-medium tracking-wider text-muted-foreground uppercase">
+            {label}
+          </span>
+        ) : (
+          label
+        )
       )}
       <div className="h-px flex-1 bg-border" />
     </div>

@@ -44,6 +44,7 @@ export type AdminTableExportTemplateId =
   | "event-checkins"
   | "event-checkouts"
   | "event-speakers"
+  | "event-live-activities"
   | "student-year-averages"
   | "student-term-averages"
   | "student-detailed-scores"
@@ -348,6 +349,13 @@ const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
     subtitle: ADMIN_EXPORT_SUBTITLE,
     recordLabel: "diễn giả",
   },
+  "event-live-activities": {
+    fileName: "luong-hoat-dong-realtime.xlsx",
+    sheetName: "Hoat dong",
+    title: "LUỒNG HOẠT ĐỘNG REALTIME SỰ KIỆN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "hoạt động",
+  },
   "student-year-averages": {
     fileName: "diem-trung-binh-nam.xlsx",
     sheetName: "Diem TB nam",
@@ -444,7 +452,8 @@ export type EventDetailExportTab =
   | "registrations"
   | "checkins"
   | "checkouts"
-  | "speakers";
+  | "speakers"
+  | "live-activities";
 
 const EVENT_DETAIL_TEMPLATE: Record<
   EventDetailExportTab,
@@ -454,6 +463,7 @@ const EVENT_DETAIL_TEMPLATE: Record<
   checkins: "event-checkins",
   checkouts: "event-checkouts",
   speakers: "event-speakers",
+  "live-activities": "event-live-activities",
 };
 
 export function buildEventDetailXlsxExport(

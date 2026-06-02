@@ -7,7 +7,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import type { PostListRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -101,18 +100,16 @@ export function PostsTable({
           onAction: onBulkPurge,
         },
       ] : []}
-      footer={
-        <AdminTablePaginationFooter
-          page={page}
-          pageSize={pageSize}
-          total={total}
-          isLoading={isLoading}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          emptySummary="Không có bài viết"
-          itemLabel="bài viết"
-        />
-      }
+      pagination={{
+        page,
+        pageSize,
+        total,
+        isLoading,
+        onPageChange,
+        onPageSizeChange,
+        emptySummary: "Không có bài viết",
+        itemLabel: "bài viết",
+      }}
     />
   )
 }

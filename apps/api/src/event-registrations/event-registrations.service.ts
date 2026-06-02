@@ -7,6 +7,7 @@ import {
   CheckinMethod,
 } from '../entities/event-registration.entity';
 import { Event } from '../entities/event.entity';
+import { User } from '../entities/user.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface EventRegistrationRowDto {
@@ -14,6 +15,8 @@ export interface EventRegistrationRowDto {
   eventId: string;
   email: string;
   fullName: string;
+  /** Avatar từ `users` (email) hoặc `formData`. */
+  avatar: string | null;
   phone: string | null;
   registeredAt: string | null;
   status: RegistrationStatus;
@@ -68,7 +71,60 @@ function toIsoString(
   return null;
 }
 
-function mapRow(r: EventRegistration): EventRegistrationRowDto {
+function avatarFromFormData(formData: unknown): string | null {
+  if (formData == null || typeof formData !== 'object') return null;
+  const record = formData as Record<string, unknown>;
+  for (const key of ['avatar', 'avatarUrl', 'image', 'photo', 'profileImage']) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (value && typeof value === 'object') {
+      const nested = value as Record<string, unknown>;
+      if (typeof nested.url === 'string' && nested.url.trim()) {
+        return nested.url.trim();
+      }
+    }
+  }
+  return null;
+}
+
+async function loadAvatarByEmails(
+  em: EntityManager,
+  emails: string[],
+): Promise<Map<string, string | null>> {
+  const normalized = [
+    ...new Set(
+      emails.map((e) => e.trim().toLowerCase()).filter((e) => e.length > 0),
+    ),
+  ];
+  const map = new Map<string, string | null>();
+  if (!normalized.length) return map;
+
+  const users = await em.find(User, {
+    email: { $in: normalized },
+    deletedAt: null,
+  } as FilterQuery<User>);
+
+  for (const user of users) {
+    const email = user.email?.trim().toLowerCase();
+    if (!email) continue;
+    map.set(email, user.avatar?.trim() || null);
+  }
+  return map;
+}
+
+function resolveRegistrationAvatar(
+  row: EventRegistration,
+  avatarByEmail?: Map<string, string | null>,
+): string | null {
+  const fromUser = avatarByEmail?.get(row.email.trim().toLowerCase());
+  if (fromUser) return fromUser;
+  return avatarFromFormData(row.formData);
+}
+
+function mapRow(
+  r: EventRegistration,
+  avatarByEmail?: Map<string, string | null>,
+): EventRegistrationRowDto {
   const eventRef = r.event as Event | { id?: string };
   const eventId =
     eventRef && typeof eventRef === 'object' && 'id' in eventRef
@@ -79,6 +135,7 @@ function mapRow(r: EventRegistration): EventRegistrationRowDto {
     eventId,
     email: r.email,
     fullName: r.fullName,
+    avatar: resolveRegistrationAvatar(r, avatarByEmail),
     phone: r.phone ?? null,
     registeredAt: toIsoString(r.registeredAt),
     status: r.status,
@@ -158,7 +215,9 @@ export class EventRegistrationsService {
       deletedAt: null,
       status: { $ne: RegistrationStatus.CANCELLED },
     } as FilterQuery<EventRegistration>);
-    return row ? mapRow(row) : null;
+    if (!row) return null;
+    const avatarByEmail = await loadAvatarByEmails(this.em, [row.email]);
+    return mapRow(row, avatarByEmail);
   }
 
   async list(
@@ -194,8 +253,12 @@ export class EventRegistrationsService {
       }),
       this.em.count(EventRegistration, whereQuery),
     ]);
+    const avatarByEmail = await loadAvatarByEmails(
+      this.em,
+      rows.map((row) => row.email),
+    );
     return {
-      data: rows.map(mapRow),
+      data: rows.map((row) => mapRow(row, avatarByEmail)),
       pagination: paginationMeta(page, limit, total),
     };
   }
@@ -203,7 +266,8 @@ export class EventRegistrationsService {
   async getById(id: string): Promise<EventRegistrationRowDto | null> {
     const r = await this.em.findOne(EventRegistration, { id });
     if (!r) return null;
-    return mapRow(r);
+    const avatarByEmail = await loadAvatarByEmails(this.em, [r.email]);
+    return mapRow(r, avatarByEmail);
   }
 
   async create(data: {
@@ -222,7 +286,8 @@ export class EventRegistrationsService {
     created.registeredAt = data.registeredAt ?? new Date();
     if (data.status !== undefined) created.status = data.status;
     await this.em.persistAndFlush(created);
-    return mapRow(created);
+    const avatarByEmail = await loadAvatarByEmails(this.em, [created.email]);
+    return mapRow(created, avatarByEmail);
   }
 
   async update(
@@ -250,7 +315,8 @@ export class EventRegistrationsService {
     if (data.checkinMethod !== undefined)
       existing.checkinMethod = data.checkinMethod;
     await this.em.persistAndFlush(existing);
-    return mapRow(existing);
+    const avatarByEmail = await loadAvatarByEmails(this.em, [existing.email]);
+    return mapRow(existing, avatarByEmail);
   }
 
   async softDelete(id: string): Promise<boolean> {

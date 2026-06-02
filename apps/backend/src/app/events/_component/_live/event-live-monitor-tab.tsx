@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import {
   Activity,
-  LogIn,
   LogOut,
   Pause,
   Play,
@@ -12,14 +11,14 @@ import {
   UserCheck,
   Users,
 } from "lucide-react"
+import { AdminDataTable } from "@ui/components/data-table"
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import { cn } from "@ui/lib/utils"
 import { api } from "@/lib/api"
+import { buildEventDetailXlsxExport } from "@/lib/admin-table-xlsx-export"
 import type { EventDetail } from "../types"
 import {
-  useEventCheckoutsQuery,
   useEventDetailQuery,
   useEventRegistrationsQuery,
   type EventLiveQueryOptions,
@@ -30,23 +29,16 @@ import {
 } from "./event-attendance-sync"
 import { useEventAttendanceContext } from "./event-attendance-provider"
 import { EventHanetConfigCard } from "./event-hanet-config-card"
+import {
+  buildLiveActivitiesFromRegistrations,
+  getEventLiveActivityColumns,
+  getEventLiveActivityGlobalFilterText,
+  type EventLiveActivityRow,
+} from "../live-activity-columns"
 
 const LIVE_POLL_MS = 15_000
 const LIVE_POLL_SOCKET_MS = 60_000
 const NEW_HIGHLIGHT_MS = 12_000
-
-type Dict = Record<string, unknown>
-
-type ActivityKind = "checkin" | "checkout"
-
-type ActivityItem = {
-  id: string
-  kind: ActivityKind
-  at: string
-  email: string
-  fullName: string
-  detail?: string
-}
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—"
@@ -54,57 +46,13 @@ function formatDateTime(value: string | null | undefined): string {
   return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
 }
 
-function checkinTypeLabel(value: unknown): string {
-  const v = Number(value)
-  if (v === 2) return "Face ID"
-  if (v === 1) return "QR Code"
-  if (v === 3) return "Thủ công"
-  return "—"
-}
-
-function buildActivities(
-  registrations: Dict[],
-  checkouts: Dict[],
-): ActivityItem[] {
-  const items: ActivityItem[] = []
-
-  for (const row of registrations) {
-    if (!asAttendanceBool(row.hasCheckin)) continue
-    const at = String(row.updatedAt ?? row.registeredAt ?? "")
-    if (!at) continue
-    items.push({
-      id: `checkin:${String(row.id)}`,
-      kind: "checkin",
-      at,
-      email: String(row.email ?? ""),
-      fullName: String(row.fullName ?? ""),
-      detail: checkinTypeLabel(row.checkinMethod),
-    })
-  }
-
-  for (const row of checkouts) {
-    const at = String(row.checkoutTime ?? "")
-    if (!at) continue
-    items.push({
-      id: `checkout:${String(row.id)}`,
-      kind: "checkout",
-      at,
-      email: String(row.email ?? ""),
-      fullName: String(row.fullName ?? ""),
-      detail: "Check-out",
-    })
-  }
-
-  return items.sort(
-    (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime(),
-  )
-}
-
 export function EventLiveMonitorTab({
   eventId,
+  eventTitle,
   initialStats,
 }: {
   eventId: string
+  eventTitle?: string
   initialStats: Pick<
     EventDetail,
     "totalRegistrations" | "totalCheckins" | "totalCheckouts"
@@ -113,9 +61,11 @@ export function EventLiveMonitorTab({
   const [liveEnabled, setLiveEnabled] = useState(true)
   const {
     connected: socketConnected,
+    socketError,
     lastPayload,
     liveRevision,
   } = useEventAttendanceContext()
+
   const pollOptions = useMemo<EventLiveQueryOptions>(
     () => ({
       enabled: liveEnabled,
@@ -129,10 +79,12 @@ export function EventLiveMonitorTab({
   )
 
   const detailQuery = useEventDetailQuery(api, eventId, pollOptions)
-  const checkoutsQuery = useEventCheckoutsQuery(api, eventId, pollOptions)
-  const registrationsQuery = useEventRegistrationsQuery(api, eventId, pollOptions)
+  const registrationsQuery = useEventRegistrationsQuery(
+    api,
+    eventId,
+    pollOptions,
+  )
 
-  const checkouts = checkoutsQuery.data ?? []
   const registrations = useMemo(
     () =>
       mergeRegistrationRowsForDisplay(
@@ -156,9 +108,11 @@ export function EventLiveMonitorTab({
   }, [detailQuery.data])
 
   const activities = useMemo(
-    () => buildActivities(registrations, checkouts),
-    [registrations, checkouts],
+    () => buildLiveActivitiesFromRegistrations(registrations),
+    [registrations],
   )
+
+  const activityColumns = useMemo(() => getEventLiveActivityColumns(), [])
 
   const pendingCheckin = useMemo(
     () =>
@@ -169,13 +123,18 @@ export function EventLiveMonitorTab({
   )
 
   const seenIdsRef = useRef<Set<string>>(new Set())
-  const [newIds, setNewIds] = useState<Set<string>>(new Set())
+  const [newActivityIds, setNewActivityIds] = useState<Set<string>>(new Set())
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null)
 
+  const newActivityCount = useMemo(
+    () => activities.filter((a) => newActivityIds.has(a.id)).length,
+    [activities, newActivityIds],
+  )
+
   const isFetching =
-    detailQuery.isFetching ||
-    registrationsQuery.isFetching ||
-    checkoutsQuery.isFetching
+    detailQuery.isFetching || registrationsQuery.isFetching
+
+  const isLoading = registrationsQuery.isLoading
 
   useEffect(() => {
     if (!liveEnabled || isFetching) return
@@ -194,9 +153,9 @@ export function EventLiveMonitorTab({
 
     if (fresh.size === 0) return
 
-    setNewIds((prev) => new Set([...prev, ...fresh]))
+    setNewActivityIds((prev) => new Set([...prev, ...fresh]))
     const timer = window.setTimeout(() => {
-      setNewIds((prev) => {
+      setNewActivityIds((prev) => {
         const next = new Set(prev)
         for (const id of fresh) next.delete(id)
         return next
@@ -215,9 +174,9 @@ export function EventLiveMonitorTab({
           ? `checkout:${lastPayload.registrationId ?? lastPayload.email}`
           : null
     if (!id) return
-    setNewIds((prev) => new Set([...prev, id]))
+    setNewActivityIds((prev) => new Set([...prev, id]))
     const timer = window.setTimeout(() => {
-      setNewIds((prev) => {
+      setNewActivityIds((prev) => {
         const next = new Set(prev)
         next.delete(id)
         return next
@@ -226,14 +185,15 @@ export function EventLiveMonitorTab({
     return () => window.clearTimeout(timer)
   }, [lastPayload, liveRevision, liveEnabled])
 
-  const isLoading =
-    registrationsQuery.isLoading ||
-    checkoutsQuery.isLoading ||
-    registrationsQuery.isLoading
+  const handleRefresh = () => {
+    void detailQuery.refetch()
+    void registrationsQuery.refetch()
+  }
 
   return (
     <div className="space-y-4">
       <EventHanetConfigCard eventId={eventId} cameras={hanetCameras} />
+
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/70 bg-card px-4 py-3">
         <div className="flex items-center gap-2">
           <span
@@ -250,6 +210,11 @@ export function EventLiveMonitorTab({
           {liveEnabled && socketConnected ? (
             <Badge variant="secondary" className="text-[10px]">
               HANET live
+            </Badge>
+          ) : null}
+          {socketError && liveEnabled ? (
+            <Badge variant="destructive" className="text-[10px]">
+              Socket lỗi
             </Badge>
           ) : null}
           <div>
@@ -287,20 +252,6 @@ export function EventLiveMonitorTab({
               </>
             )}
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => {
-              void detailQuery.refetch()
-              void registrationsQuery.refetch()
-              void checkoutsQuery.refetch()
-              void registrationsQuery.refetch()
-            }}
-          >
-            <RefreshCw className="size-3.5" /> Làm mới ngay
-          </Button>
         </div>
       </div>
 
@@ -329,83 +280,61 @@ export function EventLiveMonitorTab({
         />
       </div>
 
-      <Card className="border border-border/70 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Activity className="size-5 text-primary" />
-            Luồng hoạt động gần đây
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Đang tải dữ liệu…
-            </p>
-          ) : activities.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Chưa có check-in hoặc check-out nào.
-            </p>
-          ) : (
-            <ul className="max-h-[min(520px,60vh)] space-y-2 overflow-y-auto pr-1">
-              {activities.map((item) => {
-                const isNew = newIds.has(item.id)
-                const isCheckin = item.kind === "checkin"
-                return (
-                  <li
-                    key={item.id}
-                    className={cn(
-                      "flex items-start gap-3 rounded-lg border px-3 py-2.5 transition-colors",
-                      isNew
-                        ? "border-primary/40 bg-primary/5"
-                        : "border-border/70 bg-muted/20",
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full",
-                        isCheckin
-                          ? "bg-emerald-500/15 text-emerald-700"
-                          : "bg-amber-500/15 text-amber-700",
-                      )}
-                    >
-                      {isCheckin ? (
-                        <LogIn className="size-4" />
-                      ) : (
-                        <LogOut className="size-4" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate text-sm font-medium">
-                          {item.fullName || item.email || "—"}
-                        </p>
-                        <Badge
-                          variant={isCheckin ? "default" : "secondary"}
-                          className="text-[10px]"
-                        >
-                          {isCheckin ? "Check-in" : "Check-out"}
-                        </Badge>
-                        {isNew ? (
-                          <Badge variant="outline" className="text-[10px]">
-                            Mới
-                          </Badge>
-                        ) : null}
-                      </div>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {item.email}
-                        {item.detail ? ` · ${item.detail}` : ""}
-                      </p>
-                      <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
-                        {formatDateTime(item.at)}
-                      </p>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+      <div className="space-y-2">
+        <p className="flex items-center gap-2 text-base font-semibold">
+          <Activity className="size-5 text-primary" />
+          Luồng hoạt động gần đây
+        </p>
+        <AdminDataTable<EventLiveActivityRow>
+          data={activities}
+          columns={activityColumns}
+          getRowId={(row) => row.id}
+          isLoading={isLoading}
+          emptyLabel="Chưa có check-in hoặc check-out nào."
+          globalFilterPlaceholder="Tìm theo tên, email, loại, thời gian…"
+          filterColumnVisibilityKey="admin-table-filter-visibility:event-live-activities"
+          getGlobalFilterText={getEventLiveActivityGlobalFilterText}
+          getRowClassName={(row) =>
+            newActivityIds.has(row.original.id)
+              ? "ring-2 ring-inset ring-primary bg-primary/5"
+              : undefined
+          }
+          filterToolbarExtra={
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1"
+              disabled={isFetching}
+              onClick={handleRefresh}
+            >
+              <RefreshCw
+                className={cn("size-3.5", isFetching && "animate-spin")}
+                aria-hidden
+              />
+              Làm mới
+            </Button>
+          }
+          xlsxExport={buildEventDetailXlsxExport("live-activities", {
+            eventId,
+            eventTitle,
+            pageCount: activities.length,
+            total: activities.length,
+          })}
+          clientPagination={{
+            initialPageSize: 15,
+            itemLabel: "hoạt động",
+            emptySummary: "Chưa có hoạt động nào",
+            isLoading,
+          }}
+          footer={
+            <span>
+              {newActivityCount > 0 ? `${newActivityCount} mục mới · ` : ""}
+              Sắp xếp mới nhất trước.
+            </span>
+          }
+        />
+      </div>
     </div>
   )
 }

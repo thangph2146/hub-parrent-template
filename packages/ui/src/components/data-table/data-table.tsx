@@ -34,6 +34,7 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
@@ -44,9 +45,19 @@ import {
   type OnChangeFn,
   type RowSelectionState,
   type Row,
+  type PaginationState,
   type SortingState,
 } from "@tanstack/react-table"
-import { ChevronDown, ChevronRight, Download, Eye, EyeOff, FilterX, ListFilter } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronRight,
+  Download,
+  Eye,
+  EyeOff,
+  FilterX,
+  ListFilter,
+  Table2,
+} from "lucide-react"
 import {
   useCallback,
   useEffect,
@@ -89,6 +100,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../alert-dialog"
+import {
+  AdminDataTablePagination,
+  ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
+  type AdminDataTablePaginationConfig,
+  type AdminDataTableServerPaginationConfig,
+} from "./data-table-pagination"
+import { Divider } from "../layout"
 
 export type AdminDataTableBulkAction<TData> = {
   id: string
@@ -158,8 +176,19 @@ export type AdminDataTableProps<TData> = {
   clearFiltersVariant?: "outline" | "destructive"
   /** Nút / nhóm tùy chọn cạnh ô tìm nhanh (vd. xuất file) */
   filterToolbarExtra?: ReactNode
-  /** Phân trang / tóm tắt ngay dưới bảng */
+  /** Nội dung tùy chọn bên trái footer (tóm tắt, ghi chú). */
   footer?: ReactNode
+  /** Phân trang server — `data` là một trang từ API. */
+  pagination?: AdminDataTableServerPaginationConfig
+  /** Phân trang client — tự cắt `data` sau lọc (danh sách load một lần). */
+  clientPagination?: {
+    initialPageSize?: number
+    pageSizeOptions?: readonly number[]
+    maxPageSize?: number
+    emptySummary?: string
+    itemLabel?: string
+    isLoading?: boolean
+  }
   /**
    * Hiện nút xuất Excel (dữ liệu đúng mảng `data` hiện tại — thường là một trang/lớp đã lọc).
    * Bảng cây (`getSubRows`) sẽ xuất đủ nhánh con theo thứ tự hiển thị.
@@ -177,6 +206,19 @@ export type AdminDataTableProps<TData> = {
 }
 
 export type DataTableProps<TData> = AdminDataTableProps<TData>
+
+export type {
+  AdminDataTablePaginationConfig,
+  AdminDataTablePaginationProps,
+  AdminDataTableServerPaginationConfig,
+  AdminDataTableClientPaginationConfig,
+} from "./data-table-pagination"
+export {
+  AdminDataTablePagination,
+  ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
+  ADMIN_DATA_TABLE_MIN_PAGE_SIZE,
+  ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
+} from "./data-table-pagination"
 
 function includesText(a: unknown, q: string): boolean {
   if (!q) return true
@@ -295,6 +337,8 @@ export function AdminDataTable<TData>({
   clearFiltersVariant = "outline",
   filterToolbarExtra,
   footer,
+  pagination,
+  clientPagination,
   xlsxExport,
   rowSelectionEnabled = false,
   canSelectRow,
@@ -357,6 +401,23 @@ export function AdminDataTable<TData>({
   const [expanded, setExpanded] = useState<ExpandedState>(
     defaultExpandedAll ? true : {}
   )
+  const clientPaginationEnabled = Boolean(clientPagination)
+  const [clientPageIndex, setClientPageIndex] = useState(0)
+  const [clientPageSize, setClientPageSize] = useState(
+    clientPagination?.initialPageSize ?? 15
+  )
+  const clientPaginationState = useMemo<PaginationState>(
+    () => ({
+      pageIndex: clientPageIndex,
+      pageSize: clientPageSize,
+    }),
+    [clientPageIndex, clientPageSize]
+  )
+
+  useEffect(() => {
+    if (!clientPaginationEnabled) return
+    setClientPageIndex(0)
+  }, [clientPaginationEnabled, data.length, globalFilter, columnFilters])
 
   // Filter column visibility — lưu localStorage
   const storageKey = filterColumnVisibilityKey
@@ -383,9 +444,7 @@ export function AdminDataTable<TData>({
       header: () => null,
       cell: ({ row }) => {
         if (!row.getCanExpand()) {
-          return (
-            <span className="inline-block h-8 w-8 shrink-0" aria-hidden />
-          )
+          return <span className="inline-block h-8 w-8 shrink-0" aria-hidden />
         }
         return (
           <div className="flex w-8 items-center justify-center">
@@ -488,17 +547,33 @@ export function AdminDataTable<TData>({
       globalFilter,
       expanded,
       rowSelection: selectedRowIds,
+      ...(clientPaginationEnabled ? { pagination: clientPaginationState } : {}),
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onExpandedChange: setExpanded,
     onRowSelectionChange: setSelectedRowIds,
+    ...(clientPaginationEnabled
+      ? {
+          onPaginationChange: (updater) => {
+            const next =
+              typeof updater === "function"
+                ? updater(clientPaginationState)
+                : updater
+            setClientPageIndex(next.pageIndex)
+            setClientPageSize(next.pageSize)
+          },
+        }
+      : {}),
     getSubRows,
     getRowId,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    ...(clientPaginationEnabled
+      ? { getPaginationRowModel: getPaginationRowModel() }
+      : {}),
     getExpandedRowModel: getExpandedRowModel(),
     manualFiltering,
     filterFromLeafRows: filterFromLeafRowsProp,
@@ -523,6 +598,41 @@ export function AdminDataTable<TData>({
       ? (row) => (canSelectRow ? canSelectRow(row) : true)
       : false,
   })
+
+  const clientFilteredTotal = clientPaginationEnabled
+    ? table.getFilteredRowModel().rows.length
+    : 0
+
+  const serverPaginationFooter = pagination ? (
+    <AdminDataTablePagination {...pagination} mode="server" />
+  ) : null
+
+  const clientPaginationFooter =
+    clientPaginationEnabled && clientPagination ? (
+      <AdminDataTablePagination
+        mode="client"
+        page={clientPageIndex + 1}
+        pageSize={clientPageSize}
+        total={clientFilteredTotal}
+        onPageChange={(nextPage) =>
+          setClientPageIndex(Math.max(0, nextPage - 1))
+        }
+        onPageSizeChange={(size) => {
+          setClientPageSize(size)
+          setClientPageIndex(0)
+        }}
+        pageSizeOptions={
+          clientPagination.pageSizeOptions ?? ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS
+        }
+        maxPageSize={clientPagination.maxPageSize}
+        emptySummary={clientPagination.emptySummary}
+        itemLabel={clientPagination.itemLabel}
+        isLoading={clientPagination.isLoading ?? isLoading}
+      />
+    ) : null
+
+  const paginationFooter = serverPaginationFooter ?? clientPaginationFooter
+  const showTableFooter = Boolean(footer || paginationFooter)
 
   const handleXlsxExport = useCallback(() => {
     const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
@@ -838,7 +948,10 @@ export function AdminDataTable<TData>({
       <>
         <div className="space-y-2 rounded-lg border border-border bg-card p-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-10 animate-pulse rounded-md bg-muted/40" />
+            <div
+              key={i}
+              className="h-10 animate-pulse rounded-md bg-muted/40"
+            />
           ))}
         </div>
         <BulkActionConfirmDialog
@@ -928,12 +1041,18 @@ export function AdminDataTable<TData>({
           />
           {filterableHeaders.length > 0 && (
             <div className="space-y-2">
-              <Separator />
+              <Divider
+                label={
+                  <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
+                    <ListFilter
+                      className="size-4 shrink-0 text-primary/80"
+                      aria-hidden
+                    />
+                    Lọc theo cột
+                  </TypographyPSmall>
+                }
+              />
               <div className="flex flex-wrap items-center gap-2">
-                <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
-                  <ListFilter className="size-4 shrink-0 text-primary/80" aria-hidden />
-                  Lọc theo cột
-                </TypographyPSmall>
                 {filterColumnVisibilityKey && (
                   <div className="flex flex-wrap items-end gap-2">
                     <div className="min-w-[14rem]">
@@ -990,129 +1109,137 @@ export function AdminDataTable<TData>({
           )}
         </div>
       )}
-
-      <div className="overflow-hidden rounded-lg border border-border pt-0">
-        <div className="overflow-x-auto">
-          <Table className="min-w-[640px] text-sm sm:min-w-0">
-            <TableHeader className="bg-primary text-primary-foreground">
-              {headerGroups.map((hg) => (
-                <TableRow key={hg.id} className="hover:bg-transparent">
-                  {hg.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={cn(
-                        "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
-                        header.column.getCanSort() &&
-                          "cursor-pointer select-none",
-                        cellWidthClassName(
-                          header.column.columnDef.meta as
-                            | ColumnMeta
-                            | undefined
-                        )
-                      )}
-                      onClick={
-                        header.column.getCanSort()
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div className="flex h-full flex-col items-start justify-center gap-1">
-                          <span className="flex items-center gap-1">
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {header.column.getIsSorted() === "asc"
-                              ? " ↑"
-                              : header.column.getIsSorted() === "desc"
-                                ? " ↓"
-                                : null}
-                          </span>
-                        </div>
-                      )}
-                    </TableHead>
-                  ))}
-                </TableRow>
+      <Divider
+        label={
+          <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
+            <Table2 className="size-4 shrink-0 text-primary/80" aria-hidden />
+            Dữ liệu
+          </TypographyPSmall>
+        }
+      />
+      <div className="border border-border">
+      <Table className="min-w-[640px]">
+        <TableHeader className="bg-primary text-primary-foreground">
+          {headerGroups.map((hg) => (
+            <TableRow key={hg.id} className="hover:bg-transparent">
+              {hg.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
+                    header.column.getCanSort() && "cursor-pointer select-none",
+                    cellWidthClassName(
+                      header.column.columnDef.meta as ColumnMeta | undefined
+                    )
+                  )}
+                  onClick={
+                    header.column.getCanSort()
+                      ? header.column.getToggleSortingHandler()
+                      : undefined
+                  }
+                >
+                  {header.isPlaceholder ? null : (
+                    <div className="flex h-full flex-col items-start justify-center gap-1">
+                      <span className="flex items-center gap-1">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {header.column.getIsSorted() === "asc"
+                          ? " ↑"
+                          : header.column.getIsSorted() === "desc"
+                            ? " ↓"
+                            : null}
+                      </span>
+                    </div>
+                  )}
+                </TableHead>
               ))}
-            </TableHeader>
-            <TableBody>
-              {rows.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={tableColumns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    {emptyLabel}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-depth={row.depth}
-                    className={cn(
-                      "hover:bg-primary/8",
-                      row.index % 2 === 1 && "bg-primary/8",
-                      getRowClassName?.(row)
-                    )}
-                    style={{
-                      borderLeft:
-                        row.depth > 0
-                          ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
-                          : undefined,
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      const colIndex = cell.column.getIndex()
-                      // Calculate which column should get indent:
-                      // if rowSelection + expander: first data column is at index 2
-                      // if only expander: first data column is at index 1
-                      // if only rowSelection: first data column is at index 1
-                      const firstDataColumnIndex =
-                        (rowSelectionEnabled ? 1 : 0) + (getSubRows ? 1 : 0)
-                      const indent =
-                        getSubRows && colIndex === firstDataColumnIndex
-                          ? row.depth * 24
-                          : 0
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={cn(
-                            cellWidthClassName(
-                              cell.column.columnDef.meta as
-                                | ColumnMeta
-                                | undefined
-                            ),
-                            row.getIsSelected() && "!bg-primary/8",
-                            cell.column.id === "_select" &&
-                              !row.getIsSelected() &&
-                              "hover:!bg-primary/8"
-                          )}
-                          style={{
-                            paddingLeft:
-                              indent > 0
-                                ? `calc(0.5rem + ${indent}px)`
-                                : undefined,
-                          }}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {rows.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={tableColumns.length}
+                className="h-24 text-center text-muted-foreground"
+              >
+                {emptyLabel}
+              </TableCell>
+            </TableRow>
+          ) : (
+            rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-depth={row.depth}
+                className={cn(
+                  "hover:bg-primary/8",
+                  row.index % 2 === 1 && "bg-primary/8",
+                  getRowClassName?.(row)
+                )}
+                style={{
+                  borderLeft:
+                    row.depth > 0
+                      ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
+                      : undefined,
+                }}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const colIndex = cell.column.getIndex()
+                  // Calculate which column should get indent:
+                  // if rowSelection + expander: first data column is at index 2
+                  // if only expander: first data column is at index 1
+                  // if only rowSelection: first data column is at index 1
+                  const firstDataColumnIndex =
+                    (rowSelectionEnabled ? 1 : 0) + (getSubRows ? 1 : 0)
+                  const indent =
+                    getSubRows && colIndex === firstDataColumnIndex
+                      ? row.depth * 24
+                      : 0
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        cellWidthClassName(
+                          cell.column.columnDef.meta as ColumnMeta | undefined
+                        ),
+                        row.getIsSelected() && "!bg-primary/8",
+                        cell.column.id === "_select" &&
+                          !row.getIsSelected() &&
+                          "hover:!bg-primary/8"
+                      )}
+                      style={{
+                        paddingLeft:
+                          indent > 0 ? `calc(0.5rem + ${indent}px)` : undefined,
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
       </div>
-      {footer ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-3 sm:px-4">
-          {footer}
+      {showTableFooter ? (
+        <div
+          className={cn(
+            "flex flex-col gap-3 border-t border-border/80 bg-muted/15 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4",
+            paginationFooter && !footer && "sm:justify-center"
+          )}
+        >
+          {footer ? (
+            <div className="min-w-0 flex-1 text-sm text-muted-foreground">
+              {footer}
+            </div>
+          ) : null}
+          {paginationFooter}
         </div>
       ) : null}
 

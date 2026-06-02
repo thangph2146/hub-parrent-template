@@ -153,7 +153,7 @@ export class EventRegistrationAttendanceService {
       this.logger.debug(
         `Attendance check-in bỏ qua (đã check-in) event=${eventId} email=${reg.email}`,
       );
-      const result = this.toResult(eventId, reg, 'checkin', true);
+      const result = await this.toResult(eventId, reg, 'checkin', true);
       this.emitState(reg, eventId, 'checkin', source, {
         duplicate: true,
         deviceId: input.deviceId,
@@ -176,7 +176,7 @@ export class EventRegistrationAttendanceService {
     await this.em.flush();
     await this.syncEventCounts(eventId);
 
-    const result = this.toResult(eventId, reg, 'checkin', false);
+    const result = await this.toResult(eventId, reg, 'checkin', false);
     this.emitState(reg, eventId, 'checkin', source, {
       duplicate: false,
       deviceId: input.deviceId,
@@ -205,7 +205,7 @@ export class EventRegistrationAttendanceService {
       this.logger.debug(
         `Attendance check-out bỏ qua (đã check-out) event=${eventId} email=${reg.email}`,
       );
-      const result = this.toResult(eventId, reg, 'checkout', true);
+      const result = await this.toResult(eventId, reg, 'checkout', true);
       this.emitState(reg, eventId, 'checkout', source, { duplicate: true });
       return result;
     }
@@ -224,7 +224,7 @@ export class EventRegistrationAttendanceService {
     await this.em.flush();
     await this.syncEventCounts(eventId);
 
-    const result = this.toResult(eventId, reg, 'checkout', false);
+    const result = await this.toResult(eventId, reg, 'checkout', false);
     this.emitState(reg, eventId, 'checkout', source, { duplicate: false });
     this.logger.log(
       `Attendance check-out (${source}) event=${eventId} email=${reg.email}`,
@@ -303,31 +303,16 @@ export class EventRegistrationAttendanceService {
     );
   }
 
-  private toResult(
+  private async toResult(
     eventId: string,
     reg: EventRegistration,
     kind: 'checkin' | 'checkout',
     duplicate: boolean,
-  ): ApplyAttendanceResult {
-    const mapped = {
-      id: reg.id,
-      eventId,
-      email: reg.email,
-      fullName: reg.fullName,
-      phone: reg.phone ?? null,
-      registeredAt: reg.registeredAt?.toISOString() ?? null,
-      status: reg.status,
-      faceVerified: reg.faceVerified,
-      hasCheckin: reg.hasCheckin,
-      hasCheckout: reg.hasCheckout,
-      attendanceStatus: reg.attendanceStatus,
-      attendanceMinutes: reg.attendanceMinutes,
-      checkinMethod: reg.checkinMethod,
-      formData: reg.formData,
-      createdAt: reg.createdAt?.toISOString() ?? null,
-      updatedAt: reg.updatedAt?.toISOString() ?? null,
-      deletedAt: reg.deletedAt?.toISOString() ?? null,
-    };
+  ): Promise<ApplyAttendanceResult> {
+    const mapped = await this.eventRegistrationsService.getById(reg.id);
+    if (!mapped) {
+      throw new NotFoundException('Không tìm thấy đăng ký sự kiện');
+    }
     return {
       kind,
       eventId,

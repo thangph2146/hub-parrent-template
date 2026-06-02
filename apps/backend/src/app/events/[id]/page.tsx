@@ -46,10 +46,7 @@ import {
   useEventSpeakersQuery,
 } from "../_component"
 import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
-import {
-  EventAttendanceProvider,
-  useEventAttendanceContext,
-} from "../_component/_live/event-attendance-provider"
+import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
 import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
 import { getPosterUrlFromValue } from "../_component/utils"
 import { TypographyH1 } from "@ui/components/typography"
@@ -68,7 +65,6 @@ function EventDetailInner() {
   const router = useRouter()
   const params = useParams()
   const id = params.id as string
-  const { liveRevision } = useEventAttendanceContext()
   const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.EVENTS_UPDATE)
@@ -374,10 +370,7 @@ function EventDetailInner() {
 
                   <Divider label="Thống kê" className="my-6" />
 
-                  <div
-                    key={`event-stats-${liveRevision}`}
-                    className="grid grid-cols-2 gap-3"
-                  >
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-lg bg-muted/30 p-3 text-center">
                       <p className="text-2xl font-bold text-primary">
                         {entity.totalRegistrations}
@@ -488,6 +481,7 @@ function EventDetailInner() {
         <TabsContent value="live" className="mt-6">
           <EventLiveMonitorTab
             eventId={id}
+            eventTitle={entity.title}
             initialStats={{
               totalRegistrations: entity.totalRegistrations,
               totalCheckins: entity.totalCheckins,
@@ -568,8 +562,10 @@ function SpeakersTab({
     <AdminDataTable<Dict>
       data={rows}
       columns={columns}
+      getRowId={(row) => String(row.id ?? "")}
       isLoading={isLoading}
       emptyLabel="Chưa có diễn giả nào."
+      globalFilterPlaceholder="Tìm theo tên, vai trò, chủ đề…"
       getGlobalFilterText={(row) =>
         [row.speakerName, row.speakerTitle, row.role, row.presentationTitle].filter(Boolean).join(" ")
       }
