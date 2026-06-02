@@ -162,6 +162,7 @@ export type AdminDataTableProps<TData> = {
   footer?: ReactNode
   /**
    * Hiện nút xuất Excel (dữ liệu đúng mảng `data` hiện tại — thường là một trang/lớp đã lọc).
+   * Bảng cây (`getSubRows`) sẽ xuất đủ nhánh con theo thứ tự hiển thị.
    */
   xlsxExport?: AdminDataTableXlsxExportConfig
   /** Bật cột chọn dòng cho thao tác hàng loạt */
@@ -353,33 +354,6 @@ export function AdminDataTable<TData>({
     return `xuat-bang-${new Date().toISOString().slice(0, 10)}.xlsx`
   }, [exportFileNameProp])
 
-  const handleXlsxExport = useCallback(() => {
-    const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
-      data,
-      columns
-    )
-    void downloadXlsxFile(
-      resolvedXlsxFileName,
-      headers,
-      rows,
-      exportSheetNameProp || "Dữ liệu",
-      {
-        title: exportTitleProp,
-        subtitle: exportSubtitleProp,
-        metadata: exportMetadataProp,
-        columnWidths,
-        columnWraps,
-      }
-    )
-  }, [
-    columns,
-    data,
-    exportMetadataProp,
-    exportSheetNameProp,
-    exportSubtitleProp,
-    exportTitleProp,
-    resolvedXlsxFileName,
-  ])
   const [expanded, setExpanded] = useState<ExpandedState>(
     defaultExpandedAll ? true : {}
   )
@@ -408,21 +382,13 @@ export function AdminDataTable<TData>({
       id: "_expand",
       header: () => null,
       cell: ({ row }) => {
-        const indent = row.depth * 24
         if (!row.getCanExpand()) {
           return (
-            <span
-              className="inline-block shrink-0"
-              style={{ width: `${48 + indent}px` }}
-              aria-hidden
-            />
+            <span className="inline-block h-8 w-8 shrink-0" aria-hidden />
           )
         }
         return (
-          <div
-            className="flex items-center"
-            style={{ paddingLeft: `${indent}px` }}
-          >
+          <div className="flex w-8 items-center justify-center">
             <Button
               type="button"
               variant="ghost"
@@ -446,8 +412,13 @@ export function AdminDataTable<TData>({
       },
       enableSorting: false,
       enableColumnFilter: false,
-      meta: { disableColumnFilter: true },
-      size: 44,
+      meta: {
+        disableColumnFilter: true,
+        className: "w-8 min-w-8 max-w-8 px-0",
+      },
+      size: 32,
+      minSize: 32,
+      maxSize: 32,
     }),
     []
   )
@@ -552,6 +523,36 @@ export function AdminDataTable<TData>({
       ? (row) => (canSelectRow ? canSelectRow(row) : true)
       : false,
   })
+
+  const handleXlsxExport = useCallback(() => {
+    const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
+      data,
+      columns,
+      getSubRows ? { getSubRows } : undefined
+    )
+    void downloadXlsxFile(
+      resolvedXlsxFileName,
+      headers,
+      rows,
+      exportSheetNameProp || "Dữ liệu",
+      {
+        title: exportTitleProp,
+        subtitle: exportSubtitleProp,
+        metadata: exportMetadataProp,
+        columnWidths,
+        columnWraps,
+      }
+    )
+  }, [
+    columns,
+    data,
+    exportMetadataProp,
+    exportSheetNameProp,
+    exportSubtitleProp,
+    exportTitleProp,
+    getSubRows,
+    resolvedXlsxFileName,
+  ])
 
   const hasActiveFilters =
     String(globalFilter ?? "").trim().length > 0 || columnFilters.length > 0

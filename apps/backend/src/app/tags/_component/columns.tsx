@@ -26,6 +26,10 @@ export function getTagColumns({
       accessorKey: "name",
       header: "Tên / nhóm",
       enableColumnFilter: false,
+      meta: {
+        exportValue: (row) =>
+          row.isGroup ? `${row.name} (${row.itemCount ?? 0} thẻ)` : row.name,
+      },
       cell: ({ row, getValue }) =>
         row.original.isGroup ? (
           <div className="flex items-center gap-2">
@@ -48,6 +52,10 @@ export function getTagColumns({
       accessorKey: "slug",
       header: "Slug",
       enableColumnFilter: false,
+      meta: {
+        exportValue: (row) =>
+          row.isGroup ? `nhom:${row.slug}` : row.slug,
+      },
       cell: ({ row, getValue }) => (
         <span className="font-mono text-xs">
           {row.original.isGroup

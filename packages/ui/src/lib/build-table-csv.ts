@@ -81,13 +81,63 @@ function columnWrap<T>(col: ColumnDef<T, unknown>): boolean | undefined {
   return meta?.exportWrap
 }
 
+type FlatExportRow<T> = {
+  row: T
+  /** Tiền tố cây kiểu thư mục: `├── `, `│   └── `, … */
+  treePrefix: string
+}
+
+function flattenTreeForExport<T>(
+  data: T[],
+  getSubRows: (row: T) => T[] | undefined
+): FlatExportRow<T>[] {
+  const result: FlatExportRow<T>[] = []
+
+  function walk(rows: T[], linePrefix: string, depth: number) {
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = rows[index]!
+      const isLast = index === rows.length - 1
+      const connector = isLast ? "└── " : "├── "
+
+      result.push({
+        row,
+        treePrefix: depth === 0 ? "" : `${linePrefix}${connector}`,
+      })
+
+      const children = getSubRows(row)
+      if (children?.length) {
+        const childLinePrefix =
+          depth === 0 ? "" : `${linePrefix}${isLast ? "    " : "│   "}`
+        walk(children, childLinePrefix, depth + 1)
+      }
+    }
+  }
+
+  walk(data, "", 0)
+  return result
+}
+
+function resolveExportRows<T>(
+  data: T[],
+  getSubRows?: (row: T) => T[] | undefined
+): FlatExportRow<T>[] {
+  if (getSubRows) return flattenTreeForExport(data, getSubRows)
+  return data.map((row) => ({ row, treePrefix: "" }))
+}
+
+export type BuildCsvFromColumnsOptions<T> = {
+  /** Dùng khi bảng hiển thị dạng cây — xuất đủ nhánh con theo thứ tự depth-first. */
+  getSubRows?: (row: T) => T[] | undefined
+}
+
 /**
  * Xuất đúng mảng `data` hiện có (vd. một trang API / đã lọc client).
  * Cột không có accessorKey/accessorFn sẽ thành ô trống.
  */
 export function buildCsvFromColumns<T>(
   data: T[],
-  columns: ColumnDef<T, unknown>[]
+  columns: ColumnDef<T, unknown>[],
+  options?: BuildCsvFromColumnsOptions<T>
 ): {
   headers: string[]
   rows: string[][]
@@ -96,7 +146,16 @@ export function buildCsvFromColumns<T>(
 } {
   const exportCols = columns.filter(shouldExportColumn)
   const headers = exportCols.map(columnTitle)
-  const rows = data.map((row) => exportCols.map((col) => cellText(row, col)))
+  const exportRows = resolveExportRows(data, options?.getSubRows)
+  const rows = exportRows.map(({ row, treePrefix }) =>
+    exportCols.map((col, colIndex) => {
+      const text = cellText(row, col)
+      if (options?.getSubRows && treePrefix && colIndex === 0) {
+        return `${treePrefix}${text}`
+      }
+      return text
+    })
+  )
   const columnWidths = exportCols.map(columnWidth)
   const columnWraps = exportCols.map(columnWrap)
   return { headers, rows, columnWidths, columnWraps }
