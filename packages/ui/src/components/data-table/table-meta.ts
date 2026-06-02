@@ -36,6 +36,8 @@ declare module "@tanstack/react-table" {
     exportWidth?: number
     /** Bật xuống dòng trong ô XLSX. */
     exportWrap?: boolean
+    /** Class áp dụng lên `th`/`td` (vd. min-w-[120px]). */
+    className?: string
   }
 }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Check, ChevronDown, FileText, Folder } from "lucide-react"
+import { Check, ChevronDown, Columns3, FileText, Folder, ListChecks, ListX, X } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
@@ -18,6 +18,8 @@ export interface TreeMultiSelectPickerProps {
   options: TreeOption[]
   placeholder?: string
   id?: string
+  /** Hiện nút chọn/bỏ chọn tất cả trong popover */
+  showBulkActions?: boolean
 }
 
 function flattenTreeOptions(
@@ -112,10 +114,13 @@ export function TreeMultiSelectPicker({
   options,
   placeholder = "Tất cả",
   id,
+  showBulkActions = false,
 }: TreeMultiSelectPickerProps) {
   const [open, setOpen] = useState(false)
   const selected = Array.isArray(value) ? (value as string[]) : []
   const [draft, setDraft] = useState<string[]>(selected)
+  const flatOptions = flattenTreeOptions(options)
+  const allValues = flatOptions.map((option) => option.value)
 
   useEffect(() => {
     if (!open) {
@@ -128,8 +133,8 @@ export function TreeMultiSelectPicker({
     selected.length === 0
       ? placeholder
       : selected.length === 1
-        ? (flattenTreeOptions(options).find((o) => o.value === selected[0])
-            ?.label ?? `${selected.length} đã chọn`)
+        ? (flatOptions.find((o) => o.value === selected[0])?.label ??
+          `${selected.length} đã chọn`)
         : `${selected.length} đã chọn`
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -151,14 +156,22 @@ export function TreeMultiSelectPicker({
 
   const handleApply = () => {
     const next = draft.filter(Boolean)
-    onChange(next.length ? next : undefined)
+    onChange(showBulkActions ? next : next.length ? next : undefined)
     setOpen(false)
   }
 
   const handleClear = () => {
     setDraft([])
-    onChange(undefined)
+    onChange(showBulkActions ? [] : undefined)
     setOpen(false)
+  }
+
+  const handleSelectAllDraft = () => {
+    setDraft(allValues)
+  }
+
+  const handleClearDraft = () => {
+    setDraft([])
   }
 
   return (
@@ -168,10 +181,24 @@ export function TreeMultiSelectPicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
+          className="h-9 w-full min-w-[160px] justify-between gap-2 rounded-lg text-sm font-normal"
         >
-          <span className="truncate">{triggerLabel}</span>
-          <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+          <span className="flex min-w-0 items-center gap-2">
+            {showBulkActions ? (
+              <Columns3
+                className="size-4 shrink-0 text-primary/80"
+                aria-hidden
+              />
+            ) : null}
+            <span className="truncate">{triggerLabel}</span>
+          </span>
+          <ChevronDown
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
+              open && "rotate-180"
+            )}
+            aria-hidden
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-2" align="start">
@@ -181,6 +208,30 @@ export function TreeMultiSelectPicker({
           </p>
         ) : (
           <>
+            {showBulkActions && allValues.length > 0 ? (
+              <div className="mb-2 flex gap-2 border-b pb-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 flex-1 gap-1.5 text-xs"
+                  onClick={handleSelectAllDraft}
+                >
+                  <ListChecks className="size-3.5 shrink-0" aria-hidden />
+                  Chọn tất cả
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 flex-1 gap-1.5 text-xs"
+                  onClick={handleClearDraft}
+                >
+                  <ListX className="size-3.5 shrink-0" aria-hidden />
+                  Bỏ chọn tất cả
+                </Button>
+              </div>
+            ) : null}
             <div className="max-h-[min(60vh,18rem)] space-y-0.5 overflow-y-auto">
               {options.map((node) => (
                 <TreeMultiSelectNode
@@ -197,18 +248,20 @@ export function TreeMultiSelectPicker({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-8 flex-1 text-xs"
+                className="h-8 flex-1 gap-1.5 text-xs"
                 onClick={handleClear}
               >
+                <X className="size-3.5 shrink-0" aria-hidden />
                 Xóa
               </Button>
               <Button
                 type="button"
                 variant="default"
                 size="sm"
-                className="h-8 flex-1 text-xs"
+                className="h-8 flex-1 gap-1.5 text-xs"
                 onClick={handleApply}
               >
+                <Check className="size-3.5 shrink-0" aria-hidden />
                 Áp dụng
               </Button>
             </div>

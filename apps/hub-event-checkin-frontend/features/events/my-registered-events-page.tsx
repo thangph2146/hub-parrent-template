@@ -49,8 +49,13 @@ import {
 } from "@/lib/my-registered-events"
 import {
   formatEventDateTime,
+  formatEventScheduleText,
+  formatEventTimeDateLine,
+  formatEventTimeDateParts,
+  getEventScheduleDisplay,
   getEventLocationLabel,
   getPosterUrl,
+  type EventTimeDateParts,
 } from "@/lib/public-events"
 import { FORMAT_LABELS } from "@/lib/registration-format"
 import { useSyncExternalStore } from "react"
@@ -81,6 +86,81 @@ function eventHref(row: MyRegisteredEvent): string {
 
 function canCancel(row: MyRegisteredEvent): boolean {
   return canCancelMyRegistration(row)
+}
+
+function DateTimeTableCell({ value }: { value?: string | null }) {
+  const parts = formatEventTimeDateParts(value)
+  if (!parts) {
+    return <span className="text-sm text-muted-foreground">—</span>
+  }
+  return (
+    <div className="space-y-0.5 tabular-nums">
+      <p className="text-sm font-medium leading-none">{parts.time}</p>
+      <p className="text-xs leading-snug text-muted-foreground">{parts.date}</p>
+    </div>
+  )
+}
+
+function SchedulePoint({
+  label,
+  parts,
+}: {
+  label: string
+  parts: EventTimeDateParts
+}) {
+  return (
+    <div className="space-y-0.5">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <p className="text-sm font-medium tabular-nums leading-none">
+        {parts.time}
+      </p>
+      <p className="text-xs tabular-nums leading-snug text-muted-foreground">
+        {parts.date}
+      </p>
+    </div>
+  )
+}
+
+function EventScheduleTableCell({
+  start,
+  end,
+}: {
+  start?: string | null
+  end?: string | null
+}) {
+  const display = getEventScheduleDisplay(start, end)
+
+  if (display.kind === "empty") {
+    return <span className="text-sm text-muted-foreground">—</span>
+  }
+
+  if (display.kind === "single") {
+    return (
+      <DateTimeTableCell
+        value={start}
+      />
+    )
+  }
+
+  if (display.kind === "same-day") {
+    return (
+      <div className="space-y-0.5 tabular-nums">
+        <p className="text-sm font-medium leading-none">{display.timeRange}</p>
+        <p className="text-xs leading-snug text-muted-foreground">
+          {display.date}
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <SchedulePoint label="Bắt đầu" parts={display.start} />
+      <SchedulePoint label="Kết thúc" parts={display.end} />
+    </div>
+  )
 }
 
 function statusBadge(row: MyRegisteredEvent) {
@@ -205,7 +285,7 @@ export function MyRegisteredEventsPage() {
           const event = row.original.event
           const posterUrl = getPosterUrl(event.poster)
           return (
-            <div className="flex min-w-[260px] gap-3">
+            <div className="flex gap-3">
               <div className="aspect-[4/3] w-20 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border">
                 {posterUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -244,6 +324,7 @@ export function MyRegisteredEventsPage() {
           )
         },
         meta: {
+          className: "min-w-[260px]",
           filterPlaceholder: "Lọc theo tên sự kiện",
           exportHeader: "Tên sự kiện",
           exportValue: (row) => row.event.title,
@@ -260,6 +341,7 @@ export function MyRegisteredEventsPage() {
           </span>
         ),
         meta: {
+          className: "min-w-[120px]",
           filterPlaceholder: "Lọc mã đăng ký",
           exportHeader: "Mã đăng ký",
           exportWidth: 28,
@@ -310,13 +392,16 @@ export function MyRegisteredEventsPage() {
       {
         accessorKey: "registeredAt",
         header: "Ngày đăng ký",
-        cell: ({ getValue }) =>
-          formatEventDateTime(getValue() as string | null) ?? "—",
+        cell: ({ getValue }) => (
+          <DateTimeTableCell value={getValue() as string | null} />
+        ),
         meta: {
+          className: "min-w-[120px]",
           filterVariant: "date-range",
           filterPlaceholder: "Khoảng ngày đăng ký",
           exportHeader: "Ngày đăng ký",
-          exportValue: (row) => formatEventDateTime(row.registeredAt) ?? "",
+          exportValue: (row) =>
+            formatEventTimeDateLine(row.registeredAt) ?? "",
           exportWidth: 22,
         },
       },
@@ -324,21 +409,23 @@ export function MyRegisteredEventsPage() {
         accessorKey: "event.startDate",
         header: "Thời gian sự kiện",
         cell: ({ row }) => (
-          <div className="min-w-[150px]">
-            <p>{formatEventDateTime(row.original.event.startDate) ?? "—"}</p>
-            {row.original.event.endDate ? (
-              <p className="text-xs text-muted-foreground">
-                Kết thúc: {formatEventDateTime(row.original.event.endDate)}
-              </p>
-            ) : null}
-          </div>
+          <EventScheduleTableCell
+            start={row.original.event.startDate}
+            end={row.original.event.endDate}
+          />
         ),
         meta: {
+          className: "min-w-[160px]",
           filterVariant: "date-range",
           filterPlaceholder: "Khoảng thời gian sự kiện",
-          exportHeader: "Thời gian bắt đầu",
-          exportValue: (row) => formatEventDateTime(row.event.startDate) ?? "",
-          exportWidth: 22,
+          exportHeader: "Thời gian sự kiện",
+          exportValue: (row) =>
+            formatEventScheduleText(
+              row.event.startDate,
+              row.event.endDate
+            ) ?? "",
+          exportWidth: 28,
+          exportWrap: true,
         },
       },
       {
@@ -367,11 +454,12 @@ export function MyRegisteredEventsPage() {
         header: "Địa điểm",
         accessorFn: (row) => getEventLocationLabel(row.event) ?? "",
         cell: ({ row }) => (
-          <span className="line-clamp-2 min-w-[120px] text-sm text-muted-foreground">
+          <span className="line-clamp-2 text-sm text-muted-foreground">
             {getEventLocationLabel(row.original.event) || "—"}
           </span>
         ),
         meta: {
+          className: "min-w-[120px]",
           filterPlaceholder: "Lọc địa điểm",
           exportHeader: "Địa điểm tổ chức",
           exportValue: (row) => getEventLocationLabel(row.event) ?? "",

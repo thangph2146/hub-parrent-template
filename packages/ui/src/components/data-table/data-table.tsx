@@ -46,7 +46,7 @@ import {
   type Row,
   type SortingState,
 } from "@tanstack/react-table"
-import { ChevronDown, ChevronRight, Download, FilterX } from "lucide-react"
+import { ChevronDown, ChevronRight, Download, Eye, EyeOff, FilterX, ListFilter } from "lucide-react"
 import {
   useCallback,
   useEffect,
@@ -176,6 +176,18 @@ function includesText(a: unknown, q: string): boolean {
   if (!q) return true
   const s = String(a ?? "").toLowerCase()
   return s.includes(q.toLowerCase())
+}
+
+function columnHasMinWidth(meta: ColumnMeta | undefined): boolean {
+  return Boolean(meta?.className && /\bmin-w-/.test(meta.className))
+}
+
+function cellWidthClassName(meta: ColumnMeta | undefined): string {
+  return cn(
+    "align-middle whitespace-normal",
+    !columnHasMinWidth(meta) && "max-w-[min(420px,40vw)]",
+    meta?.className
+  )
 }
 
 function toDateOnly(value: unknown): string | null {
@@ -635,22 +647,25 @@ export function AdminDataTable<TData>({
 
   const handleFilterColumnVisibilityChange = useCallback(
     (v: unknown) => {
-      if (v === undefined || v === null) {
-        const next: Record<string, boolean> = {}
-        filterableHeaders.forEach((h) => {
-          next[h.id] = true
-        })
-        setFilterColumnVisibility(next)
-      } else if (Array.isArray(v)) {
-        const next: Record<string, boolean> = {}
-        filterableHeaders.forEach((h) => {
-          next[h.id] = v.includes(h.id)
-        })
-        setFilterColumnVisibility(next)
-      }
+      const selectedIds = Array.isArray(v) ? v : []
+      const next: Record<string, boolean> = {}
+      filterableHeaders.forEach((h) => {
+        next[h.id] = selectedIds.includes(h.id)
+      })
+      setFilterColumnVisibility(next)
     },
     [filterableHeaders]
   )
+
+  const showAllFilterColumns = useCallback(() => {
+    handleFilterColumnVisibilityChange(
+      filterableHeaders.map((header) => header.id)
+    )
+  }, [filterableHeaders, handleFilterColumnVisibilityChange])
+
+  const hideAllFilterColumns = useCallback(() => {
+    handleFilterColumnVisibilityChange([])
+  }, [handleFilterColumnVisibilityChange])
 
   // Debounced column filter input component
   function DebouncedFilterInput({
@@ -900,19 +915,43 @@ export function AdminDataTable<TData>({
             <div className="space-y-2">
               <Separator />
               <div className="flex flex-wrap items-center gap-2">
-                <TypographyPSmall className="font-semibold">
+                <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
+                  <ListFilter className="size-4 shrink-0 text-primary/80" aria-hidden />
                   Lọc theo cột
                 </TypographyPSmall>
                 {filterColumnVisibilityKey && (
-                  <div className="min-w-[14rem]">
-                    <TreeMultiSelectPicker
-                      value={filterableHeaders
-                        .filter((h) => filterColumnVisibility[h.id] !== false)
-                        .map((h) => h.id)}
-                      onChange={handleFilterColumnVisibilityChange}
-                      options={filterColumnOptions}
-                      placeholder="Chọn cột lọc"
-                    />
+                  <div className="flex flex-wrap items-end gap-2">
+                    <div className="min-w-[14rem]">
+                      <TreeMultiSelectPicker
+                        value={filterableHeaders
+                          .filter((h) => filterColumnVisibility[h.id] !== false)
+                          .map((h) => h.id)}
+                        onChange={handleFilterColumnVisibilityChange}
+                        options={filterColumnOptions}
+                        placeholder="Chọn cột lọc"
+                        showBulkActions
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 gap-1.5"
+                      onClick={showAllFilterColumns}
+                    >
+                      <Eye className="size-4 shrink-0" aria-hidden />
+                      Hiện tất cả
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 gap-1.5"
+                      onClick={hideAllFilterColumns}
+                    >
+                      <EyeOff className="size-4 shrink-0" aria-hidden />
+                      Ẩn tất cả
+                    </Button>
                   </div>
                 )}
               </div>
@@ -950,8 +989,11 @@ export function AdminDataTable<TData>({
                         "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
                         header.column.getCanSort() &&
                           "cursor-pointer select-none",
-                        (header.column.columnDef.meta as ColumnMeta | undefined)
-                          ?.className
+                        cellWidthClassName(
+                          header.column.columnDef.meta as
+                            | ColumnMeta
+                            | undefined
+                        )
                       )}
                       onClick={
                         header.column.getCanSort()
@@ -1022,12 +1064,11 @@ export function AdminDataTable<TData>({
                         <TableCell
                           key={cell.id}
                           className={cn(
-                            "max-w-[min(420px,40vw)] align-middle whitespace-normal",
-                            (
+                            cellWidthClassName(
                               cell.column.columnDef.meta as
                                 | ColumnMeta
                                 | undefined
-                            )?.className,
+                            ),
                             row.getIsSelected() && "!bg-primary/15",
                             cell.column.id === "_select" &&
                               !row.getIsSelected() &&
