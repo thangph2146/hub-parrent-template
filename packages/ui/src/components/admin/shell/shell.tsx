@@ -12,8 +12,8 @@ import {
   Sun,
   UserCircle2,
 } from "lucide-react";
-import { Button } from "../button";
-import { cn } from "../../lib/utils";
+import { Button } from "../../button";
+import { cn } from "../../../lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,19 +23,19 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../dropdown-menu";
+} from "../../dropdown-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "../sheet";
+} from "../../sheet";
 import { MobileSidebarPanel, Sidebar } from "./sidebar";
-import { ThemeToggle } from "../theme-toggle";
-import { Page, PageContent } from "../layout";
-import { TypographyH2 } from "../typography";
-import { useTextSize } from "../text-size-provider";
-import { useTheme } from "../theme-provider";
+import { ThemeToggle } from "../../theme-toggle";
+import { Page, PageContent } from "../../layout";
+import { TypographyH2 } from "../../typography";
+import { useTextSize } from "../../text-size-provider";
+import { useTheme } from "../../theme-provider";
 import { ScrollToTop } from "./scroll-to-top";
 import { useAdminLayout } from "./layout-context";
 import {
@@ -43,7 +43,7 @@ import {
   ADMIN_MAIN_SCROLL_CLASS,
   ADMIN_PAGE_CONTENT_CLASS,
   ADMIN_SHEET_NAV_CLASS,
-} from "../../lib/layout-shell";
+} from "../../../lib/layout-shell";
 
 const SIDEBAR_COLLAPSED_KEY = "admin-sidebar-collapsed";
 

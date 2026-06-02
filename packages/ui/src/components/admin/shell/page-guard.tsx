@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { AlertCircle } from "lucide-react"
-import { Card, CardDescription, CardHeader, CardTitle } from "../card"
+import { Card, CardDescription, CardHeader, CardTitle } from "../../card"
 import { canUserAccess, type PermissionCode } from "@workspace/api-client"
 import { useAdminLayout } from "./layout-context"
 

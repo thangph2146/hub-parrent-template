@@ -9,19 +9,19 @@ import {
   ChevronsUpDown,
   LogOut,
 } from "lucide-react"
-import { Button } from "../button"
-import { cn } from "../../lib/utils"
+import { Button } from "../../button"
+import { cn } from "../../../lib/utils"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../collapsible"
+} from "../../collapsible"
 import { useAdminLayout } from "./layout-context"
-import type { AdminLayoutUser, AdminMenuLeaf, AdminMenuTreeItem } from "./types"
+import type { AdminLayoutUser, AdminMenuLeaf, AdminMenuTreeItem } from "../types"
 import {
   getLegacyVisibleMenuLeaves,
   getVisibleMenuItems,
-} from "./menu-utils"
+} from "../menu-utils"
 
 function displayNameOf(user: AdminLayoutUser | null): string {
   return user?.name?.trim() || user?.email || "Người dùng HUB"

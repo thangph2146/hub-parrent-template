@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { ArrowUp } from "lucide-react"
-import { Button } from "../button"
-import { cn } from "../../lib/utils"
+import { Button } from "../../button"
+import { cn } from "../../../lib/utils"
 
 const VISIBILITY_THRESHOLD = 300
 

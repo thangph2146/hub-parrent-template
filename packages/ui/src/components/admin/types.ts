@@ -22,3 +22,31 @@ export type AdminMenuTreeItem =
       icon: LucideIcon
       children: AdminMenuLeaf[]
     }
+
+export type AdminSiteBranding = {
+  siteName: string
+  siteDescription: string
+}
+
+/** Context value do app admin cung cấp qua `AdminLayoutBridge`. */
+export type AdminLayoutContextValue = {
+  user: AdminLayoutUser | null
+  clientReady: boolean
+  logout: () => void | Promise<void>
+  menuTree: AdminMenuTreeItem[]
+  siteName: string
+  siteDescription: string
+  loginPath: string
+  isAuthPath: (pathname: string) => boolean
+  canAccessApp: (user: AdminLayoutUser) => boolean
+  clearSession: () => void
+  sessionEventName: string
+  mobileHeaderTitle?: string
+  fullWidthPaths?: string[]
+}
+
+/** Cấu hình cố định mỗi app admin (menu, auth routes, …). */
+export type AdminLayoutStaticConfig = Omit<
+  AdminLayoutContextValue,
+  "user" | "clientReady" | "logout" | "siteName" | "siteDescription"
+>

@@ -1,23 +1,7 @@
 "use client"
 
 import { createContext, useContext, type ReactNode } from "react"
-import type { AdminLayoutUser, AdminMenuTreeItem } from "./types"
-
-export type AdminLayoutContextValue = {
-  user: AdminLayoutUser | null
-  clientReady: boolean
-  logout: () => void | Promise<void>
-  menuTree: AdminMenuTreeItem[]
-  siteName: string
-  siteDescription: string
-  loginPath: string
-  isAuthPath: (pathname: string) => boolean
-  canAccessApp: (user: AdminLayoutUser) => boolean
-  clearSession: () => void
-  sessionEventName: string
-  mobileHeaderTitle?: string
-  fullWidthPaths?: string[]
-}
+import type { AdminLayoutContextValue } from "../types"
 
 const AdminLayoutContext = createContext<AdminLayoutContextValue | null>(null)
 
