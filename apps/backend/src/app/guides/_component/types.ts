@@ -35,5 +35,6 @@ export interface UpdateGuideData {
 
 export type GuideConfirmAction =
   | { kind: "delete"; row: GuideGroup }
+  | { kind: "purge"; row: GuideGroup }
   | { kind: "create"; row: null }
   | { kind: "update"; row: GuideGroup };

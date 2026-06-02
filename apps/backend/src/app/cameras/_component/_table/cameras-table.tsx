@@ -8,6 +8,7 @@ import type {
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { CameraRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function CamerasTable({
   data,
   columns,
@@ -22,6 +23,7 @@ export function CamerasTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: {
   data: CameraRow[]
@@ -37,6 +39,7 @@ export function CamerasTable({
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: CameraRow[]) => Promise<void>
+  onBulkPurge: (rows: CameraRow[]) => Promise<void>
   isFetching?: boolean
 }) {
   return (
@@ -61,7 +64,7 @@ export function CamerasTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "camera.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("cameras", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -77,6 +80,19 @@ export function CamerasTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-camera-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các camera đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} camera. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

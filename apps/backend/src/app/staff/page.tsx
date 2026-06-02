@@ -315,22 +315,19 @@ function StaffPageInner() {
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
-              <TabsTrigger value="list" className="gap-2 rounded-lg">
+              <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <Layers className="size-4 shrink-0" aria-hidden />
                 Danh sách
+                <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  {staffTotal}
+                </Badge>
               </TabsTrigger>
-              <TabsTrigger value="trash" className="gap-2 rounded-lg">
+              <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <ArchiveRestore className="size-4 shrink-0" aria-hidden />
                 Thùng rác
-                {trashedStaffQuery.data != null &&
-                  trashedStaffQuery.data.total > 0 ? (
-                  <Badge
-                    variant="secondary"
-                    className="px-1.5 py-0 text-[10px] tabular-nums"
-                  >
-                    {trashedStaffQuery.data.total}
-                  </Badge>
-                ) : null}
+                <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  {trashStaffTotal}
+                </Badge>
               </TabsTrigger>
             </TabsList>
             <div className="flex flex-wrap items-center gap-2">

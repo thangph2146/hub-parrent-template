@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { PostListRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface PostsTableProps {
   data: PostListRow[]
@@ -30,6 +31,7 @@ export interface PostsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: PostListRow[]) => Promise<void>
+  onBulkPurge: (rows: PostListRow[]) => Promise<void>
   isFetching?: boolean
   canExport?: boolean
   canDelete?: boolean
@@ -53,6 +55,7 @@ export function PostsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
   canExport,
   canDelete,
@@ -78,7 +81,7 @@ export function PostsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={canExport ? { fileName: "bai-viet-dang-hoat-dong.csv" } : undefined}
+      xlsxExport={canExport ? buildAdminTableXlsxExport("posts", { pageCount: data.length, total }) : undefined}
       rowSelectionEnabled={!!canDelete}
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -95,6 +98,19 @@ export function PostsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-post-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các bài viết đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} bài viết. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ] : []}
       footer={

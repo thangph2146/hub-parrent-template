@@ -1,11 +1,11 @@
 "use client";
 
-import type { ColumnDef, ColumnFiltersState, OnChangeFn } from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
+import { useState } from "react";
+import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
-import { RefreshCw } from "lucide-react";
 import type { GuideGroup } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface GuidesTableProps {
   data: GuideGroup[];
@@ -19,6 +19,7 @@ export interface GuidesTableProps {
   onRefresh: () => void;
   onClearFilters: () => void;
   isFetching?: boolean;
+  onBulkPurge: (rows: GuideGroup[]) => Promise<void>;
 }
 
 export function GuidesTable({
@@ -33,7 +34,10 @@ export function GuidesTable({
   onRefresh,
   onClearFilters,
   isFetching,
+  onBulkPurge,
 }: GuidesTableProps) {
+  const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
+
   return (
     <AdminDataTable<GuideGroup>
       data={data}
@@ -50,13 +54,26 @@ export function GuidesTable({
       globalFilterPlaceholder="Tìm theo section key, tiêu đề..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
+      rowSelectionEnabled
+      selectedRowIds={selectedRowIds}
+      onSelectedRowIdsChange={setSelectedRowIds}
+      bulkActions={[
+        {
+          id: "bulk-guide-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          onAction: async (rows) => {
+            await onBulkPurge(rows);
+          },
+        },
+      ]}
       filterToolbarExtra={
         <AdminTableToolbarActions
           onRefresh={onRefresh}
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "huong-dan-su-dung.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("guides", { pageCount: data.length, total })}
       footer={
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">

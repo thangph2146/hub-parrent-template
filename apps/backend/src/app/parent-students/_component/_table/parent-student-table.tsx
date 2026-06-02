@@ -32,6 +32,7 @@ export interface ParentStudentTableProps {
   onClearFilters: () => void
   onBulkApprove: (rows: ParentStudent[]) => Promise<void>
   onBulkReject: (rows: ParentStudent[]) => Promise<void>
+  onBulkPurge: (rows: ParentStudent[]) => Promise<void>
   canApprove: boolean
   isFetching?: boolean
 }
@@ -55,6 +56,7 @@ export function ParentStudentTable({
   onClearFilters,
   onBulkApprove,
   onBulkReject,
+  onBulkPurge,
   canApprove,
   isFetching,
 }: ParentStudentTableProps) {
@@ -112,6 +114,19 @@ export function ParentStudentTable({
               },
             ]
           : []),
+        {
+          id: "bulk-parent-student-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các yêu cầu đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} yêu cầu. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
+        },
       ]}
       footer={
         <AdminTablePaginationFooter

@@ -9,6 +9,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { CameraRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function CamerasTrashTable({
   data,
   columns,
@@ -72,7 +73,7 @@ export function CamerasTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "camera-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("cameras-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

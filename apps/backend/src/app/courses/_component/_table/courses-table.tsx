@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { CourseRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface CoursesTableProps {
   data: CourseRow[]
@@ -25,6 +26,7 @@ export interface CoursesTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: CourseRow[]) => Promise<void>
+  onBulkPurge: (rows: CourseRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function CoursesTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: CoursesTableProps) {
   return (
@@ -66,7 +69,7 @@ export function CoursesTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "khoa-hoc.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("courses", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -83,6 +86,19 @@ export function CoursesTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-course-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các khóa học đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} khóa học. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

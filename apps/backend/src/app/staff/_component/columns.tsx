@@ -1,19 +1,23 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  ArchiveRestore,
   CalendarClock,
   CheckCircle2,
-  Eye,
   Lock,
   Mail,
-  Pencil,
   Phone,
   ShieldHalf,
-  Trash2,
   UserCircle,
 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableEditButton,
+  AdminTablePurgeButton,
+  AdminTableRestoreButton,
+  AdminTableRowActions,
+  AdminTableSoftDeleteButton,
+  AdminTableViewButton,
+} from "@/components/admin-table-row-actions";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 import type { StaffRow } from "./types";
 
@@ -162,55 +166,31 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const u = row.original;
+        const selfAccount = String(u.id) === String(currentUserId ?? "");
+        const blockedTitle = selfAccount
+          ? "Không thao tác trên tài khoản đang đăng nhập"
+          : undefined;
         return (
-          <div className="flex flex-wrap gap-1">
-            <Button
-              variant="default"
-              onClick={() => onView(u)}
-            >
-              <Eye className="size-3.5" aria-hidden />
-              Xem
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
+          <AdminTableRowActions>
+            <AdminTableViewButton onClick={() => onView(u)} />
+            <AdminTableEditButton
               onClick={() => onEdit(u)}
               disabled={busy}
-            >
-              <Pencil className="size-3.5" aria-hidden />
-              Sửa
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
+            />
+            <AdminTableSoftDeleteButton
               onClick={() => onDelete(u)}
-              disabled={busy || String(u.id) === String(currentUserId ?? "")}
-              title={
-                String(u.id) === String(currentUserId ?? "")
-                  ? "Không xoá tài khoản đang đăng nhập"
-                  : "Xoá tạm"
-              }
-            >
-              <Trash2 className="size-3.5" aria-hidden /> Xóa tạm
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
+              disabled={busy || selfAccount}
+              title={blockedTitle ?? "Xóa tạm"}
+            />
+            <AdminTablePurgeButton
               onClick={() => onPurge(u)}
-              disabled={busy || String(u.id) === String(currentUserId ?? "")}
-              title={
-                String(u.id) === String(currentUserId ?? "")
-                  ? "Không xoá vĩnh viễn tài khoản đang đăng nhập"
-                  : "Xóa vĩnh viễn khỏi cơ sở dữ liệu"
-              }
-            >
-              <Trash2 className="size-3.5" aria-hidden />
-              Xóa vĩnh viễn
-            </Button>
-          </div>
+              disabled={busy || selfAccount}
+              title={blockedTitle ?? "Xóa vĩnh viễn khỏi cơ sở dữ liệu"}
+            />
+          </AdminTableRowActions>
         );
       },
     },
@@ -272,28 +252,19 @@ export function getTrashColumns(props: {
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => (
-        <div className="flex flex-wrap justify-end gap-1">
-          <Button
-            type="button"
-            variant="outline"
+        <AdminTableRowActions className="justify-end">
+          <AdminTableRestoreButton
             onClick={() => onRestore(row.original)}
             disabled={busy}
-          >
-            <ArchiveRestore className="size-3.5" aria-hidden />
-            Khôi phục
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
+          />
+          <AdminTablePurgeButton
             onClick={() => onPurge(row.original)}
             disabled={busy}
-          >
-            <Trash2 className="size-3.5" aria-hidden />
-            Xóa hẳn
-          </Button>
-        </div>
+            label="Xóa vĩnh viễn"
+          />
+        </AdminTableRowActions>
       ),
     },
   ];

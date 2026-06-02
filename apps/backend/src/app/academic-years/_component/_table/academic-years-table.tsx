@@ -9,6 +9,7 @@ import type {
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { AcademicYearRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface AcademicYearsTableProps {
   data: AcademicYearRow[]
@@ -24,6 +25,7 @@ export interface AcademicYearsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: AcademicYearRow[]) => Promise<void>
+  onBulkPurge: (rows: AcademicYearRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -41,6 +43,7 @@ export function AcademicYearsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: AcademicYearsTableProps) {
   return (
@@ -65,7 +68,7 @@ export function AcademicYearsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "nien-khoa.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("academic-years", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -82,6 +85,19 @@ export function AcademicYearsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-academic-year-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các niên khóa đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} niên khóa. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

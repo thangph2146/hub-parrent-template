@@ -7,6 +7,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { RefreshCw } from "lucide-react";
 import type { CategoryRow } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface CategoriesTrashTableProps {
   data: CategoryRow[];
@@ -74,7 +75,7 @@ export function CategoriesTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "danh-muc-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

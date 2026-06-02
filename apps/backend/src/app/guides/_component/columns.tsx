@@ -1,9 +1,12 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
-import { Eye, Pencil, Trash2, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableCrudRowActions,
+} from "@/components/admin-table-row-actions"
 import type { GuideGroup } from "./types"
 import { parseContent } from "./utils"
 
@@ -11,6 +14,7 @@ export interface GuideColumnsProps {
   onView: (row: GuideGroup) => void
   onEdit: (row: GuideGroup) => void
   onDelete: (row: GuideGroup) => void
+  onPurge: (row: GuideGroup) => void
   canWrite: boolean
 }
 
@@ -18,6 +22,7 @@ export function getGuidesColumns({
   onView,
   onEdit,
   onDelete,
+  onPurge,
   canWrite,
 }: GuideColumnsProps): ColumnDef<GuideGroup>[] {
   return [
@@ -89,38 +94,18 @@ export function getGuidesColumns({
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const data = row.original
         if (!data) return null
         return (
-          <div className="flex flex-wrap gap-1">
-            <Button
-              variant="default"
-              onClick={() => onView(data)}
-              aria-label="Xem"
-            >
-              <Eye className="size-4" aria-hidden /> xem
-            </Button>
-            {canWrite && (
-              <Button
-                variant="outline"
-                onClick={() => onEdit(data)}
-                aria-label="Sửa"
-              >
-                <Pencil className="size-4" aria-hidden /> sửa
-              </Button>
-            )}
-            {canWrite && (
-              <Button
-                variant="destructive"
-                onClick={() => onDelete(data)}
-                aria-label="Xóa"
-              >
-                <Trash2 className="size-4" aria-hidden /> xóa
-              </Button>
-            )}
-          </div>
+          <AdminTableCrudRowActions
+            canWrite={canWrite}
+            onView={() => onView(data)}
+            onEdit={() => onEdit(data)}
+            onSoftDelete={() => onDelete(data)}
+            onPurge={() => onPurge(data)}
+          />
         )
       },
     },

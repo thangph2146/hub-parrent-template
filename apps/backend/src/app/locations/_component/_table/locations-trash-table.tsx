@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { LocationRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface LocationsTrashTableProps {
   data: LocationRow[]
@@ -77,7 +78,7 @@ export function LocationsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "dia-diem-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("locations-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

@@ -5,8 +5,8 @@ import { AdminDataTable } from "@ui/components/data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getTrashColumns } from "../columns";
 import type { ContactRequest } from "../types";
-import { downloadCsvFile } from "@/lib/export-csv";
-import { downloadXlsxFile } from "@/lib/export-xlsx";
+import { downloadXlsxFile } from "@ui/lib/export-xlsx";
+import { buildContactRequestsXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 function parseStructuredContent(content: string | undefined): Record<string, string> {
   if (!content) return {};
@@ -109,14 +109,23 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
 
   const columns = getTrashColumns({ onRestore, onPurge, busy, canRestore, canDelete });
 
-  const handleCsvExport = () => {
-    const { headers, rows } = buildCustomExportData(data);
-    downloadCsvFile("yeu-cau-lien-he-trash.csv", headers, rows);
-  };
-
   const handleXlsxExport = () => {
+    const template = buildContactRequestsXlsxExport("trash", {
+      pageCount: data.length,
+      total,
+    });
     const { headers, rows } = buildCustomExportData(data);
-    void downloadXlsxFile("yeu-cau-lien-he-trash.xlsx", headers, rows, "Yêu cầu trong thùng rác");
+    void downloadXlsxFile(
+      template.fileName,
+      headers,
+      rows,
+      template.sheetName,
+      {
+        title: template.title,
+        subtitle: template.subtitle,
+        metadata: template.metadata,
+      },
+    );
   };
 
   const paginationFooter = (
@@ -170,7 +179,7 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
           ? [
               {
                 id: "bulk-contact-purge" as const,
-                label: "Xóa hẳn đã chọn",
+                label: "Xóa vĩnh viễn đã chọn",
                 variant: "destructive" as const,
                 onAction: async (rows: ContactRequest[]) => {
                   const ids = rows.map((c) => String(c.id));
@@ -182,35 +191,17 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
           : []),
       ]}
       filterToolbarExtra={
-        <div className="flex flex-wrap items-end gap-2">
-          <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold text-muted-foreground">
-              Xuất file
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={data.length === 0}
-                onClick={handleCsvExport}
-              >
-                <Download className="size-4" />
-                CSV
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={data.length === 0}
-                onClick={handleXlsxExport}
-              >
-                <Download className="size-4" />
-                Excel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={data.length === 0}
+          onClick={handleXlsxExport}
+        >
+          <Download className="size-4" />
+          Excel
+        </Button>
       }
-      csvExport={false}
+      xlsxExport={false}
       footer={paginationFooter}
     />
   );

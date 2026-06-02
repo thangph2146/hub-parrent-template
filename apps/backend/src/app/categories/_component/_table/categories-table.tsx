@@ -12,6 +12,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { CategoryRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface CategoriesTableProps {
   data: CategoryRow[]
@@ -27,6 +28,7 @@ export interface CategoriesTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: CategoryRow[]) => Promise<void>
+  onBulkPurge: (rows: CategoryRow[]) => Promise<void>
   isFetching?: boolean
   canSelectRow?: (row: Row<CategoryRow>) => boolean
 }
@@ -45,6 +47,7 @@ export function CategoriesTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
   canSelectRow,
 }: CategoriesTableProps) {
@@ -71,7 +74,7 @@ export function CategoriesTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "danh-muc-dang-hoat-dong.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("categories", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -89,6 +92,19 @@ export function CategoriesTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-category-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các danh mục đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} danh mục. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

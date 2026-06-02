@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { SpeakerRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface SpeakersTrashTableProps {
   data: SpeakerRow[]
@@ -79,7 +80,7 @@ export function SpeakersTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "dien-gia-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("speakers-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

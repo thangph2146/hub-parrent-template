@@ -9,6 +9,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { ScreenRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function ScreensTrashTable({
   data,
   columns,
@@ -72,7 +73,7 @@ export function ScreensTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "man-hinh-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("screens-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { AcademicYearRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface AcademicYearsTrashTableProps {
   data: AcademicYearRow[]
@@ -77,7 +78,7 @@ export function AcademicYearsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "nien-khoa-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("academic-years-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

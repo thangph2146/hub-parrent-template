@@ -246,6 +246,12 @@ function MajorsPageInner() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             Danh sách
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
+              {listQuery.data?.length ?? 0}
+            </Badge>
           </TabsTrigger>
           {canWrite && (
             <TabsTrigger
@@ -253,14 +259,12 @@ function MajorsPageInner() {
               className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Thùng rác
-              {(trashQuery.data?.total ?? 0) > 0 ? (
-                <Badge
-                  variant="secondary"
-                  className="px-1.5 py-0 text-[10px] tabular-nums"
-                >
-                  {trashQuery.data?.total}
-                </Badge>
-              ) : null}
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
+                {trashQuery.data?.total ?? 0}
+              </Badge>
             </TabsTrigger>
           )}
         </TabsList>
@@ -298,6 +302,12 @@ function MajorsPageInner() {
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "delete", ids })
               toast.success(`Đã đưa ${ids.length} ngành học vào thùng rác`)
+            }}
+            onBulkPurge={async (rows) => {
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+              toast.success(`Đã xóa vĩnh viễn ${ids.length} ngành học`)
             }}
             isFetching={listQuery.isFetching}
           />

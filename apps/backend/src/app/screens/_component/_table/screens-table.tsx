@@ -8,6 +8,7 @@ import type {
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { ScreenRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function ScreensTable({
   data,
   columns,
@@ -22,6 +23,7 @@ export function ScreensTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: {
   data: ScreenRow[]
@@ -37,6 +39,7 @@ export function ScreensTable({
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: ScreenRow[]) => Promise<void>
+  onBulkPurge: (rows: ScreenRow[]) => Promise<void>
   isFetching?: boolean
 }) {
   return (
@@ -61,7 +64,7 @@ export function ScreensTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "man-hinh.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("screens", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -77,6 +80,19 @@ export function ScreensTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-screen-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các màn hình đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} màn hình. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

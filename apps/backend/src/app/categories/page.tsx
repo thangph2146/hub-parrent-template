@@ -217,7 +217,7 @@ function CategoriesPageInner() {
             Danh mục dùng chung
           </TypographyH1>
           <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý taxonomy dùng chung để gắn cho bài viết, thẻ và các nội dung
+            Quản lý danh mục dùng chung để gắn cho bài viết, thẻ và các nội dung
             truyền thông
           </p>
           {user && !canWriteCategories && (
@@ -270,6 +270,12 @@ function CategoriesPageInner() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             Danh sách
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
+              {categoriesQuery.data?.total ?? 0}
+            </Badge>
           </TabsTrigger>
           {canWriteCategories ? (
             <TabsTrigger
@@ -277,14 +283,12 @@ function CategoriesPageInner() {
               className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Thùng rác
-              {(trashQuery.data?.total ?? 0) > 0 ? (
-                <Badge
-                  variant="secondary"
-                  className="px-1.5 py-0 text-[10px] tabular-nums"
-                >
-                  {trashQuery.data?.total}
-                </Badge>
-              ) : null}
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
+                {trashQuery.data?.total ?? 0}
+              </Badge>
             </TabsTrigger>
           ) : null}
         </TabsList>
@@ -322,6 +326,12 @@ function CategoriesPageInner() {
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
               toast.success(`Đã đưa ${ids.length} danh mục vào thùng rác`);
+            }}
+            onBulkPurge={async (rows) => {
+              const ids = rows.map((r) => String(r.id));
+              if (!ids.length) return;
+              await bulkMutation.mutateAsync({ action: "hard-delete", ids });
+              toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
             }}
             isFetching={categoriesQuery.isFetching}
             canSelectRow={(row) => {

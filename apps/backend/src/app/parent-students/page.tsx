@@ -1,11 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table";
-import { CheckCircle2, RefreshCw, UserCheck, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { CheckCircle2, RefreshCw, Trash2, UserCheck, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@ui/components/button";
 import { PageSection } from "@ui/components/layout";
@@ -40,7 +41,8 @@ interface ListResult {
 
 type ConfirmAction =
   | { kind: "approve"; row: ParentStudent }
-  | { kind: "reject"; row: ParentStudent };
+  | { kind: "reject"; row: ParentStudent }
+  | { kind: "purge"; row: ParentStudent };
 
 function AdminParentStudentsPageInner() {
   const { user } = useAuth();
@@ -51,6 +53,7 @@ function AdminParentStudentsPageInner() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [isPurging, setIsPurging] = useState(false);
 
   const debouncedQ = useDebouncedValue(globalFilter, 300);
 
@@ -96,6 +99,7 @@ function AdminParentStudentsPageInner() {
     staleTime: 20_000,
   });
 
+  const queryClient = useQueryClient();
   const reviewMutation = useReviewParentStudentMutation(() => setConfirmAction(null));
 
   const handleColumnFiltersChange = useCallback<
@@ -114,11 +118,26 @@ function AdminParentStudentsPageInner() {
     setGlobalFilter("");
   }, []);
 
+  const purgeRows = useCallback(async (rows: ParentStudent[]) => {
+    const ids = rows.map((r) => r.id);
+    if (!ids.length) return;
+    for (const id of ids) {
+      await api.http.delete(`/admin/parent-students/${id}`);
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });
+    toast.success(
+      ids.length === 1
+        ? "Đã xóa vĩnh viễn yêu cầu liên kết."
+        : `Đã xóa vĩnh viễn ${ids.length} yêu cầu`,
+    );
+  }, [queryClient]);
+
   const columns = useMemo(
     () =>
       getParentStudentsColumns({
         onApprove: (row) => setConfirmAction({ kind: "approve", row }),
         onReject: (row) => setConfirmAction({ kind: "reject", row }),
+        onPurge: (row) => setConfirmAction({ kind: "purge", row }),
         canApprove,
       }),
     [canApprove],
@@ -180,6 +199,7 @@ function AdminParentStudentsPageInner() {
             });
           }
         }}
+        onBulkPurge={purgeRows}
         canApprove={canApprove}
         isFetching={isFetching}
       />
@@ -194,6 +214,8 @@ function AdminParentStudentsPageInner() {
         icon={
           confirmAction?.kind === "approve" ? (
             <CheckCircle2 className="size-5 shrink-0 text-emerald-600" aria-hidden />
+          ) : confirmAction?.kind === "purge" ? (
+            <Trash2 className="size-5 shrink-0 text-destructive" aria-hidden />
           ) : (
             <XCircle className="size-5 shrink-0 text-destructive" aria-hidden />
           )
@@ -201,21 +223,41 @@ function AdminParentStudentsPageInner() {
         title={
           confirmAction?.kind === "approve"
             ? "Duyệt yêu cầu liên kết?"
-            : "Từ chối yêu cầu liên kết?"
+            : confirmAction?.kind === "purge"
+              ? "Xóa vĩnh viễn yêu cầu liên kết?"
+              : "Từ chối yêu cầu liên kết?"
         }
         description={
           confirmAction?.kind === "approve"
             ? `Duyệt liên kết học sinh «${confirmAction.row.studentCode}». Phụ huynh sẽ được xem bảng điểm sau khi duyệt.`
-            : confirmAction?.kind === "reject"
-              ? `Từ chối liên kết học sinh «${confirmAction.row.studentCode}». Phụ huynh sẽ thấy thông báo bị từ chối.`
-              : null
+            : confirmAction?.kind === "purge"
+              ? `Xóa vĩnh viễn yêu cầu liên kết học sinh «${confirmAction.row.studentCode}». Hành động này không thể hoàn tác.`
+              : confirmAction?.kind === "reject"
+                ? `Từ chối liên kết học sinh «${confirmAction.row.studentCode}». Phụ huynh sẽ thấy thông báo bị từ chối.`
+                : null
         }
-        confirmLabel={confirmAction?.kind === "approve" ? "Duyệt" : "Từ chối"}
-        confirmDestructive={confirmAction?.kind === "reject"}
-        confirmDisabled={reviewMutation.isPending}
-        confirmLoading={reviewMutation.isPending}
-        onConfirm={() => {
+        confirmLabel={
+          confirmAction?.kind === "approve"
+            ? "Duyệt"
+            : confirmAction?.kind === "purge"
+              ? "Xóa vĩnh viễn"
+              : "Từ chối"
+        }
+        confirmDestructive={confirmAction?.kind !== "approve"}
+        confirmDisabled={reviewMutation.isPending || isPurging}
+        confirmLoading={reviewMutation.isPending || isPurging}
+        onConfirm={async () => {
           if (!confirmAction) return;
+          if (confirmAction.kind === "purge") {
+            setIsPurging(true);
+            try {
+              await purgeRows([confirmAction.row]);
+              setConfirmAction(null);
+            } finally {
+              setIsPurging(false);
+            }
+            return;
+          }
           reviewMutation.mutate({
             id: confirmAction.row.id,
             action: confirmAction.kind === "approve" ? "approved" : "rejected",

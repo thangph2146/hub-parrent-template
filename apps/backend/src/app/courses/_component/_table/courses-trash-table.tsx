@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { CourseRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface CoursesTrashTableProps {
   data: CourseRow[]
@@ -77,7 +78,7 @@ export function CoursesTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "khoa-hoc-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("courses-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

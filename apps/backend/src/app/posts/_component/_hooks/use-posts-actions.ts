@@ -36,7 +36,7 @@ export function useHandleConfirmActionWithAction(
           ? "Không xóa được bài viết"
           : kind === "restore"
             ? "Không khôi phục được bài viết"
-            : "Không xóa hẳn được bài viết";
+            : "Không Xóa vĩnh viễn được bài viết";
       toast.error(error instanceof Error ? error.message : fallback);
     }
   }, [deleteMutation, purgeMutation, restoreMutation, setConfirmAction]);

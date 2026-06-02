@@ -4,17 +4,25 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import { CheckCircle2, Clock, User, XCircle } from "lucide-react";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTablePurgeButton,
+  AdminTableRowActions,
+} from "@/components/admin-table-row-actions";
 import type { ParentStudent } from "./types";
 import { PARENT_STUDENT_STATUS_COLORS } from "./types";
+
+const actionButtonClass = "h-8 gap-1.5";
 
 export interface ParentStudentsColumnsProps {
   onApprove: (row: ParentStudent) => void;
   onReject: (row: ParentStudent) => void;
+  onPurge: (row: ParentStudent) => void;
   canApprove: boolean;
 }
 
 export function getParentStudentsColumns(props: ParentStudentsColumnsProps): ColumnDef<ParentStudent>[] {
-  const { onApprove, onReject, canApprove } = props;
+  const { onApprove, onReject, onPurge, canApprove } = props;
 
   return [
     {
@@ -125,28 +133,35 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          {canApprove && (
+        <AdminTableRowActions>
+          {canApprove ? (
             <Button
+              type="button"
               size="sm"
               variant="default"
+              className={actionButtonClass}
               onClick={() => onApprove(row.original)}
             >
-              <CheckCircle2 className="size-3.5" />
+              <CheckCircle2 className="size-3.5" aria-hidden />
               Duyệt
             </Button>
-          )}
-          {canApprove && (
+          ) : null}
+          {canApprove ? (
             <Button
+              type="button"
+              size="sm"
               variant="destructive"
+              className={actionButtonClass}
               onClick={() => onReject(row.original)}
             >
-              <XCircle className="size-3.5" />
+              <XCircle className="size-3.5" aria-hidden />
               Từ chối
             </Button>
-          )}
-        </div>
+          ) : null}
+          <AdminTablePurgeButton onClick={() => onPurge(row.original)} />
+        </AdminTableRowActions>
       ),
     },
   ];

@@ -7,6 +7,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { RefreshCw } from "lucide-react";
 import type { TagRow } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface TagsTrashTableProps {
   data: TagRow[];
@@ -73,7 +74,7 @@ export function TagsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "the-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("tags-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

@@ -1,9 +1,13 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
 import { Badge } from "@ui/components/badge";
-import { Eye, Pencil, Trash2, ArchiveRestore, FolderTree, Folder } from "lucide-react";
+import { Eye, FolderTree, Folder } from "lucide-react";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableCrudRowActions,
+  AdminTableTrashRowActions,
+} from "@/components/admin-table-row-actions";
 import type { CategoryRow, CategoryTreeOption } from "./types";
 
 export function getCategoryColumns({
@@ -89,39 +93,32 @@ export function getCategoryColumns({
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const c = row.original;
         const childCount = c._count?.children ?? 0;
         const linkedPosts = c.postCount ?? 0;
+        const blocked = childCount > 0 || linkedPosts > 0;
+        const blockReason =
+          childCount > 0 && linkedPosts > 0
+            ? "Không thể xóa danh mục còn danh mục con hoặc bài viết liên kết"
+            : childCount > 0
+              ? "Không thể xóa danh mục còn danh mục con"
+              : linkedPosts > 0
+                ? "Không thể xóa danh mục còn bài viết liên kết"
+                : undefined;
         return (
-          <div className="flex flex-wrap gap-1">
-            <Button
-              variant="default"
-              className="gap-1"
-              onClick={() => openDetail(c)}
-            >
-              <Eye className="size-4" /> Xem
-            </Button>
-            {canWriteCategories && (
-              <>
-                <Button
-                  variant="outline"
-                  className="gap-1"
-                  onClick={() => openEdit(c)}
-                >
-                  <Pencil className="size-4" /> Sửa
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => setConfirmAction({ kind: "delete", row: c })}
-                  disabled={childCount > 0 || linkedPosts > 0}
-                >
-                  <Trash2 className="size-4" /> Xóa tạm
-                </Button>
-              </>
-            )}
-          </div>
+          <AdminTableCrudRowActions
+            canWrite={canWriteCategories}
+            onView={() => openDetail(c)}
+            onEdit={() => openEdit(c)}
+            onSoftDelete={() => setConfirmAction({ kind: "delete", row: c })}
+            onPurge={() => setConfirmAction({ kind: "purge", row: c })}
+            softDeleteDisabled={blocked}
+            softDeleteTitle={blockReason}
+            purgeDisabled={blocked}
+            purgeTitle={blockReason}
+          />
         );
       },
     },
@@ -204,30 +201,13 @@ export function getTrashColumns({
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => (
-        <div className="flex flex-wrap justify-end gap-1">
-          {canWrite && (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setConfirmAction({ kind: "restore", row: row.original })}
-              >
-                <ArchiveRestore className="size-3.5" />
-                Khôi phục
-              </Button>
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => setConfirmAction({ kind: "purge", row: row.original })}
-              >
-                <Trash2 className="size-3.5" />
-                Xóa hẳn
-              </Button>
-            </>
-          )}
-        </div>
+        <AdminTableTrashRowActions
+          canWrite={canWrite}
+          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
+          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
+        />
       ),
     },
   ];

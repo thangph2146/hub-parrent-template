@@ -6,6 +6,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { RefreshCw } from "lucide-react";
 import type { TagTreeRow } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface TagsTableProps {
   data: TagTreeRow[];
@@ -21,6 +22,7 @@ export interface TagsTableProps {
   onRefresh: () => void;
   onClearFilters: () => void;
   onBulkDelete: (rows: TagTreeRow[]) => Promise<void>;
+  onBulkPurge: (rows: TagTreeRow[]) => Promise<void>;
   isFetching?: boolean;
 }
 
@@ -38,6 +40,7 @@ export function TagsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: TagsTableProps) {
   return (
@@ -64,7 +67,7 @@ export function TagsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "the-dang-hoat-dong.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("tags", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -82,6 +85,19 @@ export function TagsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-tag-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các thẻ đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} thẻ. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

@@ -5,6 +5,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { RefreshCw, FilterX } from "lucide-react";
 import type { TrainingLevelRow } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface TrainingLevelsTableProps {
   data: TrainingLevelRow[];
@@ -20,6 +21,7 @@ export interface TrainingLevelsTableProps {
   onRefresh: () => void;
   onClearFilters: () => void;
   onBulkDelete: (rows: TrainingLevelRow[]) => Promise<void>;
+  onBulkPurge: (rows: TrainingLevelRow[]) => Promise<void>;
   isFetching?: boolean;
 }
 
@@ -37,6 +39,7 @@ export function TrainingLevelsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: TrainingLevelsTableProps) {
   return (
@@ -60,7 +63,7 @@ export function TrainingLevelsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "bac-hoc.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("training-levels", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -77,6 +80,19 @@ export function TrainingLevelsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-training-level-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các bậc học đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} bậc học. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

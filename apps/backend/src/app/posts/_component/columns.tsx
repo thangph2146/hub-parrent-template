@@ -2,8 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
-import { Eye, Pencil, Trash2, ArchiveRestore } from "lucide-react";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableCrudRowActions,
+  AdminTablePurgeButton,
+  AdminTableRestoreButton,
+  AdminTableRowActions,
+} from "@/components/admin-table-row-actions";
 import type { PostListRow, TaxonomyOption, CategoryTreeOption } from "./types";
 import { SummaryBadges } from "./summary-badges";
 
@@ -110,37 +115,23 @@ export function getPostColumns({
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => (
-        <div className="flex flex-wrap gap-1">
-          <Button
-            type="button"
-            variant="default"
-            onClick={() => navigateToView(row.original.id)}
-          >
-            <Eye className="size-3.5" />
-            Xem
-          </Button>
-          {canUpdate && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigateToEdit(row.original.id)}
-            >
-              <Pencil className="size-3.5" />
-              Sửa
-            </Button>
-          )}
-          {canDelete && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => setConfirmAction({ kind: "delete", row: row.original })}
-            >
-              <Trash2 className="size-3.5" />
-              Xóa tạm
-            </Button>
-          )}
-        </div>
+        <AdminTableCrudRowActions
+          canWrite={canDelete || canUpdate}
+          onView={() => navigateToView(row.original.id)}
+          onEdit={canUpdate ? () => navigateToEdit(row.original.id) : undefined}
+          onSoftDelete={
+            canDelete
+              ? () => setConfirmAction({ kind: "delete", row: row.original })
+              : undefined
+          }
+          onPurge={
+            canDelete
+              ? () => setConfirmAction({ kind: "purge", row: row.original })
+              : undefined
+          }
+        />
       ),
     },
   ];
@@ -261,29 +252,20 @@ export function getTrashColumns({
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => (
-        <div className="flex flex-wrap gap-1">
-          {canRestore && (
-            <Button
-              type="button"
-              variant="default"
+        <AdminTableRowActions>
+          {canRestore ? (
+            <AdminTableRestoreButton
               onClick={() => setConfirmAction({ kind: "restore", row: row.original })}
-            >
-              <ArchiveRestore className="size-3.5" />
-              Khôi phục
-            </Button>
-          )}
-          {canDelete && (
-            <Button
-              type="button"
-              variant="destructive"
+            />
+          ) : null}
+          {canDelete ? (
+            <AdminTablePurgeButton
               onClick={() => setConfirmAction({ kind: "purge", row: row.original })}
-            >
-              <Trash2 className="size-3.5" />
-              Xóa hẳn
-            </Button>
-          )}
-        </div>
+            />
+          ) : null}
+        </AdminTableRowActions>
       ),
     },
   ];

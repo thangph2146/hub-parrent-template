@@ -184,6 +184,12 @@ function ScreensPageInner() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             Danh sách
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
+              {listQ.data?.length ?? 0}
+            </Badge>
           </TabsTrigger>
           {canWrite && (
             <TabsTrigger
@@ -191,14 +197,12 @@ function ScreensPageInner() {
               className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Thùng rác
-              {(trashQ.data?.total ?? 0) > 0 ? (
-                <Badge
-                  variant="secondary"
-                  className="px-1.5 py-0 text-[10px] tabular-nums"
-                >
-                  {trashQ.data?.total}
-                </Badge>
-              ) : null}
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
+                {trashQ.data?.total ?? 0}
+              </Badge>
             </TabsTrigger>
           )}
         </TabsList>
@@ -234,6 +238,12 @@ function ScreensPageInner() {
               if (!ids.length) return
               await bulM.mutateAsync({ action: "delete", ids })
               toast.success(`Đã xóa ${ids.length} màn hình`)
+            }}
+            onBulkPurge={async (rows) => {
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulM.mutateAsync({ action: "hard-delete", ids })
+              toast.success(`Đã xóa vĩnh viễn ${ids.length} màn hình`)
             }}
             isFetching={listQ.isFetching}
           />

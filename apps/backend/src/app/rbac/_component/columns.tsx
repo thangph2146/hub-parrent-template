@@ -3,7 +3,14 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
-import { Lock, Pencil, Trash2 } from "lucide-react";
+import { Lock } from "lucide-react";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableEditButton,
+  AdminTablePurgeButton,
+  AdminTableRowActions,
+  AdminTableSoftDeleteButton,
+} from "@/components/admin-table-row-actions";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 
 type RoleRow = {
@@ -19,11 +26,12 @@ type RoleRow = {
 export interface RbacColumnsProps {
   onEdit: (role: RoleRow) => void;
   onDelete: (role: RoleRow) => void;
+  onPurge: (role: RoleRow) => void;
   canManageRoles: boolean;
 }
 
 export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
-  const { onEdit, onDelete, canManageRoles } = props;
+  const { onEdit, onDelete, onPurge, canManageRoles } = props;
 
   return [
     {
@@ -76,45 +84,35 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
-      meta: { disableColumnFilter: true },
+      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const role = row.original;
         const isSuperAdmin = isSuperAdminRoleCode(role.code);
 
+        if (isSuperAdmin) {
+          return (
+            <Button type="button" variant="ghost" size="sm" className="h-8 gap-1.5" disabled>
+              <Lock className="size-3.5" aria-hidden />
+              Hệ thống
+            </Button>
+          );
+        }
+
         return (
-          <div className="flex flex-wrap gap-1">
-            {!isSuperAdmin && (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onEdit(role)}
-                  disabled={!canManageRoles}
-                >
-                  <Pencil className="size-3.5" />
-                  Sửa
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => onDelete(role)}
-                  disabled={!canManageRoles}
-                >
-                  <Trash2 className="size-3.5" />
-                  Xóa tạm
-                </Button>
-              </>
-            )}
-            {isSuperAdmin && (
-              <Button
-                variant="ghost"
-                disabled
-              >
-                <Lock className="size-3.5" />
-                Hệ thống
-              </Button>
-            )}
-          </div>
+          <AdminTableRowActions>
+            <AdminTableEditButton
+              onClick={() => onEdit(role)}
+              disabled={!canManageRoles}
+            />
+            <AdminTableSoftDeleteButton
+              onClick={() => onDelete(role)}
+              disabled={!canManageRoles}
+            />
+            <AdminTablePurgeButton
+              onClick={() => onPurge(role)}
+              disabled={!canManageRoles}
+            />
+          </AdminTableRowActions>
         );
       },
     },

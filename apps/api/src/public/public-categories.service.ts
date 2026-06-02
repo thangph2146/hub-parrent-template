@@ -32,18 +32,20 @@ export class PublicCategoriesService {
 
     // Batch children count: single query GROUP BY parent
     const conn = this.em.getConnection();
+    const parentPlaceholders = ids.map(() => '?').join(',');
     const childrenRows = (await conn.execute(
-      'SELECT parent_id AS id, COUNT(*) AS cnt FROM categories WHERE parent_id IN (?) AND deleted_at IS NULL GROUP BY parent_id',
-      [ids],
+      `SELECT parentId AS id, COUNT(*) AS cnt FROM categories WHERE parentId IN (${parentPlaceholders}) AND deletedAt IS NULL GROUP BY parentId`,
+      ids,
     )) as Array<{ id: string; cnt: number }>;
     const childrenCounts = new Map<string, number>(
       childrenRows.map((r) => [r.id, Number(r.cnt)]),
     );
 
-    // Batch post count: single query GROUP BY category_id
+    // Batch post count: single query GROUP BY categoryId
+    const postPlaceholders = ids.map(() => '?').join(',');
     const postRows = (await conn.execute(
-      'SELECT category_id AS id, COUNT(*) AS cnt FROM post_categories WHERE category_id IN (?) GROUP BY category_id',
-      [ids],
+      `SELECT categoryId AS id, COUNT(*) AS cnt FROM post_categories WHERE categoryId IN (${postPlaceholders}) GROUP BY categoryId`,
+      ids,
     )) as Array<{ id: string; cnt: number }>;
     const postsCounts = new Map<string, number>(
       postRows.map((r) => [r.id, Number(r.cnt)]),

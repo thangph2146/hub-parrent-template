@@ -698,7 +698,7 @@ export function MyRegisteredEventsPage() {
                     .join(" ")
                 }
                 globalFilterPlaceholder="Tìm theo tên sự kiện, địa điểm, trạng thái..."
-                csvExport={{
+                xlsxExport={{
                   fileName: "su-kien-cua-toi.xlsx",
                   sheetName: "Su kien cua toi",
                   title: "DANH SÁCH SỰ KIỆN ĐÃ ĐĂNG KÝ",

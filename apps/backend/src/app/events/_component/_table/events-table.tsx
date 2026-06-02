@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { EventRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface EventsTableProps {
   data: EventRow[]
@@ -25,6 +26,7 @@ export interface EventsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: EventRow[]) => Promise<void>
+  onBulkPurge: (rows: EventRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function EventsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: EventsTableProps) {
   return (
@@ -66,7 +69,7 @@ export function EventsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "su-kien.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("events", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -82,6 +85,19 @@ export function EventsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-event-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các sự kiện đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} sự kiện. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

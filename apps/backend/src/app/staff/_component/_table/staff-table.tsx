@@ -3,6 +3,7 @@ import { AdminDataTable } from "@ui/components/data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 interface StaffTableProps {
   data: StaffRow[];
@@ -125,7 +126,7 @@ export function StaffTable(props: StaffTableProps) {
           },
         },
       ]}
-      csvExport={{ fileName: "nhan-su.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("staff", { pageCount: data.length, total })}
       footer={paginationFooter}
     />
   );

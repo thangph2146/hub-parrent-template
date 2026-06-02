@@ -242,21 +242,17 @@ function ContactRequestsPageInner() {
       <Tabs value={tab} onValueChange={(v) => setTab(v as "list" | "trash")}>
         <div className="mb-4 flex items-center justify-between">
           <TabsList>
-            <TabsTrigger value="list" className="gap-2">
+            <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               Đang hoạt động
-              {activeTotal > 0 && (
-                <Badge variant="secondary" className="h-5 px-1.5 text-xs">
-                  {activeTotal}
-                </Badge>
-              )}
+              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                {activeTotal}
+              </Badge>
             </TabsTrigger>
-            <TabsTrigger value="trash" className="gap-2">
+            <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               Thùng rác
-              {trashTotal > 0 && (
-                <Badge variant="secondary" className="h-5 px-1.5 text-xs">
-                  {trashTotal}
-                </Badge>
-              )}
+              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                {trashTotal}
+              </Badge>
             </TabsTrigger>
           </TabsList>
           <Button
@@ -299,10 +295,12 @@ function ContactRequestsPageInner() {
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onPurge={handlePurge}
             busy={busy}
             canUpdate={canUpdate}
             canDelete={canDelete}
             onBulkDelete={handleBulkDelete}
+            onBulkPurge={handleBulkPurge}
             onClearFilters={handleClearListFilters}
           />
         </TabsContent>

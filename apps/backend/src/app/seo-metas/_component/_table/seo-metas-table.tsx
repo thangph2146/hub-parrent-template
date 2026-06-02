@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { SeoMetaRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface SeoMetasTableProps {
   data: SeoMetaRow[]
@@ -25,6 +26,7 @@ export interface SeoMetasTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: SeoMetaRow[]) => Promise<void>
+  onBulkPurge: (rows: SeoMetaRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function SeoMetasTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: SeoMetasTableProps) {
   return (
@@ -66,7 +69,7 @@ export function SeoMetasTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "seo-metas.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -83,6 +86,19 @@ export function SeoMetasTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-seo-meta-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các SEO metadata đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} mục. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

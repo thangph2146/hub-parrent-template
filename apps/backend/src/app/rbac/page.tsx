@@ -530,6 +530,7 @@ export default function RbacPage() {
       getRbacColumns({
         onEdit: openEditDialog,
         onDelete: setDeleteTarget,
+        onPurge: setPurgeTarget,
         canManageRoles,
       }),
     [canManageRoles]
@@ -584,7 +585,7 @@ export default function RbacPage() {
               disabled={!canManageRoles}
             >
               <Trash2 className="size-3.5" />
-              Xóa hẳn
+              Xóa vĩnh viễn
             </Button>
           </div>
         ),
@@ -630,7 +631,7 @@ export default function RbacPage() {
             </TypographyH1>
             <TypographyPLargeMuted className={ADMIN_PAGE_SUBTITLE_CLASS}>
               Quản lý vai trò bằng bảng dùng chung, đầy đủ luồng
-              tạo/sửa/xóa/khôi phục/xóa hẳn.
+              tạo/sửa/xóa/khôi phục/Xóa vĩnh viễn.
             </TypographyPLargeMuted>
           </div>
           <div className="flex gap-2">
@@ -669,19 +670,17 @@ export default function RbacPage() {
           }
         >
           <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
-            <TabsTrigger value="list" className="rounded-lg">
+            <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               Danh sách
+              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                {listQuery.data?.total ?? 0}
+              </Badge>
             </TabsTrigger>
-            <TabsTrigger value="trash" className="rounded-lg">
+            <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               Thùng rác
-              {(trashQuery.data?.total ?? 0) > 0 ? (
-                <Badge
-                  variant="secondary"
-                  className="ml-2 px-1.5 py-0 text-[10px]"
-                >
-                  {trashQuery.data?.total}
-                </Badge>
-              ) : null}
+              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                {trashQuery.data?.total ?? 0}
+              </Badge>
             </TabsTrigger>
           </TabsList>
 
@@ -714,6 +713,20 @@ export default function RbacPage() {
                           })
                           toast.success(
                             "Đã xóa tạm các role đã chọn (chuyển vào thùng rác)"
+                          )
+                        },
+                      },
+                      {
+                        id: "bulk-purge",
+                        label: "Xóa vĩnh viễn đã chọn",
+                        variant: "destructive",
+                        onAction: async (rows) => {
+                          await bulkMutation.mutateAsync({
+                            action: "hard-delete",
+                            ids: rows.map((row) => row.id),
+                          })
+                          toast.success(
+                            "Đã xóa vĩnh viễn các role đã chọn"
                           )
                         },
                       },
@@ -766,7 +779,7 @@ export default function RbacPage() {
                       },
                       {
                         id: "bulk-purge",
-                        label: "Xóa hẳn đã chọn",
+                        label: "Xóa vĩnh viễn đã chọn",
                         variant: "destructive",
                         onAction: async (rows) => {
                           await bulkMutation.mutateAsync({

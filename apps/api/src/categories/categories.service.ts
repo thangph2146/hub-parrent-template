@@ -249,14 +249,16 @@ export class CategoriesService {
 
     // Single grouped count query
     const allDescendantIds = [...visited];
+    if (allDescendantIds.length === 0) return new Map();
     const conn = this.em.getConnection();
+    const placeholders = allDescendantIds.map(() => '?').join(',');
     const countRows = (await conn.execute(
-      `SELECT pc.category_id AS id, COUNT(*) AS cnt
+      `SELECT pc.categoryId AS id, COUNT(*) AS cnt
        FROM post_categories pc
-       JOIN posts p ON p.id = pc.post_id AND p.deleted_at IS NULL
-       WHERE pc.category_id IN (?)
-       GROUP BY pc.category_id`,
-      [allDescendantIds],
+       JOIN posts p ON p.id = pc.postId AND p.deletedAt IS NULL
+       WHERE pc.categoryId IN (${placeholders})
+       GROUP BY pc.categoryId`,
+      allDescendantIds,
     )) as Array<{ id: string; cnt: number }>;
     const postCounts = new Map<string, number>(
       countRows.map((r) => [r.id, Number(r.cnt)]),

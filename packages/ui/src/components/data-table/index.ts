@@ -5,6 +5,7 @@ export {
 export type {
   AdminDataTableBulkAction,
   AdminDataTableProps,
+  AdminDataTableXlsxExportConfig,
   DataTableBulkAction,
   DataTableProps,
 } from "./data-table";

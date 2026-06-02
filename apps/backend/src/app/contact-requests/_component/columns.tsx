@@ -1,9 +1,17 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArchiveRestore, CalendarClock, CircleCheck, CircleDashed, CircleDot, Eye, Mail, MessageSquare, Pencil, Phone, Trash2, User } from "lucide-react";
+import { CalendarClock, CircleCheck, CircleDashed, CircleDot, Mail, MessageSquare, Phone, User } from "lucide-react";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableEditButton,
+  AdminTablePurgeButton,
+  AdminTableRestoreButton,
+  AdminTableRowActions,
+  AdminTableSoftDeleteButton,
+  AdminTableViewButton,
+} from "@/components/admin-table-row-actions";
 import type { ContactRequest } from "./types";
 import { CONTACT_REQUEST_STATUS_LABELS } from "./types";
 import { formatPhoneNumber } from "./utils";
@@ -13,13 +21,14 @@ export interface ContactRequestColumnsProps {
   onView: (contact: ContactRequest) => void;
   onEdit: (contact: ContactRequest) => void;
   onDelete: (contact: ContactRequest) => void;
+  onPurge: (contact: ContactRequest) => void;
   busy: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
 }
 
 export function getContactRequestColumns(props: ContactRequestColumnsProps): ColumnDef<ContactRequest>[] {
-  const { onView, onEdit, onDelete, busy, canUpdate, canDelete } = props;
+  const { onView, onEdit, onDelete, onPurge, busy, canUpdate, canDelete } = props;
 
   return [
     {
@@ -229,40 +238,33 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
       enableColumnFilter: false,
       enableSorting: false,
       meta: {
-        disableColumnFilter: true,
+        ...ADMIN_TABLE_ACTIONS_COLUMN_META,
         className: "sticky right-0",
-      } as ColumnDef<ContactRequest>['meta'],
+      } as ColumnDef<ContactRequest>["meta"],
       cell: ({ row }) => {
         const contact = row.original;
         return (
-          <div className="flex flex-wrap gap-1">
-            <Button variant="default" onClick={() => onView(contact)}>
-              <Eye className="size-3.5" aria-hidden />
-              Xem
-            </Button>
-            {canUpdate && (
-              <Button
-                type="button"
-                variant="outline"
+          <AdminTableRowActions>
+            <AdminTableViewButton onClick={() => onView(contact)} />
+            {canUpdate ? (
+              <AdminTableEditButton
                 onClick={() => onEdit(contact)}
                 disabled={busy}
-              >
-                <Pencil className="size-3.5" aria-hidden />
-                Sửa
-              </Button>
-            )}
-            {canDelete && (
-              <Button
-                type="button"
-                variant="destructive"
+              />
+            ) : null}
+            {canDelete ? (
+              <AdminTableSoftDeleteButton
                 onClick={() => onDelete(contact)}
                 disabled={busy}
-              >
-                <Trash2 className="size-3.5" aria-hidden />
-                Xóa tạm
-              </Button>
-            )}
-          </div>
+              />
+            ) : null}
+            {canDelete ? (
+              <AdminTablePurgeButton
+                onClick={() => onPurge(contact)}
+                disabled={busy}
+              />
+            ) : null}
+          </AdminTableRowActions>
         );
       },
     },
@@ -327,32 +329,25 @@ export function getTrashColumns(props: {
       header: "Thao tác",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { disableColumnFilter: true },
+      meta: {
+        ...ADMIN_TABLE_ACTIONS_COLUMN_META,
+        className: "sticky right-0",
+      },
       cell: ({ row }) => (
-        <div className="flex flex-wrap gap-1 sticky right-0">
-          {canRestore && (
-            <Button
-              type="button"
-              variant="default"
+        <AdminTableRowActions>
+          {canRestore ? (
+            <AdminTableRestoreButton
               onClick={() => onRestore(row.original)}
               disabled={busy}
-            >
-              <ArchiveRestore className="size-3.5" aria-hidden />
-              Khôi phục
-            </Button>
-          )}
-          {canDelete && (
-            <Button
-              type="button"
-              variant="destructive"
+            />
+          ) : null}
+          {canDelete ? (
+            <AdminTablePurgeButton
               onClick={() => onPurge(row.original)}
               disabled={busy}
-            >
-              <Trash2 className="size-3.5" aria-hidden />
-              Xóa hẳn
-            </Button>
-          )}
-        </div>
+            />
+          ) : null}
+        </AdminTableRowActions>
       ),
     },
   ];

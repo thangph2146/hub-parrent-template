@@ -76,7 +76,7 @@ import {
 import { cn } from "../../lib/utils"
 import "./table-meta"
 import { buildCsvFromColumns } from "../../lib/build-table-csv"
-import { csvBaseToXlsxFilename, downloadXlsxFile } from "../../lib/export-xlsx"
+import { downloadXlsxFile } from "../../lib/export-xlsx"
 import { Separator } from "../separator"
 import { TypographyPSmall } from "../typography"
 import {
@@ -119,6 +119,19 @@ export type AdminDataTableBulkAction<TData> = {
 
 export type DataTableBulkAction<TData> = AdminDataTableBulkAction<TData>
 
+export type AdminDataTableXlsxExportConfig =
+  | boolean
+  | {
+      fileName?: string
+      sheetName?: string
+      title?: string
+      subtitle?: string
+      metadata?: Array<{
+        label: string
+        value: string | number | null | undefined
+      }>
+    }
+
 export type AdminDataTableProps<TData> = {
   data: TData[]
   columns: ColumnDef<TData, unknown>[]
@@ -150,18 +163,7 @@ export type AdminDataTableProps<TData> = {
   /**
    * Hiện nút xuất Excel (dữ liệu đúng mảng `data` hiện tại — thường là một trang/lớp đã lọc).
    */
-  csvExport?:
-    | boolean
-    | {
-        fileName?: string
-        sheetName?: string
-        title?: string
-        subtitle?: string
-        metadata?: Array<{
-          label: string
-          value: string | number | null | undefined
-        }>
-      }
+  xlsxExport?: AdminDataTableXlsxExportConfig
   /** Bật cột chọn dòng cho thao tác hàng loạt */
   rowSelectionEnabled?: boolean
   /** Kiểm soát dòng nào được phép tick */
@@ -292,7 +294,7 @@ export function AdminDataTable<TData>({
   clearFiltersVariant = "outline",
   filterToolbarExtra,
   footer,
-  csvExport,
+  xlsxExport,
   rowSelectionEnabled = false,
   canSelectRow,
   getRowId,
@@ -320,36 +322,33 @@ export function AdminDataTable<TData>({
   const setSelectedRowIds = onSelectedRowIdsChange ?? setSelectedRowIdsInternal
   const showGlobalFilter =
     getGlobalFilterText != null || onGlobalFilterChange != null
-  const csvExportEnabled = Boolean(csvExport)
+  const xlsxExportEnabled = Boolean(xlsxExport)
   const hasBulkActions = bulkActions.length > 0
   const exportFileNameProp =
-    typeof csvExport === "object" && csvExport != null
-      ? csvExport.fileName?.trim()
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.fileName?.trim()
       : undefined
   const exportSheetNameProp =
-    typeof csvExport === "object" && csvExport != null
-      ? csvExport.sheetName?.trim()
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.sheetName?.trim()
       : undefined
   const exportTitleProp =
-    typeof csvExport === "object" && csvExport != null
-      ? csvExport.title?.trim()
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.title?.trim()
       : undefined
   const exportSubtitleProp =
-    typeof csvExport === "object" && csvExport != null
-      ? csvExport.subtitle?.trim()
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.subtitle?.trim()
       : undefined
   const exportMetadataProp =
-    typeof csvExport === "object" && csvExport != null
-      ? csvExport.metadata
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.metadata
       : undefined
   const resolvedXlsxFileName = useMemo(() => {
     if (exportFileNameProp) {
       const name = exportFileNameProp.trim()
       if (name.toLowerCase().endsWith(".xlsx")) return name
-      if (name.toLowerCase().endsWith(".csv")) {
-        return csvBaseToXlsxFilename(name)
-      }
-      return `${name}.xlsx`
+      return `${name.replace(/\.[^.]+$/, "")}.xlsx`
     }
     return `xuat-bang-${new Date().toISOString().slice(0, 10)}.xlsx`
   }, [exportFileNameProp])
@@ -858,10 +857,10 @@ export function AdminDataTable<TData>({
       {(showGlobalFilter ||
         filterableHeaders.length > 0 ||
         filterToolbarExtra ||
-        csvExportEnabled ||
+        xlsxExportEnabled ||
         (rowSelectionEnabled && hasBulkActions)) && (
         <div className="space-y-4 bg-card">
-          {showGlobalFilter || filterToolbarExtra || csvExportEnabled ? (
+          {showGlobalFilter || filterToolbarExtra || xlsxExportEnabled ? (
             <div className="flex flex-wrap items-end gap-3">
               {showGlobalFilter ? (
                 <div className="flex min-w-[min(100%,18rem)] flex-1 flex-col gap-1.5">
@@ -884,7 +883,7 @@ export function AdminDataTable<TData>({
                     </span>
                     <Button
                       type="button"
-                      variant={clearFiltersVariant}
+                      variant={"destructive"}
                       onClick={handleClearFilters}
                       title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
                     >
@@ -893,14 +892,14 @@ export function AdminDataTable<TData>({
                     </Button>
                   </div>
                 ) : null}
-                {csvExportEnabled ? (
+                {xlsxExportEnabled ? (
                   <div className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-muted-foreground">
                       Xuất file
                     </span>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="success"
                       disabled={data.length === 0}
                       onClick={handleXlsxExport}
                       title="Excel: cột rộng theo nội dung, Unicode chuẩn"
@@ -1052,8 +1051,8 @@ export function AdminDataTable<TData>({
                     key={row.id}
                     data-depth={row.depth}
                     className={cn(
-                      "hover:bg-primary/10",
-                      row.index % 2 === 1 && "bg-primary/10",
+                      "hover:bg-primary/8",
+                      row.index % 2 === 1 && "bg-primary/8",
                       getRowClassName?.(row)
                     )}
                     style={{
@@ -1084,10 +1083,10 @@ export function AdminDataTable<TData>({
                                 | ColumnMeta
                                 | undefined
                             ),
-                            row.getIsSelected() && "!bg-primary/15",
+                            row.getIsSelected() && "!bg-primary/8",
                             cell.column.id === "_select" &&
                               !row.getIsSelected() &&
-                              "hover:!bg-primary/10"
+                              "hover:!bg-primary/8"
                           )}
                           style={{
                             paddingLeft:

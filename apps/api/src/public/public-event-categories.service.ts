@@ -33,9 +33,10 @@ export class PublicEventCategoriesService {
     if (ids.length === 0) return [];
 
     const conn = this.em.getConnection();
+    const placeholders = ids.map(() => '?').join(',');
     const childrenRows = (await conn.execute(
-      'SELECT parent_id AS id, COUNT(*) AS cnt FROM categories WHERE parent_id IN (?) AND deleted_at IS NULL AND type = ? GROUP BY parent_id',
-      [ids, 'event'],
+      `SELECT parentId AS id, COUNT(*) AS cnt FROM categories WHERE parentId IN (${placeholders}) AND deletedAt IS NULL AND type = ? GROUP BY parentId`,
+      [...ids, 'event'],
     )) as Array<{ id: string; cnt: number }>;
     const childrenCounts = new Map<string, number>(
       childrenRows.map((r) => [r.id, Number(r.cnt)]),

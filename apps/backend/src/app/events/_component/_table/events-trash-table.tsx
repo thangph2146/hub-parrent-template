@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { EventRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface EventsTrashTableProps {
   data: EventRow[]
@@ -77,7 +78,7 @@ export function EventsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "su-kien-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("events-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

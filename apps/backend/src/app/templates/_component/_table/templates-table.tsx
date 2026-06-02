@@ -9,6 +9,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw } from "lucide-react"
 import type { TemplateRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function TemplatesTable({
   data,
   columns,
@@ -23,6 +24,7 @@ export function TemplatesTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: {
   data: TemplateRow[]
@@ -38,6 +40,7 @@ export function TemplatesTable({
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: TemplateRow[]) => Promise<void>
+  onBulkPurge: (rows: TemplateRow[]) => Promise<void>
   isFetching?: boolean
 }) {
   return (
@@ -61,7 +64,7 @@ export function TemplatesTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "mau-hien-thi.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("templates", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -77,6 +80,19 @@ export function TemplatesTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-template-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các mẫu đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} mẫu. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

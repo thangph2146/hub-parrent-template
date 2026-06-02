@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-05-28T07:28:31.208Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-02T06:06:23.329Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 

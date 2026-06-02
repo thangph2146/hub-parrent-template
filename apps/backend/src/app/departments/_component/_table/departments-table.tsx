@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { DepartmentRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface DepartmentsTableProps {
   data: DepartmentRow[]
@@ -25,6 +26,7 @@ export interface DepartmentsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: DepartmentRow[]) => Promise<void>
+  onBulkPurge: (rows: DepartmentRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function DepartmentsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: DepartmentsTableProps) {
   return (
@@ -66,7 +69,7 @@ export function DepartmentsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "phong-khoa.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("departments", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -83,6 +86,19 @@ export function DepartmentsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-department-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các phòng khoa đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} phòng khoa. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

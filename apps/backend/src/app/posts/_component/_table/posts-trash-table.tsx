@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { PostListRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface PostsTrashTableProps {
   data: PostListRow[]
@@ -82,7 +83,7 @@ export function PostsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={canExport ? { fileName: "bai-viet-thung-rac.csv" } : undefined}
+      xlsxExport={canExport ? buildAdminTableXlsxExport("posts-trash", { pageCount: data.length, total }) : undefined}
       rowSelectionEnabled={!!canRestore || !!canDelete}
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

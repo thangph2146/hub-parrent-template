@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { Plus, BookOpen } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@ui/components/button";
 import { PageSection } from "@ui/components/layout";
 import { TypographyH1 } from "@ui/components/typography";
@@ -24,6 +25,7 @@ import {
   PAGE_KEY,
   sortGroupsByOrder,
   type GuideConfirmAction,
+  type GuideGroup,
 } from "./_component";
 
 function GuidesPageInner() {
@@ -34,6 +36,7 @@ function GuidesPageInner() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [confirmAction, setConfirmAction] = useState<GuideConfirmAction | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isPurging, setIsPurging] = useState(false);
 
   const { data, isLoading, isFetching, refetch } = useGuidesQuery({
     api,
@@ -53,6 +56,7 @@ function GuidesPageInner() {
         onView: (row) => router.push(`/guides/${row.id}`),
         onEdit: (row) => router.push(`/guides/${row.id}/edit`),
         onDelete: (row) => setConfirmAction({ kind: "delete", row }),
+        onPurge: (row) => setConfirmAction({ kind: "purge", row }),
         canWrite,
       }),
     [router, canWrite],
@@ -71,6 +75,30 @@ function GuidesPageInner() {
     }
     setConfirmAction(null);
   };
+
+  const handlePurgeConfirm = async () => {
+    if (!confirmAction || confirmAction.kind !== "purge" || !confirmAction.row) return;
+    setIsPurging(true);
+    try {
+      await api.guides.purge(confirmAction.row.id);
+      toast.success("Đã xóa vĩnh viễn nhóm hướng dẫn");
+      await refetch();
+    } finally {
+      setIsPurging(false);
+      setConfirmAction(null);
+    }
+  };
+
+  const handleBulkPurge = useCallback(async (rows: GuideGroup[]) => {
+    const ids = rows.map((r) => r.id);
+    try {
+      await api.guides.bulk({ action: "hard-delete", ids });
+      toast.success(`Đã xóa vĩnh viễn ${ids.length} nhóm hướng dẫn`);
+      await refetch();
+    } catch {
+      toast.error("Xóa vĩnh viễn thất bại");
+    }
+  }, [refetch]);
 
   return (
     <PageSection max="full" className="min-w-0 space-y-6">
@@ -109,14 +137,19 @@ function GuidesPageInner() {
           setColumnFilters([]);
         }}
         isFetching={isFetching}
+        onBulkPurge={handleBulkPurge}
       />
 
       <GuidesConfirmDialog
         confirmAction={confirmAction}
         deleteMutation={{ isPending: isDeleting }}
+        purgeMutation={{ isPending: isPurging }}
         onOpenChange={(open) => !open && setConfirmAction(null)}
         onConfirm={() => {
           void handleConfirmAction();
+        }}
+        onPurgeConfirm={() => {
+          void handlePurgeConfirm();
         }}
       />
     </PageSection>

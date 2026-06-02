@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { TrainingSystemRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface TrainingSystemsTableProps {
   data: TrainingSystemRow[]
@@ -25,6 +26,7 @@ export interface TrainingSystemsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: TrainingSystemRow[]) => Promise<void>
+  onBulkPurge: (rows: TrainingSystemRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function TrainingSystemsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: TrainingSystemsTableProps) {
   return (
@@ -66,7 +69,7 @@ export function TrainingSystemsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "he-dao-tao.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("training-systems", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -83,6 +86,19 @@ export function TrainingSystemsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-training-system-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các hệ đào tạo đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} hệ đào tạo. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { MajorRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface MajorsTableProps {
   data: MajorRow[]
@@ -25,6 +26,7 @@ export interface MajorsTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: MajorRow[]) => Promise<void>
+  onBulkPurge: (rows: MajorRow[]) => Promise<void>
   isFetching?: boolean
 }
 
@@ -42,6 +44,7 @@ export function MajorsTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
 }: MajorsTableProps) {
   return (
@@ -66,7 +69,7 @@ export function MajorsTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "nganh-hoc.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("majors", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -83,6 +86,19 @@ export function MajorsTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-major-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các ngành học đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} ngành học. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={

@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { TrainingSystemRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface TrainingSystemsTrashTableProps {
   data: TrainingSystemRow[]
@@ -77,7 +78,7 @@ export function TrainingSystemsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "he-dao-tao-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("training-systems-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

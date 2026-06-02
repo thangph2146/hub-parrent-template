@@ -5,8 +5,8 @@ import { AdminDataTable } from "@ui/components/data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getContactRequestColumns } from "../columns";
 import type { ContactRequest } from "../types";
-import { downloadCsvFile } from "@/lib/export-csv";
-import { downloadXlsxFile } from "@/lib/export-xlsx";
+import { downloadXlsxFile } from "@ui/lib/export-xlsx";
+import { buildContactRequestsXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 function parseStructuredContent(content: string | undefined): Record<string, string> {
   if (!content) return {};
@@ -87,10 +87,12 @@ interface ContactRequestTableProps {
   onView: (contact: ContactRequest) => void;
   onEdit: (contact: ContactRequest) => void;
   onDelete: (contact: ContactRequest) => void;
+  onPurge: (contact: ContactRequest) => void;
   busy: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
   onBulkDelete: (ids: string[]) => void;
+  onBulkPurge: (ids: string[]) => void;
   onClearFilters: () => void;
 }
 
@@ -112,23 +114,34 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
     onView,
     onEdit,
     onDelete,
+    onPurge,
     busy,
     canUpdate,
     canDelete,
     onBulkDelete,
+    onBulkPurge,
     onClearFilters,
   } = props;
 
-  const columns = getContactRequestColumns({ onView, onEdit, onDelete, busy, canUpdate, canDelete });
-
-  const handleCsvExport = () => {
-    const { headers, rows } = buildCustomExportData(data);
-    downloadCsvFile("yeu-cau-lien-he.csv", headers, rows);
-  };
+  const columns = getContactRequestColumns({ onView, onEdit, onDelete, onPurge, busy, canUpdate, canDelete });
 
   const handleXlsxExport = () => {
+    const template = buildContactRequestsXlsxExport("active", {
+      pageCount: data.length,
+      total,
+    });
     const { headers, rows } = buildCustomExportData(data);
-    void downloadXlsxFile("yeu-cau-lien-he.xlsx", headers, rows, "Yêu cầu liên hệ");
+    void downloadXlsxFile(
+      template.fileName,
+      headers,
+      rows,
+      template.sheetName,
+      {
+        title: template.title,
+        subtitle: template.subtitle,
+        metadata: template.metadata,
+      },
+    );
   };
 
   const paginationFooter = (
@@ -178,37 +191,33 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
               },
             ]
           : []),
+        ...(canDelete
+          ? [
+              {
+                id: "bulk-contact-purge" as const,
+                label: "Xóa vĩnh viễn đã chọn",
+                variant: "destructive" as const,
+                onAction: async (rows: ContactRequest[]) => {
+                  const ids = rows.map((c) => String(c.id));
+                  if (!ids.length) return;
+                  await onBulkPurge(ids);
+                },
+              },
+            ]
+          : []),
       ]}
       filterToolbarExtra={
-        <div className="flex flex-wrap items-end gap-2">
-          <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold text-muted-foreground">
-              Xuất file
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={data.length === 0}
-                onClick={handleCsvExport}
-              >
-                <Download className="size-4" />
-                CSV
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={data.length === 0}
-                onClick={handleXlsxExport}
-              >
-                <Download className="size-4" />
-                Excel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={data.length === 0}
+          onClick={handleXlsxExport}
+        >
+          <Download className="size-4" />
+          Excel
+        </Button>
       }
-      csvExport={false}
+      xlsxExport={false}
       footer={paginationFooter}
     />
   );

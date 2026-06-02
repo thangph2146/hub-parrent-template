@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { FilterX, RefreshCw } from "lucide-react"
 import type { MajorRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface MajorsTrashTableProps {
   data: MajorRow[]
@@ -77,7 +78,7 @@ export function MajorsTrashTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "nganh-hoc-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("majors-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

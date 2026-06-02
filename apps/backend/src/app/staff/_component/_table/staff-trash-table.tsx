@@ -11,6 +11,7 @@ import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actio
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 interface StaffTrashTableProps {
   data: StaffRow[]
@@ -120,7 +121,7 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
           isRefreshing={isLoading}
         />
       }
-      csvExport={{ fileName: "nhan-su-thung-rac.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}
       footer={paginationFooter}
     />
   )

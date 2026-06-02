@@ -10,6 +10,7 @@ import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { SpeakerRow } from "../types"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
 export interface SpeakersTableProps {
   data: SpeakerRow[]
@@ -25,6 +26,7 @@ export interface SpeakersTableProps {
   onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: SpeakerRow[]) => Promise<void>
+  onBulkPurge: (rows: SpeakerRow[]) => Promise<void>
   isFetching?: boolean
   manualFiltering?: boolean
 }
@@ -43,6 +45,7 @@ export function SpeakersTable({
   onRefresh,
   onClearFilters,
   onBulkDelete,
+  onBulkPurge,
   isFetching,
   manualFiltering: manualFilteringProp,
 }: SpeakersTableProps) {
@@ -67,7 +70,7 @@ export function SpeakersTable({
           isRefreshing={isFetching}
         />
       }
-      csvExport={{ fileName: "dien-gia.csv" }}
+      xlsxExport={buildAdminTableXlsxExport("speakers", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -84,6 +87,19 @@ export function SpeakersTable({
             destructive: true,
           },
           onAction: onBulkDelete,
+        },
+        {
+          id: "bulk-speaker-purge",
+          label: "Xóa vĩnh viễn đã chọn",
+          variant: "destructive",
+          confirm: {
+            title: "Xóa vĩnh viễn các diễn giả đã chọn?",
+            description: (rows) =>
+              `Bạn đã chọn ${rows.length} diễn giả. Hành động này không thể hoàn tác!`,
+            confirmLabel: "Xóa vĩnh viễn",
+            destructive: true,
+          },
+          onAction: onBulkPurge,
         },
       ]}
       footer={
