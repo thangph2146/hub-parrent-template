@@ -6,8 +6,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
-import { RefreshCw } from "lucide-react"
 import type { TemplateRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function TemplatesTable({
@@ -21,11 +19,9 @@ export function TemplatesTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: {
   data: TemplateRow[]
   columns: ColumnDef<TemplateRow>[]
@@ -37,11 +33,9 @@ export function TemplatesTable({
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: TemplateRow[]) => Promise<void>
   onBulkPurge: (rows: TemplateRow[]) => Promise<void>
-  isFetching?: boolean
 }) {
   return (
     <AdminDataTable<TemplateRow>
@@ -58,12 +52,6 @@ export function TemplatesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("templates", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

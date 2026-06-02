@@ -36,7 +36,18 @@ export type AdminTableExportTemplateId =
   | "templates-trash"
   | "guides"
   | "staff"
-  | "staff-trash";
+  | "staff-trash"
+  | "rbac"
+  | "rbac-trash"
+  | "parent-students"
+  | "event-registrations"
+  | "event-checkins"
+  | "event-checkouts"
+  | "event-speakers"
+  | "student-year-averages"
+  | "student-term-averages"
+  | "student-detailed-scores"
+  | "staff-related-posts";
 
 type AdminTableExportTemplate = {
   fileName: string;
@@ -288,6 +299,83 @@ const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
     subtitle: ADMIN_EXPORT_SUBTITLE,
     recordLabel: "nhân sự",
   },
+  rbac: {
+    fileName: "vai-tro.xlsx",
+    sheetName: "Vai tro",
+    title: "DANH SÁCH VAI TRÒ (RBAC)",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "vai trò",
+  },
+  "rbac-trash": {
+    fileName: "vai-tro-thung-rac.xlsx",
+    sheetName: "Vai tro thung rac",
+    title: "VAI TRÒ TRONG THÙNG RÁC",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "vai trò",
+  },
+  "parent-students": {
+    fileName: "yeu-cau-phu-huynh-sinh-vien.xlsx",
+    sheetName: "Phu huynh SV",
+    title: "DANH SÁCH YÊU CẦU PHỤ HUYNH – SINH VIÊN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "yêu cầu",
+  },
+  "event-registrations": {
+    fileName: "dang-ky-su-kien.xlsx",
+    sheetName: "Dang ky",
+    title: "DANH SÁCH ĐĂNG KÝ SỰ KIỆN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "đăng ký",
+  },
+  "event-checkins": {
+    fileName: "check-in-su-kien.xlsx",
+    sheetName: "Check in",
+    title: "DANH SÁCH CHECK-IN SỰ KIỆN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "check-in",
+  },
+  "event-checkouts": {
+    fileName: "check-out-su-kien.xlsx",
+    sheetName: "Check out",
+    title: "DANH SÁCH CHECK-OUT SỰ KIỆN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "check-out",
+  },
+  "event-speakers": {
+    fileName: "dien-gia-su-kien.xlsx",
+    sheetName: "Dien gia",
+    title: "DANH SÁCH DIỄN GIẢ SỰ KIỆN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "diễn giả",
+  },
+  "student-year-averages": {
+    fileName: "diem-trung-binh-nam.xlsx",
+    sheetName: "Diem TB nam",
+    title: "ĐIỂM TRUNG BÌNH THEO NĂM HỌC",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "năm học",
+  },
+  "student-term-averages": {
+    fileName: "diem-trung-binh-hoc-ky.xlsx",
+    sheetName: "Diem TB hoc ky",
+    title: "ĐIỂM TRUNG BÌNH THEO HỌC KỲ",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "học kỳ",
+  },
+  "student-detailed-scores": {
+    fileName: "diem-chi-tiet.xlsx",
+    sheetName: "Diem chi tiet",
+    title: "ĐIỂM CHI TIẾT THEO MÔN",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "môn học",
+  },
+  "staff-related-posts": {
+    fileName: "bai-viet-nhan-su.xlsx",
+    sheetName: "Bai viet",
+    title: "BÀI VIẾT LIÊN QUAN NHÂN SỰ",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "bài viết",
+  },
 };
 
 function formatExportDate(): string {
@@ -297,7 +385,21 @@ function formatExportDate(): string {
 export type AdminTableXlsxExportOptions = {
   pageCount?: number;
   total?: number;
+  extraMetadata?: Array<{
+    label: string;
+    value: string | number | null | undefined;
+  }>;
+  fileName?: string;
 };
+
+function sanitizeFileStem(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+}
 
 export function buildAdminTableXlsxExport(
   templateId: AdminTableExportTemplateId,
@@ -311,6 +413,10 @@ export function buildAdminTableXlsxExport(
     { label: "Chủ đề", value: template.title },
     { label: "Ngày xuất", value: formatExportDate() },
   ];
+
+  if (options.extraMetadata?.length) {
+    metadata.push(...options.extraMetadata);
+  }
 
   if (options.pageCount != null) {
     metadata.push({
@@ -326,12 +432,60 @@ export function buildAdminTableXlsxExport(
   }
 
   return {
-    fileName: template.fileName,
+    fileName: options.fileName ?? template.fileName,
     sheetName: template.sheetName,
     title: template.title,
     subtitle: template.subtitle,
     metadata,
   };
+}
+
+export type EventDetailExportTab =
+  | "registrations"
+  | "checkins"
+  | "checkouts"
+  | "speakers";
+
+const EVENT_DETAIL_TEMPLATE: Record<
+  EventDetailExportTab,
+  AdminTableExportTemplateId
+> = {
+  registrations: "event-registrations",
+  checkins: "event-checkins",
+  checkouts: "event-checkouts",
+  speakers: "event-speakers",
+};
+
+export function buildEventDetailXlsxExport(
+  tab: EventDetailExportTab,
+  options: AdminTableXlsxExportOptions & {
+    eventTitle?: string;
+    eventId?: string;
+  } = {},
+): AdminDataTableXlsxExportConfig {
+  const templateId = EVENT_DETAIL_TEMPLATE[tab];
+  const stem = options.eventId ? sanitizeFileStem(options.eventId) : "";
+  const baseTemplate = ADMIN_TABLE_EXPORT_TEMPLATES[templateId];
+  const fileName =
+    options.fileName ??
+    (stem
+      ? baseTemplate.fileName.replace(".xlsx", `-${stem}.xlsx`)
+      : baseTemplate.fileName);
+
+  const extraMetadata: AdminTableXlsxExportOptions["extraMetadata"] = [];
+  if (options.eventTitle?.trim()) {
+    extraMetadata.push({ label: "Sự kiện", value: options.eventTitle.trim() });
+  }
+  if (options.eventId?.trim()) {
+    extraMetadata.push({ label: "Mã sự kiện", value: options.eventId.trim() });
+  }
+
+  return buildAdminTableXlsxExport(templateId, {
+    pageCount: options.pageCount,
+    total: options.total,
+    fileName,
+    extraMetadata,
+  });
 }
 
 export type ContactXlsxExportKind = "active" | "trash";

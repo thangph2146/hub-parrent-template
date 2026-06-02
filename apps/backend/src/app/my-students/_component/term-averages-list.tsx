@@ -18,6 +18,7 @@ import {
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import type { TermAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"
@@ -40,6 +41,11 @@ function TermTable({ items }: { items: TermAverage[] }) {
         id: "term",
         header: "Học kỳ",
         enableColumnFilter: false,
+        accessorFn: (row) => row.termID ?? "",
+        meta: {
+          exportValue: (row: TermAverage) =>
+            row.orderTerm ? `${row.termID} (HK${row.orderTerm})` : row.termID ?? "",
+        },
         cell: ({ row }) => (
           <div className="flex items-center gap-1.5">
             <Badge variant="outline" className="text-xs">
@@ -57,6 +63,7 @@ function TermTable({ items }: { items: TermAverage[] }) {
         id: "averageScore10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
         enableColumnFilter: false,
+        accessorKey: "averageScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore10, "10")
           return (
@@ -70,6 +77,7 @@ function TermTable({ items }: { items: TermAverage[] }) {
         id: "averageScore4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
         enableColumnFilter: false,
+        accessorKey: "averageScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore4, "4")
           return (
@@ -83,6 +91,7 @@ function TermTable({ items }: { items: TermAverage[] }) {
         id: "averageGatherScore10",
         header: () => <div className="w-full text-center">Tích lũy hệ 10</div>,
         enableColumnFilter: false,
+        accessorKey: "averageGatherScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore10, "10")
           return (
@@ -96,6 +105,7 @@ function TermTable({ items }: { items: TermAverage[] }) {
         id: "averageGatherScore4",
         header: () => <div className="w-full text-center">Tích lũy hệ 4</div>,
         enableColumnFilter: false,
+        accessorKey: "averageGatherScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore4, "4")
           return (
@@ -119,6 +129,10 @@ function TermTable({ items }: { items: TermAverage[] }) {
       columns={columns}
       emptyLabel="Không có dữ liệu"
       manualFiltering
+      xlsxExport={buildAdminTableXlsxExport("student-term-averages", {
+        pageCount: sorted.length,
+        total: sorted.length,
+      })}
     />
   )
 }

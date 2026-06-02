@@ -6,10 +6,8 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { RefreshCw, FilterX } from "lucide-react"
-import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import type { ParentStudent } from "../types"
 
@@ -28,13 +26,11 @@ export interface ParentStudentTableProps {
   total: number
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkApprove: (rows: ParentStudent[]) => Promise<void>
   onBulkReject: (rows: ParentStudent[]) => Promise<void>
   onBulkPurge: (rows: ParentStudent[]) => Promise<void>
   canApprove: boolean
-  isFetching?: boolean
 }
 
 export function ParentStudentTable({
@@ -52,13 +48,11 @@ export function ParentStudentTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkApprove,
   onBulkReject,
   onBulkPurge,
   canApprove,
-  isFetching,
 }: ParentStudentTableProps) {
   return (
     <AdminDataTable<ParentStudent>
@@ -75,12 +69,11 @@ export function ParentStudentTable({
       globalFilterPlaceholder="Tìm mã sinh viên, họ tên, ID phụ huynh…"
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
+
+      xlsxExport={buildAdminTableXlsxExport("parent-students", {
+        pageCount: data.length,
+        total,
+      })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}

@@ -6,7 +6,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { CameraRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function CamerasTable({
@@ -20,11 +19,9 @@ export function CamerasTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: {
   data: CameraRow[]
   columns: ColumnDef<CameraRow>[]
@@ -36,11 +33,9 @@ export function CamerasTable({
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: CameraRow[]) => Promise<void>
   onBulkPurge: (rows: CameraRow[]) => Promise<void>
-  isFetching?: boolean
 }) {
   return (
     <AdminDataTable<CameraRow>
@@ -58,12 +53,6 @@ export function CamerasTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("cameras", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

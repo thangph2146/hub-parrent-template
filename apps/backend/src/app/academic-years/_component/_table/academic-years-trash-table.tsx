@@ -7,9 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
-import { FilterX, RefreshCw } from "lucide-react"
 import type { AcademicYearRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -28,11 +26,9 @@ export interface AcademicYearsTrashTableProps {
   total: number
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkRestore: (rows: AcademicYearRow[]) => Promise<void>
   onBulkPurge: (rows: AcademicYearRow[]) => Promise<void>
-  isFetching?: boolean
 }
 
 export function AcademicYearsTrashTable({
@@ -50,11 +46,9 @@ export function AcademicYearsTrashTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
-  isFetching,
 }: AcademicYearsTrashTableProps) {
   return (
     <AdminDataTable<AcademicYearRow>
@@ -72,12 +66,6 @@ export function AcademicYearsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("academic-years-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

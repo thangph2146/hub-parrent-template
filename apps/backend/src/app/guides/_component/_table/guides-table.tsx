@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import type { GuideGroup } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -16,9 +15,7 @@ export interface GuidesTableProps {
   globalFilter: string;
   onGlobalFilterChange: OnChangeFn<string>;
   total: number;
-  onRefresh: () => void;
   onClearFilters: () => void;
-  isFetching?: boolean;
   onBulkPurge: (rows: GuideGroup[]) => Promise<void>;
 }
 
@@ -31,9 +28,7 @@ export function GuidesTable({
   globalFilter,
   onGlobalFilterChange,
   total,
-  onRefresh,
   onClearFilters,
-  isFetching,
   onBulkPurge,
 }: GuidesTableProps) {
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
@@ -66,13 +61,7 @@ export function GuidesTable({
             await onBulkPurge(rows);
           },
         },
-      ]}
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
+      ]}
       xlsxExport={buildAdminTableXlsxExport("guides", { pageCount: data.length, total })}
       footer={
         <div className="flex items-center justify-between">

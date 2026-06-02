@@ -1,9 +1,11 @@
 export {
   buildAdminTableXlsxExport,
   buildContactRequestsXlsxExport,
+  buildEventDetailXlsxExport,
   type AdminTableExportTemplateId,
   type AdminTableXlsxExportOptions,
   type ContactXlsxExportKind,
+  type EventDetailExportTab,
 } from "./admin-table-xlsx-export";
 export { buildAdminFilterQuery,
   COMMON_FILTER_MAPPINGS,

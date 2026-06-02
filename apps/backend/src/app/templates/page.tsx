@@ -12,7 +12,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useRouter } from "next/navigation"
-import { AlertCircle, RefreshCw, LayoutTemplate, Plus } from "lucide-react"
+import { AlertCircle, LayoutTemplate, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
@@ -148,21 +148,6 @@ function TemplatesPageInner() {
           <p className={ADMIN_PAGE_SUBTITLE_CLASS}>Quản lý mẫu hiển thị.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              void listQ.refetch()
-              void trashQ.refetch()
-            }}
-          >
-            <RefreshCw
-              className={cn(
-                "size-5",
-                (listQ.isFetching || trashQ.isFetching) && "animate-spin"
-              )}
-            />{" "}
-            Làm mới
-          </Button>
           {canWrite && (
             <Button
               onClick={() => router.push("/templates/new")}
@@ -232,7 +217,6 @@ function TemplatesPageInner() {
             selectedRowIds={lS}
             onSelectedRowIdsChange={setLS}
             total={listQ.data?.length ?? 0}
-            onRefresh={() => void listQ.refetch()}
             onClearFilters={cLF}
             onBulkDelete={async (rows) => {
               const ids = rows.map((r) => r.id)
@@ -246,7 +230,6 @@ function TemplatesPageInner() {
               await bulM.mutateAsync({ action: "hard-delete", ids })
               toast.success(`Đã xóa vĩnh viễn ${ids.length} mẫu hiển thị`)
             }}
-            isFetching={listQ.isFetching}
           />
         </TabsContent>
         {canWrite && (
@@ -276,7 +259,6 @@ function TemplatesPageInner() {
                 total={trashQ.data?.total ?? 0}
                 onPageChange={setTP}
                 onPageSizeChange={setTPS}
-                onRefresh={() => void trashQ.refetch()}
                 onClearFilters={cTF}
                 onBulkRestore={async (rows) => {
                   const ids = rows.map((r) => r.id)
@@ -290,7 +272,6 @@ function TemplatesPageInner() {
                   await bulM.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} mẫu hiển thị`)
                 }}
-                isFetching={trashQ.isFetching}
               />
             )}
           </TabsContent>

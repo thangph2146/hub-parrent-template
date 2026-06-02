@@ -7,9 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
-import { RefreshCw, FilterX } from "lucide-react"
 import type { PostListRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -28,11 +26,9 @@ export interface PostsTrashTableProps {
   total: number
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkRestore: (rows: PostListRow[]) => Promise<void>
   onBulkPurge: (rows: PostListRow[]) => Promise<void>
-  isFetching?: boolean
   canExport?: boolean
   canRestore?: boolean
   canDelete?: boolean
@@ -53,11 +49,9 @@ export function PostsTrashTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
-  isFetching,
   canExport,
   canRestore,
   canDelete,
@@ -77,12 +71,6 @@ export function PostsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={canExport ? buildAdminTableXlsxExport("posts-trash", { pageCount: data.length, total }) : undefined}
       rowSelectionEnabled={!!canRestore || !!canDelete}
       selectedRowIds={selectedRowIds}

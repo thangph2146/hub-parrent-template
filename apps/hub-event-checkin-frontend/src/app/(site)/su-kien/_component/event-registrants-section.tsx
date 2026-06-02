@@ -12,6 +12,7 @@ import { formatEventDateTime } from "@/lib/public-events";
 type EventRegistrantsSectionProps = {
   registrants: PublicEventRegistrant[];
   totalRegistrations: number;
+  eventTitle?: string;
   embedded?: boolean;
 };
 
@@ -25,11 +26,17 @@ function registrantInitials(name: string): string {
 function RegistrantsList({
   registrants,
   totalRegistrations,
+  eventTitle,
 }: {
   registrants: PublicEventRegistrant[];
   totalRegistrations: number;
+  eventTitle?: string;
 }) {
   const count = Math.max(totalRegistrations, registrants.length);
+  const exportGeneratedAt = useMemo(
+    () => new Date().toLocaleString("vi-VN"),
+    [registrants.length, totalRegistrations],
+  );
   const columns = useMemo<ColumnDef<PublicEventRegistrant, unknown>[]>(
     () => [
       {
@@ -78,6 +85,20 @@ function RegistrantsList({
           .filter(Boolean)
           .join(" ")}
         globalFilterPlaceholder="Tìm sinh viên đã đăng ký..."
+        xlsxExport={{
+          fileName: "sinh-vien-dang-ky.xlsx",
+          sheetName: "Dang ky",
+          title: "DANH SÁCH SINH VIÊN ĐÃ ĐĂNG KÝ",
+          subtitle: "HUB Events — danh sách công khai",
+          metadata: [
+            ...(eventTitle?.trim()
+              ? [{ label: "Sự kiện", value: eventTitle.trim() }]
+              : []),
+            { label: "Ngày xuất", value: exportGeneratedAt },
+            { label: "Số bản ghi trang", value: registrants.length },
+            { label: "Tổng đăng ký", value: count },
+          ],
+        }}
       />
       {count > registrants.length && registrants.length > 0 ? (
         <p className="text-xs text-muted-foreground">
@@ -91,13 +112,18 @@ function RegistrantsList({
 export function EventRegistrantsSection({
   registrants,
   totalRegistrations,
+  eventTitle,
   embedded = false,
 }: EventRegistrantsSectionProps) {
   const count = Math.max(totalRegistrations, registrants.length);
   if (!embedded && count === 0 && registrants.length === 0) return null;
 
   const body = (
-    <RegistrantsList registrants={registrants} totalRegistrations={totalRegistrations} />
+    <RegistrantsList
+      registrants={registrants}
+      totalRegistrations={totalRegistrations}
+      eventTitle={eventTitle}
+    />
   );
 
   if (embedded) return body;

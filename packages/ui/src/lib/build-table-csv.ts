@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
+import { formatExportDateTime } from "./format-export-value"
 
 type ExportColumnMeta<T> = {
   excludeFromExport?: boolean
@@ -10,10 +11,11 @@ type ExportColumnMeta<T> = {
 
 function stringifyCell(v: unknown): string {
   if (v == null) return ""
+  const formattedDate = formatExportDateTime(v)
+  if (formattedDate != null) return formattedDate
   if (typeof v === "boolean") return v ? "Có" : "Không"
   if (typeof v === "number") return Number.isFinite(v) ? String(v) : ""
   if (typeof v === "string") return v
-  if (v instanceof Date) return v.toISOString()
   if (typeof v === "object") {
     try {
       return JSON.stringify(v)

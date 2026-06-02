@@ -3,11 +3,9 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { RefreshCw } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
@@ -33,7 +31,6 @@ interface StaffTrashTableProps {
   onBulkRestore: (ids: string[]) => void
   onBulkPurge: (ids: string[]) => void
   onClearFilters: () => void
-  onRefresh: () => void
 }
 
 export function StaffTrashTable(props: StaffTrashTableProps) {
@@ -57,7 +54,6 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     onBulkRestore,
     onBulkPurge,
     onClearFilters,
-    onRefresh,
   } = props
 
   const columns = getTrashColumns({ onRestore, onPurge, busy })
@@ -115,12 +111,6 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
         },
       ]}
       onClearFilters={onClearFilters}
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isLoading}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}
       footer={paginationFooter}
     />

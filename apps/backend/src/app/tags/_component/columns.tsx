@@ -60,7 +60,12 @@ export function getTagColumns({
       accessorKey: "updatedAt",
       header: "Cập nhật / quy mô",
       enableColumnFilter: true,
-      meta: { filterVariant: "date-range", filterPlaceholder: "Chọn khoảng ngày" },
+      meta: {
+        filterVariant: "date-range",
+        filterPlaceholder: "Chọn khoảng ngày",
+        exportValue: (row) =>
+          row.isGroup ? "Nhóm theo tiền tố slug" : row.updatedAt ?? "",
+      },
       filterFn: (row: Row<TagTreeRow>, columnId: string, filterValue: unknown) => {
         if (filterValue == null || filterValue === "") return true;
         if (row.original.isGroup) return true;

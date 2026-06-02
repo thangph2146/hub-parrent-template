@@ -7,8 +7,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
-import { RefreshCw, FilterX } from "lucide-react"
 import type { TrainingSystemRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -23,11 +21,9 @@ export interface TrainingSystemsTableProps {
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: TrainingSystemRow[]) => Promise<void>
   onBulkPurge: (rows: TrainingSystemRow[]) => Promise<void>
-  isFetching?: boolean
 }
 
 export function TrainingSystemsTable({
@@ -41,11 +37,9 @@ export function TrainingSystemsTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: TrainingSystemsTableProps) {
   return (
     <AdminDataTable<TrainingSystemRow>
@@ -63,12 +57,6 @@ export function TrainingSystemsTable({
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("training-systems", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

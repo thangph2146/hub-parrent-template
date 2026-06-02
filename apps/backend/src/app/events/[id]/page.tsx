@@ -27,6 +27,7 @@ import { Button } from "@ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminDataTable } from "@ui/components/data-table"
+import { buildEventDetailXlsxExport } from "@/lib/admin-table-xlsx-export"
 import { AdminPageGuard } from "@/components/admin-page-guard"
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
@@ -437,16 +438,28 @@ function EventDetailInner() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="registrations" className="mt-4">
-              <RegistrationsTab eventId={id} />
+              <RegistrationsTab
+                eventId={id}
+                eventTitle={entity.title}
+              />
             </TabsContent>
             <TabsContent value="checkins" className="mt-4">
-              <CheckinsTab eventId={id} />
+              <CheckinsTab
+                eventId={id}
+                eventTitle={entity.title}
+              />
             </TabsContent>
             <TabsContent value="checkouts" className="mt-4">
-              <CheckoutsTab eventId={id} />
+              <CheckoutsTab
+                eventId={id}
+                eventTitle={entity.title}
+              />
             </TabsContent>
             <TabsContent value="speakers" className="mt-4">
-              <SpeakersTab eventId={id} />
+              <SpeakersTab
+                eventId={id}
+                eventTitle={entity.title}
+              />
             </TabsContent>
           </Tabs>
         </TabsContent>
@@ -457,8 +470,15 @@ function EventDetailInner() {
 
 type Dict = Record<string, unknown>
 
-function RegistrationsTab({ eventId }: { eventId: string }) {
+function RegistrationsTab({
+  eventId,
+  eventTitle,
+}: {
+  eventId: string
+  eventTitle: string
+}) {
   const { data: registrations, isLoading } = useEventRegistrationsQuery(api, eventId)
+  const rows = registrations ?? []
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
     { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
       cell: ({ row }) => row.index + 1 },
@@ -485,7 +505,7 @@ function RegistrationsTab({ eventId }: { eventId: string }) {
   ], [])
   return (
     <AdminDataTable<Dict>
-      data={registrations ?? []}
+      data={rows}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Chưa có đăng ký nào."
@@ -494,12 +514,25 @@ function RegistrationsTab({ eventId }: { eventId: string }) {
         const attendanceText = row.attendanceStatus === 2 ? "Có mặt" : row.attendanceStatus === 1 ? "Một phần" : "Vắng"
         return [row.email, row.fullName, row.phone, statusText, attendanceText].filter(Boolean).join(" ")
       }}
+      xlsxExport={buildEventDetailXlsxExport("registrations", {
+        eventId,
+        eventTitle,
+        pageCount: rows.length,
+        total: rows.length,
+      })}
     />
   )
 }
 
-function CheckinsTab({ eventId }: { eventId: string }) {
+function CheckinsTab({
+  eventId,
+  eventTitle,
+}: {
+  eventId: string
+  eventTitle: string
+}) {
   const { data: checkins, isLoading } = useEventCheckinsQuery(api, eventId)
+  const rows = checkins ?? []
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
     { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
       cell: ({ row }) => row.index + 1 },
@@ -517,19 +550,32 @@ function CheckinsTab({ eventId }: { eventId: string }) {
   ], [])
   return (
     <AdminDataTable<Dict>
-      data={checkins ?? []}
+      data={rows}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Chưa có check-in nào."
       getGlobalFilterText={(row) =>
         [row.email, row.fullName].filter(Boolean).join(" ")
       }
+      xlsxExport={buildEventDetailXlsxExport("checkins", {
+        eventId,
+        eventTitle,
+        pageCount: rows.length,
+        total: rows.length,
+      })}
     />
   )
 }
 
-function SpeakersTab({ eventId }: { eventId: string }) {
+function SpeakersTab({
+  eventId,
+  eventTitle,
+}: {
+  eventId: string
+  eventTitle: string
+}) {
   const { data: speakers, isLoading } = useEventSpeakersQuery(api, eventId)
+  const rows = speakers ?? []
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
     { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
       cell: ({ row }) => row.index + 1 },
@@ -549,19 +595,32 @@ function SpeakersTab({ eventId }: { eventId: string }) {
   ], [])
   return (
     <AdminDataTable<Dict>
-      data={speakers ?? []}
+      data={rows}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Chưa có diễn giả nào."
       getGlobalFilterText={(row) =>
         [row.speakerName, row.speakerTitle, row.role, row.presentationTitle].filter(Boolean).join(" ")
       }
+      xlsxExport={buildEventDetailXlsxExport("speakers", {
+        eventId,
+        eventTitle,
+        pageCount: rows.length,
+        total: rows.length,
+      })}
     />
   )
 }
 
-function CheckoutsTab({ eventId }: { eventId: string }) {
+function CheckoutsTab({
+  eventId,
+  eventTitle,
+}: {
+  eventId: string
+  eventTitle: string
+}) {
   const { data: checkouts, isLoading } = useEventCheckoutsQuery(api, eventId)
+  const rows = checkouts ?? []
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
     { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
       cell: ({ row }) => row.index + 1 },
@@ -579,13 +638,19 @@ function CheckoutsTab({ eventId }: { eventId: string }) {
   ], [])
   return (
     <AdminDataTable<Dict>
-      data={checkouts ?? []}
+      data={rows}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Chưa có check-out nào."
       getGlobalFilterText={(row) =>
         [row.email, row.fullName, row.phone].filter(Boolean).join(" ")
       }
+      xlsxExport={buildEventDetailXlsxExport("checkouts", {
+        eventId,
+        eventTitle,
+        pageCount: rows.length,
+        total: rows.length,
+      })}
     />
   )
 }

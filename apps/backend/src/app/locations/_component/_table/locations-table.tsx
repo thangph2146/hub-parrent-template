@@ -7,8 +7,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
-import { RefreshCw, FilterX } from "lucide-react"
 import type { LocationRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -23,11 +21,9 @@ export interface LocationsTableProps {
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: LocationRow[]) => Promise<void>
   onBulkPurge: (rows: LocationRow[]) => Promise<void>
-  isFetching?: boolean
 }
 
 export function LocationsTable({
@@ -41,11 +37,9 @@ export function LocationsTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: LocationsTableProps) {
   return (
     <AdminDataTable<LocationRow>
@@ -63,12 +57,6 @@ export function LocationsTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("locations", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

@@ -6,9 +6,8 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table";
 import { toast } from "sonner";
-import { CheckCircle2, RefreshCw, Trash2, UserCheck, XCircle } from "lucide-react";
+import { CheckCircle2, Trash2, UserCheck, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@ui/components/button";
 import { PageSection } from "@ui/components/layout";
 import { TypographyH1 } from "@ui/components/typography";
 import {
@@ -74,7 +73,7 @@ function AdminParentStudentsPageInner() {
     setSelectedRowIds({});
   }, [columnFilters]);
 
-  const { data, isLoading, isFetching, refetch } = useQuery<ListResult>({
+  const { data, isLoading } = useQuery<ListResult>({
     queryKey: ["admin", "parent-students", page, pageSize, debouncedQ, columnFilterQuery],
     queryFn: async () => {
       const qs = new URLSearchParams({
@@ -155,15 +154,6 @@ function AdminParentStudentsPageInner() {
             Xem xét và duyệt yêu cầu liên kết học sinh từ phụ huynh.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="shrink-0 gap-1.5"
-          onClick={() => refetch()}
-        >
-          <RefreshCw className={isFetching ? "size-3.5 animate-spin" : "size-3.5"} />
-          Làm mới
-        </Button>
       </div>
 
       <ParentStudentTable
@@ -181,7 +171,6 @@ function AdminParentStudentsPageInner() {
         total={data?.pagination.total ?? 0}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
-        onRefresh={() => refetch()}
         onClearFilters={clearFilters}
         onBulkApprove={async (rows) => {
           for (const row of rows) {
@@ -201,7 +190,6 @@ function AdminParentStudentsPageInner() {
         }}
         onBulkPurge={purgeRows}
         canApprove={canApprove}
-        isFetching={isFetching}
       />
 
       <AdminConfirmActionDialog

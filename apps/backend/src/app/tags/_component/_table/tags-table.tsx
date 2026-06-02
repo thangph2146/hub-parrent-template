@@ -1,10 +1,7 @@
 "use client";
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
-import { RefreshCw } from "lucide-react";
 import type { TagTreeRow } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -19,11 +16,9 @@ export interface TagsTableProps {
   selectedRowIds: RowSelectionState;
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
   total: number;
-  onRefresh: () => void;
   onClearFilters: () => void;
   onBulkDelete: (rows: TagTreeRow[]) => Promise<void>;
   onBulkPurge: (rows: TagTreeRow[]) => Promise<void>;
-  isFetching?: boolean;
 }
 
 export function TagsTable({
@@ -37,11 +32,9 @@ export function TagsTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: TagsTableProps) {
   return (
     <AdminDataTable<TagTreeRow>
@@ -61,12 +54,6 @@ export function TagsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên nhóm, tên thẻ hoặc slug..."
       onClearFilters={onClearFilters}
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("tags", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

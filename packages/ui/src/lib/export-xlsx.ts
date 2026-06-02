@@ -8,6 +8,30 @@ export type XlsxExportOptions = {
   columnWraps?: Array<boolean | undefined>
 }
 
+/** Ngày tháng năm dạng dd-mm-yyyy cho tên file export. */
+export function formatExportFileNameDate(date = new Date()): string {
+  const dd = String(date.getDate()).padStart(2, "0")
+  const mm = String(date.getMonth() + 1).padStart(2, "0")
+  const yyyy = date.getFullYear()
+  return `${dd}-${mm}-${yyyy}`
+}
+
+const EXPORT_DATE_SUFFIX_PATTERN = /\d{2}-\d{2}-\d{4}$/
+
+/** Gắn hậu tố ngày tháng năm vào tên file .xlsx (tránh lặp nếu đã có). */
+export function appendExportDateToXlsxFileName(
+  fileName: string,
+  date = new Date()
+): string {
+  const trimmed = fileName.trim()
+  const withExt = trimmed.toLowerCase().endsWith(".xlsx")
+    ? trimmed
+    : `${trimmed.replace(/\.[^.]+$/, "")}.xlsx`
+  const stem = withExt.slice(0, -5)
+  if (EXPORT_DATE_SUFFIX_PATTERN.test(stem)) return withExt
+  return `${stem}-${formatExportFileNameDate(date)}.xlsx`
+}
+
 /**
  * Xuất .xlsx — đặt độ rộng cột theo nội dung (CSV không hỗ trợ width).
  */
@@ -161,9 +185,10 @@ export async function downloadXlsxFile(
       .trim()
       .slice(0, 31) || "Sheet1"
   XLSX.utils.book_append_sheet(wb, ws, safeName)
-  const out = filename.toLowerCase().endsWith(".xlsx")
+  const normalized = filename.toLowerCase().endsWith(".xlsx")
     ? filename
     : `${filename.replace(/\.csv$/i, "")}.xlsx`
+  const out = appendExportDateToXlsxFileName(normalized)
   XLSX.writeFile(wb, out)
 }
 

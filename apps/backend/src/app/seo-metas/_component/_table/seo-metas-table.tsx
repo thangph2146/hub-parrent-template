@@ -7,8 +7,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
-import { RefreshCw, FilterX } from "lucide-react"
 import type { SeoMetaRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -23,11 +21,9 @@ export interface SeoMetasTableProps {
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: SeoMetaRow[]) => Promise<void>
   onBulkPurge: (rows: SeoMetaRow[]) => Promise<void>
-  isFetching?: boolean
 }
 
 export function SeoMetasTable({
@@ -41,11 +37,9 @@ export function SeoMetasTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: SeoMetasTableProps) {
   return (
     <AdminDataTable<SeoMetaRow>
@@ -63,12 +57,6 @@ export function SeoMetasTable({
       globalFilterPlaceholder="Tìm theo đường dẫn..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

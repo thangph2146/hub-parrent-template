@@ -7,9 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
-import { FilterX, RefreshCw } from "lucide-react"
 import type { EventRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -28,11 +26,9 @@ export interface EventsTrashTableProps {
   total: number
   onPageChange: (page: number) => void
   onPageSizeChange: (size: number) => void
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkRestore: (rows: EventRow[]) => Promise<void>
   onBulkPurge: (rows: EventRow[]) => Promise<void>
-  isFetching?: boolean
 }
 
 export function EventsTrashTable({
@@ -50,11 +46,9 @@ export function EventsTrashTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
-  isFetching,
 }: EventsTrashTableProps) {
   return (
     <AdminDataTable<EventRow>
@@ -72,12 +66,6 @@ export function EventsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("events-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

@@ -6,7 +6,7 @@ import type {
 } from "@tanstack/react-table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { RefreshCw, Headset } from "lucide-react"
+import { Headset } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -255,26 +255,6 @@ function ContactRequestsPageInner() {
               </Badge>
             </TabsTrigger>
           </TabsList>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              activeQuery.refetch()
-              trashQuery.refetch()
-            }}
-            disabled={activeQuery.isLoading || trashQuery.isLoading}
-          >
-            <RefreshCw
-              className={cn(
-                "size-4",
-                activeQuery.isLoading || trashQuery.isLoading
-                  ? "animate-spin"
-                  : ""
-              )}
-              aria-hidden
-            />
-            Làm mới
-          </Button>
         </div>
 
         <TabsContent value="list" className="mt-0">

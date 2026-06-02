@@ -38,7 +38,7 @@ function GuidesPageInner() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPurging, setIsPurging] = useState(false);
 
-  const { data, isLoading, isFetching, refetch } = useGuidesQuery({
+  const { data, isLoading, refetch } = useGuidesQuery({
     api,
     page: 1,
     limit: 1000,
@@ -131,12 +131,10 @@ function GuidesPageInner() {
         globalFilter={globalFilter}
         onGlobalFilterChange={setGlobalFilter}
         total={sortedGroups.length}
-        onRefresh={() => void refetch()}
         onClearFilters={() => {
           setGlobalFilter("");
           setColumnFilters([]);
         }}
-        isFetching={isFetching}
         onBulkPurge={handleBulkPurge}
       />
 

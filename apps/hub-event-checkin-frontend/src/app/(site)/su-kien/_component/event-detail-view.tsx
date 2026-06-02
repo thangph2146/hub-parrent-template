@@ -277,6 +277,7 @@ export function EventDetailView({ event, eventPath }: EventDetailViewProps) {
                     <EventRegistrantsSection
                       registrants={registrants}
                       totalRegistrations={liveEvent.totalRegistrations}
+                      eventTitle={liveEvent.title}
                       embedded
                     />
                   </TabsContent>

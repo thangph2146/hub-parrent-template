@@ -9,8 +9,6 @@ import type {
 } from "@tanstack/react-table"
 import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
-import { RefreshCw, FilterX } from "lucide-react"
 import type { CategoryRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -25,11 +23,9 @@ export interface CategoriesTableProps {
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: CategoryRow[]) => Promise<void>
   onBulkPurge: (rows: CategoryRow[]) => Promise<void>
-  isFetching?: boolean
   canSelectRow?: (row: Row<CategoryRow>) => boolean
 }
 
@@ -44,11 +40,9 @@ export function CategoriesTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
   canSelectRow,
 }: CategoriesTableProps) {
   return (
@@ -68,12 +62,6 @@ export function CategoriesTable({
       globalFilterPlaceholder="Tìm theo tên, slug, mô tả..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("categories", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

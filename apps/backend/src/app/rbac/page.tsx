@@ -8,7 +8,6 @@ import {
   ArchiveRestore,
   Loader2,
   Plus,
-  RefreshCw,
   Shield,
   Trash2,
 } from "lucide-react"
@@ -51,6 +50,7 @@ import {
 import { AdminConfirmActionDialog } from "@/components/admin-confirm-action-dialog"
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"
 import { api, type RbacPermission } from "@/lib/api"
@@ -635,21 +635,6 @@ export default function RbacPage() {
             </TypographyPLargeMuted>
           </div>
           <div className="flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 rounded-lg"
-              onClick={() => void invalidateRoles()}
-            >
-              <RefreshCw
-                className={
-                  listQuery.isFetching || trashQuery.isFetching
-                    ? "size-4 animate-spin"
-                    : "size-4"
-                }
-              />
-              Làm mới
-            </Button>
             {canManageRoles ? (
               <Button
                 type="button"
@@ -733,6 +718,10 @@ export default function RbacPage() {
                     ]
                   : []
               }
+              xlsxExport={buildAdminTableXlsxExport("rbac", {
+                pageCount: listItems.length,
+                total: listQuery.data?.total ?? 0,
+              })}
               footer={
                 <AdminTablePaginationFooter
                   page={page}
@@ -792,6 +781,10 @@ export default function RbacPage() {
                     ]
                   : []
               }
+              xlsxExport={buildAdminTableXlsxExport("rbac-trash", {
+                pageCount: trashItems.length,
+                total: trashQuery.data?.total ?? 0,
+              })}
               footer={
                 <AdminTablePaginationFooter
                   page={trashPage}

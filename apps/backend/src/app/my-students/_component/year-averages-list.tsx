@@ -5,6 +5,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { Loader2 } from "lucide-react"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import type { YearAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 
@@ -71,6 +72,10 @@ export const YearAveragesList = ({ averages, isLoading }: Props) => {
       columns={columns}
       emptyLabel="Chưa có dữ liệu"
       manualFiltering
+      xlsxExport={buildAdminTableXlsxExport("student-year-averages", {
+        pageCount: sorted.length,
+        total: sorted.length,
+      })}
     />
   )
 }

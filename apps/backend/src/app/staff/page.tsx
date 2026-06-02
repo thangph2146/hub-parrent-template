@@ -7,7 +7,6 @@ import {
   ArchiveRestore,
   Info,
   Layers,
-  RefreshCw,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -333,17 +332,6 @@ function StaffPageInner() {
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
-                onClick={() => void usersQuery.refetch()}
-              >
-                <RefreshCw
-                  className={cn("size-4", usersQuery.isFetching && "animate-spin")}
-                  aria-hidden
-                />
-                Làm mới
-              </Button>
-              <Button
-                type="button"
                 onClick={() => router.push("/staff/new")}
                 disabled={busy || roles.length === 0}
               >
@@ -456,7 +444,6 @@ function StaffPageInner() {
                   onBulkRestore={handleBulkRestore}
                   onBulkPurge={handleBulkPurge}
                   onClearFilters={clearTrashStaffFilters}
-                  onRefresh={() => void trashedStaffQuery.refetch()}
                 />
               </>
             )}

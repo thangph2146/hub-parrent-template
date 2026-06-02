@@ -156,7 +156,7 @@ export type AdminDataTableProps<TData> = {
   /** Xóa tìm nhanh + lọc cột; dùng khi cần reset thêm state trang (phân trang, query API…). */
   onClearFilters?: () => void
   clearFiltersVariant?: "outline" | "destructive"
-  /** Nút / nhóm tùy chọn cạnh ô tìm nhanh (vd. Làm mới, xuất file) */
+  /** Nút / nhóm tùy chọn cạnh ô tìm nhanh (vd. xuất file) */
   filterToolbarExtra?: ReactNode
   /** Phân trang / tóm tắt ngay dưới bảng */
   footer?: ReactNode

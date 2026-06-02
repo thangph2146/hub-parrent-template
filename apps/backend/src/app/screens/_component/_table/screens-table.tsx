@@ -6,7 +6,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { ScreenRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function ScreensTable({
@@ -20,11 +19,9 @@ export function ScreensTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: {
   data: ScreenRow[]
   columns: ColumnDef<ScreenRow>[]
@@ -36,11 +33,9 @@ export function ScreensTable({
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkDelete: (rows: ScreenRow[]) => Promise<void>
   onBulkPurge: (rows: ScreenRow[]) => Promise<void>
-  isFetching?: boolean
 }) {
   return (
     <AdminDataTable<ScreenRow>
@@ -58,12 +53,6 @@ export function ScreensTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("screens", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

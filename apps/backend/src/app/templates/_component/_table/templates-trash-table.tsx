@@ -7,7 +7,6 @@ import type {
 } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { TemplateRow } from "../types"
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 export function TemplatesTrashTable({
@@ -25,11 +24,9 @@ export function TemplatesTrashTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
-  isFetching,
 }: {
   data: TemplateRow[]
   columns: ColumnDef<TemplateRow>[]
@@ -45,11 +42,9 @@ export function TemplatesTrashTable({
   total: number
   onPageChange: (p: number) => void
   onPageSizeChange: (s: number) => void
-  onRefresh: () => void
   onClearFilters: () => void
   onBulkRestore: (rows: TemplateRow[]) => Promise<void>
   onBulkPurge: (rows: TemplateRow[]) => Promise<void>
-  isFetching?: boolean
 }) {
   return (
     <AdminDataTable<TemplateRow>
@@ -67,12 +62,6 @@ export function TemplatesTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("templates-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

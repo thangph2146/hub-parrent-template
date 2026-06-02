@@ -35,6 +35,7 @@ import { usePostsByAuthor } from "@/app/posts/_component/_query/use-posts-querie
 import Link from "next/link"
 import { api } from "@/lib/api"
 import { AdminDataTable } from "@ui/components/data-table"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { PostListRow } from "@/app/posts/_component/types"
 
@@ -326,6 +327,13 @@ function StaffDetailPageInner() {
             columns={postColumns}
             isLoading={postsQuery.isLoading}
             emptyLabel="Chưa có bài viết nào từ nhân sự này"
+            xlsxExport={buildAdminTableXlsxExport("staff-related-posts", {
+              pageCount: posts.length,
+              total: postsQuery.data?.total ?? posts.length,
+              extraMetadata: user?.fullName
+                ? [{ label: "Nhân sự", value: user.fullName }]
+                : undefined,
+            })}
             footer={
               postsQuery.data?.total != null ? (
                 <p className="text-xs text-muted-foreground">

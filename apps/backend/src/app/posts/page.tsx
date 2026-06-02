@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import {
   AlertCircle,
   FileText,
-  RefreshCw,
   Plus,
 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
@@ -207,23 +206,6 @@ function PostsPageInner() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              void postsQuery.refetch();
-              void trashQuery.refetch();
-            }}
-          >
-            <RefreshCw
-              className={
-                postsQuery.isFetching || trashQuery.isFetching
-                  ? "size-5 animate-spin"
-                  : "size-5"
-              }
-            />
-            Làm mới
-          </Button>
           {canCreate && (
             <Button
               type="button"
@@ -282,7 +264,6 @@ function PostsPageInner() {
             total={postsQuery.data?.total ?? 0}
             onPageChange={setPage}
             onPageSizeChange={setPageSize}
-            onRefresh={() => void postsQuery.refetch()}
             onClearFilters={clearListFilters}
             onBulkDelete={async (rows) => {
               const ids = rows.map((r) => String(r.id));
@@ -296,7 +277,6 @@ function PostsPageInner() {
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
               toast.success(`Đã xóa vĩnh viễn ${ids.length} bài viết`);
             }}
-            isFetching={postsQuery.isFetching}
             canExport={canExport}
             canDelete={canDelete}
           />
@@ -318,7 +298,6 @@ function PostsPageInner() {
             total={trashQuery.data?.total ?? 0}
             onPageChange={setTrashPage}
             onPageSizeChange={setTrashPageSize}
-            onRefresh={() => void trashQuery.refetch()}
             onClearFilters={clearTrashFilters}
             onBulkRestore={async (rows) => {
               const ids = rows.map((r) => String(r.id));
@@ -332,7 +311,6 @@ function PostsPageInner() {
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
               toast.success(`Đã xóa vĩnh viễn ${ids.length} bài viết`);
             }}
-            isFetching={trashQuery.isFetching}
             canExport={canExport}
             canRestore={canRestore}
             canDelete={canDelete}

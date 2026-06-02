@@ -3,9 +3,7 @@
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
-import { RefreshCw } from "lucide-react";
 import type { CategoryRow } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -24,11 +22,9 @@ export interface CategoriesTrashTableProps {
   total: number;
   onPageChange: (page: number) => void;
   onPageSizeChange: (size: number) => void;
-  onRefresh: () => void;
   onClearFilters: () => void;
   onBulkRestore: (rows: CategoryRow[]) => Promise<void>;
   onBulkPurge: (rows: CategoryRow[]) => Promise<void>;
-  isFetching?: boolean;
 }
 
 export function CategoriesTrashTable({
@@ -46,11 +42,9 @@ export function CategoriesTrashTable({
   total,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
-  isFetching,
 }: CategoriesTrashTableProps) {
   return (
     <AdminDataTable<CategoryRow>
@@ -69,12 +63,6 @@ export function CategoriesTrashTable({
       globalFilterPlaceholder="Tìm theo tên, slug..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

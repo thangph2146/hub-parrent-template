@@ -13,7 +13,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useRouter } from "next/navigation"
-import { AlertCircle, RefreshCw, Calendar, Plus } from "lucide-react"
+import { AlertCircle, Calendar, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
@@ -210,24 +210,6 @@ function EventsPageInner() {
           <p className={ADMIN_PAGE_SUBTITLE_CLASS}>Quản lý sự kiện check-in.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              void listQuery.refetch()
-              void trashQuery.refetch()
-            }}
-          >
-            <RefreshCw
-              className={cn(
-                "size-5",
-                (listQuery.isFetching || trashQuery.isFetching) &&
-                  "animate-spin"
-              )}
-              aria-hidden
-            />{" "}
-            Làm mới
-          </Button>
           {canWrite && (
             <Button
               type="button"
@@ -301,7 +283,6 @@ function EventsPageInner() {
             selectedRowIds={listSelection}
             onSelectedRowIdsChange={setListSelection}
             total={listQuery.data?.length ?? 0}
-            onRefresh={() => void listQuery.refetch()}
             onClearFilters={clearListFilters}
             onBulkDelete={async (rows: EventRow[]) => {
               const ids = rows.map((r: EventRow) => r.id)
@@ -315,7 +296,6 @@ function EventsPageInner() {
               await bulkMutation.mutateAsync({ action: "hard-delete", ids })
               toast.success(`Đã xóa vĩnh viễn ${ids.length} sự kiện`)
             }}
-            isFetching={listQuery.isFetching}
           />
         </TabsContent>
 
@@ -349,7 +329,6 @@ function EventsPageInner() {
                 total={trashQuery.data?.total ?? 0}
                 onPageChange={setTrashPage}
                 onPageSizeChange={setTrashPageSize}
-                onRefresh={() => void trashQuery.refetch()}
                 onClearFilters={clearTrashFilters}
                 onBulkRestore={async (rows: EventRow[]) => {
                   const ids = rows.map((r: EventRow) => r.id)
@@ -363,7 +342,6 @@ function EventsPageInner() {
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} sự kiện`)
                 }}
-                isFetching={trashQuery.isFetching}
               />
             )}
           </TabsContent>

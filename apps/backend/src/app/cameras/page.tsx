@@ -12,7 +12,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useRouter } from "next/navigation"
-import { AlertCircle, RefreshCw, Camera, Plus } from "lucide-react"
+import { AlertCircle, Camera, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
@@ -147,21 +147,6 @@ function CamerasPageInner() {
           <p className={ADMIN_PAGE_SUBTITLE_CLASS}>Quản lý camera.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              void listQ.refetch()
-              void trashQ.refetch()
-            }}
-          >
-            <RefreshCw
-              className={cn(
-                "size-5",
-                (listQ.isFetching || trashQ.isFetching) && "animate-spin"
-              )}
-            />{" "}
-            Làm mới
-          </Button>
           {canWrite && (
             <Button
               onClick={() => router.push("/cameras/new")}
@@ -231,7 +216,6 @@ function CamerasPageInner() {
             selectedRowIds={lS}
             onSelectedRowIdsChange={setLS}
             total={listQ.data?.length ?? 0}
-            onRefresh={() => void listQ.refetch()}
             onClearFilters={cLF}
             onBulkDelete={async (rows: CameraRow[]) => {
               const ids = rows.map((r: CameraRow) => r.id)
@@ -245,7 +229,6 @@ function CamerasPageInner() {
               await bulM.mutateAsync({ action: "hard-delete", ids })
               toast.success(`Đã xóa vĩnh viễn ${ids.length} camera`)
             }}
-            isFetching={listQ.isFetching}
           />
         </TabsContent>
         {canWrite && (
@@ -275,7 +258,6 @@ function CamerasPageInner() {
                 total={trashQ.data?.total ?? 0}
                 onPageChange={setTP}
                 onPageSizeChange={setTPS}
-                onRefresh={() => void trashQ.refetch()}
                 onClearFilters={cTF}
                 onBulkRestore={async (rows: CameraRow[]) => {
                   const ids = rows.map((r: CameraRow) => r.id)
@@ -289,7 +271,6 @@ function CamerasPageInner() {
                   await bulM.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} camera`)
                 }}
-                isFetching={trashQ.isFetching}
               />
             )}
           </TabsContent>

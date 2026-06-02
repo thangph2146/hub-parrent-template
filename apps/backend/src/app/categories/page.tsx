@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { useRouter } from "next/navigation";
 import {
   AlertCircle,
-  RefreshCw,
   Tags,
   Plus,
 } from "lucide-react";
@@ -229,23 +228,6 @@ function CategoriesPageInner() {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              void categoriesQuery.refetch();
-              void trashQuery.refetch();
-            }}
-          >
-            <RefreshCw
-              className={cn(
-                "size-5",
-                (categoriesQuery.isFetching || trashQuery.isFetching) && "animate-spin",
-              )}
-              aria-hidden
-            />
-            Làm mới
-          </Button>
           {canWriteCategories && (
             <Button
               type="button"
@@ -319,7 +301,6 @@ function CategoriesPageInner() {
             selectedRowIds={listCategorySelection}
             onSelectedRowIdsChange={setListCategorySelection}
             total={categoriesQuery.data?.total ?? 0}
-            onRefresh={() => void categoriesQuery.refetch()}
             onClearFilters={clearListFilters}
             onBulkDelete={async (rows) => {
               const ids = rows.map((r) => String(r.id));
@@ -333,7 +314,6 @@ function CategoriesPageInner() {
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
               toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
             }}
-            isFetching={categoriesQuery.isFetching}
             canSelectRow={(row) => {
               const childCount = row.original._count?.children ?? 0;
               const linkedPosts = row.original.postCount ?? 0;
@@ -372,7 +352,6 @@ function CategoriesPageInner() {
                 total={trashQuery.data?.total ?? 0}
                 onPageChange={setTrashPage}
                 onPageSizeChange={setTrashPageSize}
-                onRefresh={() => void trashQuery.refetch()}
                 onClearFilters={clearTrashFilters}
                 onBulkRestore={async (rows) => {
                   const ids = rows.map((r) => String(r.id));
@@ -386,7 +365,6 @@ function CategoriesPageInner() {
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
                 }}
-                isFetching={trashQuery.isFetching}
               />
             )}
           </TabsContent>

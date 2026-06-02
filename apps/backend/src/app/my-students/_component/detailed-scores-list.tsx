@@ -18,6 +18,7 @@ import {
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@ui/components/data-table"
+import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export"
 import type { DetailedScore } from "@/types/student-scores"
 import { formatScore, formatGrade } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"
@@ -34,6 +35,11 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         id: "subject",
         header: "Môn học",
         enableColumnFilter: false,
+        accessorKey: "curriculumName",
+        meta: {
+          exportValue: (row: DetailedScore) =>
+            `${row.curriculumName ?? ""} (${row.curriculumID ?? ""})`.trim(),
+        },
         cell: ({ row }) => (
           <div>
             <div className="text-sm font-medium">{row.original.curriculumName}</div>
@@ -45,6 +51,7 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         id: "mark10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
         enableColumnFilter: false,
+        accessorKey: "mark10",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark10, "10")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
@@ -54,6 +61,7 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         id: "mark4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
         enableColumnFilter: false,
+        accessorKey: "mark4",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark4, "4")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
@@ -63,6 +71,7 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         id: "markLetter",
         header: () => <div className="w-full text-center">Điểm chữ</div>,
         enableColumnFilter: false,
+        accessorKey: "markLetter",
         cell: ({ row }) => {
           const g = formatGrade(row.original.markLetter)
           return (
@@ -86,6 +95,10 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       columns={columns}
       emptyLabel="Không có dữ liệu"
       manualFiltering
+      xlsxExport={buildAdminTableXlsxExport("student-detailed-scores", {
+        pageCount: subjects.length,
+        total: subjects.length,
+      })}
     />
   )
 }

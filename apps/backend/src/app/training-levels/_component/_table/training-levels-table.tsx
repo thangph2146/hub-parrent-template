@@ -2,8 +2,6 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable } from "@ui/components/data-table"
-import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
-import { RefreshCw, FilterX } from "lucide-react";
 import type { TrainingLevelRow } from "../types";
 import { buildAdminTableXlsxExport } from "@/lib/admin-table-xlsx-export";
 
@@ -18,11 +16,9 @@ export interface TrainingLevelsTableProps {
   selectedRowIds: RowSelectionState;
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
   total: number;
-  onRefresh: () => void;
   onClearFilters: () => void;
   onBulkDelete: (rows: TrainingLevelRow[]) => Promise<void>;
   onBulkPurge: (rows: TrainingLevelRow[]) => Promise<void>;
-  isFetching?: boolean;
 }
 
 export function TrainingLevelsTable({
@@ -36,11 +32,9 @@ export function TrainingLevelsTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   total,
-  onRefresh,
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
-  isFetching,
 }: TrainingLevelsTableProps) {
   return (
     <AdminDataTable<TrainingLevelRow>
@@ -57,12 +51,6 @@ export function TrainingLevelsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
-      filterToolbarExtra={
-        <AdminTableToolbarActions
-          onRefresh={onRefresh}
-          isRefreshing={isFetching}
-        />
-      }
       xlsxExport={buildAdminTableXlsxExport("training-levels", { pageCount: data.length, total })}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
