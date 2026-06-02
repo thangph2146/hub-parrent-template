@@ -5,9 +5,8 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@/components/admin-data-table"
-import { RefreshCw, FilterX } from "lucide-react"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import type { ScreenRow } from "../types"
 export function ScreensTable({
   data,
@@ -54,23 +53,13 @@ export function ScreensTable({
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
+      onClearFilters={onClearFilters}
+      clearFiltersVariant="destructive"
       filterToolbarExtra={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              void onRefresh()
-            }}
-          >
-            <RefreshCw
-              className={isFetching ? "size-4 animate-spin" : "size-4"}
-            />{" "}
-            Làm mới
-          </Button>
-          <Button variant="destructive" onClick={onClearFilters}>
-            <FilterX className="size-4" /> Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isFetching}
+        />
       }
       csvExport={{ fileName: "man-hinh.csv" }}
       rowSelectionEnabled

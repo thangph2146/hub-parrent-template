@@ -1,10 +1,12 @@
 import type { Metadata } from "next"
 import { EventsPageContent } from "@/features/events/events-page-content"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
-  title: "Hội nghị - Sự kiện",
+  title: "Sự kiện | HUB Events",
   description:
-    "Danh sách hội nghị và sự kiện tại Trường Đại học Ngân hàng TP. HCM — sự kiện nổi bật, danh mục và đăng ký tham gia.",
+    "Danh sách hội nghị và sự kiện tại Trường Đại học Ngân hàng TP. HCM — tìm kiếm, lọc theo trạng thái và đăng ký tham gia.",
 }
 
 type SearchParams = Record<string, string | string[] | undefined>

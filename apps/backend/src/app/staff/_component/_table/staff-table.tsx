@@ -1,6 +1,4 @@
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { FilterX } from "lucide-react";
-import { Button } from "@ui/components/button";
 import { AdminDataTable } from "@/components/admin-data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
 import { getStaffColumns } from "../columns";
@@ -96,6 +94,7 @@ export function StaffTable(props: StaffTableProps) {
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo email, họ tên (API)…"
+      onClearFilters={onClearFilters}
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -126,18 +125,6 @@ export function StaffTable(props: StaffTableProps) {
           },
         },
       ]}
-      filterToolbarExtra={
-        <div className="flex flex-wrap items-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClearFilters}
-          >
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
-      }
       csvExport={{ fileName: "nhan-su.csv" }}
       footer={paginationFooter}
     />

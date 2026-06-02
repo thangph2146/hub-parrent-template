@@ -230,7 +230,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
       enableSorting: false,
       meta: {
         disableColumnFilter: true,
-        className: "sticky right-0 bg-background z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]",
+        className: "sticky right-0",
       } as ColumnDef<ContactRequest>['meta'],
       cell: ({ row }) => {
         const contact = row.original;
@@ -329,7 +329,7 @@ export function getTrashColumns(props: {
       enableSorting: false,
       meta: { disableColumnFilter: true },
       cell: ({ row }) => (
-        <div className="flex flex-wrap gap-1 sticky right-0 bg-background">
+        <div className="flex flex-wrap gap-1 sticky right-0">
           {canRestore && (
             <Button
               type="button"

@@ -1,11 +1,14 @@
 import Link from "next/link"
 import { ChevronRight, MapPin } from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import { EventPoster } from "@/components/shared/event-poster"
 import { cn } from "@ui/lib/utils"
 import {
   type PublicEventItem,
-  formatEventTimeDateLine,
+  EVENT_STATUS_LABELS,
+  formatEventScheduleText,
   getEventLocationLabel,
+  getEventStatus,
 } from "@/lib/public-events"
 
 type EventRowCardProps = {
@@ -19,8 +22,9 @@ export function EventRowCard({
   compact = false,
   className,
 }: EventRowCardProps) {
-  const timeLine = formatEventTimeDateLine(event.startDate)
+  const schedule = formatEventScheduleText(event.startDate, event.endDate)
   const location = getEventLocationLabel(event)
+  const status = getEventStatus(event)
   const href = `/su-kien/${event.slug ?? event.id}`
 
   return (
@@ -28,7 +32,7 @@ export function EventRowCard({
       href={href}
       prefetch={false}
       className={cn(
-        "group flex gap-4 rounded-lg border border-border bg-card p-3 transition-colors hover:border-primary/30 hover:bg-muted/30 sm:p-4",
+        "group flex gap-4 rounded-xl border border-border/80 bg-card p-3 transition-all hover:border-primary/30 hover:bg-muted/30 hover:shadow-sm sm:p-4",
         className
       )}
     >
@@ -43,7 +47,12 @@ export function EventRowCard({
         placeholderClassName="size-8 text-muted-foreground/40"
         imageClassName="transition-transform group-hover:scale-105"
       />
-      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="secondary" className="rounded-md text-[10px] font-semibold uppercase tracking-wide">
+            {EVENT_STATUS_LABELS[status]}
+          </Badge>
+        </div>
         <h3
           className={cn(
             "leading-snug font-semibold text-foreground group-hover:text-primary",
@@ -54,14 +63,14 @@ export function EventRowCard({
         >
           {event.title}
         </h3>
-        {timeLine ? (
+        {schedule ? (
           <p
             className={cn(
-              "font-medium text-primary",
+              "font-medium text-primary tabular-nums",
               compact ? "text-xs" : "text-sm"
             )}
           >
-            {timeLine}
+            {schedule}
           </p>
         ) : null}
         {location ? (

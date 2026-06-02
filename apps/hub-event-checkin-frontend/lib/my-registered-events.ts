@@ -1,6 +1,6 @@
 import { DEFAULT_API_URL } from "@workspace/api-client"
 import { readEventSession } from "./event-auth"
-import { getEventStatus } from "./public-events"
+import { getEventStatus, computeEventStatus } from "./public-events"
 
 type ApiEnvelope<T> = {
   success: boolean
@@ -80,10 +80,9 @@ export function isCheckedInMyRegistration(row: MyRegisteredEvent): boolean {
 
 export function isUpcomingMyRegistration(row: MyRegisteredEvent): boolean {
   if (!isActiveMyRegistration(row)) return false
-  const { startDate } = row.event
-  if (!startDate) return false
-  if (Number.isNaN(Date.parse(startDate))) return false
-  return getEventStatus(row.event) === "upcoming"
+  if (!row.event.startDate) return false
+  if (Number.isNaN(Date.parse(row.event.startDate))) return false
+  return computeEventStatus(row.event) === "upcoming"
 }
 
 export function computeMyRegisteredEventStats(

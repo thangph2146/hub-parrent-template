@@ -574,6 +574,7 @@ export class PublicController {
       );
       const filter = (query.filter as EventTimeFilter) ?? 'all';
       const categorySlug = query.categorySlug?.trim() || undefined;
+      const search = query.search?.trim() || undefined;
       const result = await this.publicEventsService.list({
         page,
         limit,
@@ -581,6 +582,7 @@ export class PublicController {
           ? filter
           : 'all',
         categorySlug,
+        search,
       });
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

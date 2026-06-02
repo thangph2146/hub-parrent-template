@@ -6,8 +6,8 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { RefreshCw, FilterX } from "lucide-react"
 import type { PostListRow } from "../types"
@@ -74,26 +74,13 @@ export function PostsTrashTable({
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm trong thùng rác..."
+      onClearFilters={onClearFilters}
+      clearFiltersVariant="destructive"
       filterToolbarExtra={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              void onRefresh()
-            }}
-          >
-            <RefreshCw
-              className={isFetching ? "size-4 animate-spin" : "size-4"}
-              aria-hidden
-            />
-            Làm mới
-          </Button>
-          <Button type="button" variant="destructive" onClick={onClearFilters}>
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isFetching}
+        />
       }
       csvExport={canExport ? { fileName: "bai-viet-thung-rac.csv" } : undefined}
       rowSelectionEnabled={!!canRestore || !!canDelete}

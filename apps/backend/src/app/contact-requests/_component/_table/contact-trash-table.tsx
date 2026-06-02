@@ -1,5 +1,5 @@
 import type { ColumnFiltersState, RowSelectionState, OnChangeFn } from "@tanstack/react-table";
-import { FilterX, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@ui/components/button";
 import { AdminDataTable } from "@/components/admin-data-table";
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer";
@@ -146,6 +146,8 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên, email, tiêu đề…"
+      onClearFilters={onClearFilters}
+      clearFiltersVariant="destructive"
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}
       onSelectedRowIdsChange={onSelectedRowIdsChange}
@@ -206,14 +208,6 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
               </Button>
             </div>
           </div>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={onClearFilters}
-          >
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
         </div>
       }
       csvExport={false}

@@ -9,6 +9,7 @@ import type {
 import { RefreshCw, FilterX } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import type { ParentStudent } from "../types"
 
@@ -70,26 +71,13 @@ export function ParentStudentTable({
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm mã sinh viên, họ tên, ID phụ huynh…"
+      onClearFilters={onClearFilters}
+      clearFiltersVariant="destructive"
       filterToolbarExtra={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              void onRefresh()
-            }}
-          >
-            <RefreshCw
-              className={isFetching ? "size-4 animate-spin" : "size-4"}
-              aria-hidden
-            />
-            Làm mới
-          </Button>
-          <Button type="button" variant="destructive" onClick={onClearFilters}>
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isFetching}
+        />
       }
       rowSelectionEnabled
       selectedRowIds={selectedRowIds}

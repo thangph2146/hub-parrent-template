@@ -140,7 +140,10 @@ export type AdminDataTableProps<TData> = {
   onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>
   globalFilter?: string
   onGlobalFilterChange?: OnChangeFn<string>
-  /** Nút / nhóm tùy chọn cạnh ô tìm nhanh (vd. “Xóa bộ lọc”) */
+  /** Xóa tìm nhanh + lọc cột; dùng khi cần reset thêm state trang (phân trang, query API…). */
+  onClearFilters?: () => void
+  clearFiltersVariant?: "outline" | "destructive"
+  /** Nút / nhóm tùy chọn cạnh ô tìm nhanh (vd. Làm mới, xuất file) */
   filterToolbarExtra?: ReactNode
   /** Phân trang / tóm tắt ngay dưới bảng */
   footer?: ReactNode
@@ -285,6 +288,8 @@ export function AdminDataTable<TData>({
   onColumnFiltersChange,
   globalFilter: globalFilterControlled,
   onGlobalFilterChange,
+  onClearFilters,
+  clearFiltersVariant = "outline",
   filterToolbarExtra,
   footer,
   csvExport,
@@ -555,6 +560,16 @@ export function AdminDataTable<TData>({
     setGlobalFilter("")
     setColumnFilters([])
   }, [setColumnFilters, setGlobalFilter])
+
+  const handleClearFilters = useCallback(() => {
+    if (onClearFilters) {
+      onClearFilters()
+      return
+    }
+    clearAllFilters()
+  }, [clearAllFilters, onClearFilters])
+
+  const showClearFiltersButton = Boolean(onClearFilters) || hasActiveFilters
 
   const headerGroups = table.getHeaderGroups()
   const rows = table.getRowModel().rows
@@ -862,19 +877,19 @@ export function AdminDataTable<TData>({
                 </div>
               ) : null}
               <div className="flex shrink-0 flex-wrap items-end gap-2">
-                {hasActiveFilters ? (
+                {showClearFiltersButton ? (
                   <div className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-muted-foreground">
                       Bộ lọc
                     </span>
                     <Button
                       type="button"
-                      variant="outline"
-                      onClick={clearAllFilters}
+                      variant={clearFiltersVariant}
+                      onClick={handleClearFilters}
                       title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
                     >
                       <FilterX className="size-4" />
-                      Xóa filter
+                      Xóa bộ lọc
                     </Button>
                   </div>
                 ) : null}

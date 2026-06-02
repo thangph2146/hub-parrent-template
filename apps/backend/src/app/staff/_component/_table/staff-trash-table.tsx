@@ -3,10 +3,11 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { FilterX, RefreshCw } from "lucide-react"
+import { RefreshCw } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions"
 import { AdminTablePaginationFooter } from "@/components/admin-table-pagination-footer"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
@@ -112,24 +113,12 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
           },
         },
       ]}
+      onClearFilters={onClearFilters}
       filterToolbarExtra={
-        <div className="flex flex-wrap items-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => void onRefresh()}
-          >
-            <RefreshCw
-              className={cn("size-4", isLoading && "animate-spin")}
-              aria-hidden
-            />
-            Làm mới
-          </Button>
-          <Button type="button" variant="outline" onClick={onClearFilters}>
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isLoading}
+        />
       }
       csvExport={{ fileName: "nhan-su-thung-rac.csv" }}
       footer={paginationFooter}

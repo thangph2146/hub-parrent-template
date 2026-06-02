@@ -135,7 +135,53 @@ const menuTree: MenuTreeItem[] = [
       },
     ],
   },
-  
+  {
+    type: "group",
+    label: "Danh mục & Tag",
+    icon: FolderTree,
+    children: [
+      {
+        href: "/categories",
+        label: "Danh mục",
+        icon: FolderOpen,
+        anyPermission: [
+          PERMISSION_CODES.CATEGORIES_VIEW,
+          PERMISSION_CODES.CATEGORIES_CREATE,
+        ],
+        permission: null,
+      },
+      {
+        href: "/tags",
+        label: "Tags",
+        icon: Tags,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.TAGS_VIEW,
+          PERMISSION_CODES.TAGS_MANAGE,
+        ],
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "Truyền thông",
+    icon: FolderTree,
+    children: [
+      {
+        href: "/guides",
+        label: "Hướng dẫn sử dụng",
+        icon: BookOpen,
+        permission: PERMISSION_CODES.PAGE_CONTENTS_VIEW,
+      },
+      {
+        href: "/posts",
+        label: "Bài viết",
+        icon: FileText,
+        anyPermission: [PERMISSION_CODES.POSTS_VIEW],
+        permission: null,
+      }
+    ],
+  },
   {
     type: "group",
     label: "Sự kiện & Check-in",

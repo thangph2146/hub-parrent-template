@@ -4,6 +4,7 @@ import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { normalizePosterField } from '../common/poster-normalize';
+import { resolveEventTimeStatus } from '../common/event-time-status';
 import { EventRegistrationsService } from '../event-registrations/event-registrations.service';
 import { EventSpeakersService } from '../event-speakers/event-speakers.service';
 
@@ -19,6 +20,7 @@ export interface PublicEventsQuery {
   limit: number;
   filter?: EventTimeFilter;
   categorySlug?: string;
+  search?: string;
 }
 
 export interface PublicEventItem {
@@ -43,6 +45,7 @@ export interface PublicEventItem {
   updatedAt: string;
   isFeatured: boolean;
   featuredOrder: number;
+  timeStatus: 'upcoming' | 'ongoing' | 'past';
 }
 
 export type PublicViewerRegistration = {
@@ -135,6 +138,7 @@ function mapItem(r: Event): PublicEventItem {
     updatedAt: toIso(r.updatedAt) ?? '',
     isFeatured: r.isFeatured ?? false,
     featuredOrder: r.featuredOrder ?? 0,
+    timeStatus: resolveEventTimeStatus(r.startDate, r.endDate),
   };
 }
 
@@ -168,59 +172,93 @@ export class PublicEventsService {
       50,
     );
 
-    const where: Record<string, unknown> = {
-      status: 1,
-      deletedAt: null,
-    };
-
     const now = new Date();
     const filter = params.filter ?? 'all';
+    const timeFilter =
+      filter === 'upcoming' || filter === 'ongoing' || filter === 'past'
+        ? filter
+        : null;
+
+    const andConditions: Record<string, unknown>[] = [
+      { status: 1, deletedAt: null },
+    ];
 
     if (filter === 'featured') {
-      where.isFeatured = true;
-    } else if (filter === 'upcoming') {
-      where.startDate = { $gt: now };
-    } else if (filter === 'ongoing') {
-      where.startDate = { $lte: now };
-      where.endDate = { $gte: now };
-    } else if (filter === 'past') {
-      where.endDate = { $lt: now };
+      andConditions.push({ isFeatured: true });
     }
 
-    const whereQuery = where as FilterQuery<Event>;
+    if (params.search?.trim()) {
+      const q = `%${params.search.trim()}%`;
+      andConditions.push({
+        $or: [
+          { title: { $like: q } },
+          { description: { $like: q } },
+          { location: { $like: q } },
+          { address: { $like: q } },
+          { organizer: { $like: q } },
+          { slug: { $like: q } },
+        ],
+      });
+    }
+
+    const whereQuery = (
+      andConditions.length === 1
+        ? andConditions[0]
+        : { $and: andConditions }
+    ) as FilterQuery<Event>;
     const orderBy =
       filter === 'featured'
         ? { featuredOrder: QueryOrder.ASC, startDate: QueryOrder.DESC }
         : { startDate: QueryOrder.DESC };
+
+    const fields = [
+      'id',
+      'title',
+      'slug',
+      'poster',
+      'description',
+      'startDate',
+      'endDate',
+      'checkinStart',
+      'checkinEnd',
+      'registrationStart',
+      'registrationEnd',
+      'organizer',
+      'location',
+      'address',
+      'format',
+      'onlineLink',
+      'schedule',
+      'createdAt',
+      'updatedAt',
+      'isFeatured',
+      'featuredOrder',
+    ] as const;
+
+    if (timeFilter) {
+      const allRows = await this.em.find(Event, whereQuery, {
+        orderBy,
+        fields: [...fields] as any,
+      });
+      const matched = allRows.filter(
+        (row) =>
+          resolveEventTimeStatus(row.startDate, row.endDate, now) ===
+          timeFilter,
+      );
+      const total = matched.length;
+      const rows = matched.slice(skip, skip + limit);
+      return {
+        data: rows.map(mapItem),
+        meta: paginationMeta(page, limit, total),
+      };
+    }
 
     const [rows, total] = await Promise.all([
       this.em.find(Event, whereQuery, {
         orderBy,
         offset: skip,
         limit,
-        fields: [
-          'id',
-          'title',
-          'slug',
-          'poster',
-          'description',
-          'startDate',
-          'endDate',
-          'checkinStart',
-          'checkinEnd',
-          'registrationStart',
-          'registrationEnd',
-          'organizer',
-          'location',
-          'address',
-          'format',
-          'onlineLink',
-          'schedule',
-          'createdAt',
-          'updatedAt',
-          'isFeatured',
-          'featuredOrder',
-        ] as any,
+        fields: [...fields] as any,
       }),
       this.em.count(Event, whereQuery),
     ]);

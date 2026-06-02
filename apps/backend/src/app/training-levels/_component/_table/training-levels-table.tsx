@@ -1,8 +1,8 @@
 "use client";
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@/components/admin-data-table";
+import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
 import { RefreshCw, FilterX } from "lucide-react";
 import type { TrainingLevelRow } from "../types";
 
@@ -53,17 +53,12 @@ export function TrainingLevelsTable({
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
+      onClearFilters={onClearFilters}
       filterToolbarExtra={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" variant="outline" onClick={() => { void onRefresh(); }}>
-            <RefreshCw className={isFetching ? "size-4 animate-spin" : "size-4"} aria-hidden />
-            Làm mới
-          </Button>
-          <Button type="button" variant="outline" onClick={onClearFilters}>
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isFetching}
+        />
       }
       csvExport={{ fileName: "bac-hoc.csv" }}
       rowSelectionEnabled

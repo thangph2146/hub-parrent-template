@@ -36,6 +36,7 @@ export type PublicEventItem = {
   updatedAt: string;
   isFeatured?: boolean;
   featuredOrder?: number;
+  timeStatus?: EventStatus;
 };
 
 export type PublicViewerRegistration = {
@@ -151,6 +152,7 @@ export async function getPublicEvents(params?: {
   limit?: number;
   filter?: EventTimeFilter;
   categorySlug?: string;
+  search?: string;
 }) {
   return fetchPublicApi<PublicEventsPayload>("/public/events", params);
 }
@@ -351,16 +353,68 @@ export function formatEventDateTime(value?: string | null) {
 
 export type EventStatus = "upcoming" | "ongoing" | "past";
 
-export function getEventStatus(event: {
+function parseEventInstant(value?: string | null): number | null {
+  if (!value) return null;
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? null : ms;
+}
+
+/**
+ * Trạng thái thời gian — khớp API `timeStatus` và bộ lọc `/public/events`.
+ */
+export function computeEventStatus(event: {
   startDate?: string | null;
   endDate?: string | null;
 }): EventStatus {
-  const now = new Date();
-  if (event.startDate && new Date(event.startDate) > now) return "upcoming";
-  if (event.endDate && new Date(event.endDate) < now) return "past";
-  if (event.startDate && event.endDate) return "ongoing";
-  if (event.startDate && new Date(event.startDate) <= now) return "ongoing";
+  const now = Date.now();
+  const startMs = parseEventInstant(event.startDate);
+  const endMs = parseEventInstant(event.endDate);
+
+  if (startMs !== null && startMs > now) {
+    return "upcoming";
+  }
+
+  if (endMs !== null && endMs < now) {
+    return "past";
+  }
+
+  if (
+    startMs !== null &&
+    endMs !== null &&
+    startMs <= now &&
+    endMs >= now
+  ) {
+    return "ongoing";
+  }
+
+  if (startMs !== null && startMs <= now) {
+    return "past";
+  }
+
   return "upcoming";
+}
+
+export function getEventStatus(event: {
+  startDate?: string | null;
+  endDate?: string | null;
+  timeStatus?: EventStatus | null;
+}): EventStatus {
+  if (event.timeStatus) {
+    return event.timeStatus;
+  }
+  return computeEventStatus(event);
+}
+
+export function filterEventsByTimeStatus<T extends {
+  startDate?: string | null;
+  endDate?: string | null;
+  timeStatus?: EventStatus | null;
+}>(
+  events: T[],
+  filter: "upcoming" | "ongoing" | "past" | "all",
+): T[] {
+  if (filter === "all") return events;
+  return events.filter((event) => getEventStatus(event) === filter);
 }
 
 export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {

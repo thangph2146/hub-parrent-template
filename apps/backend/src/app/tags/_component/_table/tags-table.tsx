@@ -2,8 +2,9 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@/components/admin-data-table";
-import { RefreshCw, FilterX } from "lucide-react";
+import { AdminDataTable } from "@/components/admin-data-table"
+import { AdminTableToolbarActions } from "@/components/admin-table-toolbar-actions";
+import { RefreshCw } from "lucide-react";
 import type { TagTreeRow } from "../types";
 
 export interface TagsTableProps {
@@ -56,25 +57,12 @@ export function TagsTable({
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên nhóm, tên thẻ hoặc slug..."
+      onClearFilters={onClearFilters}
       filterToolbarExtra={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline" 
-            onClick={() => { void onRefresh(); }}
-          >
-            <RefreshCw className={isFetching ? "size-4 animate-spin" : "size-4"} aria-hidden />
-            Làm mới
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClearFilters}
-          >
-            <FilterX className="size-4" aria-hidden />
-            Xóa bộ lọc
-          </Button>
-        </div>
+        <AdminTableToolbarActions
+          onRefresh={onRefresh}
+          isRefreshing={isFetching}
+        />
       }
       csvExport={{ fileName: "the-dang-hoat-dong.csv" }}
       rowSelectionEnabled

@@ -1,14 +1,15 @@
 import Link from "next/link"
 import { cn } from "@ui/lib/utils"
+import { EventsSearchForm } from "@/components/events/events-search-form"
 import { EVENT_STATUS_LABELS, type PublicEventCategoryItem } from "@/lib/public-events"
+import {
+  buildEventsHref,
+  type EventsListQuery,
+} from "@/lib/events-list-query"
 
 type EventsFilterBarProps = {
-  activeFilter: string
-  activeCategorySlug: string
+  query: EventsListQuery
   categories: PublicEventCategoryItem[]
-  buildHref: (
-    next: Partial<{ filter: string; categorySlug: string; page: number }>,
-  ) => string
 }
 
 const STATUS_TABS = [
@@ -16,15 +17,15 @@ const STATUS_TABS = [
   ...Object.entries(EVENT_STATUS_LABELS).map(([key, label]) => ({ key, label })),
 ] as const
 
-export function EventsFilterBar({
-  activeFilter,
-  activeCategorySlug,
-  categories,
-  buildHref,
-}: EventsFilterBarProps) {
+export function EventsFilterBar({ query, categories }: EventsFilterBarProps) {
+  const { filter: activeFilter, categorySlug: activeCategorySlug, search } = query
+  const buildHref = (next: Partial<EventsListQuery>) => buildEventsHref(query, next)
+
   return (
-    <div className="sticky top-[6.5rem] z-40 border-b border-border bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/90">
+    <div className="sticky top-[4.5rem] z-40 border-b border-border bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/90">
       <div className="mx-auto w-full max-w-[1440px] space-y-4 px-6 py-4 md:px-12">
+        <EventsSearchForm initialSearch={search ?? ""} query={query} />
+
         <nav
           className="inline-flex w-full max-w-full gap-1 overflow-x-auto rounded-xl border border-border bg-muted/40 p-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:w-auto [&::-webkit-scrollbar]:hidden"
           aria-label="Lọc theo trạng thái"
@@ -50,7 +51,7 @@ export function EventsFilterBar({
         </nav>
 
         {categories.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex max-h-28 flex-wrap gap-2 overflow-y-auto pr-1">
             <Link
               href={buildHref({ categorySlug: "", page: 1 })}
               prefetch={false}
