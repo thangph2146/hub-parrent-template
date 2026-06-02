@@ -65,7 +65,7 @@ function cellText<T>(row: T, col: ColumnDef<T, unknown>): string {
 
 function shouldExportColumn<T>(col: ColumnDef<T, unknown>): boolean {
   if (col.id === "_expand") return false
-  if (col.id === "actions") return false
+  if (col.id === "actions" || col.id === "attendanceActions") return false
   const meta = col.meta as ExportColumnMeta<T> | undefined
   if (meta?.excludeFromExport) return false
   return true

@@ -10,10 +10,16 @@ function initialsFromName(name: string): string {
   return `${parts[0]![0] ?? ""}${parts[parts.length - 1]![0] ?? ""}`.toUpperCase()
 }
 
+/** URL ảnh đại diện từ nhiều shape row (đăng ký, diễn giả sự kiện, …). */
 export function resolveRegistrationAvatarUrl(
   row: Record<string, unknown>,
 ): string {
-  return getPosterUrlFromValue(row.avatar)
+  const raw = row.avatar ?? row.speakerAvatar ?? null
+  return getPosterUrlFromValue(raw)
+}
+
+export function resolveRowDisplayName(row: Record<string, unknown>): string {
+  return String(row.fullName ?? row.speakerName ?? row.email ?? "")
 }
 
 export function RegistrationAvatarCell({
@@ -23,7 +29,7 @@ export function RegistrationAvatarCell({
   row: Record<string, unknown>
   size?: "sm" | "default" | "lg"
 }) {
-  const fullName = String(row.fullName ?? row.email ?? "")
+  const fullName = resolveRowDisplayName(row)
   const src = resolveRegistrationAvatarUrl(row)
 
   return (

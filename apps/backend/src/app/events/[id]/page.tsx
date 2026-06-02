@@ -54,6 +54,10 @@ import {
   ADMIN_PAGE_SUBTITLE_CLASS,
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
+import {
+  RegistrationAvatarCell,
+  resolveRegistrationAvatarUrl,
+} from "../_component/registration-avatar-cell"
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—"
@@ -344,9 +348,7 @@ function EventDetailInner() {
                             key={s.id as string}
                             className="flex items-center gap-3 rounded-lg border border-border/70 p-3"
                           >
-                            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                              <Mic className="size-4 text-muted-foreground" />
-                            </div>
+                            <RegistrationAvatarCell row={s} />
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-sm font-medium">
                                 {(s.speakerName as string) || "—"}
@@ -544,6 +546,18 @@ function SpeakersTab({
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
     { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
       cell: ({ row }) => row.index + 1 },
+    {
+      id: "avatar",
+      header: "Avatar",
+      enableColumnFilter: false,
+      size: 56,
+      meta: {
+        exportHeader: "Avatar",
+        exportValue: (row) => resolveRegistrationAvatarUrl(row) || "",
+        exportWidth: 36,
+      },
+      cell: ({ row }) => <RegistrationAvatarCell row={row.original} />,
+    },
     { accessorKey: "speakerName", header: "Diễn giả", enableColumnFilter: false,
       cell: ({ getValue }) => (getValue() as string) || "—" },
     { accessorKey: "speakerTitle", header: "Chức danh", enableColumnFilter: false,

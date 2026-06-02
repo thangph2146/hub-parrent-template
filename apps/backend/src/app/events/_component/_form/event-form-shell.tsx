@@ -241,18 +241,13 @@ function LocationSelector({
   )
 }
 
-function buildCameraPickerOptions(
+function buildCameraSelectOptions(
   cameras: { id: string; name: string; code: string | null }[] | undefined,
 ) {
-  return [
-    { value: "", label: "— Không chọn —" },
-    ...(cameras ?? []).map((cam) => ({
-      value: cam.id,
-      label: cam.code
-        ? `${cam.name} (${cam.code})`
-        : cam.name,
-    })),
-  ]
+  return (cameras ?? []).map((cam) => ({
+    value: String(cam.id),
+    label: cam.code ? `${cam.name} (${cam.code})` : cam.name,
+  }))
 }
 
 export function EventFormShell({
@@ -266,8 +261,11 @@ export function EventFormShell({
   const { control, setValue, watch } = form
   const watchedTitle = watch("title")
   const watchedPosterUrl = watch("posterUrl") ?? ""
-  const { data: cameras } = useCamerasListQuery(api, true)
-  const cameraOptions = buildCameraPickerOptions(cameras)
+  const { data: cameras, isLoading: camerasLoading } = useCamerasListQuery(
+    api,
+    true,
+  )
+  const cameraOptions = buildCameraSelectOptions(cameras)
 
   return (
     <>
@@ -768,11 +766,17 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Camera check-in">
-                      <TreePicker
-                        value={field.value ?? ""}
-                        onChange={(v) => field.onChange(v ?? "")}
+                      <SelectPicker
+                        value={String(field.value ?? "")}
+                        onChange={(v) =>
+                          field.onChange(v != null ? String(v) : "")
+                        }
                         options={cameraOptions}
-                        placeholder="Chọn camera check-in"
+                        placeholder={
+                          camerasLoading
+                            ? "Đang tải camera…"
+                            : "Chọn camera check-in"
+                        }
                       />
                     </FormFieldCol>
                   )}
@@ -782,18 +786,32 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Camera check-out">
-                      <TreePicker
-                        value={field.value ?? ""}
-                        onChange={(v) => field.onChange(v ?? "")}
+                      <SelectPicker
+                        value={String(field.value ?? "")}
+                        onChange={(v) =>
+                          field.onChange(v != null ? String(v) : "")
+                        }
                         options={cameraOptions}
-                        placeholder="Chọn camera check-out"
+                        placeholder={
+                          camerasLoading
+                            ? "Đang tải camera…"
+                            : "Chọn camera check-out"
+                        }
                       />
                     </FormFieldCol>
                   )}
                 />
-                {!cameras?.length ? (
+                {camerasLoading ? (
+                  <p className="text-xs text-muted-foreground">
+                    Đang tải danh sách camera…
+                  </p>
+                ) : !cameras?.length ? (
                   <p className="text-xs text-amber-700 dark:text-amber-400">
-                    Chưa có camera — thêm tại menu Camera trước khi gắn sự kiện.
+                    Chưa có camera —{" "}
+                    <a href="/cameras/new" className="font-medium underline">
+                      thêm camera
+                    </a>{" "}
+                    trước khi gắn sự kiện.
                   </p>
                 ) : null}
               </CardContent>

@@ -5,7 +5,10 @@ import { LogIn, LogOut } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import { cn } from "@ui/lib/utils"
 import { asAttendanceBool } from "./_live/event-attendance-sync"
-import { RegistrationAvatarCell } from "./registration-avatar-cell"
+import {
+  RegistrationAvatarCell,
+  resolveRegistrationAvatarUrl,
+} from "./registration-avatar-cell"
 
 export type EventLiveActivityKind = "checkin" | "checkout"
 
@@ -111,6 +114,16 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
       header: "",
       enableColumnFilter: false,
       size: 56,
+      meta: {
+        exportHeader: "Avatar",
+        exportValue: (row) =>
+          resolveRegistrationAvatarUrl({
+            fullName: row.fullName,
+            email: row.email,
+            avatar: row.avatar,
+          }) || "",
+        exportWidth: 36,
+      },
       cell: ({ row }) => (
         <RegistrationAvatarCell
           row={{
@@ -126,6 +139,11 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
       header: "Loại",
       enableColumnFilter: false,
       size: 120,
+      meta: {
+        exportValue: (row) =>
+          row.kind === "checkin" ? "Check-in" : "Check-out",
+        exportWidth: 14,
+      },
       cell: ({ row }) => {
         const isCheckin = row.original.kind === "checkin"
         return (
@@ -177,6 +195,10 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
       header: "Thời gian",
       enableColumnFilter: false,
       accessorFn: (row) => row.at,
+      meta: {
+        exportValue: (row) => formatDateTime(row.at),
+        exportWidth: 20,
+      },
       cell: ({ row }) => (
         <span className="tabular-nums text-sm">
           {formatDateTime(row.original.at)}

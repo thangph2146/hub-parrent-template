@@ -7,7 +7,10 @@ import {
 } from "./attendance-status"
 import { asAttendanceBool } from "./_live/event-attendance-sync"
 import { RegistrationAttendanceActions } from "./registration-attendance-actions"
-import { RegistrationAvatarCell } from "./registration-avatar-cell"
+import {
+  RegistrationAvatarCell,
+  resolveRegistrationAvatarUrl,
+} from "./registration-avatar-cell"
 
 export type EventRegistrationRow = Record<string, unknown>
 
@@ -40,10 +43,16 @@ export function getEventRegistrationColumns(options: {
     },
     {
       id: "avatar",
-      header: "",
+      header: "Avatar",
       enableColumnFilter: false,
       size: 56,
-      meta: { disableColumnFilter: true, filterLabel: "Avatar" },
+      meta: {
+        disableColumnFilter: true,
+        filterLabel: "Avatar",
+        exportHeader: "Avatar",
+        exportValue: (row) => resolveRegistrationAvatarUrl(row) || "",
+        exportWidth: 36,
+      },
       cell: ({ row }) => <RegistrationAvatarCell row={row.original} />,
     },
     {
@@ -66,6 +75,15 @@ export function getEventRegistrationColumns(options: {
       id: "attendance",
       header: "Trạng thái check-in",
       enableColumnFilter: false,
+      meta: {
+        exportHeader: "Trạng thái check-in",
+        exportValue: (row) =>
+          getAttendanceStatusLabel({
+            hasCheckin: asAttendanceBool(row.hasCheckin),
+            hasCheckout: asAttendanceBool(row.hasCheckout),
+          }),
+        exportWidth: 22,
+      },
       cell: ({ row }) => (
         <AttendanceStatusBadge
           row={{
@@ -80,6 +98,7 @@ export function getEventRegistrationColumns(options: {
       header: "Thao tác",
       enableColumnFilter: false,
       size: 120,
+      meta: { excludeFromExport: true },
       cell: ({ row }) => (
         <RegistrationAttendanceActions
           eventId={eventId}

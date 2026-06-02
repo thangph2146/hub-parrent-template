@@ -9,7 +9,13 @@ export function getApiOrigin(): string {
   return base.replace(/\/api$/i, "")
 }
 
-/** URL webhook HANET cho một sự kiện (cấu hình trên developers.hanet.ai). */
+/** URL webhook chung — HANET suy sự kiện từ `deviceID` ↔ mã camera trong HUB. */
+export function buildHanetWebhookAutoUrl(): string {
+  const origin = getApiOrigin()
+  return `${origin}/api/public/hanet/webhook`
+}
+
+/** URL webhook HANET cho một sự kiện (khuyến nghị trên developers.hanet.ai). */
 export function buildHanetWebhookUrl(eventId: string): string {
   const origin = getApiOrigin()
   return `${origin}/api/public/hanet/webhook/${encodeURIComponent(eventId)}`

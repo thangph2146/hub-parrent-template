@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Check, ChevronDown, FileText, Folder } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
@@ -82,6 +83,10 @@ function TreeSelectNode({
   onSelect: (value: string) => void
 }) {
   const isParent = (node.children?.length ?? 0) > 0
+  const handleSelect = (value: string) => {
+    if (isParent) return
+    onSelect(value)
+  }
   return (
     <div>
       <TreeSelectItem
@@ -90,7 +95,7 @@ function TreeSelectNode({
         depth={depth}
         isParent={isParent}
         selected={selected}
-        onSelect={onSelect}
+        onSelect={handleSelect}
       />
       {node.children?.map((child) => (
         <TreeSelectNode
@@ -112,14 +117,25 @@ export function TreePicker({
   placeholder = "Tất cả",
   id,
 }: TreePickerProps) {
-  const selected = typeof value === "string" ? value : ""
+  const [open, setOpen] = useState(false)
+  const selected =
+    typeof value === "string"
+      ? value
+      : value != null && value !== ""
+        ? String(value)
+        : ""
+  const flat = flattenTreeOptions(options)
   const selectedLabel = selected
-    ? (flattenTreeOptions(options).find((o) => o.value === selected)?.label ??
-      selected)
+    ? (flat.find((o) => o.value === selected)?.label ?? selected)
     : placeholder
 
+  const handleSelect = (next: string) => {
+    onChange(next === "" ? undefined : next)
+    setOpen(false)
+  }
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <Button
           type="button"
@@ -138,15 +154,29 @@ export function TreePicker({
           </p>
         ) : (
           <div className="max-h-[min(60vh,18rem)] space-y-0.5 overflow-y-auto">
-            {options.map((node) => (
-              <TreeSelectNode
-                key={node.value}
-                node={node}
-                depth={0}
-                selected={selected}
-                onSelect={(v) => onChange(v || undefined)}
-              />
-            ))}
+            <button
+              type="button"
+              onClick={() => handleSelect("")}
+              className={cn(
+                "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+                !selected && "bg-primary/10 font-medium text-primary",
+                selected && "cursor-pointer hover:bg-muted",
+              )}
+            >
+              <span className="flex-1 truncate">{placeholder}</span>
+              {!selected && <Check className="size-4 shrink-0" />}
+            </button>
+            {options
+              .filter((node) => node.value !== "")
+              .map((node) => (
+                <TreeSelectNode
+                  key={node.value}
+                  node={node}
+                  depth={0}
+                  selected={selected}
+                  onSelect={handleSelect}
+                />
+              ))}
           </div>
         )}
       </PopoverContent>
