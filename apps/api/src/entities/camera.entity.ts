@@ -1,13 +1,23 @@
-import { Entity, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
+import { Event } from './event.entity';
 
 @Entity({ tableName: 'cameras' })
 export class Camera extends BaseEntity {
   @Property()
   name!: string;
 
+  /** Mã thiết bị HANET (`deviceID` trong webhook). */
   @Property({ nullable: true })
   code?: string | null;
+
+  /** Sự kiện nhận webhook khi URL không có `{eventId}` (một webhook chung cho camera). */
+  @ManyToOne(() => Event, {
+    nullable: true,
+    fieldName: 'linkedEventId',
+    deleteRule: 'set null',
+  })
+  linkedEvent?: Event | null;
 
   @Property({ nullable: true })
   ipAddress?: string | null;

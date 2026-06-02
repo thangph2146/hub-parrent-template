@@ -34,6 +34,7 @@ import {
   FileText,
   Search, Mic, Star,
 } from "lucide-react"
+import { useCamerasListQuery } from "@/app/cameras/_component"
 import { slugify } from "@workspace/api-client"
 import type { EventFormValues, EventFormSpeaker } from "../types"
 import { EventPosterField } from "./event-poster-field"
@@ -240,6 +241,20 @@ function LocationSelector({
   )
 }
 
+function buildCameraPickerOptions(
+  cameras: { id: string; name: string; code: string | null }[] | undefined,
+) {
+  return [
+    { value: "", label: "— Không chọn —" },
+    ...(cameras ?? []).map((cam) => ({
+      value: cam.id,
+      label: cam.code
+        ? `${cam.name} (${cam.code})`
+        : cam.name,
+    })),
+  ]
+}
+
 export function EventFormShell({
   form,
   onSubmit,
@@ -251,6 +266,8 @@ export function EventFormShell({
   const { control, setValue, watch } = form
   const watchedTitle = watch("title")
   const watchedPosterUrl = watch("posterUrl") ?? ""
+  const { data: cameras } = useCamerasListQuery(api, true)
+  const cameraOptions = buildCameraPickerOptions(cameras)
 
   return (
     <>
@@ -453,6 +470,26 @@ export function EventFormShell({
                     control={control}
                     render={({ field }) => (
                       <FormFieldCol label="Check-in kết thúc">
+                        <Input type="datetime-local" {...field} />
+                      </FormFieldCol>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Controller
+                    name="checkoutStart"
+                    control={control}
+                    render={({ field }) => (
+                      <FormFieldCol label="Check-out bắt đầu">
+                        <Input type="datetime-local" {...field} />
+                      </FormFieldCol>
+                    )}
+                  />
+                  <Controller
+                    name="checkoutEnd"
+                    control={control}
+                    render={({ field }) => (
+                      <FormFieldCol label="Check-out kết thúc">
                         <Input type="datetime-local" {...field} />
                       </FormFieldCol>
                     )}
@@ -720,6 +757,45 @@ export function EventFormShell({
                     )}
                   />
                 </div>
+
+                <Divider label="Camera HANET" />
+                <p className="text-xs text-muted-foreground px-1">
+                  Chọn camera từ danh sách — mã camera phải trùng{" "}
+                  <code className="text-[10px]">deviceID</code> trên HANET.
+                </p>
+                <Controller
+                  name="checkinCameraId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormFieldCol label="Camera check-in">
+                      <TreePicker
+                        value={field.value ?? ""}
+                        onChange={(v) => field.onChange(v ?? "")}
+                        options={cameraOptions}
+                        placeholder="Chọn camera check-in"
+                      />
+                    </FormFieldCol>
+                  )}
+                />
+                <Controller
+                  name="checkoutCameraId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormFieldCol label="Camera check-out">
+                      <TreePicker
+                        value={field.value ?? ""}
+                        onChange={(v) => field.onChange(v ?? "")}
+                        options={cameraOptions}
+                        placeholder="Chọn camera check-out"
+                      />
+                    </FormFieldCol>
+                  )}
+                />
+                {!cameras?.length ? (
+                  <p className="text-xs text-amber-700 dark:text-amber-400">
+                    Chưa có camera — thêm tại menu Camera trước khi gắn sự kiện.
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
           </div>

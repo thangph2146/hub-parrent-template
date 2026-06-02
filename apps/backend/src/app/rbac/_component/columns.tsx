@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { Lock } from "lucide-react";
 import {
@@ -70,14 +71,13 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
         if (!value) return true;
         return String(row.getValue(id)) === String(value);
       },
-      cell: ({ row }) =>
-        row.original.isActive ? (
-          <Badge variant="outline" className="border-emerald-300 text-emerald-700">
-            Hoạt động
-          </Badge>
-        ) : (
-          <Badge variant="outline">Tạm tắt</Badge>
-        ),
+      cell: ({ row }) => (
+        <UsageStatusFromValue
+          value={row.original.isActive}
+          labels={{ active: "Hoạt động", locked: "Tạm tắt" }}
+          className="text-[10px]"
+        />
+      ),
     },
     {
       id: "actions",

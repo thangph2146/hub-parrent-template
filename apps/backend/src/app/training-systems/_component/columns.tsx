@@ -7,7 +7,7 @@ import {
 } from "@/components/admin-table-row-actions"
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import type { TrainingSystemRow, TrainingSystemConfirmAction } from "./types";
 
@@ -68,14 +68,13 @@ export function getTrainingSystemColumns({
           { value: "0", label: "Tắt" },
         ],
       },
-      cell: ({ getValue }) => {
-        const status = getValue() as number;
-        return status === 1 ? (
-          <Badge variant="default" className="text-[10px]">Hoạt động</Badge>
-        ) : (
-          <Badge variant="outline" className="text-[10px]">Tắt</Badge>
-        );
-      },
+      cell: ({ getValue }) => (
+        <UsageStatusFromValue
+          value={getValue() as number}
+          labels={{ active: "Hoạt động", locked: "Tắt" }}
+          className="text-[10px]"
+        />
+      ),
     },
     {
       accessorKey: "updatedAt",

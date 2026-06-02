@@ -13,7 +13,7 @@ function EditCameraPageInner() {
   const router = useRouter(), params = useParams(), id = params.id as string, qc = useQueryClient(), { form } = useCameraForm();
   const { data: e, isLoading, isError, refetch } = useCameraDetailQuery(api, id);
   useEffect(() => { if (isError) { toast.error("Không tải được camera"); router.push("/cameras"); } }, [isError, router]);
-  useEffect(() => { if (!e) return; form.reset({ name: e.name ?? "", code: e.code ?? "", ipAddress: e.ipAddress ?? "", port: e.port ?? undefined, username: e.username ?? "", password: "", status: e.status ?? 1 }); }, [e, form]);
+  useEffect(() => { if (!e) return; form.reset({ name: e.name ?? "", code: e.code ?? "", linkedEventId: e.linkedEventId ?? "", ipAddress: e.ipAddress ?? "", port: e.port ?? undefined, username: e.username ?? "", password: "", status: e.status ?? 1 }); }, [e, form]);
   const inv = async () => { await qc.invalidateQueries({ queryKey: ["cameras"] }); };
   const mut = useMutation({ mutationFn: (i: Record<string, unknown>) => api.cameras.update(id, i), onSuccess: async (_d, v) => { await inv(); toast.success(`Đã cập nhật "${v.name}"`); router.push(`/cameras/${id}`); }, onError: (e: Error) => toast.error(e.message || "Lỗi") });
   const h = useCallback(async (v: CameraFormValues) => { await mut.mutateAsync(buildCameraPayload(v)); }, [mut]);

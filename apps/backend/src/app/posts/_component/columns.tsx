@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableCrudRowActions,
@@ -77,14 +77,13 @@ export function getPostColumns({
     {
       accessorKey: "published",
       header: "Trạng thái",
-      cell: ({ row }) =>
-        row.original.published ? (
-          <Badge className="text-xs">Đã xuất bản</Badge>
-        ) : (
-          <Badge variant="outline" className="text-xs">
-            Bản nháp
-          </Badge>
-        ),
+      cell: ({ row }) => (
+        <UsageStatusFromValue
+          value={row.original.published}
+          labels={{ active: "Đã xuất bản", locked: "Bản nháp" }}
+          className="text-[10px]"
+        />
+      ),
       filterFn: () => true,
       meta: {
         filterVariant: "multi-select",
@@ -198,14 +197,13 @@ export function getTrashColumns({
     {
       accessorKey: "published",
       header: "Trạng thái",
-      cell: ({ row }) =>
-        row.original.published ? (
-          <Badge className="text-xs">Đã xuất bản</Badge>
-        ) : (
-          <Badge variant="outline" className="text-xs">
-            Bản nháp
-          </Badge>
-        ),
+      cell: ({ row }) => (
+        <UsageStatusFromValue
+          value={row.original.published}
+          labels={{ active: "Đã xuất bản", locked: "Bản nháp" }}
+          className="text-[10px]"
+        />
+      ),
       filterFn: () => true,
       meta: {
         filterVariant: "multi-select",

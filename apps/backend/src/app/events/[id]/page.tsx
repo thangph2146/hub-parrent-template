@@ -1,9 +1,17 @@
 "use client"
 
 import { useEffect, useMemo } from "react"
+import dynamic from "next/dynamic"
 import { useRouter, useParams } from "next/navigation"
 import { toast } from "sonner"
-import { LexicalEditor } from "@thangph2146/lexical-editor"
+
+const LexicalEditor = dynamic(
+  () =>
+    import("@thangph2146/lexical-editor").then((mod) => ({
+      default: mod.LexicalEditor,
+    })),
+  { ssr: false },
+)
 import {
   Loader2,
   ArrowLeft,
@@ -14,11 +22,12 @@ import {
   Building2,
   CheckSquare,
   FileText,
-  UserCheck,
   ClipboardList,
   Mic,
   Link,
   ImageIcon,
+  Radio,
+  Camera,
 } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Divider, PageSection } from "@ui/components/layout"
@@ -34,11 +43,14 @@ import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"
 import {
   useEventDetailQuery,
-  useEventRegistrationsQuery,
-  useEventCheckinsQuery,
-  useEventCheckoutsQuery,
   useEventSpeakersQuery,
 } from "../_component"
+import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
+import {
+  EventAttendanceProvider,
+  useEventAttendanceContext,
+} from "../_component/_live/event-attendance-provider"
+import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
 import { getPosterUrlFromValue } from "../_component/utils"
 import { TypographyH1 } from "@ui/components/typography"
 import {
@@ -56,6 +68,7 @@ function EventDetailInner() {
   const router = useRouter()
   const params = useParams()
   const id = params.id as string
+  const { liveRevision } = useEventAttendanceContext()
   const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.EVENTS_UPDATE)
@@ -120,6 +133,9 @@ function EventDetailInner() {
         <TabsList className="w-full">
           <TabsTrigger value="info" className="flex-1 gap-1.5">
             <FileText className="size-4" /> Thông tin sự kiện
+          </TabsTrigger>
+          <TabsTrigger value="live" className="flex-1 gap-1.5">
+            <Radio className="size-4" /> Theo dõi realtime
           </TabsTrigger>
           <TabsTrigger value="lists" className="flex-1 gap-1.5">
             <ClipboardList className="size-4" /> Danh sách
@@ -256,6 +272,22 @@ function EventDetailInner() {
                       </p>
                     </div>
                     <div>
+                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                        <Clock className="size-3" /> Check-out từ
+                      </p>
+                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
+                        {formatDateTime(entity.checkoutStart)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                        Check-out đến
+                      </p>
+                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
+                        {formatDateTime(entity.checkoutEnd)}
+                      </p>
+                    </div>
+                    <div>
                       <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                         Đăng ký từ
                       </p>
@@ -342,7 +374,10 @@ function EventDetailInner() {
 
                   <Divider label="Thống kê" className="my-6" />
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div
+                    key={`event-stats-${liveRevision}`}
+                    className="grid grid-cols-2 gap-3"
+                  >
                     <div className="rounded-lg bg-muted/30 p-3 text-center">
                       <p className="text-2xl font-bold text-primary">
                         {entity.totalRegistrations}
@@ -385,6 +420,35 @@ function EventDetailInner() {
                         ? "Yêu cầu Face ID"
                         : "Không yêu cầu Face ID"}
                     </div>
+                    {(entity.checkinCameraName || entity.checkoutCameraName) && (
+                      <>
+                        <div className="flex items-start gap-2 text-sm pt-1">
+                          <Camera className="size-4 shrink-0 mt-0.5 text-muted-foreground" />
+                          <div className="space-y-0.5">
+                            <p>
+                              <span className="text-muted-foreground">Check-in: </span>
+                              {entity.checkinCameraName ?? "—"}
+                              {entity.checkinCameraCode ? (
+                                <span className="font-mono text-xs text-muted-foreground">
+                                  {" "}
+                                  ({entity.checkinCameraCode})
+                                </span>
+                              ) : null}
+                            </p>
+                            <p>
+                              <span className="text-muted-foreground">Check-out: </span>
+                              {entity.checkoutCameraName ?? "—"}
+                              {entity.checkoutCameraCode ? (
+                                <span className="font-mono text-xs text-muted-foreground">
+                                  {" "}
+                                  ({entity.checkoutCameraCode})
+                                </span>
+                              ) : null}
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <Divider label="Thời gian" className="my-6" />
@@ -421,36 +485,29 @@ function EventDetailInner() {
           </div>
         </TabsContent>
 
+        <TabsContent value="live" className="mt-6">
+          <EventLiveMonitorTab
+            eventId={id}
+            initialStats={{
+              totalRegistrations: entity.totalRegistrations,
+              totalCheckins: entity.totalCheckins,
+              totalCheckouts: entity.totalCheckouts,
+            }}
+          />
+        </TabsContent>
+
         <TabsContent value="lists" className="mt-6">
           <Tabs defaultValue="registrations">
-            <TabsList className="w-full">
+            <TabsList className="w-full max-w-md">
               <TabsTrigger value="registrations" className="flex-1 gap-1.5">
-                <ClipboardList className="size-4" /> Đăng ký
-              </TabsTrigger>
-              <TabsTrigger value="checkins" className="flex-1 gap-1.5">
-                <UserCheck className="size-4" /> Check-in
-              </TabsTrigger>
-              <TabsTrigger value="checkouts" className="flex-1 gap-1.5">
-                <UserCheck className="size-4" /> Check-out
+                <ClipboardList className="size-4" /> Danh sách đăng ký
               </TabsTrigger>
               <TabsTrigger value="speakers" className="flex-1 gap-1.5">
                 <Mic className="size-4" /> Diễn giả
               </TabsTrigger>
             </TabsList>
             <TabsContent value="registrations" className="mt-4">
-              <RegistrationsTab
-                eventId={id}
-                eventTitle={entity.title}
-              />
-            </TabsContent>
-            <TabsContent value="checkins" className="mt-4">
-              <CheckinsTab
-                eventId={id}
-                eventTitle={entity.title}
-              />
-            </TabsContent>
-            <TabsContent value="checkouts" className="mt-4">
-              <CheckoutsTab
+              <EventRegistrationsLiveTable
                 eventId={id}
                 eventTitle={entity.title}
               />
@@ -468,104 +525,18 @@ function EventDetailInner() {
   )
 }
 
+function EventDetailWithAttendance() {
+  const params = useParams()
+  const eventId = params.id as string
+  if (!eventId) return null
+  return (
+    <EventAttendanceProvider eventId={eventId}>
+      <EventDetailInner />
+    </EventAttendanceProvider>
+  )
+}
+
 type Dict = Record<string, unknown>
-
-function RegistrationsTab({
-  eventId,
-  eventTitle,
-}: {
-  eventId: string
-  eventTitle: string
-}) {
-  const { data: registrations, isLoading } = useEventRegistrationsQuery(api, eventId)
-  const rows = registrations ?? []
-  const columns = useMemo<ColumnDef<Dict>[]>(() => [
-    { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
-      cell: ({ row }) => row.index + 1 },
-    { accessorKey: "email", header: "Email", enableColumnFilter: false },
-    { accessorKey: "fullName", header: "Họ tên", enableColumnFilter: false },
-    { accessorKey: "phone", header: "Điện thoại", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "status", header: "Trạng thái", enableColumnFilter: false,
-      cell: ({ getValue }) => {
-        const v = getValue() as number
-        return (
-          <Badge variant={v === 1 ? "default" : v === 2 ? "outline" : "secondary"}>
-            {v === 1 ? "Đã xác nhận" : v === 2 ? "Đã hủy" : "Chờ xử lý"}
-          </Badge>
-        )
-      } },
-    { accessorKey: "hasCheckin", header: "Check-in", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() ? "✅" : "—") },
-    { accessorKey: "attendanceStatus", header: "Điểm danh", enableColumnFilter: false,
-      cell: ({ getValue }) => {
-        const v = getValue() as number
-        return v === 2 ? "Có mặt" : v === 1 ? "Một phần" : "Vắng"
-      } },
-  ], [])
-  return (
-    <AdminDataTable<Dict>
-      data={rows}
-      columns={columns}
-      isLoading={isLoading}
-      emptyLabel="Chưa có đăng ký nào."
-      getGlobalFilterText={(row) => {
-        const statusText = row.status === 1 ? "Đã xác nhận" : row.status === 2 ? "Đã hủy" : "Chờ xử lý"
-        const attendanceText = row.attendanceStatus === 2 ? "Có mặt" : row.attendanceStatus === 1 ? "Một phần" : "Vắng"
-        return [row.email, row.fullName, row.phone, statusText, attendanceText].filter(Boolean).join(" ")
-      }}
-      xlsxExport={buildEventDetailXlsxExport("registrations", {
-        eventId,
-        eventTitle,
-        pageCount: rows.length,
-        total: rows.length,
-      })}
-    />
-  )
-}
-
-function CheckinsTab({
-  eventId,
-  eventTitle,
-}: {
-  eventId: string
-  eventTitle: string
-}) {
-  const { data: checkins, isLoading } = useEventCheckinsQuery(api, eventId)
-  const rows = checkins ?? []
-  const columns = useMemo<ColumnDef<Dict>[]>(() => [
-    { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
-      cell: ({ row }) => row.index + 1 },
-    { accessorKey: "email", header: "Email", enableColumnFilter: false },
-    { accessorKey: "fullName", header: "Họ tên", enableColumnFilter: false },
-    { accessorKey: "checkinTime", header: "Thời gian", enableColumnFilter: false,
-      cell: ({ getValue }) => formatDateTime(getValue() as string) },
-    { accessorKey: "checkinType", header: "Phương thức", enableColumnFilter: false,
-      cell: ({ getValue }) => {
-        const v = getValue() as number
-        return v === 0 ? "Face ID" : v === 2 ? "QR Code" : v === 3 ? "Online" : "Thủ công"
-      } },
-    { accessorKey: "faceVerified", header: "Face ID", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() ? "✅" : "—") },
-  ], [])
-  return (
-    <AdminDataTable<Dict>
-      data={rows}
-      columns={columns}
-      isLoading={isLoading}
-      emptyLabel="Chưa có check-in nào."
-      getGlobalFilterText={(row) =>
-        [row.email, row.fullName].filter(Boolean).join(" ")
-      }
-      xlsxExport={buildEventDetailXlsxExport("checkins", {
-        eventId,
-        eventTitle,
-        pageCount: rows.length,
-        total: rows.length,
-      })}
-    />
-  )
-}
 
 function SpeakersTab({
   eventId,
@@ -612,53 +583,10 @@ function SpeakersTab({
   )
 }
 
-function CheckoutsTab({
-  eventId,
-  eventTitle,
-}: {
-  eventId: string
-  eventTitle: string
-}) {
-  const { data: checkouts, isLoading } = useEventCheckoutsQuery(api, eventId)
-  const rows = checkouts ?? []
-  const columns = useMemo<ColumnDef<Dict>[]>(() => [
-    { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
-      cell: ({ row }) => row.index + 1 },
-    { accessorKey: "email", header: "Email", enableColumnFilter: false },
-    { accessorKey: "fullName", header: "Họ tên", enableColumnFilter: false },
-    { accessorKey: "phone", header: "Điện thoại", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "checkoutTime", header: "Thời gian checkout", enableColumnFilter: false,
-      cell: ({ getValue }) => formatDateTime(getValue() as string) },
-    { accessorKey: "attendanceStatus", header: "Điểm danh", enableColumnFilter: false,
-      cell: ({ getValue }) => {
-        const v = getValue() as number
-        return v === 2 ? "Có mặt" : v === 1 ? "Một phần" : "Vắng"
-      } },
-  ], [])
-  return (
-    <AdminDataTable<Dict>
-      data={rows}
-      columns={columns}
-      isLoading={isLoading}
-      emptyLabel="Chưa có check-out nào."
-      getGlobalFilterText={(row) =>
-        [row.email, row.fullName, row.phone].filter(Boolean).join(" ")
-      }
-      xlsxExport={buildEventDetailXlsxExport("checkouts", {
-        eventId,
-        eventTitle,
-        pageCount: rows.length,
-        total: rows.length,
-      })}
-    />
-  )
-}
-
 export default function EventDetailPage() {
   return (
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
-      <EventDetailInner />
+      <EventDetailWithAttendance />
     </AdminPageGuard>
   )
 }

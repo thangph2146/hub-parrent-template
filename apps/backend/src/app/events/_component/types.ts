@@ -11,6 +11,8 @@ export type EventRow = {
   endDate: string | null;
   checkinStart: string | null;
   checkinEnd: string | null;
+  checkoutStart: string | null;
+  checkoutEnd: string | null;
   registrationStart: string | null;
   registrationEnd: string | null;
   organizer: string | null;
@@ -34,6 +36,12 @@ export type EventRow = {
   deletedAt: string | null;
   isFeatured: boolean;
   featuredOrder: number;
+  checkinCameraId: string | null;
+  checkoutCameraId: string | null;
+  checkinCameraName: string | null;
+  checkoutCameraName: string | null;
+  checkinCameraCode: string | null;
+  checkoutCameraCode: string | null;
 };
 
 export interface EventConfirmAction {
@@ -50,6 +58,8 @@ export const eventFormSchema = z.object({
   endDate: z.string().optional(),
   checkinStart: z.string().optional(),
   checkinEnd: z.string().optional(),
+  checkoutStart: z.string().optional(),
+  checkoutEnd: z.string().optional(),
   registrationStart: z.string().optional(),
   registrationEnd: z.string().optional(),
   organizer: z.string().optional(),
@@ -61,6 +71,8 @@ export const eventFormSchema = z.object({
   allowCheckin: z.coerce.boolean(),
   allowCheckout: z.coerce.boolean(),
   requireFaceId: z.coerce.boolean(),
+  checkinCameraId: z.string().optional(),
+  checkoutCameraId: z.string().optional(),
   maxParticipants: z.coerce.number(),
   format: z.coerce.number().optional(),
   onlineLink: z.string().optional(),

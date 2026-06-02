@@ -1,14 +1,13 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   CalendarClock,
-  CheckCircle2,
-  Lock,
   Mail,
   Phone,
   ShieldHalf,
   UserCircle,
 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableEditButton,
@@ -130,24 +129,13 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
       id: "isActive",
       accessorFn: (u) => (u.isActive ? "true" : "false"),
       header: "Trạng thái",
-      cell: ({ row }) =>
-        row.original.isActive ? (
-          <Badge
-            variant="outline"
-            className="gap-1 border-emerald-200 pr-2 text-emerald-700"
-          >
-            <CheckCircle2 className="size-3.5 shrink-0" aria-hidden />
-            Hoạt động
-          </Badge>
-        ) : (
-          <Badge
-            variant="outline"
-            className="gap-1 pr-2 text-muted-foreground"
-          >
-            <Lock className="size-3.5 shrink-0" aria-hidden />
-            Khoá
-          </Badge>
-        ),
+      cell: ({ row }) => (
+        <UsageStatusFromValue
+          value={row.original.isActive}
+          labels={{ active: "Hoạt động", locked: "Khoá" }}
+          className="text-[10px]"
+        />
+      ),
       filterFn: (row, id, v) => {
         if (v == null || v === "") return true;
         return row.getValue(id) === v;

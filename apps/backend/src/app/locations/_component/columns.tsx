@@ -7,7 +7,7 @@ import {
 } from "@/components/admin-table-row-actions"
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import type { LocationRow, LocationConfirmAction } from "./types";
 
@@ -68,10 +68,12 @@ export function getLocationColumns({
       },
       cell: ({ getValue }) => {
         const status = getValue() as number | null;
-        return status === 0 ? (
-          <Badge variant="outline" className="text-[10px]">Khóa</Badge>
-        ) : (
-          <Badge variant="default" className="text-[10px]">Hoạt động</Badge>
+        return (
+          <UsageStatusFromValue
+            value={status === 0 ? 0 : 1}
+            labels={{ active: "Hoạt động", locked: "Khóa" }}
+            className="text-[10px]"
+          />
         );
       },
     },

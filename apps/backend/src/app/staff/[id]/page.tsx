@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import { PageSection } from "@ui/components/layout"
 import {
@@ -79,16 +80,13 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
     accessorKey: "published",
     header: "Trạng thái",
     enableColumnFilter: false,
-    cell: ({ row }) =>
-      row.original.published ? (
-        <Badge variant="secondary" className="text-xs">
-          Đã xuất bản
-        </Badge>
-      ) : (
-        <Badge variant="outline" className="text-xs text-muted-foreground">
-          Nháp
-        </Badge>
-      ),
+    cell: ({ row }) => (
+      <UsageStatusFromValue
+        value={row.original.published}
+        labels={{ active: "Đã xuất bản", locked: "Nháp" }}
+        className="text-[10px]"
+      />
+    ),
   },
 ]
 

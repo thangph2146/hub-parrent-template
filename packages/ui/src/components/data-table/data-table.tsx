@@ -906,7 +906,7 @@ export function AdminDataTable<TData>({
                       title="Excel: cột rộng theo nội dung, Unicode chuẩn"
                     >
                       <Download className="size-4" />
-                      Excel
+                      Download Excel
                     </Button>
                   </div>
                 ) : null}

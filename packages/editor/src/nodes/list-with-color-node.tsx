@@ -1,6 +1,12 @@
 "use client"
 
-import type { DOMExportOutput, EditorConfig, LexicalEditor } from "lexical"
+import type {
+  DOMConversionMap,
+  DOMConversionOutput,
+  DOMExportOutput,
+  EditorConfig,
+  LexicalEditor,
+} from "lexical"
 import { ListNode, type ListType, type SerializedListNode } from "@lexical/list"
 import type { LexicalNode, LexicalUpdateJSON, NodeKey } from "lexical"
 import { $applyNodeReplacement } from "lexical"
@@ -12,6 +18,28 @@ export type SerializedListWithColorNode = Omit<SerializedListNode, "type"> & {
 }
 
 const LIST_WITH_COLOR_TYPE = "listwithcolor"
+
+function $convertListWithColorElement(
+  domNode: HTMLElement
+): DOMConversionOutput | null {
+  const tag = domNode.tagName
+  let listType: ListType = "bullet"
+  if (tag === "OL") {
+    listType = "number"
+  } else if (tag === "UL") {
+    const marker = domNode.getAttribute("data-list-marker")
+    listType = marker === "check" ? "check" : "bullet"
+  } else {
+    return null
+  }
+
+  const node = $createListWithColorNode(listType)
+  const listColor = domNode.getAttribute("data-list-color")
+  const markerType = domNode.getAttribute("data-list-marker")
+  if (listColor) node.setListColor(listColor)
+  if (markerType) node.setMarkerType(markerType)
+  return { node }
+}
 
 function applyListAttributesToDom(
   dom: HTMLElement,
@@ -144,6 +172,19 @@ export class ListWithColorNode extends ListNode {
       )
     }
     return output
+  }
+
+  static override importDOM(): DOMConversionMap | null {
+    return {
+      ol: () => ({
+        conversion: $convertListWithColorElement,
+        priority: 1,
+      }),
+      ul: () => ({
+        conversion: $convertListWithColorElement,
+        priority: 1,
+      }),
+    }
   }
 
   override exportJSON(): SerializedListWithColorNode {

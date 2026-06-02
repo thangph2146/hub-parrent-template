@@ -3,11 +3,23 @@ import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { EventDetail, EventRow } from "../types";
 
-export function useEventDetailQuery(apiParam: StoreSyncSdk, id: string): UseQueryResult<EventDetail> {
+export type EventLiveQueryOptions = {
+  enabled?: boolean;
+  refetchInterval?: number | false;
+};
+
+export function useEventDetailQuery(
+  apiParam: StoreSyncSdk,
+  id: string,
+  options?: EventLiveQueryOptions,
+): UseQueryResult<EventDetail> {
   return useQuery({
     queryKey: ["events", "detail", id],
     queryFn: async (): Promise<EventDetail> => apiParam.events.get<EventDetail>(id),
-    enabled: !!id,
+    enabled: !!id && (options?.enabled ?? true),
+    refetchInterval: options?.refetchInterval,
+    refetchIntervalInBackground: Boolean(options?.refetchInterval),
+    structuralSharing: false,
   });
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableCrudRowActions,
@@ -75,18 +75,13 @@ export function getScreenColumns({
           { value: "0", label: "Khóa" },
         ],
       },
-      cell: ({ getValue }) => {
-        const s = getValue() as number;
-        return s === 1 ? (
-          <Badge variant="default" className="text-[10px]">
-            Hoạt động
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="text-[10px]">
-            Khóa
-          </Badge>
-        );
-      },
+      cell: ({ getValue }) => (
+        <UsageStatusFromValue
+          value={getValue() as number}
+          labels={{ active: "Hoạt động", locked: "Khóa" }}
+          className="text-[10px]"
+        />
+      ),
     },
     {
       id: "actions",

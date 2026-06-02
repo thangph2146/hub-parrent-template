@@ -132,7 +132,7 @@ export type BuildCsvFromColumnsOptions<T> = {
 
 /**
  * Xuất đúng mảng `data` hiện có (vd. một trang API / đã lọc client).
- * Cột không có accessorKey/accessorFn sẽ thành ô trống.
+ * Cột `id: "stt"` tự điền 1, 2, 3…; cột khác không có accessor sẽ thành ô trống.
  */
 export function buildCsvFromColumns<T>(
   data: T[],
@@ -147,9 +147,10 @@ export function buildCsvFromColumns<T>(
   const exportCols = columns.filter(shouldExportColumn)
   const headers = exportCols.map(columnTitle)
   const exportRows = resolveExportRows(data, options?.getSubRows)
-  const rows = exportRows.map(({ row, treePrefix }) =>
+  const rows = exportRows.map(({ row, treePrefix }, rowIndex) =>
     exportCols.map((col, colIndex) => {
-      const text = cellText(row, col)
+      const text =
+        col.id === "stt" ? String(rowIndex + 1) : cellText(row, col)
       if (options?.getSubRows && treePrefix && colIndex === 0) {
         return `${treePrefix}${text}`
       }

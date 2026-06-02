@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { FieldError } from "@ui/components/field";
@@ -9,11 +10,24 @@ import { TypographyH1 } from "@ui/components/typography";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { cn } from "@ui/lib/utils";
 import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";
-import { ArrowLeft, Hash, Camera } from "lucide-react";
+import { ArrowLeft, Hash, Camera, Link2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { useEventsListQuery } from "@/app/events/_component/_query";
 import type { CameraFormValues } from "../types";
 export interface CameraFormShellProps { form: UseFormReturn<CameraFormValues>; onSubmit: (v: CameraFormValues) => Promise<void>; submitting: boolean; editingId: string | null; onBack: () => void; onReset: () => void; }
 export function CameraFormShell({ form, onSubmit, submitting, editingId, onBack, onReset }: CameraFormShellProps) {
   const { control } = form;
+  const { data: events } = useEventsListQuery(api, true);
+  const eventOptions = useMemo(
+    () => [
+      { value: "", label: "— Không gắn sự kiện —" },
+      ...(events ?? []).map((ev) => ({
+        value: ev.id,
+        label: ev.title?.trim() ? ev.title : ev.id,
+      })),
+    ],
+    [events],
+  );
   return (<>
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
@@ -33,7 +47,7 @@ export function CameraFormShell({ form, onSubmit, submitting, editingId, onBack,
             <CardContent className="space-y-4">
               <Controller name="name" control={control} render={({ field, fieldState }) => (<FormFieldCol label="Tên camera" required><Input placeholder="VD: Camera cổng A" {...field} className={cn(fieldState.error && "border-destructive")} />{fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}</FormFieldCol>)} />
               <div className="grid gap-4 sm:grid-cols-2">
-                <Controller name="code" control={control} render={({ field }) => (<FormFieldCol label="Mã camera"><Input placeholder="CAM-001" {...field} /></FormFieldCol>)} />
+                <Controller name="code" control={control} render={({ field }) => (<FormFieldCol label="Mã camera (deviceID HANET)"><Input placeholder="CAM-001" {...field} /></FormFieldCol>)} />
                 <Controller name="ipAddress" control={control} render={({ field }) => (<FormFieldCol label="Địa chỉ IP"><Input placeholder="192.168.1.100" {...field} /></FormFieldCol>)} />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -45,6 +59,12 @@ export function CameraFormShell({ form, onSubmit, submitting, editingId, onBack,
           </Card>
         </div>
         <div className="space-y-6">
+          <Card className="border border-border/70 shadow-sm">
+            <CardHeader className="pb-2"><CardTitle className="flex items-center gap-2 text-lg"><Link2 className="size-5 text-primary" /> HANET</CardTitle><CardDescription>Gắn sự kiện để webhook không cần {`{eventId}`} trên URL.</CardDescription></CardHeader>
+            <CardContent>
+              <Controller name="linkedEventId" control={control} render={({ field }) => (<FormFieldCol label="Sự kiện theo dõi"><TreePicker value={field.value ?? ""} onChange={(v) => field.onChange(v ?? "")} options={eventOptions} placeholder="Chọn sự kiện" /></FormFieldCol>)} />
+            </CardContent>
+          </Card>
           <Card className="border border-border/70 shadow-sm">
             <CardHeader className="pb-2"><CardTitle className="flex items-center gap-2 text-lg text-muted-foreground"><Hash className="size-5" /> Trạng thái</CardTitle></CardHeader>
             <CardContent className="space-y-3">

@@ -2,7 +2,10 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { CalendarClock, CircleCheck, CircleDashed, CircleDot, Mail, MessageSquare, Phone, User } from "lucide-react";
-import { Badge } from "@ui/components/badge";
+import {
+  UsageStatusBadge,
+  type UsageStatusTone,
+} from "@ui/components/usage-status-badge";
 import {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableEditButton,
@@ -15,7 +18,6 @@ import {
 import type { ContactRequest } from "./types";
 import { CONTACT_REQUEST_STATUS_LABELS } from "./types";
 import { formatPhoneNumber } from "./utils";
-import { cn } from "@ui/lib/utils";
 
 export interface ContactRequestColumnsProps {
   onView: (contact: ContactRequest) => void;
@@ -175,32 +177,21 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         const label = CONTACT_REQUEST_STATUS_LABELS[status];
 
         const statusConfig = {
-          new: {
-            icon: CircleDot,
-            className: "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-400",
-          },
-          "in-progress": {
-            icon: CircleDashed,
-            className: "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-400",
-          },
-          resolved: {
-            icon: CircleCheck,
-            className: "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-400",
-          },
-          archived: {
-            icon: CircleCheck,
-            className: "bg-gray-50 border-gray-200 text-gray-600 dark:bg-gray-950/30 dark:border-gray-800 dark:text-gray-400",
-          },
+          new: { icon: CircleDot, tone: "warning" as UsageStatusTone },
+          "in-progress": { icon: CircleDashed, tone: "warning" as UsageStatusTone },
+          resolved: { icon: CircleCheck, tone: "success" as UsageStatusTone },
+          archived: { icon: CircleCheck, tone: "danger" as UsageStatusTone },
         } as const;
 
-        const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.archived;
+        const config =
+          statusConfig[status as keyof typeof statusConfig] ?? statusConfig.archived;
         const StatusIcon = config.icon;
 
         return (
-          <Badge variant="outline" className={cn("gap-1.5 font-medium", config.className)}>
-            <StatusIcon className="size-3" aria-hidden />
+          <UsageStatusBadge tone={config.tone} className="gap-1.5 text-[10px]">
+            <StatusIcon className="size-3 shrink-0" aria-hidden />
             {label}
-          </Badge>
+          </UsageStatusBadge>
         );
       },
       filterFn: (row, id, v) => {

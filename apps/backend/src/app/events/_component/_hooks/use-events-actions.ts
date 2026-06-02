@@ -30,10 +30,12 @@ const EMPTY_EDITOR_STATE = {
 const EMPTY_VALUES: EventFormValues = {
   title: "", slug: "", posterUrl: "", description: "",
   startDate: "", endDate: "", checkinStart: "", checkinEnd: "",
+  checkoutStart: "", checkoutEnd: "",
   registrationStart: "", registrationEnd: "",
   organizer: "", location: "", address: "",
   status: 1, isFeatured: false, featuredOrder: 0,
   allowCheckin: true, allowCheckout: true, requireFaceId: false,
+  checkinCameraId: "", checkoutCameraId: "",
   maxParticipants: 0, format: 0, onlineLink: "", content: EMPTY_EDITOR_STATE, speakers: [],
 };
 
@@ -47,6 +49,8 @@ export function buildEventPayload(values: EventFormValues): Record<string, unkno
     endDate: values.endDate || null,
     checkinStart: values.checkinStart || null,
     checkinEnd: values.checkinEnd || null,
+    checkoutStart: values.checkoutStart || null,
+    checkoutEnd: values.checkoutEnd || null,
     registrationStart: values.registrationStart || null,
     registrationEnd: values.registrationEnd || null,
     organizer: values.organizer?.trim() || null,
@@ -58,6 +62,8 @@ export function buildEventPayload(values: EventFormValues): Record<string, unkno
     allowCheckin: values.allowCheckin,
     allowCheckout: values.allowCheckout,
     requireFaceId: values.requireFaceId,
+    checkinCameraId: values.checkinCameraId?.trim() || null,
+    checkoutCameraId: values.checkoutCameraId?.trim() || null,
     maxParticipants: values.maxParticipants,
     format: values.format ?? 0,
     onlineLink: values.onlineLink?.trim() || null,

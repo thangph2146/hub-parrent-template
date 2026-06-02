@@ -45,6 +45,7 @@ import { EventCheckoutsModule } from './event-checkouts/event-checkouts.module';
 import { FaceDataModule } from './face-data/face-data.module';
 import { EventSpeakersModule } from './event-speakers/event-speakers.module';
 import { SeoMetasModule } from './seo-metas/seo-metas.module';
+import { HanetModule } from './hanet/hanet.module';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { SeoMetasModule } from './seo-metas/seo-metas.module';
     FaceDataModule,
     EventSpeakersModule,
     SeoMetasModule,
+    HanetModule,
   ],
   providers: [
     {

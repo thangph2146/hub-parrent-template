@@ -8,6 +8,7 @@ import {
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin, Star } from "lucide-react";
 import type { EventRow, EventConfirmAction } from "./types";
@@ -152,14 +153,13 @@ export function getEventColumns({
           { value: "0", label: "Khóa" },
         ],
       },
-      cell: ({ getValue }) => {
-        const status = getValue() as number;
-        return status === 1 ? (
-          <Badge variant="default" className="text-[10px]">Hoạt động</Badge>
-        ) : (
-          <Badge variant="outline" className="text-[10px]">Khóa</Badge>
-        );
-      },
+      cell: ({ getValue }) => (
+        <UsageStatusFromValue
+          value={getValue() as number}
+          labels={{ active: "Hoạt động", locked: "Khóa" }}
+          className="text-[10px]"
+        />
+      ),
     },
     {
       id: "actions",

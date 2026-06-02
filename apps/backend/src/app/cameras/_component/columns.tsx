@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableCrudRowActions,
@@ -42,6 +42,24 @@ export function getCameraColumns({
       ),
     },
     {
+      accessorKey: "code",
+      header: "Mã HANET",
+      enableColumnFilter: false,
+      cell: ({ getValue }) => (
+        <span className="text-sm font-mono">{String(getValue() ?? "—")}</span>
+      ),
+    },
+    {
+      id: "linkedEventId",
+      header: "Sự kiện",
+      enableColumnFilter: false,
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground truncate max-w-[140px] block">
+          {row.original.linkedEventId ? row.original.linkedEventId.slice(0, 8) + "…" : "—"}
+        </span>
+      ),
+    },
+    {
       accessorKey: "ipAddress",
       header: "IP",
       enableColumnFilter: false,
@@ -68,19 +86,16 @@ export function getCameraColumns({
           { value: "1", label: "Hoạt động" },
           { value: "0", label: "Khóa" },
         ],
+        exportValue: (row) =>
+          Number(row.status) === 1 ? "Hoạt động" : "Khóa",
       },
-      cell: ({ getValue }) => {
-        const s = getValue() as number;
-        return s === 1 ? (
-          <Badge variant="default" className="text-[10px]">
-            Hoạt động
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="text-[10px]">
-            Khóa
-          </Badge>
-        );
-      },
+      cell: ({ getValue }) => (
+        <UsageStatusFromValue
+          value={getValue() as number}
+          labels={{ active: "Hoạt động", locked: "Khóa" }}
+          className="text-[10px]"
+        />
+      ),
     },
     {
       id: "actions",

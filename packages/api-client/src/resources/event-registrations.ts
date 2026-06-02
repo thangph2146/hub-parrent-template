@@ -26,6 +26,20 @@ export class EventRegistrationsApi {
     return putData<T>(this.http, `/admin/event-registrations/${id}`, body);
   }
 
+  async setAttendance<T = unknown>(
+    id: string,
+    body: {
+      action:
+        | "checkin"
+        | "checkout"
+        | "reset-checkin"
+        | "reset-checkout"
+        | "reset-all";
+    },
+  ): Promise<T> {
+    return postData<T>(this.http, `/admin/event-registrations/${id}/attendance`, body);
+  }
+
   async remove(id: string): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/event-registrations/${id}`);
   }

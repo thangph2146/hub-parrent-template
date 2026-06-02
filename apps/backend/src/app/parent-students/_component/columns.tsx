@@ -1,7 +1,10 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import {
+  UsageStatusBadge,
+  type UsageStatusTone,
+} from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { CheckCircle2, Clock, User, XCircle } from "lucide-react";
 import {
@@ -10,7 +13,6 @@ import {
   AdminTableRowActions,
 } from "@/components/admin-table-row-actions";
 import type { ParentStudent } from "./types";
-import { PARENT_STUDENT_STATUS_COLORS } from "./types";
 
 const actionButtonClass = "h-8 gap-1.5";
 
@@ -101,30 +103,21 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       },
       cell: ({ getValue }) => {
         const s = getValue() as ParentStudent["status"];
-        const STATUS_CONFIG: Record<"pending" | "approved" | "rejected", { label: string; icon: typeof Clock; className: string }> = {
-          pending: {
-            label: "Chờ duyệt",
-            icon: Clock,
-            className: PARENT_STUDENT_STATUS_COLORS.pending,
-          },
-          approved: {
-            label: "Đã duyệt",
-            icon: CheckCircle2,
-            className: PARENT_STUDENT_STATUS_COLORS.approved,
-          },
-          rejected: {
-            label: "Từ chối",
-            icon: XCircle,
-            className: PARENT_STUDENT_STATUS_COLORS.rejected,
-          },
+        const STATUS_CONFIG: Record<
+          "pending" | "approved" | "rejected",
+          { label: string; icon: typeof Clock; tone: UsageStatusTone }
+        > = {
+          pending: { label: "Chờ duyệt", icon: Clock, tone: "warning" },
+          approved: { label: "Đã duyệt", icon: CheckCircle2, tone: "success" },
+          rejected: { label: "Từ chối", icon: XCircle, tone: "danger" },
         };
         const cfg = STATUS_CONFIG[s];
         const StatusIcon = cfg.icon;
         return (
-          <Badge className={cfg.className} variant="secondary">
-            <StatusIcon className="mr-1 size-3" />
+          <UsageStatusBadge tone={cfg.tone} className="gap-1 text-[10px]">
+            <StatusIcon className="size-3 shrink-0" aria-hidden />
             {cfg.label}
-          </Badge>
+          </UsageStatusBadge>
         );
       },
     },

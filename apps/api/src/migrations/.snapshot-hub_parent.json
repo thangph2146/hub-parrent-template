@@ -823,10 +823,35 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
+        },
+        "linkedEventId": {
+          "name": "linkedEventId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
         }
       },
       "name": "cameras",
       "indexes": [
+        {
+          "columnNames": [
+            "linkedEventId"
+          ],
+          "keyName": "cameras_linkedEventId_foreign",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        },
         {
           "columnNames": [
             "id"
@@ -838,7 +863,21 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {},
+      "foreignKeys": {
+        "cameras_linkedEventId_foreign": {
+          "columnNames": [
+            "linkedEventId"
+          ],
+          "constraintName": "cameras_linkedEventId_foreign",
+          "localTableName": "cameras",
+          "referencedTableName": "events",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "set null"
+        }
+      },
       "nativeEnums": {},
       "comment": ""
     },
@@ -2613,10 +2652,92 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
+        },
+        "checkinCameraId": {
+          "name": "checkinCameraId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "checkoutCameraId": {
+          "name": "checkoutCameraId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "checkoutStart": {
+          "name": "checkoutStart",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 0,
+          "precision": null,
+          "scale": null,
+          "default": "NULL",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "checkoutEnd": {
+          "name": "checkoutEnd",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 0,
+          "precision": null,
+          "scale": null,
+          "default": "NULL",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
         }
       },
       "name": "events",
       "indexes": [
+        {
+          "columnNames": [
+            "checkinCameraId"
+          ],
+          "keyName": "events_checkinCameraId_foreign",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        },
+        {
+          "columnNames": [
+            "checkoutCameraId"
+          ],
+          "keyName": "events_checkoutCameraId_foreign",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        },
         {
           "columnNames": [
             "createdById"
@@ -2669,6 +2790,32 @@
         }
       ],
       "foreignKeys": {
+        "events_checkinCameraId_foreign": {
+          "columnNames": [
+            "checkinCameraId"
+          ],
+          "constraintName": "events_checkinCameraId_foreign",
+          "localTableName": "events",
+          "referencedTableName": "cameras",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "set null"
+        },
+        "events_checkoutCameraId_foreign": {
+          "columnNames": [
+            "checkoutCameraId"
+          ],
+          "constraintName": "events_checkoutCameraId_foreign",
+          "localTableName": "events",
+          "referencedTableName": "cameras",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "updateRule": "cascade",
+          "deleteRule": "set null"
+        },
         "events_createdById_foreign": {
           "columnNames": [
             "createdById"

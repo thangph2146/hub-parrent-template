@@ -13,6 +13,10 @@ import {
   Logger,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import {
+  EventRegistrationAttendanceService,
+  type ManualAttendanceAction,
+} from './event-registration-attendance.service';
 import { EventRegistrationsService } from './event-registrations.service';
 import {
   createSuccessResponse,
@@ -27,6 +31,7 @@ export class EventRegistrationsController {
 
   constructor(
     private readonly eventRegistrationsService: EventRegistrationsService,
+    private readonly attendanceService: EventRegistrationAttendanceService,
   ) {}
 
   private getUserId(
@@ -150,6 +155,40 @@ export class EventRegistrationsController {
     const { statusCode, body: okBody } = createSuccessResponse(created, {
       status: 201,
     });
+    return res.status(statusCode).json(okBody);
+  }
+
+  @Post(':id/attendance')
+  @ApiOperation({
+    summary:
+      'Cập nhật trạng thái check-in/out thủ công (khi socket lỗi hoặc điều chỉnh)',
+  })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async setAttendance(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+    @Body() body: { action?: ManualAttendanceAction },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) return this.unauthorized(res);
+    const action = body?.action;
+    const allowed: ManualAttendanceAction[] = [
+      'checkin',
+      'checkout',
+      'reset-checkin',
+      'reset-checkout',
+      'reset-all',
+    ];
+    if (!action || !allowed.includes(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'action phải là checkin | checkout | reset-checkin | reset-checkout | reset-all',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const updated = await this.attendanceService.applyManual(id, action);
+    const { statusCode, body: okBody } = createSuccessResponse(updated);
     return res.status(statusCode).json(okBody);
   }
 

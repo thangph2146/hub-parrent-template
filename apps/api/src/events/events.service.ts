@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
+import { Camera } from '../entities/camera.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { normalizePosterField } from '../common/poster-normalize';
 
@@ -15,6 +16,8 @@ export interface EventRowDto {
   endDate: string | null;
   checkinStart: string | null;
   checkinEnd: string | null;
+  checkoutStart: string | null;
+  checkoutEnd: string | null;
   registrationStart: string | null;
   registrationEnd: string | null;
   organizer: string | null;
@@ -38,6 +41,12 @@ export interface EventRowDto {
   deletedAt: string | null;
   isFeatured: boolean;
   featuredOrder: number;
+  checkinCameraId: string | null;
+  checkoutCameraId: string | null;
+  checkinCameraName: string | null;
+  checkoutCameraName: string | null;
+  checkinCameraCode: string | null;
+  checkoutCameraCode: string | null;
 }
 
 export interface ListEventsParams {
@@ -94,6 +103,8 @@ function mapRow(r: Event): EventRowDto {
     endDate: toIso(r.endDate),
     checkinStart: toIso(r.checkinStart),
     checkinEnd: toIso(r.checkinEnd),
+    checkoutStart: toIso(r.checkoutStart),
+    checkoutEnd: toIso(r.checkoutEnd),
     registrationStart: toIso(r.registrationStart),
     registrationEnd: toIso(r.registrationEnd),
     organizer: r.organizer ?? null,
@@ -117,8 +128,16 @@ function mapRow(r: Event): EventRowDto {
     deletedAt: toIso(r.deletedAt),
     isFeatured: r.isFeatured ?? false,
     featuredOrder: r.featuredOrder ?? 0,
+    checkinCameraId: r.checkinCamera?.id ?? null,
+    checkoutCameraId: r.checkoutCamera?.id ?? null,
+    checkinCameraName: r.checkinCamera?.name ?? null,
+    checkoutCameraName: r.checkoutCamera?.name ?? null,
+    checkinCameraCode: r.checkinCamera?.code ?? null,
+    checkoutCameraCode: r.checkoutCamera?.code ?? null,
   };
 }
+
+const EVENT_CAMERA_POPULATE = ['checkinCamera', 'checkoutCamera'] as const;
 
 @Injectable()
 export class EventsService {
@@ -179,9 +198,68 @@ export class EventsService {
   }
 
   async getById(id: string): Promise<EventRowDto | null> {
-    const r = await this.em.findOne(Event, { id });
+    const r = await this.em.findOne(
+      Event,
+      { id },
+      { populate: [...EVENT_CAMERA_POPULATE] },
+    );
     if (!r) return null;
     return mapRow(r);
+  }
+
+  private applyEventCameras(event: Event, data: Record<string, unknown>): void {
+    if (data.checkinCameraId !== undefined) {
+      const raw = data.checkinCameraId;
+      const id =
+        raw === null || raw === ''
+          ? ''
+          : String(raw).trim();
+      event.checkinCamera = id
+        ? this.em.getReference(Camera, id)
+        : null;
+    }
+    if (data.checkoutCameraId !== undefined) {
+      const raw = data.checkoutCameraId;
+      const id =
+        raw === null || raw === ''
+          ? ''
+          : String(raw).trim();
+      event.checkoutCamera = id
+        ? this.em.getReference(Camera, id)
+        : null;
+    }
+  }
+
+  private async syncCamerasForEvent(event: Event): Promise<void> {
+    const eventId = event.id;
+    const selected = new Set(
+      [event.checkinCamera?.id, event.checkoutCamera?.id].filter(
+        (id): id is string => Boolean(id),
+      ),
+    );
+
+    for (const cameraId of selected) {
+      const camera = await this.em.findOne(Camera, {
+        id: cameraId,
+        deletedAt: null,
+      });
+      if (camera) {
+        camera.linkedEvent = this.em.getReference(Event, eventId);
+      }
+    }
+
+    const previouslyLinked = await this.em.find(Camera, {
+      linkedEvent: eventId,
+      deletedAt: null,
+    } as FilterQuery<Camera>);
+
+    for (const camera of previouslyLinked) {
+      if (!selected.has(camera.id)) {
+        camera.linkedEvent = null;
+      }
+    }
+
+    await this.em.flush();
   }
 
   async create(data: Record<string, unknown>): Promise<EventRowDto> {
@@ -199,6 +277,8 @@ export class EventsService {
       endDate: data.endDate ?? null,
       checkinStart: data.checkinStart ?? null,
       checkinEnd: data.checkinEnd ?? null,
+      checkoutStart: data.checkoutStart ?? null,
+      checkoutEnd: data.checkoutEnd ?? null,
       registrationStart: data.registrationStart ?? null,
       registrationEnd: data.registrationEnd ?? null,
       organizer: data.organizer ?? null,
@@ -222,7 +302,10 @@ export class EventsService {
           ? data.featuredOrder
           : Number(data.featuredOrder) || 0,
     });
+    this.applyEventCameras(created, data);
     await this.em.persistAndFlush(created);
+    await this.syncCamerasForEvent(created);
+    await this.em.populate(created, [...EVENT_CAMERA_POPULATE]);
     return mapRow(created);
   }
 
@@ -242,6 +325,8 @@ export class EventsService {
       'endDate',
       'checkinStart',
       'checkinEnd',
+      'checkoutStart',
+      'checkoutEnd',
       'registrationStart',
       'registrationEnd',
       'organizer',
@@ -281,7 +366,10 @@ export class EventsService {
       }
       (existing as unknown as Record<string, unknown>)[f] = data[f];
     }
+    this.applyEventCameras(existing, data);
     await this.em.persistAndFlush(existing);
+    await this.syncCamerasForEvent(existing);
+    await this.em.populate(existing, [...EVENT_CAMERA_POPULATE]);
     return mapRow(existing);
   }
 

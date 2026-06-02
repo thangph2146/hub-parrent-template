@@ -20,8 +20,10 @@ import {
   conversationRoom,
   sessionRoom,
   roleRoom,
+  eventRoom,
   SOCKET_PATH,
   MAX_HTTP_BUFFER_SIZE,
+  type EventAttendanceSocketPayload,
 } from './socket.types';
 import { appConfig } from '../config/app.config';
 import {
@@ -111,6 +113,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): void {
     if (!this.server) return;
     this.server.to(roleRoom('ADMIN')).emit(event, payload);
+  }
+
+  emitEventAttendance(payload: EventAttendanceSocketPayload): void {
+    if (!this.server || !payload.eventId) return;
+    this.server.to(eventRoom(payload.eventId)).emit('event:attendance', payload);
+    this.server.to(roleRoom('ADMIN')).emit('event:attendance', payload);
   }
 
   emitMessageNew(
@@ -242,6 +250,36 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       void client.leave(room);
       this.logger.debug(`Socket ${client.id} left ${room}`);
     }
+  }
+
+  @SubscribeMessage('event:join')
+  handleEventJoin(client: Socket, payload: { eventId?: string }): void {
+    const eventId = payload?.eventId?.trim();
+    if (!eventId) return;
+    const auth = client.handshake.auth as SocketData;
+    const role = auth?.role?.toLowerCase() ?? '';
+    if (
+      role !== 'admin' &&
+      role !== 'super_admin' &&
+      role !== 'manager'
+    ) {
+      this.logger.warn(
+        `Socket ${client.id} denied event:join for ${eventId} (role=${auth?.role ?? '-'})`,
+      );
+      return;
+    }
+    const room = eventRoom(eventId);
+    void client.join(room);
+    this.logger.debug(`Socket ${client.id} joined ${room}`);
+  }
+
+  @SubscribeMessage('event:leave')
+  handleEventLeave(client: Socket, payload: { eventId?: string }): void {
+    const eventId = payload?.eventId?.trim();
+    if (!eventId) return;
+    const room = eventRoom(eventId);
+    void client.leave(room);
+    this.logger.debug(`Socket ${client.id} left ${room}`);
   }
 
   @SubscribeMessage('message:send')

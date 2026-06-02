@@ -1,5 +1,6 @@
 import { Entity, Enum, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
+import { Camera } from './camera.entity';
 import { EventCheckin } from './event-checkin.entity';
 import { EventRegistration } from './event-registration.entity';
 import { EventSpeaker } from './event-speaker.entity';
@@ -43,6 +44,12 @@ export class Event extends BaseEntity {
 
   @Property({ nullable: true })
   checkinEnd?: Date | null;
+
+  @Property({ nullable: true })
+  checkoutStart?: Date | null;
+
+  @Property({ nullable: true })
+  checkoutEnd?: Date | null;
 
   @Property({ nullable: true })
   registrationStart?: Date | null;
@@ -90,6 +97,22 @@ export class Event extends BaseEntity {
 
   @Property({ default: false })
   requireFaceId: boolean = false;
+
+  /** Camera HANET tại cổng check-in (`deviceID` = `cameras.code`). */
+  @ManyToOne(() => Camera, {
+    nullable: true,
+    fieldName: 'checkinCameraId',
+    deleteRule: 'set null',
+  })
+  checkinCamera?: Camera | null;
+
+  /** Camera HANET tại cổng check-out. */
+  @ManyToOne(() => Camera, {
+    nullable: true,
+    fieldName: 'checkoutCameraId',
+    deleteRule: 'set null',
+  })
+  checkoutCamera?: Camera | null;
 
   @Property({ default: 0 })
   maxParticipants: number = 0;

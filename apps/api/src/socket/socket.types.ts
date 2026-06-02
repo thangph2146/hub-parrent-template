@@ -69,3 +69,24 @@ export function sessionRoom(sessionId: string): string {
 export function roleRoom(role: string): string {
   return `role:${role}`;
 }
+
+export function eventRoom(eventId: string): string {
+  return `event:${eventId}`;
+}
+
+export type EventAttendanceSocketPayload = {
+  kind: 'checkin' | 'checkout';
+  eventId: string;
+  at: string;
+  email: string;
+  fullName: string;
+  source: 'hanet' | 'manual';
+  deviceId?: string | null;
+  deviceName?: string | null;
+  registrationId?: string | null;
+  checkinId?: string | null;
+  duplicate?: boolean;
+  /** Trạng thái sau cập nhật — client patch cache chính xác kể cả reset thủ công. */
+  hasCheckin?: boolean;
+  hasCheckout?: boolean;
+};

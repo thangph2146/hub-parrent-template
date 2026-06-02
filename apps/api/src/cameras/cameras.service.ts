@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Camera } from '../entities/camera.entity';
+import { Event } from '../entities/event.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface CameraRowDto {
   id: string;
   name: string;
   code: string | null;
+  linkedEventId: string | null;
   ipAddress: string | null;
   port: number | null;
   username: string | null;
@@ -28,6 +30,7 @@ function mapRow(r: Camera): CameraRowDto {
     id: r.id,
     name: r.name,
     code: r.code ?? null,
+    linkedEventId: r.linkedEvent?.id ?? null,
     ipAddress: r.ipAddress ?? null,
     port: r.port ?? null,
     username: r.username ?? null,
@@ -92,6 +95,7 @@ export class CamerasService {
     }
     const [rows, total] = await Promise.all([
       this.em.find(Camera, where as FilterQuery<Camera>, {
+        populate: ['linkedEvent'],
         orderBy: { updatedAt: 'DESC' },
         offset: skip,
         limit,
@@ -105,8 +109,21 @@ export class CamerasService {
   }
 
   async getById(id: string): Promise<CameraRowDto | null> {
-    const r = await this.em.findOne(Camera, { id });
+    const r = await this.em.findOne(Camera, { id }, { populate: ['linkedEvent'] });
     return r ? mapRow(r) : null;
+  }
+
+  private applyLinkedEvent(
+    target: Camera,
+    linkedEventId: unknown,
+  ): void {
+    if (linkedEventId === undefined) return;
+    if (linkedEventId === null || linkedEventId === '') {
+      target.linkedEvent = null;
+      return;
+    }
+    const id = String(linkedEventId).trim();
+    target.linkedEvent = id ? this.em.getReference(Event, id) : null;
   }
 
   async create(data: Record<string, unknown>): Promise<CameraRowDto> {
@@ -124,6 +141,7 @@ export class CamerasService {
       if (data[f] !== undefined)
         (created as unknown as Record<string, unknown>)[f] = data[f];
     }
+    this.applyLinkedEvent(created, data.linkedEventId);
     await this.em.persistAndFlush(created);
     return mapRow(created);
   }
@@ -147,6 +165,7 @@ export class CamerasService {
       if (data[f] !== undefined)
         (existing as unknown as Record<string, unknown>)[f] = data[f];
     }
+    this.applyLinkedEvent(existing, data.linkedEventId);
     await this.em.persistAndFlush(existing);
     return mapRow(existing);
   }
