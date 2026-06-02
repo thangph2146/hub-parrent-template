@@ -10,23 +10,18 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Badge } from "@ui/components/badge"
-import { Button } from "@ui/components/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useRouter } from "next/navigation"
 import { AlertCircle, GraduationCap, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
-import { PageSection } from "@ui/components/layout"
-import { TypographyH1 } from "@ui/components/typography"
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
-import { cn } from "@ui/lib/utils"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import {
   MajorsTable,
@@ -187,33 +182,26 @@ function MajorsPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <GraduationCap
-              className={ADMIN_PAGE_TITLE_ICON_CLASS}
-              aria-hidden
-            />
-            Ngành học
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý các ngành học trong hệ thống
-          </p>
-          {user && !canWrite && (
-            <p className="mt-2 text-sm font-medium text-amber-800 dark:text-amber-200/90">
+      <AdminListPageHeader
+        icon={GraduationCap}
+        title="Ngành học"
+        subtitle="Quản lý các ngành học trong hệ thống"
+        readOnlyHint={
+          user && !canWrite ? (
+            <AdminReadOnlyHint>
               Chỉ xem: cần quyền{" "}
               <span className="font-mono">majors:manage</span> để thêm/sửa/xoá.
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {canWrite && (
-            <Button type="button" onClick={() => router.push("/majors/new")}>
+            </AdminReadOnlyHint>
+          ) : undefined
+        }
+        actions={
+          canWrite ? (
+            <AdminPageHeaderPrimaryButton type="button" onClick={() => router.push("/majors/new")}>
               <Plus className="size-5" aria-hidden /> Thêm ngành học
-            </Button>
-          )}
-        </div>
-      </div>
+            </AdminPageHeaderPrimaryButton>
+          ) : undefined
+        }
+      />
 
       <Tabs
         value={mainTab}
@@ -222,10 +210,10 @@ function MajorsPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
+        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger
             value="list"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
           >
             Danh sách
             <Badge
@@ -238,7 +226,7 @@ function MajorsPageInner() {
           {canWrite && (
             <TabsTrigger
               value="trash"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
               <Badge

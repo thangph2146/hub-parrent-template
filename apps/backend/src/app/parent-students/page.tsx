@@ -8,18 +8,12 @@ import type {
 import { toast } from "sonner";
 import { CheckCircle2, Trash2, UserCheck, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PageSection } from "@ui/components/layout";
-import { TypographyH1 } from "@ui/components/typography";
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
 } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminConfirmActionDialog, AdminPageSection } from "@ui/components/admin";
-import { AdminPageGuard } from "@ui/components/admin";
+import { AdminConfirmActionDialog, AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 import { api } from "@/lib/api";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -144,17 +138,11 @@ function AdminParentStudentsPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <UserCheck className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Duyệt liên kết học sinh
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Xem xét và duyệt yêu cầu liên kết học sinh từ phụ huynh.
-          </p>
-        </div>
-      </div>
+      <AdminListPageHeader
+        title="Duyệt liên kết học sinh"
+        subtitle="Xem xét và duyệt yêu cầu liên kết học sinh từ phụ huynh."
+        icon={UserCheck}
+      />
 
       <ParentStudentTable
         data={data?.data ?? []}

@@ -6,18 +6,10 @@ import { useStaffForm, useStaffMutations } from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
 import { useRbacCatalog, useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import { PageSection } from "@ui/components/layout"
-import {
-  ADMIN_PAGE_TITLE_FORM_CLASS,
-  ADMIN_PAGE_TITLE_ICON_SM_CLASS,
-} from "@ui/lib/layout-shell"
-import { TypographyH1 } from "@ui/components/typography"
-import { ArrowLeft, Pencil } from "lucide-react"
+import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { Card, CardContent } from "@ui/components/card"
 import { api } from "@/lib/api"
-import { Button } from "@ui/components/button"
 
 function EditStaffPageInner() {
   const params = useParams()
@@ -71,19 +63,11 @@ function EditStaffPageInner() {
   if (!session || !canManageUsers) {
     return (
       <AdminPageSection>
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/staff/${userId}`)}
-          >
-            <ArrowLeft className="size-4" aria-hidden />
-            Quay lại
-          </Button>
-        </div>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_FORM_CLASS}>
-          <Pencil className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
-          Sửa nhân sự
-        </TypographyH1>
+        <AdminFormPageHeader
+          title="Sửa nhân sự"
+          onBack={() => router.push(`/staff/${userId}`)}
+          formId="staff-form"
+        />
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">Không có quyền truy cập</p>
@@ -96,19 +80,11 @@ function EditStaffPageInner() {
   if (userQuery.isLoading || !user) {
     return (
       <AdminPageSection>
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/staff/${userId}`)}
-          >
-            <ArrowLeft className="size-4" aria-hidden />
-            Quay lại
-          </Button>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_FORM_CLASS}>
-            <Pencil className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
-            Sửa nhân sự
-          </TypographyH1>
-        </div>
+        <AdminFormPageHeader
+          title="Sửa nhân sự"
+          onBack={() => router.push(`/staff/${userId}`)}
+          formId="staff-form"
+        />
         <div className="py-12 text-center">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>

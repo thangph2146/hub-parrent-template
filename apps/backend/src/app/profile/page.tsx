@@ -31,10 +31,8 @@ import {
 } from "@/hooks/queries"
 import { ApiError } from "@/lib/api"
 import { patchAdminSessionProfile } from "@/lib/auth-session"
-import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import { TypographyH1 } from "@ui/components/typography"
-import { ADMIN_PAGE_TITLE_PROFILE_CLASS } from "@ui/lib/layout-shell"
+import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+
 
 
 function getRoleCode(role: { code?: string; name?: string }) {
@@ -195,14 +193,10 @@ function AdminProfilePageInner() {
 
   return (
     <AdminPageSection>
-      <div>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_PROFILE_CLASS}>
-          Hồ sơ tài khoản
-        </TypographyH1>
-        <p className="mt-1 text-sm text-muted-foreground sm:text-base">
-          Cập nhật tên, liên hệ, địa chỉ làm việc và mật khẩu đăng nhập admin.
-        </p>
-      </div>
+      <AdminListPageHeader
+        title="Hồ sơ tài khoản"
+        subtitle="Cập nhật tên, liên hệ, địa chỉ làm việc và mật khẩu đăng nhập admin."
+      />
 
       {isError && (
         <p className="text-sm text-destructive">

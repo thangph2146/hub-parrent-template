@@ -4,15 +4,12 @@ import { useMemo, useState, useCallback } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { Plus, BookOpen } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@ui/components/button";
-import { PageSection } from "@ui/components/layout";
-import { TypographyH1 } from "@ui/components/typography";
 import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-} from "@ui/lib/layout-shell";
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin";
+import { AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
@@ -102,25 +99,19 @@ function GuidesPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <BookOpen className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Hướng dẫn sử dụng
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý nhóm hướng dẫn sử dụng hệ thống
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {canWrite && (
-            <Button onClick={() => router.push("/guides/new")} className="gap-2">
+      <AdminListPageHeader
+        icon={BookOpen}
+        title="Hướng dẫn sử dụng"
+        subtitle="Quản lý nhóm hướng dẫn sử dụng hệ thống"
+        actions={
+          canWrite ? (
+            <AdminPageHeaderPrimaryButton onClick={() => router.push("/guides/new")}>
               <Plus className="size-4" />
               Thêm nhóm
-            </Button>
-          )}
-        </div>
-      </div>
+            </AdminPageHeaderPrimaryButton>
+          ) : undefined
+        }
+      />
 
       <GuidesTable
         data={sortedGroups}

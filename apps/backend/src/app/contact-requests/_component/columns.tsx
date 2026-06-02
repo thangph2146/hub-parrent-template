@@ -6,23 +6,21 @@ import {
   UsageStatusBadge,
   type UsageStatusTone,
 } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
 import type { ContactRequest } from "./types";
 import { CONTACT_REQUEST_STATUS_LABELS } from "./types";
 import { formatPhoneNumber } from "./utils";
 
 export interface ContactRequestColumnsProps {
   onView: (contact: ContactRequest) => void;
-  onEdit: (contact: ContactRequest) => void;
   onDelete: (contact: ContactRequest) => void;
   onPurge: (contact: ContactRequest) => void;
   busy: boolean;
-  canUpdate?: boolean;
   canDelete?: boolean;
 }
 
 export function getContactRequestColumns(props: ContactRequestColumnsProps): ColumnDef<ContactRequest>[] {
-  const { onView, onEdit, onDelete, onPurge, busy, canUpdate, canDelete } = props;
+  const { onView, onDelete, onPurge, busy, canDelete } = props;
 
   return [
     {
@@ -229,12 +227,6 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         return (
           <AdminTableRowActions>
             <AdminTableViewButton onClick={() => onView(contact)} />
-            {canUpdate ? (
-              <AdminTableEditButton
-                onClick={() => onEdit(contact)}
-                disabled={busy}
-              />
-            ) : null}
             {canDelete ? (
               <AdminTableSoftDeleteButton
                 onClick={() => onDelete(contact)}

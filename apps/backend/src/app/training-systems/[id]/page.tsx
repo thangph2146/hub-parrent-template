@@ -3,21 +3,15 @@
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Pencil, Calendar, Clock, Building2, Hash } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
+import { Calendar, Clock, Building2, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { useTrainingSystemDetailQuery } from "../_component";
-import { TypographyH1 } from "@ui/components/typography";
-import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-} from "@ui/lib/layout-shell";
+
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";

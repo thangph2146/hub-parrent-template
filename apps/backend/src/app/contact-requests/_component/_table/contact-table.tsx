@@ -84,11 +84,9 @@ interface ContactRequestTableProps {
   selectedRowIds: RowSelectionState;
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
   onView: (contact: ContactRequest) => void;
-  onEdit: (contact: ContactRequest) => void;
   onDelete: (contact: ContactRequest) => void;
   onPurge: (contact: ContactRequest) => void;
   busy: boolean;
-  canUpdate?: boolean;
   canDelete?: boolean;
   onBulkDelete: (ids: string[]) => void;
   onBulkPurge: (ids: string[]) => void;
@@ -111,18 +109,16 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
     selectedRowIds,
     onSelectedRowIdsChange,
     onView,
-    onEdit,
     onDelete,
     onPurge,
     busy,
-    canUpdate,
     canDelete,
     onBulkDelete,
     onBulkPurge,
     onClearFilters,
   } = props;
 
-  const columns = getContactRequestColumns({ onView, onEdit, onDelete, onPurge, busy, canUpdate, canDelete });
+  const columns = getContactRequestColumns({ onView, onDelete, onPurge, busy, canDelete });
 
   const handleXlsxExport = () => {
     const template = buildContactRequestsXlsxExport("active", {

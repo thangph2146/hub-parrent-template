@@ -4,16 +4,14 @@ import { useCallback, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Search } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
-import { TypographyH1 } from "@ui/components/typography";
-import { ADMIN_PAGE_SUBTITLE_CLASS, ADMIN_PAGE_TITLE_PRIMARY_CLASS } from "@ui/lib/layout-shell";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { seoMetaFormSchema, useSeoMetaDetailQuery } from "../../_component";
@@ -87,23 +85,15 @@ function EditSeoMetaPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="flex items-center gap-3">
-        <Button type="button" variant="outline" size="sm" className="h-10 gap-2 rounded-lg" onClick={() => router.push(`/seo-metas/${id}`)}>
-          <ArrowLeft className="size-4" />
-          Quay lại
-        </Button>
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <Search className="inline size-6 mr-2" />
-            Chỉnh sửa SEO: {detail?.page ?? ""}
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Cập nhật thông tin SEO metadata.
-          </p>
-        </div>
-      </div>
+      <AdminFormPageHeader
+        title={`Chỉnh sửa SEO: ${detail?.page ?? ""}`}
+        subtitle="Cập nhật thông tin SEO metadata."
+        onBack={() => router.push(`/seo-metas/${id}`)}
+        formId="seo-meta-edit-form"
+        isEdit
+      />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
+      <form id="seo-meta-edit-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
         <Card>
           <CardHeader>
             <CardTitle>Thông tin SEO</CardTitle>

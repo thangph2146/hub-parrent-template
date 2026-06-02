@@ -13,9 +13,6 @@ const LexicalEditor = dynamic(
   { ssr: false },
 )
 import {
-  Loader2,
-  ArrowLeft,
-  Pencil,
   Calendar,
   Clock,
   MapPin,
@@ -30,9 +27,8 @@ import {
   Camera,
 } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Divider, PageSection } from "@ui/components/layout"
+import { Divider } from "@ui/components/layout"
 import { Badge } from "@ui/components/badge"
-import { Button } from "@ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminDataTable } from "@ui/components/data-table"
@@ -49,11 +45,7 @@ import { EventRegistrationsLiveTable } from "../_component/event-registrations-l
 import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
 import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
 import { getPosterUrlFromValue } from "../_component/utils"
-import { TypographyH1 } from "@ui/components/typography"
-import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-} from "@ui/lib/layout-shell"
+
 import {
   RegistrationAvatarCell,
   resolveRegistrationAvatarUrl,

@@ -3,12 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import {
-  ADMIN_PAGE_TITLE_COMPACT_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-} from "@ui/lib/layout-shell"
-import { TypographyH1 } from "@ui/components/typography"
+import { AdminDetailPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
   Phone,
   ShieldHalf,
@@ -16,16 +11,13 @@ import {
   Lock,
   CalendarClock,
   Trash2,
-  Pencil,
   FileText,
   ArrowUpRight,
-  ArrowLeft,
 } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
-import { PageSection } from "@ui/components/layout"
 import {
   canUserAccess,
   formatDateTime,
@@ -118,16 +110,11 @@ function StaffDetailPageInner() {
   if (!session || !canManageUsers) {
     return (
       <AdminPageSection>
-        <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => router.push(`/staff`)}>
-            <ArrowLeft className="size-4" aria-hidden />
-            Quay lại
-          </Button>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_COMPACT_CLASS}>
-            <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Chi tiết nhân sự
-          </TypographyH1>
-        </div>
+        <AdminDetailPageHeader
+          title="Chi tiết nhân sự"
+          variant="module"
+          onBack={() => router.push("/staff")}
+        />
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">Không có quyền truy cập</p>
@@ -140,16 +127,11 @@ function StaffDetailPageInner() {
   if (userQuery.isLoading || !user) {
     return (
       <AdminPageSection>
-        <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => router.push(`/staff`)}>
-            <ArrowLeft className="size-4" aria-hidden />
-            Quay lại
-          </Button>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_COMPACT_CLASS}>
-            <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Chi tiết nhân sự
-          </TypographyH1>
-        </div>
+        <AdminDetailPageHeader
+          title="Chi tiết nhân sự"
+          variant="module"
+          onBack={() => router.push("/staff")}
+        />
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">Đang tải...</p>
@@ -161,26 +143,12 @@ function StaffDetailPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col items-start gap-2">
-          <Button variant="outline" onClick={() => router.push(`/staff`)}>
-            <ArrowLeft className="size-4" aria-hidden />
-            Quay lại
-          </Button>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_COMPACT_CLASS}>
-            <FileText className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Chi tiết nhân sự
-          </TypographyH1>
-        </div>
-        <Button
-          type="button"
-          variant="default"
-          onClick={() => router.push(`/staff/${userId}/edit`)}
-        >
-          <Pencil className="size-4" aria-hidden />
-          Chỉnh sửa
-        </Button>
-      </div>
+      <AdminDetailPageHeader
+        title="Chi tiết nhân sự"
+        variant="module"
+        onBack={() => router.push("/staff")}
+        onEdit={() => router.push(`/staff/${userId}/edit`)}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-1">

@@ -5,11 +5,7 @@ import { useStaffForm, useStaffMutations } from "../_component";
 import { StaffFormShell } from "../_component/_form";
 import { useRbacCatalog } from "@/hooks/queries";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
-import { PageSection } from "@ui/components/layout";
-import { ADMIN_PAGE_TITLE_FORM_CLASS, ADMIN_PAGE_TITLE_ICON_SM_CLASS } from "@ui/lib/layout-shell";
-import { TypographyH1 } from "@ui/components/typography";
-import { UserPlus } from "lucide-react";
+import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { Card, CardContent } from "@ui/components/card";
 import { api } from "@/lib/api";
@@ -31,10 +27,11 @@ function NewStaffPageInner() {
   if (!session || !canManageUsers) {
     return (
       <AdminPageSection>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_FORM_CLASS}>
-          <UserPlus className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
-          Thêm nhân sự mới
-        </TypographyH1>
+        <AdminFormPageHeader
+          title="Thêm nhân sự mới"
+          onBack={() => router.push("/staff")}
+          formId="staff-form"
+        />
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">Không có quyền truy cập</p>

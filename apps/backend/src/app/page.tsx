@@ -15,15 +15,8 @@ import {
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
-import {  } from "@ui/components/layout"
-import { AdminPageSection } from "@ui/components/admin"
+import { AdminListPageHeader, AdminPageSection } from "@ui/components/admin"
 import { Skeleton } from "@ui/components/skeleton"
-import { TypographyH1 } from "@ui/components/typography"
-import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-} from "@ui/lib/layout-shell"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { useAuth } from "@/providers/auth-provider"
 import { api } from "@/lib/api"
@@ -219,21 +212,15 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminPageSection>
-      {/* Header */}
-      <div>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-          <LayoutDashboard
-            className={ADMIN_PAGE_TITLE_ICON_CLASS}
-            aria-hidden
-          />
-          Tổng quan hệ thống
-        </TypographyH1>
-        <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
+      <AdminListPageHeader
+        title="Tổng quan hệ thống"
+        subtitle={<>
           Xin chào,{" "}
           <span className="font-semibold text-foreground">{displayName}</span>.
           Đây là bảng điều khiển quản trị HUB Parent.
-        </p>
-      </div>
+        </>}
+        icon={LayoutDashboard}
+      />
 
       {/* Stat cards */}
       <div>

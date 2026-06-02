@@ -56,6 +56,8 @@ export interface CreateContactRequestInput {
 export interface UpdateContactRequestInput {
   status?: ContactRequest["status"]
   notes?: string
+  isRead?: boolean
+  priority?: "HIGH" | "MEDIUM" | "LOW"
 }
 
 function toApiStatus(status?: string): string | undefined {

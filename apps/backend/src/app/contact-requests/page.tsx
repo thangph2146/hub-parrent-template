@@ -7,11 +7,9 @@ import type {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Headset } from "lucide-react"
-import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { useContactRequests } from "@/hooks/queries"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { useAuth } from "@/providers/auth-provider"
@@ -36,16 +34,12 @@ import {
   useBulkPurgeContactRequest,
 } from "./_component/_query/use-contact-queries"
 import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
-import { TypographyH1 } from "@ui/components/typography"
-import { cn } from "@ui/lib/utils"
 
 function ContactRequestsPageInner() {
   const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_UPDATE) : false;
   const canDelete = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_DELETE) : false;
   const canRestore = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_RESTORE) : false;
   const router = useRouter()
@@ -152,13 +146,6 @@ function ContactRequestsPageInner() {
     [router]
   )
 
-  const handleEdit = useCallback(
-    (contact: ContactRequest) => {
-      router.push(`/contact-requests/${contact.id}/edit`)
-    },
-    [router]
-  )
-
   const handleDelete = useCallback((contact: ContactRequest) => {
     setDeleteTarget(contact)
   }, [])
@@ -227,35 +214,27 @@ function ContactRequestsPageInner() {
 
   return (
     <AdminPageSection>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <Headset className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-            Yêu cầu liên hệ
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý các yêu cầu liên hệ từ người dùng
-          </p>
-        </div>
-      </div>
+      <AdminListPageHeader
+        icon={Headset}
+        title="Yêu cầu liên hệ"
+        subtitle="Quản lý các yêu cầu liên hệ từ người dùng"
+      />
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as "list" | "trash")}>
-        <div className="mb-4 flex items-center justify-between">
-          <TabsList>
-            <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Đang hoạt động
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
-                {activeTotal}
-              </Badge>
-            </TabsTrigger>
-            <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Thùng rác
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
-                {trashTotal}
-              </Badge>
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+            Đang hoạt động
+            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              {activeTotal}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+            Thùng rác
+            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              {trashTotal}
+            </Badge>
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent value="list" className="mt-0">
           <ContactRequestTable
@@ -273,11 +252,9 @@ function ContactRequestsPageInner() {
             selectedRowIds={listSelection}
             onSelectedRowIdsChange={setListSelection}
             onView={handleView}
-            onEdit={handleEdit}
             onDelete={handleDelete}
             onPurge={handlePurge}
             busy={busy}
-            canUpdate={canUpdate}
             canDelete={canDelete}
             onBulkDelete={handleBulkDelete}
             onBulkPurge={handleBulkPurge}

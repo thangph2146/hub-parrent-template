@@ -32,14 +32,13 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { Textarea } from "@ui/components/textarea"
 import {
   TypographyH1,
-  TypographyPLargeMuted,
   TypographyPSmallMuted,
 } from "@ui/components/typography"
 import {
@@ -64,8 +63,6 @@ import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_DIALOG_CONTENT_LG_CLASS,
   ADMIN_PAGE_FORM_COLUMN_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
   ADMIN_PAGE_TITLE_ICON_SM_CLASS,
   ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
@@ -622,19 +619,12 @@ export default function RbacPage() {
   return (
     <AdminPageGuard roles={["super_admin"]}>
       <AdminPageSection>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-              <Shield className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
-              Phân quyền
-            </TypographyH1>
-            <TypographyPLargeMuted className={ADMIN_PAGE_SUBTITLE_CLASS}>
-              Quản lý vai trò bằng bảng dùng chung, đầy đủ luồng
-              tạo/sửa/xóa/khôi phục/Xóa vĩnh viễn.
-            </TypographyPLargeMuted>
-          </div>
-          <div className="flex gap-2">
-            {canManageRoles ? (
+        <AdminListPageHeader
+          title="Phân quyền"
+          subtitle="Quản lý vai trò bằng bảng dùng chung, đầy đủ luồng tạo/sửa/xóa/khôi phục/Xóa vĩnh viễn."
+          icon={Shield}
+          actions={
+            canManageRoles ? (
               <Button
                 type="button"
                 className="h-11 rounded-lg"
@@ -643,9 +633,9 @@ export default function RbacPage() {
                 <Plus className="size-4" />
                 Tạo role
               </Button>
-            ) : null}
-          </div>
-        </div>
+            ) : null
+          }
+        />
 
         <Tabs
           value={tab}

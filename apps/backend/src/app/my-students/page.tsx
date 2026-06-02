@@ -37,14 +37,7 @@ import {
 import { Badge } from "@ui/components/badge"
 import { Skeleton } from "@ui/components/skeleton"
 import { cn } from "@ui/lib/utils"
-import {  } from "@ui/components/layout"
-import { AdminPageSection } from "@ui/components/admin"
-import { TypographyH1 } from "@ui/components/typography"
-import {
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-} from "@ui/lib/layout-shell"
+import { AdminListPageHeader, AdminPageSection } from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { api } from "@/lib/api"
@@ -515,28 +508,21 @@ export default function MyStudentsPage() {
 
   return (
     <AdminPageSection>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <GraduationCap
-              className={ADMIN_PAGE_TITLE_ICON_CLASS}
-              aria-hidden
-            />
-            Quản lý sinh viên
-          </TypographyH1>
-          <p className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Xin chào,{" "}
-            <span className="font-semibold text-foreground">{displayName}</span>
-            . Quản lý liên kết sinh viên và theo dõi kết quả học tập.
-          </p>
-        </div>
-        {canCreate && (
+      <AdminListPageHeader
+        title="Quản lý sinh viên"
+        subtitle={<>
+          Xin chào,{" "}
+          <span className="font-semibold text-foreground">{displayName}</span>
+          . Quản lý liên kết sinh viên và theo dõi kết quả học tập.
+        </>}
+        icon={GraduationCap}
+        actions={canCreate ? (
           <Button onClick={() => setAddOpen(true)} className="shrink-0 gap-2">
             <Plus className="size-4" />
             Thêm sinh viên
           </Button>
-        )}
-      </div>
+        ) : undefined}
+      />
 
       {isLoading && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

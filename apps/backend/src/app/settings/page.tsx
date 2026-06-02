@@ -14,11 +14,8 @@ import {
 } from "@ui/components/card"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import { PageSection } from "@ui/components/layout"
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
-  TypographyH1,
-  TypographyPLargeMuted,
   TypographyPSmallMuted,
 } from "@ui/components/typography"
 import { SelectPicker, type SelectPickerOption } from "@ui/components/pickers"
@@ -31,9 +28,6 @@ import { api } from "@/lib/api"
 import { useAuth } from "@/providers/auth-provider"
 import {
   ADMIN_PAGE_FORM_COLUMN_CLASS,
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_ICON_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
 
 function normalizePagedRoles(payload: unknown): {
@@ -160,33 +154,29 @@ export default function SettingsPage() {
 
   if (!canManage) {
     return (
-      <div className={ADMIN_PAGE_FORM_COLUMN_CLASS}>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-          <Settings2 className="size-5" />
-          Cài đặt hệ thống
-        </TypographyH1>
+      <AdminPageSection>
+        <AdminListPageHeader
+          title="Cài đặt hệ thống"
+          icon={Settings2}
+        />
         <Card className="border-destructive/30 bg-destructive/5">
           <CardHeader>
             <CardTitle className="text-base">Không có quyền truy cập</CardTitle>
             <CardDescription>Cần quyền {PERMISSION_CODES.SETTINGS_MANAGE}.</CardDescription>
           </CardHeader>
         </Card>
-      </div>
+      </AdminPageSection>
     )
   }
 
   return (
     <AdminPageGuard roles={["super_admin", "admin"]}>
       <AdminPageSection>
-        <div>
-          <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-            <Settings2 className={ADMIN_PAGE_TITLE_ICON_CLASS} />
-            Cài đặt hệ thống
-          </TypographyH1>
-          <TypographyPLargeMuted className={ADMIN_PAGE_SUBTITLE_CLASS}>
-            Quản lý thông tin thương hiệu và cấu hình chung.
-          </TypographyPLargeMuted>
-        </div>
+        <AdminListPageHeader
+          title="Cài đặt hệ thống"
+          subtitle="Quản lý thông tin thương hiệu và cấu hình chung."
+          icon={Settings2}
+        />
 
         <Card className="border border-border/70 bg-card/95 shadow-sm">
           <CardHeader>

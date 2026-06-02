@@ -2,28 +2,20 @@
 
 import { useRef, useState } from "react"
 import {
-  ArrowLeft,
   Camera,
   CheckCircle2,
-  Loader2,
   Lock,
-  Save,
   ShieldHalf,
   UserCircle,
-  UserPlus,
-  X,
 } from "lucide-react"
-import { Button } from "@ui/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card"
 import { Checkbox } from "@ui/components/checkbox"
+import { Divider } from "@ui/components/layout"
 import { FieldError } from "@ui/components/field"
 import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
 import { Switch } from "@ui/components/switch"
-import { TypographyH1, TypographyH3 } from "@ui/components/typography"
-import {
-  ADMIN_PAGE_TITLE_FORM_CLASS,
-  ADMIN_PAGE_TITLE_ICON_SM_CLASS,
-} from "@ui/lib/layout-shell"
+import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar } from "@ui/components/admin"
 import { Controller } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
 import type { StaffFormValues } from "../_hooks/use-staff-form"
@@ -131,17 +123,19 @@ export function StaffFormShell(props: StaffFormShellProps) {
     />
   )
 
-  const formContent = (
-    <>
-      <div className="space-y-6 py-2">
-        {/* Account Information Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 pb-2">
-            <UserCircle className="size-4 text-primary" aria-hidden />
-            <TypographyH3 className="text-sm font-semibold text-foreground">
-              Thông tin tài khoản
-            </TypographyH3>
-          </div>
+  const mainContent = (
+    <div className="space-y-6">
+      <Card className="border border-border/70 shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <UserCircle className="size-5 text-primary" />
+            Thông tin tài khoản
+          </CardTitle>
+          <CardDescription>
+            Ảnh đại diện, email và họ tên nhân sự.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div className="flex items-start gap-4 pb-4">
             <div className="relative size-16 shrink-0">
               {avatarValue ? (
@@ -251,10 +245,20 @@ export function StaffFormShell(props: StaffFormShellProps) {
               )}
             />
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Password Section */}
-        <div className="grid gap-4 md:grid-cols-2">
+      <Card className="border border-border/70 shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Lock className="size-5 text-primary" />
+            Mật khẩu
+          </CardTitle>
+          <CardDescription>
+            {isEdit ? "Để trống nếu không muốn đổi mật khẩu" : "Mật khẩu ban đầu cho tài khoản mới."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <Controller
             name="password"
             control={form.control}
@@ -286,107 +290,90 @@ export function StaffFormShell(props: StaffFormShellProps) {
               </FormFieldCol>
             )}
           />
-
-          <div className="space-y-4">
-            <Controller
-              name="isActive"
-              control={form.control}
-              render={({ field }) => (
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-4 py-4">
-                  <div className="flex min-w-0 items-start gap-3">
-                    <div className="mt-0.5 shrink-0 rounded-lg bg-background p-1.5 shadow-sm">
-                      {field.value ? (
-                        <CheckCircle2
-                          className="size-4 text-emerald-600"
-                          aria-hidden
-                        />
-                      ) : (
-                        <Lock
-                          className="size-4 text-muted-foreground"
-                          aria-hidden
-                        />
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {isEdit ? "Tài khoản hoạt động" : "Kích hoạt"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {isEdit
-                          ? "Khoá sẽ chặn đăng nhập"
-                          : "Tắt để tạo tài khoản ở trạng thái khoá"}
-                      </p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </div>
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Status & Roles Section */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Chọn vai trò{" "}
-                {isEdit && (
-                  <span className="text-muted-foreground">
-                    (thay thế toàn bộ khi lưu)
-                  </span>
-                )}
-              </p>
-              {roleChecklist}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-end gap-2 border-t border-border pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2 rounded-lg"
-          onClick={onCancel}
-        >
-          <X className="size-4" aria-hidden />
-          Huỷ
-        </Button>
-        <Button
-          type="button"
-          onClick={() => void onSubmit()}
-          disabled={submitting}
-          className="gap-2 rounded-lg font-bold"
-        >
-          {submitting ? (
-            <Loader2 className="size-4 animate-spin" aria-hidden />
-          ) : (
-            <Save className="size-4" aria-hidden />
-          )}
-          {isEdit ? "Lưu thay đổi" : "Tạo tài khoản"}
-        </Button>
-      </div>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   )
 
   return (
     <>
-      <div className="flex flex-col items-start gap-2">
-        <Button variant="outline" onClick={onCancel}>
-          <ArrowLeft className="size-4" aria-hidden />
-          Quay lại
-        </Button>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_FORM_CLASS}>
-          <UserPlus className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
-          {isEdit ? "Sửa nhân sự" : "Thêm nhân sự mới"}
-        </TypographyH1>
-      </div>
-      <div className="rounded-lg border border-border bg-card p-6">
-        {formContent}
-      </div>
+      <AdminFormPageHeader
+        title={isEdit ? "Sửa nhân sự" : "Thêm nhân sự mới"}
+        subtitle="Quản lý tài khoản nhân sự trong hệ thống."
+        onBack={onCancel}
+        formId="staff-form"
+        isEdit={isEdit}
+        submitting={submitting}
+        saveLabel={isEdit ? "Lưu thay đổi" : "Tạo tài khoản"}
+      />
+
+      <AdminFormLayout
+        id="staff-form"
+        onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
+      >
+        <AdminFormMain>
+          {mainContent}
+        </AdminFormMain>
+
+        <AdminFormSidebar>
+          <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
+            <Divider label="Trạng thái tài khoản" />
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                {isEdit ? (
+                  <CheckCircle2 className="size-5 text-primary" />
+                ) : (
+                  <Lock className="size-5 text-primary" />
+                )}
+                {isEdit ? "Hoạt động" : "Kích hoạt"}
+              </CardTitle>
+              <CardDescription>
+                {isEdit
+                  ? "Khoá sẽ chặn đăng nhập"
+                  : "Tắt để tạo tài khoản ở trạng thái khoá"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Controller
+                name="isActive"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+                    <div>
+                      <p className="text-sm font-medium">
+                        {field.value ? "Đang hoạt động" : "Đã khoá"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {field.value
+                          ? "Tài khoản có thể đăng nhập"
+                          : "Tài khoản bị chặn đăng nhập"}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </div>
+                )}
+              />
+            </CardContent>
+
+            <Divider label="Phân quyền" />
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <ShieldHalf className="size-5 text-primary" />
+                Vai trò
+              </CardTitle>
+              <CardDescription>
+                Chọn vai trò{isEdit ? " (thay thế toàn bộ khi lưu)" : ""}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {roleChecklist}
+            </CardContent>
+          </Card>
+        </AdminFormSidebar>
+      </AdminFormLayout>
     </>
   )
 }
