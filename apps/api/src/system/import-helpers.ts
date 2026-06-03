@@ -22,7 +22,11 @@ export function stripHeroSlidesPermissions(permissions: unknown): unknown {
 }
 
 /** FK pivot: file cũ dùng postId/categoryId; export MikroORM serialize dùng post/category/tag (scalar hoặc { id }). */
-export function pivotFk(row: ImportRow, idProp: string, relProp: string): string {
+export function pivotFk(
+  row: ImportRow,
+  idProp: string,
+  relProp: string,
+): string {
   const direct = row[idProp];
   if (direct != null && direct !== '') return String(direct as string | number);
   const rel = row[relProp];
@@ -87,7 +91,11 @@ export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
   const messageIds = collectIds(data.message);
   const roleIds = collectIds(data.role);
 
-  if (postIds.size > 0 && categoryIds.size > 0 && Array.isArray(data.postCategory)) {
+  if (
+    postIds.size > 0 &&
+    categoryIds.size > 0 &&
+    Array.isArray(data.postCategory)
+  ) {
     const { next, dropped } = filterPivotRows(data.postCategory, [
       (row) => {
         const pid = pivotFk(row, 'postId', 'post');
@@ -111,7 +119,11 @@ export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
     droppedPostTag = dropped;
   }
 
-  if (eventIds.size > 0 && speakerIds.size > 0 && Array.isArray(data.eventSpeaker)) {
+  if (
+    eventIds.size > 0 &&
+    speakerIds.size > 0 &&
+    Array.isArray(data.eventSpeaker)
+  ) {
     const { next, dropped } = filterPivotRows(data.eventSpeaker, [
       (row) => {
         const eid = pivotFk(row, 'eventId', 'event');
@@ -145,7 +157,11 @@ export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
     droppedEventCheckin = dropped;
   }
 
-  if (groupIds.size > 0 && userIds.size > 0 && Array.isArray(data.groupMember)) {
+  if (
+    groupIds.size > 0 &&
+    userIds.size > 0 &&
+    Array.isArray(data.groupMember)
+  ) {
     const { next, dropped } = filterPivotRows(data.groupMember, [
       (row) => {
         const gid = pivotFk(row, 'groupId', 'group');
@@ -157,7 +173,11 @@ export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
     droppedGroupMember = dropped;
   }
 
-  if (messageIds.size > 0 && userIds.size > 0 && Array.isArray(data.messageRead)) {
+  if (
+    messageIds.size > 0 &&
+    userIds.size > 0 &&
+    Array.isArray(data.messageRead)
+  ) {
     const { next, dropped } = filterPivotRows(data.messageRead, [
       (row) => {
         const mid = pivotFk(row, 'messageId', 'message');

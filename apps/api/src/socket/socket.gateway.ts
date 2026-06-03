@@ -117,7 +117,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   emitEventAttendance(payload: EventAttendanceSocketPayload): void {
     if (!this.server || !payload.eventId) return;
-    this.server.to(eventRoom(payload.eventId)).emit('event:attendance', payload);
+    this.server
+      .to(eventRoom(payload.eventId))
+      .emit('event:attendance', payload);
     this.server.to(roleRoom('ADMIN')).emit('event:attendance', payload);
   }
 
@@ -258,11 +260,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!eventId) return;
     const auth = client.handshake.auth as SocketData;
     const role = auth?.role?.toLowerCase() ?? '';
-    if (
-      role !== 'admin' &&
-      role !== 'super_admin' &&
-      role !== 'manager'
-    ) {
+    if (role !== 'admin' && role !== 'super_admin' && role !== 'manager') {
       this.logger.warn(
         `Socket ${client.id} denied event:join for ${eventId} (role=${auth?.role ?? '-'})`,
       );

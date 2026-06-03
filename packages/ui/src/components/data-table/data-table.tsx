@@ -88,7 +88,6 @@ import { cn } from "../../lib/utils"
 import "./table-meta"
 import { buildCsvFromColumns } from "../../lib/build-table-csv"
 import { downloadXlsxFile } from "../../lib/export-xlsx"
-import { Separator } from "../separator"
 import { TypographyPSmall } from "../typography"
 import {
   AlertDialog,
@@ -103,7 +102,6 @@ import {
 import {
   AdminDataTablePagination,
   ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
-  type AdminDataTablePaginationConfig,
   type AdminDataTableServerPaginationConfig,
 } from "./data-table-pagination"
 import { Divider } from "../layout"

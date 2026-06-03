@@ -268,7 +268,7 @@ import {
   Inbox,
   IndentDecrease,
   IndentIncrease,
-  Infinity,
+  Infinity as InfinityIcon,
   Info,
   Inspect,
   InspectionPanel,
@@ -1227,7 +1227,7 @@ export const ICONS = {
   Inbox,
   IndentDecrease,
   IndentIncrease,
-  Infinity,
+  Infinity: InfinityIcon,
   Info,
   Inspect,
   InspectionPanel,
@@ -1924,3 +1924,5 @@ export function resolveIcon(name?: string | null): LucideIcon {
   if (!name) return Box
   return ICONS[name as IconName] ?? Box
 }
+
+

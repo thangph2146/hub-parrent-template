@@ -210,23 +210,13 @@ export class EventsService {
   private applyEventCameras(event: Event, data: Record<string, unknown>): void {
     if (data.checkinCameraId !== undefined) {
       const raw = data.checkinCameraId;
-      const id =
-        raw === null || raw === ''
-          ? ''
-          : String(raw).trim();
-      event.checkinCamera = id
-        ? this.em.getReference(Camera, id)
-        : null;
+      const id = raw === null || raw === '' ? '' : String(raw).trim();
+      event.checkinCamera = id ? this.em.getReference(Camera, id) : null;
     }
     if (data.checkoutCameraId !== undefined) {
       const raw = data.checkoutCameraId;
-      const id =
-        raw === null || raw === ''
-          ? ''
-          : String(raw).trim();
-      event.checkoutCamera = id
-        ? this.em.getReference(Camera, id)
-        : null;
+      const id = raw === null || raw === '' ? '' : String(raw).trim();
+      event.checkoutCamera = id ? this.em.getReference(Camera, id) : null;
     }
   }
 

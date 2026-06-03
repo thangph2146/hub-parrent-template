@@ -35,7 +35,7 @@ function RegistrantsList({
   const count = Math.max(totalRegistrations, registrants.length);
   const exportGeneratedAt = useMemo(
     () => new Date().toLocaleString("vi-VN"),
-    [registrants.length, totalRegistrations],
+    [],
   );
   const columns = useMemo<ColumnDef<PublicEventRegistrant, unknown>[]>(
     () => [

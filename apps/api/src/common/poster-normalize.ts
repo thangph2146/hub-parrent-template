@@ -42,9 +42,7 @@ export function unwrapPosterUrl(value: unknown): string | null {
   return trimmed;
 }
 
-export function normalizePosterField(
-  poster: unknown,
-): { url: string } | null {
+export function normalizePosterField(poster: unknown): { url: string } | null {
   const raw = unwrapPosterUrl(poster);
   if (!raw) return null;
   return { url: raw.replace(/\/api\/api\//g, '/api/') };

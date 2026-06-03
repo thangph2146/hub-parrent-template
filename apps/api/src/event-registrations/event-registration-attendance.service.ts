@@ -111,7 +111,9 @@ export class EventRegistrationAttendanceService {
         reg.updatedAt = at;
         await this.em.flush();
         await this.syncEventCounts(eventId);
-        this.emitState(reg, eventId, 'checkout', 'manual', { duplicate: false });
+        this.emitState(reg, eventId, 'checkout', 'manual', {
+          duplicate: false,
+        });
         break;
       case 'reset-all':
         reg.hasCheckin = false;
@@ -275,10 +277,7 @@ export class EventRegistrationAttendanceService {
 
     const windowStart = event.checkoutStart ?? event.checkinEnd ?? null;
     const windowEnd = event.checkoutEnd ?? event.endDate ?? null;
-    if (
-      (windowStart || windowEnd) &&
-      !within(windowStart, windowEnd)
-    ) {
+    if ((windowStart || windowEnd) && !within(windowStart, windowEnd)) {
       throw new BadRequestException(
         'Thời điểm check-out nằm ngoài khung giờ cho phép',
       );

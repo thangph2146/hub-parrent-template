@@ -235,7 +235,11 @@ export class TagsService {
     return dto as TagDetailDto;
   }
 
-  async create(data: { name: string; slug: string; icon?: string | null }): Promise<TagRowDto> {
+  async create(data: {
+    name: string;
+    slug: string;
+    icon?: string | null;
+  }): Promise<TagRowDto> {
     const created = new Tag();
     created.name = data.name;
     created.slug = data.slug;

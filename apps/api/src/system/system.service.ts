@@ -188,7 +188,10 @@ function isTemporalColumn(prop: EntityProperty): boolean {
 
 function isManyToOneImportProperty(prop: EntityProperty): boolean {
   const kind = String((prop as { kind?: string }).kind ?? '');
-  return kind === 'm:1' || (kind === '1:1' && !(prop as { mappedBy?: string }).mappedBy);
+  return (
+    kind === 'm:1' ||
+    (kind === '1:1' && !(prop as { mappedBy?: string }).mappedBy)
+  );
 }
 
 function coerceManyToOneScalar(raw: unknown): unknown {
@@ -465,8 +468,9 @@ export class SystemService {
 
       for (const prop of Object.values(meta.properties)) {
         if (!isManyToOneImportProperty(prop)) continue;
-        const targetClassName = (prop as { targetMeta?: { className?: string } })
-          .targetMeta?.className;
+        const targetClassName = (
+          prop as { targetMeta?: { className?: string } }
+        ).targetMeta?.className;
         if (!targetClassName) continue;
 
         const targetModel = this.resolveModelName(targetClassName);
@@ -530,7 +534,7 @@ export class SystemService {
           pk =
             'id' in rel
               ? (rel as { id: unknown }).id
-              : wrap(rel as object, true).getPrimaryKey();
+              : wrap(rel, true).getPrimaryKey();
         }
         out[fieldName] = pk;
         continue;
@@ -538,7 +542,8 @@ export class SystemService {
 
       const val = entityRow[prop.name] ?? entityRow[fieldName];
       if (val === undefined) continue;
-      const encoded = val instanceof Date ? val.toISOString() : (val as unknown);
+      const encoded =
+        val instanceof Date ? val.toISOString() : (val as unknown);
       out[fieldName] = encoded;
     }
 
@@ -692,7 +697,8 @@ export class SystemService {
       });
     }
 
-    const resolvedTargetModel = this.resolveModelName(targetModel) ?? targetModel;
+    const resolvedTargetModel =
+      this.resolveModelName(targetModel) ?? targetModel;
     const modelNames = resolvedTargetModel
       ? [resolvedTargetModel]
       : sheetMap.size > 0
@@ -754,9 +760,7 @@ export class SystemService {
   ): Promise<Record<string, unknown>[]> {
     const postIds = [
       ...new Set(
-        sanitized
-          .map((r) => pivotFk(r, 'postId', 'post'))
-          .filter(Boolean),
+        sanitized.map((r) => pivotFk(r, 'postId', 'post')).filter(Boolean),
       ),
     ];
     const categoryIds = [
@@ -897,16 +901,16 @@ export class SystemService {
           )
         : [],
     ]);
-    const leftSet = new Set(leftRows.map((r) => String((r as { id: unknown }).id)));
+    const leftSet = new Set(
+      leftRows.map((r) => String((r as { id: unknown }).id)),
+    );
     const rightSet = new Set(
       rightRows.map((r) => String((r as { id: unknown }).id)),
     );
     const out = sanitized.filter((row) => {
       const left = pivotFk(row, options.leftKey, options.leftRel);
       const right = pivotFk(row, options.rightKey, options.rightRel);
-      return (
-        Boolean(left && right && leftSet.has(left) && rightSet.has(right))
-      );
+      return Boolean(left && right && leftSet.has(left) && rightSet.has(right));
     });
     if (out.length < sanitized.length) {
       this.logger.warn(
@@ -1662,7 +1666,8 @@ export class SystemService {
     targetModel?: string,
     skipClear: boolean = false,
   ) {
-    const resolvedTargetModel = this.resolveModelName(targetModel) ?? targetModel;
+    const resolvedTargetModel =
+      this.resolveModelName(targetModel) ?? targetModel;
     data = this.normalizeImportBundle(data);
     this.assertRestorableImportBundle(data);
     this.logger.log(
@@ -1710,7 +1715,9 @@ export class SystemService {
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
       try {
-        const clearOrder = resolvedTargetModel ? [resolvedTargetModel] : this.modelOrder;
+        const clearOrder = resolvedTargetModel
+          ? [resolvedTargetModel]
+          : this.modelOrder;
 
         // Chỉ clear nếu skipClear=false
         if (!skipClear) {

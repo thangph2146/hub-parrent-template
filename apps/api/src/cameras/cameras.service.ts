@@ -109,14 +109,15 @@ export class CamerasService {
   }
 
   async getById(id: string): Promise<CameraRowDto | null> {
-    const r = await this.em.findOne(Camera, { id }, { populate: ['linkedEvent'] });
+    const r = await this.em.findOne(
+      Camera,
+      { id },
+      { populate: ['linkedEvent'] },
+    );
     return r ? mapRow(r) : null;
   }
 
-  private applyLinkedEvent(
-    target: Camera,
-    linkedEventId: unknown,
-  ): void {
+  private applyLinkedEvent(target: Camera, linkedEventId: unknown): void {
     if (linkedEventId === undefined) return;
     if (linkedEventId === null || linkedEventId === '') {
       target.linkedEvent = null;

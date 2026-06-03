@@ -1,8 +1,6 @@
 export type EventTimeStatus = 'upcoming' | 'ongoing' | 'past';
 
-function toValidDate(
-  value: Date | string | null | undefined,
-): Date | null {
+function toValidDate(value: Date | string | null | undefined): Date | null {
   if (value == null) return null;
   const date = value instanceof Date ? value : new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
@@ -31,12 +29,7 @@ export function resolveEventTimeStatus(
     return 'past';
   }
 
-  if (
-    start &&
-    end &&
-    start.getTime() <= nowMs &&
-    end.getTime() >= nowMs
-  ) {
+  if (start && end && start.getTime() <= nowMs && end.getTime() >= nowMs) {
     return 'ongoing';
   }
 

@@ -202,9 +202,7 @@ export class PublicEventsService {
     }
 
     const whereQuery = (
-      andConditions.length === 1
-        ? andConditions[0]
-        : { $and: andConditions }
+      andConditions.length === 1 ? andConditions[0] : { $and: andConditions }
     ) as FilterQuery<Event>;
     const orderBy =
       filter === 'featured'

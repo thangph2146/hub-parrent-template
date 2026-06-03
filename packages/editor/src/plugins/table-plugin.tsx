@@ -147,7 +147,7 @@ function getEditorContainerWidth(editor: LexicalEditor): number {
       const w = rootEl.parentElement.clientWidth
       if (w > 0) return w
     }
-  } catch {}
+  } catch { /* noop */ }
   return 600
 }
 

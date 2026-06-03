@@ -1,6 +1,5 @@
 "use client"
 
-import type { ReactNode } from "react"
 import { ArchiveRestore, Eye, Pencil, Trash2 } from "lucide-react"
 import {
   DataTableRowActionButton,

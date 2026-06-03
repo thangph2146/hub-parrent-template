@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { useSyncExternalStore } from "react"
 import {
@@ -39,11 +39,11 @@ export function StudentPortalLayoutProvider({
     return () => window.clearTimeout(timer)
   }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     clearEventSession()
     router.replace("/")
     router.refresh()
-  }
+  }, [router])
 
   const value = useMemo(
     () =>
