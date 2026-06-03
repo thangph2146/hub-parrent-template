@@ -6,7 +6,7 @@ import type { CategoryConfirmAction } from "../types";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const ROOT_PARENT_VALUE = "__root__";
+export const ROOT_PARENT_VALUE = "__root__";
 
 export function buildCategoryPayload(values: {
   name: string; slug: string; description: string; icon: string; sortOrder: number; parentId: string;
@@ -35,6 +35,17 @@ export type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 const EMPTY_VALUES: CategoryFormValues = {
   name: "", slug: "", description: "", icon: "Package2", sortOrder: 0, parentId: ROOT_PARENT_VALUE,
 };
+
+export function getCategoryDefaultValues(category: { name?: string; slug?: string; description?: string | null; icon?: string | null; sortOrder?: number; parentId?: string | null }): CategoryFormValues {
+  return {
+    name: category.name ?? "",
+    slug: category.slug ?? "",
+    description: category.description ?? "",
+    icon: category.icon ?? "Package2",
+    sortOrder: category.sortOrder ?? 0,
+    parentId: category.parentId ? String(category.parentId) : ROOT_PARENT_VALUE,
+  };
+}
 
 export function useCategoryForm() {
   const form = useForm<CategoryFormValues>({

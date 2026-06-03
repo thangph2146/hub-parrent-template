@@ -6,12 +6,13 @@ import type { TagConfirmAction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tagFormSchema, type TagFormValues } from "../types";
 
-const EMPTY_VALUES: TagFormValues = { name: "", slug: "" };
+const EMPTY_VALUES: TagFormValues = { name: "", slug: "", icon: null };
 
 export function buildTagPayload(values: TagFormValues): Record<string, unknown> {
   return {
     name: values.name.trim(),
     slug: values.slug.trim() || values.name.trim().toLowerCase().replace(/\s+/g, "-"),
+    icon: values.icon || null,
   };
 }
 

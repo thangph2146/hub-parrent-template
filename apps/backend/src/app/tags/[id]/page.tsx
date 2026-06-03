@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, createElement } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -12,14 +12,54 @@ import {
   File,
   ChevronRight,
 } from "lucide-react";
+import { resolveIcon } from "@ui/lib/icons";
 import { Badge } from "@ui/components/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionBadge,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { formatDateTime, useTagDetailQuery } from "../_component";
+import type { LucideIcon } from "lucide-react";
 
+function ListItem({
+  icon: Icon,
+  title,
+  subtitle,
+  badge,
+  onClick,
+}: {
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+  badge?: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-muted/40 border-0 border-t border-slate-100 dark:border-border/60 first:border-t-0"
+      onClick={onClick}
+    >
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-muted">
+        <Icon className="size-4 text-muted-foreground" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{title}</p>
+        <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      {badge}
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+    </button>
+  );
+}
 
 function TagDetailInner() {
   const router = useRouter();
@@ -37,18 +77,20 @@ function TagDetailInner() {
     }
   }, [isError, router]);
 
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
-  }
-
+  if (isLoading) return <AdminPageLoading />;
   if (!tag) return null;
+
+  const ResolvedIcon = tag.icon ? resolveIcon(tag.icon) : null;
 
   return (
     <AdminPageSection>
       <AdminDetailPageHeader
-        title={tag.name}
+        title={
+          <span className="flex items-center gap-2">
+            {ResolvedIcon && createElement(ResolvedIcon, { className: "size-11 text-primary" })}
+            {tag.name}
+          </span>
+        }
         subtitle={
           <>
             <span className="text-muted-foreground/60">Thẻ</span>
@@ -65,118 +107,89 @@ function TagDetailInner() {
 
       <AdminDetailLayout>
         <AdminDetailMain>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Tag className="size-5 text-primary" />
-                Thông tin thẻ
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Hash className="size-3" />
-                    Slug / đường dẫn
-                  </p>
-                  <p className="mt-1 font-mono text-sm text-foreground">{tag.slug}</p>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Tag}
+              title="Thông tin thẻ"
+              description="Slug và các thông tin cơ bản."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldSectionField label="Slug / đường dẫn" icon={Hash}>
+                  <p className="font-mono font-medium">{tag.slug}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground/60">/the/{tag.slug}</p>
-                </div>
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <FileText className="size-3" />
-                    Bài viết gắn thẻ
-                  </p>
-                  <p className="mt-1 text-sm font-medium">{tag.postCount ?? 0} bài</p>
-                </div>
+                </FieldSectionField>
+                <FieldSectionField label="Bài viết gắn thẻ" icon={FileText}>
+                  <p className="font-medium">{tag.postCount ?? 0} bài</p>
+                </FieldSectionField>
               </div>
-            </CardContent>
-          </Card>
+
+              <FieldSectionDivider />
+
+              <FieldSectionField label="Biểu tượng" icon={FileText}>
+                {ResolvedIcon ? (
+                  <div className="flex items-center gap-2">
+                    {createElement(ResolvedIcon, { className: "size-5 text-primary" })}
+                    <span className="font-mono text-xs text-muted-foreground">{tag.icon}</span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Không có</span>
+                )}
+              </FieldSectionField>
+            </FieldSetContent>
+          </FieldSet>
 
           {tag.posts.length > 0 && (
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <File className="size-5 text-primary" />
-                  Bài viết liên quan
-                  <Badge variant="secondary" className="ml-auto">{tag.postCount}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {tag.posts.map((post, idx) => (
-                  <button
-                    key={post.id}
-                    type="button"
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50 ${idx > 0 ? "border-t border-border/50" : ""}`}
-                    onClick={() => router.push(`/posts/${post.id}`)}
-                  >
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted shrink-0">
-                      <File className="size-4 text-muted-foreground" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{post.title}</p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(post.createdAt)}</p>
-                    </div>
-                    <Badge variant={post.published ? "default" : "outline"} className="shrink-0">
-                      {post.published ? "Đã đăng" : "Nháp"}
-                    </Badge>
-                    <ChevronRight className="size-4 text-muted-foreground shrink-0" />
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={File}
+                title="Bài viết liên quan"
+                description={`${tag.postCount} bài viết được gắn thẻ này.`}
+                badge={<FieldSectionBadge>{tag.postCount}</FieldSectionBadge>}
+              />
+              <FieldSetContent variant="section" className="px-0 pb-0 pt-0 overflow-hidden">
+                <div className="flex flex-col">
+                  {tag.posts.map((post) => (
+                    <ListItem
+                      key={post.id}
+                      icon={File}
+                      title={post.title}
+                      subtitle={formatDateTime(post.createdAt)}
+                      badge={
+                        <Badge variant={post.published ? "default" : "outline"} className="shrink-0">
+                          {post.published ? "Đã đăng" : "Nháp"}
+                        </Badge>
+                      }
+                      onClick={() => router.push(`/posts/${post.id}`)}
+                    />
+                  ))}
+                </div>
+              </FieldSetContent>
+            </FieldSet>
           )}
         </AdminDetailMain>
 
         <AdminDetailSidebar>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="size-5 text-primary" />
-                Thời gian
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Calendar className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Ngày tạo</p>
-                  <p className="text-sm font-medium">{formatDateTime(tag.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Clock className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
-                  <p className="text-sm font-medium">{formatDateTime(tag.updatedAt)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <FileText className="size-5 text-primary" />
-                Thống kê
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <File className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Bài viết</p>
-                  <p className="text-sm font-medium">{tag.postCount ?? 0} bài</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="sticky top-2 flex flex-col gap-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian & Thống kê"
+                description="Mốc thời gian và số lượng bài viết."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                  {formatDateTime(tag.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                  {formatDateTime(tag.updatedAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Bài viết" icon={File} valueClassName="font-medium">
+                  {tag.postCount ?? 0} bài
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

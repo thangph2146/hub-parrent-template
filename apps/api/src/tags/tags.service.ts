@@ -26,6 +26,7 @@ export interface TagRowDto {
   id: string;
   name: string;
   slug: string;
+  icon: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -80,6 +81,7 @@ function mapRow(r: Tag): TagRowDto {
     id: r.id,
     name: r.name,
     slug: r.slug,
+    icon: r.icon ?? null,
     createdAt: toIsoStringRequired(r.createdAt),
     updatedAt: toIsoStringRequired(r.updatedAt),
     deletedAt: toIsoString(r.deletedAt),
@@ -233,23 +235,25 @@ export class TagsService {
     return dto as TagDetailDto;
   }
 
-  async create(data: { name: string; slug: string }): Promise<TagRowDto> {
+  async create(data: { name: string; slug: string; icon?: string | null }): Promise<TagRowDto> {
     const created = new Tag();
     created.name = data.name;
     created.slug = data.slug;
+    created.icon = data.icon ?? null;
     await this.em.persistAndFlush(created);
     return mapRow(created);
   }
 
   async update(
     id: string,
-    data: { name?: string; slug?: string },
+    data: { name?: string; slug?: string; icon?: string | null },
   ): Promise<TagRowDto | null> {
     const existing = await this.em.findOne(Tag, { id });
     if (!existing) return null;
 
     if (data.name != null) existing.name = data.name;
     if (data.slug != null) existing.slug = data.slug;
+    if (data.icon !== undefined) existing.icon = data.icon;
     await this.em.persistAndFlush(existing);
     const updated = existing;
     return mapRow(updated);

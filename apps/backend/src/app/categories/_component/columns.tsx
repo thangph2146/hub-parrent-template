@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { Eye, FolderTree, Folder } from "lucide-react";
 import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { resolveIcon } from "@ui/lib/icons";
 import type { CategoryRow, CategoryTreeOption } from "./types";
 
 export function getCategoryColumns({
@@ -24,20 +25,23 @@ export function getCategoryColumns({
       accessorKey: "name",
       header: "Tên",
       enableColumnFilter: false,
-      cell: ({ row, getValue }) => (
+      cell: ({ row, getValue }) => {
+        const IconComp = row.original.icon
+          ? resolveIcon(row.original.icon)
+          : row.depth === 0
+            ? FolderTree
+            : Folder;
+        return (
         <button
           type="button"
           className="flex min-w-0 cursor-pointer items-center gap-2 text-left hover:text-primary transition-colors"
           onClick={() => openDetail(row.original)}
         >
-          {row.depth === 0 ? (
-            <FolderTree className="size-4 shrink-0 text-primary" aria-hidden />
-          ) : (
-            <Folder className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-          )}
+          <IconComp className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <span className="truncate font-medium">{String(getValue())}</span>
         </button>
-      ),
+        );
+      },
     },
     {
       accessorKey: "slug",
@@ -137,16 +141,19 @@ export function getTrashColumns({
       accessorKey: "name",
       header: "Tên",
       enableColumnFilter: false,
-      cell: ({ row, getValue }) => (
+      cell: ({ row, getValue }) => {
+        const IconComp = row.original.icon
+          ? resolveIcon(row.original.icon)
+          : row.depth === 0
+            ? FolderTree
+            : Folder;
+        return (
         <div className="flex items-center gap-2">
-          {row.depth === 0 ? (
-            <FolderTree className="size-4 shrink-0 text-primary" aria-hidden />
-          ) : (
-            <Folder className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-          )}
+          <IconComp className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <span className="font-medium">{String(getValue())}</span>
         </div>
-      ),
+        );
+      },
     },
     {
       accessorKey: "slug",

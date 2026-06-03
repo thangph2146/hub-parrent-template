@@ -10,6 +10,9 @@ export class Tag extends BaseEntity {
   @Property({ unique: true })
   slug!: string;
 
+  @Property({ nullable: true })
+  icon?: string | null;
+
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 

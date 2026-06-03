@@ -77,6 +77,7 @@ export function buildTagTree(rows: TagRow[]): TagTreeRow[] {
       id: `group:${groupSlug}`,
       name: humanizeSlug(groupSlug),
       slug: groupSlug,
+      icon: null,
       createdAt: "",
       updatedAt: "",
       deletedAt: null,

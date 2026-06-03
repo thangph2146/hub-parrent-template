@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@ui/components/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
-import { FieldError } from "@ui/components/field";
+import { FieldError, FieldSet, FieldSetContent, FieldSectionLegend } from "@ui/components/field";
 import { Input } from "@ui/components/input";
 import { Textarea } from "@ui/components/textarea";
 import { FormFieldCol } from "@ui/components/typing";
@@ -12,16 +10,14 @@ import {
   AdminFormPageHeader,
   AdminFormSidebar,
 } from "@ui/components/admin";
-import { SelectPicker, TreePicker, type TreeOption, type SelectPickerOption } from "@ui/components/pickers";
+import { IconPicker, TreePicker, type TreeOption } from "@ui/components/pickers";
 import { Badge } from "@ui/components/badge";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import type { CategoryTreeOption } from "../types";
-import { CATEGORY_ICON_OPTIONS, resolveCategoryIcon } from "@/lib/category-icons";
 import { cn } from "@ui/lib/utils";
 import { FolderTree, Globe, Layers, ListOrdered, Tag } from "lucide-react";
 import type { CategoryFormValues } from "../_hooks";
-
-const ROOT_PARENT_VALUE = "__root__";
+import { ROOT_PARENT_VALUE } from "../_hooks";
 
 function buildParentTreeOptions(
   rows: CategoryTreeOption[],
@@ -36,25 +32,12 @@ function buildParentTreeOptions(
     result.push({
       value: row.id,
       label: row.name,
+      icon: row.icon ?? undefined,
       children: children.length > 0 ? children : undefined,
     });
   }
   return result;
 }
-
-const ICON_OPTIONS: SelectPickerOption[] = CATEGORY_ICON_OPTIONS.map((name) => {
-  const Icon = resolveCategoryIcon(name);
-  return {
-    value: name,
-    label: name,
-    render: () => (
-      <div className="flex items-center gap-2">
-        <Icon className="size-4" />
-        <span>{name}</span>
-      </div>
-    ),
-  };
-});
 
 export interface CategoryFormShellProps {
   form: UseFormReturn<CategoryFormValues>;
@@ -76,7 +59,6 @@ export function CategoryFormShell({
   onReset,
 }: CategoryFormShellProps) {
   const { control, watch } = form;
-  const currentParentId = watch("parentId");
   const watchedName = watch("name");
   const watchedDescription = watch("description");
 
@@ -103,17 +85,14 @@ export function CategoryFormShell({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <AdminFormMain>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Tag className="size-5 text-primary" />
-                  Thông tin cơ bản
-                </CardTitle>
-                <CardDescription>
-                  Tên danh mục, slug và mô tả — những yếu tố ảnh hưởng đến khả năng tìm thấy và nhận diện.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Tag}
+              title="Thông tin cơ bản"
+              description="Tên danh mục, slug và mô tả — những yếu tố ảnh hưởng đến khả năng tìm thấy và nhận diện."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Controller
                   name="name"
                   control={control}
@@ -127,8 +106,8 @@ export function CategoryFormShell({
                       {fieldState.error && (
                         <FieldError>{fieldState.error.message}</FieldError>
                       )}
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-                        <span>Tối đa 50 ký tự, nên ngắn gọn và dễ nhận diện.</span>
+                      <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                        <span>Tối đa 50 ký tự.</span>
                         <Badge variant={nameLength > 50 ? "destructive" : "outline"} className="ml-auto">{nameLength} ký tự</Badge>
                       </div>
                     </FormFieldCol>
@@ -148,132 +127,100 @@ export function CategoryFormShell({
                       {fieldState.error && (
                         <FieldError>{fieldState.error.message}</FieldError>
                       )}
-                      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                         <Globe className="size-3 shrink-0" />
                         <span className="break-all font-mono">/danh-muc/{field.value || "ten-danh-muc"}</span>
                       </div>
                     </FormFieldCol>
                   )}
                 />
+              </div>
 
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <FormFieldCol label="Mô tả">
-                      <Textarea
-                        placeholder="Mô tả ngắn gọn về danh mục này..."
-                        {...field}
-                        rows={3}
-                      />
-                      <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
-                        <span>Mô tả ngắn giúp phân biệt danh mục trong danh sách và SEO.</span>
-                        <Badge variant="outline">{descLength} ký tự</Badge>
-                      </div>
-                    </FormFieldCol>
-                  )}
-                />
-              </CardContent>
-            </Card>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <FormFieldCol label="Mô tả">
+                    <Textarea
+                      placeholder="Mô tả ngắn gọn về danh mục này..."
+                      {...field}
+                      rows={3}
+                    />
+                    <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                      <span>Giúp phân biệt danh mục trong danh sách và SEO.</span>
+                      <Badge variant="outline">{descLength} ký tự</Badge>
+                    </div>
+                  </FormFieldCol>
+                )}
+              />
+            </FieldSetContent>
+          </FieldSet>
+        </AdminFormMain>
 
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Layers className="size-5 text-primary" />
-                  Phân cấp & Hiển thị
-                </CardTitle>
-                <CardDescription>
-                  Thiết lập danh mục cha, biểu tượng và thứ tự sắp xếp.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Controller
-                  name="parentId"
-                  control={control}
-                  render={({ field }) => (
+        <AdminFormSidebar>
+          <FieldSet variant="section" className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto">
+            <FieldSectionLegend
+              icon={Layers}
+              title="Phân cấp & Hiển thị"
+              description="Danh mục cha, biểu tượng và thứ tự sắp xếp."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <Controller
+                name="parentId"
+                control={control}
+                render={({ field }) => {
+                  const pid = field.value ?? ROOT_PARENT_VALUE;
+                  const isRoot = pid === "" || pid == null || pid === ROOT_PARENT_VALUE;
+                  return (
                     <FormFieldCol label={<div className="flex items-center gap-2"><FolderTree className="size-4 text-muted-foreground" />Danh mục cha</div>}>
                       <TreePicker
-                        value={currentParentId === ROOT_PARENT_VALUE ? "" : currentParentId}
+                        value={isRoot ? "" : String(pid)}
                         onChange={(value) =>
-                          field.onChange((typeof value === "string" && value) || ROOT_PARENT_VALUE)
+                          field.onChange(value == null || value === "" ? ROOT_PARENT_VALUE : String(value))
                         }
                         options={parentTreeOptions}
                         placeholder="Cấp gốc (không có cha)"
                       />
                       <p className="text-xs text-muted-foreground">
-                        {currentParentId === ROOT_PARENT_VALUE
-                          ? "Danh mục này sẽ là cấp gốc trong cây phân cấp."
-                          : "Đang chọn danh mục cha. Có thể bỏ chọn để đưa lên cấp gốc."}
+                        {isRoot ? "Cấp gốc trong cây phân cấp." : "Đã chọn danh mục cha."}
                       </p>
+                    </FormFieldCol>
+                  );
+                }}
+              />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Controller
+                  name="icon"
+                  control={control}
+                  render={({ field }) => (
+                    <FormFieldCol label="Biểu tượng">
+                      <IconPicker
+                        value={field.value}
+                        onChange={(v) => field.onChange((v as string) ?? "Package2")}
+                        placeholder="Chọn biểu tượng"
+                      />
                     </FormFieldCol>
                   )}
                 />
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Controller
-                    name="icon"
-                    control={control}
-                    render={({ field }) => (
-                      <FormFieldCol label="Biểu tượng">
-                        <SelectPicker
-                          value={field.value}
-                          onChange={(v) => field.onChange((v as string) ?? "Package2")}
-                          options={ICON_OPTIONS}
-                          placeholder="Chọn biểu tượng"
-                        />
-                      </FormFieldCol>
-                    )}
-                  />
-
-                  <Controller
-                    name="sortOrder"
-                    control={control}
-                    render={({ field }) => (
-                      <FormFieldCol label={<div className="flex items-center gap-2"><ListOrdered className="size-4 text-muted-foreground" />Thứ tự</div>}>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                        />
-                        <p className="mt-1 text-xs text-muted-foreground">Số càng nhỏ hiển thị càng trước.</p>
-                      </FormFieldCol>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-        </AdminFormMain>
-
-        <AdminFormSidebar>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-                  <Layers className="size-5" />
-                  Tổng quan
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Cấp hiện tại</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {currentParentId === ROOT_PARENT_VALUE
-                      ? "Cấp gốc"
-                      : "Danh mục con"}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Trạng thái</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {editingId ? "Đang chỉnh sửa" : "Tạo mới"}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
-                  <p className="text-xs text-muted-foreground">
-                    Danh mục sau khi lưu có thể được gắn vào bài viết và hiển thị dưới dạng cây phân cấp.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                <Controller
+                  name="sortOrder"
+                  control={control}
+                  render={({ field }) => (
+                    <FormFieldCol label={<div className="flex items-center gap-2"><ListOrdered className="size-4 text-muted-foreground" />Thứ tự</div>}>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                      />
+                      <p className="mt-1 text-xs text-muted-foreground">Số nhỏ hiển thị trước.</p>
+                    </FormFieldCol>
+                  )}
+                />
+              </div>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormSidebar>
       </AdminFormLayout>
     </>

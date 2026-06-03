@@ -1,14 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { useState, createElement } from "react"
 import { Check, ChevronDown, FileText, Folder } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
+import { resolveIcon } from "../../lib/icons"
+
+function DynamicIcon({ name, className }: { name?: string; className?: string }) {
+  if (!name) return null
+  return createElement(resolveIcon(name), { className })
+}
 
 export interface TreeOption {
   value: string
   label: string
+  icon?: string
   children?: TreeOption[]
 }
 
@@ -22,10 +29,10 @@ export interface TreePickerProps {
 
 function flattenTreeOptions(
   nodes: TreeOption[]
-): { value: string; label: string }[] {
-  const result: { value: string; label: string }[] = []
+): { value: string; label: string; icon?: string }[] {
+  const result: { value: string; label: string; icon?: string }[] = []
   for (const node of nodes) {
-    result.push({ value: node.value, label: node.label })
+    result.push({ value: node.value, label: node.label, icon: node.icon })
     if (node.children?.length) {
       result.push(...flattenTreeOptions(node.children))
     }
@@ -36,6 +43,7 @@ function flattenTreeOptions(
 function TreeSelectItem({
   label,
   value,
+  icon,
   depth,
   isParent,
   selected,
@@ -43,12 +51,18 @@ function TreeSelectItem({
 }: {
   label: string
   value: string
+  icon?: string
   depth: number
   isParent: boolean
   selected: string
   onSelect: (value: string) => void
 }) {
   const isSelected = selected === value
+  const iconClass = icon
+    ? "size-4 shrink-0 text-muted-foreground"
+    : isParent
+      ? "size-4 shrink-0 text-amber-500"
+      : "size-4 shrink-0 text-muted-foreground"
   return (
     <button
       type="button"
@@ -58,12 +72,14 @@ function TreeSelectItem({
         isSelected && "bg-primary/10 font-medium text-primary",
         !isSelected && "cursor-pointer hover:bg-muted"
       )}
-      style={{ paddingLeft: `${12 + depth * 16}px` }}
+      style={{ paddingLeft: `${12 + depth * 20}px` }}
     >
-      {isParent ? (
-        <Folder className="size-4 shrink-0 text-amber-500" />
+      {icon ? (
+        <DynamicIcon name={icon} className={iconClass} />
+      ) : isParent ? (
+        <Folder className={iconClass} />
       ) : (
-        <FileText className="size-4 shrink-0 text-muted-foreground" />
+        <FileText className={iconClass} />
       )}
       <span className="flex-1 truncate">{label}</span>
       {isSelected && <Check className="size-4 shrink-0" />}
@@ -83,19 +99,16 @@ function TreeSelectNode({
   onSelect: (value: string) => void
 }) {
   const isParent = (node.children?.length ?? 0) > 0
-  const handleSelect = (value: string) => {
-    if (isParent) return
-    onSelect(value)
-  }
   return (
     <div>
       <TreeSelectItem
         label={node.label}
         value={node.value}
+        icon={node.icon}
         depth={depth}
         isParent={isParent}
         selected={selected}
-        onSelect={handleSelect}
+        onSelect={onSelect}
       />
       {node.children?.map((child) => (
         <TreeSelectNode
@@ -125,9 +138,9 @@ export function TreePicker({
         ? String(value)
         : ""
   const flat = flattenTreeOptions(options)
-  const selectedLabel = selected
-    ? (flat.find((o) => o.value === selected)?.label ?? selected)
-    : placeholder
+  const found = selected ? flat.find((o) => o.value === selected) : undefined
+  const selectedLabel = found?.label ?? (selected || placeholder)
+  const selectedIcon = found?.icon
 
   const handleSelect = (next: string) => {
     onChange(next === "" ? undefined : next)
@@ -143,7 +156,10 @@ export function TreePicker({
           id={id}
           className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
         >
-          <span className="truncate">{selectedLabel}</span>
+          <span className="flex items-center gap-2 truncate">
+            <DynamicIcon name={selectedIcon} className="size-4 shrink-0 text-muted-foreground" />
+            <span className="truncate">{selectedLabel}</span>
+          </span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>

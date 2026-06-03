@@ -2,30 +2,79 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   CategoryFormShell,
-  useCategoryForm,
   useCategoriesOptionsQuery,
   useCategoryDetailQuery,
   buildCategoryOptionTree,
   buildCategoryPayload,
+  categoryFormSchema,
+  getCategoryDefaultValues,
 } from "../../_component";
-import type { CategoryFormValues } from "../../_component";
+import type { CategoryFormValues, CategoryDetail } from "../../_component";
+
+function EditCategoryForm({
+  category,
+  categoryTreeOptions,
+}: {
+  category: CategoryDetail;
+  categoryTreeOptions: ReturnType<typeof buildCategoryOptionTree>;
+}) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const form = useForm<CategoryFormValues>({
+    resolver: zodResolver(categoryFormSchema),
+    defaultValues: getCategoryDefaultValues(category),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (input: Record<string, unknown>) =>
+      api.categories.update(category.id, input as Parameters<typeof api.categories.update>[1]),
+    onSuccess: async (_data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success(`Đã cập nhật danh mục "${(variables.name as string)?.trim()}"`);
+      router.push(`/categories/${category.id}`);
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : "Không thể cập nhật danh mục");
+    },
+  });
+
+  const handleSubmit = useCallback(
+    async (values: CategoryFormValues) => {
+      await updateMutation.mutateAsync(buildCategoryPayload(values));
+    },
+    [updateMutation],
+  );
+
+  return (
+    <AdminPageSection>
+      <CategoryFormShell
+        form={form}
+        onSubmit={handleSubmit}
+        submitting={updateMutation.isPending}
+        editingId={category.id}
+        categoryTreeOptions={categoryTreeOptions}
+        onBack={() => router.push(`/categories/${category.id}`)}
+        onReset={() => form.reset(getCategoryDefaultValues(category))}
+      />
+    </AdminPageSection>
+  );
+}
 
 function EditCategoryPageInner() {
   const router = useRouter();
   const params = useParams();
   const categoryId = params.id as string;
-  const queryClient = useQueryClient();
-  const { form } = useCategoryForm();
 
-  const { data: category, isLoading, isError, refetch } = useCategoryDetailQuery(api, categoryId);
+  const { data: category, isLoading, isError } = useCategoryDetailQuery(api, categoryId);
   const categoriesOptionsQuery = useCategoriesOptionsQuery(api);
 
   const categoryTreeOptions = useMemo(
@@ -40,65 +89,14 @@ function EditCategoryPageInner() {
     }
   }, [isError, router]);
 
-  useEffect(() => {
-    if (!category) return;
-    form.reset({
-      name: category.name ?? "",
-      slug: category.slug ?? "",
-      description: category.description ?? "",
-      icon: category.icon ?? "Package2",
-      sortOrder: category.sortOrder ?? 0,
-      parentId: category.parentId ?? "__root__",
-    });
-  }, [category, form]);
-
-  const invalidateAll = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["categories"] });
-  };
-
-  const updateMutation = useMutation({
-    mutationFn: async (input: Record<string, unknown>) =>
-      api.categories.update(categoryId, input as Parameters<typeof api.categories.update>[1]),
-    onSuccess: async (_data, variables) => {
-      await invalidateAll();
-      toast.success(`Đã cập nhật danh mục "${(variables.name as string)?.trim()}"`);
-      router.push(`/categories/${categoryId}`);
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật danh mục";
-      toast.error(message);
-    },
-  });
-
-  const handleSubmit = useCallback(
-    async (values: CategoryFormValues) => {
-      await updateMutation.mutateAsync(buildCategoryPayload(values));
-    },
-    [updateMutation],
-  );
-
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
-  }
-
+  if (isLoading) return <AdminPageLoading />;
   if (!category) return null;
 
   return (
-    <AdminPageSection>
-      <CategoryFormShell
-        form={form}
-        onSubmit={handleSubmit}
-        submitting={updateMutation.isPending}
-        editingId={categoryId}
-        categoryTreeOptions={categoryTreeOptions}
-        onBack={() => router.push(`/categories/${categoryId}`)}
-        onReset={async () => {
-          await refetch();
-        }}
-      />
-    </AdminPageSection>
+    <EditCategoryForm
+      category={category}
+      categoryTreeOptions={categoryTreeOptions}
+    />
   );
 }
 

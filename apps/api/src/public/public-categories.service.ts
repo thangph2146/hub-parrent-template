@@ -7,6 +7,8 @@ export interface PublicCategoryItem {
   name: string;
   slug: string;
   description: string | null;
+  icon: string | null;
+  sortOrder: number;
   parentId: string | null;
   parentName: string | null;
   _count: { children: number };
@@ -56,6 +58,8 @@ export class PublicCategoriesService {
       name: r.name,
       slug: r.slug,
       description: r.description ?? null,
+      icon: r.icon ?? null,
+      sortOrder: r.sortOrder ?? 0,
       parentId: (r.parent as any)?.id ?? null,
       parentName: r.parent?.name ?? null,
       _count: { children: childrenCounts.get(r.id) ?? 0 },

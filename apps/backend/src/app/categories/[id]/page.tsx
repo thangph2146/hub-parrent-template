@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, createElement } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -14,15 +14,108 @@ import {
   ChevronRight,
   File,
 } from "lucide-react";
+import { resolveIcon } from "@ui/lib/icons";
 import { Badge } from "@ui/components/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
-import { Separator } from "@ui/components/separator";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionBadge,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { formatDateTime, useCategoryDetailQuery } from "../_component";
+import type { CategoryDetail } from "../_component";
+import type { LucideIcon } from "lucide-react";
 
+
+function SidebarInfoRow({ icon: Icon, label, value, children }: { icon: LucideIcon; label: string; value?: React.ReactNode; children?: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5 text-sm">
+      <div className="flex size-7 items-center justify-center rounded-md bg-muted">
+        <Icon className="size-3.5 text-muted-foreground" />
+      </div>
+      <div>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        {children ?? (value ? <p className="text-sm font-medium">{value}</p> : null)}
+      </div>
+    </div>
+  );
+}
+
+function ListItem({
+  icon: Icon,
+  iconClassName,
+  title,
+  subtitle,
+  badge,
+  onClick,
+}: {
+  icon: LucideIcon;
+  iconClassName?: string;
+  title: string;
+  subtitle: string;
+  badge?: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-muted/40 border-0 border-t border-slate-100 dark:border-border/60 first:border-t-0"
+      onClick={onClick}
+    >
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-muted">
+        <Icon className={iconClassName ?? "size-4 text-muted-foreground"} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{title}</p>
+        <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      {badge}
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+    </button>
+  );
+}
+
+function DetailSidebar({ category, ParentIcon }: { category: CategoryDetail; ParentIcon: ReturnType<typeof resolveIcon> | null }) {
+  return (
+    <div className="sticky top-2 flex flex-col gap-4">
+      <FieldSet variant="section">
+        <FieldSectionLegend
+          icon={Calendar}
+          title="Thời gian"
+          description="Mốc thời gian tạo và cập nhật."
+        />
+        <FieldSetContent variant="section" className="space-y-3 pt-0">
+          <SidebarInfoRow icon={Calendar} label="Ngày tạo" value={formatDateTime(category.createdAt)} />
+          <SidebarInfoRow icon={Clock} label="Cập nhật lần cuối" value={formatDateTime(category.updatedAt)} />
+        </FieldSetContent>
+      </FieldSet>
+
+      <FieldSet variant="section">
+        <FieldSectionLegend
+          icon={Layers}
+          title="Phân cấp & Thống kê"
+          description="Cấu trúc phân cấp và số lượng nội dung."
+        />
+        <FieldSetContent variant="section" className="space-y-3 pt-0">
+          <SidebarInfoRow icon={FolderTree} label="Danh mục cha">
+            <p className="flex items-center gap-1.5 text-sm font-medium">
+              {ParentIcon && createElement(ParentIcon, { className: "size-3.5 text-muted-foreground" })}
+              {category.parentName ?? "Cấp gốc"}
+            </p>
+          </SidebarInfoRow>
+          <SidebarInfoRow icon={Layers} label="Danh mục con" value={`${category._count.children} mục`} />
+          <SidebarInfoRow icon={FileText} label="Bài viết" value={`${category.postCount} bài`} />
+        </FieldSetContent>
+      </FieldSet>
+    </div>
+  );
+}
 
 function CategoryDetailInner() {
   const router = useRouter();
@@ -40,13 +133,11 @@ function CategoryDetailInner() {
     }
   }, [isError, router]);
 
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
-  }
+  if (isLoading) return <AdminPageLoading />;
 
   if (!category) return null;
+
+  const ParentIcon = category.parentIcon ? resolveIcon(category.parentIcon) : null;
 
   return (
     <AdminPageSection>
@@ -68,184 +159,102 @@ function CategoryDetailInner() {
 
       <AdminDetailLayout>
         <AdminDetailMain>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Tag className="size-5 text-primary" />
-                Thông tin danh mục
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Hash className="size-3" />
-                    Slug / đường dẫn
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Tag}
+              title="Thông tin danh mục"
+              description="Slug, danh mục cha và mô tả."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldSectionField label="Slug / đường dẫn" icon={Hash}>
+                  <p className="font-mono font-medium">{category.slug}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground/60">
+                    /danh-muc/{category.slug}
                   </p>
-                  <p className="mt-1 font-mono text-sm text-foreground">{category.slug}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground/60">/danh-muc/{category.slug}</p>
-                </div>
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <FolderTree className="size-3" />
-                    Danh mục cha
+                </FieldSectionField>
+                <FieldSectionField label="Danh mục cha" icon={FolderTree}>
+                  <p className="flex items-center gap-1.5 font-medium">
+                    {ParentIcon && createElement(ParentIcon, { className: "size-4 shrink-0 text-muted-foreground" })}
+                    {category.parentName ?? "Cấp gốc"}
                   </p>
-                  <p className="mt-1 text-sm font-medium">{category.parentName ?? "Cấp gốc"}</p>
-                </div>
+                </FieldSectionField>
               </div>
 
-              {category.description && (
+              {category.description ? (
                 <>
-                  <Separator />
-                  <div>
-                    <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                      <FileText className="size-3" />
-                      Mô tả
-                    </p>
-                    <p className="mt-1.5 text-sm leading-relaxed text-foreground">{category.description}</p>
-                  </div>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Mô tả" icon={FileText}>
+                    <p className="leading-relaxed">{category.description}</p>
+                  </FieldSectionField>
                 </>
-              )}
-            </CardContent>
-          </Card>
+              ) : null}
+            </FieldSetContent>
+          </FieldSet>
 
           {category.children.length > 0 && (
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <FolderTree className="size-5 text-primary" />
-                  Danh mục con
-                  <Badge variant="secondary" className="ml-auto">{category.children.length}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {category.children.map((child, idx) => (
-                  <button
-                    key={child.id}
-                    type="button"
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50 ${idx > 0 ? "border-t border-border/50" : ""}`}
-                    onClick={() => router.push(`/categories/${child.id}`)}
-                  >
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                      <FolderTree className="size-4 text-primary" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{child.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">/danh-muc/{child.slug}</p>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground shrink-0">
-                      <span>{child._count.children} con</span>
-                      <span>{child.postCount} bài</span>
-                    </div>
-                    <ChevronRight className="size-4 text-muted-foreground shrink-0" />
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={FolderTree}
+                title="Danh mục con"
+                description="Các danh mục con trực thuộc."
+                badge={<FieldSectionBadge>{category.children.length}</FieldSectionBadge>}
+              />
+              <FieldSetContent variant="section" className="px-0 pb-0 pt-0">
+                <div className="flex flex-col">
+                  {category.children.map((child) => (
+                    <ListItem
+                      key={child.id}
+                      icon={FolderTree}
+                      iconClassName="size-4 text-primary"
+                      title={child.name}
+                      subtitle={`/danh-muc/${child.slug}`}
+                      badge={
+                        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
+                          <span>{child._count.children} con</span>
+                          <span>{child.postCount} bài</span>
+                        </div>
+                      }
+                      onClick={() => router.push(`/categories/${child.id}`)}
+                    />
+                  ))}
+                </div>
+              </FieldSetContent>
+            </FieldSet>
           )}
 
           {category.posts.length > 0 && (
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <File className="size-5 text-primary" />
-                  Bài viết liên quan
-                  <Badge variant="secondary" className="ml-auto">{category.postCount}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {category.posts.map((post, idx) => (
-                  <button
-                    key={post.id}
-                    type="button"
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50 ${idx > 0 ? "border-t border-border/50" : ""}`}
-                    onClick={() => router.push(`/posts/${post.id}`)}
-                  >
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted shrink-0">
-                      <File className="size-4 text-muted-foreground" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{post.title}</p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(post.createdAt)}</p>
-                    </div>
-                    <Badge variant={post.published ? "default" : "outline"} className="shrink-0">
-                      {post.published ? "Đã đăng" : "Nháp"}
-                    </Badge>
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={File}
+                title="Bài viết liên quan"
+                description="Các bài viết được gắn danh mục này."
+                badge={<FieldSectionBadge>{category.postCount}</FieldSectionBadge>}
+              />
+              <FieldSetContent variant="section" className="px-0 pb-0 pt-0">
+                <div className="flex flex-col">
+                  {category.posts.map((post) => (
+                    <ListItem
+                      key={post.id}
+                      icon={File}
+                      title={post.title}
+                      subtitle={formatDateTime(post.createdAt)}
+                      badge={
+                        <Badge variant={post.published ? "default" : "outline"} className="shrink-0">
+                          {post.published ? "Đã đăng" : "Nháp"}
+                        </Badge>
+                      }
+                      onClick={() => router.push(`/posts/${post.id}`)}
+                    />
+                  ))}
+                </div>
+              </FieldSetContent>
+            </FieldSet>
           )}
-
         </AdminDetailMain>
 
         <AdminDetailSidebar>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="size-5 text-primary" />
-                Thời gian
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Calendar className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Ngày tạo</p>
-                  <p className="text-sm font-medium">{formatDateTime(category.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Clock className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
-                  <p className="text-sm font-medium">{formatDateTime(category.updatedAt)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Layers className="size-5 text-primary" />
-                Phân cấp
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <FolderTree className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Danh mục cha</p>
-                  <p className="text-sm font-medium">{category.parentName ?? "Cấp gốc"}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Layers className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Danh mục con</p>
-                  <p className="text-sm font-medium">{category._count.children} mục</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <FileText className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Bài viết</p>
-                  <p className="text-sm font-medium">{category.postCount} bài</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <DetailSidebar category={category} ParentIcon={ParentIcon} />
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

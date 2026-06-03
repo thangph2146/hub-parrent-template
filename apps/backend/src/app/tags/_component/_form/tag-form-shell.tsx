@@ -1,20 +1,20 @@
 "use client";
 
-import { Button } from "@ui/components/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
-import { FieldError } from "@ui/components/field";
+import { FieldError, FieldSet, FieldSetContent, FieldSectionLegend } from "@ui/components/field";
 import { Input } from "@ui/components/input";
 import { FormFieldCol } from "@ui/components/typing";
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
-  AdminFormSidebar,
 } from "@ui/components/admin";
+import { IconPicker } from "@ui/components/pickers";
 import { Badge } from "@ui/components/badge";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { cn } from "@ui/lib/utils";
-import { Globe, Hash, Tag } from "lucide-react";
+import { Globe, ImageIcon, Tag } from "lucide-react";
+import { resolveIcon } from "@ui/lib/icons";
+import { createElement } from "react";
 import type { TagFormValues } from "../types";
 
 export interface TagFormShellProps {
@@ -55,18 +55,15 @@ export function TagFormShell({
         id="tag-form"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <AdminFormMain>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Tag className="size-5 text-primary" />
-                  Thông tin cơ bản
-                </CardTitle>
-                <CardDescription>
-                  Tên thẻ và slug — những yếu tố ảnh hưởng đến khả năng tìm thấy và nhận diện.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <AdminFormMain className="lg:col-span-3">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Tag}
+              title="Thông tin cơ bản"
+              description="Tên thẻ và slug — những yếu tố ảnh hưởng đến khả năng tìm thấy và nhận diện."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Controller
                   name="name"
                   control={control}
@@ -80,8 +77,8 @@ export function TagFormShell({
                       {fieldState.error && (
                         <FieldError>{fieldState.error.message}</FieldError>
                       )}
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-                        <span>Tối đa 50 ký tự, nên ngắn gọn và dễ nhận diện.</span>
+                      <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                        <span>Tối đa 50 ký tự, nên ngắn gọn.</span>
                         <Badge variant={nameLength > 50 ? "destructive" : "outline"} className="ml-auto">{nameLength} ký tự</Badge>
                       </div>
                     </FormFieldCol>
@@ -101,40 +98,41 @@ export function TagFormShell({
                       {fieldState.error && (
                         <FieldError>{fieldState.error.message}</FieldError>
                       )}
-                      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                         <Globe className="size-3 shrink-0" />
                         <span className="break-all font-mono">/the/{field.value || "ten-the"}</span>
                       </div>
                     </FormFieldCol>
                   )}
                 />
-              </CardContent>
-            </Card>
-        </AdminFormMain>
+              </div>
 
-        <AdminFormSidebar>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-                  <Hash className="size-5" />
-                  Tổng quan
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Trạng thái</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {editingId ? "Đang chỉnh sửa" : "Tạo mới"}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
-                  <p className="text-xs text-muted-foreground">
-                    Thẻ sau khi lưu có thể được gắn vào bài viết để phân loại nội dung.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-        </AdminFormSidebar>
+              <Controller
+                name="icon"
+                control={control}
+                render={({ field }) => {
+                  const IconComp = field.value ? resolveIcon(field.value) : null;
+                  return (
+                    <FormFieldCol label={<div className="flex items-center gap-2"><ImageIcon className="size-4 text-muted-foreground" />Biểu tượng</div>}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-muted/30">
+                          {IconComp ? createElement(IconComp, { className: "size-5 text-primary" }) : <ImageIcon className="size-5 text-muted-foreground/50" />}
+                        </div>
+                        <div className="flex-1">
+                          <IconPicker
+                            value={field.value}
+                            onChange={(v) => field.onChange((v as string) ?? null)}
+                            placeholder="Chọn biểu tượng"
+                          />
+                        </div>
+                      </div>
+                    </FormFieldCol>
+                  );
+                }}
+              />
+            </FieldSetContent>
+          </FieldSet>
+        </AdminFormMain>
       </AdminFormLayout>
     </>
   );

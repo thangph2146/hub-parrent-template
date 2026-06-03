@@ -5,6 +5,7 @@ export type TagRow = {
   id: string;
   name: string;
   slug: string;
+  icon: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -24,6 +25,7 @@ export interface TagConfirmAction {
 export const tagFormSchema = z.object({
   name: z.string().min(1, "Tên thẻ không được để trống"),
   slug: z.string(),
+  icon: z.string().nullable().optional(),
 });
 
 export type TagFormValues = z.infer<typeof tagFormSchema>;

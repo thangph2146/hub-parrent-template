@@ -18,6 +18,12 @@ export class Category extends BaseEntity {
   @Property({ default: 'post' })
   type!: CategoryType;
 
+  @Property({ nullable: true })
+  icon?: string | null;
+
+  @Property({ default: 0 })
+  sortOrder!: number;
+
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 

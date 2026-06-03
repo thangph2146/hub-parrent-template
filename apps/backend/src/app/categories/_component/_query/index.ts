@@ -75,6 +75,14 @@ export function useTrashQuery({
   });
 }
 
+function normalizeCategoryRow(raw: CategoryRow): CategoryRow {
+  return {
+    ...raw,
+    id: String(raw.id),
+    parentId: raw.parentId != null ? String(raw.parentId) : null,
+  };
+}
+
 export function useCategoriesOptionsQuery(
   api: StoreSyncSdk
 ): UseQueryResult<CategoryRow[]> {
@@ -86,7 +94,7 @@ export function useCategoriesOptionsQuery(
         limit: 1000,
         status: "active",
       });
-      return paged.items;
+      return paged.items.map(normalizeCategoryRow);
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,

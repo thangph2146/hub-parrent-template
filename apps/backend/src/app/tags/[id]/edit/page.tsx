@@ -4,8 +4,6 @@ import { useCallback, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -37,6 +35,7 @@ function EditTagPageInner() {
     form.reset({
       name: tag.name ?? "",
       slug: tag.slug ?? "",
+      icon: tag.icon ?? null,
     });
   }, [tag, form]);
 

@@ -5,6 +5,15 @@ import { Badge } from "@ui/components/badge";
 import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
 import type { TagRow, TagTreeRow, TagConfirmAction } from "./types";
 import { formatDateTime } from "./utils";
+import { resolveIcon } from "@ui/lib/icons";
+import { createElement } from "react";
+
+function TagIcon({ name }: { name: string | null | undefined }) {
+  if (!name) return <div className="size-5 shrink-0" />;
+  const Icon = resolveIcon(name);
+  if (!Icon) return <div className="size-5 shrink-0" />;
+  return createElement(Icon, { className: "size-5 shrink-0 text-muted-foreground" });
+}
 
 export function getTagColumns({
   openDetail,
@@ -37,9 +46,10 @@ export function getTagColumns({
         ) : (
           <button
             type="button"
-            className="font-medium text-left text-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-2 font-medium text-left text-foreground hover:text-primary transition-colors"
             onClick={() => openDetail(row.original)}
           >
+            <TagIcon name={row.original.icon} />
             {String(getValue())}
           </button>
         ),

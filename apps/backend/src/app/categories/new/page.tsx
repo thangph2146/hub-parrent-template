@@ -1,16 +1,17 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
   CategoryFormShell,
   useCategoryForm,
   buildCategoryPayload,
+  useCategoriesOptionsQuery,
+  buildCategoryOptionTree,
 } from "../_component";
 import type { CategoryFormValues } from "../_component";
 
@@ -18,6 +19,12 @@ function NewCategoryPageInner() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const form = useCategoryForm().form;
+  const categoriesOptionsQuery = useCategoriesOptionsQuery(api);
+
+  const categoryTreeOptions = useMemo(
+    () => buildCategoryOptionTree(categoriesOptionsQuery.data ?? []),
+    [categoriesOptionsQuery.data],
+  );
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -51,7 +58,7 @@ function NewCategoryPageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        categoryTreeOptions={[]}
+        categoryTreeOptions={categoryTreeOptions}
         onBack={() => router.push("/categories")}
         onReset={() => { form.reset(); }}
       />

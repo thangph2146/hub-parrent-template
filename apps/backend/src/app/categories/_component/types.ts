@@ -6,6 +6,7 @@ export interface CategoryRow {
   slug: string;
   parentId: string | null;
   parentName: string | null;
+  parentIcon: string | null;
   description: string | null;
   createdAt: string;
   updatedAt: string;

@@ -223,7 +223,7 @@ export class TagsController {
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body() body: { name?: string; slug?: string },
+    @Body() body: { name?: string; slug?: string; icon?: string | null },
   ) {
     const userId = this.getUserId(headers);
     if (!userId) {
@@ -239,6 +239,7 @@ export class TagsController {
     const created = await this.tagsService.create({
       name: body.name.trim(),
       slug: body.slug.trim(),
+      icon: body.icon ?? null,
     });
     if (userId) {
       this.logActivity(
@@ -270,7 +271,7 @@ export class TagsController {
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body() body: { name?: string; slug?: string },
+    @Body() body: { name?: string; slug?: string; icon?: string | null },
   ) {
     const userId = this.getUserId(headers);
     if (!userId) {
@@ -279,6 +280,7 @@ export class TagsController {
     const updated = await this.tagsService.update(id, {
       name: body?.name?.trim(),
       slug: body?.slug?.trim(),
+      icon: body.icon !== undefined ? body.icon : undefined,
     });
     if (!updated) {
       const { statusCode, body: errBody } = createErrorResponse(

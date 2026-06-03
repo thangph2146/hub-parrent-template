@@ -240,6 +240,8 @@ export class CategoriesController {
       name?: string;
       slug?: string;
       description?: string | null;
+      icon?: string | null;
+      sortOrder?: number;
       parentId?: string | null;
       type?: 'post' | 'event';
     },
@@ -260,6 +262,8 @@ export class CategoriesController {
       name: body.name.trim(),
       slug: body.slug.trim(),
       description: body.description ?? null,
+      icon: body.icon ?? null,
+      sortOrder: body.sortOrder,
       parentId:
         body.parentId === '' || body.parentId == null ? null : body.parentId,
       type:
@@ -300,6 +304,8 @@ export class CategoriesController {
       name?: string;
       slug?: string;
       description?: string | null;
+      icon?: string | null;
+      sortOrder?: number;
       parentId?: string | null;
       type?: 'post' | 'event';
     },
@@ -313,6 +319,8 @@ export class CategoriesController {
       name: body?.name?.trim(),
       slug: body?.slug?.trim(),
       description: body?.description ?? undefined,
+      icon: body?.icon ?? undefined,
+      sortOrder: body?.sortOrder,
       parentId: body?.parentId === '' ? null : (body?.parentId ?? undefined),
       type:
         body.type === 'post' || body.type === 'event' ? body.type : undefined,

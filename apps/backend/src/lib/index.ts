@@ -5,5 +5,4 @@ export { buildAdminFilterQuery,
   type FilterMapping,
 } from "./build-admin-filter-query";
 export { formatVND, formatDate } from "./format";
-export { resolveCategoryIcon, CATEGORY_ICON_OPTIONS } from "./category-icons";
 // Note: api.ts, auth-routes.ts, auth-session.ts are kept separate to avoid circular dependencies

@@ -12,6 +12,7 @@ export interface CategoryTreeNode {
   id: string;
   name: string;
   parentId?: string | null;
+  icon?: string | null;
   sortOrder?: number;
   subRows?: CategoryTreeNode[];
 }

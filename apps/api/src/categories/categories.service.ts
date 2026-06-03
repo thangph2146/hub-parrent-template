@@ -19,7 +19,10 @@ export interface CategoryRowDto {
   slug: string;
   parentId: string | null;
   parentName?: string | null;
+  parentIcon?: string | null;
   description: string | null;
+  icon: string | null;
+  sortOrder: number;
   type: string;
   createdAt: string;
   updatedAt: string;
@@ -34,6 +37,8 @@ export interface ChildCategoryDto {
   id: string;
   name: string;
   slug: string;
+  icon: string | null;
+  sortOrder: number;
   _count: { children: number };
   postCount: number;
 }
@@ -83,7 +88,10 @@ function mapRow(r: CategoryWithParent): CategoryRowDto {
     slug: r.slug,
     parentId: r.parent?.id ?? null,
     parentName: r.parent?.name ?? null,
+    parentIcon: r.parent?.icon ?? null,
     description: r.description ?? null,
+    icon: r.icon ?? null,
+    sortOrder: r.sortOrder ?? 0,
     type: r.type,
     createdAt: toIsoString(r.createdAt) ?? new Date(0).toISOString(),
     updatedAt: toIsoString(r.updatedAt) ?? new Date(0).toISOString(),
@@ -385,6 +393,8 @@ export class CategoriesService {
       id: child.id,
       name: child.name,
       slug: child.slug,
+      icon: child.icon ?? null,
+      sortOrder: child.sortOrder ?? 0,
       _count: { children: child.children.length },
       postCount: childPostCounts.get(child.id) ?? 0,
     }));
@@ -413,6 +423,8 @@ export class CategoriesService {
     name: string;
     slug: string;
     description?: string | null;
+    icon?: string | null;
+    sortOrder?: number;
     parentId?: string | null;
     type?: 'post' | 'event';
   }): Promise<CategoryRowDto> {
@@ -420,6 +432,8 @@ export class CategoriesService {
     entity.name = data.name;
     entity.slug = data.slug;
     entity.description = data.description ?? null;
+    entity.icon = data.icon ?? null;
+    entity.sortOrder = Number.isFinite(data.sortOrder) ? data.sortOrder! : 0;
     entity.type = data.type ?? 'post';
     entity.parent = data.parentId
       ? this.em.getReference(Category, data.parentId)
@@ -441,6 +455,8 @@ export class CategoriesService {
       name?: string;
       slug?: string;
       description?: string | null;
+      icon?: string | null;
+      sortOrder?: number;
       parentId?: string | null;
       type?: 'post' | 'event';
     },
@@ -452,6 +468,9 @@ export class CategoriesService {
     if (data.slug != null) existing.slug = data.slug;
     if (data.description !== undefined)
       existing.description = data.description ?? null;
+    if (data.icon !== undefined) existing.icon = data.icon ?? null;
+    if (data.sortOrder !== undefined)
+      existing.sortOrder = Number.isFinite(data.sortOrder) ? data.sortOrder : 0;
     if (data.type !== undefined) existing.type = data.type;
     if (data.parentId !== undefined) {
       existing.parent = data.parentId

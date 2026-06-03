@@ -11,3 +11,4 @@ export {
   categoryFormSchema,
 } from "./use-categories-actions";
 export type { CategoryFormValues } from "./use-categories-actions";
+export { ROOT_PARENT_VALUE, getCategoryDefaultValues } from "./use-categories-actions";

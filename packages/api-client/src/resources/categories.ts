@@ -149,6 +149,8 @@ export class CategoriesApi {
       slug: input.slug,
       description: input.description,
       parentId: input.parentId,
+      icon: input.icon,
+      sortOrder: input.sortOrder,
     });
     return mapCategory(row);
   }
@@ -159,6 +161,8 @@ export class CategoriesApi {
       slug: input.slug,
       description: input.description,
       parentId: input.parentId,
+      icon: input.icon,
+      sortOrder: input.sortOrder,
     });
     return mapCategory(row);
   }
