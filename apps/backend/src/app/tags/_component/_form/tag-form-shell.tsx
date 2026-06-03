@@ -8,13 +8,11 @@ import {
   AdminFormMain,
   AdminFormPageHeader,
 } from "@ui/components/admin";
-import { IconPicker } from "@ui/components/pickers";
+import { IconPickerField } from "@ui/components/pickers";
 import { Badge } from "@ui/components/badge";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { cn } from "@ui/lib/utils";
 import { Globe, ImageIcon, Tag } from "lucide-react";
-import { resolveIcon } from "@ui/lib/icons";
-import { createElement } from "react";
 import type { TagFormValues } from "../types";
 
 export interface TagFormShellProps {
@@ -68,7 +66,7 @@ export function TagFormShell({
                   name="name"
                   control={control}
                   render={({ field, fieldState }) => (
-                    <FormFieldCol label="Tên hiển thị" required>
+                    <FormFieldCol label={<div className="flex items-center gap-2"><Tag className="size-4 text-muted-foreground" />Tên hiển thị</div>} required>
                       <Input
                         placeholder="VD: công nghệ, giải trí, giáo dục"
                         {...field}
@@ -89,7 +87,7 @@ export function TagFormShell({
                   name="slug"
                   control={control}
                   render={({ field, fieldState }) => (
-                    <FormFieldCol label="Slug / đường dẫn">
+                    <FormFieldCol label={<div className="flex items-center gap-2"><Globe className="size-4 text-muted-foreground" />Slug / đường dẫn</div>}>
                       <Input
                         placeholder="cong-nghe"
                         {...field}
@@ -110,25 +108,15 @@ export function TagFormShell({
               <Controller
                 name="icon"
                 control={control}
-                render={({ field }) => {
-                  const IconComp = field.value ? resolveIcon(field.value) : null;
-                  return (
-                    <FormFieldCol label={<div className="flex items-center gap-2"><ImageIcon className="size-4 text-muted-foreground" />Biểu tượng</div>}>
-                      <div className="flex items-center gap-3">
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-muted/30">
-                          {IconComp ? createElement(IconComp, { className: "size-5 text-primary" }) : <ImageIcon className="size-5 text-muted-foreground/50" />}
-                        </div>
-                        <div className="flex-1">
-                          <IconPicker
-                            value={field.value}
-                            onChange={(v) => field.onChange((v as string) ?? null)}
-                            placeholder="Chọn biểu tượng"
-                          />
-                        </div>
-                      </div>
-                    </FormFieldCol>
-                  );
-                }}
+                render={({ field }) => (
+                  <FormFieldCol label={<div className="flex items-center gap-2"><ImageIcon className="size-4 text-muted-foreground" />Biểu tượng</div>}>
+                    <IconPickerField
+                      value={field.value}
+                      onChange={(v) => field.onChange((v as string) ?? null)}
+                      placeholder="Chọn biểu tượng"
+                    />
+                  </FormFieldCol>
+                )}
               />
             </FieldSetContent>
           </FieldSet>

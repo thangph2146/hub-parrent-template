@@ -10,7 +10,7 @@ import {
   AdminFormPageHeader,
   AdminFormSidebar,
 } from "@ui/components/admin";
-import { IconPicker, TreePicker, type TreeOption } from "@ui/components/pickers";
+import { IconPickerField, TreePicker, type TreeOption } from "@ui/components/pickers";
 import { Badge } from "@ui/components/badge";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import type { CategoryTreeOption } from "../types";
@@ -195,7 +195,7 @@ export function CategoryFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Biểu tượng">
-                      <IconPicker
+                      <IconPickerField
                         value={field.value}
                         onChange={(v) => field.onChange((v as string) ?? "Package2")}
                         placeholder="Chọn biểu tượng"
