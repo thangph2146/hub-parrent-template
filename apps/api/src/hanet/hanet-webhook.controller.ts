@@ -46,7 +46,7 @@ export class HanetWebhookController {
   private async handle(rawBody: HanetWebhookBody, eventId?: string) {
     const body = normalizeHanetBody(rawBody);
     this.logger.debug(
-      `HANET webhook eventId=${eventId ?? 'auto'} keys=${Object.keys(body).join(',')} camera=${body.camera_id ?? body.deviceID ?? '-'}`,
+      `HANET webhook eventId=${eventId ?? 'auto'} keys=${Object.keys(body).join(',')} camera=${String(body.camera_id ?? body.deviceID ?? '-')}`,
     );
     const result = await this.hanetWebhookService.handleWebhook(eventId, body);
     return { success: true, data: result };

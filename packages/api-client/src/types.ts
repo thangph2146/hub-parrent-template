@@ -34,6 +34,7 @@ export interface User extends Omit<AuditFields, "id"> {
   fullName: string;
   phone?: string | null;
   address?: string | null;
+  citizenId?: string | null;
   avatar?: string | null;
   roles: UserRoleRef[];
   isActive: boolean;

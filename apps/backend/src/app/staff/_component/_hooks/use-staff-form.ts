@@ -10,6 +10,9 @@ export const staffFormSchema = z.object({
   isActive: z.boolean(),
   roleCodes: z.array(z.string()).min(1, "Vui lòng chọn ít nhất một vai trò"),
   avatar: z.string().optional(),
+  phone: z.string().optional().or(z.literal("")),
+  address: z.string().optional().or(z.literal("")),
+  citizenId: z.string().optional().or(z.literal("")),
 });
 
 export type StaffFormValues = z.infer<typeof staffFormSchema>;
@@ -30,6 +33,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       isActive: true,
       roleCodes: [],
       avatar: "",
+      phone: "",
+      address: "",
+      citizenId: "",
     },
     mode: "onChange",
   });
@@ -41,6 +47,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       password: "",
       isActive: true,
       roleCodes: [],
+      phone: "",
+      address: "",
+      citizenId: "",
     });
   }, [form]);
 
@@ -50,6 +59,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
     isActive: boolean;
     roles: { code: string }[];
     avatar?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    citizenId?: string | null;
   }) => {
     form.reset({
       email: user.email,
@@ -58,6 +70,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       isActive: user.isActive,
       roleCodes: user.roles.map((r) => r.code),
       avatar: user.avatar ?? "",
+      phone: user.phone ?? "",
+      address: user.address ?? "",
+      citizenId: user.citizenId ?? "",
     });
   }, [form]);
 
@@ -77,6 +92,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
     isActive: boolean;
     roleCodes: string[];
     avatar?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    citizenId?: string | null;
 } => {
     const values = form.getValues();
     const payload: {
@@ -86,6 +104,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       isActive: boolean;
       roleCodes: string[];
       avatar?: string | null;
+      phone?: string | null;
+      address?: string | null;
+      citizenId?: string | null;
     } = {
       fullName: values.fullName.trim(),
       isActive: values.isActive,
@@ -93,6 +114,9 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       password: "",
       roleCodes: values.roleCodes,
       avatar: values.avatar?.trim() || null,
+      phone: values.phone?.trim() || null,
+      address: values.address?.trim() || null,
+      citizenId: values.citizenId?.trim() || null,
     };
 
     if (!editingId) {

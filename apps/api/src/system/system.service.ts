@@ -12,13 +12,8 @@ import { Category } from '../entities/category.entity';
 import { Comment } from '../entities/comment.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 import { Event } from '../entities/event.entity';
-import { EventCheckin } from '../entities/event-checkin.entity';
-import { EventRegistration } from '../entities/event-registration.entity';
-import { EventSpeaker } from '../entities/event-speaker.entity';
 import { Group } from '../entities/group.entity';
-import { GroupMember } from '../entities/group-member.entity';
 import { Message } from '../entities/message.entity';
-import { MessageRead } from '../entities/message-read.entity';
 import { Speaker } from '../entities/speaker.entity';
 import { Notification } from '../entities/notification.entity';
 import { PageContent } from '../entities/page-content.entity';
@@ -1638,12 +1633,12 @@ export class SystemService {
                 : typeof entity === 'function'
                   ? entity.name
                   : mName;
-            data[mName] = rows.map((row) =>
+            data[mName] = rows.map((row: object) =>
               this.flattenEntityRowForExport(entityKey, row),
             );
           }
           this.logger.debug(
-            `Exported ${data[mName].length} records from ${mName}`,
+            `Exported ${(data[mName] as unknown[]).length} records from ${mName}`,
           );
         } else {
           this.logger.warn(`Export: không có entity cho model "${mName}"`);

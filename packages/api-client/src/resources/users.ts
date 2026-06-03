@@ -21,6 +21,7 @@ type ApiUserRow = {
   name?: string | null;
   phone?: string | null;
   address?: string | null;
+  citizenId?: string | null;
   avatar?: string | null;
   isActive?: boolean;
   createdAt?: string;
@@ -63,6 +64,7 @@ function mapUserRow(row: ApiUserRow): User {
     fullName: row.name?.trim() || row.email || "",
     phone: row.phone ?? null,
     address: row.address ?? null,
+    citizenId: row.citizenId ?? null,
     avatar: row.avatar ?? null,
     roles: (row.roles ?? []).map(mapRole),
     isActive: row.isActive ?? true,
@@ -146,6 +148,7 @@ export class UsersApi {
       password: input.password,
       phone: input.phone,
       address: input.address,
+      citizenId: input.citizenId,
       isActive: input.isActive,
       roleIds,
     });
@@ -160,6 +163,7 @@ export class UsersApi {
       password: input.password,
       phone: input.phone,
       address: input.address,
+      citizenId: input.citizenId,
       avatar: input.avatar,
       isActive: input.isActive,
       roleIds,

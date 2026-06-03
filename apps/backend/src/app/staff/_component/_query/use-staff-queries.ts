@@ -6,12 +6,12 @@ import { queryKeys } from "@/hooks/queries";
 
 type CreateStaffInput = Pick<
   CreateUserInput,
-  "email" | "fullName" | "password" | "isActive" | "roleCodes"
+  "email" | "fullName" | "password" | "isActive" | "roleCodes" | "phone" | "address" | "citizenId"
 >;
 
 type UpdateStaffInput = Pick<
   UpdateUserInput,
-  "fullName" | "password" | "isActive" | "roleCodes" | "avatar"
+  "fullName" | "password" | "isActive" | "roleCodes" | "avatar" | "phone" | "address" | "citizenId"
 >;
 
 export interface UseStaffMutationsProps {
@@ -29,6 +29,9 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
         password: input.password,
         isActive: input.isActive,
         roleCodes: input.roleCodes,
+        phone: input.phone,
+        address: input.address,
+        citizenId: input.citizenId,
       });
     },
     onSuccess: async () => {
@@ -50,6 +53,9 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
         password: input.password,
         roleCodes: input.roleCodes,
         avatar: input.avatar,
+        phone: input.phone,
+        address: input.address,
+        citizenId: input.citizenId,
       });
     },
     onSuccess: async (_data, variables) => {

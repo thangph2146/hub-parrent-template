@@ -46,6 +46,7 @@ export class CreateUserDto {
   avatar: string;
   phone: string;
   address: string;
+  citizenId: string;
   isActive: boolean;
   roleIds: string[];
 }
@@ -58,6 +59,7 @@ export class UpdateUserDto {
   avatar: string;
   phone: string;
   address: string;
+  citizenId: string;
   isActive: boolean;
   roleIds: string[];
 }
@@ -287,6 +289,7 @@ export class UsersController {
       avatar?: string | null;
       phone?: string | null;
       address?: string | null;
+      citizenId?: string | null;
       isActive?: boolean;
       roleIds?: string[];
     },
@@ -318,6 +321,7 @@ export class UsersController {
       avatar: body.avatar ?? null,
       phone: body.phone ?? null,
       address: body.address ?? null,
+      citizenId: body.citizenId ?? null,
       isActive: body.isActive ?? true,
       roleIds: body.roleIds,
     });
@@ -360,6 +364,7 @@ export class UsersController {
       avatar?: string | null;
       phone?: string | null;
       address?: string | null;
+      citizenId?: string | null;
       isActive?: boolean;
       roleIds?: string[];
     },
@@ -377,6 +382,7 @@ export class UsersController {
       avatar: body?.avatar,
       phone: body?.phone?.trim(),
       address: body?.address?.trim(),
+      citizenId: body?.citizenId?.trim(),
       isActive: body?.isActive,
       roleIds: body?.roleIds,
     });

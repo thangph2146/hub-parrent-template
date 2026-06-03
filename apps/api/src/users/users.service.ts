@@ -21,6 +21,7 @@ export interface UserRowDto {
   emailVerified: string | null;
   phone: string | null;
   address: string | null;
+  citizenId: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -72,6 +73,7 @@ function mapRow(user: User): UserRowDto {
     emailVerified: safeIsoString(user.emailVerified),
     phone: user.phone ?? null,
     address: user.address ?? null,
+    citizenId: user.citizenId ?? null,
     isActive: user.isActive,
     createdAt: safeIsoStringNow(user.createdAt),
     updatedAt: safeIsoStringNow(user.updatedAt),
@@ -246,6 +248,7 @@ export class UsersService {
     avatar?: string | null;
     phone?: string | null;
     address?: string | null;
+    citizenId?: string | null;
     isActive?: boolean;
     roleIds?: string[];
   }): Promise<UserRowDto> {
@@ -260,6 +263,7 @@ export class UsersService {
     created.avatar = data.avatar?.trim() ?? null;
     created.phone = data.phone?.trim() ?? null;
     created.address = data.address?.trim() ?? null;
+    created.citizenId = data.citizenId?.trim() ?? null;
     created.isActive = data.isActive ?? true;
     this.em.persist(created);
     await this.em.flush();
@@ -311,6 +315,7 @@ export class UsersService {
       avatar?: string | null;
       phone?: string | null;
       address?: string | null;
+      citizenId?: string | null;
       isActive?: boolean;
       roleIds?: string[];
     },
@@ -329,6 +334,9 @@ export class UsersService {
     if (data.phone !== undefined) existing.phone = data.phone?.trim() ?? null;
     if (data.address !== undefined) {
       existing.address = data.address?.trim() ?? null;
+    }
+    if (data.citizenId !== undefined) {
+      existing.citizenId = data.citizenId?.trim() ?? null;
     }
     if (data.isActive !== undefined) existing.isActive = data.isActive;
 

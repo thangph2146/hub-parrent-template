@@ -13,11 +13,24 @@ import {
   Trash2,
   FileText,
   ArrowUpRight,
+  User,
+  Mail,
+  MapPin,
+  ImageIcon,
+  Clock,
+  Fingerprint,
 } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Badge } from "@ui/components/badge"
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionBadge,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import {
   canUserAccess,
   formatDateTime,
@@ -55,7 +68,7 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
       return cats.length > 0 ? (
         cats.map((c) => c.name).join(", ")
       ) : (
-        <span className="text-muted-foreground">—</span>
+        <span className="text-muted-foreground">&mdash;</span>
       )
     },
   },
@@ -82,6 +95,33 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
   },
 ]
 
+function AvatarDisplay({ user }: { user: { avatar?: string | null; fullName: string } }) {
+  function initials(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean)
+    if (parts.length === 0) return "?"
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3 py-2">
+      <div className="relative aspect-[3/4] w-full shrink-0">
+        {user.avatar ? (
+          <img
+            src={user.avatar}
+            alt=""
+            className="h-full w-full rounded-lg border-2 border-border/60 object-cover shadow-sm"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
+            {initials(user.fullName)}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function StaffDetailPageInner() {
   const params = useParams()
   const router = useRouter()
@@ -100,13 +140,6 @@ function StaffDetailPageInner() {
   const user = userQuery.data
   const posts = postsQuery.data?.items || []
 
-  function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "?"
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-  }
-
   if (!session || !canManageUsers) {
     return (
       <AdminPageSection>
@@ -115,11 +148,9 @@ function StaffDetailPageInner() {
           variant="module"
           onBack={() => router.push("/staff")}
         />
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Không có quyền truy cập</p>
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-muted-foreground">Không có quyền truy cập</p>
+        </div>
       </AdminPageSection>
     )
   }
@@ -132,11 +163,9 @@ function StaffDetailPageInner() {
           variant="module"
           onBack={() => router.push("/staff")}
         />
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Đang tải...</p>
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-muted-foreground">Đang tải...</p>
+        </div>
       </AdminPageSection>
     )
   }
@@ -144,179 +173,179 @@ function StaffDetailPageInner() {
   return (
     <AdminPageSection>
       <AdminDetailPageHeader
-        title="Chi tiết nhân sự"
+        title={user.fullName}
+        subtitle={
+          <>
+            <span className="text-muted-foreground/60">Nhân sự</span>
+            <span className="mx-1.5 text-muted-foreground/40">/</span>
+            {user.email}
+          </>
+        }
         variant="module"
         onBack={() => router.push("/staff")}
         onEdit={() => router.push(`/staff/${userId}/edit`)}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-1">
-          <CardContent className="flex flex-col items-center gap-4 pt-6">
-            <div className="size-24">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt=""
-                  className="size-24 rounded-full border-2 border-border/60 object-cover shadow-sm"
-                />
-              ) : (
-                <div className="flex size-24 items-center justify-center rounded-full border-2 border-border/60 bg-muted text-2xl font-bold text-muted-foreground">
-                  {initials(user.fullName)}
-                </div>
-              )}
-            </div>
-            <div className="text-center">
-              <p className="text-lg font-bold">{user.fullName}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-            </div>
-            {user.phone && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="size-3.5" aria-hidden />
-                {user.phone}
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              {user.isActive ? (
-                <Badge
-                  variant="outline"
-                  className="gap-1 border-emerald-200 text-emerald-700"
-                >
-                  <CheckCircle2 className="size-3" aria-hidden />
-                  Hoạt động
-                </Badge>
-              ) : (
-                <Badge
-                  variant="outline"
-                  className="gap-1 text-muted-foreground"
-                >
-                  <Lock className="size-3" aria-hidden />
-                  Khoá
-                </Badge>
-              )}
-            </div>
-            <div className="flex flex-wrap justify-center gap-2">
-              {user.roles.map((r) => (
-                <Badge
-                  key={r.code}
-                  variant={
-                    isSuperAdminRoleCode(r.code) ? "default" : "secondary"
-                  }
-                  className="text-xs font-normal"
-                >
-                  <ShieldHalf className="mr-1 size-3" aria-hidden />
-                  {r.name}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarClock className="size-5 text-primary" aria-hidden />
-              Thời gian hoạt động
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 rounded-lg border border-border/60 bg-muted/20 p-3">
-                <CalendarClock
-                  className="size-5 shrink-0 text-muted-foreground"
-                  aria-hidden
-                />
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    Tạo lúc
-                  </p>
-                  <p className="text-sm font-medium">
-                    {formatDateTime(user.createdAt)}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 rounded-lg border border-border/60 bg-muted/20 p-3">
-                <CalendarClock
-                  className="size-5 shrink-0 text-muted-foreground"
-                  aria-hidden
-                />
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    Cập nhật lần cuối
-                  </p>
-                  <p className="text-sm font-medium">
-                    {formatDateTime(user.updatedAt)}
-                  </p>
-                </div>
-              </div>
-              {user.deletedAt && (
-                <div className="flex items-center gap-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
-                  <Trash2
-                    className="size-5 shrink-0 text-destructive"
-                    aria-hidden
-                  />
-                  <div>
-                    <p className="text-xs font-semibold text-destructive">
-                      Xóa lúc
-                    </p>
-                    <p className="text-sm font-medium text-destructive">
-                      {formatDateTime(user.deletedAt)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="size-5 text-primary" aria-hidden />
-              Bài viết liên quan
-            </CardTitle>
-            {postsQuery.data?.total && postsQuery.data.total > 5 && (
-              <Link href="/posts">
-                <Button variant="ghost" size="sm" className="gap-1">
-                  Xem tất cả
-                  <ArrowUpRight className="size-4" aria-hidden />
-                </Button>
-              </Link>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent>
-          <AdminDataTable<PostListRow>
-            data={posts}
-            columns={postColumns}
-            isLoading={postsQuery.isLoading}
-            emptyLabel="Chưa có bài viết nào từ nhân sự này"
-            xlsxExport={buildAdminTableXlsxExport("staff-related-posts", {
-              pageCount: posts.length,
-              total: postsQuery.data?.total ?? posts.length,
-              extraMetadata: user?.fullName
-                ? [{ label: "Nhân sự", value: user.fullName }]
-                : undefined,
-            })}
-            footer={
-              postsQuery.data?.total != null ? (
-                <p className="text-xs text-muted-foreground">
-                  Tổng số:{" "}
-                  <span className="font-semibold text-foreground">
-                    {postsQuery.data.total}
-                  </span>{" "}
-                  bài viết
-                  {postsQuery.data.total > 5 && (
-                    <span className="ml-1">(hiện 5 mới nhất)</span>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
+        <div className="space-y-6">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={User}
+              title="Thông tin nhân sự"
+              description="Họ tên, email, số điện thoại và địa chỉ."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldSectionField label="Họ và tên" icon={User}>
+                  <span className="font-medium">{user.fullName}</span>
+                </FieldSectionField>
+                <FieldSectionField label="Email" icon={Mail}>
+                  <span className="font-mono font-medium">{user.email}</span>
+                </FieldSectionField>
+                <FieldSectionField label="Số điện thoại" icon={Phone}>
+                  {user.phone ? (
+                    <span className="font-medium">{user.phone}</span>
+                  ) : (
+                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
                   )}
-                </p>
-              ) : null
-            }
-          />
-        </CardContent>
-      </Card>
+                </FieldSectionField>
+                <FieldSectionField label="Địa chỉ / văn phòng" icon={MapPin}>
+                  {user.address ? (
+                    <span className="font-medium">{user.address}</span>
+                  ) : (
+                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
+                  )}
+                </FieldSectionField>
+                <FieldSectionField label="Căn cước công dân" icon={Fingerprint}>
+                  {user.citizenId ? (
+                    <span className="font-mono font-medium">{user.citizenId}</span>
+                  ) : (
+                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
+                  )}
+                </FieldSectionField>
+              </div>
+
+              <FieldSectionDivider />
+
+              <FieldSectionField label="Vai trò" icon={ShieldHalf}>
+                <div className="flex flex-wrap gap-1.5">
+                  {user.roles.map((r) => (
+                    <Badge
+                      key={r.code}
+                      variant={isSuperAdminRoleCode(r.code) ? "default" : "secondary"}
+                      className="text-xs font-normal"
+                    >
+                      {r.name}
+                    </Badge>
+                  ))}
+                </div>
+              </FieldSectionField>
+
+              <FieldSectionDivider />
+
+              <FieldSectionField label="Trạng thái" icon={user.isActive ? CheckCircle2 : Lock}>
+                <Badge
+                  variant="outline"
+                  className={user.isActive ? "gap-1 border-emerald-200 text-emerald-700" : "gap-1 text-muted-foreground"}
+                >
+                  {user.isActive ? (
+                    <CheckCircle2 className="size-3" aria-hidden />
+                  ) : (
+                    <Lock className="size-3" aria-hidden />
+                  )}
+                  {user.isActive ? "Đang hoạt động" : "Đã khoá"}
+                </Badge>
+              </FieldSectionField>
+            </FieldSetContent>
+          </FieldSet>
+
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={FileText}
+              title="Bài viết liên quan"
+              description="Các bài viết được tạo bởi nhân sự này."
+              badge={posts.length > 0 ? <FieldSectionBadge>{postsQuery.data?.total ?? posts.length}</FieldSectionBadge> : undefined}
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              {postsQuery.data?.total != null && postsQuery.data.total > 5 && (
+                <div className="mb-3 flex justify-end">
+                  <Link href="/posts">
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      Xem tất cả
+                      <ArrowUpRight className="size-4" aria-hidden />
+                    </Button>
+                  </Link>
+                </div>
+              )}
+              <AdminDataTable<PostListRow>
+                data={posts}
+                columns={postColumns}
+                isLoading={postsQuery.isLoading}
+                emptyLabel="Chưa có bài viết nào từ nhân sự này"
+                xlsxExport={buildAdminTableXlsxExport("staff-related-posts", {
+                  pageCount: posts.length,
+                  total: postsQuery.data?.total ?? posts.length,
+                  extraMetadata: user?.fullName
+                    ? [{ label: "Nhân sự", value: user.fullName }]
+                    : undefined,
+                })}
+                footer={
+                  postsQuery.data?.total != null ? (
+                    <p className="text-xs text-muted-foreground">
+                      Tổng số:{" "}
+                      <span className="font-semibold text-foreground">
+                        {postsQuery.data.total}
+                      </span>{" "}
+                      bài viết
+                      {postsQuery.data.total > 5 && (
+                        <span className="ml-1">(hiện 5 mới nhất)</span>
+                      )}
+                    </p>
+                  ) : null
+                }
+              />
+            </FieldSetContent>
+          </FieldSet>
+        </div>
+
+        <div className="space-y-6">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={ImageIcon}
+              title="Ảnh đại diện"
+              description="Hình ảnh hồ sơ của nhân sự."
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              <AvatarDisplay user={user} />
+            </FieldSetContent>
+          </FieldSet>
+
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={CalendarClock}
+              title="Thời gian"
+              description="Mốc thời gian tạo và cập nhật."
+            />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
+              <FieldSectionField label="Ngày tạo" icon={CalendarClock}>
+                <span className="font-medium">{formatDateTime(user.createdAt)}</span>
+              </FieldSectionField>
+              <FieldSectionDivider />
+              <FieldSectionField label="Cập nhật lần cuối" icon={Clock}>
+                <span className="font-medium">{formatDateTime(user.updatedAt)}</span>
+              </FieldSectionField>
+              {user.deletedAt && (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Xóa lúc" icon={Trash2}>
+                    <span className="font-medium text-destructive">{formatDateTime(user.deletedAt)}</span>
+                  </FieldSectionField>
+                </>
+              )}
+            </FieldSetContent>
+          </FieldSet>
+        </div>
+      </div>
     </AdminPageSection>
   )
 }

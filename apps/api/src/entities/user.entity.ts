@@ -39,6 +39,9 @@ export class User extends BaseEntity {
   @Property({ nullable: true })
   address?: string | null;
 
+  @Property({ nullable: true })
+  citizenId?: string | null;
+
   @Property({ default: true })
   isActive: boolean = true;
 
