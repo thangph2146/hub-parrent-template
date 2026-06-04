@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useCallback, useMemo, useState } from "react"
 import type { ColumnDef, RowSelectionState } from "@tanstack/react-table"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
@@ -31,7 +32,6 @@ import {
 } from "@ui/components/dialog"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import { PageSection } from "@ui/components/layout"
 import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
@@ -82,6 +82,8 @@ type RoleRow = {
   description: string | null
   permissions: string[]
   isActive: boolean
+  createdAt: string | null
+  updatedAt: string | null
   deletedAt: string | null
 }
 
@@ -227,6 +229,8 @@ function normalizePagedRoles(payload: unknown): PagedResult<RoleRow> {
       description: (record.description as string | null | undefined) ?? null,
       permissions: normalizePermissionCodes(record.permissions),
       isActive: Boolean(record.isActive ?? true),
+      createdAt: (record.createdAt as string | null | undefined) ?? null,
+      updatedAt: (record.updatedAt as string | null | undefined) ?? null,
       deletedAt: (record.deletedAt as string | null | undefined) ?? null,
     }
   })
@@ -249,6 +253,7 @@ function roleCodeify(input: string): string {
 }
 
 export default function RbacPage() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const { user: session } = useAuth()
   const canReadRbac =
@@ -289,7 +294,6 @@ export default function RbacPage() {
   const [trashPageSize, setTrashPageSize] = useState(15)
   const [globalFilter, setGlobalFilter] = useState("")
   const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
-  const [selectedRoleId, setSelectedRoleId] = useState<string>("")
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({})
   const [trashSelectedRowIds, setTrashSelectedRowIds] =
     useState<RowSelectionState>({})
@@ -365,20 +369,6 @@ export default function RbacPage() {
     onSuccess: invalidateRoles,
   })
 
-  const updateMutation = useMutation({
-    mutationFn: async (input: RoleFormState) =>
-      unwrapEnvelope<RoleRow>(
-        await api.http.put(`/admin/roles/${input.id}`, {
-          name: input.code,
-          displayName: input.name,
-          description: input.description || null,
-          isActive: input.isActive,
-          permissions: input.permissions,
-        })
-      ),
-    onSuccess: invalidateRoles,
-  })
-
   const deleteMutation = useMutation({
     /** Luôn dùng bulk soft-delete để tránh nhầm route DELETE (soft vs hard-delete). */
     mutationFn: async (id: string) =>
@@ -414,18 +404,6 @@ export default function RbacPage() {
     () => trashQuery.data?.items ?? [],
     [trashQuery.data?.items]
   )
-  useEffect(() => {
-    if (!listItems.length) {
-      setSelectedRoleId("")
-      return
-    }
-    if (
-      !selectedRoleId ||
-      !listItems.some((role) => role.id === selectedRoleId)
-    ) {
-      setSelectedRoleId(listItems[0].id)
-    }
-  }, [listItems, selectedRoleId])
 
   const visiblePermissions = useMemo(() => {
     const q = permissionSearch.trim().toLowerCase()
@@ -473,20 +451,6 @@ export default function RbacPage() {
     setDialogOpen(true)
   }
 
-  const openEditDialog = (role: RoleRow) => {
-    setForm({
-      id: role.id,
-      code: role.code,
-      name: role.name,
-      description: role.description ?? "",
-      isActive: role.isActive,
-      permissions: role.permissions,
-    })
-    setPermissionSearch("")
-    setShowSelectedOnly(false)
-    setDialogOpen(true)
-  }
-
   const handleSave = async () => {
     const code = roleCodeify(form.code || form.name)
     const name = form.name.trim()
@@ -506,14 +470,10 @@ export default function RbacPage() {
       description: form.description.trim(),
     }
     try {
-      if (form.id) {
-        await updateMutation.mutateAsync(payload)
-        toast.success(`Đã cập nhật role "${name}"`)
-      } else {
-        const created = await createMutation.mutateAsync(payload)
-        toast.success(`Đã tạo role "${created.name || name}"`)
-      }
+      const created = await createMutation.mutateAsync(payload)
+      toast.success(`Đã tạo role "${created.name || name}"`)
       setDialogOpen(false)
+      router.push(`/rbac/${created.id}`)
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Không lưu được role"
@@ -524,12 +484,13 @@ export default function RbacPage() {
   const columns = useMemo(
     () =>
       getRbacColumns({
-        onEdit: openEditDialog,
+        onView: (role) => router.push(`/rbac/${role.id}`),
+        onEdit: (role) => router.push(`/rbac/${role.id}/edit`),
         onDelete: setDeleteTarget,
         onPurge: setPurgeTarget,
         canManageRoles,
       }),
-    [canManageRoles]
+    [canManageRoles, router]
   )
 
   const trashColumns = useMemo<ColumnDef<RoleRow>[]>(
@@ -1072,14 +1033,14 @@ export default function RbacPage() {
                 type="button"
                 className="rounded-lg"
                 onClick={() => void handleSave()}
-                disabled={createMutation.isPending || updateMutation.isPending}
+                disabled={createMutation.isPending}
               >
-                {createMutation.isPending || updateMutation.isPending ? (
+                {createMutation.isPending ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <Plus className="size-4" />
                 )}
-                {form.id ? "Lưu thay đổi" : "Tạo role"}
+                Tạo role
               </Button>
             </DialogFooter>
           </DialogContent>

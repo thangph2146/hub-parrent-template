@@ -13,9 +13,9 @@ export const PERMISSION_GROUPS = [
 export type CreateRoleInput = {
   code: string;
   name: string;
-  displayName: string;
   description?: string | null;
   permissionCodes: string[];
+  isActive: boolean;
 };
 
-export type UpdateRoleInput = Partial<Omit<CreateRoleInput, "code">>;
+export type UpdateRoleInput = Partial<CreateRoleInput>;

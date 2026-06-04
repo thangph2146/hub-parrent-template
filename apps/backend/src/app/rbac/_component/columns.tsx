@@ -1,11 +1,12 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
-import { Lock } from "lucide-react";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRowActions, AdminTableSoftDeleteButton } from "@ui/components/admin";
+import { ExternalLink, Lock } from "lucide-react";
+import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 
 type RoleRow = {
@@ -15,10 +16,13 @@ type RoleRow = {
   description: string | null;
   permissions: string[];
   isActive: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
   deletedAt: string | null;
 };
 
 export interface RbacColumnsProps {
+  onView: (role: RoleRow) => void;
   onEdit: (role: RoleRow) => void;
   onDelete: (role: RoleRow) => void;
   onPurge: (role: RoleRow) => void;
@@ -26,18 +30,23 @@ export interface RbacColumnsProps {
 }
 
 export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
-  const { onEdit, onDelete, onPurge, canManageRoles } = props;
-
+  const { onView, onEdit, onDelete, onPurge, canManageRoles } = props;
   return [
     {
       accessorKey: "name",
       header: "Vai trò",
       meta: { filterPlaceholder: "Lọc tên vai trò…" },
       cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.original.name}</div>
-          <div className="text-xs font-mono text-muted-foreground">{row.original.code}</div>
-        </div>
+        <Link
+          href={`/rbac/${row.original.id}`}
+          className="group flex items-center gap-2"
+        >
+          <div>
+            <div className="font-medium group-hover:text-primary group-hover:underline">{row.original.name}</div>
+            <div className="text-xs font-mono text-muted-foreground">{row.original.code}</div>
+          </div>
+          <ExternalLink className="size-3 shrink-0 text-muted-foreground/40 group-hover:text-primary" aria-hidden />
+        </Link>
       ),
     },
     {
@@ -94,10 +103,13 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
 
         return (
           <AdminTableRowActions>
-            <AdminTableEditButton
-              onClick={() => onEdit(role)}
-              disabled={!canManageRoles}
+            <AdminTableViewButton
+              onClick={() => onView(role)}
             />
+            <AdminTableEditButton
+                disabled={!canManageRoles}
+                onClick={() => onEdit(role)}
+              />
             <AdminTableSoftDeleteButton
               onClick={() => onDelete(role)}
               disabled={!canManageRoles}

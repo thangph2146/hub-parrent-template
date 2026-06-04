@@ -3,12 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
+  Field,
+  FieldContent,
+  FieldLabel,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
@@ -20,7 +22,6 @@ import {
   MapPin,
   Save,
 } from "lucide-react"
-import { cn } from "@ui/lib/utils"
 import { useAuth } from "@/providers/auth-provider"
 import { DEFAULT_API_URL } from "@workspace/api-client"
 
@@ -45,9 +46,6 @@ function formatDateTime(value?: string | null) {
   if (Number.isNaN(date.getTime())) return value
   return date.toLocaleString("vi-VN")
 }
-
-const PROFILE_CARD_CLASS =
-  "border border-border/70 bg-card/95 shadow-sm backdrop-blur-sm"
 
 const PROFILE_FIELD_CLASS =
   "h-10 rounded-lg border-border/70 bg-background/70 px-3 shadow-inner"
@@ -206,18 +204,13 @@ function AdminProfilePageInner() {
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.20fr)_minmax(0,0.80fr)]">
         <div className="space-y-6">
-          <Card className={PROFILE_CARD_CLASS}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                <MapPin className="size-5 text-primary" />
-                Thông tin liên hệ & địa chỉ
-              </CardTitle>
-              <CardDescription>
-                Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các
-                màn nội bộ liên quan.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={MapPin}
+              title="Thông tin liên hệ & địa chỉ"
+              description="Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các màn nội bộ liên quan."
+            />
+            <FieldSetContent variant="section" className="space-y-5">
               <div className="flex items-start gap-4">
                 <div className="flex flex-col gap-2.5">
                   <div className="relative aspect-[3/4] w-40 sm:w-60 shrink-0">
@@ -319,52 +312,52 @@ function AdminProfilePageInner() {
                       </div>
                     )}
                   </div>
-                  <div className="min-w-0 flex-1 space-y-2">
-                    <Label htmlFor="admin-email">Email</Label>
-                    <Input
-                      id="admin-email"
-                      value={email}
-                      disabled
-                      className={cn(PROFILE_FIELD_CLASS, "bg-muted/35")}
-                    />
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      Email đăng nhập đang được quản trị tập trung từ hệ thống
-                      và không chỉnh trực tiếp ở màn này.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="admin-fullName">Họ và tên</Label>
-                    <Input
-                      id="admin-fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      disabled={isLoading || !profile}
-                      className={PROFILE_FIELD_CLASS}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="admin-phone">Số điện thoại</Label>
-                    <Input
-                      id="admin-phone"
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      disabled={isLoading || !profile}
-                      placeholder="VD: 0901234567"
-                      className={PROFILE_FIELD_CLASS}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="admin-address">Địa chỉ / văn phòng</Label>
-                    <Textarea
-                      id="admin-address"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      disabled={isLoading || !profile}
-                      placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
-                      className={PROFILE_TEXTAREA_CLASS}
-                    />
-                  </div>
+                  <FieldSectionField label="Email">
+                    <span className="font-mono text-sm">{email}</span>
+                  </FieldSectionField>
+                  <p className="text-xs leading-relaxed text-muted-foreground -mt-3">
+                    Email đăng nhập đang được quản trị tập trung từ hệ thống
+                    và không chỉnh trực tiếp ở màn này.
+                  </p>
+                  <Field>
+                    <FieldLabel htmlFor="admin-fullName">Họ và tên</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="admin-fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        disabled={isLoading || !profile}
+                        className={PROFILE_FIELD_CLASS}
+                      />
+                    </FieldContent>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="admin-phone">Số điện thoại</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="admin-phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        disabled={isLoading || !profile}
+                        placeholder="VD: 0901234567"
+                        className={PROFILE_FIELD_CLASS}
+                      />
+                    </FieldContent>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="admin-address">Địa chỉ / văn phòng</FieldLabel>
+                    <FieldContent>
+                      <Textarea
+                        id="admin-address"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        disabled={isLoading || !profile}
+                        placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
+                        className={PROFILE_TEXTAREA_CLASS}
+                      />
+                    </FieldContent>
+                  </Field>
                   <div className={PROFILE_ACTION_BAR_CLASS}>
                     <Button
                       type="button"
@@ -384,58 +377,59 @@ function AdminProfilePageInner() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </FieldSetContent>
+          </FieldSet>
         </div>
         <div className="space-y-6">
-        <Card className={PROFILE_CARD_CLASS}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                <KeyRound className="size-5 text-primary" />
-                Đổi mật khẩu
-              </CardTitle>
-              <CardDescription>
-                Đặt lại mật khẩu cho phiên đăng nhập quản trị. Mật khẩu mới cần
-                từ 6 ký tự trở lên.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="admin-current-pw">Mật khẩu hiện tại</Label>
-                <Input
-                  id="admin-current-pw"
-                  type="password"
-                  autoComplete="current-password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu hiện tại"
-                  className={PROFILE_FIELD_CLASS}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="admin-new-pw">Mật khẩu mới</Label>
-                <Input
-                  id="admin-new-pw"
-                  type="password"
-                  autoComplete="new-password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
-                  className={PROFILE_FIELD_CLASS}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="admin-confirm-pw">Nhập lại mật khẩu mới</Label>
-                <Input
-                  id="admin-confirm-pw"
-                  type="password"
-                  autoComplete="new-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Nhập lại mật khẩu mới"
-                  className={PROFILE_FIELD_CLASS}
-                />
-              </div>
+        <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={KeyRound}
+              title="Đổi mật khẩu"
+              description="Đặt lại mật khẩu cho phiên đăng nhập quản trị. Mật khẩu mới cần từ 6 ký tự trở lên."
+            />
+            <FieldSetContent variant="section" className="space-y-5">
+              <Field>
+                <FieldLabel htmlFor="admin-current-pw">Mật khẩu hiện tại</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="admin-current-pw"
+                    type="password"
+                    autoComplete="current-password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu hiện tại"
+                    className={PROFILE_FIELD_CLASS}
+                  />
+                </FieldContent>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="admin-new-pw">Mật khẩu mới</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="admin-new-pw"
+                    type="password"
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                    className={PROFILE_FIELD_CLASS}
+                  />
+                </FieldContent>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="admin-confirm-pw">Nhập lại mật khẩu mới</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="admin-confirm-pw"
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Nhập lại mật khẩu mới"
+                    className={PROFILE_FIELD_CLASS}
+                  />
+                </FieldContent>
+              </Field>
               <div className={PROFILE_ACTION_BAR_CLASS}>
                 <Button
                   type="button"
@@ -452,8 +446,8 @@ function AdminProfilePageInner() {
                   <span className="ml-2">Đổi mật khẩu</span>
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </FieldSetContent>
+          </FieldSet>
         </div>
       </div>
     </AdminPageSection>
