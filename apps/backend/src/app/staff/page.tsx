@@ -23,7 +23,10 @@ import { queryKeys, useRbacCatalog, useStaffUserList, useTrashedStaffUsers } fro
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { api } from "@/lib/api";
 import { useAuth } from "@/providers/auth-provider";
-import { isProtectedAdminEmail } from "@/config/protected-admin";
+import {
+  canEditProtectedAdminUser,
+  isProtectedAdminEmail,
+} from "@/config/protected-admin";
 import {
   buildUsersFilterQuery,
   StaffBulkConfirmDialog,
@@ -64,9 +67,12 @@ function StaffPageInner() {
   const [deleteTarget, setDeleteTarget] = useState<StaffRow | null>(null);
   const [restoreTarget, setRestoreTarget] = useState<StaffRow | null>(null);
   const [purgeTarget, setPurgeTarget] = useState<StaffRow | null>(null);
+  const [toggleTarget, setToggleTarget] = useState<StaffRow | null>(null);
   const [bulkDeleteTarget, setBulkDeleteTarget] = useState<string[] | null>(null);
   const [bulkRestoreTarget, setBulkRestoreTarget] = useState<string[] | null>(null);
   const [bulkPurgeTarget, setBulkPurgeTarget] = useState<string[] | null>(null);
+  const [bulkActiveTarget, setBulkActiveTarget] = useState<string[] | null>(null);
+  const [bulkUnactiveTarget, setBulkUnactiveTarget] = useState<string[] | null>(null);
 
   useEffect(() => {
     setStaffPage(1);
@@ -113,7 +119,7 @@ function StaffPageInner() {
 
   const bulkStaffMutation = useMutation({
     mutationFn: async (input: {
-      action: "delete" | "restore" | "hard-delete";
+      action: "delete" | "restore" | "hard-delete" | "active" | "unactive";
       ids: string[];
     }) => api.users.bulk(input),
     onSuccess: async () => {
@@ -174,13 +180,18 @@ function StaffPageInner() {
     router.push(`/staff/${user.id}`);
   }, [router]);
 
-  const handleEdit = useCallback((user: StaffRow) => {
-    if (isProtectedAdminEmail(user.email)) {
-      toast.error(`Tài khoản ${user.email} là tài khoản hệ thống, không thể chỉnh sửa.`);
-      return;
-    }
-    router.push(`/staff/${user.id}/edit`);
-  }, [router]);
+  const handleEdit = useCallback(
+    (user: StaffRow) => {
+      if (!canEditProtectedAdminUser(session?.email, user.email)) {
+        toast.error(
+          `Tài khoản ${user.email} là tài khoản hệ thống. Chỉ chính tài khoản đó mới được chỉnh sửa.`,
+        );
+        return;
+      }
+      router.push(`/staff/${user.id}/edit`);
+    },
+    [router, session?.email],
+  );
 
   const handleDelete = useCallback((user: StaffRow) => {
     if (isProtectedAdminEmail(user.email)) {
@@ -205,6 +216,20 @@ function StaffPageInner() {
     }
     setPurgeTarget(user);
   }, []);
+
+  const handleToggleActive = useCallback((user: StaffRow) => {
+    if (String(user.id) === String(session?.id ?? "")) {
+      toast.error("Không thể khoá chính tài khoản đang đăng nhập");
+      return;
+    }
+    if (isProtectedAdminEmail(user.email)) {
+      toast.error(
+        `Tài khoản ${user.email} là tài khoản hệ thống, không thể thay đổi trạng thái.`,
+      );
+      return;
+    }
+    setToggleTarget(user);
+  }, [session?.id]);
 
   const handleBulkDelete = useCallback((ids: string[]) => {
     const protectedIds = roleFilteredUsers
@@ -240,6 +265,34 @@ function StaffPageInner() {
     setBulkPurgeTarget(ids);
   }, [roleFilteredUsers, trashedUsers]);
 
+  const handleBulkActive = useCallback((ids: string[]) => {
+    const allUsers = roleFilteredUsers;
+    const protectedIds = allUsers
+      .filter((u) => ids.includes(String(u.id)) && isProtectedAdminEmail(u.email))
+      .map((u) => u.email);
+    if (protectedIds.length > 0) {
+      toast.error(
+        `Không thể kích hoạt tài khoản hệ thống: ${protectedIds.join(", ")}`,
+      );
+      return;
+    }
+    setBulkActiveTarget(ids);
+  }, [roleFilteredUsers]);
+
+  const handleBulkUnactive = useCallback((ids: string[]) => {
+    const allUsers = roleFilteredUsers;
+    const protectedIds = allUsers
+      .filter((u) => ids.includes(String(u.id)) && isProtectedAdminEmail(u.email))
+      .map((u) => u.email);
+    if (protectedIds.length > 0) {
+      toast.error(
+        `Không thể khoá tài khoản hệ thống: ${protectedIds.join(", ")}`,
+      );
+      return;
+    }
+    setBulkUnactiveTarget(ids);
+  }, [roleFilteredUsers]);
+
   const handleDeleteConfirm = useCallback(async () => {
     if (!deleteTarget) return;
     if (String(deleteTarget.id) === String(session?.id ?? "")) {
@@ -270,6 +323,42 @@ function StaffPageInner() {
     toast.success(`Đã xóa vĩnh viễn ${purgeTarget.email}`);
     setPurgeTarget(null);
   }, [purgeTarget, session?.id, bulkStaffMutation]);
+
+  const handleToggleActiveConfirm = useCallback(async () => {
+    if (!toggleTarget) return;
+    const nextActive = !toggleTarget.isActive;
+    await bulkStaffMutation.mutateAsync({
+      action: nextActive ? "active" : "unactive",
+      ids: [String(toggleTarget.id)],
+    });
+    toast.success(
+      nextActive
+        ? `Đã kích hoạt ${toggleTarget.email}`
+        : `Đã khoá ${toggleTarget.email}`,
+    );
+    setToggleTarget(null);
+  }, [toggleTarget, bulkStaffMutation]);
+
+  const handleBulkActiveConfirm = useCallback(async () => {
+    if (!bulkActiveTarget || bulkActiveTarget.length === 0) return;
+    await bulkStaffMutation.mutateAsync({ action: "active", ids: bulkActiveTarget });
+    toast.success(`Đã kích hoạt ${bulkActiveTarget.length} tài khoản`);
+    setBulkActiveTarget(null);
+    setListStaffSelection({});
+  }, [bulkActiveTarget, bulkStaffMutation]);
+
+  const handleBulkUnactiveConfirm = useCallback(async () => {
+    if (!bulkUnactiveTarget || bulkUnactiveTarget.length === 0) return;
+    if (bulkUnactiveTarget.includes(String(session?.id ?? ""))) {
+      toast.error("Không thể khoá chính tài khoản đang đăng nhập");
+      setBulkUnactiveTarget(null);
+      return;
+    }
+    await bulkStaffMutation.mutateAsync({ action: "unactive", ids: bulkUnactiveTarget });
+    toast.success(`Đã khoá ${bulkUnactiveTarget.length} tài khoản`);
+    setBulkUnactiveTarget(null);
+    setListStaffSelection({});
+  }, [bulkUnactiveTarget, session?.id, bulkStaffMutation]);
 
   const handleBulkDeleteConfirm = useCallback(async () => {
     if (!bulkDeleteTarget || bulkDeleteTarget.length === 0) return;
@@ -414,10 +503,15 @@ function StaffPageInner() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onPurge={handlePurge}
+                onToggleActive={handleToggleActive}
                 busy={busy}
                 currentUserId={session?.id}
+                actorEmail={session?.email}
+                isProtected={(u) => isProtectedAdminEmail(u.email)}
                 onBulkDelete={handleBulkDelete}
                 onBulkPurge={handleBulkPurge}
+                onBulkActive={handleBulkActive}
+                onBulkUnactive={handleBulkUnactive}
                 onClearFilters={clearStaffFilters}
                 roleOptions={[
                   { value: "none", label: "Chưa gán vai trò" },
@@ -508,6 +602,17 @@ function StaffPageInner() {
         loading={bulkStaffMutation.isPending}
       />
 
+      <StaffConfirmDialog
+        open={toggleTarget != null}
+        onOpenChange={(open) => {
+          if (!open) setToggleTarget(null);
+        }}
+        action={toggleTarget?.isActive ? "unactive" : "active"}
+        target={toggleTarget}
+        onConfirm={handleToggleActiveConfirm}
+        loading={bulkStaffMutation.isPending}
+      />
+
       <StaffBulkConfirmDialog
         open={bulkDeleteTarget != null}
         onOpenChange={(open) => {
@@ -527,6 +632,28 @@ function StaffPageInner() {
         action="restore"
         count={bulkRestoreTarget?.length ?? 0}
         onConfirm={handleBulkRestoreConfirm}
+        loading={bulkStaffMutation.isPending}
+      />
+
+      <StaffBulkConfirmDialog
+        open={bulkActiveTarget != null}
+        onOpenChange={(open) => {
+          if (!open) setBulkActiveTarget(null);
+        }}
+        action="active"
+        count={bulkActiveTarget?.length ?? 0}
+        onConfirm={handleBulkActiveConfirm}
+        loading={bulkStaffMutation.isPending}
+      />
+
+      <StaffBulkConfirmDialog
+        open={bulkUnactiveTarget != null}
+        onOpenChange={(open) => {
+          if (!open) setBulkUnactiveTarget(null);
+        }}
+        action="unactive"
+        count={bulkUnactiveTarget?.length ?? 0}
+        onConfirm={handleBulkUnactiveConfirm}
         loading={bulkStaffMutation.isPending}
       />
 

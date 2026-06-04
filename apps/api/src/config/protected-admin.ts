@@ -11,3 +11,13 @@ export function isProtectedAdminEmail(
   if (!email) return false;
   return LIST.includes(email.trim().toLowerCase());
 }
+
+/** Tài khoản protected chỉ được sửa khi chính email đó thực hiện (self-edit). */
+export function canEditProtectedAdminUser(
+  actorEmail: string | null | undefined,
+  targetEmail: string | null | undefined,
+): boolean {
+  if (!isProtectedAdminEmail(targetEmail)) return true;
+  if (!actorEmail || !targetEmail) return false;
+  return actorEmail.trim().toLowerCase() === targetEmail.trim().toLowerCase();
+}

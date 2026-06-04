@@ -1,4 +1,8 @@
-import type { AuthUser } from "@workspace/api-client";
+import type { AuthUser, User } from "@workspace/api-client";
+import {
+  fetchAdminSessionPayload,
+  toAdminSessionUser,
+} from "@/features/auth/auth-api";
 
 export const ADMIN_SESSION_KEY = "storesync_admin_session";
 
@@ -103,8 +107,51 @@ export function patchAdminSessionProfile(
   const prev = readAdminSession();
   if (!prev) return;
   writeAdminSession({ ...prev, ...fields });
+  notifyAdminSessionChanged();
+}
+
+function notifyAdminSessionChanged(): void {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
+  }
+}
+
+/**
+ * Sau khi sửa nhân sự trùng tài khoản đang đăng nhập: làm mới permissions/roles
+ * từ API và đồng bộ hồ sơ (tên, SĐT, ảnh…) lên header/sidebar ngay.
+ */
+export async function syncAdminSessionIfCurrentUser(
+  updatedUserId: string,
+  profileFromUpdate?: Pick<
+    User,
+    "fullName" | "phone" | "address" | "avatar" | "updatedAt"
+  >,
+): Promise<void> {
+  const sessionId = getAdminUserId();
+  if (sessionId == null || String(sessionId) !== String(updatedUserId)) {
+    return;
+  }
+
+  const prev = readAdminSession();
+  try {
+    const payload = await fetchAdminSessionPayload(String(sessionId));
+    writeAdminSession({
+      ...toAdminSessionUser(payload),
+      phone: profileFromUpdate?.phone ?? prev?.phone ?? null,
+      address: profileFromUpdate?.address ?? prev?.address ?? null,
+      updatedAt: profileFromUpdate?.updatedAt ?? prev?.updatedAt,
+    });
+    notifyAdminSessionChanged();
+  } catch {
+    if (profileFromUpdate) {
+      patchAdminSessionProfile({
+        name: profileFromUpdate.fullName,
+        phone: profileFromUpdate.phone,
+        address: profileFromUpdate.address,
+        image: profileFromUpdate.avatar,
+        updatedAt: profileFromUpdate.updatedAt,
+      });
+    }
   }
 }
 

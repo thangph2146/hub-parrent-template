@@ -7,7 +7,14 @@ import { RoleFormShell } from "../../_component/_form"
 import { useRbacCatalog, useRoleDetail, useUpdateRoleMutation } from "../../_component/_query"
 import { useAuth } from "@/providers/auth-provider"
 import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
+import {
+  canUserAccess,
+  isSuperAdminRoleCode,
+  PERMISSION_CODES,
+} from "@workspace/api-client"
+import { canEditSuperAdminRole } from "@/config/protected-admin"
+import { Card, CardContent } from "@ui/components/card"
+import { ShieldAlert } from "lucide-react"
 
 function EditRolePageInner() {
   const params = useParams()
@@ -91,6 +98,35 @@ function EditRolePageInner() {
         <div className="py-12 text-center">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>
+      </AdminPageSection>
+    )
+  }
+
+  const isSystemSuperAdmin = isSuperAdminRoleCode(role.code)
+  const canEditThisRole =
+    !isSystemSuperAdmin || canEditSuperAdminRole(session?.email)
+
+  if (!canEditThisRole) {
+    return (
+      <AdminPageSection>
+        <AdminFormPageHeader
+          title="Sửa vai trò"
+          onBack={() => router.push(`/rbac/${roleId}`)}
+          formId="role-form"
+        />
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+            <ShieldAlert className="size-12 text-destructive/70" />
+            <div>
+              <p className="text-base font-semibold">Vai trò hệ thống</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Chỉ tài khoản trong{" "}
+                <span className="font-mono text-xs">NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS</span>{" "}
+                mới được chỉnh sửa vai trò Super Admin.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </AdminPageSection>
     )
   }

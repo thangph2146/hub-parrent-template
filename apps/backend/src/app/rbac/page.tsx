@@ -57,6 +57,7 @@ import {
   permissionLabelVi,
 } from "@/lib/permission-labels"
 import { useAuth } from "@/providers/auth-provider"
+import { canEditSuperAdminRole } from "@/config/protected-admin"
 import { getRbacColumns } from "./_component/columns"
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
@@ -208,6 +209,7 @@ export default function RbacPage() {
       session.permissions.includes(PERMISSION_CODES.ROLES_UPDATE) ||
       session.permissions.includes(PERMISSION_CODES.ROLES_DELETE) ||
       session.permissions.includes(PERMISSION_CODES.ROLES_MANAGE))
+  const canEditProtectedSuperAdmin = canEditSuperAdminRole(session?.email)
 
   const permissionCatalog = useRbacCatalog({
     enabled: Boolean(session) && canReadRbac,
@@ -413,12 +415,36 @@ export default function RbacPage() {
     () =>
       getRbacColumns({
         onView: (role) => router.push(`/rbac/${role.id}`),
-        onEdit: (role) => router.push(`/rbac/${role.id}/edit`),
-        onDelete: setDeleteTarget,
-        onPurge: setPurgeTarget,
+        onEdit: (role) => {
+          if (
+            isSuperAdminRoleCode(role.code) &&
+            !canEditProtectedSuperAdmin
+          ) {
+            toast.error(
+              "Chỉ tài khoản trong NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS mới được chỉnh sửa vai trò Super Admin."
+            )
+            return
+          }
+          router.push(`/rbac/${role.id}/edit`)
+        },
+        onDelete: (role) => {
+          if (isSuperAdminRoleCode(role.code)) {
+            toast.error("Vai trò Super Admin là vai trò hệ thống, không thể xóa.")
+            return
+          }
+          setDeleteTarget(role)
+        },
+        onPurge: (role) => {
+          if (isSuperAdminRoleCode(role.code)) {
+            toast.error("Vai trò Super Admin là vai trò hệ thống, không thể xóa.")
+            return
+          }
+          setPurgeTarget(role)
+        },
         canManageRoles,
+        canEditSuperAdminRole: canEditProtectedSuperAdmin,
       }),
-    [canManageRoles, router]
+    [canEditProtectedSuperAdmin, canManageRoles, router]
   )
 
   const trashColumns = useMemo<ColumnDef<RoleRow>[]>(
@@ -452,13 +478,24 @@ export default function RbacPage() {
         enableSorting: false,
         enableColumnFilter: false,
         meta: { disableColumnFilter: true },
-        cell: ({ row }) => (
-          <AdminTableTrashRowActions
-            canWrite={canManageRoles}
-            onRestore={() => setRestoreTarget(row.original)}
-            onPurge={() => setPurgeTarget(row.original)}
-          />
-        ),
+        cell: ({ row }) => {
+          const isSuperAdmin = isSuperAdminRoleCode(row.original.code)
+          return (
+            <AdminTableTrashRowActions
+              canWrite={canManageRoles}
+              onRestore={() => setRestoreTarget(row.original)}
+              onPurge={() => {
+                if (isSuperAdmin) {
+                  toast.error(
+                    "Vai trò Super Admin là vai trò hệ thống, không thể xóa."
+                  )
+                  return
+                }
+                setPurgeTarget(row.original)
+              }}
+            />
+          )
+        },
       },
     ],
     [canManageRoles]

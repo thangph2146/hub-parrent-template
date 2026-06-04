@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import Link from "next/link"
 import { LexicalEditor } from "@thangph2146/lexical-editor"
 import {
   Card,
@@ -774,9 +775,12 @@ export function EventFormShell({
                 ) : !cameras?.length ? (
                   <p className="text-xs text-amber-700 dark:text-amber-400">
                     Chưa có camera —{" "}
-                    <a href="/cameras/new" className="font-medium underline">
+                    <Link
+                      href="/cameras/new"
+                      className="font-medium underline"
+                    >
                       thêm camera
-                    </a>{" "}
+                    </Link>{" "}
                     trước khi gắn sự kiện.
                   </p>
                 ) : null}

@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import {
   getOptionsFromModel,
   type GetOptionsConfig,
 } from '../common/get-options';
+import { isProtectedAdminEmail } from '../config/protected-admin';
+import { isSystemSuperAdminRoleName } from '../config/system-role';
 import { Role } from '../entities/role.entity';
+import { User } from '../entities/user.entity';
 
 export interface RoleRowDto {
   id: string;
@@ -82,6 +85,31 @@ const ROLE_OPTIONS_CONFIG: GetOptionsConfig = {
 @Injectable()
 export class RolesService {
   constructor(private readonly em: EntityManager) {}
+
+  async resolveActorEmail(userId: string): Promise<string | null> {
+    const user = await this.em.findOne(User, { id: userId });
+    return user?.email?.trim().toLowerCase() ?? null;
+  }
+
+  private assertSuperAdminRoleEditable(
+    role: Role,
+    actorEmail: string | null | undefined,
+  ): void {
+    if (!isSystemSuperAdminRoleName(role.name)) return;
+    if (!isProtectedAdminEmail(actorEmail)) {
+      throw new ForbiddenException(
+        'Chỉ tài khoản quản trị hệ thống (PROTECTED_ADMIN_EMAILS) được phép chỉnh sửa vai trò Super Admin.',
+      );
+    }
+  }
+
+  private assertSuperAdminRoleNotDeletable(role: Role): void {
+    if (isSystemSuperAdminRoleName(role.name)) {
+      throw new ForbiddenException(
+        'Vai trò Super Admin là vai trò hệ thống, không thể xóa.',
+      );
+    }
+  }
 
   async list(params: ListRolesParams): Promise<ListRolesResult> {
     const { page, limit, skip } = normalizePageLimit(
@@ -176,9 +204,19 @@ export class RolesService {
       permissions?: unknown;
       isActive?: boolean;
     },
+    actorEmail?: string | null,
   ): Promise<RoleRowDto | null> {
     const existing = await this.em.findOne(Role, { id });
     if (!existing) return null;
+
+    this.assertSuperAdminRoleEditable(existing, actorEmail);
+    if (
+      isSystemSuperAdminRoleName(existing.name) &&
+      data.name != null &&
+      data.name.trim().toLowerCase() !== existing.name.trim().toLowerCase()
+    ) {
+      throw new ForbiddenException('Không thể đổi mã vai trò Super Admin.');
+    }
 
     if (data.name != null) existing.name = data.name;
     if (data.displayName != null) existing.displayName = data.displayName;
@@ -193,6 +231,7 @@ export class RolesService {
   async softDelete(id: string): Promise<boolean> {
     const r = await this.em.findOne(Role, { id });
     if (!r || r.deletedAt) return false;
+    this.assertSuperAdminRoleNotDeletable(r);
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
     return true;
@@ -209,6 +248,7 @@ export class RolesService {
   async hardDelete(id: string): Promise<boolean> {
     const r = await this.em.findOne(Role, { id });
     if (!r) return false;
+    this.assertSuperAdminRoleNotDeletable(r);
     await this.em.removeAndFlush(r);
     return true;
   }
@@ -218,6 +258,13 @@ export class RolesService {
     ids: string[],
   ): Promise<{ affected: number; message: string }> {
     if (!ids.length) return { affected: 0, message: 'Không có bản ghi nào' };
+
+    if (action === 'delete' || action === 'hard-delete') {
+      const targets = await this.em.find(Role, { id: { $in: ids } });
+      for (const role of targets) {
+        this.assertSuperAdminRoleNotDeletable(role);
+      }
+    }
 
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(

@@ -22,10 +22,15 @@ interface StaffTableProps {
   onEdit: (user: StaffRow) => void;
   onDelete: (user: StaffRow) => void;
   onPurge: (user: StaffRow) => void;
+  onToggleActive: (user: StaffRow) => void;
   busy: boolean;
   currentUserId?: string;
+  actorEmail?: string;
+  isProtected: (user: StaffRow) => boolean;
   onBulkDelete: (ids: string[]) => void;
   onBulkPurge: (ids: string[]) => void;
+  onBulkActive: (ids: string[]) => void;
+  onBulkUnactive: (ids: string[]) => void;
   onClearFilters: () => void;
   roleOptions?: { value: string; label: string }[];
 }
@@ -49,10 +54,15 @@ export function StaffTable(props: StaffTableProps) {
     onEdit,
     onDelete,
     onPurge,
+    onToggleActive,
     busy,
     currentUserId,
+    actorEmail,
+    isProtected,
     onBulkDelete,
     onBulkPurge,
+    onBulkActive,
+    onBulkUnactive,
     onClearFilters,
     roleOptions,
   } = props;
@@ -62,8 +72,11 @@ export function StaffTable(props: StaffTableProps) {
     onEdit,
     onDelete,
     onPurge,
+    onToggleActive,
     busy,
     currentUserId,
+    actorEmail,
+    isProtected,
     roleOptions,
   });
 
@@ -88,12 +101,50 @@ export function StaffTable(props: StaffTableProps) {
       canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
       bulkActions={[
         {
+          id: "bulk-staff-active",
+          label: "Kích hoạt đã chọn",
+          variant: "success",
+          onAction: async (rows) => {
+            const ids = rows
+              .filter(
+                (u) =>
+                  String(u.id) !== String(currentUserId ?? "") &&
+                  !isProtected(u) &&
+                  !u.isActive,
+              )
+              .map((u) => String(u.id));
+            if (!ids.length) return;
+            await onBulkActive(ids);
+          },
+        },
+        {
+          id: "bulk-staff-unactive",
+          label: "Khoá đã chọn",
+          variant: "warning",
+          onAction: async (rows) => {
+            const ids = rows
+              .filter(
+                (u) =>
+                  String(u.id) !== String(currentUserId ?? "") &&
+                  !isProtected(u) &&
+                  u.isActive,
+              )
+              .map((u) => String(u.id));
+            if (!ids.length) return;
+            await onBulkUnactive(ids);
+          },
+        },
+        {
           id: "bulk-staff-delete",
           label: "Xóa tạm đã chọn",
           variant: "destructive",
           onAction: async (rows) => {
             const ids = rows
-              .filter((u) => String(u.id) !== String(currentUserId ?? ""))
+              .filter(
+                (u) =>
+                  String(u.id) !== String(currentUserId ?? "") &&
+                  !isProtected(u),
+              )
               .map((u) => String(u.id));
             if (!ids.length) return;
             await onBulkDelete(ids);
@@ -105,7 +156,11 @@ export function StaffTable(props: StaffTableProps) {
           variant: "destructive",
           onAction: async (rows) => {
             const ids = rows
-              .filter((u) => String(u.id) !== String(currentUserId ?? ""))
+              .filter(
+                (u) =>
+                  String(u.id) !== String(currentUserId ?? "") &&
+                  !isProtected(u),
+              )
               .map((u) => String(u.id));
             if (!ids.length) return;
             await onBulkPurge(ids);

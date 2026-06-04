@@ -13,7 +13,7 @@ export function getPosterUrlFromValue(poster: unknown): string {
 
   if (typeof poster !== "string") return "";
 
-  let trimmed = poster.trim();
+  const trimmed = poster.trim();
   if (!trimmed) return "";
 
   if (trimmed.startsWith("{")) {

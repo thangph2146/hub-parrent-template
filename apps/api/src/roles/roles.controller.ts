@@ -190,7 +190,7 @@ export class RolesController {
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiResponse({ status: 200, description: 'Catalog retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
-  async listPermissionCatalog(
+  listPermissionCatalog(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
   ) {
@@ -319,13 +319,18 @@ export class RolesController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const updated = await this.rolesService.update(id, {
-      name: body?.name?.trim(),
-      displayName: body?.displayName?.trim(),
-      description: body?.description ?? undefined,
-      permissions: body?.permissions,
-      isActive: body?.isActive,
-    });
+    const actorEmail = await this.rolesService.resolveActorEmail(userId);
+    const updated = await this.rolesService.update(
+      id,
+      {
+        name: body?.name?.trim(),
+        displayName: body?.displayName?.trim(),
+        description: body?.description ?? undefined,
+        permissions: body?.permissions,
+        isActive: body?.isActive,
+      },
+      actorEmail,
+    );
     if (!updated) {
       const { statusCode, body: errBody } = createErrorResponse(
         'Không tìm thấy vai trò',

@@ -3,7 +3,7 @@ import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/
 import { toast } from "sonner";
 import { ApiError, api } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
-import { isProtectedAdminEmail } from "@/config/protected-admin";
+import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session";
 
 type CreateStaffInput = Pick<
   CreateUserInput,
@@ -59,11 +59,12 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
         citizenId: input.citizenId,
       });
     },
-    onSuccess: async (_data, variables) => {
+    onSuccess: async (data, variables) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.staffProfile(variables.id) }),
       ]);
+      await syncAdminSessionIfCurrentUser(variables.id, data);
       toast.success("Đã cập nhật nhân sự");
     },
     onError: (error) => {

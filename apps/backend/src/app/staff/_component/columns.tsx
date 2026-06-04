@@ -8,8 +8,18 @@ import {
 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
+import {
+  ADMIN_TABLE_ACTIONS_COLUMN_META,
+  AdminTableEditButton,
+  AdminTablePurgeButton,
+  AdminTableRestoreButton,
+  AdminTableRowActions,
+  AdminTableSoftDeleteButton,
+  AdminTableToggleActiveButton,
+  AdminTableViewButton,
+} from "@ui/components/admin";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
+import { canEditProtectedAdminUser } from "@/config/protected-admin";
 import type { StaffRow } from "./types";
 
 export interface StaffColumnsProps {
@@ -17,13 +27,27 @@ export interface StaffColumnsProps {
   onEdit: (user: StaffRow) => void;
   onDelete: (user: StaffRow) => void;
   onPurge: (user: StaffRow) => void;
+  onToggleActive: (user: StaffRow) => void;
   busy: boolean;
   currentUserId?: string;
+  actorEmail?: string;
+  isProtected: (user: StaffRow) => boolean;
   roleOptions?: { value: string; label: string }[];
 }
 
 export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[] {
-  const { onView, onEdit, onDelete, onPurge, busy, currentUserId, roleOptions } = props;
+  const {
+    onView,
+    onEdit,
+    onDelete,
+    onPurge,
+    onToggleActive,
+    busy,
+    currentUserId,
+    actorEmail,
+    isProtected,
+    roleOptions,
+  } = props;
 
   return [
     {
@@ -150,25 +174,57 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
       cell: ({ row }) => {
         const u = row.original;
         const selfAccount = String(u.id) === String(currentUserId ?? "");
-        const blockedTitle = selfAccount
-          ? "Không thao tác trên tài khoản đang đăng nhập"
-          : undefined;
+        const protectedAccount = isProtected(u);
+        const canEditThisUser = canEditProtectedAdminUser(actorEmail, u.email);
+        const blockedTitle = protectedAccount
+          ? "Tài khoản hệ thống — không thể thay đổi trạng thái"
+          : selfAccount
+            ? "Không thao tác trên tài khoản đang đăng nhập"
+            : undefined;
         return (
           <AdminTableRowActions>
             <AdminTableViewButton onClick={() => onView(u)} />
             <AdminTableEditButton
               onClick={() => onEdit(u)}
-              disabled={busy}
+              disabled={busy || !canEditThisUser}
+              title={
+                protectedAccount && !canEditThisUser
+                  ? "Tài khoản hệ thống — chỉ chính tài khoản đó mới được chỉnh sửa"
+                  : undefined
+              }
+            />
+            <AdminTableToggleActiveButton
+              isActive={u.isActive}
+              onClick={() => onToggleActive(u)}
+              disabled={busy || selfAccount || protectedAccount}
+              title={
+                blockedTitle ??
+                (u.isActive
+                  ? "Khoá tài khoản (thu hồi phiên hiện tại)"
+                  : "Kích hoạt tài khoản")
+              }
             />
             <AdminTableSoftDeleteButton
               onClick={() => onDelete(u)}
-              disabled={busy || selfAccount}
-              title={blockedTitle ?? "Xóa tạm"}
+              disabled={busy || selfAccount || protectedAccount}
+              title={
+                protectedAccount
+                  ? "Tài khoản hệ thống — không thể xóa"
+                  : selfAccount
+                    ? "Không thao tác trên tài khoản đang đăng nhập"
+                    : "Xóa tạm"
+              }
             />
             <AdminTablePurgeButton
               onClick={() => onPurge(u)}
-              disabled={busy || selfAccount}
-              title={blockedTitle ?? "Xóa vĩnh viễn khỏi cơ sở dữ liệu"}
+              disabled={busy || selfAccount || protectedAccount}
+              title={
+                protectedAccount
+                  ? "Tài khoản hệ thống — không thể xóa"
+                  : selfAccount
+                    ? "Không thao tác trên tài khoản đang đăng nhập"
+                    : "Xóa vĩnh viễn khỏi cơ sở dữ liệu"
+              }
             />
           </AdminTableRowActions>
         );

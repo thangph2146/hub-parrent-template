@@ -26,8 +26,10 @@ import {
 } from "@ui/components/field"
 import {
   canUserAccess,
+  isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
+import { canEditSuperAdminRole } from "@/config/protected-admin"
 import { useRoleDetail, useRbacCatalog } from "../_component/_query/use-rbac-queries"
 import type { RbacPermission } from "@workspace/api-client"
 import {
@@ -165,7 +167,13 @@ function RoleDetailPageInner() {
         }
         variant="module"
         onBack={() => router.push("/rbac")}
-        onEdit={canManageRoles ? () => router.push(`/rbac/${roleId}/edit`) : undefined}
+        onEdit={
+          canManageRoles &&
+          (!isSuperAdminRoleCode(role.code) ||
+            canEditSuperAdminRole(session?.email))
+            ? () => router.push(`/rbac/${roleId}/edit`)
+            : undefined
+        }
       />
 
       <AdminDetailLayout>

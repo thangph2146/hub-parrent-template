@@ -100,7 +100,9 @@ export function useEventAttendanceSocket(
 
   const onAttendanceRef = useRef(onAttendance)
 
-  onAttendanceRef.current = onAttendance
+  useEffect(() => {
+    onAttendanceRef.current = onAttendance
+  }, [onAttendance])
 
 
 

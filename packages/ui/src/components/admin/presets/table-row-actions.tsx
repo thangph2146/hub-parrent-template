@@ -1,6 +1,6 @@
 "use client"
 
-import { ArchiveRestore, Eye, Pencil, Trash2 } from "lucide-react"
+import { ArchiveRestore, Eye, Lock, Pencil, Trash2, Unlock } from "lucide-react"
 import {
   DataTableRowActionButton,
   DataTableRowActions,
@@ -88,6 +88,39 @@ export function AdminTableRestoreButton({
       label={label}
       variant="outline"
       icon={<ArchiveRestore />}
+    />
+  )
+}
+
+/**
+ * Nút bật/tắt trạng thái `isActive` cho dòng. Icon + variant đổi theo trạng thái hiện tại:
+ * - Đang hoạt động → hiển thị nút "Khoá" (warning) để chuyển sang unactive.
+ * - Đã khoá      → hiển thị nút "Kích hoạt" (success) để chuyển sang active.
+ *
+ * Đặt `disabled` + `title` từ caller khi user là protected admin / chính mình.
+ */
+export function AdminTableToggleActiveButton({
+  isActive,
+  activeLabel = "Khoá",
+  inactiveLabel = "Kích hoạt",
+  ...props
+}: ActionButtonProps & { isActive: boolean; activeLabel?: string; inactiveLabel?: string }) {
+  if (isActive) {
+    return (
+      <DataTableRowActionButton
+        {...props}
+        label={activeLabel}
+        variant="warning"
+        icon={<Lock />}
+      />
+    )
+  }
+  return (
+    <DataTableRowActionButton
+      {...props}
+      label={inactiveLabel}
+      variant="success"
+      icon={<Unlock />}
     />
   )
 }

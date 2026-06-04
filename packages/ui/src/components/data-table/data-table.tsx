@@ -63,6 +63,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from "react"
 import { Button } from "../button"
@@ -118,6 +119,8 @@ export type AdminDataTableBulkAction<TData> = {
     | "secondary"
     | "ghost"
     | "link"
+    | "warning"
+    | "success"
   className?: string
   requiresSelection?: boolean
   clearSelectionOnSuccess?: boolean
@@ -210,9 +213,30 @@ export type AdminDataTableProps<TData> = {
   indexColumnLabel?: string
   /** Bỏ cột STT khi xuất Excel — @default false */
   indexColumnExcludeFromExport?: boolean
+  /**
+   * Độ rộng cột checkbox chọn dòng (px).
+   * @default DATA_TABLE_SELECTION_COLUMN_WIDTH (44)
+   */
+  selectionColumnWidth?: number
 }
 
 export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
+
+export const DATA_TABLE_SELECTION_COLUMN_ID = "_select"
+
+/** Độ rộng mặc định cột checkbox (px) — chỉnh qua prop `selectionColumnWidth`. */
+export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 44
+
+export const DATA_TABLE_SELECTION_COLUMN_CLASS =
+  "sticky left-0 z-10 px-0 text-center shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+
+function selectionColumnBoxStyle(widthPx: number): CSSProperties {
+  return {
+    width: widthPx,
+    minWidth: widthPx,
+    maxWidth: widthPx,
+  }
+}
 
 /** Kiểm tra `columns` đã có cột STT thủ công. */
 export function dataTableColumnsHasIndexColumn<TData>(
@@ -380,7 +404,12 @@ export function AdminDataTable<TData>({
   showIndexColumn = true,
   indexColumnLabel = "STT",
   indexColumnExcludeFromExport = false,
+  selectionColumnWidth = DATA_TABLE_SELECTION_COLUMN_WIDTH,
 }: AdminDataTableProps<TData>) {
+  const resolvedSelectionColumnWidth = Math.max(
+    32,
+    Math.min(80, Math.round(selectionColumnWidth))
+  )
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFiltersInternal, setColumnFiltersInternal] =
     useState<ColumnFiltersState>([])
@@ -547,7 +576,7 @@ export function AdminDataTable<TData>({
         isIndexColumn: true,
         disableColumnFilter: true,
         excludeFromExport: indexColumnExcludeFromExport,
-        className: "w-12 min-w-12 max-w-14 text-center tabular-nums",
+        className: "w-12 min-w-12 max-w-14 text-start tabular-nums",
       },
       size: 48,
       minSize: 44,
@@ -574,40 +603,46 @@ export function AdminDataTable<TData>({
 
   const selectionColumn = useMemo<ColumnDef<TData, unknown>>(
     () => ({
-      id: "_select",
+      id: DATA_TABLE_SELECTION_COLUMN_ID,
       header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          indeterminate={
-            !table.getIsAllPageRowsSelected() &&
-            table.getIsSomePageRowsSelected()
-          }
-          onCheckedChange={(value) =>
-            table.toggleAllPageRowsSelected(value === true)
-          }
-          onClick={(event) => event.stopPropagation()}
-          aria-label="Chọn tất cả dòng"
-        />
+        <div className="flex w-full items-center justify-center">
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            indeterminate={
+              !table.getIsAllPageRowsSelected() &&
+              table.getIsSomePageRowsSelected()
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(value === true)
+            }
+            onClick={(event) => event.stopPropagation()}
+            aria-label="Chọn tất cả dòng"
+          />
+        </div>
       ),
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(value === true)}
-          disabled={!row.getCanSelect()}
-          onClick={(event) => event.stopPropagation()}
-          aria-label="Chọn dòng"
-        />
+        <div className="flex w-full items-center justify-center">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(value === true)}
+            disabled={!row.getCanSelect()}
+            onClick={(event) => event.stopPropagation()}
+            aria-label="Chọn dòng"
+          />
+        </div>
       ),
       enableSorting: false,
       enableColumnFilter: false,
+      enableResizing: false,
       meta: {
         disableColumnFilter: true,
-        className:
-          "sticky left-0 z-10 min-w-8 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]",
+        className: DATA_TABLE_SELECTION_COLUMN_CLASS,
       } satisfies ColumnMeta,
-      size: 48,
+      size: resolvedSelectionColumnWidth,
+      minSize: resolvedSelectionColumnWidth,
+      maxSize: resolvedSelectionColumnWidth,
     }),
-    []
+    [resolvedSelectionColumnWidth]
   )
 
   const exportColumns = useMemo(() => {
@@ -1229,7 +1264,10 @@ export function AdminDataTable<TData>({
         <TableHeader className="bg-primary text-primary-foreground">
           {headerGroups.map((hg) => (
             <TableRow key={hg.id} className="hover:bg-transparent">
-              {hg.headers.map((header) => (
+              {hg.headers.map((header) => {
+                const isSelectionCol =
+                  header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                return (
                 <TableHead
                   key={header.id}
                   className={cn(
@@ -1239,6 +1277,11 @@ export function AdminDataTable<TData>({
                       header.column.columnDef.meta as ColumnMeta | undefined
                     )
                   )}
+                  style={
+                    isSelectionCol
+                      ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
+                      : undefined
+                  }
                   onClick={
                     header.column.getCanSort()
                       ? header.column.getToggleSortingHandler()
@@ -1246,7 +1289,14 @@ export function AdminDataTable<TData>({
                   }
                 >
                   {header.isPlaceholder ? null : (
-                    <div className="flex h-full flex-col items-start justify-center gap-1">
+                    <div
+                      className={cn(
+                        "flex h-full gap-1",
+                        isSelectionCol
+                          ? "flex-row items-center justify-center"
+                          : "flex-col items-start justify-center"
+                      )}
+                    >
                       <span className="flex items-center gap-1">
                         {flexRender(
                           header.column.columnDef.header,
@@ -1261,7 +1311,7 @@ export function AdminDataTable<TData>({
                     </div>
                   )}
                 </TableHead>
-              ))}
+              )})}
             </TableRow>
           ))}
         </TableHeader>
@@ -1306,6 +1356,8 @@ export function AdminDataTable<TData>({
                     getSubRows && colIndex === firstDataColumnIndex
                       ? row.depth * 24
                       : 0
+                  const isSelectionCol =
+                    cell.column.id === DATA_TABLE_SELECTION_COLUMN_ID
                   return (
                     <TableCell
                       key={cell.id}
@@ -1314,11 +1366,14 @@ export function AdminDataTable<TData>({
                           cell.column.columnDef.meta as ColumnMeta | undefined
                         ),
                         row.getIsSelected() && "!bg-primary/8",
-                        cell.column.id === "_select" &&
+                        isSelectionCol &&
                           !row.getIsSelected() &&
                           "hover:!bg-primary/8"
                       )}
                       style={{
+                        ...(isSelectionCol
+                          ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
+                          : {}),
                         paddingLeft:
                           indent > 0 ? `calc(0.5rem + ${indent}px)` : undefined,
                       }}

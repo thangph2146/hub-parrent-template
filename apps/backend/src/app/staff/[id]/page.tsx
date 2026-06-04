@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { isProtectedAdminEmail } from "@/config/protected-admin"
+import { canEditProtectedAdminUser } from "@/config/protected-admin"
 import {
   AdminDetailLayout,
   AdminDetailMain,
@@ -195,7 +195,11 @@ function StaffDetailPageInner() {
         }
         variant="module"
         onBack={() => router.push("/staff")}
-        onEdit={isProtectedAdminEmail(user.email) ? undefined : () => router.push(`/staff/${userId}/edit`)}
+        onEdit={
+          canEditProtectedAdminUser(session?.email, user.email)
+            ? () => router.push(`/staff/${userId}/edit`)
+            : undefined
+        }
       />
 
       <AdminDetailLayout>

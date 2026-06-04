@@ -11,7 +11,10 @@ import { Role } from '../entities/role.entity';
 import { Setting } from '../entities/setting.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { User } from '../entities/user.entity';
-import { isProtectedAdminEmail } from '../config/protected-admin';
+import {
+  canEditProtectedAdminUser,
+  isProtectedAdminEmail,
+} from '../config/protected-admin';
 
 export interface UserRowDto {
   id: string;
@@ -141,6 +144,11 @@ const USER_OPTIONS_CONFIG: GetOptionsConfig = {
 @Injectable()
 export class UsersService {
   constructor(private readonly em: EntityManager) {}
+
+  async resolveActorEmail(userId: string): Promise<string | null> {
+    const user = await this.em.findOne(User, { id: userId });
+    return user?.email?.trim().toLowerCase() ?? null;
+  }
 
   private async getUserWithRoles(id: string): Promise<User | null> {
     return this.em.findOne(
@@ -320,14 +328,25 @@ export class UsersService {
       isActive?: boolean;
       roleIds?: string[];
     },
+    actorEmail?: string | null,
   ): Promise<UserRowDto | null> {
     const existing = await this.em.findOne(User, { id });
     if (!existing) return null;
 
-    if (isProtectedAdminEmail(existing.email)) {
+    if (!canEditProtectedAdminUser(actorEmail, existing.email)) {
       throw new ForbiddenException(
-        `Tài khoản ${existing.email} là tài khoản hệ thống, không thể chỉnh sửa.`,
+        `Tài khoản ${existing.email} là tài khoản hệ thống. Chỉ chính tài khoản đó mới được chỉnh sửa.`,
       );
+    }
+
+    const existingEmail = existing.email?.trim().toLowerCase() ?? '';
+    if (isProtectedAdminEmail(existing.email) && data.email != null) {
+      const nextEmail = data.email.trim().toLowerCase();
+      if (nextEmail !== existingEmail) {
+        throw new ForbiddenException(
+          'Không thể đổi email tài khoản quản trị hệ thống.',
+        );
+      }
     }
 
     if (data.email != null) existing.email = data.email.trim().toLowerCase();

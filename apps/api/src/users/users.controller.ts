@@ -378,18 +378,23 @@ export class UsersController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const updated = await this.usersService.update(id, {
-      email: body?.email?.trim(),
-      name: body?.name?.trim(),
-      password: body?.password,
-      bio: body?.bio,
-      avatar: body?.avatar,
-      phone: body?.phone?.trim(),
-      address: body?.address?.trim(),
-      citizenId: body?.citizenId?.trim(),
-      isActive: body?.isActive,
-      roleIds: body?.roleIds,
-    });
+    const actorEmail = await this.usersService.resolveActorEmail(userId);
+    const updated = await this.usersService.update(
+      id,
+      {
+        email: body?.email?.trim(),
+        name: body?.name?.trim(),
+        password: body?.password,
+        bio: body?.bio,
+        avatar: body?.avatar,
+        phone: body?.phone?.trim(),
+        address: body?.address?.trim(),
+        citizenId: body?.citizenId?.trim(),
+        isActive: body?.isActive,
+        roleIds: body?.roleIds,
+      },
+      actorEmail,
+    );
     if (!updated) {
       const { statusCode, body: errBody } = createErrorResponse(
         'Không tìm thấy người dùng',

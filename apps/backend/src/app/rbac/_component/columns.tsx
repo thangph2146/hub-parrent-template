@@ -27,10 +27,13 @@ export interface RbacColumnsProps {
   onDelete: (role: RoleRow) => void;
   onPurge: (role: RoleRow) => void;
   canManageRoles: boolean;
+  /** Email trong `NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS` — được sửa vai trò `super_admin`. */
+  canEditSuperAdminRole: boolean;
 }
 
 export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
-  const { onView, onEdit, onDelete, onPurge, canManageRoles } = props;
+  const { onView, onEdit, onDelete, onPurge, canManageRoles, canEditSuperAdminRole } =
+    props;
   return [
     {
       accessorKey: "name",
@@ -94,10 +97,27 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
 
         if (isSuperAdmin) {
           return (
-            <Button type="button" variant="ghost" size="sm" className="h-8 gap-1.5" disabled>
-              <Lock className="size-3.5" aria-hidden />
-              Hệ thống
-            </Button>
+            <AdminTableRowActions>
+              <AdminTableViewButton onClick={() => onView(role)} />
+              {canEditSuperAdminRole ? (
+                <AdminTableEditButton
+                  disabled={!canManageRoles}
+                  onClick={() => onEdit(role)}
+                />
+              ) : (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5"
+                  disabled
+                  title="Chỉ tài khoản quản trị hệ thống mới được chỉnh sửa"
+                >
+                  <Lock className="size-3.5" aria-hidden />
+                  Hệ thống
+                </Button>
+              )}
+            </AdminTableRowActions>
           );
         }
 

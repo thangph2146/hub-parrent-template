@@ -134,8 +134,7 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Messages
   ...generateResourcePermissions(RESOURCES.MESSAGES),
-  MESSAGES_VIEW_OWN:
-    `${RESOURCES.MESSAGES}:${ACTIONS.VIEW_OWN}` as Permission,
+  MESSAGES_VIEW_OWN: `${RESOURCES.MESSAGES}:${ACTIONS.VIEW_OWN}` as Permission,
 
   // Groups
   ...generateResourcePermissions(RESOURCES.GROUPS),

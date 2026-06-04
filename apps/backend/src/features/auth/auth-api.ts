@@ -189,6 +189,54 @@ async function getApi<TResponse>(
   return payload.data
 }
 
+/** GET /auth/admin/me — permissions + roles mới nhất (cần X-User-Id). */
+export async function fetchAdminSessionPayload(userId: string) {
+  const url = buildApiUrl("/auth/admin/me")
+  const isDev = process.env.NODE_ENV === "development"
+  const startTime = isDev ? performance.now() : 0
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "X-User-Id": userId.trim(),
+    },
+  })
+
+  const payload = (await response
+    .json()
+    .catch(() => null)) as ApiEnvelope<AuthLoginPayload> | null
+
+  if (!response.ok || !payload?.success || payload.data === undefined) {
+    const message =
+      payload?.message ||
+      payload?.error ||
+      `Request failed: ${response.status} ${response.statusText}`
+    throw new Error(message)
+  }
+
+  if (isDev) {
+    const ms = performance.now() - startTime
+    const user = payload.data
+    printDevApiCall({
+      tag: "HUB_ADMIN",
+      method: "GET",
+      path: "/auth/admin/me",
+      status: response.status,
+      ms,
+      authSuffix: `ctx=user id=${user.id} email=${user.email} roles=[${user.roles.map((r) => r.name).join(",")}]`,
+      respSummary: formatDevResponsePayload(
+        response.status,
+        payload,
+        response.ok
+      ),
+      responseJson: buildDevLogResponseJson("/auth/admin/me", response.ok, payload),
+    })
+  }
+
+  return payload.data
+}
+
 export async function loginWithEmail(body: {
   email: string
   password: string

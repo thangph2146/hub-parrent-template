@@ -16,6 +16,7 @@ export {
   AdminTableSoftDeleteButton,
   AdminTablePurgeButton,
   AdminTableRestoreButton,
+  AdminTableToggleActiveButton,
   AdminTableCrudRowActions,
   AdminTableTrashRowActions,
 } from "./table-row-actions"

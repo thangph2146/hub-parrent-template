@@ -1,12 +1,12 @@
-import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, Lock, Trash2, Unlock } from "lucide-react";
 import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell";
 import { AdminConfirmActionDialog } from "@ui/components/admin";
-import type { StaffRow } from "../types";
+import type { StaffRow, StaffBulkActionKind } from "../types";
 
 interface StaffConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  action: "delete" | "restore" | "purge";
+  action: StaffBulkActionKind;
   target: StaffRow | null;
   onConfirm: () => Promise<void> | void;
   loading?: boolean;
@@ -15,7 +15,7 @@ interface StaffConfirmDialogProps {
 interface StaffBulkConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  action: "delete" | "restore" | "purge";
+  action: StaffBulkActionKind;
   count: number;
   onConfirm: () => Promise<void> | void;
   loading?: boolean;
@@ -104,6 +104,60 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
     );
   }
 
+  if (action === "unactive") {
+    return (
+      <AdminConfirmActionDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        footerClassName="gap-2"
+        icon={<Lock className="size-5 shrink-0 text-yellow-600" aria-hidden />}
+        title="Khoá tài khoản?"
+        description={
+          target ? (
+            <>
+              Tài khoản <strong>{target.fullName}</strong> ({target.email}) sẽ bị
+              khoá, không thể đăng nhập cho đến khi kích hoạt lại. Phiên đăng nhập
+              hiện tại sẽ bị thu hồi.
+            </>
+          ) : null
+        }
+        confirmLabel="Khoá tài khoản"
+        confirmDestructive
+        confirmDisabled={loading}
+        confirmLoading={loading}
+        onConfirm={() => void onConfirm()}
+      />
+    );
+  }
+
+  if (action === "active") {
+    return (
+      <AdminConfirmActionDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        footerClassName="gap-2"
+        icon={
+          <Unlock className="size-5 shrink-0 text-green-600" aria-hidden />
+        }
+        title="Kích hoạt tài khoản?"
+        description={
+          target ? (
+            <>
+              Tài khoản <strong>{target.fullName}</strong> ({target.email}) sẽ
+              được kích hoạt lại và có thể đăng nhập.
+            </>
+          ) : null
+        }
+        confirmLabel="Kích hoạt"
+        confirmDisabled={loading}
+        confirmLoading={loading}
+        onConfirm={() => void onConfirm()}
+      />
+    );
+  }
+
   return null;
 }
 
@@ -175,6 +229,55 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
           </>
         }
         confirmLabel="Khôi phục"
+        confirmDisabled={loading}
+        confirmLoading={loading}
+        onConfirm={() => void onConfirm()}
+      />
+    );
+  }
+
+  if (action === "unactive") {
+    return (
+      <AdminConfirmActionDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        footerClassName="gap-2"
+        icon={<Lock className="size-5 shrink-0 text-yellow-600" aria-hidden />}
+        title="Khoá các tài khoản đã chọn?"
+        description={
+          <>
+            <strong>{count}</strong> tài khoản sẽ bị khoá, không thể đăng nhập
+            cho đến khi kích hoạt lại. Phiên đăng nhập hiện tại sẽ bị thu hồi.
+          </>
+        }
+        confirmLabel="Khoá tài khoản"
+        confirmDestructive
+        confirmDisabled={loading}
+        confirmLoading={loading}
+        onConfirm={() => void onConfirm()}
+      />
+    );
+  }
+
+  if (action === "active") {
+    return (
+      <AdminConfirmActionDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        footerClassName="gap-2"
+        icon={
+          <Unlock className="size-5 shrink-0 text-green-600" aria-hidden />
+        }
+        title="Kích hoạt các tài khoản đã chọn?"
+        description={
+          <>
+            <strong>{count}</strong> tài khoản sẽ được kích hoạt lại và có thể
+            đăng nhập.
+          </>
+        }
+        confirmLabel="Kích hoạt"
         confirmDisabled={loading}
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
