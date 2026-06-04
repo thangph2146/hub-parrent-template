@@ -353,6 +353,8 @@ function EventsPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="sự kiện"
+        getName={(r) => r.title}
       />
     </AdminPageSection>
   )

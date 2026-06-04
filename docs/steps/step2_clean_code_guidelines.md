@@ -1,4 +1,4 @@
-# Step 2: Clean Code Guide Line
+﻿# Step 2: Clean Code Guide Line
 
 Mục tiêu: các nguyên tắc để giữ code sạch, đúng ranh giới, và dễ review trong monorepo.
 
@@ -39,7 +39,7 @@ pnpm check:full
 - Dùng `pnpm verify:bounds` để phát hiện import cấm.
 
 ## Ghi chú cho agents / reviewers
-- Trước khi sửa: xác định scope, đọc `docs/hub-parent/PRE_CODE_PROTOCOL.md`.
+- Trước khi sửa: xác định scope, đọc `docs/admin-pattern/PRE_CODE_PROTOCOL.md`.
 - Triệt để chạy `pnpm check` và sửa theo lỗi lint/type.
 - Nếu không tìm thấy docs feature: báo và tiếp tục bằng Graphify → source.
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: hub-parent-agents
 description: Use ONLY when the user requests any coding task, feature implementation, bug fix, or source code change in the hub-parent-template project. Enforces mandatory pre-code protocol, required reading list, step docs order, pnpm check commands, and microservice boundary rules from AGENTS.md before any source modification.
 ---
@@ -20,17 +20,17 @@ Before editing **any** source file, the agent MUST follow this sequence:
 
 ### Step 1: Read the Pre-Code Protocol
 
-1. Read `docs/hub-parent/PRE_CODE_PROTOCOL.md`
+1. Read `docs/admin-pattern/PRE_CODE_PROTOCOL.md`
 2. Read any additional documents referenced inside that protocol file
 
 ### Step 2: Read Required Docs (in order)
 
 Before making changes, read these files:
 
-1. `docs/hub-parent/README.md`
-2. `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`
-3. `docs/hub-parent/AGENTS_GUIDE.md`
-4. `docs/hub-parent/FRONTEND_UX.md` (only when working on `apps/frontend`)
+1. `docs/admin-pattern/README.md`
+2. `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
+3. `docs/admin-pattern/AGENTS_GUIDE.md`
+4. `docs/admin-pattern/FRONTEND_UX.md` (only when working on `apps/frontend`)
 5. `.graphify/markdown/SUMMARY_FOR_AI.md` (monorepo index)
 6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (workspace packages)
 7. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching frontend)
@@ -45,7 +45,7 @@ The step docs at `docs/steps/` are the primary roadmap for the agent:
 
 - `docs/steps/step1_system_overview.md`
 - `docs/steps/step2_clean_code_guidelines.md`
-- `docs/steps/step3_hub_parent_docs.md`
+- `docs/steps/step3_admin_pattern_docs.md`
 - `docs/steps/step4_graphify_reading.md`
 - `docs/steps/step5_feature_implementation_guides.md`
 - `docs/steps/step6_code_execution_and_change_tracking.md`
@@ -93,7 +93,7 @@ pnpm check:full
 ## Workflow Summary
 
 1. User requests a task
-2. Agent reads `docs/hub-parent/PRE_CODE_PROTOCOL.md` + referenced docs
+2. Agent reads `docs/admin-pattern/PRE_CODE_PROTOCOL.md` + referenced docs
 3. Agent reads required docs list (above) relevant to the task scope
 4. Agent reads applicable step docs
 5. Agent reads `docs/pages/` docs if page/feature-specific
@@ -104,6 +104,6 @@ pnpm check:full
 ## Notes
 
 - `docs/steps/*.md` is the **primary roadmap** for the agent
-- `docs/hub-parent/` and `docs/pages/` are **supplementary**
+- `docs/admin-pattern/` and `docs/pages/` are **supplementary**
 - Only open `apps/*/.graphify/snapshot/context.json` when a specific excerpt is needed (files are large, embed full source)
 - After architecture refactor: run graphify update → `pnpm graphify:ai-summary` → cross-check `.graphify/README.md` checklist

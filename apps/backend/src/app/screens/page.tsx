@@ -278,6 +278,8 @@ function ScreensPageInner() {
           if (confirmAction) void hCA(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="màn hình"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

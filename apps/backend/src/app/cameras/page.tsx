@@ -278,6 +278,8 @@ function CamerasPageInner() {
           if (confirmAction) void hCA(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="camera"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

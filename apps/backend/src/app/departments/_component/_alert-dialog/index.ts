@@ -1,1 +1,1 @@
-export { DepartmentsConfirmDialog } from "./departments-confirm-dialog";
+export { AdminCrudConfirmDialog as DepartmentsConfirmDialog } from "@ui/components/admin";

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Loader2, ImagePlus, X } from "lucide-react";
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";
-import { uploadImage } from "../utils";
+import { uploadAdminImage } from "@/lib/admin-upload";
 
 interface ImageUploadFieldProps {
   value: string;
@@ -19,7 +19,7 @@ export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
   const handleFile = async (file: File) => {
     setUploading(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadAdminImage(file, { folderPath: "guides" });
       onChange(url);
     } catch {
       toast.error("Upload ảnh thất bại");

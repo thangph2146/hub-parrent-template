@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminDetailPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
   Phone,
   ShieldHalf,
@@ -186,8 +186,8 @@ function StaffDetailPageInner() {
         onEdit={() => router.push(`/staff/${userId}/edit`)}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-        <div className="space-y-6">
+      <AdminDetailLayout>
+        <AdminDetailMain>
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={User}
@@ -306,9 +306,9 @@ function StaffDetailPageInner() {
               />
             </FieldSetContent>
           </FieldSet>
-        </div>
+        </AdminDetailMain>
 
-        <div className="space-y-6">
+        <AdminDetailSidebar>
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={ImageIcon}
@@ -344,8 +344,8 @@ function StaffDetailPageInner() {
               )}
             </FieldSetContent>
           </FieldSet>
-        </div>
-      </div>
+        </AdminDetailSidebar>
+      </AdminDetailLayout>
     </AdminPageSection>
   )
 }

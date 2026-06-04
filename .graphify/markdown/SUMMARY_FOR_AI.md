@@ -1,4 +1,4 @@
-# Hub parent template — bản đồ monorepo cho AI (Graphify)
+﻿# Hub parent template — bản đồ monorepo cho AI (Graphify)
 
 > **Sinh tự động:** `2026-06-02T06:06:23.329Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
@@ -9,13 +9,13 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Mục tiêu | Mở đầu tiên | Tiếp theo |
 |------------|-------------|-----------|
 | Bản đồ monorepo | **File này** (`SUMMARY_FOR_AI.md`) | [`../../packages/.graphify/markdown/SUMMARY_FOR_AI.md`](../../packages/.graphify/markdown/SUMMARY_FOR_AI.md), [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Ranh giới service / check | [`../../docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`](../../docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |
+| Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |
 | Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api`) | `SUMMARY_FOR_AI.md` cùng app |
 | Quy mô graph, điểm nóng import | [`../../apps/frontend/.graphify/markdown/GRAPH_STATS.md`](../../apps/frontend/.graphify/markdown/GRAPH_STATS.md) (đổi segment app) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |
 | Domain Nest import lẫn nhau | [`../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
-| UX storefront (Next công khai) | [`../../docs/hub-parent/FRONTEND_UX.md`](../../docs/hub-parent/FRONTEND_UX.md) | [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Quy trình agent (đọc thứ tự) | [`../../docs/hub-parent/AGENTS_GUIDE.md`](../../docs/hub-parent/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |
+| UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |
 | Kiểm tra ranh giới tự động | [`../../scripts/verify-service-boundaries.mjs`](../../scripts/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |
 | Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |
 
@@ -84,7 +84,7 @@ pnpm graphify:ai-summary
 
 ## Đọc thêm
 
-- `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`
-- `docs/hub-parent/AGENTS_GUIDE.md`
-- `docs/hub-parent/FRONTEND_UX.md` (storefront / UI)
+- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
+- `docs/admin-pattern/AGENTS_GUIDE.md`
+- `docs/admin-pattern/FRONTEND_UX.md` (storefront / UI)
 - `AGENTS.md` (entry agent)

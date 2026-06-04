@@ -3,6 +3,12 @@ export {
   type AdminConfirmActionDialogProps,
 } from "./confirm-dialog"
 export {
+  AdminCrudConfirmDialog,
+  type AdminCrudConfirmDialogProps,
+  type CrudConfirmAction,
+  type CrudConfirmKind,
+} from "./admin-crud-confirm-dialog"
+export {
   ADMIN_TABLE_ACTIONS_COLUMN_META,
   AdminTableRowActions,
   AdminTableViewButton,

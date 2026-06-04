@@ -19,11 +19,10 @@ import {
 import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
 import { Switch } from "@ui/components/switch"
-import { AdminFormPageHeader } from "@ui/components/admin"
+import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar } from "@ui/components/admin"
 import { Controller } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
 import type { StaffFormValues } from "../_hooks/use-staff-form"
-import { readAdminSession } from "@/lib/auth-session"
 import { toast } from "sonner"
 
 export interface StaffFormShellProps {
@@ -45,23 +44,8 @@ export function StaffFormShell(props: StaffFormShellProps) {
   const handleUploadAvatar = async (file: File) => {
     setUploadingAvatar(true)
     try {
-      const fd = new FormData()
-      fd.append("file", file)
-      fd.append("folderPath", "avatars")
-      const { DEFAULT_API_URL } = await import("@workspace/api-client")
-      const baseUrl = (
-        process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
-      ).replace(/\/$/, "")
-      const uid = readAdminSession()?.id
-      const res = await fetch(`${baseUrl}/admin/uploads`, {
-        method: "POST",
-        headers: uid ? { "X-User-Id": String(uid) } : {},
-        body: fd,
-      })
-      if (!res.ok) throw new Error("Upload thất bại")
-      const json = (await res.json()) as { data?: { url?: string } }
-      const url = json.data?.url
-      if (!url) throw new Error("Không nhận được URL ảnh")
+      const { uploadAdminImage } = await import("@/lib/admin-upload")
+      const url = await uploadAdminImage(file, { folderPath: "avatars" })
       form.setValue("avatar", url, { shouldDirty: true })
       toast.success("Đã tải ảnh đại diện")
     } catch (e) {
@@ -90,16 +74,14 @@ export function StaffFormShell(props: StaffFormShellProps) {
         saveLabel={isEdit ? "Lưu thay đổi" : "Tạo tài khoản"}
       />
 
-      <form
+      <AdminFormLayout
         id="staff-form"
         onSubmit={(e) => {
           e.preventDefault()
           void onSubmit()
         }}
-        className="my-6"
       >
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-          <div className="space-y-6">
+        <AdminFormMain>
             <FieldSet variant="section">
               <FieldSectionLegend
                 icon={UserCircle}
@@ -317,9 +299,9 @@ export function StaffFormShell(props: StaffFormShellProps) {
                 />
               </FieldSetContent>
             </FieldSet>
-          </div>
+          </AdminFormMain>
 
-          <div className="space-y-6">
+        <AdminFormSidebar>
             <FieldSet variant="section">
               <FieldSectionLegend
                 icon={isEdit ? CheckCircle2 : Lock}
@@ -413,9 +395,8 @@ export function StaffFormShell(props: StaffFormShellProps) {
                 />
               </FieldSetContent>
             </FieldSet>
-          </div>
-        </div>
-      </form>
+        </AdminFormSidebar>
+      </AdminFormLayout>
     </>
   )
 }

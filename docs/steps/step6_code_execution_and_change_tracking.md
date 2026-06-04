@@ -1,4 +1,4 @@
-# Step 6: Code Execution and Change Tracking
+﻿# Step 6: Code Execution and Change Tracking
 
 Đây là bước thực thi thay đổi code và ghi nhớ các thay đổi của hệ thống hiện tại.
 
@@ -47,7 +47,7 @@ pnpm check:full
 
 ## Nếu cần cập nhật docs
 - Nếu thay đổi cấu trúc hoặc feature mới: thêm/chỉnh `docs/pages/<feature>-implementation.md` hoặc `docs/steps/*.md` tương ứng.
-- Nếu thay đổi ranh giới service: cập nhật `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md` hoặc `packages/eslint-config/service-boundaries.js` nếu có.
+- Nếu thay đổi ranh giới service: cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` hoặc `packages/eslint-config/service-boundaries.js` nếu có.
 
 ## Kết luận bước này
 - `pnpm check` pass.

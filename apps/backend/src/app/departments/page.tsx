@@ -348,6 +348,8 @@ function DepartmentsPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="phòng khoa"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

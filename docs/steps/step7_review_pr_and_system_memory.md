@@ -1,4 +1,4 @@
-# Step 7: Review, PR, and System Memory
+﻿# Step 7: Review, PR, and System Memory
 
 Đây là bước cuối cùng: review thay đổi, chuẩn bị PR, và ghi nhớ trạng thái hệ thống.
 
@@ -33,7 +33,7 @@
 
 ## Ghi nhớ hệ thống cho reviewer
 - Nếu task là feature mới: trỏ tới `docs/pages/<feature>-implementation.md`.
-- Nếu task là thay đổi kiến trúc: trỏ tới `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`.
+- Nếu task là thay đổi kiến trúc: trỏ tới `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`.
 - Nếu task là thay đổi boundary: trỏ tới `packages/eslint-config/service-boundaries.js` và `scripts/verify-service-boundaries.mjs`.
 
 ## Hoàn thành bước này

@@ -4,7 +4,7 @@ Tài liệu ngắn để agent và dev chỉnh storefront **không phá vận h�
 
 ## Nguồn palette (hub-parent)
 
-Giá trị màu semantic (`--primary`, `--secondary`, sidebar, chart, `--brand-*`, …) **đồng bộ** với [`apps/hub-parent/src/app/globals.css`](../../apps/hub-parent/src/app/globals.css). Package `@ui` phân phối theme qua [`packages/ui/src/styles/globals.css`](../../packages/ui/src/styles/globals.css) (có thêm token `surface-*`, `shadcn/tailwind`, `@source` apps) — khi đổi brand, cập nhật **một nơi** ở hub-parent rồi copy/sửa cho khớp file package.
+Giá trị màu semantic (`--primary`, `--secondary`, sidebar, chart, `--brand-*`, …) **đồng bộ** với [`apps/frontend/src/app/globals.css`](../../apps/frontend/src/app/globals.css). Package `@ui` phân phối theme qua [`packages/ui/src/styles/globals.css`](../../packages/ui/src/styles/globals.css) (có thêm token `surface-*`, `shadcn/tailwind`, `@source` apps) — khi đổi brand, cập nhật **một nơi** ở frontend rồi copy/sửa cho khớp file package.
 
 ## Nguyên tắc
 

@@ -37,7 +37,7 @@ import {
 import { Badge } from "@ui/components/badge"
 import { Skeleton } from "@ui/components/skeleton"
 import { cn } from "@ui/lib/utils"
-import { AdminListPageHeader, AdminPageSection } from "@ui/components/admin"
+import { AdminListPageHeader, AdminPageGuard, AdminPageHeaderPrimaryButton, AdminPageSection } from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { api } from "@/lib/api"
@@ -507,7 +507,8 @@ export default function MyStudentsPage() {
   const displayName = user?.name?.trim() || user?.email || "Phụ huynh"
 
   return (
-    <AdminPageSection>
+    <AdminPageGuard>
+      <AdminPageSection>
       <AdminListPageHeader
         title="Quản lý sinh viên"
         subtitle={<>
@@ -517,10 +518,10 @@ export default function MyStudentsPage() {
         </>}
         icon={GraduationCap}
         actions={canCreate ? (
-          <Button onClick={() => setAddOpen(true)} className="shrink-0 gap-2">
+          <AdminPageHeaderPrimaryButton onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />
             Thêm sinh viên
-          </Button>
+          </AdminPageHeaderPrimaryButton>
         ) : undefined}
       />
 
@@ -703,5 +704,6 @@ export default function MyStudentsPage() {
         </DialogContent>
       </Dialog>
     </AdminPageSection>
+    </AdminPageGuard>
   )
 }

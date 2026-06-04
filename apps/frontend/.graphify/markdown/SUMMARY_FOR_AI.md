@@ -1,4 +1,4 @@
-# Hub storefront — @frontend — tóm tắt cho AI (Graphify)
+﻿# Hub storefront — @frontend — tóm tắt cho AI (Graphify)
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
@@ -24,10 +24,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 
 ### Tài liệu hub (không sinh bởi Graphify)
 
-- [MICROSERVICE_SYSTEM_MAP](../../../../docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md) — boundaries, ORM, checklist.
-- [AGENTS_GUIDE](../../../../docs/hub-parent/AGENTS_GUIDE.md) — thứ tự đọc cho agent.
+- [MICROSERVICE_SYSTEM_MAP](../../../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) — boundaries, ORM, checklist.
+- [AGENTS_GUIDE](../../../../docs/admin-pattern/AGENTS_GUIDE.md) — thứ tự đọc cho agent.
 - [AGENTS.md](../../../../AGENTS.md) — `pnpm check`, `check:full`.
-- [FRONTEND_UX](../../../../docs/hub-parent/FRONTEND_UX.md) — UX / token / a11y storefront.
+- [FRONTEND_UX](../../../../docs/admin-pattern/FRONTEND_UX.md) — UX / token / a11y storefront.
 
 ## Bản đồ từ snapshot/graph.json
 

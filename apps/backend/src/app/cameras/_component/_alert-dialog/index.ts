@@ -1,1 +1,1 @@
-export { CamerasConfirmDialog } from "./cameras-confirm-dialog";
+export { AdminCrudConfirmDialog as CamerasConfirmDialog } from "@ui/components/admin";

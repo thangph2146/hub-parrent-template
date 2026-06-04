@@ -278,6 +278,8 @@ function TemplatesPageInner() {
           if (confirmAction) void hCA(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="mẫu"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

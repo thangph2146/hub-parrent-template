@@ -32,13 +32,12 @@ import {
 } from "@ui/components/dialog"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { AdminListPageHeader, AdminPageGuard, AdminPageHeaderPrimaryButton, AdminPageSection } from "@ui/components/admin";
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { Textarea } from "@ui/components/textarea"
 import {
-  TypographyH1,
   TypographyPSmallMuted,
 } from "@ui/components/typography"
 import {
@@ -46,7 +45,7 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { AdminConfirmActionDialog } from "@ui/components/admin";
+import { AdminConfirmActionDialog, AdminTableTrashRowActions } from "@ui/components/admin";
 import { AdminDataTable } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
@@ -62,9 +61,6 @@ import { getRbacColumns } from "./_component/columns"
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_DIALOG_CONTENT_LG_CLASS,
-  ADMIN_PAGE_FORM_COLUMN_CLASS,
-  ADMIN_PAGE_TITLE_ICON_SM_CLASS,
-  ADMIN_PAGE_TITLE_PRIMARY_CLASS,
 } from "@ui/lib/layout-shell"
 
 type ApiEnvelope<T> = {
@@ -525,26 +521,11 @@ export default function RbacPage() {
         enableColumnFilter: false,
         meta: { disableColumnFilter: true },
         cell: ({ row }) => (
-          <div className="flex flex-wrap gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setRestoreTarget(row.original)}
-              disabled={!canManageRoles}
-            >
-              <ArchiveRestore className="size-3.5" />
-              Khôi phục
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => setPurgeTarget(row.original)}
-              disabled={!canManageRoles}
-            >
-              <Trash2 className="size-3.5" />
-              Xóa vĩnh viễn
-            </Button>
-          </div>
+          <AdminTableTrashRowActions
+            canWrite={canManageRoles}
+            onRestore={() => setRestoreTarget(row.original)}
+            onPurge={() => setPurgeTarget(row.original)}
+          />
         ),
       },
     ],
@@ -555,25 +536,27 @@ export default function RbacPage() {
 
   if (!canReadRbac) {
     return (
-      <div className={ADMIN_PAGE_FORM_COLUMN_CLASS}>
-        <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-          <Shield className={ADMIN_PAGE_TITLE_ICON_SM_CLASS} aria-hidden />
-          Phân quyền
-        </TypographyH1>
-        <Card className="border-destructive/30 bg-destructive/5">
-          <CardHeader className="flex flex-row items-start gap-3 space-y-0">
-            <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
-            <div>
-              <CardTitle className="text-base">
-                Không có quyền truy cập
-              </CardTitle>
-              <CardDescription className="mt-1">
-                Cần quyền <span className="font-mono text-xs">rbac.read</span>.
-              </CardDescription>
-            </div>
-          </CardHeader>
-        </Card>
-      </div>
+      <AdminPageGuard roles={["super_admin"]}>
+        <AdminPageSection>
+          <AdminListPageHeader
+            title="Phân quyền"
+            icon={Shield}
+          />
+          <Card className="border-destructive/30 bg-destructive/5">
+            <CardHeader className="flex flex-row items-start gap-3 space-y-0">
+              <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
+              <div>
+                <CardTitle className="text-base">
+                  Không có quyền truy cập
+                </CardTitle>
+                <CardDescription className="mt-1">
+                  Cần quyền <span className="font-mono text-xs">rbac.read</span>.
+                </CardDescription>
+              </div>
+            </CardHeader>
+          </Card>
+        </AdminPageSection>
+      </AdminPageGuard>
     )
   }
 
@@ -586,14 +569,10 @@ export default function RbacPage() {
           icon={Shield}
           actions={
             canManageRoles ? (
-              <Button
-                type="button"
-                className="h-11 rounded-lg"
-                onClick={openCreateDialog}
-              >
+              <AdminPageHeaderPrimaryButton onClick={openCreateDialog}>
                 <Plus className="size-4" />
                 Tạo role
-              </Button>
+              </AdminPageHeaderPrimaryButton>
             ) : null
           }
         />

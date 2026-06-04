@@ -342,6 +342,8 @@ function MajorsPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="ngành học"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

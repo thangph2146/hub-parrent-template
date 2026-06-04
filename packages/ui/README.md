@@ -1,4 +1,4 @@
-# `@workspace/ui` (`packages/ui`)
+﻿# `@workspace/ui` (`packages/ui`)
 
 Thư viện UI dùng chung cho các app Next trong monorepo. **Không import** source từ `apps/*`; app chỉ tiêu thụ qua alias `@ui/*` hoặc `@workspace/ui`.
 
@@ -94,5 +94,5 @@ App admin (`apps/backend`, …) giữ **riêng**: menu tree, auth provider, `api
 
 ## Tài liệu liên quan
 
-- Palette / UX: `docs/hub-parent/FRONTEND_UX.md`
-- Ranh giới monorepo: `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`
+- Palette / UX: `docs/admin-pattern/FRONTEND_UX.md`
+- Ranh giới monorepo: `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`

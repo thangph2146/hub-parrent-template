@@ -23,9 +23,6 @@ export type {
 export {
   PAGE_KEY,
   parseContent,
-  apiBase,
-  authHeaders,
-  uploadImage,
   sortGroupsByOrder,
   reorderSteps,
 } from "./utils";

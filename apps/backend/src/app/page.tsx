@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
-import { AdminListPageHeader, AdminPageSection } from "@ui/components/admin"
+import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { Skeleton } from "@ui/components/skeleton"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { useAuth } from "@/providers/auth-provider"
@@ -211,95 +211,97 @@ export default function AdminDashboardPage() {
   const stats = buildStats(data?.overview, isLoading)
 
   return (
-    <AdminPageSection>
-      <AdminListPageHeader
-        title="Tổng quan hệ thống"
-        subtitle={<>
-          Xin chào,{" "}
-          <span className="font-semibold text-foreground">{displayName}</span>.
-          Đây là bảng điều khiển quản trị HUB Parent.
-        </>}
-        icon={LayoutDashboard}
-      />
+    <AdminPageGuard>
+      <AdminPageSection>
+        <AdminListPageHeader
+          title="Tổng quan hệ thống"
+          subtitle={<>
+            Xin chào,{" "}
+            <span className="font-semibold text-foreground">{displayName}</span>.
+            Đây là bảng điều khiển quản trị HUB Parent.
+          </>}
+          icon={LayoutDashboard}
+        />
 
-      {/* Stat cards */}
-      <div>
-        <div className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-          <TrendingUp className="size-4" aria-hidden />
-          Tổng quan dữ liệu
-        </div>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {stats.map((card) =>
-            card.isLoading ? (
-              <StatCardSkeleton key={card.label} />
-            ) : (
-              <StatCardItem key={card.label} card={card} />
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Quick links */}
-      {(() => {
-        const visible = QUICK_LINKS.filter(
-          (item) => !item.permission || (user && canUserAccess(user, item.permission))
-        )
-        if (visible.length === 0) return null
-        return (
-          <div>
-            <div className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-              <TrendingUp className="size-4" aria-hidden />
-              Truy cập nhanh
-            </div>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {visible.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link key={item.href} href={item.href} className="group block">
-                    <Card className="transition-all duration-200 group-hover:border-primary/30 hover:-translate-y-px hover:shadow-md">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                          {item.label}
-                        </CardTitle>
-                        <div className="flex size-8 items-center justify-center rounded-lg bg-muted/50">
-                          <Icon className="size-4" />
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-xs text-muted-foreground">
-                          {item.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        )
-      })()}
-
-      {/* Charts */}
-      {data && (data.monthlyData?.length ?? 0) > 0 && (
-        <div className="space-y-4">
-          <div className="mb-1 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+        {/* Stat cards */}
+        <div>
+          <div className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
             <TrendingUp className="size-4" aria-hidden />
-            Biểu đồ thống kê
+            Tổng quan dữ liệu
           </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <MonthlyLineChart data={data.monthlyData} />
-            <MonthlyBarChart data={data.monthlyData} />
-          </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {(data.categoryData?.length ?? 0) > 0 && (
-              <CategoryDoughnutChart data={data.categoryData} />
-            )}
-            {(data.topPosts?.length ?? 0) > 0 && (
-              <TopPostsChart data={data.topPosts} />
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {stats.map((card) =>
+              card.isLoading ? (
+                <StatCardSkeleton key={card.label} />
+              ) : (
+                <StatCardItem key={card.label} card={card} />
+              )
             )}
           </div>
         </div>
-      )}
-    </AdminPageSection>
+
+        {/* Quick links */}
+        {(() => {
+          const visible = QUICK_LINKS.filter(
+            (item) => !item.permission || (user && canUserAccess(user, item.permission))
+          )
+          if (visible.length === 0) return null
+          return (
+            <div>
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+                <TrendingUp className="size-4" aria-hidden />
+                Truy cập nhanh
+              </div>
+              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {visible.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <Link key={item.href} href={item.href} className="group block">
+                      <Card className="transition-all duration-200 group-hover:border-primary/30 hover:-translate-y-px hover:shadow-md">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium text-muted-foreground">
+                            {item.label}
+                          </CardTitle>
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-muted/50">
+                            <Icon className="size-4" />
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-xs text-muted-foreground">
+                            {item.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Charts */}
+        {data && (data.monthlyData?.length ?? 0) > 0 && (
+          <div className="space-y-4">
+            <div className="mb-1 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+              <TrendingUp className="size-4" aria-hidden />
+              Biểu đồ thống kê
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <MonthlyLineChart data={data.monthlyData} />
+              <MonthlyBarChart data={data.monthlyData} />
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+              {(data.categoryData?.length ?? 0) > 0 && (
+                <CategoryDoughnutChart data={data.categoryData} />
+              )}
+              {(data.topPosts?.length ?? 0) > 0 && (
+                <TopPostsChart data={data.topPosts} />
+              )}
+            </div>
+          </div>
+        )}
+      </AdminPageSection>
+    </AdminPageGuard>
   )
 }

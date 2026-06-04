@@ -1,1 +1,1 @@
-export { EventsConfirmDialog } from "./events-confirm-dialog";
+export { AdminCrudConfirmDialog as EventsConfirmDialog } from "@ui/components/admin";

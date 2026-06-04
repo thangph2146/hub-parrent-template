@@ -377,6 +377,9 @@ function CategoriesPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction);
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="danh mục"
+        getName={(r) => r.name}
+        getSubInfo={(r) => r.slug}
       />
     </AdminPageSection>
   );

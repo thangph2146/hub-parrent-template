@@ -1,1 +1,1 @@
-export { AcademicYearsConfirmDialog } from "./academic-years-confirm-dialog";
+export { AdminCrudConfirmDialog as AcademicYearsConfirmDialog } from "@ui/components/admin";

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminDetailPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
   Shield,
   ShieldHalf,
@@ -168,8 +168,8 @@ function RoleDetailPageInner() {
         onEdit={canManageRoles ? () => router.push(`/rbac/${roleId}/edit`) : undefined}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-        <div className="space-y-6">
+      <AdminDetailLayout>
+        <AdminDetailMain>
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={Shield}
@@ -304,9 +304,9 @@ function RoleDetailPageInner() {
               </ScrollArea>
             </FieldSetContent>
           </FieldSet>
-        </div>
+        </AdminDetailMain>
 
-        <div className="space-y-6">
+        <AdminDetailSidebar>
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={CalendarClock}
@@ -373,8 +373,8 @@ function RoleDetailPageInner() {
               </div>
             </FieldSetContent>
           </FieldSet>
-        </div>
-      </div>
+        </AdminDetailSidebar>
+      </AdminDetailLayout>
     </AdminPageSection>
   )
 }

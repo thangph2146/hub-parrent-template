@@ -14,7 +14,7 @@ import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
 import { Switch } from "@ui/components/switch"
 import { ScrollArea } from "@ui/components/scroll-area"
-import { AdminFormPageHeader } from "@ui/components/admin"
+import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar } from "@ui/components/admin"
 import { Controller, useWatch } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
 import type { RbacPermission } from "@workspace/api-client"
@@ -90,13 +90,11 @@ export function RoleFormShell(props: RoleFormShellProps) {
         saveLabel={isEdit ? "Lưu thay đổi" : "Tạo vai trò"}
       />
 
-      <form
+      <AdminFormLayout
         id="role-form"
         onSubmit={(e) => { e.preventDefault(); void onSubmit() }}
-        className="my-6"
       >
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-          <div className="space-y-6">
+        <AdminFormMain>
             <FieldSet variant="section">
               <FieldSectionLegend
                 icon={Shield}
@@ -283,9 +281,9 @@ export function RoleFormShell(props: RoleFormShellProps) {
                 />
               </FieldSetContent>
             </FieldSet>
-          </div>
+          </AdminFormMain>
 
-          <div className="space-y-6">
+        <AdminFormSidebar>
             <FieldSet variant="section">
               <FieldSectionLegend
                 icon={isEdit ? CheckCircle2 : Lock}
@@ -362,9 +360,8 @@ export function RoleFormShell(props: RoleFormShellProps) {
                 </div>
               </FieldSetContent>
             </FieldSet>
-          </div>
-        </div>
-      </form>
+        </AdminFormSidebar>
+      </AdminFormLayout>
     </>
   )
 }

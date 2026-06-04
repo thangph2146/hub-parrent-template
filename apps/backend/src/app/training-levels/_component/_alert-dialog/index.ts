@@ -1,1 +1,1 @@
-export { TrainingLevelsConfirmDialog } from "./training-levels-confirm-dialog";
+export { AdminCrudConfirmDialog as TrainingLevelsConfirmDialog } from "@ui/components/admin";

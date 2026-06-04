@@ -23,7 +23,6 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Camera, Hash, Loader2, User } from "lucide-react"
-import { DEFAULT_API_URL } from "@workspace/api-client"
 import type { SpeakerFormValues } from "../types"
 import Image from "next/image"
 
@@ -61,20 +60,8 @@ export function SpeakerFormShell({
   const handleUploadAvatar = async (file: File) => {
     setUploadingAvatar(true)
     try {
-      const fd = new FormData()
-      fd.append("file", file)
-      fd.append("folderPath", "avatars")
-      const baseUrl = (
-        process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
-      ).replace(/\/$/, "")
-      const res = await fetch(`${baseUrl}/admin/uploads`, {
-        method: "POST",
-        body: fd,
-      })
-      if (!res.ok) throw new Error("Upload thất bại")
-      const json = (await res.json()) as { data?: { url?: string } }
-      const url = json.data?.url
-      if (!url) throw new Error("Không nhận được URL ảnh")
+      const { uploadAdminImage } = await import("@/lib/admin-upload")
+      const url = await uploadAdminImage(file, { folderPath: "avatars" })
       setValue("avatar", url)
       toast.success("Đã tải ảnh đại diện")
     } catch (e) {

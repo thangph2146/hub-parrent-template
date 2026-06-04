@@ -6,11 +6,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-import { Button } from "@ui/components/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";
-import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -91,65 +90,59 @@ function EditSeoMetaPageInner() {
         onBack={() => router.push(`/seo-metas/${id}`)}
         formId="seo-meta-edit-form"
         isEdit
+        submitting={isSubmitting}
       />
 
-      <form id="seo-meta-edit-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Thông tin SEO</CardTitle>
-            <CardDescription>Cập nhật thông tin SEO cho trang.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="page">Đường dẫn *</Label>
-              <Input id="page" placeholder="/vi du" {...register("page")} />
-              {errors.page && <p className="text-sm text-destructive">{errors.page.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="title">Title SEO</Label>
-              <Input id="title" placeholder="Title hiển thị trên SEO" {...register("title")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Mô tả</Label>
-              <Input id="description" placeholder="Mô tả meta" {...register("description")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="keywords">Từ khóa</Label>
-              <Input id="keywords" placeholder="Từ khóa, cách nhau bằng dấu phẩy" {...register("keywords")} />
-            </div>
-          </CardContent>
-        </Card>
+      <AdminFormLayout id="seo-meta-edit-form" onSubmit={handleSubmit(onSubmit)}>
+        <AdminFormMain>
+          <Card>
+            <CardHeader>
+              <CardTitle>Thông tin SEO</CardTitle>
+              <CardDescription>Cập nhật thông tin SEO cho trang.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="page">Đường dẫn *</Label>
+                <Input id="page" placeholder="/vi du" {...register("page")} />
+                {errors.page && <p className="text-sm text-destructive">{errors.page.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="title">Title SEO</Label>
+                <Input id="title" placeholder="Title hiển thị trên SEO" {...register("title")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Mô tả</Label>
+                <Input id="description" placeholder="Mô tả meta" {...register("description")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="keywords">Từ khóa</Label>
+                <Input id="keywords" placeholder="Từ khóa, cách nhau bằng dấu phẩy" {...register("keywords")} />
+              </div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Open Graph</CardTitle>
-            <CardDescription>Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="ogTitle">OG Title</Label>
-              <Input id="ogTitle" placeholder="Open Graph title" {...register("ogTitle")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="ogDescription">OG Mô tả</Label>
-              <Input id="ogDescription" placeholder="Open Graph description" {...register("ogDescription")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="ogImage">OG Ảnh (URL)</Label>
-              <Input id="ogImage" placeholder="https://..." {...register("ogImage")} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex gap-3">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Đang cập nhật..." : "Cập nhật"}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => router.push(`/seo-metas/${id}`)}>
-            Hủy
-          </Button>
-        </div>
-      </form>
+          <Card>
+            <CardHeader>
+              <CardTitle>Open Graph</CardTitle>
+              <CardDescription>Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="ogTitle">OG Title</Label>
+                <Input id="ogTitle" placeholder="Open Graph title" {...register("ogTitle")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ogDescription">OG Mô tả</Label>
+                <Input id="ogDescription" placeholder="Open Graph description" {...register("ogDescription")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ogImage">OG Ảnh (URL)</Label>
+                <Input id="ogImage" placeholder="https://..." {...register("ogImage")} />
+              </div>
+            </CardContent>
+          </Card>
+        </AdminFormMain>
+      </AdminFormLayout>
     </AdminPageSection>
   );
 }

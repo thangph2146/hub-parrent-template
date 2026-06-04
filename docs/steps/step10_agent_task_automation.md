@@ -1,4 +1,4 @@
-# Step 10: Agent Task Automation and Final Checklist
+﻿# Step 10: Agent Task Automation and Final Checklist
 
 Đây là bước dành cho việc tự động hóa task của agent và đóng vòng hoàn chỉnh trước khi dừng.
 
@@ -12,7 +12,7 @@
 2. Đọc các bước step 1–9 theo thứ tự:
    - `step1_system_overview`
    - `step2_clean_code_guidelines`
-   - `step3_hub_parent_docs`
+   - `step3_admin_pattern_docs`
    - `step4_graphify_reading`
    - `step5_feature_implementation_guides`
    - `step6_code_execution_and_change_tracking`
@@ -24,7 +24,7 @@
 
 ## Final checklist
 - [ ] Đã xác nhận scope task.
-- [ ] Đã đọc `docs/hub-parent/PRE_CODE_PROTOCOL.md`.
+- [ ] Đã đọc `docs/admin-pattern/PRE_CODE_PROTOCOL.md`.
 - [ ] Đã đọc docs feature tương ứng nếu cần.
 - [ ] Đã dùng Graphify để định vị file.
 - [ ] Đã sửa code theo boundary rules.

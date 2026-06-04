@@ -1,1 +1,1 @@
-export { TemplatesConfirmDialog } from "./templates-confirm-dialog";
+export { AdminCrudConfirmDialog as TemplatesConfirmDialog } from "@ui/components/admin";

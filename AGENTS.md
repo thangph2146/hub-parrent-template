@@ -1,36 +1,37 @@
-# AGENTS Quick Guide (hub-parent-template)
+﻿# AGENTS Quick Guide (hub-parent-template)
 
-Tài liệu này là **entry point ngắn gọn** cho agent. Chi tiết đầy đủ nằm trong `docs/hub-parent/` và các step docs ở root.
+Tài liệu này là **entry point ngắn gọn** cho agent. Chi tiết đầy đủ nằm trong `docs/admin-pattern/` và các step docs ở root.
 
 ## Quy trình bắt buộc trước khi code
 
 Trước khi sửa bất kỳ file code nào, agent phải đọc và làm theo:
 
-1. `docs/hub-parent/PRE_CODE_PROTOCOL.md`
+1. `docs/admin-pattern/PRE_CODE_PROTOCOL.md`
 2. Các tài liệu liên quan được liệt kê trong protocol đó
 
 Nếu task liên quan page/feature cụ thể, phải đọc docs tương ứng trong `docs/pages/` trước khi sửa source.
 
-> Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/hub-parent/` và `docs/pages/` làm tài liệu bổ trợ.
+> Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/admin-pattern/` và `docs/pages/` làm tài liệu bổ trợ.
 
 ## Đọc trước khi sửa
 
-1. `docs/hub-parent/README.md`
-2. `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`
-3. `docs/hub-parent/AGENTS_GUIDE.md`
-4. `docs/hub-parent/FRONTEND_UX.md` (khi chỉnh `apps/frontend`)
-5. `.graphify/markdown/SUMMARY_FOR_AI.md` (chỉ mục monorepo + link tới từng app)
-6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (danh sách workspace packages)
-7. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
-8. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-9. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+1. `docs/admin-pattern/README.md`
+2. `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
+3. `docs/admin-pattern/AGENTS_GUIDE.md`
+4. `docs/admin-pattern/FRONTEND_UX.md` (khi chỉnh `apps/frontend`)
+5. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (khi triển khai page admin trong `apps/backend`)
+6. `.graphify/markdown/SUMMARY_FOR_AI.md` (chỉ mục monorepo + link tới từng app)
+7. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (danh sách workspace packages)
+8. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
+9. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
+10. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
 
 Sau `.graphify/markdown/SUMMARY_FOR_AI.md`, dùng mục **Chỉ dẫn theo chủ đề** trong cùng file để chọn đúng `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md` (cùng thư mục `markdown/` của từng scope) theo việc cần làm.
 
 ### Step-by-step docs cho agent
 - `docs/steps/step1_system_overview.md`
 - `docs/steps/step2_clean_code_guidelines.md`
-- `docs/steps/step3_hub_parent_docs.md`
+- `docs/steps/step3_admin_pattern_docs.md`
 - `docs/steps/step4_graphify_reading.md`
 - `docs/steps/step5_feature_implementation_guides.md`
 - `docs/steps/step6_code_execution_and_change_tracking.md`

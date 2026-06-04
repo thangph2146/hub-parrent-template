@@ -1,4 +1,4 @@
-# Step 1: System Overview
+﻿# Step 1: System Overview
 
 Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trước khi phát triển.
 
@@ -20,9 +20,9 @@ Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trướ
 - Logic dùng chung đặt ở `packages/*` nếu thực sự cần chia sẻ.
 
 ## Tài liệu quan trọng (đọc trước khi sửa code)
-- `docs/hub-parent/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
-- `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và checklist.
-- `docs/hub-parent/AGENTS_GUIDE.md` — hướng dẫn đọc thứ tự và chạy `pnpm check`.
+- `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
+- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và checklist.
+- `docs/admin-pattern/AGENTS_GUIDE.md` — hướng dẫn đọc thứ tự và chạy `pnpm check`.
 - `.graphify/markdown/SUMMARY_FOR_AI.md` và `apps/*/.graphify/markdown/SUMMARY_FOR_AI.md` — bản tóm tắt graph cho từng app.
 - Nếu task liên quan page/feature: `docs/pages/<feature>-implementation.md`.
 

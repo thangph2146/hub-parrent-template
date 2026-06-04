@@ -1,5 +1,3 @@
-import { DEFAULT_API_URL } from "@workspace/api-client";
-import { readAdminSession } from "@/lib/auth-session";
 import type { GuideGroup, GuideStep } from "./types";
 
 export const PAGE_KEY = "huong-dan-su-dung";
@@ -33,34 +31,6 @@ export function parseContent(raw: unknown): NonNullable<GuideGroup["content"]> {
         }))
       : [],
   };
-}
-
-/** Lấy base URL của API từ env hoặc default */
-export function apiBase(): string {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
-}
-
-/** Tạo headers auth với X-User-Id từ session */
-export function authHeaders(): Record<string, string> {
-  const uid = readAdminSession()?.id;
-  return uid ? { "X-User-Id": String(uid) } : {};
-}
-
-/** Upload ảnh lên /admin/uploads */
-export async function uploadImage(file: File): Promise<string> {
-  const fd = new FormData();
-  fd.append("file", file);
-  fd.append("folderPath", "guides");
-  const res = await fetch(`${apiBase()}/admin/uploads`, {
-    method: "POST",
-    headers: authHeaders(),
-    body: fd,
-  });
-  if (!res.ok) throw new Error("Upload thất bại");
-  const json = (await res.json()) as { data?: { url?: string } };
-  const url = json.data?.url;
-  if (!url) throw new Error("Không nhận được URL ảnh");
-  return url;
 }
 
 /** Sắp xếp groups theo order trong content */

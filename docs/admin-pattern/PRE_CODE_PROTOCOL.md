@@ -1,4 +1,4 @@
-# Pre-Code Protocol For Agents
+﻿# Pre-Code Protocol For Agents
 
 Tài liệu này là quy trình bắt buộc trước khi agent sửa code trong repo `hub-parent-template`.
 
@@ -14,9 +14,9 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 
 ## 2. Thứ tự đọc tối thiểu
 
-1. `docs/hub-parent/README.md`
-2. `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md`
-3. `docs/hub-parent/AGENTS_GUIDE.md`
+1. `docs/admin-pattern/README.md`
+2. `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
+3. `docs/admin-pattern/AGENTS_GUIDE.md`
 4. `.graphify/markdown/SUMMARY_FOR_AI.md`
 5. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
 6. App Graphify summary tương ứng với phạm vi task:
@@ -33,7 +33,11 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 
 Không mở `apps/*/.graphify/snapshot/context.json` trừ khi cần trích đoạn source cụ thể từ snapshot.
 
-## 3. Mapping docs feature
+## 3. Reading order bổ sung cho admin pages
+
+Trước khi sửa **bất kỳ page nào** trong `apps/backend/src/app/`, agent phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` trước — tài liệu này định nghĩa pattern chuẩn (guard, header, layout grid, table actions, form) mà mọi page phải tuân thủ.
+
+## 4. Mapping docs feature
 
 Khi task đụng đến các route/module dưới đây, đọc docs tương ứng trước khi code:
 
@@ -53,7 +57,7 @@ Khi task đụng đến các route/module dưới đây, đọc docs tương ứ
 
 Nếu không tìm thấy docs feature tương ứng, agent phải nói rõ: "Không tìm thấy docs feature tương ứng", rồi tiếp tục bằng Graphify + source code.
 
-## 4. Boundary checklist trước khi sửa
+## 5. Boundary checklist trước khi sửa
 
 Trước khi code, agent phải tự đối chiếu:
 
@@ -63,7 +67,7 @@ Trước khi code, agent phải tự đối chiếu:
 - Logic dùng chung không phụ thuộc runtime app thì đặt trong `packages/*` khi thật sự cần share.
 - Không thêm dependency sai boundary vào `package.json`.
 
-## 5. Quy trình khi bắt đầu một task code
+## 6. Quy trình khi bắt đầu một task code
 
 1. Xác định task thuộc app/package/feature nào.
 2. Đọc docs theo thứ tự trong tài liệu này.
@@ -74,7 +78,7 @@ Trước khi code, agent phải tự đối chiếu:
 7. Sau khi sửa, chạy `pnpm check`.
 8. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
 
-## 6. Khi làm việc với `parent-students`
+## 7. Khi làm việc với `parent-students`
 
 Với mọi task liên quan `apps/backend/src/app/parent-students/**`, agent phải đọc:
 

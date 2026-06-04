@@ -1,4 +1,4 @@
-# Step 8: Architecture Maintenance and System Updates
+﻿# Step 8: Architecture Maintenance and System Updates
 
 Đây là bước dành cho bảo trì kiến trúc, cập nhật docs, và giữ hệ thống sạch lâu dài.
 
@@ -14,7 +14,7 @@
    - package workspace mới
    - thay đổi import boundaries
 2. Cập nhật `docs/pages/` nếu feature mới cần hướng dẫn implementation thêm.
-3. Cập nhật `docs/hub-parent/MICROSERVICE_SYSTEM_MAP.md` nếu kiến trúc service đã thay đổi.
+3. Cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` nếu kiến trúc service đã thay đổi.
 4. Cập nhật `packages/eslint-config/service-boundaries.js` khi boundary rules cần mở rộng hoặc siết chặt.
 5. Nếu có thay đổi dependency workspace, chạy `pnpm graphify:ai-summary`.
 
