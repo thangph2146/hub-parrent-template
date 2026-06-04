@@ -200,14 +200,14 @@ export default function RbacPage() {
   const queryClient = useQueryClient()
   const { user: session } = useAuth()
   const canReadRbac =
-    session != null && canUserAccess(session, PERMISSION_CODES.RBAC_READ)
+    session != null && canUserAccess(session, PERMISSION_CODES.ROLES_VIEW)
   const canManageRoles =
     session != null &&
     (session.roles.some((role) => isSuperAdminRoleCode(role.name)) ||
-      session.permissions.includes("roles:create") ||
-      session.permissions.includes("roles:update") ||
-      session.permissions.includes("roles:delete") ||
-      session.permissions.includes("roles:manage"))
+      session.permissions.includes(PERMISSION_CODES.ROLES_CREATE) ||
+      session.permissions.includes(PERMISSION_CODES.ROLES_UPDATE) ||
+      session.permissions.includes(PERMISSION_CODES.ROLES_DELETE) ||
+      session.permissions.includes(PERMISSION_CODES.ROLES_MANAGE))
 
   const permissionCatalog = useRbacCatalog({
     enabled: Boolean(session) && canReadRbac,

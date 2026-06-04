@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Major } from '../entities/major.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface MajorRowDto {
@@ -171,5 +176,8 @@ export class MajorsService {
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, Major, action, ids, { label: 'nganh' });
   }
 }

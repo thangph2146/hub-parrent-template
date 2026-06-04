@@ -103,13 +103,6 @@ export function getEventLiveActivityGlobalFilterText(
 export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[] {
   return [
     {
-      id: "stt",
-      header: "STT",
-      enableColumnFilter: false,
-      size: 48,
-      cell: ({ row }) => row.index + 1,
-    },
-    {
       id: "avatar",
       header: "Avatar",
       enableColumnFilter: false,

@@ -76,7 +76,9 @@ function CategoriesPageInner() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const canWriteCategories = user
-    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_WRITE)
+    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CATEGORIES_CREATE) ||
+      canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE)
     : false;
 
   const invalidateAll = async () => {

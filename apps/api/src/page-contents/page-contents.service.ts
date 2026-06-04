@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { PageContent } from '../entities/page-content.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 
 export interface PageContentCreateInput {
   pageKey: string;
@@ -95,5 +100,10 @@ export class PageContentsService {
 
     await this.em.removeAndFlush(existing);
     return existing;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, PageContent, action, ids, {
+      label: 'trang',
+    });
   }
 }

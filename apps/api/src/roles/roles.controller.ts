@@ -183,6 +183,33 @@ export class RolesController {
     return res.status(statusCode).json(body);
   }
 
+  @Get('permissions')
+  @ApiOperation({
+    summary: 'List full permission catalog (cho UI ma trận quyền)',
+  })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiResponse({ status: 200, description: 'Catalog retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
+  async listPermissionCatalog(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+    const items = Object.values(PERMISSIONS)
+      .map((code, index) => ({
+        id: index + 1,
+        code,
+        name: code,
+        description: null,
+      }))
+      .sort((a, b) => a.code.localeCompare(b.code));
+    const { statusCode, body } = createSuccessResponse(items);
+    return res.status(statusCode).json(body);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get role by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -484,7 +511,7 @@ export class RolesController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.ROLES_MANAGE)
+  @Permissions(PERMISSIONS.ROLES_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted role' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

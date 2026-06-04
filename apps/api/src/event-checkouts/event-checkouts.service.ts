@@ -65,6 +65,11 @@ function mapRow(r: EventRegistration): EventCheckoutRowDto {
   };
 }
 
+export interface BulkClearCheckoutsResult {
+  affected: number;
+  message: string;
+}
+
 @Injectable()
 export class EventCheckoutsService {
   constructor(private readonly em: EntityManager) {}
@@ -101,6 +106,22 @@ export class EventCheckoutsService {
     return {
       data: rows.map(mapRow),
       pagination: paginationMeta(page, limit, total),
+    };
+  }
+
+  async bulkClear(ids: string[]): Promise<BulkClearCheckoutsResult> {
+    if (!ids.length) {
+      return { affected: 0, message: 'Không có bản ghi nào' };
+    }
+    const result = await this.em.nativeUpdate(
+      EventRegistration,
+      { id: { $in: ids }, hasCheckout: true, deletedAt: null },
+      { hasCheckout: false, updatedAt: new Date() },
+    );
+    const affected = result ?? 0;
+    return {
+      affected,
+      message: `Đã hủy checkout ${affected} lượt đăng ký`,
     };
   }
 }

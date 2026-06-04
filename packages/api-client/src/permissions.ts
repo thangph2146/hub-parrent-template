@@ -1,16 +1,31 @@
 /**
- * Mã quyền khớp `apps/api/src/config/permissions.ts` — dùng cho UI (ẩn menu, v.v.).
+ * Permission codes — mirror `apps/api/src/config/permissions.ts`.
+ *
  * Format: `resource:action` (vd: `users:view`, `posts:create`).
+ * Dùng cho UI admin (`canUserAccess(...)`) để ẩn menu / nút hành động khi
+ * role thiếu quyền. Phía server vẫn enforce ở `@Permissions()` guard.
+ *
+ * Nhóm theo domain nghiệp vụ để dễ tra cứu; key `MANAGE` = superset
+ * (view+create+update+delete+export) của resource đó.
  */
 import type { AuthUser } from "./types";
 
 export const PERMISSION_CODES = {
   ALL: "*",
 
-  // ─── Dashboard ───
+  // ─── Dashboard ───────────────────────────────────────────────
   DASHBOARD_VIEW: "dashboard:view",
 
-  // ─── Users ───
+  // ─── RBAC: roles (cấp quyền, gán vai trò) ────────────────────
+  ROLES_VIEW: "roles:view",
+  ROLES_CREATE: "roles:create",
+  ROLES_UPDATE: "roles:update",
+  ROLES_DELETE: "roles:delete",
+  ROLES_MANAGE: "roles:manage",
+  ROLES_EXPORT: "roles:export",
+  ROLES_RESTORE: "roles:restore",
+
+  // ─── People: users / accounts / sessions ─────────────────────
   USERS_VIEW: "users:view",
   USERS_CREATE: "users:create",
   USERS_UPDATE: "users:update",
@@ -23,7 +38,19 @@ export const PERMISSION_CODES = {
   USERS_ACTIVE: "users:active",
   USERS_UNACTIVE: "users:unactive",
 
-  // ─── Posts ───
+  ACCOUNTS_VIEW: "accounts:view",
+  ACCOUNTS_UPDATE: "accounts:update",
+  ACCOUNTS_MANAGE: "accounts:manage",
+
+  SESSIONS_VIEW: "sessions:view",
+  SESSIONS_CREATE: "sessions:create",
+  SESSIONS_UPDATE: "sessions:update",
+  SESSIONS_DELETE: "sessions:delete",
+  SESSIONS_MANAGE: "sessions:manage",
+  SESSIONS_EXPORT: "sessions:export",
+  SESSIONS_RESTORE: "sessions:restore",
+
+  // ─── Content: posts / categories / tags / page-contents / seo-metas / comments ──
   POSTS_VIEW: "posts:view",
   POSTS_VIEW_ALL: "posts:view_all",
   POSTS_VIEW_OWN: "posts:view_own",
@@ -36,7 +63,6 @@ export const PERMISSION_CODES = {
   POSTS_IMPORT: "posts:import",
   POSTS_RESTORE: "posts:restore",
 
-  // ─── Categories ───
   CATEGORIES_VIEW: "categories:view",
   CATEGORIES_CREATE: "categories:create",
   CATEGORIES_UPDATE: "categories:update",
@@ -44,15 +70,30 @@ export const PERMISSION_CODES = {
   CATEGORIES_MANAGE: "categories:manage",
   CATEGORIES_EXPORT: "categories:export",
 
-  // ─── Tags ───
   TAGS_VIEW: "tags:view",
   TAGS_CREATE: "tags:create",
   TAGS_UPDATE: "tags:update",
   TAGS_DELETE: "tags:delete",
   TAGS_MANAGE: "tags:manage",
   TAGS_EXPORT: "tags:export",
+  TAGS_RESTORE: "tags:restore",
 
-  // ─── Comments ───
+  PAGE_CONTENTS_VIEW: "page_contents:view",
+  PAGE_CONTENTS_CREATE: "page_contents:create",
+  PAGE_CONTENTS_UPDATE: "page_contents:update",
+  PAGE_CONTENTS_DELETE: "page_contents:delete",
+  PAGE_CONTENTS_MANAGE: "page_contents:manage",
+  PAGE_CONTENTS_EXPORT: "page_contents:export",
+
+  SEO_METAS_VIEW: "seo_metas:view",
+  SEO_METAS_CREATE: "seo_metas:create",
+  SEO_METAS_UPDATE: "seo_metas:update",
+  SEO_METAS_DELETE: "seo_metas:delete",
+  SEO_METAS_MANAGE: "seo_metas:manage",
+  SEO_METAS_EXPORT: "seo_metas:export",
+  SEO_METAS_RESTORE: "seo_metas:restore",
+  SEO_METAS_HARD_DELETE: "seo_metas:hard-delete",
+
   COMMENTS_VIEW: "comments:view",
   COMMENTS_CREATE: "comments:create",
   COMMENTS_UPDATE: "comments:update",
@@ -62,15 +103,7 @@ export const PERMISSION_CODES = {
   COMMENTS_APPROVE: "comments:approve",
   COMMENTS_RESTORE: "comments:restore",
 
-  // ─── Roles ───
-  ROLES_VIEW: "roles:view",
-  ROLES_CREATE: "roles:create",
-  ROLES_UPDATE: "roles:update",
-  ROLES_DELETE: "roles:delete",
-  ROLES_MANAGE: "roles:manage",
-  ROLES_EXPORT: "roles:export",
-
-  // ─── Messages ───
+  // ─── Communication: messages / notifications / groups / contact-requests ──
   MESSAGES_VIEW: "messages:view",
   MESSAGES_VIEW_OWN: "messages:view_own",
   MESSAGES_CREATE: "messages:create",
@@ -79,7 +112,12 @@ export const PERMISSION_CODES = {
   MESSAGES_MANAGE: "messages:manage",
   MESSAGES_EXPORT: "messages:export",
 
-  // ─── Groups ───
+  NOTIFICATIONS_VIEW: "notifications:view",
+  NOTIFICATIONS_VIEW_ALL: "notifications:view_all",
+  NOTIFICATIONS_VIEW_OWN: "notifications:view_own",
+  NOTIFICATIONS_MANAGE: "notifications:manage",
+  NOTIFICATIONS_EXPORT: "notifications:export",
+
   GROUPS_VIEW: "groups:view",
   GROUPS_CREATE: "groups:create",
   GROUPS_UPDATE: "groups:update",
@@ -87,14 +125,6 @@ export const PERMISSION_CODES = {
   GROUPS_MANAGE: "groups:manage",
   GROUPS_EXPORT: "groups:export",
 
-  // ─── Notifications ───
-  NOTIFICATIONS_VIEW: "notifications:view",
-  NOTIFICATIONS_VIEW_ALL: "notifications:view_all",
-  NOTIFICATIONS_VIEW_OWN: "notifications:view_own",
-  NOTIFICATIONS_MANAGE: "notifications:manage",
-  NOTIFICATIONS_EXPORT: "notifications:export",
-
-  // ─── Contact Requests ───
   CONTACT_REQUESTS_VIEW: "contact_requests:view",
   CONTACT_REQUESTS_CREATE: "contact_requests:create",
   CONTACT_REQUESTS_UPDATE: "contact_requests:update",
@@ -104,7 +134,7 @@ export const PERMISSION_CODES = {
   CONTACT_REQUESTS_ASSIGN: "contact_requests:assign",
   CONTACT_REQUESTS_RESTORE: "contact_requests:restore",
 
-  // ─── Students ───
+  // ─── Academic: students / courses / academic-years / training-* / majors / departments ──
   STUDENTS_VIEW: "students:view",
   STUDENTS_VIEW_ALL: "students:view_all",
   STUDENTS_VIEW_OWN: "students:view_own",
@@ -117,16 +147,140 @@ export const PERMISSION_CODES = {
   STUDENTS_IMPORT: "students:import",
   STUDENTS_RESTORE: "students:restore",
 
-  // ─── Sessions ───
-  SESSIONS_VIEW: "sessions:view",
-  SESSIONS_CREATE: "sessions:create",
-  SESSIONS_UPDATE: "sessions:update",
-  SESSIONS_DELETE: "sessions:delete",
-  SESSIONS_MANAGE: "sessions:manage",
-  SESSIONS_EXPORT: "sessions:export",
-  SESSIONS_RESTORE: "sessions:restore",
+  COURSES_VIEW: "courses:view",
+  COURSES_CREATE: "courses:create",
+  COURSES_UPDATE: "courses:update",
+  COURSES_DELETE: "courses:delete",
+  COURSES_MANAGE: "courses:manage",
+  COURSES_EXPORT: "courses:export",
+  COURSES_RESTORE: "courses:restore",
 
-  // ─── Settings ───
+  ACADEMIC_YEARS_VIEW: "academic_years:view",
+  ACADEMIC_YEARS_CREATE: "academic_years:create",
+  ACADEMIC_YEARS_UPDATE: "academic_years:update",
+  ACADEMIC_YEARS_DELETE: "academic_years:delete",
+  ACADEMIC_YEARS_MANAGE: "academic_years:manage",
+  ACADEMIC_YEARS_EXPORT: "academic_years:export",
+  ACADEMIC_YEARS_RESTORE: "academic_years:restore",
+
+  TRAINING_LEVELS_VIEW: "training_levels:view",
+  TRAINING_LEVELS_CREATE: "training_levels:create",
+  TRAINING_LEVELS_UPDATE: "training_levels:update",
+  TRAINING_LEVELS_DELETE: "training_levels:delete",
+  TRAINING_LEVELS_MANAGE: "training_levels:manage",
+  TRAINING_LEVELS_EXPORT: "training_levels:export",
+  TRAINING_LEVELS_RESTORE: "training_levels:restore",
+
+  TRAINING_SYSTEMS_VIEW: "training_systems:view",
+  TRAINING_SYSTEMS_CREATE: "training_systems:create",
+  TRAINING_SYSTEMS_UPDATE: "training_systems:update",
+  TRAINING_SYSTEMS_DELETE: "training_systems:delete",
+  TRAINING_SYSTEMS_MANAGE: "training_systems:manage",
+  TRAINING_SYSTEMS_EXPORT: "training_systems:export",
+  TRAINING_SYSTEMS_RESTORE: "training_systems:restore",
+
+  MAJORS_VIEW: "majors:view",
+  MAJORS_CREATE: "majors:create",
+  MAJORS_UPDATE: "majors:update",
+  MAJORS_DELETE: "majors:delete",
+  MAJORS_MANAGE: "majors:manage",
+  MAJORS_EXPORT: "majors:export",
+  MAJORS_RESTORE: "majors:restore",
+
+  DEPARTMENTS_VIEW: "departments:view",
+  DEPARTMENTS_CREATE: "departments:create",
+  DEPARTMENTS_UPDATE: "departments:update",
+  DEPARTMENTS_DELETE: "departments:delete",
+  DEPARTMENTS_MANAGE: "departments:manage",
+  DEPARTMENTS_EXPORT: "departments:export",
+  DEPARTMENTS_RESTORE: "departments:restore",
+
+  // ─── Events: events + sub-resources ──────────────────────────
+  EVENTS_VIEW: "events:view",
+  EVENTS_CREATE: "events:create",
+  EVENTS_UPDATE: "events:update",
+  EVENTS_DELETE: "events:delete",
+  EVENTS_MANAGE: "events:manage",
+  EVENTS_EXPORT: "events:export",
+  EVENTS_RESTORE: "events:restore",
+
+  EVENT_REGISTRATIONS_VIEW: "event_registrations:view",
+  EVENT_REGISTRATIONS_CREATE: "event_registrations:create",
+  EVENT_REGISTRATIONS_UPDATE: "event_registrations:update",
+  EVENT_REGISTRATIONS_DELETE: "event_registrations:delete",
+  EVENT_REGISTRATIONS_MANAGE: "event_registrations:manage",
+  EVENT_REGISTRATIONS_EXPORT: "event_registrations:export",
+
+  EVENT_CHECKINS_VIEW: "event_checkins:view",
+  EVENT_CHECKINS_CREATE: "event_checkins:create",
+  EVENT_CHECKINS_UPDATE: "event_checkins:update",
+  EVENT_CHECKINS_DELETE: "event_checkins:delete",
+  EVENT_CHECKINS_MANAGE: "event_checkins:manage",
+  EVENT_CHECKINS_EXPORT: "event_checkins:export",
+
+  EVENT_CHECKOUTS_VIEW: "event_checkouts:view",
+  EVENT_CHECKOUTS_CREATE: "event_checkouts:create",
+  EVENT_CHECKOUTS_UPDATE: "event_checkouts:update",
+  EVENT_CHECKOUTS_DELETE: "event_checkouts:delete",
+  EVENT_CHECKOUTS_MANAGE: "event_checkouts:manage",
+  EVENT_CHECKOUTS_EXPORT: "event_checkouts:export",
+
+  EVENT_SPEAKERS_VIEW: "event_speakers:view",
+  EVENT_SPEAKERS_CREATE: "event_speakers:create",
+  EVENT_SPEAKERS_UPDATE: "event_speakers:update",
+  EVENT_SPEAKERS_DELETE: "event_speakers:delete",
+  EVENT_SPEAKERS_MANAGE: "event_speakers:manage",
+  EVENT_SPEAKERS_EXPORT: "event_speakers:export",
+
+  // ─── CMS resources: speakers / locations / screens / cameras / templates / uploads ──
+  SPEAKERS_VIEW: "speakers:view",
+  SPEAKERS_CREATE: "speakers:create",
+  SPEAKERS_UPDATE: "speakers:update",
+  SPEAKERS_DELETE: "speakers:delete",
+  SPEAKERS_MANAGE: "speakers:manage",
+  SPEAKERS_EXPORT: "speakers:export",
+  SPEAKERS_RESTORE: "speakers:restore",
+
+  LOCATIONS_VIEW: "locations:view",
+  LOCATIONS_CREATE: "locations:create",
+  LOCATIONS_UPDATE: "locations:update",
+  LOCATIONS_DELETE: "locations:delete",
+  LOCATIONS_MANAGE: "locations:manage",
+  LOCATIONS_EXPORT: "locations:export",
+  LOCATIONS_RESTORE: "locations:restore",
+
+  SCREENS_VIEW: "screens:view",
+  SCREENS_CREATE: "screens:create",
+  SCREENS_UPDATE: "screens:update",
+  SCREENS_DELETE: "screens:delete",
+  SCREENS_MANAGE: "screens:manage",
+  SCREENS_EXPORT: "screens:export",
+  SCREENS_RESTORE: "screens:restore",
+
+  CAMERAS_VIEW: "cameras:view",
+  CAMERAS_CREATE: "cameras:create",
+  CAMERAS_UPDATE: "cameras:update",
+  CAMERAS_DELETE: "cameras:delete",
+  CAMERAS_MANAGE: "cameras:manage",
+  CAMERAS_EXPORT: "cameras:export",
+  CAMERAS_RESTORE: "cameras:restore",
+
+  TEMPLATES_VIEW: "templates:view",
+  TEMPLATES_CREATE: "templates:create",
+  TEMPLATES_UPDATE: "templates:update",
+  TEMPLATES_DELETE: "templates:delete",
+  TEMPLATES_MANAGE: "templates:manage",
+  TEMPLATES_EXPORT: "templates:export",
+  TEMPLATES_RESTORE: "templates:restore",
+
+  UPLOADS_VIEW: "uploads:view",
+  UPLOADS_CREATE: "uploads:create",
+  UPLOADS_UPDATE: "uploads:update",
+  UPLOADS_DELETE: "uploads:delete",
+  UPLOADS_MANAGE: "uploads:manage",
+  UPLOADS_EXPORT: "uploads:export",
+
+  // ─── Operational: settings / system / admission-results / imported-users / parent-students / face-data ──
   SETTINGS_VIEW: "settings:view",
   SETTINGS_CREATE: "settings:create",
   SETTINGS_UPDATE: "settings:update",
@@ -135,20 +289,14 @@ export const PERMISSION_CODES = {
   SETTINGS_EXPORT: "settings:export",
   SETTINGS_IMPORT: "settings:import",
 
-  // ─── Accounts (profile) ───
-  ACCOUNTS_VIEW: "accounts:view",
-  ACCOUNTS_UPDATE: "accounts:update",
-  ACCOUNTS_MANAGE: "accounts:manage",
+  SYSTEM_VIEW: "system:view",
+  SYSTEM_CREATE: "system:create",
+  SYSTEM_UPDATE: "system:update",
+  SYSTEM_DELETE: "system:delete",
+  SYSTEM_MANAGE: "system:manage",
+  SYSTEM_EXPORT: "system:export",
+  SYSTEM_IMPORT: "system:import",
 
-  // ─── Uploads ───
-  UPLOADS_VIEW: "uploads:view",
-  UPLOADS_CREATE: "uploads:create",
-  UPLOADS_UPDATE: "uploads:update",
-  UPLOADS_DELETE: "uploads:delete",
-  UPLOADS_MANAGE: "uploads:manage",
-  UPLOADS_EXPORT: "uploads:export",
-
-  // ─── Admission Results ───
   ADMISSION_RESULTS_VIEW: "admission_results:view",
   ADMISSION_RESULTS_CREATE: "admission_results:create",
   ADMISSION_RESULTS_UPDATE: "admission_results:update",
@@ -158,125 +306,30 @@ export const PERMISSION_CODES = {
   ADMISSION_RESULTS_IMPORT: "admission_results:import",
   ADMISSION_RESULTS_RESTORE: "admission_results:restore",
 
-  // ─── Page Contents ───
-  PAGE_CONTENTS_VIEW: "page_contents:view",
-  PAGE_CONTENTS_CREATE: "page_contents:create",
-  PAGE_CONTENTS_UPDATE: "page_contents:update",
-  PAGE_CONTENTS_DELETE: "page_contents:delete",
-  PAGE_CONTENTS_MANAGE: "page_contents:manage",
-  PAGE_CONTENTS_EXPORT: "page_contents:export",
+  IMPORTED_USERS_VIEW: "imported_users:view",
+  IMPORTED_USERS_CREATE: "imported_users:create",
+  IMPORTED_USERS_UPDATE: "imported_users:update",
+  IMPORTED_USERS_DELETE: "imported_users:delete",
+  IMPORTED_USERS_MANAGE: "imported_users:manage",
+  IMPORTED_USERS_EXPORT: "imported_users:export",
+  IMPORTED_USERS_RESTORE: "imported_users:restore",
 
-  // ─── Frontend-specific Resources (chưa có trong API permissions) ───
-  SPEAKERS_VIEW: "speakers:view",
-  SPEAKERS_CREATE: "speakers:create",
-  SPEAKERS_UPDATE: "speakers:update",
-  SPEAKERS_DELETE: "speakers:delete",
-  SPEAKERS_MANAGE: "speakers:manage",
-  SPEAKERS_EXPORT: "speakers:export",
-  LOCATIONS_VIEW: "locations:view",
-  LOCATIONS_CREATE: "locations:create",
-  LOCATIONS_UPDATE: "locations:update",
-  LOCATIONS_DELETE: "locations:delete",
-  LOCATIONS_MANAGE: "locations:manage",
-  LOCATIONS_EXPORT: "locations:export",
-  TRAINING_LEVELS_VIEW: "training_levels:view",
-  TRAINING_LEVELS_CREATE: "training_levels:create",
-  TRAINING_LEVELS_UPDATE: "training_levels:update",
-  TRAINING_LEVELS_DELETE: "training_levels:delete",
-  TRAINING_LEVELS_MANAGE: "training_levels:manage",
-  TRAINING_LEVELS_EXPORT: "training_levels:export",
-  TRAINING_SYSTEMS_VIEW: "training_systems:view",
-  TRAINING_SYSTEMS_CREATE: "training_systems:create",
-  TRAINING_SYSTEMS_UPDATE: "training_systems:update",
-  TRAINING_SYSTEMS_DELETE: "training_systems:delete",
-  TRAINING_SYSTEMS_MANAGE: "training_systems:manage",
-  TRAINING_SYSTEMS_EXPORT: "training_systems:export",
-  MAJORS_VIEW: "majors:view",
-  MAJORS_CREATE: "majors:create",
-  MAJORS_UPDATE: "majors:update",
-  MAJORS_DELETE: "majors:delete",
-  MAJORS_MANAGE: "majors:manage",
-  MAJORS_EXPORT: "majors:export",
-  COURSES_VIEW: "courses:view",
-  COURSES_CREATE: "courses:create",
-  COURSES_UPDATE: "courses:update",
-  COURSES_DELETE: "courses:delete",
-  COURSES_MANAGE: "courses:manage",
-  COURSES_EXPORT: "courses:export",
-  ACADEMIC_YEARS_VIEW: "academic_years:view",
-  ACADEMIC_YEARS_CREATE: "academic_years:create",
-  ACADEMIC_YEARS_UPDATE: "academic_years:update",
-  ACADEMIC_YEARS_DELETE: "academic_years:delete",
-  ACADEMIC_YEARS_MANAGE: "academic_years:manage",
-  ACADEMIC_YEARS_EXPORT: "academic_years:export",
-  EVENTS_VIEW: "events:view",
-  EVENTS_CREATE: "events:create",
-  EVENTS_UPDATE: "events:update",
-  EVENTS_DELETE: "events:delete",
-  EVENTS_MANAGE: "events:manage",
-  CAMERAS_VIEW: "cameras:view",
-  CAMERAS_CREATE: "cameras:create",
-  CAMERAS_UPDATE: "cameras:update",
-  CAMERAS_DELETE: "cameras:delete",
-  CAMERAS_MANAGE: "cameras:manage",
-  TEMPLATES_VIEW: "templates:view",
-  TEMPLATES_CREATE: "templates:create",
-  TEMPLATES_UPDATE: "templates:update",
-  TEMPLATES_DELETE: "templates:delete",
-  TEMPLATES_MANAGE: "templates:manage",
-  SCREENS_VIEW: "screens:view",
-  SCREENS_CREATE: "screens:create",
-  SCREENS_UPDATE: "screens:update",
-  SCREENS_DELETE: "screens:delete",
-  SCREENS_MANAGE: "screens:manage",
-  DEPARTMENTS_VIEW: "departments:view",
-  DEPARTMENTS_CREATE: "departments:create",
-  DEPARTMENTS_UPDATE: "departments:update",
-  DEPARTMENTS_DELETE: "departments:delete",
-  DEPARTMENTS_MANAGE: "departments:manage",
-  EVENT_REGISTRATIONS_VIEW: "event_registrations:view",
-  EVENT_REGISTRATIONS_CREATE: "event_registrations:create",
-  EVENT_REGISTRATIONS_UPDATE: "event_registrations:update",
-  EVENT_REGISTRATIONS_DELETE: "event_registrations:delete",
-  EVENT_REGISTRATIONS_MANAGE: "event_registrations:manage",
-  EVENT_CHECKINS_VIEW: "event_checkins:view",
-  EVENT_CHECKINS_CREATE: "event_checkins:create",
-  EVENT_CHECKINS_UPDATE: "event_checkins:update",
-  EVENT_CHECKINS_DELETE: "event_checkins:delete",
-  EVENT_CHECKINS_MANAGE: "event_checkins:manage",
-  EVENT_SPEAKERS_VIEW: "event_speakers:view",
-  EVENT_SPEAKERS_CREATE: "event_speakers:create",
-  EVENT_SPEAKERS_UPDATE: "event_speakers:update",
-  EVENT_SPEAKERS_DELETE: "event_speakers:delete",
-  EVENT_SPEAKERS_MANAGE: "event_speakers:manage",
+  PARENT_STUDENTS_VIEW: "parent_students:view",
+  PARENT_STUDENTS_CREATE: "parent_students:create",
+  PARENT_STUDENTS_UPDATE: "parent_students:update",
+  PARENT_STUDENTS_DELETE: "parent_students:delete",
+  PARENT_STUDENTS_MANAGE: "parent_students:manage",
+  PARENT_STUDENTS_EXPORT: "parent_students:export",
+
   FACE_DATA_VIEW: "face_data:view",
   FACE_DATA_CREATE: "face_data:create",
   FACE_DATA_UPDATE: "face_data:update",
   FACE_DATA_DELETE: "face_data:delete",
   FACE_DATA_MANAGE: "face_data:manage",
+  FACE_DATA_EXPORT: "face_data:export",
 
-  // ─── SEO Metas ───
-  SEO_METAS_VIEW: "seo_metas:view",
-  SEO_METAS_CREATE: "seo_metas:create",
-  SEO_METAS_UPDATE: "seo_metas:update",
-  SEO_METAS_DELETE: "seo_metas:delete",
-  SEO_METAS_MANAGE: "seo_metas:manage",
-  SEO_METAS_EXPORT: "seo_metas:export",
-  SEO_METAS_RESTORE: "seo_metas:restore",
-  SEO_METAS_HARD_DELETE: "seo_metas:hard-delete",
-
-  // ─── Legacy (shop/frontend, format dot-notation) ───
-  /** @deprecated Dùng PRODUCTS_VIEW, PRODUCTS_WRITE từ API khi có */
-  PRODUCTS_READ: "products.read",
-  /** @deprecated */
-  PRODUCTS_WRITE: "products.write",
-  /** @deprecated */
-  ORDERS_READ: "orders.read",
-  /** @deprecated */
-  ORDERS_WRITE: "orders.write",
-  /** @deprecated */
-  ORDERS_CHECKOUT: "orders.checkout",
-  /** @deprecated Dùng USERS_MANAGE */
+  // ─── Legacy (dot-notation, giữ để không vỡ code cũ) ──────────
+  /** @deprecated Dùng USERS_MANAGE khi API có tương ứng */
   USERS_CART_OWN: "users.cart_own",
   /** @deprecated Dùng ROLES_VIEW */
   RBAC_READ: "rbac.read",
@@ -290,6 +343,16 @@ export const PERMISSION_CODES = {
   CATEGORIES_READ: "categories.read",
   /** @deprecated Dùng CATEGORIES_CREATE hoặc CATEGORIES_UPDATE */
   CATEGORIES_WRITE: "categories.write",
+  /** @deprecated Dùng PRODUCTS_VIEW, PRODUCTS_WRITE từ API khi có */
+  PRODUCTS_READ: "products.read",
+  /** @deprecated */
+  PRODUCTS_WRITE: "products.write",
+  /** @deprecated */
+  ORDERS_READ: "orders.read",
+  /** @deprecated */
+  ORDERS_WRITE: "orders.write",
+  /** @deprecated */
+  ORDERS_CHECKOUT: "orders.checkout",
 } as const;
 
 export type PermissionCode =
@@ -334,7 +397,7 @@ export const STAFF_ADMIN_ROLE_CODES = [
   "student",
 ] as const;
 
-/** Quyền “vận hành” — nếu có (kể cả role lạ trong DB) vẫn coi là nội bộ. */
+/** Quyền "vận hành" — nếu có (kể cả role lạ trong DB) vẫn coi là nội bộ. */
 const STAFF_PANEL_PERMISSION_CODES: PermissionCode[] = [
   PERMISSION_CODES.USERS_MANAGE,
   PERMISSION_CODES.ROLES_VIEW,

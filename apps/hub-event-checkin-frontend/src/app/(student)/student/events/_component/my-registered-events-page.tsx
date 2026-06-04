@@ -252,22 +252,6 @@ export function MyRegisteredEventsPage() {
   const columns = useMemo<ColumnDef<MyRegisteredEvent, unknown>[]>(
     () => [
       {
-        id: "stt",
-        header: "STT",
-        enableSorting: false,
-        enableColumnFilter: false,
-        size: 48,
-        cell: ({ row }) => (
-          <span className="text-sm tabular-nums text-muted-foreground">
-            {row.index + 1}
-          </span>
-        ),
-        meta: {
-          disableColumnFilter: true,
-          excludeFromExport: true,
-        },
-      },
-      {
         accessorKey: "event.title",
         header: "Sự kiện",
         cell: ({ row }) => {
@@ -684,6 +668,7 @@ export function MyRegisteredEventsPage() {
                 columns={columns}
                 getRowId={(row) => row.id}
                 isLoading={loading}
+                indexColumnExcludeFromExport
                 emptyLabel="Bạn chưa đăng ký sự kiện nào."
                 getGlobalFilterText={(row) =>
                   [

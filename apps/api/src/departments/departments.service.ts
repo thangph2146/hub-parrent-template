@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Department } from '../entities/department.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface DepartmentRowDto {
@@ -148,5 +153,10 @@ export class DepartmentsService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, Department, action, ids, {
+      label: 'phong khoa',
+    });
   }
 }

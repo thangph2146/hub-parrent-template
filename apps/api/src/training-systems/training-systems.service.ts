@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { TrainingSystem } from '../entities/training-system.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface TrainingSystemRowDto {
@@ -176,5 +181,10 @@ export class TrainingSystemsService {
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, TrainingSystem, action, ids, {
+      label: 'he dao tao',
+    });
   }
 }

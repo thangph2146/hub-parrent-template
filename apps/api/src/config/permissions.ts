@@ -42,6 +42,9 @@ export const RESOURCES = {
   EVENT_CHECKOUTS: 'event_checkouts',
   EVENT_SPEAKERS: 'event_speakers',
   FACE_DATA: 'face_data',
+  IMPORTED_USERS: 'imported_users',
+  SYSTEM: 'system',
+  PARENT_STUDENTS: 'parent_students',
 } as const;
 
 // Action types
@@ -118,6 +121,7 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Tags
   ...generateResourcePermissions(RESOURCES.TAGS),
+  TAGS_RESTORE: `${RESOURCES.TAGS}:${ACTIONS.RESTORE}` as Permission,
 
   // Comments
   ...generateResourcePermissions(RESOURCES.COMMENTS),
@@ -126,9 +130,12 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Roles
   ...generateResourcePermissions(RESOURCES.ROLES),
+  ROLES_RESTORE: `${RESOURCES.ROLES}:${ACTIONS.RESTORE}` as Permission,
 
   // Messages
   ...generateResourcePermissions(RESOURCES.MESSAGES),
+  MESSAGES_VIEW_OWN:
+    `${RESOURCES.MESSAGES}:${ACTIONS.VIEW_OWN}` as Permission,
 
   // Groups
   ...generateResourcePermissions(RESOURCES.GROUPS),
@@ -274,4 +281,16 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Face Data
   ...generateResourcePermissions(RESOURCES.FACE_DATA),
+
+  // Imported Users
+  ...generateResourcePermissions(RESOURCES.IMPORTED_USERS),
+  IMPORTED_USERS_RESTORE:
+    `${RESOURCES.IMPORTED_USERS}:${ACTIONS.RESTORE}` as Permission,
+
+  // System (sao lưu, import, database-schema, ...)
+  ...generateResourcePermissions(RESOURCES.SYSTEM),
+  SYSTEM_IMPORT: `${RESOURCES.SYSTEM}:${ACTIONS.IMPORT}` as Permission,
+
+  // Parent Students (duyệt yêu cầu liên kết phụ huynh–sinh viên)
+  ...generateResourcePermissions(RESOURCES.PARENT_STUDENTS),
 } as const;

@@ -509,8 +509,6 @@ function SpeakersTab({
   const { data: speakers, isLoading } = useEventSpeakersQuery(api, eventId)
   const rows = speakers ?? []
   const columns = useMemo<ColumnDef<Dict>[]>(() => [
-    { id: "stt", header: "STT", enableColumnFilter: false, size: 48,
-      cell: ({ row }) => row.index + 1 },
     {
       id: "avatar",
       header: "Avatar",

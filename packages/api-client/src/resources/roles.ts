@@ -3,22 +3,6 @@ import { deleteData, getData, normalizePagedResult, postData, putData } from "./
 
 type RequestQuery = Record<string, string | number | boolean | undefined | null>;
 
-function normalizePermissionCodes(value: unknown): string[] {
-  const visit = (input: unknown): string[] => {
-    if (Array.isArray(input)) {
-      return input.flatMap((item) => visit(item));
-    }
-    if (typeof input !== "string") return [];
-    const trimmed = input.trim();
-    if (!trimmed) return [];
-    if ((trimmed.startsWith("[") && trimmed.endsWith("]")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
-      try { return visit(JSON.parse(trimmed)); } catch { return [trimmed]; }
-    }
-    return [trimmed];
-  };
-  return [...new Set(visit(value))].sort((a, b) => a.localeCompare(b));
-}
-
 export class RolesApi {
   constructor(private readonly http: ApiClient) {}
 
@@ -39,9 +23,7 @@ export class RolesApi {
 
   async listPermissions<T extends { id: number; code: string; name: string; description: string | null }>(): Promise<T[]> {
     try {
-      const rows = await this.listAll<Record<string, unknown>>();
-      const codes = [...new Set(rows.flatMap((row) => normalizePermissionCodes(row.permissions)))];
-      return codes.map((code, index) => ({ id: index + 1, code, name: code, description: null }) as T);
+      return await getData<T[]>(this.http, "/admin/roles/permissions");
     } catch {
       return [];
     }

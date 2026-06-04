@@ -18,8 +18,11 @@ import type { Response } from 'express';
 import { SocketGateway } from '../socket/socket.gateway';
 import { Message, MessageType } from '../entities/message.entity';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 
 @Controller(ADMIN_ROUTES.CONVERSATIONS)
+@Permissions(PERMISSIONS.MESSAGES_VIEW)
 @ApiBearerAuth()
 @ApiTags('conversations')
 export class ConversationsController {
@@ -38,6 +41,7 @@ export class ConversationsController {
   }
 
   @Post(':otherUserId/mark-read')
+  @Permissions(PERMISSIONS.MESSAGES_UPDATE)
   async markRead(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

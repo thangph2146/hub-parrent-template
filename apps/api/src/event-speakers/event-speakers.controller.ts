@@ -1,4 +1,10 @@
-import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiHeader,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -21,6 +27,7 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 
 @ApiTags('Event Speakers')
 @Permissions(PERMISSIONS.EVENT_SPEAKERS_VIEW)
@@ -218,5 +225,41 @@ export class EventSpeakersController {
       message: 'Đã xóa event speaker',
     });
     return res.status(statusCode).json(body);
+  }
+  @Post('bulk')
+  @Permissions(PERMISSIONS.EVENT_SPEAKERS_MANAGE)
+  @ApiOperation({ summary: 'Bulk action on gan dien gias' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({ description: 'Bulk action with ids' })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 400, description: 'Invalid action' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { action?: string; ids?: string[] },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+    const action = body?.action;
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    const validActions = BULK_ACTIONS as ReadonlySet<string>;
+    if (!action || !validActions.has(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Action khong hop le',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const result = await this.eventSpeakersService.bulk(
+      action as BulkAction,
+      ids,
+    );
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.affected, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
   }
 }

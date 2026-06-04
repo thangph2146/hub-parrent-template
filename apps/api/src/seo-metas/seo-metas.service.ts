@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { SeoMeta } from '../entities/seo-meta.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface SeoMetaRowDto {
@@ -183,5 +188,10 @@ export class SeoMetasService {
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, SeoMeta, action, ids, {
+      label: 'SEO meta',
+    });
   }
 }

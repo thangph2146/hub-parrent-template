@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { FaceData } from '../entities/face-data.entity';
 import { User } from '../entities/user.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface FaceDataRowDto {
@@ -144,5 +149,10 @@ export class FaceDataService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, FaceData, action, ids, {
+      label: 'khuon mat',
+    });
   }
 }

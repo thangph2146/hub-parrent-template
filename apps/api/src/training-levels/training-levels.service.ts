@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { TrainingLevel } from '../entities/training-level.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface TrainingLevelRowDto {
@@ -174,5 +179,10 @@ export class TrainingLevelsService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, TrainingLevel, action, ids, {
+      label: 'bac hoc',
+    });
   }
 }

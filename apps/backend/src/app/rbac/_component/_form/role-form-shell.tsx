@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react"
 import {
+  CheckCheck,
   CheckCircle2,
+  Eraser,
   KeyRound,
   Lock,
   ShieldHalf,
@@ -14,6 +16,7 @@ import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
 import { Switch } from "@ui/components/switch"
 import { ScrollArea } from "@ui/components/scroll-area"
+import { Button } from "@ui/components/button"
 import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar } from "@ui/components/admin"
 import { Controller, useWatch } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
@@ -168,18 +171,63 @@ export function RoleFormShell(props: RoleFormShellProps) {
                 description={isEdit ? "Chọn quyền hạn cho vai trò (thay thế toàn bộ khi lưu)." : "Chọn quyền hạn cho vai trò mới."}
               />
               <FieldSetContent variant="section" className="space-y-4 pt-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs text-muted-foreground">
-                    Đã chọn {watchedPermissions.length}/{permissions.length}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setShowSelectedOnly((prev) => !prev)}
-                    className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
-                  >
-                    {showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"}
-                  </button>
-                </div>
+                <Controller
+                  name="permissions"
+                  control={form.control}
+                  render={({ field: { value, onChange } }) => {
+                    const selectedSet = new Set(value)
+                    const visibleCodes = visiblePermissions.map((p) => p.code)
+                    const allVisibleSelected =
+                      visibleCodes.length > 0 &&
+                      visibleCodes.every((c) => selectedSet.has(c))
+                   
+                    const toggleAllVisible = () => {
+                      if (allVisibleSelected) {
+                        onChange(value.filter((c) => !visibleCodes.includes(c)))
+                      } else {
+                        onChange([...new Set([...value, ...visibleCodes])])
+                      }
+                    }
+                  
+                    return (
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-xs text-muted-foreground">
+                          Đã chọn {watchedPermissions.length}/{permissions.length}
+                          {permissionSearch &&
+                            visiblePermissions.length !== permissions.length && (
+                              <span className="ml-1 text-muted-foreground/70">
+                                · {visiblePermissions.length} khớp
+                              </span>
+                            )}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <Button
+                            type="button"
+                            variant={allVisibleSelected ? "destructive" : "outline"}
+                            disabled={visiblePermissions.length === 0}
+                            onClick={toggleAllVisible}
+                            title={
+                              allVisibleSelected
+                                ? `Bỏ chọn tất cả`
+                                : `Chọn tất cả`
+                            }
+                          >
+                            {allVisibleSelected ? <Eraser /> : <CheckCheck />}
+                            {allVisibleSelected ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowSelectedOnly((prev) => !prev)}
+                            title={showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"}
+                          >
+                            {showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"}
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  }}
+                />
                 <Controller
                   name="permissions"
                   control={form.control}

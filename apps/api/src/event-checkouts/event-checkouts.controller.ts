@@ -1,5 +1,20 @@
-import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
-import { Controller, Get, Query, Headers, Res, Logger } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiHeader,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Headers,
+  Res,
+  Logger,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { EventCheckoutsService } from './event-checkouts.service';
 import {
@@ -67,5 +82,38 @@ export class EventCheckoutsController {
       pagination: result.pagination,
     });
     return res.status(statusCode).json(body);
+  }
+
+  @Post('bulk')
+  @Permissions(PERMISSIONS.EVENT_CHECKOUTS_MANAGE)
+  @ApiOperation({ summary: 'Bulk clear checkouts (reset hasCheckout=false)' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({
+    description: 'Bulk action with registration ids',
+    schema: {
+      type: 'object',
+      properties: {
+        ids: { type: 'array', items: { type: 'string' } },
+      },
+      required: ['ids'],
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { ids?: string[] },
+  ) {
+    this.logger.log(`bulk clear-checkout ids=${(body?.ids ?? []).length}`);
+    const userId = this.getUserId(headers);
+    if (!userId) return this.unauthorized(res);
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    const result = await this.eventCheckoutsService.bulkClear(ids);
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.affected, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
   }
 }

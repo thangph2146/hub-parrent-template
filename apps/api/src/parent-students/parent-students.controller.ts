@@ -447,7 +447,7 @@ export class ParentStudentsPublicController {
   }
 }
 
-@Permissions(PERMISSIONS.STUDENTS_VIEW)
+@Permissions(PERMISSIONS.PARENT_STUDENTS_VIEW)
 @Controller(ADMIN_ROUTES.PARENT_STUDENTS)
 export class ParentStudentsAdminController {
   private readonly logger = new Logger(ParentStudentsAdminController.name);
@@ -475,7 +475,7 @@ export class ParentStudentsAdminController {
     }
   }
 
-  @Permissions(PERMISSIONS.STUDENTS_UPDATE)
+  @Permissions(PERMISSIONS.PARENT_STUDENTS_UPDATE)
   @Patch(':id/review')
   async review(
     @Param('id') id: string,

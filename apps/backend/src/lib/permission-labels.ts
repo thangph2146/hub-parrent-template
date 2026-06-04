@@ -65,8 +65,13 @@ const RESOURCE_LABEL_VI: Record<string, string> = {
   departments: "phòng ban",
   event_registrations: "đăng ký sự kiện",
   event_checkins: "check-in sự kiện",
+  event_checkouts: "check-out sự kiện",
   event_speakers: "diễn giả sự kiện",
   face_data: "dữ liệu khuôn mặt",
+  imported_users: "user imported",
+  seo_metas: "SEO meta",
+  system: "hệ thống",
+  parent_students: "phụ huynh–sinh viên",
 }
 
 const ACTION_LABEL_VI: Record<string, string> = {

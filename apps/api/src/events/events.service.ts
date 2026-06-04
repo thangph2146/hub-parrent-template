@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
 import { Camera } from '../entities/camera.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { normalizePosterField } from '../common/poster-normalize';
 
@@ -384,5 +389,8 @@ export class EventsService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, Event, action, ids, { label: 'su kien' });
   }
 }

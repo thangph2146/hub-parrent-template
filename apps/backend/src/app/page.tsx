@@ -135,7 +135,7 @@ export const QUICK_LINKS: QuickLink[] = [
     label: "Vai trò & phân quyền",
     description: "Cấu hình quyền truy cập hệ thống",
     icon: ShieldCheck,
-    permission: PERMISSION_CODES.RBAC_READ,
+    permission: PERMISSION_CODES.ROLES_VIEW,
   },
   {
     href: "/contact-requests",

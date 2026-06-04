@@ -1,4 +1,10 @@
-import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiHeader,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -21,6 +27,7 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 
 @ApiTags('Departments')
 @Controller(ADMIN_ROUTES.DEPARTMENTS)
@@ -211,5 +218,41 @@ export class DepartmentsController {
       message: 'Đã khôi phục phòng khoa',
     });
     return res.status(statusCode).json(body);
+  }
+  @Post('bulk')
+  @Permissions(PERMISSIONS.DEPARTMENTS_MANAGE)
+  @ApiOperation({ summary: 'Bulk action on phong khoas' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({ description: 'Bulk action with ids' })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 400, description: 'Invalid action' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { action?: string; ids?: string[] },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+    const action = body?.action;
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    const validActions = BULK_ACTIONS as ReadonlySet<string>;
+    if (!action || !validActions.has(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Action khong hop le',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const result = await this.departmentsService.bulk(
+      action as BulkAction,
+      ids,
+    );
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.affected, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
   }
 }

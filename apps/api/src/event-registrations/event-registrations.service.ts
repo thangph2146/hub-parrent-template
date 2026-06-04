@@ -8,6 +8,11 @@ import {
 } from '../entities/event-registration.entity';
 import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface EventRegistrationRowDto {
@@ -340,5 +345,10 @@ export class EventRegistrationsService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, EventRegistration, action, ids, {
+      label: 'luot dang ky',
+    });
   }
 }

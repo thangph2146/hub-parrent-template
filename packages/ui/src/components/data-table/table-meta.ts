@@ -24,6 +24,8 @@ declare module "@tanstack/react-table" {
     }[]
     /** Không hiển thị ô lọc dưới header (vd. cột nút) */
     disableColumnFilter?: boolean
+    /** Cột STT / số thứ tự do DataTable tự chèn — không lọc, không nhân đôi. */
+    isIndexColumn?: boolean
     /** Ẩn khỏi bảng UI nhưng vẫn có thể dùng cho export nếu không exclude. */
     hideInTable?: boolean
     /** Bỏ qua khi xuất CSV (cột thao tác, icon, …) */

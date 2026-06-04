@@ -201,6 +201,39 @@ export type AdminDataTableProps<TData> = {
   bulkActions?: AdminDataTableBulkAction<TData>[]
   /** localStorage key để lưu trạng thái hiển thị filter cột (mặc định: không lưu) */
   filterColumnVisibilityKey?: string
+  /**
+   * Cột STT (số thứ tự) tự chèn đầu bảng. Tắt nếu `columns` đã có `id: "stt"` hoặc `"_index"`.
+   * @default true
+   */
+  showIndexColumn?: boolean
+  /** Nhãn cột STT — @default "STT" */
+  indexColumnLabel?: string
+  /** Bỏ cột STT khi xuất Excel — @default false */
+  indexColumnExcludeFromExport?: boolean
+}
+
+export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
+
+/** Kiểm tra `columns` đã có cột STT thủ công. */
+export function dataTableColumnsHasIndexColumn<TData>(
+  columns: ColumnDef<TData, unknown>[]
+): boolean {
+  const walk = (cols: ColumnDef<TData, unknown>[]): boolean => {
+    for (const col of cols) {
+      const id =
+        col.id ??
+        ("accessorKey" in col && col.accessorKey != null
+          ? String(col.accessorKey)
+          : "")
+      if (id === DATA_TABLE_INDEX_COLUMN_ID || id === "_index") return true
+      const group = col as ColumnDef<TData, unknown> & {
+        columns?: ColumnDef<TData, unknown>[]
+      }
+      if (group.columns?.length && walk(group.columns)) return true
+    }
+    return false
+  }
+  return walk(columns)
 }
 
 export type DataTableProps<TData> = AdminDataTableProps<TData>
@@ -344,6 +377,9 @@ export function AdminDataTable<TData>({
   onSelectedRowIdsChange,
   bulkActions = [],
   filterColumnVisibilityKey,
+  showIndexColumn = true,
+  indexColumnLabel = "STT",
+  indexColumnExcludeFromExport = false,
 }: AdminDataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFiltersInternal, setColumnFiltersInternal] =
@@ -479,6 +515,63 @@ export function AdminDataTable<TData>({
     []
   )
 
+  const hasManualIndexColumn = useMemo(
+    () => dataTableColumnsHasIndexColumn(columns),
+    [columns]
+  )
+  const indexColumnEnabled =
+    showIndexColumn && !hasManualIndexColumn
+
+  const indexRowOffset = useMemo(() => {
+    if (pagination) {
+      return Math.max(0, (pagination.page - 1) * pagination.pageSize)
+    }
+    if (clientPaginationEnabled) {
+      return clientPageIndex * clientPageSize
+    }
+    return 0
+  }, [
+    clientPageIndex,
+    clientPageSize,
+    clientPaginationEnabled,
+    pagination,
+  ])
+
+  const indexColumn = useMemo<ColumnDef<TData, unknown>>(
+    () => ({
+      id: DATA_TABLE_INDEX_COLUMN_ID,
+      header: indexColumnLabel,
+      enableSorting: false,
+      enableColumnFilter: false,
+      meta: {
+        isIndexColumn: true,
+        disableColumnFilter: true,
+        excludeFromExport: indexColumnExcludeFromExport,
+        className: "w-12 min-w-12 max-w-14 text-center tabular-nums",
+      },
+      size: 48,
+      minSize: 44,
+      maxSize: 56,
+      cell: ({ row, table }) => {
+        const flatIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id)
+        const order =
+          flatIndex >= 0 ? flatIndex : row.index
+        return (
+          <span className="text-sm tabular-nums text-muted-foreground">
+            {indexRowOffset + order + 1 +"."}
+          </span>
+        )
+      },
+    }),
+    [
+      indexColumnExcludeFromExport,
+      indexColumnLabel,
+      indexRowOffset,
+    ]
+  )
+
   const selectionColumn = useMemo<ColumnDef<TData, unknown>>(
     () => ({
       id: "_select",
@@ -517,10 +610,23 @@ export function AdminDataTable<TData>({
     []
   )
 
+  const exportColumns = useMemo(() => {
+    if (!indexColumnEnabled || hasManualIndexColumn) return columns
+    if (indexColumnExcludeFromExport) return columns
+    return [indexColumn, ...columns]
+  }, [
+    columns,
+    hasManualIndexColumn,
+    indexColumn,
+    indexColumnEnabled,
+    indexColumnExcludeFromExport,
+  ])
+
   const tableColumns = useMemo(() => {
     const built: ColumnDef<TData, unknown>[] = []
     if (rowSelectionEnabled) built.push(selectionColumn)
     if (getSubRows) built.push(expanderColumn)
+    if (indexColumnEnabled) built.push(indexColumn)
     built.push(
       ...applyDefaultFilterFns(
         columns.filter((column) => !column.meta?.hideInTable)
@@ -531,6 +637,8 @@ export function AdminDataTable<TData>({
     columns,
     expanderColumn,
     getSubRows,
+    indexColumn,
+    indexColumnEnabled,
     rowSelectionEnabled,
     selectionColumn,
   ])
@@ -634,7 +742,7 @@ export function AdminDataTable<TData>({
   const handleXlsxExport = useCallback(() => {
     const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
       data,
-      columns,
+      exportColumns,
       getSubRows ? { getSubRows } : undefined
     )
     void downloadXlsxFile(
@@ -651,8 +759,8 @@ export function AdminDataTable<TData>({
       }
     )
   }, [
-    columns,
     data,
+    exportColumns,
     exportMetadataProp,
     exportSheetNameProp,
     exportSubtitleProp,
@@ -747,7 +855,9 @@ export function AdminDataTable<TData>({
     .getFlatHeaders()
     .filter(
       (h) =>
-        h.column.getCanFilter() && !h.column.columnDef.meta?.disableColumnFilter
+        h.column.getCanFilter() &&
+        !h.column.columnDef.meta?.disableColumnFilter &&
+        !h.column.columnDef.meta?.isIndexColumn
     )
 
   const visibleFilterableHeaders = useMemo(() => {
@@ -1189,7 +1299,9 @@ export function AdminDataTable<TData>({
                   // if only expander: first data column is at index 1
                   // if only rowSelection: first data column is at index 1
                   const firstDataColumnIndex =
-                    (rowSelectionEnabled ? 1 : 0) + (getSubRows ? 1 : 0)
+                    (rowSelectionEnabled ? 1 : 0) +
+                    (getSubRows ? 1 : 0) +
+                    (indexColumnEnabled ? 1 : 0)
                   const indent =
                     getSubRows && colIndex === firstDataColumnIndex
                       ? row.depth * 24

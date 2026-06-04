@@ -3,6 +3,11 @@ import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { EventCheckin, CheckinType } from '../entities/event-checkin.entity';
 import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 
 export interface EventCheckinRowDto {
@@ -190,5 +195,10 @@ export class EventCheckinsService {
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
+  }
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, EventCheckin, action, ids, {
+      label: 'luot check-in',
+    });
   }
 }

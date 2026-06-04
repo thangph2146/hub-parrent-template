@@ -29,16 +29,16 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 
-/** Khớp admin: `/system/maintenance` và API import/export dùng SETTINGS_MANAGE; API trước đây chỉ super_admin → 403 cho admin thường. */
+/** Khớp admin: `/system/*` và API import/export dùng SYSTEM_MANAGE / SYSTEM_IMPORT. */
 const SYSTEM_MAINTENANCE_PERMISSIONS: ReadonlySet<string> = new Set([
-  PERMISSIONS.SETTINGS_MANAGE,
-  PERMISSIONS.SETTINGS_IMPORT,
+  PERMISSIONS.SYSTEM_MANAGE,
+  PERMISSIONS.SYSTEM_IMPORT,
 ]);
 const MAX_SYSTEM_EXCEL_FILE_BYTES = 50 * 1024 * 1024;
 
 /** Import/export nhiều chunk — không áp dụng giới hạn 100 req/phút toàn cục. */
 @SkipThrottle()
-@Permissions(PERMISSIONS.SETTINGS_MANAGE)
+@Permissions(PERMISSIONS.SYSTEM_MANAGE)
 @Controller(ADMIN_ROUTES.SYSTEM)
 export class SystemController {
   private readonly logger = new Logger(SystemController.name);
@@ -95,7 +95,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -123,7 +123,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -151,7 +151,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -185,7 +185,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SETTINGS_IMPORT)
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
   @Post('import')
   @UsePipes(
     new ValidationPipe({
@@ -205,7 +205,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -240,7 +240,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SETTINGS_IMPORT)
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
   @Post('import/excel')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -258,7 +258,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -302,7 +302,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);
@@ -321,7 +321,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SETTINGS_VIEW)
+  @Permissions(PERMISSIONS.SYSTEM_VIEW)
   @Get('database-schema')
   async getDatabaseSchema(
     @Res() res: Response,
@@ -330,7 +330,7 @@ export class SystemController {
     try {
       if (!(await this.canAccessSystemMaintenance(headers))) {
         const { statusCode, body } = createErrorResponse(
-          'Unauthorized: Super Admin or settings manage permission required',
+          'Unauthorized: Super Admin or system manage permission required',
           { status: 403 },
         );
         return res.status(statusCode).json(body);

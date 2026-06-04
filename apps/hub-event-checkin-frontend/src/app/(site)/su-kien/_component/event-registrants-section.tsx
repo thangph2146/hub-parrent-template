@@ -40,12 +40,6 @@ function RegistrantsList({
   const columns = useMemo<ColumnDef<PublicEventRegistrant, unknown>[]>(
     () => [
       {
-        id: "stt",
-        header: "STT",
-        enableSorting: false,
-        cell: ({ row }) => row.index + 1,
-      },
-      {
         accessorKey: "fullName",
         header: "Sinh viên",
         enableColumnFilter: false,

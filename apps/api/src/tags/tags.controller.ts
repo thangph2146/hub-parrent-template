@@ -461,7 +461,7 @@ export class TagsController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.TAGS_MANAGE)
+  @Permissions(PERMISSIONS.TAGS_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted tag' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS_KEY } from './permissions.decorator';
 import { IS_PUBLIC_KEY } from './public.decorator';
-import { APP_HEADERS } from '../config/constants';
+import { APP_HEADERS, AUTH_ROLE_NAMES } from '../config/constants';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -43,6 +43,10 @@ export class PermissionsGuard implements CanActivate {
       throw new UnauthorizedException(
         'Người dùng không tồn tại hoặc không có quyền truy cập',
       );
+    }
+
+    if (payload.roles.some((r) => r.name === AUTH_ROLE_NAMES.SUPER_ADMIN)) {
+      return true;
     }
 
     const hasPermission = requiredPermissions.some((p) =>

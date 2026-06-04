@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { AcademicYear } from '../entities/academic-year.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import {
+  applyBulkAction,
+  type BulkAction,
+  type BulkResult,
+} from '../common/bulk-actions';
 
 export interface AcademicYearRowDto {
   id: number;
@@ -183,5 +188,11 @@ export class AcademicYearsService {
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;
+  }
+
+  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
+    return applyBulkAction(this.em, AcademicYear, action, ids, {
+      label: 'niên khóa',
+    });
   }
 }

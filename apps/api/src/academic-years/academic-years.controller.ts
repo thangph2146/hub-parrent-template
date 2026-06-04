@@ -21,6 +21,7 @@ import {
 } from '@nestjs/common';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
+import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import type { Response } from 'express';
 import { AcademicYearsService } from './academic-years.service';
 import {
@@ -33,6 +34,8 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 @Controller(ADMIN_ROUTES.ACADEMIC_YEARS)
 @Permissions(PERMISSIONS.ACADEMIC_YEARS_VIEW)
 export class AcademicYearsController {
+  private readonly bulkActions: ReadonlySet<BulkAction> = BULK_ACTIONS;
+
   constructor(private readonly service: AcademicYearsService) {}
 
   private getUserId(
@@ -47,6 +50,10 @@ export class AcademicYearsController {
       status: 401,
     });
     return res.status(statusCode).json(body);
+  }
+
+  private isBulkAction(action: string): action is BulkAction {
+    return this.bulkActions.has(action as BulkAction);
   }
 
   @Get()
@@ -269,5 +276,36 @@ export class AcademicYearsController {
       message: 'Đã xóa vĩnh viễn',
     });
     return res.status(statusCode).json(body);
+  }
+
+  @Post('bulk')
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_MANAGE)
+  @ApiOperation({ summary: 'Bulk action on academic years' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({ description: 'Bulk action with ids' })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 400, description: 'Invalid action' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { action?: string; ids?: string[] },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) return this.unauthorized(res);
+    const action = body?.action;
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    if (!action || !this.isBulkAction(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Action không hợp lệ',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const result = await this.service.bulk(action, ids);
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.affected, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
   }
 }
