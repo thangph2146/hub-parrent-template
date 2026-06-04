@@ -195,11 +195,7 @@ function EnhancedGradeDialog({
     queryKey: ["student-scores", "detailed", studentCode],
     queryFn: async () => {
       if (isDev) return MOCK_DETAILED_SCORES
-      const payload = await api.http.get<unknown>(
-        `/parent/my-students/scores/detailed/${encodeURIComponent(studentCode)}`
-      )
-      const envelope = payload as { data?: DetailedScore[] }
-      return envelope.data ?? []
+      return api.myStudents.getDetailedScores<DetailedScore>(studentCode)
     },
     enabled: open,
     staleTime: 5 * 60_000,
@@ -213,11 +209,7 @@ function EnhancedGradeDialog({
     queryKey: ["student-averages", "year", studentCode],
     queryFn: async () => {
       if (isDev) return MOCK_YEAR_AVERAGES
-      const payload = await api.http.get<unknown>(
-        `/parent/my-students/averages/year/${encodeURIComponent(studentCode)}`
-      )
-      const envelope = payload as { data?: YearAverage[] }
-      return envelope.data ?? []
+      return api.myStudents.getYearAverages<YearAverage>(studentCode)
     },
     enabled: open,
     staleTime: 5 * 60_000,
@@ -231,11 +223,7 @@ function EnhancedGradeDialog({
     queryKey: ["student-averages", "terms", studentCode],
     queryFn: async () => {
       if (isDev) return MOCK_TERM_AVERAGES
-      const payload = await api.http.get<unknown>(
-        `/parent/my-students/averages/terms/${encodeURIComponent(studentCode)}`
-      )
-      const envelope = payload as { data?: TermAverage[] }
-      return envelope.data ?? []
+      return api.myStudents.getTermAverages<TermAverage>(studentCode)
     },
     enabled: open,
     staleTime: 5 * 60_000,
@@ -244,15 +232,11 @@ function EnhancedGradeDialog({
 
   const {
     data: overallAverage,
-  } = useQuery<OverallAverage>({
+  } = useQuery<OverallAverage | null>({
     queryKey: ["student-averages", "overall", studentCode],
     queryFn: async () => {
       if (isDev) return MOCK_OVERALL_AVERAGE
-      const payload = await api.http.get<unknown>(
-        `/parent/my-students/averages/overall/${encodeURIComponent(studentCode)}`
-      )
-      const envelope = payload as { data?: OverallAverage }
-      return envelope.data ?? ({} as OverallAverage)
+      return api.myStudents.getOverallAverage<OverallAverage>(studentCode)
     },
     enabled: open,
     staleTime: 5 * 60_000,
@@ -381,14 +365,7 @@ function AddStudentDialog({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = await api.http.post<unknown>("/parent/my-students", {
-        studentCode,
-        studentName,
-        note,
-      })
-      const envelope = payload as { success?: boolean; message?: string }
-      if (envelope.success === false) throw new Error(envelope.message ?? "Lỗi")
-      return payload
+      await api.myStudents.add({ studentCode, studentName, note })
     },
     onSuccess: () => {
       setStudentCode("")
@@ -485,16 +462,15 @@ export default function MyStudentsPage() {
   const { data: students, isLoading } = useQuery<ParentStudentRow[]>({
     queryKey: ["parent-students", "my"],
     queryFn: async () => {
-      const payload = await api.http.get<unknown>("/parent/my-students")
-      const envelope = payload as { data?: ParentStudentRow[] }
-      return envelope.data ?? []
+      const result = await api.myStudents.list()
+      return result as unknown as ParentStudentRow[]
     },
     staleTime: 30_000,
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await api.http.delete(`/parent/my-students/${id}`)
+      await api.myStudents.remove(id)
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({

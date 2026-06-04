@@ -5,7 +5,9 @@
 import { Controller, Get, Query, Res, Logger } from '@nestjs/common';
 import type { Response } from 'express';
 import { ADMIN_ROUTES } from '../config/constants';
+import { Public } from '../common/public.decorator';
 
+@Public()
 @Controller(ADMIN_ROUTES.BASE)
 export class ProxyImageController {
   private readonly logger = new Logger(ProxyImageController.name);

@@ -8,7 +8,7 @@ export function useReviewParentStudentMutation(onSuccess?: () => void) {
 
   return useMutation({
     mutationFn: async ({ id, action }: { id: string; action: "approved" | "rejected" }) => {
-      await api.http.patch(`/admin/parent-students/${id}/review`, { action });
+      await api.parentStudents.review(id, { status: action });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });

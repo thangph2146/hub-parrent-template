@@ -9,11 +9,13 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PUBLIC_ROUTES } from '../config/constants';
+import { Public } from '../common/public.decorator';
 import { normalizeHanetBody } from './hanet-payload';
 import { HanetWebhookService } from './hanet-webhook.service';
 import type { HanetWebhookBody } from './hanet.types';
 
 @ApiTags('HANET Webhook')
+@Public()
 @Controller(PUBLIC_ROUTES.HANET_WEBHOOK)
 export class HanetWebhookController {
   private readonly logger = new Logger(HanetWebhookController.name);

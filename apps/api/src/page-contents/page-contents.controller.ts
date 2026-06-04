@@ -22,11 +22,13 @@ import {
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
 import type {
   PageContentCreateInput,
   PageContentUpdateInput,
 } from './page-contents.service';
 
+@Permissions(PERMISSIONS.PAGE_CONTENTS_VIEW)
 @Controller(ADMIN_ROUTES.PAGE_CONTENTS)
 export class PageContentsController {
   private readonly logger = new Logger(PageContentsController.name);
@@ -208,6 +210,7 @@ export class PageContentsController {
     }
   }
 
+  @Permissions(PERMISSIONS.PAGE_CONTENTS_CREATE)
   @Post()
   async create(
     @Res() res: Response,
@@ -266,6 +269,7 @@ export class PageContentsController {
     }
   }
 
+  @Permissions(PERMISSIONS.PAGE_CONTENTS_UPDATE)
   @Put(':id')
   async update(
     @Res() res: Response,
@@ -333,6 +337,7 @@ export class PageContentsController {
     }
   }
 
+  @Permissions(PERMISSIONS.PAGE_CONTENTS_DELETE)
   @Delete(':id')
   async delete(
     @Res() res: Response,

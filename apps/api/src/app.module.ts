@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { DatabaseModule } from './mikro-orm/mikro-orm.module';
+import { PermissionsGuard } from './common/permissions.guard';
 import { PublicModule } from './public/public.module';
 import { SocketModule } from './socket/socket.module';
 import { AuthModule } from './auth/auth.module';
@@ -105,6 +106,10 @@ import { HanetModule } from './hanet/hanet.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
     },
   ],
 })

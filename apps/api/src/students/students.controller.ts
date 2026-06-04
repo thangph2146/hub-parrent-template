@@ -34,12 +34,14 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
 
 type StudentListStatus = 'active' | 'deleted' | 'all';
 type StudentBulkAction = 'delete' | 'restore' | 'hard-delete';
 
 @ApiTags('Students')
+@Permissions(PERMISSIONS.STUDENTS_VIEW)
 @Controller(ADMIN_ROUTES.STUDENTS)
 export class StudentsController {
   private readonly logger = new Logger(StudentsController.name);
@@ -206,6 +208,7 @@ export class StudentsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.STUDENTS_CREATE)
   @ApiOperation({ summary: 'Create new student' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Student data', required: true })
@@ -261,6 +264,7 @@ export class StudentsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.STUDENTS_UPDATE)
   @ApiOperation({ summary: 'Update student by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -316,6 +320,7 @@ export class StudentsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.STUDENTS_DELETE)
   @ApiOperation({ summary: 'Soft delete student' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -361,6 +366,7 @@ export class StudentsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.STUDENTS_MANAGE)
   @ApiOperation({ summary: 'Bulk action on students' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
@@ -425,6 +431,7 @@ export class StudentsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.STUDENTS_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted student' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -467,6 +474,7 @@ export class StudentsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.STUDENTS_MANAGE)
   @ApiOperation({ summary: 'Hard delete student permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

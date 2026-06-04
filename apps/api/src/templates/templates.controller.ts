@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { TemplatesService } from './templates.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Templates')
 @Controller(ADMIN_ROUTES.TEMPLATES)
+@Permissions(PERMISSIONS.TEMPLATES_VIEW)
 export class TemplatesController {
   private readonly logger = new Logger(TemplatesController.name);
   constructor(private readonly templatesService: TemplatesService) {}
@@ -90,6 +93,7 @@ export class TemplatesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TEMPLATES_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create template' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -113,6 +117,7 @@ export class TemplatesController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.TEMPLATES_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update template' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -135,6 +140,7 @@ export class TemplatesController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.TEMPLATES_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete template' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -157,6 +163,7 @@ export class TemplatesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TEMPLATES_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete template' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -180,6 +187,7 @@ export class TemplatesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TEMPLATES_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore template' })
   @ApiHeader({ name: 'X-User-Id', required: true })

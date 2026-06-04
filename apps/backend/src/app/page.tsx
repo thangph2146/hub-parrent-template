@@ -197,14 +197,7 @@ export default function AdminDashboardPage() {
 
   const { data, isLoading } = useQuery<DashboardStatsDto>({
     queryKey: ["dashboard", "stats"],
-    queryFn: async () => {
-      const payload = await api.http.get<unknown>("/admin/dashboard/stats")
-      const envelope = payload as {
-        success?: boolean
-        data?: DashboardStatsDto
-      }
-      return envelope.data as DashboardStatsDto
-    },
+    queryFn: async () => api.dashboard.stats<DashboardStatsDto>(),
     staleTime: 60_000,
   })
 

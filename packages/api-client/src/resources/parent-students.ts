@@ -1,5 +1,5 @@
 import type { ApiClient } from "../client";
-import { getData, putData, deleteData } from "./_shared";
+import { getData, patchData, putData, deleteData, normalizePagedResult } from "./_shared";
 
 export interface ParentStudent {
   id: string;
@@ -32,7 +32,7 @@ export class ParentStudentsApi {
   constructor(private readonly http: ApiClient) {}
 
   async list(params?: ParentStudentsListParams): Promise<{ items: ParentStudent[]; total: number }> {
-    const payload = await getData<{ items: ParentStudent[]; total: number }>(this.http, "/admin/parent-students", {
+    const payload = await this.http.get<unknown>("/admin/parent-students", {
       query: {
         page: params?.page ?? 1,
         limit: params?.limit ?? 20,
@@ -41,7 +41,7 @@ export class ParentStudentsApi {
         createdAt: params?.createdAt,
       },
     });
-    return payload;
+    return normalizePagedResult<ParentStudent>(payload);
   }
 
   async detail(id: string | number): Promise<ParentStudent> {
@@ -61,5 +61,9 @@ export class ParentStudentsApi {
 
   async remove(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/parent-students/${id}`);
+  }
+
+  async review(id: string | number, input: { status: ParentStudent["status"]; note?: string }): Promise<ParentStudent> {
+    return patchData<ParentStudent>(this.http, `/admin/parent-students/${id}/review`, input);
   }
 }

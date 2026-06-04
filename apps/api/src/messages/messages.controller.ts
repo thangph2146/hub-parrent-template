@@ -20,8 +20,11 @@ import { MessageRead } from '../entities/message-read.entity';
 import { GroupMember } from '../entities/group-member.entity';
 import { Group } from '../entities/group.entity';
 import { User } from '../entities/user.entity';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
+@Permissions(PERMISSIONS.MESSAGES_VIEW)
 @Controller(ADMIN_ROUTES.MESSAGES)
 export class MessagesController {
   private readonly logger = new Logger(MessagesController.name);
@@ -53,6 +56,7 @@ export class MessagesController {
   }
 
   @Patch(':id')
+  @Permissions(PERMISSIONS.MESSAGES_UPDATE)
   async markRead(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -133,6 +137,7 @@ export class MessagesController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.MESSAGES_CREATE)
   async send(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

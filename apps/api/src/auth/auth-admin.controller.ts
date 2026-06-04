@@ -21,6 +21,7 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { Public } from '../common/public.decorator';
 
 export class LoginDto {
   email: string;
@@ -124,6 +125,7 @@ export class AuthAdminController {
     }
   }
 
+  @Public()
   @Post('login')
   @ApiOperation({ summary: 'Admin login with email/password' })
   @ApiBody({ type: LoginDto })
@@ -166,6 +168,7 @@ export class AuthAdminController {
     }
   }
 
+  @Public()
   @Post('dev-login')
   @ApiOperation({ summary: 'Development login (dev only)' })
   @ApiBody({ type: DevLoginDto })
@@ -218,6 +221,7 @@ export class AuthAdminController {
     }
   }
 
+  @Public()
   @Get('google/config')
   @ApiOperation({ summary: 'Get Google OAuth client ID for frontend' })
   @ApiResponse({ status: 200, description: 'Returns Google OAuth config' })
@@ -229,6 +233,7 @@ export class AuthAdminController {
     return res.status(statusCode).json(body);
   }
 
+  @Public()
   @Post('google')
   @ApiOperation({ summary: 'Login with Google credential (idToken)' })
   @ApiBody({ type: GoogleLoginDto })

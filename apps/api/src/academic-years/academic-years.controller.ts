@@ -19,6 +19,8 @@ import {
   Headers,
   Res,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { AcademicYearsService } from './academic-years.service';
 import {
@@ -29,6 +31,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('AcademicYears')
 @Controller(ADMIN_ROUTES.ACADEMIC_YEARS)
+@Permissions(PERMISSIONS.ACADEMIC_YEARS_VIEW)
 export class AcademicYearsController {
   constructor(private readonly service: AcademicYearsService) {}
 
@@ -115,6 +118,7 @@ export class AcademicYearsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create academic year' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -145,6 +149,7 @@ export class AcademicYearsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update academic year' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -183,6 +188,7 @@ export class AcademicYearsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete academic year' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -210,6 +216,7 @@ export class AcademicYearsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted academic year' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -237,6 +244,7 @@ export class AcademicYearsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.ACADEMIC_YEARS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Permanently delete academic year' })
   @ApiHeader({ name: 'X-User-Id', required: true })

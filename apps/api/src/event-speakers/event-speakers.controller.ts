@@ -18,9 +18,12 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Event Speakers')
+@Permissions(PERMISSIONS.EVENT_SPEAKERS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_SPEAKERS)
 export class EventSpeakersController {
   private readonly logger = new Logger(EventSpeakersController.name);
@@ -97,6 +100,7 @@ export class EventSpeakersController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.EVENT_SPEAKERS_CREATE)
   @ApiOperation({ summary: 'Create new event speaker' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
@@ -147,6 +151,7 @@ export class EventSpeakersController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.EVENT_SPEAKERS_UPDATE)
   @ApiOperation({ summary: 'Update event speaker by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
@@ -191,6 +196,7 @@ export class EventSpeakersController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.EVENT_SPEAKERS_DELETE)
   @ApiOperation({ summary: 'Delete event speaker' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async delete(

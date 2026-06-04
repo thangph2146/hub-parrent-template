@@ -18,9 +18,12 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('FaceData')
+@Permissions(PERMISSIONS.FACE_DATA_VIEW)
 @Controller(ADMIN_ROUTES.FACE_DATA)
 export class FaceDataController {
   private readonly logger = new Logger(FaceDataController.name);
@@ -89,6 +92,7 @@ export class FaceDataController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.FACE_DATA_CREATE)
   @ApiOperation({ summary: 'Create new face data' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
@@ -122,6 +126,7 @@ export class FaceDataController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.FACE_DATA_UPDATE)
   @ApiOperation({ summary: 'Update face data by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
@@ -152,6 +157,7 @@ export class FaceDataController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.FACE_DATA_DELETE)
   @ApiOperation({ summary: 'Hard delete face data permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
@@ -176,6 +182,7 @@ export class FaceDataController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.FACE_DATA_DELETE)
   @ApiOperation({ summary: 'Soft delete face data' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
@@ -200,6 +207,7 @@ export class FaceDataController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.FACE_DATA_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted face data' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(

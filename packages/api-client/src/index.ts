@@ -57,6 +57,7 @@ export { ScreensApi } from "./resources/screens"
 export { DepartmentsApi } from "./resources/departments"
 export { RolesApi } from "./resources/roles"
 export { SettingsApi } from "./resources/settings"
+export { DashboardApi } from "./resources/dashboard"
 export { StoreSyncSdk, createStoreSyncSdk, DEFAULT_API_URL } from "./sdk"
 export {
   unwrapApiEnvelope,
@@ -64,6 +65,7 @@ export {
   getData,
   postData,
   putData,
+  patchData,
   deleteData,
 } from "./resources/_shared"
 export {

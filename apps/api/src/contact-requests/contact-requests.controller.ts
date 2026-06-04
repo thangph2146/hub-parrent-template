@@ -25,7 +25,8 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
 
 type ContactListStatus =
   | 'active'
@@ -45,6 +46,7 @@ type ContactBulkAction =
   | 'mark-unread'
   | 'update-status';
 
+@Permissions(PERMISSIONS.CONTACT_REQUESTS_VIEW)
 @Controller(ADMIN_ROUTES.CONTACT_REQUESTS)
 export class ContactRequestsController {
   private readonly logger = new Logger(ContactRequestsController.name);
@@ -248,6 +250,7 @@ export class ContactRequestsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_UPDATE)
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -295,6 +298,7 @@ export class ContactRequestsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_MANAGE)
   async bulk(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -402,6 +406,7 @@ export class ContactRequestsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -440,6 +445,7 @@ export class ContactRequestsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_DELETE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -478,6 +484,7 @@ export class ContactRequestsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -516,6 +523,7 @@ export class ContactRequestsController {
   }
 
   @Post(':id/assign')
+  @Permissions(PERMISSIONS.CONTACT_REQUESTS_ASSIGN)
   async assign(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

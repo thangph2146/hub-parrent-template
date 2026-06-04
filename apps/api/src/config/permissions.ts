@@ -25,6 +25,23 @@ export const RESOURCES = {
   ADMISSION_RESULTS: 'admission_results',
   PAGE_CONTENTS: 'page_contents',
   SEO_METAS: 'seo_metas',
+  SPEAKERS: 'speakers',
+  LOCATIONS: 'locations',
+  TRAINING_LEVELS: 'training_levels',
+  TRAINING_SYSTEMS: 'training_systems',
+  MAJORS: 'majors',
+  COURSES: 'courses',
+  ACADEMIC_YEARS: 'academic_years',
+  EVENTS: 'events',
+  CAMERAS: 'cameras',
+  TEMPLATES: 'templates',
+  SCREENS: 'screens',
+  DEPARTMENTS: 'departments',
+  EVENT_REGISTRATIONS: 'event_registrations',
+  EVENT_CHECKINS: 'event_checkins',
+  EVENT_CHECKOUTS: 'event_checkouts',
+  EVENT_SPEAKERS: 'event_speakers',
+  FACE_DATA: 'face_data',
 } as const;
 
 // Action types
@@ -76,7 +93,7 @@ function generateResourcePermissions<T extends string>(resource: T) {
 }
 
 // Centralized Permissions List
-export const PERMISSIONS = {
+export const PERMISSIONS: Record<string, Permission> = {
   // Dashboard
   DASHBOARD_VIEW: `${RESOURCES.DASHBOARD}:${ACTIONS.VIEW}` as Permission,
 
@@ -190,4 +207,71 @@ export const PERMISSIONS = {
   SEO_METAS_RESTORE: `${RESOURCES.SEO_METAS}:${ACTIONS.RESTORE}` as Permission,
   SEO_METAS_HARD_DELETE:
     `${RESOURCES.SEO_METAS}:${ACTIONS.HARD_DELETE}` as Permission,
+
+  // Speakers
+  ...generateResourcePermissions(RESOURCES.SPEAKERS),
+  SPEAKERS_RESTORE: `${RESOURCES.SPEAKERS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Locations
+  ...generateResourcePermissions(RESOURCES.LOCATIONS),
+  LOCATIONS_RESTORE: `${RESOURCES.LOCATIONS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Training Levels
+  ...generateResourcePermissions(RESOURCES.TRAINING_LEVELS),
+  TRAINING_LEVELS_RESTORE:
+    `${RESOURCES.TRAINING_LEVELS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Training Systems
+  ...generateResourcePermissions(RESOURCES.TRAINING_SYSTEMS),
+  TRAINING_SYSTEMS_RESTORE:
+    `${RESOURCES.TRAINING_SYSTEMS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Majors
+  ...generateResourcePermissions(RESOURCES.MAJORS),
+  MAJORS_RESTORE: `${RESOURCES.MAJORS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Courses
+  ...generateResourcePermissions(RESOURCES.COURSES),
+  COURSES_RESTORE: `${RESOURCES.COURSES}:${ACTIONS.RESTORE}` as Permission,
+
+  // Academic Years
+  ...generateResourcePermissions(RESOURCES.ACADEMIC_YEARS),
+  ACADEMIC_YEARS_RESTORE:
+    `${RESOURCES.ACADEMIC_YEARS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Events
+  ...generateResourcePermissions(RESOURCES.EVENTS),
+  EVENTS_RESTORE: `${RESOURCES.EVENTS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Cameras
+  ...generateResourcePermissions(RESOURCES.CAMERAS),
+  CAMERAS_RESTORE: `${RESOURCES.CAMERAS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Templates
+  ...generateResourcePermissions(RESOURCES.TEMPLATES),
+  TEMPLATES_RESTORE: `${RESOURCES.TEMPLATES}:${ACTIONS.RESTORE}` as Permission,
+
+  // Screens
+  ...generateResourcePermissions(RESOURCES.SCREENS),
+  SCREENS_RESTORE: `${RESOURCES.SCREENS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Departments
+  ...generateResourcePermissions(RESOURCES.DEPARTMENTS),
+  DEPARTMENTS_RESTORE:
+    `${RESOURCES.DEPARTMENTS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Event Registrations
+  ...generateResourcePermissions(RESOURCES.EVENT_REGISTRATIONS),
+
+  // Event Checkins
+  ...generateResourcePermissions(RESOURCES.EVENT_CHECKINS),
+
+  // Event Checkouts
+  ...generateResourcePermissions(RESOURCES.EVENT_CHECKOUTS),
+
+  // Event Speakers
+  ...generateResourcePermissions(RESOURCES.EVENT_SPEAKERS),
+
+  // Face Data
+  ...generateResourcePermissions(RESOURCES.FACE_DATA),
 } as const;

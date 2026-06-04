@@ -10,7 +10,10 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 
+@Permissions(PERMISSIONS.DASHBOARD_VIEW)
 @Controller(ADMIN_ROUTES.DASHBOARD)
 export class DashboardController {
   private readonly logger = new Logger(DashboardController.name);

@@ -24,7 +24,8 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
 type CommentListStatus = 'active' | 'deleted' | 'all';
 type CommentBulkAction =
@@ -34,6 +35,7 @@ type CommentBulkAction =
   | 'restore'
   | 'hard-delete';
 
+@Permissions(PERMISSIONS.COMMENTS_VIEW)
 @Controller(ADMIN_ROUTES.COMMENTS)
 export class CommentsController {
   private readonly logger = new Logger(CommentsController.name);
@@ -185,6 +187,7 @@ export class CommentsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.COMMENTS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -223,6 +226,7 @@ export class CommentsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.COMMENTS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -261,6 +265,7 @@ export class CommentsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.COMMENTS_MANAGE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -299,6 +304,7 @@ export class CommentsController {
   }
 
   @Post(':id/approve')
+  @Permissions(PERMISSIONS.COMMENTS_APPROVE)
   async approve(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -337,6 +343,7 @@ export class CommentsController {
   }
 
   @Post(':id/unapprove')
+  @Permissions(PERMISSIONS.COMMENTS_APPROVE)
   async unapprove(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -375,6 +382,7 @@ export class CommentsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.COMMENTS_MANAGE)
   async bulk(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

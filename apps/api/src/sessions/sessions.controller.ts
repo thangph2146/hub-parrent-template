@@ -25,8 +25,10 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
 
+@Permissions(PERMISSIONS.SESSIONS_VIEW)
 @Controller(ADMIN_ROUTES.SESSIONS)
 export class SessionsController {
   private readonly logger = new Logger(SessionsController.name);
@@ -192,6 +194,7 @@ export class SessionsController {
    * Body: { userId, userAgent?, ipAddress? }. Header: X-User-Id (người đang đăng nhập).
    */
   @Post()
+  @Permissions(PERMISSIONS.SESSIONS_CREATE)
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -371,6 +374,7 @@ export class SessionsController {
    * Không cho phép: (1) cưỡng chế đăng xuất chính mình, (2) cưỡng chế đăng xuất tài khoản Super Admin.
    */
   @Post('revoke-by-user/:userId')
+  @Permissions(PERMISSIONS.SESSIONS_MANAGE)
   async revokeByUser(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -458,6 +462,7 @@ export class SessionsController {
    * PUT /api/admin/sessions/:id
    */
   @Put(':id')
+  @Permissions(PERMISSIONS.SESSIONS_UPDATE)
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -513,6 +518,7 @@ export class SessionsController {
    * DELETE /api/admin/sessions/:id - Soft delete
    */
   @Delete(':id')
+  @Permissions(PERMISSIONS.SESSIONS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -559,6 +565,7 @@ export class SessionsController {
    * POST /api/admin/sessions/bulk - phải khai báo trước :id/restore
    */
   @Post('bulk')
+  @Permissions(PERMISSIONS.SESSIONS_MANAGE)
   async bulk(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -646,6 +653,7 @@ export class SessionsController {
    * POST /api/admin/sessions/:id/restore
    */
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.SESSIONS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -691,6 +699,7 @@ export class SessionsController {
    * DELETE /api/admin/sessions/:id/hard-delete
    */
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.SESSIONS_MANAGE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

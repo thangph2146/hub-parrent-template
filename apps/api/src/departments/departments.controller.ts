@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { DepartmentsService } from './departments.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Departments')
 @Controller(ADMIN_ROUTES.DEPARTMENTS)
+@Permissions(PERMISSIONS.DEPARTMENTS_VIEW)
 export class DepartmentsController {
   private readonly logger = new Logger(DepartmentsController.name);
   constructor(private readonly departmentsService: DepartmentsService) {}
@@ -91,6 +94,7 @@ export class DepartmentsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.DEPARTMENTS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create department' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -114,6 +118,7 @@ export class DepartmentsController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.DEPARTMENTS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update department' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -136,6 +141,7 @@ export class DepartmentsController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.DEPARTMENTS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete department' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -159,6 +165,7 @@ export class DepartmentsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.DEPARTMENTS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete department' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -182,6 +189,7 @@ export class DepartmentsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.DEPARTMENTS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore department' })
   @ApiHeader({ name: 'X-User-Id', required: true })

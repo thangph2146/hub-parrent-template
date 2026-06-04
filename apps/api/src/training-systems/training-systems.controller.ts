@@ -19,6 +19,8 @@ import {
   Headers,
   Res,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { TrainingSystemsService } from './training-systems.service';
 import {
@@ -29,6 +31,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('TrainingSystems')
 @Controller(ADMIN_ROUTES.TRAINING_SYSTEMS)
+@Permissions(PERMISSIONS.TRAINING_SYSTEMS_VIEW)
 export class TrainingSystemsController {
   constructor(private readonly service: TrainingSystemsService) {}
 
@@ -115,6 +118,7 @@ export class TrainingSystemsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_SYSTEMS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create training system' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -144,6 +148,7 @@ export class TrainingSystemsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_SYSTEMS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update training system' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -175,6 +180,7 @@ export class TrainingSystemsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_SYSTEMS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete training system' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -202,6 +208,7 @@ export class TrainingSystemsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_SYSTEMS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted training system' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -229,6 +236,7 @@ export class TrainingSystemsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_SYSTEMS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Permanently delete training system' })
   @ApiHeader({ name: 'X-User-Id', required: true })

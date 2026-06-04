@@ -23,6 +23,7 @@ import { queryKeys, useRbacCatalog, useStaffUserList, useTrashedStaffUsers } fro
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { api } from "@/lib/api";
 import { useAuth } from "@/providers/auth-provider";
+import { isProtectedAdminEmail } from "@/config/protected-admin";
 import {
   buildUsersFilterQuery,
   StaffBulkConfirmDialog,
@@ -114,7 +115,7 @@ function StaffPageInner() {
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete";
       ids: string[];
-    }) => api.http.post("/admin/users/bulk", input),
+    }) => api.users.bulk(input),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
@@ -174,32 +175,70 @@ function StaffPageInner() {
   }, [router]);
 
   const handleEdit = useCallback((user: StaffRow) => {
+    if (isProtectedAdminEmail(user.email)) {
+      toast.error(`Tài khoản ${user.email} là tài khoản hệ thống, không thể chỉnh sửa.`);
+      return;
+    }
     router.push(`/staff/${user.id}/edit`);
   }, [router]);
 
   const handleDelete = useCallback((user: StaffRow) => {
+    if (isProtectedAdminEmail(user.email)) {
+      toast.error(`Tài khoản ${user.email} là tài khoản hệ thống, không thể xóa.`);
+      return;
+    }
     setDeleteTarget(user);
   }, []);
 
   const handleRestore = useCallback((user: StaffRow) => {
+    if (isProtectedAdminEmail(user.email)) {
+      toast.error(`Tài khoản ${user.email} là tài khoản hệ thống.`);
+      return;
+    }
     setRestoreTarget(user);
   }, []);
 
   const handlePurge = useCallback((user: StaffRow) => {
+    if (isProtectedAdminEmail(user.email)) {
+      toast.error(`Tài khoản ${user.email} là tài khoản hệ thống, không thể xóa.`);
+      return;
+    }
     setPurgeTarget(user);
   }, []);
 
   const handleBulkDelete = useCallback((ids: string[]) => {
+    const protectedIds = roleFilteredUsers
+      .filter((u) => ids.includes(String(u.id)) && isProtectedAdminEmail(u.email))
+      .map((u) => u.email);
+    if (protectedIds.length > 0) {
+      toast.error(`Không thể xóa tài khoản hệ thống: ${protectedIds.join(", ")}`);
+      return;
+    }
     setBulkDeleteTarget(ids);
-  }, []);
+  }, [roleFilteredUsers]);
 
   const handleBulkRestore = useCallback((ids: string[]) => {
+    const protectedIds = trashedUsers
+      .filter((u) => ids.includes(String(u.id)) && isProtectedAdminEmail(u.email))
+      .map((u) => u.email);
+    if (protectedIds.length > 0) {
+      toast.error(`Không thể khôi phục tài khoản hệ thống: ${protectedIds.join(", ")}`);
+      return;
+    }
     setBulkRestoreTarget(ids);
-  }, []);
+  }, [trashedUsers]);
 
   const handleBulkPurge = useCallback((ids: string[]) => {
+    const allUsers = [...roleFilteredUsers, ...trashedUsers];
+    const protectedIds = allUsers
+      .filter((u) => ids.includes(String(u.id)) && isProtectedAdminEmail(u.email))
+      .map((u) => u.email);
+    if (protectedIds.length > 0) {
+      toast.error(`Không thể xóa vĩnh viễn tài khoản hệ thống: ${protectedIds.join(", ")}`);
+      return;
+    }
     setBulkPurgeTarget(ids);
-  }, []);
+  }, [roleFilteredUsers, trashedUsers]);
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!deleteTarget) return;

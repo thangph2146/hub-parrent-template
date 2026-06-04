@@ -35,12 +35,14 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
 type RoleListStatus = 'active' | 'deleted' | 'all';
 type RoleBulkAction = 'delete' | 'restore' | 'hard-delete';
 
 @ApiTags('Roles')
+@Permissions(PERMISSIONS.ROLES_VIEW)
 @Controller(ADMIN_ROUTES.ROLES)
 export class RolesController {
   private readonly logger = new Logger(RolesController.name);
@@ -209,6 +211,7 @@ export class RolesController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.ROLES_CREATE)
   @ApiOperation({ summary: 'Create new role' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Role data', required: true })
@@ -265,6 +268,7 @@ export class RolesController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.ROLES_UPDATE)
   @ApiOperation({ summary: 'Update role by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -325,6 +329,7 @@ export class RolesController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.ROLES_MANAGE)
   @ApiOperation({ summary: 'Hard delete role permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -367,6 +372,7 @@ export class RolesController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.ROLES_DELETE)
   @ApiOperation({ summary: 'Soft delete role' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -413,6 +419,7 @@ export class RolesController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.ROLES_MANAGE)
   @ApiOperation({ summary: 'Bulk action on roles' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
@@ -477,6 +484,7 @@ export class RolesController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.ROLES_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted role' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

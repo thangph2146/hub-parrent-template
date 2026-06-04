@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { CamerasService } from './cameras.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Cameras')
 @Controller(ADMIN_ROUTES.CAMERAS)
+@Permissions(PERMISSIONS.CAMERAS_VIEW)
 export class CamerasController {
   private readonly logger = new Logger(CamerasController.name);
   constructor(private readonly camerasService: CamerasService) {}
@@ -91,6 +94,7 @@ export class CamerasController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.CAMERAS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -114,6 +118,7 @@ export class CamerasController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.CAMERAS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -136,6 +141,7 @@ export class CamerasController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.CAMERAS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -159,6 +165,7 @@ export class CamerasController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.CAMERAS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -182,6 +189,7 @@ export class CamerasController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.CAMERAS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })

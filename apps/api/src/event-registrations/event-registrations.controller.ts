@@ -22,9 +22,12 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Event Registrations')
+@Permissions(PERMISSIONS.EVENT_REGISTRATIONS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_REGISTRATIONS)
 export class EventRegistrationsController {
   private readonly logger = new Logger(EventRegistrationsController.name);
@@ -112,6 +115,7 @@ export class EventRegistrationsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_CREATE)
   @ApiOperation({ summary: 'Create new event registration' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
@@ -161,6 +165,7 @@ export class EventRegistrationsController {
   }
 
   @Post(':id/attendance')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_UPDATE)
   @ApiOperation({
     summary:
       'Cập nhật trạng thái check-in/out thủ công (khi socket lỗi hoặc điều chỉnh)',
@@ -195,6 +200,7 @@ export class EventRegistrationsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_UPDATE)
   @ApiOperation({ summary: 'Update event registration by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
@@ -236,6 +242,7 @@ export class EventRegistrationsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_DELETE)
   @ApiOperation({ summary: 'Hard delete event registration permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
@@ -260,6 +267,7 @@ export class EventRegistrationsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_DELETE)
   @ApiOperation({ summary: 'Soft delete event registration' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
@@ -284,6 +292,7 @@ export class EventRegistrationsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted event registration' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(

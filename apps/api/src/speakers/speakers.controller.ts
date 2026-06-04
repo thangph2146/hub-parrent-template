@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { SpeakersService } from './speakers.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Speakers')
 @Controller(ADMIN_ROUTES.SPEAKERS)
+@Permissions(PERMISSIONS.SPEAKERS_VIEW)
 export class SpeakersController {
   private readonly logger = new Logger(SpeakersController.name);
 
@@ -101,6 +104,7 @@ export class SpeakersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SPEAKERS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create new speaker' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -144,6 +148,7 @@ export class SpeakersController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.SPEAKERS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update speaker by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -193,6 +198,7 @@ export class SpeakersController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.SPEAKERS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete speaker permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -217,6 +223,7 @@ export class SpeakersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SPEAKERS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete speaker' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -241,6 +248,7 @@ export class SpeakersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SPEAKERS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted speaker' })
   @ApiHeader({ name: 'X-User-Id', required: true })

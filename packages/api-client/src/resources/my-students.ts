@@ -16,23 +16,42 @@ export interface ParentStudent {
 
 export interface AddStudentInput {
   studentCode: string;
+  studentName?: string;
   note?: string;
 }
 
 export class MyStudentsApi {
   constructor(private readonly http: ApiClient) {}
 
-  async list(): Promise<{ items: ParentStudent[] }> {
-    const payload = await getData<{ items: ParentStudent[] }>(this.http, "/parent/my-students");
-    return payload;
+  async list(): Promise<ParentStudent[]> {
+    return getData<ParentStudent[]>(this.http, "/parent/my-students");
   }
 
   async add(input: AddStudentInput): Promise<ParentStudent> {
-    const payload = await postData<ParentStudent>(this.http, "/parent/my-students", input);
-    return payload;
+    return postData<ParentStudent>(this.http, "/parent/my-students", input);
   }
 
   async remove(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/parent/my-students/${id}`);
+  }
+
+  async getDetailedScores<T = unknown>(studentCode: string): Promise<T[]> {
+    return getData<T[]>(this.http, `/parent/my-students/scores/detailed/${encodeURIComponent(studentCode)}`);
+  }
+
+  async getYearAverages<T = unknown>(studentCode: string): Promise<T[]> {
+    return getData<T[]>(this.http, `/parent/my-students/averages/year/${encodeURIComponent(studentCode)}`);
+  }
+
+  async getTermAverages<T = unknown>(studentCode: string): Promise<T[]> {
+    return getData<T[]>(this.http, `/parent/my-students/averages/terms/${encodeURIComponent(studentCode)}`);
+  }
+
+  async getOverallAverage<T = unknown>(studentCode: string): Promise<T | null> {
+    try {
+      return await getData<T>(this.http, `/parent/my-students/averages/overall/${encodeURIComponent(studentCode)}`);
+    } catch {
+      return null;
+    }
   }
 }

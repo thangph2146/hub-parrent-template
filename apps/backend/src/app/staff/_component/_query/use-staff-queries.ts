@@ -3,6 +3,7 @@ import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/
 import { toast } from "sonner";
 import { ApiError, api } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
+import { isProtectedAdminEmail } from "@/config/protected-admin";
 
 type CreateStaffInput = Pick<
   CreateUserInput,

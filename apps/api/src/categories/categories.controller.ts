@@ -34,12 +34,14 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
 type CategoryListStatus = 'active' | 'deleted' | 'all';
 type CategoryBulkAction = 'delete' | 'restore' | 'hard-delete' | 'set-parent';
 
 @ApiTags('Categories')
+@Permissions(PERMISSIONS.CATEGORIES_VIEW)
 @Controller(ADMIN_ROUTES.CATEGORIES)
 export class CategoriesController {
   private readonly logger = new Logger(CategoriesController.name);
@@ -227,6 +229,7 @@ export class CategoriesController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.CATEGORIES_CREATE)
   @ApiOperation({ summary: 'Create new category' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Category data', required: true })
@@ -289,6 +292,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.CATEGORIES_UPDATE)
   @ApiOperation({ summary: 'Update category by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -350,6 +354,7 @@ export class CategoriesController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
   @ApiOperation({ summary: 'Bulk action on categories' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
@@ -425,6 +430,7 @@ export class CategoriesController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
   @ApiOperation({ summary: 'Hard delete category permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -468,6 +474,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.CATEGORIES_DELETE)
   @ApiOperation({ summary: 'Soft delete category' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -514,6 +521,7 @@ export class CategoriesController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted category' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

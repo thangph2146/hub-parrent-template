@@ -16,8 +16,11 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
+@Permissions(PERMISSIONS.SEO_METAS_VIEW)
 @Controller(ADMIN_ROUTES.SEO_METAS)
 export class SeoMetasController {
   constructor(private readonly service: SeoMetasService) {}
@@ -80,6 +83,7 @@ export class SeoMetasController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.SEO_METAS_CREATE)
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -119,6 +123,7 @@ export class SeoMetasController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.SEO_METAS_UPDATE)
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -159,6 +164,7 @@ export class SeoMetasController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.SEO_METAS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -181,6 +187,7 @@ export class SeoMetasController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.SEO_METAS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -203,6 +210,7 @@ export class SeoMetasController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.SEO_METAS_MANAGE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

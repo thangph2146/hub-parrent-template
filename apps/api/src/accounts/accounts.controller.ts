@@ -18,8 +18,11 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
+@Permissions(PERMISSIONS.ACCOUNTS_VIEW)
 @Controller(ADMIN_ROUTES.ACCOUNTS)
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
@@ -73,6 +76,7 @@ export class AccountsController {
    * PUT /api/admin/accounts - Cập nhật profile user hiện tại
    */
   @Put()
+  @Permissions(PERMISSIONS.ACCOUNTS_UPDATE)
   async updateProfile(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

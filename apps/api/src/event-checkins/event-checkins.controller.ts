@@ -18,9 +18,12 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Event Checkins')
+@Permissions(PERMISSIONS.EVENT_CHECKINS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_CHECKINS)
 export class EventCheckinsController {
   private readonly logger = new Logger(EventCheckinsController.name);
@@ -101,6 +104,7 @@ export class EventCheckinsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.EVENT_CHECKINS_CREATE)
   @ApiOperation({ summary: 'Create new event checkin' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
@@ -151,6 +155,7 @@ export class EventCheckinsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.EVENT_CHECKINS_UPDATE)
   @ApiOperation({ summary: 'Update event checkin by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
@@ -187,6 +192,7 @@ export class EventCheckinsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.EVENT_CHECKINS_DELETE)
   @ApiOperation({ summary: 'Hard delete event checkin permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
@@ -211,6 +217,7 @@ export class EventCheckinsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.EVENT_CHECKINS_DELETE)
   @ApiOperation({ summary: 'Soft delete event checkin' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
@@ -235,6 +242,7 @@ export class EventCheckinsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.EVENT_CHECKINS_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted event checkin' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(

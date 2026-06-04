@@ -179,7 +179,7 @@ export const useMyStudents = (opts?: {
     queryKey: queryKeys.myStudents(),
     queryFn: async () => {
       const res = await api.myStudents.list()
-      return { items: res.items }
+      return { items: res }
     },
     enabled: opts?.enabled ?? true,
   })

@@ -33,6 +33,7 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
+import { Public } from '../common/public.decorator';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 
@@ -58,6 +59,7 @@ function parseQuery(query: Record<string, string | undefined>) {
   };
 }
 
+@Public()
 @Controller(PUBLIC_ROUTES.BASE)
 export class PublicController {
   private readonly logger = new Logger(PublicController.name);

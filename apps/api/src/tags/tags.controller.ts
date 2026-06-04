@@ -34,12 +34,14 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
 type TagListStatus = 'active' | 'deleted' | 'all';
 type TagBulkAction = 'delete' | 'restore' | 'hard-delete';
 
 @ApiTags('Tags')
+@Permissions(PERMISSIONS.TAGS_VIEW)
 @Controller(ADMIN_ROUTES.TAGS)
 export class TagsController {
   private readonly logger = new Logger(TagsController.name);
@@ -215,6 +217,7 @@ export class TagsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.TAGS_CREATE)
   @ApiOperation({ summary: 'Create new tag' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Tag data', required: true })
@@ -261,6 +264,7 @@ export class TagsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.TAGS_UPDATE)
   @ApiOperation({ summary: 'Update tag by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -307,6 +311,7 @@ export class TagsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.TAGS_MANAGE)
   @ApiOperation({ summary: 'Bulk action on tags' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
@@ -371,6 +376,7 @@ export class TagsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.TAGS_MANAGE)
   @ApiOperation({ summary: 'Hard delete tag permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -412,6 +418,7 @@ export class TagsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.TAGS_DELETE)
   @ApiOperation({ summary: 'Soft delete tag' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -454,6 +461,7 @@ export class TagsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.TAGS_MANAGE)
   @ApiOperation({ summary: 'Restore soft-deleted tag' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

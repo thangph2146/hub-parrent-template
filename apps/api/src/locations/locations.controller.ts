@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { LocationsService } from './locations.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Locations')
 @Controller(ADMIN_ROUTES.LOCATIONS)
+@Permissions(PERMISSIONS.LOCATIONS_VIEW)
 export class LocationsController {
   private readonly logger = new Logger(LocationsController.name);
 
@@ -100,6 +103,7 @@ export class LocationsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.LOCATIONS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create new location' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -130,6 +134,7 @@ export class LocationsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.LOCATIONS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update location by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -162,6 +167,7 @@ export class LocationsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.LOCATIONS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete location permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -186,6 +192,7 @@ export class LocationsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.LOCATIONS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete location' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -210,6 +217,7 @@ export class LocationsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.LOCATIONS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted location' })
   @ApiHeader({ name: 'X-User-Id', required: true })

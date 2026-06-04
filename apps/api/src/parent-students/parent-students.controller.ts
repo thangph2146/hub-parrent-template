@@ -33,6 +33,8 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES, PUBLIC_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 
 @Controller(PUBLIC_ROUTES.PARENT_MY_STUDENTS)
 export class ParentStudentsPublicController {
@@ -445,6 +447,7 @@ export class ParentStudentsPublicController {
   }
 }
 
+@Permissions(PERMISSIONS.STUDENTS_VIEW)
 @Controller(ADMIN_ROUTES.PARENT_STUDENTS)
 export class ParentStudentsAdminController {
   private readonly logger = new Logger(ParentStudentsAdminController.name);
@@ -472,6 +475,7 @@ export class ParentStudentsAdminController {
     }
   }
 
+  @Permissions(PERMISSIONS.STUDENTS_UPDATE)
   @Patch(':id/review')
   async review(
     @Param('id') id: string,

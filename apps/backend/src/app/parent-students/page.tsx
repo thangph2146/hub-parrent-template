@@ -22,16 +22,6 @@ import { useReviewParentStudentMutation } from "./_component/_query";
 import { getParentStudentsColumns } from "./_component/columns";
 import type { ParentStudent } from "./_component/types";
 
-interface ListResult {
-  data: ParentStudent[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
 type ConfirmAction =
   | { kind: "approve"; row: ParentStudent }
   | { kind: "reject"; row: ParentStudent }
@@ -67,28 +57,22 @@ function AdminParentStudentsPageInner() {
     setSelectedRowIds({});
   }, [columnFilters]);
 
-  const { data, isLoading } = useQuery<ListResult>({
+  const { data, isLoading } = useQuery({
     queryKey: ["admin", "parent-students", page, pageSize, debouncedQ, columnFilterQuery],
     queryFn: async () => {
-      const qs = new URLSearchParams({
-        page: String(page),
-        limit: String(pageSize),
+      const result = await api.parentStudents.list({
+        page,
+        limit: pageSize,
+        search: debouncedQ.trim() || undefined,
+        status: columnFilterQuery.status || undefined,
+        createdAt: columnFilterQuery.createdAt || undefined,
       });
-      if (debouncedQ.trim()) qs.set("search", debouncedQ.trim());
-      if (columnFilterQuery.status) qs.set("status", columnFilterQuery.status);
-      if (columnFilterQuery.createdAt) qs.set("createdAt", columnFilterQuery.createdAt);
-
-      const payload = await api.http.get<unknown>(
-        `/admin/parent-students?${qs.toString()}`,
-      );
-      const envelope = payload as { data?: ListResult };
-      return (
-        envelope.data ?? {
-          data: [],
-          pagination: { page: 1, limit: pageSize, total: 0, totalPages: 0 },
-        }
-      );
+      return result;
     },
+    select: (result) => ({
+      data: result.items,
+      pagination: { page, limit: pageSize, total: result.total, totalPages: Math.ceil(result.total / pageSize) },
+    }),
     staleTime: 20_000,
   });
 
@@ -115,7 +99,7 @@ function AdminParentStudentsPageInner() {
     const ids = rows.map((r) => r.id);
     if (!ids.length) return;
     for (const id of ids) {
-      await api.http.delete(`/admin/parent-students/${id}`);
+      await api.parentStudents.remove(id);
     }
     queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });
     toast.success(

@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { TrainingLevelsService } from './training-levels.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('TrainingLevels')
 @Controller(ADMIN_ROUTES.TRAINING_LEVELS)
+@Permissions(PERMISSIONS.TRAINING_LEVELS_VIEW)
 export class TrainingLevelsController {
   private readonly logger = new Logger(TrainingLevelsController.name);
 
@@ -100,6 +103,7 @@ export class TrainingLevelsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_LEVELS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create new training level' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -128,6 +132,7 @@ export class TrainingLevelsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_LEVELS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update training level by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -155,6 +160,7 @@ export class TrainingLevelsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_LEVELS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete training level permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -179,6 +185,7 @@ export class TrainingLevelsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_LEVELS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete training level' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -203,6 +210,7 @@ export class TrainingLevelsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.TRAINING_LEVELS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted training level' })
   @ApiHeader({ name: 'X-User-Id', required: true })

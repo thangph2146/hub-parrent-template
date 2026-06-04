@@ -19,6 +19,8 @@ import {
   Headers,
   Res,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { MajorsService } from './majors.service';
 import {
@@ -29,6 +31,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Majors')
 @Controller(ADMIN_ROUTES.MAJORS)
+@Permissions(PERMISSIONS.MAJORS_VIEW)
 export class MajorsController {
   constructor(private readonly service: MajorsService) {}
 
@@ -115,6 +118,7 @@ export class MajorsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.MAJORS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create major' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -144,6 +148,7 @@ export class MajorsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.MAJORS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update major' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -175,6 +180,7 @@ export class MajorsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.MAJORS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete major' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -202,6 +208,7 @@ export class MajorsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.MAJORS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted major' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -229,6 +236,7 @@ export class MajorsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.MAJORS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Permanently delete major' })
   @ApiHeader({ name: 'X-User-Id', required: true })

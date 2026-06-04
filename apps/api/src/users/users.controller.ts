@@ -36,7 +36,8 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
 
 export class CreateUserDto {
   email: string;
@@ -72,6 +73,7 @@ export class BulkActionDto {
 type BulkAction = 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive';
 
 @ApiTags('Users')
+@Permissions(PERMISSIONS.USERS_VIEW)
 @Controller(ADMIN_ROUTES.USERS)
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
@@ -272,6 +274,7 @@ export class UsersController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.USERS_CREATE)
   @ApiOperation({ summary: 'Create new user' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ type: CreateUserDto })
@@ -345,6 +348,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.USERS_UPDATE)
   @ApiOperation({ summary: 'Update user by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -414,6 +418,7 @@ export class UsersController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.USERS_MANAGE)
   @ApiOperation({ summary: 'Bulk action on users' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ type: BulkActionDto })
@@ -494,6 +499,7 @@ export class UsersController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.USERS_HARD_DELETE)
   @ApiOperation({ summary: 'Hard delete user permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -537,6 +543,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.USERS_DELETE)
   @ApiOperation({ summary: 'Soft delete user' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -583,6 +590,7 @@ export class UsersController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.USERS_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted user' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

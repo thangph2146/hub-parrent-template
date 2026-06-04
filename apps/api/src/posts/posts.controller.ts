@@ -33,7 +33,8 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
 type PostListStatus = 'active' | 'deleted' | 'all';
 type PostBulkAction =
@@ -71,6 +72,7 @@ function normalizeRelationIds(value: unknown): string[] | undefined {
 }
 
 @ApiTags('Posts')
+@Permissions(PERMISSIONS.POSTS_VIEW)
 @Controller(ADMIN_ROUTES.POSTS)
 export class PostsController {
   private readonly logger = new Logger(PostsController.name);
@@ -345,6 +347,7 @@ export class PostsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.POSTS_CREATE)
   @ApiOperation({ summary: 'Create new post' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiResponse({ status: 201, description: 'Post created successfully' })
@@ -412,6 +415,7 @@ export class PostsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.POSTS_UPDATE)
   @ApiOperation({ summary: 'Update post by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -510,6 +514,7 @@ export class PostsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.POSTS_MANAGE)
   @ApiOperation({ summary: 'Bulk action on posts' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })
@@ -641,6 +646,7 @@ export class PostsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.POSTS_MANAGE)
   @ApiOperation({ summary: 'Hard delete post permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -684,6 +690,7 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.POSTS_DELETE)
   @ApiOperation({ summary: 'Soft delete post' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -730,6 +737,7 @@ export class PostsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.POSTS_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted post' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

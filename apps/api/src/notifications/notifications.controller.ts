@@ -27,8 +27,11 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
+@Permissions(PERMISSIONS.NOTIFICATIONS_VIEW)
 @Controller(ADMIN_ROUTES.BASE)
 export class NotificationsController {
   private readonly logger = new Logger(NotificationsController.name);
@@ -424,6 +427,7 @@ export class NotificationsController {
    * Đánh dấu một thông báo đã đọc/chưa đọc. Body: { isRead: boolean }. Header: X-User-Id.
    */
   @Patch('notifications/:id')
+  @Permissions(PERMISSIONS.NOTIFICATIONS_MANAGE)
   async markRead(
     @Res() res: Response,
     @Param('id') id: string,
@@ -502,6 +506,7 @@ export class NotificationsController {
    * Xóa một thông báo. Chỉ xóa được nếu thuộc user (X-User-Id). Trả 204 khi thành công, 404 nếu không tìm thấy hoặc không có quyền.
    */
   @Delete('notifications/:id')
+  @Permissions(PERMISSIONS.NOTIFICATIONS_MANAGE)
   async deleteOne(
     @Res() res: Response,
     @Param('id') id: string,
@@ -564,6 +569,7 @@ export class NotificationsController {
    * Đánh dấu tất cả thông báo của user là đã đọc. Header: X-User-Id (hoặc body.userId).
    */
   @Post('notifications/mark-all-read')
+  @Permissions(PERMISSIONS.NOTIFICATIONS_MANAGE)
   async markAllAsRead(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -626,6 +632,7 @@ export class NotificationsController {
    * Header: X-User-Id.
    */
   @Post('notifications/bulk')
+  @Permissions(PERMISSIONS.NOTIFICATIONS_MANAGE)
   async bulk(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

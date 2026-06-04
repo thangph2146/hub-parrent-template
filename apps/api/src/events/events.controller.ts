@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { EventsService } from './events.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Events')
 @Controller(ADMIN_ROUTES.EVENTS)
+@Permissions(PERMISSIONS.EVENTS_VIEW)
 export class EventsController {
   private readonly logger = new Logger(EventsController.name);
   constructor(private readonly eventsService: EventsService) {}
@@ -97,6 +100,7 @@ export class EventsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.EVENTS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create new event' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -121,6 +125,7 @@ export class EventsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.EVENTS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update event by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -144,6 +149,7 @@ export class EventsController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.EVENTS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete event permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -168,6 +174,7 @@ export class EventsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.EVENTS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete event' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -192,6 +199,7 @@ export class EventsController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.EVENTS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted event' })
   @ApiHeader({ name: 'X-User-Id', required: true })

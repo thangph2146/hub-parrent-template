@@ -25,11 +25,13 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
 
 type AdmissionListStatus = 'active' | 'deleted' | 'all';
 type AdmissionBulkAction = 'delete' | 'restore' | 'hard-delete';
 
+@Permissions(PERMISSIONS.ADMISSION_RESULTS_VIEW)
 @Controller(ADMIN_ROUTES.ADMISSION_RESULTS)
 export class AdmissionResultsController {
   private readonly logger = new Logger(AdmissionResultsController.name);
@@ -178,6 +180,7 @@ export class AdmissionResultsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_CREATE)
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -238,6 +241,7 @@ export class AdmissionResultsController {
   }
 
   @Put(':id')
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_UPDATE)
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -287,6 +291,7 @@ export class AdmissionResultsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -324,6 +329,7 @@ export class AdmissionResultsController {
   }
 
   @Post('bulk')
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_MANAGE)
   async bulk(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -383,6 +389,7 @@ export class AdmissionResultsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -420,6 +427,7 @@ export class AdmissionResultsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.ADMISSION_RESULTS_MANAGE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

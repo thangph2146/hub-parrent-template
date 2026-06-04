@@ -6,9 +6,12 @@ import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Event Checkouts')
+@Permissions(PERMISSIONS.EVENT_CHECKOUTS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_CHECKOUTS)
 export class EventCheckoutsController {
   private readonly logger = new Logger(EventCheckoutsController.name);

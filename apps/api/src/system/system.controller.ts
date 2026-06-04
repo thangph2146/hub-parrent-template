@@ -26,6 +26,7 @@ import {
   ADMIN_ROUTES,
   AUTH_ROLE_NAMES,
 } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 
 /** Khớp admin: `/system/maintenance` và API import/export dùng SETTINGS_MANAGE; API trước đây chỉ super_admin → 403 cho admin thường. */
@@ -37,6 +38,7 @@ const MAX_SYSTEM_EXCEL_FILE_BYTES = 50 * 1024 * 1024;
 
 /** Import/export nhiều chunk — không áp dụng giới hạn 100 req/phút toàn cục. */
 @SkipThrottle()
+@Permissions(PERMISSIONS.SETTINGS_MANAGE)
 @Controller(ADMIN_ROUTES.SYSTEM)
 export class SystemController {
   private readonly logger = new Logger(SystemController.name);
@@ -183,6 +185,7 @@ export class SystemController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_IMPORT)
   @Post('import')
   @UsePipes(
     new ValidationPipe({
@@ -237,6 +240,7 @@ export class SystemController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_IMPORT)
   @Post('import/excel')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -317,6 +321,7 @@ export class SystemController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_VIEW)
   @Get('database-schema')
   async getDatabaseSchema(
     @Res() res: Response,

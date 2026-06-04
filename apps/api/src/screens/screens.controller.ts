@@ -12,6 +12,8 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { ScreensService } from './screens.service';
 import {
@@ -22,6 +24,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Screens')
 @Controller(ADMIN_ROUTES.SCREENS)
+@Permissions(PERMISSIONS.SCREENS_VIEW)
 export class ScreensController {
   private readonly logger = new Logger(ScreensController.name);
   constructor(private readonly screensService: ScreensService) {}
@@ -91,6 +94,7 @@ export class ScreensController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SCREENS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create screen' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -114,6 +118,7 @@ export class ScreensController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.SCREENS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update screen' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -136,6 +141,7 @@ export class ScreensController {
     return res.status(statusCode).json(ok);
   }
 
+  @Permissions(PERMISSIONS.SCREENS_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete screen' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -159,6 +165,7 @@ export class ScreensController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SCREENS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete screen' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -182,6 +189,7 @@ export class ScreensController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.SCREENS_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore screen' })
   @ApiHeader({ name: 'X-User-Id', required: true })

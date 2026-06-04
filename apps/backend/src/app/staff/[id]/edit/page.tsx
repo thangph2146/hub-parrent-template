@@ -10,6 +10,8 @@ import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/compo
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { Card, CardContent } from "@ui/components/card"
 import { api } from "@/lib/api"
+import { ShieldAlert } from "lucide-react"
+import { isProtectedAdminEmail } from "@/config/protected-admin"
 
 function EditStaffPageInner() {
   const params = useParams()
@@ -88,6 +90,30 @@ function EditStaffPageInner() {
         <div className="py-12 text-center">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>
+      </AdminPageSection>
+    )
+  }
+
+  if (isProtectedAdminEmail(user.email)) {
+    return (
+      <AdminPageSection>
+        <AdminFormPageHeader
+          title="Sửa nhân sự"
+          onBack={() => router.push(`/staff/${userId}`)}
+          formId="staff-form"
+        />
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+            <ShieldAlert className="size-12 text-destructive/70" />
+            <div>
+              <p className="text-base font-semibold">Tài khoản bảo vệ</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Tài khoản <span className="font-mono font-medium">{user.email}</span>{" "}
+                là tài khoản quản trị hệ thống và không thể chỉnh sửa từ giao diện.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </AdminPageSection>
     )
   }

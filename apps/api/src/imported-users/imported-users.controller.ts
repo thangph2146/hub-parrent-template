@@ -27,8 +27,11 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 
 @ApiTags('Imported Users')
+@Permissions(PERMISSIONS.USERS_VIEW)
 @Controller(ADMIN_ROUTES.IMPORTED_USERS)
 export class ImportedUsersController {
   private readonly logger = new Logger(ImportedUsersController.name);
@@ -106,6 +109,7 @@ export class ImportedUsersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.USERS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create new imported user' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -186,6 +190,7 @@ export class ImportedUsersController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.USERS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update imported user by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -268,6 +273,7 @@ export class ImportedUsersController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.USERS_DELETE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Hard delete imported user permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -298,6 +304,7 @@ export class ImportedUsersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.USERS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete imported user' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -328,6 +335,7 @@ export class ImportedUsersController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.USERS_UPDATE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted imported user' })
   @ApiHeader({ name: 'X-User-Id', required: true })

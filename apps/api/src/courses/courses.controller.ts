@@ -19,6 +19,8 @@ import {
   Headers,
   Res,
 } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { CoursesService } from './courses.service';
 import {
@@ -29,6 +31,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 @ApiTags('Courses')
 @Controller(ADMIN_ROUTES.COURSES)
+@Permissions(PERMISSIONS.COURSES_VIEW)
 export class CoursesController {
   constructor(private readonly service: CoursesService) {}
 
@@ -115,6 +118,7 @@ export class CoursesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.COURSES_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create course' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -152,6 +156,7 @@ export class CoursesController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.COURSES_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update course' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -192,6 +197,7 @@ export class CoursesController {
     return res.status(statusCode).json(okBody);
   }
 
+  @Permissions(PERMISSIONS.COURSES_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete course' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -219,6 +225,7 @@ export class CoursesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.COURSES_RESTORE)
   @Post(':id/restore')
   @ApiOperation({ summary: 'Restore soft-deleted course' })
   @ApiHeader({ name: 'X-User-Id', required: true })
@@ -246,6 +253,7 @@ export class CoursesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.COURSES_MANAGE)
   @Delete(':id/hard-delete')
   @ApiOperation({ summary: 'Permanently delete course' })
   @ApiHeader({ name: 'X-User-Id', required: true })

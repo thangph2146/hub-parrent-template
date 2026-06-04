@@ -24,11 +24,14 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { appConfig } from '../config/app.config';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 
 /** Giới hạn kích thước file upload (multer); đồng bộ với appConfig.bodyLimit (50mb). */
 const MAX_UPLOAD_FILE_BYTES = 50 * 1024 * 1024;
 
+@Permissions(PERMISSIONS.UPLOADS_VIEW)
 @Controller(ADMIN_ROUTES.UPLOADS)
 export class UploadsController {
   private readonly logger = new Logger(UploadsController.name);
@@ -106,6 +109,7 @@ export class UploadsController {
 
   /** POST /api/admin/uploads - FormData: action=createFolder + folderName + parentPath? hoặc file + folderPath? + isExistingFolder? */
   @Post()
+  @Permissions(PERMISSIONS.UPLOADS_CREATE)
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: MAX_UPLOAD_FILE_BYTES } }),
   )
@@ -182,6 +186,7 @@ export class UploadsController {
 
   /** DELETE /api/admin/uploads?path=... hoặc ?path=...&deleteFolder=true */
   @Delete()
+  @Permissions(PERMISSIONS.UPLOADS_DELETE)
   async delete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

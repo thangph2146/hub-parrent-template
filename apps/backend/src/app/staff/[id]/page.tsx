@@ -3,7 +3,15 @@
 import { useParams, useRouter } from "next/navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { isProtectedAdminEmail } from "@/config/protected-admin"
+import {
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailPageHeader,
+  AdminDetailSidebar,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import {
   Phone,
   ShieldHalf,
@@ -95,7 +103,11 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
   },
 ]
 
-function AvatarDisplay({ user }: { user: { avatar?: string | null; fullName: string } }) {
+function AvatarDisplay({
+  user,
+}: {
+  user: { avatar?: string | null; fullName: string }
+}) {
   function initials(name: string): string {
     const parts = name.trim().split(/\s+/).filter(Boolean)
     if (parts.length === 0) return "?"
@@ -105,7 +117,7 @@ function AvatarDisplay({ user }: { user: { avatar?: string | null; fullName: str
 
   return (
     <div className="flex flex-col items-center gap-3 py-2">
-      <div className="relative aspect-[3/4] w-full shrink-0">
+      <div className="relative aspect-[3/4] w-40 shrink-0">
         {user.avatar ? (
           <img
             src={user.avatar}
@@ -183,7 +195,7 @@ function StaffDetailPageInner() {
         }
         variant="module"
         onBack={() => router.push("/staff")}
-        onEdit={() => router.push(`/staff/${userId}/edit`)}
+        onEdit={isProtectedAdminEmail(user.email) ? undefined : () => router.push(`/staff/${userId}/edit`)}
       />
 
       <AdminDetailLayout>
@@ -195,67 +207,49 @@ function StaffDetailPageInner() {
               description="Họ tên, email, số điện thoại và địa chỉ."
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Họ và tên" icon={User}>
-                  <span className="font-medium">{user.fullName}</span>
-                </FieldSectionField>
-                <FieldSectionField label="Email" icon={Mail}>
-                  <span className="font-mono font-medium">{user.email}</span>
-                </FieldSectionField>
-                <FieldSectionField label="Số điện thoại" icon={Phone}>
-                  {user.phone ? (
-                    <span className="font-medium">{user.phone}</span>
-                  ) : (
-                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
-                  )}
-                </FieldSectionField>
-                <FieldSectionField label="Địa chỉ / văn phòng" icon={MapPin}>
-                  {user.address ? (
-                    <span className="font-medium">{user.address}</span>
-                  ) : (
-                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
-                  )}
-                </FieldSectionField>
-                <FieldSectionField label="Căn cước công dân" icon={Fingerprint}>
-                  {user.citizenId ? (
-                    <span className="font-mono font-medium">{user.citizenId}</span>
-                  ) : (
-                    <span className="italic text-muted-foreground/60">Chưa cập nhật</span>
-                  )}
-                </FieldSectionField>
-              </div>
-
-              <FieldSectionDivider />
-
-              <FieldSectionField label="Vai trò" icon={ShieldHalf}>
-                <div className="flex flex-wrap gap-1.5">
-                  {user.roles.map((r) => (
-                    <Badge
-                      key={r.code}
-                      variant={isSuperAdminRoleCode(r.code) ? "default" : "secondary"}
-                      className="text-xs font-normal"
-                    >
-                      {r.name}
-                    </Badge>
-                  ))}
+              <div className="flex w-full gap-2.5">
+                <AvatarDisplay user={user} />
+                <div className="grid w-full gap-4 sm:grid-cols-2">
+                  <FieldSectionField label="Họ và tên" icon={User}>
+                    <span className="font-medium">{user.fullName}</span>
+                  </FieldSectionField>
+                  <FieldSectionField label="Email" icon={Mail}>
+                    <span className="font-mono font-medium">{user.email}</span>
+                  </FieldSectionField>
+                  <FieldSectionField label="Số điện thoại" icon={Phone}>
+                    {user.phone ? (
+                      <span className="font-medium">{user.phone}</span>
+                    ) : (
+                      <span className="text-muted-foreground/60 italic">
+                        Chưa cập nhật
+                      </span>
+                    )}
+                  </FieldSectionField>
+                  <FieldSectionField label="Địa chỉ / văn phòng" icon={MapPin}>
+                    {user.address ? (
+                      <span className="font-medium">{user.address}</span>
+                    ) : (
+                      <span className="text-muted-foreground/60 italic">
+                        Chưa cập nhật
+                      </span>
+                    )}
+                  </FieldSectionField>
+                  <FieldSectionField
+                    label="Căn cước công dân"
+                    icon={Fingerprint}
+                  >
+                    {user.citizenId ? (
+                      <span className="font-mono font-medium">
+                        {user.citizenId}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground/60 italic">
+                        Chưa cập nhật
+                      </span>
+                    )}
+                  </FieldSectionField>
                 </div>
-              </FieldSectionField>
-
-              <FieldSectionDivider />
-
-              <FieldSectionField label="Trạng thái" icon={user.isActive ? CheckCircle2 : Lock}>
-                <Badge
-                  variant="outline"
-                  className={user.isActive ? "gap-1 border-emerald-200 text-emerald-700" : "gap-1 text-muted-foreground"}
-                >
-                  {user.isActive ? (
-                    <CheckCircle2 className="size-3" aria-hidden />
-                  ) : (
-                    <Lock className="size-3" aria-hidden />
-                  )}
-                  {user.isActive ? "Đang hoạt động" : "Đã khoá"}
-                </Badge>
-              </FieldSectionField>
+              </div>
             </FieldSetContent>
           </FieldSet>
 
@@ -264,7 +258,13 @@ function StaffDetailPageInner() {
               icon={FileText}
               title="Bài viết liên quan"
               description="Các bài viết được tạo bởi nhân sự này."
-              badge={posts.length > 0 ? <FieldSectionBadge>{postsQuery.data?.total ?? posts.length}</FieldSectionBadge> : undefined}
+              badge={
+                posts.length > 0 ? (
+                  <FieldSectionBadge>
+                    {postsQuery.data?.total ?? posts.length}
+                  </FieldSectionBadge>
+                ) : undefined
+              }
             />
             <FieldSetContent variant="section" className="pt-0">
               {postsQuery.data?.total != null && postsQuery.data.total > 5 && (
@@ -312,11 +312,50 @@ function StaffDetailPageInner() {
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={ImageIcon}
-              title="Ảnh đại diện"
+              title="Trạng thái"
               description="Hình ảnh hồ sơ của nhân sự."
             />
             <FieldSetContent variant="section" className="pt-0">
-              <AvatarDisplay user={user} />
+              <FieldSectionDivider />
+
+              <FieldSectionField label="Vai trò" icon={ShieldHalf}>
+                <div className="flex flex-wrap gap-1.5">
+                  {user.roles.map((r) => (
+                    <Badge
+                      key={r.code}
+                      variant={
+                        isSuperAdminRoleCode(r.code) ? "default" : "secondary"
+                      }
+                      className="text-xs font-normal"
+                    >
+                      {r.name}
+                    </Badge>
+                  ))}
+                </div>
+              </FieldSectionField>
+
+              <FieldSectionDivider />
+
+              <FieldSectionField
+                label="Trạng thái"
+                icon={user.isActive ? CheckCircle2 : Lock}
+              >
+                <Badge
+                  variant="outline"
+                  className={
+                    user.isActive
+                      ? "gap-1 border-emerald-200 text-emerald-700"
+                      : "gap-1 text-muted-foreground"
+                  }
+                >
+                  {user.isActive ? (
+                    <CheckCircle2 className="size-3" aria-hidden />
+                  ) : (
+                    <Lock className="size-3" aria-hidden />
+                  )}
+                  {user.isActive ? "Đang hoạt động" : "Đã khoá"}
+                </Badge>
+              </FieldSectionField>
             </FieldSetContent>
           </FieldSet>
 
@@ -328,17 +367,23 @@ function StaffDetailPageInner() {
             />
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               <FieldSectionField label="Ngày tạo" icon={CalendarClock}>
-                <span className="font-medium">{formatDateTime(user.createdAt)}</span>
+                <span className="font-medium">
+                  {formatDateTime(user.createdAt)}
+                </span>
               </FieldSectionField>
               <FieldSectionDivider />
               <FieldSectionField label="Cập nhật lần cuối" icon={Clock}>
-                <span className="font-medium">{formatDateTime(user.updatedAt)}</span>
+                <span className="font-medium">
+                  {formatDateTime(user.updatedAt)}
+                </span>
               </FieldSectionField>
               {user.deletedAt && (
                 <>
                   <FieldSectionDivider />
                   <FieldSectionField label="Xóa lúc" icon={Trash2}>
-                    <span className="font-medium text-destructive">{formatDateTime(user.deletedAt)}</span>
+                    <span className="font-medium text-destructive">
+                      {formatDateTime(user.deletedAt)}
+                    </span>
                   </FieldSectionField>
                 </>
               )}

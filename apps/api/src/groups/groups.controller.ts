@@ -27,8 +27,10 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { RESOURCES, ACTIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 
+@Permissions(PERMISSIONS.GROUPS_VIEW)
 @Controller(ADMIN_ROUTES.GROUPS)
 export class GroupsController {
   private readonly logger = new Logger(GroupsController.name);
@@ -100,6 +102,7 @@ export class GroupsController {
   }
 
   @Post(':id/mark-read')
+  @Permissions(PERMISSIONS.GROUPS_UPDATE)
   async markRead(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -124,6 +127,7 @@ export class GroupsController {
   }
 
   @Post(':id/members')
+  @Permissions(PERMISSIONS.GROUPS_UPDATE)
   async addMembers(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -157,6 +161,7 @@ export class GroupsController {
   }
 
   @Delete(':id/members/:userId')
+  @Permissions(PERMISSIONS.GROUPS_UPDATE)
   async removeMember(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -187,6 +192,7 @@ export class GroupsController {
   }
 
   @Patch(':id/members/:userId/role')
+  @Permissions(PERMISSIONS.GROUPS_UPDATE)
   async updateMemberRole(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -275,6 +281,7 @@ export class GroupsController {
   }
 
   @Patch(':id')
+  @Permissions(PERMISSIONS.GROUPS_UPDATE)
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -319,6 +326,7 @@ export class GroupsController {
   }
 
   @Delete(':id/hard-delete')
+  @Permissions(PERMISSIONS.GROUPS_MANAGE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -357,6 +365,7 @@ export class GroupsController {
   }
 
   @Delete(':id')
+  @Permissions(PERMISSIONS.GROUPS_DELETE)
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -400,6 +409,7 @@ export class GroupsController {
   }
 
   @Post(':id/restore')
+  @Permissions(PERMISSIONS.GROUPS_MANAGE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -442,6 +452,7 @@ export class GroupsController {
   }
 
   @Post()
+  @Permissions(PERMISSIONS.GROUPS_CREATE)
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

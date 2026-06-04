@@ -16,7 +16,10 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 
+@Permissions(PERMISSIONS.SETTINGS_VIEW)
 @Controller(ADMIN_ROUTES.SETTINGS)
 export class SettingsController {
   private readonly logger = new Logger(SettingsController.name);
@@ -85,6 +88,7 @@ export class SettingsController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_UPDATE)
   @Put()
   async updateBulk(
     @Res() res: Response,
@@ -108,6 +112,7 @@ export class SettingsController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_UPDATE)
   @Put(':key')
   async update(
     @Res() res: Response,
@@ -130,6 +135,7 @@ export class SettingsController {
     }
   }
 
+  @Permissions(PERMISSIONS.SETTINGS_DELETE)
   @Delete(':id')
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {

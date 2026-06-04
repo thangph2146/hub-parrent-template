@@ -83,6 +83,16 @@ export async function putData<T>(
   return unwrapApiEnvelope<T>(payload);
 }
 
+export async function patchData<T>(
+  http: ApiClient,
+  path: string,
+  body?: unknown,
+  options?: Parameters<ApiClient["patch"]>[2],
+): Promise<T> {
+  const payload = await http.patch<unknown>(path, body, options);
+  return unwrapApiEnvelope<T>(payload);
+}
+
 export async function deleteData<T>(
   http: ApiClient,
   path: string,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
@@ -11,6 +11,7 @@ import { Role } from '../entities/role.entity';
 import { Setting } from '../entities/setting.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { User } from '../entities/user.entity';
+import { isProtectedAdminEmail } from '../config/protected-admin';
 
 export interface UserRowDto {
   id: string;
@@ -323,6 +324,12 @@ export class UsersService {
     const existing = await this.em.findOne(User, { id });
     if (!existing) return null;
 
+    if (isProtectedAdminEmail(existing.email)) {
+      throw new ForbiddenException(
+        `Tài khoản ${existing.email} là tài khoản hệ thống, không thể chỉnh sửa.`,
+      );
+    }
+
     if (data.email != null) existing.email = data.email.trim().toLowerCase();
     if (data.name !== undefined) existing.name = data.name?.trim() ?? null;
     if (data.password != null && data.password !== '') {
@@ -368,6 +375,11 @@ export class UsersService {
   async softDelete(id: string): Promise<boolean> {
     const user = await this.em.findOne(User, { id });
     if (!user || user.deletedAt) return false;
+    if (isProtectedAdminEmail(user.email)) {
+      throw new ForbiddenException(
+        `Tài khoản ${user.email} là tài khoản hệ thống, không thể xóa.`,
+      );
+    }
     user.deletedAt = new Date();
     this.em.persist(user);
     await this.em.flush();
@@ -386,6 +398,11 @@ export class UsersService {
   async hardDelete(id: string): Promise<boolean> {
     const user = await this.em.findOne(User, { id });
     if (!user) return false;
+    if (isProtectedAdminEmail(user.email)) {
+      throw new ForbiddenException(
+        `Tài khoản ${user.email} là tài khoản hệ thống, không thể xóa vĩnh viễn.`,
+      );
+    }
     this.em.remove(user);
     await this.em.flush();
     return true;
@@ -404,15 +421,24 @@ export class UsersService {
     }
 
     if (action === 'delete') {
-      const result = await this.em.nativeUpdate(
-        User,
-        { id: { $in: ids }, deletedAt: null },
-        { deletedAt: new Date() },
-      );
-      return {
-        affected: result ?? 0,
-        message: `Đã xóa ${result ?? 0} người dùng`,
-      };
+      const users = await this.em.find(User, {
+        id: { $in: ids },
+        deletedAt: null,
+      });
+      const filtered = users.filter((u) => !isProtectedAdminEmail(u.email));
+      const skipCount = users.length - filtered.length;
+      if (filtered.length > 0) {
+        await this.em.nativeUpdate(
+          User,
+          { id: { $in: filtered.map((u) => u.id) } },
+          { deletedAt: new Date() },
+        );
+      }
+      const msg =
+        skipCount > 0
+          ? `Đã xóa ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
+          : `Đã xóa ${filtered.length} người dùng`;
+      return { affected: filtered.length, message: msg };
     }
 
     if (action === 'restore') {
@@ -429,16 +455,19 @@ export class UsersService {
 
     if (action === 'hard-delete') {
       const users = await this.em.find(User, { id: { $in: ids } });
-      if (users.length > 0) {
-        for (const user of users) {
+      const filtered = users.filter((u) => !isProtectedAdminEmail(u.email));
+      const skipCount = users.length - filtered.length;
+      if (filtered.length > 0) {
+        for (const user of filtered) {
           this.em.remove(user);
         }
         await this.em.flush();
       }
-      return {
-        affected: users.length,
-        message: `Đã xóa vĩnh viễn ${users.length} người dùng`,
-      };
+      const msg =
+        skipCount > 0
+          ? `Đã xóa vĩnh viễn ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
+          : `Đã xóa vĩnh viễn ${filtered.length} người dùng`;
+      return { affected: filtered.length, message: msg };
     }
 
     if (action === 'active') {
