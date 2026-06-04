@@ -1,5 +1,16 @@
 # Admin Page Pattern — Hướng dẫn triển khai
 
+## ⚠️ Nguyên tắc bắt buộc: KHÔNG tạo admin component trong apps/
+
+Mọi component UI admin — guard, page header, layout grid, table actions, confirm dialog, button, input, card, badge, icon — **PHẢI** import từ `@ui/components/...`.
+
+**KHÔNG** được:
+- Tạo file `.tsx` mới trong `apps/backend/src/components/`, `apps/backend/src/app/**/_components/`, hay bất kỳ thư mục `components/` nào trong apps
+- Định nghĩa lại `AdminPageGuard`, `AdminListPageHeader`, `AdminFormLayout`, `AdminCrudConfirmDialog`, `AdminTableCrudRowActions`, `Button`, `Input`, `Badge`, `Card`, v.v.
+- Tạo wrapper confirm dialog riêng cho từng module — dùng `AdminCrudConfirmDialog` từ `@ui/components/admin`
+
+Nếu thiếu component nào, **hãy thêm vào `packages/ui/src/components/admin/`** (presets, pages, shell, hoặc trực tiếp trong `components/`), không tạo local copy trong apps.
+
 Mọi page trong `apps/backend/src/app/**/page.tsx` phải dùng **common admin layout components** từ `@ui/components/admin`.
 
 ## Import chuẩn
@@ -250,7 +261,14 @@ Grid class reference (trong `@ui/lib/layout-shell`):
 
 ## Confirm dialog pattern (AdminCrudConfirmDialog)
 
-Không tạo wrapper confirm dialog riêng cho từng module. Dùng `AdminCrudConfirmDialog` chung từ `@ui/components/admin`:
+**⚠️ BẮT BUỘC:** Không tạo wrapper confirm dialog riêng cho từng module. Mọi module phải dùng `AdminCrudConfirmDialog` chung từ `@ui/components/admin`.
+
+Các module đã migrate (không có file `.tsx` riêng trong `_alert-dialog/`):
+categories, posts, training-systems, courses, departments, academic-years, locations, majors, training-levels, events, templates, cameras, screens, tags, speakers, seo-metas.
+
+Các module giữ lại custom dialog (có lý do đặc thù: bulk operations, no restore): staff, contact-requests, guides.
+
+Dùng `AdminCrudConfirmDialog` chung từ `@ui/components/admin`:
 
 ```tsx
 import { AdminCrudConfirmDialog } from "@ui/components/admin"

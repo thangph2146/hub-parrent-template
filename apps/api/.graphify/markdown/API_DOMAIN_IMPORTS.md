@@ -1,6 +1,6 @@
 # API — phụ thuộc giữa các domain (`src/`)
 
-> **Sinh tự động:** `2026-06-02T06:06:23.319Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
+> **Sinh tự động:** `2026-06-04T07:32:10.133Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
 > **Domain** = thư mục cấp một dưới `src/` (ví dụ `posts`, `users`). File trực tiếp trong `src/*.ts` gom vào domain `_root`.
 
 Ý nghĩa: **domain hàng gọi (import) domain cột** — Nest module/controller/service trong một feature đang dùng code của feature khác hoặc layer dùng chung (`entities`, `common`, …).
@@ -13,6 +13,7 @@
 | `_root` | `accounts` | 1 | app.module.ts → accounts.module.ts |
 | `_root` | `admission-results` | 1 | app.module.ts → admission-results.module.ts |
 | `_root` | `auth` | 1 | app.module.ts → auth.module.ts |
+| `_root` | `cameras` | 1 | app.module.ts → cameras.module.ts |
 | `_root` | `categories` | 1 | app.module.ts → categories.module.ts |
 | `_root` | `comments` | 1 | app.module.ts → comments.module.ts |
 | `_root` | `common` | 4 | main.ts → logging.interceptor.ts; main.ts → database-http-exception.filter.ts; main.ts → request-id.middleware.ts; main.ts → api-access.middleware.ts |
@@ -20,8 +21,16 @@
 | `_root` | `contact-requests` | 1 | app.module.ts → contact-requests.module.ts |
 | `_root` | `courses` | 1 | app.module.ts → courses.module.ts |
 | `_root` | `dashboard` | 1 | app.module.ts → dashboard.module.ts |
+| `_root` | `departments` | 1 | app.module.ts → departments.module.ts |
 | `_root` | `entities` | 27 | seed-full-export.ts → account.entity.ts; seed-full-export.ts → admission-result.entity.ts; seed-full-export.ts → category.entity.ts; seed-full-export.ts → comment.entity.ts |
+| `_root` | `event-checkins` | 1 | app.module.ts → event-checkins.module.ts |
+| `_root` | `event-checkouts` | 1 | app.module.ts → event-checkouts.module.ts |
+| `_root` | `event-registrations` | 1 | app.module.ts → event-registrations.module.ts |
+| `_root` | `event-speakers` | 1 | app.module.ts → event-speakers.module.ts |
+| `_root` | `events` | 1 | app.module.ts → events.module.ts |
+| `_root` | `face-data` | 1 | app.module.ts → face-data.module.ts |
 | `_root` | `groups` | 1 | app.module.ts → groups.module.ts |
+| `_root` | `hanet` | 1 | app.module.ts → hanet.module.ts |
 | `_root` | `imported-users` | 1 | app.module.ts → imported-users.module.ts |
 | `_root` | `locations` | 1 | app.module.ts → locations.module.ts |
 | `_root` | `majors` | 1 | app.module.ts → majors.module.ts |
@@ -34,7 +43,9 @@
 | `_root` | `proxy-image` | 1 | app.module.ts → proxy-image.module.ts |
 | `_root` | `public` | 1 | app.module.ts → public.module.ts |
 | `_root` | `roles` | 1 | app.module.ts → roles.module.ts |
+| `_root` | `screens` | 1 | app.module.ts → screens.module.ts |
 | `_root` | `seeds` | 1 | seed-superadmin.ts → superadmin-bootstrap.runner.ts |
+| `_root` | `seo-metas` | 1 | app.module.ts → seo-metas.module.ts |
 | `_root` | `sessions` | 1 | app.module.ts → sessions.module.ts |
 | `_root` | `settings` | 1 | app.module.ts → settings.module.ts |
 | `_root` | `socket` | 1 | app.module.ts → socket.module.ts |
@@ -42,6 +53,7 @@
 | `_root` | `students` | 1 | app.module.ts → students.module.ts |
 | `_root` | `system` | 2 | app.module.ts → system.module.ts; seed-full-export.ts → import-helpers.ts |
 | `_root` | `tags` | 1 | app.module.ts → tags.module.ts |
+| `_root` | `templates` | 1 | app.module.ts → templates.module.ts |
 | `_root` | `training-levels` | 1 | app.module.ts → training-levels.module.ts |
 | `_root` | `training-systems` | 1 | app.module.ts → training-systems.module.ts |
 | `_root` | `uploads` | 1 | app.module.ts → uploads.module.ts |
@@ -58,7 +70,10 @@
 | `admission-results` | `notifications` | 2 | admission-results.controller.ts → notifications.service.ts; admission-results.module.ts → notifications.module.ts |
 | `auth` | `common` | 1 | auth-admin.controller.ts → api-response.ts |
 | `auth` | `config` | 2 | auth-admin.controller.ts → constants.ts; auth.service.ts → constants.ts |
-| `auth` | `entities` | 6 | auth.service.spec.ts → user.entity.ts; auth.service.spec.ts → role.entity.ts; auth.service.spec.ts → user-role.entity.ts; auth.service.ts → user.entity.ts |
+| `auth` | `entities` | 7 | auth.service.spec.ts → user.entity.ts; auth.service.spec.ts → role.entity.ts; auth.service.spec.ts → user-role.entity.ts; auth.service.ts → user.entity.ts |
+| `cameras` | `common` | 2 | cameras.controller.ts → api-response.ts; cameras.service.ts → pagination.ts |
+| `cameras` | `config` | 1 | cameras.controller.ts → constants.ts |
+| `cameras` | `entities` | 2 | cameras.service.ts → camera.entity.ts; cameras.service.ts → event.entity.ts |
 | `categories` | `common` | 2 | categories.controller.ts → api-response.ts; categories.service.ts → pagination.ts |
 | `categories` | `config` | 2 | categories.controller.ts → constants.ts; categories.controller.ts → permissions.ts |
 | `categories` | `entities` | 4 | categories.controller.ts → notification.entity.ts; categories.service.spec.ts → category.entity.ts; categories.service.ts → category.entity.ts; categories.service.ts → post-category.entity.ts |
@@ -79,11 +94,36 @@
 | `dashboard` | `common` | 1 | dashboard.controller.ts → api-response.ts |
 | `dashboard` | `config` | 1 | dashboard.controller.ts → constants.ts |
 | `dashboard` | `entities` | 12 | dashboard.service.ts → category.entity.ts; dashboard.service.ts → comment.entity.ts; dashboard.service.ts → contact-request.entity.ts; dashboard.service.ts → message.entity.ts |
+| `departments` | `common` | 2 | departments.controller.ts → api-response.ts; departments.service.ts → pagination.ts |
+| `departments` | `config` | 1 | departments.controller.ts → constants.ts |
+| `departments` | `entities` | 1 | departments.service.ts → department.entity.ts |
+| `event-checkins` | `common` | 2 | event-checkins.controller.ts → api-response.ts; event-checkins.service.ts → pagination.ts |
+| `event-checkins` | `config` | 1 | event-checkins.controller.ts → constants.ts |
+| `event-checkins` | `entities` | 3 | event-checkins.service.ts → event-checkin.entity.ts; event-checkins.service.ts → event.entity.ts; event-checkins.service.ts → event-registration.entity.ts |
+| `event-checkouts` | `common` | 2 | event-checkouts.controller.ts → api-response.ts; event-checkouts.service.ts → pagination.ts |
+| `event-checkouts` | `config` | 1 | event-checkouts.controller.ts → constants.ts |
+| `event-checkouts` | `entities` | 1 | event-checkouts.service.ts → event-registration.entity.ts |
+| `event-registrations` | `common` | 2 | event-registrations.controller.ts → api-response.ts; event-registrations.service.ts → pagination.ts |
+| `event-registrations` | `config` | 1 | event-registrations.controller.ts → constants.ts |
+| `event-registrations` | `entities` | 5 | event-registration-attendance.service.ts → event.entity.ts; event-registration-attendance.service.ts → event-registration.entity.ts; event-registrations.service.ts → event-registration.entity.ts; event-registrations.service.ts → event.entity.ts |
+| `event-registrations` | `socket` | 3 | event-registration-attendance.service.ts → socket.gateway.ts; event-registration-attendance.service.ts → socket.types.ts; event-registrations.module.ts → socket.module.ts |
+| `event-speakers` | `common` | 2 | event-speakers.controller.ts → api-response.ts; event-speakers.service.ts → pagination.ts |
+| `event-speakers` | `config` | 1 | event-speakers.controller.ts → constants.ts |
+| `event-speakers` | `entities` | 3 | event-speakers.service.ts → event-speaker.entity.ts; event-speakers.service.ts → event.entity.ts; event-speakers.service.ts → speaker.entity.ts |
+| `events` | `common` | 3 | events.controller.ts → api-response.ts; events.service.ts → pagination.ts; events.service.ts → poster-normalize.ts |
+| `events` | `config` | 1 | events.controller.ts → constants.ts |
+| `events` | `entities` | 2 | events.service.ts → event.entity.ts; events.service.ts → camera.entity.ts |
+| `face-data` | `common` | 2 | face-data.controller.ts → api-response.ts; face-data.service.ts → pagination.ts |
+| `face-data` | `config` | 1 | face-data.controller.ts → constants.ts |
+| `face-data` | `entities` | 2 | face-data.service.ts → face-data.entity.ts; face-data.service.ts → user.entity.ts |
 | `groups` | `common` | 1 | groups.controller.ts → api-response.ts |
 | `groups` | `config` | 2 | groups.controller.ts → constants.ts; groups.controller.ts → permissions.ts |
 | `groups` | `entities` | 8 | groups.controller.ts → notification.entity.ts; groups.service.spec.ts → group.entity.ts; groups.service.spec.ts → group-member.entity.ts; groups.service.ts → group.entity.ts |
 | `groups` | `notifications` | 2 | groups.controller.ts → notifications.service.ts; groups.module.ts → notifications.module.ts |
 | `groups` | `socket` | 2 | groups.controller.ts → socket.gateway.ts; groups.module.ts → socket.module.ts |
+| `hanet` | `config` | 1 | hanet-webhook.controller.ts → constants.ts |
+| `hanet` | `entities` | 3 | hanet-webhook.service.ts → event.entity.ts; hanet-webhook.service.ts → event-registration.entity.ts; hanet-webhook.service.ts → camera.entity.ts |
+| `hanet` | `event-registrations` | 2 | hanet-webhook.service.ts → event-registration-attendance.service.ts; hanet.module.ts → event-registrations.module.ts |
 | `imported-users` | `common` | 2 | imported-users.controller.ts → api-response.ts; imported-users.service.ts → pagination.ts |
 | `imported-users` | `config` | 1 | imported-users.controller.ts → constants.ts |
 | `imported-users` | `entities` | 1 | imported-users.service.ts → imported-user.entity.ts |
@@ -97,7 +137,7 @@
 | `messages` | `config` | 2 | conversations.controller.ts → constants.ts; messages.controller.ts → constants.ts |
 | `messages` | `entities` | 6 | conversations.controller.ts → message.entity.ts; messages.controller.ts → message.entity.ts; messages.controller.ts → message-read.entity.ts; messages.controller.ts → group-member.entity.ts |
 | `messages` | `socket` | 3 | conversations.controller.ts → socket.gateway.ts; messages.controller.ts → socket.gateway.ts; messages.module.ts → socket.module.ts |
-| `mikro-orm` | `entities` | 31 | orm-entities.ts → academic-year.entity.ts; orm-entities.ts → account.entity.ts; orm-entities.ts → admission-result.entity.ts; orm-entities.ts → category.entity.ts |
+| `mikro-orm` | `entities` | 41 | orm-entities.ts → academic-year.entity.ts; orm-entities.ts → account.entity.ts; orm-entities.ts → admission-result.entity.ts; orm-entities.ts → camera.entity.ts |
 | `notifications` | `common` | 1 | notifications.controller.ts → api-response.ts |
 | `notifications` | `config` | 1 | notifications.controller.ts → constants.ts |
 | `notifications` | `entities` | 6 | notifications.service.spec.ts → notification.entity.ts; notifications.service.ts → notification.entity.ts; notifications.service.ts → user.entity.ts; notifications.service.ts → user-role.entity.ts |
@@ -116,9 +156,11 @@
 | `proxy-image` | `config` | 1 | proxy-image.controller.ts → constants.ts |
 | `public` | `admission-results` | 2 | public.controller.ts → admission-results.service.ts; public.module.ts → admission-results.module.ts |
 | `public` | `auth` | 3 | public-auth.service.ts → auth.service.ts; public.controller.ts → auth.service.ts; public.module.ts → auth.module.ts |
-| `public` | `common` | 2 | public-posts.service.ts → pagination.ts; public.controller.ts → api-response.ts |
+| `public` | `common` | 6 | public-event-registration.service.ts → poster-normalize.ts; public-events.service.ts → pagination.ts; public-events.service.ts → poster-normalize.ts; public-events.service.ts → event-time-status.ts |
 | `public` | `config` | 2 | public-auth.service.ts → constants.ts; public.controller.ts → constants.ts |
-| `public` | `entities` | 9 | public-auth.service.ts → role.entity.ts; public-auth.service.ts → user.entity.ts; public-categories.service.ts → category.entity.ts; public-categories.service.ts → post-category.entity.ts |
+| `public` | `entities` | 15 | public-auth.service.ts → role.entity.ts; public-auth.service.ts → setting.entity.ts; public-auth.service.ts → user.entity.ts; public-categories.service.ts → category.entity.ts |
+| `public` | `event-registrations` | 3 | public-event-registration.service.ts → event-registrations.service.ts; public-events.service.ts → event-registrations.service.ts; public.module.ts → event-registrations.module.ts |
+| `public` | `event-speakers` | 2 | public-events.service.ts → event-speakers.service.ts; public.module.ts → event-speakers.module.ts |
 | `public` | `page-contents` | 2 | public.controller.ts → page-contents.service.ts; public.module.ts → page-contents.module.ts |
 | `public` | `users` | 3 | public-auth.service.ts → users.service.ts; public.controller.ts → users.service.ts; public.module.ts → users.module.ts |
 | `roles` | `common` | 3 | roles.controller.ts → api-response.ts; roles.service.ts → pagination.ts; roles.service.ts → get-options.ts |
@@ -126,9 +168,15 @@
 | `roles` | `entities` | 3 | roles.controller.ts → notification.entity.ts; roles.service.spec.ts → role.entity.ts; roles.service.ts → role.entity.ts |
 | `roles` | `notifications` | 2 | roles.controller.ts → notifications.service.ts; roles.module.ts → notifications.module.ts |
 | `roles` | `socket` | 2 | roles.controller.ts → socket.gateway.ts; roles.module.ts → socket.module.ts |
+| `screens` | `common` | 2 | screens.controller.ts → api-response.ts; screens.service.ts → pagination.ts |
+| `screens` | `config` | 1 | screens.controller.ts → constants.ts |
+| `screens` | `entities` | 1 | screens.service.ts → screen.entity.ts |
 | `scripts` | `mikro-orm` | 1 | mark-migrations-executed.ts → mikro-orm.module.ts |
 | `seeders` | `seeds` | 1 | DatabaseSeeder.ts → superadmin-bootstrap.runner.ts |
 | `seeds` | `entities` | 4 | superadmin-bootstrap.runner.ts → user.entity.ts; superadmin-bootstrap.runner.ts → role.entity.ts; superadmin-bootstrap.runner.ts → user-role.entity.ts; superadmin-bootstrap.runner.ts → page-content.entity.ts |
+| `seo-metas` | `common` | 2 | seo-metas.controller.ts → api-response.ts; seo-metas.service.ts → pagination.ts |
+| `seo-metas` | `config` | 1 | seo-metas.controller.ts → constants.ts |
+| `seo-metas` | `entities` | 1 | seo-metas.service.ts → seo-meta.entity.ts |
 | `sessions` | `common` | 3 | sessions.controller.ts → api-response.ts; sessions.service.ts → resolve-relation-filters.ts; sessions.service.ts → pagination.ts |
 | `sessions` | `config` | 3 | sessions.controller.ts → constants.ts; sessions.controller.ts → permissions.ts; sessions.service.ts → constants.ts |
 | `sessions` | `entities` | 5 | sessions.controller.ts → notification.entity.ts; sessions.service.ts → session.entity.ts; sessions.service.ts → user.entity.ts; sessions.service.ts → user-role.entity.ts |
@@ -150,24 +198,27 @@
 | `system` | `auth` | 2 | system.controller.ts → auth.service.ts; system.module.ts → auth.module.ts |
 | `system` | `common` | 1 | system.controller.ts → api-response.ts |
 | `system` | `config` | 2 | system.controller.ts → constants.ts; system.controller.ts → permissions.ts |
-| `system` | `entities` | 13 | system.service.ts → category.entity.ts; system.service.ts → comment.entity.ts; system.service.ts → contact-request.entity.ts; system.service.ts → message.entity.ts |
+| `system` | `entities` | 16 | system.service.ts → category.entity.ts; system.service.ts → comment.entity.ts; system.service.ts → contact-request.entity.ts; system.service.ts → event.entity.ts |
 | `system` | `mikro-orm` | 1 | system.service.ts → orm-entities.ts |
 | `system` | `seeds` | 1 | system.service.ts → superadmin-bootstrap.runner.ts |
 | `tags` | `common` | 3 | tags.controller.ts → api-response.ts; tags.service.ts → pagination.ts; tags.service.ts → get-options.ts |
 | `tags` | `config` | 2 | tags.controller.ts → constants.ts; tags.controller.ts → permissions.ts |
 | `tags` | `entities` | 4 | tags.controller.ts → notification.entity.ts; tags.service.spec.ts → tag.entity.ts; tags.service.ts → tag.entity.ts; tags.service.ts → post-tag.entity.ts |
 | `tags` | `notifications` | 2 | tags.controller.ts → notifications.service.ts; tags.module.ts → notifications.module.ts |
+| `templates` | `common` | 2 | templates.controller.ts → api-response.ts; templates.service.ts → pagination.ts |
+| `templates` | `config` | 1 | templates.controller.ts → constants.ts |
+| `templates` | `entities` | 1 | templates.service.ts → template.entity.ts |
 | `training-levels` | `common` | 2 | training-levels.controller.ts → api-response.ts; training-levels.service.ts → pagination.ts |
 | `training-levels` | `config` | 1 | training-levels.controller.ts → constants.ts |
 | `training-levels` | `entities` | 1 | training-levels.service.ts → training-level.entity.ts |
 | `training-systems` | `common` | 2 | training-systems.controller.ts → api-response.ts; training-systems.service.ts → pagination.ts |
 | `training-systems` | `config` | 1 | training-systems.controller.ts → constants.ts |
 | `training-systems` | `entities` | 1 | training-systems.service.ts → training-system.entity.ts |
-| `uploads` | `common` | 1 | uploads.controller.ts → api-response.ts |
+| `uploads` | `common` | 2 | uploads.controller.ts → api-response.ts; uploads.service.ts → image-processor.ts |
 | `uploads` | `config` | 4 | public-uploads.controller.ts → constants.ts; uploads.controller.ts → app.config.ts; uploads.controller.ts → constants.ts; uploads.service.ts → app.config.ts |
 | `users` | `common` | 4 | users.controller.ts → api-response.ts; users.service.ts → pagination.ts; users.service.ts → get-options.ts; users.service.ts → date-utils.ts |
 | `users` | `config` | 2 | users.controller.ts → constants.ts; users.controller.ts → permissions.ts |
-| `users` | `entities` | 7 | users.controller.ts → notification.entity.ts; users.service.spec.ts → user.entity.ts; users.service.spec.ts → role.entity.ts; users.service.spec.ts → user-role.entity.ts |
+| `users` | `entities` | 8 | users.controller.ts → notification.entity.ts; users.service.spec.ts → user.entity.ts; users.service.spec.ts → role.entity.ts; users.service.spec.ts → user-role.entity.ts |
 | `users` | `notifications` | 2 | users.controller.ts → notifications.service.ts; users.module.ts → notifications.module.ts |
 | `users` | `sessions` | 2 | users.controller.ts → sessions.service.ts; users.module.ts → sessions.module.ts |
 | `users` | `socket` | 2 | users.controller.ts → socket.gateway.ts; users.module.ts → socket.module.ts |
@@ -176,41 +227,41 @@
 
 Liệt kê domain **đích** (`to`) được nhiều cạnh `imports` nhất; kèm các domain **nguồn** (`from`) nổi bật.
 
-- **`entities`**: **204** cạnh từ **34** domain — `mikro-orm` (31), `_root` (27), `common` (13), `system` (13), `dashboard` (12), `posts` (11), `public` (9), `groups` (8)
-- **`common`**: **66** cạnh từ **31** domain — `posts` (5), `_root` (4), `users` (4), `admission-results` (3), `contact-requests` (3), `roles` (3), `sessions` (3), `students` (3)
-- **`config`**: **56** cạnh từ **34** domain — `uploads` (4), `common` (3), `sessions` (3), `admission-results` (2), `auth` (2), `categories` (2), `comments` (2), `contact-requests` (2)
+- **`entities`**: **250** cạnh từ **46** domain — `mikro-orm` (41), `_root` (27), `system` (16), `public` (15), `common` (13), `dashboard` (12), `posts` (11), `groups` (8)
+- **`common`**: **94** cạnh từ **42** domain — `public` (6), `posts` (5), `_root` (4), `users` (4), `admission-results` (3), `contact-requests` (3), `events` (3), `roles` (3)
+- **`config`**: **68** cạnh từ **46** domain — `uploads` (4), `common` (3), `sessions` (3), `admission-results` (2), `auth` (2), `categories` (2), `comments` (2), `contact-requests` (2)
 - **`notifications`**: **25** cạnh từ **13** domain — `admission-results` (2), `categories` (2), `comments` (2), `contact-requests` (2), `groups` (2), `page-contents` (2), `posts` (2), `roles` (2)
-- **`socket`**: **12** cạnh từ **6** domain — `messages` (3), `groups` (2), `roles` (2), `sessions` (2), `users` (2), `_root` (1)
+- **`socket`**: **15** cạnh từ **7** domain — `event-registrations` (3), `messages` (3), `groups` (2), `roles` (2), `sessions` (2), `users` (2), `_root` (1)
 - **`auth`**: **8** cạnh từ **4** domain — `public` (3), `page-contents` (2), `system` (2), `_root` (1)
+- **`event-registrations`**: **6** cạnh từ **3** domain — `public` (3), `hanet` (2), `_root` (1)
 - **`sessions`**: **5** cạnh từ **3** domain — `socket` (2), `users` (2), `_root` (1)
 - **`mikro-orm`**: **4** cạnh từ **3** domain — `_root` (2), `scripts` (1), `system` (1)
 - **`users`**: **4** cạnh từ **2** domain — `public` (3), `_root` (1)
 - **`admission-results`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
+- **`event-speakers`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
 - **`page-contents`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
 - **`seeds`**: **3** cạnh từ **3** domain — `_root` (1), `seeders` (1), `system` (1)
 - **`system`**: **2** cạnh từ **1** domain — `_root` (2)
 - **`academic-years`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`accounts`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`cameras`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`categories`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`comments`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`contact-requests`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`courses`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`dashboard`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`departments`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`event-checkins`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`event-checkouts`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`events`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`face-data`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`groups`**: **1** cạnh từ **1** domain — `_root` (1)
+- **`hanet`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`imported-users`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`locations`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`majors`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`messages`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`parent-students`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`posts`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`proxy-image`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`public`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`roles`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`settings`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`speakers`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`students`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`tags`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`training-levels`**: **1** cạnh từ **1** domain — `_root` (1)
 
 ## Sơ đồ Mermaid (tối đa 80 cặp domain, ưu tiên cạnh có trọng số lớn)
 
@@ -221,6 +272,7 @@ flowchart LR
     dom_accounts["accounts"]
     dom_admission_results["admission-results"]
     dom_auth["auth"]
+    dom_cameras["cameras"]
     dom_categories["categories"]
     dom_comments["comments"]
     dom_common["common"]
@@ -228,8 +280,16 @@ flowchart LR
     dom_contact_requests["contact-requests"]
     dom_courses["courses"]
     dom_dashboard["dashboard"]
+    dom_departments["departments"]
     dom_entities["entities"]
+    dom_event_checkins["event-checkins"]
+    dom_event_checkouts["event-checkouts"]
+    dom_event_registrations["event-registrations"]
+    dom_event_speakers["event-speakers"]
+    dom_events["events"]
+    dom_face_data["face-data"]
     dom_groups["groups"]
+    dom_hanet["hanet"]
     dom_imported_users["imported-users"]
     dom_locations["locations"]
     dom_majors["majors"]
@@ -237,33 +297,32 @@ flowchart LR
     dom_mikro_orm["mikro-orm"]
     dom_notifications["notifications"]
     dom_page_contents["page-contents"]
-    dom_parent_students["parent-students"]
     dom_posts["posts"]
     dom_public["public"]
     dom_roles["roles"]
     dom_seeds["seeds"]
     dom_sessions["sessions"]
-    dom_settings["settings"]
     dom_socket["socket"]
-    dom_speakers["speakers"]
     dom_students["students"]
     dom_system["system"]
     dom_tags["tags"]
     dom_uploads["uploads"]
     dom_users["users"]
-    dom_mikro_orm -->|31| dom_entities
+    dom_mikro_orm -->|41| dom_entities
     dom_root -->|27| dom_entities
+    dom_system -->|16| dom_entities
+    dom_public -->|15| dom_entities
     dom_common -->|13| dom_entities
-    dom_system -->|13| dom_entities
     dom_dashboard -->|12| dom_entities
     dom_posts -->|11| dom_entities
-    dom_public -->|9| dom_entities
     dom_groups -->|8| dom_entities
-    dom_users -->|7| dom_entities
-    dom_auth -->|6| dom_entities
+    dom_users -->|8| dom_entities
+    dom_auth -->|7| dom_entities
     dom_messages -->|6| dom_entities
     dom_notifications -->|6| dom_entities
+    dom_public -->|6| dom_common
     dom_accounts -->|5| dom_entities
+    dom_event_registrations -->|5| dom_entities
     dom_posts -->|5| dom_common
     dom_sessions -->|5| dom_entities
     dom_students -->|5| dom_entities
@@ -279,8 +338,14 @@ flowchart LR
     dom_comments -->|3| dom_entities
     dom_common -->|3| dom_config
     dom_contact_requests -->|3| dom_common
+    dom_event_checkins -->|3| dom_entities
+    dom_event_registrations -->|3| dom_socket
+    dom_event_speakers -->|3| dom_entities
+    dom_events -->|3| dom_common
+    dom_hanet -->|3| dom_entities
     dom_messages -->|3| dom_socket
     dom_public -->|3| dom_auth
+    dom_public -->|3| dom_event_registrations
     dom_public -->|3| dom_users
     dom_roles -->|3| dom_common
     dom_roles -->|3| dom_entities
@@ -294,6 +359,8 @@ flowchart LR
     dom_admission_results -->|2| dom_config
     dom_admission_results -->|2| dom_notifications
     dom_auth -->|2| dom_config
+    dom_cameras -->|2| dom_common
+    dom_cameras -->|2| dom_entities
     dom_categories -->|2| dom_common
     dom_categories -->|2| dom_config
     dom_categories -->|2| dom_notifications
@@ -303,34 +370,24 @@ flowchart LR
     dom_contact_requests -->|2| dom_config
     dom_contact_requests -->|2| dom_notifications
     dom_courses -->|2| dom_common
+    dom_departments -->|2| dom_common
+    dom_event_checkins -->|2| dom_common
+    dom_event_checkouts -->|2| dom_common
+    dom_event_registrations -->|2| dom_common
+    dom_event_speakers -->|2| dom_common
+    dom_events -->|2| dom_entities
+    dom_face_data -->|2| dom_common
+    dom_face_data -->|2| dom_entities
     dom_groups -->|2| dom_config
     dom_groups -->|2| dom_notifications
     dom_groups -->|2| dom_socket
+    dom_hanet -->|2| dom_event_registrations
     dom_imported_users -->|2| dom_common
     dom_locations -->|2| dom_common
     dom_majors -->|2| dom_common
     dom_messages -->|2| dom_common
     dom_messages -->|2| dom_config
     dom_page_contents -->|2| dom_auth
-    dom_page_contents -->|2| dom_config
-    dom_page_contents -->|2| dom_entities
-    dom_page_contents -->|2| dom_notifications
-    dom_parent_students -->|2| dom_common
-    dom_posts -->|2| dom_config
-    dom_posts -->|2| dom_notifications
-    dom_public -->|2| dom_admission_results
-    dom_public -->|2| dom_common
-    dom_public -->|2| dom_config
-    dom_public -->|2| dom_page_contents
-    dom_roles -->|2| dom_config
-    dom_roles -->|2| dom_notifications
-    dom_roles -->|2| dom_socket
-    dom_sessions -->|2| dom_notifications
-    dom_sessions -->|2| dom_socket
-    dom_settings -->|2| dom_entities
-    dom_socket -->|2| dom_entities
-    dom_socket -->|2| dom_sessions
-    dom_speakers -->|2| dom_common
 ```
 
 ## Ghi chú

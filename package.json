@@ -1,5 +1,5 @@
 {
-  "name": "hub-parent-template",
+  "name": "monorepo-template",
   "version": "0.0.1",
   "private": true,
   "scripts": {

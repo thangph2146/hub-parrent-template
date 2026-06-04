@@ -1,9 +1,9 @@
-﻿# Hub storefront — @frontend — tóm tắt cho AI (Graphify)
+# Hub storefront — @frontend — tóm tắt cho AI (Graphify)
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/frontend`
-- **context.generatedAt:** 2026-05-28T01:53:56.193Z
+- **context.generatedAt:** 2026-06-04T07:12:48.232Z
 
 ## Mục lục artefact Graphify
 
@@ -90,7 +90,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/footer.tsx` | tsx | no | Footer | src/components/icons/logo.tsx |
 | `src/components/shared/header.tsx` | tsx | yes | Header | src/features/auth/admin-bridge.ts, src/components/icons/logo.tsx |
 | `src/components/shared/post-content-renderer.tsx` | tsx | yes | PostContentRenderer |  |
-| `src/components/shared/post-content.tsx` | tsx | yes | PostContent |  |
+| `src/components/shared/post-content.tsx` | tsx | yes | PostContent | src/components/shared/post-content-renderer.tsx |
 | `src/components/shared/public-post-view-badge.tsx` | tsx | yes | PublicPostViewBadge |  |
 | `src/components/shared/route-loading.tsx` | tsx | no | RouteLoading |  |
 | `src/components/shared/scroll-to-top.tsx` | tsx | yes | ScrollToTop | src/lib/scroll.ts |

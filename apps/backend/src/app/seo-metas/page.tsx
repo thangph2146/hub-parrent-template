@@ -268,6 +268,8 @@ function SeoMetasPageInner() {
         onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
         onConfirm={() => { if (confirmAction) void handleConfirmAction(confirmAction); }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="SEO metadata"
+        getName={(r) => r.page}
       />
     </AdminPageSection>
   );

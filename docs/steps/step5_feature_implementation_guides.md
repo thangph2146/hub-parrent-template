@@ -1,35 +1,48 @@
-# Step 5: Feature Implementation Guides
+# Step 5: Feature Implementation Reference
 
-Đây là bước đọc các tài liệu `docs/pages/` khi task liên quan feature/page cụ thể.
+Đây là bước đọc tài liệu tham chiếu cho feature implementation — gồm admin pages, API pattern, và API client pattern.
 
 ## Các file chính
-1. `docs/pages/README.md`
-   - Danh sách các hướng dẫn implementation sẵn có.
-   - Giúp xác định guide tương ứng với module.
-2. `docs/pages/categories-implementation.md`
-3. `docs/pages/posts-implementation.md`
-4. `docs/pages/tags-implementation.md`
-5. `docs/pages/guides-implementation.md`
-6. `docs/pages/staff-implementation.md`
-7. `docs/pages/contact-requests-implementation.md`
-8. `docs/pages/data-implementation.md`
-9. `docs/pages/my-students-implementation.md`
-10. `docs/pages/parent-students-implementation.md`
-11. `docs/pages/profile-implementation.md`
-12. `docs/pages/rbac-implementation.md`
+
+### Admin pages (apps/backend)
+1. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — pattern chuẩn cho mọi page admin (guard, header, layout, table actions, confirm dialog, upload)
+2. `docs/pages/README.md` — kiến trúc file chuẩn (`_component/`, `_hooks/`, `_query/`, ...) và import rule
+3. Graphify summaries + `FOLDER_TREE.md` của `apps/backend` — định vị file/module cụ thể
+
+### API (apps/api)
+4. `docs/api-pattern/README.md` — kiến trúc NestJS: controller, service, entity, common utilities
+
+### API Client (packages/api-client)
+5. `docs/api-client-pattern/README.md` — pattern gọi API qua `@workspace/api-client`: `StoreSyncSdk`, `ApiClient`, resource classes
+
+### Workspace Packages
+6. `packages/` — bản đồ packages:
+   - `@workspace/ui` → UI components (admin + site)
+   - `@workspace/api-client` → API client SDK
+   - `@thangph2146/lexical-editor` → Lexical editor (cần build trước)
+   - `@workspace/logger` → dev logging
+   - `@workspace/query-client` → TanStack Query setup
+   - `@workspace/eslint-config` + `@workspace/typescript-config` → dev configs
 
 ## Mục tiêu bước này
-- Nắm chi tiết yêu cầu feature/module.
-- Làm theo checklist của từng guide.
 - Hiểu cấu trúc page, form, bảng, và flow implement.
+- Nắm pattern chuẩn để không tạo code ngoài `packages/`:
+  - **UI**: `@workspace/ui` — không tạo local admin/site components
+  - **API calls**: `@workspace/api-client` — không tự viết fetch
+  - **Editor**: `@thangph2146/lexical-editor` — không tự build editor UI
+  - **Logger/Query**: `@workspace/logger`, `@workspace/query-client` — dùng khi cần
+- Async Admin components từ `@ui`, confirm dialog dùng `AdminCrudConfirmDialog`, upload dùng `uploadAdminImage`, action buttons dùng preset
+- API endpoint ở `apps/api` theo pattern controller → service → entity
+- Gọi API từ app qua `@workspace/api-client` — không tự viết fetch
 
 ## Cách dùng
-1. Mở `docs/pages/README.md` để xác định feature tương ứng.
-2. Đọc guide chi tiết theo từng phase.
-3. Ghi lại các bước đã hoàn thành.
-4. Sử dụng guide làm checklist để sửa code.
-
-## Ghi chú cho AI
-- Đọc guide trước khi mở source feature/module.
-- Nếu không tìm thấy guide tương ứng, báo rõ và chuyển sang Graphify + source.
-- Luôn giữ track các thay đổi hệ thống khi thực hiện phase theo guide.
+1. Đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` trước.
+2. Đọc `docs/pages/README.md` để xem kiến trúc file + import chuẩn.
+3. Nếu task cần sửa API: đọc `docs/api-pattern/README.md`.
+4. Nếu task cần gọi API từ app: đọc `docs/api-client-pattern/README.md`.
+5. Nếu task dùng editor: đọc `packages/editor/README.md`.
+6. Nếu task dùng logger: đọc `docs/logger-pattern/README.md`.
+7. Nếu task dùng query client: đọc `docs/query-client-pattern/README.md`.
+8. Nếu task dùng UI components nói chung: đọc `docs/ui-pattern/README.md`.
+6. Mở module qua Graphify `FOLDER_TREE.md` để xem cấu trúc thực tế.
+7. Sửa code theo pattern đã học.

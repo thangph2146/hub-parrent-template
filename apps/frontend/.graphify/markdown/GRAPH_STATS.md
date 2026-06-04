@@ -1,6 +1,6 @@
 # Thống kê graph — frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-02T06:06:23.295Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-04T07:32:10.100Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
@@ -20,7 +20,7 @@
 | relation | Số |
 |----------|-----|
 | `contains` | 102 |
-| `imports` | 92 |
+| `imports` | 93 |
 | `assets` | 2 |
 | `renders` | 2 |
 

@@ -13,7 +13,7 @@
    - module mới
    - package workspace mới
    - thay đổi import boundaries
-2. Cập nhật `docs/pages/` nếu feature mới cần hướng dẫn implementation thêm.
+2. Cập nhật `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` hoặc `docs/pages/README.md` nếu feature mới cần hướng dẫn implementation thêm.
 3. Cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` nếu kiến trúc service đã thay đổi.
 4. Cập nhật `packages/eslint-config/service-boundaries.js` khi boundary rules cần mở rộng hoặc siết chặt.
 5. Nếu có thay đổi dependency workspace, chạy `pnpm graphify:ai-summary`.

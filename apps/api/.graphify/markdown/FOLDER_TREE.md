@@ -1,6 +1,6 @@
 # Cây thư mục — api (Graphify)
 
-> **Sinh tự động:** `2026-06-02T06:06:23.319Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-04T07:32:10.133Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -8,6 +8,7 @@ src/
 ├── accounts/
 ├── admission-results/
 ├── auth/
+├── cameras/
 ├── categories/
 ├── comments/
 ├── common/
@@ -15,8 +16,16 @@ src/
 ├── contact-requests/
 ├── courses/
 ├── dashboard/
+├── departments/
 ├── entities/
+├── event-checkins/
+├── event-checkouts/
+├── event-registrations/
+├── event-speakers/
+├── events/
+├── face-data/
 ├── groups/
+├── hanet/
 ├── imported-users/
 ├── locations/
 ├── majors/
@@ -30,9 +39,11 @@ src/
 ├── proxy-image/
 ├── public/
 ├── roles/
+├── screens/
 ├── scripts/
 ├── seeders/
 ├── seeds/
+├── seo-metas/
 ├── sessions/
 ├── settings/
 ├── socket/
@@ -40,6 +51,7 @@ src/
 ├── students/
 ├── system/
 ├── tags/
+├── templates/
 ├── training-levels/
 ├── training-systems/
 ├── uploads/

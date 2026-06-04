@@ -1,6 +1,6 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-02T06:06:23.327Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-04T07:32:10.142Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 

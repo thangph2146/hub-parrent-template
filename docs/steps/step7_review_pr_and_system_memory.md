@@ -32,7 +32,7 @@
 4. Nếu cần, đề xuất reviewer chuyên môn cho `apps/api`, `apps/backend`, `apps/frontend`, hoặc `packages/*`.
 
 ## Ghi nhớ hệ thống cho reviewer
-- Nếu task là feature mới: trỏ tới `docs/pages/<feature>-implementation.md`.
+- Nếu task là feature mới: trỏ tới `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` và `docs/pages/README.md`.
 - Nếu task là thay đổi kiến trúc: trỏ tới `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`.
 - Nếu task là thay đổi boundary: trỏ tới `packages/eslint-config/service-boundaries.js` và `scripts/verify-service-boundaries.mjs`.
 

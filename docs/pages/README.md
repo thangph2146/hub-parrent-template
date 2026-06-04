@@ -1,359 +1,74 @@
-# Pages Implementation Documentation
+# Admin Pages — Implementation Reference
 
-> This directory contains detailed task lists for implementing admin pages in the backend application. Each document provides step-by-step instructions for AI coding to ensure clean, consistent code.
+> Thư mục này trước đây chứa task list cho từng module riêng lẻ. Các module đã hoàn thiện, nội dung pattern chuẩn đã được gộp vào file này và `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`.
 
-## Available Implementation Guides
+## Kiến trúc chuẩn cho mọi module
 
-### Core Modules
-
-- **[Categories Implementation](./categories-implementation.md)** - Task list for implementing the Categories module with hierarchical tree structure, parent-child relationships, and bulk operations.
-
-- **[Posts Implementation](./posts-implementation.md)** - Task list for implementing the Posts module with rich text editor, taxonomy (categories/tags), and publishing workflow.
-
-- **[Tags Implementation](./tags-implementation.md)** - Task list for implementing the Tags module with client-side prefix-based tree grouping and flat data model.
-
-- **[Guides Implementation](./guides-implementation.md)** - Task list for implementing the Guides module with step-by-step instructions, image uploads, and SDK-based API integration.
-
-- **[Staff Implementation](./staff-implementation.md)** - Task list for implementing the Staff module with user management, role assignment, and soft-delete functionality.
-
-### Additional Modules
-
-- **[Contact Requests Implementation](./contact-requests-implementation.md)** - Task list for implementing the Contact Requests module with message management, status tracking, and response workflow.
-
-- **[Data Management Implementation](./data-implementation.md)** - Task list for implementing the Data Management module with database export, backup, and restore functionality.
-
-- **[My Students Implementation](./my-students-implementation.md)** - Task list for implementing the My Students module for parent-student relationship management.
-
-- **[Parent Students Implementation](./parent-students-implementation.md)** - Task list for implementing the Parent Students module for managing parent-student connection requests.
-
-- **[Profile Implementation](./profile-implementation.md)** - Task list for implementing the Profile module for user profile management.
-
-- **[RBAC Implementation](./rbac-implementation.md)** - Task list for implementing the RBAC module for managing roles and permissions.
-
-## How to Use
-
-1. **Before implementing**: Read the relevant implementation guide for the module you're working on.
-2. **Follow the phases**: Each guide is divided into phases (Phase 1, Phase 2, etc.) that should be completed in order.
-3. **Check off tasks**: Each phase has a checklist of tasks. Complete them one by one.
-4. **Test thoroughly**: After implementation, use the Testing Checklist at the end of each guide to verify functionality.
-5. **Follow clean code guidelines**: Refer to the Clean Code Guidelines section for best practices.
-
-## Standard Implementation Pattern
-
-### File Structure Template
-
-All new admin pages should follow this structure (based on existing modules like staff, categories, posts, tags, guides):
+Mọi admin page trong `apps/backend/src/app/<module>/` đều theo cấu trúc:
 
 ```
-module-name/
-├── page.tsx                    # Main list page
+<module>/
+├── page.tsx                    # List page
 ├── new/
-│   └── page.tsx                # Create page (optional, for complex forms)
+│   └── page.tsx                # Create page
 ├── [id]/
-│   ├── page.tsx                # Detail page (optional)
+│   ├── page.tsx                # Detail page
 │   └── edit/
-│       └── page.tsx            # Edit page (optional, for complex forms)
+│       └── page.tsx            # Edit page
 └── _component/
-    ├── index.ts                # Export all components
-    ├── types.ts                # TypeScript types (export from @workspace/api-client)
-    ├── utils.ts                # Utility functions (slugify, format, etc.)
+    ├── index.ts                # Barrel export
+    ├── types.ts                # Types (row, form, confirm action, detail)
+    ├── utils.ts                # Utilities (slugify, buildPayload, format...)
     ├── columns.tsx             # Table column definitions
-    ├── _hooks/                 # Custom React hooks (form hooks, action hooks)
+    ├── _hooks/                 # Form/action hooks
     │   ├── index.ts
-    │   └── use-module-form.ts # Form hook with zodResolver
+    │   └── use-<module>-actions.ts
     ├── _query/                 # React Query hooks
     │   ├── index.ts
-    │   └── use-module-queries.ts
-    ├── _table/                 # Table components (wrappers around AdminDataTable)
+    │   └── use-<module>-queries.ts
+    ├── _table/
     │   ├── index.ts
-    │   └── module-table.tsx
-    ├── _form/                  # Form shell components (Dialog-based forms)
+    │   ├── <module>-table.tsx
+    │   └── <module>-trash-table.tsx
+    ├── _form/
     │   ├── index.ts
-    │   └── module-form-shell.tsx
-    └── _alert-dialog/          # Confirmation dialogs
-        ├── index.ts
-        └── module-confirm-dialog.tsx
+    │   └── <module>-form-shell.tsx
+    └── _alert-dialog/
+        └── index.ts            # Re-export AdminCrudConfirmDialog từ @ui
 ```
 
-**Key differences from simplified pattern:**
-- **_table/**: Wrapper components around AdminDataTable for module-specific table logic
-- **_form/**: Form shell components for create/edit (not just Dialog, but form shells)
-- **_hooks/**: Custom hooks for form state and actions (beyond just query hooks)
-- **utils.ts**: Utility functions for data transformation, formatting, etc.
+## Quy tắc bắt buộc (xem chi tiết trong `docs/admin-pattern/`)
 
-### Step-by-Step Implementation
+| Rule | File |
+|------|------|
+| Stack UI pattern (guard, header, layout, table actions, confirm dialog) | `ADMIN_PAGE_PATTERN.md` |
+| Microservice boundaries, ORM, package responsibilities | `MICROSERVICE_SYSTEM_MAP.md` |
+| Quy trình agent trước khi code | `PRE_CODE_PROTOCOL.md` |
+| Lệnh kiểm tra (`pnpm check`, `check:full`) | `AGENTS_GUIDE.md` |
+| Graphify summaries & snapshot | `.graphify/markdown/SUMMARY_FOR_AI.md` |
 
-#### Phase 1: Setup File Structure
-- Create directory structure following the template above
-- Create index.ts files in each subdirectory for clean exports
+## Import chuẩn
 
-#### Phase 2: Define Types (`_component/types.ts`)
-- Export shared types from `@workspace/api-client`:
-  ```typescript
-  export type { ModuleType, CreateModuleInput, UpdateModuleInput } from "@workspace/api-client";
-  ```
-- Define local UI types if needed (for table rows, form state, etc.)
-- Define constants (status labels, colors, etc.)
+```tsx
+// Page guard + layout
+import { AdminPageGuard, AdminPageSection, AdminListPageHeader } from "@ui/components/admin"
 
-#### Phase 3: Create Utility Functions (`_component/utils.ts`)
-- Implement utility functions for data transformation
-- Examples: `slugify()`, `formatDateTime()`, `buildFilterQuery()`, `buildPayload()`
-- These functions keep the main page clean and reusable
+// Data table + actions
+import { TABLE_ACTIONS_COLUMN_META } from "@ui/components/data-table"
+import { AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin"
 
-#### Phase 4: Create Form Hook (`_component/_hooks/use-module-form.ts`)
-- Define schema with zod:
-  ```typescript
-  export const moduleFormSchema = z.object({
-    name: z.string().min(1, "Tên không được để trống"),
-    // ... other fields
-  });
-  ```
-- Export `useModuleForm(options)` hook using react-hook-form:
-  - Use `useForm` with zodResolver
-  - Provide `form` object (UseFormReturn)
-  - Provide `resetForm()`, `populateForm()`, `getPayload()`
-  - Support both create and edit modes
+// Confirm dialog (dùng chung, không tạo wrapper riêng)
+import { AdminCrudConfirmDialog } from "@ui/components/admin"
 
-#### Phase 5: Create Query Hooks (`_component/_query/use-module-queries.ts`)
-- Import from `@/hooks/queries` for shared hooks when available
-- Implement mutations using `api.moduleName` from `@workspace/api-client`:
-  ```typescript
-  import { useMutation, useQueryClient } from "@tanstack/react-query";
-  import { api } from "@/lib/api";
-  import { toast } from "sonner";
+// Upload (dùng chung, không tự viết fetch)
+import { uploadAdminImage } from "@/lib/admin-upload"
 
-  const queryClient = useQueryClient();
-
-  const createMutation = useMutation({
-    mutationFn: async (input: CreateModuleInput) => {
-      return api.moduleName.create(input);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["module-name"] });
-      toast.success("Đã tạo");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-  ```
-
-#### Phase 6: Create Table Columns (`_component/columns.tsx`)
-- Define column definitions with proper types
-- Use Badge for status indicators
-- Add action buttons using Lucide icons
-- Add meta properties for filtering
-
-#### Phase 7: Create Table Components (`_component/_table/`)
-- Create wrapper components around `AdminDataTable`
-- Configure data, columns, pagination
-- Add filters, row selection, bulk actions
-- Handle module-specific table logic
-
-#### Phase 8: Create Form Shell (`_component/_form/module-form-shell.tsx`)
-- Define props interface with form state and callbacks
-- Implement form layout with Dialog components
-- Use FormFieldCol/FormFieldRow for form layout consistency
-- Handle form submission with mutations
-- Support both create and edit modes
-
-#### Phase 9: Create Confirm Dialog (`_component/_alert-dialog/module-confirm-dialog.tsx`)
-- Define props interface with action type, target, callbacks
-- Use `AdminConfirmActionDialog` shared component
-- Handle delete, restore, purge actions with appropriate icons and messages
-
-#### Phase 10: Implement Main List Page (`page.tsx`)
-- Import query hooks and table components from `_component`
-- Import shared hooks from `@/hooks/queries`
-- Use table components from `_component/_table/`
-- Add filters, search, pagination
-- Wrap with `AdminPageGuard` for permission check
-- Use correct route paths (e.g., `/staff` not `/admin/staff`)
-
-### API Usage Guidelines
-
-#### Using `@workspace/api-client`
-- All API calls should use the SDK from `@workspace/api-client`:
-  ```typescript
-  import { api } from "@/lib/api";
-
-  // ✅ Correct - use SDK methods
-  const data = await api.moduleName.list({ page: 1, limit: 20 });
-  await api.moduleName.create(input);
-  await api.moduleName.update(id, input);
-  await api.moduleName.remove(id);
-
-  // ❌ Incorrect - avoid direct http calls
-  const response = await api.http.get("/admin/module-name");
-  ```
-
-#### Using `@workspace/query-client` with React Query
-- Use shared query hooks from `@/hooks/queries` when available
-- For custom hooks, follow React Query pattern with proper cache invalidation
-
-#### Using FormField Components
-- `FormFieldCol` - Vertical layout (label above input)
-- `FormFieldRow` - Horizontal layout (label beside input)
-- Always use with Controller from react-hook-form for controlled components
-
-## Common Patterns
-
-All modules follow this structure:
-
-### Backend Admin UI (Next.js)
-- Main list page with pagination and filters
-- New/Edit/Detail pages with routing
-- Shared components in `_component/`:
-  - `types.ts` - TypeScript types
-  - `utils.ts` - Utility functions
-  - `columns.tsx` - Table column definitions
-  - `_hooks/` - Custom React hooks
-  - `_query/` - React Query hooks
-  - `_table/` - Table components
-  - `_form/` - Form components
-  - `_alert-dialog/` - Confirmation dialogs
-
-### API Service (NestJS)
-- Controller with HTTP endpoints
-- Service with business logic
-- Module definition
-- DTOs for data transfer
-
-## Module Differences
-
-| Feature | Categories | Posts | Tags | Guides | Staff |
-|---------|-----------|-------|------|--------|-------|
-| **Data Model** | Hierarchical tree | Rich content | Flat with prefix tree | Steps with images | User with roles |
-| **UI Pattern** | Tree view table | Data table | Prefix tree table | Card grid / Table | Data table with role filter |
-| **Bulk Actions** | Yes (set-parent) | Yes (set-categories) | No | No | Yes (delete/restore/purge) |
-| **API Pattern** | Direct API calls | Direct API calls | Direct API calls | SDK-based | Direct API calls |
-
-## Quick Reference
-
-### File Locations
-- **Categories**: `apps/backend/src/app/categories/`
-- **Posts**: `apps/backend/src/app/posts/`
-- **Tags**: `apps/backend/src/app/tags/`
-- **Guides**: `apps/backend/src/app/guides/`
-- **Staff**: `apps/backend/src/app/staff/`
-
-### Shared Types
-- Categories: `@workspace/api-client` - `Category`, `CreateCategoryInput`, `UpdateCategoryInput`
-- Posts: `@workspace/api-client` - `Post`, `CreatePostInput`, `UpdatePostInput`
-- Tags: `@workspace/api-client` - `Tag`, `CreateTagInput`, `UpdateTagInput`
-- Guides: `@workspace/api-client` - `PageContent` → `GuideGroup`, `PageContentStep` → `GuideStep`
-- Staff: `@workspace/api-client` - `User`
-
-## Advanced UI Patterns
-
-### Custom CSV/XLSX Export with Structured Data
-
-For modules with structured content (like contact requests):
-
-1. **Create custom export function**:
-   ```typescript
-   function buildCustomExportData(data: ContactRequest[]) {
-     const headers = ["Name", "Email", "Phone", "Address", "Program", "Major", ...];
-     const rows = data.map(item => {
-       const content = item.content || item.message || "";
-       // Parse structured fields from content
-       const address = content.match(/Địa chỉ:\s*(.+?)(?:\n|$)/)?.[1] || "";
-       const program = content.match(/Chương trình:\s*(.+?)(?:\n|$)/)?.[1] || "";
-       // ...
-       return [item.name, item.email, item.phone, address, program, ...];
-     });
-     return { headers, rows };
-   }
-   ```
-
-2. **Add custom export buttons** instead of using default `csvExport` prop:
-   ```typescript
-   const handleCsvExport = () => {
-     const { headers, rows } = buildCustomExportData(data);
-     downloadCsvFile("filename.csv", headers, rows);
-   };
-   ```
-
-### Bulk Operations Pattern
-
-For modules that need bulk delete/restore/purge:
-
-1. **Add bulk methods to API client**:
-   ```typescript
-   bulkDelete(ids: string[]): Promise<void> {
-     return this.http.post(`/admin/contact-requests/bulk-delete`, { ids });
-   }
-   ```
-
-2. **Implement bulk mutations in query hooks**:
-   ```typescript
-   const bulkDeleteMutation = useMutation({
-     mutationFn: async (ids: string[]) => {
-       return api.contactRequests.bulkDelete(ids);
-     },
-     onSuccess: async () => {
-       await queryClient.invalidateQueries({ queryKey: ["contact-requests"] });
-       toast.success("Đã xóa hàng loạt");
-     },
-   });
-   ```
-
-3. **Use bulk confirmation dialog** with `target="selected"`:
-   ```typescript
-   <ContactBulkConfirmDialog
-     action="delete"
-     target="selected"
-     count={selectedRows.length}
-     onConfirm={() => bulkDeleteMutation.mutate(selectedIds)}
-   />
-   ```
-
-### Form Optimization: Structured Fields
-
-For modules with complex form data (like contact requests):
-
-1. **Split single field into multiple structured fields**:
-   - Instead of single `message` textarea, create separate fields
-   - Use `Switch` component from `@ui/components` for boolean fields
-   - Build payload to combine structured fields into formatted content string
-
-2. **Parse and populate on edit**:
-   - Parse content field from API response
-   - Extract structured fields and populate form fields
-   - Handle both old format and new format for backward compatibility
-
-## Common Issues and Solutions
-
-### Backend Controller: Trash Parameter Mapping
-
-If trash items don't show, ensure the controller maps the `trash` query parameter to `status='deleted'`:
-```typescript
-// In controller list method
-if (trash) query.status = 'deleted';
+// Form (dùng useWatch thay form.watch khi có reset)
+import { useWatch } from "react-hook-form"
 ```
 
-### Status Badge Case Sensitivity
+## Ghi chú
 
-Ensure status lookup handles case correctly:
-```typescript
-const status = row.original.status;
-const label = CONTACT_REQUEST_STATUS_LABELS[status]; // or use status.toLowerCase()
-```
-
-### Layout Breaks on Smaller Screens
-
-Use CSS Grid with responsive columns:
-```typescript
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-```
-
-## Notes
-
-- All modules use React Hook Form with Zod validation
-- All modules use React Query for data fetching
-- All modules use UI components from `@ui/components`
-- All modules use Lucide icons for consistency
-- All modules have permission checks with `AdminPageGuard`
-- For TypeScript errors with meta.className, use `(meta as any)?.className` pattern
-- Always test sticky positioning on actual table with overflow-x-auto container
-- For structured content, consider both display in table and export formats
+- Không tạo wrapper confirm dialog riêng cho từng module — dùng `AdminCrudConfirmDialog` chung.
+- Không tự viết fetch upload — dùng `uploadAdminImage` từ `@/lib/admin-upload`.
+- Confirm dialog barrel `_alert-dialog/index.ts` chỉ cần 1 dòng: `export { AdminCrudConfirmDialog as ModuleNameConfirmDialog } from "@ui/components/admin"`

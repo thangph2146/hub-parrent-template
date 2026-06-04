@@ -21,14 +21,19 @@ Agent nên dùng các file step-by-step này làm lộ trình chính:
 - `docs/steps/step10_agent_task_automation.md`
 
 ## Supporting docs
-- `docs/admin-pattern/README.md` — giới thiệu nội dung thư mục `hub-parent`.
+- `docs/admin-pattern/README.md` — giới thiệu nội dung thư mục `hub-parent` + bản đồ packages.
 - `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
 - `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và ranh giới.
 - `docs/admin-pattern/AGENTS_GUIDE.md` — hướng dẫn agent vận hành chi tiết.
 - `docs/admin-pattern/FRONTEND_UX.md` — UX storefront public.
-- `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — Pattern admin page cho `apps/backend`.
+- `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — Pattern admin page cho `apps/backend` + `@workspace/ui`.
 - `docs/pages/README.md` — index các implementation guide.
 - `docs/pages/*.md` — hướng dẫn chi tiết theo feature.
+- `docs/logger-pattern/README.md` — `@workspace/logger`: logger dev + format API calls.
+- `docs/query-client-pattern/README.md` — `@workspace/query-client`: TanStack Query config.
+- `docs/ui-pattern/README.md` — `@workspace/ui`: components, hooks, lib overview.
+- `docs/api-client-pattern/README.md` — `@workspace/api-client`: SDK pattern.
+- `docs/api-pattern/README.md` — `apps/api` NestJS pattern.
 
 ## Cách dùng
 - Bắt đầu với `docs/steps/step1_system_overview.md` và dọc theo chuỗi step-by-step.

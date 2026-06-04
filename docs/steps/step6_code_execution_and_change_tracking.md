@@ -46,7 +46,7 @@ pnpm check:full
 3. Sửa theo nhóm lỗi, rồi chạy lại `pnpm check`.
 
 ## Nếu cần cập nhật docs
-- Nếu thay đổi cấu trúc hoặc feature mới: thêm/chỉnh `docs/pages/<feature>-implementation.md` hoặc `docs/steps/*.md` tương ứng.
+- Nếu thay đổi cấu trúc hoặc feature mới: cập nhật `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (pattern chuẩn) hoặc `docs/pages/README.md` (kiến trúc file) hoặc `docs/steps/*.md` tương ứng.
 - Nếu thay đổi ranh giới service: cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` hoặc `packages/eslint-config/service-boundaries.js` nếu có.
 
 ## Kết luận bước này

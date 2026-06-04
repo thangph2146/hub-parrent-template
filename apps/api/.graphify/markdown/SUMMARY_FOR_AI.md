@@ -1,9 +1,9 @@
-﻿# REST API — @api (NestJS) — tóm tắt cho AI (Graphify)
+# REST API — @api (NestJS) — tóm tắt cho AI (Graphify)
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/api`
-- **context.generatedAt:** 2026-05-28T07:28:26.736Z
+- **context.generatedAt:** 2026-06-04T07:12:48.650Z
 
 ## Mục lục artefact Graphify
 
@@ -35,7 +35,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Phụ thuộc chéo giữa domain API:** [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md) — domain `src/<tên>` nào import domain nào (cạnh `imports` trong graph).
 
 ## Thống kê
-- **totalFiles:** 178
+- **totalFiles:** 228
 - **clientComponents:** 0
 
 ## Góc hệ thống (@api) — đường dẫn gợi ý
@@ -51,18 +51,27 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 
 > **DB:** entity `src/entities/`, migration `src/migrations/` — xem thêm bảng *Module map* và `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` (MikroORM).
 
-## Nest — module (34)
+## Nest — module (46)
 - `src/academic-years/academic-years.module.ts`
 - `src/accounts/accounts.module.ts`
 - `src/admission-results/admission-results.module.ts`
 - `src/app.module.ts`
 - `src/auth/auth.module.ts`
+- `src/cameras/cameras.module.ts`
 - `src/categories/categories.module.ts`
 - `src/comments/comments.module.ts`
 - `src/contact-requests/contact-requests.module.ts`
 - `src/courses/courses.module.ts`
 - `src/dashboard/dashboard.module.ts`
+- `src/departments/departments.module.ts`
+- `src/event-checkins/event-checkins.module.ts`
+- `src/event-checkouts/event-checkouts.module.ts`
+- `src/event-registrations/event-registrations.module.ts`
+- `src/event-speakers/event-speakers.module.ts`
+- `src/events/events.module.ts`
+- `src/face-data/face-data.module.ts`
 - `src/groups/groups.module.ts`
+- `src/hanet/hanet.module.ts`
 - `src/imported-users/imported-users.module.ts`
 - `src/locations/locations.module.ts`
 - `src/majors/majors.module.ts`
@@ -75,6 +84,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/proxy-image/proxy-image.module.ts`
 - `src/public/public.module.ts`
 - `src/roles/roles.module.ts`
+- `src/screens/screens.module.ts`
+- `src/seo-metas/seo-metas.module.ts`
 - `src/sessions/sessions.module.ts`
 - `src/settings/settings.module.ts`
 - `src/socket/socket.module.ts`
@@ -82,22 +93,32 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/students/students.module.ts`
 - `src/system/system.module.ts`
 - `src/tags/tags.module.ts`
+- `src/templates/templates.module.ts`
 - `src/training-levels/training-levels.module.ts`
 - `src/training-systems/training-systems.module.ts`
 - `src/uploads/uploads.module.ts`
 - `src/users/users.module.ts`
 
-## Nest — controller (33)
+## Nest — controller (45)
 - `src/academic-years/academic-years.controller.ts`
 - `src/accounts/accounts.controller.ts`
 - `src/admission-results/admission-results.controller.ts`
 - `src/auth/auth-admin.controller.ts`
+- `src/cameras/cameras.controller.ts`
 - `src/categories/categories.controller.ts`
 - `src/comments/comments.controller.ts`
 - `src/contact-requests/contact-requests.controller.ts`
 - `src/courses/courses.controller.ts`
 - `src/dashboard/dashboard.controller.ts`
+- `src/departments/departments.controller.ts`
+- `src/event-checkins/event-checkins.controller.ts`
+- `src/event-checkouts/event-checkouts.controller.ts`
+- `src/event-registrations/event-registrations.controller.ts`
+- `src/event-speakers/event-speakers.controller.ts`
+- `src/events/events.controller.ts`
+- `src/face-data/face-data.controller.ts`
 - `src/groups/groups.controller.ts`
+- `src/hanet/hanet-webhook.controller.ts`
 - `src/imported-users/imported-users.controller.ts`
 - `src/locations/locations.controller.ts`
 - `src/majors/majors.controller.ts`
@@ -110,27 +131,37 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/proxy-image/proxy-image.controller.ts`
 - `src/public/public.controller.ts`
 - `src/roles/roles.controller.ts`
+- `src/screens/screens.controller.ts`
+- `src/seo-metas/seo-metas.controller.ts`
 - `src/sessions/sessions.controller.ts`
 - `src/settings/settings.controller.ts`
 - `src/speakers/speakers.controller.ts`
 - `src/students/students.controller.ts`
 - `src/system/system.controller.ts`
 - `src/tags/tags.controller.ts`
+- `src/templates/templates.controller.ts`
 - `src/training-levels/training-levels.controller.ts`
 - `src/training-systems/training-systems.controller.ts`
 - `src/uploads/public-uploads.controller.ts`
 - `src/uploads/uploads.controller.ts`
 - `src/users/users.controller.ts`
 
-## Entities (32)
+## Entities (42)
 - `src/entities/academic-year.entity.ts`
 - `src/entities/account.entity.ts`
 - `src/entities/admission-result.entity.ts`
 - `src/entities/base.entity.ts`
+- `src/entities/camera.entity.ts`
 - `src/entities/category.entity.ts`
 - `src/entities/comment.entity.ts`
 - `src/entities/contact-request.entity.ts`
 - `src/entities/course.entity.ts`
+- `src/entities/department.entity.ts`
+- `src/entities/event-checkin.entity.ts`
+- `src/entities/event-registration.entity.ts`
+- `src/entities/event-speaker.entity.ts`
+- `src/entities/event.entity.ts`
+- `src/entities/face-data.entity.ts`
 - `src/entities/group-member.entity.ts`
 - `src/entities/group.entity.ts`
 - `src/entities/imported-user.entity.ts`
@@ -145,24 +176,19 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/entities/post-tag.entity.ts`
 - `src/entities/post.entity.ts`
 - `src/entities/role.entity.ts`
+- `src/entities/screen.entity.ts`
+- `src/entities/seo-meta.entity.ts`
 - `src/entities/session.entity.ts`
 - `src/entities/setting.entity.ts`
 - `src/entities/speaker.entity.ts`
 - `src/entities/student.entity.ts`
 - `src/entities/tag.entity.ts`
+- `src/entities/template.entity.ts`
 - `src/entities/training-level.entity.ts`
 - `src/entities/training-system.entity.ts`
 - `src/entities/user-role.entity.ts`
 - `src/entities/user.entity.ts`
 - `src/entities/verification-token.entity.ts`
-
-## Migrations (6)
-- `src/migrations/Migration20260503140000.ts`
-- `src/migrations/Migration20260503150000.ts`
-- `src/migrations/Migration20260503160000.ts`
-- `src/migrations/Migration20260503170000.ts`
-- `src/migrations/Migration20260503180000.ts`
-- `src/migrations/Migration20260514100000.ts`
 
 ## Module map (không có nội dung file)
 
@@ -184,7 +210,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/auth/auth-admin.controller.ts` | ts | no | LoginDto, DevLoginDto, GoogleLoginDto, LogoutDto, AuthAdminController | src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts |
 | `src/auth/auth.module.ts` | ts | no | AuthModule | src/auth/auth-admin.controller.ts, src/auth/auth.service.ts |
 | `src/auth/auth.service.spec.ts` | ts | no |  | src/auth/auth.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
-| `src/auth/auth.service.ts` | ts | no | LoginDto, GoogleProfileDto, AuthUserPayload, AuthService | src/config/constants.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
+| `src/auth/auth.service.ts` | ts | no | LoginDto, GoogleProfileDto, AuthUserPayload, AuthService | src/config/constants.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/setting.entity.ts |
+| `src/cameras/cameras.controller.ts` | ts | no | CamerasController | src/cameras/cameras.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/cameras/cameras.module.ts` | ts | no | CamerasModule | src/cameras/cameras.controller.ts, src/cameras/cameras.service.ts |
+| `src/cameras/cameras.service.ts` | ts | no | CameraRowDto, CamerasService | src/entities/camera.entity.ts, src/entities/event.entity.ts, src/common/pagination.ts |
 | `src/categories/categories.controller.ts` | ts | no | CategoriesController | src/categories/categories.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
 | `src/categories/categories.module.ts` | ts | no | CategoriesModule | src/notifications/notifications.module.ts, src/categories/categories.service.ts, src/categories/categories.controller.ts |
 | `src/categories/categories.service.spec.ts` | ts | no |  | src/categories/categories.service.ts, src/entities/category.entity.ts |
@@ -197,9 +226,12 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/common/api-response.ts` | ts | no | ApiResponsePayload, createSuccessResponse, createErrorResponse |  |
 | `src/common/database-http-exception.filter.ts` | ts | no | DatabaseHttpExceptionFilter | src/common/api-response.ts |
 | `src/common/date-utils.ts` | ts | no | safeIsoString, safeIsoStringNow |  |
+| `src/common/event-time-status.ts` | ts | no | EventTimeStatus, resolveEventTimeStatus |  |
 | `src/common/get-options.ts` | ts | no | GetOptionsColumnConfig, GetOptionsConfig |  |
+| `src/common/image-processor.ts` | ts | no | ImageProcessOptions, isImageMime, isImageExt |  |
 | `src/common/logging.interceptor.ts` | ts | no | LoggingInterceptor | src/config/app.config.ts, src/config/constants.ts, src/common/request-id.middleware.ts |
 | `src/common/pagination.ts` | ts | no | PaginationParams, normalizePageLimit, PaginationMeta, paginationMeta |  |
+| `src/common/poster-normalize.ts` | ts | no | unwrapPosterUrl, normalizePosterField |  |
 | `src/common/request-id.middleware.ts` | ts | no | REQUEST_ID_HEADER, RequestIdMiddleware |  |
 | `src/common/resolve-relation-filters.ts` | ts | no | RelationFilterConfig, RelationFiltersConfig | src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/contact-request.entity.ts, src/entities/group.entity.ts, src/entities/message.entity.ts, src/entities/notificatio |
 | `src/config/app.config.ts` | ts | no | appConfig | src/config/constants.ts |
@@ -216,14 +248,24 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/dashboard/dashboard.module.ts` | ts | no | DashboardModule | src/dashboard/dashboard.controller.ts, src/dashboard/dashboard.service.ts |
 | `src/dashboard/dashboard.service.spec.ts` | ts | no |  | src/dashboard/dashboard.service.ts |
 | `src/dashboard/dashboard.service.ts` | ts | no | DashboardOverviewDto, DashboardMonthlyItemDto, DashboardCategoryItemDto, DashboardTopPostDto, DashboardStatsDto, DashboardService | src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.entity.ts, src/entities/message.entity.ts, src/entities/notification.entity.ts, src/entities/post-category |
+| `src/departments/departments.controller.ts` | ts | no | DepartmentsController | src/departments/departments.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/departments/departments.module.ts` | ts | no | DepartmentsModule | src/departments/departments.controller.ts, src/departments/departments.service.ts |
+| `src/departments/departments.service.ts` | ts | no | DepartmentRowDto, DepartmentsService | src/entities/department.entity.ts, src/common/pagination.ts |
 | `src/entities/academic-year.entity.ts` | ts | no | AcademicYear |  |
 | `src/entities/account.entity.ts` | ts | no | Account | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/admission-result.entity.ts` | ts | no | AdmissionResult | src/entities/base.entity.ts |
 | `src/entities/base.entity.ts` | ts | no |  |  |
+| `src/entities/camera.entity.ts` | ts | no | Camera | src/entities/base.entity.ts, src/entities/event.entity.ts |
 | `src/entities/category.entity.ts` | ts | no | CategoryType, Category | src/entities/base.entity.ts, src/entities/post-category.entity.ts |
 | `src/entities/comment.entity.ts` | ts | no | Comment | src/entities/base.entity.ts, src/entities/post.entity.ts, src/entities/user.entity.ts |
 | `src/entities/contact-request.entity.ts` | ts | no | ContactStatus, ContactPriority, ContactRequest | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/course.entity.ts` | ts | no | Course |  |
+| `src/entities/department.entity.ts` | ts | no | Department | src/entities/base.entity.ts |
+| `src/entities/event-checkin.entity.ts` | ts | no | CheckinType, EventCheckin | src/entities/base.entity.ts, src/entities/event.entity.ts, src/entities/event-registration.entity.ts |
+| `src/entities/event-registration.entity.ts` | ts | no | RegistrationStatus, AttendanceStatus, CheckinMethod, EventRegistration | src/entities/base.entity.ts, src/entities/event.entity.ts |
+| `src/entities/event-speaker.entity.ts` | ts | no | EventSpeaker | src/entities/base.entity.ts, src/entities/event.entity.ts, src/entities/speaker.entity.ts |
+| `src/entities/event.entity.ts` | ts | no | EventFormat, Event | src/entities/base.entity.ts, src/entities/camera.entity.ts, src/entities/event-checkin.entity.ts, src/entities/event-registration.entity.ts, src/entities/event-speaker.entity.ts, src/entities/user.ent |
+| `src/entities/face-data.entity.ts` | ts | no | FaceData | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/group-member.entity.ts` | ts | no | GroupRole, GroupMember | src/entities/base.entity.ts, src/entities/group.entity.ts, src/entities/user.entity.ts |
 | `src/entities/group.entity.ts` | ts | no | Group | src/entities/base.entity.ts, src/entities/group-member.entity.ts, src/entities/message.entity.ts, src/entities/user.entity.ts |
 | `src/entities/imported-user.entity.ts` | ts | no | ImportedUser | src/entities/academic-year.entity.ts, src/entities/training-level.entity.ts, src/entities/training-system.entity.ts, src/entities/major.entity.ts |
@@ -238,20 +280,48 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/entities/post-tag.entity.ts` | ts | no | PostTag | src/entities/post.entity.ts, src/entities/tag.entity.ts |
 | `src/entities/post.entity.ts` | ts | no | Post | src/entities/base.entity.ts, src/entities/comment.entity.ts, src/entities/post-category.entity.ts, src/entities/post-tag.entity.ts, src/entities/user.entity.ts |
 | `src/entities/role.entity.ts` | ts | no | Role | src/entities/base.entity.ts, src/entities/user-role.entity.ts |
+| `src/entities/screen.entity.ts` | ts | no | Screen | src/entities/base.entity.ts, src/entities/camera.entity.ts, src/entities/template.entity.ts |
+| `src/entities/seo-meta.entity.ts` | ts | no | SeoMeta | src/entities/base.entity.ts |
 | `src/entities/session.entity.ts` | ts | no | Session | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/setting.entity.ts` | ts | no | Setting | src/entities/base.entity.ts |
 | `src/entities/speaker.entity.ts` | ts | no | Speaker |  |
 | `src/entities/student.entity.ts` | ts | no | Student | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/tag.entity.ts` | ts | no | Tag | src/entities/base.entity.ts, src/entities/post-tag.entity.ts |
+| `src/entities/template.entity.ts` | ts | no | Template | src/entities/base.entity.ts |
 | `src/entities/training-level.entity.ts` | ts | no | TrainingLevel |  |
 | `src/entities/training-system.entity.ts` | ts | no | TrainingSystem |  |
 | `src/entities/user-role.entity.ts` | ts | no | UserRole | src/entities/base.entity.ts, src/entities/role.entity.ts, src/entities/user.entity.ts |
 | `src/entities/user.entity.ts` | ts | no | User | src/entities/base.entity.ts, src/entities/account.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.entity.ts, src/entities/group-member.entity.ts, src/entities/group.entity.ts,  |
 | `src/entities/verification-token.entity.ts` | ts | no | VerificationToken |  |
+| `src/event-checkins/event-checkins.controller.ts` | ts | no | EventCheckinsController | src/event-checkins/event-checkins.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-checkins/event-checkins.module.ts` | ts | no | EventCheckinsModule | src/event-checkins/event-checkins.controller.ts, src/event-checkins/event-checkins.service.ts |
+| `src/event-checkins/event-checkins.service.ts` | ts | no | EventCheckinRowDto, ListEventCheckinsParams, ListEventCheckinsResult, EventCheckinsService | src/entities/event-checkin.entity.ts, src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/common/pagination.ts |
+| `src/event-checkouts/event-checkouts.controller.ts` | ts | no | EventCheckoutsController | src/event-checkouts/event-checkouts.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-checkouts/event-checkouts.module.ts` | ts | no | EventCheckoutsModule | src/event-checkouts/event-checkouts.controller.ts, src/event-checkouts/event-checkouts.service.ts |
+| `src/event-checkouts/event-checkouts.service.ts` | ts | no | EventCheckoutRowDto, ListEventCheckoutsParams, ListEventCheckoutsResult, EventCheckoutsService | src/entities/event-registration.entity.ts, src/common/pagination.ts |
+| `src/event-registrations/event-registration-attendance.service.ts` | ts | no | AttendanceSource, ManualAttendanceAction, ApplyAttendanceResult, EventRegistrationAttendanceService | src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/socket/socket.gateway.ts, src/socket/socket.types.ts, src/event-registrations/event-registrations.service.ts |
+| `src/event-registrations/event-registrations.controller.ts` | ts | no | EventRegistrationsController | src/event-registrations/event-registration-attendance.service.ts, src/event-registrations/event-registrations.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-registrations/event-registrations.module.ts` | ts | no | EventRegistrationsModule | src/socket/socket.module.ts, src/event-registrations/event-registration-attendance.service.ts, src/event-registrations/event-registrations.controller.ts, src/event-registrations/event-registrations.se |
+| `src/event-registrations/event-registrations.service.ts` | ts | no | EventRegistrationRowDto, ListEventRegistrationsParams, ListEventRegistrationsResult, PublicEventRegistrantDto, EventRegistrationsService | src/entities/event-registration.entity.ts, src/entities/event.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts |
+| `src/event-speakers/event-speakers.controller.ts` | ts | no | EventSpeakersController | src/event-speakers/event-speakers.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-speakers/event-speakers.module.ts` | ts | no | EventSpeakersModule | src/event-speakers/event-speakers.controller.ts, src/event-speakers/event-speakers.service.ts |
+| `src/event-speakers/event-speakers.service.ts` | ts | no | EventSpeakerRowDto, ListEventSpeakersParams, ListEventSpeakersResult, EventSpeakersService | src/entities/event-speaker.entity.ts, src/entities/event.entity.ts, src/entities/speaker.entity.ts, src/common/pagination.ts |
+| `src/events/events.controller.ts` | ts | no | EventsController | src/events/events.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/events/events.module.ts` | ts | no | EventsModule | src/events/events.controller.ts, src/events/events.service.ts |
+| `src/events/events.service.ts` | ts | no | EventRowDto, ListEventsParams, ListEventsResult, EventsService | src/entities/event.entity.ts, src/entities/camera.entity.ts, src/common/pagination.ts, src/common/poster-normalize.ts |
+| `src/face-data/face-data.controller.ts` | ts | no | FaceDataController | src/face-data/face-data.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/face-data/face-data.module.ts` | ts | no | FaceDataModule | src/face-data/face-data.controller.ts, src/face-data/face-data.service.ts |
+| `src/face-data/face-data.service.ts` | ts | no | FaceDataRowDto, ListFaceDataParams, ListFaceDataResult, FaceDataService | src/entities/face-data.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts |
 | `src/groups/groups.controller.ts` | ts | no | GroupsController | src/groups/groups.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, src/config/constants.ts, src/co |
 | `src/groups/groups.module.ts` | ts | no | GroupsModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/groups/groups.controller.ts, src/groups/groups.service.ts |
 | `src/groups/groups.service.spec.ts` | ts | no |  | src/groups/groups.service.ts, src/entities/group.entity.ts, src/entities/group-member.entity.ts |
 | `src/groups/groups.service.ts` | ts | no | CreateGroupInput, ListGroupsInput, GroupsService | src/entities/group.entity.ts, src/entities/group-member.entity.ts, src/entities/message.entity.ts, src/entities/message-read.entity.ts, src/entities/user.entity.ts |
+| `src/hanet/hanet-payload.spec.ts` | ts | no |  | src/hanet/hanet-payload.ts |
+| `src/hanet/hanet-payload.ts` | ts | no | HANET_DEVICE_ID_KEYS, HANET_PERSON_NAME_KEYS, HANET_PERSON_ID_KEYS, parseHanetCompactTime, pickHanetString, pickHanetTimestamp, pickHanetAttendanceKind, pickHanetDeviceId, normalizeHanetBody | src/hanet/hanet.types.ts |
+| `src/hanet/hanet-webhook.controller.ts` | ts | no | HanetWebhookController | src/config/constants.ts, src/hanet/hanet-payload.ts, src/hanet/hanet-webhook.service.ts, src/hanet/hanet.types.ts |
+| `src/hanet/hanet-webhook.service.ts` | ts | no | HanetWebhookService | src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/entities/camera.entity.ts, src/event-registrations/event-registration-attendance.service.ts, src/hanet/hanet-payload.ts, sr |
+| `src/hanet/hanet.module.ts` | ts | no | HanetModule | src/event-registrations/event-registrations.module.ts, src/hanet/hanet-webhook.controller.ts, src/hanet/hanet-webhook.service.ts |
+| `src/hanet/hanet.types.ts` | ts | no | HanetWebhookBody, HanetCameraRole, HanetResolveContext, HanetWebhookResult |  |
 | `src/imported-users/imported-users.controller.ts` | ts | no | ImportedUsersController | src/imported-users/imported-users.service.ts, src/common/api-response.ts, src/config/constants.ts |
 | `src/imported-users/imported-users.module.ts` | ts | no | ImportedUsersModule | src/imported-users/imported-users.controller.ts, src/imported-users/imported-users.service.ts |
 | `src/imported-users/imported-users.service.ts` | ts | no | ImportedUserRowDto, ListImportedUsersParams, ListImportedUsersResult, ImportedUsersService | src/entities/imported-user.entity.ts, src/common/pagination.ts |
@@ -265,14 +335,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/messages/conversations.controller.ts` | ts | no | ConversationsController | src/common/api-response.ts, src/socket/socket.gateway.ts, src/entities/message.entity.ts, src/config/constants.ts |
 | `src/messages/messages.controller.ts` | ts | no | MessagesController | src/socket/socket.gateway.ts, src/common/api-response.ts, src/entities/message.entity.ts, src/entities/message-read.entity.ts, src/entities/group-member.entity.ts, src/entities/group.entity.ts, src/en |
 | `src/messages/messages.module.ts` | ts | no | MessagesModule | src/socket/socket.module.ts, src/messages/messages.controller.ts, src/messages/conversations.controller.ts |
-| `src/migrations/Migration20260503140000.ts` | ts | no | Migration20260503140000 |  |
-| `src/migrations/Migration20260503150000.ts` | ts | no | Migration20260503150000 |  |
-| `src/migrations/Migration20260503160000.ts` | ts | no | Migration20260503160000 |  |
-| `src/migrations/Migration20260503170000.ts` | ts | no | Migration20260503170000 |  |
-| `src/migrations/Migration20260503180000.ts` | ts | no | Migration20260503180000 |  |
-| `src/migrations/Migration20260514100000.ts` | ts | no | Migration20260514100000 |  |
 | `src/mikro-orm/mikro-orm.module.ts` | ts | no | createMikroConfig, DatabaseModule | src/mikro-orm/orm-entities.ts |
-| `src/mikro-orm/orm-entities.ts` | ts | no | ormEntities | src/entities/academic-year.entity.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-req |
+| `src/mikro-orm/orm-entities.ts` | ts | no | ormEntities | src/entities/academic-year.entity.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/camera.entity.ts, src/entities/category.entity.ts, src/entities/comment.enti |
 | `src/notifications/notifications.controller.ts` | ts | no | NotificationsController | src/notifications/notifications.service.ts, src/common/api-response.ts, src/config/constants.ts |
 | `src/notifications/notifications.module.ts` | ts | no | NotificationsModule | src/notifications/notifications.service.ts, src/notifications/notifications.controller.ts |
 | `src/notifications/notifications.service.spec.ts` | ts | no |  | src/notifications/notifications.service.ts, src/entities/notification.entity.ts |
@@ -289,16 +353,22 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/posts/posts.service.ts` | ts | no | PostRowDto, PostDetailDto, POSTS_FILTER_CATEGORIES_NONE, ListPostsParams, ListPostsResult, PostsService | src/common/resolve-relation-filters.ts, src/common/pagination.ts, src/common/get-options.ts, src/common/date-utils.ts, src/entities/post.entity.ts, src/entities/post-category.entity.ts, src/entities/p |
 | `src/proxy-image/proxy-image.controller.ts` | ts | no | ProxyImageController | src/config/constants.ts |
 | `src/proxy-image/proxy-image.module.ts` | ts | no | ProxyImageModule | src/proxy-image/proxy-image.controller.ts |
-| `src/public/public-auth.service.ts` | ts | no | CreatePublicRegisterDto, PublicAuthService | src/entities/role.entity.ts, src/entities/user.entity.ts, src/auth/auth.service.ts, src/users/users.service.ts, src/config/constants.ts |
-| `src/public/public-categories.service.ts` | ts | no | PublicCategoryItem, PublicCategoriesService | src/entities/category.entity.ts, src/entities/post-category.entity.ts |
+| `src/public/public-auth.service.ts` | ts | no | CreatePublicRegisterDto, PublicAuthService | src/entities/role.entity.ts, src/entities/setting.entity.ts, src/entities/user.entity.ts, src/auth/auth.service.ts, src/users/users.service.ts, src/config/constants.ts |
+| `src/public/public-categories.service.ts` | ts | no | PublicCategoryItem, PublicCategoriesService | src/entities/category.entity.ts |
 | `src/public/public-contact-requests.service.ts` | ts | no | CreateContactRequestDto, PublicContactRequestsService | src/entities/contact-request.entity.ts |
+| `src/public/public-event-categories.service.ts` | ts | no | PublicEventCategoryItem, PublicEventCategoriesService | src/entities/category.entity.ts |
+| `src/public/public-event-registration.service.ts` | ts | no | RegisterForEventResult, MyRegisteredEventItem, PublicEventRegistrationService | src/entities/event.entity.ts, src/entities/user.entity.ts, src/entities/event-registration.entity.ts, src/event-registrations/event-registrations.service.ts, src/common/poster-normalize.ts |
+| `src/public/public-events.service.ts` | ts | no | EventTimeFilter, PublicEventsQuery, PublicEventItem, PublicViewerRegistration, PublicEventSpeaker, PublicEventRegistrant, PublicEventDetail, PublicEventsService | src/entities/event.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts, src/common/poster-normalize.ts, src/common/event-time-status.ts, src/event-registrations/event-registrations.servic |
 | `src/public/public-posts.service.ts` | ts | no | PublicPostsQuery, PublicPostsService | src/entities/post.entity.ts, src/entities/category.entity.ts, src/entities/tag.entity.ts, src/entities/setting.entity.ts, src/common/pagination.ts |
-| `src/public/public.controller.ts` | ts | no | PublicController | src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-auth.service.ts, src/admission-results/admission-results.s |
-| `src/public/public.module.ts` | ts | no | PublicModule | src/public/public.controller.ts, src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-auth.service.ts, src/admi |
+| `src/public/public.controller.ts` | ts | no | PublicController | src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-events.service.ts, src/public/public-event-categories.serv |
+| `src/public/public.module.ts` | ts | no | PublicModule | src/public/public.controller.ts, src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-events.service.ts, src/pu |
 | `src/roles/roles.controller.ts` | ts | no | RolesController | src/roles/roles.service.ts, src/socket/socket.gateway.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/conf |
 | `src/roles/roles.module.ts` | ts | no | RolesModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/roles/roles.controller.ts, src/roles/roles.service.ts |
 | `src/roles/roles.service.spec.ts` | ts | no |  | src/roles/roles.service.ts, src/entities/role.entity.ts |
 | `src/roles/roles.service.ts` | ts | no | RoleRowDto, ListRolesParams, ListRolesResult, RolesService | src/common/pagination.ts, src/common/get-options.ts, src/entities/role.entity.ts |
+| `src/screens/screens.controller.ts` | ts | no | ScreensController | src/screens/screens.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/screens/screens.module.ts` | ts | no | ScreensModule | src/screens/screens.controller.ts, src/screens/screens.service.ts |
+| `src/screens/screens.service.ts` | ts | no | ScreenRowDto, ScreensService | src/entities/screen.entity.ts, src/common/pagination.ts |
 | `src/scripts/mark-migrations-executed.ts` | ts | no |  | src/mikro-orm/mikro-orm.module.ts |
 | `src/seed-full-export.ts` | ts | no |  | src/mikro-orm/orm-entities.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.en |
 | `src/seed-guides.ts` | ts | no |  | src/entities/page-content.entity.ts |
@@ -306,6 +376,9 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/seeders/DatabaseSeeder.ts` | ts | no | DatabaseSeeder | src/seeds/superadmin-bootstrap.runner.ts |
 | `src/seeds/superadmin-bootstrap.data.ts` | ts | no | SUPERADMIN_ROLES_DATA, SUPERADMIN_USERS_DATA, SUPERADMIN_USER_ROLES_DATA |  |
 | `src/seeds/superadmin-bootstrap.runner.ts` | ts | no | SuperadminBootstrapResult | src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/page-content.entity.ts, src/seeds/superadmin-bootstrap.data.ts |
+| `src/seo-metas/seo-metas.controller.ts` | ts | no | SeoMetasController | src/seo-metas/seo-metas.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/seo-metas/seo-metas.module.ts` | ts | no | SeoMetasModule | src/seo-metas/seo-metas.controller.ts, src/seo-metas/seo-metas.service.ts |
+| `src/seo-metas/seo-metas.service.ts` | ts | no | SeoMetaRowDto, ListSeoMetasParams, ListSeoMetasResult, SeoMetasService | src/entities/seo-meta.entity.ts, src/common/pagination.ts |
 | `src/sessions/sessions.controller.ts` | ts | no | SessionsController | src/sessions/sessions.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, src/config/constants.ts, sr |
 | `src/sessions/sessions.module.ts` | ts | no | SessionsModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/sessions/sessions.service.ts, src/sessions/sessions.controller.ts |
 | `src/sessions/sessions.service.ts` | ts | no | SessionRowDto, ListSessionsParams, ListSessionsResult, AccountWithSessionStatusDto, ListAccountsWithSessionStatusParams, ListAccountsWithSessionStatusResult, SessionsService | src/entities/session.entity.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/role.entity.ts, src/common/resolve-relation-filters.ts, src/common/pagination.ts, src/config |
@@ -316,7 +389,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/socket/notification-mapper.ts` | ts | no | NotificationLike, mapNotificationToPayload | src/socket/socket.types.ts |
 | `src/socket/socket.gateway.ts` | ts | no | SocketGateway | src/sessions/sessions.service.ts, src/entities/notification.entity.ts, src/entities/user.entity.ts, src/socket/socket.types.ts, src/config/app.config.ts, src/socket/notification-mapper.ts |
 | `src/socket/socket.module.ts` | ts | no | SocketModule | src/socket/socket.gateway.ts, src/sessions/sessions.module.ts |
-| `src/socket/socket.types.ts` | ts | no | SocketNotificationKind, SocketNotificationPayload, SocketData, SessionRowDto, MAX_HTTP_BUFFER_SIZE, SOCKET_PATH, userRoom, conversationRoom, sessionRoom, roleRoom |  |
+| `src/socket/socket.types.ts` | ts | no | SocketNotificationKind, SocketNotificationPayload, SocketData, SessionRowDto, MAX_HTTP_BUFFER_SIZE, SOCKET_PATH, userRoom, conversationRoom, sessionRoom, roleRoom, eventRoom, EventAttendanceSocketPayl |  |
 | `src/speakers/speakers.controller.ts` | ts | no | SpeakersController | src/speakers/speakers.service.ts, src/common/api-response.ts, src/config/constants.ts |
 | `src/speakers/speakers.module.ts` | ts | no | SpeakersModule | src/speakers/speakers.controller.ts, src/speakers/speakers.service.ts |
 | `src/speakers/speakers.service.ts` | ts | no | SpeakerRowDto, ListSpeakersParams, ListSpeakersResult, SpeakersService | src/entities/speaker.entity.ts, src/common/pagination.ts |
@@ -324,13 +397,16 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/students/students.module.ts` | ts | no | StudentsModule | src/notifications/notifications.module.ts, src/students/students.controller.ts, src/students/students.service.ts |
 | `src/students/students.service.spec.ts` | ts | no |  | src/students/students.service.ts, src/entities/student.entity.ts, src/entities/user.entity.ts |
 | `src/students/students.service.ts` | ts | no | StudentRowDto, ListStudentsParams, ListStudentsResult, StudentsService | src/entities/user.entity.ts, src/common/pagination.ts, src/common/get-options.ts, src/entities/student.entity.ts |
-| `src/system/import-helpers.ts` | ts | no | ImportRow, stripLegacyHeroSlideFromBundle, stripHeroSlidesPermissions, sanitizePivotRowsInExportJson, orderCategoryRowsForImport |  |
+| `src/system/import-helpers.ts` | ts | no | ImportRow, stripLegacyHeroSlideFromBundle, stripHeroSlidesPermissions, pivotFk, sanitizePivotRowsInExportJson, orderCategoryRowsForImport |  |
 | `src/system/system.controller.ts` | ts | no | SystemController | src/system/system.service.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
 | `src/system/system.module.ts` | ts | no | SystemModule | src/system/system.controller.ts, src/system/system.service.ts, src/auth/auth.module.ts |
 | `src/tags/tags.controller.ts` | ts | no | TagsController | src/tags/tags.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
 | `src/tags/tags.module.ts` | ts | no | TagsModule | src/notifications/notifications.module.ts, src/tags/tags.controller.ts, src/tags/tags.service.ts |
 | `src/tags/tags.service.spec.ts` | ts | no |  | src/tags/tags.service.ts, src/entities/tag.entity.ts |
 | `src/tags/tags.service.ts` | ts | no | RelatedPostDto, TagDetailDto, TagRowDto, ListTagsParams, ListTagsResult, TagsService | src/entities/tag.entity.ts, src/entities/post-tag.entity.ts, src/common/pagination.ts, src/common/get-options.ts |
+| `src/templates/templates.controller.ts` | ts | no | TemplatesController | src/templates/templates.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/templates/templates.module.ts` | ts | no | TemplatesModule | src/templates/templates.controller.ts, src/templates/templates.service.ts |
+| `src/templates/templates.service.ts` | ts | no | TemplateRowDto, TemplatesService | src/entities/template.entity.ts, src/common/pagination.ts |
 | `src/training-levels/training-levels.controller.ts` | ts | no | TrainingLevelsController | src/training-levels/training-levels.service.ts, src/common/api-response.ts, src/config/constants.ts |
 | `src/training-levels/training-levels.module.ts` | ts | no | TrainingLevelsModule | src/training-levels/training-levels.controller.ts, src/training-levels/training-levels.service.ts |
 | `src/training-levels/training-levels.service.ts` | ts | no | TrainingLevelRowDto, ListTrainingLevelsParams, ListTrainingLevelsResult, TrainingLevelsService | src/entities/training-level.entity.ts, src/common/pagination.ts |
@@ -340,11 +416,11 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/uploads/public-uploads.controller.ts` | ts | no | PublicUploadsController | src/uploads/uploads.service.ts, src/config/constants.ts |
 | `src/uploads/uploads.controller.ts` | ts | no | UploadsController | src/uploads/uploads.service.ts, src/common/api-response.ts, src/config/app.config.ts, src/config/constants.ts |
 | `src/uploads/uploads.module.ts` | ts | no | UploadsModule | src/uploads/uploads.service.ts, src/uploads/uploads.controller.ts, src/uploads/public-uploads.controller.ts |
-| `src/uploads/uploads.service.ts` | ts | no | ImageItemDto, FolderNodeDto, FolderItemDto, ListImagesResult, ListFoldersResult, UploadsService | src/config/app.config.ts |
+| `src/uploads/uploads.service.ts` | ts | no | ImageItemDto, FolderNodeDto, FolderItemDto, ListImagesResult, ListFoldersResult, UploadsService | src/config/app.config.ts, src/common/image-processor.ts |
 | `src/users/users.controller.ts` | ts | no | CreateUserDto, UpdateUserDto, BulkActionDto, UsersController | src/users/users.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/sessions/sessions.service.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, |
 | `src/users/users.module.ts` | ts | no | UsersModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/sessions/sessions.module.ts, src/users/users.service.ts, src/users/users.controller.ts |
 | `src/users/users.service.spec.ts` | ts | no |  | src/users/users.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
-| `src/users/users.service.ts` | ts | no | UserRowDto, DevLoginOptionDto, ListUsersParams, ListUsersResult, UsersService | src/common/pagination.ts, src/common/get-options.ts, src/common/date-utils.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/user.entity.ts |
+| `src/users/users.service.ts` | ts | no | UserRowDto, DevLoginOptionDto, ListUsersParams, ListUsersResult, UsersService | src/common/pagination.ts, src/common/get-options.ts, src/common/date-utils.ts, src/entities/role.entity.ts, src/entities/setting.entity.ts, src/entities/user-role.entity.ts, src/entities/user.entity.t |
 | `tsconfig.json` | config | — | — | — |
 ## File Markdown trong scope app
 

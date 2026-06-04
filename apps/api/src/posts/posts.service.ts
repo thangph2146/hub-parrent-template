@@ -388,32 +388,15 @@ export class PostsService {
     const ids = idsOnly.map((p) => p.id);
     const rows =
       ids.length > 0
-        ? await this.em.find(Post, { id: { $in: ids } } as FilterQuery<Post>, {
+        ? await this.em.find(Post, ids, {
             populate: POST_POPULATE,
-            fields: [
-              'id',
-              'title',
-              'slug',
-              'excerpt',
-              'image',
-              'published',
-              'publishedAt',
-              'eventStartAt',
-              'eventEndAt',
-              'createdAt',
-              'updatedAt',
-              'deletedAt',
-              'author',
-              'categories',
-              'tags',
-            ],
           })
         : [];
 
     // Preserve the sort order from the paginated ID query
-    const orderMap = new Map<string, number>();
-    for (let i = 0; i < ids.length; i++) orderMap.set(ids[i], i);
-    rows.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
+    const idOrder = new Map<string, number>();
+    for (let i = 0; i < ids.length; i++) idOrder.set(ids[i], i);
+    rows.sort((a, b) => (idOrder.get(a.id) ?? 0) - (idOrder.get(b.id) ?? 0));
 
     let finalRows = rows;
     if (params.categoriesNone) {

@@ -52,4 +52,4 @@ pnpm check:full
 - Không thêm phụ thuộc sai vào `package.json` của app/package.
 
 ----
-File này là tóm tắt; tham khảo chi tiết trong `docs/hub-parent` và `.graphify/markdown/`.
+File này là tóm tắt; tham khảo chi tiết trong `docs/admin-pattern/` và `.graphify/markdown/`.

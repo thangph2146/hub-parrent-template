@@ -354,6 +354,8 @@ function SpeakersPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction)
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="diễn giả"
+        getName={(r) => r.name}
       />
     </AdminPageSection>
   )

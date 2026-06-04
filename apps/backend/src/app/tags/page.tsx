@@ -354,6 +354,9 @@ function TagsPageInner() {
           if (confirmAction) void handleConfirmAction(confirmAction);
         }}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
+        entityLabel="thẻ"
+        getName={(r) => r.name}
+        getSubInfo={(r) => r.slug}
       />
     </AdminPageSection>
   );

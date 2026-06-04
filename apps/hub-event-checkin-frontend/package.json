@@ -1,5 +1,5 @@
 {
-  "name": "hub-event-checkin-frontend",
+  "name": "@hub-event-checkin-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {

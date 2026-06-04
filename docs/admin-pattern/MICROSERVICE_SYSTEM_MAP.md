@@ -18,8 +18,9 @@ Nguyên tắc:
 
 - `@workspace/api-client`: SDK/contract để gọi `@api`.
 - `@workspace/query-client`: cấu hình `QueryClient` / TanStack Query dùng chung cho Next apps.
-- `@ui`: component/UI primitives dùng cho Next apps.
+- `@workspace/ui` (`@ui`): component/UI primitives dùng cho Next apps.
 - `@thangph2146/lexical-editor`: editor Lexical (workspace package `packages/editor`).
+- `@workspace/logger`: dev logging (console output), dùng nội bộ bởi `@workspace/api-client`.
 - `@workspace/eslint-config`: lint rules + service boundaries.
 - `@workspace/typescript-config`: tsconfig dùng chung.
 

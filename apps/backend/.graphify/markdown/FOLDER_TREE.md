@@ -1,6 +1,6 @@
 # Cây thư mục — backend (Graphify)
 
-> **Sinh tự động:** `2026-06-02T06:06:23.310Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-04T07:32:10.121Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -17,6 +17,16 @@ src/
 │   │   └── new/
 │   ├── api/
 │   │   └── graphify/
+│   ├── cameras/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
 │   ├── categories/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -30,12 +40,9 @@ src/
 │   ├── contact-requests/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
-│   │   │   ├── _form/
-│   │   │   ├── _hooks/
 │   │   │   ├── _query/
 │   │   │   └── _table/
 │   │   └── [id]/
-│   │       └── edit/
 │   ├── courses/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -48,6 +55,27 @@ src/
 │   │   └── new/
 │   ├── data/
 │   ├── database-schema/
+│   ├── departments/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
+│   ├── events/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   ├── _live/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
 │   ├── graph/
 │   ├── guides/
 │   │   ├── _component/
@@ -98,10 +126,33 @@ src/
 │   │   └── new/
 │   ├── profile/
 │   ├── rbac/
-│   │   └── _component/
-│   │       ├── _alert-dialog/
-│   │       └── _query/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   └── _query/
+│   │   └── [id]/
+│   │       └── edit/
 │   ├── register/
+│   ├── screens/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
+│   ├── seo-metas/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
+│   ├── settings/
 │   ├── speakers/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -132,6 +183,16 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── templates/
+│   │   ├── _component/
+│   │   │   ├── _alert-dialog/
+│   │   │   ├── _form/
+│   │   │   ├── _hooks/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   ├── [id]/
+│   │   │   └── edit/
+│   │   └── new/
 │   ├── training-levels/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -153,7 +214,7 @@ src/
 │       │   └── edit/
 │       └── new/
 ├── components/
-│   └── admin-data-table/
+├── config/
 ├── features/
 │   └── auth/
 ├── hooks/

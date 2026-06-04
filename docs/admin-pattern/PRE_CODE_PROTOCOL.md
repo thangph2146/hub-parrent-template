@@ -37,57 +37,49 @@ Không mở `apps/*/.graphify/snapshot/context.json` trừ khi cần trích đo�
 
 Trước khi sửa **bất kỳ page nào** trong `apps/backend/src/app/`, agent phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` trước — tài liệu này định nghĩa pattern chuẩn (guard, header, layout grid, table actions, form) mà mọi page phải tuân thủ.
 
-## 4. Mapping docs feature
+## 4. Reference docs
 
-Khi task đụng đến các route/module dưới đây, đọc docs tương ứng trước khi code:
+Docs feature cho từng module đã được gộp vào file `docs/pages/README.md` và `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`. Các file task list riêng lẻ cũ đã được xoá.
 
-| Phạm vi source | Docs bắt buộc |
-|---|---|
-| `apps/backend/src/app/categories/**` | `docs/pages/categories-implementation.md` |
-| `apps/backend/src/app/contact-requests/**` | `docs/pages/contact-requests-implementation.md` |
-| `apps/backend/src/app/data/**` | `docs/pages/data-implementation.md` |
-| `apps/backend/src/app/guides/**` | `docs/pages/guides-implementation.md` |
-| `apps/backend/src/app/my-students/**` | `docs/pages/my-students-implementation.md` |
-| `apps/backend/src/app/parent-students/**` | `docs/pages/parent-students-implementation.md` |
-| `apps/backend/src/app/posts/**` | `docs/pages/posts-implementation.md` |
-| `apps/backend/src/app/profile/**` | `docs/pages/profile-implementation.md` |
-| `apps/backend/src/app/rbac/**` | `docs/pages/rbac-implementation.md` |
-| `apps/backend/src/app/staff/**` | `docs/pages/staff-implementation.md` |
-| `apps/backend/src/app/tags/**` | `docs/pages/tags-implementation.md` |
-
-Nếu không tìm thấy docs feature tương ứng, agent phải nói rõ: "Không tìm thấy docs feature tương ứng", rồi tiếp tục bằng Graphify + source code.
+Khi cần hiểu chi tiết về một module, agent đọc:
+- `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — pattern chuẩn cho mọi page admin
+- `docs/pages/README.md` — kiến trúc file, import chuẩn, quy tắc
+- App Graphify summaries + `FOLDER_TREE.md` để định vị file cụ thể
 
 ## 5. Boundary checklist trước khi sửa
 
 Trước khi code, agent phải tự đối chiếu:
 
+- **Admin components TUYỆT ĐỐI không tạo local** trong `apps/backend/src/`. Mọi component UI admin (guard, page header, layout grid, table actions, confirm dialog, button, input, card, badge...) đều import từ `packages/ui` (`@ui/components/...`). Nếu thấy thiếu, hãy thêm vào `packages/ui/src/components/admin/` — không tạo file tương đương trong apps.
 - Không import chéo source giữa `apps/*`.
-- `apps/frontend` và `apps/backend` gọi `apps/api` qua HTTP và `@workspace/api-client`.
+- `apps/frontend` và `apps/backend` gọi `apps/api` qua HTTP và `@workspace/api-client` — không tự viết fetch.
 - Entity, MikroORM, migrations, seeders, business logic database chỉ thuộc `apps/api`.
 - Logic dùng chung không phụ thuộc runtime app thì đặt trong `packages/*` khi thật sự cần share.
 - Không thêm dependency sai boundary vào `package.json`.
+- Khi sửa API (`apps/api`): đọc `docs/api-pattern/README.md`.
+- Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.
 
 ## 6. Quy trình khi bắt đầu một task code
 
 1. Xác định task thuộc app/package/feature nào.
 2. Đọc docs theo thứ tự trong tài liệu này.
 3. Đọc docs feature trong `docs/pages/` nếu task là admin page/module.
-4. Đọc Graphify files đúng chủ đề.
-5. Trace import của file target và các API-client method liên quan.
-6. Chỉ sửa code sau khi đã hiểu luồng dữ liệu đúng.
-7. Sau khi sửa, chạy `pnpm check`.
-8. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
+4. Nếu task liên quan một package cụ thể, đọc tài liệu bổ trợ tương ứng (xem `AGENTS.md` mục "Tài liệu bổ trợ theo package").
+5. Đọc Graphify files đúng chủ đề.
+6. Trace import của file target và các API-client method liên quan.
+7. Chỉ sửa code sau khi đã hiểu luồng dữ liệu đúng.
+8. Sau khi sửa, chạy `pnpm check`.
+9. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
 
 ## 7. Khi làm việc với `parent-students`
 
 Với mọi task liên quan `apps/backend/src/app/parent-students/**`, agent phải đọc:
 
-1. `docs/pages/parent-students-implementation.md`
-2. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-3. `apps/backend/.graphify/markdown/FOLDER_TREE.md`
-4. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
-5. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
-6. Source target trong `apps/backend/src/app/parent-students/**`
-7. API client source liên quan trong `packages/*` hoặc import path tương ứng
+1. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
+2. `apps/backend/.graphify/markdown/FOLDER_TREE.md`
+3. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+4. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
+5. Source target trong `apps/backend/src/app/parent-students/**`
+6. API client source liên quan trong `packages/*` hoặc import path tương ứng
 
 Sau đó mới sửa component, hook, query, table, hoặc form của feature.

@@ -1695,6 +1695,11 @@
       "relation": "assets"
     },
     {
+      "source": "file_src_components_shared_post_content_tsx",
+      "target": "file_src_components_shared_post_content_renderer_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_components_shared_scroll_to_top_tsx",
       "target": "file_src_lib_scroll_ts",
       "relation": "imports"
