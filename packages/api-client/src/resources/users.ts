@@ -202,4 +202,8 @@ export class UsersApi {
   async purgeTrashed(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/users/${id}/hard-delete`);
   }
+
+  async bulk(body: { action: string; ids: string[] }): Promise<{ affected: number; message: string }> {
+    return postData<{ affected: number; message: string }>(this.http, "/admin/users/bulk", body);
+  }
 }

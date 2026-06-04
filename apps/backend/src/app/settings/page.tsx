@@ -30,36 +30,6 @@ import {
   ADMIN_PAGE_FORM_COLUMN_CLASS,
 } from "@ui/lib/layout-shell"
 
-function normalizePagedRoles(payload: unknown): {
-  items: { id: string; code: string; name: string }[]
-} {
-  const envelope =
-    payload && typeof payload === "object"
-      ? (payload as Record<string, unknown>)
-      : {}
-  const inner = envelope.data
-  const raw =
-    inner && typeof inner === "object" && "data" in (inner as Record<string, unknown>)
-      ? (inner as Record<string, unknown>).data
-      : inner
-  if (!Array.isArray(raw)) return { items: [] }
-  const seen = new Set<string>()
-  const items = raw
-    .filter((r): r is Record<string, unknown> => typeof r === "object" && r != null)
-    .map((r) => ({
-      id: String(r.id ?? ""),
-      code: String(r.code ?? r.name ?? "").replace(/^"|"$/g, ""),
-      name: String(r.displayName ?? r.name ?? "").replace(/^"|"$/g, ""),
-    }))
-    .filter((r) => !isSuperAdminRoleCode(r.code))
-    .filter((r) => {
-      if (seen.has(r.code)) return false
-      seen.add(r.code)
-      return true
-    })
-  return { items }
-}
-
 /** Giá trị settings từ API bị JSON double-encode (do MikroORM type:json).
  *  Parse thêm một lần để lấy chuỗi gốc. */
 export function extractSettingValue(
@@ -87,7 +57,7 @@ export default function SettingsPage() {
   const siteNameQuery = useQuery({
     queryKey: ["settings", "site_name"],
     queryFn: async (): Promise<string> => {
-      return extractSettingValue(await api.http.get("/admin/settings/site_name"), "HUB Parent")
+      return extractSettingValue(await api.settings.get("site_name"), "HUB Parent")
     },
     enabled: Boolean(session),
   })
@@ -95,7 +65,7 @@ export default function SettingsPage() {
   const siteDescQuery = useQuery({
     queryKey: ["settings", "site_description"],
     queryFn: async (): Promise<string> => {
-      return extractSettingValue(await api.http.get("/admin/settings/site_description"), "Quản trị hệ thống")
+      return extractSettingValue(await api.settings.get("site_description"), "Quản trị hệ thống")
     },
     enabled: Boolean(session),
   })
@@ -103,15 +73,31 @@ export default function SettingsPage() {
   const defaultRoleQuery = useQuery({
     queryKey: ["settings", "default_new_user_role"],
     queryFn: async (): Promise<string> => {
-      return extractSettingValue(await api.http.get("/admin/settings/default_new_user_role"), "parent")
+      return extractSettingValue(await api.settings.get("default_new_user_role"), "parent")
     },
     enabled: Boolean(session),
   })
 
   const rolesQuery = useQuery({
     queryKey: ["settings", "roles-options"],
-    queryFn: async () =>
-      normalizePagedRoles(await api.http.get("/admin/roles", { query: { page: 1, limit: 200, status: "active" } })),
+    queryFn: async () => {
+      const result = await api.roles.list<Record<string, unknown>>({ page: 1, limit: 200, status: "active" })
+      const seen = new Set<string>()
+      const items = result.items
+        .filter((r) => !isSuperAdminRoleCode(String(r.name ?? "")))
+        .filter((r) => {
+          const code = String(r.code ?? r.name ?? "").replace(/^"|"$/g, "")
+          if (seen.has(code)) return false
+          seen.add(code)
+          return true
+        })
+        .map((r) => ({
+          id: String(r.id ?? ""),
+          code: String(r.code ?? r.name ?? "").replace(/^"|"$/g, ""),
+          name: String(r.displayName ?? r.name ?? "").replace(/^"|"$/g, ""),
+        }))
+      return { items }
+    },
     enabled: Boolean(session),
   })
 
@@ -133,7 +119,7 @@ export default function SettingsPage() {
 
   const saveMutation = useMutation({
     mutationFn: async () =>
-      api.http.put("/admin/settings", {
+      api.settings.update({
         site_name: siteName,
         site_description: siteDesc,
         default_new_user_role: defaultRole,

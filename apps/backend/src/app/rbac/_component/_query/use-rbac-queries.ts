@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { api } from "@/lib/api"
+import type { RbacPermission, RbacRole } from "@workspace/api-client"
 import type { CreateRoleInput, UpdateRoleInput } from "../types"
 
 export type RoleRow = {
@@ -15,13 +16,6 @@ export type RoleRow = {
   createdAt: string | null
   updatedAt: string | null
   deletedAt: string | null
-}
-
-type ApiEnvelope<T> = {
-  success?: boolean
-  message?: string
-  error?: string | null
-  data?: T
 }
 
 function normalizePermissions(value: unknown): string[] {
@@ -63,15 +57,6 @@ function normalizeRole(raw: Record<string, unknown>): RoleRow {
   }
 }
 
-function unwrapEnvelope<T>(payload: unknown): T {
-  if (!payload || typeof payload !== "object") return payload as T
-  const envelope = payload as ApiEnvelope<T>
-  if (envelope.success === false) {
-    throw new Error(envelope.message || envelope.error || "Yêu cầu thất bại")
-  }
-  return "data" in envelope ? (envelope.data as T) : (payload as T)
-}
-
 export const rbacQueryKeys = {
   all: ["rbac"] as const,
   catalog: () => [...rbacQueryKeys.all, "catalog"] as const,
@@ -81,10 +66,10 @@ export const rbacQueryKeys = {
 export function useRbacCatalog() {
   return useQuery({
     queryKey: rbacQueryKeys.catalog(),
-    queryFn: async () => {
+    queryFn: async (): Promise<{ roles: RbacRole[]; permissions: RbacPermission[] }> => {
       const [roles, permissions] = await Promise.all([
-        api.rbac.listRoles(),
-        api.rbac.listPermissions(),
+        api.roles.listAll<RbacRole>(),
+        api.roles.listPermissions(),
       ])
       return { roles, permissions }
     },
@@ -96,8 +81,7 @@ export function useRoleDetail(id: string) {
   return useQuery({
     queryKey: rbacQueryKeys.detail(id),
     queryFn: async () => {
-      const payload = await api.http.get(`/admin/roles/${id}`)
-      const data = unwrapEnvelope<Record<string, unknown>>(payload)
+      const data = await api.roles.get<Record<string, unknown>>(id)
       return normalizeRole(data)
     },
     enabled: !!id,
@@ -109,14 +93,13 @@ export function useCreateRoleMutation() {
 
   return useMutation({
     mutationFn: async (data: CreateRoleInput) => {
-      const payload = await api.http.post("/admin/roles", {
+      const role = await api.roles.create<Record<string, unknown>>({
         name: data.code,
         displayName: data.name,
         description: data.description || null,
         permissions: data.permissionCodes,
         isActive: data.isActive ?? true,
       })
-      const role = unwrapEnvelope<Record<string, unknown>>(payload)
       return normalizeRole(role)
     },
     onSuccess: () => {
@@ -135,14 +118,13 @@ export function useUpdateRoleMutation() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: UpdateRoleInput }) => {
-      const payload = await api.http.put(`/admin/roles/${id}`, {
+      const role = await api.roles.update<Record<string, unknown>>(id, {
         name: data.code,
         displayName: data.name,
         description: data.description || null,
         permissions: data.permissionCodes,
         isActive: data.isActive,
       })
-      const role = unwrapEnvelope<Record<string, unknown>>(payload)
       return normalizeRole(role)
     },
     onSuccess: (_data, variables) => {
@@ -162,7 +144,7 @@ export function useDeleteRoleMutation() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.http.post("/admin/roles/bulk", { action: "delete", ids: [id] })
+      await api.roles.bulk({ action: "delete", ids: [id] })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })

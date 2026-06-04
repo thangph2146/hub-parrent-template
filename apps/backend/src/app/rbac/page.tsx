@@ -63,14 +63,6 @@ import {
   ADMIN_DIALOG_CONTENT_LG_CLASS,
 } from "@ui/lib/layout-shell"
 
-type ApiEnvelope<T> = {
-  success?: boolean
-  message?: string
-  error?: string | null
-  data?: T
-  pagination?: { page?: number; limit?: number; total?: number }
-}
-
 type RoleRow = {
   id: string
   code: string
@@ -172,15 +164,6 @@ const EMPTY_FORM: RoleFormState = {
   permissions: [],
 }
 
-function unwrapEnvelope<T>(payload: unknown): T {
-  if (!payload || typeof payload !== "object") return payload as T
-  const envelope = payload as ApiEnvelope<T>
-  if (envelope.success === false) {
-    throw new Error(envelope.message || envelope.error || "Yeu cau that bai")
-  }
-  return "data" in envelope ? (envelope.data as T) : (payload as T)
-}
-
 function normalizePermissionCodes(value: unknown): string[] {
   const visit = (input: unknown): string[] => {
     if (Array.isArray(input)) return input.flatMap((item) => visit(item))
@@ -200,42 +183,6 @@ function normalizePermissionCodes(value: unknown): string[] {
     return [trimmed]
   }
   return [...new Set(visit(value))].sort((a, b) => a.localeCompare(b))
-}
-
-function normalizePagedRoles(payload: unknown): PagedResult<RoleRow> {
-  const envelope =
-    payload && typeof payload === "object"
-      ? (payload as ApiEnvelope<unknown>)
-      : {}
-  const raw = envelope.data
-  const rows = Array.isArray(raw)
-    ? raw
-    : raw &&
-        typeof raw === "object" &&
-        Array.isArray((raw as { data?: unknown }).data)
-      ? ((raw as { data: unknown[] }).data ?? [])
-      : []
-
-  const items: RoleRow[] = rows.map((row) => {
-    const record = row as Record<string, unknown>
-    return {
-      id: String(record.id ?? ""),
-      code: String(record.name ?? ""),
-      name: String(record.displayName ?? record.name ?? ""),
-      description: (record.description as string | null | undefined) ?? null,
-      permissions: normalizePermissionCodes(record.permissions),
-      isActive: Boolean(record.isActive ?? true),
-      createdAt: (record.createdAt as string | null | undefined) ?? null,
-      updatedAt: (record.updatedAt as string | null | undefined) ?? null,
-      deletedAt: (record.deletedAt as string | null | undefined) ?? null,
-    }
-  })
-
-  const pagination = envelope.pagination ?? {}
-  const page = Number(pagination.page ?? 1)
-  const limit = Number(pagination.limit ?? (items.length || 10))
-  const total = Number(pagination.total ?? items.length)
-  return { items, total, page, limit }
 }
 
 function roleCodeify(input: string): string {
@@ -304,42 +251,35 @@ export default function RbacPage() {
   const debouncedQ = useDebouncedValue(globalFilter, 300)
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 300)
 
+  const fetchRoles = async (params: {
+    page: number; limit: number; search?: string; status: string
+  }): Promise<PagedResult<RoleRow>> => {
+    const result = await api.roles.list<Record<string, unknown>>(params);
+    const items: RoleRow[] = result.items.map((row) => ({
+      id: String(row.id ?? ""),
+      code: String(row.name ?? ""),
+      name: String(row.displayName ?? row.name ?? ""),
+      description: (row.description as string | null | undefined) ?? null,
+      permissions: normalizePermissionCodes(row.permissions),
+      isActive: Boolean(row.isActive ?? true),
+      createdAt: (row.createdAt as string | null | undefined) ?? null,
+      updatedAt: (row.updatedAt as string | null | undefined) ?? null,
+      deletedAt: (row.deletedAt as string | null | undefined) ?? null,
+    }));
+    return { items, total: result.total, page: params.page, limit: params.limit };
+  };
+
   const listQuery = useQuery({
     queryKey: ["rbac", "roles", "list", page, pageSize, debouncedQ],
-    queryFn: async (): Promise<PagedResult<RoleRow>> =>
-      normalizePagedRoles(
-        await api.http.get("/admin/roles", {
-          query: {
-            page,
-            limit: pageSize,
-            search: debouncedQ.trim() || undefined,
-            status: "active",
-          },
-        })
-      ),
+    queryFn: (): Promise<PagedResult<RoleRow>> =>
+      fetchRoles({ page, limit: pageSize, search: debouncedQ.trim() || undefined, status: "active" }),
     enabled: Boolean(session) && canReadRbac && tab === "list",
   })
 
   const trashQuery = useQuery({
-    queryKey: [
-      "rbac",
-      "roles",
-      "trash",
-      trashPage,
-      trashPageSize,
-      debouncedTrashQ,
-    ],
-    queryFn: async (): Promise<PagedResult<RoleRow>> =>
-      normalizePagedRoles(
-        await api.http.get("/admin/roles", {
-          query: {
-            page: trashPage,
-            limit: trashPageSize,
-            search: debouncedTrashQ.trim() || undefined,
-            status: "deleted",
-          },
-        })
-      ),
+    queryKey: ["rbac", "roles", "trash", trashPage, trashPageSize, debouncedTrashQ],
+    queryFn: (): Promise<PagedResult<RoleRow>> =>
+      fetchRoles({ page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted" }),
     enabled: Boolean(session) && canReadRbac && tab === "trash",
   })
 
@@ -353,42 +293,34 @@ export default function RbacPage() {
 
   const createMutation = useMutation({
     mutationFn: async (input: RoleFormState) =>
-      unwrapEnvelope<RoleRow>(
-        await api.http.post("/admin/roles", {
-          name: input.code,
-          displayName: input.name,
-          description: input.description || null,
-          isActive: input.isActive,
-          permissions: input.permissions,
-        })
-      ),
+      api.roles.create<RoleRow>({
+        name: input.code,
+        displayName: input.name,
+        description: input.description || null,
+        isActive: input.isActive,
+        permissions: input.permissions,
+      }),
     onSuccess: invalidateRoles,
   })
 
   const deleteMutation = useMutation({
-    /** Luôn dùng bulk soft-delete để tránh nhầm route DELETE (soft vs hard-delete). */
     mutationFn: async (id: string) =>
-      api.http.post("/admin/roles/bulk", { action: "delete", ids: [id] }),
+      api.roles.bulk({ action: "delete", ids: [id] }),
     onSuccess: invalidateRoles,
   })
   const restoreMutation = useMutation({
     mutationFn: async (id: string) =>
-      api.http.post(`/admin/roles/${id}/restore`),
+      api.roles.restore(id),
     onSuccess: invalidateRoles,
   })
   const purgeMutation = useMutation({
     mutationFn: async (id: string) =>
-      api.http.delete(`/admin/roles/${id}/hard-delete`),
+      api.roles.purge(id),
     onSuccess: invalidateRoles,
   })
   const bulkMutation = useMutation({
-    mutationFn: async ({
-      action,
-      ids,
-    }: {
-      action: "delete" | "restore" | "hard-delete"
-      ids: string[]
-    }) => api.http.post("/admin/roles/bulk", { action, ids }),
+    mutationFn: async ({ action, ids }: { action: string; ids: string[] }) =>
+      api.roles.bulk({ action, ids }),
     onSuccess: invalidateRoles,
   })
 

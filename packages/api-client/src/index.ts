@@ -55,6 +55,8 @@ export { CamerasApi } from "./resources/cameras"
 export { TemplatesApi } from "./resources/templates"
 export { ScreensApi } from "./resources/screens"
 export { DepartmentsApi } from "./resources/departments"
+export { RolesApi } from "./resources/roles"
+export { SettingsApi } from "./resources/settings"
 export { StoreSyncSdk, createStoreSyncSdk, DEFAULT_API_URL } from "./sdk"
 export {
   unwrapApiEnvelope,
