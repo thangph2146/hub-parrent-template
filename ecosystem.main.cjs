@@ -9,9 +9,9 @@
  *   pm2 start ecosystem.main.cjs
  *
  * Từng app:
- *   pm2 start ecosystem.main.cjs --only hub-main-api
- *   pm2 start ecosystem.main.cjs --only hub-main-backend
- *   pm2 start ecosystem.main.cjs --only hub-main-frontend
+ *   pm2 start ecosystem.main.cjs --only hub-parent-api
+ *   pm2 start ecosystem.main.cjs --only hub-parent-backend
+ *   pm2 start ecosystem.main.cjs --only hub-parent-frontend
  */
 const { createMainStack } = require("./ecosystem.shared.cjs")
 

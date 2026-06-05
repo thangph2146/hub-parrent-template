@@ -82,9 +82,9 @@ Factory chung: `ecosystem.shared.cjs`. Hai file stack:
 
 | Thư mục | Package | Tên PM2 | Port |
 |---|---|---|---|
-| `apps/api` | `@api` | `hub-main-api` | 3002 |
-| `apps/backend` | `@backend` | `hub-main-backend` | 3001 |
-| `apps/frontend` | `@frontend` | `hub-main-frontend` | 3000 |
+| `apps/api` | `@api` | `hub-parent-api` | 3002 |
+| `apps/backend` | `@backend` | `hub-parent-backend` | 3001 |
+| `apps/frontend` | `@frontend` | `hub-parent-frontend` | 3000 |
 
 ```bash
 pnpm pm2:start
@@ -125,9 +125,9 @@ pnpm db -- migration:up   # khi có migration mới
 ### Chạy riêng một app trong compo
 
 ```bash
-pm2 start ecosystem.main.cjs --only hub-main-api
-pm2 start ecosystem.main.cjs --only hub-main-backend
-pm2 start ecosystem.main.cjs --only hub-main-frontend
+pm2 start ecosystem.main.cjs --only hub-parent-api
+pm2 start ecosystem.main.cjs --only hub-parent-backend
+pm2 start ecosystem.main.cjs --only hub-parent-frontend
 
 pm2 start ecosystem.checkin.cjs --only hub-checkin-api
 pm2 start ecosystem.checkin.cjs --only hub-checkin-backend
@@ -138,8 +138,8 @@ pm2 start ecosystem.checkin.cjs --only hub-checkin-frontend
 
 ```bash
 pm2 status
-pm2 logs hub-checkin-api
-pm2 logs hub-main-backend --lines 100
+pm2 logs hub-parent-api
+pm2 logs hub-checkin-api --lines 100
 pnpm pm2:delete:checkin    # gỡ toàn bộ process compo 2
 pnpm pm2:delete            # gỡ toàn bộ process compo 1
 pm2 save                   # giữ process list sau reboot
@@ -154,9 +154,9 @@ Nếu `pm2 status` thấy `ecosystem.checkin` (fork, ~11mb) thay vì `hub-checki
 
 ```bash
 pm2 delete ecosystem.checkin
-# Dừng stack cũ (tên legacy hoặc compo khác) trước khi start — trùng port 3000–3002
-pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend
-# hoặc: pnpm pm2:delete && pnpm pm2:delete:checkin
+# Dừng compo khác trước khi start — trùng port 3000–3002
+# Chuyển sang check-in: pnpm pm2:delete
+# Chuyển sang site chính: pnpm pm2:delete:checkin
 
 git pull
 pnpm pm2:start:checkin

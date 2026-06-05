@@ -41,9 +41,9 @@ function createNextFrontendApp(name, cwd, port = 3000) {
 /** Site chính: @frontend (3000) + @backend (3001) + @api (3002) */
 function createMainStack() {
   return [
-    createApiApp("hub-main-api"),
-    createBackendApp("hub-main-backend"),
-    createNextFrontendApp("hub-main-frontend", "./apps/frontend", 3000),
+    createApiApp("hub-parent-api"),
+    createBackendApp("hub-parent-backend"),
+    createNextFrontendApp("hub-parent-frontend", "./apps/frontend", 3000),
   ]
 }
 
