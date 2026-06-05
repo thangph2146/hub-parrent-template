@@ -14,10 +14,15 @@ export class TrainingSystem {
   @Property({ default: 1 })
   status: number = 1;
 
-  @Property({ fieldName: 'created_at', nullable: true })
+  @Property({ fieldName: 'created_at', nullable: true, onCreate: () => new Date() })
   createdAt?: Date;
 
-  @Property({ fieldName: 'updated_at', nullable: true })
+  @Property({
+    fieldName: 'updated_at',
+    nullable: true,
+    onCreate: () => new Date(),
+    onUpdate: () => new Date(),
+  })
   updatedAt?: Date;
 
   @Property({ fieldName: 'deleted_at', nullable: true })

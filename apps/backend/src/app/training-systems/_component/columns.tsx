@@ -22,12 +22,18 @@ export function getTrainingSystemColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: TrainingSystemRow) => void
   openEdit?: (row: TrainingSystemRow) => void
   rowActions: AdminCrudRowHandlers<TrainingSystemRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<TrainingSystemRow>[] {
   const dataColumns: ColumnDef<TrainingSystemRow>[] = [
     {
@@ -86,6 +92,8 @@ export function getTrainingSystemColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<TrainingSystemRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -94,6 +102,8 @@ export function getTrainingSystemColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<TrainingSystemRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

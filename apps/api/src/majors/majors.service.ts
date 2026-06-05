@@ -10,6 +10,10 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { MAJOR_COLUMN_FILTERS } from '../common/admin-filter-configs';
+import {
+  backfillLegacyAuditTimestampsIfMissing,
+  touchLegacyAuditTimestamps,
+} from '../common/legacy-audit-timestamps';
 
 export interface MajorRowDto {
   id: number;
@@ -131,13 +135,18 @@ export class MajorsService {
 
   async getById(id: number): Promise<MajorRowDto | null> {
     const row = await this.em.findOne(Major, { id });
-    return row ? mapRow(row) : null;
+    if (!row) return null;
+    if (backfillLegacyAuditTimestampsIfMissing(row)) {
+      await this.em.persistAndFlush(row);
+    }
+    return mapRow(row);
   }
 
   async create(data: { name: string; code: string }): Promise<MajorRowDto> {
     const entity = new Major();
     entity.name = data.name;
     entity.code = data.code;
+    touchLegacyAuditTimestamps(entity, true);
     await this.em.persistAndFlush(entity);
     return mapRow(entity);
   }
@@ -151,6 +160,7 @@ export class MajorsService {
     if (data.name != null) existing.name = data.name;
     if (data.code != null) existing.code = data.code;
     if (data.status != null) existing.status = data.status;
+    touchLegacyAuditTimestamps(existing);
     await this.em.persistAndFlush(existing);
     return mapRow(existing);
   }
@@ -159,6 +169,7 @@ export class MajorsService {
     const row = await this.em.findOne(Major, { id });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
+    touchLegacyAuditTimestamps(row);
     await this.em.persistAndFlush(row);
     return true;
   }

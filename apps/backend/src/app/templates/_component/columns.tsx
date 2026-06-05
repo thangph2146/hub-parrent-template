@@ -19,12 +19,18 @@ export function getTemplateColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: TemplateRow) => void
   openEdit?: (row: TemplateRow) => void
   rowActions: AdminCrudRowHandlers<TemplateRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<TemplateRow>[] {
   const dataColumns: ColumnDef<TemplateRow>[] = [
     {
@@ -80,6 +86,8 @@ export function getTemplateColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<TemplateRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -88,6 +96,8 @@ export function getTemplateColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<TemplateRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

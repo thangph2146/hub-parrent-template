@@ -10,6 +10,10 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { TRAINING_LEVEL_COLUMN_FILTERS } from '../common/admin-filter-configs';
+import {
+  backfillLegacyAuditTimestampsIfMissing,
+  touchLegacyAuditTimestamps,
+} from '../common/legacy-audit-timestamps';
 
 export interface TrainingLevelRowDto {
   id: number;
@@ -106,6 +110,9 @@ export class TrainingLevelsService {
   async getById(id: number): Promise<TrainingLevelRowDto | null> {
     const r = await this.em.findOne(TrainingLevel, { id });
     if (!r) return null;
+    if (backfillLegacyAuditTimestampsIfMissing(r)) {
+      await this.em.persistAndFlush(r);
+    }
     return mapRow(r);
   }
 
@@ -118,6 +125,7 @@ export class TrainingLevelsService {
     created.name = data.name;
     if (data.code !== undefined) created.code = data.code;
     if (data.status !== undefined) created.status = data.status;
+    touchLegacyAuditTimestamps(created, true);
     await this.em.persistAndFlush(created);
     return mapRow(created);
   }
@@ -131,6 +139,7 @@ export class TrainingLevelsService {
     if (data.name !== undefined) existing.name = data.name;
     if (data.code !== undefined) existing.code = data.code;
     if (data.status !== undefined) existing.status = data.status;
+    touchLegacyAuditTimestamps(existing);
     await this.em.persistAndFlush(existing);
     return mapRow(existing);
   }
@@ -139,6 +148,7 @@ export class TrainingLevelsService {
     const r = await this.em.findOne(TrainingLevel, { id });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
+    touchLegacyAuditTimestamps(r);
     await this.em.persistAndFlush(r);
     return true;
   }

@@ -13,6 +13,10 @@ import {
 } from '../common/bulk-actions';
 import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { ACADEMIC_YEAR_COLUMN_FILTERS } from '../common/admin-filter-configs';
+import {
+  backfillLegacyAuditTimestampsIfMissing,
+  touchLegacyAuditTimestamps,
+} from '../common/legacy-audit-timestamps';
 
 export interface AcademicYearRowDto {
   id: number;
@@ -146,7 +150,11 @@ export class AcademicYearsService {
 
   async getById(id: number): Promise<AcademicYearRowDto | null> {
     const row = await this.em.findOne(AcademicYear, { id });
-    return row ? mapRow(row) : null;
+    if (!row) return null;
+    if (backfillLegacyAuditTimestampsIfMissing(row)) {
+      await this.em.persistAndFlush(row);
+    }
+    return mapRow(row);
   }
 
   async create(data: {
@@ -160,6 +168,7 @@ export class AcademicYearsService {
     entity.startDate = normalizeAcademicYearDateInput(data.startDate);
     entity.endDate = normalizeAcademicYearDateInput(data.endDate);
     if (data.status != null) entity.status = data.status;
+    touchLegacyAuditTimestamps(entity, true);
     await this.em.persistAndFlush(entity);
     return mapRow(entity);
   }
@@ -183,6 +192,7 @@ export class AcademicYearsService {
       existing.endDate = normalizeAcademicYearDateInput(data.endDate);
     }
     if (data.status != null) existing.status = data.status;
+    touchLegacyAuditTimestamps(existing);
     await this.em.persistAndFlush(existing);
     return mapRow(existing);
   }
@@ -191,6 +201,7 @@ export class AcademicYearsService {
     const row = await this.em.findOne(AcademicYear, { id });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
+    touchLegacyAuditTimestamps(row);
     await this.em.persistAndFlush(row);
     return true;
   }

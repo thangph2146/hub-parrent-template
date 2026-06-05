@@ -22,12 +22,18 @@ export function getTrainingLevelColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: TrainingLevelRow) => void
   openEdit?: (row: TrainingLevelRow) => void
   rowActions: AdminCrudRowHandlers<TrainingLevelRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<TrainingLevelRow>[] {
   const dataColumns: ColumnDef<TrainingLevelRow>[] = [
     {
@@ -86,6 +92,8 @@ export function getTrainingLevelColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<TrainingLevelRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -94,6 +102,8 @@ export function getTrainingLevelColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<TrainingLevelRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

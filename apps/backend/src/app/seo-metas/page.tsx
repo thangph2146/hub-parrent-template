@@ -37,6 +37,18 @@ function SeoMetasPageInner() {
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SEO_METAS_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SEO_METAS_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SEO_METAS_HARD_DELETE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["seo-metas"] });
