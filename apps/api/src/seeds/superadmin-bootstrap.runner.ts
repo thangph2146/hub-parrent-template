@@ -25,15 +25,24 @@ export async function ensureSeedUserRoleLinks(
       role: link.roleId,
     });
     if (exists) continue;
-    const user = await em.findOne(User, { id: link.userId });
-    const role = await em.findOne(Role, { id: link.roleId });
-    if (!user || !role) continue;
+    const [userCount, roleCount] = await Promise.all([
+      em.count(User, { id: link.userId }),
+      em.count(Role, { id: link.roleId }),
+    ]);
+    if (userCount === 0 || roleCount === 0) continue;
     const ur = new UserRole();
+    ur.id = link.id;
     ur.user = em.getReference(User, link.userId);
     ur.role = em.getReference(Role, link.roleId);
     em.persist(ur);
   }
+
+  const conn = em.getConnection();
+  const driverName = em.getDriver().constructor.name;
+  const isMysql = /mysql|mariadb/i.test(driverName);
+  if (isMysql) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
   await em.flush();
+  if (isMysql) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
 }
 
 export type SuperadminBootstrapResult = {
@@ -111,7 +120,10 @@ export async function runSuperadminBootstrap(
 
   L('Seeding roles...');
   for (const roleData of SUPERADMIN_ROLES_DATA) {
-    const existing = await em.findOne(Role, { id: roleData.id });
+    let existing = await em.findOne(Role, { id: roleData.id });
+    if (!existing) {
+      existing = await em.findOne(Role, { name: roleData.name });
+    }
     if (!existing) {
       const role = new Role();
       role.id = roleData.id;
@@ -124,16 +136,31 @@ export async function runSuperadminBootstrap(
       out.rolesInserted++;
       L(`Created role: ${roleData.name}`);
     } else {
-      existing.name = roleData.name;
-      existing.displayName = roleData.displayName;
-      existing.description = roleData.description;
-      existing.permissions = roleData.permissions;
-      existing.isActive = roleData.isActive;
-      em.persist(existing);
+      if (existing.id !== roleData.id) {
+        em.remove(existing);
+        const role = new Role();
+        role.id = roleData.id;
+        role.name = roleData.name;
+        role.displayName = roleData.displayName;
+        role.description = roleData.description;
+        role.permissions = roleData.permissions;
+        role.isActive = roleData.isActive;
+        em.persist(role);
+      } else {
+        existing.name = roleData.name;
+        existing.displayName = roleData.displayName;
+        existing.description = roleData.description;
+        existing.permissions = roleData.permissions;
+        existing.isActive = roleData.isActive;
+        em.persist(existing);
+      }
       out.rolesUpdated++;
-      L(`Updated role: ${roleData.name}`);
+      L(`Updated role: ${roleData.name} (id=${roleData.id})`);
     }
   }
+
+  await em.flush();
+  L('Roles committed.');
 
   L('Seeding users...');
   for (const userData of SUPERADMIN_USERS_DATA) {
@@ -169,6 +196,9 @@ export async function runSuperadminBootstrap(
     }
   }
 
+  await em.flush();
+  L('Users committed.');
+
   L('Seeding user roles...');
   for (const userRoleData of SUPERADMIN_USER_ROLES_DATA) {
     const existingPair = await em.findOne(UserRole, {
@@ -190,6 +220,9 @@ export async function runSuperadminBootstrap(
     out.userRolesInserted++;
     L(`Created user role: ${userRoleData.userId} -> ${userRoleData.roleId}`);
   }
+
+  await em.flush();
+  L('User roles committed.');
 
   const pageContentData = loadOptionalPageContent();
   L('Seeding page contents...');

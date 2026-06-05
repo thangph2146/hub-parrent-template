@@ -88,6 +88,16 @@ const PREFERRED_MIDDLE_MODEL_ORDER: readonly string[] = [
   'session',
 ];
 
+/**
+ * Các bảng con / pivot import cùng request với bảng cha (một transaction).
+ * Khớp thứ tự FK: role → user → userRole; post → postCategory/postTag; …
+ */
+const IMPORT_MODEL_BUNDLES: Record<string, readonly string[]> = {
+  user: ['userRole'],
+  post: ['postCategory', 'postTag'],
+  event: ['eventSpeaker', 'eventRegistration'],
+};
+
 /** Xoá ký tự điều khiển XML (0x00–0x08, 0x0B–0x0C, 0x0E–0x1F) có thể làm hỏng XLSX. */
 function sanitizeExcelString(raw: string): string {
   if (!raw) return raw;
@@ -691,6 +701,7 @@ export class SystemService {
     fileBuffer: Buffer,
     targetModel?: string,
     skipClear: boolean = false,
+    onProgress?: (event: object) => void,
   ) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(fileBuffer as unknown as ExcelWorkbookLoadInput);
@@ -763,7 +774,7 @@ export class SystemService {
       data[modelName] = rows;
     }
 
-    return this.importData(data, resolvedTargetModel, skipClear);
+    return this.importData(data, resolvedTargetModel, skipClear, onProgress);
   }
 
   /** Bỏ pivot trỏ tới post/category không tồn tại (tránh lỗi FK / file export lệch). */
@@ -1083,17 +1094,20 @@ export class SystemService {
     em: EntityManager,
     mName: string,
     sanitized: Record<string, unknown>[],
-  ): Promise<void> {
+    onRowError?: (index: number, message: string) => void,
+  ): Promise<{ imported: number; skipped: number; total: number }> {
     const entity = entityByModelName[mName];
-    if (!entity || sanitized.length === 0) return;
+    const total = sanitized.length;
+    if (!entity || sanitized.length === 0)
+      return { imported: 0, skipped: 0, total };
 
     let rows = sanitized;
     rows = await this.filterRowsByExistingManyToOneRefs(em, mName, rows);
-    if (rows.length === 0) return;
+    if (rows.length === 0) return { imported: 0, skipped: total, total };
 
     if (mName === 'postCategory') {
       rows = await this.filterSanitizedPostCategories(em, rows);
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'user') {
@@ -1101,8 +1115,9 @@ export class SystemService {
     }
 
     if (mName === 'userRole') {
+      await em.flush();
       rows = await this.filterSanitizedUserRoles(em, rows);
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'eventSpeaker') {
@@ -1115,7 +1130,7 @@ export class SystemService {
         rightEntity: Speaker,
         label: 'eventSpeaker',
       });
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'groupMember') {
@@ -1128,7 +1143,7 @@ export class SystemService {
         rightEntity: User,
         label: 'groupMember',
       });
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'messageRead') {
@@ -1141,7 +1156,7 @@ export class SystemService {
         rightEntity: User,
         label: 'messageRead',
       });
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'eventRegistration' || mName === 'eventCheckin') {
@@ -1164,7 +1179,7 @@ export class SystemService {
         );
       }
       rows = filtered;
-      if (rows.length === 0) return;
+      if (rows.length === 0) return { imported: 0, skipped: total, total };
     }
 
     if (mName === 'role') {
@@ -1180,12 +1195,16 @@ export class SystemService {
       this.logger.debug(
         `Imported ${rows.length} pageContent (persist) in ${Date.now() - startTime}ms`,
       );
-      return;
+      return { imported: rows.length, skipped: total - rows.length, total };
     }
 
+    const preFilterSkipped = total - rows.length;
+    let imported = 0;
+    let skipped = preFilterSkipped;
     const startTime = Date.now();
     try {
       await em.insertMany(entity, rows as object[]);
+      imported = rows.length;
     } catch (e: unknown) {
       const message = getErrorMessage(e);
       this.logger.warn(
@@ -1199,16 +1218,21 @@ export class SystemService {
         const chunk = rows.slice(i, i + batchSize);
         try {
           await em.insertMany(entity, chunk as object[]);
+          imported += chunk.length;
         } catch (inner: unknown) {
           const innerMsg = getErrorMessage(inner);
           this.logger.debug(
             `Batch insert failed for ${mName}, fallback từng dòng: ${innerMsg}`,
           );
           for (const record of chunk) {
+            const rowIndex = rows.indexOf(record);
             try {
               await em.insert(entity, record as object);
+              imported++;
             } catch (rowErr: unknown) {
+              skipped++;
               const errMsg = getErrorMessage(rowErr);
+              onRowError?.(rowIndex, errMsg);
               if (
                 !errMsg.toLowerCase().includes('unique') &&
                 !errMsg.toLowerCase().includes('constraint')
@@ -1221,8 +1245,9 @@ export class SystemService {
       }
     }
     this.logger.debug(
-      `Imported ${rows.length} records into ${mName} in ${Date.now() - startTime}ms`,
+      `Imported ${imported}/${total} records into ${mName} in ${Date.now() - startTime}ms${skipped > 0 ? ` (${skipped} skipped)` : ''}`,
     );
+    return { imported, skipped, total };
   }
 
   /**
@@ -1262,10 +1287,105 @@ export class SystemService {
    * Một request: xóa user (CASCADE xóa user_roles) + insert user + insert user_roles.
    * Tránh 403 giữa các HTTP: sau khi replace user, phiên hiện tại mất role nếu userRole ở request sau.
    */
+  private appendImportBundleToPayload(
+    data: Record<string, any[]>,
+    primary: string,
+    payload: Record<string, any[]>,
+    skipModels: Set<string>,
+  ): string[] {
+    const bundled: string[] = [];
+    for (const extra of IMPORT_MODEL_BUNDLES[primary] ?? []) {
+      if (skipModels.has(extra)) continue;
+      if (!Object.prototype.hasOwnProperty.call(data, extra)) continue;
+      payload[extra] = Array.isArray(data[extra]) ? data[extra] : [];
+      skipModels.add(extra);
+      bundled.push(extra);
+    }
+    return bundled;
+  }
+
+  /** Import nhiều bảng liên quan trong một transaction (cha + pivot cùng request). */
+  private async importOrderedModelsInTransaction(
+    data: Record<string, any[]>,
+    modelNames: string[],
+    skipClear: boolean,
+  ): Promise<Array<{ model: string; index: number; message: string }>> {
+    const rowErrors: Array<{ model: string; index: number; message: string }> =
+      [];
+
+    await this.em.transactional(async (em) => {
+      const conn = em.getConnection();
+      const driverName = em.getDriver().constructor.name;
+      const isMysqlFamily = /mysql|mariadb/i.test(driverName);
+      const isSqlite = /sqlite/i.test(driverName);
+
+      if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
+      if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
+
+      try {
+        const clearOrder = this.modelOrder.filter((m) =>
+          modelNames.includes(m),
+        );
+
+        if (!skipClear) {
+          for (const mName of clearOrder) {
+            const entity = entityByModelName[mName];
+            if (!entity) continue;
+            if (mName === 'user') {
+              await this.detachNullableUserForeignKeys(em);
+            }
+            if (mName === 'category') {
+              await this.clearCategoryTableForImport(em);
+            } else {
+              await em.nativeDelete(entity, {});
+            }
+          }
+        }
+
+        const importOrder = [...clearOrder].reverse();
+        for (const mName of importOrder) {
+          const records = data[mName];
+          if (!records?.length) continue;
+          const entity = entityByModelName[mName];
+          if (!entity) continue;
+
+          let sanitized = records.map((r) =>
+            this.pickImportPayload(em, entity, r as Record<string, unknown>),
+          );
+          if (mName === 'category') {
+            sanitized = orderCategoryRowsForImport(sanitized);
+          }
+          await this.insertSanitizedModel(
+            em,
+            mName,
+            sanitized,
+            (rowIndex, errMsg) => {
+              rowErrors.push({
+                model: mName,
+                index: rowIndex,
+                message: errMsg,
+              });
+            },
+          );
+        }
+
+        if (!skipClear && modelNames.includes('role')) {
+          await ensureSeedUserRoleLinks(em);
+        }
+      } finally {
+        if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
+        if (isSqlite) await conn.execute('PRAGMA foreign_keys = ON');
+      }
+    });
+
+    return rowErrors;
+  }
+
   private async importUsersWithRolesInTransaction(
     userRows: any[],
     userRoleRows: any[],
     skipClear: boolean,
+    onRowError?: (model: string, index: number, message: string) => void,
   ): Promise<void> {
     await this.em.transactional(async (em) => {
       const conn = em.getConnection();
@@ -1281,6 +1401,7 @@ export class SystemService {
           const startTime = Date.now();
           await this.detachNullableUserForeignKeys(em);
           await em.nativeDelete(User, {});
+          em.clear();
           this.logger.debug(
             `Cleared data from user (and cascaded user_roles) in ${Date.now() - startTime}ms`,
           );
@@ -1289,15 +1410,24 @@ export class SystemService {
           const sanitized = userRows.map((r) =>
             this.pickImportPayload(em, User, r as Record<string, unknown>),
           );
-          await this.insertSanitizedModel(em, 'user', sanitized);
+          await this.insertSanitizedModel(em, 'user', sanitized, (idx, msg) =>
+            onRowError?.('user', idx, msg),
+          );
+          await em.flush();
         }
         if (userRoleRows.length > 0) {
           const sanitized = userRoleRows.map((r) =>
             this.pickImportPayload(em, UserRole, r as Record<string, unknown>),
           );
-          await this.insertSanitizedModel(em, 'userRole', sanitized);
+          await this.insertSanitizedModel(
+            em,
+            'userRole',
+            sanitized,
+            (idx, msg) => onRowError?.('userRole', idx, msg),
+          );
         }
-        if (userRows.length > 0) {
+        // Chỉ bổ sung seed khi file không có userRole — tránh chèn link seed (id cũ) sau khi đã xóa users.
+        if (userRows.length > 0 && userRoleRows.length === 0) {
           await ensureSeedUserRoleLinks(em);
         }
       } finally {
@@ -1679,6 +1809,7 @@ export class SystemService {
     data: Record<string, any[]>,
     targetModel?: string,
     skipClear: boolean = false,
+    onProgress?: (event: object) => void,
   ) {
     const resolvedTargetModel =
       this.resolveModelName(targetModel) ?? targetModel;
@@ -1699,26 +1830,68 @@ export class SystemService {
 
     // Nếu import tất cả models, chia nhỏ và import từng model riêng
     if (!resolvedTargetModel && Object.keys(data).length > 1) {
-      return this.importDataByModels(data, skipClear);
+      return this.importDataByModels(data, skipClear, onProgress);
     }
 
-    if (
-      resolvedTargetModel === 'user' &&
-      Object.prototype.hasOwnProperty.call(data, 'userRole') &&
-      Object.prototype.hasOwnProperty.call(data, 'user')
-    ) {
+    const payloadKeys = Object.keys(data).filter(
+      (k) => Array.isArray(data[k]) && data[k].length > 0,
+    );
+
+    if (resolvedTargetModel && payloadKeys.length > 1) {
+      if (
+        resolvedTargetModel === 'user' &&
+        payloadKeys.includes('user') &&
+        payloadKeys.includes('userRole')
+      ) {
+        this.logger.log(
+          `Import user + userRole trong một transaction (skipClear: ${skipClear})…`,
+        );
+        const userRowErrors: Array<{
+          model: string;
+          index: number;
+          message: string;
+        }> = [];
+        await this.importUsersWithRolesInTransaction(
+          Array.isArray(data.user) ? data.user : [],
+          Array.isArray(data.userRole) ? data.userRole : [],
+          skipClear,
+          (model, idx, msg) =>
+            userRowErrors.push({ model, index: idx, message: msg }),
+        );
+        return {
+          success: userRowErrors.length === 0,
+          message:
+            userRowErrors.length > 0
+              ? `Imported user+userRole with ${userRowErrors.length} row error(s)`
+              : 'Data imported successfully',
+          rowErrors: userRowErrors.length > 0 ? userRowErrors : undefined,
+        };
+      }
+
+      const ordered = this.orderModelsForDependencySafeImport(payloadKeys);
       this.logger.log(
-        `Import user + userRole trong một transaction (skipClear: ${skipClear})…`,
+        `Import bundle [${ordered.join(', ')}] trong một transaction (skipClear: ${skipClear})…`,
       );
-      await this.importUsersWithRolesInTransaction(
-        Array.isArray(data.user) ? data.user : [],
-        Array.isArray(data.userRole) ? data.userRole : [],
+      const bundleRowErrors = await this.importOrderedModelsInTransaction(
+        data,
+        ordered,
         skipClear,
       );
-      return { success: true, message: 'Data imported successfully' };
+      return {
+        success: bundleRowErrors.length === 0,
+        message:
+          bundleRowErrors.length > 0
+            ? `Imported bundle with ${bundleRowErrors.length} row error(s)`
+            : 'Data imported successfully',
+        rowErrors:
+          bundleRowErrors.length > 0 ? bundleRowErrors : undefined,
+      };
     }
 
     // Import single model hoặc khi chỉ có 1 model
+    let rowErrors: Array<{ model: string; index: number; message: string }> =
+      [];
+
     await this.em.transactional(async (em) => {
       const conn = em.getConnection();
       const driverName = em.getDriver().constructor.name;
@@ -1764,6 +1937,8 @@ export class SystemService {
           ? [resolvedTargetModel]
           : [...this.modelOrder].reverse();
 
+        rowErrors = [];
+
         for (const mName of importOrder) {
           const records = data[mName];
           if (records && records.length > 0) {
@@ -1780,7 +1955,23 @@ export class SystemService {
                 if (mName === 'category') {
                   sanitized = orderCategoryRowsForImport(sanitized);
                 }
-                await this.insertSanitizedModel(em, mName, sanitized);
+                const stats = await this.insertSanitizedModel(
+                  em,
+                  mName,
+                  sanitized,
+                  (rowIndex, errMsg) => {
+                    rowErrors.push({
+                      model: mName,
+                      index: rowIndex,
+                      message: errMsg,
+                    });
+                  },
+                );
+                if (stats.skipped > 0) {
+                  this.logger.warn(
+                    `${mName}: imported ${stats.imported}/${stats.total} (${stats.skipped} skipped)`,
+                  );
+                }
               }
             } catch (error) {
               this.logger.error(`Error importing model ${mName}:`, error);
@@ -1801,7 +1992,14 @@ export class SystemService {
         if (isSqlite) await conn.execute('PRAGMA foreign_keys = ON');
       }
     });
-    return { success: true, message: 'Data imported successfully' };
+    return {
+      success: true,
+      message:
+        rowErrors.length > 0
+          ? `Imported with ${rowErrors.length} row error(s)`
+          : 'Data imported successfully',
+      rowErrors: rowErrors.length > 0 ? rowErrors : undefined,
+    };
   }
 
   /** Thứ tự an toàn FK khi mỗi lần chỉ import một bảng (vd. role → user → userRole). */
@@ -1830,6 +2028,7 @@ export class SystemService {
   private async importDataByModels(
     data: Record<string, any[]>,
     skipClear: boolean = false,
+    onProgress?: (event: object) => void,
   ) {
     this.logger.log(
       'Importing data theo từng model (một request HTTP / model từ client)…',
@@ -1848,6 +2047,18 @@ export class SystemService {
     const ordered = this.orderModelsForDependencySafeImport(presentModels);
     const skipModels = new Set<string>();
 
+    const modelRecords = ordered.map((m) => data[m]?.length ?? 0);
+    const totalRecords = modelRecords.reduce((a, b) => a + b, 0);
+
+    onProgress?.({
+      type: 'start',
+      total: ordered.length,
+      totalRecords,
+      models: ordered,
+      records: modelRecords,
+    });
+    let cumulativeImported = 0;
+
     for (const modelName of ordered) {
       if (skipModels.has(modelName)) continue;
       const records = data[modelName];
@@ -1857,22 +2068,95 @@ export class SystemService {
             `Importing ${modelName} (${records.length} records)...`,
           );
           const payload: Record<string, any[]> = { [modelName]: records };
-          if (
-            modelName === 'user' &&
-            Object.prototype.hasOwnProperty.call(data, 'userRole')
-          ) {
-            payload.userRole = Array.isArray(data.userRole)
-              ? data.userRole
-              : [];
-            skipModels.add('userRole');
+          const bundledModels = this.appendImportBundleToPayload(
+            data,
+            modelName,
+            payload,
+            skipModels,
+          );
+          onProgress?.({
+            type: 'model-start',
+            model: modelName,
+            records: records.length,
+            index: results.length,
+            total: ordered.length,
+            cumulativeImported,
+            totalRecords,
+            bundledModels: bundledModels.length ? bundledModels : undefined,
+          });
+          for (const bundled of bundledModels) {
+            onProgress?.({
+              type: 'model-start',
+              model: bundled,
+              bundledWith: modelName,
+              records: data[bundled]?.length ?? 0,
+              index: results.length,
+              total: ordered.length,
+              cumulativeImported,
+              totalRecords,
+            });
           }
           const result = await this.importData(payload, modelName, skipClear);
-          results.push({ model: modelName, success: true, result });
-          this.logger.log(`Successfully imported ${modelName}`);
+          const rowErrors = (result as any)?.rowErrors as
+            | Array<{ model: string; index: number; message: string }>
+            | undefined;
+          const importOk = (result as { success?: boolean }).success !== false;
+          results.push({
+            model: modelName,
+            success: importOk,
+            result,
+          });
+          if (importOk) {
+            this.logger.log(`Successfully imported ${modelName}`);
+          }
+          cumulativeImported +=
+            records.length +
+            bundledModels.reduce(
+              (sum, name) => sum + (data[name]?.length ?? 0),
+              0,
+            );
+          onProgress?.({
+            type: 'model-end',
+            model: modelName,
+            success: importOk,
+            records: records.length,
+            cumulativeImported,
+            totalRecords,
+            bundledModels,
+            rowErrors: rowErrors?.length ? rowErrors : undefined,
+            error: importOk
+              ? undefined
+              : (result as { message?: string })?.message,
+          });
+          for (const bundled of bundledModels) {
+            const bundledRowErrors = rowErrors?.filter(
+              (r) => r.model === bundled,
+            );
+            onProgress?.({
+              type: 'model-end',
+              model: bundled,
+              bundledWith: modelName,
+              success: importOk && !bundledRowErrors?.length,
+              records: data[bundled]?.length ?? 0,
+              cumulativeImported,
+              totalRecords,
+              rowErrors: bundledRowErrors?.length
+                ? bundledRowErrors
+                : undefined,
+              error: bundledRowErrors?.[0]?.message,
+            });
+          }
         } catch (error) {
           this.logger.error(`Failed to import ${modelName}:`, error);
           results.push({ model: modelName, success: false, error });
-          // Không throw error để tiếp tục import các model khác
+          onProgress?.({
+            type: 'model-end',
+            model: modelName,
+            success: false,
+            error: getErrorMessage(error),
+            cumulativeImported,
+            totalRecords,
+          });
         }
       }
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { Button } from "@ui/components/button";
 import { Input } from "@ui/components/input";
@@ -35,10 +35,14 @@ import {
   Download,
   FileSpreadsheet,
   FileJson,
-  Upload,
-  Loader2,
   FolderOpen,
+  Loader2,
+  Upload,
 } from "lucide-react";
+import {
+  ImportProgressPanel,
+  withSkippedRemaining,
+} from "./import-progress-panel";
 import {
   pickExportDirectory,
   saveExportBlob,
@@ -59,6 +63,43 @@ type ApiEnvelope<T> = {
 const FILE_INPUT_CLASS =
   "h-9 w-full border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 cursor-pointer text-sm file:mr-2 file:rounded-md file:border-0 file:bg-primary/10 file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-primary hover:file:bg-primary/15";
 
+async function readNdjsonStream(
+  response: Response,
+  onEvent: (event: Record<string, unknown>) => void,
+): Promise<void> {
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("Response body not readable");
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      try {
+        onEvent(JSON.parse(trimmed) as Record<string, unknown>);
+      } catch {
+        /* skip malformed line */
+      }
+    }
+  }
+  if (buffer.trim()) {
+    try {
+      onEvent(JSON.parse(buffer.trim()) as Record<string, unknown>);
+    } catch {
+      /* skip */
+    }
+  }
+}
+
 function DataBackupPageInner() {
   const { user } = useAuth();
   const canExport = user
@@ -70,7 +111,29 @@ function DataBackupPageInner() {
       canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE)
     : false;
   const [exporting, setExporting] = useState<"json" | "excel" | null>(null);
-  const [importing, setImporting] = useState<"json" | "excel" | null>(null);
+  const [importProgress, setImportProgress] = useState<{
+    active: boolean;
+    models: Array<{
+      name: string;
+      records: number;
+      status: "pending" | "importing" | "done" | "error" | "skipped";
+      error?: string;
+    }>;
+    currentIndex: number;
+    total: number;
+    totalRecords: number;
+    cumulativeImported: number;
+    status: "idle" | "importing" | "done" | "error";
+    message?: string;
+  }>({
+    active: false,
+    models: [],
+    currentIndex: 0,
+    total: 0,
+    totalRecords: 0,
+    cumulativeImported: 0,
+    status: "idle",
+  });
   const [pickingDirectory, setPickingDirectory] = useState(false);
   const [exportDirectory, setExportDirectory] =
     useState<FileSystemDirectoryHandle | null>(null);
@@ -91,7 +154,7 @@ function DataBackupPageInner() {
     return headers;
   };
 
-  const toastFetchError = async (res: Response): Promise<void> => {
+  const toastFetchError = useCallback(async (res: Response): Promise<string> => {
     let msg = "";
     try {
       const json = (await res.json()) as ApiEnvelope<unknown>;
@@ -104,20 +167,19 @@ function DataBackupPageInner() {
       msg = t.length > 280 ? `${t.slice(0, 280)}…` : t;
     }
     if (res.status === 401) {
-      toast.error(
-        "API từ chối: thiếu hoặc sai X-User-Id — hãy đăng nhập lại admin.",
-      );
-      return;
+      const m = "API từ chối: thiếu hoặc sai X-User-Id — hãy đăng nhập lại admin.";
+      toast.error(m);
+      return m;
     }
     if (res.status === 403) {
-      toast.error(
-        msg || "Không đủ quyền export/import hệ thống cho tài khoản hiện tại.",
-      );
-      return;
+      const m = msg || "Không đủ quyền xuất nhập hệ thống cho tài khoản hiện tại.";
+      toast.error(m);
+      return m;
     }
-    toast.error(msg || `Lỗi ${res.status}`);
-  };
-
+    const m = msg || `Lỗi ${res.status}`;
+    toast.error(m);
+    return m;
+  }, []);
   const chooseExportDirectory = async (): Promise<void> => {
     if (!directoryPickerSupported) {
       toast.error(
@@ -241,78 +303,179 @@ function DataBackupPageInner() {
     }
   };
 
+  const resetImportProgress = useCallback(() => {
+    setImportProgress({
+      active: false,
+      models: [],
+      currentIndex: 0,
+      total: 0,
+      totalRecords: 0,
+      cumulativeImported: 0,
+      status: "idle",
+    });
+  }, []);
+
+  const handleImportStream = useCallback(
+    async (res: Response) => {
+      if (!res.ok) {
+        await toastFetchError(res);
+        resetImportProgress();
+        return;
+      }
+
+      setImportProgress((prev) => ({ ...prev, status: "importing" }));
+
+      let errorMessage = "";
+
+      await readNdjsonStream(res, (event) => {
+        const type = event.type as string;
+
+        if (type === "start") {
+          const modelNames = (event.models as string[]) ?? [];
+          const records = (event.records as number[]) ?? [];
+          setImportProgress({
+            active: true,
+            models: modelNames.map((name, i) => ({
+              name,
+              records: records[i] ?? 0,
+              status: "pending" as const,
+            })),
+            currentIndex: 0,
+            total: (event.total as number) ?? modelNames.length,
+            totalRecords: (event.totalRecords as number) ?? 0,
+            cumulativeImported: 0,
+            status: "importing",
+          });
+        } else if (type === "model-start") {
+          const modelName = event.model as string;
+          setImportProgress((prev) => ({
+            ...prev,
+            currentIndex: (event.index as number) ?? prev.currentIndex,
+            models: prev.models.map((m) =>
+              m.name === modelName ? { ...m, status: "importing" as const } : m,
+            ),
+          }));
+        } else if (type === "model-end") {
+          const modelName = event.model as string;
+          const success = event.success as boolean;
+          const error = event.error as string | undefined;
+          const rowErrors = event.rowErrors as
+            | Array<{ model: string; index: number; message: string }>
+            | undefined;
+          setImportProgress((prev) => ({
+            ...prev,
+            cumulativeImported:
+              (event.cumulativeImported as number) ?? prev.cumulativeImported,
+            models: prev.models.map((m) => {
+              if (m.name !== modelName) return m;
+              const modelRowErr = rowErrors?.filter((r) => r.model === m.name);
+              const errMsg =
+                error ??
+                modelRowErr?.[0]?.message ??
+                (!success ? `Import ${modelName} thất bại` : undefined);
+              const ok = success && !errMsg;
+              return {
+                ...m,
+                status: ok ? ("done" as const) : ("error" as const),
+                error: errMsg,
+              };
+            }),
+          }));
+        } else if (type === "complete") {
+          const success = event.success as boolean;
+          const message = (event.message as string) ?? "";
+          setImportProgress((prev) => ({
+            ...prev,
+            status: success ? ("done" as const) : ("error" as const),
+            message,
+            models: success ? prev.models : withSkippedRemaining(prev.models),
+          }));
+          toast[success ? "success" : "error"](
+            message || (success ? "Import hoàn tất." : "Import có lỗi."),
+          );
+        } else if (type === "error") {
+          errorMessage = (event.message as string) ?? "Lỗi không xác định";
+        }
+      });
+
+      if (errorMessage) {
+        setImportProgress((prev) => ({
+          ...prev,
+          status: "error",
+          message: errorMessage,
+          models: withSkippedRemaining(prev.models),
+        }));
+        toast.error(errorMessage);
+      }
+    },
+    [toastFetchError, resetImportProgress],
+  );
+
   const importJsonFile = async (file: File | null): Promise<void> => {
     if (!file) return;
-    setImporting("json");
+    resetImportProgress();
+
     try {
       const text = await file.text();
-      let body: unknown;
+      let body: Record<string, unknown[]>;
       try {
-        body = JSON.parse(text) as unknown;
+        body = JSON.parse(text) as Record<string, unknown[]>;
       } catch {
         toast.error("File không phải JSON hợp lệ.");
         return;
       }
-      const res = await fetch(`${apiBase()}/admin/system/import`, {
-        method: "POST",
-        headers: { ...authHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        await toastFetchError(res);
+
+      const modelKeys = Object.keys(body).filter(
+        (k) => Array.isArray(body[k]) && body[k].length > 0,
+      );
+      if (modelKeys.length === 0) {
+        toast.error("File JSON không chứa dữ liệu nào.");
         return;
       }
-      const payload = (await res.json()) as ApiEnvelope<{
-        success?: boolean;
-        message?: string;
-      }>;
-      toast.success(
-        payload.message ||
-          payload.data?.message ||
-          "Import JSON hoàn tất.",
+
+      // Một request — API import theo thứ tự FK và gộp bảng liên quan (user+userRole, …)
+      const res = await fetch(
+        `${apiBase()}/admin/system/import?stream=true&skipClear=false`,
+        {
+          method: "POST",
+          headers: { ...authHeaders(), "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        },
       );
+      await handleImportStream(res);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
       );
-    } finally {
-      setImporting(null);
+      resetImportProgress();
     }
   };
 
   const importExcelFile = async (file: File | null): Promise<void> => {
     if (!file) return;
-    setImporting("excel");
+    resetImportProgress();
+
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch(`${apiBase()}/admin/system/import/excel`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: fd,
-      });
-      if (!res.ok) {
-        await toastFetchError(res);
-        return;
-      }
-      const payload = (await res.json()) as ApiEnvelope<{
-        success?: boolean;
-        message?: string;
-      }>;
-      toast.success(
-        payload.message ||
-          payload.data?.message ||
-          "Import Excel hoàn tất.",
+      const res = await fetch(
+        `${apiBase()}/admin/system/import/excel?stream=true`,
+        {
+          method: "POST",
+          headers: authHeaders(),
+          body: fd,
+        },
       );
+      await handleImportStream(res);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
       );
-    } finally {
-      setImporting(null);
+      resetImportProgress();
     }
   };
 
+  const importBusy = importProgress.active && importProgress.status === "importing";
   const exportBusy = exporting !== null;
 
   const showBackupPanel = canExport || canImport;
@@ -490,7 +653,7 @@ function DataBackupPageInner() {
                       <Input
                         type="file"
                         accept="application/json,.json"
-                        disabled={importing !== null}
+                        disabled={importBusy}
                         className={FILE_INPUT_CLASS}
                         onChange={(e) =>
                           void importJsonFile(
@@ -501,12 +664,6 @@ function DataBackupPageInner() {
                         }
                       />
                     </FieldSectionValue>
-                    {importing === "json" ? (
-                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                        <Loader2 className="size-3 animate-spin" />
-                        Đang import…
-                      </p>
-                    ) : null}
                   </Field>
 
                   <Field className="gap-1.5">
@@ -518,7 +675,7 @@ function DataBackupPageInner() {
                       <Input
                         type="file"
                         accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        disabled={importing !== null}
+                        disabled={importBusy}
                         className={FILE_INPUT_CLASS}
                         onChange={(e) =>
                           void importExcelFile(
@@ -529,14 +686,15 @@ function DataBackupPageInner() {
                         }
                       />
                     </FieldSectionValue>
-                    {importing === "excel" ? (
-                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                        <Loader2 className="size-3 animate-spin" />
-                        Đang import…
-                      </p>
-                    ) : null}
                   </Field>
                 </div>
+
+                {importProgress.active ? (
+                  <ImportProgressPanel
+                    progress={importProgress}
+                    onReset={resetImportProgress}
+                  />
+                ) : null}
               </div>
             ) : null}
           </FieldSetContent>

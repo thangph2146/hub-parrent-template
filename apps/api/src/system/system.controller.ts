@@ -200,6 +200,7 @@ export class SystemController {
     @Headers() headers: Record<string, string | undefined>,
     @Query('model') model?: string,
     @Query('skipClear') skipClear?: string,
+    @Query('stream') stream?: string,
     @Body() data?: Record<string, any[]>,
   ) {
     try {
@@ -219,6 +220,38 @@ export class SystemController {
         return res.status(statusCode).json(body);
       }
 
+      if (stream === 'true') {
+        res.setHeader('Content-Type', 'application/x-ndjson');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        const onProgress = (event: object) => {
+          if (!res.writableEnded) {
+            res.write(JSON.stringify(event) + '\n');
+          }
+        };
+
+        try {
+          const result = await this.systemService.importData(
+            data,
+            model,
+            skipClear === 'true',
+            onProgress,
+          );
+          onProgress({ type: 'complete', ...result });
+        } catch (error) {
+          onProgress({
+            type: 'error',
+            message:
+              error instanceof Error ? error.message : 'Internal Server Error',
+          });
+        } finally {
+          if (!res.writableEnded) {
+            res.end();
+          }
+        }
+        return;
+      }
+
       const result = await this.systemService.importData(
         data,
         model,
@@ -230,6 +263,7 @@ export class SystemController {
       this.logApiError('POST /api/admin/system/import', error, {
         model,
         skipClear,
+        stream,
         modelCount: data ? Object.keys(data).length : 0,
       });
       const { statusCode, body } = createErrorResponse(
@@ -252,6 +286,7 @@ export class SystemController {
     @Headers() headers: Record<string, string | undefined>,
     @Query('model') model?: string,
     @Query('skipClear') skipClear?: string,
+    @Query('stream') stream?: string,
     @UploadedFile()
     file?: { buffer: Buffer; originalname?: string; mimetype?: string },
   ) {
@@ -272,6 +307,38 @@ export class SystemController {
         return res.status(statusCode).json(body);
       }
 
+      if (stream === 'true') {
+        res.setHeader('Content-Type', 'application/x-ndjson');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        const onProgress = (event: object) => {
+          if (!res.writableEnded) {
+            res.write(JSON.stringify(event) + '\n');
+          }
+        };
+
+        try {
+          const result = await this.systemService.importExcelData(
+            file.buffer,
+            model,
+            skipClear === 'true',
+            onProgress,
+          );
+          onProgress({ type: 'complete', ...result });
+        } catch (error) {
+          onProgress({
+            type: 'error',
+            message:
+              error instanceof Error ? error.message : 'Internal Server Error',
+          });
+        } finally {
+          if (!res.writableEnded) {
+            res.end();
+          }
+        }
+        return;
+      }
+
       const result = await this.systemService.importExcelData(
         file.buffer,
         model,
@@ -283,6 +350,7 @@ export class SystemController {
       this.logApiError('POST /api/admin/system/import/excel', error, {
         model,
         skipClear,
+        stream,
         filename: file?.originalname ?? null,
       });
       const { statusCode, body } = createErrorResponse(
