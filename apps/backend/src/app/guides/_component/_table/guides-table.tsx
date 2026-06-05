@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { GuideGroup } from "../types";
+import { applyOrderToGroups } from "../utils";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
 export interface GuidesTableProps {
@@ -17,6 +18,8 @@ export interface GuidesTableProps {
   total: number;
   onClearFilters: () => void;
   onBulkPurge: (rows: GuideGroup[]) => Promise<void>;
+  onRowReorder?: (orderedRows: GuideGroup[]) => void;
+  isReordering?: boolean;
 }
 
 export function GuidesTable({
@@ -30,6 +33,8 @@ export function GuidesTable({
   total,
   onClearFilters,
   onBulkPurge,
+  onRowReorder,
+  isReordering,
 }: GuidesTableProps) {
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
 
@@ -39,6 +44,10 @@ export function GuidesTable({
       data={data}
       getRowId={(row) => String(row.id)}
       defaultExpandedAll={false}
+      rowReorderEnabled={Boolean(onRowReorder)}
+      onRowReorder={onRowReorder}
+      mapReorderedRows={applyOrderToGroups}
+      rowReorderDisabled={isReordering}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Chưa có nhóm hướng dẫn nào."

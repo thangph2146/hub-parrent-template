@@ -24,6 +24,7 @@ export {
   PAGE_KEY,
   parseContent,
   sortGroupsByOrder,
+  applyOrderToGroups,
   reorderSteps,
 } from "./utils";
 

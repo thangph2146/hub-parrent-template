@@ -260,7 +260,7 @@
 | GET/POST/PUT/DELETE | `/admin/settings/*` | `settings:*` | SettingsController |
 | GET/PUT | `/admin/accounts/*` | `accounts:*` | AccountsController |
 | GET/POST/PUT/DELETE | `/admin/page-contents/*` | `page_contents:*` (đã enforce) | PageContentsController |
-| GET/POST | `/admin/system/*` | `settings:manage` hoặc `settings:import` (đã enforce) | SystemController |
+| GET/POST | `/admin/system/*` | `system:*` (view, manage, import) — đã có `SystemController` riêng | SystemController |
 | GET/POST/PUT/DELETE | `/admin/admission-results/*` | `admission_results:*` | AdmissionResultsController |
 | GET/POST/PUT/DELETE | `/admin/events/*` | `events:*` | EventsController |
 | GET/POST/PUT/DELETE | `/admin/cameras/*` | `cameras:*` | CamerasController |
@@ -283,14 +283,14 @@
 | GET/POST/PUT/DELETE | `/admin/messages/*` | `messages:*` | MessagesController |
 | GET/POST/PUT/DELETE | `/admin/groups/*` | `groups:*` | GroupsController |
 | GET/POST/PUT/DELETE | `/admin/notifications/*` | `notifications:*` | NotificationsController |
-| GET/POST/PUT/DELETE | `/admin/parent-students/*` | `students:*` | ParentStudentsController |
+| GET/POST/PUT/DELETE | `/admin/parent-students/*` | `parent_students:*` (view, update) | ParentStudentsController |
 
 ---
 
 ## 4. Seed Role Permissions (Hiện tại)
 
 ### super_admin
-Toàn bộ ~123 permissions. Xem chi tiết trong `apps/api/src/seeds/superadmin-bootstrap.data.ts`.
+Toàn bộ ~277 permissions (từ `apps/api/src/config/permissions.ts`). Xem chi tiết tại `apps/api/src/seeds/superadmin-bootstrap.data.ts`.
 
 ### admin
 ~62 permissions. Thiếu so với super_admin: `users:active`, `users:hard-delete`, `users:import`, `users:restore`, `users:unactive`, `comments:*`, `tags:*`, `messages:*`, `students:*`, `admission_results:import/restore`, `sessions:revoke-by-user`.
@@ -319,52 +319,23 @@ Toàn bộ ~123 permissions. Xem chi tiết trong `apps/api/src/seeds/superadmin
 
 ---
 
-## 5. Diff: API Permissions vs Frontend PERMISSION_CODES
+## 5. Parity: API Permissions vs Frontend PERMISSION_CODES
 
-### 5.1. API permissions KHÔNG có trong frontend (cần thêm)
+**Trạng thái hiện tại: HOÀN TOÀN ĐỒNG BỘ.**
 
-Những permission này tồn tại trong `apps/api/src/config/permissions.ts` NHƯNG chưa có trong `packages/api-client/src/permissions.ts`:
+- API (`apps/api/src/config/permissions.ts`): **277 codes**
+- Client (`packages/api-client/src/permissions.ts`): **289 codes** (277 standard + 12 legacy dot-notation)
+- Legacy dot-notation (có `@deprecated` JSDoc, giữ để tương thích DB cũ):
+  - `users.cart_own`, `rbac.read`, `data.maintenance`, `support.read`, `support.write`
+  - `categories.read`, `categories.write`, `products.read`, `products.write`
+  - `orders.read`, `orders.write`, `orders.checkout`
+- Parity được kiểm soát bởi script `scripts/verify-permission-parity.mjs` (wired vào `pnpm check` + `pnpm check:full`).
 
-- `users:view`, `users:create`, `users:update`, `users:delete`
-- `users:import`, `users:restore`, `users:hard-delete`, `users:active`, `users:unactive`
-- `posts:create`, `posts:update`, `posts:delete`, `posts:manage`, `posts:export`
-- `posts:view_all`, `posts:view_own`, `posts:publish`, `posts:import`, `posts:restore`
-- `categories:create`, `categories:update`, `categories:delete`, `categories:manage`, `categories:export`
-- `tags:create`, `tags:update`, `tags:delete` (đã có view/manage/export)
-- `comments:*` (tất cả 8 permissions)
-- `roles:*` (tất cả 6 permissions)
-- `messages:*` (tất cả 8 permissions, chỉ có `view_own`)
-- `notifications:*` (chỉ có `view_own`, thiếu view/manage/export/view_all)
-- `students:*` (chỉ có `view_own`, thiếu 10 permissions còn lại)
-- `sessions:*` (tất cả 7 permissions)
-- `settings:*` (tất cả 7 permissions)
-- `accounts:*` (thiếu `accounts:manage`)
-- `uploads:*` (tất cả 6 permissions)
-- `admission_results:*` (tất cả 8 permissions)
-- `dashboard:view` (đã thêm gần đây)
-- `groups:*` (tất cả 6 permissions)
+**Các resource có RESTORE + HARD_DELETE riêng:**
+categories, event_checkins, event_registrations, face_data, groups, users, posts, tags, comments, roles, sessions, contact_requests, students, admission_results, seo_metas, courses, academic_years, training_levels, training_systems, majors, departments, speakers, locations, screens, cameras, templates, events
 
-### 5.2. Frontend permissions KHÔNG tồn tại trong API
-
-Những permission này có trong `packages/api-client/src/permissions.ts` NHƯNG không có trong API:
-
-- `products.read`, `products.write`, `orders.read`, `orders.write`, `orders.checkout`
-- `users.cart_own`
-- `rbac.read`, `data.maintenance`
-- `support.read`, `support.write`
-- `speakers:*`, `locations:*`, `events:*`, `cameras:*`, `templates:*`, `screens:*`, `departments:*`
-- `training_levels:*`, `training_systems:*`, `majors:*`, `courses:*`, `academic_years:*`
-- `event_registrations:*`, `event_checkins:*`, `event_speakers:*`
-- `face_data:*`
-- `categories.read`, `categories.write` (nên đổi thành `categories:view`, `categories:create`)
-
-### 5.3. Cần đồng bộ
-
-Frontend `PERMISSION_CODES` cần:
-1. Thêm tất cả permission từ API chưa có
-2. Chuẩn hóa tên theo format `RESOURCE_ACTION` (khớp API constant)
-3. Giữ lại các code đặc thù frontend (như `speakers:*`, `events:*`, etc.) nhưng thêm cả API counterparts
-4. Đổi `categories.read` → `categories:view`, `categories.write` → `categories:create` (nếu có thể)
+**Các resource KHÔNG có RESTORE/HARD_DELETE (không cần soft-delete):**
+dashboard, accounts, settings, uploads, notifications, page_contents, messages, imported_users, parent_students, system, event_checkouts, event_speakers
 
 ---
 

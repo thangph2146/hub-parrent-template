@@ -1,6 +1,12 @@
 "use client"
 
-import { useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
+import {
+  useState,
+  type ComponentProps,
+  type CSSProperties,
+  type Ref,
+  type ReactNode,
+} from "react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -112,6 +118,7 @@ function DataTableRowContextMenuContent({
 export type DataTableRowContextMenuProps = {
   rowId: string
   enabled?: boolean
+  rowRef?: Ref<HTMLTableRowElement>
   className?: string
   style?: CSSProperties
   children: ReactNode
@@ -120,6 +127,7 @@ export type DataTableRowContextMenuProps = {
 export function DataTableRowContextMenu({
   rowId,
   enabled = true,
+  rowRef,
   className,
   style,
   children,
@@ -130,7 +138,7 @@ export function DataTableRowContextMenu({
 
   if (!enabled || !registry) {
     return (
-      <TableRow className={className} style={style} {...tableRowProps}>
+      <TableRow ref={rowRef} className={className} style={style} {...tableRowProps}>
         {children}
       </TableRow>
     )
@@ -147,6 +155,7 @@ export function DataTableRowContextMenu({
           <TableRow
             className={cn(className)}
             style={style}
+            ref={rowRef}
             {...tableRowProps}
           />
         }

@@ -1,4 +1,3 @@
-
 const ADMIN_EXPORT_SUBTITLE = "Hệ thống quản trị HUB"
 
 export type AdminTableExportTemplateId =
@@ -541,7 +540,7 @@ export type ContactXlsxExportTemplate = AdminTableXlsxBuiltConfig
 /** @deprecated Dùng `buildAdminTableXlsxExport("contact-requests" | "contact-requests-trash")`. */
 export function buildContactRequestsXlsxExport(
   kind: ContactXlsxExportKind,
-  options: AdminTableXlsxExportOptions = {},
+  options: AdminTableXlsxExportOptions = {}
 ): ContactXlsxExportTemplate {
   const templateId =
     kind === "trash" ? "contact-requests-trash" : "contact-requests"

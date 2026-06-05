@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react"
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { cn } from "../../lib/utils"
 
 const TABLE_CONTAINER_SELECTOR = '[data-slot="table-container"]'
@@ -124,7 +118,8 @@ export function DataTableHorizontalScroll({
         ref={topScrollRef}
         className={cn(
           "shrink-0 overflow-x-auto overflow-y-hidden border-b border-border/60 bg-muted/15",
-          !showTopBar && "pointer-events-none h-0 overflow-hidden border-b-0 opacity-0"
+          !showTopBar &&
+            "pointer-events-none h-0 overflow-hidden border-b-0 opacity-0"
         )}
         style={showTopBar ? { height: "0.75rem" } : undefined}
         onScroll={syncFromTop}

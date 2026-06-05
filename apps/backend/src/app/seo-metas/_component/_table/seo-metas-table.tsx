@@ -22,9 +22,9 @@ export interface SeoMetasTableProps {
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
   total: number
   onClearFilters: () => void
-  onBulkDelete: (rows: SeoMetaRow[]) => Promise<void>
+  onBulkDelete?: (rows: SeoMetaRow[]) => Promise<void>
   onBulkRestore?: (rows: SeoMetaRow[]) => Promise<void>
-  onBulkPurge: (rows: SeoMetaRow[]) => Promise<void>
+  onBulkPurge?: (rows: SeoMetaRow[]) => Promise<void>
 }
 
 export function SeoMetasTable({
@@ -60,32 +60,40 @@ export function SeoMetasTable({
           },
         ]
       : []),
-    {
-      id: "bulk-seo-meta-delete" as const,
-      label: "Xóa tạm đã chọn",
-      variant: "destructive" as const,
-      confirm: {
-        title: "Đưa các SEO metadata đã chọn vào thùng rác?",
-        description: (rows: SeoMetaRow[]) =>
-          `Bạn đã chọn ${rows.length} mục. Các mục sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
-        confirmLabel: "Xóa tạm",
-        destructive: true,
-      },
-      onAction: onBulkDelete,
-    },
-    {
-      id: "bulk-seo-meta-purge" as const,
-      label: "Xóa vĩnh viễn đã chọn",
-      variant: "destructive" as const,
-      confirm: {
-        title: "Xóa vĩnh viễn các SEO metadata đã chọn?",
-        description: (rows: SeoMetaRow[]) =>
-          `Bạn đã chọn ${rows.length} mục. Hành động này không thể hoàn tác!`,
-        confirmLabel: "Xóa vĩnh viễn",
-        destructive: true,
-      },
-      onAction: onBulkPurge,
-    },
+    ...(onBulkDelete
+      ? [
+          {
+            id: "bulk-seo-meta-delete" as const,
+            label: "Xóa tạm đã chọn",
+            variant: "destructive" as const,
+            confirm: {
+              title: "Đưa các SEO metadata đã chọn vào thùng rác?",
+              description: (rows: SeoMetaRow[]) =>
+                `Bạn đã chọn ${rows.length} mục. Các mục sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
+              confirmLabel: "Xóa tạm",
+              destructive: true,
+            },
+            onAction: onBulkDelete,
+          },
+        ]
+      : []),
+    ...(onBulkPurge
+      ? [
+          {
+            id: "bulk-seo-meta-purge" as const,
+            label: "Xóa vĩnh viễn đã chọn",
+            variant: "destructive" as const,
+            confirm: {
+              title: "Xóa vĩnh viễn các SEO metadata đã chọn?",
+              description: (rows: SeoMetaRow[]) =>
+                `Bạn đã chọn ${rows.length} mục. Hành động này không thể hoàn tác!`,
+              confirmLabel: "Xóa vĩnh viễn",
+              destructive: true,
+            },
+            onAction: onBulkPurge,
+          },
+        ]
+      : []),
   ];
 
   return (

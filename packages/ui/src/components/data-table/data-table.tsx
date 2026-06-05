@@ -58,7 +58,7 @@ import {
 import {
   ChevronDown,
   ChevronRight,
-  Columns3,
+  GripVertical,
   Download,
   Eye,
   EyeOff,
@@ -152,6 +152,7 @@ import {
   DATA_TABLE_EXPAND_COLUMN_ID,
   DATA_TABLE_INDEX_COLUMN_ID,
   DATA_TABLE_SELECTION_COLUMN_ID,
+  DATA_TABLE_REORDER_COLUMN_ID,
   dataTableCellContentClampClassName,
   dataTableCellWidthClassName,
   isDataTableActionsColumn,
@@ -386,6 +387,22 @@ export type AdminDataTableProps<TData> = {
    * Mặc định bật khi bảng có cột thao tác.
    */
   rowContextMenu?: boolean
+
+  /**
+   * Bật kéo-thả để sắp xếp thứ tự dòng theo chiều dọc.
+   * Chỉ hoạt động khi truyền `onRowReorder`.
+   */
+  rowReorderEnabled?: boolean
+  /** Callback với danh sách row theo thứ tự mới. */
+  onRowReorder?: (orderedRows: TData[]) => void
+  /**
+   * Chuẩn hóa dữ liệu row sau khi kéo (vd cập nhật `content.order` trước khi hiển thị/lưu).
+   */
+  mapReorderedRows?: (orderedRows: TData[]) => TData[]
+  /** Vô hiệu hóa drag-and-drop (vd đang lưu thứ tự). */
+  rowReorderDisabled?: boolean
+  /** Aria label cho nút kéo sắp xếp. */
+  rowReorderHandleAriaLabel?: string
 }
 
 export {
@@ -432,15 +449,21 @@ const DATA_TABLE_SELECTION_CHECKBOX_WRAP_BODY =
 function stickyPinnedHeadCellClassName(options: {
   isSelectionCol: boolean
   isActionsCol: boolean
+  isReorderCol: boolean
   stickyTableHeader: boolean
 }): string {
-  const { isSelectionCol, isActionsCol, stickyTableHeader } = options
-  if (!isSelectionCol && !isActionsCol) return ""
+  const { isSelectionCol, isActionsCol, isReorderCol, stickyTableHeader } =
+    options
+  if (!isSelectionCol && !isActionsCol && !isReorderCol) return ""
   return cn(
     "bg-primary text-center align-middle text-primary-foreground",
-    isSelectionCol && "sticky left-0 px-0",
+    (isSelectionCol || isReorderCol) && "sticky left-0 px-0",
     isActionsCol && "sticky right-0",
-    stickyTableHeader ? "z-[25]" : isSelectionCol ? "z-[12]" : "z-[10]"
+    stickyTableHeader
+      ? "z-[25]"
+      : isSelectionCol || isReorderCol
+        ? "z-[12]"
+        : "z-[10]"
   )
 }
 
@@ -507,9 +530,10 @@ function stickyTableHeadClassName(options: {
   enabled: boolean
   isSelectionCol: boolean
   isActionsCol: boolean
+  isReorderCol: boolean
 }): string {
   if (!options.enabled) return ""
-  const corner = options.isSelectionCol || options.isActionsCol
+  const corner = options.isSelectionCol || options.isActionsCol || options.isReorderCol
   return cn(
     "sticky top-0 shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]",
     corner ? "z-[25]" : "z-[15]",
@@ -741,7 +765,7 @@ export function AdminDataTable<TData>({
   filterColumnVisibilityKey,
   tableColumnVisibilityKey,
   exportFetchPage,
-  showTableColumnPicker = true,
+  showTableColumnPicker: _showTableColumnPicker = true,
   showIndexColumn = true,
   indexColumnLabel = "STT",
   indexColumnExcludeFromExport = false,
@@ -751,6 +775,11 @@ export function AdminDataTable<TData>({
   stickyTableHeaderTop,
   tableBodyMaxHeight,
   rowContextMenu,
+  rowReorderEnabled = false,
+  onRowReorder,
+  mapReorderedRows,
+  rowReorderDisabled = false,
+  rowReorderHandleAriaLabel = "Kéo để sắp xếp",
 }: AdminDataTableProps<TData>) {
   const tableScopeId = useId()
   const globalFilterControlId = useId()
@@ -772,8 +801,7 @@ export function AdminDataTable<TData>({
       maxPageSize,
       pageSizeOptions:
         pagination.pageSizeOptions ?? ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
-      currentPageRowCount:
-        pagination.currentPageRowCount ?? data.length,
+      currentPageRowCount: pagination.currentPageRowCount ?? data.length,
       showAllPageSizeOption: pagination.showAllPageSizeOption ?? true,
       onShowAllRows:
         pagination.onShowAllRows ??
@@ -796,6 +824,48 @@ export function AdminDataTable<TData>({
     if (resolvedTableScrollMaxHeight == null) return undefined
     return { maxHeight: toCssSize(resolvedTableScrollMaxHeight) }
   }, [resolvedTableScrollMaxHeight])
+
+  const rowReorderColumnEnabled = Boolean(rowReorderEnabled && onRowReorder)
+  const rowReorderDndEnabled =
+    rowReorderColumnEnabled && rowReorderDisabled !== true
+
+  const resolveRowIdForOriginal = useCallback(
+    (originalRow: TData, index: number) => {
+      if (getRowId) return getRowId(originalRow, index)
+      return String(index)
+    },
+    [getRowId]
+  )
+
+  const [localData, setLocalData] = useState<TData[]>(data)
+  useEffect(() => {
+    if (!rowReorderColumnEnabled) {
+      setLocalData(data)
+      return
+    }
+
+    setLocalData((prev) => {
+      const propIds = data.map(resolveRowIdForOriginal)
+      const prevIds = prev.map(resolveRowIdForOriginal)
+
+      if (propIds.length !== prevIds.length) return data
+
+      const propIdSet = new Set(propIds)
+      if (prevIds.some((id) => !propIdSet.has(id))) return data
+
+      const sameSequence = propIds.every((id, idx) => id === prevIds[idx])
+      if (sameSequence) return data
+
+      const prevIdSet = new Set(prevIds)
+      const sameItemSet = propIds.every((id) => prevIdSet.has(id))
+      if (sameItemSet) return prev
+
+      return data
+    })
+  }, [data, rowReorderColumnEnabled, resolveRowIdForOriginal])
+
+  const effectiveData = rowReorderColumnEnabled ? localData : data
+
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFiltersInternal, setColumnFiltersInternal] =
     useState<ColumnFiltersState>([])
@@ -1074,6 +1144,27 @@ export function AdminDataTable<TData>({
     [resolvedSelectionColumnWidth]
   )
 
+  const reorderColumn = useMemo<ColumnDef<TData, unknown>>(
+    () => ({
+      id: DATA_TABLE_REORDER_COLUMN_ID,
+      header: () => null,
+      cell: () => null,
+      enableSorting: false,
+      enableColumnFilter: false,
+      enableResizing: false,
+      meta: {
+        disableColumnFilter: true,
+        enableHiding: false,
+        excludeFromExport: true,
+        className: "w-10 min-w-10 max-w-10 px-0",
+      },
+      size: 32,
+      minSize: 32,
+      maxSize: 32,
+    }),
+    []
+  )
+
   const exportColumns = useMemo(() => {
     if (!indexColumnEnabled || hasManualIndexColumn) return columns
     if (indexColumnExcludeFromExport) return columns
@@ -1089,6 +1180,7 @@ export function AdminDataTable<TData>({
   const tableColumns = useMemo(() => {
     const built: ColumnDef<TData, unknown>[] = []
     if (rowSelectionActive) built.push(selectionColumn)
+    if (rowReorderColumnEnabled) built.push(reorderColumn)
     if (indexColumnEnabled) built.push(indexColumn)
     if (getSubRows) built.push(expanderColumn)
     built.push(...applyDefaultFilterFns(normalizeDataTableColumns(columns)))
@@ -1101,10 +1193,12 @@ export function AdminDataTable<TData>({
     indexColumnEnabled,
     rowSelectionActive,
     selectionColumn,
+    reorderColumn,
+    rowReorderColumnEnabled,
   ])
 
   const table = useReactTable({
-    data,
+    data: effectiveData,
     columns: tableColumns,
     state: {
       sorting,
@@ -1294,6 +1388,66 @@ export function AdminDataTable<TData>({
 
   const headerGroups = table.getHeaderGroups()
   const rows = table.getRowModel().rows
+
+  const reorderTopLevelRows = useMemo(
+    () => (rowReorderColumnEnabled ? rows.filter((r) => r.depth === 0) : []),
+    [rowReorderColumnEnabled, rows]
+  )
+  const reorderTopLevelIds = useMemo(
+    () => reorderTopLevelRows.map((r) => r.id),
+    [reorderTopLevelRows]
+  )
+  const reorderTopLevelIdSet = useMemo(
+    () => new Set(reorderTopLevelIds),
+    [reorderTopLevelIds]
+  )
+  const reorderIdToOriginal = useMemo(() => {
+    const m = new Map<string, TData>()
+    for (const r of reorderTopLevelRows) m.set(r.id, r.original)
+    return m
+  }, [reorderTopLevelRows])
+
+  const [draggingRowId, setDraggingRowId] = useState<string | null>(null)
+
+  const reorderTopLevelByIds = useCallback(
+    (activeId: string, overId: string) => {
+      if (!rowReorderColumnEnabled || !onRowReorder) return
+      if (activeId === overId) return
+      if (
+        !reorderTopLevelIdSet.has(activeId) ||
+        !reorderTopLevelIdSet.has(overId)
+      ) {
+        return
+      }
+
+      const oldIndex = reorderTopLevelIds.indexOf(activeId)
+      const newIndex = reorderTopLevelIds.indexOf(overId)
+      if (oldIndex < 0 || newIndex < 0) return
+
+      const nextIds = [...reorderTopLevelIds]
+      nextIds.splice(oldIndex, 1)
+      const insertIndex = newIndex > oldIndex ? newIndex - 1 : newIndex
+      nextIds.splice(insertIndex, 0, activeId)
+
+      const ordered = nextIds
+        .map((id: string) => reorderIdToOriginal.get(id))
+        .filter(Boolean) as TData[]
+
+      const result = mapReorderedRows ? mapReorderedRows(ordered) : ordered
+
+      setLocalData(result)
+      onRowReorder(result)
+    },
+    [
+      mapReorderedRows,
+      onRowReorder,
+      reorderIdToOriginal,
+      reorderTopLevelIdSet,
+      reorderTopLevelIds,
+      rowReorderColumnEnabled,
+    ]
+  )
+
   // Recursively collect selected rows including sub-rows for tree-structured tables
   // When parent is selected, all descendants are also considered selected
   const selectedRows = useMemo(() => {
@@ -1431,9 +1585,6 @@ export function AdminDataTable<TData>({
   const hideOptionalTableColumns = useCallback(() => {
     handleTableColumnVisibilityChange([])
   }, [handleTableColumnVisibilityChange])
-
-  const showTableColumnPickerUi =
-    showTableColumnPicker && hideableTableColumnOptions.length > 0
 
   // Debounced column filter input component
   function DebouncedFilterInput({
@@ -1706,7 +1857,7 @@ export function AdminDataTable<TData>({
             Lọc theo cột
           </DataTablePanelLegend>
           <FieldSetContent className="space-y-3">
-            <div className="w-full flex flex-wrap items-end justify-end gap-2">
+            <div className="flex w-full flex-wrap items-end justify-end gap-2">
               {resolvedFilterColumnVisibilityKey ? (
                 <>
                   <div className="w-full max-w-[14rem] flex-1">
@@ -1780,7 +1931,7 @@ export function AdminDataTable<TData>({
         variant="custom"
         className={cn("min-w-0", DATA_TABLE_PANEL_FIELDSET_CLASS)}
       >
-        <div className="w-full flex flex-wrap items-end justify-end gap-4 mb-4">
+        <div className="mb-4 flex w-full flex-wrap items-end justify-end gap-4">
           <div className="w-full max-w-[14rem] flex-1">
             <Field className="w-full gap-1">
               <FieldLabel className="text-xs font-medium text-foreground/80">
@@ -1848,6 +1999,9 @@ export function AdminDataTable<TData>({
                             const isSelectionCol =
                               header.column.id ===
                               DATA_TABLE_SELECTION_COLUMN_ID
+                            const isReorderCol =
+                              header.column.id ===
+                              DATA_TABLE_REORDER_COLUMN_ID
                             const headerMeta = header.column.columnDef.meta as
                               | ColumnMeta
                               | undefined
@@ -1875,12 +2029,14 @@ export function AdminDataTable<TData>({
                                   stickyPinnedHeadCellClassName({
                                     isSelectionCol,
                                     isActionsCol,
+                                    isReorderCol,
                                     stickyTableHeader,
                                   }),
                                   stickyTableHeadClassName({
                                     enabled: stickyTableHeader,
                                     isSelectionCol,
                                     isActionsCol,
+                                    isReorderCol,
                                   })
                                 )}
                                 style={{
@@ -1900,7 +2056,7 @@ export function AdminDataTable<TData>({
                                   <div
                                     className={cn(
                                       "flex h-full gap-1",
-                                      isSelectionCol || isActionsCol
+                                      isSelectionCol || isActionsCol || isReorderCol
                                         ? "flex-row items-center justify-center"
                                         : "flex-col items-start justify-center"
                                     )}
@@ -1961,6 +2117,7 @@ export function AdminDataTable<TData>({
                                 // Cột dữ liệu đầu tiên — sau checkbox, STT, expander (theo thứ tự đó).
                                 const firstDataColumnIndex =
                                   (rowSelectionActive ? 1 : 0) +
+                                  (rowReorderColumnEnabled ? 1 : 0) +
                                   (indexColumnEnabled ? 1 : 0) +
                                   (getSubRows ? 1 : 0)
                                 const indent =
@@ -1971,6 +2128,9 @@ export function AdminDataTable<TData>({
                                 const isSelectionCol =
                                   cell.column.id ===
                                   DATA_TABLE_SELECTION_COLUMN_ID
+                                const isReorderCol =
+                                  cell.column.id ===
+                                  DATA_TABLE_REORDER_COLUMN_ID
                                 const cellMeta = cell.column.columnDef.meta as
                                   | ColumnMeta
                                   | undefined
@@ -1979,7 +2139,9 @@ export function AdminDataTable<TData>({
                                   cellMeta
                                 )
                                 const isPinnedCol =
-                                  isSelectionCol || isActionsCol
+                                  isSelectionCol ||
+                                  isReorderCol ||
+                                  isActionsCol
                                 return (
                                   <TableCell
                                     key={cell.id}
@@ -1993,11 +2155,12 @@ export function AdminDataTable<TData>({
                                         stickyPinnedBodyCellClassName({
                                           rowIndex: row.index,
                                           isSelected: row.getIsSelected(),
-                                          side: isSelectionCol
+                                          side: isSelectionCol || isReorderCol
                                             ? "left"
                                             : "right",
                                         }),
                                       isSelectionCol && "px-0",
+                                      isReorderCol && "px-0",
                                       isActionsCol && "px-1"
                                     )}
                                     style={{
@@ -2013,6 +2176,71 @@ export function AdminDataTable<TData>({
                                     }}
                                   >
                                     {(() => {
+                                      if (isReorderCol) {
+                                        const draggable =
+                                          row.depth === 0 &&
+                                          rowReorderDndEnabled === true
+
+                                        const droppingDisabled =
+                                          !rowReorderDndEnabled ||
+                                          row.depth > 0
+
+                                        return (
+                                          <button
+                                            type="button"
+                                            draggable={draggable}
+                                            aria-label={
+                                              rowReorderHandleAriaLabel
+                                            }
+                                            disabled={droppingDisabled}
+                                            onDragStart={(e) => {
+                                              if (!draggable) return
+                                              e.dataTransfer.effectAllowed =
+                                                "move"
+                                              e.dataTransfer.setData(
+                                                "text/plain",
+                                                row.id
+                                              )
+                                              setDraggingRowId(row.id)
+                                            }}
+                                            onDragOver={(e) => {
+                                              if (droppingDisabled) return
+                                              e.preventDefault()
+                                            }}
+                                            onDrop={(e) => {
+                                              e.preventDefault()
+                                              if (droppingDisabled) return
+                                              const activeId =
+                                                e.dataTransfer.getData(
+                                                  "text/plain"
+                                                )
+                                              if (!activeId) return
+                                              reorderTopLevelByIds(
+                                                activeId,
+                                                row.id
+                                              )
+                                              setDraggingRowId(null)
+                                            }}
+                                            onDragEnd={() => {
+                                              setDraggingRowId(null)
+                                            }}
+                                            className={cn(
+                                              "flex size-8 items-center justify-center rounded-md transition-colors",
+                                              droppingDisabled
+                                                ? "cursor-not-allowed opacity-50"
+                                                : draggingRowId === row.id
+                                                  ? "cursor-grabbing opacity-70"
+                                                  : "cursor-grab hover:bg-muted/50 active:cursor-grabbing"
+                                            )}
+                                          >
+                                            <GripVertical
+                                              className="size-3.5 text-muted-foreground"
+                                              aria-hidden
+                                            />
+                                          </button>
+                                        )
+                                      }
+
                                       const cellContent = flexRender(
                                         cell.column.columnDef.cell,
                                         cell.getContext()
@@ -2049,12 +2277,7 @@ export function AdminDataTable<TData>({
                   {footer}
                 </div>
               ) : null}
-              <div
-                className={cn(
-                  "min-w-0",
-                  footer ? "shrink-0" : "w-full"
-                )}
-              >
+              <div className={cn("min-w-0", footer ? "shrink-0" : "w-full")}>
                 {paginationFooter}
               </div>
             </div>

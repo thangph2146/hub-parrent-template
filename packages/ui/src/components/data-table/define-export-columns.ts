@@ -61,7 +61,7 @@ export function resolveLinkedUser(
     id?: string | null
     name?: string | null
     email?: string | null
-  } | null,
+  } | null
 ): LinkedUserRef | null {
   if (nested && (nested.id || nested.email || nested.name)) {
     return {
@@ -91,26 +91,27 @@ export function defineRelationExportColumns<T>(
     const filterVariant = resolveRelationFilterVariant(field.id)
     const isDateRange = filterVariant === "date-range"
     return {
-    id: field.id,
-    header: field.header,
-    accessorFn: (row) => field.getValue(row),
-    enableSorting: false,
-    enableColumnFilter: true,
-    ...(isDateRange ? {} : { filterFn: () => true }),
-    meta: {
-      defaultHidden: field.defaultHidden ?? true,
-      filterVariant,
-      filterPlaceholder:
-        filterVariant === "date-range" ? "Chọn khoảng ngày" : "Lọc…",
-      exportHeader: field.header,
-      exportValue: (row: T) => formatRelationCellValue(field.getValue(row)),
-      exportWidth: field.exportWidth,
-    },
-    cell: ({ row }) => {
-      const text = formatRelationCellValue(field.getValue(row.original))
-      return text || "—"
-    },
-  }})
+      id: field.id,
+      header: field.header,
+      accessorFn: (row) => field.getValue(row),
+      enableSorting: false,
+      enableColumnFilter: true,
+      ...(isDateRange ? {} : { filterFn: () => true }),
+      meta: {
+        defaultHidden: field.defaultHidden ?? true,
+        filterVariant,
+        filterPlaceholder:
+          filterVariant === "date-range" ? "Chọn khoảng ngày" : "Lọc…",
+        exportHeader: field.header,
+        exportValue: (row: T) => formatRelationCellValue(field.getValue(row)),
+        exportWidth: field.exportWidth,
+      },
+      cell: ({ row }) => {
+        const text = formatRelationCellValue(field.getValue(row.original))
+        return text || "—"
+      },
+    }
+  })
 }
 
 function linkedUserLabel(user: LinkedUserRef | null | undefined): string {

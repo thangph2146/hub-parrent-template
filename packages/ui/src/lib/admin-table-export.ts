@@ -9,7 +9,10 @@ import {
   buildCsvFromColumns,
   type BuildCsvFromColumnsOptions,
 } from "./build-table-csv"
-import { buildExportFromFields, type ExportFieldDef } from "./build-field-export"
+import {
+  buildExportFromFields,
+  type ExportFieldDef,
+} from "./build-field-export"
 import {
   downloadXlsxFile,
   downloadXlsxWorkbook,
@@ -47,7 +50,9 @@ export type DownloadAdminTableXlsxParams<T> = {
   relatedSections?: XlsxRelatedSection[]
 }
 
-function resolveExportData<T>(params: DownloadAdminTableXlsxParams<T>): AdminTableExportData<T> {
+function resolveExportData<T>(
+  params: DownloadAdminTableXlsxParams<T>
+): AdminTableExportData<T> {
   if (params.fields?.length) {
     return buildExportFromFields(params.data, params.fields)
   }
@@ -62,11 +67,11 @@ function resolveExportData<T>(params: DownloadAdminTableXlsxParams<T>): AdminTab
  * Dùng chung cho mọi danh sách `apps/backend` gắn `AdminDataTable`.
  */
 export async function downloadAdminTableXlsx<T>(
-  params: DownloadAdminTableXlsxParams<T>,
+  params: DownloadAdminTableXlsxParams<T>
 ): Promise<void> {
   const mainConfig = buildAdminTableXlsxExport(
     params.templateId,
-    params.options ?? {},
+    params.options ?? {}
   )
   const { headers, rows, columnWidths, columnWraps } = resolveExportData(params)
 
@@ -115,7 +120,6 @@ export async function downloadAdminTableXlsx<T>(
     headers,
     rows,
     mainConfig.sheetName,
-    mainOptions,
+    mainOptions
   )
 }
-

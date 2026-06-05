@@ -13,11 +13,13 @@ type ColumnMetaLike = {
 /** Số dòng tối đa hiển thị trong ô dữ liệu (ellipsis sau dòng thứ 5). */
 export const DATA_TABLE_CELL_MAX_LINES = 5
 
-export const DATA_TABLE_CELL_CONTENT_CLAMP_CLASS = "line-clamp-5 break-words min-w-0 w-full"
+export const DATA_TABLE_CELL_CONTENT_CLAMP_CLASS =
+  "line-clamp-5 break-words min-w-0 w-full"
 
 export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
 export const DATA_TABLE_EXPAND_COLUMN_ID = "_expand"
 export const DATA_TABLE_SELECTION_COLUMN_ID = "_select"
+export const DATA_TABLE_REORDER_COLUMN_ID = "_reorder"
 
 /** Min-width mặc định cho cột dữ liệu (ngoài checkbox, STT, expand, thao tác). */
 export const DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_WIDTH_CLASS = "min-w-[180px]"
@@ -62,6 +64,7 @@ export function isDataTableStructuralColumn(
 ): boolean {
   return (
     columnId === DATA_TABLE_SELECTION_COLUMN_ID ||
+    columnId === DATA_TABLE_REORDER_COLUMN_ID ||
     columnId === DATA_TABLE_INDEX_COLUMN_ID ||
     columnId === DATA_TABLE_EXPAND_COLUMN_ID ||
     columnId === "_index" ||

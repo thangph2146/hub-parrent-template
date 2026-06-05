@@ -54,7 +54,7 @@ function padRow(row: string[], colCount: number): string[] {
 function buildSheetLayout(
   headers: string[],
   rows: string[][],
-  options?: XlsxExportOptions,
+  options?: XlsxExportOptions
 ): SheetLayout {
   const preambleRows: string[][] = []
   if (options?.title?.trim()) preambleRows.push([options.title.trim()])
@@ -67,10 +67,19 @@ function buildSheetLayout(
     }
   }
 
-  const blocks: Array<{ sectionTitle?: string; relationHint?: string; headers: string[]; rows: string[][] }> = []
+  const blocks: Array<{
+    sectionTitle?: string
+    relationHint?: string
+    headers: string[]
+    rows: string[][]
+  }> = []
 
   if (preambleRows.length || headers.length) {
-    blocks.push({ sectionTitle: preambleRows.length ? SECTION_MAIN : undefined, headers, rows })
+    blocks.push({
+      sectionTitle: preambleRows.length ? SECTION_MAIN : undefined,
+      headers,
+      rows,
+    })
   } else {
     blocks.push({ headers, rows })
   }
@@ -105,7 +114,7 @@ function buildSheetLayout(
       colCount = Math.max(
         colCount,
         block.headers.length,
-        ...block.rows.map((r) => r.length),
+        ...block.rows.map((r) => r.length)
       )
     }
     for (const row of block.rows) {
@@ -116,9 +125,8 @@ function buildSheetLayout(
 
   const paddedAoa = aoa.map((row) => padRow(row, colCount))
   const reportInfoRow = paddedAoa.findIndex((row) => row[0] === SECTION_REPORT)
-  const detailSectionRow = sectionTitleRows.find(
-    (r) => paddedAoa[r]?.[0] === SECTION_MAIN,
-  ) ?? -1
+  const detailSectionRow =
+    sectionTitleRows.find((r) => paddedAoa[r]?.[0] === SECTION_MAIN) ?? -1
 
   return {
     aoa: paddedAoa,
@@ -133,13 +141,22 @@ function buildSheetLayout(
 function applySheetStyles(
   ws: Record<string, unknown>,
   layout: SheetLayout,
-  options?: XlsxExportOptions,
+  options?: XlsxExportOptions
 ): void {
   const range = (ws["!ref"] as string) ?? "A1:A1"
   const decoded = decodeRange(range)
-  const { colCount, headerRowIndexes, sectionTitleRows, reportInfoRow, detailSectionRow } = layout
+  const {
+    colCount,
+    headerRowIndexes,
+    sectionTitleRows,
+    reportInfoRow,
+    detailSectionRow,
+  } = layout
 
-  const merges: Array<{ s: { r: number; c: number }; e: { r: number; c: number } }> = []
+  const merges: Array<{
+    s: { r: number; c: number }
+    e: { r: number; c: number }
+  }> = []
   if (options?.title?.trim() && colCount > 1) {
     merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: colCount - 1 } })
   }
@@ -264,7 +281,7 @@ function encodeCell({ r, c }: { r: number; c: number }) {
 async function buildStyledSheet(
   headers: string[],
   rows: string[][],
-  options?: XlsxExportOptions,
+  options?: XlsxExportOptions
 ) {
   const XLSX = await import("xlsx-js-style")
   const layout = buildSheetLayout(headers, rows, options)
@@ -301,7 +318,7 @@ const EXPORT_DATE_SUFFIX_PATTERN = /\d{2}-\d{2}-\d{4}$/
 /** Gắn hậu tố ngày tháng năm vào tên file .xlsx (tránh lặp nếu đã có). */
 export function appendExportDateToXlsxFileName(
   fileName: string,
-  date = new Date(),
+  date = new Date()
 ): string {
   const trimmed = fileName.trim()
   const withExt = trimmed.toLowerCase().endsWith(".xlsx")
@@ -320,7 +337,7 @@ export async function downloadXlsxFile(
   headers: string[],
   rows: string[][],
   sheetName = "Dữ liệu",
-  options?: XlsxExportOptions,
+  options?: XlsxExportOptions
 ): Promise<void> {
   const XLSX = await import("xlsx-js-style")
   const ws = await buildStyledSheet(headers, rows, options)
@@ -341,17 +358,13 @@ export async function downloadXlsxFile(
 /** Workbook nhiều sheet — mỗi bảng quan hệ một tab (vd. sự kiện / đăng ký). */
 export async function downloadXlsxWorkbook(
   filename: string,
-  sheets: XlsxSheetPayload[],
+  sheets: XlsxSheetPayload[]
 ): Promise<void> {
   if (!sheets.length) return
   const XLSX = await import("xlsx-js-style")
   const wb = XLSX.utils.book_new()
   for (const sheet of sheets) {
-    const ws = await buildStyledSheet(
-      sheet.headers,
-      sheet.rows,
-      sheet.options,
-    )
+    const ws = await buildStyledSheet(sheet.headers, sheet.rows, sheet.options)
     const safeName =
       sheet.sheetName
         .replace(/[:\\/?*[\]]/g, " ")

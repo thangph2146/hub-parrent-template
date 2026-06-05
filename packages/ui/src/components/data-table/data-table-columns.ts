@@ -46,7 +46,8 @@ export function normalizeDataTableColumns<TData>(
       : undefined
     const id = resolveDataTableColumnId(column)
     const isActions =
-      id === DATA_TABLE_ACTIONS_COLUMN_ID || column.meta?.isActionsColumn === true
+      id === DATA_TABLE_ACTIONS_COLUMN_ID ||
+      column.meta?.isActionsColumn === true
 
     if (!isActions && !children) return column
 

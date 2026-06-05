@@ -167,7 +167,10 @@ export function AdminDataTablePagination({
     setDraftPage(String(displayPage))
   }, [displayPage])
 
-  const totalPages = Math.max(1, Math.ceil(total / Math.max(1, displayPageSize)))
+  const totalPages = Math.max(
+    1,
+    Math.ceil(total / Math.max(1, displayPageSize))
+  )
   const safePage = Math.min(Math.max(1, displayPage), totalPages)
 
   useEffect(() => {
@@ -179,14 +182,7 @@ export function AdminDataTablePagination({
     if (page > totalPages) {
       onPageChange(totalPages)
     }
-  }, [
-    appliedPage,
-    isLoading,
-    onPageChange,
-    page,
-    total,
-    totalPages,
-  ])
+  }, [appliedPage, isLoading, onPageChange, page, total, totalPages])
 
   useEffect(() => {
     if (isLoading) return
@@ -195,8 +191,7 @@ export function AdminDataTablePagination({
     }
   }, [appliedPageSize, isLoading, onPageSizeChange, pageSize])
 
-  const from =
-    empty || total <= 0 ? 0 : (safePage - 1) * displayPageSize + 1
+  const from = empty || total <= 0 ? 0 : (safePage - 1) * displayPageSize + 1
   const rowsOnPage =
     currentPageRowCount ??
     (empty || total <= 0
@@ -220,16 +215,7 @@ export function AdminDataTablePagination({
     return itemLabel
       ? `Hiển thị ${from}–${to} / ${total} ${itemLabel}`
       : `Hiển thị ${from}–${to} / ${total}`
-  }, [
-    empty,
-    emptySummary,
-    from,
-    isLoading,
-    itemLabel,
-    showingAll,
-    to,
-    total,
-  ])
+  }, [empty, emptySummary, from, isLoading, itemLabel, showingAll, to, total])
 
   const visiblePages = useMemo(
     () => buildVisiblePages(safePage, totalPages),
@@ -269,8 +255,7 @@ export function AdminDataTablePagination({
   const canShowAll =
     total > 0 &&
     displayPageSize < total &&
-    (onShowAllRows != null ||
-      (showAllPageSizeOption && total <= maxPageSize))
+    (onShowAllRows != null || (showAllPageSizeOption && total <= maxPageSize))
 
   const selectValue = customPageSizeMode
     ? CUSTOM_PAGE_SIZE_VALUE
@@ -337,7 +322,9 @@ export function AdminDataTablePagination({
         >
           <label
             htmlFor={
-              customPageSizeMode ? `${pageSizeSelectId}-custom` : pageSizeSelectId
+              customPageSizeMode
+                ? `${pageSizeSelectId}-custom`
+                : pageSizeSelectId
             }
             className="inline-flex items-center gap-1.5 ps-1.5 text-xs font-medium whitespace-nowrap text-muted-foreground"
           >

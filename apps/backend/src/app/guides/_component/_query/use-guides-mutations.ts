@@ -1,10 +1,10 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { StoreSyncSdk } from "@workspace/api-client";
-import type { GuideFormData, UpdateGuideData, GuideGroup } from "../types";
-import { PAGE_KEY, parseContent } from "../utils";
+import type { GuideFormData, UpdateGuideData, GuideGroup, ListResult } from "../types";
+import { PAGE_KEY, parseContent, applyOrderToGroups } from "../utils";
 
 interface CreateGuideVariables {
   api: StoreSyncSdk;
@@ -36,14 +36,43 @@ async function deleteGuide(api: StoreSyncSdk, id: string): Promise<void> {
 }
 
 async function reorderGuides(api: StoreSyncSdk, ordered: GuideGroup[]): Promise<void> {
-  for (let idx = 0; idx < ordered.length; idx++) {
-    const grp = ordered[idx];
+  const withOrder = applyOrderToGroups(ordered);
+  for (const grp of withOrder) {
     const c = parseContent(grp.content);
     await api.guides.update(grp.id, {
       isVisible: grp.isVisible,
-      content: { ...c, order: idx + 1 },
+      content: c,
     });
   }
+}
+
+interface GuidesListCacheSnapshot {
+  queryKey: readonly unknown[];
+  previous: ListResult | undefined;
+}
+
+function patchGuidesListOrderCache(
+  queryClient: QueryClient,
+  ordered: GuideGroup[],
+): GuidesListCacheSnapshot[] {
+  const optimisticById = new Map(
+    applyOrderToGroups(ordered).map((grp) => [grp.id, grp] as const),
+  );
+  const snapshots: GuidesListCacheSnapshot[] = [];
+
+  for (const [queryKey, old] of queryClient.getQueriesData<ListResult>({
+    queryKey: ["admin", "guides"],
+  })) {
+    if (!old?.data) continue;
+
+    snapshots.push({ queryKey, previous: old });
+    queryClient.setQueryData<ListResult>(queryKey, {
+      ...old,
+      data: old.data.map((grp) => optimisticById.get(grp.id) ?? grp),
+    });
+  }
+
+  return snapshots;
 }
 
 export function useCreateGuideMutation() {
@@ -97,11 +126,19 @@ export function useReorderGuidesMutation() {
   return useMutation({
     mutationFn: ({ api, ordered }: { api: StoreSyncSdk; ordered: GuideGroup[] }) =>
       reorderGuides(api, ordered),
+    onMutate: async ({ ordered }) => {
+      await queryClient.cancelQueries({ queryKey: ["admin", "guides"] });
+      const snapshots = patchGuidesListOrderCache(queryClient, ordered);
+      return { snapshots };
+    },
     onSuccess: () => {
       toast.success("Đã lưu thứ tự");
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
     },
-    onError: (error: Error) => {
+    onError: (error: Error, _variables, context) => {
+      for (const { queryKey, previous } of context?.snapshots ?? []) {
+        queryClient.setQueryData(queryKey, previous);
+      }
       toast.error(error.message || "Không thể lưu thứ tự");
     },
   });

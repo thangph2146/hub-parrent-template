@@ -64,7 +64,9 @@ function cellText<T>(row: T, col: ColumnDef<T, unknown>): string {
   return ""
 }
 
-export function shouldExportTableColumn<T>(col: ColumnDef<T, unknown>): boolean {
+export function shouldExportTableColumn<T>(
+  col: ColumnDef<T, unknown>
+): boolean {
   if (col.id === "_expand" || col.id === "_select") return false
   if (col.id === "actions" || col.id === "attendanceActions") return false
   const meta = col.meta as ExportColumnMeta<T> | undefined
@@ -108,9 +110,7 @@ function flattenTreeForExport<T>(
       const isLast = index === rows.length - 1
       const connector = isLast ? "└── " : "├── "
       const indexPath =
-        depth === 0
-          ? [index + 1 + rootOffset]
-          : [...parentIndexPath, index + 1]
+        depth === 0 ? [index + 1 + rootOffset] : [...parentIndexPath, index + 1]
 
       result.push({
         row,

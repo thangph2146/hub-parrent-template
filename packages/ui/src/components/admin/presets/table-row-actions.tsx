@@ -268,7 +268,12 @@ export function AdminTableCrudRowActions({
       group: "status",
       disabled: toggleDisabled,
       title: toggleTitle,
-      confirm: resolveActionConfirm(toggleKey, pageConfirm, recordLabel, labels),
+      confirm: resolveActionConfirm(
+        toggleKey,
+        pageConfirm,
+        recordLabel,
+        labels
+      ),
     })
   }
 
@@ -465,8 +470,7 @@ export function defineAdminCrudActionsColumn<T>(
     cell: ({ row }) => {
       const data = row.original
       const extra = resolveRowProps?.(data) ?? {}
-      const isActive =
-        extra.isActive ?? getIsActive?.(data)
+      const isActive = extra.isActive ?? getIsActive?.(data)
 
       return (
         <AdminTableCrudRowActions
@@ -482,9 +486,7 @@ export function defineAdminCrudActionsColumn<T>(
           }
           onPurge={onPurge ? () => onPurge(data) : extra.onPurge}
           onToggleActive={
-            onToggleActive
-              ? () => onToggleActive(data)
-              : extra.onToggleActive
+            onToggleActive ? () => onToggleActive(data) : extra.onToggleActive
           }
           isActive={isActive}
           {...extra}
@@ -537,9 +539,7 @@ export function defineAdminTrashActionsColumn<T>(
           busy={busy}
           recordLabel={getRecordLabel?.(data)}
           pageConfirm={pageConfirm}
-          onRestore={
-            onRestore ? () => onRestore(data) : extra.onRestore
-          }
+          onRestore={onRestore ? () => onRestore(data) : extra.onRestore}
           onPurge={onPurge ? () => onPurge(data) : extra.onPurge}
           {...extra}
         />

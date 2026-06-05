@@ -14,7 +14,7 @@ export async function fetchAllPagedList<T>(
     page: number
     limit: number
   }) => Promise<PagedListResult<T>>,
-  limit = ADMIN_PAGED_LIST_FETCH_LIMIT,
+  limit = ADMIN_PAGED_LIST_FETCH_LIMIT
 ): Promise<T[]> {
   const first = await fetchPage({ page: 1, limit })
   if (first.total <= first.items.length) return first.items

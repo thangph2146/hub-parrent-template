@@ -40,6 +40,17 @@ export function sortGroupsByOrder(groups: GuideGroup[]): GuideGroup[] {
   );
 }
 
+/** Gán content.order theo vị trí trong mảng (sau drag-and-drop). */
+export function applyOrderToGroups(groups: GuideGroup[]): GuideGroup[] {
+  return groups.map((grp, idx) => {
+    const content = parseContent(grp.content);
+    return {
+      ...grp,
+      content: { ...content, order: idx + 1 },
+    };
+  });
+}
+
 /** Reorder steps sau khi drag-drop */
 export function reorderSteps(steps: GuideStep[]): GuideStep[] {
   return steps.map((s, idx) => ({ ...s, order: idx + 1 }));

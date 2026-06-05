@@ -260,9 +260,12 @@ export function useDataTableRowActionRunnerOptional() {
   return useContext(RowActionConfirmRunnerContext)?.runAction ?? null
 }
 
-export function useRowActionConfirm(defaultAutoConfirmDangerousActions = false) {
-  const [pendingAction, setPendingAction] =
-    useState<PendingRowAction | null>(null)
+export function useRowActionConfirm(
+  defaultAutoConfirmDangerousActions = false
+) {
+  const [pendingAction, setPendingAction] = useState<PendingRowAction | null>(
+    null
+  )
   const [running, setRunning] = useState(false)
 
   const runAction = useCallback(

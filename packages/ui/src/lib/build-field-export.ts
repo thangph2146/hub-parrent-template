@@ -30,7 +30,7 @@ function stringifyCell(v: unknown): string {
  */
 export function buildExportFromFields<T>(
   data: T[],
-  fields: ExportFieldDef<T>[],
+  fields: ExportFieldDef<T>[]
 ): {
   headers: string[]
   rows: string[][]
@@ -38,9 +38,7 @@ export function buildExportFromFields<T>(
   columnWraps: Array<boolean | undefined>
 } {
   const headers = fields.map((f) => f.header)
-  const rows = data.map((row) =>
-    fields.map((f) => stringifyCell(f.value(row))),
-  )
+  const rows = data.map((row) => fields.map((f) => stringifyCell(f.value(row))))
   return {
     headers,
     rows,

@@ -19,6 +19,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import {
   useGuidesQuery,
+  useGuidesActions,
   getGuidesColumns,
   GuidesTable,
   PAGE_KEY,
@@ -61,6 +62,11 @@ function GuidesPageInner() {
     () => sortGroupsByOrder((data?.data ?? []).filter((g) => g.pageKey === PAGE_KEY)),
     [data],
   );
+
+  const { handleReorder, isReordering } = useGuidesActions({
+    api,
+    groups: sortedGroups,
+  });
 
   const rowActions = useAdminCrudRowHandlers<GuideGroup>({
     getRecordLabel: (row) => parseContent(row.content).title ?? row.sectionKey,
@@ -121,6 +127,8 @@ function GuidesPageInner() {
           setColumnFilters([]);
         }}
         onBulkPurge={handleBulkPurge}
+        onRowReorder={canWrite ? handleReorder : undefined}
+        isReordering={isReordering}
       />
     </AdminPageSection>
   );

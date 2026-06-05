@@ -35,14 +35,15 @@ export function useAdminTableRowSelection(initial: RowSelectionState = {}) {
     selectedRowIds,
     onSelectedRowIdsChange: setSelectedRowIds,
     clearRowSelection,
-    selectionProps: adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds),
+    selectionProps: adminTableRowSelectionProps(
+      selectedRowIds,
+      setSelectedRowIds
+    ),
   }
 }
 
-export function adminTableGetRowIdFromOriginal<T extends { id: string | number }>(
-  original: T,
-  _index?: number,
-  _parent?: Row<T>
-): string {
+export function adminTableGetRowIdFromOriginal<
+  T extends { id: string | number },
+>(original: T, _index?: number, _parent?: Row<T>): string {
   return String(original.id)
 }
