@@ -33,7 +33,8 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TagsTable,
   TagsTrashTable,
-  getTagColumns,  buildTagTree,
+  getTagColumns,
+  buildTagTree,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
@@ -70,31 +71,15 @@ function TagsPageInner() {
 
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350);
 
-  const listFilterParams = useMemo(() => {
-    const params: Record<string, string> = {};
-    for (const f of columnFilters) {
-      if (f.id === "status") {
-        params.statusFilter = String(f.value);
-      } else if (f.id === "updatedAt" && typeof f.value === "string") {
-        const [fromStr, toStr] = f.value.split(",");
-        if (fromStr) params.updatedAtFrom = fromStr;
-        if (toStr) params.updatedAtTo = toStr;
-      }
-    }
-    return params;
-  }, [columnFilters]);
+  const listFilterParams = useMemo(
+    () => buildTagsFilterQuery(columnFilters),
+    [columnFilters]
+  );
 
-  const trashFilterParams = useMemo(() => {
-    const params: Record<string, string> = {};
-    for (const f of trashColumnFilters) {
-      if (f.id === "deletedAt" && typeof f.value === "string") {
-        const [fromStr, toStr] = f.value.split(",");
-        if (fromStr) params.deletedAtFrom = fromStr;
-        if (toStr) params.deletedAtTo = toStr;
-      }
-    }
-    return params;
-  }, [trashColumnFilters]);
+  const trashFilterParams = useMemo(
+    () => buildTagsFilterQuery(trashColumnFilters),
+    [trashColumnFilters]
+  );
 
   const trashExportFilterParams = useMemo(
     () => ({

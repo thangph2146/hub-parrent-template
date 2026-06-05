@@ -30,7 +30,8 @@ export function getScreenColumns({
     {
       accessorKey: "name",
       header: "Tên màn hình",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"

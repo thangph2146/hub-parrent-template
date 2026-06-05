@@ -8,6 +8,8 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { SPEAKER_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface SpeakerRowDto {
   id: number;
@@ -34,6 +36,7 @@ export interface ListSpeakersParams {
   updatedAtTo?: string;
   deletedAtFrom?: string;
   deletedAtTo?: string;
+  filters?: Record<string, string>;
 }
 
 export interface ListSpeakersResult {
@@ -83,20 +86,16 @@ export class SpeakersService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListSpeakersParams): Promise<ListSpeakersResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const status = params.status ?? 'active';
-    if (status === 'deleted') where.deletedAt = { $ne: null };
-    else if (status === 'active') where.deletedAt = null;
-    if (params.search?.trim()) {
-      const q = params.search.trim();
-      where.$or = [
-        { name: { $like: `%${q}%` } },
-        { email: { $like: `%${q}%` } },
-        { organization: { $like: `%${q}%` } },
-      ];
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['name', 'title', 'organization', 'email'],
+      filterConfig: SPEAKER_COLUMN_FILTERS,
+    });
     if (params.speakerStatus === 0 || params.speakerStatus === 1) {
       where.status = params.speakerStatus;
     }

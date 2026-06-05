@@ -21,6 +21,7 @@ import {
 } from "@ui/lib/layout-shell"
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   TemplatesTable,
@@ -56,26 +57,14 @@ function TemplatesPageInner() {
   const [lS, setLS] = useState<RowSelectionState>({})
   const [tS, setTS] = useState<RowSelectionState>({})
   const dQ = useDebouncedValue(tGF, 350)
-  const listFilterParams = useMemo(() => {
-    const p: Record<string, string> = {}
-    for (const f of cF) {
-      if (f.id === "status") {
-        p.statusFilter = String(f.value)
-      }
-    }
-    return p
-  }, [cF])
-  const trashFilterParams = useMemo(() => {
-    const p: Record<string, string> = {}
-    for (const f of tCF) {
-      if (f.id === "deletedAt" && typeof f.value === "string") {
-        const [a, b] = f.value.split(",")
-        if (a) p.deletedAtFrom = a
-        if (b) p.deletedAtTo = b
-      }
-    }
-    return p
-  }, [tCF])
+  const listFilterParams = useMemo(
+    () => buildAdminFilterQuery(cF, COMMON_FILTER_MAPPINGS.templates),
+    [cF]
+  )
+  const trashFilterParams = useMemo(
+    () => buildAdminFilterQuery(tCF, COMMON_FILTER_MAPPINGS.templates),
+    [tCF]
+  )
   const listQ = useTemplatesListQuery(api, canWrite || true, listFilterParams)
   const trashQ = useTemplatesTrashQuery({
     api: api,

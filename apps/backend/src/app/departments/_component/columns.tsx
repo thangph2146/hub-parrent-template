@@ -31,7 +31,8 @@ export function getDepartmentColumns({
     {
       accessorKey: "code",
       header: "Mã phòng khoa",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="font-mono text-xs font-medium">
           {String(getValue())}
@@ -41,7 +42,8 @@ export function getDepartmentColumns({
     {
       accessorKey: "name",
       header: "Tên phòng khoa",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"

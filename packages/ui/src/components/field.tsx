@@ -27,7 +27,7 @@ export const FIELD_PANEL_ITEM_CLASS =
 
 /** Badge đếm góc phải header section (vd. số danh mục con). */
 export const FIELD_SECTION_BADGE_CLASS =
-  "inline-flex size-6 min-w-6 items-center justify-center rounded-md bg-red-950 px-0 text-xs font-bold text-white"
+  "inline-flex size-6 min-w-6 items-center justify-center rounded-md bg-secondary px-0 text-xs font-bold text-white"
 
 function FieldSectionBadge({
   className,

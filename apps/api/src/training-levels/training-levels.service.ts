@@ -8,6 +8,8 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { TRAINING_LEVEL_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface TrainingLevelRowDto {
   id: number;
@@ -29,6 +31,7 @@ export interface ListTrainingLevelsParams {
   updatedAtTo?: string;
   deletedAtFrom?: string;
   deletedAtTo?: string;
+  filters?: Record<string, string>;
 }
 
 export interface ListTrainingLevelsResult {
@@ -75,40 +78,16 @@ export class TrainingLevelsService {
   async list(
     params: ListTrainingLevelsParams,
   ): Promise<ListTrainingLevelsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const status = params.status ?? 'active';
-    if (status === 'deleted') where.deletedAt = { $ne: null };
-    else if (status === 'active') where.deletedAt = null;
-    if (params.statusFilter != null) where.status = params.statusFilter;
-    if (params.updatedAtFrom)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $gte: new Date(params.updatedAtFrom),
-      };
-    if (params.updatedAtTo)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $lte: new Date(params.updatedAtTo),
-      };
-    if (params.deletedAtFrom)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $gte: new Date(params.deletedAtFrom),
-      };
-    if (params.deletedAtTo)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $lte: new Date(params.deletedAtTo),
-      };
-    if (params.search?.trim()) {
-      const q = params.search.trim();
-      where.$or = [
-        { name: { $like: `%${q}%` } },
-        { code: { $like: `%${q}%` } },
-      ];
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['name', 'code'],
+      filterConfig: TRAINING_LEVEL_COLUMN_FILTERS,
+    });
     const whereQuery = where as FilterQuery<TrainingLevel>;
     const [rows, total] = await Promise.all([
       this.em.find(TrainingLevel, whereQuery, {

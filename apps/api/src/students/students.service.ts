@@ -66,8 +66,11 @@ export class StudentsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListStudentsParams): Promise<ListStudentsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
 
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';

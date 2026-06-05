@@ -37,7 +37,8 @@ export function getEventRegistrationColumns(options: {
     {
       id: "avatar",
       header: "Avatar",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       size: 56,
       meta: {
         disableColumnFilter: true,
@@ -51,23 +52,27 @@ export function getEventRegistrationColumns(options: {
     {
       accessorKey: "email",
       header: "Email",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
     },
     {
       accessorKey: "fullName",
       header: "Họ tên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
     },
     {
       accessorKey: "phone",
       header: "Điện thoại",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (getValue() as string) || "—",
     },
     {
       id: "attendance",
       header: "Trạng thái check-in",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         exportHeader: "Trạng thái check-in",
         exportValue: (row) =>
@@ -89,7 +94,8 @@ export function getEventRegistrationColumns(options: {
     {
       id: "attendanceActions",
       header: "Thao tác",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       size: 120,
       meta: { excludeFromExport: true },
       cell: ({ row }) => (

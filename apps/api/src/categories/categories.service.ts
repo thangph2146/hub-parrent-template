@@ -133,6 +133,27 @@ function buildWhere(params: ListCategoriesParams): Record<string, unknown> {
         where.name = { $like: `%${trimmed}%` };
       } else if (key === 'slug') {
         where.slug = { $like: `%${trimmed}%` };
+      } else if (key === 'description') {
+        where.description = { $like: `%${trimmed}%` };
+      } else if (
+        key === 'type' &&
+        (trimmed === 'post' || trimmed === 'event')
+      ) {
+        where.type = trimmed;
+      } else if (
+        key === 'updatedAt' ||
+        key === 'deletedAt' ||
+        key === 'createdAt'
+      ) {
+        const dates = trimmed.split(',').filter(Boolean);
+        if (dates.length === 1) {
+          where[key] = { $gte: new Date(dates[0]) };
+        } else if (dates.length >= 2) {
+          where[key] = {
+            $gte: new Date(dates[0]),
+            $lte: new Date(dates[1]),
+          };
+        }
       } else if (key === 'parentId') {
         const ids = trimmed.includes(',')
           ? trimmed

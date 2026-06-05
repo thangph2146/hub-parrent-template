@@ -20,6 +20,7 @@ import {
 } from "@ui/components/data-table"
 import type { MyStudentRow } from "./types"
 import { defineRelationExportColumns } from "@ui/components/data-table"
+import { defineAdminCreatedAtColumn } from "@/lib/admin-table-columns"
 
 function recordLabel(row: MyStudentRow): string {
   return row.studentName?.trim() || row.studentCode
@@ -41,7 +42,8 @@ export function getMyStudentsColumns(
     {
       id: "student",
       header: "Sinh viên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       enableSorting: true,
       sortingFn: (a, b) => {
         const la = recordLabel(a.original)
@@ -67,7 +69,8 @@ export function getMyStudentsColumns(
     {
       accessorKey: "note",
       header: "Ghi chú",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => {
         const v = getValue() as string | null
         return v ? (
@@ -77,22 +80,7 @@ export function getMyStudentsColumns(
         )
       },
     },
-    {
-      accessorKey: "createdAt",
-      header: "Ngày gửi",
-      enableColumnFilter: true,
-      enableSorting: true,
-      meta: {
-        filterVariant: "date-range",
-        filterPlaceholder: "Chọn khoảng ngày",
-      },
-      cell: ({ getValue }) =>
-        new Date(getValue() as string).toLocaleDateString("vi-VN", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
-    },
+    defineAdminCreatedAtColumn<MyStudentRow>({ header: "Ngày gửi" }),
     {
       accessorKey: "status",
       header: "Trạng thái",
@@ -138,7 +126,8 @@ export function getMyStudentsColumns(
       id: "actions",
       header: "Thao tác",
       enableSorting: false,
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => {
         const data = row.original
         const label = recordLabel(data)

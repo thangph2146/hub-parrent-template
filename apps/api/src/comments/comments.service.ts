@@ -107,8 +107,11 @@ export class CommentsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListCommentsParams): Promise<ListCommentsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where = buildWhere(params) as FilterQuery<Comment>;
 
     const [rows, total] = await Promise.all([

@@ -29,6 +29,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @ApiTags('Locations')
 @Controller(ADMIN_ROUTES.LOCATIONS)
@@ -67,6 +68,7 @@ export class LocationsController {
     @Query('updatedAtTo') updatedAtTo?: string,
     @Query('deletedAtFrom') deletedAtFrom?: string,
     @Query('deletedAtTo') deletedAtTo?: string,
+    @Query() query?: Record<string, string>,
   ) {
     this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
     const userId = this.getUserId(headers);
@@ -81,6 +83,7 @@ export class LocationsController {
       updatedAtTo: updatedAtTo?.trim(),
       deletedAtFrom: deletedAtFrom?.trim(),
       deletedAtTo: deletedAtTo?.trim(),
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

@@ -52,10 +52,9 @@ function AdminParentStudentsPageInner() {
   const listQuery = useMemo(
     () => ({
       search: debouncedQ.trim() || undefined,
-      status: columnFilterQuery.status || undefined,
-      createdAt: columnFilterQuery.createdAt || undefined,
+      filters: columnFilterQuery,
     }),
-    [columnFilterQuery.createdAt, columnFilterQuery.status, debouncedQ],
+    [columnFilterQuery, debouncedQ],
   );
 
   useEffect(() => {
@@ -72,9 +71,8 @@ function AdminParentStudentsPageInner() {
       const result = await api.parentStudents.list({
         page,
         limit: pageSize,
-        search: debouncedQ.trim() || undefined,
-        status: columnFilterQuery.status || undefined,
-        createdAt: columnFilterQuery.createdAt || undefined,
+        search: listQuery.search,
+        filters: listQuery.filters,
       });
       return result;
     },

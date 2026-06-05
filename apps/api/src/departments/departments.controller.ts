@@ -29,6 +29,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @ApiTags('Departments')
 @Controller(ADMIN_ROUTES.DEPARTMENTS)
@@ -61,6 +62,7 @@ export class DepartmentsController {
     @Query('updatedAtTo') updatedAtTo?: string,
     @Query('deletedAtFrom') deletedAtFrom?: string,
     @Query('deletedAtTo') deletedAtTo?: string,
+    @Query() query?: Record<string, string>,
   ) {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const result = await this.departmentsService.list({
@@ -73,6 +75,7 @@ export class DepartmentsController {
       updatedAtTo: updatedAtTo?.trim(),
       deletedAtFrom: deletedAtFrom?.trim(),
       deletedAtTo: deletedAtTo?.trim(),
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

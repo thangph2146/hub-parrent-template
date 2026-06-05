@@ -1758,7 +1758,7 @@ export function AdminDataTable<TData>({
                 return (
                   <Field
                     key={header.id}
-                    className="w-[12rem] min-w-[min(100%,12rem)] gap-1"
+                    className="w-[16rem] min-w-[min(100%,12rem)] gap-1"
                   >
                     <FieldLabel
                       htmlFor={filterControlId}

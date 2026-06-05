@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import {
-  CalendarClock,
   CircleCheck,
   CircleDashed,
   CircleDot,
@@ -18,20 +17,20 @@ import {
 import { defineAdminTrashActionsColumn } from "@ui/components/admin"
 import {
   defineLinkedUserColumns,
-  defineRelationExportColumns,
   resolveLinkedUser,
 } from "@ui/components/data-table"
 import {
   type AdminTableView,
   buildAdminTableColumns,
   dedupeAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 import type { ContactRequest } from "./types"
 import {
   CONTACT_REQUEST_PRIORITY_LABELS,
   CONTACT_REQUEST_STATUS_LABELS,
 } from "./types"
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import { formatPhoneNumber } from "./utils"
 import {
   ContactRequestRowActions,
@@ -92,6 +91,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "name",
       header: "Tên",
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         filterPlaceholder: "Lọc tên…",
         className: COL_NAME,
@@ -106,6 +107,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "email",
       header: "Email",
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         filterPlaceholder: "Lọc email…",
         className: COL_EMAIL,
@@ -120,6 +123,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "phone",
       header: "SĐT",
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         filterPlaceholder: "Lọc SĐT…",
         className: COL_PHONE,
@@ -144,6 +149,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "subject",
       header: "Tiêu đề",
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         filterPlaceholder: "Lọc tiêu đề…",
         className: COL_SUBJECT,
@@ -192,6 +199,8 @@ export function getContactRequestColumns(
           </span>
         )
       },
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         filterPlaceholder: "Lọc nội dung…",
         className: COL_TEXT,
@@ -200,7 +209,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "address",
       header: "Địa chỉ",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: { className: COL_TEXT },
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
@@ -216,7 +226,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "program",
       header: "Chương trình",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: { className: COL_SLUG },
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
@@ -232,7 +243,8 @@ export function getContactRequestColumns(
     {
       accessorKey: "major",
       header: "Ngành",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: { className: COL_SLUG },
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
@@ -373,35 +385,23 @@ export function getContactRequestColumns(
         }),
       defaultHidden: true,
     }),
-    ...defineRelationExportColumns<ContactRequest>([
-      {
-        id: "updatedAt",
-        header: "Cập nhật lúc",
-        getValue: (row) => row.updatedAt,
-      },
-    ]),
-    {
-      accessorKey: "createdAt",
+    defineAdminCreatedAtColumn<ContactRequest>({
       header: "Ngày tạo",
-      enableColumnFilter: false,
       meta: { className: COL_DATE },
-      cell: ({ getValue }) => {
-        const v = getValue() as string
-        return (
-          <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
-            <CalendarClock className="size-3.5 shrink-0" aria-hidden />
-            {formatAdminDateTime(v)}
-          </span>
-        )
-      },
-    },
+    }),
+    defineAdminUpdatedAtColumn<ContactRequest>({
+      header: "Cập nhật lúc",
+      meta: { className: COL_DATE },
+    }),
+    
   ]
 
   const listActionsColumn: ColumnDef<ContactRequest> = {
     id: contactRequestActionsColumnId,
     header: "Thao tác",
     enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+      filterFn: () => true,
     meta: contactRequestActionsColumnMeta,
     cell: ({ row }) => (
       <ContactRequestRowActions

@@ -229,8 +229,11 @@ export class EventRegistrationsService {
   async list(
     params: ListEventRegistrationsParams,
   ): Promise<ListEventRegistrationsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where: Record<string, unknown> = {};
     where.eventId = params.eventId;
     where.deletedAt = null;

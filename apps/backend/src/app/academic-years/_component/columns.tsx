@@ -37,7 +37,8 @@ export function getAcademicYearColumns({
     {
       accessorKey: "name",
       header: "Tên niên khóa",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"

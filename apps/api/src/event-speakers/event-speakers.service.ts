@@ -85,8 +85,11 @@ export class EventSpeakersService {
   async list(
     params: ListEventSpeakersParams,
   ): Promise<ListEventSpeakersResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const [rows, total] = await Promise.all([
       this.em.find(
         EventSpeaker,

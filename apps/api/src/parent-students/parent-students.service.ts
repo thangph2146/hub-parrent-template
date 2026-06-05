@@ -7,6 +7,8 @@ import {
   paginationMeta,
 } from '../common/pagination';
 import { SocketGateway } from '../socket/socket.gateway';
+import { applyColumnFilters } from '../common/apply-column-filters';
+import { PARENT_STUDENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface ParentStudentRowDto {
   id: string;
@@ -95,8 +97,11 @@ export class ParentStudentsService {
       totalPages: number;
     };
   }> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const [rows, total] = await Promise.all([
       this.em.find(
         ParentStudent,
@@ -122,6 +127,7 @@ export class ParentStudentsService {
     status?: string;
     search?: string;
     createdAt?: string;
+    filters?: Record<string, string>;
   }): Promise<{
     data: ParentStudentRowDto[];
     pagination: {
@@ -172,6 +178,7 @@ export class ParentStudentsService {
         where.createdAt = dateRange;
       }
     }
+    applyColumnFilters(where, params.filters, PARENT_STUDENT_COLUMN_FILTERS);
     const [rows, total] = await Promise.all([
       this.em.find(ParentStudent, where, {
         populate: ['parent'],

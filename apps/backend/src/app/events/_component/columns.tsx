@@ -14,6 +14,8 @@ import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 import type { EventRow } from "./types"
 import { defineRelationExportColumns } from "@ui/components/data-table"
@@ -45,7 +47,8 @@ export function getEventColumns({
     {
       accessorKey: "title",
       header: "Sự kiện",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -59,7 +62,8 @@ export function getEventColumns({
     {
       accessorKey: "organizer",
       header: "Đơn vị tổ chức",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -89,7 +93,8 @@ export function getEventColumns({
     {
       accessorKey: "location",
       header: "Địa điểm",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
           <MapPin className="size-3" />
@@ -130,7 +135,8 @@ export function getEventColumns({
     {
       accessorKey: "isFeatured",
       header: "Nổi bật",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => {
         const featured = row.original.isFeatured
         const busy = isTogglingFeaturedId === row.original.id
@@ -232,8 +238,9 @@ export function getEventColumns({
         header: "Sức chứa",
         getValue: (r) => r.maxParticipants,
       },
-      { id: "updatedAt", header: "Cập nhật lúc", getValue: (r) => r.updatedAt },
     ]),
+    defineAdminCreatedAtColumn<EventRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<EventRow>({ defaultHidden: true }),
   ]
 
   return buildAdminTableColumns({

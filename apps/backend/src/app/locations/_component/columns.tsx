@@ -11,8 +11,9 @@ import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import type { LocationRow } from "./types"
 
 export function getLocationColumns({
@@ -32,7 +33,8 @@ export function getLocationColumns({
     {
       accessorKey: "name",
       header: "Tên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -46,7 +48,8 @@ export function getLocationColumns({
     {
       accessorKey: "address",
       header: "Địa chỉ",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -77,27 +80,8 @@ export function getLocationColumns({
         )
       },
     },
-    {
-      accessorKey: "updatedAt",
-      header: "Cập nhật",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true
-        const rowVal = row.getValue(columnId) as string
-        if (!rowVal) return false
-        const [fromStr, toStr] = String(filterValue).split(",")
-        const rowDate = rowVal.split("T")[0]
-        if (fromStr && rowDate < fromStr) return false
-        if (toStr && rowDate > toStr) return false
-        return true
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatAdminDateTime(getValue() as string)}
-        </span>
-      ),
-    },
+    defineAdminCreatedAtColumn<LocationRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<LocationRow>({ header: "Cập nhật" }),
   ]
 
   return buildAdminTableColumns({

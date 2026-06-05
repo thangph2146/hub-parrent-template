@@ -22,11 +22,13 @@ export const YearAveragesList = ({ averages, isLoading }: Props) => {
 
   const columns = useMemo<ColumnDef<YearAverage>[]>(
     () => [
-      { accessorKey: "yearStudy", header: "Năm học", enableColumnFilter: false, cell: ({ row }) => <span className="font-medium">{row.original.yearStudy}</span> },
+      { accessorKey: "yearStudy", header: "Năm học", enableColumnFilter: true,
+      filterFn: () => true, cell: ({ row }) => <span className="font-medium">{row.original.yearStudy}</span> },
       {
         accessorKey: "averageScore10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore10, "10")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
@@ -35,7 +37,8 @@ export const YearAveragesList = ({ averages, isLoading }: Props) => {
       {
         accessorKey: "averageScore4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore4, "4")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
@@ -44,7 +47,8 @@ export const YearAveragesList = ({ averages, isLoading }: Props) => {
       {
         accessorKey: "averageGatherScore10",
         header: () => <div className="w-full text-center">Tích lũy hệ 10</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore10, "10")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
@@ -53,7 +57,8 @@ export const YearAveragesList = ({ averages, isLoading }: Props) => {
       {
         accessorKey: "averageGatherScore4",
         header: () => <div className="w-full text-center">Tích lũy hệ 4</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore4, "4")
           return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>

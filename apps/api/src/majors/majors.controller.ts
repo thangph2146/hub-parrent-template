@@ -30,6 +30,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @ApiTags('Majors')
 @Controller(ADMIN_ROUTES.MAJORS)
@@ -75,6 +76,7 @@ export class MajorsController {
     @Query('updatedAtTo') updatedAtTo?: string,
     @Query('deletedAtFrom') deletedAtFrom?: string,
     @Query('deletedAtTo') deletedAtTo?: string,
+    @Query() query?: Record<string, string>,
   ) {
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
@@ -88,6 +90,7 @@ export class MajorsController {
       updatedAtTo: updatedAtTo?.trim(),
       deletedAtFrom: deletedAtFrom?.trim(),
       deletedAtTo: deletedAtTo?.trim(),
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

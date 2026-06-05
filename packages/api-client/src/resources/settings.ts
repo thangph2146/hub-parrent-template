@@ -1,12 +1,12 @@
 import type { ApiClient } from "../client";
 import { deleteData, getData, putData } from "./_shared";
 
-type RequestQuery = Record<string, string | number | boolean | undefined | null>;
+type SettingsListQuery = Record<string, string | number | boolean | undefined | null>;
 
 export class SettingsApi {
   constructor(private readonly http: ApiClient) {}
 
-  async list<T = unknown>(params?: RequestQuery): Promise<T[]> {
+  async list<T = unknown>(params?: SettingsListQuery): Promise<T[]> {
     return getData<T[]>(this.http, "/admin/settings", {
       query: params,
     });

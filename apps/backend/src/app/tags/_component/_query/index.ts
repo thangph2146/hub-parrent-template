@@ -25,7 +25,7 @@ export function useTagsListQuery(
   return useQuery({
     queryKey: ["media", "tags", "tree", filters],
     queryFn: async (): Promise<TagRow[]> => {
-      const result = await api.tags.list<TagRow>({ page: 1, limit: 500, status: "active", ...filters });
+      const result = await api.tags.list<TagRow>({ page: 1, limit: 500, status: "active", filters });
       return result.items;
     },
     staleTime: 5 * 60 * 1000,

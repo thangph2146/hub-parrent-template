@@ -34,7 +34,8 @@ export function getCategoryColumns({
     {
       accessorKey: "name",
       header: "Tên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => {
         const IconComp = row.original.icon
           ? resolveIcon(row.original.icon)
@@ -59,16 +60,19 @@ export function getCategoryColumns({
     {
       accessorKey: "slug",
       header: "Slug",
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="font-mono text-xs">{String(getValue())}</span>
       ),
-      meta: { filterPlaceholder: "Lọc slug" },
+      meta: { filterPlaceholder: "Lọc slug", filterVariant: "text" },
     },
     {
       id: "postCount",
       accessorFn: (row) => row.postCount ?? 0,
       header: "Bài viết",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => {
         const count = row.original.postCount ?? 0
         return (
@@ -85,6 +89,8 @@ export function getCategoryColumns({
       id: "parentId",
       accessorFn: (row) => row.parentName ?? "Gốc",
       header: "Danh mục cha",
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) =>
         row.original.parentName ? (
           row.original.parentName

@@ -22,6 +22,8 @@ import { defineRelationExportColumns } from "@ui/components/data-table"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 
 export interface StaffColumnsProps {
@@ -209,10 +211,9 @@ export function getStaffColumns(
         getValue: (u) => u.citizenId ?? "",
       },
 
-      { id: "createdAt", header: "Tạo lúc", getValue: (u) => u.createdAt },
-
-      { id: "updatedAt", header: "Cập nhật lúc", getValue: (u) => u.updatedAt },
     ]),
+    defineAdminCreatedAtColumn<StaffRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<StaffRow>({ defaultHidden: true }),
 
     {
       id: "isActive",

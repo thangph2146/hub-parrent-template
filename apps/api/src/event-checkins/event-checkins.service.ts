@@ -93,8 +93,11 @@ export class EventCheckinsService {
   async list(
     params: ListEventCheckinsParams,
   ): Promise<ListEventCheckinsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where: Record<string, unknown> = { eventId: params.eventId };
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };

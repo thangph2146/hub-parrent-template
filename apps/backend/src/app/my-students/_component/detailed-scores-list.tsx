@@ -34,7 +34,8 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "subject",
         header: "Môn học",
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "curriculumName",
         meta: {
           exportValue: (row: DetailedScore) =>
@@ -50,7 +51,8 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "mark10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "mark10",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark10, "10")
@@ -60,7 +62,8 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "mark4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "mark4",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark4, "4")
@@ -70,7 +73,8 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "markLetter",
         header: () => <div className="w-full text-center">Điểm chữ</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "markLetter",
         cell: ({ row }) => {
           const g = formatGrade(row.original.markLetter)

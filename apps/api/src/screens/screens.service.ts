@@ -8,6 +8,8 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { SCREEN_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface ScreenRowDto {
   id: string;
@@ -60,37 +62,18 @@ export class ScreensService {
     updatedAtTo?: string;
     deletedAtFrom?: string;
     deletedAtTo?: string;
+    filters?: Record<string, string>;
   }) {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const s = params.status ?? 'active';
-    if (s === 'deleted') where.deletedAt = { $ne: null };
-    else if (s === 'active') where.deletedAt = null;
-    if (params.statusFilter != null) where.status = params.statusFilter;
-    if (params.updatedAtFrom)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $gte: new Date(params.updatedAtFrom),
-      };
-    if (params.updatedAtTo)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $lte: new Date(params.updatedAtTo),
-      };
-    if (params.deletedAtFrom)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $gte: new Date(params.deletedAtFrom),
-      };
-    if (params.deletedAtTo)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $lte: new Date(params.deletedAtTo),
-      };
-    if (params.search?.trim()) {
-      where.$or = [{ name: { $like: `%${params.search.trim()}%` } }];
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['name', 'code'],
+      filterConfig: SCREEN_COLUMN_FILTERS,
+    });
     const [rows, total] = await Promise.all([
       this.em.find(Screen, where as FilterQuery<Screen>, {
         populate: ['camera', 'template'],

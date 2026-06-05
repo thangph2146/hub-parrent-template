@@ -18,6 +18,10 @@ import {
   defineRelationExportColumns,
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
+import {
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
+} from "@/lib/admin-table-columns"
 import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import type { ParentStudent } from "./types"
 
@@ -37,7 +41,8 @@ export function getParentStudentsColumns(
     {
       id: "parent",
       header: "Phụ huynh",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
@@ -60,7 +65,8 @@ export function getParentStudentsColumns(
     {
       id: "student",
       header: "Học sinh",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <div>
@@ -77,7 +83,8 @@ export function getParentStudentsColumns(
     {
       accessorKey: "note",
       header: "Ghi chú",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => {
         const v = getValue() as string | null
         return v ? (
@@ -87,22 +94,7 @@ export function getParentStudentsColumns(
         )
       },
     },
-    {
-      accessorKey: "createdAt",
-      header: "Ngày gửi",
-      enableColumnFilter: true,
-      enableSorting: true,
-      meta: {
-        filterVariant: "date-range",
-        filterPlaceholder: "Chọn khoảng ngày",
-      },
-      cell: ({ getValue }) =>
-        new Date(getValue() as string).toLocaleDateString("vi-VN", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
-    },
+    defineAdminCreatedAtColumn<ParentStudent>({ header: "Ngày gửi" }),
     {
       accessorKey: "status",
       header: "Trạng thái",
@@ -139,7 +131,8 @@ export function getParentStudentsColumns(
     {
       accessorKey: "reviewedAt",
       header: "Duyệt lúc",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: { defaultHidden: true },
       cell: ({ getValue }) => {
         const v = getValue() as string | null
@@ -153,7 +146,8 @@ export function getParentStudentsColumns(
     {
       accessorKey: "reviewedBy",
       header: "Người duyệt",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: { defaultHidden: true },
       cell: ({ getValue }) => {
         const v = getValue() as string | null
@@ -181,17 +175,14 @@ export function getParentStudentsColumns(
         header: "SĐT phụ huynh",
         getValue: (row) => row.parentPhone,
       },
-      {
-        id: "updatedAt",
-        header: "Cập nhật lúc",
-        getValue: (row) => row.updatedAt,
-      },
     ]),
+    defineAdminUpdatedAtColumn<ParentStudent>({ defaultHidden: true }),
     {
       id: "actions",
       header: "Thao tác",
       enableSorting: false,
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row }) => {
         const data = row.original
         const actions: DataTableRowActionItem[] = []

@@ -30,7 +30,8 @@ export function getTemplateColumns({
     {
       accessorKey: "name",
       header: "Tên mẫu",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"

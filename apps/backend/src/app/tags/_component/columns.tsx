@@ -42,7 +42,8 @@ export function getTagColumns({
     {
       accessorKey: "name",
       header: "Tên / nhóm",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         exportValue: (row) =>
           row.isGroup ? `${row.name} (${row.itemCount ?? 0} thẻ)` : row.name,
@@ -69,7 +70,8 @@ export function getTagColumns({
     {
       accessorKey: "slug",
       header: "Slug",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         exportValue: (row) => (row.isGroup ? `nhom:${row.slug}` : row.slug),
       },
@@ -122,7 +124,8 @@ export function getTagColumns({
     id: "actions",
     header: "Thao tác",
     enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+      filterFn: () => true,
     cell: ({ row }) =>
       row.original.isGroup ? null : (
         <AdminTableCrudRowActions

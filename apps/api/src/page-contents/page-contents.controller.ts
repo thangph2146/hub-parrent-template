@@ -29,6 +29,7 @@ import {
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 import { Permissions } from '../common/permissions.decorator';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 import type {
   PageContentCreateInput,
   PageContentUpdateInput,
@@ -120,6 +121,7 @@ export class PageContentsController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('search') search?: string,
+    @Query() query?: Record<string, string>,
   ) {
     const userId = this.getUserId(headers);
     if (!userId) {
@@ -143,6 +145,7 @@ export class PageContentsController {
         page: page ? parseInt(page, 10) : 1,
         limit: limit ? parseInt(limit, 10) : 10,
         search,
+        filters: parseColumnFiltersFromQuery(query),
       });
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

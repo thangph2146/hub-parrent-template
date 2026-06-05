@@ -1,5 +1,12 @@
 import type { ApiClient } from "../client";
-import { getData, patchData, putData, deleteData, normalizePagedResult } from "./_shared";
+import {
+  getData,
+  patchData,
+  putData,
+  deleteData,
+  normalizePagedResult,
+  toApiFilterQuery,
+} from "./_shared";
 
 export interface ParentStudent {
   id: string;
@@ -23,6 +30,7 @@ export interface ParentStudentsListParams {
   status?: string;
   search?: string;
   createdAt?: string;
+  filters?: Record<string, string>;
 }
 
 export interface UpdateParentStudentInput {
@@ -40,6 +48,7 @@ export class ParentStudentsApi {
         status: params?.status,
         search: params?.search,
         createdAt: params?.createdAt,
+        ...toApiFilterQuery(params?.filters),
       },
     });
     return normalizePagedResult<ParentStudent>(payload);

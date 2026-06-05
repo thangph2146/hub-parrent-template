@@ -105,7 +105,8 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
     {
       id: "avatar",
       header: "Avatar",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       size: 56,
       meta: {
         exportHeader: "Avatar",
@@ -130,7 +131,8 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
     {
       id: "kind",
       header: "Loại",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       size: 120,
       meta: {
         exportValue: (row) =>
@@ -168,25 +170,29 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
     {
       accessorKey: "fullName",
       header: "Họ tên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (getValue() as string) || "—",
     },
     {
       accessorKey: "email",
       header: "Email",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (getValue() as string) || "—",
     },
     {
       accessorKey: "detail",
       header: "Ghi chú",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (getValue() as string) || "—",
     },
     {
       id: "at",
       header: "Thời gian",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       accessorFn: (row) => row.at,
       meta: {
         exportValue: (row) => formatDateTime(row.at),

@@ -12,8 +12,9 @@ import { defineRelationExportColumns } from "@ui/components/data-table"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import type { SpeakerRow } from "./types"
 
 export function getSpeakerColumns({
@@ -83,27 +84,8 @@ export function getSpeakerColumns({
         />
       ),
     },
-    {
-      accessorKey: "updatedAt",
-      header: "Cập nhật",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true
-        const rowVal = row.getValue(columnId) as string
-        if (!rowVal) return false
-        const rowDate = rowVal.split("T")[0]
-        const [fromStr, toStr] = String(filterValue).split(",")
-        if (fromStr && rowDate < fromStr) return false
-        if (toStr && rowDate > toStr) return false
-        return true
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatAdminDateTime(getValue() as string)}
-        </span>
-      ),
-    },
+    defineAdminCreatedAtColumn<SpeakerRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<SpeakerRow>({ header: "Cập nhật" }),
     ...defineRelationExportColumns<SpeakerRow>([
       { id: "email", header: "Email", getValue: (row) => row.email ?? "" },
       { id: "phone", header: "SĐT", getValue: (row) => row.phone ?? "" },
@@ -113,7 +95,6 @@ export function getSpeakerColumns({
         header: "Avatar URL",
         getValue: (row) => row.avatar ?? "",
       },
-      { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
       {
         id: "id",
         header: "ID",

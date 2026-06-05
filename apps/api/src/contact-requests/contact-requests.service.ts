@@ -156,6 +156,28 @@ function buildWhere(
         where.priority = v as ContactPriority;
       else if (key === 'isRead') where.isRead = v === 'true';
       else if (key === 'assignedToId') where.assignedTo = v;
+      else if (key === 'assignedToName')
+        where.assignedTo = { name: { $like: `%${v}%` } };
+      else if (key === 'submittedByName')
+        where.submittedBy = { name: { $like: `%${v}%` } };
+      else if (key === 'assignedToEmail')
+        where.assignedTo = { email: { $like: `%${v}%` } };
+      else if (key === 'submittedByEmail')
+        where.submittedBy = { email: { $like: `%${v}%` } };
+      else if (
+        key === 'createdAt' ||
+        key === 'updatedAt' ||
+        key === 'deletedAt'
+      ) {
+        const dates = v.split(',').filter(Boolean);
+        if (dates.length === 1) where[key] = { $gte: new Date(dates[0]) };
+        else if (dates.length >= 2) {
+          where[key] = {
+            $gte: new Date(dates[0]),
+            $lte: new Date(dates[1]),
+          };
+        }
+      }
     }
   }
 
@@ -169,8 +191,11 @@ export class ContactRequestsService {
   async list(
     params: ListContactRequestsParams,
   ): Promise<ListContactRequestsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where = buildWhere(params) as FilterQuery<ContactRequest>;
 
     const [rows, total] = await Promise.all([

@@ -97,8 +97,11 @@ export class AdmissionResultsService {
   async list(
     params: ListAdmissionResultsParams,
   ): Promise<ListAdmissionResultsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where = buildWhere(params) as FilterQuery<AdmissionResult>;
     const [rows, total] = await Promise.all([
       this.em.find(AdmissionResult, where, {

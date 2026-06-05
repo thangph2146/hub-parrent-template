@@ -1,4 +1,4 @@
-import { normalizeAdminFilterValues } from "@/lib";
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 
 export {
   slugify,
@@ -10,14 +10,10 @@ export {
 } from "@workspace/api-client";
 
 export function buildCategoriesFilterQuery(
-  filters: { id: string; value: unknown }[]
+  columnFilters: { id: string; value: unknown }[],
 ): Record<string, string> {
-  const query: Record<string, string> = {};
-  for (const filter of filters) {
-    if (filter.id !== "parentId") continue;
-
-    const values = normalizeAdminFilterValues(filter.value);
-    if (values.length) query.parentId = values.join(",");
-  }
-  return query;
+  return buildAdminFilterQuery(
+    columnFilters,
+    COMMON_FILTER_MAPPINGS.categories,
+  );
 }

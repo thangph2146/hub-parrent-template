@@ -18,6 +18,27 @@ type RelationExportField<T> = {
   defaultHidden?: boolean
 }
 
+const DATE_RANGE_FIELD_IDS = new Set([
+  "createdAt",
+  "updatedAt",
+  "deletedAt",
+  "startDate",
+  "endDate",
+  "checkinStart",
+  "checkinEnd",
+  "checkoutStart",
+  "checkoutEnd",
+  "registrationStart",
+  "registrationEnd",
+])
+
+function resolveRelationFilterVariant(fieldId: string): "text" | "date-range" {
+  if (DATE_RANGE_FIELD_IDS.has(fieldId) || /At$/.test(fieldId)) {
+    return "date-range"
+  }
+  return "text"
+}
+
 function formatRelationCellValue(value: unknown): string {
   if (value == null || value === "") return ""
   if (typeof value === "boolean") return value ? "Có" : "Không"
@@ -66,14 +87,21 @@ export function resolveLinkedUser(
 export function defineRelationExportColumns<T>(
   fields: RelationExportField<T>[]
 ): ColumnDef<T, unknown>[] {
-  return fields.map((field) => ({
+  return fields.map((field) => {
+    const filterVariant = resolveRelationFilterVariant(field.id)
+    const isDateRange = filterVariant === "date-range"
+    return {
     id: field.id,
     header: field.header,
     accessorFn: (row) => field.getValue(row),
     enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+    ...(isDateRange ? {} : { filterFn: () => true }),
     meta: {
       defaultHidden: field.defaultHidden ?? true,
+      filterVariant,
+      filterPlaceholder:
+        filterVariant === "date-range" ? "Chọn khoảng ngày" : "Lọc…",
       exportHeader: field.header,
       exportValue: (row: T) => formatRelationCellValue(field.getValue(row)),
       exportWidth: field.exportWidth,
@@ -82,7 +110,7 @@ export function defineRelationExportColumns<T>(
       const text = formatRelationCellValue(field.getValue(row.original))
       return text || "—"
     },
-  }))
+  }})
 }
 
 function linkedUserLabel(user: LinkedUserRef | null | undefined): string {
@@ -107,9 +135,12 @@ export function defineLinkedUserColumns<T>(options: {
       header,
       accessorFn: (row) => linkedUserLabel(getUser(row)),
       enableSorting: false,
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       meta: {
         defaultHidden,
+        filterVariant: "text",
+        filterPlaceholder: "Lọc…",
         exportHeader: header,
         exportValue: (row: T) => linkedUserLabel(getUser(row)),
       },

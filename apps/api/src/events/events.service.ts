@@ -10,6 +10,8 @@ import {
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { normalizePosterField } from '../common/poster-normalize';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { EVENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface EventRowDto {
   id: string;
@@ -65,6 +67,7 @@ export interface ListEventsParams {
   updatedAtTo?: string;
   deletedAtFrom?: string;
   deletedAtTo?: string;
+  filters?: Record<string, string>;
 }
 
 export interface ListEventsResult {
@@ -150,41 +153,16 @@ export class EventsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListEventsParams): Promise<ListEventsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const status = params.status ?? 'active';
-    if (status === 'deleted') where.deletedAt = { $ne: null };
-    else if (status === 'active') where.deletedAt = null;
-    if (params.statusFilter != null) where.status = params.statusFilter;
-    if (params.updatedAtFrom)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $gte: new Date(params.updatedAtFrom),
-      };
-    if (params.updatedAtTo)
-      where.updatedAt = {
-        ...(where.updatedAt ?? {}),
-        $lte: new Date(params.updatedAtTo),
-      };
-    if (params.deletedAtFrom)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $gte: new Date(params.deletedAtFrom),
-      };
-    if (params.deletedAtTo)
-      where.deletedAt = {
-        ...(where.deletedAt ?? {}),
-        $lte: new Date(params.deletedAtTo),
-      };
-    if (params.search?.trim()) {
-      const q = params.search.trim();
-      where.$or = [
-        { title: { $like: `%${q}%` } },
-        { organizer: { $like: `%${q}%` } },
-        { location: { $like: `%${q}%` } },
-      ];
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['title', 'organizer', 'location'],
+      filterConfig: EVENT_COLUMN_FILTERS,
+    });
     const whereQuery = where as FilterQuery<Event>;
     const [rows, total] = await Promise.all([
       this.em.find(Event, whereQuery, {

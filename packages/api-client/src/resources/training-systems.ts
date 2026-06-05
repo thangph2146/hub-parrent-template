@@ -1,27 +1,14 @@
 import type { ApiClient } from "../client";
-import {
-  deleteData,
-  getData,
-  normalizePagedResult,
-  postData,
-  putData,
-} from "./_shared";
-
-type RequestQuery = Record<string, string | number | boolean | undefined | null>;
+import { deleteData, getData, normalizePagedResult, postData, putData, buildAdminListQuery, type AdminListQueryParams } from "./_shared";
 
 export class TrainingSystemsApi {
   constructor(private readonly http: ApiClient) {}
 
   async list<T = unknown>(
-    params?: RequestQuery,
+    params?: AdminListQueryParams,
   ): Promise<{ items: T[]; total: number }> {
     const payload = await this.http.get<unknown>("/admin/training-systems", {
-      query: {
-        page: 1,
-        limit: 20,
-        status: "active",
-        ...params,
-      },
+      query: buildAdminListQuery(params, { page: 1, limit: 20, status: "active" }),
     });
     const normalized = normalizePagedResult<T>(payload);
     return { items: normalized.items, total: normalized.total };

@@ -6,6 +6,8 @@ import {
   type BulkAction,
   type BulkResult,
 } from '../common/bulk-actions';
+import { applyColumnFilters } from '../common/apply-column-filters';
+import { GUIDE_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface PageContentCreateInput {
   pageKey: string;
@@ -43,15 +45,27 @@ export class PageContentsService {
     return this.em.findOne(PageContent, { id });
   }
 
-  async list(params: { page?: number; limit?: number; search?: string } = {}) {
-    const { page = 1, limit = 10, search } = params;
+  async list(
+    params: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      filters?: Record<string, string>;
+    } = {},
+  ) {
+    const { page = 1, limit = 10, search, filters } = params;
     const offset = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
     if (search?.trim()) {
       const s = `%${search.trim()}%`;
-      where.$or = [{ pageKey: { $like: s } }, { sectionKey: { $like: s } }];
+      where.$or = [
+        { pageKey: { $like: s } },
+        { sectionKey: { $like: s } },
+        { content: { $like: s } },
+      ];
     }
+    applyColumnFilters(where, filters, GUIDE_COLUMN_FILTERS);
     const whereQuery = where as unknown as FilterQuery<PageContent>;
 
     const [data, total] = await Promise.all([

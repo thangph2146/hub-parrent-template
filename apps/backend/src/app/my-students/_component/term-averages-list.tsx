@@ -40,7 +40,8 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "term",
         header: "Học kỳ",
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorFn: (row) => row.termID ?? "",
         meta: {
           exportValue: (row: TermAverage) =>
@@ -62,7 +63,8 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageScore10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "averageScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore10, "10")
@@ -76,7 +78,8 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageScore4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "averageScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore4, "4")
@@ -90,7 +93,8 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageGatherScore10",
         header: () => <div className="w-full text-center">Tích lũy hệ 10</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "averageGatherScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore10, "10")
@@ -104,7 +108,8 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageGatherScore4",
         header: () => <div className="w-full text-center">Tích lũy hệ 4</div>,
-        enableColumnFilter: false,
+        enableColumnFilter: true,
+      filterFn: () => true,
         accessorKey: "averageGatherScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore4, "4")

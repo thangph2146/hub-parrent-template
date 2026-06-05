@@ -1,13 +1,5 @@
 import type { ApiClient } from "../client";
-import {
-  deleteData,
-  getData,
-  normalizePagedResult,
-  postData,
-  putData,
-} from "./_shared";
-
-type RequestQuery = Record<string, string | number | boolean | undefined | null>;
+import { buildAdminListQuery, deleteData, getData, normalizePagedResult, postData, putData, type AdminListQueryParams } from "./_shared";
 
 /**
  * API cho PageContent (hướng dẫn sử dụng / guides).
@@ -17,14 +9,10 @@ export class GuidesApi {
   constructor(private readonly http: ApiClient) {}
 
   async list<T = unknown>(
-    params?: RequestQuery,
+    params?: AdminListQueryParams,
   ): Promise<{ items: T[]; total: number }> {
     const payload = await this.http.get<unknown>("/admin/page-contents", {
-      query: {
-        page: 1,
-        limit: 50,
-        ...params,
-      },
+      query: buildAdminListQuery(params, { page: 1, limit: 50 }),
     });
     const normalized = normalizePagedResult<T>(payload);
     return { items: normalized.items, total: normalized.total };

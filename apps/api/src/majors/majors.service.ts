@@ -8,6 +8,8 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { MAJOR_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface MajorRowDto {
   id: number;
@@ -29,6 +31,7 @@ export interface ListMajorsParams {
   updatedAtTo?: string;
   deletedAtFrom?: string;
   deletedAtTo?: string;
+  filters?: Record<string, string>;
 }
 
 export interface ListMajorsResult {
@@ -68,17 +71,16 @@ export class MajorsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListMajorsParams): Promise<ListMajorsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const status = params.status ?? 'active';
-
-    if (status === 'deleted') where.deletedAt = { $ne: null };
-    else if (status === 'active') where.deletedAt = null;
-
-    if (params.statusFilter != null) {
-      where.status = params.statusFilter;
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['name', 'code'],
+      filterConfig: MAJOR_COLUMN_FILTERS,
+    });
     if (params.updatedAtFrom) {
       where.updatedAt = {
         ...(where.updatedAt ?? {}),

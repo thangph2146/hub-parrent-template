@@ -78,8 +78,11 @@ export class EventCheckoutsService {
   async list(
     params: ListEventCheckoutsParams,
   ): Promise<ListEventCheckoutsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where: Record<string, unknown> = {
       event: params.eventId,
       hasCheckout: true,

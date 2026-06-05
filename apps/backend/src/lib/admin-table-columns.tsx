@@ -6,7 +6,7 @@ import { formatAdminDateTime } from "./format-admin-datetime"
 
 export type AdminTableView = "list" | "trash"
 
-export const adminDeletedAtDateRangeFilterFn: FilterFn<unknown> = (
+export const adminDateRangeFilterFn: FilterFn<unknown> = (
   row,
   columnId,
   filterValue
@@ -19,6 +19,99 @@ export const adminDeletedAtDateRangeFilterFn: FilterFn<unknown> = (
   if (fromStr && rowDate < fromStr) return false
   if (toStr && rowDate > toStr) return false
   return true
+}
+
+const DEFAULT_ADMIN_DATE_COLUMN_CLASS =
+  "w-[180px] min-w-[180px] max-w-[185px]"
+
+/** @deprecated Dùng `adminDateRangeFilterFn`. */
+export const adminDeletedAtDateRangeFilterFn = adminDateRangeFilterFn
+
+type AdminDateColumnOptions = {
+  header?: string
+  enableColumnFilter?: boolean
+  showIcon?: boolean
+  defaultHidden?: boolean
+  meta?: ColumnDef<unknown>["meta"]
+}
+
+function defineAdminDateColumn<TData>(
+  accessorKey: "createdAt" | "updatedAt" | "deletedAt",
+  defaults: Required<
+    Pick<AdminDateColumnOptions, "header" | "enableColumnFilter" | "defaultHidden">
+  >,
+  options: AdminDateColumnOptions = {}
+): ColumnDef<TData> {
+  const {
+    header = defaults.header,
+    enableColumnFilter = defaults.enableColumnFilter,
+    showIcon = true,
+    defaultHidden = defaults.defaultHidden,
+    meta: extraMeta,
+  } = options
+
+  return {
+    accessorKey,
+    header,
+    enableColumnFilter,
+    enableSorting: true,
+    filterFn: enableColumnFilter
+      ? (adminDateRangeFilterFn as FilterFnOption<TData>)
+      : undefined,
+    meta: {
+      defaultHidden,
+      filterVariant: enableColumnFilter ? "date-range" : undefined,
+      filterPlaceholder: enableColumnFilter ? "Chọn khoảng ngày" : undefined,
+      className: extraMeta?.className ?? DEFAULT_ADMIN_DATE_COLUMN_CLASS,
+      exportHeader: header,
+      exportValue: (row: TData) => {
+        const val = (row as Record<string, unknown>)[accessorKey]
+        const formatted = formatAdminDateTime(
+          val as string | Date | number | null | undefined
+        )
+        return formatted === "—" ? "" : formatted
+      },
+      ...extraMeta,
+    },
+    cell: ({ getValue }) => {
+      const formatted = formatAdminDateTime(getValue() as string)
+      if (!showIcon) {
+        return (
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {formatted}
+          </span>
+        )
+      }
+      return (
+        <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
+          <CalendarClock className="size-3.5 shrink-0" aria-hidden />
+          {formatted}
+        </span>
+      )
+    },
+  }
+}
+
+/** Cột `createdAt` — lọc khoảng ngày giống `updatedAt` / `deletedAt`. */
+export function defineAdminCreatedAtColumn<TData>(
+  options: AdminDateColumnOptions = {}
+): ColumnDef<TData> {
+  return defineAdminDateColumn<TData>("createdAt", {
+    header: "Tạo lúc",
+    enableColumnFilter: true,
+    defaultHidden: false,
+  }, options)
+}
+
+/** Cột `updatedAt` — lọc khoảng ngày. */
+export function defineAdminUpdatedAtColumn<TData>(
+  options: AdminDateColumnOptions = {}
+): ColumnDef<TData> {
+  return defineAdminDateColumn<TData>("updatedAt", {
+    header: "Cập nhật lúc",
+    enableColumnFilter: true,
+    defaultHidden: false,
+  }, options)
 }
 
 type DeletedAtColumnOptions = {
@@ -39,36 +132,15 @@ export function defineAdminDeletedAtColumn<TData>(
     showIcon = true,
   } = options
 
-  return {
-    accessorKey: "deletedAt",
-    header,
-    enableColumnFilter,
-    enableSorting: true,
-    filterFn: enableColumnFilter
-      ? (adminDeletedAtDateRangeFilterFn as FilterFnOption<TData>)
-      : undefined,
-    meta: {
+  return defineAdminDateColumn<TData>(
+    "deletedAt",
+    {
+      header,
+      enableColumnFilter,
       defaultHidden: view === "list",
-      filterVariant: enableColumnFilter ? "date-range" : undefined,
-      filterPlaceholder: enableColumnFilter ? "Chọn khoảng ngày" : undefined,
     },
-    cell: ({ getValue }) => {
-      const formatted = formatAdminDateTime(getValue() as string)
-      if (!showIcon) {
-        return (
-          <span className="text-xs text-muted-foreground tabular-nums">
-            {formatted}
-          </span>
-        )
-      }
-      return (
-        <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
-          <CalendarClock className="size-3.5 shrink-0" aria-hidden />
-          {formatted}
-        </span>
-      )
-    },
-  }
+    { showIcon }
+  )
 }
 
 /** Ghép cột dữ liệu + deletedAt + cột thao tác theo view list/trash. */

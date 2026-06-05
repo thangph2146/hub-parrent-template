@@ -12,6 +12,7 @@ import {
 } from "@ui/components/admin";
 import { AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
@@ -33,11 +34,17 @@ function GuidesPageInner() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const listFilterParams = useMemo(
+    () => buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.guides),
+    [columnFilters],
+  );
+
   const { data, isLoading, refetch } = useGuidesQuery({
     api,
     page: 1,
     limit: 1000,
     search: globalFilter,
+    filters: listFilterParams,
   });
 
   const deleteMutation = useMutation({

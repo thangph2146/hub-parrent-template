@@ -166,8 +166,11 @@ export class UsersService {
   }
 
   async list(params: ListUsersParams): Promise<ListUsersResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
 
     const where = buildWhere(params) as FilterQuery<User>;
 

@@ -18,7 +18,7 @@ export function useDepartmentsListQuery(api: StoreSyncSdk, enabled: boolean, fil
       const items: DepartmentRow[] = [];
       let page = 1, total = Infinity;
       while (items.length < total) {
-        const r = await api.departments.list<DepartmentRow>({ page, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT, status: "active", ...filters });
+        const r = await api.departments.list<DepartmentRow>({ page, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT, status: "active", filters });
         items.push(...r.items);
         total = r.total;
         if (!r.items.length) break;
@@ -37,7 +37,7 @@ export function useDepartmentsTrashQuery({ api, trashPage, trashPageSize, deboun
     queryKey: ["departments", "trash", trashPage, trashPageSize, debouncedTrashQ, filters],
     enabled,
     queryFn: () => api.departments.list<DepartmentRow>({
-      page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted", ...filters,
+      page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted", filters,
     }),
   });
 }

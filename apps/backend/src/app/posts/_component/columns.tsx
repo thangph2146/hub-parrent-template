@@ -16,9 +16,9 @@ import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
-
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 
 import type { PostListRow, TaxonomyOption, CategoryTreeOption } from "./types"
 
@@ -67,7 +67,8 @@ export function getPostColumns({
 
       header: "Tiêu đề",
 
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
 
       cell: ({ row }) => (
         <div className="space-y-1">
@@ -195,29 +196,8 @@ export function getPostColumns({
       },
     },
 
-    {
-      accessorKey: "updatedAt",
-
-      header: "Cập nhật",
-
-      enableColumnFilter: true,
-
-      enableSorting: true,
-
-      filterFn: () => true,
-
-      meta: {
-        filterVariant: "date-range",
-
-        filterPlaceholder: "Chọn khoảng ngày",
-      },
-
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatAdminDateTime(getValue() as string)}
-        </span>
-      ),
-    },
+    defineAdminCreatedAtColumn<PostListRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<PostListRow>({ header: "Cập nhật" }),
   ]
 
   return buildAdminTableColumns({

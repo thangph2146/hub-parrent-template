@@ -22,6 +22,7 @@ import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @Permissions(PERMISSIONS.SEO_METAS_VIEW)
 @Controller(ADMIN_ROUTES.SEO_METAS)
@@ -50,6 +51,7 @@ export class SeoMetasController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
+    @Query() query?: Record<string, string>,
   ) {
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
@@ -58,6 +60,7 @@ export class SeoMetasController {
       limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: (status as 'active' | 'deleted' | 'all') ?? 'active',
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

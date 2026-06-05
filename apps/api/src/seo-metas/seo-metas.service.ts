@@ -8,6 +8,8 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { SEO_META_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface SeoMetaRowDto {
   id: string;
@@ -29,6 +31,7 @@ export interface ListSeoMetasParams {
   limit: number;
   search?: string;
   status?: 'active' | 'deleted' | 'all';
+  filters?: Record<string, string>;
 }
 
 export interface ListSeoMetasResult {
@@ -73,20 +76,16 @@ export class SeoMetasService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListSeoMetasParams): Promise<ListSeoMetasResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
-    const where: Record<string, unknown> = {};
-    const status = params.status ?? 'active';
-
-    if (status === 'deleted') where.deletedAt = { $ne: null };
-    else if (status === 'active') where.deletedAt = null;
-
-    if (params.search?.trim()) {
-      where.$or = [
-        { page: { $like: `%${params.search.trim()}%` } },
-        { title: { $like: `%${params.search.trim()}%` } },
-      ];
-    }
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = buildStandardAdminWhere({
+      ...params,
+      searchFields: ['page', 'title', 'description'],
+      filterConfig: SEO_META_COLUMN_FILTERS,
+    });
 
     const qb = where as FilterQuery<SeoMeta>;
     const [rows, total] = await Promise.all([

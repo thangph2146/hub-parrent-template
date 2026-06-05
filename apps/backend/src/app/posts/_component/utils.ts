@@ -1,5 +1,10 @@
 import type { SerializedEditorState, SerializedLexicalNode } from "lexical";
-import { normalizeAdminFilterValue, normalizeAdminFilterValues } from "@/lib";
+import {
+  buildAdminFilterQuery,
+  COMMON_FILTER_MAPPINGS,
+  normalizeAdminFilterValue,
+  normalizeAdminFilterValues,
+} from "@/lib";
 import { uploadAdminImage } from "@/lib/admin-upload";
 import type {
   EditorParagraphNodeShape,
@@ -97,9 +102,9 @@ export function getSeoStatus(
 }
 
 export function buildPostsFilterQuery(
-  filters: { id: string; value: unknown }[]
+  filters: { id: string; value: unknown }[],
 ): Record<string, string> {
-  const query: Record<string, string> = {};
+  const query = buildAdminFilterQuery(filters, COMMON_FILTER_MAPPINGS.posts);
   for (const filter of filters) {
     if (filter.id === "published") {
       const values = normalizeAdminFilterValues(filter.value);
@@ -110,9 +115,6 @@ export function buildPostsFilterQuery(
     } else if (filter.id === "tagId") {
       const values = normalizeAdminFilterValues(filter.value);
       if (values.length) query.tagId = values.join(",");
-    } else if (filter.id === "updatedAt") {
-      const v = normalizeAdminFilterValue(filter.value);
-      if (v) query.updatedAt = v;
     }
   }
   return query;

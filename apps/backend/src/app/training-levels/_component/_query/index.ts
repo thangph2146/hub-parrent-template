@@ -30,7 +30,7 @@ export function useTrainingLevelsListQuery(
       let total = Number.POSITIVE_INFINITY;
 
       while (items.length < total) {
-        const result = await apiParam.trainingLevels.list<TrainingLevelRow>({ page, limit, status: "active", ...filters });
+        const result = await apiParam.trainingLevels.list<TrainingLevelRow>({ page, limit, status: "active", filters });
         items.push(...result.items);
         total = result.total;
         if (result.items.length === 0) break;

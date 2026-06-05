@@ -37,6 +37,7 @@ import { APP_HEADERS, ADMIN_ROUTES, PUBLIC_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @Controller(PUBLIC_ROUTES.PARENT_MY_STUDENTS)
 export class ParentStudentsPublicController {
@@ -467,6 +468,7 @@ export class ParentStudentsAdminController {
         status: query.status,
         search: query.search,
         createdAt: query.createdAt,
+        filters: parseColumnFiltersFromQuery(query),
       });
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

@@ -31,7 +31,7 @@ export function useEventsListQuery(apiParam: StoreSyncSdk, enabled: boolean, fil
       const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT; const items: EventRow[] = [];
       let page = 1; let total = Number.POSITIVE_INFINITY;
       while (items.length < total) {
-        const result = await apiParam.events.list<EventRow>({ page, limit, status: "active", ...filters });
+        const result = await apiParam.events.list<EventRow>({ page, limit, status: "active", filters });
         items.push(...result.items); total = result.total;
         if (result.items.length === 0) break; page += 1;
       }
@@ -52,7 +52,7 @@ export function useEventsTrashQuery({
     queryKey: ["events", "trash", trashPage, trashPageSize, debouncedTrashQ, filters],
     enabled,
     queryFn: async (): Promise<PagedResult<EventRow>> => apiParam.events.list<EventRow>({
-      page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted", ...filters,
+      page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted", filters,
     }),
   });
 }

@@ -11,8 +11,9 @@ import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import type { TrainingSystemRow } from "./types"
 
 export function getTrainingSystemColumns({
@@ -32,7 +33,8 @@ export function getTrainingSystemColumns({
     {
       accessorKey: "name",
       header: "Tên",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -46,7 +48,8 @@ export function getTrainingSystemColumns({
     {
       accessorKey: "code",
       header: "Mã",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <span className="font-mono text-xs">{String(getValue() ?? "—")}</span>
       ),
@@ -74,27 +77,8 @@ export function getTrainingSystemColumns({
         />
       ),
     },
-    {
-      accessorKey: "updatedAt",
-      header: "Cập nhật",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true
-        const rowVal = row.getValue(columnId) as string
-        if (!rowVal) return false
-        const [fromStr, toStr] = String(filterValue).split(",")
-        const rowDate = rowVal.split("T")[0]
-        if (fromStr && rowDate < fromStr) return false
-        if (toStr && rowDate > toStr) return false
-        return true
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatAdminDateTime(getValue() as string)}
-        </span>
-      ),
-    },
+    defineAdminCreatedAtColumn<TrainingSystemRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<TrainingSystemRow>({ header: "Cập nhật" }),
   ]
 
   return buildAdminTableColumns({

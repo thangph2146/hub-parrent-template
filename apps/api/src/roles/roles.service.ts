@@ -113,8 +113,11 @@ export class RolesService {
   }
 
   async list(params: ListRolesParams): Promise<ListRolesResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
 
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';

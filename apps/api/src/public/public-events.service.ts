@@ -167,7 +167,8 @@ export class PublicEventsService {
   ) {}
 
   async list(params: PublicEventsQuery): Promise<PublicEventsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
       params.limit,
       50,
     );
@@ -318,7 +319,10 @@ export class PublicEventsService {
         page: 1,
         limit: 50,
       }),
-      this.eventRegistrationsService.listPublicForEvent(r.id, ADMIN_TABLE_EXPORT_MAX_LIMIT),
+      this.eventRegistrationsService.listPublicForEvent(
+        r.id,
+        ADMIN_TABLE_EXPORT_MAX_LIMIT,
+      ),
       viewerId
         ? this.resolveViewerRegistration(r.id, viewerId)
         : Promise.resolve(null),

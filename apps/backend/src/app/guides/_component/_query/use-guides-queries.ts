@@ -11,6 +11,7 @@ export interface UseGuidesQueryProps {
   page: number;
   limit?: number;
   search?: string;
+  filters?: Record<string, string>;
 }
 
 export function useGuidesQuery({
@@ -18,14 +19,16 @@ export function useGuidesQuery({
   page,
   limit = 50,
   search = "",
+  filters,
 }: UseGuidesQueryProps): UseQueryResult<ListResult> {
   return useQuery({
-    queryKey: ["admin", "guides", page, search],
+    queryKey: ["admin", "guides", page, search, filters],
     queryFn: async (): Promise<ListResult> => {
       const payload = await api.guides.list<GuideGroup>({
         page,
         limit,
         search: search.trim() || PAGE_KEY,
+        filters,
       });
       return {
         data: payload.items,

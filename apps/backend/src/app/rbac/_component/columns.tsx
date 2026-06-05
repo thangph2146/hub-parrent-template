@@ -24,6 +24,8 @@ import { permissionLabelVi } from "@/lib/permission-labels"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 
 import type { RoleRow } from "./utils"
@@ -141,7 +143,8 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
 
       accessorFn: (row) => row.permissions.length,
 
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
 
       cell: ({ row }) => (
         <Badge variant="secondary" className="rounded-lg">
@@ -158,7 +161,8 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
       accessorFn: (row) =>
         row.permissions.map((code) => permissionLabelVi(code)).join("; "),
 
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
 
       meta: { defaultHidden: true },
 
@@ -225,14 +229,6 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
         defaultHidden: true,
       },
 
-      { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
-
-      {
-        id: "updatedAt",
-        header: "Cập nhật lúc",
-        getValue: (row) => row.updatedAt,
-      },
-
       {
         id: "id",
         header: "ID",
@@ -240,6 +236,8 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
         defaultHidden: true,
       },
     ]),
+    defineAdminCreatedAtColumn<RoleRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<RoleRow>({ defaultHidden: true }),
   ]
 
   return buildAdminTableColumns({

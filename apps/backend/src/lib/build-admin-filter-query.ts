@@ -28,6 +28,11 @@ export function normalizeAdminFilterValues(value: unknown): string[] {
   return normalized ? [normalized] : []
 }
 
+/** Map 1-1 column id → API filter key (cùng tên). */
+export function identityFilterMapping(...keys: string[]): FilterMapping {
+  return Object.fromEntries(keys.map((key) => [key, key]))
+}
+
 export function buildAdminFilterQuery(
   columnFilters: ColumnFiltersState,
   mapping: FilterMapping
@@ -58,11 +63,34 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
   // Posts
   posts: {
     title: "title",
+    slug: "slug",
     published: (v: unknown) =>
       v === "true" ? "true" : v === "false" ? "false" : undefined,
     categoryId: "categoryId",
     tagId: "tagId",
+    createdAt: "createdAt",
     updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
+  } as FilterMapping,
+
+  categories: {
+    name: "name",
+    slug: "slug",
+    parentId: "parentId",
+    description: "description",
+    type: "type",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
+  } as FilterMapping,
+
+  guides: {
+    sectionKey: "sectionKey",
+    title: "title",
+    order: "order",
+    stepsCount: "stepsCount",
+    isVisible: (v: unknown) =>
+      v === "true" || v === "1" ? "true" : v === "false" || v === "0" ? "false" : undefined,
   } as FilterMapping,
 
   // Users/Staff
@@ -83,8 +111,16 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
 
   // Parent-students
   parentStudents: {
+    parent: "parentName",
+    student: "studentCode",
+    parentName: "parentName",
+    parentEmail: "parentEmail",
+    studentCode: "studentCode",
+    studentName: "studentName",
+    note: "note",
     status: "status",
     createdAt: "createdAt",
+    updatedAt: "updatedAt",
   } as FilterMapping,
 
   // Roles / RBAC
@@ -94,6 +130,166 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     description: "description",
     isActive: (v: unknown) => String(v),
   } as FilterMapping,
+
+  cameras: identityFilterMapping(
+    "name",
+    "code",
+    "linkedEventTitle",
+    "linkedEventId",
+    "linkedEventSlug",
+    "ipAddress",
+    "port",
+    "username",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  departments: identityFilterMapping(
+    "name",
+    "code",
+    "description",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  locations: identityFilterMapping(
+    "name",
+    "address",
+    "mapUrl",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  screens: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  templates: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  speakers: identityFilterMapping(
+    "name",
+    "title",
+    "organization",
+    "email",
+    "phone",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  seoMetas: identityFilterMapping(
+    "page",
+    "pageKey",
+    "title",
+    "description",
+    "keywords",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  academicYears: identityFilterMapping(
+    "name",
+    "startDate",
+    "endDate",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  courses: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  majors: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  trainingLevels: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  trainingSystems: identityFilterMapping(
+    "name",
+    "code",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
+
+  events: identityFilterMapping(
+    "title",
+    "slug",
+    "organizer",
+    "location",
+    "address",
+    "startDate",
+    "endDate",
+    "format",
+    "status",
+    "isFeatured",
+    "featuredOrder",
+    "totalRegistrations",
+    "totalCheckins",
+    "totalCheckouts",
+    "checkinCameraName",
+    "checkoutCameraName",
+    "checkinCameraId",
+    "checkoutCameraId",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "id"
+  ),
 
   // Contact requests
   contactRequests: {
@@ -112,5 +308,12 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     },
     priority: "priority",
     isRead: (v: unknown) => (v === "read" || v === "true" ? "true" : "false"),
+    assignedToName: "assignedToName",
+    submittedByName: "submittedByName",
+    assignedToEmail: "assignedToEmail",
+    submittedByEmail: "submittedByEmail",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   } as FilterMapping,
 }

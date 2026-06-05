@@ -329,8 +329,11 @@ export class PostsService {
   }
 
   async list(params: ListPostsParams): Promise<ListPostsResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const rawFilters = params.filters ? { ...params.filters } : undefined;
     let categoriesNone = false;
     if (

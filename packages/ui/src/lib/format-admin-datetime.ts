@@ -16,7 +16,7 @@ export function isParsableDateTime(value: unknown): boolean {
 }
 
 /**
- * Định dạng ngày giờ chuẩn admin table: `DD/MM/YYYY HH:mm` (vi-VN).
+ * Định dạng ngày giờ chuẩn admin table: `HH:mm DD/MM/YYYY` (vi-VN).
  * Dùng cho cột Tạo lúc / Cập nhật / Xóa lúc và export Excel.
  */
 export function formatAdminDateTime(

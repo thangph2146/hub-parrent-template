@@ -25,6 +25,9 @@ export function getGuidesColumns({
     {
       accessorKey: "sectionKey",
       header: "Section Key",
+      enableColumnFilter: true,
+      filterFn: () => true,
+      meta: { filterVariant: "text", filterPlaceholder: "Lọc section key…" },
       cell: ({ getValue }) => (
         <span className="font-mono text-xs">{String(getValue())}</span>
       ),
@@ -43,7 +46,8 @@ export function getGuidesColumns({
       id: "order",
       accessorFn: (row) => parseContent(row.content).order ?? 0,
       header: "Thứ tự",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <Badge variant="outline" className="font-mono tabular-nums">
           {String(getValue())}
@@ -54,7 +58,8 @@ export function getGuidesColumns({
       id: "stepsCount",
       accessorFn: (row) => parseContent(row.content).steps?.length ?? 0,
       header: "Số bước",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => (
         <Badge variant="secondary" className="font-mono tabular-nums">
           {String(getValue())}
@@ -65,7 +70,8 @@ export function getGuidesColumns({
       id: "isVisible",
       accessorFn: (row) => row.isVisible,
       header: "Hiển thị",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => {
         const visible = getValue()
         return (

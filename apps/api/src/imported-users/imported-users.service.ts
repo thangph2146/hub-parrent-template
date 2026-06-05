@@ -99,8 +99,11 @@ export class ImportedUsersService {
   async list(
     params: ListImportedUsersParams,
   ): Promise<ListImportedUsersResult> {
-    const { page, limit, skip } = normalizePageLimit(params.page,
-      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
     const where: Record<string, unknown> = { deletedAt: null };
 
     if (params.search?.trim()) {

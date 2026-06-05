@@ -27,6 +27,7 @@ import {
   AdminPageHeaderPrimaryButton,
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   EventsTable,
@@ -65,27 +66,15 @@ function EventsPageInner() {
   const [trashSelection, setTrashSelection] = useState<RowSelectionState>({})
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350)
 
-  const listFilterParams = useMemo(() => {
-    const params: Record<string, string> = {}
-    for (const f of columnFilters) {
-      if (f.id === "status") {
-        params.statusFilter = String(f.value)
-      }
-    }
-    return params
-  }, [columnFilters])
+  const listFilterParams = useMemo(
+    () => buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.events),
+    [columnFilters]
+  )
 
-  const trashFilterParams = useMemo(() => {
-    const params: Record<string, string> = {}
-    for (const f of trashColumnFilters) {
-      if (f.id === "deletedAt" && typeof f.value === "string") {
-        const [fromStr, toStr] = f.value.split(",")
-        if (fromStr) params.deletedAtFrom = fromStr
-        if (toStr) params.deletedAtTo = toStr
-      }
-    }
-    return params
-  }, [trashColumnFilters])
+  const trashFilterParams = useMemo(
+    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.events),
+    [trashColumnFilters]
+  )
 
   const listQuery = useEventsListQuery(api, canWrite || true, listFilterParams)
   const trashQuery = useEventsTrashQuery({

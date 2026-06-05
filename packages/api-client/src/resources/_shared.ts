@@ -134,7 +134,7 @@ export function unwrapApiEnvelope<T>(payload: unknown): T {
 export function normalizePagedResult<T>(
   payload: unknown,
 ): NormalizedPagedResult<T> {
-  let body: unknown = stripApiEnvelope(payload);
+  const body: unknown = stripApiEnvelope(payload);
 
   if (isPagedDataListPayload<T>(body)) {
     return parsePagedDataList(body);
@@ -197,4 +197,50 @@ export async function deleteData<T>(
 ): Promise<T> {
   const payload = await http.delete<unknown>(path, options);
   return unwrapApiEnvelope<T>(payload);
+}
+
+/** Chuyển `filters` admin sang query `filter[columnId]`. */
+export function toApiFilterQuery(
+  filters?: Record<string, string>,
+): Record<string, string> {
+  if (!filters) return {};
+  const query: Record<string, string> = {};
+  for (const [key, value] of Object.entries(filters)) {
+    const normalized = String(value ?? "").trim();
+    if (!normalized) continue;
+    query[`filter[${key}]`] = normalized;
+  }
+  return query;
+}
+
+export type AdminListQueryParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  trash?: boolean | string;
+  filters?: Record<string, string>;
+  statusFilter?: number | string;
+  updatedAtFrom?: string;
+  updatedAtTo?: string;
+  deletedAtFrom?: string;
+  deletedAtTo?: string;
+  speakerStatus?: number | string;
+  eventId?: string;
+  categoryId?: string;
+  tagId?: string;
+};
+
+/** Ghép query list admin chuẩn (page, status, search + filter[column]). */
+export function buildAdminListQuery(
+  params?: AdminListQueryParams,
+  defaults?: Record<string, string | number | boolean | undefined | null>,
+): Record<string, string | number | boolean | undefined | null> {
+  if (!params) return { ...(defaults ?? {}) };
+  const { filters, ...rest } = params;
+  return {
+    ...(defaults ?? {}),
+    ...rest,
+    ...toApiFilterQuery(filters),
+  } as Record<string, string | number | boolean | undefined | null>;
 }

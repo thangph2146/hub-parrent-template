@@ -31,8 +31,7 @@ export function useSpeakersListQuery(
 
       while (items.length < total) {
         const result = await apiParam.speakers.list<SpeakerRow>({
-          page, limit, status: "active",
-          ...filters,
+          page, limit, status: "active", filters,
         });
         items.push(...result.items);
         total = result.total;
@@ -71,7 +70,7 @@ export function useSpeakersTrashQuery({
         limit: trashPageSize,
         search: debouncedTrashQ.trim() || undefined,
         status: "deleted",
-        ...filters,
+        filters,
       });
     },
   });

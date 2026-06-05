@@ -31,7 +31,8 @@ export function getSeoMetaColumns({
     {
       accessorKey: "page",
       header: "Đường dẫn",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -45,7 +46,8 @@ export function getSeoMetaColumns({
     {
       accessorKey: "title",
       header: "Title SEO",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => {
         const val = getValue() as string | null
         return (
@@ -58,7 +60,8 @@ export function getSeoMetaColumns({
     {
       accessorKey: "keywords",
       header: "Từ khóa",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
       cell: ({ getValue }) => {
         const val = getValue() as string | null
         return (

@@ -11,6 +11,8 @@ import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
   buildAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 import type { CameraRow } from "./types"
 
@@ -31,7 +33,9 @@ export function getCameraColumns({
     {
       accessorKey: "name",
       header: "Tên camera",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
+      meta: { filterVariant: "text", filterPlaceholder: "Lọc tên…" },
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -45,7 +49,9 @@ export function getCameraColumns({
     {
       accessorKey: "code",
       header: "Mã HANET",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
+      meta: { filterVariant: "text", filterPlaceholder: "Lọc mã…" },
       cell: ({ getValue }) => (
         <span className="font-mono text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -54,8 +60,13 @@ export function getCameraColumns({
       id: "linkedEventTitle",
       header: "Sự kiện",
       accessorFn: (row) => row.linkedEventTitle ?? row.linkedEventId ?? "",
-      enableColumnFilter: false,
-      meta: { defaultHidden: false },
+      enableColumnFilter: true,
+      filterFn: () => true,
+      meta: {
+        filterVariant: "text",
+        filterPlaceholder: "Lọc sự kiện…",
+        defaultHidden: false,
+      },
       cell: ({ row }) => (
         <span className="block max-w-[180px] truncate text-sm">
           {row.original.linkedEventTitle?.trim() ||
@@ -67,7 +78,9 @@ export function getCameraColumns({
     {
       accessorKey: "ipAddress",
       header: "IP",
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
+      meta: { filterVariant: "text", filterPlaceholder: "Lọc IP…" },
       cell: ({ getValue }) => (
         <span className="font-mono text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -121,12 +134,6 @@ export function getCameraColumns({
         header: "Username",
         getValue: (row) => row.username ?? "",
       },
-      { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
-      {
-        id: "updatedAt",
-        header: "Cập nhật lúc",
-        getValue: (row) => row.updatedAt,
-      },
       {
         id: "id",
         header: "ID",
@@ -134,6 +141,8 @@ export function getCameraColumns({
         defaultHidden: true,
       },
     ]),
+    defineAdminCreatedAtColumn<CameraRow>({ defaultHidden: true }),
+    defineAdminUpdatedAtColumn<CameraRow>({ defaultHidden: true }),
   ]
 
   return buildAdminTableColumns({

@@ -29,6 +29,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @ApiTags('Templates')
 @Controller(ADMIN_ROUTES.TEMPLATES)
@@ -61,6 +62,7 @@ export class TemplatesController {
     @Query('updatedAtTo') updatedAtTo?: string,
     @Query('deletedAtFrom') deletedAtFrom?: string,
     @Query('deletedAtTo') deletedAtTo?: string,
+    @Query() query?: Record<string, string>,
   ) {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const result = await this.templatesService.list({
@@ -73,6 +75,7 @@ export class TemplatesController {
       updatedAtTo: updatedAtTo?.trim(),
       deletedAtFrom: deletedAtFrom?.trim(),
       deletedAtTo: deletedAtTo?.trim(),
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

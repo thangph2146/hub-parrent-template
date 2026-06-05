@@ -1,4 +1,5 @@
 export { buildAdminFilterQuery,
+  identityFilterMapping,
   COMMON_FILTER_MAPPINGS,
   normalizeAdminFilterValue,
   normalizeAdminFilterValues,
@@ -8,7 +9,10 @@ export { formatVND, formatDate } from "./format";
 export { formatAdminDateTime, isParsableDateTime } from "./format-admin-datetime";
 export {
   type AdminTableView,
+  adminDateRangeFilterFn,
   adminDeletedAtDateRangeFilterFn,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
   defineAdminDeletedAtColumn,
   buildAdminTableColumns,
   dedupeAdminTableColumns,

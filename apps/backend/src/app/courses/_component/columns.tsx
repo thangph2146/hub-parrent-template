@@ -15,13 +15,11 @@ import {
   type AdminTableView,
   buildAdminTableColumns,
   dedupeAdminTableColumns,
+  defineAdminCreatedAtColumn,
+  defineAdminUpdatedAtColumn,
 } from "@/lib/admin-table-columns"
 
-import { formatAdminDateTime } from "@/lib/format-admin-datetime"
-
 import type { CourseRow } from "./types"
-
-import { defineRelationExportColumns } from "@ui/components/data-table"
 
 export function getCourseColumns({
   view = "list",
@@ -50,7 +48,8 @@ export function getCourseColumns({
 
       header: "Tên khóa học",
 
-      enableColumnFilter: false,
+      enableColumnFilter: true,
+      filterFn: () => true,
 
       cell: ({ row, getValue }) => (
         <button
@@ -105,11 +104,7 @@ export function getCourseColumns({
       },
     },
 
-    ...defineRelationExportColumns<CourseRow>([
-      { id: "createdAt", header: "Tạo lúc", getValue: (r) => r.createdAt },
-
-      { id: "updatedAt", header: "Cập nhật lúc", getValue: (r) => r.updatedAt },
-    ]),
+    defineAdminCreatedAtColumn<CourseRow>({ defaultHidden: true }),
 
     {
       accessorKey: "status",
@@ -143,39 +138,7 @@ export function getCourseColumns({
       ),
     },
 
-    {
-      accessorKey: "updatedAt",
-
-      header: "Cập nhật",
-
-      enableColumnFilter: true,
-
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true
-
-        const rowVal = row.getValue(columnId) as string
-
-        if (!rowVal) return false
-
-        const [fromStr, toStr] = String(filterValue).split(",")
-
-        const rowDate = rowVal.split("T")[0]
-
-        if (fromStr && rowDate < fromStr) return false
-
-        if (toStr && rowDate > toStr) return false
-
-        return true
-      },
-
-      meta: { filterVariant: "date-range" },
-
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatAdminDateTime(getValue() as string)}
-        </span>
-      ),
-    },
+    defineAdminUpdatedAtColumn<CourseRow>({ header: "Cập nhật" }),
   ]
 
   return dedupeAdminTableColumns(

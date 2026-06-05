@@ -23,6 +23,7 @@ export interface SeoMetasTableProps {
   total: number
   onClearFilters: () => void
   onBulkDelete: (rows: SeoMetaRow[]) => Promise<void>
+  onBulkRestore?: (rows: SeoMetaRow[]) => Promise<void>
   onBulkPurge: (rows: SeoMetaRow[]) => Promise<void>
 }
 
@@ -39,8 +40,54 @@ export function SeoMetasTable({
   total,
   onClearFilters,
   onBulkDelete,
+  onBulkRestore,
   onBulkPurge,
 }: SeoMetasTableProps) {
+  const bulkActions = [
+    ...(onBulkRestore
+      ? [
+          {
+            id: "bulk-seo-meta-restore" as const,
+            label: "Khôi phục đã chọn",
+            variant: "outline" as const,
+            confirm: {
+              title: "Khôi phục các SEO metadata đã chọn?",
+              description: (rows: SeoMetaRow[]) =>
+                `Bạn đã chọn ${rows.length} mục. Các mục sẽ được khôi phục.`,
+              confirmLabel: "Khôi phục",
+            },
+            onAction: onBulkRestore,
+          },
+        ]
+      : []),
+    {
+      id: "bulk-seo-meta-delete" as const,
+      label: "Xóa tạm đã chọn",
+      variant: "destructive" as const,
+      confirm: {
+        title: "Đưa các SEO metadata đã chọn vào thùng rác?",
+        description: (rows: SeoMetaRow[]) =>
+          `Bạn đã chọn ${rows.length} mục. Các mục sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
+        confirmLabel: "Xóa tạm",
+        destructive: true,
+      },
+      onAction: onBulkDelete,
+    },
+    {
+      id: "bulk-seo-meta-purge" as const,
+      label: "Xóa vĩnh viễn đã chọn",
+      variant: "destructive" as const,
+      confirm: {
+        title: "Xóa vĩnh viễn các SEO metadata đã chọn?",
+        description: (rows: SeoMetaRow[]) =>
+          `Bạn đã chọn ${rows.length} mục. Hành động này không thể hoàn tác!`,
+        confirmLabel: "Xóa vĩnh viễn",
+        destructive: true,
+      },
+      onAction: onBulkPurge,
+    },
+  ];
+
   return (
     <AdminDataTable<SeoMetaRow>
       tableScope="seo-metas"
@@ -57,35 +104,9 @@ export function SeoMetasTable({
       globalFilterPlaceholder="Tìm theo đường dẫn..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
-      bulkActions={[
-        {
-          id: "bulk-seo-meta-delete",
-          label: "Xóa tạm đã chọn",
-          variant: "destructive",
-          confirm: {
-            title: "Đưa các SEO metadata đã chọn vào thùng rác?",
-            description: (rows) =>
-              `Bạn đã chọn ${rows.length} mục. Các mục sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
-            confirmLabel: "Xóa tạm",
-            destructive: true,
-          },
-          onAction: onBulkDelete,
-        },
-        {
-          id: "bulk-seo-meta-purge",
-          label: "Xóa vĩnh viễn đã chọn",
-          variant: "destructive",
-          confirm: {
-            title: "Xóa vĩnh viễn các SEO metadata đã chọn?",
-            description: (rows) =>
-              `Bạn đã chọn ${rows.length} mục. Hành động này không thể hoàn tác!`,
-            confirmLabel: "Xóa vĩnh viễn",
-            destructive: true,
-          },
-          onAction: onBulkPurge,
-        },
-      ]}
+      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      bulkActions={bulkActions}
       footer={
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
