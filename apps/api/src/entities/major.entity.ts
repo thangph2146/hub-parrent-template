@@ -1,33 +1,29 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity({ tableName: 'nganhhoc' })
+@Entity({ tableName: 'majors' })
 export class Major {
   @PrimaryKey()
   id!: number;
 
-  @Property({ fieldName: 'ten_nganh' })
+  @Property()
   name!: string;
 
-  @Property({ fieldName: 'ma_nganh' })
+  @Property()
   code!: string;
 
   @Property({ default: 1 })
   status: number = 1;
 
-  @Property({
-    fieldName: 'created_at',
-    nullable: true,
-    onCreate: () => new Date(),
-  })
+  @Property({ nullable: true, onCreate: () => new Date() })
   createdAt?: Date;
 
   @Property({
-    fieldName: 'updated_at',
     nullable: true,
     onCreate: () => new Date(),
+    onUpdate: () => new Date(),
   })
   updatedAt?: Date;
 
-  @Property({ fieldName: 'deleted_at', nullable: true })
+  @Property({ nullable: true })
   deletedAt?: Date | null;
 }

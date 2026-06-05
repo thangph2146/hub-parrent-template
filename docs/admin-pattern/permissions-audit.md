@@ -1,6 +1,6 @@
 # Audit: Actions & API Queries theo từng chức năng Backend
 
-> Ngày tạo: 2026-06-04
+> Ngày tạo: 2026-06-04 (cập nhật lần cuối: 2026-06-05)
 > Mục đích: Liệt kê `feature → action → API query → permission → controller` để đối chiếu giữa `apps/backend/`, `apps/api/` và `apps/api/src/config/permissions.ts`.
 > Trạng thái: **Permission list đã được chuẩn hóa — bổ sung `EVENT_CHECKOUTS_*`, `IMPORTED_USERS_*`, `SYSTEM_*`, `PARENT_STUDENTS_*`, `ROLES_RESTORE`, `TAGS_RESTORE` ở cả API config, api-client `PERMISSION_CODES`, backend labels, và super_admin seed. `packages/api-client/src/permissions.ts` đã được refactor: bỏ section "Frontend-specific Resources" (đã lỗi thời vì các resource này giờ đều có trong API), nhóm theo domain nghiệp vụ, cô lập các key dot-notation legacy ở cuối với JSDoc `@deprecated`.**
 
@@ -312,7 +312,43 @@ Tính từ `apps/api/src/config/permissions.ts` (generateResourcePermissions + e
 
 ---
 
-## 8. Parity check (API ↔ client)
+## 8. UI Permission Gating — gaps fixed (round 3)
+
+Sau audit phát hiện và đã fix 2 trang còn 🟡/❌ trong ma trận UI gating:
+
+### 8.1. `my-students` — thêm page guard
+
+**File:** `apps/backend/src/app/my-students/page.tsx:141`
+
+- Trước: `<AdminPageGuard>` (không prop → chỉ chặn unauthenticated)
+- Sau: `<AdminPageGuard permission={PERMISSION_CODES.STUDENTS_VIEW_OWN}>`
+
+### 8.2. `staff` — fine-grained permission gating
+
+**File:** `apps/backend/src/app/staff/page.tsx`
+
+- Thêm `canCreate`/`canUpdate`/`canDelete`/`canRestore`/`canHardDelete` từ session permissions.
+- **Toolbar "Thêm nhân sự"**: gated bằng `canCreate` (thay vì luôn hiện).
+- **Cột thao tác (list)**: `canWrite` = `canUpdate`, `canDelete`, `canHardDelete` thay vì hardcoded `canWrite: true`.
+- **Cột thao tác (trash)**: `canRestore`, `canHardDelete` thay vì hardcoded `canWrite: true`.
+- **Bulk actions (list)**: conditional — active/unactive gated by `canUpdate`, delete gated by `canDelete`, purge gated by `canHardDelete`.
+- **Bulk actions (trash)**: restore gated by `canRestore`, purge gated by `canHardDelete`.
+
+**Files đã sửa:**
+- `apps/backend/src/app/staff/page.tsx`
+- `apps/backend/src/app/staff/_component/columns.tsx`
+- `apps/backend/src/app/staff/_component/_table/staff-table.tsx`
+- `apps/backend/src/app/staff/_component/_table/staff-trash-table.tsx`
+
+### 8.3. Kết quả
+
+- **staff page**: 5 🟡 → ✅
+- **my-students page**: 1 ❌ → ✅
+- **Form submit ⬜ items**: xác nhận không phải gap thực sự (role-gated + API enforcement). Chỉ cần cập nhật doc.
+
+---
+
+## 9. Parity check (API ↔ client)
 
 Để tránh drift giữa 2 nguồn truth, có script `scripts/verify-permission-parity.mjs` chạy qua `pnpm verify:permissions` (đã wire vào `pnpm check` + `pnpm check:full`).
 

@@ -37,6 +37,10 @@ import {
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
 } from './import-helpers';
+import {
+  normalizeLegacyImportRow,
+  resolveLegacyTableModelName,
+} from './export-schema';
 
 const EXCEL_META_SHEET = '__meta';
 const EXCEL_NULL_MARKER = '__HUB_NULL__';
@@ -359,6 +363,11 @@ export class SystemService {
     if (!key) return undefined;
     if (entityByModelName[key]) return key;
 
+    const legacyModel = resolveLegacyTableModelName(key);
+    if (legacyModel && entityByModelName[legacyModel]) {
+      return legacyModel;
+    }
+
     const lower = key.toLowerCase();
     for (const [modelName, entity] of Object.entries(entityByModelName)) {
       const entityName = this.getEntityName(entity);
@@ -503,10 +512,18 @@ export class SystemService {
     return parentFirst.reverse();
   }
 
+  /** Khóa export chuẩn: property name (scalar) hoặc FK column tiếng Anh (`authorId`, …). */
+  private getExportFieldKey(prop: EntityProperty): string {
+    if (isManyToOneImportProperty(prop)) {
+      return prop.fieldNames?.[0] ?? `${prop.name}Id`;
+    }
+    return prop.name;
+  }
+
   /**
-   * Export theo field DB thực tế:
-   * - scalar dùng `fieldName` nếu có (`ten_dien_gia`, `created_at`, ...)
-   * - ManyToOne dùng FK column (`eventId`, `createdById`, ...)
+   * Export theo property entity (tiếng Anh, camelCase):
+   * - scalar → `name`, `startDate`, …
+   * - ManyToOne → FK column (`authorId`, `academicYearId`, …)
    */
   private flattenEntityRowForExport(
     entityKey: string,
@@ -518,10 +535,11 @@ export class SystemService {
 
     for (const prop of Object.values(meta.properties)) {
       if (shouldSkipImportProperty(prop)) continue;
-      const fieldName = prop.fieldNames?.[0] ?? prop.name;
+      const exportKey = this.getExportFieldKey(prop);
+      const dbField = prop.fieldNames?.[0] ?? prop.name;
 
       if (isManyToOneImportProperty(prop)) {
-        const rel = entityRow[prop.name] ?? entityRow[fieldName];
+        const rel = entityRow[prop.name] ?? entityRow[dbField];
         let pk: unknown = null;
         if (typeof rel === 'string' || typeof rel === 'number') {
           pk = rel;
@@ -531,15 +549,15 @@ export class SystemService {
               ? (rel as { id: unknown }).id
               : wrap(rel, true).getPrimaryKey();
         }
-        out[fieldName] = pk;
+        out[exportKey] = pk;
         continue;
       }
 
-      const val = entityRow[prop.name] ?? entityRow[fieldName];
+      const val = entityRow[prop.name] ?? entityRow[dbField];
       if (val === undefined) continue;
       const encoded =
         val instanceof Date ? val.toISOString() : (val as unknown);
-      out[fieldName] = encoded;
+      out[exportKey] = encoded;
     }
 
     return out;
@@ -571,7 +589,7 @@ export class SystemService {
     const columns: string[] = [];
     for (const prop of Object.values(meta.properties)) {
       if (shouldSkipImportProperty(prop)) continue;
-      columns.push(prop.fieldNames?.[0] ?? prop.name);
+      columns.push(this.getExportFieldKey(prop));
     }
     return columns;
   }
@@ -1301,6 +1319,7 @@ export class SystemService {
         : typeof entity === 'function'
           ? entity.name
           : String(entity as unknown as string);
+    const normalizedRow = normalizeLegacyImportRow(entityKey, row);
     const meta = em.getMetadata().get(entityKey);
     const out: Record<string, unknown> = {};
 
@@ -1308,24 +1327,24 @@ export class SystemService {
       if (shouldSkipImportProperty(prop)) continue;
 
       let raw: unknown;
-      if (Object.prototype.hasOwnProperty.call(row, prop.name)) {
-        raw = row[prop.name];
+      if (Object.prototype.hasOwnProperty.call(normalizedRow, prop.name)) {
+        raw = normalizedRow[prop.name];
       } else if (prop.fieldNames?.length) {
         const col = prop.fieldNames[0];
         if (
           col &&
           col !== prop.name &&
-          Object.prototype.hasOwnProperty.call(row, col)
+          Object.prototype.hasOwnProperty.call(normalizedRow, col)
         ) {
-          raw = row[col];
+          raw = normalizedRow[col];
         }
       }
       if (
         raw === undefined &&
         isManyToOneImportProperty(prop) &&
-        Object.prototype.hasOwnProperty.call(row, `${prop.name}Id`)
+        Object.prototype.hasOwnProperty.call(normalizedRow, `${prop.name}Id`)
       ) {
-        raw = row[`${prop.name}Id`];
+        raw = normalizedRow[`${prop.name}Id`];
       }
       if (raw === undefined) continue;
       let val = normalizeImportScalar(prop, raw);

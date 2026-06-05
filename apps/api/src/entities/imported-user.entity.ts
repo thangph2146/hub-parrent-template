@@ -4,86 +4,92 @@ import { TrainingLevel } from './training-level.entity';
 import { TrainingSystem } from './training-system.entity';
 import { Major } from './major.entity';
 
-@Entity({ tableName: 'nguoidung' })
+@Entity({ tableName: 'imported_users' })
 export class ImportedUser {
   @PrimaryKey()
   id!: number;
 
-  @Property({ fieldName: 'AccountId', nullable: true })
+  @Property({ nullable: true })
   accountId?: string | null;
 
-  @Property({ fieldName: 'LastName', nullable: true })
+  @Property({ nullable: true })
   lastName?: string | null;
 
-  @Property({ fieldName: 'MiddleName', nullable: true })
+  @Property({ nullable: true })
   middleName?: string | null;
 
-  @Property({ fieldName: 'FirstName', nullable: true })
+  @Property({ nullable: true })
   firstName?: string | null;
 
-  @Property({ fieldName: 'AccountType', nullable: true })
+  @Property({ nullable: true })
   accountType?: string | null;
 
-  @Property({ fieldName: 'FullName', nullable: true })
+  @Property({ nullable: true })
   fullName?: string | null;
 
-  @Property({ fieldName: 'MobilePhone', nullable: true })
+  @Property({ nullable: true })
   mobilePhone?: string | null;
 
-  @Property({ fieldName: 'Email', nullable: true })
+  @Property({ nullable: true })
   email?: string | null;
 
-  @Property({ fieldName: 'HomePhone1', nullable: true })
+  @Property({ nullable: true })
   homePhone1?: string | null;
 
-  @Property({ fieldName: 'PW', nullable: true })
+  @Property({ nullable: true })
   password?: string | null;
 
-  @Property({ fieldName: 'HomePhone', nullable: true })
+  @Property({ nullable: true })
   homePhone?: string | null;
 
-  @Property({ fieldName: 'Avatar', nullable: true })
+  @Property({ nullable: true })
   avatar?: string | null;
 
-  @Property({ fieldName: 'CanUploadAvatar', default: 1 })
+  @Property({ default: 1 })
   canUploadAvatar: number = 1;
 
-  @Property({ fieldName: 'loai_id', nullable: true })
+  @Property({ nullable: true })
   typeId?: number | null;
 
-  @ManyToOne(() => AcademicYear, { fieldName: 'nam_hoc_id', nullable: true })
+  @ManyToOne(() => AcademicYear, {
+    fieldName: 'academicYearId',
+    nullable: true,
+  })
   academicYear?: AcademicYear;
 
-  @ManyToOne(() => TrainingLevel, { fieldName: 'bac_hoc_id', nullable: true })
+  @ManyToOne(() => TrainingLevel, {
+    fieldName: 'trainingLevelId',
+    nullable: true,
+  })
   trainingLevel?: TrainingLevel;
 
   @ManyToOne(() => TrainingSystem, {
-    fieldName: 'he_dao_tao_id',
+    fieldName: 'trainingSystemId',
     nullable: true,
   })
   trainingSystem?: TrainingSystem;
 
-  @ManyToOne(() => Major, { fieldName: 'nganh_id', nullable: true })
+  @ManyToOne(() => Major, { fieldName: 'majorId', nullable: true })
   major?: Major;
 
-  @Property({ fieldName: 'phong_khoa_id', nullable: true })
+  @Property({ nullable: true })
   departmentId?: number | null;
 
   @Property({ default: 1 })
   status: number = 1;
 
-  @Property({ fieldName: 'created_at', nullable: true })
+  @Property({ nullable: true })
   createdAt?: Date;
 
-  @Property({ fieldName: 'updated_at', nullable: true })
+  @Property({ nullable: true })
   updatedAt?: Date;
 
-  @Property({ fieldName: 'deleted_at', nullable: true })
+  @Property({ nullable: true })
   deletedAt?: Date | null;
 
-  @Property({ fieldName: 'refresh_token', type: 'text', nullable: true })
+  @Property({ type: 'text', nullable: true })
   refreshToken?: string | null;
 
-  @Property({ fieldName: 'refresh_token_exp', nullable: true })
+  @Property({ nullable: true })
   refreshTokenExp?: Date | null;
 }

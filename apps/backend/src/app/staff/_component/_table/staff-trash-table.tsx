@@ -30,6 +30,8 @@ interface StaffTrashTableProps {
   onRestore: (user: StaffRow) => void
   onPurge: (user: StaffRow) => void
   busy: boolean
+  canRestore: boolean
+  canHardDelete: boolean
   onBulkRestore: (ids: string[]) => void
   onBulkPurge: (ids: string[]) => void
   onClearFilters: () => void
@@ -59,11 +61,15 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     onRestore,
     onPurge,
     busy,
+    canRestore: canRestorePerm,
+    canHardDelete: canHardDeletePerm,
     onBulkRestore,
     onBulkPurge,
     onClearFilters,
     listParams,
   } = props
+
+  const canWriteTrash = canRestorePerm || canHardDeletePerm
 
   const columns = getStaffColumns({
     view: "trash",
@@ -75,6 +81,9 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     onToggleActive: () => {},
     busy,
     isProtected: () => false,
+    canWrite: canWriteTrash,
+    canRestore: canRestorePerm,
+    canHardDelete: canHardDeletePerm,
   })
 
   return (
@@ -94,26 +103,34 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
       globalFilterPlaceholder="Tìm theo email, họ tên, SĐT (API)…"
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
-        {
-          id: "bulk-staff-restore",
-          label: "Khôi phục đã chọn",
-          variant: "outline",
-          onAction: async (rows) => {
-            const ids = rows.map((u) => String(u.id))
-            if (!ids.length) return
-            await onBulkRestore(ids)
-          },
-        },
-        {
-          id: "bulk-staff-purge",
-          label: "Xóa vĩnh viễn đã chọn",
-          variant: "destructive",
-          onAction: async (rows) => {
-            const ids = rows.map((u) => String(u.id))
-            if (!ids.length) return
-            await onBulkPurge(ids)
-          },
-        },
+        ...(canRestorePerm
+          ? [
+              {
+                id: "bulk-staff-restore" as const,
+                label: "Khôi phục đã chọn",
+                variant: "outline" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows.map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkRestore(ids)
+                },
+              },
+            ]
+          : []),
+        ...(canHardDeletePerm
+          ? [
+              {
+                id: "bulk-staff-purge" as const,
+                label: "Xóa vĩnh viễn đã chọn",
+                variant: "destructive" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows.map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkPurge(ids)
+                },
+              },
+            ]
+          : []),
       ]}
       onClearFilters={onClearFilters}
       xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}

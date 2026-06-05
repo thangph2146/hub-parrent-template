@@ -30,6 +30,10 @@ interface StaffTableProps {
   currentUserId?: string;
   actorEmail?: string;
   isProtected: (user: StaffRow) => boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+  canRestore: boolean;
+  canHardDelete: boolean;
   onBulkDelete: (ids: string[]) => void;
   onBulkPurge: (ids: string[]) => void;
   onBulkActive: (ids: string[]) => void;
@@ -68,6 +72,10 @@ export function StaffTable(props: StaffTableProps) {
     currentUserId,
     actorEmail,
     isProtected,
+    canUpdate,
+    canDelete: canDeletePerm,
+    canRestore: canRestorePerm,
+    canHardDelete: canHardDeletePerm,
     onBulkDelete,
     onBulkPurge,
     onBulkActive,
@@ -90,6 +98,10 @@ export function StaffTable(props: StaffTableProps) {
     actorEmail,
     isProtected,
     roleOptions,
+    canWrite: canUpdate,
+    canDelete: canDeletePerm,
+    canRestore: canRestorePerm,
+    canHardDelete: canHardDeletePerm,
   });
 
   return (
@@ -111,72 +123,84 @@ export function StaffTable(props: StaffTableProps) {
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
       bulkActions={[
-        {
-          id: "bulk-staff-active",
-          label: "Kích hoạt đã chọn",
-          variant: "success",
-          onAction: async (rows) => {
-            const ids = rows
-              .filter(
-                (u) =>
-                  String(u.id) !== String(currentUserId ?? "") &&
-                  !isProtected(u) &&
-                  !u.isActive,
-              )
-              .map((u) => String(u.id));
-            if (!ids.length) return;
-            await onBulkActive(ids);
-          },
-        },
-        {
-          id: "bulk-staff-unactive",
-          label: "Khoá đã chọn",
-          variant: "warning",
-          onAction: async (rows) => {
-            const ids = rows
-              .filter(
-                (u) =>
-                  String(u.id) !== String(currentUserId ?? "") &&
-                  !isProtected(u) &&
-                  u.isActive,
-              )
-              .map((u) => String(u.id));
-            if (!ids.length) return;
-            await onBulkUnactive(ids);
-          },
-        },
-        {
-          id: "bulk-staff-delete",
-          label: "Xóa tạm đã chọn",
-          variant: "destructive",
-          onAction: async (rows) => {
-            const ids = rows
-              .filter(
-                (u) =>
-                  String(u.id) !== String(currentUserId ?? "") &&
-                  !isProtected(u),
-              )
-              .map((u) => String(u.id));
-            if (!ids.length) return;
-            await onBulkDelete(ids);
-          },
-        },
-        {
-          id: "bulk-staff-purge",
-          label: "Xóa vĩnh viễn đã chọn",
-          variant: "destructive",
-          onAction: async (rows) => {
-            const ids = rows
-              .filter(
-                (u) =>
-                  String(u.id) !== String(currentUserId ?? "") &&
-                  !isProtected(u),
-              )
-              .map((u) => String(u.id));
-            if (!ids.length) return;
-            await onBulkPurge(ids);
-          },
-        },
+        ...(canUpdate
+          ? [
+              {
+                id: "bulk-staff-active" as const,
+                label: "Kích hoạt đã chọn",
+                variant: "success" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows
+                    .filter(
+                      (u) =>
+                        String(u.id) !== String(currentUserId ?? "") &&
+                        !isProtected(u) &&
+                        !u.isActive,
+                    )
+                    .map((u) => String(u.id));
+                  if (!ids.length) return;
+                  await onBulkActive(ids);
+                },
+              },
+              {
+                id: "bulk-staff-unactive" as const,
+                label: "Khoá đã chọn",
+                variant: "warning" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows
+                    .filter(
+                      (u) =>
+                        String(u.id) !== String(currentUserId ?? "") &&
+                        !isProtected(u) &&
+                        u.isActive,
+                    )
+                    .map((u) => String(u.id));
+                  if (!ids.length) return;
+                  await onBulkUnactive(ids);
+                },
+              },
+            ]
+          : []),
+        ...(canDeletePerm
+          ? [
+              {
+                id: "bulk-staff-delete" as const,
+                label: "Xóa tạm đã chọn",
+                variant: "destructive" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows
+                    .filter(
+                      (u) =>
+                        String(u.id) !== String(currentUserId ?? "") &&
+                        !isProtected(u),
+                    )
+                    .map((u) => String(u.id));
+                  if (!ids.length) return;
+                  await onBulkDelete(ids);
+                },
+              },
+            ]
+          : []),
+        ...(canHardDeletePerm
+          ? [
+              {
+                id: "bulk-staff-purge" as const,
+                label: "Xóa vĩnh viễn đã chọn",
+                variant: "destructive" as const,
+                onAction: async (rows: StaffRow[]) => {
+                  const ids = rows
+                    .filter(
+                      (u) =>
+                        String(u.id) !== String(currentUserId ?? "") &&
+                        !isProtected(u),
+                    )
+                    .map((u) => String(u.id));
+                  if (!ids.length) return;
+                  await onBulkPurge(ids);
+                },
+              },
+            ]
+          : []),
       ]}
       xlsxExport={buildAdminTableXlsxExport("staff", { pageCount: data.length, total })}
       exportFetchPage={async ({ page: exportPage, limit }) => {

@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity({ tableName: 'diadiem' })
+@Entity({ tableName: 'locations' })
 export class Location {
   @PrimaryKey()
   id!: number;
@@ -11,22 +11,18 @@ export class Location {
   @Property({ type: 'text', nullable: true })
   address?: string | null;
 
-  @Property({ fieldName: 'url_bando' })
+  @Property()
   mapUrl!: string;
 
   @Property({ nullable: true })
   status?: number | null;
 
-  @Property({ fieldName: 'created_at', onCreate: () => new Date() })
+  @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 
-  @Property({
-    fieldName: 'updated_at',
-    onCreate: () => new Date(),
-    onUpdate: () => new Date(),
-  })
+  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
   updatedAt!: Date;
 
-  @Property({ fieldName: 'deleted_at', nullable: true })
+  @Property({ nullable: true })
   deletedAt?: Date | null;
 }

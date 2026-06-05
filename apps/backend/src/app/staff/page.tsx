@@ -42,6 +42,11 @@ function StaffPageInner() {
   const { user: session } = useAuth();
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE);
+  const canCreate = session != null && canUserAccess(session, PERMISSION_CODES.USERS_CREATE);
+  const canUpdate = session != null && canUserAccess(session, PERMISSION_CODES.USERS_UPDATE);
+  const canDelete = session != null && canUserAccess(session, PERMISSION_CODES.USERS_DELETE);
+  const canRestore = session != null && canUserAccess(session, PERMISSION_CODES.USERS_RESTORE);
+  const canHardDelete = session != null && canUserAccess(session, PERMISSION_CODES.USERS_HARD_DELETE);
 
   const rbacQuery = useRbacCatalog({
     enabled: Boolean(session) && canManageUsers,
@@ -423,7 +428,7 @@ function StaffPageInner() {
           <AdminPageHeaderPrimaryButton
             type="button"
             onClick={() => router.push("/staff/new")}
-            disabled={busy || roles.length === 0}
+            disabled={!canCreate || busy || roles.length === 0}
           >
             <UserPlus className="size-4" aria-hidden />
             Thêm nhân sự
@@ -510,6 +515,10 @@ function StaffPageInner() {
                 currentUserId={session?.id}
                 actorEmail={session?.email}
                 isProtected={(u) => isProtectedAdminEmail(u.email)}
+                canUpdate={canUpdate}
+                canDelete={canDelete}
+                canRestore={canRestore}
+                canHardDelete={canHardDelete}
                 onBulkDelete={handleBulkDelete}
                 onBulkPurge={handleBulkPurge}
                 onBulkActive={handleBulkActive}
@@ -568,6 +577,8 @@ function StaffPageInner() {
                   onRestore={handleRestore}
                   onPurge={handlePurge}
                   busy={busy}
+                  canRestore={canRestore}
+                  canHardDelete={canHardDelete}
                   onBulkRestore={handleBulkRestore}
                   onBulkPurge={handleBulkPurge}
                   onClearFilters={clearTrashStaffFilters}

@@ -50,6 +50,11 @@ export interface StaffColumnsProps {
   isProtected: (user: StaffRow) => boolean
 
   roleOptions?: { value: string; label: string }[]
+
+  canWrite?: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }
 
 export function getStaffColumns(
@@ -79,6 +84,10 @@ export function getStaffColumns(
     isProtected,
 
     roleOptions,
+    canWrite = true,
+    canDelete: canDeletePerm,
+    canRestore: canRestorePerm,
+    canHardDelete: canHardDeletePerm,
   } = props
 
   const dataColumns: ColumnDef<StaffRow>[] = [
@@ -256,7 +265,9 @@ export function getStaffColumns(
     dataColumns,
 
     listActionsColumn: defineAdminCrudActionsColumn<StaffRow>({
-      canWrite: true,
+      canWrite,
+      canDelete: canDeletePerm,
+      canHardDelete: canHardDeletePerm,
 
       busy,
 
@@ -323,7 +334,9 @@ export function getStaffColumns(
     }),
 
     trashActionsColumn: defineAdminTrashActionsColumn<StaffRow>({
-      canWrite: true,
+      canWrite,
+      canRestore: canRestorePerm,
+      canHardDelete: canHardDeletePerm,
 
       busy,
 

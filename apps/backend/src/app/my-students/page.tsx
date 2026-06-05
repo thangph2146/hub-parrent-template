@@ -138,7 +138,7 @@ export default function MyStudentsPage() {
   ) : undefined
 
   return (
-    <AdminPageGuard>
+    <AdminPageGuard permission={PERMISSION_CODES.STUDENTS_VIEW_OWN}>
       <AdminPageSection>
         <AdminListPageHeader
           title="Quản lý sinh viên"

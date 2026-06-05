@@ -4,27 +4,30 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@ui/components/button";
 import { Input } from "@ui/components/input";
-import { Label } from "@ui/components/label";
 import { Badge } from "@ui/components/badge";
-import { Separator } from "@ui/components/separator";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
 } from "@ui/components/alert";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card";
-import { PageSection } from "@ui/components/layout";
-import { TypographyH1, TypographyH2 } from "@ui/components/typography";
-import { ADMIN_PAGE_TITLE_DOCUMENT_CLASS } from "@ui/lib/layout-shell";
+  Field,
+  FieldDescription,
+  FieldLabel,
+  FieldSectionDivider,
+  FieldSectionLabel,
+  FieldSectionLegend,
+  FieldSectionValue,
+  FieldSet,
+  FieldSetContent,
+} from "@ui/components/field";
 import { cn } from "@ui/lib/utils";
 import { readAdminSession } from "@/lib/auth-session";
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { DEFAULT_API_URL, canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
 import {
@@ -34,10 +37,13 @@ import {
   FileJson,
   Upload,
   Loader2,
-  FolderDown,
-  Check,
-  Sparkles,
+  FolderOpen,
 } from "lucide-react";
+import {
+  pickExportDirectory,
+  saveExportBlob,
+  supportsExportDirectoryPicker,
+} from "@/lib/export-file-save";
 
 function apiBase(): string {
   return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
@@ -50,38 +56,39 @@ type ApiEnvelope<T> = {
   data?: T;
 };
 
+const FILE_INPUT_CLASS =
+  "h-9 w-full border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 cursor-pointer text-sm file:mr-2 file:rounded-md file:border-0 file:bg-primary/10 file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-primary hover:file:bg-primary/15";
+
 function DataBackupPageInner() {
   const { user } = useAuth();
-  const canExport = user ? canUserAccess(user, PERMISSION_CODES.SETTINGS_EXPORT) || canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE) : false;
-  const canImport = user ? canUserAccess(user, PERMISSION_CODES.SETTINGS_IMPORT) || canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE) : false;
+  const canExport = user
+    ? canUserAccess(user, PERMISSION_CODES.SETTINGS_EXPORT) ||
+      canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE)
+    : false;
+  const canImport = user
+    ? canUserAccess(user, PERMISSION_CODES.SETTINGS_IMPORT) ||
+      canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE)
+    : false;
   const [exporting, setExporting] = useState<"json" | "excel" | null>(null);
   const [importing, setImporting] = useState<"json" | "excel" | null>(null);
+  const [pickingDirectory, setPickingDirectory] = useState(false);
+  const [exportDirectory, setExportDirectory] =
+    useState<FileSystemDirectoryHandle | null>(null);
+  const directoryPickerSupported = supportsExportDirectoryPicker();
 
   const dateStamp = () => {
-    const now = new Date()
-    const y = now.getFullYear()
-    const m = String(now.getMonth() + 1).padStart(2, "0")
-    const d = String(now.getDate()).padStart(2, "0")
-    return `${y}-${m}-${d}`
-  }
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
 
   const authHeaders = (): HeadersInit => {
     const headers: Record<string, string> = {};
     const uid = readAdminSession()?.id;
     if (uid != null) headers["X-User-Id"] = String(uid);
     return headers;
-  };
-
-  const downloadBlob = (blob: Blob, filename: string): void => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
   };
 
   const toastFetchError = async (res: Response): Promise<void> => {
@@ -111,7 +118,67 @@ function DataBackupPageInner() {
     toast.error(msg || `Lỗi ${res.status}`);
   };
 
+  const chooseExportDirectory = async (): Promise<void> => {
+    if (!directoryPickerSupported) {
+      toast.error(
+        "Trình duyệt không hỗ trợ chọn thư mục. Dùng Chrome hoặc Edge, hoặc hộp thoại lưu file sẽ mở khi xuất.",
+      );
+      return;
+    }
+    setPickingDirectory(true);
+    try {
+      const dir = await pickExportDirectory();
+      if (!dir) return;
+      setExportDirectory(dir);
+      toast.success(`Đã chọn thư mục lưu: ${dir.name}`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Không thể chọn thư mục lưu export.",
+      );
+    } finally {
+      setPickingDirectory(false);
+    }
+  };
+
+  const persistExportBlob = async (
+    blob: Blob,
+    filename: string,
+    mimeType: string,
+    mimeLabel: string,
+  ): Promise<boolean> => {
+    const mode = await saveExportBlob(blob, filename, {
+      directory: exportDirectory,
+      mimeType,
+      mimeLabel,
+    });
+    if (mode === "cancelled") {
+      toast.message("Đã hủy lưu file export.");
+      return false;
+    }
+    if (mode === "directory") {
+      toast.success(
+        `Đã lưu ${filename} vào thư mục ${exportDirectory?.name ?? "đã chọn"}.`,
+      );
+      return true;
+    }
+    if (mode === "save-picker") {
+      toast.success(`Đã lưu ${filename}.`);
+      return true;
+    }
+    toast.success(`Đã tải ${filename} (thư mục Tải xuống mặc định).`);
+    return true;
+  };
+
+  const exportReady =
+    !directoryPickerSupported || exportDirectory !== null;
+
   const exportJson = async (): Promise<void> => {
+    if (!exportReady) {
+      toast.error("Hãy chọn thư mục lưu trước khi xuất JSON.");
+      return;
+    }
     setExporting("json");
     try {
       const res = await fetch(`${apiBase()}/admin/system/export`, {
@@ -121,17 +188,19 @@ function DataBackupPageInner() {
         await toastFetchError(res);
         return;
       }
-      const payload = (await res.json()) as ApiEnvelope<Record<string, unknown[]>>;
+      const payload = (await res.json()) as ApiEnvelope<
+        Record<string, unknown[]>
+      >;
       if (!payload.success || !payload.data) {
         toast.error(payload.message || "API không trả dữ liệu export hợp lệ.");
         return;
       }
 
+      const filename = `hub-system-export-${dateStamp()}.json`;
       const blob = new Blob([JSON.stringify(payload.data, null, 2)], {
         type: "application/json;charset=utf-8",
       });
-      downloadBlob(blob, `hub-system-export-${dateStamp()}.json`);
-      toast.success(`Đã tải hub-system-export-${dateStamp()}.json.`);
+      await persistExportBlob(blob, filename, "application/json", "JSON");
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
@@ -142,6 +211,10 @@ function DataBackupPageInner() {
   };
 
   const exportExcel = async (): Promise<void> => {
+    if (!exportReady) {
+      toast.error("Hãy chọn thư mục lưu trước khi xuất Excel.");
+      return;
+    }
     setExporting("excel");
     try {
       const res = await fetch(`${apiBase()}/admin/system/export/excel`, {
@@ -151,9 +224,14 @@ function DataBackupPageInner() {
         await toastFetchError(res);
         return;
       }
+      const filename = `hub-system-export-${dateStamp()}.xlsx`;
       const blob = await res.blob();
-      downloadBlob(blob, `hub-system-export-${dateStamp()}.xlsx`);
-      toast.success(`Đã tải hub-system-export-${dateStamp()}.xlsx.`);
+      await persistExportBlob(
+        blob,
+        filename,
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Excel",
+      );
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
@@ -190,8 +268,8 @@ function DataBackupPageInner() {
       }>;
       toast.success(
         payload.message ||
-        payload.data?.message ||
-        "Import JSON hoàn tất.",
+          payload.data?.message ||
+          "Import JSON hoàn tất.",
       );
     } catch (e) {
       toast.error(
@@ -223,8 +301,8 @@ function DataBackupPageInner() {
       }>;
       toast.success(
         payload.message ||
-        payload.data?.message ||
-        "Import Excel hoàn tất.",
+          payload.data?.message ||
+          "Import Excel hoàn tất.",
       );
     } catch (e) {
       toast.error(
@@ -237,268 +315,233 @@ function DataBackupPageInner() {
 
   const exportBusy = exporting !== null;
 
+  const showBackupPanel = canExport || canImport;
+
   return (
-    <AdminPageSection>
-      {/* Tiêu đề + bối cảnh ngay khi mở trang */}
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary ring-1 ring-primary/20">
-            <Database className="size-7" />
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <TypographyH1 className={ADMIN_PAGE_TITLE_DOCUMENT_CLASS}>
-                Sao lưu &amp; phục hồi dữ liệu
-              </TypographyH1>
-              <Badge variant="secondary" className="font-normal">
-                Admin
-              </Badge>
-            </div>
-            <p className="text-muted-foreground text-pretty leading-relaxed">
-              <span className="font-medium text-foreground">Bước 1:</span> chọn định dạng
-              bên dưới và bấm nút xuất — file sẽ tải về máy.{" "}
-            </p>
+    <AdminPageSection className="space-y-4">
+      <AdminListPageHeader
+        icon={Database}
+        title="Sao lưu & phục hồi dữ liệu"
+        subtitle="Snapshot toàn hệ thống — chọn thư mục lưu, xuất hoặc import file export."
+      />
 
-            <p className="text-muted-foreground text-pretty leading-relaxed">
-              <span className="font-medium text-foreground">Bước 2 (tuỳ chọn):</span>{" "}
-              dùng file JSON export từ chính hệ thống để import lại khi cần.
-            </p>
-          </div>
-        </div>
-
-        {readAdminSession() == null ? (
-          <Alert variant="destructive" className="border-destructive/40">
-            <AlertTitle>Chưa đăng nhập admin</AlertTitle>
-            <AlertDescription>
-              Export và import cần header{" "}
-              <code className="rounded bg-muted px-1 text-xs">X-User-Id</code> — hãy đăng nhập
-              tài khoản có quyền{" "}
-              <code className="rounded bg-muted px-1 text-xs">settings:manage</code>{" "}
-              hoặc{" "}
-              <code className="rounded bg-muted px-1 text-xs">settings:import</code>.
-            </AlertDescription>
-          </Alert>
-        ) : null}
-
-        <Alert className="border-primary/25 bg-primary/[0.04]">
-          <FolderDown className="size-4 text-primary" />
-          <AlertTitle className="text-foreground">
-            File tải về đi đâu?
-          </AlertTitle>
-          <AlertDescription className="text-muted-foreground space-y-1">
-            <p>
-              Trình duyệt thường lưu vào thư mục{" "}
-              <strong className="text-foreground">Tải xuống</strong> (Downloads) với tên cố định{" "}
-              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
-                hub-system-export.json
-              </code>
-              . Nếu không thấy file, mở bảng tải xuống của trình duyệt (Ctrl+J / ⌘+J).
-            </p>
+      {readAdminSession() == null ? (
+        <Alert variant="destructive" className="py-3">
+          <AlertTitle className="text-sm">Chưa đăng nhập admin</AlertTitle>
+          <AlertDescription className="text-xs">
+            Cần quyền{" "}
+            <code className="rounded bg-muted px-1">settings:manage</code> hoặc{" "}
+            <code className="rounded bg-muted px-1">settings:import</code>.
           </AlertDescription>
         </Alert>
-      </header>
+      ) : null}
 
-      {/* Xuất — hai lựa chọn song song, dễ quét mắt */}
-      <section className="space-y-4" aria-labelledby="export-heading">
-        <div className="flex items-center gap-2">
-          <Sparkles className="size-5 text-primary" aria-hidden />
-          <TypographyH2
-            id="export-heading"
-            className="text-lg font-semibold tracking-tight"
+      {showBackupPanel ? (
+        <FieldSet variant="section">
+          <FieldSectionLegend
+            icon={Database}
+            title="Thao tác sao lưu"
+            description="hub-system-export-YYYY-MM-DD (.json / .xlsx)"
+            badge={
+              canExport ? (
+                exportReady ? (
+                  <Badge variant="outline" className="text-xs font-normal">
+                    Sẵn sàng xuất
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-xs font-normal">
+                    Chọn thư mục
+                  </Badge>
+                )
+              ) : undefined
+            }
+          />
+          <FieldSetContent
+            variant="section"
+            className="space-y-4 px-4 pb-4 pt-0 sm:px-5"
           >
-            Xuất snapshot hiện tại
-          </TypographyH2>
-        </div>
-        <p className="text-muted-foreground -mt-1 text-sm">
-          Có thể xuất cùng snapshot hệ thống ở định dạng JSON hoặc Excel `.xlsx`.
-        </p>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* JSON */}
-          <Card
-            className={cn(
-              "py-0 relative overflow-hidden border-2 transition-shadow",
-              "border-border hover:border-primary/35 hover:shadow-md",
-            )}
-          >
-            <div className="absolute right-3 top-3">
-              <Badge variant="outline" className="font-mono text-xs">
-                .json
-              </Badge>
-            </div>
-            <CardHeader className="pb-2 pt-6">
-              <div className="mb-3 flex size-12 items-center justify-center rounded-lg bg-sky-500/12 text-sky-600 dark:text-sky-400">
-                <FileJson className="size-6" />
+            {canExport ? (
+              <div className="space-y-2">
+                <FieldSectionLabel icon={Download}>
+                  Xuất dữ liệu
+                </FieldSectionLabel>
+                <FieldSectionValue className="flex min-h-10 flex-wrap items-center gap-2 py-2">
+                  <FolderOpen
+                    className="size-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <span
+                    className={cn(
+                      "min-w-0 flex-1 truncate font-mono text-xs sm:text-sm",
+                      exportDirectory
+                        ? "text-foreground"
+                        : "text-muted-foreground",
+                    )}
+                    title={
+                      exportDirectory?.name ??
+                      (directoryPickerSupported
+                        ? "Chưa chọn thư mục"
+                        : "Hộp thoại lưu khi xuất")
+                    }
+                  >
+                    {exportDirectory
+                      ? exportDirectory.name
+                      : directoryPickerSupported
+                        ? "Chưa chọn thư mục"
+                        : "Hộp thoại lưu khi xuất"}
+                  </span>
+                  {directoryPickerSupported ? (
+                    <>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 shrink-0 gap-1.5"
+                        disabled={pickingDirectory || exportBusy}
+                        onClick={() => void chooseExportDirectory()}
+                      >
+                        {pickingDirectory ? (
+                          <Loader2 className="size-3.5 animate-spin" />
+                        ) : (
+                          <FolderOpen className="size-3.5" />
+                        )}
+                        Thư mục
+                      </Button>
+                      {exportDirectory ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 shrink-0 px-2 text-muted-foreground"
+                          disabled={exportBusy}
+                          onClick={() => setExportDirectory(null)}
+                        >
+                          Bỏ
+                        </Button>
+                      ) : null}
+                    </>
+                  ) : null}
+                  <span
+                    className="hidden h-5 w-px shrink-0 bg-border sm:block"
+                    aria-hidden
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-8 shrink-0 gap-1.5"
+                    disabled={exportBusy || !exportReady}
+                    onClick={() => void exportJson()}
+                  >
+                    {exporting === "json" ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      <FileJson className="size-3.5" />
+                    )}
+                    JSON
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-8 shrink-0 gap-1.5"
+                    disabled={exportBusy || !exportReady}
+                    onClick={() => void exportExcel()}
+                  >
+                    {exporting === "excel" ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      <FileSpreadsheet className="size-3.5" />
+                    )}
+                    Excel
+                  </Button>
+                </FieldSectionValue>
               </div>
-              <CardTitle className="text-lg">JSON</CardTitle>
-              <CardDescription className="text-pretty">
-                Snapshot chuẩn theo contract `admin/system/export`, phù hợp sao lưu và import lại qua API.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-0">
-              <ul className="text-muted-foreground space-y-2 text-sm">
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  Lấy trực tiếp từ API bảo trì hệ thống hiện có của HUB.
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  Phù hợp import lại qua `POST /api/admin/system/import`.
-                </li>
-              </ul>
-              {canExport && (
-                <Button
-                  type="button"
-                  className="h-11 w-full gap-2 text-base font-semibold"
-                  disabled={exportBusy}
-                  onClick={() => void exportJson()}
-                >
-                  {exporting === "json" ? (
-                    <>
-                      <Loader2 className="size-5 animate-spin" />
-                      Đang tạo file…
-                    </>
-                  ) : (
-                    <>
-                      <Download className="size-5" />
-                      Xuất JSON
-                    </>
-                  )}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+            ) : null}
 
-          {/* Excel */}
-          <Card
-            className={cn(
-              "pt-0 relative overflow-hidden border-2 transition-shadow",
-              "border-border hover:border-primary/35 hover:shadow-md",
-            )}
-          >
-            <div className="absolute right-3 top-3">
-              <Badge variant="outline" className="font-mono text-xs">
-                .xlsx
-              </Badge>
-            </div>
-            <CardHeader className="pb-2 pt-6">
-              <div className="mb-3 flex size-12 items-center justify-center rounded-lg bg-emerald-500/12 text-emerald-600 dark:text-emerald-400">
-                <FileSpreadsheet className="size-6" />
+            {canExport && canImport ? (
+              <FieldSectionDivider />
+            ) : null}
+
+            {canImport ? (
+              <div className="space-y-2">
+                <FieldSectionLabel
+                  icon={Upload}
+                  className="text-destructive normal-case"
+                >
+                  Import — ghi đè toàn bộ
+                  <Badge
+                    variant="destructive"
+                    className="ml-2 align-middle text-[10px] font-normal"
+                  >
+                    Nguy hiểm
+                  </Badge>
+                </FieldSectionLabel>
+                <FieldDescription className="text-xs">
+                  Xóa dữ liệu các bảng đã đăng ký rồi nạp lại — chỉ dùng khi đã
+                  sao lưu.
+                </FieldDescription>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field className="gap-1.5">
+                    <FieldLabel className="flex items-center gap-1.5 text-xs font-medium normal-case">
+                      <FileJson className="size-3.5 text-sky-600" />
+                      File JSON
+                    </FieldLabel>
+                    <FieldSectionValue className="px-4 py-1">
+                      <Input
+                        type="file"
+                        accept="application/json,.json"
+                        disabled={importing !== null}
+                        className={FILE_INPUT_CLASS}
+                        onChange={(e) =>
+                          void importJsonFile(
+                            e.target.files?.[0] ?? null,
+                          ).finally(() => {
+                            e.target.value = "";
+                          })
+                        }
+                      />
+                    </FieldSectionValue>
+                    {importing === "json" ? (
+                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                        <Loader2 className="size-3 animate-spin" />
+                        Đang import…
+                      </p>
+                    ) : null}
+                  </Field>
+
+                  <Field className="gap-1.5">
+                    <FieldLabel className="flex items-center gap-1.5 text-xs font-medium normal-case">
+                      <FileSpreadsheet className="size-3.5 text-emerald-600" />
+                      File Excel
+                    </FieldLabel>
+                    <FieldSectionValue className="px-4 py-1">
+                      <Input
+                        type="file"
+                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        disabled={importing !== null}
+                        className={FILE_INPUT_CLASS}
+                        onChange={(e) =>
+                          void importExcelFile(
+                            e.target.files?.[0] ?? null,
+                          ).finally(() => {
+                            e.target.value = "";
+                          })
+                        }
+                      />
+                    </FieldSectionValue>
+                    {importing === "excel" ? (
+                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                        <Loader2 className="size-3 animate-spin" />
+                        Đang import…
+                      </p>
+                    ) : null}
+                  </Field>
+                </div>
               </div>
-              <CardTitle className="text-lg">Excel</CardTitle>
-              <CardDescription className="text-pretty">
-                Mỗi model/entity là một sheet, phù hợp kiểm tra nhanh và chỉnh dữ liệu trước khi import lại.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-0">
-              <ul className="text-muted-foreground space-y-2 text-sm">
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  Xuất workbook `.xlsx` từ cùng bundle dữ liệu của JSON export.
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  Mỗi bảng hiện tại của hệ thống được tách thành sheet tương ứng.
-                </li>
-              </ul>
-              {canExport && (
-                <Button
-                  type="button"
-                  variant="default"
-                  className="h-11 w-full gap-2 text-base font-semibold"
-                  disabled={exportBusy}
-                  onClick={() => void exportExcel()}
-                >
-                  {exporting === "excel" ? (
-                    <>
-                      <Loader2 className="size-5 animate-spin" />
-                      Đang tạo workbook…
-                    </>
-                  ) : (
-                    <>
-                      <Download className="size-5" />
-                      Xuất Excel
-                    </>
-                  )}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <Separator />
-
-      <Card className="border-destructive/40 bg-destructive/[0.03]">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg text-destructive">
-            <Upload className="size-5" />
-            Import — ghi đè toàn bộ
-          </CardTitle>
-          <CardDescription className="text-pretty">
-            Xóa dữ liệu các bảng đã đăng ký rồi nạp lại từ file. Chỉ dùng khi bạn đã sao lưu
-            hoặc chấp nhận mất dữ liệu hiện tại.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-6 sm:grid-cols-2">
-          {canImport && (
-            <div className="space-y-2 rounded-lg border border-border bg-card p-4">
-              <Label className="flex items-center gap-2 text-base font-medium">
-                <FileJson className="size-4 text-sky-600" />
-                Import JSON
-              </Label>
-              <p className="text-muted-foreground text-xs">
-                Chọn file <code className="rounded bg-muted px-1">.json</code> đã xuất từ hệ thống.
-              </p>
-              <Input
-                type="file"
-                accept="application/json,.json"
-                disabled={importing !== null}
-                className="cursor-pointer file:mr-2 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/15"
-                onChange={(e) =>
-                  void importJsonFile(e.target.files?.[0] ?? null).finally(() => {
-                    e.target.value = "";
-                  })
-                }
-              />
-              {importing === "json" && (
-                <p className="text-muted-foreground flex items-center gap-2 text-sm">
-                  <Loader2 className="size-4 animate-spin" />
-                  Đang import…
-                </p>
-              )}
-            </div>
-          )}
-          {canImport && (
-            <div className="space-y-2 rounded-lg border border-border bg-card p-4">
-              <Label className="flex items-center gap-2 text-base font-medium">
-                <FileSpreadsheet className="size-4 text-emerald-600" />
-                Import Excel
-              </Label>
-              <p className="text-muted-foreground text-xs">
-                Chọn file <code className="rounded bg-muted px-1">.xlsx</code> do hệ thống export ra để import lại.
-              </p>
-              <Input
-                type="file"
-                accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                disabled={importing !== null}
-                className="cursor-pointer file:mr-2 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/15"
-                onChange={(e) =>
-                  void importExcelFile(e.target.files?.[0] ?? null).finally(() => {
-                    e.target.value = "";
-                  })
-                }
-              />
-              {importing === "excel" && (
-                <p className="text-muted-foreground flex items-center gap-2 text-sm">
-                  <Loader2 className="size-4 animate-spin" />
-                  Đang import…
-                </p>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            ) : null}
+          </FieldSetContent>
+        </FieldSet>
+      ) : null}
     </AdminPageSection>
   );
 }

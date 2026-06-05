@@ -365,8 +365,8 @@ dashboard, accounts, settings, uploads, notifications, page_contents, messages, 
 | **tags** | `roles=[...]` | ✅ `canWrite` | ✅ `canWrite` | ✅ `canWrite` | N/A | ✅ `canWrite` | ✅ `canWrite` | ✅ `TAGS_UPDATE` |
 | **contact-requests** | `roles=[...]` | N/A | ✅ `CONTACT_REQUESTS_UPDATE` | ✅ `CONTACT_REQUESTS_DELETE` | N/A | ✅ `CONTACT_REQUESTS_DELETE` | ✅ `CONTACT_REQUESTS_RESTORE` | ✅ `CONTACT_REQUESTS_UPDATE` |
 | **guides** | `permission=page_contents:view` | ✅ `PAGE_CONTENTS_CREATE` | ✅ `PAGE_CONTENTS_UPDATE` | ✅ `PAGE_CONTENTS_DELETE` | N/A | N/A | N/A | ✅ `PAGE_CONTENTS_UPDATE` |
-| **staff** | `roles=[...]` | 🟡 `users:create` | 🟡 `users:update` | 🟡 `users:delete` | N/A | 🟡 | 🟡 | ✅ `USERS_MANAGE` |
-| **my-students** | ❌ không có guard | ✅ `STUDENTS_CREATE` | N/A | ✅ `STUDENTS_DELETE` | N/A | N/A | N/A | N/A |
+| **staff** | `roles=[...]` | ✅ `users:create` | ✅ `canWrite=canUpdate` | ✅ `canDelete` | N/A | ✅ gated by `canUpdate/canDelete/canHardDelete` | ✅ gated by `canRestore/canHardDelete` | ✅ `USERS_MANAGE` |
+| **my-students** | ✅ `students:view_own` | ✅ `STUDENTS_CREATE` | N/A | ✅ `STUDENTS_DELETE` | N/A | N/A | N/A | N/A |
 | **parent-students** | `roles=[...]` | N/A | N/A | N/A | N/A | ✅ `STUDENTS_UPDATE` | N/A | N/A |
 | **data** | `roles=[...]` | N/A | N/A | N/A | ✅ `settings:export` | N/A | N/A | N/A |
 | **dashboard** | không có guard | N/A | N/A | N/A | N/A | N/A | N/A | ✅ (quick links gated) |

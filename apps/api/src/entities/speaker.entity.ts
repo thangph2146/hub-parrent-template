@@ -1,20 +1,20 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity({ tableName: 'diengia' })
+@Entity({ tableName: 'speakers' })
 export class Speaker {
   @PrimaryKey()
   id!: number;
 
-  @Property({ fieldName: 'ten_dien_gia' })
+  @Property()
   name!: string;
 
-  @Property({ fieldName: 'chuc_danh', nullable: true })
+  @Property({ nullable: true })
   title?: string | null;
 
-  @Property({ fieldName: 'to_chuc', nullable: true })
+  @Property({ nullable: true })
   organization?: string | null;
 
-  @Property({ fieldName: 'gioi_thieu', type: 'text', nullable: true })
+  @Property({ type: 'text', nullable: true })
   bio?: string | null;
 
   @Property({ nullable: true })
@@ -23,27 +23,22 @@ export class Speaker {
   @Property({ nullable: true })
   email?: string | null;
 
-  @Property({ fieldName: 'dien_thoai', nullable: true })
+  @Property({ nullable: true })
   phone?: string | null;
 
   @Property({ default: 1 })
   status: number = 1;
 
-  @Property({
-    fieldName: 'created_at',
-    nullable: true,
-    onCreate: () => new Date(),
-  })
+  @Property({ nullable: true, onCreate: () => new Date() })
   createdAt?: Date;
 
   @Property({
-    fieldName: 'updated_at',
     nullable: true,
     onCreate: () => new Date(),
     onUpdate: () => new Date(),
   })
   updatedAt?: Date;
 
-  @Property({ fieldName: 'deleted_at', nullable: true })
+  @Property({ nullable: true })
   deletedAt?: Date | null;
 }
