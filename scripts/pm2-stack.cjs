@@ -19,6 +19,20 @@ const STACKS = {
   checkin: createCheckinStack,
 }
 
+/** Tên process cũ / lỗi — chỉ dùng khi delete để dọn sạch server. */
+const EXTRA_DELETE_NAMES = {
+  main: [
+    "hub-main-api",
+    "hub-main-backend",
+    "hub-main-frontend",
+  ],
+  checkin: [
+    "hub-checkin-api",
+    "hub-checkin-backend",
+    "hub-checkin-frontend",
+  ],
+}
+
 const action = process.argv[2]
 const stack = process.argv[3]
 
@@ -42,28 +56,44 @@ const apps = STACKS[stack]()
 const names = apps.map((app) => app.name)
 const jsonPath = path.join(ROOT, `.pm2-ecosystem-${stack}.json`)
 
-function run(command) {
-  execSync(command, { stdio: "inherit", cwd: ROOT })
+function runPm2(args, { allowMissing = false } = {}) {
+  try {
+    execSync(`pm2 ${args}`, { stdio: "inherit", cwd: ROOT })
+  } catch (error) {
+    if (!allowMissing) {
+      throw error
+    }
+    console.warn(`[pm2-stack] bỏ qua (không tìm thấy hoặc đã dừng): pm2 ${args}`)
+  }
+}
+
+function runOnEachName(pm2Action, targetNames, { allowMissing = false } = {}) {
+  const envFlag =
+    pm2Action === "reload" || pm2Action === "restart" ? " --update-env" : ""
+
+  for (const name of targetNames) {
+    runPm2(`${pm2Action} ${name}${envFlag}`, { allowMissing })
+  }
 }
 
 fs.writeFileSync(jsonPath, `${JSON.stringify({ apps }, null, 2)}\n`)
 
 switch (action) {
   case "start":
-    run(`pm2 start "${jsonPath}"`)
+    runPm2(`start "${jsonPath}"`)
     break
   case "reload":
-    run(`pm2 reload ${names.join(" ")} --update-env`)
-    break
   case "restart":
-    run(`pm2 restart ${names.join(" ")} --update-env`)
-    break
   case "stop":
-    run(`pm2 stop ${names.join(" ")}`)
+    runOnEachName(action, names, { allowMissing: true })
     break
-  case "delete":
-    run(`pm2 delete ${names.join(" ")}`)
+  case "delete": {
+    const deleteNames = [
+      ...new Set([...names, ...(EXTRA_DELETE_NAMES[stack] ?? [])]),
+    ]
+    runOnEachName("delete", deleteNames, { allowMissing: true })
     break
+  }
   default:
     usage()
 }

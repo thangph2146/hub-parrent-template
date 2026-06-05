@@ -148,19 +148,24 @@ pm2 startup                # tạo systemd (chạy một lần trên server)
 
 Script `scripts/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2 — tránh lỗi một số bản PM2 chạy file `.cjs` như script (`ecosystem.checkin` fork 1 instance).
 
-### Sửa lỗi PM2 trên server
+### Xóa đúng process (quan trọng)
 
-Nếu `pm2 status` thấy `ecosystem.checkin` (fork, ~11mb) thay vì `hub-checkin-api` / `hub-checkin-backend` / `hub-checkin-frontend`:
+`pm2 delete ecosystem.checkin` **chỉ** xóa process tên `ecosystem.checkin` (lỗi PM2 parse `.cjs`). **Không** xóa `hub-parent-*` hay `hub-checkin-*`.
+
+| Muốn dừng stack | Lệnh |
+|---|---|
+| Compo 1 — `hub-parent-api`, `hub-parent-backend`, `hub-parent-frontend` | `pnpm pm2:delete` (tự bỏ qua nếu không tìm thấy; dọn cả tên cũ `hub-main-*`) hoặc `pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend` |
+| Compo 2 — `hub-checkin-api`, `hub-checkin-backend`, `hub-checkin-frontend` | `pnpm pm2:delete:checkin` hoặc `pm2 delete hub-checkin-api hub-checkin-backend hub-checkin-frontend` |
+| Process lỗi `ecosystem.checkin` | `pm2 delete ecosystem.checkin` |
+
+### Chuyển compo (ví dụ: site chính → check-in)
 
 ```bash
-pm2 delete ecosystem.checkin
-# Dừng compo khác trước khi start — trùng port 3000–3002
-# Chuyển sang check-in: pnpm pm2:delete
-# Chuyển sang site chính: pnpm pm2:delete:checkin
-
+pnpm pm2:delete              # dừng hub-parent-* (3 process đang chạy)
+pm2 delete ecosystem.checkin   # nếu còn process lỗi
 git pull
 pnpm pm2:start:checkin
-pm2 status   # phải thấy 3 process hub-checkin-*
+pm2 status                     # phải thấy hub-checkin-* (3 process)
 pm2 save
 ```
 
