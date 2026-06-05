@@ -17,8 +17,7 @@ import {
   SelectValue,
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { MyStudentsScoreTable } from "./_table/my-students-score-table"
 import type { DetailedScore } from "@/types/student-scores"
 import { formatScore, formatGrade } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"
@@ -34,8 +33,6 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "subject",
         header: "Môn học",
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "curriculumName",
         meta: {
           exportValue: (row: DetailedScore) =>
@@ -51,8 +48,6 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "mark10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "mark10",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark10, "10")
@@ -62,8 +57,6 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "mark4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "mark4",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark4, "4")
@@ -73,8 +66,6 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       {
         id: "markLetter",
         header: () => <div className="w-full text-center">Điểm chữ</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "markLetter",
         cell: ({ row }) => {
           const g = formatGrade(row.original.markLetter)
@@ -94,15 +85,10 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
       <p className="py-3 text-sm text-muted-foreground">Không có dữ liệu</p>
     )
   return (
-    <AdminDataTable
+    <MyStudentsScoreTable
       data={subjects}
       columns={columns}
       emptyLabel="Không có dữ liệu"
-      manualFiltering
-      xlsxExport={buildAdminTableXlsxExport("student-detailed-scores", {
-        pageCount: subjects.length,
-        total: subjects.length,
-      })}
     />
   )
 }

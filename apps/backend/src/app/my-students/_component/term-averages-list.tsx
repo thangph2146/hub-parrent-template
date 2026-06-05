@@ -17,8 +17,7 @@ import {
   SelectValue,
 } from "@ui/components/select"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@ui/components/data-table"
-import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { MyStudentsScoreTable } from "./_table/my-students-score-table"
 import type { TermAverage } from "@/types/student-scores"
 import { formatScore } from "./score-utils"
 import { ScrollArea } from "@ui/components/scroll-area"
@@ -40,8 +39,6 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "term",
         header: "Học kỳ",
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorFn: (row) => row.termID ?? "",
         meta: {
           exportValue: (row: TermAverage) =>
@@ -63,8 +60,6 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageScore10",
         header: () => <div className="w-full text-center">Hệ 10</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "averageScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore10, "10")
@@ -78,8 +73,6 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageScore4",
         header: () => <div className="w-full text-center">Hệ 4</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "averageScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageScore4, "4")
@@ -93,8 +86,6 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageGatherScore10",
         header: () => <div className="w-full text-center">Tích lũy hệ 10</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "averageGatherScore10",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore10, "10")
@@ -108,8 +99,6 @@ function TermTable({ items }: { items: TermAverage[] }) {
       {
         id: "averageGatherScore4",
         header: () => <div className="w-full text-center">Tích lũy hệ 4</div>,
-        enableColumnFilter: true,
-      filterFn: () => true,
         accessorKey: "averageGatherScore4",
         cell: ({ row }) => {
           const f = formatScore(row.original.averageGatherScore4, "4")
@@ -129,15 +118,10 @@ function TermTable({ items }: { items: TermAverage[] }) {
       <p className="py-3 text-sm text-muted-foreground">Không có dữ liệu</p>
     )
   return (
-    <AdminDataTable
+    <MyStudentsScoreTable
       data={sorted}
       columns={columns}
       emptyLabel="Không có dữ liệu"
-      manualFiltering
-      xlsxExport={buildAdminTableXlsxExport("student-term-averages", {
-        pageCount: sorted.length,
-        total: sorted.length,
-      })}
     />
   )
 }

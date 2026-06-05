@@ -76,6 +76,18 @@ function CategoriesPageInner() {
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE)
     : false;
+  const canDeleteCategories = user
+    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CATEGORIES_DELETE)
+    : false;
+  const canRestoreCategories = user
+    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CATEGORIES_RESTORE)
+    : false;
+  const canHardDeleteCategories = user
+    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CATEGORIES_HARD_DELETE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -177,6 +189,10 @@ function CategoriesPageInner() {
     restoreMutation,
     purgeMutation,
   });
+  const canDelete = canDeleteCategories;
+  const canRestore = canRestoreCategories;
+  const canHardDelete = canHardDeleteCategories;
+
   const columns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({
@@ -186,8 +202,10 @@ function CategoriesPageInner() {
         rowActions,
         categoryTreeOptions,
         canWriteCategories,
+        canDeleteCategories,
+        canHardDeleteCategories,
       }),
-    [rowActions, router, categoryTreeOptions, canWriteCategories],
+    [rowActions, router, categoryTreeOptions, canWriteCategories, canDeleteCategories, canHardDeleteCategories],
   );
 
 
@@ -201,8 +219,10 @@ function CategoriesPageInner() {
         rowActions,
         categoryTreeOptions,
         canWriteCategories,
+        canRestoreCategories,
+        canHardDeleteCategories,
       }),
-    [rowActions, router, categoryTreeOptions, canWriteCategories],
+    [rowActions, router, categoryTreeOptions, canWriteCategories, canRestoreCategories, canHardDeleteCategories],
   );
 
   return (

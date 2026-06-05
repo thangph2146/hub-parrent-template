@@ -6,6 +6,10 @@ import { Check, ChevronDown } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 
 export interface SelectPickerOption {
   value: string
@@ -19,6 +23,8 @@ export interface SelectPickerProps {
   options: SelectPickerOption[]
   placeholder?: string
   id?: string
+  size?: PickerSize
+  className?: string
 }
 
 export function SelectPicker({
@@ -27,6 +33,8 @@ export function SelectPicker({
   options,
   placeholder = "Tất cả",
   id,
+  size = "default",
+  className,
 }: SelectPickerProps) {
   const [open, setOpen] = useState(false)
   const selected = typeof value === "string" ? value : ""
@@ -43,7 +51,7 @@ export function SelectPicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(size, className)}
         >
           <span className="truncate">
             {selectedOption?.render ? selectedOption.render() : selectedLabel}

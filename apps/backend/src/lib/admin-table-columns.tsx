@@ -121,14 +121,13 @@ type DeletedAtColumnOptions = {
   showIcon?: boolean
 }
 
-/** Cột `deletedAt` dùng chung list + trash; ẩn mặc định ở danh sách, hiện ở thùng rác. */
+/** Cột `deletedAt` — chỉ dùng cho bảng thùng rác (xem `buildAdminTableColumns`). */
 export function defineAdminDeletedAtColumn<TData>(
-  view: AdminTableView,
   options: DeletedAtColumnOptions = {}
 ): ColumnDef<TData> {
   const {
     header = "Xóa lúc",
-    enableColumnFilter = view === "trash",
+    enableColumnFilter = true,
     showIcon = true,
   } = options
 
@@ -137,13 +136,13 @@ export function defineAdminDeletedAtColumn<TData>(
     {
       header,
       enableColumnFilter,
-      defaultHidden: view === "list",
+      defaultHidden: false,
     },
     { showIcon }
   )
 }
 
-/** Ghép cột dữ liệu + deletedAt + cột thao tác theo view list/trash. */
+/** Ghép cột dữ liệu + (deletedAt nếu trash) + cột thao tác theo view list/trash. */
 export function buildAdminTableColumns<TData>({
   view,
   dataColumns,
@@ -155,14 +154,20 @@ export function buildAdminTableColumns<TData>({
   dataColumns: ColumnDef<TData>[]
   listActionsColumn: ColumnDef<TData>
   trashActionsColumn: ColumnDef<TData>
+  /** Tùy chỉnh cột xóa lúc; chỉ ghép khi `view === "trash"`. */
   deletedAtColumn?: ColumnDef<TData>
 }): ColumnDef<TData>[] {
-  const deletedAt = deletedAtColumn ?? defineAdminDeletedAtColumn<TData>(view)
-  return [
-    ...dataColumns,
-    deletedAt,
-    view === "trash" ? trashActionsColumn : listActionsColumn,
-  ]
+  const actionColumn =
+    view === "trash" ? trashActionsColumn : listActionsColumn
+
+  if (view !== "trash") {
+    return [...dataColumns, actionColumn]
+  }
+
+  const deletedAt =
+    deletedAtColumn ?? defineAdminDeletedAtColumn<TData>()
+
+  return [...dataColumns, deletedAt, actionColumn]
 }
 
 /** Loại cột trùng `id` / `accessorKey` (giữ bản cuối). */

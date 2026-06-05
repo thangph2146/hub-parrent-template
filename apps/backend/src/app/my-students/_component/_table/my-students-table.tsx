@@ -1,10 +1,7 @@
 "use client"
 
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  OnChangeFn,
-} from "@tanstack/react-table"
+import type { ColumnDef, OnChangeFn } from "@tanstack/react-table"
+import type { ColumnFiltersState } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { MyStudentRow } from "../types"

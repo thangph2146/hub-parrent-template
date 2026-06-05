@@ -5,6 +5,10 @@ import { Check, ChevronDown } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 
 export interface MultiSelectPickerProps {
   value: unknown
@@ -12,6 +16,8 @@ export interface MultiSelectPickerProps {
   options: { value: string; label: string }[]
   placeholder?: string
   id?: string
+  size?: PickerSize
+  className?: string
 }
 
 export function MultiSelectPicker({
@@ -20,6 +26,8 @@ export function MultiSelectPicker({
   options,
   placeholder = "Tất cả",
   id,
+  size = "default",
+  className,
 }: MultiSelectPickerProps) {
   const [open, setOpen] = useState(false)
   const selected = Array.isArray(value) ? (value as string[]) : []
@@ -64,7 +72,7 @@ export function MultiSelectPicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(size, className)}
         >
           <span className="truncate">{triggerLabel}</span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />

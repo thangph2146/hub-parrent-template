@@ -54,6 +54,17 @@ function TagsPageInner() {
       canUserAccess(user, PERMISSION_CODES.TAGS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.TAGS_UPDATE)
     : false;
+  const canDeleteTags = user
+    ? canUserAccess(user, PERMISSION_CODES.TAGS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TAGS_DELETE)
+    : false;
+  const canRestoreTags = user
+    ? canUserAccess(user, PERMISSION_CODES.TAGS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TAGS_RESTORE)
+    : false;
+  const canHardDeleteTags = user
+    ? canUserAccess(user, PERMISSION_CODES.TAGS_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["media", "tags"] });
@@ -159,6 +170,10 @@ function TagsPageInner() {
     [listQuery.data],
   );
 
+  const canDelete = canDeleteTags;
+  const canRestore = canRestoreTags;
+  const canHardDelete = canHardDeleteTags;
+
   const columns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
       getTagColumns({
@@ -167,8 +182,10 @@ function TagsPageInner() {
         openEdit: (row) => router.push(`/tags/${row.id}/edit`),
         rowActions,
         canWrite: canWriteTags,
+        canDelete: canDeleteTags,
+        canHardDelete: canHardDeleteTags,
       }),
-    [rowActions, router, canWriteTags],
+    [rowActions, router, canWriteTags, canDeleteTags, canHardDeleteTags],
   );
 
   const trashColumns = useMemo<ColumnDef<TagTreeRow>[]>(
@@ -179,8 +196,10 @@ function TagsPageInner() {
         openEdit: (row) => router.push(`/tags/${row.id}/edit`),
         rowActions,
         canWrite: canWriteTags,
+        canRestore: canRestoreTags,
+        canHardDelete: canHardDeleteTags,
       }),
-    [rowActions, router, canWriteTags],
+    [rowActions, router, canWriteTags, canRestoreTags, canHardDeleteTags],
   );
 
   return (

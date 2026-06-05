@@ -22,6 +22,9 @@ export function getCategoryColumns({
   rowActions,
   categoryTreeOptions,
   canWriteCategories,
+  canDeleteCategories,
+  canRestoreCategories,
+  canHardDeleteCategories,
 }: {
   view?: AdminTableView
   openDetail?: (row: CategoryRow) => void
@@ -29,6 +32,9 @@ export function getCategoryColumns({
   rowActions: AdminCrudRowHandlers<CategoryRow>
   categoryTreeOptions: CategoryTreeOption[]
   canWriteCategories: boolean
+  canDeleteCategories?: boolean
+  canRestoreCategories?: boolean
+  canHardDeleteCategories?: boolean
 }): ColumnDef<CategoryRow>[] {
   const dataColumns: ColumnDef<CategoryRow>[] = [
     {
@@ -120,6 +126,8 @@ export function getCategoryColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<CategoryRow>({
       canWrite: canWriteCategories,
+      canDelete: canDeleteCategories,
+      canHardDelete: canHardDeleteCategories,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -147,6 +155,8 @@ export function getCategoryColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<CategoryRow>({
       canWrite: canWriteCategories,
+      canRestore: canRestoreCategories,
+      canHardDelete: canHardDeleteCategories,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

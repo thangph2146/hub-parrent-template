@@ -31,12 +31,18 @@ export function getTagColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: TagRow) => void
   openEdit?: (row: TagRow) => void
   rowActions: AdminCrudRowHandlers<TagRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<TagTreeRow>[] {
   const dataColumns: ColumnDef<TagTreeRow>[] = [
     {
@@ -130,6 +136,8 @@ export function getTagColumns({
       row.original.isGroup ? null : (
         <AdminTableCrudRowActions
           canWrite={canWrite}
+          canDelete={canDelete}
+          canHardDelete={canHardDelete}
           recordLabel={rowActions.getRecordLabel(row.original)}
           onView={() => openDetail(row.original)}
           onEdit={() => openEdit(row.original)}
@@ -153,6 +161,8 @@ export function getTagColumns({
     listActionsColumn,
     trashActionsColumn: defineAdminTrashActionsColumn<TagRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

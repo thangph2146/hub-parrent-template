@@ -5,12 +5,19 @@ import { CalendarIcon } from "lucide-react"
 import { Button } from "../button"
 import { Calendar } from "../calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
+import { cn } from "../../lib/utils"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 
 export interface DateRangePickerProps {
   value: unknown
   onChange: (value: unknown) => void
   placeholder?: string
   id?: string
+  size?: PickerSize
+  className?: string
 }
 
 function formatIsoDate(d: Date): string {
@@ -38,6 +45,8 @@ export function DateRangePicker({
   onChange,
   placeholder = "Tất cả",
   id,
+  size = "default",
+  className,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false)
   const [draftRange, setDraftRange] = useState<{ from?: Date; to?: Date }>(() =>
@@ -68,7 +77,10 @@ export function DateRangePicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[200px] justify-between rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(
+            size,
+            cn(size === "default" && "min-w-[200px]", className)
+          )}
         >
           <span className="truncate">{displayLabel}</span>
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />

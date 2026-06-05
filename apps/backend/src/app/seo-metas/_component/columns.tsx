@@ -20,12 +20,18 @@ export function getSeoMetaColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: SeoMetaRow) => void
   openEdit?: (row: SeoMetaRow) => void
   rowActions: AdminCrudRowHandlers<SeoMetaRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<SeoMetaRow>[] {
   const dataColumns: ColumnDef<SeoMetaRow>[] = [
     {
@@ -101,6 +107,8 @@ export function getSeoMetaColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<SeoMetaRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -109,6 +117,8 @@ export function getSeoMetaColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<SeoMetaRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

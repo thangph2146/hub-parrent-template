@@ -5,6 +5,10 @@ import { Check, ChevronDown, FileText, Folder } from "lucide-react"
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 import { resolveIcon } from "../../lib/icons"
 
 function DynamicIcon({
@@ -31,6 +35,8 @@ export interface TreePickerProps {
   options: TreeOption[]
   placeholder?: string
   id?: string
+  size?: PickerSize
+  className?: string
 }
 
 function flattenTreeOptions(
@@ -135,6 +141,8 @@ export function TreePicker({
   options,
   placeholder = "Tất cả",
   id,
+  size = "default",
+  className,
 }: TreePickerProps) {
   const [open, setOpen] = useState(false)
   const selected =
@@ -160,7 +168,7 @@ export function TreePicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(size, className)}
         >
           <span className="flex items-center gap-2 truncate">
             <DynamicIcon

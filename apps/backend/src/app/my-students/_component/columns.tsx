@@ -1,6 +1,6 @@
 "use client"
 
-import type { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef, FilterFnOption } from "@tanstack/react-table"
 import {
   UsageStatusBadge,
   type UsageStatusTone,
@@ -22,7 +22,11 @@ import {
 } from "@ui/components/data-table"
 import type { MyStudentRow } from "./types"
 import { defineRelationExportColumns } from "@ui/components/data-table"
-import { defineAdminCreatedAtColumn } from "@/lib/admin-table-columns"
+import {
+  adminDateRangeFilterFn,
+  defineAdminCreatedAtColumn,
+} from "@/lib/admin-table-columns"
+import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 
 function recordLabel(row: MyStudentRow): string {
   return row.studentName?.trim() || row.studentCode
@@ -44,8 +48,13 @@ export function getMyStudentsColumns(
     {
       id: "student",
       header: "Sinh viên",
+      accessorFn: (row) =>
+        [row.studentCode, row.studentName].filter(Boolean).join(" "),
       enableColumnFilter: true,
-      filterFn: () => true,
+      meta: {
+        filterLabel: "Sinh viên",
+        filterPlaceholder: "Mã hoặc họ tên…",
+      },
       enableSorting: true,
       sortingFn: (a, b) => {
         const la = recordLabel(a.original)
@@ -72,7 +81,6 @@ export function getMyStudentsColumns(
       accessorKey: "note",
       header: "Ghi chú",
       enableColumnFilter: true,
-      filterFn: () => true,
       cell: ({ getValue }) => {
         const v = getValue() as string | null
         return v ? (
@@ -87,6 +95,10 @@ export function getMyStudentsColumns(
       accessorKey: "status",
       header: "Trạng thái",
       enableColumnFilter: true,
+      filterFn: (row, columnId, filterValue) => {
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
+      },
       enableSorting: false,
       meta: {
         filterVariant: "select",
@@ -116,14 +128,29 @@ export function getMyStudentsColumns(
         )
       },
     },
-    ...defineRelationExportColumns<MyStudentRow>([
-      { id: "parentId", header: "ID phụ huynh", getValue: (r) => r.parentId },
-      {
-        id: "reviewedAt",
-        header: "Duyệt lúc",
-        getValue: (r) => r.reviewedAt ?? "",
+    {
+      accessorKey: "reviewedAt",
+      header: "Duyệt lúc",
+      enableColumnFilter: true,
+      filterFn: adminDateRangeFilterFn as FilterFnOption<MyStudentRow>,
+      meta: {
+        defaultHidden: true,
+        filterVariant: "date-range",
+        filterPlaceholder: "Chọn khoảng ngày",
       },
-    ]),
+      cell: ({ getValue }) => {
+        const v = getValue() as string | null
+        return (
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {formatAdminDateTime(v)}
+          </span>
+        )
+      },
+    },
+    ...defineRelationExportColumns<MyStudentRow>(
+      [{ id: "parentId", header: "ID phụ huynh", getValue: (r) => r.parentId }],
+      { enableColumnFilter: false }
+    ),
     {
       id: DATA_TABLE_ACTIONS_COLUMN_ID,
       header: "Thao tác",

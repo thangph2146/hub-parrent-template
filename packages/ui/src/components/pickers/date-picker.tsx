@@ -5,6 +5,10 @@ import { CalendarIcon } from "lucide-react"
 import { Button } from "../button"
 import { Calendar } from "../calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 
 export interface DatePickerProps {
   value: unknown
@@ -15,6 +19,8 @@ export interface DatePickerProps {
   fromYear?: number
   /** Năm muộn nhất trong dropdown (mặc định: năm hiện tại + 20). */
   toYear?: number
+  size?: PickerSize
+  className?: string
 }
 
 function formatIsoDate(d: Date): string {
@@ -51,6 +57,8 @@ export function DatePicker({
   id,
   fromYear,
   toYear,
+  size = "default",
+  className,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
 
@@ -89,7 +97,7 @@ export function DatePicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(size, className)}
         >
           <span className="truncate">{displayLabel}</span>
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />

@@ -8,7 +8,7 @@ const SCROLL_EDGE_THRESHOLD_PX = 6
 
 export type DataTableHorizontalScrollProps = {
   children: ReactNode
-  /** Thanh cuộn ngang phía trên bảng (đồng bộ với table-container). @default true */
+  /** Thanh cuộn ngang phía trên bảng (đồng bộ với table-container). @default false */
   enabled?: boolean
   className?: string
   /** Đổi khi bảng mount lại (loading, số dòng…) để gắn lại listener scroll. */
@@ -17,7 +17,7 @@ export type DataTableHorizontalScrollProps = {
 
 export function DataTableHorizontalScroll({
   children,
-  enabled = true,
+  enabled = false,
   className,
   watchKey,
 }: DataTableHorizontalScrollProps) {

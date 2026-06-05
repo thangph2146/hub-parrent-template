@@ -59,11 +59,6 @@ import {
   ChevronDown,
   ChevronRight,
   GripVertical,
-  Download,
-  Eye,
-  EyeOff,
-  FilterX,
-  ListFilter,
   Table2,
 } from "lucide-react"
 import {
@@ -72,7 +67,6 @@ import {
   useId,
   useMemo,
   useState,
-  type ComponentType,
   type CSSProperties,
   type ReactNode,
 } from "react"
@@ -134,15 +128,11 @@ import {
   type AdminDataTableServerPaginationConfig,
   ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
 } from "./data-table-pagination"
+import { FieldSet, FieldSetContent } from "../field"
 import {
-  Field,
-  FieldContent,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-  FieldSetContent,
-  FieldTitle,
-} from "../field"
+  DataTablePanelLegend,
+  DataTableToolbar,
+} from "./data-table-toolbar"
 import {
   dataTableColumnsHasActionsColumn,
   normalizeDataTableColumns,
@@ -347,6 +337,10 @@ export type AdminDataTableProps<TData> = {
   }) => Promise<{ items: TData[]; total: number }>
   /** Bật bộ chọn hiện/ẩn cột dữ liệu. @default true */
   showTableColumnPicker?: boolean
+  /** Hiện khối lọc theo cột trên toolbar. @default true */
+  showColumnFilters?: boolean
+  /** Hiện toolbar (tìm nhanh, xuất Excel, hiện cột…). @default true */
+  showTableToolbar?: boolean
   /**
    * Cột STT (số thứ tự) tự chèn đầu bảng. Tắt nếu `columns` đã có `id: "stt"` hoặc `"_index"`.
    * @default true
@@ -364,7 +358,7 @@ export type AdminDataTableProps<TData> = {
   /**
    * Thanh cuộn ngang phía trên bảng (đồng bộ với vùng cuộn bảng).
    * Tự ẩn khi bảng không tràn ngang.
-   * @default true
+   * @default false
    */
   horizontalScrollButtons?: boolean
   /**
@@ -418,7 +412,7 @@ export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 48
 
 /** Chiều cao tối đa mặc định vùng cuộn bảng khi `stickyTableHeader` (trừ header/filter admin). */
 export const DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT =
-  "calc(100dvh - 15rem)"
+  "calc(100dvh - 30rem)"
 
 export const DATA_TABLE_SELECTION_COLUMN_CLASS =
   "sticky left-0 z-[11] px-0 text-center align-middle shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
@@ -710,28 +704,8 @@ function columnFilterToolbarLabel<TData>(
   return header.column.id
 }
 
-const DATA_TABLE_PANEL_FIELDSET_CLASS = "bg-card rounded-lg"
-const DATA_TABLE_PANEL_LEGEND_CLASS =
-  "!normal-case !text-sm !font-semibold !tracking-normal text-foreground"
-
-function DataTablePanelLegend({
-  icon: Icon,
-  children,
-}: {
-  icon?: ComponentType<{ className?: string }>
-  children: ReactNode
-}) {
-  return (
-    <FieldLegend variant="custom" className={DATA_TABLE_PANEL_LEGEND_CLASS}>
-      <span className="flex items-center gap-1.5">
-        {Icon ? (
-          <Icon className="size-4 shrink-0 text-primary/80" aria-hidden />
-        ) : null}
-        {children}
-      </span>
-    </FieldLegend>
-  )
-}
+const DATA_TABLE_PANEL_FIELDSET_CLASS =
+  "overflow-hidden border-none p-0"
 
 export function AdminDataTable<TData>({
   data,
@@ -765,12 +739,14 @@ export function AdminDataTable<TData>({
   filterColumnVisibilityKey,
   tableColumnVisibilityKey,
   exportFetchPage,
-  showTableColumnPicker: _showTableColumnPicker = true,
+  showTableColumnPicker = true,
+  showColumnFilters = true,
+  showTableToolbar = true,
   showIndexColumn = true,
   indexColumnLabel = "STT",
   indexColumnExcludeFromExport = false,
   selectionColumnWidth = DATA_TABLE_SELECTION_COLUMN_WIDTH,
-  horizontalScrollButtons = true,
+  horizontalScrollButtons = false,
   stickyTableHeader = true,
   stickyTableHeaderTop,
   tableBodyMaxHeight,
@@ -1370,7 +1346,8 @@ export function AdminDataTable<TData>({
   ])
 
   const hasActiveFilters =
-    String(globalFilter ?? "").trim().length > 0 || columnFilters.length > 0
+    String(globalFilter ?? "").trim().length > 0 ||
+    (showColumnFilters && columnFilters.length > 0)
   const clearAllFilters = useCallback(() => {
     setGlobalFilter("")
     setColumnFilters([])
@@ -1548,16 +1525,6 @@ export function AdminDataTable<TData>({
     [filterableHeaders]
   )
 
-  const showAllFilterColumns = useCallback(() => {
-    handleFilterColumnVisibilityChange(
-      filterableHeaders.map((header) => header.id)
-    )
-  }, [filterableHeaders, handleFilterColumnVisibilityChange])
-
-  const hideAllFilterColumns = useCallback(() => {
-    handleFilterColumnVisibilityChange([])
-  }, [handleFilterColumnVisibilityChange])
-
   const hideableTableColumnOptions = useMemo(
     () => getHideableTableColumnOptions(table),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1576,15 +1543,34 @@ export function AdminDataTable<TData>({
     [hideableTableColumnOptions]
   )
 
-  const showAllTableColumns = useCallback(() => {
-    handleTableColumnVisibilityChange(
-      hideableTableColumnOptions.map((option) => option.value)
-    )
-  }, [handleTableColumnVisibilityChange, hideableTableColumnOptions])
+  const visibleTableColumnIds = useMemo(
+    () =>
+      hideableTableColumnOptions
+        .filter(
+          (option) =>
+            table.getColumn(option.value)?.getIsVisible() !== false
+        )
+        .map((option) => option.value),
+    [hideableTableColumnOptions, table, columnVisibility]
+  )
 
-  const hideOptionalTableColumns = useCallback(() => {
-    handleTableColumnVisibilityChange([])
-  }, [handleTableColumnVisibilityChange])
+  const filterColumnVisibilityValue = useMemo(
+    () =>
+      filterableHeaders
+        .filter((h) => filterColumnVisibility[h.id] !== false)
+        .map((h) => h.id),
+    [filterableHeaders, filterColumnVisibility]
+  )
+
+  const toolbarFilterableHeaders = showColumnFilters ? filterableHeaders : []
+  const toolbarVisibleFilterableHeaders = showColumnFilters
+    ? visibleFilterableHeaders
+    : []
+  const toolbarHideableColumnOptions = showTableColumnPicker
+    ? hideableTableColumnOptions
+    : []
+
+  const showBulkBar = rowSelectionActive && hasBulkActions
 
   // Debounced column filter input component
   function DebouncedFilterInput({
@@ -1633,7 +1619,7 @@ export function AdminDataTable<TData>({
       <Input
         id={controlId}
         type={type}
-        className="h-9 rounded-lg text-sm"
+        className="h-8 rounded-md text-sm shadow-none"
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
@@ -1656,6 +1642,7 @@ export function AdminDataTable<TData>({
       return (
         <SelectPicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.selectOptions ?? []}
@@ -1667,6 +1654,7 @@ export function AdminDataTable<TData>({
       return (
         <MultiSelectPicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.selectOptions ?? []}
@@ -1678,6 +1666,7 @@ export function AdminDataTable<TData>({
       return (
         <TreePicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.treeOptions ?? []}
@@ -1689,6 +1678,7 @@ export function AdminDataTable<TData>({
       return (
         <TreeMultiSelectPicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.treeOptions ?? []}
@@ -1700,6 +1690,7 @@ export function AdminDataTable<TData>({
       return (
         <DatePicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
         />
@@ -1710,6 +1701,7 @@ export function AdminDataTable<TData>({
       return (
         <DateRangePicker
           id={controlId}
+          size="sm"
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           placeholder={ph}
@@ -1760,221 +1752,48 @@ export function AdminDataTable<TData>({
     )
   }
 
-  const showSearchToolbarPanel =
-    showGlobalFilter ||
-    filterToolbarExtra ||
-    xlsxExportEnabled ||
-    showClearFiltersButton
-  const showBulkBar = rowSelectionActive && hasBulkActions
-
   return (
-    <div className="flex flex-col gap-4">
-      {showSearchToolbarPanel || showBulkBar ? (
-        <FieldSet variant="custom" className={DATA_TABLE_PANEL_FIELDSET_CLASS}>
-          <DataTablePanelLegend>Tìm kiếm & thao tác</DataTablePanelLegend>
-          <FieldSetContent className="space-y-4">
-            {showSearchToolbarPanel ? (
-              <div className="flex flex-wrap items-end gap-3">
-                {showGlobalFilter ? (
-                  <Field className="min-w-[min(100%,18rem)] flex-1 gap-1.5">
-                    <FieldLabel
-                      htmlFor={globalFilterControlId}
-                      className="text-xs font-semibold text-muted-foreground"
-                    >
-                      Tìm nhanh
-                    </FieldLabel>
-                    <FieldContent>
-                      <Input
-                        id={globalFilterControlId}
-                        placeholder={globalFilterPlaceholder}
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-full"
-                      />
-                    </FieldContent>
-                  </Field>
-                ) : null}
-                <div className="flex shrink-0 flex-wrap items-end gap-2">
-                  {showClearFiltersButton ? (
-                    <Field className="w-auto gap-1.5">
-                      <FieldTitle className="text-xs font-semibold text-muted-foreground">
-                        Bộ lọc
-                      </FieldTitle>
-                      <FieldContent>
-                        <Button
-                          type="button"
-                          variant={"destructive"}
-                          onClick={handleClearFilters}
-                          title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
-                        >
-                          <FilterX className="size-4" />
-                          Xóa bộ lọc
-                        </Button>
-                      </FieldContent>
-                    </Field>
-                  ) : null}
-                  {xlsxExportEnabled ? (
-                    <Field className="w-auto gap-1.5">
-                      <FieldTitle className="text-xs font-semibold text-muted-foreground">
-                        Xuất file
-                      </FieldTitle>
-                      <FieldContent>
-                        <Button
-                          type="button"
-                          variant="success"
-                          disabled={data.length === 0}
-                          onClick={handleXlsxExport}
-                          title="Excel: cột rộng theo nội dung, Unicode chuẩn"
-                        >
-                          <Download className="size-4" />
-                          Download Excel
-                        </Button>
-                      </FieldContent>
-                    </Field>
-                  ) : null}
-                  {filterToolbarExtra ? (
-                    <div className="flex flex-wrap gap-2">
-                      {filterToolbarExtra}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-            <BulkActionsBar
-              visible={showBulkBar}
-              selectedCount={selectedCount}
-              bulkActions={bulkActions}
-              selectedRows={selectedRows}
-              runningBulkActionId={runningBulkActionId}
-              onRunAction={runBulkAction}
-            />
-          </FieldSetContent>
-        </FieldSet>
-      ) : null}
-      {filterableHeaders.length > 0 ? (
-        <FieldSet variant="custom" className={DATA_TABLE_PANEL_FIELDSET_CLASS}>
-          <DataTablePanelLegend icon={ListFilter}>
-            Lọc theo cột
-          </DataTablePanelLegend>
-          <FieldSetContent className="space-y-3">
-            <div className="flex w-full flex-wrap items-end justify-end gap-2">
-              {resolvedFilterColumnVisibilityKey ? (
-                <>
-                  <div className="w-full max-w-[14rem] flex-1">
-                    <Field className="w-full gap-1">
-                      <FieldLabel className="text-xs font-medium text-foreground/80">
-                        Chọn cột lọc
-                      </FieldLabel>
-                      <FieldContent>
-                        <TreeMultiSelectPicker
-                          value={filterableHeaders
-                            .filter(
-                              (h) => filterColumnVisibility[h.id] !== false
-                            )
-                            .map((h) => h.id)}
-                          onChange={handleFilterColumnVisibilityChange}
-                          options={filterColumnOptions}
-                          placeholder="Chọn cột lọc"
-                          showBulkActions
-                        />
-                      </FieldContent>
-                    </Field>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-9 gap-1.5"
-                    onClick={showAllFilterColumns}
-                  >
-                    <Eye className="size-4 shrink-0" aria-hidden />
-                    Hiện tất cả
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-9 gap-1.5"
-                    onClick={hideAllFilterColumns}
-                  >
-                    <EyeOff className="size-4 shrink-0" aria-hidden />
-                    Ẩn tất cả
-                  </Button>
-                </>
-              ) : null}
-            </div>
-            <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-              {visibleFilterableHeaders.map((header) => {
-                const filterControlId = `admin-col-filter-ctl-${header.id}`
-                return (
-                  <Field
-                    key={header.id}
-                    className="w-[16rem] min-w-[min(100%,12rem)] gap-1"
-                  >
-                    <FieldLabel
-                      htmlFor={filterControlId}
-                      className="text-xs font-medium text-foreground/80"
-                    >
-                      {columnFilterToolbarLabel(header)}
-                    </FieldLabel>
-                    <FieldContent>
-                      {renderOutsideColumnFilter(header)}
-                    </FieldContent>
-                  </Field>
-                )
-              })}
-            </div>
-          </FieldSetContent>
-        </FieldSet>
+    <div className="flex flex-col gap-3">
+      {showTableToolbar ? (
+      <DataTableToolbar
+        globalFilterControlId={globalFilterControlId}
+        showGlobalFilter={showGlobalFilter}
+        globalFilterPlaceholder={globalFilterPlaceholder}
+        globalFilter={globalFilter}
+        onGlobalFilterChange={setGlobalFilter}
+        showClearFiltersButton={showClearFiltersButton}
+        hasActiveFilters={hasActiveFilters}
+        onClearFilters={handleClearFilters}
+        xlsxExportEnabled={xlsxExportEnabled}
+        exportDisabled={data.length === 0}
+        onXlsxExport={handleXlsxExport}
+        filterToolbarExtra={filterToolbarExtra}
+        showBulkBar={showBulkBar}
+        selectedCount={selectedCount}
+        bulkActions={bulkActions}
+        selectedRows={selectedRows}
+        runningBulkActionId={runningBulkActionId}
+        onRunBulkAction={runBulkAction}
+        filterableHeadersCount={toolbarFilterableHeaders.length}
+        visibleFilterableHeaders={toolbarVisibleFilterableHeaders}
+        renderColumnFilter={renderOutsideColumnFilter}
+        columnFilterToolbarLabel={columnFilterToolbarLabel}
+        showFilterColumnPicker={
+          showColumnFilters && Boolean(resolvedFilterColumnVisibilityKey)
+        }
+        filterColumnOptions={filterColumnOptions}
+        filterColumnVisibilityValue={filterColumnVisibilityValue}
+        onFilterColumnVisibilityChange={handleFilterColumnVisibilityChange}
+        hideableTableColumnOptions={toolbarHideableColumnOptions}
+        visibleTableColumnIds={visibleTableColumnIds}
+        onTableColumnVisibilityChange={handleTableColumnVisibilityChange}
+        columnFilters={showColumnFilters ? columnFilters : []}
+      />
       ) : null}
       <FieldSet
         variant="custom"
         className={cn("min-w-0", DATA_TABLE_PANEL_FIELDSET_CLASS)}
       >
-        <div className="mb-4 flex w-full flex-wrap items-end justify-end gap-4">
-          <div className="w-full max-w-[14rem] flex-1">
-            <Field className="w-full gap-1">
-              <FieldLabel className="text-xs font-medium text-foreground/80">
-                Hiện cột
-              </FieldLabel>
-              <FieldContent>
-                <TreeMultiSelectPicker
-                  value={hideableTableColumnOptions
-                    .filter(
-                      (option) =>
-                        table.getColumn(option.value)?.getIsVisible() !== false
-                    )
-                    .map((option) => option.value)}
-                  onChange={handleTableColumnVisibilityChange}
-                  options={hideableTableColumnOptions}
-                  placeholder="Chọn cột hiển thị"
-                  showBulkActions
-                />
-              </FieldContent>
-            </Field>
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-9 gap-1.5"
-            onClick={showAllTableColumns}
-          >
-            <Eye className="size-4 shrink-0" aria-hidden />
-            Hiện tất cả
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-9 gap-1.5"
-            onClick={hideOptionalTableColumns}
-          >
-            <EyeOff className="size-4 shrink-0" aria-hidden />
-            Ẩn tùy chọn
-          </Button>
-        </div>
-        <DataTablePanelLegend icon={Table2}>Dữ liệu</DataTablePanelLegend>
         <FieldSetContent className="space-y-0 p-0">
           <DataTableRowActionsRegistryProvider>
             <DataTableScopeProvider scopeId={tableScopeId}>
@@ -1982,7 +1801,6 @@ export function AdminDataTable<TData>({
                 enabled={horizontalScrollButtons}
                 watchKey={`${isLoading}-${data.length}`}
               >
-                <div className="border border-border">
                   <Table
                     className="min-w-[640px]"
                     scrollContainerClassName={
@@ -2266,7 +2084,6 @@ export function AdminDataTable<TData>({
                       )}
                     </TableBody>
                   </Table>
-                </div>
               </DataTableHorizontalScroll>
             </DataTableScopeProvider>
           </DataTableRowActionsRegistryProvider>
@@ -2374,60 +2191,3 @@ function BulkActionConfirmDialog<TData>({
   )
 }
 
-// Extracted component for bulk actions bar
-type BulkActionsBarProps<TData> = {
-  visible: boolean
-  selectedCount: number
-  bulkActions: AdminDataTableBulkAction<TData>[]
-  selectedRows: TData[]
-  runningBulkActionId: string | null
-  onRunAction: (action: AdminDataTableBulkAction<TData>) => void
-}
-
-function BulkActionsBar<TData>({
-  visible,
-  selectedCount,
-  bulkActions,
-  selectedRows,
-  runningBulkActionId,
-  onRunAction,
-}: BulkActionsBarProps<TData>) {
-  if (!visible) return null
-
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/70 bg-muted/20 px-3 py-2">
-      <p className="text-xs font-medium text-muted-foreground">
-        Đã chọn{" "}
-        <span className="font-semibold text-foreground">{selectedCount}</span>{" "}
-        dòng
-      </p>
-      <div className="flex flex-wrap items-center gap-2">
-        {bulkActions.map((action) => {
-          const requiresSelection = action.requiresSelection ?? true
-          const disabledBySelection = requiresSelection && selectedCount === 0
-          const disabledByAction = action.disabled?.(selectedRows) ?? false
-          const isRunning = runningBulkActionId === action.id
-          return (
-            <Button
-              key={action.id}
-              type="button"
-              size="sm"
-              variant={action.variant ?? "outline"}
-              className={cn("h-8 gap-1.5 rounded-lg", action.className)}
-              disabled={
-                isRunning ||
-                runningBulkActionId != null ||
-                disabledBySelection ||
-                disabledByAction
-              }
-              onClick={() => onRunAction(action)}
-            >
-              {action.icon}
-              {action.label}
-            </Button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}

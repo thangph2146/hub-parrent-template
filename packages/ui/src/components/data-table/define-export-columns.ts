@@ -85,8 +85,10 @@ export function resolveLinkedUser(
  * Bật hiển thị qua "Hiện cột" — cell render giá trị thật, không để trống.
  */
 export function defineRelationExportColumns<T>(
-  fields: RelationExportField<T>[]
+  fields: RelationExportField<T>[],
+  options?: { enableColumnFilter?: boolean }
 ): ColumnDef<T, unknown>[] {
+  const enableColumnFilter = options?.enableColumnFilter ?? true
   return fields.map((field) => {
     const filterVariant = resolveRelationFilterVariant(field.id)
     const isDateRange = filterVariant === "date-range"
@@ -95,13 +97,17 @@ export function defineRelationExportColumns<T>(
       header: field.header,
       accessorFn: (row) => field.getValue(row),
       enableSorting: false,
-      enableColumnFilter: true,
-      ...(isDateRange ? {} : { filterFn: () => true }),
+      enableColumnFilter,
+      ...(enableColumnFilter && !isDateRange ? { filterFn: () => true } : {}),
       meta: {
         defaultHidden: field.defaultHidden ?? true,
-        filterVariant,
-        filterPlaceholder:
-          filterVariant === "date-range" ? "Chọn khoảng ngày" : "Lọc…",
+        ...(enableColumnFilter
+          ? {
+              filterVariant,
+              filterPlaceholder:
+                filterVariant === "date-range" ? "Chọn khoảng ngày" : "Lọc…",
+            }
+          : { disableColumnFilter: true }),
         exportHeader: field.header,
         exportValue: (row: T) => formatRelationCellValue(field.getValue(row)),
         exportWidth: field.exportWidth,

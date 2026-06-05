@@ -14,6 +14,10 @@ import {
 import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
+import {
+  pickerTriggerClassName,
+  type PickerSize,
+} from "./picker-trigger-styles"
 
 export interface TreeOption {
   value: string
@@ -29,6 +33,8 @@ export interface TreeMultiSelectPickerProps {
   id?: string
   /** Hiện nút chọn/bỏ chọn tất cả trong popover */
   showBulkActions?: boolean
+  size?: PickerSize
+  className?: string
 }
 
 function flattenTreeOptions(
@@ -124,6 +130,8 @@ export function TreeMultiSelectPicker({
   placeholder = "Tất cả",
   id,
   showBulkActions = false,
+  size = "default",
+  className,
 }: TreeMultiSelectPickerProps) {
   const [open, setOpen] = useState(false)
   const selected = Array.isArray(value) ? (value as string[]) : []
@@ -190,7 +198,7 @@ export function TreeMultiSelectPicker({
           type="button"
           variant="outline"
           id={id}
-          className="h-9 w-full min-w-[160px] justify-between gap-2 rounded-lg text-sm font-normal"
+          className={pickerTriggerClassName(size, className)}
         >
           <span className="flex min-w-0 items-center gap-2">
             {showBulkActions ? (
@@ -255,7 +263,7 @@ export function TreeMultiSelectPicker({
             <div className="mt-2 flex gap-2 border-t pt-2">
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 className="h-8 flex-1 gap-1.5 text-xs"
                 onClick={handleClear}
