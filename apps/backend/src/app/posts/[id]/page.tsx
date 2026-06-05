@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ComponentType, type ReactNode } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -14,11 +14,24 @@ import {
   Tags,
   Globe,
 } from "lucide-react";
-import { Divider } from "@ui/components/layout";
 import { Badge } from "@ui/components/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionBadge,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { useAuth } from "@/providers/auth-provider";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { normalizeContentForEditor, formatDateTime } from "../_component";
@@ -31,26 +44,6 @@ const LexicalEditor = dynamic(
     })),
   { ssr: false },
 );
-
-function DetailField({
-  label,
-  icon: Icon,
-  children,
-}: {
-  label: string;
-  icon?: ComponentType<{ className?: string }>;
-  children: ReactNode;
-}) {
-  return (
-    <div>
-      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-        {Icon ? <Icon className="size-3" /> : null}
-        {label}
-      </p>
-      <div className="mt-1 text-sm text-foreground">{children}</div>
-    </div>
-  );
-}
 
 function PostDetailInner() {
   const router = useRouter();
@@ -71,9 +64,7 @@ function PostDetailInner() {
   }, [error, router]);
 
   if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
+    return <AdminPageLoading />;
   }
 
   if (!post) return null;
@@ -95,111 +86,111 @@ function PostDetailInner() {
 
       <AdminDetailLayout className="my-6">
         <AdminDetailMain>
-          {content ? (
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <FileText className="size-5 text-primary" />
-                  Nội dung chi tiết
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <LexicalEditor value={content} readOnly className="max-w-full" />
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <FileText className="size-5 text-primary" />
-                  Nội dung chi tiết
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          <FieldSet variant="section">
+            <FieldSectionLegend icon={FileText} title="Nội dung chi tiết" />
+            <FieldSetContent variant="section" className="pt-0">
+              {content ? (
+                <LexicalEditor value={content} readOnly className="max-w-4xl mx-auto" />
+              ) : (
                 <p className="text-sm italic text-muted-foreground">
                   Bài viết chưa có nội dung
                 </p>
-              </CardContent>
-            </Card>
-          )}
+              )}
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
 
-        <AdminDetailSidebar>
-          <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
-            <CardContent className="space-y-0">
-              <Divider label="Hình ảnh đại diện" className="my-6" />
-              {post.image ? (
-                <div className="mb-4 overflow-hidden rounded-lg border border-border/70">
-                  <p className="flex items-center gap-1.5 border-b border-border/70 bg-muted/30 px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                    <ImageIcon className="size-3" /> Hình ảnh đại diện
+        <AdminDetailSidebar className="max-h-[calc(100vh-80px)] overflow-y-auto sticky top-2">
+            <FieldSet variant="section">
+              <FieldSectionLegend icon={ImageIcon} title="Hình ảnh đại diện" />
+              <FieldSetContent variant="section" className="pt-0">
+                {post.image ? (
+                  <div className="overflow-hidden rounded-lg border border-border/70">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="aspect-[16/10] w-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Chưa có ảnh đại diện.
                   </p>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="aspect-[16/10] w-full object-cover"
-                  />
-                </div>
-              ) : (
-                <p className="mb-4 text-sm text-muted-foreground">
-                  Chưa có ảnh đại diện.
-                </p>
-              )}
+                )}
+              </FieldSetContent>
+            </FieldSet>
 
-              <Divider label="Thông tin cơ bản" className="my-6" />
-              <div className="grid gap-4">
-                <DetailField label="Tiêu đề" icon={FileText}>
-                  <p className="whitespace-pre-wrap rounded-lg border border-border/70 p-2">
-                    {post.title}
-                  </p>
-                </DetailField>
-                <DetailField label="Slug" icon={Link}>
-                  <p className="rounded-lg border border-border/70 p-2 text-muted-foreground">
-                    {post.slug || "—"}
-                  </p>
-                </DetailField>
-                <DetailField label="Đường dẫn công khai" icon={Globe}>
-                  <p className="break-all rounded-lg border border-border/70 p-2 font-mono text-xs text-muted-foreground">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={FileText}
+                title="Thông tin cơ bản"
+                description="Tiêu đề, slug và mô tả ngắn."
+              />
+              <FieldSetContent variant="section" className="space-y-4 pt-0">
+                <FieldSectionField label="Tiêu đề" icon={FileText}>
+                  <p className="whitespace-pre-wrap">{post.title}</p>
+                </FieldSectionField>
+                <FieldSectionField label="Slug" icon={Link}>
+                  <p className="text-muted-foreground">{post.slug || "—"}</p>
+                </FieldSectionField>
+                <FieldSectionField label="Đường dẫn công khai" icon={Globe}>
+                  <p className="break-all font-mono text-xs text-muted-foreground">
                     {previewPath}
                   </p>
-                </DetailField>
+                </FieldSectionField>
                 {post.excerpt ? (
-                  <DetailField label="Mô tả ngắn">
-                    <p className="whitespace-pre-wrap rounded-lg border border-border/70 p-2 text-muted-foreground">
+                  <FieldSectionField label="Mô tả ngắn">
+                    <p className="whitespace-pre-wrap text-muted-foreground">
                       {post.excerpt}
                     </p>
-                  </DetailField>
+                  </FieldSectionField>
                 ) : null}
-              </div>
+              </FieldSetContent>
+            </FieldSet>
 
-              <Divider label="Xuất bản" className="my-6" />
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Xuất bản"
+                description="Trạng thái hiển thị và thời điểm phát hành."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Trạng thái">
                   {post.published ? (
                     <Badge>Đã xuất bản</Badge>
                   ) : (
                     <Badge variant="outline">Bản nháp</Badge>
                   )}
-                </div>
+                </FieldSectionField>
                 {post.publishedAt ? (
-                  <DetailField label="Ngày xuất bản" icon={Calendar}>
-                    <p className="rounded-lg border border-border/70 p-2 tabular-nums">
-                      {formatDateTime(post.publishedAt)}
-                    </p>
-                  </DetailField>
+                  <FieldSectionField
+                    label="Ngày xuất bản"
+                    icon={Calendar}
+                    valueClassName="tabular-nums font-medium"
+                  >
+                    {formatDateTime(post.publishedAt)}
+                  </FieldSectionField>
                 ) : null}
-                <DetailField label="Tác giả" icon={User}>
-                  <p className="rounded-lg border border-border/70 p-2">
-                    {post.author.name ?? post.author.email}
-                  </p>
-                </DetailField>
-              </div>
+                <FieldSectionField label="Tác giả" icon={User}>
+                  {post.author.name ?? post.author.email}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
 
-              <Divider label="Phân loại" className="my-6" />
-              <div className="space-y-4">
-                <DetailField label="Danh mục" icon={Tags}>
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Tags}
+                title="Phân loại"
+                badge={
+                  <FieldSectionBadge>
+                    {post.categories.length + post.tags.length}
+                  </FieldSectionBadge>
+                }
+              />
+              <FieldSetContent variant="section" className="space-y-4 pt-0">
+                <FieldSectionField label="Danh mục" icon={Tags}>
                   {post.categories.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5 rounded-lg border border-border/70 p-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {post.categories.map((cat) => (
                         <Badge key={cat.id} variant="secondary" className="text-xs">
                           {cat.name}
@@ -209,10 +200,10 @@ function PostDetailInner() {
                   ) : (
                     <p className="italic text-muted-foreground">Chưa phân loại</p>
                   )}
-                </DetailField>
-                <DetailField label="Thẻ">
+                </FieldSectionField>
+                <FieldSectionField label="Thẻ">
                   {post.tags.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5 rounded-lg border border-border/70 p-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {post.tags.map((tag) => (
                         <Badge key={tag.id} variant="outline" className="text-xs">
                           {tag.name}
@@ -222,38 +213,33 @@ function PostDetailInner() {
                   ) : (
                     <p className="italic text-muted-foreground">Chưa có thẻ</p>
                   )}
-                </DetailField>
-              </div>
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
 
-              <Divider label="Thời gian" className="my-6" />
-              <div className="space-y-3">
-                <div className="flex items-center gap-2.5 text-sm">
-                  <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                    <Calendar className="size-3.5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Ngày tạo</p>
-                    <p className="text-sm font-medium">
-                      {formatDateTime(post.createdAt)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5 text-sm">
-                  <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                    <Clock className="size-3.5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      Cập nhật lần cuối
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formatDateTime(post.updatedAt)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Clock}
+                title="Thời gian"
+                description="Mốc tạo và cập nhật bài viết."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
+                  {formatDateTime(post.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
+                  {formatDateTime(post.updatedAt)}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

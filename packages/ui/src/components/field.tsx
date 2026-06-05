@@ -15,9 +15,13 @@ export const FIELDSET_CUSTOM_CLASS =
 export const FIELD_LEGEND_CUSTOM_CLASS =
   "w-fit absolute start-2.5 left-2.5 top-0 z-[1] -translate-y-1/2 border-0 bg-white px-2 text-[15px] font-bold uppercase leading-none tracking-wide text-foreground dark:bg-card"
 
-/** Card chi tiết admin: bo góc, viền solid đậm hơn slate-200. */
+/**
+ * Card chi tiết admin: bo góc, viền solid đậm hơn slate-200.
+ * Dùng `overflow-visible` để sticky toolbar / dropdown con không bị cắt.
+ * Sidebar scroll: override bằng `overflow-y-auto` trên FieldSet.
+ */
 export const FIELDSET_SECTION_CLASS =
-  "box-border flex min-w-0 flex-col overflow-hidden rounded-xl border-2 border-solid border-slate-300 bg-white dark:border-border dark:bg-card hover:border-primary/50"
+  "box-border flex min-w-0 flex-col overflow-visible rounded-xl border-2 border-solid border-slate-300 bg-white dark:border-border dark:bg-card hover:border-primary/50"
 
 export const FIELD_LEGEND_SECTION_CLASS =
   "!float-none !-mt-0 block w-fit max-w-full border-0 ml-4 px-2 py-2 font-normal text-foreground"

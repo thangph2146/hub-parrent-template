@@ -41,6 +41,7 @@ import {
   $canUnmergeAtSelection,
   $getCurrentTableNode,
 } from "./table-toolbar-utils"
+import { Separator } from "@/ui/separator"
 
 export function TableActionsToolbarPlugin() {
   const { activeEditor } = useToolbarContext()
@@ -94,188 +95,193 @@ export function TableActionsToolbarPlugin() {
   if (!insideTable) return null
 
   return (
-    <Select value="" modal={false}>
-      <SelectTrigger
-        className="editor-toolbar-item editor-toolbar-item--w-auto editor-toolbar-item--gap-sm editor-toolbar-select-trigger editor-toolbar-select-trigger--w-auto"
-        title="Thao tác ô bảng"
-        aria-label="Thao tác ô bảng"
-      >
-        <IconSize size="sm">
-          <TableProperties />
-        </IconSize>
-        Table
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Ô đã chọn</SelectLabel>
-          <SelectItem
-            value="__merge"
-            className={!canMerge ? "editor-select-item--disabled" : undefined}
-            onPointerUp={() => {
-              if (!canMerge) return
-              runMerge()
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Combine />
-              </IconSize>
-              <span>Gộp ô</span>
-            </Flex>
-          </SelectItem>
-          <SelectItem
-            value="__unmerge"
-            className={!canUnmerge ? "editor-select-item--disabled" : undefined}
-            onPointerUp={() => {
-              if (!canUnmerge) return
-              runUnmerge()
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="md">
-                <SplitSquareVertical />
-              </IconSize>
-              <span>Tách ô</span>
-            </Flex>
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Chèn</SelectLabel>
-          <SelectItem
-            value="__col-right"
-            onPointerUp={() => {
-              activeEditor.update(() => $insertTableColumnAtSelection(true))
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Columns3 />
-              </IconSize>
-              <span>Chèn cột bên phải</span>
-            </Flex>
-          </SelectItem>
-          <SelectItem
-            value="__col-left"
-            onPointerUp={() => {
-              activeEditor.update(() => $insertTableColumnAtSelection(false))
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Columns3 />
-              </IconSize>
-              <span>Chèn cột bên trái</span>
-            </Flex>
-          </SelectItem>
-          <SelectItem
-            value="__row-below"
-            onPointerUp={() => {
-              activeEditor.update(() => $insertTableRowAtSelection(true))
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Rows3 />
-              </IconSize>
-              <span>Chèn dòng bên dưới</span>
-            </Flex>
-          </SelectItem>
-          <SelectItem
-            value="__row-above"
-            onPointerUp={() => {
-              activeEditor.update(() => $insertTableRowAtSelection(false))
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Rows3 />
-              </IconSize>
-              <span>Chèn dòng bên trên</span>
-            </Flex>
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Xóa</SelectLabel>
-          <SelectItem
-            value="__del-row"
-            className={
-              !canDeleteRow ? "editor-select-item--disabled" : undefined
-            }
-            onPointerUp={() => {
-              if (!canDeleteRow) return
-              activeEditor.update(() => $deleteTableRowAtSelection())
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Trash2 />
-              </IconSize>
-              <span>Xóa dòng hiện tại</span>
-            </Flex>
-          </SelectItem>
-          <SelectItem
-            value="__del-col"
-            className={
-              !canDeleteColumn ? "editor-select-item--disabled" : undefined
-            }
-            onPointerUp={() => {
-              if (!canDeleteColumn) return
-              activeEditor.update(() => {
-                const sel = $getSelection()
-                const table = sel ? $getCurrentTableNode(sel) : null
-                const savedColWidths = table?.getColWidths() ?? null
+    <>
+      <Separator orientation="vertical" className="editor-toolbar-separator" />
+      <Select value="" modal={false}>
+        <SelectTrigger
+          className="editor-toolbar-item editor-toolbar-item--w-auto editor-toolbar-item--gap-sm editor-toolbar-select-trigger editor-toolbar-select-trigger--w-auto"
+          title="Thao tác ô bảng"
+          aria-label="Thao tác ô bảng"
+        >
+          <IconSize size="sm">
+            <TableProperties />
+          </IconSize>
+          Table
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Ô đã chọn</SelectLabel>
+            <SelectItem
+              value="__merge"
+              className={!canMerge ? "editor-select-item--disabled" : undefined}
+              onPointerUp={() => {
+                if (!canMerge) return
+                runMerge()
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Combine />
+                </IconSize>
+                <span>Gộp ô</span>
+              </Flex>
+            </SelectItem>
+            <SelectItem
+              value="__unmerge"
+              className={
+                !canUnmerge ? "editor-select-item--disabled" : undefined
+              }
+              onPointerUp={() => {
+                if (!canUnmerge) return
+                runUnmerge()
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="md">
+                  <SplitSquareVertical />
+                </IconSize>
+                <span>Tách ô</span>
+              </Flex>
+            </SelectItem>
+          </SelectGroup>
+          <SelectGroup>
+            <SelectLabel>Chèn</SelectLabel>
+            <SelectItem
+              value="__col-right"
+              onPointerUp={() => {
+                activeEditor.update(() => $insertTableColumnAtSelection(true))
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Columns3 />
+                </IconSize>
+                <span>Chèn cột bên phải</span>
+              </Flex>
+            </SelectItem>
+            <SelectItem
+              value="__col-left"
+              onPointerUp={() => {
+                activeEditor.update(() => $insertTableColumnAtSelection(false))
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Columns3 />
+                </IconSize>
+                <span>Chèn cột bên trái</span>
+              </Flex>
+            </SelectItem>
+            <SelectItem
+              value="__row-below"
+              onPointerUp={() => {
+                activeEditor.update(() => $insertTableRowAtSelection(true))
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Rows3 />
+                </IconSize>
+                <span>Chèn dòng bên dưới</span>
+              </Flex>
+            </SelectItem>
+            <SelectItem
+              value="__row-above"
+              onPointerUp={() => {
+                activeEditor.update(() => $insertTableRowAtSelection(false))
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Rows3 />
+                </IconSize>
+                <span>Chèn dòng bên trên</span>
+              </Flex>
+            </SelectItem>
+          </SelectGroup>
+          <SelectGroup>
+            <SelectLabel>Xóa</SelectLabel>
+            <SelectItem
+              value="__del-row"
+              className={
+                !canDeleteRow ? "editor-select-item--disabled" : undefined
+              }
+              onPointerUp={() => {
+                if (!canDeleteRow) return
+                activeEditor.update(() => $deleteTableRowAtSelection())
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Trash2 />
+                </IconSize>
+                <span>Xóa dòng hiện tại</span>
+              </Flex>
+            </SelectItem>
+            <SelectItem
+              value="__del-col"
+              className={
+                !canDeleteColumn ? "editor-select-item--disabled" : undefined
+              }
+              onPointerUp={() => {
+                if (!canDeleteColumn) return
+                activeEditor.update(() => {
+                  const sel = $getSelection()
+                  const table = sel ? $getCurrentTableNode(sel) : null
+                  const savedColWidths = table?.getColWidths() ?? null
 
-                let deletedColIdx = -1
-                if (sel && $isRangeSelection(sel) && table) {
-                  const anchor = sel.anchor.getNode()
-                  const cell = anchor
-                    ? $findMatchingParent(anchor, $isTableCellNode)
-                    : null
-                  if (cell && $isTableCellNode(cell)) {
-                    const row = cell.getParent()
-                    if (row) {
-                      const cells = row.getChildren()
-                      let idx = 0
-                      for (const c of cells) {
-                        if ($isTableCellNode(c)) {
-                          if (c.is(cell)) {
-                            deletedColIdx = idx
-                            break
+                  let deletedColIdx = -1
+                  if (sel && $isRangeSelection(sel) && table) {
+                    const anchor = sel.anchor.getNode()
+                    const cell = anchor
+                      ? $findMatchingParent(anchor, $isTableCellNode)
+                      : null
+                    if (cell && $isTableCellNode(cell)) {
+                      const row = cell.getParent()
+                      if (row) {
+                        const cells = row.getChildren()
+                        let idx = 0
+                        for (const c of cells) {
+                          if ($isTableCellNode(c)) {
+                            if (c.is(cell)) {
+                              deletedColIdx = idx
+                              break
+                            }
+                            idx += c.getColSpan()
                           }
-                          idx += c.getColSpan()
                         }
                       }
                     }
                   }
-                }
 
-                $deleteTableColumnAtSelection()
+                  $deleteTableColumnAtSelection()
 
-                if (savedColWidths && deletedColIdx >= 0) {
-                  const newSel = $getSelection()
-                  const updated = newSel ? $getCurrentTableNode(newSel) : null
-                  if (updated) {
-                    const newColWidths = updated.getColWidths()
-                    const colCount = updated.getColumnCount()
-                    if (!newColWidths || newColWidths.length !== colCount) {
-                      const fixed = [...savedColWidths]
-                      fixed.splice(deletedColIdx, 1)
-                      updated.setColWidths(fixed)
+                  if (savedColWidths && deletedColIdx >= 0) {
+                    const newSel = $getSelection()
+                    const updated = newSel ? $getCurrentTableNode(newSel) : null
+                    if (updated) {
+                      const newColWidths = updated.getColWidths()
+                      const colCount = updated.getColumnCount()
+                      if (!newColWidths || newColWidths.length !== colCount) {
+                        const fixed = [...savedColWidths]
+                        fixed.splice(deletedColIdx, 1)
+                        updated.setColWidths(fixed)
+                      }
                     }
                   }
-                }
-              })
-            }}
-          >
-            <Flex align="center" gap={2}>
-              <IconSize size="sm">
-                <Trash2 />
-              </IconSize>
-              <span>Xóa cột hiện tại</span>
-            </Flex>
-          </SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+                })
+              }}
+            >
+              <Flex align="center" gap={2}>
+                <IconSize size="sm">
+                  <Trash2 />
+                </IconSize>
+                <span>Xóa cột hiện tại</span>
+              </Flex>
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </>
   )
 }

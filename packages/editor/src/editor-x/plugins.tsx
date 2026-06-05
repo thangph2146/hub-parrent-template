@@ -188,10 +188,7 @@ export function Plugins({
                     <SubSuperToolbarPlugin />
                     <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
                   </div>
-                  <Separator
-                    orientation="vertical"
-                    className="editor-toolbar-separator"
-                  />
+
                   <div className="editor-toolbar-group">
                     <TableActionsToolbarPlugin />
                   </div>
@@ -199,6 +196,7 @@ export function Plugins({
                     orientation="vertical"
                     className="editor-toolbar-separator"
                   />
+
                   <div className="editor-toolbar-group">
                     <FontColorToolbarPlugin />
                     <FontBackgroundToolbarPlugin />

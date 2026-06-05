@@ -146,6 +146,10 @@ export function AdminTableToggleActiveButton({
 
 type AdminTableCrudRowActionsProps = {
   canWrite: boolean
+  /** Quyền xóa tạm — mặc định fallback về `canWrite`. */
+  canDelete?: boolean
+  /** Quyền xóa vĩnh viễn — mặc định fallback về `canWrite`. */
+  canHardDelete?: boolean
   onView: () => void
   onEdit?: () => void
   onSoftDelete?: () => void
@@ -202,6 +206,8 @@ function resolveActionConfirm(
 
 export function AdminTableCrudRowActions({
   canWrite,
+  canDelete,
+  canHardDelete,
   onView,
   onEdit,
   onSoftDelete,
@@ -277,7 +283,7 @@ export function AdminTableCrudRowActions({
     })
   }
 
-  if (canWrite && onSoftDelete) {
+  if ((canDelete ?? canWrite) && onSoftDelete) {
     actions.push({
       key: "soft-delete",
       label: labels?.softDelete ?? "Xóa tạm",
@@ -299,7 +305,7 @@ export function AdminTableCrudRowActions({
     })
   }
 
-  if (canWrite && onPurge) {
+  if ((canHardDelete ?? canWrite) && onPurge) {
     actions.push({
       key: "purge",
       label: labels?.purge ?? "Xóa vĩnh viễn",
@@ -338,6 +344,10 @@ export function AdminTableCrudRowActions({
 
 type AdminTableTrashRowActionsProps = {
   canWrite: boolean
+  /** Quyền khôi phục — mặc định fallback về `canWrite`. */
+  canRestore?: boolean
+  /** Quyền xóa vĩnh viễn — mặc định fallback về `canWrite`. */
+  canHardDelete?: boolean
   /** Bỏ qua nếu không hiển thị khôi phục (quyền từng phần). */
   onRestore?: () => void
   /** Bỏ qua nếu không hiển thị xóa vĩnh viễn. */
@@ -355,6 +365,8 @@ type AdminTableTrashRowActionsProps = {
 
 export function AdminTableTrashRowActions({
   canWrite,
+  canRestore,
+  canHardDelete,
   onRestore,
   onPurge,
   disabled,
@@ -365,11 +377,10 @@ export function AdminTableTrashRowActions({
   autoConfirmDangerousActions,
 }: AdminTableTrashRowActionsProps) {
   const useMenuConfirm = autoConfirmDangerousActions ?? !pageConfirm
-  if (!canWrite) return null
 
   const actions: DataTableRowActionItem[] = []
 
-  if (onRestore) {
+  if ((canRestore ?? canWrite) && onRestore) {
     actions.push({
       key: "restore",
       label: labels?.restore ?? "Khôi phục",
@@ -389,7 +400,7 @@ export function AdminTableTrashRowActions({
     })
   }
 
-  if (onPurge) {
+  if ((canHardDelete ?? canWrite) && onPurge) {
     actions.push({
       key: "purge",
       label: labels?.purge ?? "Xóa vĩnh viễn",
@@ -421,6 +432,8 @@ export function AdminTableTrashRowActions({
 
 type AdminCrudActionsColumnHandlers<T> = {
   canWrite: boolean
+  canDelete?: boolean
+  canHardDelete?: boolean
   busy?: boolean
   header?: string
   /** Gộp thêm vào meta cột (vd. `sticky right-0`). */
@@ -446,6 +459,8 @@ export function defineAdminCrudActionsColumn<T>(
 ): ColumnDef<T, unknown> {
   const {
     canWrite,
+    canDelete,
+    canHardDelete,
     busy,
     header = "Thao tác",
     columnMeta,
@@ -475,6 +490,8 @@ export function defineAdminCrudActionsColumn<T>(
       return (
         <AdminTableCrudRowActions
           canWrite={canWrite}
+          canDelete={canDelete}
+          canHardDelete={canHardDelete}
           busy={busy}
           labels={labels}
           recordLabel={getRecordLabel?.(data)}
@@ -498,6 +515,8 @@ export function defineAdminCrudActionsColumn<T>(
 
 type AdminTrashActionsColumnHandlers<T> = {
   canWrite: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
   busy?: boolean
   header?: string
   columnMeta?: ColumnDef<T, unknown>["meta"]
@@ -514,6 +533,8 @@ export function defineAdminTrashActionsColumn<T>(
 ): ColumnDef<T, unknown> {
   const {
     canWrite,
+    canRestore,
+    canHardDelete,
     busy,
     header = "Thao tác",
     columnMeta,
@@ -536,6 +557,8 @@ export function defineAdminTrashActionsColumn<T>(
       return (
         <AdminTableTrashRowActions
           canWrite={canWrite}
+          canRestore={canRestore}
+          canHardDelete={canHardDelete}
           busy={busy}
           recordLabel={getRecordLabel?.(data)}
           pageConfirm={pageConfirm}
