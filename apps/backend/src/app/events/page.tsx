@@ -334,6 +334,10 @@ function EventsPageInner() {
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} sự kiện`)
                 }}
+                trashExportParams={{
+                  search: debouncedTrashQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

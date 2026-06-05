@@ -13,6 +13,7 @@ import type { ReadStream } from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
 import { appConfig } from '../config/app.config';
+import { parseAdminListLimit } from '../common/parse-list-query';
 import {
   isImageMime,
   isImageExt,
@@ -383,7 +384,7 @@ export class UploadsService {
 
     const total = allImages.length;
     const page = Math.max(1, params.page);
-    const limit = Math.min(100, Math.max(1, params.limit));
+    const limit = parseAdminListLimit(params.limit, 20);
     const totalPages = Math.ceil(total / limit) || 1;
     const start = (page - 1) * limit;
     const data = allImages.slice(start, start + limit);

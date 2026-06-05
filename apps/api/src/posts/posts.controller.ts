@@ -35,6 +35,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 type PostListStatus = 'active' | 'deleted' | 'all';
 type PostBulkAction =
@@ -217,7 +218,7 @@ export class PostsController {
     try {
       const result = await this.postsService.list({
         page: Math.max(1, parseInt(String(page), 10) || 1),
-        limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+        limit: parseAdminListLimit(limit, 10),
         search: search?.trim(),
         status: this.parseListStatus(status),
         filters: Object.keys(filters).length ? filters : undefined,
@@ -276,7 +277,7 @@ export class PostsController {
     const options = await this.postsService.getOptions(
       column ?? 'title',
       search?.trim(),
-      Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50)),
+      parseAdminListLimit(limit, 50),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);

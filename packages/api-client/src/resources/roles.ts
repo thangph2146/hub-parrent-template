@@ -1,14 +1,32 @@
 import type { ApiClient } from "../client";
 import { deleteData, getData, normalizePagedResult, postData, putData } from "./_shared";
 
-type RequestQuery = Record<string, string | number | boolean | undefined | null>;
+type RolesListParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  filters?: Record<string, string>;
+};
+
+function toApiFilterQuery(filters?: Record<string, string>): Record<string, string> {
+  if (!filters) return {};
+  const query: Record<string, string> = {};
+  for (const [key, value] of Object.entries(filters)) {
+    const normalized = String(value ?? "").trim();
+    if (!normalized) continue;
+    query[`filter[${key}]`] = normalized;
+  }
+  return query;
+}
 
 export class RolesApi {
   constructor(private readonly http: ApiClient) {}
 
-  async list<T = unknown>(params?: RequestQuery): Promise<{ items: T[]; total: number }> {
+  async list<T = unknown>(params?: RolesListParams): Promise<{ items: T[]; total: number }> {
+    const { filters, ...rest } = params ?? {};
     const payload = await this.http.get<unknown>("/admin/roles", {
-      query: { page: 1, limit: 20, ...params },
+      query: { page: 1, limit: 20, ...rest, ...toApiFilterQuery(filters) },
     });
     const normalized = normalizePagedResult<T>(payload);
     return { items: normalized.items, total: normalized.total };

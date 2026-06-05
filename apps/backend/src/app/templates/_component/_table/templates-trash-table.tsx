@@ -8,6 +8,12 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TemplateRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
+
 export function TemplatesTrashTable({
   data,
   columns,
@@ -26,6 +32,7 @@ export function TemplatesTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: {
   data: TemplateRow[]
   columns: ColumnDef<TemplateRow>[]
@@ -44,16 +51,17 @@ export function TemplatesTrashTable({
   onClearFilters: () => void
   onBulkRestore: (rows: TemplateRow[]) => Promise<void>
   onBulkPurge: (rows: TemplateRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }) {
   return (
     <AdminDataTable<TemplateRow>
+      tableScope="templates-trash"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:templates-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -61,7 +69,16 @@ export function TemplatesTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("templates-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("templates-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<TemplateRow>(
+              (params) => api.templates.list<TemplateRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-template-restore",

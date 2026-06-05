@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { EventRegistration } from '../entities/event-registration.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventCheckoutRowDto {
   id: string;
@@ -77,11 +78,8 @@ export class EventCheckoutsService {
   async list(
     params: ListEventCheckoutsParams,
   ): Promise<ListEventCheckoutsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {
       event: params.eventId,
       hasCheckout: true,

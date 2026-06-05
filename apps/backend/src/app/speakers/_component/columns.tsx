@@ -6,6 +6,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 import type { SpeakerRow } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
@@ -29,7 +30,7 @@ export function getSpeakerColumns({
     {
       accessorKey: "name",
       header: "Tên",
-      enableColumnFilter: false,
+      meta: { filterPlaceholder: "Lọc tên…" },
       cell: ({ row, getValue }) => (
         <button
           type="button"
@@ -43,6 +44,7 @@ export function getSpeakerColumns({
     {
       accessorKey: "title",
       header: "Chức danh",
+      meta: { filterPlaceholder: "Lọc chức danh…" },
       cell: ({ getValue }) => (
         <span className="text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -50,7 +52,7 @@ export function getSpeakerColumns({
     {
       accessorKey: "organization",
       header: "Tổ chức",
-      enableColumnFilter: false,
+      meta: { filterPlaceholder: "Lọc tổ chức…" },
       cell: ({ getValue }) => (
         <span className="text-sm">{String(getValue() ?? "—")}</span>
       ),
@@ -99,6 +101,14 @@ export function getSpeakerColumns({
         </span>
       ),
     },
+    ...defineRelationExportColumns<SpeakerRow>([
+      { id: "email", header: "Email", getValue: (row) => row.email ?? "" },
+      { id: "phone", header: "SĐT", getValue: (row) => row.phone ?? "" },
+      { id: "bio", header: "Tiểu sử", getValue: (row) => row.bio ?? "" },
+      { id: "avatar", header: "Avatar URL", getValue: (row) => row.avatar ?? "" },
+      { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
+      { id: "id", header: "ID", getValue: (row) => row.id, defaultHidden: true },
+    ]),
     defineAdminCrudActionsColumn<SpeakerRow>({
       canWrite,
       onView: openDetail,

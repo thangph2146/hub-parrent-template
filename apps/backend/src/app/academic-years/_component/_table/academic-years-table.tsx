@@ -43,13 +43,13 @@ export function AcademicYearsTable({
 }: AcademicYearsTableProps) {
   return (
     <AdminDataTable<AcademicYearRow>
+      tableScope="academic-years"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có niên khóa — bấm "Thêm niên khóa".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:academic-years-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

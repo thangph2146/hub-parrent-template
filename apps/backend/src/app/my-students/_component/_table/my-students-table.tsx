@@ -35,6 +35,7 @@ export function MyStudentsTable({
 }: MyStudentsTableProps) {
   return (
     <AdminDataTable<MyStudentRow>
+      tableScope="my-students"
       data={data}
       getRowId={(row) => String(row.id)}
       columns={columns}
@@ -49,7 +50,7 @@ export function MyStudentsTable({
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
       filterToolbarExtra={filterToolbarExtra}
-      filterColumnVisibilityKey="my-students-table-filters"
+      tableColumnVisibilityKey="my-students-table-columns"
       xlsxExport={buildAdminTableXlsxExport("my-students", {
         pageCount: data.length,
         total: data.length,

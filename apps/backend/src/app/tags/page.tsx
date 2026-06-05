@@ -41,6 +41,8 @@ import {
   useClearTrashFilters,
   useTagsListQuery,
   useTrashQuery,
+  buildTagsFilterQuery,
+  toFilterQuery,
 } from "./_component";
 import type { TagRow, TagTreeRow } from "./_component";
 
@@ -95,6 +97,14 @@ function TagsPageInner() {
     }
     return params;
   }, [trashColumnFilters]);
+
+  const trashExportFilterParams = useMemo(
+    () => ({
+      ...toFilterQuery(buildTagsFilterQuery(trashColumnFilters)),
+      ...trashFilterParams,
+    }),
+    [trashColumnFilters, trashFilterParams],
+  );
 
   const listQuery = useTagsListQuery(canWriteTags || true, listFilterParams);
 
@@ -331,6 +341,10 @@ function TagsPageInner() {
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} thẻ`);
+                }}
+                trashExportParams={{
+                  search: debouncedTrashQ.trim() || undefined,
+                  filters: trashExportFilterParams as Record<string, string>,
                 }}
               />
             )}

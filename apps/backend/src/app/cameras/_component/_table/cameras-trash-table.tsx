@@ -8,6 +8,12 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { CameraRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
+
 export function CamerasTrashTable({
   data,
   columns,
@@ -26,6 +32,7 @@ export function CamerasTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: {
   data: CameraRow[]
   columns: ColumnDef<CameraRow>[]
@@ -44,16 +51,17 @@ export function CamerasTrashTable({
   onClearFilters: () => void
   onBulkRestore: (rows: CameraRow[]) => Promise<void>
   onBulkPurge: (rows: CameraRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }) {
   return (
     <AdminDataTable<CameraRow>
+      tableScope="cameras-trash"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:cameras-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -61,7 +69,16 @@ export function CamerasTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("cameras-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("cameras-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<CameraRow>(
+              (params) => api.cameras.list<CameraRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-camera-restore",

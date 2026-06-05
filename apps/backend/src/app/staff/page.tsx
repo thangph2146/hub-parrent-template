@@ -513,6 +513,10 @@ function StaffPageInner() {
                 onBulkActive={handleBulkActive}
                 onBulkUnactive={handleBulkUnactive}
                 onClearFilters={clearStaffFilters}
+                listParams={{
+                  q: debouncedGlobalFilter.trim() || undefined,
+                  filters: buildUsersFilterQuery(columnFilters),
+                }}
                 roleOptions={[
                   { value: "none", label: "Chưa gán vai trò" },
                   ...roles.map((r) => ({ value: r.code, label: r.name })),
@@ -563,6 +567,10 @@ function StaffPageInner() {
                   onBulkRestore={handleBulkRestore}
                   onBulkPurge={handleBulkPurge}
                   onClearFilters={clearTrashStaffFilters}
+                  listParams={{
+                    q: debouncedTrashSearch.trim() || undefined,
+                    filters: buildUsersFilterQuery(trashColumnFilters),
+                  }}
                 />
               </>
             )}

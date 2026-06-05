@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { Comment } from '../entities/comment.entity';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface CommentRowDto {
   id: string;
@@ -106,11 +107,8 @@ export class CommentsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListCommentsParams): Promise<ListCommentsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where = buildWhere(params) as FilterQuery<Comment>;
 
     const [rows, total] = await Promise.all([

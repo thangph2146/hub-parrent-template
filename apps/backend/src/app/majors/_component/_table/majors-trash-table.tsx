@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { MajorRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface MajorsTrashTableProps {
   data: MajorRow[]
@@ -28,6 +33,7 @@ export interface MajorsTrashTableProps {
   onClearFilters: () => void
   onBulkRestore: (rows: MajorRow[]) => Promise<void>
   onBulkPurge: (rows: MajorRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function MajorsTrashTable({
@@ -48,16 +54,17 @@ export function MajorsTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: MajorsTrashTableProps) {
   return (
     <AdminDataTable<MajorRow>
+      tableScope="majors-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:majors-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -65,7 +72,16 @@ export function MajorsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("majors-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("majors-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<MajorRow>(
+              (params) => api.majors.list<MajorRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-major-restore",

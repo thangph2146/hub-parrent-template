@@ -3,6 +3,7 @@ import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
 
 interface StaffTableProps {
   data: StaffRow[];
@@ -33,6 +34,10 @@ interface StaffTableProps {
   onBulkUnactive: (ids: string[]) => void;
   onClearFilters: () => void;
   roleOptions?: { value: string; label: string }[];
+  listParams: {
+    q?: string;
+    filters?: Record<string, string>;
+  };
 }
 
 export function StaffTable(props: StaffTableProps) {
@@ -65,6 +70,7 @@ export function StaffTable(props: StaffTableProps) {
     onBulkUnactive,
     onClearFilters,
     roleOptions,
+    listParams,
   } = props;
 
   const columns = getStaffColumns({
@@ -82,6 +88,7 @@ export function StaffTable(props: StaffTableProps) {
 
   return (
     <AdminDataTable<StaffRow>
+      tableScope="staff"
       data={data}
       getRowId={(row) => String(row.id)}
       columns={columns}
@@ -166,6 +173,15 @@ export function StaffTable(props: StaffTableProps) {
         },
       ]}
       xlsxExport={buildAdminTableXlsxExport("staff", { pageCount: data.length, total })}
+      exportFetchPage={async ({ page: exportPage, limit }) => {
+        const res = await api.users.list({
+          q: listParams.q,
+          page: exportPage,
+          limit,
+          filters: listParams.filters,
+        });
+        return { items: res.items, total: res.total };
+      }}
       pagination={{
         page,
         pageSize,

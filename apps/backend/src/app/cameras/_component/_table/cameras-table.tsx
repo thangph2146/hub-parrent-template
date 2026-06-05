@@ -39,13 +39,13 @@ export function CamerasTable({
 }) {
   return (
     <AdminDataTable<CameraRow>
+      tableScope="cameras"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có camera — bấm "Thêm camera".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:cameras-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

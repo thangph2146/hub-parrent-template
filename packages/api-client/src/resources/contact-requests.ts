@@ -28,6 +28,9 @@ export interface ContactRequest {
   assignedToName?: string | null
   assignedToId?: string | null
   assignedTo?: { id: string; name: string | null; email: string } | null
+  submittedById?: string | null
+  submittedByName?: string | null
+  submittedBy?: { id: string; name: string | null; email: string } | null
   notes?: string
   respondedBy?: string
   respondedAt?: string

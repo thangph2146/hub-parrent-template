@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { ParentStudent } from '../entities/parent-student.entity';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import {
+  ADMIN_TABLE_EXPORT_MAX_LIMIT,
+  normalizePageLimit,
+  paginationMeta,
+} from '../common/pagination';
 import { SocketGateway } from '../socket/socket.gateway';
 
 export interface ParentStudentRowDto {
   id: string;
   parentId: string;
+  parentEmail: string | null;
+  parentName: string | null;
+  parentPhone: string | null;
   studentCode: string;
   studentName: string | null;
   note: string | null;
@@ -29,12 +36,26 @@ function toIso(v: unknown): string | null {
 
 function mapRow(r: ParentStudent): ParentStudentRowDto {
   const parent = r.parent as unknown;
+  const parentObj =
+    parent != null && typeof parent === 'object'
+      ? (parent as {
+          id?: unknown;
+          email?: unknown;
+          name?: unknown;
+          phone?: unknown;
+        })
+      : null;
   return {
     id: r.id,
-    parentId:
-      parent != null && typeof parent === 'object' && 'id' in parent
-        ? String((parent as { id: unknown }).id)
-        : String(r.parent),
+    parentId: parentObj?.id != null ? String(parentObj.id) : String(r.parent),
+    parentEmail: typeof parentObj?.email === 'string' ? parentObj.email : null,
+    parentName:
+      parentObj?.name == null
+        ? null
+        : typeof parentObj.name === 'string'
+          ? parentObj.name
+          : null,
+    parentPhone: typeof parentObj?.phone === 'string' ? parentObj.phone : null,
     studentCode: r.studentCode,
     studentName: r.studentName ?? null,
     note: r.note ?? null,
@@ -57,7 +78,10 @@ export class ParentStudentsService {
     const rows = await this.em.find(
       ParentStudent,
       { parent: parentId },
-      { orderBy: { createdAt: 'DESC' } },
+      {
+        populate: ['parent'],
+        orderBy: { createdAt: 'DESC' },
+      },
     );
     return rows.map(mapRow);
   }
@@ -71,11 +95,8 @@ export class ParentStudentsService {
       totalPages: number;
     };
   }> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const [rows, total] = await Promise.all([
       this.em.find(
         ParentStudent,
@@ -113,7 +134,7 @@ export class ParentStudentsService {
     const { page, limit, skip } = normalizePageLimit(
       params.page,
       params.limit,
-      100,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
     );
     const where: Record<string, unknown> = {};
     if (

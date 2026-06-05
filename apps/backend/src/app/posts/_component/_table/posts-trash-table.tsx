@@ -9,6 +9,7 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { PostListRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
 
 export interface PostsTrashTableProps {
   data: PostListRow[]
@@ -31,6 +32,10 @@ export interface PostsTrashTableProps {
   canExport?: boolean
   canRestore?: boolean
   canDelete?: boolean
+  listQuery: {
+    search?: string
+    filters?: Record<string, unknown>
+  }
 }
 
 export function PostsTrashTable({
@@ -54,9 +59,11 @@ export function PostsTrashTable({
   canExport,
   canRestore,
   canDelete,
+  listQuery,
 }: PostsTrashTableProps) {
   return (
     <AdminDataTable<PostListRow>
+      tableScope="posts-trash"
       data={data}
       getRowId={(row) => String(row.id)}
       columns={columns}
@@ -70,7 +77,28 @@ export function PostsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={canExport ? buildAdminTableXlsxExport("posts-trash", { pageCount: data.length, total }) : undefined}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={canExport ? buildAdminTableXlsxExport("posts-trash", { pageCount: data.length, total }) : undefined}
+      exportFetchPage={
+        canExport
+          ? async ({ page: exportPage, limit }) => {
+              const filterQuery = Object.fromEntries(
+                Object.entries(listQuery.filters ?? {}).map(([key, value]) => [
+                  `filter[${key}]`,
+                  value as string | number | boolean | undefined | null,
+                ]),
+              );
+              const result = await api.posts.list<PostListRow>({
+                page: exportPage,
+                limit,
+                search: listQuery.search,
+                status: "deleted",
+                ...filterQuery,
+              });
+              return { items: result.items, total: result.total };
+            }
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         ...(canRestore
           ? [

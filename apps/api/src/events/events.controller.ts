@@ -28,6 +28,7 @@ import {
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('Events')
 @Controller(ADMIN_ROUTES.EVENTS)
@@ -69,7 +70,7 @@ export class EventsController {
     if (!userId) return this.unauthorized(res);
     const result = await this.eventsService.list({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: (status as 'active' | 'deleted' | 'all') ?? 'active',
       statusFilter: statusFilter != null ? Number(statusFilter) : undefined,

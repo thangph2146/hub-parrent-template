@@ -263,6 +263,10 @@ function TemplatesPageInner() {
                   await bulM.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} mẫu hiển thị`)
                 }}
+                trashExportParams={{
+                  search: dQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

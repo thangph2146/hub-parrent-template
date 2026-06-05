@@ -9,6 +9,7 @@ import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
 
 interface StaffTrashTableProps {
   data: StaffRow[]
@@ -30,6 +31,10 @@ interface StaffTrashTableProps {
   onBulkRestore: (ids: string[]) => void
   onBulkPurge: (ids: string[]) => void
   onClearFilters: () => void
+  listParams: {
+    q?: string
+    filters?: Record<string, string>
+  }
 }
 
 export function StaffTrashTable(props: StaffTrashTableProps) {
@@ -53,12 +58,14 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     onBulkRestore,
     onBulkPurge,
     onClearFilters,
+    listParams,
   } = props
 
   const columns = getTrashColumns({ onRestore, onPurge, busy })
 
   return (
     <AdminDataTable<StaffRow>
+      tableScope="staff-trash"
       data={data}
       getRowId={(row) => String(row.id)}
       columns={columns}
@@ -96,6 +103,15 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
       ]}
       onClearFilters={onClearFilters}
       xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}
+      exportFetchPage={async ({ page: exportPage, limit }) => {
+        const res = await api.users.listTrashed({
+          page: exportPage,
+          limit,
+          q: listParams.q,
+          filters: listParams.filters,
+        });
+        return { items: res.items, total: res.total };
+      }}
       pagination={{
         page,
         pageSize,

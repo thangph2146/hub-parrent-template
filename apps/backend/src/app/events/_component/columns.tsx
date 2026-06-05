@@ -9,6 +9,7 @@ import { Button } from "@ui/components/button";
 import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin, Star } from "lucide-react";
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { EventRow } from "./types";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -158,6 +159,34 @@ export function getEventColumns({
         />
       ),
     },
+    ...defineRelationExportColumns<EventRow>([
+      { id: "slug", header: "Slug", getValue: (r) => r.slug ?? "" },
+      { id: "address", header: "Địa chỉ", getValue: (r) => r.address ?? "" },
+      { id: "onlineLink", header: "Link online", getValue: (r) => r.onlineLink ?? "" },
+      { id: "endDate", header: "Kết thúc", getValue: (r) => r.endDate ?? "" },
+      { id: "createdBy", header: "Người tạo (ID)", getValue: (r) => r.createdBy ?? "" },
+      {
+        id: "checkinCamera",
+        header: "Camera check-in",
+        getValue: (r) =>
+          r.checkinCameraName
+            ? `${r.checkinCameraName}${r.checkinCameraCode ? ` (${r.checkinCameraCode})` : ""}`
+            : r.checkinCameraId ?? "",
+      },
+      {
+        id: "checkoutCamera",
+        header: "Camera check-out",
+        getValue: (r) =>
+          r.checkoutCameraName
+            ? `${r.checkoutCameraName}${r.checkoutCameraCode ? ` (${r.checkoutCameraCode})` : ""}`
+            : r.checkoutCameraId ?? "",
+      },
+      { id: "totalRegistrations", header: "Đăng ký", getValue: (r) => r.totalRegistrations },
+      { id: "totalCheckins", header: "Check-in", getValue: (r) => r.totalCheckins },
+      { id: "totalCheckouts", header: "Check-out", getValue: (r) => r.totalCheckouts },
+      { id: "maxParticipants", header: "Sức chứa", getValue: (r) => r.maxParticipants },
+      { id: "updatedAt", header: "Cập nhật lúc", getValue: (r) => r.updatedAt },
+    ]),
     defineAdminCrudActionsColumn<EventRow>({
       canWrite,
       onView: openDetail,

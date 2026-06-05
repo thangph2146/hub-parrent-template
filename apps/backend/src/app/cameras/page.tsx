@@ -263,6 +263,10 @@ function CamerasPageInner() {
                   await bulM.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} camera`)
                 }}
+                trashExportParams={{
+                  search: dQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

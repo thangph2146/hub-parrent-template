@@ -36,6 +36,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES, PUBLIC_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @Controller(PUBLIC_ROUTES.PARENT_MY_STUDENTS)
 export class ParentStudentsPublicController {
@@ -458,7 +459,7 @@ export class ParentStudentsAdminController {
   @Get()
   async list(@Query() query: Record<string, string>, @Res() res: Response) {
     const page = Math.max(1, parseInt(query.page, 10) || 1);
-    const limit = Math.min(100, Math.max(1, parseInt(query.limit, 10) || 20));
+    const limit = parseAdminListLimit(query.limit, 20);
     try {
       const result = await this.svc.listAll({
         page,

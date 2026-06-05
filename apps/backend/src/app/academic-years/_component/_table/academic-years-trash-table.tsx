@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { AcademicYearRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface AcademicYearsTrashTableProps {
   data: AcademicYearRow[]
@@ -28,6 +33,7 @@ export interface AcademicYearsTrashTableProps {
   onClearFilters: () => void
   onBulkRestore: (rows: AcademicYearRow[]) => Promise<void>
   onBulkPurge: (rows: AcademicYearRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function AcademicYearsTrashTable({
@@ -48,16 +54,17 @@ export function AcademicYearsTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: AcademicYearsTrashTableProps) {
   return (
     <AdminDataTable<AcademicYearRow>
+      tableScope="academic-years-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:academic-years-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -65,7 +72,16 @@ export function AcademicYearsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("academic-years-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("academic-years-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<AcademicYearRow>(
+              (params) => api.academicYears.list<AcademicYearRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-academic-year-restore",

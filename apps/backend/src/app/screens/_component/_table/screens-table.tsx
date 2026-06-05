@@ -39,13 +39,13 @@ export function ScreensTable({
 }) {
   return (
     <AdminDataTable<ScreenRow>
+      tableScope="screens"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có màn hình — bấm "Thêm màn hình".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:screens-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

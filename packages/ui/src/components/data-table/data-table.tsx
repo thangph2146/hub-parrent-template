@@ -19,6 +19,10 @@ function debounce<TArgs extends unknown[]>(
 type ColumnMeta = {
   disableColumnFilter?: boolean
   isActionsColumn?: boolean
+  isIndexColumn?: boolean
+  enableHiding?: boolean
+  hideInTable?: boolean
+  defaultHidden?: boolean
   className?: string
   filterPlaceholder?: string
   filterVariant?: string
@@ -49,10 +53,12 @@ import {
   type Row,
   type PaginationState,
   type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table"
 import {
   ChevronDown,
   ChevronRight,
+  Columns3,
   Download,
   Eye,
   EyeOff,
@@ -66,6 +72,7 @@ import {
   useId,
   useMemo,
   useState,
+  type ComponentType,
   type CSSProperties,
   type ReactNode,
 } from "react"
@@ -90,9 +97,27 @@ import {
 } from "../table"
 import { cn } from "../../lib/utils"
 import "./table-meta"
-import { buildCsvFromColumns } from "../../lib/build-table-csv"
-import { downloadXlsxFile, type XlsxRelatedSection } from "../../lib/export-xlsx"
-import { TypographyPSmall } from "../typography"
+import {
+  buildCsvFromColumns,
+  filterExportColumnsByVisibility,
+} from "../../lib/build-table-csv"
+import {
+  buildDefaultTableColumnVisibility,
+  getHideableTableColumnOptions,
+  readStoredColumnVisibility,
+} from "./data-table-column-visibility"
+import {
+  formatFlatRowIndex,
+  formatHierarchicalRowIndex,
+} from "./data-table-row-index"
+import {
+  downloadXlsxFile,
+  type XlsxRelatedSection,
+} from "../../lib/export-xlsx"
+import {
+  ADMIN_PAGED_LIST_FETCH_LIMIT,
+  fetchAllPagedList,
+} from "../../lib/fetch-all-paged-list"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -107,12 +132,30 @@ import {
   AdminDataTablePagination,
   ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
   type AdminDataTableServerPaginationConfig,
+  ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
 } from "./data-table-pagination"
-import { Divider } from "../layout"
+import {
+  Field,
+  FieldContent,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldSetContent,
+  FieldTitle,
+} from "../field"
 import {
   dataTableColumnsHasActionsColumn,
   normalizeDataTableColumns,
 } from "./data-table-columns"
+import {
+  DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_SIZE,
+  DATA_TABLE_EXPAND_COLUMN_ID,
+  DATA_TABLE_INDEX_COLUMN_ID,
+  DATA_TABLE_SELECTION_COLUMN_ID,
+  dataTableCellContentClampClassName,
+  dataTableCellWidthClassName,
+  isDataTableActionsColumn,
+} from "./data-table-column-width"
 import { DataTableHorizontalScroll } from "./data-table-horizontal-scroll"
 import { DataTableRowContextMenu } from "./data-table-row-context-menu"
 import {
@@ -120,8 +163,6 @@ import {
   DataTableRowActionsRowProvider,
   DataTableScopeProvider,
 } from "./data-table-row-actions-registry"
-import { DATA_TABLE_ACTIONS_COLUMN_ID } from "./table-row-actions"
-
 export type AdminDataTableBulkAction<TData> = {
   id: string
   label: string
@@ -140,7 +181,10 @@ export type AdminDataTableBulkAction<TData> = {
   requiresSelection?: boolean
   clearSelectionOnSuccess?: boolean
   disabled?: (selectedRows: TData[]) => boolean
-  /** Hiển thị dialog xác nhận trước khi thực hiện */
+  /**
+   * Dialog xác nhận trước khi thực hiện.
+   * Mặc định: **bật** cho mọi thao tác hàng loạt. Truyền `confirm: false` để bỏ qua.
+   */
   confirm?:
     | boolean
     | {
@@ -149,6 +193,53 @@ export type AdminDataTableBulkAction<TData> = {
         confirmLabel?: string
         destructive?: boolean
       }
+}
+
+function bulkActionNeedsConfirm<TData>(
+  action: AdminDataTableBulkAction<TData>
+): boolean {
+  return action.confirm !== false
+}
+
+function resolveBulkActionConfirmTitle<TData>(
+  action: AdminDataTableBulkAction<TData>
+): string {
+  if (typeof action.confirm === "object") return action.confirm.title
+  return action.label
+}
+
+function resolveBulkActionConfirmDescription<TData>(
+  action: AdminDataTableBulkAction<TData>,
+  selectedCount: number,
+  selectedRows: TData[]
+): ReactNode {
+  if (typeof action.confirm === "object" && action.confirm.description) {
+    return typeof action.confirm.description === "function"
+      ? action.confirm.description(selectedRows)
+      : action.confirm.description
+  }
+  if (action.variant === "destructive") {
+    return `Bạn đã chọn ${selectedCount} dòng. Hành động này có thể không hoàn tác được.`
+  }
+  return `Bạn đã chọn ${selectedCount} dòng. Tiếp tục thực hiện "${action.label}"?`
+}
+
+function resolveBulkActionConfirmLabel<TData>(
+  action: AdminDataTableBulkAction<TData>
+): string {
+  if (typeof action.confirm === "object" && action.confirm.confirmLabel) {
+    return action.confirm.confirmLabel
+  }
+  return action.label
+}
+
+function resolveBulkActionConfirmDestructive<TData>(
+  action: AdminDataTableBulkAction<TData>
+): boolean {
+  if (typeof action.confirm === "object") {
+    return action.confirm.destructive ?? action.variant === "destructive"
+  }
+  return action.variant === "destructive"
 }
 
 export type DataTableBulkAction<TData> = AdminDataTableBulkAction<TData>
@@ -171,6 +262,11 @@ export type AdminDataTableXlsxExportConfig =
        * Dùng với `downloadAdminTableXlsx` từ `@ui/lib/admin-table-export`.
        */
       runExport?: () => void | Promise<void>
+      /**
+       * Tải toàn bộ dữ liệu (phân trang server) trước khi xuất — khớp bộ lọc hiện tại.
+       * Dùng `fetchAllAdminList` từ `apps/backend`.
+       */
+      fetchAllForExport?: () => Promise<unknown[]>
     }
 
 export type AdminDataTableProps<TData> = {
@@ -228,8 +324,28 @@ export type AdminDataTableProps<TData> = {
   selectedRowIds?: RowSelectionState
   onSelectedRowIdsChange?: OnChangeFn<RowSelectionState>
   bulkActions?: AdminDataTableBulkAction<TData>[]
+  /**
+   * Phạm vi bảng admin — tự sinh key localStorage:
+   * `{scope}-table-filters` và `{scope}-table-columns`.
+   */
+  tableScope?: string
   /** localStorage key để lưu trạng thái hiển thị filter cột (mặc định: không lưu) */
   filterColumnVisibilityKey?: string
+  /**
+   * localStorage key cho "Hiện cột" bảng dữ liệu.
+   * Mặc định: `{tableScope}-table-columns` hoặc `{filterColumnVisibilityKey}-table-columns`.
+   */
+  tableColumnVisibilityKey?: string
+  /**
+   * Tải toàn bộ dữ liệu phân trang server trước khi xuất Excel.
+   * Tự gắn `fetchAllForExport` khi `xlsxExport` chưa có.
+   */
+  exportFetchPage?: (params: {
+    page: number
+    limit: number
+  }) => Promise<{ items: TData[]; total: number }>
+  /** Bật bộ chọn hiện/ẩn cột dữ liệu. @default true */
+  showTableColumnPicker?: boolean
   /**
    * Cột STT (số thứ tự) tự chèn đầu bảng. Tắt nếu `columns` đã có `id: "stt"` hoặc `"_index"`.
    * @default true
@@ -272,9 +388,13 @@ export type AdminDataTableProps<TData> = {
   rowContextMenu?: boolean
 }
 
-export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
-
-export const DATA_TABLE_SELECTION_COLUMN_ID = "_select"
+export {
+  DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_SIZE,
+  DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_WIDTH_CLASS,
+  DATA_TABLE_EXPAND_COLUMN_ID,
+  DATA_TABLE_INDEX_COLUMN_ID,
+  DATA_TABLE_SELECTION_COLUMN_ID,
+} from "./data-table-column-width"
 
 /** Độ rộng mặc định cột checkbox (px) — chỉnh qua prop `selectionColumnWidth`. */
 export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 48
@@ -383,15 +503,6 @@ function toCssSize(value: string | number): string {
   return typeof value === "number" ? `${value}px` : value
 }
 
-function isDataTableActionsColumn(
-  columnId: string,
-  meta: ColumnMeta | undefined
-): boolean {
-  return (
-    columnId === DATA_TABLE_ACTIONS_COLUMN_ID || meta?.isActionsColumn === true
-  )
-}
-
 function stickyTableHeadClassName(options: {
   enabled: boolean
   isSelectionCol: boolean
@@ -469,48 +580,18 @@ function includesText(a: unknown, q: string): boolean {
   return s.includes(q.toLowerCase())
 }
 
-const COLUMN_EXPLICIT_WIDTH_CLASS =
-  /\b(min-w-|max-w-|w-\[|w-\d|w-auto|w-full|w-fit)\b/
-
-function columnHasExplicitWidthClass(meta: ColumnMeta | undefined): boolean {
-  return Boolean(
-    meta?.className && COLUMN_EXPLICIT_WIDTH_CLASS.test(meta.className)
-  )
-}
-
-function columnDefHasExplicitSize(columnDef: {
-  size?: number
-  minSize?: number
-  maxSize?: number
-}): boolean {
-  return (
-    columnDef.size != null ||
-    columnDef.minSize != null ||
-    columnDef.maxSize != null
-  )
-}
-
-function cellWidthClassName(
-  meta: ColumnMeta | undefined,
-  columnDef?: { size?: number; minSize?: number; maxSize?: number }
-): string {
-  const hasExplicit =
-    columnHasExplicitWidthClass(meta) ||
-    Boolean(columnDef && columnDefHasExplicitSize(columnDef))
-  return cn(
-    "min-w-0 align-middle whitespace-normal",
-    !hasExplicit && "max-w-[min(280px,32vw)]",
-    meta?.className
-  )
-}
-
 /** Áp `size` / `minSize` / `maxSize` từ ColumnDef khi chưa có class width trong meta. */
 function columnSizeBoxStyle<TData>(
   column: Column<TData, unknown>
 ): CSSProperties | undefined {
   const def = column.columnDef
   const meta = def.meta as ColumnMeta | undefined
-  if (columnHasExplicitWidthClass(meta)) return undefined
+  if (
+    meta?.className &&
+    /\b(min-w-|max-w-|w-\[|w-\d|w-auto|w-full|w-fit)\b/.test(meta.className)
+  ) {
+    return undefined
+  }
 
   const { size, minSize, maxSize } = def
   if (size == null && minSize == null && maxSize == null) return undefined
@@ -605,6 +686,29 @@ function columnFilterToolbarLabel<TData>(
   return header.column.id
 }
 
+const DATA_TABLE_PANEL_FIELDSET_CLASS = "bg-card rounded-lg"
+const DATA_TABLE_PANEL_LEGEND_CLASS =
+  "!normal-case !text-sm !font-semibold !tracking-normal text-foreground"
+
+function DataTablePanelLegend({
+  icon: Icon,
+  children,
+}: {
+  icon?: ComponentType<{ className?: string }>
+  children: ReactNode
+}) {
+  return (
+    <FieldLegend variant="custom" className={DATA_TABLE_PANEL_LEGEND_CLASS}>
+      <span className="flex items-center gap-1.5">
+        {Icon ? (
+          <Icon className="size-4 shrink-0 text-primary/80" aria-hidden />
+        ) : null}
+        {children}
+      </span>
+    </FieldLegend>
+  )
+}
+
 export function AdminDataTable<TData>({
   data,
   columns,
@@ -633,7 +737,11 @@ export function AdminDataTable<TData>({
   selectedRowIds: selectedRowIdsControlled,
   onSelectedRowIdsChange,
   bulkActions = [],
+  tableScope,
   filterColumnVisibilityKey,
+  tableColumnVisibilityKey,
+  exportFetchPage,
+  showTableColumnPicker = true,
   showIndexColumn = true,
   indexColumnLabel = "STT",
   indexColumnExcludeFromExport = false,
@@ -645,12 +753,39 @@ export function AdminDataTable<TData>({
   rowContextMenu,
 }: AdminDataTableProps<TData>) {
   const tableScopeId = useId()
+  const globalFilterControlId = useId()
+  const resolvedFilterColumnVisibilityKey =
+    filterColumnVisibilityKey ??
+    (tableScope ? `${tableScope}-table-filters` : undefined)
+  const resolvedTableColumnVisibilityKey =
+    tableColumnVisibilityKey ??
+    (tableScope
+      ? `${tableScope}-table-columns`
+      : resolvedFilterColumnVisibilityKey
+        ? `${resolvedFilterColumnVisibilityKey}-table-columns`
+        : undefined)
+  const resolvedServerPagination = useMemo(() => {
+    if (!pagination) return null
+    const maxPageSize = pagination.maxPageSize ?? ADMIN_DATA_TABLE_MAX_PAGE_SIZE
+    return {
+      ...pagination,
+      maxPageSize,
+      showAllPageSizeOption: pagination.showAllPageSizeOption ?? true,
+      onShowAllRows:
+        pagination.onShowAllRows ??
+        (() => {
+          pagination.onPageChange(1)
+          pagination.onPageSizeChange(Math.min(pagination.total, maxPageSize))
+        }),
+    }
+  }, [pagination])
   const resolvedSelectionColumnWidth = Math.max(
     32,
     Math.min(80, Math.round(selectionColumnWidth))
   )
   const resolvedTableScrollMaxHeight = useMemo(
-    () => resolveDataTableScrollMaxHeight(stickyTableHeader, tableBodyMaxHeight),
+    () =>
+      resolveDataTableScrollMaxHeight(stickyTableHeader, tableBodyMaxHeight),
     [stickyTableHeader, tableBodyMaxHeight]
   )
   const tableScrollContainerStyle = useMemo((): CSSProperties | undefined => {
@@ -734,7 +869,14 @@ export function AdminDataTable<TData>({
   }, [clientPaginationEnabled, data.length, globalFilter, columnFilters])
 
   // Filter column visibility — lưu localStorage
-  const storageKey = filterColumnVisibilityKey
+  const storageKey = resolvedFilterColumnVisibilityKey
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    () =>
+      buildDefaultTableColumnVisibility(
+        columns,
+        readStoredColumnVisibility(resolvedTableColumnVisibilityKey)
+      )
+  )
   const [filterColumnVisibility, setFilterColumnVisibility] = useState<
     Record<string, boolean>
   >(() => {
@@ -752,9 +894,26 @@ export function AdminDataTable<TData>({
     localStorage.setItem(storageKey, JSON.stringify(filterColumnVisibility))
   }, [filterColumnVisibility, storageKey])
 
+  useEffect(() => {
+    setColumnVisibility(
+      buildDefaultTableColumnVisibility(
+        columns,
+        readStoredColumnVisibility(resolvedTableColumnVisibilityKey)
+      )
+    )
+  }, [columns, resolvedTableColumnVisibilityKey])
+
+  useEffect(() => {
+    if (!resolvedTableColumnVisibilityKey) return
+    localStorage.setItem(
+      resolvedTableColumnVisibilityKey,
+      JSON.stringify(columnVisibility)
+    )
+  }, [columnVisibility, resolvedTableColumnVisibilityKey])
+
   const expanderColumn = useMemo<ColumnDef<TData, unknown>>(
     () => ({
-      id: "_expand",
+      id: DATA_TABLE_EXPAND_COLUMN_ID,
       header: () => null,
       cell: ({ row }) => {
         if (!row.getCanExpand()) {
@@ -787,6 +946,7 @@ export function AdminDataTable<TData>({
       enableColumnFilter: false,
       meta: {
         disableColumnFilter: true,
+        enableHiding: false,
         className: "w-8 min-w-8 max-w-8 px-0",
       },
       size: 32,
@@ -826,6 +986,7 @@ export function AdminDataTable<TData>({
       meta: {
         isIndexColumn: true,
         disableColumnFilter: true,
+        enableHiding: false,
         excludeFromExport: indexColumnExcludeFromExport,
         className: "w-12 min-w-12 max-w-14 text-start tabular-nums",
       },
@@ -833,18 +994,23 @@ export function AdminDataTable<TData>({
       minSize: 44,
       maxSize: 56,
       cell: ({ row, table }) => {
-        const flatIndex = table
-          .getRowModel()
-          .rows.findIndex((r) => r.id === row.id)
-        const order = flatIndex >= 0 ? flatIndex : row.index
+        const label = getSubRows
+          ? formatHierarchicalRowIndex(row, indexRowOffset)
+          : (() => {
+              const flatIndex = table
+                .getRowModel()
+                .rows.findIndex((r) => r.id === row.id)
+              const order = flatIndex >= 0 ? flatIndex : row.index
+              return formatFlatRowIndex(order, indexRowOffset)
+            })()
         return (
           <span className="text-sm text-muted-foreground tabular-nums">
-            {indexRowOffset + order + 1 + "."}
+            {label}
           </span>
         )
       },
     }),
-    [indexColumnExcludeFromExport, indexColumnLabel, indexRowOffset]
+    [getSubRows, indexColumnExcludeFromExport, indexColumnLabel, indexRowOffset]
   )
 
   const selectionColumn = useMemo<ColumnDef<TData, unknown>>(
@@ -894,6 +1060,7 @@ export function AdminDataTable<TData>({
       enableResizing: false,
       meta: {
         disableColumnFilter: true,
+        enableHiding: false,
         className: DATA_TABLE_SELECTION_COLUMN_CLASS,
       } satisfies ColumnMeta,
       size: resolvedSelectionColumnWidth,
@@ -918,15 +1085,9 @@ export function AdminDataTable<TData>({
   const tableColumns = useMemo(() => {
     const built: ColumnDef<TData, unknown>[] = []
     if (rowSelectionActive) built.push(selectionColumn)
-    if (getSubRows) built.push(expanderColumn)
     if (indexColumnEnabled) built.push(indexColumn)
-    built.push(
-      ...applyDefaultFilterFns(
-        normalizeDataTableColumns(
-          columns.filter((column) => !column.meta?.hideInTable)
-        )
-      )
-    )
+    if (getSubRows) built.push(expanderColumn)
+    built.push(...applyDefaultFilterFns(normalizeDataTableColumns(columns)))
     return built
   }, [
     columns,
@@ -944,6 +1105,7 @@ export function AdminDataTable<TData>({
     state: {
       sorting,
       columnFilters,
+      columnVisibility,
       globalFilter,
       expanded,
       rowSelection: selectedRowIds,
@@ -951,6 +1113,7 @@ export function AdminDataTable<TData>({
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
     onExpandedChange: setExpanded,
     onRowSelectionChange: setSelectedRowIds,
@@ -988,7 +1151,9 @@ export function AdminDataTable<TData>({
         : "includesString",
     autoResetExpanded: false,
     defaultColumn: {
+      minSize: DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_SIZE,
       enableColumnFilter: true,
+      enableHiding: true,
       filterFn: (row, columnId, filterValue) => {
         if (filterValue == null || filterValue === "") return true
         return includesText(row.getValue(columnId), String(filterValue))
@@ -1003,8 +1168,8 @@ export function AdminDataTable<TData>({
     ? table.getFilteredRowModel().rows.length
     : 0
 
-  const serverPaginationFooter = pagination ? (
-    <AdminDataTablePagination {...pagination} mode="server" />
+  const serverPaginationFooter = resolvedServerPagination ? (
+    <AdminDataTablePagination {...resolvedServerPagination} mode="server" />
   ) : null
 
   const clientPaginationFooter =
@@ -1028,27 +1193,56 @@ export function AdminDataTable<TData>({
         emptySummary={clientPagination.emptySummary}
         itemLabel={clientPagination.itemLabel}
         isLoading={clientPagination.isLoading ?? isLoading}
+        showAllPageSizeOption
       />
     ) : null
 
   const paginationFooter = serverPaginationFooter ?? clientPaginationFooter
   const showTableFooter = Boolean(footer || paginationFooter)
 
-  const handleXlsxExport = useCallback(() => {
+  const handleXlsxExport = useCallback(async () => {
     if (
       typeof xlsxExport === "object" &&
       xlsxExport != null &&
       xlsxExport.runExport
     ) {
-      void xlsxExport.runExport()
+      await xlsxExport.runExport()
       return
     }
-    const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
-      data,
-      exportColumns,
-      getSubRows ? { getSubRows } : undefined
+
+    let exportData: TData[] = table
+      .getFilteredRowModel()
+      .rows.map((row) => row.original)
+
+    if (
+      typeof xlsxExport === "object" &&
+      xlsxExport != null &&
+      xlsxExport.fetchAllForExport
+    ) {
+      exportData = (await xlsxExport.fetchAllForExport()) as TData[]
+    } else if (exportFetchPage) {
+      exportData = await fetchAllPagedList(
+        exportFetchPage,
+        ADMIN_PAGED_LIST_FETCH_LIMIT
+      )
+    }
+
+    const visibleColumnIds = new Set(
+      table.getVisibleLeafColumns().map((column) => column.id)
     )
-    void downloadXlsxFile(
+    const columnsForExport = filterExportColumnsByVisibility(
+      exportColumns,
+      visibleColumnIds
+    )
+
+    const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
+      exportData,
+      columnsForExport,
+      getSubRows || indexRowOffset > 0
+        ? { getSubRows, indexRowOffset }
+        : undefined
+    )
+    await downloadXlsxFile(
       resolvedXlsxFileName,
       headers,
       rows,
@@ -1060,10 +1254,9 @@ export function AdminDataTable<TData>({
         columnWidths,
         columnWraps,
         relatedSections: exportRelatedSectionsProp,
-      },
+      }
     )
   }, [
-    data,
     exportColumns,
     exportMetadataProp,
     exportRelatedSectionsProp,
@@ -1071,7 +1264,10 @@ export function AdminDataTable<TData>({
     exportSubtitleProp,
     exportTitleProp,
     getSubRows,
+    indexRowOffset,
     resolvedXlsxFileName,
+    table,
+    exportFetchPage,
     xlsxExport,
   ])
 
@@ -1123,8 +1319,7 @@ export function AdminDataTable<TData>({
       const requiresSelection = action.requiresSelection ?? true
       if (requiresSelection && selectedRows.length === 0) return
       if (action.disabled?.(selectedRows)) return
-      // If action has confirm, show confirmation dialog first
-      if (action.confirm) {
+      if (bulkActionNeedsConfirm(action)) {
         setConfirmAction(action)
         return
       }
@@ -1204,6 +1399,37 @@ export function AdminDataTable<TData>({
   const hideAllFilterColumns = useCallback(() => {
     handleFilterColumnVisibilityChange([])
   }, [handleFilterColumnVisibilityChange])
+
+  const hideableTableColumnOptions = useMemo(
+    () => getHideableTableColumnOptions(table),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [table, columnVisibility, columns]
+  )
+
+  const handleTableColumnVisibilityChange = useCallback(
+    (v: unknown) => {
+      const selectedIds = Array.isArray(v) ? v : []
+      const next: VisibilityState = {}
+      hideableTableColumnOptions.forEach((option) => {
+        next[option.value] = selectedIds.includes(option.value)
+      })
+      setColumnVisibility((prev) => ({ ...prev, ...next }))
+    },
+    [hideableTableColumnOptions]
+  )
+
+  const showAllTableColumns = useCallback(() => {
+    handleTableColumnVisibilityChange(
+      hideableTableColumnOptions.map((option) => option.value)
+    )
+  }, [handleTableColumnVisibilityChange, hideableTableColumnOptions])
+
+  const hideOptionalTableColumns = useCallback(() => {
+    handleTableColumnVisibilityChange([])
+  }, [handleTableColumnVisibilityChange])
+
+  const showTableColumnPickerUi =
+    showTableColumnPicker && hideableTableColumnOptions.length > 0
 
   // Debounced column filter input component
   function DebouncedFilterInput({
@@ -1379,358 +1605,456 @@ export function AdminDataTable<TData>({
     )
   }
 
+  const showSearchToolbarPanel =
+    showGlobalFilter ||
+    filterToolbarExtra ||
+    xlsxExportEnabled ||
+    showClearFiltersButton
+  const showBulkBar = rowSelectionActive && hasBulkActions
+
   return (
-    <div className="space-y-3">
-      {(showGlobalFilter ||
-        filterableHeaders.length > 0 ||
-        filterToolbarExtra ||
-        xlsxExportEnabled ||
-        (rowSelectionActive && hasBulkActions)) && (
-        <div className="space-y-4 bg-card">
-          {showGlobalFilter || filterToolbarExtra || xlsxExportEnabled ? (
-            <div className="flex flex-wrap items-end gap-3">
-              {showGlobalFilter ? (
-                <div className="flex min-w-[min(100%,18rem)] flex-1 flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground">
-                    Tìm nhanh
-                  </label>
-                  <Input
-                    placeholder={globalFilterPlaceholder}
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-              ) : null}
-              <div className="flex shrink-0 flex-wrap items-end gap-2">
-                {showClearFiltersButton ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      Bộ lọc
-                    </span>
-                    <Button
-                      type="button"
-                      variant={"destructive"}
-                      onClick={handleClearFilters}
-                      title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
+    <div className="flex flex-col gap-4">
+      {showSearchToolbarPanel || showBulkBar ? (
+        <FieldSet variant="custom" className={DATA_TABLE_PANEL_FIELDSET_CLASS}>
+          <DataTablePanelLegend>Tìm kiếm & thao tác</DataTablePanelLegend>
+          <FieldSetContent className="space-y-4">
+            {showSearchToolbarPanel ? (
+              <div className="flex flex-wrap items-end gap-3">
+                {showGlobalFilter ? (
+                  <Field className="min-w-[min(100%,18rem)] flex-1 gap-1.5">
+                    <FieldLabel
+                      htmlFor={globalFilterControlId}
+                      className="text-xs font-semibold text-muted-foreground"
                     >
-                      <FilterX className="size-4" />
-                      Xóa bộ lọc
-                    </Button>
-                  </div>
-                ) : null}
-                {xlsxExportEnabled ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      Xuất file
-                    </span>
-                    <Button
-                      type="button"
-                      variant="success"
-                      disabled={data.length === 0}
-                      onClick={handleXlsxExport}
-                      title="Excel: cột rộng theo nội dung, Unicode chuẩn"
-                    >
-                      <Download className="size-4" />
-                      Download Excel
-                    </Button>
-                  </div>
-                ) : null}
-                {filterToolbarExtra ? (
-                  <div className="flex flex-wrap gap-2">
-                    {filterToolbarExtra}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-          <BulkActionsBar
-            visible={rowSelectionActive && hasBulkActions}
-            selectedCount={selectedCount}
-            bulkActions={bulkActions}
-            selectedRows={selectedRows}
-            runningBulkActionId={runningBulkActionId}
-            onRunAction={runBulkAction}
-          />
-          {filterableHeaders.length > 0 && (
-            <div className="space-y-2">
-              <Divider
-                label={
-                  <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
-                    <ListFilter
-                      className="size-4 shrink-0 text-primary/80"
-                      aria-hidden
-                    />
-                    Lọc theo cột
-                  </TypographyPSmall>
-                }
-              />
-              <div className="flex flex-wrap items-center gap-2">
-                {filterColumnVisibilityKey && (
-                  <div className="flex flex-wrap items-end gap-2">
-                    <div className="min-w-[14rem]">
-                      <TreeMultiSelectPicker
-                        value={filterableHeaders
-                          .filter((h) => filterColumnVisibility[h.id] !== false)
-                          .map((h) => h.id)}
-                        onChange={handleFilterColumnVisibilityChange}
-                        options={filterColumnOptions}
-                        placeholder="Chọn cột lọc"
-                        showBulkActions
+                      Tìm nhanh
+                    </FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id={globalFilterControlId}
+                        placeholder={globalFilterPlaceholder}
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className="w-full"
                       />
+                    </FieldContent>
+                  </Field>
+                ) : null}
+                <div className="flex shrink-0 flex-wrap items-end gap-2">
+                  {showClearFiltersButton ? (
+                    <Field className="w-auto gap-1.5">
+                      <FieldTitle className="text-xs font-semibold text-muted-foreground">
+                        Bộ lọc
+                      </FieldTitle>
+                      <FieldContent>
+                        <Button
+                          type="button"
+                          variant={"destructive"}
+                          onClick={handleClearFilters}
+                          title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
+                        >
+                          <FilterX className="size-4" />
+                          Xóa bộ lọc
+                        </Button>
+                      </FieldContent>
+                    </Field>
+                  ) : null}
+                  {xlsxExportEnabled ? (
+                    <Field className="w-auto gap-1.5">
+                      <FieldTitle className="text-xs font-semibold text-muted-foreground">
+                        Xuất file
+                      </FieldTitle>
+                      <FieldContent>
+                        <Button
+                          type="button"
+                          variant="success"
+                          disabled={data.length === 0}
+                          onClick={handleXlsxExport}
+                          title="Excel: cột rộng theo nội dung, Unicode chuẩn"
+                        >
+                          <Download className="size-4" />
+                          Download Excel
+                        </Button>
+                      </FieldContent>
+                    </Field>
+                  ) : null}
+                  {filterToolbarExtra ? (
+                    <div className="flex flex-wrap gap-2">
+                      {filterToolbarExtra}
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-9 gap-1.5"
-                      onClick={showAllFilterColumns}
-                    >
-                      <Eye className="size-4 shrink-0" aria-hidden />
-                      Hiện tất cả
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-9 gap-1.5"
-                      onClick={hideAllFilterColumns}
-                    >
-                      <EyeOff className="size-4 shrink-0" aria-hidden />
-                      Ẩn tất cả
-                    </Button>
-                  </div>
-                )}
+                  ) : null}
+                </div>
               </div>
-              <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-                {visibleFilterableHeaders.map((header) => (
-                  <div
-                    key={header.id}
-                    className="flex w-[12rem] min-w-[min(100%,12rem)] flex-col gap-1"
+            ) : null}
+            <BulkActionsBar
+              visible={showBulkBar}
+              selectedCount={selectedCount}
+              bulkActions={bulkActions}
+              selectedRows={selectedRows}
+              runningBulkActionId={runningBulkActionId}
+              onRunAction={runBulkAction}
+            />
+          </FieldSetContent>
+        </FieldSet>
+      ) : null}
+      {filterableHeaders.length > 0 ? (
+        <FieldSet variant="custom" className={DATA_TABLE_PANEL_FIELDSET_CLASS}>
+          <DataTablePanelLegend icon={ListFilter}>
+            Lọc theo cột
+          </DataTablePanelLegend>
+          <FieldSetContent className="space-y-3">
+            <div className="w-full flex flex-wrap items-end justify-end gap-2">
+              {resolvedFilterColumnVisibilityKey ? (
+                <>
+                  <div className="w-full max-w-[14rem] flex-1">
+                    <Field className="w-full gap-1">
+                      <FieldLabel className="text-xs font-medium text-foreground/80">
+                        Chọn cột lọc
+                      </FieldLabel>
+                      <FieldContent>
+                        <TreeMultiSelectPicker
+                          value={filterableHeaders
+                            .filter(
+                              (h) => filterColumnVisibility[h.id] !== false
+                            )
+                            .map((h) => h.id)}
+                          onChange={handleFilterColumnVisibilityChange}
+                          options={filterColumnOptions}
+                          placeholder="Chọn cột lọc"
+                          showBulkActions
+                        />
+                      </FieldContent>
+                    </Field>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-9 gap-1.5"
+                    onClick={showAllFilterColumns}
                   >
-                    <label
-                      htmlFor={`admin-col-filter-ctl-${header.id}`}
+                    <Eye className="size-4 shrink-0" aria-hidden />
+                    Hiện tất cả
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-9 gap-1.5"
+                    onClick={hideAllFilterColumns}
+                  >
+                    <EyeOff className="size-4 shrink-0" aria-hidden />
+                    Ẩn tất cả
+                  </Button>
+                </>
+              ) : null}
+            </div>
+            <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+              {visibleFilterableHeaders.map((header) => {
+                const filterControlId = `admin-col-filter-ctl-${header.id}`
+                return (
+                  <Field
+                    key={header.id}
+                    className="w-[12rem] min-w-[min(100%,12rem)] gap-1"
+                  >
+                    <FieldLabel
+                      htmlFor={filterControlId}
                       className="text-xs font-medium text-foreground/80"
                     >
                       {columnFilterToolbarLabel(header)}
-                    </label>
-                    <div>{renderOutsideColumnFilter(header)}</div>
-                  </div>
-                ))}
-              </div>
+                    </FieldLabel>
+                    <FieldContent>
+                      {renderOutsideColumnFilter(header)}
+                    </FieldContent>
+                  </Field>
+                )
+              })}
             </div>
-          )}
-        </div>
-      )}
-      <Divider
-        label={
-          <TypographyPSmall className="flex items-center gap-1.5 font-semibold">
-            <Table2 className="size-4 shrink-0 text-primary/80" aria-hidden />
-            Dữ liệu
-          </TypographyPSmall>
-        }
-      />
-      <DataTableRowActionsRegistryProvider>
-      <DataTableScopeProvider scopeId={tableScopeId}>
-      <DataTableHorizontalScroll
-        enabled={horizontalScrollButtons}
-        watchKey={`${isLoading}-${data.length}`}
+          </FieldSetContent>
+        </FieldSet>
+      ) : null}
+      <FieldSet
+        variant="custom"
+        className={cn("min-w-0", DATA_TABLE_PANEL_FIELDSET_CLASS)}
       >
-        <div className="border border-border">
-          <Table
-            className="min-w-[640px]"
-            scrollContainerClassName={
-              resolvedTableScrollMaxHeight != null ? "overflow-auto" : undefined
-            }
-            scrollContainerStyle={tableScrollContainerStyle}
+        <div className="w-full flex flex-wrap items-end justify-end gap-4 mb-4">
+          <div className="w-full max-w-[14rem] flex-1">
+            <Field className="w-full gap-1">
+              <FieldLabel className="text-xs font-medium text-foreground/80">
+                Hiện cột
+              </FieldLabel>
+              <FieldContent>
+                <TreeMultiSelectPicker
+                  value={hideableTableColumnOptions
+                    .filter(
+                      (option) =>
+                        table.getColumn(option.value)?.getIsVisible() !== false
+                    )
+                    .map((option) => option.value)}
+                  onChange={handleTableColumnVisibilityChange}
+                  options={hideableTableColumnOptions}
+                  placeholder="Chọn cột hiển thị"
+                  showBulkActions
+                />
+              </FieldContent>
+            </Field>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 gap-1.5"
+            onClick={showAllTableColumns}
           >
-          <TableHeader className="bg-primary text-primary-foreground">
-            {headerGroups.map((hg) => (
-              <TableRow key={hg.id} className="hover:bg-transparent">
-                {hg.headers.map((header) => {
-                  const isSelectionCol =
-                    header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
-                  const headerMeta = header.column.columnDef.meta as
-                    | ColumnMeta
-                    | undefined
-                  const isActionsCol = isDataTableActionsColumn(
-                    header.column.id,
-                    headerMeta
-                  )
-                  const headBoxStyle = isSelectionCol
-                    ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
-                    : columnSizeBoxStyle(header.column)
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={cn(
-                        "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
-                        header.column.getCanSort() &&
-                          "cursor-pointer select-none",
-                        cellWidthClassName(headerMeta, header.column.columnDef),
-                        stickyPinnedHeadCellClassName({
-                          isSelectionCol,
-                          isActionsCol,
-                          stickyTableHeader,
-                        }),
-                        stickyTableHeadClassName({
-                          enabled: stickyTableHeader,
-                          isSelectionCol,
-                          isActionsCol,
-                        })
-                      )}
-                      style={{
-                        ...headBoxStyle,
-                        ...stickyTableHeadTopStyle(
-                          stickyTableHeader,
-                          stickyTableHeaderTop
-                        ),
-                      }}
-                      onClick={
-                        header.column.getCanSort()
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div
-                          className={cn(
-                            "flex h-full gap-1",
-                            isSelectionCol || isActionsCol
-                              ? "flex-row items-center justify-center"
-                              : "flex-col items-start justify-center"
-                          )}
-                        >
-                          <span className="flex items-center gap-1">
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {header.column.getIsSorted() === "asc"
-                              ? " ↑"
-                              : header.column.getIsSorted() === "desc"
-                                ? " ↓"
-                                : null}
-                          </span>
-                        </div>
-                      )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {rows.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={tableColumns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  {emptyLabel}
-                </TableCell>
-              </TableRow>
-            ) : (
-              rows.map((row) => (
-                <DataTableRowActionsRowProvider key={row.id} rowId={row.id}>
-                  <DataTableRowContextMenu
-                    rowId={row.id}
-                    enabled={rowContextMenuEnabled}
-                    data-depth={row.depth}
-                    className={dataTableRowBodyClassName({
-                      rowIndex: row.index,
-                      isSelected: row.getIsSelected(),
-                      extra: getRowClassName?.(row),
-                    })}
-                    style={{
-                      borderLeft:
-                        row.depth > 0
-                          ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
-                          : undefined,
-                    }}
-                  >
-                  {row.getVisibleCells().map((cell) => {
-                    const colIndex = cell.column.getIndex()
-                    // Calculate which column should get indent:
-                    // if rowSelection + expander: first data column is at index 2
-                    // if only expander: first data column is at index 1
-                    // if only rowSelection: first data column is at index 1
-                    const firstDataColumnIndex =
-                      (rowSelectionActive ? 1 : 0) +
-                      (getSubRows ? 1 : 0) +
-                      (indexColumnEnabled ? 1 : 0)
-                    const indent =
-                      getSubRows && colIndex === firstDataColumnIndex
-                        ? row.depth * 24
-                        : 0
-                    const isSelectionCol =
-                      cell.column.id === DATA_TABLE_SELECTION_COLUMN_ID
-                    const cellMeta = cell.column.columnDef.meta as
-                      | ColumnMeta
-                      | undefined
-                    const isActionsCol = isDataTableActionsColumn(
-                      cell.column.id,
-                      cellMeta
-                    )
-                    const isPinnedCol = isSelectionCol || isActionsCol
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          cellWidthClassName(cellMeta, cell.column.columnDef),
-                          isPinnedCol &&
-                            stickyPinnedBodyCellClassName({
-                              rowIndex: row.index,
-                              isSelected: row.getIsSelected(),
-                              side: isSelectionCol ? "left" : "right",
-                            }),
-                          isSelectionCol && "px-0",
-                          isActionsCol && "px-1"
-                        )}
-                        style={{
-                          ...(isSelectionCol
-                            ? selectionColumnBoxStyle(
-                                resolvedSelectionColumnWidth
-                              )
-                            : columnSizeBoxStyle(cell.column)),
-                          paddingLeft:
-                            indent > 0
-                              ? `calc(0.5rem + ${indent}px)`
-                              : undefined,
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )
-                  })}
-                  </DataTableRowContextMenu>
-                </DataTableRowActionsRowProvider>
-              ))
-            )}
-          </TableBody>
-          </Table>
+            <Eye className="size-4 shrink-0" aria-hidden />
+            Hiện tất cả
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 gap-1.5"
+            onClick={hideOptionalTableColumns}
+          >
+            <EyeOff className="size-4 shrink-0" aria-hidden />
+            Ẩn tùy chọn
+          </Button>
         </div>
-      </DataTableHorizontalScroll>
-      </DataTableScopeProvider>
-      </DataTableRowActionsRegistryProvider>
-      {showTableFooter ? (
-        <div
-          className={cn(
-            "flex flex-col gap-3 border-t border-border/80 bg-muted/15 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4",
-            paginationFooter && !footer && "sm:justify-center"
-          )}
-        >
-          {footer ? (
-            <div className="min-w-0 flex-1 text-sm text-muted-foreground">
-              {footer}
+        <DataTablePanelLegend icon={Table2}>Dữ liệu</DataTablePanelLegend>
+        <FieldSetContent className="space-y-0 p-0">
+          <DataTableRowActionsRegistryProvider>
+            <DataTableScopeProvider scopeId={tableScopeId}>
+              <DataTableHorizontalScroll
+                enabled={horizontalScrollButtons}
+                watchKey={`${isLoading}-${data.length}`}
+              >
+                <div className="border border-border">
+                  <Table
+                    className="min-w-[640px]"
+                    scrollContainerClassName={
+                      resolvedTableScrollMaxHeight != null
+                        ? "overflow-auto"
+                        : undefined
+                    }
+                    scrollContainerStyle={tableScrollContainerStyle}
+                  >
+                    <TableHeader className="bg-primary text-primary-foreground">
+                      {headerGroups.map((hg) => (
+                        <TableRow key={hg.id} className="hover:bg-transparent">
+                          {hg.headers.map((header) => {
+                            const isSelectionCol =
+                              header.column.id ===
+                              DATA_TABLE_SELECTION_COLUMN_ID
+                            const headerMeta = header.column.columnDef.meta as
+                              | ColumnMeta
+                              | undefined
+                            const isActionsCol = isDataTableActionsColumn(
+                              header.column.id,
+                              headerMeta
+                            )
+                            const headBoxStyle = isSelectionCol
+                              ? selectionColumnBoxStyle(
+                                  resolvedSelectionColumnWidth
+                                )
+                              : columnSizeBoxStyle(header.column)
+                            return (
+                              <TableHead
+                                key={header.id}
+                                className={cn(
+                                  "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
+                                  header.column.getCanSort() &&
+                                    "cursor-pointer select-none",
+                                  dataTableCellWidthClassName(
+                                    header.column.id,
+                                    headerMeta,
+                                    header.column.columnDef
+                                  ),
+                                  stickyPinnedHeadCellClassName({
+                                    isSelectionCol,
+                                    isActionsCol,
+                                    stickyTableHeader,
+                                  }),
+                                  stickyTableHeadClassName({
+                                    enabled: stickyTableHeader,
+                                    isSelectionCol,
+                                    isActionsCol,
+                                  })
+                                )}
+                                style={{
+                                  ...headBoxStyle,
+                                  ...stickyTableHeadTopStyle(
+                                    stickyTableHeader,
+                                    stickyTableHeaderTop
+                                  ),
+                                }}
+                                onClick={
+                                  header.column.getCanSort()
+                                    ? header.column.getToggleSortingHandler()
+                                    : undefined
+                                }
+                              >
+                                {header.isPlaceholder ? null : (
+                                  <div
+                                    className={cn(
+                                      "flex h-full gap-1",
+                                      isSelectionCol || isActionsCol
+                                        ? "flex-row items-center justify-center"
+                                        : "flex-col items-start justify-center"
+                                    )}
+                                  >
+                                    <span className="flex items-center gap-1">
+                                      {flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                      )}
+                                      {header.column.getIsSorted() === "asc"
+                                        ? " ↑"
+                                        : header.column.getIsSorted() === "desc"
+                                          ? " ↓"
+                                          : null}
+                                    </span>
+                                  </div>
+                                )}
+                              </TableHead>
+                            )
+                          })}
+                        </TableRow>
+                      ))}
+                    </TableHeader>
+                    <TableBody>
+                      {rows.length === 0 ? (
+                        <TableRow>
+                          <TableCell
+                            colSpan={tableColumns.length}
+                            className="h-24 text-center text-muted-foreground"
+                          >
+                            {emptyLabel}
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        rows.map((row) => (
+                          <DataTableRowActionsRowProvider
+                            key={row.id}
+                            rowId={row.id}
+                          >
+                            <DataTableRowContextMenu
+                              rowId={row.id}
+                              enabled={rowContextMenuEnabled}
+                              data-depth={row.depth}
+                              className={dataTableRowBodyClassName({
+                                rowIndex: row.index,
+                                isSelected: row.getIsSelected(),
+                                extra: getRowClassName?.(row),
+                              })}
+                              style={{
+                                borderLeft:
+                                  row.depth > 0
+                                    ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
+                                    : undefined,
+                              }}
+                            >
+                              {row.getVisibleCells().map((cell) => {
+                                const colIndex = cell.column.getIndex()
+                                // Cột dữ liệu đầu tiên — sau checkbox, STT, expander (theo thứ tự đó).
+                                const firstDataColumnIndex =
+                                  (rowSelectionActive ? 1 : 0) +
+                                  (indexColumnEnabled ? 1 : 0) +
+                                  (getSubRows ? 1 : 0)
+                                const indent =
+                                  getSubRows &&
+                                  colIndex === firstDataColumnIndex
+                                    ? row.depth * 24
+                                    : 0
+                                const isSelectionCol =
+                                  cell.column.id ===
+                                  DATA_TABLE_SELECTION_COLUMN_ID
+                                const cellMeta = cell.column.columnDef.meta as
+                                  | ColumnMeta
+                                  | undefined
+                                const isActionsCol = isDataTableActionsColumn(
+                                  cell.column.id,
+                                  cellMeta
+                                )
+                                const isPinnedCol =
+                                  isSelectionCol || isActionsCol
+                                return (
+                                  <TableCell
+                                    key={cell.id}
+                                    className={cn(
+                                      dataTableCellWidthClassName(
+                                        cell.column.id,
+                                        cellMeta,
+                                        cell.column.columnDef
+                                      ),
+                                      isPinnedCol &&
+                                        stickyPinnedBodyCellClassName({
+                                          rowIndex: row.index,
+                                          isSelected: row.getIsSelected(),
+                                          side: isSelectionCol
+                                            ? "left"
+                                            : "right",
+                                        }),
+                                      isSelectionCol && "px-0",
+                                      isActionsCol && "px-1"
+                                    )}
+                                    style={{
+                                      ...(isSelectionCol
+                                        ? selectionColumnBoxStyle(
+                                            resolvedSelectionColumnWidth
+                                          )
+                                        : columnSizeBoxStyle(cell.column)),
+                                      paddingLeft:
+                                        indent > 0
+                                          ? `calc(0.5rem + ${indent}px)`
+                                          : undefined,
+                                    }}
+                                  >
+                                    {(() => {
+                                      const cellContent = flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
+                                      )
+                                      const clampClass =
+                                        dataTableCellContentClampClassName(
+                                          cell.column.id,
+                                          cellMeta
+                                        )
+                                      if (!clampClass) return cellContent
+                                      return (
+                                        <div className={clampClass}>
+                                          {cellContent}
+                                        </div>
+                                      )
+                                    })()}
+                                  </TableCell>
+                                )
+                              })}
+                            </DataTableRowContextMenu>
+                          </DataTableRowActionsRowProvider>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </DataTableHorizontalScroll>
+            </DataTableScopeProvider>
+          </DataTableRowActionsRegistryProvider>
+          {showTableFooter ? (
+            <div
+              className={cn(
+                "flex flex-col gap-3 border-t border-border/80 bg-muted/15 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4",
+                paginationFooter && !footer && "sm:justify-center"
+              )}
+            >
+              {footer ? (
+                <div className="min-w-0 flex-1 text-sm text-muted-foreground">
+                  {footer}
+                </div>
+              ) : null}
+              {paginationFooter}
             </div>
           ) : null}
-          {paginationFooter}
-        </div>
-      ) : null}
+        </FieldSetContent>
+      </FieldSet>
 
       <BulkActionConfirmDialog
         confirmAction={confirmAction}
@@ -1766,27 +2090,25 @@ function BulkActionConfirmDialog<TData>({
 }: BulkActionConfirmDialogProps<TData>) {
   const isOpen = confirmAction != null
 
-  const title =
-    typeof confirmAction?.confirm === "object"
-      ? confirmAction.confirm.title
-      : (confirmAction?.label ?? "Xác nhận thao tác")
+  const title = confirmAction
+    ? resolveBulkActionConfirmTitle(confirmAction)
+    : "Xác nhận thao tác"
 
-  const description =
-    typeof confirmAction?.confirm === "object" &&
-    confirmAction.confirm.description
-      ? typeof confirmAction.confirm.description === "function"
-        ? confirmAction.confirm.description(selectedRows)
-        : confirmAction.confirm.description
-      : `Bạn đã chọn ${selectedCount} mục. Thao tác này không thể hoàn tác.`
+  const description = confirmAction
+    ? resolveBulkActionConfirmDescription(
+        confirmAction,
+        selectedCount,
+        selectedRows
+      )
+    : null
 
-  const confirmLabel =
-    typeof confirmAction?.confirm === "object"
-      ? confirmAction.confirm.confirmLabel
-      : "Xác nhận"
+  const confirmLabel = confirmAction
+    ? resolveBulkActionConfirmLabel(confirmAction)
+    : "Xác nhận"
 
-  const isDestructive =
-    typeof confirmAction?.confirm === "object" &&
-    confirmAction.confirm.destructive
+  const isDestructive = confirmAction
+    ? resolveBulkActionConfirmDestructive(confirmAction)
+    : false
 
   return (
     <AlertDialog

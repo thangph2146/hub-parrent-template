@@ -38,13 +38,13 @@ export function TrainingLevelsTable({
 }: TrainingLevelsTableProps) {
   return (
     <AdminDataTable<TrainingLevelRow>
+      tableScope="training-levels"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có bậc học — bấm "Thêm bậc học".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:training-levels-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

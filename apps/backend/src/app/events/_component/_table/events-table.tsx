@@ -43,13 +43,13 @@ export function EventsTable({
 }: EventsTableProps) {
   return (
     <AdminDataTable<EventRow>
+      tableScope="events"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có sự kiện — bấm "Thêm sự kiện".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:events-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

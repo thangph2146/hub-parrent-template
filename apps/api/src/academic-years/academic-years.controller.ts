@@ -29,6 +29,7 @@ import {
   createErrorResponse,
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('AcademicYears')
 @Controller(ADMIN_ROUTES.ACADEMIC_YEARS)
@@ -85,7 +86,7 @@ export class AcademicYearsController {
     if (!userId) return this.unauthorized(res);
     const result = await this.service.list({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: (status as 'active' | 'deleted' | 'all') ?? 'active',
       statusFilter: statusFilter != null ? Number(statusFilter) : undefined,

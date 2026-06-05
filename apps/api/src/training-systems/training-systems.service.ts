@@ -7,6 +7,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface TrainingSystemRowDto {
   id: number;
@@ -69,11 +70,8 @@ export class TrainingSystemsService {
   async list(
     params: ListTrainingSystemsParams,
   ): Promise<ListTrainingSystemsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';
 

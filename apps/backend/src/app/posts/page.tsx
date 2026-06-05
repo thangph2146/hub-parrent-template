@@ -269,6 +269,10 @@ function PostsPageInner() {
             }}
             canExport={canExport}
             canDelete={canDelete}
+            listQuery={{
+              search: debouncedQ.trim() || undefined,
+              filters: postColumnFilterQuery,
+            }}
           />
         </TabsContent>
 
@@ -304,6 +308,10 @@ function PostsPageInner() {
             canExport={canExport}
             canRestore={canRestore}
             canDelete={canDelete}
+            listQuery={{
+              search: debouncedTrashQ.trim() || undefined,
+              filters: trashColumnFilterQuery,
+            }}
           />
         </TabsContent>
       </Tabs>

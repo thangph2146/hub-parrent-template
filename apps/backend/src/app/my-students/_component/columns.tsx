@@ -19,6 +19,7 @@ import {
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
 import type { MyStudentRow } from "./types"
+import { defineRelationExportColumns } from "@ui/components/data-table"
 
 function recordLabel(row: MyStudentRow): string {
   return row.studentName?.trim() || row.studentCode
@@ -70,7 +71,7 @@ export function getMyStudentsColumns(
       cell: ({ getValue }) => {
         const v = getValue() as string | null
         return v ? (
-          <span className="line-clamp-2 text-xs text-muted-foreground">{v}</span>
+          <span className="text-xs text-muted-foreground">{v}</span>
         ) : (
           <span className="text-xs italic opacity-40">—</span>
         )
@@ -125,6 +126,10 @@ export function getMyStudentsColumns(
         )
       },
     },
+    ...defineRelationExportColumns<MyStudentRow>([
+      { id: "parentId", header: "ID phụ huynh", getValue: (r) => r.parentId },
+      { id: "reviewedAt", header: "Duyệt lúc", getValue: (r) => r.reviewedAt ?? "" },
+    ]),
     {
       id: "actions",
       header: "Thao tác",

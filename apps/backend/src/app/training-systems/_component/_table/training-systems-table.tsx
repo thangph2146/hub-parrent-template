@@ -43,13 +43,13 @@ export function TrainingSystemsTable({
 }: TrainingSystemsTableProps) {
   return (
     <AdminDataTable<TrainingSystemRow>
+      tableScope="training-systems"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có hệ đào tạo — bấm "Thêm hệ đào tạo".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:training-systems-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

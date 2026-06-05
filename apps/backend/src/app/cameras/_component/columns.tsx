@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { CameraRow } from "./types";
 
@@ -47,12 +48,16 @@ export function getCameraColumns({
       ),
     },
     {
-      id: "linkedEventId",
+      id: "linkedEventTitle",
       header: "Sự kiện",
+      accessorFn: (row) => row.linkedEventTitle ?? row.linkedEventId ?? "",
       enableColumnFilter: false,
+      meta: { defaultHidden: false },
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground truncate max-w-[140px] block">
-          {row.original.linkedEventId ? row.original.linkedEventId.slice(0, 8) + "…" : "—"}
+        <span className="block max-w-[180px] truncate text-sm">
+          {row.original.linkedEventTitle?.trim() ||
+            row.original.linkedEventId ||
+            "—"}
         </span>
       ),
     },
@@ -94,6 +99,24 @@ export function getCameraColumns({
         />
       ),
     },
+    ...defineRelationExportColumns<CameraRow>([
+      {
+        id: "linkedEventId",
+        header: "ID sự kiện",
+        getValue: (row) => row.linkedEventId ?? "",
+        defaultHidden: true,
+      },
+      {
+        id: "linkedEventSlug",
+        header: "Slug sự kiện",
+        getValue: (row) => row.linkedEventSlug ?? "",
+        defaultHidden: true,
+      },
+      { id: "username", header: "Username", getValue: (row) => row.username ?? "" },
+      { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
+      { id: "updatedAt", header: "Cập nhật lúc", getValue: (row) => row.updatedAt },
+      { id: "id", header: "ID", getValue: (row) => row.id, defaultHidden: true },
+    ]),
     defineAdminCrudActionsColumn<CameraRow>({
       canWrite,
       onView: openDetail,

@@ -43,13 +43,13 @@ export function CoursesTable({
 }: CoursesTableProps) {
   return (
     <AdminDataTable<CourseRow>
+      tableScope="courses"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có khóa học — bấm "Thêm khóa học".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:courses-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

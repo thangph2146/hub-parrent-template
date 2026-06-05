@@ -9,6 +9,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventSpeakerRowDto {
   id: string;
@@ -84,11 +85,8 @@ export class EventSpeakersService {
   async list(
     params: ListEventSpeakersParams,
   ): Promise<ListEventSpeakersResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const [rows, total] = await Promise.all([
       this.em.find(
         EventSpeaker,

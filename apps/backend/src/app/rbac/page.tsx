@@ -1,8 +1,8 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useCallback, useMemo, useState } from "react"
-import type { ColumnDef, RowSelectionState } from "@tanstack/react-table"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   AlertCircle,
@@ -45,10 +45,7 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import {
-  AdminConfirmActionDialog,
-  defineAdminTrashActionsColumn,
-} from "@ui/components/admin";
+import { AdminConfirmActionDialog } from "@ui/components/admin";
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
@@ -61,23 +58,16 @@ import {
 } from "@/lib/permission-labels"
 import { useAuth } from "@/providers/auth-provider"
 import { canEditSuperAdminRole } from "@/config/protected-admin"
-import { getRbacColumns } from "./_component/columns"
+import { getRbacColumns, getRbacTrashColumns } from "./_component/columns"
+import {
+  buildRolesFilterQuery,
+  mapRoleRow,
+  type RoleRow,
+} from "./_component/utils"
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_DIALOG_CONTENT_LG_CLASS,
 } from "@ui/lib/layout-shell"
-
-type RoleRow = {
-  id: string
-  code: string
-  name: string
-  description: string | null
-  permissions: string[]
-  isActive: boolean
-  createdAt: string | null
-  updatedAt: string | null
-  deletedAt: string | null
-}
 
 type PagedResult<T> = {
   items: T[]
@@ -168,27 +158,6 @@ const EMPTY_FORM: RoleFormState = {
   permissions: [],
 }
 
-function normalizePermissionCodes(value: unknown): string[] {
-  const visit = (input: unknown): string[] => {
-    if (Array.isArray(input)) return input.flatMap((item) => visit(item))
-    if (typeof input !== "string") return []
-    const trimmed = input.trim()
-    if (!trimmed) return []
-    if (
-      (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
-      (trimmed.startsWith('"') && trimmed.endsWith('"'))
-    ) {
-      try {
-        return visit(JSON.parse(trimmed))
-      } catch {
-        return [trimmed]
-      }
-    }
-    return [trimmed]
-  }
-  return [...new Set(visit(value))].sort((a, b) => a.localeCompare(b))
-}
-
 function roleCodeify(input: string): string {
   return input
     .toLowerCase()
@@ -242,6 +211,9 @@ export default function RbacPage() {
   const [trashPageSize, setTrashPageSize] = useState(15)
   const [globalFilter, setGlobalFilter] = useState("")
   const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [trashColumnFilters, setTrashColumnFilters] =
+    useState<ColumnFiltersState>([])
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({})
   const [trashSelectedRowIds, setTrashSelectedRowIds] =
     useState<RowSelectionState>({})
@@ -256,35 +228,72 @@ export default function RbacPage() {
   const debouncedQ = useDebouncedValue(globalFilter, 300)
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 300)
 
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedQ, pageSize, columnFilters])
+
+  useEffect(() => {
+    setTrashPage(1)
+  }, [debouncedTrashQ, trashPageSize, trashColumnFilters])
+
+  const listFilters = useMemo(
+    () => buildRolesFilterQuery(columnFilters),
+    [columnFilters]
+  )
+  const trashFilters = useMemo(
+    () => buildRolesFilterQuery(trashColumnFilters),
+    [trashColumnFilters]
+  )
+
   const fetchRoles = async (params: {
-    page: number; limit: number; search?: string; status: string
+    page: number
+    limit: number
+    search?: string
+    status: string
+    filters?: Record<string, string>
   }): Promise<PagedResult<RoleRow>> => {
-    const result = await api.roles.list<Record<string, unknown>>(params);
-    const items: RoleRow[] = result.items.map((row) => ({
-      id: String(row.id ?? ""),
-      code: String(row.name ?? ""),
-      name: String(row.displayName ?? row.name ?? ""),
-      description: (row.description as string | null | undefined) ?? null,
-      permissions: normalizePermissionCodes(row.permissions),
-      isActive: Boolean(row.isActive ?? true),
-      createdAt: (row.createdAt as string | null | undefined) ?? null,
-      updatedAt: (row.updatedAt as string | null | undefined) ?? null,
-      deletedAt: (row.deletedAt as string | null | undefined) ?? null,
-    }));
-    return { items, total: result.total, page: params.page, limit: params.limit };
-  };
+    const result = await api.roles.list<Record<string, unknown>>({
+      page: params.page,
+      limit: params.limit,
+      search: params.search,
+      status: params.status,
+      filters: params.filters,
+    })
+    const items = result.items.map((row) => mapRoleRow(row))
+    return { items, total: result.total, page: params.page, limit: params.limit }
+  }
 
   const listQuery = useQuery({
-    queryKey: ["rbac", "roles", "list", page, pageSize, debouncedQ],
+    queryKey: ["rbac", "roles", "list", page, pageSize, debouncedQ, listFilters],
     queryFn: (): Promise<PagedResult<RoleRow>> =>
-      fetchRoles({ page, limit: pageSize, search: debouncedQ.trim() || undefined, status: "active" }),
+      fetchRoles({
+        page,
+        limit: pageSize,
+        search: debouncedQ.trim() || undefined,
+        status: "active",
+        filters: listFilters,
+      }),
     enabled: Boolean(session) && canReadRbac && tab === "list",
   })
 
   const trashQuery = useQuery({
-    queryKey: ["rbac", "roles", "trash", trashPage, trashPageSize, debouncedTrashQ],
+    queryKey: [
+      "rbac",
+      "roles",
+      "trash",
+      trashPage,
+      trashPageSize,
+      debouncedTrashQ,
+      trashFilters,
+    ],
     queryFn: (): Promise<PagedResult<RoleRow>> =>
-      fetchRoles({ page: trashPage, limit: trashPageSize, search: debouncedTrashQ.trim() || undefined, status: "deleted" }),
+      fetchRoles({
+        page: trashPage,
+        limit: trashPageSize,
+        search: debouncedTrashQ.trim() || undefined,
+        status: "deleted",
+        filters: trashFilters,
+      }),
     enabled: Boolean(session) && canReadRbac && tab === "trash",
   })
 
@@ -450,33 +459,10 @@ export default function RbacPage() {
     [canEditProtectedSuperAdmin, canManageRoles, router]
   )
 
-  const trashColumns = useMemo<ColumnDef<RoleRow>[]>(
-    () => [
-      {
-        accessorKey: "name",
-        header: "Vai trò",
-        cell: ({ row }) => (
-          <div>
-            <div className="font-medium">{row.original.name}</div>
-            <div className="font-mono text-xs text-muted-foreground">
-              {row.original.code}
-            </div>
-          </div>
-        ),
-      },
-      {
-        accessorKey: "deletedAt",
-        header: "Xóa lúc",
-        cell: ({ row }) => (
-          <TypographyPSmallMuted>
-            {row.original.deletedAt
-              ? new Date(row.original.deletedAt).toLocaleString("vi-VN")
-              : "—"}
-          </TypographyPSmallMuted>
-        ),
-      },
-      defineAdminTrashActionsColumn<RoleRow>({
-        canWrite: canManageRoles,
+  const trashColumns = useMemo(
+    () =>
+      getRbacTrashColumns({
+        canManageRoles,
         onRestore: (role) => setRestoreTarget(role),
         onPurge: (role) => {
           if (isSuperAdminRoleCode(role.code)) {
@@ -488,7 +474,6 @@ export default function RbacPage() {
           setPurgeTarget(role)
         },
       }),
-    ],
     [canManageRoles]
   )
 
@@ -560,15 +545,22 @@ export default function RbacPage() {
 
           <TabsContent value="list" className="mt-4 space-y-4">
             <AdminDataTable<RoleRow>
+              tableScope="rbac"
               data={listItems}
               getRowId={(row) => row.id}
               columns={columns}
               isLoading={listQuery.isLoading || permissionCatalog.isLoading}
               emptyLabel="Chưa có vai trò."
               manualFiltering
+              columnFilters={columnFilters}
+              onColumnFiltersChange={setColumnFilters}
               globalFilter={globalFilter}
               onGlobalFilterChange={setGlobalFilter}
               globalFilterPlaceholder="Tìm theo tên, mã role..."
+              onClearFilters={() => {
+                setGlobalFilter("")
+                setColumnFilters([])
+              }}
               {...(canManageRoles
                 ? adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds)
                 : {})}
@@ -611,6 +603,16 @@ export default function RbacPage() {
                 pageCount: listItems.length,
                 total: listQuery.data?.total ?? 0,
               })}
+              exportFetchPage={async ({ page: exportPage, limit }) => {
+                const result = await fetchRoles({
+                  page: exportPage,
+                  limit,
+                  search: debouncedQ.trim() || undefined,
+                  status: "active",
+                  filters: listFilters,
+                })
+                return { items: result.items, total: result.total }
+              }}
               pagination={{
         page,
         pageSize,
@@ -626,15 +628,22 @@ export default function RbacPage() {
 
           <TabsContent value="trash" className="mt-4">
             <AdminDataTable<RoleRow>
+              tableScope="rbac-trash"
               data={trashItems}
               getRowId={(row) => row.id}
               columns={trashColumns}
               isLoading={trashQuery.isLoading}
               emptyLabel="Thùng rác trống."
               manualFiltering
+              columnFilters={trashColumnFilters}
+              onColumnFiltersChange={setTrashColumnFilters}
               globalFilter={trashGlobalFilter}
               onGlobalFilterChange={setTrashGlobalFilter}
               globalFilterPlaceholder="Tìm trong thùng rác..."
+              onClearFilters={() => {
+                setTrashGlobalFilter("")
+                setTrashColumnFilters([])
+              }}
               {...(canManageRoles
                 ? adminTableRowSelectionProps(
                     trashSelectedRowIds,
@@ -675,6 +684,16 @@ export default function RbacPage() {
                 pageCount: trashItems.length,
                 total: trashQuery.data?.total ?? 0,
               })}
+              exportFetchPage={async ({ page: exportPage, limit }) => {
+                const result = await fetchRoles({
+                  page: exportPage,
+                  limit,
+                  search: debouncedTrashQ.trim() || undefined,
+                  status: "deleted",
+                  filters: trashFilters,
+                })
+                return { items: result.items, total: result.total }
+              }}
               pagination={{
         page: trashPage,
         pageSize: trashPageSize,

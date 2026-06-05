@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
+import { formatHierarchicalIndexFromPath } from "../components/data-table/data-table-row-index"
 import { formatExportDateTime } from "./format-export-value"
 
 type ExportColumnMeta<T> = {
@@ -63,7 +64,7 @@ function cellText<T>(row: T, col: ColumnDef<T, unknown>): string {
   return ""
 }
 
-function shouldExportColumn<T>(col: ColumnDef<T, unknown>): boolean {
+export function shouldExportTableColumn<T>(col: ColumnDef<T, unknown>): boolean {
   if (col.id === "_expand" || col.id === "_select") return false
   if (col.id === "actions" || col.id === "attendanceActions") return false
   const meta = col.meta as ExportColumnMeta<T> | undefined
@@ -85,49 +86,87 @@ type FlatExportRow<T> = {
   row: T
   /** Tiền tố cây kiểu thư mục: `├── `, `│   └── `, … */
   treePrefix: string
+  /** Đường dẫn STT phân cấp, vd. [1, 2] → `1.2.` */
+  indexPath: number[]
 }
 
 function flattenTreeForExport<T>(
   data: T[],
-  getSubRows: (row: T) => T[] | undefined
+  getSubRows: (row: T) => T[] | undefined,
+  rootOffset = 0
 ): FlatExportRow<T>[] {
   const result: FlatExportRow<T>[] = []
 
-  function walk(rows: T[], linePrefix: string, depth: number) {
+  function walk(
+    rows: T[],
+    linePrefix: string,
+    depth: number,
+    parentIndexPath: number[]
+  ) {
     for (let index = 0; index < rows.length; index += 1) {
       const row = rows[index]!
       const isLast = index === rows.length - 1
       const connector = isLast ? "└── " : "├── "
+      const indexPath =
+        depth === 0
+          ? [index + 1 + rootOffset]
+          : [...parentIndexPath, index + 1]
 
       result.push({
         row,
         treePrefix: depth === 0 ? "" : `${linePrefix}${connector}`,
+        indexPath,
       })
 
       const children = getSubRows(row)
       if (children?.length) {
         const childLinePrefix =
           depth === 0 ? "" : `${linePrefix}${isLast ? "    " : "│   "}`
-        walk(children, childLinePrefix, depth + 1)
+        walk(children, childLinePrefix, depth + 1, indexPath)
       }
     }
   }
 
-  walk(data, "", 0)
+  walk(data, "", 0, [])
   return result
 }
 
 function resolveExportRows<T>(
   data: T[],
-  getSubRows?: (row: T) => T[] | undefined
+  getSubRows?: (row: T) => T[] | undefined,
+  indexRowOffset = 0
 ): FlatExportRow<T>[] {
-  if (getSubRows) return flattenTreeForExport(data, getSubRows)
-  return data.map((row) => ({ row, treePrefix: "" }))
+  if (getSubRows) {
+    return flattenTreeForExport(data, getSubRows, indexRowOffset)
+  }
+  return data.map((row, rowIndex) => ({
+    row,
+    treePrefix: "",
+    indexPath: [rowIndex + 1 + indexRowOffset],
+  }))
+}
+
+export function filterExportColumnsByVisibility<T>(
+  columns: ColumnDef<T, unknown>[],
+  visibleColumnIds: ReadonlySet<string>
+): ColumnDef<T, unknown>[] {
+  return columns.filter((col) => {
+    if (!shouldExportTableColumn(col)) return false
+    const id =
+      col.id ??
+      ("accessorKey" in col && col.accessorKey != null
+        ? String(col.accessorKey)
+        : undefined)
+    if (!id) return false
+    return visibleColumnIds.has(id)
+  })
 }
 
 export type BuildCsvFromColumnsOptions<T> = {
   /** Dùng khi bảng hiển thị dạng cây — xuất đủ nhánh con theo thứ tự depth-first. */
   getSubRows?: (row: T) => T[] | undefined
+  /** Bù STT khi phân trang (chỉ áp số gốc cấp 1). */
+  indexRowOffset?: number
 }
 
 /**
@@ -144,12 +183,19 @@ export function buildCsvFromColumns<T>(
   columnWidths: Array<number | undefined>
   columnWraps: Array<boolean | undefined>
 } {
-  const exportCols = columns.filter(shouldExportColumn)
+  const exportCols = columns.filter(shouldExportTableColumn)
   const headers = exportCols.map(columnTitle)
-  const exportRows = resolveExportRows(data, options?.getSubRows)
-  const rows = exportRows.map(({ row, treePrefix }, rowIndex) =>
+  const exportRows = resolveExportRows(
+    data,
+    options?.getSubRows,
+    options?.indexRowOffset ?? 0
+  )
+  const rows = exportRows.map(({ row, treePrefix, indexPath }) =>
     exportCols.map((col, colIndex) => {
-      const text = col.id === "stt" ? String(rowIndex + 1) : cellText(row, col)
+      const text =
+        col.id === "stt"
+          ? formatHierarchicalIndexFromPath(indexPath)
+          : cellText(row, col)
       if (options?.getSubRows && treePrefix && colIndex === 0) {
         return `${treePrefix}${text}`
       }

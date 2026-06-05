@@ -357,6 +357,10 @@ function CategoriesPageInner() {
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
                 }}
+                trashExportParams={{
+                  search: debouncedTrashQ.trim() || undefined,
+                  filters: trashColumnFilterQuery,
+                }}
               />
             )}
           </TabsContent>

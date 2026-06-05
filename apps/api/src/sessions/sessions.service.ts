@@ -11,6 +11,7 @@ import {
 } from '../common/resolve-relation-filters';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { AUTH_ROLE_NAMES } from '../config/constants';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface SessionRowDto {
   id: string;
@@ -182,11 +183,8 @@ export class SessionsService {
   }
 
   async list(params: ListSessionsParams): Promise<ListSessionsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const filters = await resolveRelationFilters(
       this.em,
       params.filters,
@@ -441,11 +439,8 @@ export class SessionsService {
   async listAccountsWithSessionStatus(
     params: ListAccountsWithSessionStatusParams,
   ): Promise<ListAccountsWithSessionStatusResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };

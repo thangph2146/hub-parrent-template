@@ -7,6 +7,7 @@ import {
   type GetOptionsConfig,
 } from '../common/get-options';
 import { Student } from '../entities/student.entity';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface StudentRowDto {
   id: string;
@@ -65,11 +66,8 @@ export class StudentsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListStudentsParams): Promise<ListStudentsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
 
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';

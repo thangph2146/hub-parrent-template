@@ -28,6 +28,7 @@ import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('Event Checkins')
 @Permissions(PERMISSIONS.EVENT_CHECKINS_VIEW)
@@ -77,7 +78,7 @@ export class EventCheckinsController {
     const result = await this.eventCheckinsService.list({
       eventId: eventId.trim(),
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: (status as 'active' | 'deleted' | 'all') ?? 'active',
     });

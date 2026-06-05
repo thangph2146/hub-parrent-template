@@ -15,6 +15,7 @@ import {
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 import { canEditProtectedAdminUser } from "@/config/protected-admin";
 import type { StaffRow } from "./types";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 
 export interface StaffColumnsProps {
   onView: (user: StaffRow) => void;
@@ -135,6 +136,20 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
         selectOptions: roleOptions ?? [],
       },
     },
+    ...defineRelationExportColumns<StaffRow>([
+      {
+        id: "address",
+        header: "Địa chỉ",
+        getValue: (u) => u.address ?? "",
+      },
+      {
+        id: "citizenId",
+        header: "CCCD/CMND",
+        getValue: (u) => u.citizenId ?? "",
+      },
+      { id: "createdAt", header: "Tạo lúc", getValue: (u) => u.createdAt, },
+      { id: "updatedAt", header: "Cập nhật lúc", getValue: (u) => u.updatedAt },
+    ]),
     {
       id: "isActive",
       accessorFn: (u) => (u.isActive ? "true" : "false"),

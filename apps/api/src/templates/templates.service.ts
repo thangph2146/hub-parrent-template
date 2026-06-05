@@ -7,6 +7,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface TemplateRowDto {
   id: string;
@@ -54,11 +55,8 @@ export class TemplatesService {
     deletedAtFrom?: string;
     deletedAtTo?: string;
   }) {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const s = params.status ?? 'active';
     if (s === 'deleted') where.deletedAt = { $ne: null };

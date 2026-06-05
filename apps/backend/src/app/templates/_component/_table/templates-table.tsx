@@ -39,13 +39,13 @@ export function TemplatesTable({
 }) {
   return (
     <AdminDataTable<TemplateRow>
+      tableScope="templates"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có mẫu — bấm "Thêm mẫu hiển thị".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:templates-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

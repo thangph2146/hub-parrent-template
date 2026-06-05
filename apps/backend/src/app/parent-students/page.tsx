@@ -49,6 +49,15 @@ function AdminParentStudentsPageInner() {
     [columnFilters],
   );
 
+  const listQuery = useMemo(
+    () => ({
+      search: debouncedQ.trim() || undefined,
+      status: columnFilterQuery.status || undefined,
+      createdAt: columnFilterQuery.createdAt || undefined,
+    }),
+    [columnFilterQuery.createdAt, columnFilterQuery.status, debouncedQ],
+  );
+
   useEffect(() => {
     setPage(1);
   }, [columnFilters, debouncedQ, pageSize]);
@@ -150,6 +159,7 @@ function AdminParentStudentsPageInner() {
         total={data?.pagination.total ?? 0}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
+        listQuery={listQuery}
         onClearFilters={clearFilters}
         onBulkApprove={async (rows) => {
           for (const row of rows) {

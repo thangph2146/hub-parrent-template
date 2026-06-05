@@ -5,6 +5,8 @@ import { Button } from "@ui/components/button";
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { CategoryRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import { type AdminTrashExportParams } from "@/lib/admin-trash-export";
 
 export interface CategoriesTrashTableProps {
   data: CategoryRow[];
@@ -24,6 +26,7 @@ export interface CategoriesTrashTableProps {
   onClearFilters: () => void;
   onBulkRestore: (rows: CategoryRow[]) => Promise<void>;
   onBulkPurge: (rows: CategoryRow[]) => Promise<void>;
+  trashExportParams?: AdminTrashExportParams;
 }
 
 export function CategoriesTrashTable({
@@ -44,9 +47,11 @@ export function CategoriesTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: CategoriesTrashTableProps) {
   return (
     <AdminDataTable<CategoryRow>
+      tableScope="categories-trash"
       data={data}
       getRowId={(row) => String(row.id)}
       getSubRows={(row) => (row as CategoryRow).subRows}
@@ -62,7 +67,22 @@ export function CategoriesTrashTable({
       globalFilterPlaceholder="Tìm theo tên, slug..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? async ({ page, limit }) => {
+              const result = await api.categories.rawList<CategoryRow>({
+                page,
+                limit,
+                q: trashExportParams.search,
+                status: "deleted",
+                filters: trashExportParams.filters,
+              });
+              return { items: result.items, total: result.total };
+            }
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-category-restore",

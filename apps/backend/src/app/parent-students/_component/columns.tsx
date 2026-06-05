@@ -8,6 +8,7 @@ import {
 import { CheckCircle2, Clock, Settings2, Trash2, User, XCircle } from "lucide-react";
 import {
   DataTableRowActionsMenu,
+  defineRelationExportColumns,
   type DataTableRowActionItem,
 } from "@ui/components/data-table";
 import type { ParentStudent } from "./types";
@@ -32,9 +33,16 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
           <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
             <User className="size-3.5" />
           </div>
-          <span className="font-mono text-xs text-muted-foreground">
-            {row.original.parentId.slice(0, 8)}…
-          </span>
+          <div className="min-w-0">
+            {row.original.parentName ? (
+              <p className="truncate text-sm font-medium">
+                {row.original.parentName}
+              </p>
+            ) : null}
+            <p className="truncate font-mono text-xs text-muted-foreground">
+              {row.original.parentEmail ?? `${row.original.parentId.slice(0, 8)}…`}
+            </p>
+          </div>
         </div>
       ),
     },
@@ -117,6 +125,59 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
         );
       },
     },
+    {
+      accessorKey: "reviewedAt",
+      header: "Duyệt lúc",
+      enableColumnFilter: false,
+      meta: { defaultHidden: true },
+      cell: ({ getValue }) => {
+        const v = getValue() as string | null;
+        return v ? (
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {new Date(v).toLocaleString("vi-VN")}
+          </span>
+        ) : (
+          <span className="text-xs italic opacity-40">—</span>
+        );
+      },
+    },
+    {
+      accessorKey: "reviewedBy",
+      header: "Người duyệt",
+      enableColumnFilter: false,
+      meta: { defaultHidden: true },
+      cell: ({ getValue }) => {
+        const v = getValue() as string | null;
+        return v ? (
+          <span className="font-mono text-xs text-muted-foreground">{v}</span>
+        ) : (
+          <span className="text-xs italic opacity-40">—</span>
+        );
+      },
+    },
+    ...defineRelationExportColumns<ParentStudent>([
+      {
+        id: "parentId_full",
+        header: "ID phụ huynh",
+        getValue: (row) => row.parentId,
+      },
+      {
+        id: "parentEmail",
+        header: "Email phụ huynh",
+        getValue: (row) => row.parentEmail,
+        defaultHidden: false,
+      },
+      {
+        id: "parentPhone",
+        header: "SĐT phụ huynh",
+        getValue: (row) => row.parentPhone,
+      },
+      {
+        id: "updatedAt",
+        header: "Cập nhật lúc",
+        getValue: (row) => row.updatedAt,
+      },
+    ]),
     {
       id: "actions",
       header: "Thao tác",

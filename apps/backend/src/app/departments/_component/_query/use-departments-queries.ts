@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { DepartmentDetail, DepartmentRow } from "../types";
 
@@ -17,7 +18,7 @@ export function useDepartmentsListQuery(api: StoreSyncSdk, enabled: boolean, fil
       const items: DepartmentRow[] = [];
       let page = 1, total = Infinity;
       while (items.length < total) {
-        const r = await api.departments.list<DepartmentRow>({ page, limit: 100, status: "active", ...filters });
+        const r = await api.departments.list<DepartmentRow>({ page, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT, status: "active", ...filters });
         items.push(...r.items);
         total = r.total;
         if (!r.items.length) break;

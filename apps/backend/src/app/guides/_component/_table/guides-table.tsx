@@ -35,6 +35,7 @@ export function GuidesTable({
 
   return (
     <AdminDataTable<GuideGroup>
+      tableScope="guides"
       data={data}
       getRowId={(row) => String(row.id)}
       defaultExpandedAll={false}

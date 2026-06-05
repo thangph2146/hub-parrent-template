@@ -29,6 +29,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @Permissions(PERMISSIONS.GROUPS_VIEW)
 @Controller(ADMIN_ROUTES.GROUPS)
@@ -90,7 +91,7 @@ export class GroupsController {
     }
     const result = await this.groupsService.list(userId, {
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50)),
+      limit: parseAdminListLimit(limit, 50),
       search: search?.trim(),
       includeDeleted: includeDeleted === 'true' || includeDeleted === '1',
     });

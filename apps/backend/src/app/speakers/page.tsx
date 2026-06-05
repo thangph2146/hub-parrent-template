@@ -333,6 +333,10 @@ function SpeakersPageInner() {
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} diễn giả`)
                 }}
                 manualFiltering
+                trashExportParams={{
+                  search: debouncedTrashQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

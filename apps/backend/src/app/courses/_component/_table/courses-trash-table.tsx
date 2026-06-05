@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { CourseRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface CoursesTrashTableProps {
   data: CourseRow[]
@@ -28,6 +33,7 @@ export interface CoursesTrashTableProps {
   onClearFilters: () => void
   onBulkRestore: (rows: CourseRow[]) => Promise<void>
   onBulkPurge: (rows: CourseRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function CoursesTrashTable({
@@ -48,16 +54,17 @@ export function CoursesTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: CoursesTrashTableProps) {
   return (
     <AdminDataTable<CourseRow>
+      tableScope="courses-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:courses-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -65,7 +72,16 @@ export function CoursesTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("courses-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("courses-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<CourseRow>(
+              (params) => api.courses.list<CourseRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-course-restore",

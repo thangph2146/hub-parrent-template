@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TrainingSystemRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface TrainingSystemsTrashTableProps {
   data: TrainingSystemRow[]
@@ -28,6 +33,7 @@ export interface TrainingSystemsTrashTableProps {
   onClearFilters: () => void
   onBulkRestore: (rows: TrainingSystemRow[]) => Promise<void>
   onBulkPurge: (rows: TrainingSystemRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function TrainingSystemsTrashTable({
@@ -48,16 +54,17 @@ export function TrainingSystemsTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: TrainingSystemsTrashTableProps) {
   return (
     <AdminDataTable<TrainingSystemRow>
+      tableScope="training-systems-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:training-systems-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -65,7 +72,16 @@ export function TrainingSystemsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("training-systems-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("training-systems-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<TrainingSystemRow>(
+              (params) => api.trainingSystems.list<TrainingSystemRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-training-system-restore",

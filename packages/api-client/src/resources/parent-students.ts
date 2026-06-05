@@ -4,8 +4,9 @@ import { getData, patchData, putData, deleteData, normalizePagedResult } from ".
 export interface ParentStudent {
   id: string;
   parentId: string;
-  parentName: string;
-  parentEmail: string;
+  parentName: string | null;
+  parentEmail: string | null;
+  parentPhone: string | null;
   studentCode: string;
   studentName: string | null;
   note: string | null;

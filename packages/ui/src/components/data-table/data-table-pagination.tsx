@@ -8,16 +8,17 @@ import {
   ChevronsRight,
 } from "lucide-react"
 import { Button } from "../button"
+import { Field, FieldContent, FieldLabel } from "../field"
 import { Input } from "../input"
 import { cn } from "../../lib/utils"
 
-/** Mức page size dùng chung (API thường giới hạn ≤ 200). */
+/** Mức page size dùng chung (API admin cho phép tới 5000). */
 export const ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS = [
-  10, 15, 20, 25, 50, 100,
+  10, 15, 20, 25, 50, 100, 500, 1000,
 ] as const
 
 export const ADMIN_DATA_TABLE_MIN_PAGE_SIZE = 1
-export const ADMIN_DATA_TABLE_MAX_PAGE_SIZE = 200
+export const ADMIN_DATA_TABLE_MAX_PAGE_SIZE = 5000
 
 export type AdminDataTableServerPaginationConfig = {
   mode?: "server"
@@ -31,6 +32,9 @@ export type AdminDataTableServerPaginationConfig = {
   emptySummary?: string
   itemLabel?: string
   isLoading?: boolean
+  /** Nút "Tất cả" — gọi khi user muốn tải/hiển thị đủ bản ghi (server fetch). */
+  onShowAllRows?: () => void
+  showAllPageSizeOption?: boolean
 }
 
 export type AdminDataTableClientPaginationConfig = {
@@ -45,6 +49,9 @@ export type AdminDataTableClientPaginationConfig = {
   emptySummary?: string
   itemLabel?: string
   isLoading?: boolean
+  /** Hiện nút đặt page size = tổng bản ghi đã lọc (client). @default true */
+  showAllPageSizeOption?: boolean
+  onShowAllRows?: () => void
 }
 
 export type AdminDataTablePaginationConfig =
@@ -95,6 +102,8 @@ export function AdminDataTablePagination({
   emptySummary = "Không có dữ liệu",
   itemLabel,
   isLoading = false,
+  showAllPageSizeOption = true,
+  onShowAllRows,
 }: AdminDataTablePaginationProps) {
   const pageSizeListId = useId()
   const disabled = isLoading || total === 0
@@ -129,38 +138,74 @@ export function AdminDataTablePagination({
     if (next !== pageSize) onPageSizeChange(next)
   }
 
+  const showAllRows = () => {
+    if (onShowAllRows) {
+      onShowAllRows()
+      return
+    }
+    if (total <= 0) return
+    const next = clampPageSize(total, maxPageSize)
+    setDraftPageSize(String(next))
+    if (next !== pageSize) onPageSizeChange(next)
+  }
+
+  const canShowAll =
+    total > 0 &&
+    pageSize < total &&
+    (onShowAllRows != null ||
+      (showAllPageSizeOption && total <= maxPageSize))
+
   return (
     <>
       <p className="min-w-0 text-sm text-muted-foreground">{summary}</p>
       <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-        <div className="flex items-center gap-2 rounded-lg border border-border/70 bg-background px-2 py-1">
-          <label
+        <Field
+          orientation="horizontal"
+          className="w-auto items-center gap-2 rounded-lg border border-border/70 bg-background px-2 py-1"
+        >
+          <FieldLabel
             htmlFor={pageSizeListId}
-            className="text-xs font-medium whitespace-nowrap text-muted-foreground"
+            className="shrink-0 text-xs font-medium whitespace-nowrap text-muted-foreground"
           >
             Mỗi trang
-          </label>
-          <Input
-            id={pageSizeListId}
-            type="number"
-            inputMode="numeric"
-            min={ADMIN_DATA_TABLE_MIN_PAGE_SIZE}
-            max={maxPageSize}
-            disabled={disabled}
-            value={draftPageSize}
-            onChange={(e) => setDraftPageSize(e.target.value)}
-            onBlur={commitPageSize}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                commitPageSize()
-              }
-            }}
-            list={`${pageSizeListId}-options`}
-            aria-label="Số dòng mỗi trang"
-            title={`Nhập từ ${ADMIN_DATA_TABLE_MIN_PAGE_SIZE} đến ${maxPageSize}, Enter để áp dụng`}
-          />
-        </div>
+          </FieldLabel>
+          <FieldContent className="flex-row flex-wrap items-center gap-2">
+            <Input
+              id={pageSizeListId}
+              type="number"
+              inputMode="numeric"
+              min={ADMIN_DATA_TABLE_MIN_PAGE_SIZE}
+              max={maxPageSize}
+              disabled={disabled}
+              value={draftPageSize}
+              onChange={(e) => setDraftPageSize(e.target.value)}
+              onBlur={commitPageSize}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  commitPageSize()
+                }
+              }}
+              list={`${pageSizeListId}-options`}
+              aria-label="Số dòng mỗi trang"
+              title={`Nhập từ ${ADMIN_DATA_TABLE_MIN_PAGE_SIZE} đến ${maxPageSize}, Enter để áp dụng`}
+              className="h-8 w-16"
+            />
+            {canShowAll ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 shrink-0 px-2 text-xs"
+                disabled={disabled}
+                onClick={showAllRows}
+                title="Hiển thị toàn bộ dòng đang có trong bảng"
+              >
+                Tất cả
+              </Button>
+            ) : null}
+          </FieldContent>
+        </Field>
 
         <nav
           className="flex items-center gap-0.5 rounded-lg border border-border/70 bg-background p-0.5"

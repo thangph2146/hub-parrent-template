@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { SpeakerRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface SpeakersTrashTableProps {
   data: SpeakerRow[]
@@ -29,6 +34,7 @@ export interface SpeakersTrashTableProps {
   onBulkRestore: (rows: SpeakerRow[]) => Promise<void>
   onBulkPurge: (rows: SpeakerRow[]) => Promise<void>
   manualFiltering?: boolean
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function SpeakersTrashTable({
@@ -50,16 +56,17 @@ export function SpeakersTrashTable({
   onBulkRestore,
   onBulkPurge,
   manualFiltering: manualFilteringProp,
+  trashExportParams,
 }: SpeakersTrashTableProps) {
   return (
     <AdminDataTable<SpeakerRow>
+      tableScope="speakers-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering={manualFilteringProp}
-      filterColumnVisibilityKey="admin-table-filter-visibility:speakers-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -67,7 +74,16 @@ export function SpeakersTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("speakers-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("speakers-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<SpeakerRow>(
+              (params) => api.speakers.list<SpeakerRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-speaker-restore",

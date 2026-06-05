@@ -27,6 +27,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 type ContactListStatus =
   | 'active'
@@ -191,7 +192,7 @@ export class ContactRequestsController {
 
     const result = await this.contactRequestsService.list({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: listStatus,
       filters: Object.keys(filters).length ? filters : undefined,
@@ -220,7 +221,7 @@ export class ContactRequestsController {
     const options = await this.contactRequestsService.getOptions(
       column ?? '',
       search?.trim(),
-      Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50)),
+      parseAdminListLimit(limit, 50),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);

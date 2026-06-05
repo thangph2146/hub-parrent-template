@@ -27,6 +27,7 @@ import {
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @Permissions(PERMISSIONS.SESSIONS_VIEW)
 @Controller(ADMIN_ROUTES.SESSIONS)
@@ -144,7 +145,7 @@ export class SessionsController {
 
     const result = await this.sessionsService.list({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: status === 'deleted' || status === 'all' ? status : 'active',
       filters: Object.keys(filters).length ? filters : undefined,
@@ -177,7 +178,7 @@ export class SessionsController {
 
     const result = await this.sessionsService.listAccountsWithSessionStatus({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: status ?? 'active',
     });
@@ -363,7 +364,7 @@ export class SessionsController {
     const options = await this.sessionsService.getOptions(
       column ?? '',
       search?.trim(),
-      Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50)),
+      parseAdminListLimit(limit, 50),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);

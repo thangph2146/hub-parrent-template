@@ -27,6 +27,7 @@ import { appConfig } from '../config/app.config';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 /** Giới hạn kích thước file upload (multer); đồng bộ với appConfig.bodyLimit (50mb). */
 const MAX_UPLOAD_FILE_BYTES = 50 * 1024 * 1024;
@@ -96,7 +97,7 @@ export class UploadsController {
     const serveBaseUrl = this.getServeBaseUrl(req);
     const result = await this.uploadsService.listImages({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 50)),
+      limit: parseAdminListLimit(limit, 50),
       serveBaseUrl,
     });
     const { statusCode, body } = createSuccessResponse({

@@ -7,6 +7,11 @@ import {
   type UsageStatusTone,
 } from "@ui/components/usage-status-badge";
 import { defineAdminTrashActionsColumn } from "@ui/components/admin";
+import {
+  defineLinkedUserColumns,
+  defineRelationExportColumns,
+  resolveLinkedUser,
+} from "@ui/components/data-table";
 import type { ContactRequest } from "./types";
 import {
   CONTACT_REQUEST_PRIORITY_LABELS,
@@ -71,7 +76,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
       cell: ({ row }) => (
         <span className="flex min-w-0 items-center gap-2">
           <User className="size-4 shrink-0 text-primary/80" aria-hidden />
-          <span className="line-clamp-3 font-medium">{row.original.name}</span>
+          <span className="font-medium">{row.original.name}</span>
         </span>
       ),
     },
@@ -85,7 +90,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
       cell: ({ getValue }) => (
         <span className="flex min-w-0 items-center gap-2 font-mono text-xs text-muted-foreground">
           <Mail className="size-3.5 shrink-0 opacity-80" aria-hidden />
-          <span className="line-clamp-3 break-all">{String(getValue())}</span>
+          <span className="break-all">{String(getValue())}</span>
         </span>
       ),
     },
@@ -118,7 +123,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         className: COL_SUBJECT,
       },
       cell: ({ getValue }) => (
-        <span className="line-clamp-3">{String(getValue())}</span>
+        <span className="line-clamp-5">{String(getValue())}</span>
       ),
     },
     {
@@ -152,7 +157,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         return (
           <span className="flex items-start gap-2 text-xs">
             <MessageSquare className="size-3.5 shrink-0 mt-0.5 text-muted-foreground" aria-hidden />
-            <span className="line-clamp-3">{message.trim() || content}</span>
+            <span className="line-clamp-5">{message.trim() || content}</span>
           </span>
         );
       },
@@ -174,7 +179,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         if (!address) return <span className="text-muted-foreground text-xs">—</span>;
         
         return (
-          <span className="line-clamp-3 text-xs">{address}</span>
+          <span className="text-xs">{address}</span>
         );
       },
     },
@@ -191,7 +196,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         if (!program) return <span className="text-muted-foreground text-xs">—</span>;
         
         return (
-          <span className="line-clamp-3 text-xs">{program}</span>
+          <span className="text-xs">{program}</span>
         );
       },
     },
@@ -208,7 +213,7 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         if (!major) return <span className="text-muted-foreground text-xs">—</span>;
         
         return (
-          <span className="line-clamp-3 text-xs">{major}</span>
+          <span className="text-xs">{major}</span>
         );
       },
     },
@@ -315,6 +320,39 @@ export function getContactRequestColumns(props: ContactRequestColumnsProps): Col
         ],
       },
     },
+    ...defineLinkedUserColumns<ContactRequest>({
+      scope: "assignedTo",
+      header: "Người phụ trách",
+      getUser: (row) =>
+        resolveLinkedUser(row.assignedTo, {
+          id: row.assignedToId,
+          name: row.assignedToName,
+          email: row.assignedTo?.email,
+        }),
+    }),
+    ...defineLinkedUserColumns<ContactRequest>({
+      scope: "submittedBy",
+      header: "Tài khoản gửi",
+      getUser: (row) =>
+        resolveLinkedUser(row.submittedBy, {
+          id: row.submittedById,
+          name: row.submittedByName,
+          email: row.submittedBy?.email,
+        }),
+      defaultHidden: true,
+    }),
+    ...defineRelationExportColumns<ContactRequest>([
+      {
+        id: "updatedAt",
+        header: "Cập nhật lúc",
+        getValue: (row) => row.updatedAt,
+      },
+      {
+        id: "deletedAt",
+        header: "Xóa lúc",
+        getValue: (row) => row.deletedAt ?? "",
+      },
+    ]),
     {
       accessorKey: "createdAt",
       header: "Ngày tạo",

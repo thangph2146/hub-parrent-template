@@ -8,12 +8,15 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface CameraRowDto {
   id: string;
   name: string;
   code: string | null;
   linkedEventId: string | null;
+  linkedEventTitle: string | null;
+  linkedEventSlug: string | null;
   ipAddress: string | null;
   port: number | null;
   username: string | null;
@@ -36,6 +39,8 @@ function mapRow(r: Camera): CameraRowDto {
     name: r.name,
     code: r.code ?? null,
     linkedEventId: r.linkedEvent?.id ?? null,
+    linkedEventTitle: r.linkedEvent?.title ?? null,
+    linkedEventSlug: r.linkedEvent?.slug ?? null,
     ipAddress: r.ipAddress ?? null,
     port: r.port ?? null,
     username: r.username ?? null,
@@ -61,11 +66,8 @@ export class CamerasService {
     deletedAtFrom?: string;
     deletedAtTo?: string;
   }) {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const s = params.status ?? 'active';
     if (s === 'deleted') where.deletedAt = { $ne: null };

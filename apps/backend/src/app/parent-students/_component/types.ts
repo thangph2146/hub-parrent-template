@@ -1,6 +1,22 @@
-import type { ParentStudent as ParentStudentAdmin, UpdateParentStudentInput } from "@workspace/api-client";
+import type { UpdateParentStudentInput } from "@workspace/api-client";
 
-export type { ParentStudentAdmin as ParentStudent, UpdateParentStudentInput };
+export type { UpdateParentStudentInput };
+
+export type ParentStudent = {
+  id: string;
+  parentId: string;
+  parentName: string | null;
+  parentEmail: string | null;
+  parentPhone: string | null;
+  studentCode: string;
+  studentName: string | null;
+  note: string | null;
+  status: "pending" | "approved" | "rejected";
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export const PARENT_STUDENT_STATUSES: ("pending" | "approved" | "rejected")[] = [
   "pending",

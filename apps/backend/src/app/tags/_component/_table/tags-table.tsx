@@ -38,6 +38,7 @@ export function TagsTable({
 }: TagsTableProps) {
   return (
     <AdminDataTable<TagTreeRow>
+      tableScope="tags"
       data={data}
       getRowId={(row) => String(row.id)}
       getSubRows={(row) => row.subRows}
@@ -47,7 +48,6 @@ export function TagsTable({
       isLoading={isLoading}
       emptyLabel='Chưa có thẻ — bấm "Thêm thẻ".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:tags-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

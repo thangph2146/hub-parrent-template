@@ -9,6 +9,7 @@ import {
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { normalizePosterField } from '../common/poster-normalize';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventRowDto {
   id: string;
@@ -149,11 +150,8 @@ export class EventsService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListEventsParams): Promise<ListEventsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };
@@ -190,6 +188,7 @@ export class EventsService {
     const whereQuery = where as FilterQuery<Event>;
     const [rows, total] = await Promise.all([
       this.em.find(Event, whereQuery, {
+        populate: [...EVENT_CAMERA_POPULATE],
         orderBy: { updatedAt: 'DESC' },
         offset: skip,
         limit,

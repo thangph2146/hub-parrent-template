@@ -9,6 +9,7 @@ import { isProtectedAdminEmail } from '../config/protected-admin';
 import { isSystemSuperAdminRoleName } from '../config/system-role';
 import { Role } from '../entities/role.entity';
 import { User } from '../entities/user.entity';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface RoleRowDto {
   id: string;
@@ -112,11 +113,8 @@ export class RolesService {
   }
 
   async list(params: ListRolesParams): Promise<ListRolesResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
 
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';
@@ -138,6 +136,7 @@ export class RolesService {
         const v = value.trim();
         if (key === 'name') where.name = { $like: `%${v}%` };
         else if (key === 'displayName') where.displayName = { $like: `%${v}%` };
+        else if (key === 'description') where.description = { $like: `%${v}%` };
         else if (key === 'isActive') where.isActive = v === 'true';
       }
     }

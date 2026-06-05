@@ -1,4 +1,5 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { AcademicYearDetail, AcademicYearRow } from "../types";
@@ -23,7 +24,7 @@ export function useAcademicYearsListQuery(
   return useQuery({
     queryKey: ["academic-years", "list", filters],
     queryFn: async (): Promise<AcademicYearRow[]> => {
-      const limit = 100;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
       const items: AcademicYearRow[] = [];
       let page = 1;
       let total = Number.POSITIVE_INFINITY;

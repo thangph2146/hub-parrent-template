@@ -1,4 +1,5 @@
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import type { TagRow, TagTreeRow } from "./types";
 
 export {
@@ -116,7 +117,7 @@ async function _fetchPage(
 }
 
 export async function fetchAllActiveTags(): Promise<TagRow[]> {
-  const limit = 100;
+  const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
   const items: TagRow[] = [];
   let page = 1;
   let total = Number.POSITIVE_INFINITY;

@@ -8,6 +8,7 @@ import type {
 } from "@tanstack/react-table"
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 import type { ParentStudent } from "../types"
 
 export interface ParentStudentTableProps {
@@ -30,6 +31,11 @@ export interface ParentStudentTableProps {
   onBulkReject: (rows: ParentStudent[]) => Promise<void>
   onBulkPurge: (rows: ParentStudent[]) => Promise<void>
   canApprove: boolean
+  listQuery: {
+    search?: string
+    status?: string
+    createdAt?: string
+  }
 }
 
 export function ParentStudentTable({
@@ -52,9 +58,16 @@ export function ParentStudentTable({
   onBulkReject,
   onBulkPurge,
   canApprove,
+  listQuery,
 }: ParentStudentTableProps) {
+  const xlsxBase = buildAdminTableXlsxExport("parent-students", {
+    pageCount: data.length,
+    total,
+  })
+
   return (
     <AdminDataTable<ParentStudent>
+      tableScope="parent-students"
       data={data}
       getRowId={(row) => String(row.id)}
       columns={columns}
@@ -68,11 +81,18 @@ export function ParentStudentTable({
       globalFilterPlaceholder="Tìm mã sinh viên, họ tên, ID phụ huynh…"
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-
-      xlsxExport={buildAdminTableXlsxExport("parent-students", {
-        pageCount: data.length,
-        total,
-      })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={xlsxBase}
+      exportFetchPage={async ({ page: exportPage, limit }) => {
+        const result = await api.parentStudents.list({
+          page: exportPage,
+          limit,
+          search: listQuery.search,
+          status: listQuery.status,
+          createdAt: listQuery.createdAt,
+        })
+        return { items: result.items, total: result.total }
+      }}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         ...(canApprove
           ? [

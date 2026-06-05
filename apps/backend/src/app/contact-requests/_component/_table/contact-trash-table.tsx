@@ -4,6 +4,8 @@ import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data
 
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
+import { api } from "@/lib/api";
+
 import { downloadAdminTableXlsx } from "@/lib/admin-xlsx-export";
 
 import { getTrashColumns } from "../columns";
@@ -58,6 +60,11 @@ interface ContactRequestTrashTableProps {
 
   onClearFilters: () => void;
 
+  listParams: {
+    search?: string;
+    filters?: Record<string, string>;
+  };
+
 }
 
 
@@ -108,6 +115,8 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
 
     onClearFilters,
 
+    listParams,
+
   } = props;
 
 
@@ -126,6 +135,7 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
   return (
 
     <AdminDataTable<ContactRequest>
+      tableScope="contact-requests-trash"
 
       data={data}
 
@@ -232,6 +242,16 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
 
           }),
 
+      }}
+      exportFetchPage={async ({ page: exportPage, limit }) => {
+        const result = await api.contactRequests.list({
+          page: exportPage,
+          limit,
+          search: listParams.search,
+          trash: true,
+          filters: listParams.filters,
+        });
+        return { items: result.items, total: result.total };
       }}
 
       pagination={{

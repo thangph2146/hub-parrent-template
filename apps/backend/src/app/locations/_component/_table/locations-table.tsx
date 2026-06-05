@@ -43,13 +43,13 @@ export function LocationsTable({
 }: LocationsTableProps) {
   return (
     <AdminDataTable<LocationRow>
+      tableScope="locations"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có địa điểm — bấm "Thêm địa điểm".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:locations-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

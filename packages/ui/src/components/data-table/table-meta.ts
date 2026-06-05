@@ -28,8 +28,14 @@ declare module "@tanstack/react-table" {
     isIndexColumn?: boolean
     /** Cột menu thao tác (id `actions` hoặc meta này) — DataTable gộp meta chuẩn. */
     isActionsColumn?: boolean
-    /** Ẩn khỏi bảng UI nhưng vẫn có thể dùng cho export nếu không exclude. */
+    /** Ẩn khỏi bảng UI; bật lại qua "Hiện cột" hoặc vẫn xuất Excel khi được bật. */
     hideInTable?: boolean
+    /** Ẩn mặc định trong bảng (vẫn bật qua "Hiện cột"). */
+    defaultHidden?: boolean
+    /** `false` = không cho ẩn/hiện qua "Hiện cột". */
+    enableHiding?: boolean
+    /** @deprecated alias — dùng `enableHiding` */
+    enableColumnHiding?: boolean
     /** Bỏ qua khi xuất CSV (cột thao tác, icon, …) */
     excludeFromExport?: boolean
     /** Nhãn riêng khi xuất file, nếu khác header đang hiển thị trong bảng. */
@@ -42,6 +48,8 @@ declare module "@tanstack/react-table" {
     exportWrap?: boolean
     /** Class áp dụng lên `th`/`td` (vd. min-w-[120px]). */
     className?: string
+    /** Tắt giới hạn tối đa 5 dòng nội dung ô (mặc định: bật cho cột dữ liệu). */
+    disableCellLineClamp?: boolean
   }
 }
 

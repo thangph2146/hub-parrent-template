@@ -8,6 +8,12 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { ScreenRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
+
 export function ScreensTrashTable({
   data,
   columns,
@@ -26,6 +32,7 @@ export function ScreensTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: {
   data: ScreenRow[]
   columns: ColumnDef<ScreenRow>[]
@@ -44,16 +51,17 @@ export function ScreensTrashTable({
   onClearFilters: () => void
   onBulkRestore: (rows: ScreenRow[]) => Promise<void>
   onBulkPurge: (rows: ScreenRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }) {
   return (
     <AdminDataTable<ScreenRow>
+      tableScope="screens-trash"
       data={data}
       getRowId={(r) => r.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:screens-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -61,7 +69,16 @@ export function ScreensTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("screens-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("screens-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<ScreenRow>(
+              (params) => api.screens.list<ScreenRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-screen-restore",

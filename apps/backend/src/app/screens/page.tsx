@@ -263,6 +263,10 @@ function ScreensPageInner() {
                   await bulM.mutateAsync({ action: "hard-delete", ids })
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} màn hình`)
                 }}
+                trashExportParams={{
+                  search: dQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

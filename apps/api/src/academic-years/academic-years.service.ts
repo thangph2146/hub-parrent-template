@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { AcademicYear } from '../entities/academic-year.entity';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import {
+  ADMIN_TABLE_EXPORT_MAX_LIMIT,
+  normalizePageLimit,
+  paginationMeta,
+} from '../common/pagination';
 import {
   applyBulkAction,
   type BulkAction,
@@ -71,11 +75,8 @@ export class AcademicYearsService {
   async list(
     params: ListAcademicYearsParams,
   ): Promise<ListAcademicYearsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     const status = params.status ?? 'active';
 

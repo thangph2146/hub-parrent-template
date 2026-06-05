@@ -87,6 +87,14 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     createdAt: "createdAt",
   } as FilterMapping,
 
+  // Roles / RBAC
+  roles: {
+    name: "displayName",
+    code: "name",
+    description: "description",
+    isActive: (v: unknown) => String(v),
+  } as FilterMapping,
+
   // Contact requests
   contactRequests: {
     name: "name",

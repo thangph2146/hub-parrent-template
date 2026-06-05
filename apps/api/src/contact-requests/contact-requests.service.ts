@@ -8,9 +8,11 @@ import { ContactRequest } from '../entities/contact-request.entity';
 import { User } from '../entities/user.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { safeIsoString, safeIsoStringNow } from '../common/date-utils';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
-type ContactRequestWithAssigned = ContactRequest & {
+type ContactRequestWithRelations = ContactRequest & {
   assignedTo?: Pick<User, 'id' | 'name' | 'email'> | null;
+  submittedBy?: Pick<User, 'id' | 'name' | 'email'> | null;
 };
 
 export type ContactStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
@@ -29,6 +31,9 @@ export interface ContactRequestRowDto {
   assignedToName: string | null;
   assignedToId: string | null;
   assignedTo: { id: string; name: string | null; email: string } | null;
+  submittedById: string | null;
+  submittedByName: string | null;
+  submittedBy: { id: string; name: string | null; email: string } | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -52,42 +57,31 @@ export interface ListContactRequestsResult {
   };
 }
 
-function mapAssigneeFields(
-  r: ContactRequestWithAssigned,
-): Pick<
-  ContactRequestRowDto,
-  'assignedTo' | 'assignedToName' | 'assignedToId'
-> {
+function mapLinkedUserFields(
+  user: Pick<User, 'id' | 'name' | 'email'> | null | undefined,
+): { id: string; name: string | null; email: string } | null {
   try {
-    const u = r.assignedTo;
     if (
-      u &&
-      typeof u === 'object' &&
-      'id' in u &&
-      typeof (u as User).id === 'string'
+      user &&
+      typeof user === 'object' &&
+      'id' in user &&
+      typeof user.id === 'string'
     ) {
       return {
-        assignedToName: (u as User).name ?? null,
-        assignedToId: (u as User).id,
-        assignedTo: {
-          id: (u as User).id,
-          name: (u as User).name ?? null,
-          email: (u as User).email ?? '',
-        },
+        id: user.id,
+        name: user.name ?? null,
+        email: user.email ?? '',
       };
     }
   } catch {
-    // Quan hệ chưa load / FK lỗi — không làm hỏng GET.
+    // Quan hệ chưa load — không làm hỏng GET.
   }
-  return {
-    assignedToName: null,
-    assignedToId: null,
-    assignedTo: null,
-  };
+  return null;
 }
 
-function mapRow(r: ContactRequestWithAssigned): ContactRequestRowDto {
-  const assign = mapAssigneeFields(r);
+function mapRow(r: ContactRequestWithRelations): ContactRequestRowDto {
+  const assignedTo = mapLinkedUserFields(r.assignedTo);
+  const submittedBy = mapLinkedUserFields(r.submittedBy);
   return {
     id: r.id,
     name: r.name,
@@ -98,7 +92,12 @@ function mapRow(r: ContactRequestWithAssigned): ContactRequestRowDto {
     status: r.status as ContactStatus,
     priority: r.priority as ContactPriority,
     isRead: r.isRead,
-    ...assign,
+    assignedToName: assignedTo?.name ?? null,
+    assignedToId: assignedTo?.id ?? null,
+    assignedTo,
+    submittedById: submittedBy?.id ?? null,
+    submittedByName: submittedBy?.name ?? null,
+    submittedBy,
     createdAt: safeIsoStringNow(r.createdAt),
     updatedAt: safeIsoStringNow(r.updatedAt),
     deletedAt: safeIsoString(r.deletedAt),
@@ -170,16 +169,13 @@ export class ContactRequestsService {
   async list(
     params: ListContactRequestsParams,
   ): Promise<ListContactRequestsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where = buildWhere(params) as FilterQuery<ContactRequest>;
 
     const [rows, total] = await Promise.all([
       this.em.find(ContactRequest, where, {
-        populate: ['assignedTo'],
+        populate: ['assignedTo', 'submittedBy'],
         orderBy: { updatedAt: 'DESC' },
         offset: skip,
         limit,
@@ -188,7 +184,7 @@ export class ContactRequestsService {
     ]);
 
     return {
-      data: rows.map((r) => mapRow(r as ContactRequestWithAssigned)),
+      data: rows.map((r) => mapRow(r as ContactRequestWithRelations)),
       pagination: paginationMeta(page, limit, total),
     };
   }
@@ -234,9 +230,9 @@ export class ContactRequestsService {
     const row = await this.em.findOne(
       ContactRequest,
       { id },
-      { populate: ['assignedTo'] },
+      { populate: ['assignedTo', 'submittedBy'] },
     );
-    return row ? mapRow(row as ContactRequestWithAssigned) : null;
+    return row ? mapRow(row as ContactRequestWithRelations) : null;
   }
 
   async update(
@@ -279,9 +275,9 @@ export class ContactRequestsService {
     const updated = await this.em.findOne(
       ContactRequest,
       { id },
-      { populate: ['assignedTo'] },
+      { populate: ['assignedTo', 'submittedBy'] },
     );
-    return updated ? mapRow(updated as ContactRequestWithAssigned) : null;
+    return updated ? mapRow(updated as ContactRequestWithRelations) : null;
   }
 
   async softDelete(id: string): Promise<boolean> {

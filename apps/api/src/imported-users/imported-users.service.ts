@@ -7,6 +7,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface ImportedUserRowDto {
   id: number;
@@ -98,11 +99,8 @@ export class ImportedUsersService {
   async list(
     params: ListImportedUsersParams,
   ): Promise<ListImportedUsersResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = { deletedAt: null };
 
     if (params.search?.trim()) {

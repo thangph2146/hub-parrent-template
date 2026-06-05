@@ -47,6 +47,7 @@ export function CategoriesTable({
 }: CategoriesTableProps) {
   return (
     <AdminDataTable<CategoryRow>
+      tableScope="categories"
       data={data}
       getRowId={(row) => String(row.id)}
       getSubRows={(row) => (row as CategoryRow).subRows}

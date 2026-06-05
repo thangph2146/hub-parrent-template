@@ -4,11 +4,9 @@ import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data
 
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
-import { downloadAdminTableXlsx } from "@/lib/admin-xlsx-export";
+import { api } from "@/lib/api";
 
 import { getContactRequestColumns } from "../columns";
-
-import { getContactRequestExportFields } from "../contact-export";
 
 import type { ContactRequest } from "../types";
 
@@ -78,6 +76,11 @@ interface ContactRequestTableProps {
 
   onClearFilters: () => void;
 
+  listParams: {
+    search?: string;
+    filters?: Record<string, string>;
+  };
+
 }
 
 
@@ -136,6 +139,8 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
 
     onClearFilters,
 
+    listParams,
+
   } = props;
 
 
@@ -174,6 +179,7 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
   return (
 
     <AdminDataTable<ContactRequest>
+      tableScope="contact-requests"
 
       data={data}
 
@@ -265,15 +271,15 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
 
       ]}
 
-      xlsxExport={{
-        ...exportConfig,
-        runExport: () =>
-          downloadAdminTableXlsx({
-            templateId: "contact-requests",
-            data,
-            fields: getContactRequestExportFields("active"),
-            options: { pageCount: data.length, total },
-          }),
+      xlsxExport={exportConfig}
+      exportFetchPage={async ({ page: exportPage, limit }) => {
+        const result = await api.contactRequests.list({
+          page: exportPage,
+          limit,
+          search: listParams.search,
+          filters: listParams.filters,
+        });
+        return { items: result.items, total: result.total };
       }}
 
       pagination={{

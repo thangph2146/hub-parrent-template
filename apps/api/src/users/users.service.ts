@@ -1,7 +1,11 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import {
+  ADMIN_TABLE_EXPORT_MAX_LIMIT,
+  normalizePageLimit,
+  paginationMeta,
+} from '../common/pagination';
 import {
   getOptionsFromModel,
   type GetOptionsConfig,
@@ -162,11 +166,8 @@ export class UsersService {
   }
 
   async list(params: ListUsersParams): Promise<ListUsersResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
 
     const where = buildWhere(params) as FilterQuery<User>;
 

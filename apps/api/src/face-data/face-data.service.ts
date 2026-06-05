@@ -8,6 +8,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface FaceDataRowDto {
   id: string;
@@ -67,11 +68,8 @@ export class FaceDataService {
   constructor(private readonly em: EntityManager) {}
 
   async list(params: ListFaceDataParams): Promise<ListFaceDataResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = {};
     where.deletedAt = null;
     if (params.userId) {

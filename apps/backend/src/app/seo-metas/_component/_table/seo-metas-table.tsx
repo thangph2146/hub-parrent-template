@@ -43,13 +43,13 @@ export function SeoMetasTable({
 }: SeoMetasTableProps) {
   return (
     <AdminDataTable<SeoMetaRow>
+      tableScope="seo-metas"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có SEO metadata — bấm "Thêm SEO".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:seo-metas-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

@@ -1,4 +1,5 @@
 "use client";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -97,7 +98,7 @@ function EditEventPageInner() {
 
   useEffect(() => {
     if (!entity) return;
-    api.eventSpeakers.list<EventFormSpeaker & { id: string }>({ eventId: id, limit: 100 })
+    api.eventSpeakers.list<EventFormSpeaker & { id: string }>({ eventId: id, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT })
       .then((res) => {
         const assignments = res.items.map((a) => ({
           id: a.id,

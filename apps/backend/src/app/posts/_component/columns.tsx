@@ -6,6 +6,7 @@ import {
   defineAdminCrudActionsColumn,
   defineAdminTrashActionsColumn,
 } from "@ui/components/admin";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { PostListRow, TaxonomyOption, CategoryTreeOption } from "./types";
 import { SummaryBadges } from "./summary-badges";
@@ -72,6 +73,32 @@ export function getPostColumns({
       },
       cell: ({ row }) => <SummaryBadges items={row.original.tags} />,
     },
+    {
+      id: "authorName",
+      header: "Tác giả",
+      accessorFn: (row) =>
+        row.author?.name?.trim() || row.author?.email || "",
+      meta: { filterPlaceholder: "Lọc tác giả…" },
+      cell: ({ row }) => {
+        const author = row.original.author
+        const label =
+          author?.name?.trim() || author?.email || ""
+        return label || "—"
+      },
+    },
+    ...defineRelationExportColumns<PostListRow>([
+      {
+        id: "authorEmail",
+        header: "Email tác giả",
+        getValue: (row) => row.author?.email ?? "",
+      },
+      {
+        id: "authorId",
+        header: "ID tác giả",
+        getValue: (row) => row.author?.id ?? "",
+        defaultHidden: true,
+      },
+    ]),
     {
       accessorKey: "published",
       header: "Trạng thái",
@@ -176,6 +203,18 @@ export function getTrashColumns({
       },
       cell: ({ row }) => <SummaryBadges items={row.original.tags} />,
     },
+    {
+      id: "authorName",
+      header: "Tác giả",
+      accessorFn: (row) => row.author?.name ?? row.author?.email ?? "",
+    },
+    ...defineRelationExportColumns<PostListRow>([
+      {
+        id: "authorEmail",
+        header: "Email tác giả",
+        getValue: (row) => row.author?.email ?? "",
+      },
+    ]),
     {
       accessorKey: "published",
       header: "Trạng thái",

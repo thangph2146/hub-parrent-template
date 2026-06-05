@@ -1,4 +1,5 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { EventDetail, EventRow } from "../types";
@@ -27,7 +28,7 @@ export function useEventsListQuery(apiParam: StoreSyncSdk, enabled: boolean, fil
   return useQuery({
     queryKey: ["events", "list", filters],
     queryFn: async (): Promise<EventRow[]> => {
-      const limit = 100; const items: EventRow[] = [];
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT; const items: EventRow[] = [];
       let page = 1; let total = Number.POSITIVE_INFINITY;
       while (items.length < total) {
         const result = await apiParam.events.list<EventRow>({ page, limit, status: "active", ...filters });

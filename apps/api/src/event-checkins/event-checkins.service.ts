@@ -9,6 +9,7 @@ import {
   type BulkResult,
 } from '../common/bulk-actions';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventCheckinRowDto {
   id: string;
@@ -92,11 +93,8 @@ export class EventCheckinsService {
   async list(
     params: ListEventCheckinsParams,
   ): Promise<ListEventCheckinsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where: Record<string, unknown> = { eventId: params.eventId };
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };

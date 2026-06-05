@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
+import { applyDefaultDataColumnWidths } from "./data-table-column-width"
 import {
   DATA_TABLE_ACTIONS_COLUMN_ID,
   TABLE_ACTIONS_COLUMN_META,
@@ -36,7 +37,7 @@ export function dataTableColumnsHasActionsColumn<TData>(
 export function normalizeDataTableColumns<TData>(
   columns: ColumnDef<TData, unknown>[]
 ): ColumnDef<TData, unknown>[] {
-  return columns.map((column) => {
+  const normalized = columns.map((column) => {
     const groupColumn = column as ColumnDef<TData, unknown> & {
       columns?: ColumnDef<TData, unknown>[]
     }
@@ -67,4 +68,5 @@ export function normalizeDataTableColumns<TData>(
       },
     }
   })
+  return applyDefaultDataColumnWidths(normalized)
 }

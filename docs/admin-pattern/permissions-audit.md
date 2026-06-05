@@ -281,15 +281,15 @@ Tính từ `apps/api/src/config/permissions.ts` (generateResourcePermissions + e
 | `CoursesController` | `COURSES_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `AcademicYearsController` | `ACADEMIC_YEARS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `EventsController` | `EVENTS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
-| `EventRegistrationsController` | `EVENT_REGISTRATIONS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
-| `EventCheckinsController` | `EVENT_CHECKINS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
+| `EventRegistrationsController` | `EVENT_REGISTRATIONS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_HARD_DELETE` | ✅ | ✅ |
+| `EventCheckinsController` | `EVENT_CHECKINS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_HARD_DELETE` | ✅ | ✅ |
 | `EventCheckoutsController` | `EVENT_CHECKOUTS_VIEW` | `bulkClear` dùng `_MANAGE` | ✅ | ✅ |
 | `EventSpeakersController` | `EVENT_SPEAKERS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `CamerasController` | `CAMERAS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `TemplatesController` | `TEMPLATES_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `ScreensController` | `SCREENS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
 | `DepartmentsController` | `DEPARTMENTS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
-| `FaceDataController` | `FACE_DATA_VIEW` | (per-action) | ✅ | ✅ |
+| `FaceDataController` | `FACE_DATA_VIEW` | `_DELETE/_RESTORE/_HARD_DELETE` | ✅ | ✅ |
 | `ImportedUsersController` | `IMPORTED_USERS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_MANAGE` | ✅ | ✅ |
 | `SystemController` | `SYSTEM_MANAGE` | `SYSTEM_IMPORT` (POST /import), `SYSTEM_VIEW` (GET database-schema) | (n/a) | ✅ |
 | `HanetWebhookController` | (n/a — webhook) | (n/a) | (n/a) | public |

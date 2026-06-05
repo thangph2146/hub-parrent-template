@@ -9,6 +9,11 @@ import type {
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TrainingLevelRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { api } from "@/lib/api";
+import {
+  createAdminTrashExportFetchPage,
+  type AdminTrashExportParams,
+} from "@/lib/admin-trash-export";
 
 export interface TrainingLevelsTrashTableProps {
   data: TrainingLevelRow[]
@@ -28,6 +33,7 @@ export interface TrainingLevelsTrashTableProps {
   onClearFilters: () => void
   onBulkRestore: (rows: TrainingLevelRow[]) => Promise<void>
   onBulkPurge: (rows: TrainingLevelRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function TrainingLevelsTrashTable({
@@ -48,16 +54,17 @@ export function TrainingLevelsTrashTable({
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
+  trashExportParams,
 }: TrainingLevelsTrashTableProps) {
   return (
     <AdminDataTable<TrainingLevelRow>
+      tableScope="training-levels-trash"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel="Thùng rác trống."
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:training-levels-trash"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
@@ -65,7 +72,16 @@ export function TrainingLevelsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("training-levels-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("training-levels-trash", { pageCount: data.length, total })}
+      exportFetchPage={
+        trashExportParams
+          ? createAdminTrashExportFetchPage<TrainingLevelRow>(
+              (params) => api.trainingLevels.list<TrainingLevelRow>(params),
+              trashExportParams,
+            )
+          : undefined
+      }
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-training-level-restore",

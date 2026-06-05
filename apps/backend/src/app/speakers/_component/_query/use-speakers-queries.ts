@@ -1,4 +1,5 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { SpeakerDetail, SpeakerRow } from "../types";
@@ -23,7 +24,7 @@ export function useSpeakersListQuery(
   return useQuery({
     queryKey: ["speakers", "list", filters],
     queryFn: async (): Promise<SpeakerRow[]> => {
-      const limit = 100;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
       const items: SpeakerRow[] = [];
       let page = 1;
       let total = Number.POSITIVE_INFINITY;

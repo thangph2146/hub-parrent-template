@@ -30,6 +30,7 @@ import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('Imported Users')
 @Permissions(PERMISSIONS.IMPORTED_USERS_VIEW)
@@ -75,7 +76,7 @@ export class ImportedUsersController {
     if (!userId) return this.unauthorized(res);
     const result = await this.importedUsersService.list({
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
     });
     const { statusCode, body } = createSuccessResponse({

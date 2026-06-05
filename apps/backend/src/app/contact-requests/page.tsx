@@ -296,6 +296,13 @@ function ContactRequestsPageInner() {
             onBulkDelete={handleBulkDelete}
             onBulkPurge={handleBulkPurge}
             onClearFilters={handleClearListFilters}
+            listParams={{
+              search: debouncedGlobalFilter.trim() || undefined,
+              filters: buildAdminFilterQuery(
+                columnFilters,
+                COMMON_FILTER_MAPPINGS.contactRequests,
+              ),
+            }}
           />
         </TabsContent>
 
@@ -322,6 +329,10 @@ function ContactRequestsPageInner() {
             onBulkRestore={handleBulkRestore}
             onBulkPurge={handleBulkPurge}
             onClearFilters={handleClearTrashFilters}
+            listParams={{
+              search: trashParams.search,
+              filters: trashParams.filters,
+            }}
           />
         </TabsContent>
       </Tabs>

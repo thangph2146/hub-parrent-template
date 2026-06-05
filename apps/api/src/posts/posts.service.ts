@@ -16,6 +16,7 @@ import { PostTag } from '../entities/post-tag.entity';
 import { Category } from '../entities/category.entity';
 import { Tag } from '../entities/tag.entity';
 import { User } from '../entities/user.entity';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface PostRowDto {
   id: string;
@@ -328,11 +329,8 @@ export class PostsService {
   }
 
   async list(params: ListPostsParams): Promise<ListPostsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const rawFilters = params.filters ? { ...params.filters } : undefined;
     let categoriesNone = false;
     if (

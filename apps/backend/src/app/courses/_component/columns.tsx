@@ -6,6 +6,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { CourseRow } from "./types";
+import { defineRelationExportColumns } from "@ui/components/data-table";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -55,6 +56,24 @@ export function getCourseColumns({
         return <span className="text-sm">{val ?? "—"}</span>;
       },
     },
+    {
+      accessorKey: "departmentId",
+      header: "Phòng/Khoa (ID)",
+      meta: { defaultHidden: true },
+      cell: ({ getValue }) => {
+        const val = getValue() as number | null;
+        return (
+          <span className="font-mono text-xs text-muted-foreground">
+            {val ?? "—"}
+          </span>
+        );
+      },
+    },
+    ...defineRelationExportColumns<CourseRow>([
+      { id: "createdAt", header: "Tạo lúc", getValue: (r) => r.createdAt },
+      { id: "updatedAt", header: "Cập nhật lúc", getValue: (r) => r.updatedAt },
+      { id: "deletedAt", header: "Xóa lúc", getValue: (r) => r.deletedAt ?? "" },
+    ]),
     {
       accessorKey: "status",
       header: "Trạng thái",

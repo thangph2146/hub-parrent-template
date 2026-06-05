@@ -271,6 +271,10 @@ function LocationsPageInner() {
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
                   toast.success(`Đã xóa vĩnh viễn ${ids.length} địa điểm`);
                 }}
+                trashExportParams={{
+                  search: debouncedTrashQ.trim() || undefined,
+                  filters: trashFilterParams,
+                }}
               />
             )}
           </TabsContent>

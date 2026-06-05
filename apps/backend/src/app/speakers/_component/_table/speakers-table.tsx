@@ -45,13 +45,13 @@ export function SpeakersTable({
 }: SpeakersTableProps) {
   return (
     <AdminDataTable<SpeakerRow>
+      tableScope="speakers"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có diễn giả — bấm "Thêm diễn giả".'
       manualFiltering={manualFilteringProp}
-      filterColumnVisibilityKey="admin-table-filter-visibility:speakers-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

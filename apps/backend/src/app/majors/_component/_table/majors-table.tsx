@@ -43,13 +43,13 @@ export function MajorsTable({
 }: MajorsTableProps) {
   return (
     <AdminDataTable<MajorRow>
+      tableScope="majors"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có ngành học — bấm "Thêm ngành học".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:majors-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}

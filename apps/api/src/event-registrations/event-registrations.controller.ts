@@ -32,6 +32,7 @@ import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('Event Registrations')
 @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_VIEW)
@@ -88,7 +89,7 @@ export class EventRegistrationsController {
     const result = await this.eventRegistrationsService.list({
       eventId: trimmedEventId,
       page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(100, Math.max(1, parseInt(String(limit), 10) || 10)),
+      limit: parseAdminListLimit(limit, 10),
       search: search?.trim(),
       status: status?.trim(),
     });

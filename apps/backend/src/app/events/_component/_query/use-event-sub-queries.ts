@@ -1,4 +1,5 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { EventLiveQueryOptions } from "./use-events-queries";
@@ -76,7 +77,7 @@ export function useEventSpeakersQuery(apiParam: StoreSyncSdk, eventId: string): 
   return useQuery({
     queryKey: ["events", eventId, "speakers"],
     queryFn: async (): Promise<Dict[]> => {
-      const result = await apiParam.eventSpeakers.list<Dict>({ eventId, limit: 100 });
+      const result = await apiParam.eventSpeakers.list<Dict>({ eventId, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT });
       return result.items;
     },
     enabled: !!eventId,

@@ -3,6 +3,7 @@ import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { AdmissionResult } from '../entities/admission-result.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { safeIsoString, safeIsoStringNow } from '../common/date-utils';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface AdmissionResultRowDto {
   id: string;
@@ -96,11 +97,8 @@ export class AdmissionResultsService {
   async list(
     params: ListAdmissionResultsParams,
   ): Promise<ListAdmissionResultsResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      100,
-    );
+    const { page, limit, skip } = normalizePageLimit(params.page,
+      params.limit, ADMIN_TABLE_EXPORT_MAX_LIMIT);
     const where = buildWhere(params) as FilterQuery<AdmissionResult>;
     const [rows, total] = await Promise.all([
       this.em.find(AdmissionResult, where, {

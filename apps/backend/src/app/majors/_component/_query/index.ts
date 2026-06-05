@@ -1,4 +1,5 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { MajorDetail, MajorRow } from "../types";
@@ -23,7 +24,7 @@ export function useMajorsListQuery(
   return useQuery({
     queryKey: ["majors", "list", filters],
     queryFn: async (): Promise<MajorRow[]> => {
-      const limit = 100;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
       const items: MajorRow[] = [];
       let page = 1;
       let total = Number.POSITIVE_INFINITY;

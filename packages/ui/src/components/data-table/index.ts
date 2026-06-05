@@ -23,6 +23,30 @@ export {
   dataTableColumnsHasActionsColumn,
 } from "./data-table-columns"
 export {
+  applyDefaultDataColumnWidths,
+  columnDefHasExplicitSize,
+  columnHasExplicitWidthClass,
+  dataTableCellWidthClassName,
+  dataTableCellContentClampClassName,
+  shouldClampDataTableCellContent,
+  DATA_TABLE_CELL_MAX_LINES,
+  DATA_TABLE_CELL_CONTENT_CLAMP_CLASS,
+  isDataTableActionsColumn,
+  isDataTableStructuralColumn,
+  DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_SIZE,
+} from "./data-table-column-width"
+export {
+  defineLinkedUserColumns,
+  defineRelationExportColumns,
+  resolveLinkedUser,
+  type LinkedUserRef,
+} from "./define-export-columns"
+export {
+  formatFlatRowIndex,
+  formatHierarchicalRowIndex,
+  formatHierarchicalIndexFromPath,
+} from "./data-table-row-index"
+export {
   adminTableGetRowIdFromOriginal,
   adminTableRowSelectionProps,
   useAdminTableRowSelection,
@@ -62,6 +86,8 @@ export {
   DATA_TABLE_SELECTION_COLUMN_ID,
   DATA_TABLE_SELECTION_COLUMN_WIDTH,
   DATA_TABLE_SELECTION_COLUMN_CLASS,
+  DATA_TABLE_EXPAND_COLUMN_ID,
+  DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_WIDTH_CLASS,
   DATA_TABLE_PINNED_COLUMN_CLASS,
   DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT,
   dataTableColumnsHasIndexColumn,

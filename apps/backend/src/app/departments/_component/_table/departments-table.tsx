@@ -43,13 +43,13 @@ export function DepartmentsTable({
 }: DepartmentsTableProps) {
   return (
     <AdminDataTable<DepartmentRow>
+      tableScope="departments"
       data={data}
       getRowId={(row) => row.id}
       columns={columns}
       isLoading={isLoading}
       emptyLabel='Chưa có phòng khoa — bấm "Thêm phòng khoa".'
       manualFiltering
-      filterColumnVisibilityKey="admin-table-filter-visibility:departments-list"
       columnFilters={columnFilters}
       onColumnFiltersChange={onColumnFiltersChange}
       globalFilter={globalFilter}
