@@ -326,7 +326,7 @@ export class GroupsController {
   }
 
   @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.GROUPS_MANAGE)
+  @Permissions(PERMISSIONS.GROUPS_HARD_DELETE)
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -409,7 +409,7 @@ export class GroupsController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.GROUPS_MANAGE)
+  @Permissions(PERMISSIONS.GROUPS_RESTORE)
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,

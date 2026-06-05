@@ -249,7 +249,7 @@ export class EventRegistrationsController {
   }
 
   @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_DELETE)
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_HARD_DELETE)
   @ApiOperation({ summary: 'Hard delete event registration permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
@@ -299,7 +299,7 @@ export class EventRegistrationsController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_MANAGE)
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted event registration' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(

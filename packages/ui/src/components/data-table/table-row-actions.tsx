@@ -9,13 +9,17 @@ import { useRowActionConfirm } from "./row-action-confirm"
 /** Id mặc định cột thao tác — DataTable tự gộp meta khi khớp id này. */
 export const DATA_TABLE_ACTIONS_COLUMN_ID = "actions"
 
+/** Nút ⋯ trên nền cột ghim `bg-secondary` — icon chữ trắng, viền/hover nhẹ. */
+export const DATA_TABLE_ROW_ACTIONS_TRIGGER_CLASS =
+  "size-8 shrink-0 border-secondary-foreground/50 !bg-secondary-foreground/10 p-0 !text-secondary-foreground hover:!border-secondary-foreground/70 hover:!bg-secondary-foreground/20 hover:!text-secondary-foreground aria-expanded:!border-secondary-foreground/70 aria-expanded:!bg-secondary-foreground/25 aria-expanded:!text-secondary-foreground [&_svg]:!text-secondary-foreground"
+
 /** Meta chuẩn cho cột hành động (ẩn filter, loại khỏi export, căn giữa menu ⋯). */
 export const TABLE_ACTIONS_COLUMN_META = {
   disableColumnFilter: true,
   excludeFromExport: true,
   isActionsColumn: true,
   className:
-    "w-[72px] min-w-[72px] max-w-[80px] px-1 text-center align-middle [&>div]:mx-auto [&>button]:mx-auto",
+    "w-[72px] min-w-[72px] max-w-[80px] px-1 text-center align-middle [&>div]:flex [&>div]:w-full [&>div]:justify-center",
 } as const
 
 const defaultActionButtonClass = "h-8 gap-1.5"

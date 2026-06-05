@@ -164,7 +164,7 @@ export class FaceDataController {
   }
 
   @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.FACE_DATA_DELETE)
+  @Permissions(PERMISSIONS.FACE_DATA_HARD_DELETE)
   @ApiOperation({ summary: 'Hard delete face data permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
@@ -214,7 +214,7 @@ export class FaceDataController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.FACE_DATA_MANAGE)
+  @Permissions(PERMISSIONS.FACE_DATA_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted face data' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(

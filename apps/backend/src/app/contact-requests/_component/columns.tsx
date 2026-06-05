@@ -20,14 +20,14 @@ import {
 } from "./contact-row-actions";
 
 /** Độ rộng cột bảng — khai báo trên `meta.className`, không đặt `min-w` trong cell. */
-const COL_NAME = "w-[180px] min-w-[160px] max-w-[220px]";
-const COL_EMAIL = "w-[210px] min-w-[190px] max-w-[260px]";
-const COL_PHONE = "w-[130px] min-w-[120px] max-w-[145px]";
-const COL_SUBJECT = "w-[160px] min-w-[140px] max-w-[200px]";
-const COL_TEXT = "w-[220px] min-w-[180px] max-w-[280px]";
+const COL_NAME = "w-[200px] min-w-[200px] max-w-[260px]";
+const COL_EMAIL = "w-[240px] min-w-[240px] max-w-[300px]";
+const COL_PHONE = "w-[160px] min-w-[160px] max-w-[250px]";
+const COL_SUBJECT = "w-[180px] min-w-[180px] max-w-[250px]";
+const COL_TEXT = "w-[250px] min-w-[250px] max-w-[350px]";
 const COL_SLUG = "w-[140px] min-w-[120px] max-w-[165px]";
 const COL_BADGE = "w-[108px] min-w-[96px] max-w-[120px]";
-const COL_DATE = "w-[168px] min-w-[150px] max-w-[185px]";
+const COL_DATE = "w-[180px] min-w-[180px] max-w-[185px]";
 
 export interface ContactRequestColumnsProps {
   onView: (contact: ContactRequest) => void;

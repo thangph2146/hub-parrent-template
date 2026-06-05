@@ -94,7 +94,8 @@ export function StaffTable(props: StaffTableProps) {
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo email, họ tên (API)…"
-      onClearFilters={onClearFilters}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      onClearFilters={onClearFilters}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
       bulkActions={[
         {

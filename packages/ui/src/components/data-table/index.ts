@@ -1,5 +1,6 @@
 export {
   DATA_TABLE_ACTIONS_COLUMN_ID,
+  DATA_TABLE_ROW_ACTIONS_TRIGGER_CLASS,
   TABLE_ACTIONS_COLUMN_META,
   DataTableRowActions,
   DataTableRowActionButton,
@@ -30,6 +31,10 @@ export {
   type RowActionsMenuGroupConfig,
 } from "./table-row-actions-menu"
 export {
+  DataTableHorizontalScroll,
+  type DataTableHorizontalScrollProps,
+} from "./data-table-horizontal-scroll"
+export {
   AdminDataTable,
   DataTable,
   AdminDataTablePagination,
@@ -40,6 +45,8 @@ export {
   DATA_TABLE_SELECTION_COLUMN_ID,
   DATA_TABLE_SELECTION_COLUMN_WIDTH,
   DATA_TABLE_SELECTION_COLUMN_CLASS,
+  DATA_TABLE_PINNED_COLUMN_CLASS,
+  DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT,
   dataTableColumnsHasIndexColumn,
 } from "./data-table"
 export type {

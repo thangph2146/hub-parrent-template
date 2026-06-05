@@ -13,9 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu"
 import { cn } from "../../lib/utils"
-import type {
-  DataTableRowActionGroupId,
-  DataTableRowActionItem,
+import {
+  DATA_TABLE_ROW_ACTIONS_TRIGGER_CLASS,
+  type DataTableRowActionGroupId,
+  type DataTableRowActionItem,
 } from "./table-row-actions"
 import { useRowActionConfirm } from "./row-action-confirm"
 
@@ -183,7 +184,7 @@ export function DataTableRowActionsMenu({
 
   return (
     <>
-    <div className={cn("flex justify-start", className)}>
+    <div className={cn("flex w-full justify-center", className)}>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
@@ -191,13 +192,16 @@ export function DataTableRowActionsMenu({
               type="button"
               variant="outline"
               size="sm"
-              className="size-8 shrink-0 p-0"
+              className={DATA_TABLE_ROW_ACTIONS_TRIGGER_CLASS}
               disabled={busy}
               aria-label={triggerLabel}
             />
           }
         >
-          <MoreHorizontal className="size-4" aria-hidden />
+          <MoreHorizontal
+            className="size-4 text-secondary-foreground"
+            aria-hidden
+          />
           <span className="sr-only">{triggerLabel}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align={align} className="w-64 p-1.5">

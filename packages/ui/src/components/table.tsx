@@ -4,11 +4,32 @@ import * as React from "react"
 
 import { cn } from "../lib/utils"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+type TableProps = React.ComponentProps<"table"> & {
+  /** Class cho vỏ `[data-slot=table-container"]` (cuộn ngang/dọc). */
+  scrollContainerClassName?: string
+  /** Style cho vỏ cuộn — vd. `maxHeight` khi header sticky. */
+  scrollContainerStyle?: React.CSSProperties
+}
+
+function Table({
+  className,
+  scrollContainerClassName,
+  scrollContainerStyle,
+  ...props
+}: TableProps) {
+  const stickyViewport =
+    scrollContainerClassName?.includes("overflow-auto") ||
+    scrollContainerStyle?.maxHeight != null
+
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn(
+        "relative w-full",
+        stickyViewport ? "overflow-auto" : "overflow-x-auto",
+        scrollContainerClassName
+      )}
+      style={scrollContainerStyle}
     >
       <table
         data-slot="table"

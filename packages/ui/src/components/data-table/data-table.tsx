@@ -18,6 +18,7 @@ function debounce<TArgs extends unknown[]>(
 
 type ColumnMeta = {
   disableColumnFilter?: boolean
+  isActionsColumn?: boolean
   className?: string
   filterPlaceholder?: string
   filterVariant?: string
@@ -108,6 +109,8 @@ import {
 } from "./data-table-pagination"
 import { Divider } from "../layout"
 import { normalizeDataTableColumns } from "./data-table-columns"
+import { DataTableHorizontalScroll } from "./data-table-horizontal-scroll"
+import { DATA_TABLE_ACTIONS_COLUMN_ID } from "./table-row-actions"
 
 export type AdminDataTableBulkAction<TData> = {
   id: string
@@ -231,6 +234,27 @@ export type AdminDataTableProps<TData> = {
    * @default DATA_TABLE_SELECTION_COLUMN_WIDTH (48)
    */
   selectionColumnWidth?: number
+  /**
+   * Thanh cuộn ngang phía trên bảng (đồng bộ với vùng cuộn bảng).
+   * Tự ẩn khi bảng không tràn ngang.
+   * @default true
+   */
+  horizontalScrollButtons?: boolean
+  /**
+   * Header bảng dính trên khi cuộn dọc (scroll ancestor, thường là `<main>` admin).
+   * @default true
+   */
+  stickyTableHeader?: boolean
+  /**
+   * Giá trị CSS `top` cho header dính (số = px, chuỗi = đơn vị tùy ý).
+   * @default 0
+   */
+  stickyTableHeaderTop?: string | number
+  /**
+   * Chiều cao tối đa vùng cuộn bảng (`overflow-auto` trên table-container).
+   * Khi `stickyTableHeader` và không truyền — dùng `DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT`.
+   */
+  tableBodyMaxHeight?: string | number
 }
 
 export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
@@ -240,20 +264,113 @@ export const DATA_TABLE_SELECTION_COLUMN_ID = "_select"
 /** Độ rộng mặc định cột checkbox (px) — chỉnh qua prop `selectionColumnWidth`. */
 export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 48
 
+/** Chiều cao tối đa mặc định vùng cuộn bảng khi `stickyTableHeader` (trừ header/filter admin). */
+export const DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT =
+  "calc(100dvh - 15rem)"
+
 export const DATA_TABLE_SELECTION_COLUMN_CLASS =
   "sticky left-0 z-[11] px-0 text-center align-middle shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
 
-const DATA_TABLE_SELECTION_CHECKBOX_WRAP_CLASS =
-  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary-foreground/15 focus-within:ring-2 focus-within:ring-primary-foreground/25"
+/** Nền cột ghim checkbox / thao tác — secondary opaque, căn giữa. */
+export const DATA_TABLE_PINNED_COLUMN_CLASS =
+  "!bg-secondary !text-secondary-foreground"
 
-const DATA_TABLE_SELECTION_BODY_CHECKBOX_WRAP_CLASS =
-  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary/10 focus-within:ring-2 focus-within:ring-primary/20"
+const DATA_TABLE_PINNED_CHECKBOX_CLASS =
+  "size-[18px] border-secondary-foreground/50 data-checked:border-secondary-foreground data-checked:bg-secondary-foreground data-checked:text-secondary"
+
+const DATA_TABLE_PINNED_CHECKBOX_WRAP_HEADER =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-secondary-foreground/15 focus-within:ring-2 focus-within:ring-secondary-foreground/25"
+
+const DATA_TABLE_PINNED_CHECKBOX_WRAP_BODY =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-secondary-foreground/15 focus-within:ring-2 focus-within:ring-secondary-foreground/20"
+
+function stickyPinnedHeadCellClassName(options: {
+  isSelectionCol: boolean
+  isActionsCol: boolean
+  stickyTableHeader: boolean
+}): string {
+  const { isSelectionCol, isActionsCol, stickyTableHeader } = options
+  if (!isSelectionCol && !isActionsCol) return ""
+  return cn(
+    DATA_TABLE_PINNED_COLUMN_CLASS,
+    "text-center",
+    isSelectionCol && "sticky left-0 px-0",
+    isActionsCol && "sticky right-0",
+    stickyTableHeader ? "z-[25]" : isSelectionCol ? "z-[12]" : "z-[10]"
+  )
+}
+
+function stickyPinnedBodyCellBackground(): CSSProperties {
+  return {
+    backgroundColor: "var(--secondary)",
+    color: "var(--secondary-foreground)",
+  }
+}
+
+function stickyPinnedBodyCellClassName(side: "left" | "right"): string {
+  return cn(
+    side === "left" ? "sticky left-0 z-[11]" : "sticky right-0 z-[10]",
+    "text-center align-middle",
+    DATA_TABLE_PINNED_COLUMN_CLASS,
+    "hover:!bg-secondary/90",
+    side === "left"
+      ? "shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
+      : "shadow-[-2px_0_6px_-2px_rgba(0,0,0,0.08)]"
+  )
+}
 
 function selectionColumnBoxStyle(widthPx: number): CSSProperties {
   return {
     width: widthPx,
     minWidth: widthPx,
     maxWidth: widthPx,
+  }
+}
+
+function toCssSize(value: string | number): string {
+  return typeof value === "number" ? `${value}px` : value
+}
+
+function isDataTableActionsColumn(
+  columnId: string,
+  meta: ColumnMeta | undefined
+): boolean {
+  return (
+    columnId === DATA_TABLE_ACTIONS_COLUMN_ID || meta?.isActionsColumn === true
+  )
+}
+
+function stickyTableHeadClassName(options: {
+  enabled: boolean
+  isSelectionCol: boolean
+  isActionsCol: boolean
+}): string {
+  if (!options.enabled) return ""
+  const corner = options.isSelectionCol || options.isActionsCol
+  return cn(
+    "sticky top-0 shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]",
+    corner ? "z-[25]" : "z-[15]",
+    corner ? DATA_TABLE_PINNED_COLUMN_CLASS : "bg-primary"
+  )
+}
+
+function resolveDataTableScrollMaxHeight(
+  stickyTableHeader: boolean,
+  tableBodyMaxHeight: string | number | undefined
+): string | number | undefined {
+  if (tableBodyMaxHeight != null) return tableBodyMaxHeight
+  if (stickyTableHeader) return DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT
+  return undefined
+}
+
+function stickyTableHeadTopStyle(
+  enabled: boolean,
+  top: string | number | undefined
+): CSSProperties | undefined {
+  if (!enabled) return undefined
+  const resolved = top ?? 0
+  return {
+    top: typeof resolved === "number" ? `${resolved}px` : resolved,
   }
 }
 
@@ -469,11 +586,23 @@ export function AdminDataTable<TData>({
   indexColumnLabel = "STT",
   indexColumnExcludeFromExport = false,
   selectionColumnWidth = DATA_TABLE_SELECTION_COLUMN_WIDTH,
+  horizontalScrollButtons = true,
+  stickyTableHeader = true,
+  stickyTableHeaderTop,
+  tableBodyMaxHeight,
 }: AdminDataTableProps<TData>) {
   const resolvedSelectionColumnWidth = Math.max(
     32,
     Math.min(80, Math.round(selectionColumnWidth))
   )
+  const resolvedTableScrollMaxHeight = useMemo(
+    () => resolveDataTableScrollMaxHeight(stickyTableHeader, tableBodyMaxHeight),
+    [stickyTableHeader, tableBodyMaxHeight]
+  )
+  const tableScrollContainerStyle = useMemo((): CSSProperties | undefined => {
+    if (resolvedTableScrollMaxHeight == null) return undefined
+    return { maxHeight: toCssSize(resolvedTableScrollMaxHeight) }
+  }, [resolvedTableScrollMaxHeight])
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFiltersInternal, setColumnFiltersInternal] =
     useState<ColumnFiltersState>([])
@@ -664,9 +793,9 @@ export function AdminDataTable<TData>({
       id: DATA_TABLE_SELECTION_COLUMN_ID,
       header: ({ table }) => (
         <div className="flex w-full items-center justify-center">
-          <span className={DATA_TABLE_SELECTION_CHECKBOX_WRAP_CLASS}>
+          <span className={DATA_TABLE_PINNED_CHECKBOX_WRAP_HEADER}>
             <Checkbox
-              className="size-[18px] border-primary-foreground/40 data-checked:border-primary-foreground data-checked:bg-primary-foreground data-checked:text-primary"
+              className={DATA_TABLE_PINNED_CHECKBOX_CLASS}
               checked={table.getIsAllPageRowsSelected()}
               indeterminate={
                 !table.getIsAllPageRowsSelected() &&
@@ -685,14 +814,14 @@ export function AdminDataTable<TData>({
         <div className="flex w-full items-center justify-center">
           <span
             className={cn(
-              DATA_TABLE_SELECTION_BODY_CHECKBOX_WRAP_CLASS,
+              DATA_TABLE_PINNED_CHECKBOX_WRAP_BODY,
               row.getIsSelected() &&
-                "bg-primary/15 ring-2 ring-primary/25",
+                "bg-secondary-foreground/15 ring-2 ring-secondary-foreground/30",
               !row.getCanSelect() && "pointer-events-none opacity-40"
             )}
           >
             <Checkbox
-              className="size-[18px]"
+              className={DATA_TABLE_PINNED_CHECKBOX_CLASS}
               checked={row.getIsSelected()}
               onCheckedChange={(value) => row.toggleSelected(value === true)}
               disabled={!row.getCanSelect()}
@@ -1343,14 +1472,34 @@ export function AdminDataTable<TData>({
           </TypographyPSmall>
         }
       />
-      <div className="border border-border">
-        <Table className="min-w-[640px]">
+      <DataTableHorizontalScroll
+        enabled={horizontalScrollButtons}
+        watchKey={`${isLoading}-${data.length}`}
+      >
+        <div className="border border-border">
+          <Table
+            className="min-w-[640px]"
+            scrollContainerClassName={
+              resolvedTableScrollMaxHeight != null ? "overflow-auto" : undefined
+            }
+            scrollContainerStyle={tableScrollContainerStyle}
+          >
           <TableHeader className="bg-primary text-primary-foreground">
             {headerGroups.map((hg) => (
               <TableRow key={hg.id} className="hover:bg-transparent">
                 {hg.headers.map((header) => {
                   const isSelectionCol =
                     header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                  const headerMeta = header.column.columnDef.meta as
+                    | ColumnMeta
+                    | undefined
+                  const isActionsCol = isDataTableActionsColumn(
+                    header.column.id,
+                    headerMeta
+                  )
+                  const headBoxStyle = isSelectionCol
+                    ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
+                    : columnSizeBoxStyle(header.column)
                   return (
                     <TableHead
                       key={header.id}
@@ -1358,20 +1507,25 @@ export function AdminDataTable<TData>({
                         "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
                         header.column.getCanSort() &&
                           "cursor-pointer select-none",
-                        isSelectionCol &&
-                          "sticky left-0 z-[12] bg-primary px-0",
-                        cellWidthClassName(
-                          header.column.columnDef.meta as ColumnMeta | undefined,
-                          header.column.columnDef
-                        )
+                        cellWidthClassName(headerMeta, header.column.columnDef),
+                        stickyPinnedHeadCellClassName({
+                          isSelectionCol,
+                          isActionsCol,
+                          stickyTableHeader,
+                        }),
+                        stickyTableHeadClassName({
+                          enabled: stickyTableHeader,
+                          isSelectionCol,
+                          isActionsCol,
+                        })
                       )}
-                      style={
-                        isSelectionCol
-                          ? selectionColumnBoxStyle(
-                              resolvedSelectionColumnWidth
-                            )
-                          : columnSizeBoxStyle(header.column)
-                      }
+                      style={{
+                        ...headBoxStyle,
+                        ...stickyTableHeadTopStyle(
+                          stickyTableHeader,
+                          stickyTableHeaderTop
+                        ),
+                      }}
                       onClick={
                         header.column.getCanSort()
                           ? header.column.getToggleSortingHandler()
@@ -1449,21 +1603,30 @@ export function AdminDataTable<TData>({
                         : 0
                     const isSelectionCol =
                       cell.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                    const cellMeta = cell.column.columnDef.meta as
+                      | ColumnMeta
+                      | undefined
+                    const isActionsCol = isDataTableActionsColumn(
+                      cell.column.id,
+                      cellMeta
+                    )
+                    const isPinnedCol = isSelectionCol || isActionsCol
                     return (
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          cellWidthClassName(
-                            cell.column.columnDef.meta as ColumnMeta | undefined,
-                            cell.column.columnDef
-                          ),
-                          isSelectionCol && "sticky left-0 z-[11] bg-inherit px-0",
-                          row.getIsSelected() && "!bg-primary/12",
-                          isSelectionCol &&
-                            !row.getIsSelected() &&
-                            "hover:!bg-primary/8"
+                          cellWidthClassName(cellMeta, cell.column.columnDef),
+                          isPinnedCol &&
+                            stickyPinnedBodyCellClassName(
+                              isSelectionCol ? "left" : "right"
+                            ),
+                          isSelectionCol && "px-0",
+                          isActionsCol && "px-1"
                         )}
                         style={{
+                          ...(isPinnedCol
+                            ? stickyPinnedBodyCellBackground()
+                            : {}),
                           ...(isSelectionCol
                             ? selectionColumnBoxStyle(
                                 resolvedSelectionColumnWidth
@@ -1486,8 +1649,9 @@ export function AdminDataTable<TData>({
               ))
             )}
           </TableBody>
-        </Table>
-      </div>
+          </Table>
+        </div>
+      </DataTableHorizontalScroll>
       {showTableFooter ? (
         <div
           className={cn(

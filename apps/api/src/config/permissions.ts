@@ -65,6 +65,8 @@ export const ACTIONS = {
   RESTORE: 'restore',
   HARD_DELETE: 'hard-delete',
   UNACTIVE: 'unactive',
+  /** Thu hồi mọi phiên của một user (audit log; quyền API: sessions:manage). */
+  REVOKE_BY_USER: 'revoke_by_user',
 } as const;
 
 export type Resource = (typeof RESOURCES)[keyof typeof RESOURCES];

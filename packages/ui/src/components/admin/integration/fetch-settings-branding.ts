@@ -16,6 +16,18 @@ function extractSettingString(res: unknown, fallback: string): string {
  * Đọc site_name + site_description từ API admin settings.
  * App truyền `http.get` (vd. api.http.get) — không import client app khác.
  */
+async function safeSettingGet(
+  get: (path: string) => Promise<unknown>,
+  path: string,
+  fallback: string
+): Promise<string> {
+  try {
+    return extractSettingString(await get(path), fallback)
+  } catch {
+    return fallback
+  }
+}
+
 export async function fetchAdminSettingsBranding(
   get: (path: string) => Promise<unknown>,
   defaults: AdminSiteBranding = {
@@ -23,12 +35,13 @@ export async function fetchAdminSettingsBranding(
     siteDescription: "Quản trị hệ thống",
   }
 ): Promise<AdminSiteBranding> {
-  const [nameRes, descRes] = await Promise.all([
-    get("/admin/settings/site_name"),
-    get("/admin/settings/site_description"),
+  const [siteName, siteDescription] = await Promise.all([
+    safeSettingGet(get, "/admin/settings/site_name", defaults.siteName),
+    safeSettingGet(
+      get,
+      "/admin/settings/site_description",
+      defaults.siteDescription
+    ),
   ])
-  return {
-    siteName: extractSettingString(nameRes, defaults.siteName),
-    siteDescription: extractSettingString(descRes, defaults.siteDescription),
-  }
+  return { siteName, siteDescription }
 }

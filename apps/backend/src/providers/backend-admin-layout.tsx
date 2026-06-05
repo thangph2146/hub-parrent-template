@@ -14,17 +14,20 @@ import { useAuth, useClientReady } from "@/providers/auth-provider"
 export function BackendAdminLayoutProvider({ children }: { children: ReactNode }) {
   const clientReady = useClientReady()
   const { user, logout } = useAuth()
+  const brandingDefaults = {
+    siteName: "HUB Parent",
+    siteDescription: "Quản trị hệ thống",
+  } as const
+
   const branding = useAdminSiteBranding({
-    queryKey: ["settings", "site-config"],
+    queryKey: ["settings", "site-config", user?.id ?? "guest"],
+    enabled: clientReady && !!user,
     fetchBranding: () =>
-      fetchAdminSettingsBranding((path: string) => api.http.get(path), {
-        siteName: "HUB Parent",
-        siteDescription: "Quản trị hệ thống",
-      }),
-    defaults: {
-      siteName: "HUB Parent",
-      siteDescription: "Quản trị hệ thống",
-    },
+      fetchAdminSettingsBranding(
+        (path: string) => api.http.get(path),
+        brandingDefaults
+      ),
+    defaults: brandingDefaults,
   })
 
   const value = useMemo(

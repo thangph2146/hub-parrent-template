@@ -13,12 +13,16 @@ export function useAdminSiteBranding(options: {
   fetchBranding: () => Promise<AdminSiteBranding>
   defaults?: AdminSiteBranding
   staleTimeMs?: number
+  /** false khi chưa đăng nhập — tránh gọi /admin/settings (401 thiếu X-User-Id). */
+  enabled?: boolean
 }) {
   const defaults = options.defaults ?? DEFAULT_BRANDING
   const { data } = useQuery({
     queryKey: options.queryKey,
     queryFn: options.fetchBranding,
+    enabled: options.enabled ?? true,
     staleTime: options.staleTimeMs ?? 5 * 60 * 1000,
+    retry: false,
   })
 
   return {

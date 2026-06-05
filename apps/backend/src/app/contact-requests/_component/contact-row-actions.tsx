@@ -201,7 +201,7 @@ export function ContactRequestRowActions({
 
 export const contactRequestActionsColumnMeta = {
   ...TABLE_ACTIONS_COLUMN_META,
-  className: `${TABLE_ACTIONS_COLUMN_META.className} sticky right-0 z-[10] bg-inherit`,
+  className: `${TABLE_ACTIONS_COLUMN_META.className} sticky right-0 z-[10]`,
 };
 
 export const contactRequestActionsColumnId = DATA_TABLE_ACTIONS_COLUMN_ID;
