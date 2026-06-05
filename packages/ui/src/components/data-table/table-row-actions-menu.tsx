@@ -24,6 +24,8 @@ import {
 import {
   groupRowActions,
   RowActionMenuItemBody,
+  RowActionsMenuGroups,
+  rowActionsGroupLabelClassName,
   type RowActionsMenuGroupConfig,
 } from "./row-actions-menu-shared"
 import { useRegisterDataTableRowActions } from "./data-table-row-actions-registry"
@@ -33,13 +35,15 @@ export type { RowActionsMenuGroupConfig }
 function DropdownRowActionItem({
   action,
   onRun,
+  busy,
 }: {
   action: DataTableRowActionItem
   onRun: (action: DataTableRowActionItem) => void
+  busy?: boolean
 }) {
   return (
     <DropdownMenuItem
-      disabled={action.disabled}
+      disabled={action.disabled || busy}
       variant={action.menuVariant ?? "default"}
       onClick={(event) => {
         event.preventDefault()
@@ -88,18 +92,16 @@ export function DataTableRowActionsMenu({
     groupsOverride
   )
 
-  useRegisterDataTableRowActions(
-    visible.length > 0
-      ? {
-          actions,
-          groups: groupsOverride,
-          busy,
-          autoConfirmDangerousActions,
-        }
-      : null
-  )
+  useRegisterDataTableRowActions({
+    actions,
+    groups: groupsOverride,
+    busy,
+    autoConfirmDangerousActions,
+  })
 
-  if (visible.length === 0) return null
+  if (visible.length === 0) {
+    return <span className="block h-8 w-full" aria-hidden />
+  }
 
   return (
     <>
@@ -121,41 +123,41 @@ export function DataTableRowActionsMenu({
             <span className="sr-only">{triggerLabel}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align={align} className="w-64 p-1.5">
-            {orderedGroups.map((groupId, index) => {
-              const config = groups[groupId]
-              const items = byGroup.get(groupId) ?? []
-              const GroupIcon = config.icon
-
-              return (
-                <div key={groupId}>
-                  {index > 0 ? <DropdownMenuSeparator /> : null}
-                  <DropdownMenuGroup>
-                    {config.sublabel ? (
-                      <DropdownMenuLabel className="px-1 py-1 text-[11px] font-medium text-muted-foreground">
-                        {config.label}
-                      </DropdownMenuLabel>
-                    ) : (
-                      <DropdownMenuLabel className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        {GroupIcon ? (
-                          <GroupIcon className="size-3.5 shrink-0 text-primary" />
-                        ) : null}
-                        {config.label}
-                      </DropdownMenuLabel>
-                    )}
-                    {config.header ? (
-                      <div className="mb-1.5 px-1">{config.header}</div>
+            <RowActionsMenuGroups
+              orderedGroups={orderedGroups}
+              groups={groups}
+              byGroup={byGroup}
+              renderSeparator={() => <DropdownMenuSeparator />}
+              renderGroup={(children) => (
+                <DropdownMenuGroup>{children}</DropdownMenuGroup>
+              )}
+              renderGroupLabel={(config, GroupIcon) =>
+                config.sublabel ? (
+                  <DropdownMenuLabel
+                    className={rowActionsGroupLabelClassName(config)}
+                  >
+                    {config.label}
+                  </DropdownMenuLabel>
+                ) : (
+                  <DropdownMenuLabel
+                    className={rowActionsGroupLabelClassName(config)}
+                  >
+                    {GroupIcon ? (
+                      <GroupIcon className="size-3.5 shrink-0 text-primary" />
                     ) : null}
-                    {items.map((action) => (
-                      <DropdownRowActionItem
-                        key={action.key}
-                        action={action}
-                        onRun={runAction}
-                      />
-                    ))}
-                  </DropdownMenuGroup>
-                </div>
-              )
-            })}
+                    {config.label}
+                  </DropdownMenuLabel>
+                )
+              }
+              renderItem={(action) => (
+                <DropdownRowActionItem
+                  key={action.key}
+                  action={action}
+                  onRun={runAction}
+                  busy={busy}
+                />
+              )}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

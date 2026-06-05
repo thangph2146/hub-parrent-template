@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentType, ReactNode } from "react"
+import type { ComponentType, ReactNode, ReactElement } from "react"
 import { cn } from "../../lib/utils"
 import type {
   DataTableRowActionGroupId,
@@ -102,6 +102,57 @@ export function groupRowActions(
   )
 
   return { visible, groups, byGroup, orderedGroups }
+}
+
+export function RowActionsMenuGroups({
+  orderedGroups,
+  groups,
+  byGroup,
+  renderItem,
+  renderSeparator,
+  renderGroup,
+  renderGroupLabel,
+}: {
+  orderedGroups: DataTableRowActionGroupId[]
+  groups: Record<DataTableRowActionGroupId, RowActionsMenuGroupConfig>
+  byGroup: Map<DataTableRowActionGroupId, DataTableRowActionItem[]>
+  renderItem: (action: DataTableRowActionItem) => ReactElement
+  renderSeparator: () => ReactElement
+  renderGroup: (children: ReactNode) => ReactElement
+  renderGroupLabel: (config: RowActionsMenuGroupConfig, GroupIcon?: ComponentType<{ className?: string }>) => ReactElement
+}) {
+  return (
+    <>
+      {orderedGroups.map((groupId, index) => {
+        const config = groups[groupId]
+        const items = byGroup.get(groupId) ?? []
+        const GroupIcon = config.icon
+
+        return (
+          <div key={groupId}>
+            {index > 0 ? renderSeparator() : null}
+            {renderGroup(
+              <>
+                {renderGroupLabel(config, GroupIcon)}
+                {config.header ? (
+                  <div className="mb-1.5 px-1">{config.header}</div>
+                ) : null}
+                {items.map((action) => renderItem(action))}
+              </>
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+export function rowActionsGroupLabelClassName(
+  config: RowActionsMenuGroupConfig
+): string {
+  return config.sublabel
+    ? "px-1 py-1 text-[11px] font-medium text-muted-foreground"
+    : "flex items-center gap-2 px-1 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
 }
 
 export function RowActionMenuItemBody({

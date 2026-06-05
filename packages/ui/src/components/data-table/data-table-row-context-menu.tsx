@@ -7,6 +7,7 @@ import {
   type Ref,
   type ReactNode,
 } from "react"
+import { flushSync } from "react-dom"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -21,10 +22,13 @@ import { cn } from "../../lib/utils"
 import {
   groupRowActions,
   RowActionMenuItemBody,
+  RowActionsMenuGroups,
+  rowActionsGroupLabelClassName,
 } from "./row-actions-menu-shared"
 import {
   useDataTableRowActionsRegistryOptional,
   useDataTableScopeId,
+  type RegisteredDataTableRowActions,
 } from "./data-table-row-actions-registry"
 import type { DataTableRowActionItem } from "./table-row-actions"
 import { useDataTableRowActionRunnerOptional } from "./row-action-confirm"
@@ -32,16 +36,18 @@ import { useDataTableRowActionRunnerOptional } from "./row-action-confirm"
 function ContextMenuRowActionItem({
   action,
   onRun,
+  busy,
 }: {
   action: DataTableRowActionItem
   onRun: (action: DataTableRowActionItem) => void
+  busy?: boolean
 }) {
   return (
     <ContextMenuItem
-      disabled={action.disabled}
+      disabled={action.disabled || busy}
       variant={action.menuVariant ?? "default"}
-      onClick={(event) => {
-        event.preventDefault()
+      label={action.label}
+      onClick={() => {
         onRun(action)
       }}
       title={action.title}
@@ -53,64 +59,58 @@ function ContextMenuRowActionItem({
 }
 
 function DataTableRowContextMenuContent({
-  rowId,
-  refreshKey,
+  entry,
+  runAction,
 }: {
-  rowId: string
-  refreshKey: number
+  entry: RegisteredDataTableRowActions
+  runAction: (action: DataTableRowActionItem) => void
 }) {
-  const registry = useDataTableRowActionsRegistryOptional()
-  const scopeId = useDataTableScopeId()
-  const runAction = useDataTableRowActionRunnerOptional()
-  void refreshKey
-  const entry = registry?.getScoped(scopeId, rowId)
-
-  if (!entry || !runAction) return null
-
   const { groups, byGroup, orderedGroups } = groupRowActions(
     entry.actions,
     entry.groups
   )
 
-  if (orderedGroups.length === 0) return null
+  if (orderedGroups.length === 0) {
+    return (
+      <ContextMenuContent className="w-64 p-1.5">
+        <ContextMenuItem disabled className="text-muted-foreground">
+          Không có thao tác khả dụng
+        </ContextMenuItem>
+      </ContextMenuContent>
+    )
+  }
 
   return (
     <ContextMenuContent className="w-64 p-1.5">
-      {orderedGroups.map((groupId, index) => {
-        const config = groups[groupId]
-        const items = byGroup.get(groupId) ?? []
-        const GroupIcon = config.icon
-
-        return (
-          <div key={groupId}>
-            {index > 0 ? <ContextMenuSeparator /> : null}
-            <ContextMenuGroup>
-              {config.sublabel ? (
-                <ContextMenuLabel className="px-1 py-1 text-[11px] font-medium text-muted-foreground">
-                  {config.label}
-                </ContextMenuLabel>
-              ) : (
-                <ContextMenuLabel className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  {GroupIcon ? (
-                    <GroupIcon className="size-3.5 shrink-0 text-primary" />
-                  ) : null}
-                  {config.label}
-                </ContextMenuLabel>
-              )}
-              {config.header ? (
-                <div className="mb-1.5 px-1">{config.header}</div>
+      <RowActionsMenuGroups
+        orderedGroups={orderedGroups}
+        groups={groups}
+        byGroup={byGroup}
+        renderSeparator={() => <ContextMenuSeparator />}
+        renderGroup={(children) => <ContextMenuGroup>{children}</ContextMenuGroup>}
+        renderGroupLabel={(config, GroupIcon) =>
+          config.sublabel ? (
+            <ContextMenuLabel className={rowActionsGroupLabelClassName(config)}>
+              {config.label}
+            </ContextMenuLabel>
+          ) : (
+            <ContextMenuLabel className={rowActionsGroupLabelClassName(config)}>
+              {GroupIcon ? (
+                <GroupIcon className="size-3.5 shrink-0 text-primary" />
               ) : null}
-              {items.map((action) => (
-                <ContextMenuRowActionItem
-                  key={action.key}
-                  action={action}
-                  onRun={runAction}
-                />
-              ))}
-            </ContextMenuGroup>
-          </div>
-        )
-      })}
+              {config.label}
+            </ContextMenuLabel>
+          )
+        }
+        renderItem={(action) => (
+          <ContextMenuRowActionItem
+            key={action.key}
+            action={action}
+            onRun={runAction}
+            busy={entry.busy}
+          />
+        )}
+      />
     </ContextMenuContent>
   )
 }
@@ -134,7 +134,11 @@ export function DataTableRowContextMenu({
   ...tableRowProps
 }: DataTableRowContextMenuProps) {
   const registry = useDataTableRowActionsRegistryOptional()
-  const [refreshKey, setRefreshKey] = useState(0)
+  const scopeId = useDataTableScopeId()
+  const runAction = useDataTableRowActionRunnerOptional()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [openEntry, setOpenEntry] =
+    useState<RegisteredDataTableRowActions | null>(null)
 
   if (!enabled || !registry) {
     return (
@@ -147,22 +151,61 @@ export function DataTableRowContextMenu({
   return (
     <ContextMenu
       onOpenChange={(open) => {
-        if (open) setRefreshKey((key) => key + 1)
+        if (open) {
+          flushSync(() => {
+            const entry = registry.getScoped(scopeId, rowId)
+            setOpenEntry(entry)
+            setMenuOpen(true)
+          })
+          return
+        }
+        setMenuOpen(false)
+        setOpenEntry(null)
       }}
     >
       <ContextMenuTrigger
-        render={
-          <TableRow
-            className={cn(className)}
-            style={style}
-            ref={rowRef}
-            {...tableRowProps}
-          />
-        }
+        render={(triggerProps) => {
+          const { ref: triggerRef, className: triggerClassName, style: triggerStyle, ...restTrigger } =
+            triggerProps
+
+          return (
+            <TableRow
+              {...tableRowProps}
+              {...restTrigger}
+              className={cn(className, triggerClassName)}
+              style={{ ...style, ...triggerStyle }}
+              ref={(node) => {
+                if (typeof triggerRef === "function") {
+                  triggerRef(node)
+                } else if (triggerRef) {
+                  triggerRef.current = node
+                }
+                if (typeof rowRef === "function") {
+                  rowRef(node)
+                } else if (rowRef) {
+                  rowRef.current = node
+                }
+              }}
+            />
+          )
+        }}
       >
         {children}
       </ContextMenuTrigger>
-      <DataTableRowContextMenuContent rowId={rowId} refreshKey={refreshKey} />
+      {menuOpen ? (
+        runAction && openEntry ? (
+          <DataTableRowContextMenuContent
+            entry={openEntry}
+            runAction={runAction}
+          />
+        ) : (
+          <ContextMenuContent className="w-64 p-1.5">
+            <ContextMenuItem disabled className="text-muted-foreground">
+              Không có thao tác khả dụng
+            </ContextMenuItem>
+          </ContextMenuContent>
+        )
+      ) : null}
     </ContextMenu>
   )
 }
