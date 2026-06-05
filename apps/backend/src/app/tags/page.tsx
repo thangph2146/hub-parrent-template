@@ -170,10 +170,6 @@ function TagsPageInner() {
     [listQuery.data],
   );
 
-  const canDelete = canDeleteTags;
-  const canRestore = canRestoreTags;
-  const canHardDelete = canHardDeleteTags;
-
   const columns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
       getTagColumns({

@@ -189,10 +189,6 @@ function CategoriesPageInner() {
     restoreMutation,
     purgeMutation,
   });
-  const canDelete = canDeleteCategories;
-  const canRestore = canRestoreCategories;
-  const canHardDelete = canHardDeleteCategories;
-
   const columns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({

@@ -32,7 +32,11 @@
     "db:fresh": "pnpm --filter @api run db:fresh",
     "db:migration:fresh": "pnpm --filter @api run db:migration:fresh",
     "db:seed": "pnpm --filter @api run db:seed",
-    "seed:superadmin": "pnpm --filter \"@api\" run seed:superadmin"
+    "seed:superadmin": "pnpm --filter \"@api\" run seed:superadmin",
+    "pm2:start": "pm2 start ecosystem.main.cjs",
+    "pm2:start:checkin": "pm2 start ecosystem.checkin.cjs",
+    "pm2:reload": "pm2 reload ecosystem.main.cjs --update-env",
+    "pm2:reload:checkin": "pm2 reload ecosystem.checkin.cjs --update-env"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
