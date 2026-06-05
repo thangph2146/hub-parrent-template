@@ -1,8 +1,11 @@
 /**
- * PM2 — stack check-in sự kiện
- * @hub-event-checkin-frontend :3000 | @backend :3001 | @api :3002
+ * PM2 compo 2 — check-in sự kiện
+ * apps/api (:3002) + apps/backend (:3001) + apps/hub-event-checkin-frontend (:3000)
  *
  * Cả stack:
+ *   pnpm pm2:start:checkin
+ *   pnpm pm2:reload:checkin
+ *   pnpm pm2:restart:checkin
  *   pm2 start ecosystem.checkin.cjs
  *
  * Từng app:

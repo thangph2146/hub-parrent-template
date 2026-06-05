@@ -33,10 +33,16 @@
     "db:migration:fresh": "pnpm --filter @api run db:migration:fresh",
     "db:seed": "pnpm --filter @api run db:seed",
     "seed:superadmin": "pnpm --filter \"@api\" run seed:superadmin",
-    "pm2:start": "pm2 start ecosystem.main.cjs",
-    "pm2:start:checkin": "pm2 start ecosystem.checkin.cjs",
-    "pm2:reload": "pm2 reload ecosystem.main.cjs --update-env",
-    "pm2:reload:checkin": "pm2 reload ecosystem.checkin.cjs --update-env"
+    "pm2:start": "node scripts/pm2-stack.cjs start main",
+    "pm2:start:checkin": "node scripts/pm2-stack.cjs start checkin",
+    "pm2:reload": "node scripts/pm2-stack.cjs reload main",
+    "pm2:reload:checkin": "node scripts/pm2-stack.cjs reload checkin",
+    "pm2:restart": "node scripts/pm2-stack.cjs restart main",
+    "pm2:restart:checkin": "node scripts/pm2-stack.cjs restart checkin",
+    "pm2:stop": "node scripts/pm2-stack.cjs stop main",
+    "pm2:stop:checkin": "node scripts/pm2-stack.cjs stop checkin",
+    "pm2:delete": "node scripts/pm2-stack.cjs delete main",
+    "pm2:delete:checkin": "node scripts/pm2-stack.cjs delete checkin"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

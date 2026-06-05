@@ -67,6 +67,105 @@ pnpm check:full
 
 (`check:full` = `pnpm check` + `pnpm graphify:ai-summary`; không tự chạy `update.cjs` — xem checklist `.graphify/README.md`.)
 
+## PM2 production — 2 composition
+
+Factory chung: `ecosystem.shared.cjs`. Hai file stack:
+
+| # | Composition (3 app) | File PM2 | Alias |
+|---|---|---|---|
+| **1** | `apps/api` + `apps/backend` + `apps/frontend` | `ecosystem.main.cjs` | `ecosystem.config.cjs` |
+| **2** | `apps/api` + `apps/backend` + `apps/hub-event-checkin-frontend` | `ecosystem.checkin.cjs` | — |
+
+**Không chạy đồng thời** compo 1 và compo 2 trên cùng máy — trùng port 3000 / 3001 / 3002.
+
+### Compo 1 — site chính (`ecosystem.main.cjs`)
+
+| Thư mục | Package | Tên PM2 | Port |
+|---|---|---|---|
+| `apps/api` | `@api` | `hub-main-api` | 3002 |
+| `apps/backend` | `@backend` | `hub-main-backend` | 3001 |
+| `apps/frontend` | `@frontend` | `hub-main-frontend` | 3000 |
+
+```bash
+pnpm pm2:start
+# pm2 start ecosystem.main.cjs
+# pm2 start ecosystem.config.cjs
+pnpm pm2:reload      # zero-downtime (sau pull code)
+pnpm pm2:restart     # stop + start lại toàn stack
+pnpm pm2:stop
+```
+
+### Compo 2 — check-in sự kiện (`ecosystem.checkin.cjs`)
+
+| Thư mục | Package | Tên PM2 | Port |
+|---|---|---|---|
+| `apps/api` | `@api` | `hub-checkin-api` | 3002 |
+| `apps/backend` | `@backend` | `hub-checkin-backend` | 3001 |
+| `apps/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | `hub-checkin-frontend` | 3000 |
+
+```bash
+pnpm pm2:start:checkin
+# pm2 start ecosystem.checkin.cjs
+pnpm pm2:reload:checkin
+pnpm pm2:restart:checkin
+pnpm pm2:stop:checkin
+```
+
+### Chuẩn bị trước khi start (production)
+
+```bash
+pnpm install
+pnpm --filter @api run build
+pnpm --filter @backend run build
+pnpm --filter @frontend run build
+# stack check-in: pnpm --filter @hub-event-checkin-frontend run build
+pnpm db -- migration:up   # khi có migration mới
+```
+
+### Chạy riêng một app trong compo
+
+```bash
+pm2 start ecosystem.main.cjs --only hub-main-api
+pm2 start ecosystem.main.cjs --only hub-main-backend
+pm2 start ecosystem.main.cjs --only hub-main-frontend
+
+pm2 start ecosystem.checkin.cjs --only hub-checkin-api
+pm2 start ecosystem.checkin.cjs --only hub-checkin-backend
+pm2 start ecosystem.checkin.cjs --only hub-checkin-frontend
+```
+
+### Vận hành thường dùng
+
+```bash
+pm2 status
+pm2 logs hub-checkin-api
+pm2 logs hub-main-backend --lines 100
+pnpm pm2:delete:checkin    # gỡ toàn bộ process compo 2
+pnpm pm2:delete            # gỡ toàn bộ process compo 1
+pm2 save                   # giữ process list sau reboot
+pm2 startup                # tạo systemd (chạy một lần trên server)
+```
+
+Script `scripts/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2 — tránh lỗi một số bản PM2 chạy file `.cjs` như script (`ecosystem.checkin` fork 1 instance).
+
+### Sửa lỗi PM2 trên server
+
+Nếu `pm2 status` thấy `ecosystem.checkin` (fork, ~11mb) thay vì `hub-checkin-api` / `hub-checkin-backend` / `hub-checkin-frontend`:
+
+```bash
+pm2 delete ecosystem.checkin
+# Dừng stack cũ (tên legacy hoặc compo khác) trước khi start — trùng port 3000–3002
+pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend
+# hoặc: pnpm pm2:delete && pnpm pm2:delete:checkin
+
+git pull
+pnpm pm2:start:checkin
+pm2 status   # phải thấy 3 process hub-checkin-*
+pm2 save
+```
+
+Chi tiết deploy server: `README.md` (mục PM2).
+
 ## Nguyên tắc microservice
 
 - Không import chéo source giữa các app trong `apps/*`.

@@ -1,14 +1,12 @@
 /**
- * PM2 mặc định — alias của stack site chính.
+ * PM2 mặc định — alias compo 1 (ecosystem.main.cjs).
  *
- * Site chính (@frontend + @backend + @api):
+ * Compo 1: apps/api + apps/backend + apps/frontend
+ *   pnpm pm2:start
  *   pm2 start ecosystem.config.cjs
- *   pm2 start ecosystem.main.cjs
  *
- * Check-in (@hub-event-checkin-frontend + @backend + @api):
+ * Compo 2: apps/api + apps/backend + apps/hub-event-checkin-frontend
+ *   pnpm pm2:start:checkin
  *   pm2 start ecosystem.checkin.cjs
- *
- * Chạy riêng một app (ví dụ chỉ API):
- *   pm2 start ecosystem.main.cjs --only hub-main-api
  */
 module.exports = require("./ecosystem.main.cjs")

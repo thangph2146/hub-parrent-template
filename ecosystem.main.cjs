@@ -1,8 +1,11 @@
 /**
- * PM2 — stack site chính
- * @frontend :3000 | @backend :3001 | @api :3002
+ * PM2 compo 1 — site chính
+ * apps/api (:3002) + apps/backend (:3001) + apps/frontend (:3000)
  *
  * Cả stack:
+ *   pnpm pm2:start
+ *   pnpm pm2:reload
+ *   pnpm pm2:restart
  *   pm2 start ecosystem.main.cjs
  *
  * Từng app:
