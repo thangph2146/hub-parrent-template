@@ -188,11 +188,7 @@ export function GraphifyForceGraph3D({
         link.source.y,
         link.source.z
       )
-      const end = new three.Vector3(
-        link.target.x,
-        link.target.y,
-        link.target.z
-      )
+      const end = new three.Vector3(link.target.x, link.target.y, link.target.z)
       const direction = new three.Vector3().subVectors(end, start)
       const length = direction.length()
       const isDirect = link.__isDirectConnection ?? false
@@ -311,8 +307,7 @@ export function GraphifyForceGraph3D({
       const group = new three.Group()
 
       const geo = new three.SphereGeometry(1, 16, 16)
-      const isDimmed =
-        selectedNode && !node.__isSelected && !node.__isLinked
+      const isDimmed = selectedNode && !node.__isSelected && !node.__isLinked
       const mat = new three.MeshLambertMaterial({
         color: node.__isSelected
           ? 0xffffff
@@ -358,14 +353,11 @@ export function GraphifyForceGraph3D({
           : selectedNode
             ? 0.3
             : 0.7
-      createLabelSprite(
-        node.label,
-        labelColor,
-        fontSize,
-        opacity
-      ).then((sprite) => {
-        group.add(sprite)
-      })
+      createLabelSprite(node.label, labelColor, fontSize, opacity).then(
+        (sprite) => {
+          group.add(sprite)
+        }
+      )
 
       if (node.__isSelected) {
         const ringGeo = new three.RingGeometry(1.4, 1.65, 32)
@@ -402,8 +394,8 @@ export function GraphifyForceGraph3D({
 
   if (!threeReady) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-400 text-sm">Loading 3D graph...</div>
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-zinc-950">
+        <div className="text-sm text-zinc-400">Loading 3D graph...</div>
       </div>
     )
   }

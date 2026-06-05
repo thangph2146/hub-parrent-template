@@ -111,7 +111,6 @@ import {
   Edit,
   Egg,
   EggFried,
-
   Euro,
   Eye,
   EyeOff,
@@ -272,7 +271,6 @@ import {
   Info,
   Inspect,
   InspectionPanel,
-
   Italic,
   IterationCcw,
   JapaneseYen,
@@ -311,7 +309,6 @@ import {
   Link,
   Link2,
   Link2Off,
-
   List,
   ListCheck,
   ListChecks,
@@ -534,7 +531,6 @@ import {
   Plug2,
   PlugZap,
   Plus,
-
   PocketKnife,
   Podcast,
   Pointer,
@@ -851,7 +847,6 @@ import {
   TreePalm,
   TreePine,
   Trees,
-
   TrendingDown,
   TrendingUp,
   TrendingUpDown,
@@ -864,8 +859,6 @@ import {
   Tv,
   TvMinimal,
   TvMinimalPlay,
-
-
   Type,
   Umbrella,
   UmbrellaOff,
@@ -951,7 +944,6 @@ import {
   WrapText,
   Wrench,
   X,
-
   Zap,
   ZapOff,
   ZoomIn,
@@ -1824,7 +1816,6 @@ export const ICONS = {
   TvMinimal,
   TvMinimalPlay,
 
-
   Type,
   Umbrella,
   UmbrellaOff,
@@ -1924,5 +1915,3 @@ export function resolveIcon(name?: string | null): LucideIcon {
   if (!name) return Box
   return ICONS[name as IconName] ?? Box
 }
-
-

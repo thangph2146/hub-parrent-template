@@ -6,7 +6,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { PostListRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -68,10 +68,7 @@ export function PostsTable({
       globalFilterPlaceholder="Tìm theo tiêu đề, slug..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={canExport ? buildAdminTableXlsxExport("posts", { pageCount: data.length, total }) : undefined}
-      rowSelectionEnabled={!!canDelete}
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={canExport ? buildAdminTableXlsxExport("posts", { pageCount: data.length, total }) : undefined}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={canDelete ? [
         {
           id: "bulk-post-delete",

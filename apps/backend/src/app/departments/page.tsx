@@ -10,7 +10,6 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Badge } from "@ui/components/badge"
-import { Button } from "@ui/components/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useRouter } from "next/navigation"
 import { AlertCircle, Building2, Plus } from "lucide-react"
@@ -19,23 +18,20 @@ import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   DepartmentsTable,
   DepartmentsTrashTable,
-  DepartmentsConfirmDialog,
   getDepartmentColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useDepartmentsListQuery,
   useDepartmentsTrashQuery,
 } from "./_component"
@@ -157,29 +153,29 @@ function DepartmentsPageInner() {
     setTrashColumnFilters
   )
 
-  const { confirmAction, setConfirmAction } = useConfirmAction()
-
-  const handleConfirmAction = useHandleConfirmAction(
+  const rowActions = useAdminCrudRowHandlers<DepartmentRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "phòng khoa",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction
-  )
+  });
+
 
   const columns = useMemo<ColumnDef<DepartmentRow>[]>(
     () =>
       getDepartmentColumns({
         openDetail: (row) => router.push(`/departments/${row.id}`),
         openEdit: (row) => router.push(`/departments/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite,
       }),
-    [setConfirmAction, router, canWrite]
+    [rowActions, router, canWrite]
   )
 
   const trashColumns = useMemo<ColumnDef<DepartmentRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite]
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite]
   )
 
   return (
@@ -335,22 +331,6 @@ function DepartmentsPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <DepartmentsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null)
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction)
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="phòng khoa"
-        getName={(r) => r.name}
-      />
     </AdminPageSection>
   )
 }

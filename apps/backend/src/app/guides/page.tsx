@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
-import { Plus, BookOpen } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Plus, BookOpen } from "lucide-react";
 import {
   AdminListPageHeader,
   AdminPageGuard,
@@ -11,17 +12,17 @@ import {
 } from "@ui/components/admin";
 import { AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import {
   useGuidesQuery,
-  GuidesConfirmDialog,
   getGuidesColumns,
   GuidesTable,
   PAGE_KEY,
   sortGroupsByOrder,
-  type GuideConfirmAction,
+  parseContent,
   type GuideGroup,
 } from "./_component";
 
@@ -31,9 +32,6 @@ function GuidesPageInner() {
   const router = useRouter();
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [confirmAction, setConfirmAction] = useState<GuideConfirmAction | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isPurging, setIsPurging] = useState(false);
 
   const { data, isLoading, refetch } = useGuidesQuery({
     api,
@@ -42,51 +40,40 @@ function GuidesPageInner() {
     search: globalFilter,
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => api.guides.remove(id),
+    onSuccess: async () => { await refetch(); },
+  });
+
+  const purgeMutation = useMutation({
+    mutationFn: async (id: string) => api.guides.purge(id),
+    onSuccess: async () => { await refetch(); },
+  });
+
   const sortedGroups = useMemo(
     () => sortGroupsByOrder((data?.data ?? []).filter((g) => g.pageKey === PAGE_KEY)),
     [data],
   );
+
+  const rowActions = useAdminCrudRowHandlers<GuideGroup>({
+    getRecordLabel: (row) => parseContent(row.content).title ?? row.sectionKey,
+    entityLabel: "nhóm hướng dẫn",
+    deleteMutation,
+    purgeMutation,
+  });
 
   const columns = useMemo(
     () =>
       getGuidesColumns({
         onView: (row) => router.push(`/guides/${row.id}`),
         onEdit: (row) => router.push(`/guides/${row.id}/edit`),
-        onDelete: (row) => setConfirmAction({ kind: "delete", row }),
-        onPurge: (row) => setConfirmAction({ kind: "purge", row }),
+        rowActions,
         canWrite,
       }),
-    [router, canWrite],
+    [router, canWrite, rowActions],
   );
 
-  const handleConfirmAction = async () => {
-    if (!confirmAction) return;
-    if (confirmAction.kind === "delete" && confirmAction.row) {
-      setIsDeleting(true);
-      try {
-        await api.guides.remove(confirmAction.row.id);
-        await refetch();
-      } finally {
-        setIsDeleting(false);
-      }
-    }
-    setConfirmAction(null);
-  };
-
-  const handlePurgeConfirm = async () => {
-    if (!confirmAction || confirmAction.kind !== "purge" || !confirmAction.row) return;
-    setIsPurging(true);
-    try {
-      await api.guides.purge(confirmAction.row.id);
-      toast.success("Đã xóa vĩnh viễn nhóm hướng dẫn");
-      await refetch();
-    } finally {
-      setIsPurging(false);
-      setConfirmAction(null);
-    }
-  };
-
-  const handleBulkPurge = useCallback(async (rows: GuideGroup[]) => {
+  const handleBulkPurge = async (rows: GuideGroup[]) => {
     const ids = rows.map((r) => r.id);
     try {
       await api.guides.bulk({ action: "hard-delete", ids });
@@ -95,7 +82,7 @@ function GuidesPageInner() {
     } catch {
       toast.error("Xóa vĩnh viễn thất bại");
     }
-  }, [refetch]);
+  };
 
   return (
     <AdminPageSection>
@@ -127,19 +114,6 @@ function GuidesPageInner() {
           setColumnFilters([]);
         }}
         onBulkPurge={handleBulkPurge}
-      />
-
-      <GuidesConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={{ isPending: isDeleting }}
-        purgeMutation={{ isPending: isPurging }}
-        onOpenChange={(open) => !open && setConfirmAction(null)}
-        onConfirm={() => {
-          void handleConfirmAction();
-        }}
-        onPurgeConfirm={() => {
-          void handlePurgeConfirm();
-        }}
       />
     </AdminPageSection>
   );

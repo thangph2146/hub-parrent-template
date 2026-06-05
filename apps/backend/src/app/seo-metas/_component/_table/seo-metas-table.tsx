@@ -6,7 +6,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { SeoMetaRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -57,10 +57,7 @@ export function SeoMetasTable({
       globalFilterPlaceholder="Tìm theo đường dẫn..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-seo-meta-delete",

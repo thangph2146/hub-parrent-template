@@ -89,9 +89,9 @@ export function AdminCrudConfirmDialog<T>({
     false
 
   const anyPending =
-    (deleteMutation?.isPending) ||
-    (restoreMutation?.isPending) ||
-    (purgeMutation?.isPending) ||
+    deleteMutation?.isPending ||
+    restoreMutation?.isPending ||
+    purgeMutation?.isPending ||
     false
 
   return (
@@ -107,7 +107,9 @@ export function AdminCrudConfirmDialog<T>({
       confirmDestructive={kind !== "restore"}
       confirmDisabled={anyPending}
       confirmLoading={isPending}
-      onConfirm={() => { void handleConfirm() }}
+      onConfirm={() => {
+        void handleConfirm()
+      }}
     />
   )
 }

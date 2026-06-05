@@ -9,9 +9,12 @@ import {
 } from "@tanstack/react-query"
 import {
   api,
+  type AccountProfile,
+  type ChangeAccountPasswordInput,
   type ChangePasswordInput,
   type RbacPermission,
   type RbacRole,
+  type UpdateAccountInput,
   type UpdateProfileInput,
   type User,
   type ContactRequest,
@@ -20,6 +23,7 @@ import {
 } from "@/lib/api"
 
 export const queryKeys = {
+  accountProfile: () => ["accounts", "profile"] as const,
   staffProfile: (id: string | number) =>
     ["users", "staff-profile", id] as const,
   staffUserList: () => ["users", "staff-list"] as const,
@@ -47,6 +51,41 @@ export type RbacCatalog = { permissions: RbacPermission[]; roles: RbacRole[] }
 export type ContactRequestsData = { items: ContactRequest[]; total: number }
 export type MyStudentsData = { items: ParentStudent[] }
 export type ParentStudentsData = { items: ParentStudentAdmin[]; total: number }
+
+export const useAccountProfile = (enabled = true) =>
+  useQuery<AccountProfile, Error>({
+    queryKey: queryKeys.accountProfile(),
+    queryFn: () => api.accounts.get(),
+    enabled,
+  })
+
+export const useUpdateAccountProfile = (): UseMutationResult<
+  AccountProfile,
+  Error,
+  UpdateAccountInput
+> => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input) => api.accounts.update(input),
+    onSuccess: (profile) => {
+      qc.setQueryData(queryKeys.accountProfile(), profile)
+    },
+  })
+}
+
+export const useChangeAccountPassword = (): UseMutationResult<
+  AccountProfile,
+  Error,
+  ChangeAccountPasswordInput
+> => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input) => api.accounts.changePassword(input),
+    onSuccess: (profile) => {
+      qc.setQueryData(queryKeys.accountProfile(), profile)
+    },
+  })
+}
 
 export const useStaffProfile = (userId: string | number | null | undefined) =>
   useQuery<User, Error>({

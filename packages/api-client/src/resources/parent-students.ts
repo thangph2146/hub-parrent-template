@@ -63,7 +63,14 @@ export class ParentStudentsApi {
     await deleteData<unknown>(this.http, `/admin/parent-students/${id}`);
   }
 
-  async review(id: string | number, input: { status: ParentStudent["status"]; note?: string }): Promise<ParentStudent> {
-    return patchData<ParentStudent>(this.http, `/admin/parent-students/${id}/review`, input);
+  async review(
+    id: string | number,
+    input: { action: "approved" | "rejected"; note?: string },
+  ): Promise<ParentStudent> {
+    return patchData<ParentStudent>(
+      this.http,
+      `/admin/parent-students/${id}/review`,
+      input,
+    );
   }
 }

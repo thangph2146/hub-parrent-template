@@ -18,13 +18,15 @@ function defaultApiBase(): string {
 /**
  * Factory upload ảnh admin — app truyền header phiên (vd. X-User-Id).
  */
-export function createAdminImageUploader(config: AdminImageUploaderConfig = {}) {
+export function createAdminImageUploader(
+  config: AdminImageUploaderConfig = {}
+) {
   const getApiBase = config.getApiBase ?? defaultApiBase
   const getAuthHeaders = config.getAuthHeaders ?? (() => ({}))
 
   return async function uploadAdminImage(
     file: File,
-    options: AdminUploadOptions,
+    options: AdminUploadOptions
   ): Promise<string> {
     const fd = new FormData()
     fd.append("file", file)
@@ -48,7 +50,7 @@ export function createAdminImageUploader(config: AdminImageUploaderConfig = {}) 
 
     if (!res.ok || json?.success === false) {
       throw new Error(
-        json?.message || json?.error || `Upload thất bại (${res.status})`,
+        json?.message || json?.error || `Upload thất bại (${res.status})`
       )
     }
 

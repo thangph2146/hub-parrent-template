@@ -27,13 +27,12 @@ import {
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { PostsTable, PostsTrashTable } from "./_component/_table";
-import { PostsConfirmDialog } from "./_component/_alert-dialog";
 import {
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmActionWithAction,
 } from "./_component/_hooks";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   usePostsQuery,
   useTrashQuery,
@@ -46,14 +45,10 @@ import {
 } from "./_component/_query";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
-import type {
-  PostListRow,
-  PostConfirmAction,
-} from "./_component";
+import type { PostListRow } from "./_component";
 import {
   buildCategoryOptionTree,
   buildPostsFilterQuery,
@@ -86,8 +81,6 @@ function PostsPageInner() {
   const [trashColumnFilters, setTrashColumnFilters] = useState<ColumnFiltersState>([]);
   const [listPostSelection, setListPostSelection] = useState<RowSelectionState>({});
   const [trashPostSelection, setTrashPostSelection] = useState<RowSelectionState>({});
-  const [confirmAction, setConfirmAction] = useState<PostConfirmAction | null>(null);
-
   const debouncedQ = useDebouncedValue(globalFilter, 300);
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 300);
 
@@ -159,39 +152,40 @@ function PostsPageInner() {
     [router],
   );
 
-  const handleConfirmAction = useHandleConfirmActionWithAction(
-    deleteMutation,
-    restoreMutation,
-    purgeMutation,
-    setConfirmAction,
-  );
+  const rowActions = useAdminCrudRowHandlers<PostListRow>({
+    getRecordLabel: (row) => row.title,
+    entityLabel: "bài viết",
+    deleteMutation: canDelete ? deleteMutation : undefined,
+    restoreMutation: canRestore ? restoreMutation : undefined,
+    purgeMutation: canDelete ? purgeMutation : undefined,
+  });
 
   const columns = useMemo<ColumnDef<PostListRow>[]>(
     () =>
       getPostColumns({
         navigateToEdit,
         navigateToView,
-        setConfirmAction,
+        rowActions,
         categoryTreeOptions,
         tagsOptions: tagsQuery.data ?? [],
         formatDateTime,
         canUpdate,
         canDelete,
       }),
-    [navigateToEdit, navigateToView, tagsQuery.data, categoryTreeOptions, canUpdate, canDelete],
+    [navigateToEdit, navigateToView, rowActions, tagsQuery.data, categoryTreeOptions, canUpdate, canDelete],
   );
 
   const trashColumns = useMemo<ColumnDef<PostListRow>[]>(
     () =>
       getTrashColumns({
-        setConfirmAction,
+        rowActions,
         formatDateTime,
         categoryTreeOptions,
         tagsOptions: tagsQuery.data ?? [],
         canRestore,
         canDelete,
       }),
-    [setConfirmAction, categoryTreeOptions, tagsQuery.data, canRestore, canDelete],
+    [rowActions, categoryTreeOptions, tagsQuery.data, canRestore, canDelete],
   );
 
   return (
@@ -313,22 +307,6 @@ function PostsPageInner() {
           />
         </TabsContent>
       </Tabs>
-
-      <PostsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null);
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction);
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="bài viết"
-        getName={(r) => r.title}
-      />
     </AdminPageSection>
   );
 }

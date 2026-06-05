@@ -5,7 +5,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { ScreenRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 export function ScreensTable({
@@ -53,10 +53,7 @@ export function ScreensTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("screens", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("screens", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-screen-delete",

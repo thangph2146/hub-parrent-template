@@ -1,4 +1,7 @@
-export { AdminPageSection, type AdminPageSectionProps } from "./admin-page-section"
+export {
+  AdminPageSection,
+  type AdminPageSectionProps,
+} from "./admin-page-section"
 export { AdminPageLoading } from "./admin-page-loading"
 export { AdminReadOnlyHint } from "./admin-read-only-hint"
 export {

@@ -15,24 +15,21 @@ import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { PageSection } from "@ui/components/layout";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TrainingSystemsTable,
   TrainingSystemsTrashTable,
-  TrainingSystemsConfirmDialog,
   getTrainingSystemColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useTrainingSystemsListQuery,
   useTrainingSystemsTrashQuery,
 } from "./_component";
@@ -129,26 +126,29 @@ function TrainingSystemsPageInner() {
   const clearListFilters = useClearListFilters(setColumnFilters, setGlobalFilter);
   const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
   const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
-
-  const { confirmAction, setConfirmAction } = useConfirmAction();
-
-  const handleConfirmAction = useHandleConfirmAction(
-    deleteMutation, restoreMutation, purgeMutation, setConfirmAction,
-  );
-
+  const rowActions = useAdminCrudRowHandlers<TrainingSystemRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "hệ đào tạo",
+    deleteMutation,
+    restoreMutation,
+    purgeMutation,
+  });
   const columns = useMemo<ColumnDef<TrainingSystemRow>[]>(
-    () => getTrainingSystemColumns({
-      openDetail: (row) => router.push(`/training-systems/${row.id}`),
-      openEdit: (row) => router.push(`/training-systems/${row.id}/edit`),
-      setConfirmAction,
-      canWrite,
-    }),
-    [setConfirmAction, router, canWrite],
+    () =>
+      getTrainingSystemColumns({
+        openDetail: (row) => router.push(`/training-systems/${row.id}`),
+        openEdit: (row) => router.push(`/training-systems/${row.id}/edit`),
+        rowActions,
+        canWrite,
+      }),
+    [rowActions, router, canWrite],
   );
+
+
 
   const trashColumns = useMemo<ColumnDef<TrainingSystemRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite],
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite],
   );
 
   return (
@@ -280,19 +280,6 @@ function TrainingSystemsPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <TrainingSystemsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
-        onConfirm={() => { if (confirmAction) void handleConfirmAction(confirmAction); }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="hệ đào tạo"
-        getName={(r) => r.name}
-        getSubInfo={(r) => r.code || "N/A"}
-      />
     </AdminPageSection>
   );
 }

@@ -292,7 +292,9 @@ export function LayoutPlugin(): JSX.Element | null {
                 const nextStyle = buildLayoutItemStyle(values)
                 logger.info("[Layout] Computed next style", { nextStyle })
                 let updatedItemsCount = 0
-                const container = $getNodeByKey<LexicalNode>(payload.containerKey)
+                const container = $getNodeByKey<LexicalNode>(
+                  payload.containerKey
+                )
                 if ($isLayoutContainerNode(container)) {
                   updateLayoutContainerTemplate(container, values.template)
                   const items = container.getChildren<LexicalNode>()

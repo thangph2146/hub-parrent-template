@@ -2,14 +2,18 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTablePurgeButton, AdminTableRestoreButton, AdminTableRowActions } from "@ui/components/admin";
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { PostListRow, TaxonomyOption, CategoryTreeOption } from "./types";
 import { SummaryBadges } from "./summary-badges";
 
 export function getPostColumns({
   navigateToEdit,
   navigateToView,
-  setConfirmAction,
+  rowActions,
   categoryTreeOptions,
   tagsOptions,
   formatDateTime,
@@ -18,7 +22,7 @@ export function getPostColumns({
 }: {
   navigateToEdit: (id: string) => void;
   navigateToView: (id: string) => void;
-  setConfirmAction: (action: { kind: "delete" | "restore" | "purge"; row: PostListRow }) => void;
+  rowActions: AdminCrudRowHandlers<PostListRow>;
   categoryTreeOptions: CategoryTreeOption[];
   tagsOptions: TaxonomyOption[];
   formatDateTime: (date: string) => string;
@@ -103,42 +107,26 @@ export function getPostColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canDelete || canUpdate}
-          onView={() => navigateToView(row.original.id)}
-          onEdit={canUpdate ? () => navigateToEdit(row.original.id) : undefined}
-          onSoftDelete={
-            canDelete
-              ? () => setConfirmAction({ kind: "delete", row: row.original })
-              : undefined
-          }
-          onPurge={
-            canDelete
-              ? () => setConfirmAction({ kind: "purge", row: row.original })
-              : undefined
-          }
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<PostListRow>({
+      canWrite: canDelete || canUpdate,
+      onView: (row) => navigateToView(row.id),
+      onEdit: canUpdate ? (row) => navigateToEdit(row.id) : undefined,
+      onSoftDelete: canDelete ? rowActions.onSoftDelete : undefined,
+      onPurge: canDelete ? rowActions.onPurge : undefined,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   formatDateTime,
   categoryTreeOptions,
   tagsOptions,
   canRestore,
   canDelete,
 }: {
-  setConfirmAction: (action: { kind: "delete" | "restore" | "purge"; row: PostListRow }) => void;
+  rowActions: AdminCrudRowHandlers<PostListRow>;
   formatDateTime: (date: string) => string;
   categoryTreeOptions: CategoryTreeOption[];
   tagsOptions: TaxonomyOption[];
@@ -239,26 +227,11 @@ export function getTrashColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableRowActions>
-          {canRestore ? (
-            <AdminTableRestoreButton
-              onClick={() => setConfirmAction({ kind: "restore", row: row.original })}
-            />
-          ) : null}
-          {canDelete ? (
-            <AdminTablePurgeButton
-              onClick={() => setConfirmAction({ kind: "purge", row: row.original })}
-            />
-          ) : null}
-        </AdminTableRowActions>
-      ),
-    },
+    defineAdminTrashActionsColumn<PostListRow>({
+      canWrite: !!(canRestore || canDelete),
+      onRestore: canRestore ? rowActions.onRestore : undefined,
+      onPurge: canDelete ? rowActions.onPurge : undefined,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

@@ -3,20 +3,21 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { Eye, FolderTree, Folder } from "lucide-react";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
 import { resolveIcon } from "@ui/lib/icons";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { CategoryRow, CategoryTreeOption } from "./types";
 
 export function getCategoryColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   categoryTreeOptions,
   canWriteCategories,
 }: {
   openDetail: (row: CategoryRow) => void;
   openEdit: (row: CategoryRow) => void;
-  setConfirmAction: (action: { kind: "delete" | "restore" | "purge"; row: CategoryRow }) => void;
+  rowActions: AdminCrudRowHandlers<CategoryRow>;
   categoryTreeOptions: CategoryTreeOption[];
   canWriteCategories: boolean;
 }): ColumnDef<CategoryRow>[] {
@@ -88,14 +89,14 @@ export function getCategoryColumns({
         })),
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableColumnFilter: false,
-      enableSorting: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => {
-        const c = row.original;
+    defineAdminCrudActionsColumn<CategoryRow>({
+      canWrite: canWriteCategories,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+      resolveRowProps: (c) => {
         const childCount = c._count?.children ?? 0;
         const linkedPosts = c.postCount ?? 0;
         const blocked = childCount > 0 || linkedPosts > 0;
@@ -107,31 +108,24 @@ export function getCategoryColumns({
               : linkedPosts > 0
                 ? "Không thể xóa danh mục còn bài viết liên kết"
                 : undefined;
-        return (
-          <AdminTableCrudRowActions
-            canWrite={canWriteCategories}
-            onView={() => openDetail(c)}
-            onEdit={() => openEdit(c)}
-            onSoftDelete={() => setConfirmAction({ kind: "delete", row: c })}
-            onPurge={() => setConfirmAction({ kind: "purge", row: c })}
-            softDeleteDisabled={blocked}
-            softDeleteTitle={blockReason}
-            purgeDisabled={blocked}
-            purgeTitle={blockReason}
-          />
-        );
+        return {
+          softDeleteDisabled: blocked,
+          softDeleteTitle: blockReason,
+          purgeDisabled: blocked,
+          purgeTitle: blockReason,
+        };
       },
-    },
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   formatDateTime,
   categoryTreeOptions,
   canWrite,
 }: {
-  setConfirmAction: (action: { kind: "delete" | "restore" | "purge"; row: CategoryRow }) => void;
+  rowActions: AdminCrudRowHandlers<CategoryRow>;
   formatDateTime: (date: string) => string;
   categoryTreeOptions: CategoryTreeOption[];
   canWrite: boolean;
@@ -199,19 +193,11 @@ export function getTrashColumns({
         );
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableColumnFilter: false,
-      enableSorting: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<CategoryRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

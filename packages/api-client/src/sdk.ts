@@ -5,6 +5,7 @@ import { PostsApi } from './resources/posts';
 import { RbacApi } from './resources/rbac';
 import { TagsApi } from './resources/tags';
 import { UsersApi } from './resources/users';
+import { AccountsApi } from './resources/accounts';
 import { ContactRequestsApi } from './resources/contact-requests';
 import { MyStudentsApi } from './resources/my-students';
 import { ParentStudentsApi } from './resources/parent-students';
@@ -48,6 +49,7 @@ export const DEFAULT_API_URL = 'http://localhost:3002/api';
 export class StoreSyncSdk {
   readonly http: ApiClient;
   readonly users: UsersApi;
+  readonly accounts: AccountsApi;
   readonly posts: PostsApi;
   readonly categories: CategoriesApi;
   readonly tags: TagsApi;
@@ -82,6 +84,7 @@ export class StoreSyncSdk {
   constructor(options: ApiClientOptions) {
     this.http = new ApiClient(options);
     this.users = new UsersApi(this.http);
+    this.accounts = new AccountsApi(this.http);
     this.posts = new PostsApi(this.http);
     this.categories = new CategoriesApi(this.http);
     this.tags = new TagsApi(this.http);

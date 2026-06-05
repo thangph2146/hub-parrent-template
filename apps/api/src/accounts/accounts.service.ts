@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 
@@ -12,7 +12,9 @@ export interface AccountProfileDto {
   bio: string | null;
   phone: string | null;
   address: string | null;
+  citizenId: string | null;
   emailVerified: string | null;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
   roles: Array<{ id: string; name: string; displayName: string }>;
@@ -23,9 +25,16 @@ export interface UpdateAccountDto {
   bio?: string | null;
   phone?: string | null;
   address?: string | null;
+  citizenId?: string | null;
   avatar?: string | null;
+  /** Chỉ dùng kèm `password` — xác minh trước khi đổi mật khẩu. */
+  currentPassword?: string;
   password?: string;
 }
+
+export type UpdateAccountResult =
+  | { ok: true; profile: AccountProfileDto }
+  | { ok: false; reason: 'not_found' | 'wrong_password' | 'password_required' };
 
 function mapToProfile(user: User, userRoles: UserRole[]): AccountProfileDto {
   return {
@@ -36,7 +45,9 @@ function mapToProfile(user: User, userRoles: UserRole[]): AccountProfileDto {
     bio: user.bio ?? null,
     phone: user.phone ?? null,
     address: user.address ?? null,
+    citizenId: user.citizenId ?? null,
     emailVerified: user.emailVerified?.toISOString() ?? null,
+    isActive: user.isActive,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
     roles: userRoles.map((ur) => ({
@@ -70,11 +81,11 @@ export class AccountsService {
   async updateProfile(
     userId: string,
     dto: UpdateAccountDto,
-  ): Promise<AccountProfileDto | null> {
+  ): Promise<UpdateAccountResult> {
     const existing = await this.em.findOne(User, { id: userId });
 
     if (!existing || existing.deletedAt || !existing.isActive) {
-      return null;
+      return { ok: false, reason: 'not_found' };
     }
 
     if (dto.name !== undefined) existing.name = dto.name.trim();
@@ -83,15 +94,32 @@ export class AccountsService {
     if (dto.address !== undefined) {
       existing.address = dto.address?.trim() ?? null;
     }
+    if (dto.citizenId !== undefined) {
+      existing.citizenId = dto.citizenId?.trim() ?? null;
+    }
     if (dto.avatar !== undefined) {
       existing.avatar = dto.avatar === null ? null : dto.avatar.trim() || null;
     }
-    if (dto.password && dto.password.trim() !== '') {
-      existing.password = await hash(dto.password.trim(), 10);
+
+    const newPassword = dto.password?.trim() ?? '';
+    if (newPassword) {
+      const current = dto.currentPassword?.trim() ?? '';
+      if (!current) {
+        return { ok: false, reason: 'password_required' };
+      }
+      const valid = await compare(current, existing.password);
+      if (!valid) {
+        return { ok: false, reason: 'wrong_password' };
+      }
+      existing.password = await hash(newPassword, 10);
     }
 
     await this.em.persistAndFlush(existing);
 
-    return this.getProfile(userId);
+    const profile = await this.getProfile(userId);
+    if (!profile) {
+      return { ok: false, reason: 'not_found' };
+    }
+    return { ok: true, profile };
   }
 }

@@ -430,7 +430,7 @@ export class CategoriesController {
   }
 
   @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
+  @Permissions(PERMISSIONS.CATEGORIES_HARD_DELETE)
   @ApiOperation({ summary: 'Hard delete category permanently' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })
@@ -521,7 +521,7 @@ export class CategoriesController {
   }
 
   @Post(':id/restore')
-  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
+  @Permissions(PERMISSIONS.CATEGORIES_RESTORE)
   @ApiOperation({ summary: 'Restore soft-deleted category' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiParam({ name: 'id', type: String })

@@ -6,7 +6,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { AcademicYearRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -57,10 +57,7 @@ export function AcademicYearsTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("academic-years", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("academic-years", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-academic-year-delete",

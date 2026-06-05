@@ -19,7 +19,7 @@ export type ConfirmActionDialogProps = {
   title: string
   confirmLabel: string
   cancelLabel: string
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
   description?: ReactNode
   icon?: ReactNode
   confirmDestructive?: boolean
@@ -61,7 +61,9 @@ export function ConfirmActionDialog({
           ) : null}
         </AlertDialogHeader>
         <AlertDialogFooter className={footerClassName}>
-          <AlertDialogCancel className="rounded-lg">{cancelLabel}</AlertDialogCancel>
+          <AlertDialogCancel className="rounded-lg">
+            {cancelLabel}
+          </AlertDialogCancel>
           <AlertDialogAction
             className={
               confirmDestructive
@@ -70,7 +72,7 @@ export function ConfirmActionDialog({
             }
             onClick={(event) => {
               event.preventDefault()
-              onConfirm()
+              void Promise.resolve(onConfirm())
             }}
             disabled={confirmDisabled}
           >

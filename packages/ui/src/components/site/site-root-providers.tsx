@@ -31,7 +31,10 @@ export function SiteRootProviders({
       <ThemeProvider>
         <TextSizeProvider>
           {children}
-          <Toaster position={toaster.position} richColors={toaster.richColors} />
+          <Toaster
+            position={toaster.position}
+            richColors={toaster.richColors}
+          />
         </TextSizeProvider>
       </ThemeProvider>
     </>

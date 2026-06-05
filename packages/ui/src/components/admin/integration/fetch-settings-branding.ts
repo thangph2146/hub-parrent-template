@@ -21,7 +21,7 @@ export async function fetchAdminSettingsBranding(
   defaults: AdminSiteBranding = {
     siteName: "HUB Parent",
     siteDescription: "Quản trị hệ thống",
-  },
+  }
 ): Promise<AdminSiteBranding> {
   const [nameRes, descRes] = await Promise.all([
     get("/admin/settings/site_name"),

@@ -1,11 +1,12 @@
 "use client";
 
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
-import type { AcademicYearRow, AcademicYearConfirmAction } from "./types";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { AcademicYearRow } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -22,12 +23,12 @@ function formatDate(value: string | null | undefined): string {
 export function getAcademicYearColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: AcademicYearRow) => void;
   openEdit: (row: AcademicYearRow) => void;
-  setConfirmAction: (action: AcademicYearConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<AcademicYearRow>;
   canWrite: boolean;
 }): ColumnDef<AcademicYearRow>[] {
   return [
@@ -110,30 +111,22 @@ export function getAcademicYearColumns({
         />
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<AcademicYearRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (action: AcademicYearConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<AcademicYearRow>;
   canWrite: boolean;
 }): ColumnDef<AcademicYearRow>[] {
   return [
@@ -163,19 +156,11 @@ export function getTrashColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<AcademicYearRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

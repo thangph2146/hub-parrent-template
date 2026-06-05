@@ -6,12 +6,15 @@ const SUPER_ROLES = ["super_admin", "admin"] as const
 function isSuperUser(user: AdminLayoutUser): boolean {
   return (
     user.roles?.some((r) =>
-      SUPER_ROLES.includes(r.name as (typeof SUPER_ROLES)[number]),
+      SUPER_ROLES.includes(r.name as (typeof SUPER_ROLES)[number])
     ) ?? false
   )
 }
 
-function canSeeLeaf(user: AdminLayoutUser | null, item: AdminMenuLeaf): boolean {
+function canSeeLeaf(
+  user: AdminLayoutUser | null,
+  item: AdminMenuLeaf
+): boolean {
   if (!user) return false
   if (isSuperUser(user)) return true
   if (item.roleGuard) {
@@ -28,7 +31,7 @@ function canSeeLeaf(user: AdminLayoutUser | null, item: AdminMenuLeaf): boolean 
 
 export function getVisibleMenuItems(
   user: AdminLayoutUser | null,
-  menuTree: AdminMenuTreeItem[],
+  menuTree: AdminMenuTreeItem[]
 ): AdminMenuTreeItem[] {
   if (!user) return []
   return menuTree.reduce<AdminMenuTreeItem[]>((acc, item) => {
@@ -45,13 +48,13 @@ export function getVisibleMenuItems(
 
 function getFlatVisibleLeaves(items: AdminMenuTreeItem[]): AdminMenuLeaf[] {
   return items.flatMap((item) =>
-    item.type === "leaf" ? [item] : item.children,
+    item.type === "leaf" ? [item] : item.children
   )
 }
 
 export function getLegacyVisibleMenuLeaves(
   user: AdminLayoutUser | null,
-  menuTree: AdminMenuTreeItem[],
+  menuTree: AdminMenuTreeItem[]
 ): AdminMenuLeaf[] {
   return getFlatVisibleLeaves(getVisibleMenuItems(user, menuTree))
 }

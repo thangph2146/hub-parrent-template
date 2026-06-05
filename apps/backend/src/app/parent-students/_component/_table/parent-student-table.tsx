@@ -6,7 +6,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { ParentStudent } from "../types"
 
@@ -72,10 +72,7 @@ export function ParentStudentTable({
       xlsxExport={buildAdminTableXlsxExport("parent-students", {
         pageCount: data.length,
         total,
-      })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         ...(canApprove
           ? [

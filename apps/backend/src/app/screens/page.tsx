@@ -16,23 +16,20 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   ScreensTable,
   ScreensTrashTable,
-  ScreensConfirmDialog,
   getScreenColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useScreensListQuery,
   useScreensTrashQuery,
 } from "./_component"
@@ -116,21 +113,26 @@ function ScreensPageInner() {
   const cLF = useClearListFilters(setCF, setGF)
   const cTF = useClearTrashFilters(setTGF, setTCF)
   const hTCFC = useColumnFiltersChange(setTCF)
-  const { confirmAction, setConfirmAction } = useConfirmAction()
-  const hCA = useHandleConfirmAction(delM, resM, purM, setConfirmAction)
+  const rowActions = useAdminCrudRowHandlers<ScreenRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "màn hình",
+    deleteMutation: delM,
+    restoreMutation: resM,
+    purgeMutation: purM,
+  })
   const cols = useMemo<ColumnDef<ScreenRow>[]>(
     () =>
       getScreenColumns({
         openDetail: (r) => router.push(`/screens/${r.id}`),
         openEdit: (r) => router.push(`/screens/${r.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite,
       }),
-    [setConfirmAction, router, canWrite]
+    [rowActions, router, canWrite]
   )
   const tCols = useMemo<ColumnDef<ScreenRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite]
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite]
   )
   return (
     <AdminPageSection>
@@ -266,21 +268,6 @@ function ScreensPageInner() {
           </TabsContent>
         )}
       </Tabs>
-      <ScreensConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={delM}
-        restoreMutation={resM}
-        purgeMutation={purM}
-        onOpenChange={(o) => {
-          if (!o) setConfirmAction(null)
-        }}
-        onConfirm={() => {
-          if (confirmAction) void hCA(confirmAction)
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="màn hình"
-        getName={(r) => r.name}
-      />
     </AdminPageSection>
   )
 }

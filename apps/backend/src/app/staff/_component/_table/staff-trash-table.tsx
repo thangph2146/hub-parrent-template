@@ -5,7 +5,7 @@ import type {
 } from "@tanstack/react-table"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import { getTrashColumns } from "../columns"
 import type { StaffRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
@@ -71,9 +71,7 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo email, họ tên, SĐT (API)…"
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-staff-restore",

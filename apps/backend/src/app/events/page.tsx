@@ -17,7 +17,6 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
@@ -28,17 +27,15 @@ import {
   AdminPageHeaderPrimaryButton,
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   EventsTable,
   EventsTrashTable,
-  EventsConfirmDialog,
   getEventColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useEventsListQuery,
   useEventsTrashQuery,
 } from "./_component"
@@ -165,20 +162,22 @@ function EventsPageInner() {
   const handleTrashColumnFiltersChange = useColumnFiltersChange(
     setTrashColumnFilters
   )
-  const { confirmAction, setConfirmAction } = useConfirmAction()
-  const handleConfirmAction = useHandleConfirmAction(
+
+  const rowActions = useAdminCrudRowHandlers<EventRow>({
+    getRecordLabel: (row) => row.title,
+    entityLabel: "sự kiện",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction
-  )
+  });
+
 
   const columns = useMemo<ColumnDef<EventRow>[]>(
     () =>
       getEventColumns({
         openDetail: (row) => router.push(`/events/${row.id}`),
         openEdit: (row) => router.push(`/events/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite,
         isTogglingFeaturedId: togglingFeaturedId,
         onToggleFeatured: canWrite
@@ -191,12 +190,12 @@ function EventsPageInner() {
             }
           : undefined,
       }),
-    [setConfirmAction, router, canWrite, togglingFeaturedId, featuredMutation]
+    [rowActions, router, canWrite, togglingFeaturedId, featuredMutation]
   )
 
   const trashColumns = useMemo<ColumnDef<EventRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite]
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite]
   )
 
   return (
@@ -340,22 +339,6 @@ function EventsPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <EventsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null)
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction)
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="sự kiện"
-        getName={(r) => r.title}
-      />
     </AdminPageSection>
   )
 }

@@ -11,7 +11,7 @@ const DEFAULT_DESCRIPTION =
 
 /** Metadata chuẩn cho app admin (noindex). */
 export function createAdminMetadata(
-  options: CreateAdminMetadataOptions = {},
+  options: CreateAdminMetadataOptions = {}
 ): Metadata {
   return {
     title: {

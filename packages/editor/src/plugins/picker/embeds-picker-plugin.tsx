@@ -8,9 +8,7 @@ export function EmbedsPickerPlugin({
 }: {
   embed: "tweet" | "youtube-video"
 }) {
-  const embedConfig = EmbedConfigs.find(
-    (config) => config.type === embed
-  )
+  const embedConfig = EmbedConfigs.find((config) => config.type === embed)
 
   if (!embedConfig) return null
 

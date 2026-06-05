@@ -8,7 +8,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { ICON_NAMES, resolveIcon } from "../../lib/icons"
 import { cn } from "../../lib/utils"
 
-function DynamicIcon({ name, className }: { name?: string; className?: string }) {
+function DynamicIcon({
+  name,
+  className,
+}: {
+  name?: string
+  className?: string
+}) {
   if (!name) return null
   return createElement(resolveIcon(name), { className })
 }
@@ -54,7 +60,7 @@ export function IconPicker({
       </PopoverTrigger>
       <PopoverContent className="w-80 p-3" align="start">
         <div className="relative mb-3">
-          <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Tìm biểu tượng..."
             value={search}
@@ -68,7 +74,7 @@ export function IconPicker({
             Không tìm thấy biểu tượng
           </p>
         ) : (
-          <div className="grid grid-cols-6 gap-1 max-h-[min(60vh,18rem)] overflow-y-auto">
+          <div className="grid max-h-[min(60vh,18rem)] grid-cols-6 gap-1 overflow-y-auto">
             {filtered.map((name) => {
               const Icon = resolveIcon(name)
               const isSelected = selected === name
@@ -85,16 +91,16 @@ export function IconPicker({
                     "flex flex-col items-center gap-1 rounded-md p-2 text-xs transition-colors",
                     isSelected
                       ? "bg-primary/10 text-primary ring-1 ring-primary/30"
-                      : "hover:bg-muted text-muted-foreground hover:text-foreground",
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   title={name}
                 >
                   <Icon className="size-5 shrink-0" />
-                  <span className="truncate w-full text-center leading-tight">
+                  <span className="w-full truncate text-center leading-tight">
                     {name}
                   </span>
                   {isSelected && (
-                    <Check className="size-3 shrink-0 absolute top-0.5 right-0.5" />
+                    <Check className="absolute top-0.5 right-0.5 size-3 shrink-0" />
                   )}
                 </button>
               )

@@ -23,29 +23,26 @@ import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { PageSection } from "@ui/components/layout";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TagsTable,
   TagsTrashTable,
-  TagsConfirmDialog,
   getTagColumns,
   getTrashColumns,
   buildTagTree,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useTagsListQuery,
   useTrashQuery,
 } from "./_component";
-import type { TagTreeRow } from "./_component";
+import type { TagRow, TagTreeRow } from "./_component";
 
 function TagsPageInner() {
   const router = useRouter();
@@ -156,14 +153,13 @@ function TagsPageInner() {
   const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
   const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
 
-  const { confirmAction, setConfirmAction } = useConfirmAction();
-
-  const handleConfirmAction = useHandleConfirmAction(
+  const rowActions = useAdminCrudRowHandlers<TagRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "thẻ",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction,
-  );
+  });
 
   const treeRows = useMemo<TagTreeRow[]>(
     () => buildTagTree(listQuery.data ?? []),
@@ -175,19 +171,19 @@ function TagsPageInner() {
       getTagColumns({
         openDetail: (row) => router.push(`/tags/${row.id}`),
         openEdit: (row) => router.push(`/tags/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite: canWriteTags,
       }),
-    [setConfirmAction, router, canWriteTags],
+    [rowActions, router, canWriteTags],
   );
 
   const trashColumns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
       getTrashColumns({
-        setConfirmAction,
+        rowActions,
         canWrite: canWriteTags,
       }),
-    [setConfirmAction, canWriteTags],
+    [rowActions, canWriteTags],
   );
 
   return (
@@ -341,23 +337,6 @@ function TagsPageInner() {
           </TabsContent>
         ) : null}
       </Tabs>
-
-      <TagsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null);
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction);
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="thẻ"
-        getName={(r) => r.name}
-        getSubInfo={(r) => r.slug}
-      />
     </AdminPageSection>
   );
 }

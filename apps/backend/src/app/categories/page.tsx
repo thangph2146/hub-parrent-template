@@ -23,17 +23,16 @@ import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { PageSection } from "@ui/components/layout";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   CategoriesTable,
   CategoriesTrashTable,
-  CategoriesConfirmDialog,
   getCategoryColumns,
   getTrashColumns,
   buildCategoryOptionTree,
@@ -42,8 +41,6 @@ import {
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useCategoriesQuery,
   useTrashQuery,
   useCategoriesOptionsQuery,
@@ -174,37 +171,36 @@ function CategoriesPageInner() {
   const clearListFilters = useClearListFilters(setColumnFilters, setGlobalFilter);
   const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
   const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
-
-  const { confirmAction, setConfirmAction } = useConfirmAction();
-
-  const handleConfirmAction = useHandleConfirmAction(
+  const rowActions = useAdminCrudRowHandlers<CategoryRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "danh mục",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction,
-  );
-
+  });
   const columns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({
         openDetail: (row) => router.push(`/categories/${row.id}`),
         openEdit: (row) => router.push(`/categories/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         categoryTreeOptions,
         canWriteCategories,
       }),
-    [setConfirmAction, categoryTreeOptions, canWriteCategories, router],
+    [rowActions, router, categoryTreeOptions, canWriteCategories],
   );
+
+
 
   const trashColumns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getTrashColumns({
-        setConfirmAction,
+        rowActions,
         formatDateTime,
         categoryTreeOptions,
         canWrite: canWriteCategories,
       }),
-    [setConfirmAction, categoryTreeOptions, canWriteCategories],
+    [rowActions, categoryTreeOptions, canWriteCategories],
   );
 
   return (
@@ -366,23 +362,6 @@ function CategoriesPageInner() {
           </TabsContent>
         ) : null}
       </Tabs>
-
-      <CategoriesConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null);
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction);
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="danh mục"
-        getName={(r) => r.name}
-        getSubInfo={(r) => r.slug}
-      />
     </AdminPageSection>
   );
 }

@@ -92,7 +92,16 @@ export class AccountsController {
       return res.status(statusCode).json(errBody);
     }
 
-    const allowed = ['name', 'bio', 'phone', 'address', 'avatar', 'password'];
+    const allowed = [
+      'name',
+      'bio',
+      'phone',
+      'address',
+      'citizenId',
+      'avatar',
+      'currentPassword',
+      'password',
+    ];
     const payload: UpdateAccountDto = {};
     for (const key of allowed) {
       if ((body as Record<string, unknown>)[key] !== undefined) {
@@ -102,17 +111,35 @@ export class AccountsController {
       }
     }
 
-    const updated = await this.accountsService.updateProfile(userId, payload);
+    const result = await this.accountsService.updateProfile(userId, payload);
 
-    if (!updated) {
+    if (!result.ok) {
+      const messages: Record<
+        typeof result.reason,
+        { status: number; message: string }
+      > = {
+        not_found: {
+          status: 404,
+          message: 'Không tìm thấy tài khoản hoặc cập nhật thất bại',
+        },
+        wrong_password: {
+          status: 400,
+          message: 'Mật khẩu hiện tại không đúng',
+        },
+        password_required: {
+          status: 400,
+          message: 'Cần nhập mật khẩu hiện tại để đổi mật khẩu',
+        },
+      };
+      const picked = messages[result.reason];
       const { statusCode, body: errBody } = createErrorResponse(
-        'Không tìm thấy tài khoản hoặc cập nhật thất bại',
-        { status: 404 },
+        picked.message,
+        { status: picked.status },
       );
       return res.status(statusCode).json(errBody);
     }
 
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
+    const { statusCode, body: okBody } = createSuccessResponse(result.profile);
     return res.status(statusCode).json(okBody);
   }
 }

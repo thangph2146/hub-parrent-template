@@ -42,8 +42,11 @@ export const api = createStoreSyncSdk({
 })
 
 export type {
+  AccountProfile,
   AuthUser,
+  ChangeAccountPasswordInput,
   ChangePasswordInput,
+  UpdateAccountInput,
   CreateUserInput,
   RbacPermission,
   RbacRole,

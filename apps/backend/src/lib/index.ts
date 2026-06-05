@@ -5,4 +5,8 @@ export { buildAdminFilterQuery,
   type FilterMapping,
 } from "./build-admin-filter-query";
 export { formatVND, formatDate } from "./format";
+export {
+  useAdminCrudRowHandlers,
+  type AdminCrudRowHandlers,
+} from "./admin-row-action-handlers";
 // Note: api.ts, auth-routes.ts, auth-session.ts are kept separate to avoid circular dependencies

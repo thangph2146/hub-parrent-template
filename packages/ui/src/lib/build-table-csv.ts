@@ -149,8 +149,7 @@ export function buildCsvFromColumns<T>(
   const exportRows = resolveExportRows(data, options?.getSubRows)
   const rows = exportRows.map(({ row, treePrefix }, rowIndex) =>
     exportCols.map((col, colIndex) => {
-      const text =
-        col.id === "stt" ? String(rowIndex + 1) : cellText(row, col)
+      const text = col.id === "stt" ? String(rowIndex + 1) : cellText(row, col)
       if (options?.getSubRows && treePrefix && colIndex === 0) {
         return `${treePrefix}${text}`
       }

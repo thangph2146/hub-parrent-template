@@ -36,6 +36,8 @@ export function AdminDetailSidebar({
   className?: string
 }) {
   return (
-    <div className={cn(ADMIN_PAGE_GRID_SIDEBAR_CLASS, className)}>{children}</div>
+    <div className={cn(ADMIN_PAGE_GRID_SIDEBAR_CLASS, className)}>
+      {children}
+    </div>
   )
 }

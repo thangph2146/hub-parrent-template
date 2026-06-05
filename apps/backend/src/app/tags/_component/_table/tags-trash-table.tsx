@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TagRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -60,10 +60,7 @@ export function TagsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("tags-trash", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("tags-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-tag-restore",

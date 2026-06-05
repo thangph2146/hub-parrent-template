@@ -17,7 +17,10 @@ export {
 export type { InsertImagePayload } from "./insert-image-dialog"
 
 export { InsertLayoutDialog } from "./insert-layout-dialog"
-export type { InsertLayoutDialogProps, LayoutDialogValues } from "./insert-layout-dialog"
+export type {
+  InsertLayoutDialogProps,
+  LayoutDialogValues,
+} from "./insert-layout-dialog"
 
 export {
   AutoEmbedDialog,

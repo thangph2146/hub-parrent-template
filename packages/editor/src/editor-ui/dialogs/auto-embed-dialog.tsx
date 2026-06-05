@@ -8,7 +8,10 @@
  */
 import { JSX, useMemo, useState } from "react"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import type { EmbedConfig, EmbedMatchResult } from "@lexical/react/LexicalAutoEmbedPlugin"
+import type {
+  EmbedConfig,
+  EmbedMatchResult,
+} from "@lexical/react/LexicalAutoEmbedPlugin"
 import type { LexicalEditor } from "lexical"
 
 import { Button } from "../../ui/button"

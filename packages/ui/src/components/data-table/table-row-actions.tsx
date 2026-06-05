@@ -3,19 +3,29 @@
 import type { ComponentProps, ReactNode } from "react"
 import { Button } from "../button"
 import { cn } from "../../lib/utils"
+import type { DataTableRowActionConfirm } from "./row-action-confirm"
+import { useRowActionConfirm } from "./row-action-confirm"
 
-/** Meta chuẩn cho cột hành động (ẩn filter, loại khỏi export). */
+/** Id mặc định cột thao tác — DataTable tự gộp meta khi khớp id này. */
+export const DATA_TABLE_ACTIONS_COLUMN_ID = "actions"
+
+/** Meta chuẩn cho cột hành động (ẩn filter, loại khỏi export, căn giữa menu ⋯). */
 export const TABLE_ACTIONS_COLUMN_META = {
   disableColumnFilter: true,
   excludeFromExport: true,
+  isActionsColumn: true,
+  className:
+    "w-[72px] min-w-[72px] max-w-[80px] px-1 text-center align-middle [&>div]:mx-auto [&>button]:mx-auto",
 } as const
 
 const defaultActionButtonClass = "h-8 gap-1.5"
 
+export type DataTableRowActionGroupId = "primary" | "status" | "danger"
+
 export type DataTableRowActionItem = {
   key: string
   label: string
-  onClick: () => void
+  onClick: () => void | Promise<void>
   icon?: ReactNode
   variant?: ComponentProps<typeof Button>["variant"]
   size?: ComponentProps<typeof Button>["size"]
@@ -23,37 +33,58 @@ export type DataTableRowActionItem = {
   title?: string
   className?: string
   hidden?: boolean
+  /** Nhóm trong menu dropdown (mặc định: primary). */
+  group?: DataTableRowActionGroupId
+  /** Gợi ý phụ dưới nhãn trong menu. */
+  hint?: string
+  iconBgClassName?: string
+  iconClassName?: string
+  menuVariant?: "default" | "destructive"
+  /**
+   * Dialog xác nhận trước khi gọi `onClick`.
+   * `false` = tắt; không khai báo = menu tự bật với thao tác danger/toggle (xem `autoConfirmDangerousActions`).
+   */
+  confirm?: DataTableRowActionConfirm | false
 }
 
 export function DataTableRowActions({
   actions,
   children,
   className,
+  autoConfirmDangerousActions = true,
 }: {
   actions?: DataTableRowActionItem[]
   children?: ReactNode
   className?: string
+  autoConfirmDangerousActions?: boolean
 }) {
+  const { runAction, confirmDialog } = useRowActionConfirm(
+    autoConfirmDangerousActions
+  )
+
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      {actions
-        ? actions
-            .filter((action) => !action.hidden)
-            .map((action) => (
-              <DataTableRowActionButton
-                key={action.key}
-                label={action.label}
-                onClick={action.onClick}
-                icon={action.icon}
-                variant={action.variant}
-                size={action.size}
-                disabled={action.disabled}
-                title={action.title}
-                className={action.className}
-              />
-            ))
-        : children}
-    </div>
+    <>
+      <div className={cn("flex flex-wrap items-center gap-2", className)}>
+        {actions
+          ? actions
+              .filter((action) => !action.hidden)
+              .map((action) => (
+                <DataTableRowActionButton
+                  key={action.key}
+                  label={action.label}
+                  onClick={() => runAction(action)}
+                  icon={action.icon}
+                  variant={action.variant}
+                  size={action.size}
+                  disabled={action.disabled}
+                  title={action.title}
+                  className={action.className}
+                />
+              ))
+          : children}
+      </div>
+      {confirmDialog}
+    </>
   )
 }
 
@@ -68,7 +99,7 @@ export function DataTableRowActionButton({
   className,
 }: {
   label: string
-  onClick: () => void
+  onClick: () => void | Promise<void>
   icon?: ReactNode
   variant?: ComponentProps<typeof Button>["variant"]
   size?: ComponentProps<typeof Button>["size"]

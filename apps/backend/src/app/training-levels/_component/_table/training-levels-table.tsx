@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TrainingLevelRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -51,10 +51,7 @@ export function TrainingLevelsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
-      xlsxExport={buildAdminTableXlsxExport("training-levels", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("training-levels", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-training-level-delete",

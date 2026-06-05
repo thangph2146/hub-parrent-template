@@ -1,13 +1,14 @@
 "use client";
 
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
 import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin, Star } from "lucide-react";
-import type { EventRow, EventConfirmAction } from "./types";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { EventRow } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -22,11 +23,11 @@ function formatDate(value: string | null | undefined): string {
 }
 
 export function getEventColumns({
-  openDetail, openEdit, setConfirmAction, canWrite, onToggleFeatured, isTogglingFeaturedId,
+  openDetail, openEdit, rowActions, canWrite, onToggleFeatured, isTogglingFeaturedId,
 }: {
   openDetail: (row: EventRow) => void;
   openEdit: (row: EventRow) => void;
-  setConfirmAction: (action: EventConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<EventRow>;
   canWrite: boolean;
   onToggleFeatured?: (row: EventRow) => void;
   isTogglingFeaturedId?: string | null;
@@ -157,30 +158,22 @@ export function getEventColumns({
         />
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<EventRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (action: EventConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<EventRow>;
   canWrite: boolean;
 }): ColumnDef<EventRow>[] {
   return [
@@ -202,19 +195,11 @@ export function getTrashColumns({
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => <span className="text-xs text-muted-foreground">{formatDateTime(getValue() as string)}</span>,
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<EventRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

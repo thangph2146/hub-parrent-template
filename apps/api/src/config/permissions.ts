@@ -65,7 +65,6 @@ export const ACTIONS = {
   RESTORE: 'restore',
   HARD_DELETE: 'hard-delete',
   UNACTIVE: 'unactive',
-  REVOKE_BY_USER: 'revoke-by-user',
 } as const;
 
 export type Resource = (typeof RESOURCES)[keyof typeof RESOURCES];
@@ -118,6 +117,9 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Categories
   ...generateResourcePermissions(RESOURCES.CATEGORIES),
+  CATEGORIES_RESTORE: `${RESOURCES.CATEGORIES}:${ACTIONS.RESTORE}` as Permission,
+  CATEGORIES_HARD_DELETE:
+    `${RESOURCES.CATEGORIES}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Tags
   ...generateResourcePermissions(RESOURCES.TAGS),
@@ -138,6 +140,8 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Groups
   ...generateResourcePermissions(RESOURCES.GROUPS),
+  GROUPS_RESTORE: `${RESOURCES.GROUPS}:${ACTIONS.RESTORE}` as Permission,
+  GROUPS_HARD_DELETE: `${RESOURCES.GROUPS}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Notifications
   NOTIFICATIONS_VIEW:
@@ -268,9 +272,17 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Event Registrations
   ...generateResourcePermissions(RESOURCES.EVENT_REGISTRATIONS),
+  EVENT_REGISTRATIONS_RESTORE:
+    `${RESOURCES.EVENT_REGISTRATIONS}:${ACTIONS.RESTORE}` as Permission,
+  EVENT_REGISTRATIONS_HARD_DELETE:
+    `${RESOURCES.EVENT_REGISTRATIONS}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Event Checkins
   ...generateResourcePermissions(RESOURCES.EVENT_CHECKINS),
+  EVENT_CHECKINS_RESTORE:
+    `${RESOURCES.EVENT_CHECKINS}:${ACTIONS.RESTORE}` as Permission,
+  EVENT_CHECKINS_HARD_DELETE:
+    `${RESOURCES.EVENT_CHECKINS}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Event Checkouts
   ...generateResourcePermissions(RESOURCES.EVENT_CHECKOUTS),
@@ -280,6 +292,9 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Face Data
   ...generateResourcePermissions(RESOURCES.FACE_DATA),
+  FACE_DATA_RESTORE: `${RESOURCES.FACE_DATA}:${ACTIONS.RESTORE}` as Permission,
+  FACE_DATA_HARD_DELETE:
+    `${RESOURCES.FACE_DATA}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Imported Users
   ...generateResourcePermissions(RESOURCES.IMPORTED_USERS),

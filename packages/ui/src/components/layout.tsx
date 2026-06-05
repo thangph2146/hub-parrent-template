@@ -64,12 +64,7 @@ export function PageContent({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        "flex flex-1 flex-col justify-between",
-        className
-      )}
-    >
+    <div className={cn("flex flex-1 flex-col justify-between", className)}>
       {children}
     </div>
   )
@@ -227,15 +222,14 @@ export function Divider({
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <div className="h-px flex-1 bg-border" />
-      {label && (
-        typeof label === "string" ? (
+      {label &&
+        (typeof label === "string" ? (
           <span className="text-caption font-medium tracking-wider text-muted-foreground uppercase">
             {label}
           </span>
         ) : (
           label
-        )
-      )}
+        ))}
       <div className="h-px flex-1 bg-border" />
     </div>
   )

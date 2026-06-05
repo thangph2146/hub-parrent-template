@@ -258,16 +258,16 @@ export function TableColumnResizerPlugin({
             typeof (tableNode as unknown as Record<string, unknown>)
               .setColWidths === "function"
           ) {
-            ; (
+            ;(
               (tableNode as unknown as Record<string, unknown>)
                 .setColWidths as (widths: number[]) => void
             )(nextColWidths)
           } else {
             // Fallback for different Lexical versions if needed
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ; (tableNode as any).__colWidths = nextColWidths
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ; (tableNode as any).__widths = nextColWidths
+            ;(tableNode as any).__colWidths = nextColWidths
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ;(tableNode as any).__widths = nextColWidths
             tableNode.markDirty()
           }
         })

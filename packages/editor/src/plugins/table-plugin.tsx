@@ -125,7 +125,9 @@ export function TablePlugin({
           cols,
           includeHeaders
         )
-        tableNode.setStyle("width: 100%").setColWidths(Array(cols).fill(colWidth))
+        tableNode
+          .setStyle("width: 100%")
+          .setColWidths(Array(cols).fill(colWidth))
         $insertNodes([tableNode])
         return true
       },
@@ -147,7 +149,9 @@ function getEditorContainerWidth(editor: LexicalEditor): number {
       const w = rootEl.parentElement.clientWidth
       if (w > 0) return w
     }
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
   return 600
 }
 
@@ -173,13 +177,17 @@ export function InsertTableCommandPlugin(): JSX.Element | null {
               cols,
               includeHeaders
             )
-            tableNode.setStyle("width: 100%").setColWidths(Array(cols).fill(colWidth))
+            tableNode
+              .setStyle("width: 100%")
+              .setColWidths(Array(cols).fill(colWidth))
             try {
               const selection = $getSelection()
               let targetBlock: ReturnType<typeof root.getFirstChild> = null
               if (selection !== null && $isRangeSelection(selection)) {
                 try {
-                  targetBlock = selection.anchor.getNode().getTopLevelElementOrThrow()
+                  targetBlock = selection.anchor
+                    .getNode()
+                    .getTopLevelElementOrThrow()
                 } catch {
                   targetBlock = root.getLastChild()
                 }

@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
+import { hash } from 'bcryptjs';
 import { AccountsService } from './accounts.service';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
@@ -17,6 +18,7 @@ describe('AccountsService', () => {
     bio: 'Test bio',
     phone: '0123456789',
     address: 'Test Address',
+    citizenId: '001234567890',
     emailVerified: null,
     isActive: true,
     deletedAt: null,
@@ -107,8 +109,10 @@ describe('AccountsService', () => {
         phone: '0987654321',
       });
 
-      expect(result).not.toBeNull();
-      expect(result?.name).toBe('Updated Name');
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.profile.name).toBe('Updated Name');
+      }
       expect(em.persistAndFlush).toHaveBeenCalled();
     });
 
@@ -119,7 +123,7 @@ describe('AccountsService', () => {
         name: 'New',
       });
 
-      expect(result).toBeNull();
+      expect(result).toEqual({ ok: false, reason: 'not_found' });
     });
 
     it('should return null when user is deleted', async () => {
@@ -128,7 +132,7 @@ describe('AccountsService', () => {
 
       const result = await service.updateProfile('user-1', { name: 'New' });
 
-      expect(result).toBeNull();
+      expect(result).toEqual({ ok: false, reason: 'not_found' });
     });
 
     it('should return null when user is inactive', async () => {
@@ -137,7 +141,7 @@ describe('AccountsService', () => {
 
       const result = await service.updateProfile('user-1', { name: 'New' });
 
-      expect(result).toBeNull();
+      expect(result).toEqual({ ok: false, reason: 'not_found' });
     });
 
     it('should trim name field', async () => {
@@ -150,15 +154,44 @@ describe('AccountsService', () => {
       expect(existing.name).toBe('Trimmed Name');
     });
 
-    it('should update password when provided', async () => {
+    it('should update password when current password is valid', async () => {
       const existing = { ...mockUser };
       (em.findOne as jest.Mock).mockResolvedValue(existing);
       (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
+      existing.password = await hash('oldpass', 10);
 
-      await service.updateProfile('user-1', { password: 'newpassword123' });
+      const result = await service.updateProfile('user-1', {
+        currentPassword: 'oldpass',
+        password: 'newpassword123',
+      });
 
+      expect(result.ok).toBe(true);
       expect(em.persistAndFlush).toHaveBeenCalled();
       expect(existing.password).not.toBe('hashedpassword');
+    });
+
+    it('should reject password change without current password', async () => {
+      const existing = { ...mockUser };
+      (em.findOne as jest.Mock).mockResolvedValue(existing);
+
+      const result = await service.updateProfile('user-1', {
+        password: 'newpassword123',
+      });
+
+      expect(result).toEqual({ ok: false, reason: 'password_required' });
+    });
+
+    it('should reject password change when current password is wrong', async () => {
+      const existing = { ...mockUser };
+      (em.findOne as jest.Mock).mockResolvedValue(existing);
+      existing.password = await hash('realpass', 10);
+
+      const result = await service.updateProfile('user-1', {
+        currentPassword: 'wrong',
+        password: 'newpassword123',
+      });
+
+      expect(result).toEqual({ ok: false, reason: 'wrong_password' });
     });
 
     it('should not update password when empty', async () => {

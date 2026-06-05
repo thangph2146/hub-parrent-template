@@ -5,7 +5,7 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { TemplateRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 export function TemplatesTable({
@@ -52,10 +52,7 @@ export function TemplatesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
-      xlsxExport={buildAdminTableXlsxExport("templates", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("templates", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-template-delete",

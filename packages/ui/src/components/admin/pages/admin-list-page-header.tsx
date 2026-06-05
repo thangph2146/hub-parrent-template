@@ -31,7 +31,9 @@ export function AdminListPageHeader({
     <div className={ADMIN_PAGE_HEADER_TOOLBAR_CLASS}>
       <div>
         <TypographyH1 className={ADMIN_PAGE_TITLE_PRIMARY_CLASS}>
-          {Icon ? <Icon className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden /> : null}
+          {Icon ? (
+            <Icon className={ADMIN_PAGE_TITLE_ICON_CLASS} aria-hidden />
+          ) : null}
           {title}
         </TypographyH1>
         {subtitle ? (

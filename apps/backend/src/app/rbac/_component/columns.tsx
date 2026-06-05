@@ -4,9 +4,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import { ExternalLink, Lock } from "lucide-react";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableEditButton, AdminTablePurgeButton, AdminTableRowActions, AdminTableSoftDeleteButton, AdminTableViewButton } from "@ui/components/admin";
+import { ExternalLink } from "lucide-react";
+import { defineAdminCrudActionsColumn } from "@ui/components/admin";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 
 type RoleRow = {
@@ -85,62 +84,33 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
         />
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => {
-        const role = row.original;
+    defineAdminCrudActionsColumn<RoleRow>({
+      canWrite: true,
+      pageConfirm: true,
+      getRecordLabel: (r) => r.name,
+      onView,
+      onEdit,
+      onSoftDelete: onDelete,
+      onPurge,
+      resolveRowProps: (role) => {
         const isSuperAdmin = isSuperAdminRoleCode(role.code);
-
         if (isSuperAdmin) {
-          return (
-            <AdminTableRowActions>
-              <AdminTableViewButton onClick={() => onView(role)} />
-              {canEditSuperAdminRole ? (
-                <AdminTableEditButton
-                  disabled={!canManageRoles}
-                  onClick={() => onEdit(role)}
-                />
-              ) : (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 gap-1.5"
-                  disabled
-                  title="Chỉ tài khoản quản trị hệ thống mới được chỉnh sửa"
-                >
-                  <Lock className="size-3.5" aria-hidden />
-                  Hệ thống
-                </Button>
-              )}
-            </AdminTableRowActions>
-          );
+          return {
+            editHidden: !canEditSuperAdminRole,
+            editDisabled: !canManageRoles,
+            editTitle: canEditSuperAdminRole
+              ? undefined
+              : "Chỉ tài khoản quản trị hệ thống mới được chỉnh sửa",
+            onSoftDelete: undefined,
+            onPurge: undefined,
+          };
         }
-
-        return (
-          <AdminTableRowActions>
-            <AdminTableViewButton
-              onClick={() => onView(role)}
-            />
-            <AdminTableEditButton
-                disabled={!canManageRoles}
-                onClick={() => onEdit(role)}
-              />
-            <AdminTableSoftDeleteButton
-              onClick={() => onDelete(role)}
-              disabled={!canManageRoles}
-            />
-            <AdminTablePurgeButton
-              onClick={() => onPurge(role)}
-              disabled={!canManageRoles}
-            />
-          </AdminTableRowActions>
-        );
+        return {
+          editDisabled: !canManageRoles,
+          softDeleteDisabled: !canManageRoles,
+          purgeDisabled: !canManageRoles,
+        };
       },
-    },
+    }),
   ];
 }

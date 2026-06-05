@@ -19,3 +19,16 @@ export const CONTACT_REQUEST_STATUS_LABELS: Record<ContactRequest["status"], str
   resolved: "Đã giải quyết",
   archived: "Đã lưu trữ",
 };
+
+export const CONTACT_REQUEST_PRIORITIES = ["HIGH", "MEDIUM", "LOW"] as const;
+
+export type ContactRequestPriority = (typeof CONTACT_REQUEST_PRIORITIES)[number];
+
+export const CONTACT_REQUEST_PRIORITY_LABELS: Record<
+  ContactRequestPriority,
+  string
+> = {
+  HIGH: "Cao",
+  MEDIUM: "Trung bình",
+  LOW: "Thấp",
+};

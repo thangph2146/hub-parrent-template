@@ -5,12 +5,12 @@ import {
   UsageStatusBadge,
   type UsageStatusTone,
 } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import { CheckCircle2, Clock, User, XCircle } from "lucide-react";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTablePurgeButton, AdminTableRowActions } from "@ui/components/admin";
+import { CheckCircle2, Clock, Settings2, Trash2, User, XCircle } from "lucide-react";
+import {
+  DataTableRowActionsMenu,
+  type DataTableRowActionItem,
+} from "@ui/components/data-table";
 import type { ParentStudent } from "./types";
-
-const actionButtonClass = "h-8 gap-1.5";
 
 export interface ParentStudentsColumnsProps {
   onApprove: (row: ParentStudent) => void;
@@ -122,36 +122,53 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableRowActions>
-          {canApprove ? (
-            <Button
-              type="button"
-              size="sm"
-              variant="default"
-              className={actionButtonClass}
-              onClick={() => onApprove(row.original)}
-            >
-              <CheckCircle2 className="size-3.5" aria-hidden />
-              Duyệt
-            </Button>
-          ) : null}
-          {canApprove ? (
-            <Button
-              type="button"
-              size="sm"
-              variant="destructive"
-              className={actionButtonClass}
-              onClick={() => onReject(row.original)}
-            >
-              <XCircle className="size-3.5" aria-hidden />
-              Từ chối
-            </Button>
-          ) : null}
-          <AdminTablePurgeButton onClick={() => onPurge(row.original)} />
-        </AdminTableRowActions>
-      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        const actions: DataTableRowActionItem[] = [];
+        if (canApprove && data.status === "pending") {
+          actions.push(
+            {
+              key: "approve",
+              label: "Duyệt",
+              hint: "Chấp nhận liên kết phụ huynh – học sinh",
+              onClick: () => onApprove(data),
+              icon: <CheckCircle2 />,
+              group: "primary",
+              confirm: false,
+            },
+            {
+              key: "reject",
+              label: "Từ chối",
+              hint: "Từ chối yêu cầu liên kết",
+              onClick: () => onReject(data),
+              icon: <XCircle />,
+              group: "danger",
+              menuVariant: "destructive",
+              confirm: false,
+            }
+          );
+        }
+        actions.push({
+          key: "purge",
+          label: "Xóa vĩnh viễn",
+          hint: "Xóa khỏi cơ sở dữ liệu, không hoàn tác",
+          onClick: () => onPurge(data),
+          icon: <Trash2 />,
+          group: "danger",
+          menuVariant: "destructive",
+          confirm: false,
+        });
+        return (
+          <DataTableRowActionsMenu
+            actions={actions}
+            autoConfirmDangerousActions={false}
+            groups={{
+              primary: { label: "Thao tác", icon: Settings2 },
+              danger: { label: "Từ chối / xóa", sublabel: true },
+            }}
+          />
+        );
+      },
     },
   ];
 }

@@ -32,6 +32,7 @@ import {
   useBulkDeleteContactRequest,
   useBulkRestoreContactRequest,
   useBulkPurgeContactRequest,
+  useUpdateContactRequest,
 } from "./_component/_query/use-contact-queries"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
@@ -42,6 +43,10 @@ function ContactRequestsPageInner() {
   const { user } = useAuth();
   const canDelete = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_DELETE) : false;
   const canRestore = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_RESTORE) : false;
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_UPDATE) ||
+      canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_MANAGE)
+    : false;
   const router = useRouter()
 
   const [tab, setTab] = useState<"list" | "trash">("list")
@@ -74,6 +79,7 @@ function ContactRequestsPageInner() {
   const deleteMutation = useDeleteContactRequest()
   const restoreMutation = useRestoreContactRequest()
   const purgeMutation = usePurgeContactRequest()
+  const updateMutation = useUpdateContactRequest()
   const bulkDeleteMutation = useBulkDeleteContactRequest()
   const bulkRestoreMutation = useBulkRestoreContactRequest()
   const bulkPurgeMutation = useBulkPurgeContactRequest()
@@ -158,6 +164,30 @@ function ContactRequestsPageInner() {
     setPurgeTarget(contact)
   }, [])
 
+  const handleStatusChange = useCallback(
+    (contact: ContactRequest, status: ContactRequest["status"]) => {
+      updateMutation.mutate({ id: contact.id, input: { status } })
+    },
+    [updateMutation],
+  )
+
+  const handleSetRead = useCallback(
+    (contact: ContactRequest, isRead: boolean) => {
+      updateMutation.mutate({ id: contact.id, input: { isRead } })
+    },
+    [updateMutation],
+  )
+
+  const handleSetPriority = useCallback(
+    (
+      contact: ContactRequest,
+      priority: NonNullable<ContactRequest["priority"]>,
+    ) => {
+      updateMutation.mutate({ id: contact.id, input: { priority } })
+    },
+    [updateMutation],
+  )
+
   const handleBulkDelete = useCallback(async (ids: string[]) => {
     setBulkDeleteTarget(ids)
   }, [])
@@ -208,6 +238,7 @@ function ContactRequestsPageInner() {
     deleteMutation.isPending ||
     restoreMutation.isPending ||
     purgeMutation.isPending ||
+    updateMutation.isPending ||
     bulkDeleteMutation.isPending ||
     bulkRestoreMutation.isPending ||
     bulkPurgeMutation.isPending
@@ -254,7 +285,11 @@ function ContactRequestsPageInner() {
             onView={handleView}
             onDelete={handleDelete}
             onPurge={handlePurge}
+            onStatusChange={handleStatusChange}
+            onSetRead={handleSetRead}
+            onSetPriority={handleSetPriority}
             busy={busy}
+            canUpdate={canUpdate}
             canDelete={canDelete}
             onBulkDelete={handleBulkDelete}
             onBulkPurge={handleBulkPurge}

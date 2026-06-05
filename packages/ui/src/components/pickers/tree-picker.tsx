@@ -7,7 +7,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
 import { resolveIcon } from "../../lib/icons"
 
-function DynamicIcon({ name, className }: { name?: string; className?: string }) {
+function DynamicIcon({
+  name,
+  className,
+}: {
+  name?: string
+  className?: string
+}) {
   if (!name) return null
   return createElement(resolveIcon(name), { className })
 }
@@ -157,7 +163,10 @@ export function TreePicker({
           className="h-9 w-full min-w-[160px] justify-between rounded-lg text-sm font-normal"
         >
           <span className="flex items-center gap-2 truncate">
-            <DynamicIcon name={selectedIcon} className="size-4 shrink-0 text-muted-foreground" />
+            <DynamicIcon
+              name={selectedIcon}
+              className="size-4 shrink-0 text-muted-foreground"
+            />
             <span className="truncate">{selectedLabel}</span>
           </span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
@@ -176,7 +185,7 @@ export function TreePicker({
               className={cn(
                 "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
                 !selected && "bg-primary/10 font-medium text-primary",
-                selected && "cursor-pointer hover:bg-muted",
+                selected && "cursor-pointer hover:bg-muted"
               )}
             >
               <span className="flex-1 truncate">{placeholder}</span>

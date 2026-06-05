@@ -19,23 +19,20 @@ import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   SpeakersTable,
   SpeakersTrashTable,
-  SpeakersConfirmDialog,
   getSpeakerColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useSpeakersListQuery,
   useSpeakersTrashQuery,
 } from "./_component"
@@ -161,29 +158,29 @@ function SpeakersPageInner() {
     setTrashColumnFilters
   )
 
-  const { confirmAction, setConfirmAction } = useConfirmAction()
-
-  const handleConfirmAction = useHandleConfirmAction(
+  const rowActions = useAdminCrudRowHandlers<SpeakerRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "diễn giả",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction
-  )
+  });
+
 
   const columns = useMemo<ColumnDef<SpeakerRow>[]>(
     () =>
       getSpeakerColumns({
         openDetail: (row) => router.push(`/speakers/${row.id}`),
         openEdit: (row) => router.push(`/speakers/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite,
       }),
-    [setConfirmAction, router, canWrite]
+    [rowActions, router, canWrite]
   )
 
   const trashColumns = useMemo<ColumnDef<SpeakerRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite]
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite]
   )
 
   return (
@@ -341,22 +338,6 @@ function SpeakersPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <SpeakersConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null)
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction)
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="diễn giả"
-        getName={(r) => r.name}
-      />
     </AdminPageSection>
   )
 }

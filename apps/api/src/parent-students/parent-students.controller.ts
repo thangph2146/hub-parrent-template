@@ -10,8 +10,9 @@
  *   | GET | averages/overall/{studentCode}  | Tổng hợp điểm trung bình chung     |
  *
  * Routes admin:
- *   GET    /admin/parent-students        — toàn bộ yêu cầu (có filter status)
+ *   GET    /admin/parent-students            — toàn bộ yêu cầu (có filter status)
  *   PATCH  /admin/parent-students/:id/review — duyệt / từ chối
+ *   DELETE /admin/parent-students/:id        — xóa vĩnh viễn yêu cầu
  */
 import {
   Controller,
@@ -502,6 +503,33 @@ export class ParentStudentsAdminController {
       return res.status(statusCode).json(b);
     } catch (err) {
       this.logger.error('review', err);
+      const { statusCode, body: b } = createErrorResponse('Lỗi hệ thống');
+      return res.status(statusCode).json(b);
+    }
+  }
+
+  @Permissions(
+    PERMISSIONS.PARENT_STUDENTS_DELETE,
+    PERMISSIONS.PARENT_STUDENTS_MANAGE,
+    PERMISSIONS.PARENT_STUDENTS_UPDATE,
+  )
+  @Delete(':id')
+  async remove(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const ok = await this.svc.removeByAdmin(id);
+      if (!ok) {
+        const { statusCode, body: b } = createErrorResponse('Không tìm thấy', {
+          status: 404,
+        });
+        return res.status(statusCode).json(b);
+      }
+      const { statusCode, body: b } = createSuccessResponse({ id });
+      return res.status(statusCode).json(b);
+    } catch (err) {
+      this.logger.error('adminRemove', err);
       const { statusCode, body: b } = createErrorResponse('Lỗi hệ thống');
       return res.status(statusCode).json(b);
     }

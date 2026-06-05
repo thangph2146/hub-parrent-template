@@ -1,6 +1,5 @@
-import type { AdminDataTableXlsxExportConfig } from "../../data-table"
 
-const ADMIN_EXPORT_SUBTITLE = "Hệ thống quản trị HUB";
+const ADMIN_EXPORT_SUBTITLE = "Hệ thống quản trị HUB"
 
 export type AdminTableExportTemplateId =
   | "academic-years"
@@ -40,6 +39,9 @@ export type AdminTableExportTemplateId =
   | "rbac"
   | "rbac-trash"
   | "parent-students"
+  | "my-students"
+  | "contact-requests"
+  | "contact-requests-trash"
   | "event-registrations"
   | "event-checkins"
   | "event-checkouts"
@@ -48,15 +50,15 @@ export type AdminTableExportTemplateId =
   | "student-year-averages"
   | "student-term-averages"
   | "student-detailed-scores"
-  | "staff-related-posts";
+  | "staff-related-posts"
 
 type AdminTableExportTemplate = {
-  fileName: string;
-  sheetName: string;
-  title: string;
-  subtitle: string;
-  recordLabel: string;
-};
+  fileName: string
+  sheetName: string
+  title: string
+  subtitle: string
+  recordLabel: string
+}
 
 const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
   AdminTableExportTemplateId,
@@ -321,6 +323,27 @@ const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
     subtitle: ADMIN_EXPORT_SUBTITLE,
     recordLabel: "yêu cầu",
   },
+  "my-students": {
+    fileName: "sinh-vien-cua-toi.xlsx",
+    sheetName: "Sinh vien",
+    title: "DANH SÁCH LIÊN KẾT SINH VIÊN CỦA TÔI",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "liên kết",
+  },
+  "contact-requests": {
+    fileName: "yeu-cau-lien-he.xlsx",
+    sheetName: "Yeu cau lien he",
+    title: "DANH SÁCH YÊU CẦU LIÊN HỆ",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "yêu cầu",
+  },
+  "contact-requests-trash": {
+    fileName: "yeu-cau-lien-he-thung-rac.xlsx",
+    sheetName: "Lien he thung rac",
+    title: "YÊU CẦU LIÊN HỆ TRONG THÙNG RÁC",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "yêu cầu",
+  },
   "event-registrations": {
     fileName: "dang-ky-su-kien.xlsx",
     sheetName: "Dang ky",
@@ -384,21 +407,33 @@ const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
     subtitle: ADMIN_EXPORT_SUBTITLE,
     recordLabel: "bài viết",
   },
-};
+}
 
 function formatExportDate(): string {
-  return new Date().toLocaleString("vi-VN");
+  return new Date().toLocaleString("vi-VN")
 }
 
 export type AdminTableXlsxExportOptions = {
-  pageCount?: number;
-  total?: number;
+  pageCount?: number
+  total?: number
   extraMetadata?: Array<{
-    label: string;
-    value: string | number | null | undefined;
-  }>;
-  fileName?: string;
-};
+    label: string
+    value: string | number | null | undefined
+  }>
+  fileName?: string
+}
+
+/** Kết quả `buildAdminTableXlsxExport` — truyền vào `AdminDataTable` `xlsxExport`. */
+export type AdminTableXlsxBuiltConfig = {
+  fileName: string
+  sheetName: string
+  title: string
+  subtitle: string
+  metadata: Array<{
+    label: string
+    value: string | number | null | undefined
+  }>
+}
 
 function sanitizeFileStem(value: string): string {
   return value
@@ -406,37 +441,37 @@ function sanitizeFileStem(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 48);
+    .slice(0, 48)
 }
 
 export function buildAdminTableXlsxExport(
   templateId: AdminTableExportTemplateId,
-  options: AdminTableXlsxExportOptions = {},
-): AdminDataTableXlsxExportConfig {
-  const template = ADMIN_TABLE_EXPORT_TEMPLATES[templateId];
+  options: AdminTableXlsxExportOptions = {}
+): AdminTableXlsxBuiltConfig {
+  const template = ADMIN_TABLE_EXPORT_TEMPLATES[templateId]
   const metadata: Array<{
-    label: string;
-    value: string | number | null | undefined;
+    label: string
+    value: string | number | null | undefined
   }> = [
     { label: "Chủ đề", value: template.title },
     { label: "Ngày xuất", value: formatExportDate() },
-  ];
+  ]
 
   if (options.extraMetadata?.length) {
-    metadata.push(...options.extraMetadata);
+    metadata.push(...options.extraMetadata)
   }
 
   if (options.pageCount != null) {
     metadata.push({
       label: "Số bản ghi trang",
       value: options.pageCount,
-    });
+    })
   }
   if (options.total != null) {
     metadata.push({
       label: `Tổng ${template.recordLabel}`,
       value: options.total,
-    });
+    })
   }
 
   return {
@@ -445,7 +480,7 @@ export function buildAdminTableXlsxExport(
     title: template.title,
     subtitle: template.subtitle,
     metadata,
-  };
+  }
 }
 
 export type EventDetailExportTab =
@@ -453,7 +488,7 @@ export type EventDetailExportTab =
   | "checkins"
   | "checkouts"
   | "speakers"
-  | "live-activities";
+  | "live-activities"
 
 const EVENT_DETAIL_TEMPLATE: Record<
   EventDetailExportTab,
@@ -464,30 +499,30 @@ const EVENT_DETAIL_TEMPLATE: Record<
   checkouts: "event-checkouts",
   speakers: "event-speakers",
   "live-activities": "event-live-activities",
-};
+}
 
 export function buildEventDetailXlsxExport(
   tab: EventDetailExportTab,
   options: AdminTableXlsxExportOptions & {
-    eventTitle?: string;
-    eventId?: string;
-  } = {},
-): AdminDataTableXlsxExportConfig {
-  const templateId = EVENT_DETAIL_TEMPLATE[tab];
-  const stem = options.eventId ? sanitizeFileStem(options.eventId) : "";
-  const baseTemplate = ADMIN_TABLE_EXPORT_TEMPLATES[templateId];
+    eventTitle?: string
+    eventId?: string
+  } = {}
+): AdminTableXlsxBuiltConfig {
+  const templateId = EVENT_DETAIL_TEMPLATE[tab]
+  const stem = options.eventId ? sanitizeFileStem(options.eventId) : ""
+  const baseTemplate = ADMIN_TABLE_EXPORT_TEMPLATES[templateId]
   const fileName =
     options.fileName ??
     (stem
       ? baseTemplate.fileName.replace(".xlsx", `-${stem}.xlsx`)
-      : baseTemplate.fileName);
+      : baseTemplate.fileName)
 
-  const extraMetadata: AdminTableXlsxExportOptions["extraMetadata"] = [];
+  const extraMetadata: AdminTableXlsxExportOptions["extraMetadata"] = []
   if (options.eventTitle?.trim()) {
-    extraMetadata.push({ label: "Sự kiện", value: options.eventTitle.trim() });
+    extraMetadata.push({ label: "Sự kiện", value: options.eventTitle.trim() })
   }
   if (options.eventId?.trim()) {
-    extraMetadata.push({ label: "Mã sự kiện", value: options.eventId.trim() });
+    extraMetadata.push({ label: "Mã sự kiện", value: options.eventId.trim() })
   }
 
   return buildAdminTableXlsxExport(templateId, {
@@ -495,56 +530,20 @@ export function buildEventDetailXlsxExport(
     total: options.total,
     fileName,
     extraMetadata,
-  });
+  })
 }
 
-export type ContactXlsxExportKind = "active" | "trash";
+export type ContactXlsxExportKind = "active" | "trash"
 
-export type ContactXlsxExportTemplate = {
-  fileName: string;
-  sheetName: string;
-  title: string;
-  subtitle: string;
-  metadata: Array<{
-    label: string;
-    value: string | number | null | undefined;
-  }>;
-};
+/** @deprecated Dùng `AdminTableXlsxBuiltConfig`. */
+export type ContactXlsxExportTemplate = AdminTableXlsxBuiltConfig
 
+/** @deprecated Dùng `buildAdminTableXlsxExport("contact-requests" | "contact-requests-trash")`. */
 export function buildContactRequestsXlsxExport(
   kind: ContactXlsxExportKind,
   options: AdminTableXlsxExportOptions = {},
 ): ContactXlsxExportTemplate {
-  const isTrash = kind === "trash";
-  const title = isTrash
-    ? "YÊU CẦU LIÊN HỆ TRONG THÙNG RÁC"
-    : "DANH SÁCH YÊU CẦU LIÊN HỆ";
-  const metadata: Array<{
-    label: string;
-    value: string | number | null | undefined;
-  }> = [
-    { label: "Chủ đề", value: title },
-    { label: "Ngày xuất", value: formatExportDate() },
-  ];
-
-  if (options.pageCount != null) {
-    metadata.push({
-      label: "Số bản ghi trang",
-      value: options.pageCount,
-    });
-  }
-  if (options.total != null) {
-    metadata.push({
-      label: "Tổng yêu cầu",
-      value: options.total,
-    });
-  }
-
-  return {
-    fileName: isTrash ? "yeu-cau-lien-he-thung-rac.xlsx" : "yeu-cau-lien-he.xlsx",
-    sheetName: isTrash ? "Lien he thung rac" : "Yeu cau lien he",
-    title,
-    subtitle: ADMIN_EXPORT_SUBTITLE,
-    metadata,
-  };
+  const templateId =
+    kind === "trash" ? "contact-requests-trash" : "contact-requests"
+  return buildAdminTableXlsxExport(templateId, options)
 }

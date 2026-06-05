@@ -69,6 +69,8 @@ export const PERMISSION_CODES = {
   CATEGORIES_DELETE: "categories:delete",
   CATEGORIES_MANAGE: "categories:manage",
   CATEGORIES_EXPORT: "categories:export",
+  CATEGORIES_RESTORE: "categories:restore",
+  CATEGORIES_HARD_DELETE: "categories:hard-delete",
 
   TAGS_VIEW: "tags:view",
   TAGS_CREATE: "tags:create",
@@ -124,6 +126,8 @@ export const PERMISSION_CODES = {
   GROUPS_DELETE: "groups:delete",
   GROUPS_MANAGE: "groups:manage",
   GROUPS_EXPORT: "groups:export",
+  GROUPS_RESTORE: "groups:restore",
+  GROUPS_HARD_DELETE: "groups:hard-delete",
 
   CONTACT_REQUESTS_VIEW: "contact_requests:view",
   CONTACT_REQUESTS_CREATE: "contact_requests:create",
@@ -210,6 +214,8 @@ export const PERMISSION_CODES = {
   EVENT_REGISTRATIONS_DELETE: "event_registrations:delete",
   EVENT_REGISTRATIONS_MANAGE: "event_registrations:manage",
   EVENT_REGISTRATIONS_EXPORT: "event_registrations:export",
+  EVENT_REGISTRATIONS_RESTORE: "event_registrations:restore",
+  EVENT_REGISTRATIONS_HARD_DELETE: "event_registrations:hard-delete",
 
   EVENT_CHECKINS_VIEW: "event_checkins:view",
   EVENT_CHECKINS_CREATE: "event_checkins:create",
@@ -217,6 +223,8 @@ export const PERMISSION_CODES = {
   EVENT_CHECKINS_DELETE: "event_checkins:delete",
   EVENT_CHECKINS_MANAGE: "event_checkins:manage",
   EVENT_CHECKINS_EXPORT: "event_checkins:export",
+  EVENT_CHECKINS_RESTORE: "event_checkins:restore",
+  EVENT_CHECKINS_HARD_DELETE: "event_checkins:hard-delete",
 
   EVENT_CHECKOUTS_VIEW: "event_checkouts:view",
   EVENT_CHECKOUTS_CREATE: "event_checkouts:create",
@@ -327,6 +335,8 @@ export const PERMISSION_CODES = {
   FACE_DATA_DELETE: "face_data:delete",
   FACE_DATA_MANAGE: "face_data:manage",
   FACE_DATA_EXPORT: "face_data:export",
+  FACE_DATA_RESTORE: "face_data:restore",
+  FACE_DATA_HARD_DELETE: "face_data:hard-delete",
 
   // ─── Legacy (dot-notation, giữ để không vỡ code cũ) ──────────
   /** @deprecated Dùng USERS_MANAGE khi API có tương ứng */

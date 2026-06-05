@@ -98,15 +98,22 @@ function AdminParentStudentsPageInner() {
   const purgeRows = useCallback(async (rows: ParentStudent[]) => {
     const ids = rows.map((r) => r.id);
     if (!ids.length) return;
-    for (const id of ids) {
-      await api.parentStudents.remove(id);
+    try {
+      for (const id of ids) {
+        await api.parentStudents.remove(id);
+      }
+      queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });
+      toast.success(
+        ids.length === 1
+          ? "Đã xóa vĩnh viễn yêu cầu liên kết."
+          : `Đã xóa vĩnh viễn ${ids.length} yêu cầu`,
+      );
+    } catch (err: unknown) {
+      toast.error(
+        err instanceof Error ? err.message : "Không thể xóa yêu cầu liên kết.",
+      );
+      throw err;
     }
-    queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });
-    toast.success(
-      ids.length === 1
-        ? "Đã xóa vĩnh viễn yêu cầu liên kết."
-        : `Đã xóa vĩnh viễn ${ids.length} yêu cầu`,
-    );
   }, [queryClient]);
 
   const columns = useMemo(
@@ -218,7 +225,7 @@ function AdminParentStudentsPageInner() {
             }
             return;
           }
-          reviewMutation.mutate({
+          await reviewMutation.mutateAsync({
             id: confirmAction.row.id,
             action: confirmAction.kind === "approve" ? "approved" : "rejected",
           });

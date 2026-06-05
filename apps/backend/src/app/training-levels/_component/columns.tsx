@@ -1,11 +1,12 @@
 "use client";
 
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
-import type { TrainingLevelRow, TrainingLevelConfirmAction } from "./types";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { TrainingLevelRow } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -16,12 +17,12 @@ function formatDateTime(value: string | null | undefined): string {
 export function getTrainingLevelColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: TrainingLevelRow) => void;
   openEdit: (row: TrainingLevelRow) => void;
-  setConfirmAction: (action: TrainingLevelConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<TrainingLevelRow>;
   canWrite: boolean;
 }): ColumnDef<TrainingLevelRow>[] {
   return [
@@ -93,30 +94,22 @@ export function getTrainingLevelColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<TrainingLevelRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (action: TrainingLevelConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<TrainingLevelRow>;
   canWrite: boolean;
 }): ColumnDef<TrainingLevelRow>[] {
   return [
@@ -146,19 +139,11 @@ export function getTrashColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<TrainingLevelRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

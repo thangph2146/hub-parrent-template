@@ -1,5 +1,5 @@
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable } from "@ui/components/data-table";
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table";
 import { getStaffColumns } from "../columns";
 import type { StaffRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
@@ -94,10 +94,7 @@ export function StaffTable(props: StaffTableProps) {
       globalFilter={globalFilter}
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo email, họ tên (API)…"
-      onClearFilters={onClearFilters}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      onClearFilters={onClearFilters}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
       bulkActions={[
         {

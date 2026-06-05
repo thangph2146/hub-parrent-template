@@ -3,12 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  ShieldCheck,
-  ChevronDown,
-  ChevronsUpDown,
-  LogOut,
-} from "lucide-react"
+import { ShieldCheck, ChevronDown, ChevronsUpDown, LogOut } from "lucide-react"
 import { Button } from "../../button"
 import { cn } from "../../../lib/utils"
 import {
@@ -17,11 +12,12 @@ import {
   CollapsibleTrigger,
 } from "../../collapsible"
 import { useAdminLayout } from "./layout-context"
-import type { AdminLayoutUser, AdminMenuLeaf, AdminMenuTreeItem } from "../types"
-import {
-  getLegacyVisibleMenuLeaves,
-  getVisibleMenuItems,
-} from "../menu-utils"
+import type {
+  AdminLayoutUser,
+  AdminMenuLeaf,
+  AdminMenuTreeItem,
+} from "../types"
+import { getLegacyVisibleMenuLeaves, getVisibleMenuItems } from "../menu-utils"
 
 function displayNameOf(user: AdminLayoutUser | null): string {
   return user?.name?.trim() || user?.email || "Người dùng HUB"
@@ -379,12 +375,7 @@ type SidebarProps = {
 }
 
 export function Sidebar({ collapsed }: SidebarProps) {
-  const {
-    logout,
-    siteName,
-    siteDescription,
-    homePath = "/",
-  } = useAdminLayout()
+  const { logout, siteName, siteDescription, homePath = "/" } = useAdminLayout()
 
   return (
     <aside

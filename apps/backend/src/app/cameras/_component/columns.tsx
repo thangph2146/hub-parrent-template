@@ -2,8 +2,9 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
-import type { CameraRow, CameraConfirmAction } from "./types";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { CameraRow } from "./types";
 
 function fmt(v: string | null | undefined): string {
   if (!v) return "—";
@@ -14,12 +15,12 @@ function fmt(v: string | null | undefined): string {
 export function getCameraColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: CameraRow) => void;
   openEdit: (row: CameraRow) => void;
-  setConfirmAction: (a: CameraConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<CameraRow>;
   canWrite: boolean;
 }): ColumnDef<CameraRow>[] {
   return [
@@ -93,30 +94,22 @@ export function getCameraColumns({
         />
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<CameraRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (a: CameraConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<CameraRow>;
   canWrite: boolean;
 }): ColumnDef<CameraRow>[] {
   return [
@@ -140,19 +133,11 @@ export function getTrashColumns({
         <span className="text-xs text-muted-foreground">{fmt(getValue() as string)}</span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<CameraRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

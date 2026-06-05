@@ -106,7 +106,11 @@ function FieldSet({
     <fieldset
       data-slot="field-set"
       data-variant={variant}
-      className={cn(FIELDSET_BASE_CLASS, fieldSetVariants({ variant }), className)}
+      className={cn(
+        FIELDSET_BASE_CLASS,
+        fieldSetVariants({ variant }),
+        className
+      )}
       {...props}
     />
   )
@@ -135,7 +139,10 @@ function FieldLegendDescription({
   return (
     <p
       data-slot="field-legend-description"
-      className={cn("mt-0.5 text-sm font-normal text-muted-foreground", className)}
+      className={cn(
+        "mt-0.5 text-sm font-normal text-muted-foreground",
+        className
+      )}
       {...props}
     />
   )
@@ -172,7 +179,7 @@ function FieldSectionLegend({
         ) : null}
         <span className="min-w-0 flex-1">
           <span className="flex w-full items-center gap-2">
-            <span className="text-[15px] font-bold leading-snug text-foreground">
+            <span className="text-[15px] leading-snug font-bold text-foreground">
               {title}
             </span>
             {badge ? <span className="ml-auto shrink-0">{badge}</span> : null}
@@ -200,8 +207,7 @@ function FieldSetContent({
   className,
   variant = "default",
   ...props
-}: React.ComponentProps<"div"> &
-  VariantProps<typeof fieldSetContentVariants>) {
+}: React.ComponentProps<"div"> & VariantProps<typeof fieldSetContentVariants>) {
   return (
     <div
       data-slot="field-set-content"
@@ -212,7 +218,7 @@ function FieldSetContent({
 }
 
 const fieldPanelGridRowVariants = cva(
-  "grid w-full overflow-hidden rounded-sm border border-slate-300 divide-x divide-y divide-slate-300 dark:border-border dark:divide-border",
+  "grid w-full divide-x divide-y divide-slate-300 overflow-hidden rounded-sm border border-slate-300 dark:divide-border dark:border-border",
   {
     variants: {
       columns: {
@@ -234,7 +240,8 @@ function FieldPanelGrid({
   columns = 3,
   children,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof fieldPanelGridRowVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof fieldPanelGridRowVariants>) {
   return (
     <div
       data-slot="field-panel-grid"
@@ -322,7 +329,9 @@ function FieldSectionField({
       className={cn("flex flex-col gap-1.5", className)}
     >
       <FieldSectionLabel icon={icon}>{label}</FieldSectionLabel>
-      <FieldSectionValue className={valueClassName}>{children}</FieldSectionValue>
+      <FieldSectionValue className={valueClassName}>
+        {children}
+      </FieldSectionValue>
     </div>
   )
 }
@@ -340,7 +349,7 @@ function FieldSectionLabel({
     <p
       data-slot="field-section-label"
       className={cn(
-        "flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+        "flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase",
         className
       )}
       {...props}

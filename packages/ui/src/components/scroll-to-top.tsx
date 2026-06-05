@@ -23,7 +23,7 @@ export function ScrollToTop() {
 
   useEffect(() => {
     const main = document.querySelector<HTMLElement>(
-      "main[class*='overflow-y-auto']",
+      "main[class*='overflow-y-auto']"
     )
 
     const checkScroll = () => {
@@ -46,7 +46,7 @@ export function ScrollToTop() {
 
   const scrollToTop = () => {
     const main = document.querySelector<HTMLElement>(
-      "main[class*='overflow-y-auto']",
+      "main[class*='overflow-y-auto']"
     )
     if (main && main.scrollTop > 0) {
       main.scrollTo({ top: 0, behavior: "smooth" })
@@ -62,10 +62,10 @@ export function ScrollToTop() {
       aria-label="Cuộn lên đầu trang"
       onClick={scrollToTop}
       className={cn(
-        "fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-all duration-300 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "fixed right-6 bottom-6 z-50 flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-all duration-300 hover:bg-secondary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         visible
           ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-2 opacity-0",
+          : "pointer-events-none translate-y-2 opacity-0"
       )}
     >
       <ArrowUp className="size-5 text-secondary-foreground" />

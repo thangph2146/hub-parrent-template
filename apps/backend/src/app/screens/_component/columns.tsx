@@ -2,8 +2,9 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
-import type { ScreenRow, ScreenConfirmAction } from "./types";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { ScreenRow } from "./types";
 
 function fmt(v: string | null | undefined): string {
   if (!v) return "—";
@@ -14,12 +15,12 @@ function fmt(v: string | null | undefined): string {
 export function getScreenColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: ScreenRow) => void;
   openEdit: (row: ScreenRow) => void;
-  setConfirmAction: (a: ScreenConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<ScreenRow>;
   canWrite: boolean;
 }): ColumnDef<ScreenRow>[] {
   return [
@@ -79,30 +80,22 @@ export function getScreenColumns({
         />
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<ScreenRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (a: ScreenConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<ScreenRow>;
   canWrite: boolean;
 }): ColumnDef<ScreenRow>[] {
   return [
@@ -126,19 +119,11 @@ export function getTrashColumns({
         <span className="text-xs text-muted-foreground">{fmt(getValue() as string)}</span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<ScreenRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

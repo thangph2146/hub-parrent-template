@@ -17,23 +17,20 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   MajorsTable,
   MajorsTrashTable,
-  MajorsConfirmDialog,
   getMajorColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useMajorsListQuery,
   useMajorsTrashQuery,
 } from "./_component"
@@ -155,29 +152,29 @@ function MajorsPageInner() {
     setTrashColumnFilters
   )
 
-  const { confirmAction, setConfirmAction } = useConfirmAction()
-
-  const handleConfirmAction = useHandleConfirmAction(
+  const rowActions = useAdminCrudRowHandlers<MajorRow>({
+    getRecordLabel: (row) => row.name,
+    entityLabel: "ngành học",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-    setConfirmAction
-  )
+  });
+
 
   const columns = useMemo<ColumnDef<MajorRow>[]>(
     () =>
       getMajorColumns({
         openDetail: (row) => router.push(`/majors/${row.id}`),
         openEdit: (row) => router.push(`/majors/${row.id}/edit`),
-        setConfirmAction,
+        rowActions,
         canWrite,
       }),
-    [setConfirmAction, router, canWrite]
+    [rowActions, router, canWrite]
   )
 
   const trashColumns = useMemo<ColumnDef<MajorRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite]
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite]
   )
 
   return (
@@ -329,22 +326,6 @@ function MajorsPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <MajorsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null)
-        }}
-        onConfirm={() => {
-          if (confirmAction) void handleConfirmAction(confirmAction)
-        }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="ngành học"
-        getName={(r) => r.name}
-      />
     </AdminPageSection>
   )
 }

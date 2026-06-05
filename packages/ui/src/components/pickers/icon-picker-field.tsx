@@ -16,7 +16,8 @@ export function IconPickerField({
   onChange,
   placeholder,
 }: IconPickerFieldProps) {
-  const IconComp = typeof value === "string" && value ? resolveIcon(value) : null
+  const IconComp =
+    typeof value === "string" && value ? resolveIcon(value) : null
 
   return (
     <div className="flex items-center gap-3">

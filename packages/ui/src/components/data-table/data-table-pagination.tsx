@@ -53,20 +53,17 @@ export type AdminDataTablePaginationConfig =
 
 export type AdminDataTablePaginationProps = AdminDataTablePaginationConfig
 
-function clampPageSize(
-  value: number,
-  maxPageSize: number,
-): number {
+function clampPageSize(value: number, maxPageSize: number): number {
   if (!Number.isFinite(value)) return ADMIN_DATA_TABLE_MIN_PAGE_SIZE
   return Math.min(
     maxPageSize,
-    Math.max(ADMIN_DATA_TABLE_MIN_PAGE_SIZE, Math.floor(value)),
+    Math.max(ADMIN_DATA_TABLE_MIN_PAGE_SIZE, Math.floor(value))
   )
 }
 
 function buildVisiblePages(
   page: number,
-  totalPages: number,
+  totalPages: number
 ): Array<number | "ellipsis"> {
   if (totalPages <= 1) return totalPages === 1 ? [1] : []
   if (totalPages <= 7) {
@@ -74,9 +71,9 @@ function buildVisiblePages(
   }
 
   const pages = new Set<number>([1, totalPages, page, page - 1, page + 1])
-  const sorted = [...pages].filter((p) => p >= 1 && p <= totalPages).sort(
-    (a, b) => a - b,
-  )
+  const sorted = [...pages]
+    .filter((p) => p >= 1 && p <= totalPages)
+    .sort((a, b) => a - b)
 
   const result: Array<number | "ellipsis"> = []
   let prev = 0
@@ -122,7 +119,7 @@ export function AdminDataTablePagination({
 
   const visiblePages = useMemo(
     () => buildVisiblePages(safePage, totalPages),
-    [safePage, totalPages],
+    [safePage, totalPages]
   )
 
   const commitPageSize = () => {
@@ -210,7 +207,7 @@ export function AdminDataTablePagination({
                   size="icon"
                   className={cn(
                     "size-8 shrink-0 rounded-md text-sm tabular-nums",
-                    item === safePage && "font-semibold",
+                    item === safePage && "font-semibold"
                   )}
                   disabled={disabled}
                   onClick={() => onPageChange(item)}
@@ -219,11 +216,11 @@ export function AdminDataTablePagination({
                 >
                   {item}
                 </Button>
-              ),
+              )
             )}
           </div>
 
-          <span className="px-2 text-xs tabular-nums text-muted-foreground sm:hidden">
+          <span className="px-2 text-xs text-muted-foreground tabular-nums sm:hidden">
             {safePage}/{totalPages}
           </span>
 

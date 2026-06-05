@@ -37,6 +37,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type Column,
   type ColumnDef,
   type ColumnFiltersState,
   type ExpandedState,
@@ -88,7 +89,7 @@ import {
 import { cn } from "../../lib/utils"
 import "./table-meta"
 import { buildCsvFromColumns } from "../../lib/build-table-csv"
-import { downloadXlsxFile } from "../../lib/export-xlsx"
+import { downloadXlsxFile, type XlsxRelatedSection } from "../../lib/export-xlsx"
 import { TypographyPSmall } from "../typography"
 import {
   AlertDialog,
@@ -106,6 +107,7 @@ import {
   type AdminDataTableServerPaginationConfig,
 } from "./data-table-pagination"
 import { Divider } from "../layout"
+import { normalizeDataTableColumns } from "./data-table-columns"
 
 export type AdminDataTableBulkAction<TData> = {
   id: string
@@ -149,6 +151,13 @@ export type AdminDataTableXlsxExportConfig =
         label: string
         value: string | number | null | undefined
       }>
+      /** Bảng liên quan chèn sau dữ liệu chính (cùng sheet). */
+      relatedSections?: import("../../lib/export-xlsx").XlsxRelatedSection[]
+      /**
+       * Xuất tùy chỉnh (field phẳng, sheet quan hệ…) — thay cho `buildCsvFromColumns`.
+       * Dùng với `downloadAdminTableXlsx` từ `@ui/lib/admin-table-export`.
+       */
+      runExport?: () => void | Promise<void>
     }
 
 export type AdminDataTableProps<TData> = {
@@ -195,7 +204,11 @@ export type AdminDataTableProps<TData> = {
    * Bảng cây (`getSubRows`) sẽ xuất đủ nhánh con theo thứ tự hiển thị.
    */
   xlsxExport?: AdminDataTableXlsxExportConfig
-  /** Bật cột chọn dòng cho thao tác hàng loạt */
+  /**
+   * Bật cột checkbox chọn dòng.
+   * Mặc định tự bật khi có `bulkActions` (không cần truyền `rowSelectionEnabled`).
+   * Truyền `false` để tắt dù vẫn có bulk (trường hợp hiếm).
+   */
   rowSelectionEnabled?: boolean
   /** Kiểm soát dòng nào được phép tick */
   canSelectRow?: (row: Row<TData>) => boolean
@@ -215,7 +228,7 @@ export type AdminDataTableProps<TData> = {
   indexColumnExcludeFromExport?: boolean
   /**
    * Độ rộng cột checkbox chọn dòng (px).
-   * @default DATA_TABLE_SELECTION_COLUMN_WIDTH (44)
+   * @default DATA_TABLE_SELECTION_COLUMN_WIDTH (48)
    */
   selectionColumnWidth?: number
 }
@@ -225,10 +238,16 @@ export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
 export const DATA_TABLE_SELECTION_COLUMN_ID = "_select"
 
 /** Độ rộng mặc định cột checkbox (px) — chỉnh qua prop `selectionColumnWidth`. */
-export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 44
+export const DATA_TABLE_SELECTION_COLUMN_WIDTH = 48
 
 export const DATA_TABLE_SELECTION_COLUMN_CLASS =
-  "sticky left-0 z-10 px-0 text-center shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+  "sticky left-0 z-[11] px-0 text-center align-middle shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
+
+const DATA_TABLE_SELECTION_CHECKBOX_WRAP_CLASS =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary-foreground/15 focus-within:ring-2 focus-within:ring-primary-foreground/25"
+
+const DATA_TABLE_SELECTION_BODY_CHECKBOX_WRAP_CLASS =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary/10 focus-within:ring-2 focus-within:ring-primary/20"
 
 function selectionColumnBoxStyle(widthPx: number): CSSProperties {
   return {
@@ -281,16 +300,61 @@ function includesText(a: unknown, q: string): boolean {
   return s.includes(q.toLowerCase())
 }
 
-function columnHasMinWidth(meta: ColumnMeta | undefined): boolean {
-  return Boolean(meta?.className && /\bmin-w-/.test(meta.className))
+const COLUMN_EXPLICIT_WIDTH_CLASS =
+  /\b(min-w-|max-w-|w-\[|w-\d|w-auto|w-full|w-fit)\b/
+
+function columnHasExplicitWidthClass(meta: ColumnMeta | undefined): boolean {
+  return Boolean(
+    meta?.className && COLUMN_EXPLICIT_WIDTH_CLASS.test(meta.className)
+  )
 }
 
-function cellWidthClassName(meta: ColumnMeta | undefined): string {
+function columnDefHasExplicitSize(columnDef: {
+  size?: number
+  minSize?: number
+  maxSize?: number
+}): boolean {
+  return (
+    columnDef.size != null ||
+    columnDef.minSize != null ||
+    columnDef.maxSize != null
+  )
+}
+
+function cellWidthClassName(
+  meta: ColumnMeta | undefined,
+  columnDef?: { size?: number; minSize?: number; maxSize?: number }
+): string {
+  const hasExplicit =
+    columnHasExplicitWidthClass(meta) ||
+    Boolean(columnDef && columnDefHasExplicitSize(columnDef))
   return cn(
-    "align-middle whitespace-normal",
-    !columnHasMinWidth(meta) && "max-w-[min(420px,40vw)]",
+    "min-w-0 align-middle whitespace-normal",
+    !hasExplicit && "max-w-[min(280px,32vw)]",
     meta?.className
   )
+}
+
+/** Áp `size` / `minSize` / `maxSize` từ ColumnDef khi chưa có class width trong meta. */
+function columnSizeBoxStyle<TData>(
+  column: Column<TData, unknown>
+): CSSProperties | undefined {
+  const def = column.columnDef
+  const meta = def.meta as ColumnMeta | undefined
+  if (columnHasExplicitWidthClass(meta)) return undefined
+
+  const { size, minSize, maxSize } = def
+  if (size == null && minSize == null && maxSize == null) return undefined
+
+  const style: CSSProperties = {}
+  if (size != null) {
+    style.width = size
+    if (minSize == null) style.minWidth = size
+    if (maxSize == null) style.maxWidth = size
+  }
+  if (minSize != null) style.minWidth = minSize
+  if (maxSize != null) style.maxWidth = maxSize
+  return style
 }
 
 function toDateOnly(value: unknown): string | null {
@@ -431,6 +495,7 @@ export function AdminDataTable<TData>({
     getGlobalFilterText != null || onGlobalFilterChange != null
   const xlsxExportEnabled = Boolean(xlsxExport)
   const hasBulkActions = bulkActions.length > 0
+  const rowSelectionActive = rowSelectionEnabled ?? hasBulkActions
   const exportFileNameProp =
     typeof xlsxExport === "object" && xlsxExport != null
       ? xlsxExport.fileName?.trim()
@@ -450,6 +515,10 @@ export function AdminDataTable<TData>({
   const exportMetadataProp =
     typeof xlsxExport === "object" && xlsxExport != null
       ? xlsxExport.metadata
+      : undefined
+  const exportRelatedSectionsProp: XlsxRelatedSection[] | undefined =
+    typeof xlsxExport === "object" && xlsxExport != null
+      ? xlsxExport.relatedSections
       : undefined
   const resolvedXlsxFileName = useMemo(() => {
     if (exportFileNameProp) {
@@ -548,8 +617,7 @@ export function AdminDataTable<TData>({
     () => dataTableColumnsHasIndexColumn(columns),
     [columns]
   )
-  const indexColumnEnabled =
-    showIndexColumn && !hasManualIndexColumn
+  const indexColumnEnabled = showIndexColumn && !hasManualIndexColumn
 
   const indexRowOffset = useMemo(() => {
     if (pagination) {
@@ -559,12 +627,7 @@ export function AdminDataTable<TData>({
       return clientPageIndex * clientPageSize
     }
     return 0
-  }, [
-    clientPageIndex,
-    clientPageSize,
-    clientPaginationEnabled,
-    pagination,
-  ])
+  }, [clientPageIndex, clientPageSize, clientPaginationEnabled, pagination])
 
   const indexColumn = useMemo<ColumnDef<TData, unknown>>(
     () => ({
@@ -585,20 +648,15 @@ export function AdminDataTable<TData>({
         const flatIndex = table
           .getRowModel()
           .rows.findIndex((r) => r.id === row.id)
-        const order =
-          flatIndex >= 0 ? flatIndex : row.index
+        const order = flatIndex >= 0 ? flatIndex : row.index
         return (
-          <span className="text-sm tabular-nums text-muted-foreground">
-            {indexRowOffset + order + 1 +"."}
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {indexRowOffset + order + 1 + "."}
           </span>
         )
       },
     }),
-    [
-      indexColumnExcludeFromExport,
-      indexColumnLabel,
-      indexRowOffset,
-    ]
+    [indexColumnExcludeFromExport, indexColumnLabel, indexRowOffset]
   )
 
   const selectionColumn = useMemo<ColumnDef<TData, unknown>>(
@@ -606,29 +664,42 @@ export function AdminDataTable<TData>({
       id: DATA_TABLE_SELECTION_COLUMN_ID,
       header: ({ table }) => (
         <div className="flex w-full items-center justify-center">
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            indeterminate={
-              !table.getIsAllPageRowsSelected() &&
-              table.getIsSomePageRowsSelected()
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(value === true)
-            }
-            onClick={(event) => event.stopPropagation()}
-            aria-label="Chọn tất cả dòng"
-          />
+          <span className={DATA_TABLE_SELECTION_CHECKBOX_WRAP_CLASS}>
+            <Checkbox
+              className="size-[18px] border-primary-foreground/40 data-checked:border-primary-foreground data-checked:bg-primary-foreground data-checked:text-primary"
+              checked={table.getIsAllPageRowsSelected()}
+              indeterminate={
+                !table.getIsAllPageRowsSelected() &&
+                table.getIsSomePageRowsSelected()
+              }
+              onCheckedChange={(value) =>
+                table.toggleAllPageRowsSelected(value === true)
+              }
+              onClick={(event) => event.stopPropagation()}
+              aria-label="Chọn tất cả dòng trên trang"
+            />
+          </span>
         </div>
       ),
       cell: ({ row }) => (
         <div className="flex w-full items-center justify-center">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(value === true)}
-            disabled={!row.getCanSelect()}
-            onClick={(event) => event.stopPropagation()}
-            aria-label="Chọn dòng"
-          />
+          <span
+            className={cn(
+              DATA_TABLE_SELECTION_BODY_CHECKBOX_WRAP_CLASS,
+              row.getIsSelected() &&
+                "bg-primary/15 ring-2 ring-primary/25",
+              !row.getCanSelect() && "pointer-events-none opacity-40"
+            )}
+          >
+            <Checkbox
+              className="size-[18px]"
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(value === true)}
+              disabled={!row.getCanSelect()}
+              onClick={(event) => event.stopPropagation()}
+              aria-label="Chọn dòng"
+            />
+          </span>
         </div>
       ),
       enableSorting: false,
@@ -659,12 +730,14 @@ export function AdminDataTable<TData>({
 
   const tableColumns = useMemo(() => {
     const built: ColumnDef<TData, unknown>[] = []
-    if (rowSelectionEnabled) built.push(selectionColumn)
+    if (rowSelectionActive) built.push(selectionColumn)
     if (getSubRows) built.push(expanderColumn)
     if (indexColumnEnabled) built.push(indexColumn)
     built.push(
       ...applyDefaultFilterFns(
-        columns.filter((column) => !column.meta?.hideInTable)
+        normalizeDataTableColumns(
+          columns.filter((column) => !column.meta?.hideInTable)
+        )
       )
     )
     return built
@@ -674,7 +747,7 @@ export function AdminDataTable<TData>({
     getSubRows,
     indexColumn,
     indexColumnEnabled,
-    rowSelectionEnabled,
+    rowSelectionActive,
     selectionColumn,
   ])
 
@@ -734,7 +807,7 @@ export function AdminDataTable<TData>({
         return includesText(row.getValue(columnId), String(filterValue))
       },
     },
-    enableRowSelection: rowSelectionEnabled
+    enableRowSelection: rowSelectionActive
       ? (row) => (canSelectRow ? canSelectRow(row) : true)
       : false,
   })
@@ -775,6 +848,14 @@ export function AdminDataTable<TData>({
   const showTableFooter = Boolean(footer || paginationFooter)
 
   const handleXlsxExport = useCallback(() => {
+    if (
+      typeof xlsxExport === "object" &&
+      xlsxExport != null &&
+      xlsxExport.runExport
+    ) {
+      void xlsxExport.runExport()
+      return
+    }
     const { headers, rows, columnWidths, columnWraps } = buildCsvFromColumns(
       data,
       exportColumns,
@@ -791,17 +872,20 @@ export function AdminDataTable<TData>({
         metadata: exportMetadataProp,
         columnWidths,
         columnWraps,
-      }
+        relatedSections: exportRelatedSectionsProp,
+      },
     )
   }, [
     data,
     exportColumns,
     exportMetadataProp,
+    exportRelatedSectionsProp,
     exportSheetNameProp,
     exportSubtitleProp,
     exportTitleProp,
     getSubRows,
     resolvedXlsxFileName,
+    xlsxExport,
   ])
 
   const hasActiveFilters =
@@ -1114,7 +1198,7 @@ export function AdminDataTable<TData>({
         filterableHeaders.length > 0 ||
         filterToolbarExtra ||
         xlsxExportEnabled ||
-        (rowSelectionEnabled && hasBulkActions)) && (
+        (rowSelectionActive && hasBulkActions)) && (
         <div className="space-y-4 bg-card">
           {showGlobalFilter || filterToolbarExtra || xlsxExportEnabled ? (
             <div className="flex flex-wrap items-end gap-3">
@@ -1174,7 +1258,7 @@ export function AdminDataTable<TData>({
             </div>
           ) : null}
           <BulkActionsBar
-            visible={rowSelectionEnabled && hasBulkActions}
+            visible={rowSelectionActive && hasBulkActions}
             selectedCount={selectedCount}
             bulkActions={bulkActions}
             selectedRows={selectedRows}
@@ -1260,136 +1344,149 @@ export function AdminDataTable<TData>({
         }
       />
       <div className="border border-border">
-      <Table className="min-w-[640px]">
-        <TableHeader className="bg-primary text-primary-foreground">
-          {headerGroups.map((hg) => (
-            <TableRow key={hg.id} className="hover:bg-transparent">
-              {hg.headers.map((header) => {
-                const isSelectionCol =
-                  header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
-                return (
-                <TableHead
-                  key={header.id}
-                  className={cn(
-                    "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
-                    header.column.getCanSort() && "cursor-pointer select-none",
-                    cellWidthClassName(
-                      header.column.columnDef.meta as ColumnMeta | undefined
-                    )
-                  )}
-                  style={
-                    isSelectionCol
-                      ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
-                      : undefined
-                  }
-                  onClick={
-                    header.column.getCanSort()
-                      ? header.column.getToggleSortingHandler()
-                      : undefined
-                  }
-                >
-                  {header.isPlaceholder ? null : (
-                    <div
-                      className={cn(
-                        "flex h-full gap-1",
-                        isSelectionCol
-                          ? "flex-row items-center justify-center"
-                          : "flex-col items-start justify-center"
-                      )}
-                    >
-                      <span className="flex items-center gap-1">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {header.column.getIsSorted() === "asc"
-                          ? " ↑"
-                          : header.column.getIsSorted() === "desc"
-                            ? " ↓"
-                            : null}
-                      </span>
-                    </div>
-                  )}
-                </TableHead>
-              )})}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {rows.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={tableColumns.length}
-                className="h-24 text-center text-muted-foreground"
-              >
-                {emptyLabel}
-              </TableCell>
-            </TableRow>
-          ) : (
-            rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-depth={row.depth}
-                className={cn(
-                  "hover:bg-primary/8",
-                  row.index % 2 === 1 && "bg-primary/8",
-                  getRowClassName?.(row)
-                )}
-                style={{
-                  borderLeft:
-                    row.depth > 0
-                      ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
-                      : undefined,
-                }}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const colIndex = cell.column.getIndex()
-                  // Calculate which column should get indent:
-                  // if rowSelection + expander: first data column is at index 2
-                  // if only expander: first data column is at index 1
-                  // if only rowSelection: first data column is at index 1
-                  const firstDataColumnIndex =
-                    (rowSelectionEnabled ? 1 : 0) +
-                    (getSubRows ? 1 : 0) +
-                    (indexColumnEnabled ? 1 : 0)
-                  const indent =
-                    getSubRows && colIndex === firstDataColumnIndex
-                      ? row.depth * 24
-                      : 0
+        <Table className="min-w-[640px]">
+          <TableHeader className="bg-primary text-primary-foreground">
+            {headerGroups.map((hg) => (
+              <TableRow key={hg.id} className="hover:bg-transparent">
+                {hg.headers.map((header) => {
                   const isSelectionCol =
-                    cell.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                    header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
                   return (
-                    <TableCell
-                      key={cell.id}
+                    <TableHead
+                      key={header.id}
                       className={cn(
-                        cellWidthClassName(
-                          cell.column.columnDef.meta as ColumnMeta | undefined
-                        ),
-                        row.getIsSelected() && "!bg-primary/8",
+                        "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
+                        header.column.getCanSort() &&
+                          "cursor-pointer select-none",
                         isSelectionCol &&
-                          !row.getIsSelected() &&
-                          "hover:!bg-primary/8"
+                          "sticky left-0 z-[12] bg-primary px-0",
+                        cellWidthClassName(
+                          header.column.columnDef.meta as ColumnMeta | undefined,
+                          header.column.columnDef
+                        )
                       )}
-                      style={{
-                        ...(isSelectionCol
-                          ? selectionColumnBoxStyle(resolvedSelectionColumnWidth)
-                          : {}),
-                        paddingLeft:
-                          indent > 0 ? `calc(0.5rem + ${indent}px)` : undefined,
-                      }}
+                      style={
+                        isSelectionCol
+                          ? selectionColumnBoxStyle(
+                              resolvedSelectionColumnWidth
+                            )
+                          : columnSizeBoxStyle(header.column)
+                      }
+                      onClick={
+                        header.column.getCanSort()
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                      {header.isPlaceholder ? null : (
+                        <div
+                          className={cn(
+                            "flex h-full gap-1",
+                            isSelectionCol
+                              ? "flex-row items-center justify-center"
+                              : "flex-col items-start justify-center"
+                          )}
+                        >
+                          <span className="flex items-center gap-1">
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {header.column.getIsSorted() === "asc"
+                              ? " ↑"
+                              : header.column.getIsSorted() === "desc"
+                                ? " ↓"
+                                : null}
+                          </span>
+                        </div>
                       )}
-                    </TableCell>
+                    </TableHead>
                   )
                 })}
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={tableColumns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  {emptyLabel}
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-depth={row.depth}
+                  className={cn(
+                    "hover:bg-primary/8",
+                    row.index % 2 === 1 && "bg-primary/8",
+                    getRowClassName?.(row)
+                  )}
+                  style={{
+                    borderLeft:
+                      row.depth > 0
+                        ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
+                        : undefined,
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const colIndex = cell.column.getIndex()
+                    // Calculate which column should get indent:
+                    // if rowSelection + expander: first data column is at index 2
+                    // if only expander: first data column is at index 1
+                    // if only rowSelection: first data column is at index 1
+                    const firstDataColumnIndex =
+                      (rowSelectionActive ? 1 : 0) +
+                      (getSubRows ? 1 : 0) +
+                      (indexColumnEnabled ? 1 : 0)
+                    const indent =
+                      getSubRows && colIndex === firstDataColumnIndex
+                        ? row.depth * 24
+                        : 0
+                    const isSelectionCol =
+                      cell.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          cellWidthClassName(
+                            cell.column.columnDef.meta as ColumnMeta | undefined,
+                            cell.column.columnDef
+                          ),
+                          isSelectionCol && "sticky left-0 z-[11] bg-inherit px-0",
+                          row.getIsSelected() && "!bg-primary/12",
+                          isSelectionCol &&
+                            !row.getIsSelected() &&
+                            "hover:!bg-primary/8"
+                        )}
+                        style={{
+                          ...(isSelectionCol
+                            ? selectionColumnBoxStyle(
+                                resolvedSelectionColumnWidth
+                              )
+                            : columnSizeBoxStyle(cell.column)),
+                          paddingLeft:
+                            indent > 0
+                              ? `calc(0.5rem + ${indent}px)`
+                              : undefined,
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
       {showTableFooter ? (
         <div

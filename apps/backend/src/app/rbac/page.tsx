@@ -45,8 +45,11 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { AdminConfirmActionDialog, AdminTableTrashRowActions } from "@ui/components/admin";
-import { AdminDataTable } from "@ui/components/data-table"
+import {
+  AdminConfirmActionDialog,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin";
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"
@@ -472,31 +475,19 @@ export default function RbacPage() {
           </TypographyPSmallMuted>
         ),
       },
-      {
-        id: "actions",
-        header: "Thao tác",
-        enableSorting: false,
-        enableColumnFilter: false,
-        meta: { disableColumnFilter: true },
-        cell: ({ row }) => {
-          const isSuperAdmin = isSuperAdminRoleCode(row.original.code)
-          return (
-            <AdminTableTrashRowActions
-              canWrite={canManageRoles}
-              onRestore={() => setRestoreTarget(row.original)}
-              onPurge={() => {
-                if (isSuperAdmin) {
-                  toast.error(
-                    "Vai trò Super Admin là vai trò hệ thống, không thể xóa."
-                  )
-                  return
-                }
-                setPurgeTarget(row.original)
-              }}
-            />
-          )
+      defineAdminTrashActionsColumn<RoleRow>({
+        canWrite: canManageRoles,
+        onRestore: (role) => setRestoreTarget(role),
+        onPurge: (role) => {
+          if (isSuperAdminRoleCode(role.code)) {
+            toast.error(
+              "Vai trò Super Admin là vai trò hệ thống, không thể xóa."
+            )
+            return
+          }
+          setPurgeTarget(role)
         },
-      },
+      }),
     ],
     [canManageRoles]
   )
@@ -578,9 +569,9 @@ export default function RbacPage() {
               globalFilter={globalFilter}
               onGlobalFilterChange={setGlobalFilter}
               globalFilterPlaceholder="Tìm theo tên, mã role..."
-              rowSelectionEnabled
-              selectedRowIds={selectedRowIds}
-              onSelectedRowIdsChange={setSelectedRowIds}
+              {...(canManageRoles
+                ? adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds)
+                : {})}
               canSelectRow={(row) => !isSuperAdminRoleCode(row.original.code)}
               bulkActions={
                 canManageRoles
@@ -644,9 +635,12 @@ export default function RbacPage() {
               globalFilter={trashGlobalFilter}
               onGlobalFilterChange={setTrashGlobalFilter}
               globalFilterPlaceholder="Tìm trong thùng rác..."
-              rowSelectionEnabled
-              selectedRowIds={trashSelectedRowIds}
-              onSelectedRowIdsChange={setTrashSelectedRowIds}
+              {...(canManageRoles
+                ? adminTableRowSelectionProps(
+                    trashSelectedRowIds,
+                    setTrashSelectedRowIds
+                  )
+                : {})}
               canSelectRow={(row) => !isSuperAdminRoleCode(row.original.code)}
               bulkActions={
                 canManageRoles

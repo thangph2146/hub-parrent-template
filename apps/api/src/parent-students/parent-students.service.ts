@@ -207,6 +207,14 @@ export class ParentStudentsService {
     return true;
   }
 
+  /** Xóa vĩnh viễn yêu cầu liên kết (admin, không ràng buộc phụ huynh sở hữu). */
+  async removeByAdmin(id: string): Promise<boolean> {
+    const ps = await this.em.findOne(ParentStudent, { id });
+    if (!ps) return false;
+    await this.em.removeAndFlush(ps);
+    return true;
+  }
+
   async getById(id: string): Promise<ParentStudentRowDto | null> {
     const ps = await this.em.findOne(
       ParentStudent,

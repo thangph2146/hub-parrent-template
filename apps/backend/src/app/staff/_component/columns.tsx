@@ -9,14 +9,8 @@ import {
 import { Badge } from "@ui/components/badge";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import {
-  ADMIN_TABLE_ACTIONS_COLUMN_META,
-  AdminTableEditButton,
-  AdminTablePurgeButton,
-  AdminTableRestoreButton,
-  AdminTableRowActions,
-  AdminTableSoftDeleteButton,
-  AdminTableToggleActiveButton,
-  AdminTableViewButton,
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
 } from "@ui/components/admin";
 import { isSuperAdminRoleCode } from "@workspace/api-client";
 import { canEditProtectedAdminUser } from "@/config/protected-admin";
@@ -165,14 +159,18 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
         ],
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableColumnFilter: false,
-      enableSorting: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => {
-        const u = row.original;
+    defineAdminCrudActionsColumn<StaffRow>({
+      canWrite: true,
+      busy,
+      pageConfirm: true,
+      getRecordLabel: (u) => u.fullName || u.email,
+      onView,
+      onEdit,
+      onSoftDelete: onDelete,
+      onPurge,
+      onToggleActive,
+      getIsActive: (u) => u.isActive,
+      resolveRowProps: (u) => {
         const selfAccount = String(u.id) === String(currentUserId ?? "");
         const protectedAccount = isProtected(u);
         const canEditThisUser = canEditProtectedAdminUser(actorEmail, u.email);
@@ -181,55 +179,30 @@ export function getStaffColumns(props: StaffColumnsProps): ColumnDef<StaffRow>[]
           : selfAccount
             ? "Không thao tác trên tài khoản đang đăng nhập"
             : undefined;
-        return (
-          <AdminTableRowActions>
-            <AdminTableViewButton onClick={() => onView(u)} />
-            <AdminTableEditButton
-              onClick={() => onEdit(u)}
-              disabled={busy || !canEditThisUser}
-              title={
-                protectedAccount && !canEditThisUser
-                  ? "Tài khoản hệ thống — chỉ chính tài khoản đó mới được chỉnh sửa"
-                  : undefined
-              }
-            />
-            <AdminTableToggleActiveButton
-              isActive={u.isActive}
-              onClick={() => onToggleActive(u)}
-              disabled={busy || selfAccount || protectedAccount}
-              title={
-                blockedTitle ??
-                (u.isActive
-                  ? "Khoá tài khoản (thu hồi phiên hiện tại)"
-                  : "Kích hoạt tài khoản")
-              }
-            />
-            <AdminTableSoftDeleteButton
-              onClick={() => onDelete(u)}
-              disabled={busy || selfAccount || protectedAccount}
-              title={
-                protectedAccount
-                  ? "Tài khoản hệ thống — không thể xóa"
-                  : selfAccount
-                    ? "Không thao tác trên tài khoản đang đăng nhập"
-                    : "Xóa tạm"
-              }
-            />
-            <AdminTablePurgeButton
-              onClick={() => onPurge(u)}
-              disabled={busy || selfAccount || protectedAccount}
-              title={
-                protectedAccount
-                  ? "Tài khoản hệ thống — không thể xóa"
-                  : selfAccount
-                    ? "Không thao tác trên tài khoản đang đăng nhập"
-                    : "Xóa vĩnh viễn khỏi cơ sở dữ liệu"
-              }
-            />
-          </AdminTableRowActions>
-        );
+        const blockedDeleteTitle = protectedAccount
+          ? "Tài khoản hệ thống — không thể xóa"
+          : selfAccount
+            ? "Không thao tác trên tài khoản đang đăng nhập"
+            : undefined;
+        return {
+          editDisabled: busy || !canEditThisUser,
+          editTitle:
+            protectedAccount && !canEditThisUser
+              ? "Tài khoản hệ thống — chỉ chính tài khoản đó mới được chỉnh sửa"
+              : undefined,
+          toggleDisabled: busy || selfAccount || protectedAccount,
+          toggleTitle:
+            blockedTitle ??
+            (u.isActive
+              ? "Khoá tài khoản (thu hồi phiên hiện tại)"
+              : "Kích hoạt tài khoản"),
+          softDeleteDisabled: busy || selfAccount || protectedAccount,
+          softDeleteTitle: blockedDeleteTitle ?? "Xóa tạm",
+          purgeDisabled: busy || selfAccount || protectedAccount,
+          purgeTitle: blockedDeleteTitle ?? "Xóa vĩnh viễn khỏi cơ sở dữ liệu",
+        };
       },
-    },
+    }),
   ];
 }
 
@@ -283,25 +256,14 @@ export function getTrashColumns(props: {
         );
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableColumnFilter: false,
-      enableSorting: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableRowActions className="justify-end">
-          <AdminTableRestoreButton
-            onClick={() => onRestore(row.original)}
-            disabled={busy}
-          />
-          <AdminTablePurgeButton
-            onClick={() => onPurge(row.original)}
-            disabled={busy}
-            label="Xóa vĩnh viễn"
-          />
-        </AdminTableRowActions>
-      ),
-    },
+    defineAdminTrashActionsColumn<StaffRow>({
+      canWrite: true,
+      busy,
+      pageConfirm: true,
+      getRecordLabel: (u) => u.fullName || u.email,
+      onRestore,
+      onPurge,
+      resolveRowProps: () => ({ disabled: busy }),
+    }),
   ];
 }

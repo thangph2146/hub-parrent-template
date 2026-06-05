@@ -2,8 +2,12 @@
 
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
-import type { TagRow, TagTreeRow, TagConfirmAction } from "./types";
+import {
+  AdminTableCrudRowActions,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { TagRow, TagTreeRow } from "./types";
 import { formatDateTime } from "./utils";
 import { resolveIcon } from "@ui/lib/icons";
 import { createElement } from "react";
@@ -18,12 +22,12 @@ function TagIcon({ name }: { name: string | null | undefined }) {
 export function getTagColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: TagRow) => void;
   openEdit: (row: TagRow) => void;
-  setConfirmAction: (action: TagConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<TagRow>;
   canWrite: boolean;
 }): ColumnDef<TagTreeRow>[] {
   return [
@@ -106,15 +110,23 @@ export function getTagColumns({
       header: "Thao tác",
       enableSorting: false,
       enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) =>
         row.original.isGroup ? null : (
           <AdminTableCrudRowActions
             canWrite={canWrite}
+            recordLabel={rowActions.getRecordLabel(row.original)}
             onView={() => openDetail(row.original)}
             onEdit={() => openEdit(row.original)}
-            onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-            onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
+            onSoftDelete={
+              rowActions.onSoftDelete
+                ? () => rowActions.onSoftDelete?.(row.original)
+                : undefined
+            }
+            onPurge={
+              rowActions.onPurge
+                ? () => rowActions.onPurge?.(row.original)
+                : undefined
+            }
           />
         ),
     },
@@ -122,10 +134,10 @@ export function getTagColumns({
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (action: TagConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<TagRow>;
   canWrite: boolean;
 }): ColumnDef<TagRow>[] {
   return [
@@ -155,19 +167,11 @@ export function getTrashColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<TagRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

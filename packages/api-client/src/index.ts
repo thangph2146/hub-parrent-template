@@ -29,6 +29,13 @@ export {
 } from "@workspace/logger"
 export type { ApiClientOptions, RequestOptions } from "./client"
 export { UsersApi } from "./resources/users"
+export {
+  AccountsApi,
+  type AccountProfile,
+  type AccountRoleRef,
+  type UpdateAccountInput,
+  type ChangeAccountPasswordInput,
+} from "./resources/accounts"
 export { PostsApi } from "./resources/posts"
 export { CategoriesApi } from "./resources/categories"
 export { TagsApi } from "./resources/tags"

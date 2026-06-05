@@ -26,7 +26,12 @@ import {
   PopoverTrigger,
 } from "../../ui/popover"
 import { IconSize } from "../../ui/typography"
-import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command"
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "../../ui/command"
 import {
   AutoEmbedDialog,
   CustomEmbedConfig,

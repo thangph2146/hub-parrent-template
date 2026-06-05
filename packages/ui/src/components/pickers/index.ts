@@ -19,7 +19,4 @@ export {
 export { DatePicker, type DatePickerProps } from "./date-picker"
 export { DateRangePicker, type DateRangePickerProps } from "./date-range-picker"
 export { IconPicker, type IconPickerProps } from "./icon-picker"
-export {
-  IconPickerField,
-  type IconPickerFieldProps,
-} from "./icon-picker-field"
+export { IconPickerField, type IconPickerFieldProps } from "./icon-picker-field"

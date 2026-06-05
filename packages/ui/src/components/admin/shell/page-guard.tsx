@@ -23,7 +23,7 @@ export function AdminPageGuard({
 
   const isBypassRole =
     user.roles?.some((r) =>
-      BYPASS_ROLES.includes(r.name as (typeof BYPASS_ROLES)[number]),
+      BYPASS_ROLES.includes(r.name as (typeof BYPASS_ROLES)[number])
     ) ?? false
   if (isBypassRole) return <>{children}</>
 

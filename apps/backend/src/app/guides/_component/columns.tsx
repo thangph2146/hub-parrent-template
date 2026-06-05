@@ -3,23 +3,22 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@ui/components/badge"
 import { Eye, EyeOff } from "lucide-react"
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn } from "@ui/components/admin";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import type { GuideGroup } from "./types"
 import { parseContent } from "./utils"
 
 export interface GuideColumnsProps {
   onView: (row: GuideGroup) => void
   onEdit: (row: GuideGroup) => void
-  onDelete: (row: GuideGroup) => void
-  onPurge: (row: GuideGroup) => void
+  rowActions: AdminCrudRowHandlers<GuideGroup>
   canWrite: boolean
 }
 
 export function getGuidesColumns({
   onView,
   onEdit,
-  onDelete,
-  onPurge,
+  rowActions,
   canWrite,
 }: GuideColumnsProps): ColumnDef<GuideGroup>[] {
   return [
@@ -86,25 +85,13 @@ export function getGuidesColumns({
         )
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableColumnFilter: false,
-      enableSorting: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => {
-        const data = row.original
-        if (!data) return null
-        return (
-          <AdminTableCrudRowActions
-            canWrite={canWrite}
-            onView={() => onView(data)}
-            onEdit={() => onEdit(data)}
-            onSoftDelete={() => onDelete(data)}
-            onPurge={() => onPurge(data)}
-          />
-        )
-      },
-    },
+    defineAdminCrudActionsColumn<GuideGroup>({
+      canWrite,
+      onView,
+      onEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ]
 }

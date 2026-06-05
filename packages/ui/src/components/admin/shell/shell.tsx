@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useEffect, useState, type ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import {
   ChevronDown,
   Menu,
@@ -11,9 +11,9 @@ import {
   PanelLeft,
   Sun,
   UserCircle2,
-} from "lucide-react";
-import { Button } from "../../button";
-import { cn } from "../../../lib/utils";
+} from "lucide-react"
+import { Button } from "../../button"
+import { cn } from "../../../lib/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,74 +23,69 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "../../sheet";
-import { MobileSidebarPanel, Sidebar } from "./sidebar";
-import { ThemeToggle } from "../../theme-toggle";
-import { Page, PageContent } from "../../layout";
-import { TypographyH2 } from "../../typography";
-import { useTextSize } from "../../text-size-provider";
-import { useTheme } from "../../theme-provider";
-import { ScrollToTop } from "../../scroll-to-top";
-import { useAdminLayout } from "./layout-context";
+} from "../../dropdown-menu"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../../sheet"
+import { MobileSidebarPanel, Sidebar } from "./sidebar"
+import { ThemeToggle } from "../../theme-toggle"
+import { Page, PageContent } from "../../layout"
+import { TypographyH2 } from "../../typography"
+import { useTextSize } from "../../text-size-provider"
+import { useTheme } from "../../theme-provider"
+import { ScrollToTop } from "../../scroll-to-top"
+import { useAdminLayout } from "./layout-context"
 import {
   ADMIN_HEADER_ROLE_LINE_CLASS,
   ADMIN_MAIN_SCROLL_CLASS,
   ADMIN_PAGE_CONTENT_CLASS,
   ADMIN_SHEET_NAV_CLASS,
-} from "../../../lib/layout-shell";
+} from "../../../lib/layout-shell"
 
-const SIDEBAR_COLLAPSED_KEY = "admin-sidebar-collapsed";
+const SIDEBAR_COLLAPSED_KEY = "admin-sidebar-collapsed"
 
 const HEADER_ICON_BTN_MOBILE = cn(
-  "h-11 w-11 min-h-11 min-w-11 shrink-0 rounded-lg border-border/70 bg-background/90 text-muted-foreground shadow-sm",
-  "hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow active:scale-[0.98] md:hidden [&_svg]:size-5",
-);
+  "h-11 min-h-11 w-11 min-w-11 shrink-0 rounded-lg border-border/70 bg-background/90 text-muted-foreground shadow-sm",
+  "hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow active:scale-[0.98] md:hidden [&_svg]:size-5"
+)
 
 const HEADER_ICON_BTN_DESKTOP = cn(
   "hidden h-10 w-10 shrink-0 rounded-lg border-border/70 bg-background/90 text-muted-foreground shadow-sm",
-  "hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow active:scale-[0.98] md:inline-flex [&_svg]:size-5",
-);
+  "hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow active:scale-[0.98] md:inline-flex [&_svg]:size-5"
+)
 
 const HEADER_PROFILE_TRIGGER = cn(
   "group relative inline-flex min-h-12 min-w-12 items-center gap-3 rounded-lg border border-border/70 bg-background/95 px-2.5 py-1.5 pr-3 text-left shadow-sm ring-1 ring-black/5 backdrop-blur-xl",
   "transition-all duration-200 hover:-translate-y-px hover:border-primary/25 hover:bg-primary/[0.04] hover:shadow-md",
   "aria-expanded:border-primary/25 aria-expanded:bg-primary/[0.05] aria-expanded:shadow-md",
-  "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/20 supports-[backdrop-filter]:bg-background/75",
-);
+  "focus-visible:ring-4 focus-visible:ring-ring/20 focus-visible:outline-none supports-[backdrop-filter]:bg-background/75"
+)
 
 const HEADER_PROFILE_AVATAR = cn(
   "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-gradient-to-br from-primary/15 to-primary/5",
   "text-sm font-extrabold tracking-wide text-primary shadow-inner transition-all duration-200",
   "group-hover:border-primary/25 group-hover:from-primary/20 group-hover:to-primary/10 group-hover:shadow-sm",
-  "group-aria-expanded:border-primary/25 group-aria-expanded:from-primary/20 group-aria-expanded:to-primary/10",
-);
+  "group-aria-expanded:border-primary/25 group-aria-expanded:from-primary/20 group-aria-expanded:to-primary/10"
+)
 
 function initials(name: string): string {
-  const p = name.trim().split(/\s+/).filter(Boolean);
-  if (p.length === 0) return "?";
-  if (p.length === 1) return p[0]!.slice(0, 2).toUpperCase();
-  return `${p[0]![0] ?? ""}${p[p.length - 1]![0] ?? ""}`.toUpperCase();
+  const p = name.trim().split(/\s+/).filter(Boolean)
+  if (p.length === 0) return "?"
+  if (p.length === 1) return p[0]!.slice(0, 2).toUpperCase()
+  return `${p[0]![0] ?? ""}${p[p.length - 1]![0] ?? ""}`.toUpperCase()
 }
 
 function roleSummary(user: {
   roles: { name: string; displayName?: string }[]
 }): string {
-  if (!user.roles.length) return "Chưa gán vai trò";
-  return user.roles.map((r) => r.displayName || r.name).join(" · ");
+  if (!user.roles.length) return "Chưa gán vai trò"
+  return user.roles.map((r) => r.displayName || r.name).join(" · ")
 }
 
 function AuthLoadingScreen({ message }: { message: string }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 text-muted-foreground text-sm">
+    <div className="flex min-h-screen items-center justify-center bg-muted/30 text-sm text-muted-foreground">
       {message}
     </div>
-  );
+  )
 }
 
 export function AdminShell({
@@ -102,8 +97,8 @@ export function AdminShell({
   classMain?: string
   isSidebar?: boolean
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = usePathname()
+  const router = useRouter()
   const {
     user,
     clientReady,
@@ -117,73 +112,75 @@ export function AdminShell({
     homePath = "/",
     profilePath = "/profile",
     accessDeniedReason = "staff_only",
-  } = useAdminLayout();
-  const { theme, setTheme } = useTheme();
-  const { size, setSize } = useTextSize();
-  const displayName = user?.name?.trim() || user?.email || "Người dùng HUB";
-  const avatarUrl = user?.image?.trim() || null;
-  const onAuthRoute = isAuthPath(pathname);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  } = useAdminLayout()
+  const { theme, setTheme } = useTheme()
+  const { size, setSize } = useTextSize()
+  const displayName = user?.name?.trim() || user?.email || "Người dùng HUB"
+  const avatarUrl = user?.image?.trim() || null
+  const onAuthRoute = isAuthPath(pathname)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
     try {
-      setSidebarCollapsed(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+      setSidebarCollapsed(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1")
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     try {
-      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, sidebarCollapsed ? "1" : "0");
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, sidebarCollapsed ? "1" : "0")
     } catch {
       /* ignore */
     }
-  }, [sidebarCollapsed]);
+  }, [sidebarCollapsed])
 
   // Force editor toolbar sticky via JS to overcome any CSS specificity issues
   useEffect(() => {
     const forceToolbarSticky = () => {
-      document.querySelectorAll<HTMLElement>(".editor-toolbar").forEach((el) => {
-        el.style.setProperty("position", "sticky", "important");
-        el.style.setProperty("top", "0px", "important");
-      });
-    };
-    forceToolbarSticky();
-    const timer = setTimeout(forceToolbarSticky, 500);
-    const observer = new MutationObserver(forceToolbarSticky);
-    observer.observe(document.body, { childList: true, subtree: true });
+      document
+        .querySelectorAll<HTMLElement>(".editor-toolbar")
+        .forEach((el) => {
+          el.style.setProperty("position", "sticky", "important")
+          el.style.setProperty("top", "0px", "important")
+        })
+    }
+    forceToolbarSticky()
+    const timer = setTimeout(forceToolbarSticky, 500)
+    const observer = new MutationObserver(forceToolbarSticky)
+    observer.observe(document.body, { childList: true, subtree: true })
     return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, []);
+      clearTimeout(timer)
+      observer.disconnect()
+    }
+  }, [])
 
   useEffect(() => {
-    if (!clientReady) return;
+    if (!clientReady) return
 
     if (onAuthRoute) {
       if (user && canAccessApp(user)) {
-        router.replace(homePath);
-        return;
+        router.replace(homePath)
+        return
       }
       if (user && !canAccessApp(user)) {
-        clearSession();
-        window.dispatchEvent(new Event(sessionEventName));
-        router.replace(`${loginPath}?reason=${accessDeniedReason}`);
+        clearSession()
+        window.dispatchEvent(new Event(sessionEventName))
+        router.replace(`${loginPath}?reason=${accessDeniedReason}`)
       }
-      return;
+      return
     }
 
     if (!user) {
-      router.replace(loginPath);
-      return;
+      router.replace(loginPath)
+      return
     }
     if (!canAccessApp(user)) {
-      clearSession();
-      window.dispatchEvent(new Event(sessionEventName));
-      router.replace(`${loginPath}?reason=${accessDeniedReason}`);
+      clearSession()
+      window.dispatchEvent(new Event(sessionEventName))
+      router.replace(`${loginPath}?reason=${accessDeniedReason}`)
     }
   }, [
     accessDeniedReason,
@@ -196,34 +193,34 @@ export function AdminShell({
     router,
     sessionEventName,
     user,
-  ]);
+  ])
 
   if (onAuthRoute) {
     if (!clientReady) {
-      return <AuthLoadingScreen message="Đang tải…" />;
+      return <AuthLoadingScreen message="Đang tải…" />
     }
     if (user && canAccessApp(user)) {
-      return <AuthLoadingScreen message="Đang chuyển về bảng điều khiển…" />;
+      return <AuthLoadingScreen message="Đang chuyển về bảng điều khiển…" />
     }
     return (
       <>
-        <div className="fixed right-4 top-4 z-50 rounded-lg border border-border bg-background/90 p-0.5 shadow-sm backdrop-blur-sm">
+        <div className="fixed top-4 right-4 z-50 rounded-lg border border-border bg-background/90 p-0.5 shadow-sm backdrop-blur-sm">
           <ThemeToggle />
         </div>
         {children}
       </>
-    );
+    )
   }
 
   if (!clientReady || !user) {
-    return <AuthLoadingScreen message="Đang tải…" />;
+    return <AuthLoadingScreen message="Đang tải…" />
   }
 
-  const rolesDisplay = roleSummary(user);
+  const rolesDisplay = roleSummary(user)
 
   return (
     <>
-    <div className="flex h-screen w-full flex-col bg-background font-sans text-foreground md:flex-row">
+      <div className="flex h-screen w-full flex-col bg-background font-sans text-foreground md:flex-row">
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetContent
             id="admin-mobile-nav"
@@ -241,7 +238,10 @@ export function AdminShell({
         {isSidebar && <Sidebar collapsed={sidebarCollapsed} />}
 
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <header data-admin-header="true" className="sticky top-0 z-10 flex min-h-16 shrink-0 items-center justify-between border-b border-border/70 bg-background/85 px-3 shadow-[0_1px_0_0_hsl(var(--border)/0.4)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/75 sm:min-h-[4.5rem] sm:px-5 lg:px-6">
+          <header
+            data-admin-header="true"
+            className="sticky top-0 z-10 flex min-h-16 shrink-0 items-center justify-between border-b border-border/70 bg-background/85 px-3 shadow-[0_1px_0_0_hsl(var(--border)/0.4)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/75 sm:min-h-[4.5rem] sm:px-5 lg:px-6"
+          >
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               <Button
                 type="button"
@@ -288,13 +288,13 @@ export function AdminShell({
                   }
                 >
                   <div className="hidden min-w-0 text-right sm:block">
-                    <p className="max-w-[220px] truncate text-sm font-bold leading-none text-foreground">
+                    <p className="max-w-[220px] truncate text-sm leading-none font-bold text-foreground">
                       {displayName}
                     </p>
                     <p
                       className={cn(
                         ADMIN_HEADER_ROLE_LINE_CLASS,
-                        "mt-1 max-w-[220px] truncate text-[11px] text-muted-foreground/90",
+                        "mt-1 max-w-[220px] truncate text-[11px] text-muted-foreground/90"
                       )}
                       title={rolesDisplay}
                     >
@@ -303,7 +303,11 @@ export function AdminShell({
                   </div>
                   <div className={HEADER_PROFILE_AVATAR}>
                     {avatarUrl ? (
-                      <img src={avatarUrl} alt="" className="size-full rounded-lg object-cover" />
+                      <img
+                        src={avatarUrl}
+                        alt=""
+                        className="size-full rounded-lg object-cover"
+                      />
                     ) : (
                       initials(displayName)
                     )}
@@ -313,18 +317,25 @@ export function AdminShell({
                 <DropdownMenuContent align="end" className="w-72 p-2">
                   <div className="px-2 py-2">
                     <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-sm font-bold text-primary">
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt="" className="size-full rounded-lg object-cover" />
-                      ) : (
-                        initials(displayName)
-                      )}
-                    </div>
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-sm font-bold text-primary">
+                        {avatarUrl ? (
+                          <img
+                            src={avatarUrl}
+                            alt=""
+                            className="size-full rounded-lg object-cover"
+                          />
+                        ) : (
+                          initials(displayName)
+                        )}
+                      </div>
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-foreground">
                           {displayName}
                         </p>
-                        <p className="truncate text-xs text-muted-foreground" title={rolesDisplay}>
+                        <p
+                          className="truncate text-xs text-muted-foreground"
+                          title={rolesDisplay}
+                        >
                           {rolesDisplay}
                         </p>
                       </div>
@@ -341,7 +352,7 @@ export function AdminShell({
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     Giao diện
                   </div>
                   <DropdownMenuRadioGroup
@@ -373,14 +384,16 @@ export function AdminShell({
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     Cỡ chữ
                   </div>
                   <DropdownMenuRadioGroup
                     value={size}
-                    onValueChange={(value) => setSize(value as "sm" | "base" | "lg")}
+                    onValueChange={(value) =>
+                      setSize(value as "sm" | "base" | "lg")
+                    }
                   >
-                    <div className="grid grid-cols-3 gap-2 px-2 pb-1 pt-1">
+                    <div className="grid grid-cols-3 gap-2 px-2 pt-1 pb-1">
                       <DropdownMenuRadioItem
                         value="sm"
                         className="cursor-pointer justify-center rounded-md border border-border px-2 py-2 font-bold"
@@ -420,5 +433,5 @@ export function AdminShell({
       </div>
       <ScrollToTop />
     </>
-  );
+  )
 }

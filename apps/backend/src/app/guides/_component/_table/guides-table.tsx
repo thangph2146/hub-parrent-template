@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { GuideGroup } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -49,9 +49,7 @@ export function GuidesTable({
       globalFilterPlaceholder="Tìm theo section key, tiêu đề..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={setSelectedRowIds}
+      {...adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds)}
       bulkActions={[
         {
           id: "bulk-guide-purge",
@@ -61,7 +59,8 @@ export function GuidesTable({
             await onBulkPurge(rows);
           },
         },
-      ]}
+      ]}
+
       xlsxExport={buildAdminTableXlsxExport("guides", { pageCount: data.length, total })}
       footer={
         <div className="flex items-center justify-between">

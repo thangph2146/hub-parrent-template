@@ -1,9 +1,34 @@
 export {
+  DATA_TABLE_ACTIONS_COLUMN_ID,
   TABLE_ACTIONS_COLUMN_META,
   DataTableRowActions,
   DataTableRowActionButton,
+  type DataTableRowActionGroupId,
   type DataTableRowActionItem,
-} from "./table-row-actions";
+} from "./table-row-actions"
+export {
+  RowActionConfirmDialog,
+  buildAdminRowActionConfirm,
+  resolveRowActionConfirm,
+  useRowActionConfirm,
+  type DataTableRowActionConfirm,
+} from "./row-action-confirm"
+export {
+  normalizeDataTableColumns,
+  resolveDataTableColumnId,
+  dataTableColumnsHasActionsColumn,
+} from "./data-table-columns"
+export {
+  adminTableGetRowIdFromOriginal,
+  adminTableRowSelectionProps,
+  useAdminTableRowSelection,
+  type AdminTableRowSelectionProps,
+} from "./admin-table-selection"
+export {
+  DataTableRowActionsMenu,
+  type DataTableRowActionsMenuProps,
+  type RowActionsMenuGroupConfig,
+} from "./table-row-actions-menu"
 export {
   AdminDataTable,
   DataTable,
@@ -16,7 +41,7 @@ export {
   DATA_TABLE_SELECTION_COLUMN_WIDTH,
   DATA_TABLE_SELECTION_COLUMN_CLASS,
   dataTableColumnsHasIndexColumn,
-} from "./data-table";
+} from "./data-table"
 export type {
   AdminDataTableBulkAction,
   AdminDataTableProps,
@@ -27,4 +52,4 @@ export type {
   AdminDataTableClientPaginationConfig,
   DataTableBulkAction,
   DataTableProps,
-} from "./data-table";
+} from "./data-table"

@@ -15,24 +15,21 @@ import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { PageSection } from "@ui/components/layout";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   LocationsTable,
   LocationsTrashTable,
-  LocationsConfirmDialog,
   getLocationColumns,
   getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-  useHandleConfirmAction,
-  useConfirmAction,
   useLocationsListQuery,
   useLocationsTrashQuery,
 } from "./_component";
@@ -125,26 +122,29 @@ function LocationsPageInner() {
   const clearListFilters = useClearListFilters(setColumnFilters, setGlobalFilter);
   const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
   const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
-
-  const { confirmAction, setConfirmAction } = useConfirmAction();
-
-  const handleConfirmAction = useHandleConfirmAction(
-    deleteMutation, restoreMutation, purgeMutation, setConfirmAction,
-  );
-
+  const rowActions = useAdminCrudRowHandlers<LocationRow>({
+    getRecordLabel: (row) => row.name || row.mapUrl,
+    entityLabel: "địa điểm",
+    deleteMutation,
+    restoreMutation,
+    purgeMutation,
+  });
   const columns = useMemo<ColumnDef<LocationRow>[]>(
-    () => getLocationColumns({
-      openDetail: (row) => router.push(`/locations/${row.id}`),
-      openEdit: (row) => router.push(`/locations/${row.id}/edit`),
-      setConfirmAction,
-      canWrite,
-    }),
-    [setConfirmAction, router, canWrite],
+    () =>
+      getLocationColumns({
+        openDetail: (row) => router.push(`/locations/${row.id}`),
+        openEdit: (row) => router.push(`/locations/${row.id}/edit`),
+        rowActions,
+        canWrite,
+      }),
+    [rowActions, router, canWrite],
   );
+
+
 
   const trashColumns = useMemo<ColumnDef<LocationRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite],
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite],
   );
 
   return (
@@ -276,18 +276,6 @@ function LocationsPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <LocationsConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
-        onConfirm={() => { if (confirmAction) void handleConfirmAction(confirmAction); }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="địa điểm"
-        getName={(r) => r.name || r.mapUrl}
-      />
     </AdminPageSection>
   );
 }

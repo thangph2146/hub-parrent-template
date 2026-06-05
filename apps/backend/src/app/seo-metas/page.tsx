@@ -14,21 +14,20 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useAuth } from "@/providers/auth-provider";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
 import { api } from "@/lib/api";
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   SeoMetasTable,
-  SeoMetasConfirmDialog,
   getSeoMetaColumns,
   getTrashColumns,
   useSeoMetasListQuery,
   useSeoMetasTrashQuery,
 } from "./_component";
-import type { SeoMetaRow, SeoMetaConfirmAction } from "./_component";
+import type { SeoMetaRow } from "./_component";
 
 function SeoMetasPageInner() {
   const router = useRouter();
@@ -112,26 +111,29 @@ function SeoMetasPageInner() {
 
   useEffect(() => { setTrashPage(1); }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
   useEffect(() => { setListSelection({}); setTrashSelection({}); }, [mainTab]);
-
-  const { confirmAction, setConfirmAction } = useConfirmAction();
-
-  const handleConfirmAction = useHandleConfirmAction(
-    deleteMutation, restoreMutation, purgeMutation, setConfirmAction,
-  );
-
+  const rowActions = useAdminCrudRowHandlers<SeoMetaRow>({
+    getRecordLabel: (row) => row.page,
+    entityLabel: "SEO metadata",
+    deleteMutation,
+    restoreMutation,
+    purgeMutation,
+  });
   const columns = useMemo<ColumnDef<SeoMetaRow>[]>(
-    () => getSeoMetaColumns({
-      openDetail: (row) => router.push(`/seo-metas/${row.id}`),
-      openEdit: (row) => router.push(`/seo-metas/${row.id}/edit`),
-      setConfirmAction,
-      canWrite,
-    }),
-    [setConfirmAction, router, canWrite],
+    () =>
+      getSeoMetaColumns({
+        openDetail: (row) => router.push(`/seo-metas/${row.id}`),
+        openEdit: (row) => router.push(`/seo-metas/${row.id}/edit`),
+        rowActions,
+        canWrite,
+      }),
+    [rowActions, router, canWrite],
   );
+
+
 
   const trashColumns = useMemo<ColumnDef<SeoMetaRow>[]>(
-    () => getTrashColumns({ setConfirmAction, canWrite }),
-    [setConfirmAction, canWrite],
+    () => getTrashColumns({ rowActions, canWrite }),
+    [rowActions, canWrite],
   );
 
   return (
@@ -259,57 +261,7 @@ function SeoMetasPageInner() {
           </TabsContent>
         )}
       </Tabs>
-
-      <SeoMetasConfirmDialog
-        confirmAction={confirmAction}
-        deleteMutation={deleteMutation}
-        restoreMutation={restoreMutation}
-        purgeMutation={purgeMutation}
-        onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
-        onConfirm={() => { if (confirmAction) void handleConfirmAction(confirmAction); }}
-        contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
-        entityLabel="SEO metadata"
-        getName={(r) => r.page}
-      />
     </AdminPageSection>
-  );
-}
-
-function useConfirmAction() {
-  const [confirmAction, setConfirmAction] = useState<SeoMetaConfirmAction | null>(null);
-  return { confirmAction, setConfirmAction };
-}
-
-import { useCallback } from "react";
-
-function useHandleConfirmAction(
-  deleteMutation: UseMutationResult<unknown, Error, string>,
-  restoreMutation: UseMutationResult<unknown, Error, string>,
-  purgeMutation: UseMutationResult<unknown, Error, string>,
-  setConfirmAction: React.Dispatch<React.SetStateAction<SeoMetaConfirmAction | null>>,
-) {
-  return useCallback(
-    async ({ kind, row }: SeoMetaConfirmAction) => {
-      try {
-        const id = row.id;
-        if (kind === "delete") {
-          await deleteMutation.mutateAsync(id);
-          toast.success("Đã xóa tạm SEO metadata");
-        } else if (kind === "restore") {
-          await restoreMutation.mutateAsync(id);
-          toast.success("Đã khôi phục SEO metadata");
-        } else if (kind === "purge") {
-          await purgeMutation.mutateAsync(id);
-          toast.success("Đã xóa vĩnh viễn SEO metadata");
-        }
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Thao tác thất bại";
-        toast.error(message);
-      } finally {
-        setConfirmAction(null);
-      }
-    },
-    [deleteMutation, restoreMutation, purgeMutation, setConfirmAction],
   );
 }
 

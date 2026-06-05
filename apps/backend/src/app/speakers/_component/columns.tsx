@@ -1,11 +1,12 @@
 "use client";
 
-import { ADMIN_TABLE_ACTIONS_COLUMN_META, AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin";
+import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
 import { Button } from "@ui/components/button";
-import type { SpeakerRow, SpeakerConfirmAction } from "./types";
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import type { SpeakerRow } from "./types";
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
@@ -16,12 +17,12 @@ function formatDateTime(value: string | null | undefined): string {
 export function getSpeakerColumns({
   openDetail,
   openEdit,
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
   openDetail: (row: SpeakerRow) => void;
   openEdit: (row: SpeakerRow) => void;
-  setConfirmAction: (action: SpeakerConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<SpeakerRow>;
   canWrite: boolean;
 }): ColumnDef<SpeakerRow>[] {
   return [
@@ -98,30 +99,22 @@ export function getSpeakerColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableCrudRowActions
-          canWrite={canWrite}
-          onView={() => openDetail(row.original)}
-          onEdit={() => openEdit(row.original)}
-          onSoftDelete={() => setConfirmAction({ kind: "delete", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminCrudActionsColumn<SpeakerRow>({
+      canWrite,
+      onView: openDetail,
+      onEdit: openEdit,
+      onSoftDelete: rowActions.onSoftDelete,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }
 
 export function getTrashColumns({
-  setConfirmAction,
+  rowActions,
   canWrite,
 }: {
-  setConfirmAction: (action: SpeakerConfirmAction) => void;
+  rowActions: AdminCrudRowHandlers<SpeakerRow>;
   canWrite: boolean;
 }): ColumnDef<SpeakerRow>[] {
   return [
@@ -151,19 +144,11 @@ export function getTrashColumns({
         </span>
       ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: ADMIN_TABLE_ACTIONS_COLUMN_META,
-      cell: ({ row }) => (
-        <AdminTableTrashRowActions
-          canWrite={canWrite}
-          onRestore={() => setConfirmAction({ kind: "restore", row: row.original })}
-          onPurge={() => setConfirmAction({ kind: "purge", row: row.original })}
-        />
-      ),
-    },
+    defineAdminTrashActionsColumn<SpeakerRow>({
+      canWrite,
+      onRestore: rowActions.onRestore,
+      onPurge: rowActions.onPurge,
+      getRecordLabel: rowActions.getRecordLabel,
+    }),
   ];
 }

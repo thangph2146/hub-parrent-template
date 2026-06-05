@@ -2,7 +2,7 @@
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { CategoryRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 
@@ -62,10 +62,7 @@ export function CategoriesTrashTable({
       globalFilterPlaceholder="Tìm theo tên, slug..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}
-      rowSelectionEnabled
-      selectedRowIds={selectedRowIds}
-      onSelectedRowIdsChange={onSelectedRowIdsChange}
+      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-category-restore",

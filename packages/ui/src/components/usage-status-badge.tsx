@@ -17,12 +17,9 @@ const usageStatusBadgeVariants = cva(
   {
     variants: {
       tone: {
-        success:
-          "bg-success/10 text-success dark:bg-success/20",
-        warning:
-          "bg-warning/10 text-warning dark:bg-warning/20",
-        danger:
-          "bg-destructive/10 text-destructive dark:bg-destructive/20",
+        success: "bg-success/10 text-success dark:bg-success/20",
+        warning: "bg-warning/10 text-warning dark:bg-warning/20",
+        danger: "bg-destructive/10 text-destructive dark:bg-destructive/20",
       },
     },
     defaultVariants: {
@@ -64,7 +61,7 @@ export function UsageStatusBadge({
  * Boolean: `true` → success, `false` → danger.
  */
 export function resolveUsageStatusTone(
-  value: number | boolean | UsageStatusTone,
+  value: number | boolean | UsageStatusTone
 ): UsageStatusTone {
   if (value === "success" || value === "warning" || value === "danger") {
     return value
@@ -88,7 +85,7 @@ export type UsageStatusFromValueLabels = {
 export function resolveUsageStatusLabel(
   tone: UsageStatusTone,
   value?: number | boolean,
-  labels?: UsageStatusFromValueLabels,
+  labels?: UsageStatusFromValueLabels
 ): string {
   if (typeof value === "number") {
     if (value === 1 && labels?.active?.trim()) return labels.active.trim()
@@ -121,7 +118,7 @@ export function UsageStatusFromValue({
   const label = resolveUsageStatusLabel(
     tone,
     typeof value === "number" || typeof value === "boolean" ? value : undefined,
-    labels,
+    labels
   )
   return (
     <UsageStatusBadge
