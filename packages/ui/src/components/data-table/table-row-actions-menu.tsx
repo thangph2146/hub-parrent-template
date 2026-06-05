@@ -17,7 +17,10 @@ import {
   type DataTableRowActionGroupId,
   type DataTableRowActionItem,
 } from "./table-row-actions"
-import { useRowActionConfirm } from "./row-action-confirm"
+import {
+  useDataTableRowActionRunnerOptional,
+  useRowActionConfirm,
+} from "./row-action-confirm"
 import {
   groupRowActions,
   RowActionMenuItemBody,
@@ -57,7 +60,10 @@ export type DataTableRowActionsMenuProps = {
   triggerLabel?: string
   align?: "start" | "center" | "end"
   className?: string
-  /** Mặc định true: xóa/khoá/kích hoạt… tự hiện dialog xác nhận. */
+  /**
+   * Tự hiện dialog xác nhận với thao tác danger khi action không khai báo `confirm`.
+   * Mặc định `true`; đặt `false` khi mỗi action đã có `confirm` riêng hoặc dùng `pageConfirm`.
+   */
   autoConfirmDangerousActions?: boolean
 }
 
@@ -70,9 +76,13 @@ export function DataTableRowActionsMenu({
   className,
   autoConfirmDangerousActions = true,
 }: DataTableRowActionsMenuProps) {
-  const { runAction, confirmDialog } = useRowActionConfirm(
-    autoConfirmDangerousActions
-  )
+  const sharedRunAction = useDataTableRowActionRunnerOptional()
+  const localConfirm = useRowActionConfirm(autoConfirmDangerousActions)
+  const runAction =
+    sharedRunAction ??
+    ((action: DataTableRowActionItem) => localConfirm.runAction(action))
+  const confirmDialog = sharedRunAction ? null : localConfirm.confirmDialog
+
   const { visible, groups, byGroup, orderedGroups } = groupRowActions(
     actions,
     groupsOverride

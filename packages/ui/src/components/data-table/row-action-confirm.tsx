@@ -1,6 +1,12 @@
 "use client"
 
-import { useCallback, useState, type ReactNode } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +28,13 @@ export type DataTableRowActionConfirm =
       destructive?: boolean
     }
 
+export type ResolvedDataTableRowActionConfirm = {
+  title: string
+  description?: ReactNode
+  confirmLabel: string
+  destructive?: boolean
+}
+
 const DANGER_ACTION_KEYS = new Set([
   "soft-delete",
   "purge",
@@ -35,7 +48,7 @@ const DANGER_ACTION_KEYS = new Set([
 
 function defaultConfirmForAction(
   action: DataTableRowActionItem
-): DataTableRowActionConfirm | undefined {
+): ResolvedDataTableRowActionConfirm | undefined {
   if (action.key === "soft-delete" || action.key === "delete") {
     return {
       title: "Đưa bản ghi vào thùng rác?",
@@ -50,8 +63,7 @@ function defaultConfirmForAction(
   if (action.key === "purge") {
     return {
       title: "Xóa vĩnh viễn bản ghi?",
-      description:
-        action.hint ?? "Hành động này không thể hoàn tác.",
+      description: action.hint ?? "Hành động này không thể hoàn tác.",
       confirmLabel: action.label || "Xóa vĩnh viễn",
       destructive: true,
     }
@@ -65,10 +77,7 @@ function defaultConfirmForAction(
     }
   }
 
-  if (
-    action.key === "toggle-inactive" ||
-    action.key === "deactivate"
-  ) {
+  if (action.key === "toggle-inactive" || action.key === "deactivate") {
     return {
       title: "Khoá tài khoản?",
       description:
@@ -115,7 +124,8 @@ export function buildAdminRowActionConfirm(
   if (key === "soft-delete" || key === "delete") {
     return {
       title: `Đưa ${quoted} vào thùng rác?`,
-      description: "Bản ghi sẽ được chuyển vào thùng rác và có thể khôi phục sau.",
+      description:
+        "Bản ghi sẽ được chuyển vào thùng rác và có thể khôi phục sau.",
       confirmLabel: labels?.softDelete ?? "Xóa tạm",
       destructive: true,
     }
@@ -189,32 +199,94 @@ export function resolveRowActionConfirm(
   return undefined
 }
 
-export function useRowActionConfirm(autoConfirmDangerousActions = true) {
+export function normalizeResolvedRowActionConfirm(
+  action: DataTableRowActionItem,
+  autoConfirm = true
+): ResolvedDataTableRowActionConfirm | null {
+  const resolved = resolveRowActionConfirm(action, autoConfirm)
+  if (!resolved) return null
+
+  if (resolved === true) {
+    return {
+      title: "Xác nhận thao tác?",
+      description: action.hint ?? "Bạn có chắc muốn tiếp tục?",
+      confirmLabel: action.label || "Xác nhận",
+      destructive:
+        action.menuVariant === "destructive" || action.group === "danger",
+    }
+  }
+
+  return {
+    title: resolved.title,
+    description: resolved.description ?? action.hint,
+    confirmLabel: resolved.confirmLabel ?? action.label ?? "Xác nhận",
+    destructive: resolved.destructive,
+  }
+}
+
+type PendingRowAction = {
+  action: DataTableRowActionItem
+  confirm: ResolvedDataTableRowActionConfirm
+}
+
+type RowActionConfirmRunnerContextValue = {
+  runAction: (action: DataTableRowActionItem) => void
+}
+
+const RowActionConfirmRunnerContext =
+  createContext<RowActionConfirmRunnerContextValue | null>(null)
+
+export function DataTableRowActionConfirmRunnerProvider({
+  autoConfirmDangerousActions = false,
+  children,
+  confirmDialog,
+  runAction,
+}: {
+  autoConfirmDangerousActions?: boolean
+  children: ReactNode
+  confirmDialog: ReactNode
+  runAction: (action: DataTableRowActionItem) => void
+}) {
+  void autoConfirmDangerousActions
+  return (
+    <RowActionConfirmRunnerContext.Provider value={{ runAction }}>
+      {children}
+      {confirmDialog}
+    </RowActionConfirmRunnerContext.Provider>
+  )
+}
+
+export function useDataTableRowActionRunnerOptional() {
+  return useContext(RowActionConfirmRunnerContext)?.runAction ?? null
+}
+
+export function useRowActionConfirm(defaultAutoConfirmDangerousActions = false) {
   const [pendingAction, setPendingAction] =
-    useState<DataTableRowActionItem | null>(null)
+    useState<PendingRowAction | null>(null)
   const [running, setRunning] = useState(false)
 
   const runAction = useCallback(
-    (action: DataTableRowActionItem) => {
+    (action: DataTableRowActionItem, autoConfirm?: boolean) => {
       if (action.disabled) return
-      const confirm = resolveRowActionConfirm(
-        action,
-        autoConfirmDangerousActions
-      )
+      const auto =
+        autoConfirm !== undefined
+          ? autoConfirm
+          : defaultAutoConfirmDangerousActions
+      const confirm = normalizeResolvedRowActionConfirm(action, auto)
       if (confirm) {
-        setPendingAction({ ...action, confirm })
+        setPendingAction({ action, confirm })
         return
       }
-      action.onClick()
+      void action.onClick()
     },
-    [autoConfirmDangerousActions]
+    [defaultAutoConfirmDangerousActions]
   )
 
   const handleConfirm = useCallback(async () => {
     if (!pendingAction) return
     setRunning(true)
     try {
-      await pendingAction.onClick()
+      await pendingAction.action.onClick()
       setPendingAction(null)
     } catch {
       // Giữ dialog mở; handler thường đã toast lỗi.
@@ -232,7 +304,7 @@ export function useRowActionConfirm(autoConfirmDangerousActions = true) {
     runAction,
     confirmDialog: (
       <RowActionConfirmDialog
-        action={pendingAction}
+        pending={pendingAction}
         running={running}
         onCancel={handleCancel}
         onConfirm={handleConfirm}
@@ -242,37 +314,25 @@ export function useRowActionConfirm(autoConfirmDangerousActions = true) {
 }
 
 type RowActionConfirmDialogProps = {
-  action: DataTableRowActionItem | null
+  pending: PendingRowAction | null
   running: boolean
   onCancel: () => void
   onConfirm: () => void
 }
 
 export function RowActionConfirmDialog({
-  action,
+  pending,
   running,
   onCancel,
   onConfirm,
 }: RowActionConfirmDialogProps) {
-  const isOpen = action != null
-  const confirm =
-    action != null ? resolveRowActionConfirm(action, true) : undefined
+  const isOpen = pending != null
+  const confirm = pending?.confirm
 
-  const title =
-    typeof confirm === "object"
-      ? confirm.title
-      : (action?.label ?? "Xác nhận thao tác")
-
-  const description =
-    typeof confirm === "object" && confirm.description != null
-      ? confirm.description
-      : "Bạn có chắc muốn tiếp tục?"
-
-  const confirmLabel =
-    typeof confirm === "object" ? (confirm.confirmLabel ?? "Xác nhận") : "Xác nhận"
-
-  const isDestructive =
-    typeof confirm === "object" && Boolean(confirm.destructive)
+  const title = confirm?.title ?? "Xác nhận thao tác"
+  const description = confirm?.description ?? "Bạn có chắc muốn tiếp tục?"
+  const confirmLabel = confirm?.confirmLabel ?? "Xác nhận"
+  const isDestructive = Boolean(confirm?.destructive)
 
   return (
     <AlertDialog

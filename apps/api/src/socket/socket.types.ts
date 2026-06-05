@@ -90,3 +90,13 @@ export type EventAttendanceSocketPayload = {
   hasCheckin?: boolean;
   hasCheckout?: boolean;
 };
+
+/** Admin duyệt/từ chối liên kết phụ huynh – học sinh. */
+export type ParentStudentReviewSocketPayload = {
+  id: string;
+  parentId: string;
+  studentCode: string;
+  studentName: string | null;
+  status: 'approved' | 'rejected';
+  reviewedAt: string;
+};

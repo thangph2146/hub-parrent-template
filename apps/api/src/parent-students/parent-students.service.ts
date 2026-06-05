@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { ParentStudent } from '../entities/parent-student.entity';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { SocketGateway } from '../socket/socket.gateway';
 
 export interface ParentStudentRowDto {
   id: string;
@@ -47,7 +48,10 @@ function mapRow(r: ParentStudent): ParentStudentRowDto {
 
 @Injectable()
 export class ParentStudentsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    private readonly socketGateway: SocketGateway,
+  ) {}
 
   async listByParent(parentId: string): Promise<ParentStudentRowDto[]> {
     const rows = await this.em.find(
@@ -197,7 +201,16 @@ export class ParentStudentsService {
     ps.reviewedBy = reviewedBy;
     ps.reviewedAt = new Date();
     await this.em.persistAndFlush(ps);
-    return mapRow(ps);
+    const row = mapRow(ps);
+    this.socketGateway.emitParentStudentReview({
+      id: row.id,
+      parentId: row.parentId,
+      studentCode: row.studentCode,
+      studentName: row.studentName,
+      status: action,
+      reviewedAt: row.reviewedAt ?? new Date().toISOString(),
+    });
+    return row;
   }
 
   async remove(id: string, parentId: string): Promise<boolean> {

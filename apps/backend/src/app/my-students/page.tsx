@@ -25,6 +25,10 @@ import {
   type GradeDialogTarget,
   type MyStudentRow,
 } from "./_component"
+import {
+  myStudentsPollInterval,
+  useMyStudentsSocket,
+} from "./_component/use-my-students-socket"
 
 export default function MyStudentsPage() {
   const { user } = useAuth()
@@ -44,6 +48,15 @@ export default function MyStudentsPage() {
   const [globalFilter, setGlobalFilter] = useState("")
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
+  const handleStudentReviewed = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.myStudents() })
+  }, [queryClient])
+
+  const { connected: socketConnected } = useMyStudentsSocket(
+    true,
+    handleStudentReviewed,
+  )
+
   const { data: students, isLoading } = useQuery<MyStudentRow[]>({
     queryKey: queryKeys.myStudents(),
     queryFn: async () => {
@@ -51,6 +64,11 @@ export default function MyStudentsPage() {
       return result as unknown as MyStudentRow[]
     },
     staleTime: 30_000,
+    refetchInterval: (query) => {
+      const rows = query.state.data as MyStudentRow[] | undefined
+      const hasPending = (rows ?? []).some((row) => row.status === "pending")
+      return myStudentsPollInterval(socketConnected, hasPending)
+    },
   })
 
   const deleteMutation = useMutation({

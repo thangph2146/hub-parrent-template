@@ -63,7 +63,6 @@ function ContactRequestsPageInner() {
   const [trashColumnFilters, setTrashColumnFilters] =
     useState<ColumnFiltersState>([])
 
-  const [deleteTarget, setDeleteTarget] = useState<ContactRequest | null>(null)
   const [restoreTarget, setRestoreTarget] = useState<ContactRequest | null>(
     null
   )
@@ -152,9 +151,12 @@ function ContactRequestsPageInner() {
     [router]
   )
 
-  const handleDelete = useCallback((contact: ContactRequest) => {
-    setDeleteTarget(contact)
-  }, [])
+  const handleDelete = useCallback(
+    async (contact: ContactRequest) => {
+      await deleteMutation.mutateAsync(contact.id)
+    },
+    [deleteMutation],
+  )
 
   const handleRestore = useCallback((contact: ContactRequest) => {
     setRestoreTarget(contact)
@@ -323,20 +325,6 @@ function ContactRequestsPageInner() {
           />
         </TabsContent>
       </Tabs>
-
-      <ContactConfirmDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        action="delete"
-        target={deleteTarget}
-        onConfirm={async () => {
-          if (deleteTarget) {
-            await deleteMutation.mutateAsync(deleteTarget.id)
-            setDeleteTarget(null)
-          }
-        }}
-        loading={deleteMutation.isPending}
-      />
 
       <ContactConfirmDialog
         open={!!restoreTarget}

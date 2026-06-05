@@ -24,6 +24,7 @@ import {
   SOCKET_PATH,
   MAX_HTTP_BUFFER_SIZE,
   type EventAttendanceSocketPayload,
+  type ParentStudentReviewSocketPayload,
 } from './socket.types';
 import { appConfig } from '../config/app.config';
 import {
@@ -121,6 +122,13 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .to(eventRoom(payload.eventId))
       .emit('event:attendance', payload);
     this.server.to(roleRoom('ADMIN')).emit('event:attendance', payload);
+  }
+
+  emitParentStudentReview(payload: ParentStudentReviewSocketPayload): void {
+    if (!this.server || !payload.parentId) return;
+    this.server
+      .to(userRoom(payload.parentId))
+      .emit('parent-student:reviewed', payload);
   }
 
   emitMessageNew(

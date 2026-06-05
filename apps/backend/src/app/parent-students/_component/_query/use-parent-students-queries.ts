@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { queryKeys } from "@/hooks/queries";
 
 export function useReviewParentStudentMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
@@ -18,7 +19,10 @@ export function useReviewParentStudentMutation(onSuccess?: () => void) {
       await api.parentStudents.review(id, { action });
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "parent-students"] });
+      void queryClient.invalidateQueries({
+        queryKey: ["admin", "parent-students"],
+      });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.myStudents() });
       toast.success(
         variables.action === "approved"
           ? "Đã duyệt yêu cầu liên kết."

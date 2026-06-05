@@ -63,6 +63,7 @@ import {
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useState,
   type CSSProperties,
@@ -117,6 +118,7 @@ import { DataTableRowContextMenu } from "./data-table-row-context-menu"
 import {
   DataTableRowActionsRegistryProvider,
   DataTableRowActionsRowProvider,
+  DataTableScopeProvider,
 } from "./data-table-row-actions-registry"
 import { DATA_TABLE_ACTIONS_COLUMN_ID } from "./table-row-actions"
 
@@ -642,6 +644,7 @@ export function AdminDataTable<TData>({
   tableBodyMaxHeight,
   rowContextMenu,
 }: AdminDataTableProps<TData>) {
+  const tableScopeId = useId()
   const resolvedSelectionColumnWidth = Math.max(
     32,
     Math.min(80, Math.round(selectionColumnWidth))
@@ -1528,6 +1531,7 @@ export function AdminDataTable<TData>({
         }
       />
       <DataTableRowActionsRegistryProvider>
+      <DataTableScopeProvider scopeId={tableScopeId}>
       <DataTableHorizontalScroll
         enabled={horizontalScrollButtons}
         watchKey={`${isLoading}-${data.length}`}
@@ -1710,6 +1714,7 @@ export function AdminDataTable<TData>({
           </Table>
         </div>
       </DataTableHorizontalScroll>
+      </DataTableScopeProvider>
       </DataTableRowActionsRegistryProvider>
       {showTableFooter ? (
         <div

@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentProps, CSSProperties, ReactNode } from "react"
+import { useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -16,9 +16,12 @@ import {
   groupRowActions,
   RowActionMenuItemBody,
 } from "./row-actions-menu-shared"
-import { useDataTableRowActionsRegistryOptional } from "./data-table-row-actions-registry"
+import {
+  useDataTableRowActionsRegistryOptional,
+  useDataTableScopeId,
+} from "./data-table-row-actions-registry"
 import type { DataTableRowActionItem } from "./table-row-actions"
-import { useRowActionConfirm } from "./row-action-confirm"
+import { useDataTableRowActionRunnerOptional } from "./row-action-confirm"
 
 function ContextMenuRowActionItem({
   action,
@@ -43,15 +46,20 @@ function ContextMenuRowActionItem({
   )
 }
 
-function DataTableRowContextMenuContent({ rowId }: { rowId: string }) {
+function DataTableRowContextMenuContent({
+  rowId,
+  refreshKey,
+}: {
+  rowId: string
+  refreshKey: number
+}) {
   const registry = useDataTableRowActionsRegistryOptional()
-  const entry = registry?.get(rowId)
+  const scopeId = useDataTableScopeId()
+  const runAction = useDataTableRowActionRunnerOptional()
+  void refreshKey
+  const entry = registry?.getScoped(scopeId, rowId)
 
-  const { runAction, confirmDialog } = useRowActionConfirm(
-    entry?.autoConfirmDangerousActions ?? true
-  )
-
-  if (!entry) return null
+  if (!entry || !runAction) return null
 
   const { groups, byGroup, orderedGroups } = groupRowActions(
     entry.actions,
@@ -61,46 +69,43 @@ function DataTableRowContextMenuContent({ rowId }: { rowId: string }) {
   if (orderedGroups.length === 0) return null
 
   return (
-    <>
-      <ContextMenuContent className="w-64 p-1.5">
-        {orderedGroups.map((groupId, index) => {
-          const config = groups[groupId]
-          const items = byGroup.get(groupId) ?? []
-          const GroupIcon = config.icon
+    <ContextMenuContent className="w-64 p-1.5">
+      {orderedGroups.map((groupId, index) => {
+        const config = groups[groupId]
+        const items = byGroup.get(groupId) ?? []
+        const GroupIcon = config.icon
 
-          return (
-            <div key={groupId}>
-              {index > 0 ? <ContextMenuSeparator /> : null}
-              <ContextMenuGroup>
-                {config.sublabel ? (
-                  <ContextMenuLabel className="px-1 py-1 text-[11px] font-medium text-muted-foreground">
-                    {config.label}
-                  </ContextMenuLabel>
-                ) : (
-                  <ContextMenuLabel className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                    {GroupIcon ? (
-                      <GroupIcon className="size-3.5 shrink-0 text-primary" />
-                    ) : null}
-                    {config.label}
-                  </ContextMenuLabel>
-                )}
-                {config.header ? (
-                  <div className="mb-1.5 px-1">{config.header}</div>
-                ) : null}
-                {items.map((action) => (
-                  <ContextMenuRowActionItem
-                    key={action.key}
-                    action={action}
-                    onRun={runAction}
-                  />
-                ))}
-              </ContextMenuGroup>
-            </div>
-          )
-        })}
-      </ContextMenuContent>
-      {confirmDialog}
-    </>
+        return (
+          <div key={groupId}>
+            {index > 0 ? <ContextMenuSeparator /> : null}
+            <ContextMenuGroup>
+              {config.sublabel ? (
+                <ContextMenuLabel className="px-1 py-1 text-[11px] font-medium text-muted-foreground">
+                  {config.label}
+                </ContextMenuLabel>
+              ) : (
+                <ContextMenuLabel className="flex items-center gap-2 px-1 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  {GroupIcon ? (
+                    <GroupIcon className="size-3.5 shrink-0 text-primary" />
+                  ) : null}
+                  {config.label}
+                </ContextMenuLabel>
+              )}
+              {config.header ? (
+                <div className="mb-1.5 px-1">{config.header}</div>
+              ) : null}
+              {items.map((action) => (
+                <ContextMenuRowActionItem
+                  key={action.key}
+                  action={action}
+                  onRun={runAction}
+                />
+              ))}
+            </ContextMenuGroup>
+          </div>
+        )
+      })}
+    </ContextMenuContent>
   )
 }
 
@@ -121,6 +126,7 @@ export function DataTableRowContextMenu({
   ...tableRowProps
 }: DataTableRowContextMenuProps) {
   const registry = useDataTableRowActionsRegistryOptional()
+  const [refreshKey, setRefreshKey] = useState(0)
 
   if (!enabled || !registry) {
     return (
@@ -131,7 +137,11 @@ export function DataTableRowContextMenu({
   }
 
   return (
-    <ContextMenu>
+    <ContextMenu
+      onOpenChange={(open) => {
+        if (open) setRefreshKey((key) => key + 1)
+      }}
+    >
       <ContextMenuTrigger
         render={
           <TableRow
@@ -143,7 +153,7 @@ export function DataTableRowContextMenu({
       >
         {children}
       </ContextMenuTrigger>
-      <DataTableRowContextMenuContent rowId={rowId} />
+      <DataTableRowContextMenuContent rowId={rowId} refreshKey={refreshKey} />
     </ContextMenu>
   )
 }

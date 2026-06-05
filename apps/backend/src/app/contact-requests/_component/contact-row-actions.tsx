@@ -15,6 +15,7 @@ import {
   DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
   TABLE_ACTIONS_COLUMN_META,
+  type DataTableRowActionConfirm,
   type DataTableRowActionItem,
 } from "@ui/components/data-table";
 import {
@@ -62,6 +63,34 @@ export type ContactRequestRowActionsProps = {
     priority: NonNullable<ContactRequest["priority"]>,
   ) => void | Promise<void>;
 };
+
+function contactDeleteConfirm(contact: ContactRequest): DataTableRowActionConfirm {
+  return {
+    title: "Đưa yêu cầu vào thùng rác?",
+    description: (
+      <>
+        Yêu cầu từ <strong>{contact.name}</strong> ({contact.email}) sẽ không
+        hiển thị trong danh sách. Có thể khôi phục trong tab Thùng rác.
+      </>
+    ),
+    confirmLabel: "Xóa tạm",
+    destructive: true,
+  };
+}
+
+function contactPurgeConfirm(contact: ContactRequest): DataTableRowActionConfirm {
+  return {
+    title: "Xóa vĩnh viễn yêu cầu?",
+    description: (
+      <>
+        Yêu cầu từ <strong>{contact.name}</strong> ({contact.email}) sẽ bị xoá
+        khỏi cơ sở dữ liệu. Không thể hoàn tác.
+      </>
+    ),
+    confirmLabel: "Xóa vĩnh viễn",
+    destructive: true,
+  };
+}
 
 function ContactStatusBadge({ status }: { status: ContactRequest["status"] }) {
   const cfg = STATUS_VISUAL[status];
@@ -146,7 +175,7 @@ export function ContactRequestRowActions({
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      confirm: false,
+      confirm: contactDeleteConfirm(contact),
     });
   }
 
@@ -159,7 +188,7 @@ export function ContactRequestRowActions({
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      confirm: false,
+      confirm: contactPurgeConfirm(contact),
     });
   }
 

@@ -185,7 +185,7 @@ const RESOURCE_LABEL_VI = {
 
 ### 4.4. `apps/api/src/seeds/superadmin-bootstrap.data.ts` — đã fix
 
-Role `super_admin` được bổ sung các perm còn thiếu: `tags:restore`, `roles:restore`, `imported_users:*` (7), `system:*` (7), `parent_students:*` (6). Tổng seed giờ bao phủ 40 resource × action (xem chi tiết tại `apps/api/src/seeds/superadmin-bootstrap.data.ts`).
+Role `super_admin` được bổ sung các perm còn thiếu: `tags:restore`, `roles:restore`, `imported_users:*` (7), `system:*` (7), `parent_students:*` (6), `categories:restore`, `categories:hard-delete`, `groups:restore`, `groups:hard-delete` (cho 3 role super_admin records). Tổng seed giờ bao phủ 40 resource × action (xem chi tiết tại `apps/api/src/seeds/superadmin-bootstrap.data.ts`).
 
 ### 4.5. `packages/api-client/src/permissions.ts` — clean code refactor
 
@@ -193,7 +193,28 @@ Role `super_admin` được bổ sung các perm còn thiếu: `tags:restore`, `r
 - Nhóm theo domain nghiệp vụ (Dashboard / People / Content / Communication / Academic / Events / CMS resources / Operational / RBAC) với separator `// ───`.
 - Cô lập key dot-notation legacy (`users.cart_own`, `rbac.read`, `data.maintenance`, `support.read/write`, `categories.read/write`, `products.read/write`, `orders.read/write/checkout`) vào section `// ─── Legacy (dot-notation, giữ để không vỡ code cũ) ───` với JSDoc `@deprecated` chỉ hướng di chuyển.
 - Mỗi resource tuân thủ thứ tự `VIEW → CREATE → UPDATE → DELETE → MANAGE → EXPORT` rồi extras (`*_RESTORE`, `*_HARD_DELETE`, `*_ACTIVE`, `*_UNACTIVE`, `*_APPROVE`, `*_PUBLISH`, `*_VIEW_ALL/OWN`, `*_IMPORT`).
-- Bổ sung `ROLES_*` (7), `FACE_DATA_EXPORT`, `IMPORTED_USERS_EXPORT` để đối xứng với API.
+- Bổ sung `ROLES_*` (7), `FACE_DATA_EXPORT`, `IMPORTED_USERS_EXPORT`, `CATEGORIES_RESTORE/HARD_DELETE`, `GROUPS_RESTORE/HARD_DELETE`, `EVENT_REGISTRATIONS_RESTORE/HARD_DELETE`, `EVENT_CHECKINS_RESTORE/HARD_DELETE`, `FACE_DATA_RESTORE/HARD_DELETE` để đối xứng với API.
+
+### 4.6. Đối xứng restore / hard-delete giữa các resource (round 2)
+
+Round 1 audit phát hiện 5 resource còn dùng `*_MANAGE` cho restore và `*_DELETE`/`*_MANAGE` cho hard-delete. Đã thống nhất convention: **mỗi restore endpoint dùng `*_RESTORE`** (nếu có restore action) và **mỗi hard-delete endpoint dùng `*_HARD_DELETE`** (nếu có hard-delete action). Round 2 bổ sung 10 perm code mới:
+
+| Resource | Restore | Hard-delete |
+| --- | --- | --- |
+| `categories` | `CATEGORIES_RESTORE` | `CATEGORIES_HARD_DELETE` |
+| `event_checkins` | `EVENT_CHECKINS_RESTORE` | `EVENT_CHECKINS_HARD_DELETE` |
+| `event_registrations` | `EVENT_REGISTRATIONS_RESTORE` | `EVENT_REGISTRATIONS_HARD_DELETE` |
+| `face_data` | `FACE_DATA_RESTORE` | `FACE_DATA_HARD_DELETE` |
+| `groups` | `GROUPS_RESTORE` | `GROUPS_HARD_DELETE` |
+
+5 controller đã được update để dùng perm granular mới:
+- `apps/api/src/categories/categories.controller.ts:524, 433`
+- `apps/api/src/event-checkins/event-checkins.controller.ts:202, 252`
+- `apps/api/src/event-registrations/event-registrations.controller.ts:252, 302`
+- `apps/api/src/face-data/face-data.controller.ts:167, 217`
+- `apps/api/src/groups/groups.controller.ts:329, 412`
+
+Convention: **khi thêm resource mới có restore / hard-delete, khai báo đủ `*_RESTORE` và `*_HARD_DELETE` cùng `*_MANAGE`**.
 
 ---
 
@@ -206,26 +227,26 @@ Tính từ `apps/api/src/config/permissions.ts` (generateResourcePermissions + e
 | dashboard | 1 | seo_metas | 8 |
 | users | 11 | speakers | 7 |
 | posts | 11 | locations | 7 |
-| categories | 6 | training_levels | 7 |
+| categories | 8 | training_levels | 7 |
 | tags | 7 | training_systems | 7 |
 | comments | 8 | majors | 7 |
 | roles | 7 | courses | 7 |
 | messages | 6 | academic_years | 7 |
-| groups | 6 | events | 7 |
+| groups | 8 | events | 7 |
 | notifications | 5 | cameras | 7 |
 | contact_requests | 8 | templates | 7 |
 | students | 11 | screens | 7 |
 | sessions | 7 | departments | 7 |
-| settings | 7 | event_registrations | 6 |
-| accounts | 3 | event_checkins | 6 |
+| settings | 7 | event_registrations | 8 |
+| accounts | 3 | event_checkins | 8 |
 | uploads | 6 | event_checkouts | 6 |
 | admission_results | 8 | event_speakers | 6 |
-| page_contents | 6 | face_data | 6 |
+| page_contents | 6 | face_data | 8 |
 | | | imported_users | 7 |
 | | | system | 6 |
 | | | parent_students | 6 |
 
-**Tổng: ~258 permissions** trải đều trên 40 resource. Ma trận UI ở `/rbac/[id]` sẽ hiển thị đủ nhóm vì `Object.values(PERMISSION_CODES)` quét toàn bộ `PERMISSION_CODES`.
+**Tổng: 277 permissions** trải đều trên 40 resource (sau round 2: +10 perm cho restore/hard-delete của 5 resource: categories, groups, event_checkins, event_registrations, face_data). Ma trận UI ở `/rbac/[id]` sẽ hiển thị đủ nhóm vì `Object.values(PERMISSION_CODES)` quét toàn bộ `PERMISSION_CODES`.
 
 ---
 
@@ -236,12 +257,12 @@ Tính từ `apps/api/src/config/permissions.ts` (generateResourcePermissions + e
 | `UsersController` | `USERS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_HARD_DELETE/_ACTIVE/_UNACTIVE` | ✅ | ✅ |
 | `RolesController` | `ROLES_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_MANAGE` | ✅ | ✅ |
 | `PostsController` | `POSTS_VIEW` | `_CREATE/_UPDATE/_DELETE/_PUBLISH/_RESTORE/_IMPORT/_EXPORT` | ✅ | ✅ |
-| `CategoriesController` | `CATEGORIES_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
+| `CategoriesController` | `CATEGORIES_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_HARD_DELETE` | ✅ | ✅ |
 | `TagsController` | `TAGS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_MANAGE` | ✅ | ✅ |
 | `CommentsController` | `COMMENTS_VIEW` | `_CREATE/_UPDATE/_DELETE/_APPROVE/_MANAGE` | ✅ | ✅ |
 | `MessagesController` | `MESSAGES_VIEW` | (tùy method) | ✅ | ✅ |
 | `ConversationsController` | `MESSAGES_VIEW` | `markRead` dùng `MESSAGES_UPDATE` | ✅ | ✅ |
-| `GroupsController` | `GROUPS_VIEW` | `_CREATE/_UPDATE/_DELETE/_MANAGE` | ✅ | ✅ |
+| `GroupsController` | `GROUPS_VIEW` | `_CREATE/_UPDATE/_DELETE/_RESTORE/_HARD_DELETE` | ✅ | ✅ |
 | `NotificationsController` | `NOTIFICATIONS_VIEW_OWN` | (per-action override) | (n/a) | ✅ |
 | `ContactRequestsController` | `CONTACT_REQUESTS_VIEW` | `_CREATE/_UPDATE/_DELETE/_ASSIGN/_MANAGE` | ✅ | ✅ |
 | `StudentsController` | `STUDENTS_VIEW` | (per-action) | ✅ | ✅ |
@@ -303,4 +324,4 @@ Script sẽ:
    - **Code chỉ có ở client (không phải legacy)** → FAIL (dùng làm @Permissions() sẽ undefined, runtime guard broken).
    - **Legacy dot-notation** → WARN (giữ để tương thích DB cũ, có JSDoc `@deprecated`).
 
-Kết quả hiện tại: **267 API codes ↔ 279 client codes (gồm 12 legacy) — parity OK**.
+Kết quả hiện tại: **277 API codes ↔ 289 client codes (gồm 12 legacy) — parity OK**.

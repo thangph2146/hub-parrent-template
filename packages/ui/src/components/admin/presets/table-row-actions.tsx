@@ -401,8 +401,6 @@ export function AdminTableTrashRowActions({
     })
   }
 
-  if (actions.length === 0) return null
-
   return (
     <DataTableRowActionsMenu
       actions={actions}

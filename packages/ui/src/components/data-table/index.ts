@@ -10,9 +10,12 @@ export {
 export {
   RowActionConfirmDialog,
   buildAdminRowActionConfirm,
+  normalizeResolvedRowActionConfirm,
   resolveRowActionConfirm,
+  useDataTableRowActionRunnerOptional,
   useRowActionConfirm,
   type DataTableRowActionConfirm,
+  type ResolvedDataTableRowActionConfirm,
 } from "./row-action-confirm"
 export {
   normalizeDataTableColumns,
@@ -31,9 +34,12 @@ export {
   type RowActionsMenuGroupConfig,
 } from "./table-row-actions-menu"
 export {
+  DataTableRowActionsRegistrar,
   DataTableRowActionsRegistryProvider,
   DataTableRowActionsRowProvider,
+  DataTableScopeProvider,
   useDataTableRowActionsRowId,
+  useDataTableScopeId,
   useRegisterDataTableRowActions,
   type RegisteredDataTableRowActions,
 } from "./data-table-row-actions-registry"
