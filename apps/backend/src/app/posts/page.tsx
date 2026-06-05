@@ -53,8 +53,6 @@ import {
   buildCategoryOptionTree,
   buildPostsFilterQuery,
   getPostColumns,
-  getTrashColumns,
-  formatDateTime,
 } from "./_component";
 function PostsPageInner() {
   const router = useRouter();
@@ -163,12 +161,12 @@ function PostsPageInner() {
   const columns = useMemo<ColumnDef<PostListRow>[]>(
     () =>
       getPostColumns({
+        view: "list",
         navigateToEdit,
         navigateToView,
         rowActions,
         categoryTreeOptions,
         tagsOptions: tagsQuery.data ?? [],
-        formatDateTime,
         canUpdate,
         canDelete,
       }),
@@ -177,15 +175,18 @@ function PostsPageInner() {
 
   const trashColumns = useMemo<ColumnDef<PostListRow>[]>(
     () =>
-      getTrashColumns({
+      getPostColumns({
+        view: "trash",
+        navigateToEdit,
+        navigateToView,
         rowActions,
-        formatDateTime,
         categoryTreeOptions,
         tagsOptions: tagsQuery.data ?? [],
-        canRestore,
+        canUpdate,
         canDelete,
+        canRestore,
       }),
-    [rowActions, categoryTreeOptions, tagsQuery.data, canRestore, canDelete],
+    [navigateToEdit, navigateToView, rowActions, categoryTreeOptions, tagsQuery.data, canUpdate, canDelete, canRestore],
   );
 
   return (

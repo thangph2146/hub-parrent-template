@@ -33,7 +33,7 @@ export interface MyStudentsColumnsProps {
 }
 
 export function getMyStudentsColumns(
-  props: MyStudentsColumnsProps,
+  props: MyStudentsColumnsProps
 ): ColumnDef<MyStudentRow>[] {
   const { onViewGrades, onDelete, canDelete, deleteBusy } = props
 
@@ -128,7 +128,11 @@ export function getMyStudentsColumns(
     },
     ...defineRelationExportColumns<MyStudentRow>([
       { id: "parentId", header: "ID phụ huynh", getValue: (r) => r.parentId },
-      { id: "reviewedAt", header: "Duyệt lúc", getValue: (r) => r.reviewedAt ?? "" },
+      {
+        id: "reviewedAt",
+        header: "Duyệt lúc",
+        getValue: (r) => r.reviewedAt ?? "",
+      },
     ]),
     {
       id: "actions",
@@ -196,7 +200,5 @@ export function getMyStudentsColumns(
 }
 
 export function getMyStudentGlobalFilterText(row: MyStudentRow): string {
-  return [row.studentCode, row.studentName, row.note]
-    .filter(Boolean)
-    .join(" ")
+  return [row.studentCode, row.studentName, row.note].filter(Boolean).join(" ")
 }

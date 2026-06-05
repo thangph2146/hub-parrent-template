@@ -8,11 +8,7 @@ export {
   normalizePagedResult as normalizePaged,
 } from "@workspace/api-client";
 
-export function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+export { formatAdminDateTime as formatDateTime } from "@/lib/format-admin-datetime";
 
 export function humanizeSlug(slug: string): string {
   return slug.split("-").filter(Boolean).join(" ");

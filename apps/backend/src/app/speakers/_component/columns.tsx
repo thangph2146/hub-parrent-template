@@ -1,32 +1,35 @@
-"use client";
+"use client"
 
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import { defineRelationExportColumns } from "@ui/components/data-table";
-import type { SpeakerRow } from "./types";
-
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import { defineRelationExportColumns } from "@ui/components/data-table"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import { formatAdminDateTime } from "@/lib/format-admin-datetime"
+import type { SpeakerRow } from "./types"
 
 export function getSpeakerColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: SpeakerRow) => void;
-  openEdit: (row: SpeakerRow) => void;
-  rowActions: AdminCrudRowHandlers<SpeakerRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: SpeakerRow) => void
+  openEdit?: (row: SpeakerRow) => void
+  rowActions: AdminCrudRowHandlers<SpeakerRow>
+  canWrite: boolean
 }): ColumnDef<SpeakerRow>[] {
-  return [
+  const dataColumns: ColumnDef<SpeakerRow>[] = [
     {
       accessorKey: "name",
       header: "Tên",
@@ -34,7 +37,7 @@ export function getSpeakerColumns({
       cell: ({ row, getValue }) => (
         <button
           type="button"
-          className="font-medium text-left text-foreground hover:text-primary transition-colors"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
           onClick={() => openDetail(row.original)}
         >
           {String(getValue())}
@@ -62,8 +65,8 @@ export function getSpeakerColumns({
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -85,19 +88,19 @@ export function getSpeakerColumns({
       header: "Cập nhật",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const rowDate = rowVal.split("T")[0];
-        const [fromStr, toStr] = String(filterValue).split(",");
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
+        if (filterValue == null || filterValue === "") return true
+        const rowVal = row.getValue(columnId) as string
+        if (!rowVal) return false
+        const rowDate = rowVal.split("T")[0]
+        const [fromStr, toStr] = String(filterValue).split(",")
+        if (fromStr && rowDate < fromStr) return false
+        if (toStr && rowDate > toStr) return false
+        return true
       },
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => (
         <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
+          {formatAdminDateTime(getValue() as string)}
         </span>
       ),
     },
@@ -105,11 +108,25 @@ export function getSpeakerColumns({
       { id: "email", header: "Email", getValue: (row) => row.email ?? "" },
       { id: "phone", header: "SĐT", getValue: (row) => row.phone ?? "" },
       { id: "bio", header: "Tiểu sử", getValue: (row) => row.bio ?? "" },
-      { id: "avatar", header: "Avatar URL", getValue: (row) => row.avatar ?? "" },
+      {
+        id: "avatar",
+        header: "Avatar URL",
+        getValue: (row) => row.avatar ?? "",
+      },
       { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
-      { id: "id", header: "ID", getValue: (row) => row.id, defaultHidden: true },
+      {
+        id: "id",
+        header: "ID",
+        getValue: (row) => row.id,
+        defaultHidden: true,
+      },
     ]),
-    defineAdminCrudActionsColumn<SpeakerRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<SpeakerRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -117,48 +134,11 @@ export function getSpeakerColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<SpeakerRow>;
-  canWrite: boolean;
-}): ColumnDef<SpeakerRow>[] {
-  return [
-    {
-      accessorKey: "name",
-      header: "Tên",
-      enableColumnFilter: false,
-    },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const rowDate = rowVal.split("T")[0];
-        const [fromStr, toStr] = String(filterValue).split(",");
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
-        </span>
-      ),
-    },
-    defineAdminTrashActionsColumn<SpeakerRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<SpeakerRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }

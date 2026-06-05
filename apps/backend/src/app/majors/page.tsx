@@ -26,9 +26,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   MajorsTable,
   MajorsTrashTable,
-  getMajorColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getMajorColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useMajorsListQuery,
@@ -164,6 +162,7 @@ function MajorsPageInner() {
   const columns = useMemo<ColumnDef<MajorRow>[]>(
     () =>
       getMajorColumns({
+        view: "list",
         openDetail: (row) => router.push(`/majors/${row.id}`),
         openEdit: (row) => router.push(`/majors/${row.id}/edit`),
         rowActions,
@@ -173,7 +172,7 @@ function MajorsPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<MajorRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getMajorColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite]
   )
 

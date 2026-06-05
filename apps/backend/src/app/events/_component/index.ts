@@ -1,6 +1,6 @@
 export type { EventRow, EventFormValues, EventConfirmAction, EventDetail, EventFormSpeaker } from "./types";
 export { eventFormSchema } from "./types";
-export { getEventColumns, getTrashColumns } from "./columns";
+export { getEventColumns } from "./columns";
 export {
   useEventDetailQuery,
   useEventsListQuery,

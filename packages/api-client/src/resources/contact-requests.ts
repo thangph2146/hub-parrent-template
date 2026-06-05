@@ -107,7 +107,13 @@ export class ContactRequestsApi {
 
   async list(
     params?: ContactRequestsListParams
-  ): Promise<{ items: ContactRequest[]; total: number }> {
+  ): Promise<{
+    items: ContactRequest[];
+    total: number;
+    page?: number;
+    limit?: number;
+    totalPages?: number;
+  }> {
     const payload = await getData<unknown>(
       this.http,
       "/admin/contact-requests",
@@ -126,6 +132,9 @@ export class ContactRequestsApi {
     return {
       items: normalized.items.map(mapContactRequest),
       total: normalized.total,
+      page: normalized.page,
+      limit: normalized.limit,
+      totalPages: normalized.totalPages,
     }
   }
 

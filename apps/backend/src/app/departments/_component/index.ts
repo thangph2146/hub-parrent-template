@@ -1,6 +1,6 @@
 export type { DepartmentRow, DepartmentFormValues, DepartmentConfirmAction, DepartmentDetail } from "./types";
 export { departmentFormSchema } from "./types";
-export { getDepartmentColumns, getTrashColumns } from "./columns";
+export { getDepartmentColumns } from "./columns";
 export {
   useDepartmentDetailQuery,
   useDepartmentsListQuery,

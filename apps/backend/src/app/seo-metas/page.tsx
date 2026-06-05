@@ -22,9 +22,7 @@ import { api } from "@/lib/api";
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   SeoMetasTable,
-  getSeoMetaColumns,
-  getTrashColumns,
-  useSeoMetasListQuery,
+  getSeoMetaColumns,  useSeoMetasListQuery,
   useSeoMetasTrashQuery,
 } from "./_component";
 import type { SeoMetaRow } from "./_component";
@@ -121,6 +119,7 @@ function SeoMetasPageInner() {
   const columns = useMemo<ColumnDef<SeoMetaRow>[]>(
     () =>
       getSeoMetaColumns({
+        view: "list",
         openDetail: (row) => router.push(`/seo-metas/${row.id}`),
         openEdit: (row) => router.push(`/seo-metas/${row.id}/edit`),
         rowActions,
@@ -132,7 +131,7 @@ function SeoMetasPageInner() {
 
 
   const trashColumns = useMemo<ColumnDef<SeoMetaRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getSeoMetaColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite],
   );
 

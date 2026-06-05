@@ -27,9 +27,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   DepartmentsTable,
   DepartmentsTrashTable,
-  getDepartmentColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getDepartmentColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useDepartmentsListQuery,
@@ -165,6 +163,7 @@ function DepartmentsPageInner() {
   const columns = useMemo<ColumnDef<DepartmentRow>[]>(
     () =>
       getDepartmentColumns({
+        view: "list",
         openDetail: (row) => router.push(`/departments/${row.id}`),
         openEdit: (row) => router.push(`/departments/${row.id}/edit`),
         rowActions,
@@ -174,7 +173,7 @@ function DepartmentsPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<DepartmentRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getDepartmentColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite]
   )
 

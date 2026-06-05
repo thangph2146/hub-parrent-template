@@ -23,13 +23,25 @@ function toApiFilterQuery(filters?: Record<string, string>): Record<string, stri
 export class RolesApi {
   constructor(private readonly http: ApiClient) {}
 
-  async list<T = unknown>(params?: RolesListParams): Promise<{ items: T[]; total: number }> {
+  async list<T = unknown>(params?: RolesListParams): Promise<{
+    items: T[];
+    total: number;
+    page?: number;
+    limit?: number;
+    totalPages?: number;
+  }> {
     const { filters, ...rest } = params ?? {};
     const payload = await this.http.get<unknown>("/admin/roles", {
       query: { page: 1, limit: 20, ...rest, ...toApiFilterQuery(filters) },
     });
     const normalized = normalizePagedResult<T>(payload);
-    return { items: normalized.items, total: normalized.total };
+    return {
+      items: normalized.items,
+      total: normalized.total,
+      page: normalized.page,
+      limit: normalized.limit,
+      totalPages: normalized.totalPages,
+    };
   }
 
   async listAll<T = unknown>(): Promise<T[]> {

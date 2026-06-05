@@ -11,7 +11,7 @@ export {
   buildTagsFilterQuery,
   toFilterQuery,
 } from "./utils";
-export { getTagColumns, getTrashColumns } from "./columns";
+export { getTagColumns } from "./columns";
 export {
   useTagDetailQuery,
   useTagsListQuery,

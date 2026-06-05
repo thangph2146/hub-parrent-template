@@ -25,9 +25,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   CoursesTable,
   CoursesTrashTable,
-  getCourseColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getCourseColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useCoursesListQuery,
@@ -137,6 +135,7 @@ function CoursesPageInner() {
 
   const columns = useMemo<ColumnDef<CourseRow>[]>(
     () => getCourseColumns({
+        view: "list",
       openDetail: (row) => router.push(`/courses/${row.id}`),
       openEdit: (row) => router.push(`/courses/${row.id}/edit`),
       rowActions,
@@ -146,7 +145,7 @@ function CoursesPageInner() {
   );
 
   const trashColumns = useMemo<ColumnDef<CourseRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getCourseColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite],
   );
 

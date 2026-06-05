@@ -1,29 +1,32 @@
-"use client";
+"use client"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { TemplateRow } from "./types";
-
-function fmt(v: string | null | undefined): string {
-  if (!v) return "—";
-  const d = new Date(v);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import type { TemplateRow } from "./types"
 
 export function getTemplateColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: TemplateRow) => void;
-  openEdit: (row: TemplateRow) => void;
-  rowActions: AdminCrudRowHandlers<TemplateRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: TemplateRow) => void
+  openEdit?: (row: TemplateRow) => void
+  rowActions: AdminCrudRowHandlers<TemplateRow>
+  canWrite: boolean
 }): ColumnDef<TemplateRow>[] {
-  return [
+  const dataColumns: ColumnDef<TemplateRow>[] = [
     {
       accessorKey: "name",
       header: "Tên mẫu",
@@ -31,7 +34,7 @@ export function getTemplateColumns({
       cell: ({ row, getValue }) => (
         <button
           type="button"
-          className="font-medium text-left text-foreground hover:text-primary transition-colors"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
           onClick={() => openDetail(row.original)}
         >
           {String(getValue())}
@@ -43,7 +46,7 @@ export function getTemplateColumns({
       header: "Mã",
       enableColumnFilter: true,
       cell: ({ getValue }) => (
-        <span className="text-sm font-mono">{String(getValue() ?? "—")}</span>
+        <span className="font-mono text-sm">{String(getValue() ?? "—")}</span>
       ),
     },
     {
@@ -51,8 +54,8 @@ export function getTemplateColumns({
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -69,7 +72,12 @@ export function getTemplateColumns({
         />
       ),
     },
-    defineAdminCrudActionsColumn<TemplateRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<TemplateRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -77,42 +85,11 @@ export function getTemplateColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<TemplateRow>;
-  canWrite: boolean;
-}): ColumnDef<TemplateRow>[] {
-  return [
-    { accessorKey: "name", header: "Tên", enableColumnFilter: false },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">{fmt(getValue() as string)}</span>
-      ),
-    },
-    defineAdminTrashActionsColumn<TemplateRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<TemplateRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }

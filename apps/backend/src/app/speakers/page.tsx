@@ -28,9 +28,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   SpeakersTable,
   SpeakersTrashTable,
-  getSpeakerColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getSpeakerColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useSpeakersListQuery,
@@ -170,6 +168,7 @@ function SpeakersPageInner() {
   const columns = useMemo<ColumnDef<SpeakerRow>[]>(
     () =>
       getSpeakerColumns({
+        view: "list",
         openDetail: (row) => router.push(`/speakers/${row.id}`),
         openEdit: (row) => router.push(`/speakers/${row.id}/edit`),
         rowActions,
@@ -179,7 +178,7 @@ function SpeakersPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<SpeakerRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getSpeakerColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite]
   )
 

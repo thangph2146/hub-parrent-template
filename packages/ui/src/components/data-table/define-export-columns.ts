@@ -1,4 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table"
+import {
+  formatAdminDateTime,
+  isParsableDateTime,
+} from "../../lib/format-admin-datetime"
 
 export type LinkedUserRef = {
   id: string
@@ -17,8 +21,13 @@ type RelationExportField<T> = {
 function formatRelationCellValue(value: unknown): string {
   if (value == null || value === "") return ""
   if (typeof value === "boolean") return value ? "Có" : "Không"
-  if (typeof value === "number") return String(value)
-  if (value instanceof Date) return value.toLocaleString("vi-VN")
+  if (typeof value === "number" && !isParsableDateTime(value)) {
+    return String(value)
+  }
+  if (isParsableDateTime(value)) {
+    const formatted = formatAdminDateTime(value as string | Date | number)
+    return formatted === "—" ? "" : formatted
+  }
   return String(value)
 }
 
@@ -66,7 +75,7 @@ export function defineRelationExportColumns<T>(
     meta: {
       defaultHidden: field.defaultHidden ?? true,
       exportHeader: field.header,
-      exportValue: (row: T) => field.getValue(row),
+      exportValue: (row: T) => formatRelationCellValue(field.getValue(row)),
       exportWidth: field.exportWidth,
     },
     cell: ({ row }) => {

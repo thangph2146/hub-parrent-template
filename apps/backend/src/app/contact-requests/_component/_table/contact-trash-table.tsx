@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 
 import { downloadAdminTableXlsx } from "@/lib/admin-xlsx-export";
 
-import { getTrashColumns } from "../columns";
+import { getContactRequestColumns } from "../columns";
 
 import { getContactRequestExportFields } from "../contact-export";
 
@@ -27,6 +27,10 @@ interface ContactRequestTrashTableProps {
   page: number;
 
   pageSize: number;
+
+  appliedPage?: number;
+
+  appliedPageSize?: number;
 
   onPageChange: (page: number) => void;
 
@@ -83,6 +87,10 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
 
     pageSize,
 
+    appliedPage,
+
+    appliedPageSize,
+
     onPageChange,
 
     onPageSizeChange,
@@ -121,7 +129,19 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
 
 
 
-  const columns = getTrashColumns({ onRestore, onPurge, busy, canRestore, canDelete });
+  const columns = getContactRequestColumns({
+    view: "trash",
+    onView: () => {},
+    onDelete: () => {},
+    onRestore,
+    onPurge,
+    onStatusChange: async () => {},
+    onSetRead: async () => {},
+    onSetPriority: async () => {},
+    busy,
+    canRestore,
+    canDelete,
+  });
 
 
 
@@ -255,23 +275,16 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
       }}
 
       pagination={{
-
         page,
-
         pageSize,
-
         total,
-
+        appliedPage,
+        appliedPageSize,
         isLoading,
-
         onPageChange,
-
         onPageSizeChange,
-
         emptySummary: "Không có yêu cầu trong thùng rác",
-
         itemLabel: "yêu cầu",
-
       }}
 
     />

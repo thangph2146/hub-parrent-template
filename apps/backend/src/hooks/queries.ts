@@ -46,9 +46,20 @@ export const queryKeys = {
   }) => ["parent-students", params] as const,
 }
 
-export type UsersListData = { items: User[]; total: number }
+export type UsersListData = {
+  items: User[]
+  total: number
+  page?: number
+  limit?: number
+}
 export type RbacCatalog = { permissions: RbacPermission[]; roles: RbacRole[] }
-export type ContactRequestsData = { items: ContactRequest[]; total: number }
+export type ContactRequestsData = {
+  items: ContactRequest[]
+  total: number
+  page?: number
+  limit?: number
+  totalPages?: number
+}
 export type MyStudentsData = { items: ParentStudent[] }
 export type ParentStudentsData = { items: ParentStudentAdmin[]; total: number }
 
@@ -151,7 +162,12 @@ export const useStaffUserList = (opts?: {
         limit: opts?.listParams?.limit,
         filters: opts?.listParams?.filters,
       })
-      return { items: res.items, total: res.total }
+      return {
+        items: res.items,
+        total: res.total,
+        page: res.page,
+        limit: res.limit,
+      }
     },
     enabled: opts?.enabled ?? true,
   })
@@ -175,7 +191,12 @@ export const useTrashedStaffUsers = (opts?: {
         q: lp?.q,
         filters: lp?.filters,
       })
-      return { items: res.items, total: res.total }
+      return {
+        items: res.items,
+        total: res.total,
+        page: res.page,
+        limit: res.limit,
+      }
     },
     enabled: opts?.enabled ?? true,
   })
@@ -196,7 +217,13 @@ export const useContactRequests = (opts?: {
     queryKey: queryKeys.contactRequests(opts?.params),
     queryFn: async () => {
       const res = await api.contactRequests.list(opts?.params)
-      return { items: res.items, total: res.total }
+      return {
+        items: res.items,
+        total: res.total,
+        page: res.page,
+        limit: res.limit,
+        totalPages: res.totalPages,
+      }
     },
     enabled: opts?.enabled ?? true,
   })

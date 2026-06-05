@@ -1,6 +1,6 @@
 export type { LocationRow, LocationFormValues, LocationConfirmAction, LocationDetail } from "./types";
 export { locationFormSchema } from "./types";
-export { getLocationColumns, getTrashColumns } from "./columns";
+export { getLocationColumns } from "./columns";
 export {
   useLocationDetailQuery,
   useLocationsListQuery,

@@ -1,6 +1,6 @@
 export type { TrainingLevelRow, TrainingLevelFormValues, TrainingLevelConfirmAction, TrainingLevelDetail } from "./types";
 export { entityFormSchema } from "./types";
-export { getTrainingLevelColumns, getTrashColumns } from "./columns";
+export { getTrainingLevelColumns } from "./columns";
 export {
   useTrainingLevelDetailQuery,
   useTrainingLevelsListQuery,

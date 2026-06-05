@@ -25,9 +25,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TrainingLevelsTable,
   TrainingLevelsTrashTable,
-  getTrainingLevelColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getTrainingLevelColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useTrainingLevelsListQuery,
@@ -136,6 +134,7 @@ function TrainingLevelsPageInner() {
   const columns = useMemo<ColumnDef<TrainingLevelRow>[]>(
     () =>
       getTrainingLevelColumns({
+        view: "list",
         openDetail: (row) => router.push(`/training-levels/${row.id}`),
         openEdit: (row) => router.push(`/training-levels/${row.id}/edit`),
         rowActions,
@@ -147,7 +146,7 @@ function TrainingLevelsPageInner() {
 
 
   const trashColumns = useMemo<ColumnDef<TrainingLevelRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getTrainingLevelColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite],
   );
 

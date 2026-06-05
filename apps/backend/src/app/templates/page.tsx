@@ -26,7 +26,6 @@ import {
   TemplatesTable,
   TemplatesTrashTable,
   getTemplateColumns,
-  getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
@@ -123,6 +122,7 @@ function TemplatesPageInner() {
   const cols = useMemo<ColumnDef<TemplateRow>[]>(
     () =>
       getTemplateColumns({
+        view: "list",
         openDetail: (r) => router.push(`/templates/${r.id}`),
         openEdit: (r) => router.push(`/templates/${r.id}/edit`),
         rowActions,
@@ -131,7 +131,7 @@ function TemplatesPageInner() {
     [rowActions, router, canWrite]
   )
   const tCols = useMemo<ColumnDef<TemplateRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getTemplateColumns({ view: "trash", rowActions, canWrite }),
     [rowActions, canWrite]
   )
   return (

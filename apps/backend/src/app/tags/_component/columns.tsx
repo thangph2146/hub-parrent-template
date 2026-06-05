@@ -1,36 +1,44 @@
-"use client";
+"use client"
 
-import type { ColumnDef, Row } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
+import type { ColumnDef, Row } from "@tanstack/react-table"
+import { Badge } from "@ui/components/badge"
 import {
   AdminTableCrudRowActions,
   defineAdminTrashActionsColumn,
-} from "@ui/components/admin";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { TagRow, TagTreeRow } from "./types";
-import { formatDateTime } from "./utils";
-import { resolveIcon } from "@ui/lib/icons";
-import { createElement } from "react";
+} from "@ui/components/admin"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import type { TagRow, TagTreeRow } from "./types"
+import { formatDateTime } from "./utils"
+import { resolveIcon } from "@ui/lib/icons"
+import { createElement } from "react"
 
 function TagIcon({ name }: { name: string | null | undefined }) {
-  if (!name) return <div className="size-5 shrink-0" />;
-  const Icon = resolveIcon(name);
-  if (!Icon) return <div className="size-5 shrink-0" />;
-  return createElement(Icon, { className: "size-5 shrink-0 text-muted-foreground" });
+  if (!name) return <div className="size-5 shrink-0" />
+  const Icon = resolveIcon(name)
+  if (!Icon) return <div className="size-5 shrink-0" />
+  return createElement(Icon, {
+    className: "size-5 shrink-0 text-muted-foreground",
+  })
 }
 
 export function getTagColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: TagRow) => void;
-  openEdit: (row: TagRow) => void;
-  rowActions: AdminCrudRowHandlers<TagRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: TagRow) => void
+  openEdit?: (row: TagRow) => void
+  rowActions: AdminCrudRowHandlers<TagRow>
+  canWrite: boolean
 }): ColumnDef<TagTreeRow>[] {
-  return [
+  const dataColumns: ColumnDef<TagTreeRow>[] = [
     {
       accessorKey: "name",
       header: "Tên / nhóm",
@@ -50,7 +58,7 @@ export function getTagColumns({
         ) : (
           <button
             type="button"
-            className="flex items-center gap-2 font-medium text-left text-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-2 text-left font-medium text-foreground transition-colors hover:text-primary"
             onClick={() => openDetail(row.original)}
           >
             <TagIcon name={row.original.icon} />
@@ -63,8 +71,7 @@ export function getTagColumns({
       header: "Slug",
       enableColumnFilter: false,
       meta: {
-        exportValue: (row) =>
-          row.isGroup ? `nhom:${row.slug}` : row.slug,
+        exportValue: (row) => (row.isGroup ? `nhom:${row.slug}` : row.slug),
       },
       cell: ({ row, getValue }) => (
         <span className="font-mono text-xs">
@@ -82,17 +89,21 @@ export function getTagColumns({
         filterVariant: "date-range",
         filterPlaceholder: "Chọn khoảng ngày",
         exportValue: (row) =>
-          row.isGroup ? "Nhóm theo tiền tố slug" : row.updatedAt ?? "",
+          row.isGroup ? "Nhóm theo tiền tố slug" : (row.updatedAt ?? ""),
       },
-      filterFn: (row: Row<TagTreeRow>, columnId: string, filterValue: unknown) => {
-        if (filterValue == null || filterValue === "") return true;
-        if (row.original.isGroup) return true;
-        const dates = String(filterValue).split(",").filter(Boolean);
-        if (!dates.length) return true;
-        const rowDate = new Date(row.getValue<string>(columnId));
-        if (Number.isNaN(rowDate.getTime())) return true;
-        if (dates.length === 1) return rowDate >= new Date(dates[0]);
-        return rowDate >= new Date(dates[0]) && rowDate <= new Date(dates[1]);
+      filterFn: (
+        row: Row<TagTreeRow>,
+        columnId: string,
+        filterValue: unknown
+      ) => {
+        if (filterValue == null || filterValue === "") return true
+        if (row.original.isGroup) return true
+        const dates = String(filterValue).split(",").filter(Boolean)
+        if (!dates.length) return true
+        const rowDate = new Date(row.getValue<string>(columnId))
+        if (Number.isNaN(rowDate.getTime())) return true
+        if (dates.length === 1) return rowDate >= new Date(dates[0])
+        return rowDate >= new Date(dates[0]) && rowDate <= new Date(dates[1])
       },
       cell: ({ row, getValue }) =>
         row.original.isGroup ? (
@@ -105,73 +116,43 @@ export function getTagColumns({
           </span>
         ),
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      cell: ({ row }) =>
-        row.original.isGroup ? null : (
-          <AdminTableCrudRowActions
-            canWrite={canWrite}
-            recordLabel={rowActions.getRecordLabel(row.original)}
-            onView={() => openDetail(row.original)}
-            onEdit={() => openEdit(row.original)}
-            onSoftDelete={
-              rowActions.onSoftDelete
-                ? () => rowActions.onSoftDelete?.(row.original)
-                : undefined
-            }
-            onPurge={
-              rowActions.onPurge
-                ? () => rowActions.onPurge?.(row.original)
-                : undefined
-            }
-          />
-        ),
-    },
-  ];
-}
+  ]
 
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<TagRow>;
-  canWrite: boolean;
-}): ColumnDef<TagRow>[] {
-  return [
-    {
-      accessorKey: "name",
-      header: "Tên",
-      enableColumnFilter: false,
-    },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range", filterPlaceholder: "Chọn khoảng ngày" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
-        </span>
+  const listActionsColumn: ColumnDef<TagTreeRow> = {
+    id: "actions",
+    header: "Thao tác",
+    enableSorting: false,
+    enableColumnFilter: false,
+    cell: ({ row }) =>
+      row.original.isGroup ? null : (
+        <AdminTableCrudRowActions
+          canWrite={canWrite}
+          recordLabel={rowActions.getRecordLabel(row.original)}
+          onView={() => openDetail(row.original)}
+          onEdit={() => openEdit(row.original)}
+          onSoftDelete={
+            rowActions.onSoftDelete
+              ? () => rowActions.onSoftDelete?.(row.original)
+              : undefined
+          }
+          onPurge={
+            rowActions.onPurge
+              ? () => rowActions.onPurge?.(row.original)
+              : undefined
+          }
+        />
       ),
-    },
-    defineAdminTrashActionsColumn<TagRow>({
+  }
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn,
+    trashActionsColumn: defineAdminTrashActionsColumn<TagRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
-    }),
-  ];
+    }) as ColumnDef<TagTreeRow>,
+  })
 }

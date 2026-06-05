@@ -770,6 +770,10 @@ export function AdminDataTable<TData>({
     return {
       ...pagination,
       maxPageSize,
+      pageSizeOptions:
+        pagination.pageSizeOptions ?? ADMIN_DATA_TABLE_PAGE_SIZE_OPTIONS,
+      currentPageRowCount:
+        pagination.currentPageRowCount ?? data.length,
       showAllPageSizeOption: pagination.showAllPageSizeOption ?? true,
       onShowAllRows:
         pagination.onShowAllRows ??
@@ -778,7 +782,7 @@ export function AdminDataTable<TData>({
           pagination.onPageSizeChange(Math.min(pagination.total, maxPageSize))
         }),
     }
-  }, [pagination])
+  }, [pagination, data.length])
   const resolvedSelectionColumnWidth = Math.max(
     32,
     Math.min(80, Math.round(selectionColumnWidth))
@@ -2039,18 +2043,20 @@ export function AdminDataTable<TData>({
             </DataTableScopeProvider>
           </DataTableRowActionsRegistryProvider>
           {showTableFooter ? (
-            <div
-              className={cn(
-                "flex flex-col gap-3 border-t border-border/80 bg-muted/15 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4",
-                paginationFooter && !footer && "sm:justify-center"
-              )}
-            >
+            <div className="flex flex-col gap-3 border-t border-border/80 bg-muted/15 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4">
               {footer ? (
                 <div className="min-w-0 flex-1 text-sm text-muted-foreground">
                   {footer}
                 </div>
               ) : null}
-              {paginationFooter}
+              <div
+                className={cn(
+                  "min-w-0",
+                  footer ? "shrink-0" : "w-full"
+                )}
+              >
+                {paginationFooter}
+              </div>
             </div>
           ) : null}
         </FieldSetContent>

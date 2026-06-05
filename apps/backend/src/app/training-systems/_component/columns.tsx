@@ -1,31 +1,34 @@
-"use client";
+"use client"
 
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { TrainingSystemRow } from "./types";
-
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import { formatAdminDateTime } from "@/lib/format-admin-datetime"
+import type { TrainingSystemRow } from "./types"
 
 export function getTrainingSystemColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: TrainingSystemRow) => void;
-  openEdit: (row: TrainingSystemRow) => void;
-  rowActions: AdminCrudRowHandlers<TrainingSystemRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: TrainingSystemRow) => void
+  openEdit?: (row: TrainingSystemRow) => void
+  rowActions: AdminCrudRowHandlers<TrainingSystemRow>
+  canWrite: boolean
 }): ColumnDef<TrainingSystemRow>[] {
-  return [
+  const dataColumns: ColumnDef<TrainingSystemRow>[] = [
     {
       accessorKey: "name",
       header: "Tên",
@@ -33,7 +36,7 @@ export function getTrainingSystemColumns({
       cell: ({ row, getValue }) => (
         <button
           type="button"
-          className="font-medium text-left text-foreground hover:text-primary transition-colors"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
           onClick={() => openDetail(row.original)}
         >
           {String(getValue())}
@@ -45,9 +48,7 @@ export function getTrainingSystemColumns({
       header: "Mã",
       enableColumnFilter: false,
       cell: ({ getValue }) => (
-        <span className="font-mono text-xs">
-          {String(getValue() ?? "—")}
-        </span>
+        <span className="font-mono text-xs">{String(getValue() ?? "—")}</span>
       ),
     },
     {
@@ -55,8 +56,8 @@ export function getTrainingSystemColumns({
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -78,23 +79,28 @@ export function getTrainingSystemColumns({
       header: "Cập nhật",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
+        if (filterValue == null || filterValue === "") return true
+        const rowVal = row.getValue(columnId) as string
+        if (!rowVal) return false
+        const [fromStr, toStr] = String(filterValue).split(",")
+        const rowDate = rowVal.split("T")[0]
+        if (fromStr && rowDate < fromStr) return false
+        if (toStr && rowDate > toStr) return false
+        return true
       },
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => (
         <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
+          {formatAdminDateTime(getValue() as string)}
         </span>
       ),
     },
-    defineAdminCrudActionsColumn<TrainingSystemRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<TrainingSystemRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -102,48 +108,11 @@ export function getTrainingSystemColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<TrainingSystemRow>;
-  canWrite: boolean;
-}): ColumnDef<TrainingSystemRow>[] {
-  return [
-    {
-      accessorKey: "name",
-      header: "Tên",
-      enableColumnFilter: false,
-    },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
-        </span>
-      ),
-    },
-    defineAdminTrashActionsColumn<TrainingSystemRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<TrainingSystemRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }

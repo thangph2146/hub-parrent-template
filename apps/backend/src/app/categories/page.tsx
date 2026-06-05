@@ -34,7 +34,6 @@ import {
   CategoriesTable,
   CategoriesTrashTable,
   getCategoryColumns,
-  getTrashColumns,
   buildCategoryOptionTree,
   buildCategoriesFilterQuery,
   formatDateTime,
@@ -181,6 +180,7 @@ function CategoriesPageInner() {
   const columns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({
+        view: "list",
         openDetail: (row) => router.push(`/categories/${row.id}`),
         openEdit: (row) => router.push(`/categories/${row.id}/edit`),
         rowActions,
@@ -194,13 +194,15 @@ function CategoriesPageInner() {
 
   const trashColumns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
-      getTrashColumns({
+      getCategoryColumns({
+        view: "trash",
+        openDetail: (row) => router.push(`/categories/${row.id}`),
+        openEdit: (row) => router.push(`/categories/${row.id}/edit`),
         rowActions,
-        formatDateTime,
         categoryTreeOptions,
-        canWrite: canWriteCategories,
+        canWriteCategories,
       }),
-    [rowActions, categoryTreeOptions, canWriteCategories],
+    [rowActions, router, categoryTreeOptions, canWriteCategories],
   );
 
   return (

@@ -29,7 +29,7 @@ export {
 
 export { SummaryBadges } from "./summary-badges";
 
-export { getPostColumns, getTrashColumns } from "./columns";
+export { getPostColumns } from "./columns";
 
 export {
   usePostForm,

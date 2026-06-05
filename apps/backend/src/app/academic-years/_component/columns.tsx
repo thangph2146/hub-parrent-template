@@ -1,37 +1,39 @@
-"use client";
+"use client"
 
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { AcademicYearRow } from "./types";
-
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import type { AcademicYearRow } from "./types"
 
 function formatDate(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("vi-VN")
 }
 
 export function getAcademicYearColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: AcademicYearRow) => void;
-  openEdit: (row: AcademicYearRow) => void;
-  rowActions: AdminCrudRowHandlers<AcademicYearRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: AcademicYearRow) => void
+  openEdit?: (row: AcademicYearRow) => void
+  rowActions: AdminCrudRowHandlers<AcademicYearRow>
+  canWrite: boolean
 }): ColumnDef<AcademicYearRow>[] {
-  return [
+  const dataColumns: ColumnDef<AcademicYearRow>[] = [
     {
       accessorKey: "name",
       header: "Tên niên khóa",
@@ -39,7 +41,7 @@ export function getAcademicYearColumns({
       cell: ({ row, getValue }) => (
         <button
           type="button"
-          className="font-medium text-left text-foreground hover:text-primary transition-colors"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
           onClick={() => openDetail(row.original)}
         >
           {String(getValue())}
@@ -51,14 +53,14 @@ export function getAcademicYearColumns({
       header: "Ngày bắt đầu",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
+        if (filterValue == null || filterValue === "") return true
+        const rowVal = row.getValue(columnId) as string
+        if (!rowVal) return false
+        const [fromStr, toStr] = String(filterValue).split(",")
+        const rowDate = rowVal.split("T")[0]
+        if (fromStr && rowDate < fromStr) return false
+        if (toStr && rowDate > toStr) return false
+        return true
       },
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => (
@@ -72,14 +74,14 @@ export function getAcademicYearColumns({
       header: "Ngày kết thúc",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
+        if (filterValue == null || filterValue === "") return true
+        const rowVal = row.getValue(columnId) as string
+        if (!rowVal) return false
+        const [fromStr, toStr] = String(filterValue).split(",")
+        const rowDate = rowVal.split("T")[0]
+        if (fromStr && rowDate < fromStr) return false
+        if (toStr && rowDate > toStr) return false
+        return true
       },
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => (
@@ -93,8 +95,8 @@ export function getAcademicYearColumns({
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -111,7 +113,12 @@ export function getAcademicYearColumns({
         />
       ),
     },
-    defineAdminCrudActionsColumn<AcademicYearRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<AcademicYearRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -119,48 +126,11 @@ export function getAcademicYearColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<AcademicYearRow>;
-  canWrite: boolean;
-}): ColumnDef<AcademicYearRow>[] {
-  return [
-    {
-      accessorKey: "name",
-      header: "Tên niên khóa",
-      enableColumnFilter: false,
-    },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">
-          {formatDateTime(getValue() as string)}
-        </span>
-      ),
-    },
-    defineAdminTrashActionsColumn<AcademicYearRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<AcademicYearRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }

@@ -276,6 +276,8 @@ function ContactRequestsPageInner() {
             total={activeTotal}
             page={page}
             pageSize={pageSize}
+            appliedPage={activeQuery.data?.page}
+            appliedPageSize={activeQuery.data?.limit}
             onPageChange={setPage}
             onPageSizeChange={setPageSize}
             columnFilters={columnFilters}
@@ -313,6 +315,8 @@ function ContactRequestsPageInner() {
             total={trashTotal}
             page={trashPage}
             pageSize={trashPageSize}
+            appliedPage={trashQuery.data?.page}
+            appliedPageSize={trashQuery.data?.limit}
             onPageChange={setTrashPage}
             onPageSizeChange={setTrashPageSize}
             columnFilters={trashColumnFilters}

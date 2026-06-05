@@ -25,9 +25,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   LocationsTable,
   LocationsTrashTable,
-  getLocationColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getLocationColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useLocationsListQuery,
@@ -132,6 +130,7 @@ function LocationsPageInner() {
   const columns = useMemo<ColumnDef<LocationRow>[]>(
     () =>
       getLocationColumns({
+        view: "list",
         openDetail: (row) => router.push(`/locations/${row.id}`),
         openEdit: (row) => router.push(`/locations/${row.id}/edit`),
         rowActions,
@@ -143,7 +142,7 @@ function LocationsPageInner() {
 
 
   const trashColumns = useMemo<ColumnDef<LocationRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getLocationColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite],
   );
 

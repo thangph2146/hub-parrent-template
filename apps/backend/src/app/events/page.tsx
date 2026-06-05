@@ -31,9 +31,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   EventsTable,
   EventsTrashTable,
-  getEventColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getEventColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useEventsListQuery,
@@ -175,6 +173,7 @@ function EventsPageInner() {
   const columns = useMemo<ColumnDef<EventRow>[]>(
     () =>
       getEventColumns({
+        view: "list",
         openDetail: (row) => router.push(`/events/${row.id}`),
         openEdit: (row) => router.push(`/events/${row.id}/edit`),
         rowActions,
@@ -194,7 +193,7 @@ function EventsPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<EventRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getEventColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite]
   )
 

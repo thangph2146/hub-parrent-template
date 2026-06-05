@@ -58,7 +58,7 @@ import {
 } from "@/lib/permission-labels"
 import { useAuth } from "@/providers/auth-provider"
 import { canEditSuperAdminRole } from "@/config/protected-admin"
-import { getRbacColumns, getRbacTrashColumns } from "./_component/columns"
+import { getRbacColumns } from "./_component/columns"
 import {
   buildRolesFilterQuery,
   mapRoleRow,
@@ -260,7 +260,12 @@ export default function RbacPage() {
       filters: params.filters,
     })
     const items = result.items.map((row) => mapRoleRow(row))
-    return { items, total: result.total, page: params.page, limit: params.limit }
+    return {
+      items,
+      total: result.total,
+      page: result.page ?? params.page,
+      limit: result.limit ?? params.limit,
+    }
   }
 
   const listQuery = useQuery({
@@ -426,6 +431,7 @@ export default function RbacPage() {
   const columns = useMemo(
     () =>
       getRbacColumns({
+        view: "list",
         onView: (role) => router.push(`/rbac/${role.id}`),
         onEdit: (role) => {
           if (
@@ -453,6 +459,7 @@ export default function RbacPage() {
           }
           setPurgeTarget(role)
         },
+        onRestore: () => {},
         canManageRoles,
         canEditSuperAdminRole: canEditProtectedSuperAdmin,
       }),
@@ -461,8 +468,11 @@ export default function RbacPage() {
 
   const trashColumns = useMemo(
     () =>
-      getRbacTrashColumns({
-        canManageRoles,
+      getRbacColumns({
+        view: "trash",
+        onView: (role) => router.push(`/rbac/${role.id}`),
+        onEdit: () => {},
+        onDelete: () => {},
         onRestore: (role) => setRestoreTarget(role),
         onPurge: (role) => {
           if (isSuperAdminRoleCode(role.code)) {
@@ -473,8 +483,10 @@ export default function RbacPage() {
           }
           setPurgeTarget(role)
         },
+        canManageRoles,
+        canEditSuperAdminRole: canEditProtectedSuperAdmin,
       }),
-    [canManageRoles]
+    [canEditProtectedSuperAdmin, canManageRoles, router]
   )
 
   if (!session) return null
@@ -617,6 +629,8 @@ export default function RbacPage() {
         page,
         pageSize,
         total: listQuery.data?.total ?? 0,
+        appliedPage: listQuery.data?.page,
+        appliedPageSize: listQuery.data?.limit,
         isLoading: listQuery.isLoading,
         onPageChange: setPage,
         onPageSizeChange: setPageSize,
@@ -698,6 +712,8 @@ export default function RbacPage() {
         page: trashPage,
         pageSize: trashPageSize,
         total: trashQuery.data?.total ?? 0,
+        appliedPage: trashQuery.data?.page,
+        appliedPageSize: trashQuery.data?.limit,
         isLoading: trashQuery.isLoading,
         onPageChange: setTrashPage,
         onPageSizeChange: setTrashPageSize,

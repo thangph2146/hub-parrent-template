@@ -1,27 +1,37 @@
-"use client";
+"use client"
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table"
 import {
   UsageStatusBadge,
   type UsageStatusTone,
-} from "@ui/components/usage-status-badge";
-import { CheckCircle2, Clock, Settings2, Trash2, User, XCircle } from "lucide-react";
+} from "@ui/components/usage-status-badge"
+import {
+  CheckCircle2,
+  Clock,
+  Settings2,
+  Trash2,
+  User,
+  XCircle,
+} from "lucide-react"
 import {
   DataTableRowActionsMenu,
   defineRelationExportColumns,
   type DataTableRowActionItem,
-} from "@ui/components/data-table";
-import type { ParentStudent } from "./types";
+} from "@ui/components/data-table"
+import { formatAdminDateTime } from "@/lib/format-admin-datetime"
+import type { ParentStudent } from "./types"
 
 export interface ParentStudentsColumnsProps {
-  onApprove: (row: ParentStudent) => void;
-  onReject: (row: ParentStudent) => void;
-  onPurge: (row: ParentStudent) => void;
-  canApprove: boolean;
+  onApprove: (row: ParentStudent) => void
+  onReject: (row: ParentStudent) => void
+  onPurge: (row: ParentStudent) => void
+  canApprove: boolean
 }
 
-export function getParentStudentsColumns(props: ParentStudentsColumnsProps): ColumnDef<ParentStudent>[] {
-  const { onApprove, onReject, onPurge, canApprove } = props;
+export function getParentStudentsColumns(
+  props: ParentStudentsColumnsProps
+): ColumnDef<ParentStudent>[] {
+  const { onApprove, onReject, onPurge, canApprove } = props
 
   return [
     {
@@ -40,7 +50,8 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
               </p>
             ) : null}
             <p className="truncate font-mono text-xs text-muted-foreground">
-              {row.original.parentEmail ?? `${row.original.parentId.slice(0, 8)}…`}
+              {row.original.parentEmail ??
+                `${row.original.parentId.slice(0, 8)}…`}
             </p>
           </div>
         </div>
@@ -68,12 +79,12 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       header: "Ghi chú",
       enableColumnFilter: false,
       cell: ({ getValue }) => {
-        const v = getValue() as string | null;
+        const v = getValue() as string | null
         return v ? (
           <span className="text-xs text-muted-foreground">{v}</span>
         ) : (
           <span className="text-xs italic opacity-40">Không có</span>
-        );
+        )
       },
     },
     {
@@ -106,7 +117,7 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
         ],
       },
       cell: ({ getValue }) => {
-        const s = getValue() as ParentStudent["status"];
+        const s = getValue() as ParentStudent["status"]
         const STATUS_CONFIG: Record<
           "pending" | "approved" | "rejected",
           { label: string; icon: typeof Clock; tone: UsageStatusTone }
@@ -114,15 +125,15 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
           pending: { label: "Chờ duyệt", icon: Clock, tone: "warning" },
           approved: { label: "Đã duyệt", icon: CheckCircle2, tone: "success" },
           rejected: { label: "Từ chối", icon: XCircle, tone: "danger" },
-        };
-        const cfg = STATUS_CONFIG[s];
-        const StatusIcon = cfg.icon;
+        }
+        const cfg = STATUS_CONFIG[s]
+        const StatusIcon = cfg.icon
         return (
           <UsageStatusBadge tone={cfg.tone} className="gap-1 text-[10px]">
             <StatusIcon className="size-3 shrink-0" aria-hidden />
             {cfg.label}
           </UsageStatusBadge>
-        );
+        )
       },
     },
     {
@@ -131,14 +142,12 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       enableColumnFilter: false,
       meta: { defaultHidden: true },
       cell: ({ getValue }) => {
-        const v = getValue() as string | null;
-        return v ? (
+        const v = getValue() as string | null
+        return (
           <span className="text-xs text-muted-foreground tabular-nums">
-            {new Date(v).toLocaleString("vi-VN")}
+            {formatAdminDateTime(v)}
           </span>
-        ) : (
-          <span className="text-xs italic opacity-40">—</span>
-        );
+        )
       },
     },
     {
@@ -147,12 +156,12 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       enableColumnFilter: false,
       meta: { defaultHidden: true },
       cell: ({ getValue }) => {
-        const v = getValue() as string | null;
+        const v = getValue() as string | null
         return v ? (
           <span className="font-mono text-xs text-muted-foreground">{v}</span>
         ) : (
           <span className="text-xs italic opacity-40">—</span>
-        );
+        )
       },
     },
     ...defineRelationExportColumns<ParentStudent>([
@@ -184,8 +193,8 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
       enableSorting: false,
       enableColumnFilter: false,
       cell: ({ row }) => {
-        const data = row.original;
-        const actions: DataTableRowActionItem[] = [];
+        const data = row.original
+        const actions: DataTableRowActionItem[] = []
         if (canApprove && data.status === "pending") {
           actions.push(
             {
@@ -207,7 +216,7 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
               menuVariant: "destructive",
               confirm: false,
             }
-          );
+          )
         }
         actions.push({
           key: "purge",
@@ -218,7 +227,7 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
           group: "danger",
           menuVariant: "destructive",
           confirm: false,
-        });
+        })
         return (
           <DataTableRowActionsMenu
             actions={actions}
@@ -228,8 +237,8 @@ export function getParentStudentsColumns(props: ParentStudentsColumnsProps): Col
               danger: { label: "Từ chối / xóa", sublabel: true },
             }}
           />
-        );
+        )
       },
     },
-  ];
+  ]
 }

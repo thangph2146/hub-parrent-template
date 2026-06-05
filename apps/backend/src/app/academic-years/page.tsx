@@ -25,9 +25,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   AcademicYearsTable,
   AcademicYearsTrashTable,
-  getAcademicYearColumns,
-  getTrashColumns,
-  useColumnFiltersChange,
+  getAcademicYearColumns,  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useAcademicYearsListQuery,
@@ -133,6 +131,7 @@ function AcademicYearsPageInner() {
 
   const columns = useMemo<ColumnDef<AcademicYearRow>[]>(
     () => getAcademicYearColumns({
+        view: "list",
       openDetail: (row) => router.push(`/academic-years/${row.id}`),
       openEdit: (row) => router.push(`/academic-years/${row.id}/edit`),
       rowActions,
@@ -142,7 +141,7 @@ function AcademicYearsPageInner() {
   );
 
   const trashColumns = useMemo<ColumnDef<AcademicYearRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getAcademicYearColumns({ view: "trash",  rowActions, canWrite }),
     [rowActions, canWrite],
   );
 

@@ -1,6 +1,6 @@
 export type { SpeakerRow, SpeakerFormValues, SpeakerConfirmAction, SpeakerDetail } from "./types";
 export { speakerFormSchema } from "./types";
-export { getSpeakerColumns, getTrashColumns } from "./columns";
+export { getSpeakerColumns } from "./columns";
 export {
   useSpeakerDetailQuery,
   useSpeakersListQuery,

@@ -1,6 +1,6 @@
 export type { CourseRow, CourseFormValues, CourseConfirmAction, CourseDetail } from "./types";
 export { courseFormSchema } from "./types";
-export { getCourseColumns, getTrashColumns } from "./columns";
+export { getCourseColumns } from "./columns";
 export {
   useCourseDetailQuery,
   useCoursesListQuery,

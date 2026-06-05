@@ -1,6 +1,6 @@
 export type { AcademicYearRow, AcademicYearFormValues, AcademicYearConfirmAction, AcademicYearDetail } from "./types";
 export { academicYearFormSchema } from "./types";
-export { getAcademicYearColumns, getTrashColumns } from "./columns";
+export { getAcademicYearColumns } from "./columns";
 export {
   useAcademicYearDetailQuery,
   useAcademicYearsListQuery,

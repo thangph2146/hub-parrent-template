@@ -26,7 +26,6 @@ import {
   ScreensTable,
   ScreensTrashTable,
   getScreenColumns,
-  getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
@@ -123,6 +122,7 @@ function ScreensPageInner() {
   const cols = useMemo<ColumnDef<ScreenRow>[]>(
     () =>
       getScreenColumns({
+        view: "list",
         openDetail: (r) => router.push(`/screens/${r.id}`),
         openEdit: (r) => router.push(`/screens/${r.id}/edit`),
         rowActions,
@@ -131,7 +131,7 @@ function ScreensPageInner() {
     [rowActions, router, canWrite]
   )
   const tCols = useMemo<ColumnDef<ScreenRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getScreenColumns({ view: "trash", rowActions, canWrite }),
     [rowActions, canWrite]
   )
   return (

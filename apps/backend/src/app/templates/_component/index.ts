@@ -1,6 +1,6 @@
 export type { TemplateRow, TemplateFormValues, TemplateConfirmAction, TemplateDetail } from "./types";
 export { templateFormSchema } from "./types";
-export { getTemplateColumns, getTrashColumns } from "./columns";
+export { getTemplateColumns } from "./columns";
 export { useTemplateDetailQuery, useTemplatesListQuery, useTemplatesTrashQuery } from "./_query";
 export { useColumnFiltersChange, useClearListFilters, useClearTrashFilters } from "@/hooks/use-table-filters";
 export { buildTemplatePayload, useTemplateForm, useHandleConfirmAction, useConfirmAction } from "./_hooks";

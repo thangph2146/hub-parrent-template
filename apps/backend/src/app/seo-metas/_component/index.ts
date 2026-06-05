@@ -6,7 +6,7 @@ export {
   type SeoMetaDetail,
 } from "./types";
 
-export { getSeoMetaColumns, getTrashColumns } from "./columns";
+export { getSeoMetaColumns } from "./columns";
 
 export {
   useSeoMetaDetailQuery,

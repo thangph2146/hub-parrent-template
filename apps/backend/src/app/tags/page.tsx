@@ -33,9 +33,7 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TagsTable,
   TagsTrashTable,
-  getTagColumns,
-  getTrashColumns,
-  buildTagTree,
+  getTagColumns,  buildTagTree,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
@@ -179,6 +177,7 @@ function TagsPageInner() {
   const columns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
       getTagColumns({
+        view: "list",
         openDetail: (row) => router.push(`/tags/${row.id}`),
         openEdit: (row) => router.push(`/tags/${row.id}/edit`),
         rowActions,
@@ -189,11 +188,14 @@ function TagsPageInner() {
 
   const trashColumns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
-      getTrashColumns({
+      getTagColumns({
+        view: "trash",
+        openDetail: (row) => router.push(`/tags/${row.id}`),
+        openEdit: (row) => router.push(`/tags/${row.id}/edit`),
         rowActions,
         canWrite: canWriteTags,
       }),
-    [rowActions, canWriteTags],
+    [rowActions, router, canWriteTags],
   );
 
   return (

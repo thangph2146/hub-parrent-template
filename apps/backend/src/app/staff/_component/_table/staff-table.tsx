@@ -11,6 +11,8 @@ interface StaffTableProps {
   total: number;
   page: number;
   pageSize: number;
+  appliedPage?: number;
+  appliedPageSize?: number;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   columnFilters: ColumnFiltersState;
@@ -47,6 +49,8 @@ export function StaffTable(props: StaffTableProps) {
     total,
     page,
     pageSize,
+    appliedPage,
+    appliedPageSize,
     onPageChange,
     onPageSizeChange,
     columnFilters,
@@ -74,9 +78,11 @@ export function StaffTable(props: StaffTableProps) {
   } = props;
 
   const columns = getStaffColumns({
+    view: "list",
     onView,
     onEdit,
     onDelete,
+    onRestore: () => {},
     onPurge,
     onToggleActive,
     busy,
@@ -186,6 +192,8 @@ export function StaffTable(props: StaffTableProps) {
         page,
         pageSize,
         total,
+        appliedPage,
+        appliedPageSize,
         isLoading,
         onPageChange,
         onPageSizeChange,

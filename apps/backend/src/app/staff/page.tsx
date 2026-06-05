@@ -491,6 +491,8 @@ function StaffPageInner() {
                 total={staffTotal}
                 page={staffPage}
                 pageSize={staffPageSize}
+                appliedPage={usersQuery.data?.page}
+                appliedPageSize={usersQuery.data?.limit}
                 onPageChange={setStaffPage}
                 onPageSizeChange={setStaffPageSize}
                 columnFilters={columnFilters}
@@ -553,6 +555,8 @@ function StaffPageInner() {
                   total={trashStaffTotal}
                   page={trashPage}
                   pageSize={trashPageSize}
+                  appliedPage={trashedStaffQuery.data?.page}
+                  appliedPageSize={trashedStaffQuery.data?.limit}
                   onPageChange={setTrashPage}
                   onPageSizeChange={setTrashPageSize}
                   columnFilters={trashColumnFilters}

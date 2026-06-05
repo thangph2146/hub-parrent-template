@@ -91,7 +91,12 @@ export class UsersApi {
     return roleIds.length ? roleIds : undefined;
   }
 
-  async list(params?: UsersListParams): Promise<{ items: User[]; total: number }> {
+  async list(params?: UsersListParams): Promise<{
+    items: User[];
+    total: number;
+    page?: number;
+    limit?: number;
+  }> {
     const payload = await this.http.get<unknown>("/admin/users", {
       query: {
         page: params?.page ?? 1,
@@ -102,10 +107,20 @@ export class UsersApi {
       },
     });
     const normalized = normalizePagedResult<ApiUserRow>(payload);
-    return { items: normalized.items.map(mapUserRow), total: normalized.total };
+    return {
+      items: normalized.items.map(mapUserRow),
+      total: normalized.total,
+      page: normalized.page,
+      limit: normalized.limit,
+    };
   }
 
-  async listTrashed(params?: UsersListParams): Promise<{ items: User[]; total: number }> {
+  async listTrashed(params?: UsersListParams): Promise<{
+    items: User[];
+    total: number;
+    page?: number;
+    limit?: number;
+  }> {
     const payload = await this.http.get<unknown>("/admin/users", {
       query: {
         page: params?.page ?? 1,
@@ -116,7 +131,12 @@ export class UsersApi {
       },
     });
     const normalized = normalizePagedResult<ApiUserRow>(payload);
-    return { items: normalized.items.map(mapUserRow), total: normalized.total };
+    return {
+      items: normalized.items.map(mapUserRow),
+      total: normalized.total,
+      page: normalized.page,
+      limit: normalized.limit,
+    };
   }
 
   async listDealers(): Promise<User[]> {

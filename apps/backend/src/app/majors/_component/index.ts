@@ -1,6 +1,6 @@
 export type { MajorRow, MajorFormValues, MajorConfirmAction, MajorDetail } from "./types";
 export { majorFormSchema } from "./types";
-export { getMajorColumns, getTrashColumns } from "./columns";
+export { getMajorColumns } from "./columns";
 export {
   useMajorDetailQuery,
   useMajorsListQuery,

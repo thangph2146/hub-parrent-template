@@ -64,11 +64,13 @@ export { ScreensApi } from "./resources/screens"
 export { DepartmentsApi } from "./resources/departments"
 export { RolesApi } from "./resources/roles"
 export { SettingsApi } from "./resources/settings"
+export { SeoMetasApi } from "./resources/seo-metas"
 export { DashboardApi } from "./resources/dashboard"
 export { StoreSyncSdk, createStoreSyncSdk, DEFAULT_API_URL } from "./sdk"
 export {
   unwrapApiEnvelope,
   normalizePagedResult,
+  type NormalizedPagedResult,
   getData,
   postData,
   putData,

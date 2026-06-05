@@ -1,30 +1,33 @@
-"use client";
+"use client"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
-import { defineRelationExportColumns } from "@ui/components/data-table";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { CameraRow } from "./types";
-
-function fmt(v: string | null | undefined): string {
-  if (!v) return "—";
-  const d = new Date(v);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
+import { defineRelationExportColumns } from "@ui/components/data-table"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import type { CameraRow } from "./types"
 
 export function getCameraColumns({
-  openDetail,
-  openEdit,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
   rowActions,
   canWrite,
 }: {
-  openDetail: (row: CameraRow) => void;
-  openEdit: (row: CameraRow) => void;
-  rowActions: AdminCrudRowHandlers<CameraRow>;
-  canWrite: boolean;
+  view?: AdminTableView
+  openDetail?: (row: CameraRow) => void
+  openEdit?: (row: CameraRow) => void
+  rowActions: AdminCrudRowHandlers<CameraRow>
+  canWrite: boolean
 }): ColumnDef<CameraRow>[] {
-  return [
+  const dataColumns: ColumnDef<CameraRow>[] = [
     {
       accessorKey: "name",
       header: "Tên camera",
@@ -32,7 +35,7 @@ export function getCameraColumns({
       cell: ({ row, getValue }) => (
         <button
           type="button"
-          className="font-medium text-left text-foreground hover:text-primary transition-colors"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
           onClick={() => openDetail(row.original)}
         >
           {String(getValue())}
@@ -44,7 +47,7 @@ export function getCameraColumns({
       header: "Mã HANET",
       enableColumnFilter: false,
       cell: ({ getValue }) => (
-        <span className="text-sm font-mono">{String(getValue() ?? "—")}</span>
+        <span className="font-mono text-sm">{String(getValue() ?? "—")}</span>
       ),
     },
     {
@@ -66,21 +69,23 @@ export function getCameraColumns({
       header: "IP",
       enableColumnFilter: false,
       cell: ({ getValue }) => (
-        <span className="text-sm font-mono">{String(getValue() ?? "—")}</span>
+        <span className="font-mono text-sm">{String(getValue() ?? "—")}</span>
       ),
     },
     {
       accessorKey: "port",
       header: "Cổng",
-      cell: ({ getValue }) => <span className="text-sm">{String(getValue() ?? "—")}</span>,
+      cell: ({ getValue }) => (
+        <span className="text-sm">{String(getValue() ?? "—")}</span>
+      ),
     },
     {
       accessorKey: "status",
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -88,8 +93,7 @@ export function getCameraColumns({
           { value: "1", label: "Hoạt động" },
           { value: "0", label: "Khóa" },
         ],
-        exportValue: (row) =>
-          Number(row.status) === 1 ? "Hoạt động" : "Khóa",
+        exportValue: (row) => (Number(row.status) === 1 ? "Hoạt động" : "Khóa"),
       },
       cell: ({ getValue }) => (
         <UsageStatusFromValue
@@ -112,12 +116,30 @@ export function getCameraColumns({
         getValue: (row) => row.linkedEventSlug ?? "",
         defaultHidden: true,
       },
-      { id: "username", header: "Username", getValue: (row) => row.username ?? "" },
+      {
+        id: "username",
+        header: "Username",
+        getValue: (row) => row.username ?? "",
+      },
       { id: "createdAt", header: "Tạo lúc", getValue: (row) => row.createdAt },
-      { id: "updatedAt", header: "Cập nhật lúc", getValue: (row) => row.updatedAt },
-      { id: "id", header: "ID", getValue: (row) => row.id, defaultHidden: true },
+      {
+        id: "updatedAt",
+        header: "Cập nhật lúc",
+        getValue: (row) => row.updatedAt,
+      },
+      {
+        id: "id",
+        header: "ID",
+        getValue: (row) => row.id,
+        defaultHidden: true,
+      },
     ]),
-    defineAdminCrudActionsColumn<CameraRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<CameraRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -125,42 +147,11 @@ export function getCameraColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<CameraRow>;
-  canWrite: boolean;
-}): ColumnDef<CameraRow>[] {
-  return [
-    { accessorKey: "name", header: "Tên", enableColumnFilter: false },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => (
-        <span className="text-xs text-muted-foreground">{fmt(getValue() as string)}</span>
-      ),
-    },
-    defineAdminTrashActionsColumn<CameraRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<CameraRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }

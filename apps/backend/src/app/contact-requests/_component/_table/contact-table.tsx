@@ -24,6 +24,10 @@ interface ContactRequestTableProps {
 
   pageSize: number;
 
+  appliedPage?: number;
+
+  appliedPageSize?: number;
+
   onPageChange: (page: number) => void;
 
   onPageSizeChange: (pageSize: number) => void;
@@ -99,6 +103,10 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
 
     pageSize,
 
+    appliedPage,
+
+    appliedPageSize,
+
     onPageChange,
 
     onPageSizeChange,
@@ -146,11 +154,10 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
 
 
   const columns = getContactRequestColumns({
-
+    view: "list",
     onView,
-
     onDelete,
-
+    onRestore: () => {},
     onPurge,
 
     onStatusChange,
@@ -283,23 +290,16 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
       }}
 
       pagination={{
-
         page,
-
         pageSize,
-
         total,
-
+        appliedPage,
+        appliedPageSize,
         isLoading,
-
         onPageChange,
-
         onPageSizeChange,
-
         emptySummary: "Không có yêu cầu liên hệ",
-
         itemLabel: "yêu cầu",
-
       }}
 
     />

@@ -1,4 +1,4 @@
-export { getCategoryColumns, getTrashColumns } from "./columns";
+export { getCategoryColumns } from "./columns";
 export {
   slugify,
   buildCategoryOptionTree,

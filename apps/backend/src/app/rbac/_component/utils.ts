@@ -54,8 +54,4 @@ export function buildRolesFilterQuery(
   return buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.roles);
 }
 
-export function formatRoleDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+export { formatAdminDateTime as formatRoleDateTime } from "@/lib/format-admin-datetime";

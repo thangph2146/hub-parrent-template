@@ -7,9 +7,101 @@ type ApiEnvelope<T> = {
   data?: T;
 };
 
-type PagedApiShape<T> =
-  | { data: T[]; pagination?: { total?: number } }
-  | { items: T[]; total?: number };
+type PagedApiPagination = {
+  page?: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
+};
+
+type PagedDataListPayload<T> = {
+  data: T[];
+  pagination?: PagedApiPagination;
+};
+
+type PagedItemsListPayload<T> = {
+  items: T[];
+  total?: number;
+  pagination?: PagedApiPagination;
+};
+
+export type NormalizedPagedResult<T> = {
+  items: T[];
+  total: number;
+  page?: number;
+  limit?: number;
+  totalPages?: number;
+};
+
+function isPagedDataListPayload<T>(
+  value: unknown,
+): value is PagedDataListPayload<T> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "data" in value &&
+    Array.isArray((value as PagedDataListPayload<T>).data) &&
+    "pagination" in value
+  );
+}
+
+function isPagedItemsListPayload<T>(
+  value: unknown,
+): value is PagedItemsListPayload<T> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "items" in value &&
+    Array.isArray((value as PagedItemsListPayload<T>).items)
+  );
+}
+
+function parsePagedDataList<T>(
+  body: PagedDataListPayload<T>,
+): NormalizedPagedResult<T> {
+  const pagination = body.pagination;
+  const total =
+    typeof pagination?.total === "number"
+      ? pagination.total
+      : body.data.length;
+  return {
+    items: body.data,
+    total,
+    page: pagination?.page,
+    limit: pagination?.limit,
+    totalPages: pagination?.totalPages,
+  };
+}
+
+function parsePagedItemsList<T>(
+  body: PagedItemsListPayload<T>,
+): NormalizedPagedResult<T> {
+  const pagination = body.pagination;
+  return {
+    items: body.items,
+    total:
+      typeof pagination?.total === "number"
+        ? pagination.total
+        : typeof body.total === "number"
+          ? body.total
+          : body.items.length,
+    page: pagination?.page,
+    limit: pagination?.limit,
+    totalPages: pagination?.totalPages,
+  };
+}
+
+function stripApiEnvelope(body: unknown): unknown {
+  if (!body || typeof body !== "object") return body;
+  const envelope = body as ApiEnvelope<unknown>;
+  if (envelope.success === false) {
+    throw new ApiError(400, "Bad Request", body, envelope.message);
+  }
+  if ("success" in envelope && "data" in envelope) {
+    return envelope.data;
+  }
+  return body;
+}
 
 export function unwrapApiEnvelope<T>(payload: unknown): T {
   if (!payload || typeof payload !== "object") {
@@ -20,35 +112,40 @@ export function unwrapApiEnvelope<T>(payload: unknown): T {
   if (envelope.success === false) {
     throw new ApiError(400, "Bad Request", payload, envelope.message);
   }
+
+  // `{ data: T[], pagination }` — payload phân trang, không phải API envelope.
+  if (isPagedDataListPayload(envelope)) {
+    return payload as T;
+  }
+
   if ("data" in envelope) {
     return envelope.data as T;
   }
   return payload as T;
 }
 
+/**
+ * Chuẩn hóa response phân trang admin.
+ * Hỗ trợ:
+ * - `{ success, data: { data: T[], pagination } }`
+ * - `{ data: T[], pagination }` (sau getData / unwrap một lần)
+ * - `{ items: T[], total?, pagination? }`
+ */
 export function normalizePagedResult<T>(
   payload: unknown,
-): { items: T[]; total: number } {
-  const data = unwrapApiEnvelope<PagedApiShape<T>>(payload);
+): NormalizedPagedResult<T> {
+  let body: unknown = stripApiEnvelope(payload);
 
-  if (Array.isArray(data)) {
-    return { items: data, total: data.length };
+  if (isPagedDataListPayload<T>(body)) {
+    return parsePagedDataList(body);
   }
 
-  if (data && typeof data === "object") {
-    if ("items" in data && Array.isArray(data.items)) {
-      return {
-        items: data.items,
-        total: typeof data.total === "number" ? data.total : data.items.length,
-      };
-    }
-    if ("data" in data && Array.isArray(data.data)) {
-      const total =
-        typeof data.pagination?.total === "number"
-          ? data.pagination.total
-          : data.data.length;
-      return { items: data.data, total };
-    }
+  if (Array.isArray(body)) {
+    return { items: body as T[], total: body.length };
+  }
+
+  if (body && typeof body === "object" && isPagedItemsListPayload<T>(body)) {
+    return parsePagedItemsList(body);
   }
 
   return { items: [], total: 0 };

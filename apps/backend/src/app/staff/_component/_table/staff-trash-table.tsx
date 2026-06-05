@@ -6,7 +6,7 @@ import type {
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
-import { getTrashColumns } from "../columns"
+import { getStaffColumns } from "../columns"
 import type { StaffRow } from "../types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -17,6 +17,8 @@ interface StaffTrashTableProps {
   total: number
   page: number
   pageSize: number
+  appliedPage?: number
+  appliedPageSize?: number
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
   columnFilters: ColumnFiltersState
@@ -44,6 +46,8 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     total,
     page,
     pageSize,
+    appliedPage,
+    appliedPageSize,
     onPageChange,
     onPageSizeChange,
     columnFilters,
@@ -61,7 +65,17 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
     listParams,
   } = props
 
-  const columns = getTrashColumns({ onRestore, onPurge, busy })
+  const columns = getStaffColumns({
+    view: "trash",
+    onView: () => {},
+    onEdit: () => {},
+    onDelete: () => {},
+    onRestore,
+    onPurge,
+    onToggleActive: () => {},
+    busy,
+    isProtected: () => false,
+  })
 
   return (
     <AdminDataTable<StaffRow>
@@ -116,6 +130,8 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
         page,
         pageSize,
         total,
+        appliedPage,
+        appliedPageSize,
         isLoading,
         onPageChange,
         onPageSizeChange,

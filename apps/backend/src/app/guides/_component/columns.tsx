@@ -3,8 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@ui/components/badge"
 import { Eye, EyeOff } from "lucide-react"
-import { defineAdminCrudActionsColumn } from "@ui/components/admin";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import { defineAdminCrudActionsColumn } from "@ui/components/admin"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import type { GuideGroup } from "./types"
 import { parseContent } from "./utils"
 

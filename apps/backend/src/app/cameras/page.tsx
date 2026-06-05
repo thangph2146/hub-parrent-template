@@ -26,7 +26,6 @@ import {
   CamerasTable,
   CamerasTrashTable,
   getCameraColumns,
-  getTrashColumns,
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
@@ -123,6 +122,7 @@ function CamerasPageInner() {
   const cols = useMemo<ColumnDef<CameraRow>[]>(
     () =>
       getCameraColumns({
+        view: "list",
         openDetail: (r) => router.push(`/cameras/${r.id}`),
         openEdit: (r) => router.push(`/cameras/${r.id}/edit`),
         rowActions,
@@ -131,7 +131,7 @@ function CamerasPageInner() {
     [rowActions, router, canWrite]
   )
   const tCols = useMemo<ColumnDef<CameraRow>[]>(
-    () => getTrashColumns({ rowActions, canWrite }),
+    () => getCameraColumns({ view: "trash", rowActions, canWrite }),
     [rowActions, canWrite]
   )
   return (

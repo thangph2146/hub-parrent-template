@@ -1,45 +1,57 @@
-"use client";
+"use client"
 
-import { defineAdminCrudActionsColumn, defineAdminTrashActionsColumn } from "@ui/components/admin";
+import {
+  defineAdminCrudActionsColumn,
+  defineAdminTrashActionsColumn,
+} from "@ui/components/admin"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@ui/components/badge";
-import { UsageStatusFromValue } from "@ui/components/usage-status-badge";
-import { Button } from "@ui/components/button";
-import { Pencil, Trash2, ArchiveRestore, Eye, Calendar, MapPin, Star } from "lucide-react";
-import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
-import type { EventRow } from "./types";
-import { defineRelationExportColumns } from "@ui/components/data-table";
-
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
-}
+import type { ColumnDef } from "@tanstack/react-table"
+import { Badge } from "@ui/components/badge"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
+import { Button } from "@ui/components/button"
+import { Calendar, MapPin, Star } from "lucide-react"
+import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
+import {
+  type AdminTableView,
+  buildAdminTableColumns,
+} from "@/lib/admin-table-columns"
+import type { EventRow } from "./types"
+import { defineRelationExportColumns } from "@ui/components/data-table"
 
 function formatDate(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("vi-VN")
 }
 
 export function getEventColumns({
-  openDetail, openEdit, rowActions, canWrite, onToggleFeatured, isTogglingFeaturedId,
+  view = "list",
+  openDetail = () => {},
+  openEdit = () => {},
+  rowActions,
+  canWrite,
+  onToggleFeatured,
+  isTogglingFeaturedId,
 }: {
-  openDetail: (row: EventRow) => void;
-  openEdit: (row: EventRow) => void;
-  rowActions: AdminCrudRowHandlers<EventRow>;
-  canWrite: boolean;
-  onToggleFeatured?: (row: EventRow) => void;
-  isTogglingFeaturedId?: string | null;
+  view?: AdminTableView
+  openDetail?: (row: EventRow) => void
+  openEdit?: (row: EventRow) => void
+  rowActions: AdminCrudRowHandlers<EventRow>
+  canWrite: boolean
+  onToggleFeatured?: (row: EventRow) => void
+  isTogglingFeaturedId?: string | null
 }): ColumnDef<EventRow>[] {
-  return [
+  const dataColumns: ColumnDef<EventRow>[] = [
     {
       accessorKey: "title",
       header: "Sự kiện",
       enableColumnFilter: false,
       cell: ({ row, getValue }) => (
-        <button type="button" className="font-medium text-left text-foreground hover:text-primary transition-colors" onClick={() => openDetail(row.original)}>
+        <button
+          type="button"
+          className="text-left font-medium text-foreground transition-colors hover:text-primary"
+          onClick={() => openDetail(row.original)}
+        >
           {String(getValue())}
         </button>
       ),
@@ -48,26 +60,29 @@ export function getEventColumns({
       accessorKey: "organizer",
       header: "Đơn vị tổ chức",
       enableColumnFilter: false,
-      cell: ({ getValue }) => <span className="text-sm">{String(getValue() ?? "—")}</span>,
+      cell: ({ getValue }) => (
+        <span className="text-sm">{String(getValue() ?? "—")}</span>
+      ),
     },
     {
       accessorKey: "startDate",
       header: "Bắt đầu",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
+        if (filterValue == null || filterValue === "") return true
+        const rowVal = row.getValue(columnId) as string
+        if (!rowVal) return false
+        const [fromStr, toStr] = String(filterValue).split(",")
+        const rowDate = rowVal.split("T")[0]
+        if (fromStr && rowDate < fromStr) return false
+        if (toStr && rowDate > toStr) return false
+        return true
       },
       meta: { filterVariant: "date-range" },
       cell: ({ getValue }) => (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Calendar className="size-3" />{formatDate(getValue() as string)}
+          <Calendar className="size-3" />
+          {formatDate(getValue() as string)}
         </span>
       ),
     },
@@ -77,7 +92,8 @@ export function getEventColumns({
       enableColumnFilter: false,
       cell: ({ getValue }) => (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="size-3" />{String(getValue() ?? "—")}
+          <MapPin className="size-3" />
+          {String(getValue() ?? "—")}
         </span>
       ),
     },
@@ -86,8 +102,8 @@ export function getEventColumns({
       header: "Hình thức",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -98,12 +114,17 @@ export function getEventColumns({
         ],
       },
       cell: ({ getValue }) => {
-        const fmt = getValue() as number;
+        const fmt = getValue() as number
         return (
-          <Badge variant={fmt === 1 ? "secondary" : fmt === 2 ? "outline" : "default"} className="text-[10px]">
+          <Badge
+            variant={
+              fmt === 1 ? "secondary" : fmt === 2 ? "outline" : "default"
+            }
+            className="text-[10px]"
+          >
             {fmt === 1 ? "Online" : fmt === 2 ? "Hybrid" : "Offline"}
           </Badge>
-        );
+        )
       },
     },
     {
@@ -111,14 +132,16 @@ export function getEventColumns({
       header: "Nổi bật",
       enableColumnFilter: false,
       cell: ({ row }) => {
-        const featured = row.original.isFeatured;
-        const busy = isTogglingFeaturedId === row.original.id;
+        const featured = row.original.isFeatured
+        const busy = isTogglingFeaturedId === row.original.id
         if (!canWrite || !onToggleFeatured) {
           return featured ? (
-            <Badge className="bg-amber-500/15 text-amber-800 dark:text-amber-300 text-[10px]">Nổi bật</Badge>
+            <Badge className="bg-amber-500/15 text-[10px] text-amber-800 dark:text-amber-300">
+              Nổi bật
+            </Badge>
           ) : (
             <span className="text-xs text-muted-foreground">—</span>
-          );
+          )
         }
         return (
           <Button
@@ -133,7 +156,7 @@ export function getEventColumns({
             <Star className={featured ? "size-3.5 fill-current" : "size-3.5"} />
             {featured ? "Đang bật" : "Đánh dấu"}
           </Button>
-        );
+        )
       },
     },
     {
@@ -141,8 +164,8 @@ export function getEventColumns({
       header: "Trạng thái",
       enableColumnFilter: true,
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        return String(row.getValue(columnId)) === String(filterValue);
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId)) === String(filterValue)
       },
       meta: {
         filterVariant: "select",
@@ -162,16 +185,24 @@ export function getEventColumns({
     ...defineRelationExportColumns<EventRow>([
       { id: "slug", header: "Slug", getValue: (r) => r.slug ?? "" },
       { id: "address", header: "Địa chỉ", getValue: (r) => r.address ?? "" },
-      { id: "onlineLink", header: "Link online", getValue: (r) => r.onlineLink ?? "" },
+      {
+        id: "onlineLink",
+        header: "Link online",
+        getValue: (r) => r.onlineLink ?? "",
+      },
       { id: "endDate", header: "Kết thúc", getValue: (r) => r.endDate ?? "" },
-      { id: "createdBy", header: "Người tạo (ID)", getValue: (r) => r.createdBy ?? "" },
+      {
+        id: "createdBy",
+        header: "Người tạo (ID)",
+        getValue: (r) => r.createdBy ?? "",
+      },
       {
         id: "checkinCamera",
         header: "Camera check-in",
         getValue: (r) =>
           r.checkinCameraName
             ? `${r.checkinCameraName}${r.checkinCameraCode ? ` (${r.checkinCameraCode})` : ""}`
-            : r.checkinCameraId ?? "",
+            : (r.checkinCameraId ?? ""),
       },
       {
         id: "checkoutCamera",
@@ -179,15 +210,36 @@ export function getEventColumns({
         getValue: (r) =>
           r.checkoutCameraName
             ? `${r.checkoutCameraName}${r.checkoutCameraCode ? ` (${r.checkoutCameraCode})` : ""}`
-            : r.checkoutCameraId ?? "",
+            : (r.checkoutCameraId ?? ""),
       },
-      { id: "totalRegistrations", header: "Đăng ký", getValue: (r) => r.totalRegistrations },
-      { id: "totalCheckins", header: "Check-in", getValue: (r) => r.totalCheckins },
-      { id: "totalCheckouts", header: "Check-out", getValue: (r) => r.totalCheckouts },
-      { id: "maxParticipants", header: "Sức chứa", getValue: (r) => r.maxParticipants },
+      {
+        id: "totalRegistrations",
+        header: "Đăng ký",
+        getValue: (r) => r.totalRegistrations,
+      },
+      {
+        id: "totalCheckins",
+        header: "Check-in",
+        getValue: (r) => r.totalCheckins,
+      },
+      {
+        id: "totalCheckouts",
+        header: "Check-out",
+        getValue: (r) => r.totalCheckouts,
+      },
+      {
+        id: "maxParticipants",
+        header: "Sức chứa",
+        getValue: (r) => r.maxParticipants,
+      },
       { id: "updatedAt", header: "Cập nhật lúc", getValue: (r) => r.updatedAt },
     ]),
-    defineAdminCrudActionsColumn<EventRow>({
+  ]
+
+  return buildAdminTableColumns({
+    view,
+    dataColumns,
+    listActionsColumn: defineAdminCrudActionsColumn<EventRow>({
       canWrite,
       onView: openDetail,
       onEdit: openEdit,
@@ -195,40 +247,11 @@ export function getEventColumns({
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
-}
-
-export function getTrashColumns({
-  rowActions,
-  canWrite,
-}: {
-  rowActions: AdminCrudRowHandlers<EventRow>;
-  canWrite: boolean;
-}): ColumnDef<EventRow>[] {
-  return [
-    { accessorKey: "title", header: "Sự kiện", enableColumnFilter: false },
-    {
-      accessorKey: "deletedAt",
-      header: "Xóa lúc",
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterValue) => {
-        if (filterValue == null || filterValue === "") return true;
-        const rowVal = row.getValue(columnId) as string;
-        if (!rowVal) return false;
-        const [fromStr, toStr] = String(filterValue).split(",");
-        const rowDate = rowVal.split("T")[0];
-        if (fromStr && rowDate < fromStr) return false;
-        if (toStr && rowDate > toStr) return false;
-        return true;
-      },
-      meta: { filterVariant: "date-range" },
-      cell: ({ getValue }) => <span className="text-xs text-muted-foreground">{formatDateTime(getValue() as string)}</span>,
-    },
-    defineAdminTrashActionsColumn<EventRow>({
+    trashActionsColumn: defineAdminTrashActionsColumn<EventRow>({
       canWrite,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
     }),
-  ];
+  })
 }
