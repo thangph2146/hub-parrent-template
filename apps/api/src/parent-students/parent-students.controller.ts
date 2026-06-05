@@ -514,10 +514,7 @@ export class ParentStudentsAdminController {
     PERMISSIONS.PARENT_STUDENTS_UPDATE,
   )
   @Delete(':id')
-  async remove(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ) {
+  async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const ok = await this.svc.removeByAdmin(id);
       if (!ok) {

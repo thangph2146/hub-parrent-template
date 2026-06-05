@@ -31,6 +31,17 @@ export {
   type RowActionsMenuGroupConfig,
 } from "./table-row-actions-menu"
 export {
+  DataTableRowActionsRegistryProvider,
+  DataTableRowActionsRowProvider,
+  useDataTableRowActionsRowId,
+  useRegisterDataTableRowActions,
+  type RegisteredDataTableRowActions,
+} from "./data-table-row-actions-registry"
+export {
+  DataTableRowContextMenu,
+  type DataTableRowContextMenuProps,
+} from "./data-table-row-context-menu"
+export {
   DataTableHorizontalScroll,
   type DataTableHorizontalScrollProps,
 } from "./data-table-horizontal-scroll"

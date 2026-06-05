@@ -108,8 +108,16 @@ import {
   type AdminDataTableServerPaginationConfig,
 } from "./data-table-pagination"
 import { Divider } from "../layout"
-import { normalizeDataTableColumns } from "./data-table-columns"
+import {
+  dataTableColumnsHasActionsColumn,
+  normalizeDataTableColumns,
+} from "./data-table-columns"
 import { DataTableHorizontalScroll } from "./data-table-horizontal-scroll"
+import { DataTableRowContextMenu } from "./data-table-row-context-menu"
+import {
+  DataTableRowActionsRegistryProvider,
+  DataTableRowActionsRowProvider,
+} from "./data-table-row-actions-registry"
 import { DATA_TABLE_ACTIONS_COLUMN_ID } from "./table-row-actions"
 
 export type AdminDataTableBulkAction<TData> = {
@@ -255,6 +263,11 @@ export type AdminDataTableProps<TData> = {
    * Khi `stickyTableHeader` và không truyền — dùng `DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT`.
    */
   tableBodyMaxHeight?: string | number
+  /**
+   * Chuột phải trên dòng mở menu thao tác (cùng nội dung cột actions / `DataTableRowActionsMenu`).
+   * Mặc định bật khi bảng có cột thao tác.
+   */
+  rowContextMenu?: boolean
 }
 
 export const DATA_TABLE_INDEX_COLUMN_ID = "stt"
@@ -271,18 +284,28 @@ export const DATA_TABLE_STICKY_HEADER_DEFAULT_MAX_HEIGHT =
 export const DATA_TABLE_SELECTION_COLUMN_CLASS =
   "sticky left-0 z-[11] px-0 text-center align-middle shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
 
-/** Nền cột ghim checkbox / thao tác — secondary opaque, căn giữa. */
-export const DATA_TABLE_PINNED_COLUMN_CLASS =
-  "!bg-secondary !text-secondary-foreground"
+/** Cột ghim checkbox / thao tác — căn giữa; nền opaque đồng bộ dòng (xem stickyPinnedBodyCell*). */
+export const DATA_TABLE_PINNED_COLUMN_CLASS = "text-center align-middle"
 
-const DATA_TABLE_PINNED_CHECKBOX_CLASS =
-  "size-[18px] border-secondary-foreground/50 data-checked:border-secondary-foreground data-checked:bg-secondary-foreground data-checked:text-secondary"
+/** Nền opaque + hover đồng bộ giữa `<tr>` và ô ghim — cùng token & transition. */
+const DATA_TABLE_ROW_BG_TRANSITION =
+  "transition-colors duration-150 ease-in-out"
 
-const DATA_TABLE_PINNED_CHECKBOX_WRAP_HEADER =
-  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-secondary-foreground/15 focus-within:ring-2 focus-within:ring-secondary-foreground/25"
+const STICKY_PINNED_BG_EVEN = "!bg-card"
+const STICKY_PINNED_BG_ODD =
+  "!bg-[color-mix(in_oklch,var(--primary)_8%,var(--card))]"
+const DATA_TABLE_ROW_BG_HOVER =
+  "hover:!bg-[color-mix(in_oklch,var(--primary)_8%,var(--card))]"
+const STICKY_PINNED_BG_HOVER_GROUP =
+  "group-hover/row:!bg-[color-mix(in_oklch,var(--primary)_8%,var(--card))]"
+const STICKY_PINNED_BG_SELECTED =
+  "!bg-[color-mix(in_oklch,var(--primary)_12%,var(--card)))]"
 
-const DATA_TABLE_PINNED_CHECKBOX_WRAP_BODY =
-  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-secondary-foreground/15 focus-within:ring-2 focus-within:ring-secondary-foreground/20"
+const DATA_TABLE_SELECTION_CHECKBOX_WRAP_HEADER =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary-foreground/15 focus-within:ring-2 focus-within:ring-primary-foreground/25"
+
+const DATA_TABLE_SELECTION_CHECKBOX_WRAP_BODY =
+  "inline-flex items-center justify-center rounded-md p-2 transition-colors hover:bg-primary/10 focus-within:ring-2 focus-within:ring-primary/20"
 
 function stickyPinnedHeadCellClassName(options: {
   isSelectionCol: boolean
@@ -292,30 +315,57 @@ function stickyPinnedHeadCellClassName(options: {
   const { isSelectionCol, isActionsCol, stickyTableHeader } = options
   if (!isSelectionCol && !isActionsCol) return ""
   return cn(
-    DATA_TABLE_PINNED_COLUMN_CLASS,
-    "text-center",
+    "bg-primary text-center align-middle text-primary-foreground",
     isSelectionCol && "sticky left-0 px-0",
     isActionsCol && "sticky right-0",
     stickyTableHeader ? "z-[25]" : isSelectionCol ? "z-[12]" : "z-[10]"
   )
 }
 
-function stickyPinnedBodyCellBackground(): CSSProperties {
-  return {
-    backgroundColor: "var(--secondary)",
-    color: "var(--secondary-foreground)",
-  }
+function dataTableRowBodyClassName(options: {
+  rowIndex: number
+  isSelected: boolean
+  extra?: string
+}): string {
+  const { rowIndex, isSelected, extra } = options
+  const isOdd = rowIndex % 2 === 1
+  const baseBg = isSelected
+    ? STICKY_PINNED_BG_SELECTED
+    : isOdd
+      ? STICKY_PINNED_BG_ODD
+      : STICKY_PINNED_BG_EVEN
+
+  return cn(
+    "group/row",
+    DATA_TABLE_ROW_BG_TRANSITION,
+    baseBg,
+    !isSelected && DATA_TABLE_ROW_BG_HOVER,
+    extra
+  )
 }
 
-function stickyPinnedBodyCellClassName(side: "left" | "right"): string {
+function stickyPinnedBodyCellClassName(options: {
+  rowIndex: number
+  isSelected: boolean
+  side: "left" | "right"
+}): string {
+  const { rowIndex, isSelected, side } = options
+  const isOdd = rowIndex % 2 === 1
+  const baseBg = isSelected
+    ? STICKY_PINNED_BG_SELECTED
+    : isOdd
+      ? STICKY_PINNED_BG_ODD
+      : STICKY_PINNED_BG_EVEN
+
   return cn(
     side === "left" ? "sticky left-0 z-[11]" : "sticky right-0 z-[10]",
-    "text-center align-middle",
     DATA_TABLE_PINNED_COLUMN_CLASS,
-    "hover:!bg-secondary/90",
+    DATA_TABLE_ROW_BG_TRANSITION,
     side === "left"
       ? "shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]"
-      : "shadow-[-2px_0_6px_-2px_rgba(0,0,0,0.08)]"
+      : "shadow-[-2px_0_6px_-2px_rgba(0,0,0,0.08)]",
+    baseBg,
+    !isSelected && STICKY_PINNED_BG_HOVER_GROUP
   )
 }
 
@@ -350,7 +400,7 @@ function stickyTableHeadClassName(options: {
   return cn(
     "sticky top-0 shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]",
     corner ? "z-[25]" : "z-[15]",
-    corner ? DATA_TABLE_PINNED_COLUMN_CLASS : "bg-primary"
+    "bg-primary"
   )
 }
 
@@ -590,6 +640,7 @@ export function AdminDataTable<TData>({
   stickyTableHeader = true,
   stickyTableHeaderTop,
   tableBodyMaxHeight,
+  rowContextMenu,
 }: AdminDataTableProps<TData>) {
   const resolvedSelectionColumnWidth = Math.max(
     32,
@@ -746,6 +797,11 @@ export function AdminDataTable<TData>({
     () => dataTableColumnsHasIndexColumn(columns),
     [columns]
   )
+  const hasActionsColumn = useMemo(
+    () => dataTableColumnsHasActionsColumn(columns),
+    [columns]
+  )
+  const rowContextMenuEnabled = rowContextMenu ?? hasActionsColumn
   const indexColumnEnabled = showIndexColumn && !hasManualIndexColumn
 
   const indexRowOffset = useMemo(() => {
@@ -793,9 +849,9 @@ export function AdminDataTable<TData>({
       id: DATA_TABLE_SELECTION_COLUMN_ID,
       header: ({ table }) => (
         <div className="flex w-full items-center justify-center">
-          <span className={DATA_TABLE_PINNED_CHECKBOX_WRAP_HEADER}>
+          <span className={DATA_TABLE_SELECTION_CHECKBOX_WRAP_HEADER}>
             <Checkbox
-              className={DATA_TABLE_PINNED_CHECKBOX_CLASS}
+              className="size-[18px] border-primary-foreground/40 data-checked:border-primary-foreground data-checked:bg-primary-foreground data-checked:text-primary"
               checked={table.getIsAllPageRowsSelected()}
               indeterminate={
                 !table.getIsAllPageRowsSelected() &&
@@ -814,14 +870,13 @@ export function AdminDataTable<TData>({
         <div className="flex w-full items-center justify-center">
           <span
             className={cn(
-              DATA_TABLE_PINNED_CHECKBOX_WRAP_BODY,
-              row.getIsSelected() &&
-                "bg-secondary-foreground/15 ring-2 ring-secondary-foreground/30",
+              DATA_TABLE_SELECTION_CHECKBOX_WRAP_BODY,
+              row.getIsSelected() && "bg-primary/15 ring-2 ring-primary/25",
               !row.getCanSelect() && "pointer-events-none opacity-40"
             )}
           >
             <Checkbox
-              className={DATA_TABLE_PINNED_CHECKBOX_CLASS}
+              className="size-[18px]"
               checked={row.getIsSelected()}
               onCheckedChange={(value) => row.toggleSelected(value === true)}
               disabled={!row.getCanSelect()}
@@ -1472,6 +1527,7 @@ export function AdminDataTable<TData>({
           </TypographyPSmall>
         }
       />
+      <DataTableRowActionsRegistryProvider>
       <DataTableHorizontalScroll
         enabled={horizontalScrollButtons}
         watchKey={`${isLoading}-${data.length}`}
@@ -1536,7 +1592,7 @@ export function AdminDataTable<TData>({
                         <div
                           className={cn(
                             "flex h-full gap-1",
-                            isSelectionCol
+                            isSelectionCol || isActionsCol
                               ? "flex-row items-center justify-center"
                               : "flex-col items-start justify-center"
                           )}
@@ -1572,21 +1628,23 @@ export function AdminDataTable<TData>({
               </TableRow>
             ) : (
               rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-depth={row.depth}
-                  className={cn(
-                    "hover:bg-primary/8",
-                    row.index % 2 === 1 && "bg-primary/8",
-                    getRowClassName?.(row)
-                  )}
-                  style={{
-                    borderLeft:
-                      row.depth > 0
-                        ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
-                        : undefined,
-                  }}
-                >
+                <DataTableRowActionsRowProvider key={row.id} rowId={row.id}>
+                  <DataTableRowContextMenu
+                    rowId={row.id}
+                    enabled={rowContextMenuEnabled}
+                    data-depth={row.depth}
+                    className={dataTableRowBodyClassName({
+                      rowIndex: row.index,
+                      isSelected: row.getIsSelected(),
+                      extra: getRowClassName?.(row),
+                    })}
+                    style={{
+                      borderLeft:
+                        row.depth > 0
+                          ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
+                          : undefined,
+                    }}
+                  >
                   {row.getVisibleCells().map((cell) => {
                     const colIndex = cell.column.getIndex()
                     // Calculate which column should get indent:
@@ -1617,16 +1675,15 @@ export function AdminDataTable<TData>({
                         className={cn(
                           cellWidthClassName(cellMeta, cell.column.columnDef),
                           isPinnedCol &&
-                            stickyPinnedBodyCellClassName(
-                              isSelectionCol ? "left" : "right"
-                            ),
+                            stickyPinnedBodyCellClassName({
+                              rowIndex: row.index,
+                              isSelected: row.getIsSelected(),
+                              side: isSelectionCol ? "left" : "right",
+                            }),
                           isSelectionCol && "px-0",
                           isActionsCol && "px-1"
                         )}
                         style={{
-                          ...(isPinnedCol
-                            ? stickyPinnedBodyCellBackground()
-                            : {}),
                           ...(isSelectionCol
                             ? selectionColumnBoxStyle(
                                 resolvedSelectionColumnWidth
@@ -1645,13 +1702,15 @@ export function AdminDataTable<TData>({
                       </TableCell>
                     )
                   })}
-                </TableRow>
+                  </DataTableRowContextMenu>
+                </DataTableRowActionsRowProvider>
               ))
             )}
           </TableBody>
           </Table>
         </div>
       </DataTableHorizontalScroll>
+      </DataTableRowActionsRegistryProvider>
       {showTableFooter ? (
         <div
           className={cn(

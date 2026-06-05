@@ -119,7 +119,8 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Categories
   ...generateResourcePermissions(RESOURCES.CATEGORIES),
-  CATEGORIES_RESTORE: `${RESOURCES.CATEGORIES}:${ACTIONS.RESTORE}` as Permission,
+  CATEGORIES_RESTORE:
+    `${RESOURCES.CATEGORIES}:${ACTIONS.RESTORE}` as Permission,
   CATEGORIES_HARD_DELETE:
     `${RESOURCES.CATEGORIES}:${ACTIONS.HARD_DELETE}` as Permission,
 
@@ -143,7 +144,8 @@ export const PERMISSIONS: Record<string, Permission> = {
   // Groups
   ...generateResourcePermissions(RESOURCES.GROUPS),
   GROUPS_RESTORE: `${RESOURCES.GROUPS}:${ACTIONS.RESTORE}` as Permission,
-  GROUPS_HARD_DELETE: `${RESOURCES.GROUPS}:${ACTIONS.HARD_DELETE}` as Permission,
+  GROUPS_HARD_DELETE:
+    `${RESOURCES.GROUPS}:${ACTIONS.HARD_DELETE}` as Permission,
 
   // Notifications
   NOTIFICATIONS_VIEW:
