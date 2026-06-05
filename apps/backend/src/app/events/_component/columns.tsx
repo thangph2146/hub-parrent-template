@@ -32,6 +32,9 @@ export function getEventColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
   onToggleFeatured,
   isTogglingFeaturedId,
 }: {
@@ -40,6 +43,9 @@ export function getEventColumns({
   openEdit?: (row: EventRow) => void
   rowActions: AdminCrudRowHandlers<EventRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
   onToggleFeatured?: (row: EventRow) => void
   isTogglingFeaturedId?: string | null
 }): ColumnDef<EventRow>[] {
@@ -248,6 +254,8 @@ export function getEventColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<EventRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -256,6 +264,8 @@ export function getEventColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<EventRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

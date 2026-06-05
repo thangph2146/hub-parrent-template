@@ -1,69 +1,63 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { toast } from "sonner"
+import { useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "sonner";
 import {
-  Loader2,
-  ArrowLeft,
-  Pencil,
   Calendar,
   Clock,
   LayoutTemplate,
   Fingerprint,
   FileJson,
-} from "lucide-react"
-import { PageSection } from "@ui/components/layout"
-import { Badge } from "@ui/components/badge"
+} from "lucide-react";
+import { Badge } from "@ui/components/badge";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin"
-import { api } from "@/lib/api"
-import { useTemplateDetailQuery } from "../_component"
-import { TypographyH1, TypographyH2 } from "@ui/components/typography"
+  FieldSet,
+  FieldSetContent,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_COMPACT_CLASS,
-} from "@ui/lib/layout-shell"
-import { useAuth } from "@/providers/auth-provider"
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin";
+import { api } from "@/lib/api";
+import { useTemplateDetailQuery } from "../_component";
+import { useAuth } from "@/providers/auth-provider";
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—"
-  const d = new Date(value)
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN")
+  if (!value) return "—";
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN");
 }
 
 function DetailInner() {
-  const router = useRouter()
-  const params = useParams()
-  const id = params.id as string
-  const { user } = useAuth()
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const { user } = useAuth();
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_UPDATE)
-    : false
+    : false;
 
-  const { data: e, isLoading, isError } = useTemplateDetailQuery(api, id)
+  const { data: e, isLoading, isError } = useTemplateDetailQuery(api, id);
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được mẫu")
-      router.push("/templates")
+      toast.error("Không tải được mẫu");
+      router.push("/templates");
     }
-  }, [isError, router])
+  }, [isError, router]);
 
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    )
-  }
-
-  if (!e) return null
+  if (isLoading) return <AdminPageLoading />;
+  if (!e) return null;
 
   return (
     <AdminPageSection>
@@ -72,104 +66,74 @@ function DetailInner() {
         subtitle={<span className="text-muted-foreground/60">Mẫu hiển thị</span>}
         variant="entity"
         onBack={() => router.push("/templates")}
-        onEdit={
-          canUpdate ? () => router.push(`/templates/${id}/edit`) : undefined
-        }
+        onEdit={canUpdate ? () => router.push(`/templates/${id}/edit`) : undefined}
       />
 
       <AdminDetailLayout>
         <AdminDetailMain>
-                <Card className="border border-border/70 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <LayoutTemplate className="size-5 text-primary" />
-            Thông tin mẫu
-          </CardTitle>
-          <CardDescription>
-            Thông tin cơ bản của mẫu hiển thị.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <TypographyH1 className="text-2xl font-bold">
-              {e.name || "—"}
-            </TypographyH1>
-            <div className="mt-2">
-              {e.status === 0 ? (
-                <Badge variant="outline" className="rounded-full px-3 py-0.5">
-                  Khóa
-                </Badge>
-              ) : (
-                <Badge
-                  variant="default"
-                  className="rounded-full px-3 py-0.5 shadow-sm"
-                >
-                  Hoạt động
-                </Badge>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={LayoutTemplate}
+              title="Thông tin mẫu"
+              description="Thông tin cơ bản của mẫu hiển thị."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-2xl font-bold">{e.name || "—"}</p>
+                {e.status === 0 ? (
+                  <Badge variant="outline" className="rounded-full px-3 py-0.5">
+                    Khóa
+                  </Badge>
+                ) : (
+                  <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                    Hoạt động
+                  </Badge>
+                )}
+              </div>
+
+              {e.code && (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Mã mẫu" icon={Fingerprint}>
+                      {e.code}
+                  </FieldSectionField>
+                </>
               )}
-            </div>
-          </div>
 
-          {e.code && (
-            <>
-              <hr className="border-border/40" />
-              <div className="space-y-1">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Fingerprint className="size-3.5" />
-                  Mã mẫu
-                </p>
-                <p className="text-sm font-mono text-foreground/90 bg-muted/20 rounded-lg border border-border/40 p-3">
-                  {e.code}
-                </p>
-              </div>
-            </>
-          )}
-
-          {e.content != null && (
-            <>
-              <hr className="border-border/40" />
-              <div className="space-y-1">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <FileJson className="size-3.5" />
-                  Nội dung
-                </p>
-                <pre className="text-xs leading-relaxed whitespace-pre-wrap text-foreground/80 bg-muted/20 rounded-lg border border-border/40 p-3 font-mono max-h-48 overflow-auto">
-                  {typeof e.content === "string"
-                    ? e.content
-                    : JSON.stringify(e.content, null, 2)}
-                </pre>
-              </div>
-            </>
-          )}
-
-          <hr className="border-dashed border-border/40" />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="size-3.5" />
-                Ngày tạo
-              </p>
-              <p className="text-sm font-medium">
-                {formatDateTime(e.createdAt)}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Clock className="size-3.5" />
-                Cập nhật
-              </p>
-              <p className="text-sm font-medium">
-                {formatDateTime(e.updatedAt)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              {e.content != null && (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Nội dung" icon={FileJson}>
+                    <pre className="max-h-48 overflow-auto rounded-lg border border-border/40 bg-muted/20 p-3 font-mono text-xs leading-relaxed whitespace-pre-wrap">
+                      {typeof e.content === "string"
+                        ? e.content
+                        : JSON.stringify(e.content, null, 2)}
+                    </pre>
+                  </FieldSectionField>
+                </>
+              )}
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
+
+        <AdminDetailSidebar>
+          <div className="sticky top-2 flex flex-col gap-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                  {formatDateTime(e.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                  {formatDateTime(e.updatedAt)}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
+        </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  )
+  );
 }
 
 export default function TemplateDetailPage() {
@@ -177,5 +141,5 @@ export default function TemplateDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <DetailInner />
     </AdminPageGuard>
-  )
+  );
 }

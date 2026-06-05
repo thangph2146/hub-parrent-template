@@ -6,14 +6,27 @@ import type { CourseConfirmAction, CourseFormValues } from "../types";
 import { courseFormSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const EMPTY_VALUES: CourseFormValues = { name: "", startYear: undefined, endYear: undefined, departmentId: undefined, status: 1 };
+const EMPTY_VALUES: CourseFormValues = {
+  name: "",
+  startYear: undefined,
+  endYear: undefined,
+  departmentId: "",
+  status: 1,
+};
+
+function parseDepartmentId(value: string | undefined): number | null {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  const num = Number(trimmed);
+  return Number.isFinite(num) ? num : null;
+}
 
 export function buildCoursePayload(values: CourseFormValues): Record<string, unknown> {
   return {
     name: values.name.trim(),
     startYear: values.startYear || null,
     endYear: values.endYear || null,
-    departmentId: values.departmentId || null,
+    departmentId: parseDepartmentId(values.departmentId),
     status: values.status,
   };
 }

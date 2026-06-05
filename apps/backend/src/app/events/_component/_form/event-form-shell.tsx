@@ -4,13 +4,12 @@ import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import { LexicalEditor } from "@thangph2146/lexical-editor"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
-import { FieldError } from "@ui/components/field"
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionDivider,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import { Input } from "@ui/components/input"
 import { Textarea } from "@ui/components/textarea"
 import { FormFieldCol } from "@ui/components/typing"
@@ -38,7 +37,6 @@ import { useCamerasListQuery } from "@/app/cameras/_component"
 import { slugify } from "@workspace/api-client"
 import type { EventFormValues, EventFormSpeaker } from "../types"
 import { EventPosterField } from "./event-poster-field"
-import { Divider } from "@ui/components/layout"
 import { api } from "@/lib/api"
 
 interface LocationOption {
@@ -284,45 +282,39 @@ export function EventFormShell({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <AdminFormMain>
-            <Card className="overflow-visible border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <FileText className="size-5 text-primary" /> Nội dung chi tiết
-                </CardTitle>
-                <CardDescription>
-                  Nội dung phong phú cho sự kiện (hỗ trợ rich text).
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mx-auto max-w-6xl">
-                  <Controller
-                    name="content"
-                    control={control}
-                    render={({ field }) => (
-                      <LexicalEditor
-                        value={field.value}
-                        placeholder="Nhập nội dung chi tiết sự kiện..."
-                        onChange={(value) => field.onChange(value)}
-                        uploadsContext={undefined}
-                        stickyTop={0}
-                      />
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+          <FieldSet variant="section" className="overflow-visible">
+            <FieldSectionLegend
+              icon={FileText}
+              title="Nội dung chi tiết"
+              description="Nội dung phong phú cho sự kiện (hỗ trợ rich text)."
+            />
+            <FieldSetContent variant="section" className="overflow-visible pt-0">
+              <div className="mx-auto max-w-4xl overflow-visible">
+                <Controller
+                  name="content"
+                  control={control}
+                  render={({ field }) => (
+                    <LexicalEditor
+                      value={field.value}
+                      placeholder="Nhập nội dung chi tiết sự kiện..."
+                      onChange={(value) => field.onChange(value)}
+                      uploadsContext={undefined}
+                    />
+                  )}
+                />
+              </div>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormMain>
 
-        <AdminFormSidebar>
-            <Card className="border border-border/70 shadow-sm max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-2">
-              <Divider label="Thông tin sự kiện" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Calendar className="size-5 text-primary" /> Thông tin sự kiện
-                </CardTitle>
-                <CardDescription>Thông tin cơ bản của sự kiện.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Calendar}
+              title="Thông tin sự kiện"
+              description="Thông tin cơ bản của sự kiện."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
                 <Controller
                   name="posterUrl"
                   control={control}
@@ -409,17 +401,16 @@ export function EventFormShell({
                     )}
                   />
                 </div>
-              </CardContent>
-              <Divider label="Thông tin check-in" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MapPin className="size-5 text-primary" /> Thông tin check-in
-                </CardTitle>
-                <CardDescription>
-                  Cấu hình thời gian check-in và địa điểm.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            </FieldSetContent>
+          </FieldSet>
+
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={MapPin}
+              title="Thông tin check-in"
+              description="Cấu hình thời gian check-in và địa điểm."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Controller
                     name="checkinStart"
@@ -510,15 +501,12 @@ export function EventFormShell({
                     )}
                   />
                 </div>
-              </CardContent>
+            </FieldSetContent>
+          </FieldSet>
 
-              <Divider label="Trạng thái" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-                  <Hash className="size-5" /> Trạng thái
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+          <FieldSet variant="section">
+            <FieldSectionLegend icon={Hash} title="Trạng thái" />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <Controller
                   name="status"
                   control={control}
@@ -536,18 +524,16 @@ export function EventFormShell({
                     </FormFieldCol>
                   )}
                 />
-              </CardContent>
+            </FieldSetContent>
+          </FieldSet>
 
-              <Divider label="Hiển thị công khai" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Star className="size-5 text-primary" /> Sự kiện nổi bật
-                </CardTitle>
-                <CardDescription>
-                  Sự kiện được đánh dấu sẽ hiển thị trên trang chủ và carousel &quot;Sự kiện nổi bật&quot; tại /su-kien.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Star}
+              title="Sự kiện nổi bật"
+              description='Sự kiện được đánh dấu sẽ hiển thị trên trang chủ và carousel "Sự kiện nổi bật" tại /su-kien.'
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
                 <Controller
                   name="isFeatured"
                   control={control}
@@ -616,15 +602,12 @@ export function EventFormShell({
                     </FormFieldCol>
                   )}
                 />
-              </CardContent>
+            </FieldSetContent>
+          </FieldSet>
 
-              <Divider label="Hình thức" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Monitor className="size-5 text-primary" /> Hình thức
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+          <FieldSet variant="section">
+            <FieldSectionLegend icon={Monitor} title="Hình thức" />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <Controller
                   name="format"
                   control={control}
@@ -655,25 +638,23 @@ export function EventFormShell({
                     </FormFieldCol>
                   )}
                 />
-              </CardContent>
+            </FieldSetContent>
+          </FieldSet>
 
-              <Divider label="Diễn giả" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Mic className="size-5 text-primary" /> Diễn giả</CardTitle>
-                <CardDescription>Chọn diễn giả tham gia sự kiện.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SpeakerSelector form={form} />
-              </CardContent>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Mic}
+              title="Diễn giả"
+              description="Chọn diễn giả tham gia sự kiện."
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              <SpeakerSelector form={form} />
+            </FieldSetContent>
+          </FieldSet>
 
-              <Divider label="Cấu hình" />
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Users className="size-5 text-primary" /> Cấu hình
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+          <FieldSet variant="section">
+            <FieldSectionLegend icon={Users} title="Cấu hình" />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <Controller
                   name="maxParticipants"
                   control={control}
@@ -723,8 +704,11 @@ export function EventFormShell({
                   />
                 </div>
 
-                <Divider label="Camera HANET" />
-                <p className="text-xs text-muted-foreground px-1">
+                <FieldSectionDivider />
+                <p className="px-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  Camera HANET
+                </p>
+                <p className="px-1 text-xs text-muted-foreground">
                   Chọn camera từ danh sách — mã camera phải trùng{" "}
                   <code className="text-[10px]">deviceID</code> trên HANET.
                 </p>
@@ -784,8 +768,8 @@ export function EventFormShell({
                     trước khi gắn sự kiện.
                   </p>
                 ) : null}
-              </CardContent>
-            </Card>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormSidebar>
       </AdminFormLayout>
     </>

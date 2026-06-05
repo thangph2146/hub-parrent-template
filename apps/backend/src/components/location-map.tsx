@@ -92,7 +92,7 @@ export function LocationMap({
     return (
       <div
         className={`flex items-center justify-center rounded-lg border border-border/40 bg-muted/10 ${className}`}
-        style={{ height: 300 }}
+        style={{ height: 250 }}
       >
         <p className="text-sm text-muted-foreground">Đang tải bản đồ…</p>
       </div>
@@ -103,7 +103,7 @@ export function LocationMap({
     return (
       <div
         className={`flex items-center justify-center rounded-lg border border-border/40 bg-muted/10 ${className}`}
-        style={{ height: 300 }}
+        style={{ height: 250 }}
       >
         <p className="text-sm text-muted-foreground">
           Không thể xác định tọa độ từ URL bản đồ.
@@ -121,7 +121,7 @@ export function LocationMap({
         center={[coords.lat, coords.lng]}
         zoom={16}
         scrollWheelZoom={false}
-        style={{ height: 600, width: "100%" }}
+        style={{ height: 300, width: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

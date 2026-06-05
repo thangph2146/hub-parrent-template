@@ -43,6 +43,17 @@ function LocationsPageInner() {
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.LOCATIONS_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.LOCATIONS_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["locations"] });
@@ -124,15 +135,17 @@ function LocationsPageInner() {
         openEdit: (row) => router.push(`/locations/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite],
+    [rowActions, router, canWrite, canDelete, canHardDelete],
   );
 
 
 
   const trashColumns = useMemo<ColumnDef<LocationRow>[]>(
-    () => getLocationColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite],
+    () => getLocationColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete],
   );
 
   return (

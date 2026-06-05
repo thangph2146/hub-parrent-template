@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useMemo, useState } from "react"
 import { CalendarIcon } from "lucide-react"
 import { Button } from "../button"
 import { Calendar } from "../calendar"
@@ -10,6 +11,10 @@ export interface DatePickerProps {
   onChange: (value: unknown) => void
   placeholder?: string
   id?: string
+  /** Năm sớm nhất trong dropdown (mặc định: năm hiện tại − 50). */
+  fromYear?: number
+  /** Năm muộn nhất trong dropdown (mặc định: năm hiện tại + 20). */
+  toYear?: number
 }
 
 function formatIsoDate(d: Date): string {
@@ -19,14 +24,55 @@ function formatIsoDate(d: Date): string {
   return `${y}-${m}-${day}`
 }
 
+/** Parse YYYY-MM-DD theo giờ local, tránh lệch ngày do UTC. */
+export function parseIsoDateString(value: string): Date | undefined {
+  const trimmed = value.trim()
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(trimmed)
+  if (match) {
+    const year = Number(match[1])
+    const month = Number(match[2])
+    const day = Number(match[3])
+    const date = new Date(year, month - 1, day)
+    return Number.isNaN(date.getTime()) ? undefined : date
+  }
+  const fallback = new Date(trimmed)
+  return Number.isNaN(fallback.getTime()) ? undefined : fallback
+}
+
+function getDefaultYearBounds() {
+  const currentYear = new Date().getFullYear()
+  return { fromYear: currentYear - 50, toYear: currentYear + 20 }
+}
+
 export function DatePicker({
   value,
   onChange,
   placeholder = "Tất cả",
   id,
+  fromYear,
+  toYear,
 }: DatePickerProps) {
+  const [open, setOpen] = useState(false)
+
+  const { startMonth, endMonth } = useMemo(() => {
+    const bounds = getDefaultYearBounds()
+    const minYear = fromYear ?? bounds.fromYear
+    const maxYear = toYear ?? bounds.toYear
+    return {
+      startMonth: new Date(minYear, 0),
+      endMonth: new Date(maxYear, 11),
+    }
+  }, [fromYear, toYear])
+
   const dateValue =
-    typeof value === "string" && value ? new Date(value) : undefined
+    typeof value === "string" && value ? parseIsoDateString(value) : undefined
+
+  const [month, setMonth] = useState<Date>(() => dateValue ?? new Date())
+
+  useEffect(() => {
+    if (dateValue) setMonth(dateValue)
+  }, [value])
+
   const displayLabel =
     dateValue && !Number.isNaN(dateValue.getTime())
       ? dateValue.toLocaleDateString("vi-VN", {
@@ -37,7 +83,7 @@ export function DatePicker({
       : placeholder
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <Button
           type="button"
@@ -52,9 +98,15 @@ export function DatePicker({
       <PopoverContent className="w-auto p-2" align="start">
         <Calendar
           mode="single"
+          captionLayout="dropdown"
+          month={month}
+          onMonthChange={setMonth}
+          startMonth={startMonth}
+          endMonth={endMonth}
           selected={dateValue}
           onSelect={(date) => {
             onChange(date ? formatIsoDate(date) : undefined)
+            if (date) setOpen(false)
           }}
           initialFocus
         />
@@ -65,7 +117,10 @@ export function DatePicker({
               variant="ghost"
               size="sm"
               className="h-8 w-full text-xs"
-              onClick={() => onChange(undefined)}
+              onClick={() => {
+                onChange(undefined)
+                setOpen(false)
+              }}
             >
               Xóa ngày
             </Button>

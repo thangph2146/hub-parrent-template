@@ -8,11 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const EMPTY_VALUES: AcademicYearFormValues = { name: "", startDate: "", endDate: "", status: 1 };
 
+function normalizeDateField(value: string | undefined): string | null {
+  const trimmed = value?.trim();
+  return trimmed || null;
+}
+
 export function buildAcademicYearPayload(values: AcademicYearFormValues): Record<string, unknown> {
   return {
     name: values.name.trim(),
-    startDate: values.startDate || null,
-    endDate: values.endDate || null,
+    startDate: normalizeDateField(values.startDate),
+    endDate: normalizeDateField(values.endDate),
     status: values.status,
   };
 }

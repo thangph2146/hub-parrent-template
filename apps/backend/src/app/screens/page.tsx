@@ -44,6 +44,17 @@ function ScreensPageInner() {
       canUserAccess(user, PERMISSION_CODES.SCREENS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.SCREENS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SCREENS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SCREENS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.SCREENS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SCREENS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SCREENS_MANAGE)
+    : false
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["screens"] })
   }
@@ -116,12 +127,14 @@ function ScreensPageInner() {
         openEdit: (r) => router.push(`/screens/${r.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<ScreenRow>[]>(
-    () => getScreenColumns({ view: "trash", rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getScreenColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
   return (
     <AdminPageSection>

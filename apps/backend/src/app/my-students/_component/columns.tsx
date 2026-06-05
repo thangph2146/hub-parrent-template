@@ -15,7 +15,9 @@ import {
   XCircle,
 } from "lucide-react"
 import {
+  DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
+  TABLE_ACTIONS_COLUMN_META,
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
 import type { MyStudentRow } from "./types"
@@ -123,11 +125,11 @@ export function getMyStudentsColumns(
       },
     ]),
     {
-      id: "actions",
+      id: DATA_TABLE_ACTIONS_COLUMN_ID,
       header: "Thao tác",
       enableSorting: false,
-      enableColumnFilter: true,
-      filterFn: () => true,
+      enableColumnFilter: false,
+      meta: TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const data = row.original
         const label = recordLabel(data)

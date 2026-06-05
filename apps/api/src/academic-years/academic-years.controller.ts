@@ -138,7 +138,13 @@ export class AcademicYearsController {
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body() body: { name?: string; startDate?: string; endDate?: string },
+    @Body()
+    body: {
+      name?: string;
+      startDate?: string;
+      endDate?: string;
+      status?: number;
+    },
   ) {
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
@@ -151,8 +157,9 @@ export class AcademicYearsController {
     }
     const created = await this.service.create({
       name: body.name.trim(),
-      startDate: body.startDate?.trim() ?? null,
-      endDate: body.endDate?.trim() ?? null,
+      startDate: body.startDate ?? null,
+      endDate: body.endDate ?? null,
+      status: body.status,
     });
     const { statusCode, body: okBody } = createSuccessResponse(created, {
       status: 201,

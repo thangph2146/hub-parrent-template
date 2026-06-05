@@ -31,6 +31,13 @@ export function getCourseColumns({
   rowActions,
 
   canWrite,
+
+  canDelete,
+
+  canRestore,
+
+  canHardDelete,
+
 }: {
   view?: AdminTableView
 
@@ -41,6 +48,12 @@ export function getCourseColumns({
   rowActions: AdminCrudRowHandlers<CourseRow>
 
   canWrite: boolean
+
+  canDelete?: boolean
+
+  canRestore?: boolean
+
+  canHardDelete?: boolean
 }): ColumnDef<CourseRow>[] {
   const dataColumns: ColumnDef<CourseRow>[] = [
     {
@@ -150,6 +163,10 @@ export function getCourseColumns({
       listActionsColumn: defineAdminCrudActionsColumn<CourseRow>({
         canWrite,
 
+        canDelete,
+
+        canHardDelete,
+
         onView: openDetail,
 
         onEdit: openEdit,
@@ -163,6 +180,10 @@ export function getCourseColumns({
 
       trashActionsColumn: defineAdminTrashActionsColumn<CourseRow>({
         canWrite,
+
+        canRestore,
+
+        canHardDelete,
 
         onRestore: rowActions.onRestore,
 

@@ -69,6 +69,7 @@ export function EventRegistrationsLiveTable({
     <AdminDataTable<EventRegistrationRow>
       data={displayRows}
       columns={columns}
+      rowContextMenu
       getRowId={(row) => String(row.id ?? "")}
       isLoading={isLoading}
       emptyLabel="Chưa có đăng ký nào."

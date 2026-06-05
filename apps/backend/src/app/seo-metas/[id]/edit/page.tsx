@@ -4,17 +4,28 @@ import { useCallback, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
+import { Loader2, FileText, Globe } from "lucide-react";
+import {
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { Input } from "@ui/components/input";
-import { Label } from "@ui/components/label";
-import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { FormFieldCol } from "@ui/components/typing";
+import {
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { seoMetaFormSchema, useSeoMetaDetailQuery } from "../../_component";
 import type { SeoMetaFormValues } from "../../_component";
+import { cn } from "@ui/lib/utils";
 
 function EditSeoMetaPageInner() {
   const router = useRouter();
@@ -22,7 +33,12 @@ function EditSeoMetaPageInner() {
   const id = params.id as string;
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<SeoMetaFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<SeoMetaFormValues>({
     resolver: zodResolver(seoMetaFormSchema),
   });
 
@@ -54,8 +70,7 @@ function EditSeoMetaPageInner() {
   };
 
   const updateMutation = useMutation({
-    mutationFn: async (input: Record<string, unknown>) =>
-      api.seoMetas.update(id, input),
+    mutationFn: async (input: Record<string, unknown>) => api.seoMetas.update(id, input),
     onSuccess: async () => {
       await invalidateAll();
       toast.success("Đã cập nhật SEO metadata");
@@ -76,7 +91,7 @@ function EditSeoMetaPageInner() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
+      <div className="flex min-h-[200px] items-center justify-center">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
       </div>
     );
@@ -95,52 +110,60 @@ function EditSeoMetaPageInner() {
 
       <AdminFormLayout id="seo-meta-edit-form" onSubmit={handleSubmit(onSubmit)}>
         <AdminFormMain>
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin SEO</CardTitle>
-              <CardDescription>Cập nhật thông tin SEO cho trang.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="page">Đường dẫn *</Label>
-                <Input id="page" placeholder="/vi du" {...register("page")} />
-                {errors.page && <p className="text-sm text-destructive">{errors.page.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="title">Title SEO</Label>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={FileText}
+              title="Thông tin SEO"
+              description="Cập nhật thông tin SEO cho trang."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FormFieldCol label="Đường dẫn" required>
+                <Input
+                  id="page"
+                  placeholder="/vi du"
+                  {...register("page")}
+                  className={cn(errors.page && "border-destructive")}
+                />
+                {errors.page && <FieldError>{errors.page.message}</FieldError>}
+              </FormFieldCol>
+              <FormFieldCol label="Title SEO">
                 <Input id="title" placeholder="Title hiển thị trên SEO" {...register("title")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Mô tả</Label>
+              </FormFieldCol>
+              <FormFieldCol label="Mô tả">
                 <Input id="description" placeholder="Mô tả meta" {...register("description")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="keywords">Từ khóa</Label>
-                <Input id="keywords" placeholder="Từ khóa, cách nhau bằng dấu phẩy" {...register("keywords")} />
-              </div>
-            </CardContent>
-          </Card>
+              </FormFieldCol>
+              <FormFieldCol label="Từ khóa">
+                <Input
+                  id="keywords"
+                  placeholder="Từ khóa, cách nhau bằng dấu phẩy"
+                  {...register("keywords")}
+                />
+              </FormFieldCol>
+            </FieldSetContent>
+          </FieldSet>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Open Graph</CardTitle>
-              <CardDescription>Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="ogTitle">OG Title</Label>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Globe}
+              title="Open Graph"
+              description="Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FormFieldCol label="OG Title">
                 <Input id="ogTitle" placeholder="Open Graph title" {...register("ogTitle")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogDescription">OG Mô tả</Label>
-                <Input id="ogDescription" placeholder="Open Graph description" {...register("ogDescription")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogImage">OG Ảnh (URL)</Label>
+              </FormFieldCol>
+              <FormFieldCol label="OG Mô tả">
+                <Input
+                  id="ogDescription"
+                  placeholder="Open Graph description"
+                  {...register("ogDescription")}
+                />
+              </FormFieldCol>
+              <FormFieldCol label="OG Ảnh (URL)">
                 <Input id="ogImage" placeholder="https://..." {...register("ogImage")} />
-              </div>
-            </CardContent>
-          </Card>
+              </FormFieldCol>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormMain>
       </AdminFormLayout>
     </AdminPageSection>

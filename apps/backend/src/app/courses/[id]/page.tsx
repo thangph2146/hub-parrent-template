@@ -3,20 +3,37 @@
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
-import { Calendar, Clock, BookOpen, Hash } from "lucide-react";
+import { Calendar, Clock, BookOpen, CalendarDays, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
 import { useCourseDetailQuery } from "../_component";
 
-
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
+}
+
+function formatDepartmentCode(value: number | null | undefined): string {
+  if (value == null) return "—";
+  return String(value);
 }
 
 function CourseDetailInner() {
@@ -35,107 +52,100 @@ function CourseDetailInner() {
     }
   }, [isError, router]);
 
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
-  }
-
+  if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
+
+  const departmentCode = formatDepartmentCode(entity.departmentId);
 
   return (
     <AdminPageSection>
       <AdminDetailPageHeader
         title={entity.name}
-        subtitle={<span className="text-muted-foreground/60">Khóa học</span>}
+        subtitle={
+          <>
+            <span className="text-muted-foreground/60">Khóa học</span>
+            {entity.departmentId != null && (
+              <>
+                <span className="mx-1.5 text-muted-foreground/40">/</span>
+                <span className="font-mono">{departmentCode}</span>
+              </>
+            )}
+          </>
+        }
         variant="module"
         onBack={() => router.push("/courses")}
-        onEdit={
-          canUpdate ? () => router.push(`/courses/${id}/edit`) : undefined
-        }
+        onEdit={canUpdate ? () => router.push(`/courses/${id}/edit`) : undefined}
       />
 
       <AdminDetailLayout>
         <AdminDetailMain>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <BookOpen className="size-5 text-primary" />
-                Thông tin khóa học
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Hash className="size-3" />
-                    Năm bắt đầu
-                  </p>
-                  <p className="mt-1 text-sm text-foreground">{entity.startYear ?? "—"}</p>
-                </div>
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Hash className="size-3" />
-                    Năm kết thúc
-                  </p>
-                  <p className="mt-1 text-sm text-foreground">{entity.endYear ?? "—"}</p>
-                </div>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={BookOpen}
+              title="Thông tin khóa học"
+              description="Mã khoa liên kết."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FieldSectionField label="Mã khoa" icon={Hash} valueClassName="font-mono font-medium">
+                {departmentCode}
+              </FieldSectionField>
+            </FieldSetContent>
+          </FieldSet>
+
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={CalendarDays}
+              title="Thời gian"
+              description="Năm bắt đầu và kết thúc của khóa học."
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldSectionField label="Năm bắt đầu" icon={CalendarDays} valueClassName="font-medium">
+                  {entity.startYear ?? "—"}
+                </FieldSectionField>
+                <FieldSectionField label="Năm kết thúc" icon={CalendarDays} valueClassName="font-medium">
+                  {entity.endYear ?? "—"}
+                </FieldSectionField>
               </div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Badge variant="outline" className="size-3" />
-                    Mã khoa
-                  </p>
-                  <p className="mt-1 text-sm text-foreground">{entity.departmentId ?? "—"}</p>
-                </div>
-                <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    <Badge variant="outline" className="size-3" />
-                    Trạng thái
-                  </p>
-                  <p className="mt-1 text-sm font-medium">
-                    {entity.status === 1 ? (
-                      <Badge variant="default">Hoạt động</Badge>
-                    ) : (
-                      <Badge variant="outline">Tắt</Badge>
-                    )}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
 
         <AdminDetailSidebar>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="size-5 text-primary" />
-                Thời gian
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Calendar className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Ngày tạo</p>
-                  <p className="text-sm font-medium">{formatDateTime(entity.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm">
-                <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                  <Clock className="size-3.5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
-                  <p className="text-sm font-medium">{formatDateTime(entity.updatedAt)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="sticky top-2 flex flex-col gap-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Hash}
+                title="Trạng thái"
+                description="Trạng thái hoạt động của khóa học."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Trạng thái" icon={BookOpen}>
+                  {entity.status === 1 ? (
+                    <Badge variant="default">Hoạt động</Badge>
+                  ) : (
+                    <Badge variant="outline">Tắt</Badge>
+                  )}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                  {formatDateTime(entity.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                  {formatDateTime(entity.updatedAt)}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

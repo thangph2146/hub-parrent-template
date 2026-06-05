@@ -1,69 +1,57 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { toast } from "sonner"
+import { useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "sonner";
+import { Calendar, Clock, Building2, Hash, Tag } from "lucide-react";
+import { Badge } from "@ui/components/badge";
 import {
-  Loader2,
-  ArrowLeft,
-  Pencil,
-  Calendar,
-  Clock,
-  Building2,
-  Hash,
-  Tag,
-} from "lucide-react"
-import { PageSection } from "@ui/components/layout"
-import { Badge } from "@ui/components/badge"
+  FieldSet,
+  FieldSetContent,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin"
-import { useAuth } from "@/providers/auth-provider"
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
-import { api } from "@/lib/api"
-import { useDepartmentDetailQuery } from "../_component"
-import { TypographyH1, TypographyH2 } from "@ui/components/typography"
-import {
-  ADMIN_PAGE_SUBTITLE_CLASS,
-  ADMIN_PAGE_TITLE_COMPACT_CLASS,
-} from "@ui/lib/layout-shell"
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin";
+import { useAuth } from "@/providers/auth-provider";
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
+import { api } from "@/lib/api";
+import { useDepartmentDetailQuery } from "../_component";
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—"
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
+  if (!value) return "—";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
 }
 
 function DepartmentDetailInner() {
-  const router = useRouter()
-  const params = useParams()
-  const id = params.id as string
-  const { user } = useAuth()
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const { user } = useAuth();
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_UPDATE)
-    : false
+    : false;
 
-  const { data: entity, isLoading, isError } = useDepartmentDetailQuery(api, id)
+  const { data: entity, isLoading, isError } = useDepartmentDetailQuery(api, id);
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được phòng khoa")
-      router.push("/departments")
+      toast.error("Không tải được phòng khoa");
+      router.push("/departments");
     }
-  }, [isError, router])
+  }, [isError, router]);
 
-  if (isLoading) {
-    return (
-      <AdminPageLoading />
-    )
-  }
-
-  if (!entity) return null
+  if (isLoading) return <AdminPageLoading />;
+  if (!entity) return null;
 
   return (
     <AdminPageSection>
@@ -72,102 +60,74 @@ function DepartmentDetailInner() {
         subtitle={<span className="text-muted-foreground/60">Phòng khoa</span>}
         variant="entity"
         onBack={() => router.push("/departments")}
-        onEdit={
-          canUpdate ? () => router.push(`/departments/${id}/edit`) : undefined
-        }
+        onEdit={canUpdate ? () => router.push(`/departments/${id}/edit`) : undefined}
       />
 
       <AdminDetailLayout>
         <AdminDetailMain>
-                <Card className="border border-border/70 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Building2 className="size-5 text-primary" />
-            Thông tin phòng khoa
-          </CardTitle>
-          <CardDescription>
-            Thông tin cơ bản của phòng khoa.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <TypographyH1 className="text-2xl font-bold">
-              {entity.name || "—"}
-            </TypographyH1>
-            <div className="mt-2">
-              {entity.status === 0 ? (
-                <Badge variant="outline" className="rounded-full px-3 py-0.5">
-                  Khóa
-                </Badge>
-              ) : (
-                <Badge
-                  variant="default"
-                  className="rounded-full px-3 py-0.5 shadow-sm"
-                >
-                  Hoạt động
-                </Badge>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Building2}
+              title="Thông tin phòng khoa"
+              description="Thông tin cơ bản của phòng khoa."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-2xl font-bold">{entity.name || "—"}</p>
+                {entity.status === 0 ? (
+                  <Badge variant="outline" className="rounded-full px-3 py-0.5">
+                    Khóa
+                  </Badge>
+                ) : (
+                  <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                    Hoạt động
+                  </Badge>
+                )}
+              </div>
+
+              {entity.code && (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Mã phòng khoa" icon={Hash}>
+                    <p className="rounded-lg border border-border/40 bg-muted/20 p-3 font-mono text-sm whitespace-pre-wrap">
+                      {entity.code}
+                    </p>
+                  </FieldSectionField>
+                </>
               )}
-            </div>
-          </div>
 
-          {entity.code && (
-            <>
-              <hr className="border-border/40" />
-              <div className="space-y-1">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Hash className="size-3.5" />
-                  Mã phòng khoa
-                </p>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground/90 bg-muted/20 rounded-lg border border-border/40 p-3 font-mono">
-                  {entity.code}
-                </p>
-              </div>
-            </>
-          )}
-
-          {entity.description && (
-            <>
-              <hr className="border-border/40" />
-              <div className="space-y-1">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Tag className="size-3.5" />
-                  Mô tả
-                </p>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground/90 bg-muted/20 rounded-lg border border-border/40 p-3">
-                  {entity.description}
-                </p>
-              </div>
-            </>
-          )}
-
-          <hr className="border-dashed border-border/40" />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="size-3.5" />
-                Ngày tạo
-              </p>
-              <p className="text-sm font-medium">
-                {formatDateTime(entity.createdAt)}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Clock className="size-3.5" />
-                Cập nhật
-              </p>
-              <p className="text-sm font-medium">
-                {formatDateTime(entity.updatedAt)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              {entity.description && (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField label="Mô tả" icon={Tag}>
+                    <p className="rounded-lg border border-border/40 bg-muted/20 p-3 text-sm leading-relaxed whitespace-pre-wrap">
+                      {entity.description}
+                    </p>
+                  </FieldSectionField>
+                </>
+              )}
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
+
+        <AdminDetailSidebar>
+          <div className="sticky top-2 flex flex-col gap-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                  {formatDateTime(entity.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                  {formatDateTime(entity.updatedAt)}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
+        </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  )
+  );
 }
 
 export default function DepartmentDetailPage() {
@@ -175,5 +135,5 @@ export default function DepartmentDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <DepartmentDetailInner />
     </AdminPageGuard>
-  )
+  );
 }

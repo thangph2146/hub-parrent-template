@@ -2,6 +2,10 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import {
+  DATA_TABLE_ACTIONS_COLUMN_ID,
+  TABLE_ACTIONS_COLUMN_META,
+} from "@ui/components/data-table"
+import {
   AttendanceStatusBadge,
   getAttendanceStatusLabel,
 } from "./attendance-status"
@@ -92,12 +96,15 @@ export function getEventRegistrationColumns(options: {
       ),
     },
     {
-      id: "attendanceActions",
+      id: DATA_TABLE_ACTIONS_COLUMN_ID,
       header: "Thao tác",
-      enableColumnFilter: true,
-      filterFn: () => true,
+      enableSorting: false,
+      enableColumnFilter: false,
       size: 120,
-      meta: { excludeFromExport: true },
+      meta: {
+        ...TABLE_ACTIONS_COLUMN_META,
+        className: "w-[120px] min-w-[100px] max-w-[140px] px-1",
+      },
       cell: ({ row }) => (
         <RegistrationAttendanceActions
           eventId={eventId}

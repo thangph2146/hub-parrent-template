@@ -23,12 +23,18 @@ export function getSpeakerColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: SpeakerRow) => void
   openEdit?: (row: SpeakerRow) => void
   rowActions: AdminCrudRowHandlers<SpeakerRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<SpeakerRow>[] {
   const dataColumns: ColumnDef<SpeakerRow>[] = [
     {
@@ -109,6 +115,8 @@ export function getSpeakerColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<SpeakerRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -117,6 +125,8 @@ export function getSpeakerColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<SpeakerRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

@@ -3,13 +3,11 @@
 import { useRef, useState } from "react"
 import { toast } from "sonner"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
-import { FieldError } from "@ui/components/field"
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import { Input } from "@ui/components/input"
 import { Textarea } from "@ui/components/textarea"
 import { FormFieldCol } from "@ui/components/typing"
@@ -88,17 +86,13 @@ export function SpeakerFormShell({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <AdminFormMain>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <User className="size-5 text-primary" />
-                  Thông tin diễn giả
-                </CardTitle>
-                <CardDescription>
-                  Thông tin cơ bản của diễn giả.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={User}
+                title="Thông tin diễn giả"
+                description="Thông tin cơ bản của diễn giả."
+              />
+              <FieldSetContent variant="section" className="space-y-4 pt-0">
                 <FormFieldCol label="Ảnh đại diện">
                   <div className="flex items-start gap-4">
                     <div className="relative aspect-[3/4] w-40 shrink-0 sm:w-60">
@@ -249,19 +243,14 @@ export function SpeakerFormShell({
                     </div>
                   </div>
                 </FormFieldCol>
-              </CardContent>
-            </Card>
+              </FieldSetContent>
+            </FieldSet>
         </AdminFormMain>
 
-        <AdminFormSidebar>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-                  <Hash className="size-5" />
-                  Trạng thái
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+        <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+            <FieldSet variant="section">
+              <FieldSectionLegend icon={Hash} title="Trạng thái" />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <Controller
                   name="status"
                   control={control}
@@ -286,8 +275,8 @@ export function SpeakerFormShell({
                     Diễn giả sau khi lưu có thể được chọn khi tạo sự kiện.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+              </FieldSetContent>
+            </FieldSet>
         </AdminFormSidebar>
       </AdminFormLayout>
     </>

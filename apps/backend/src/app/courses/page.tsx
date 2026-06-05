@@ -43,6 +43,17 @@ function CoursesPageInner() {
       canUserAccess(user, PERMISSION_CODES.COURSES_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.COURSES_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.COURSES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.COURSES_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.COURSES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.COURSES_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.COURSES_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["courses"] });
@@ -125,13 +136,15 @@ function CoursesPageInner() {
       openEdit: (row) => router.push(`/courses/${row.id}/edit`),
       rowActions,
       canWrite,
+      canDelete,
+      canHardDelete,
     }),
-    [rowActions, router, canWrite],
+    [rowActions, router, canWrite, canDelete, canHardDelete],
   );
 
   const trashColumns = useMemo<ColumnDef<CourseRow>[]>(
-    () => getCourseColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite],
+    () => getCourseColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete],
   );
 
   return (

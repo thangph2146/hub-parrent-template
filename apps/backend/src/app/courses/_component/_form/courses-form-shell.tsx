@@ -1,8 +1,11 @@
 "use client";
 
-import { Button } from "@ui/components/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
-import { FieldError } from "@ui/components/field";
+import {
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { Input } from "@ui/components/input";
 import { FormFieldCol } from "@ui/components/typing";
 import {
@@ -14,7 +17,7 @@ import {
 import { TreePicker } from "@ui/components/pickers";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { cn } from "@ui/lib/utils";
-import { BookOpen, Hash } from "lucide-react";
+import { BookOpen, CalendarDays, Hash } from "lucide-react";
 import type { CourseFormValues } from "../types";
 
 export interface CourseFormShellProps {
@@ -40,7 +43,7 @@ export function CourseFormShell({
     <>
       <AdminFormPageHeader
         title={editingId ? "Chỉnh sửa khóa học" : "Tạo khóa học mới"}
-        subtitle={"Quản lý các khóa học trong hệ thống."}
+        subtitle="Quản lý các khóa học trong hệ thống."
         onBack={onBack}
         onReset={onReset}
         formId="course-form"
@@ -53,34 +56,60 @@ export function CourseFormShell({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <AdminFormMain>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <BookOpen className="size-5 text-primary" />
-                  Thông tin cơ bản
-                </CardTitle>
-                <CardDescription>
-                  Tên và thông tin khóa học.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <FormFieldCol label="Tên khóa học" required>
-                      <Input
-                        placeholder="VD: Khóa học 2026-2030"
-                        {...field}
-                        className={cn(fieldState.error && "border-destructive")}
-                      />
-                      {fieldState.error && (
-                        <FieldError>{fieldState.error.message}</FieldError>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={BookOpen}
+              title="Thông tin khóa học"
+              description="Tên và mã khoa liên kết."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <Controller
+                name="name"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <FormFieldCol label="Tên khóa học" required>
+                    <Input
+                      placeholder="VD: Khóa học 2026-2030"
+                      {...field}
+                      className={cn(fieldState.error && "border-destructive")}
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </FormFieldCol>
+                )}
+              />
+              <Controller
+                name="departmentId"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <FormFieldCol label="Mã khoa">
+                    <Input
+                      placeholder="VD: P.CNTT"
+                      {...field}
+                      value={field.value ?? ""}
+                      className={cn(
+                        "font-mono text-sm",
+                        fieldState.error && "border-destructive",
                       )}
-                    </FormFieldCol>
-                  )}
-                />
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </FormFieldCol>
+                )}
+              />
+            </FieldSetContent>
+          </FieldSet>
 
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={CalendarDays}
+              title="Thời gian"
+              description="Năm bắt đầu và kết thúc của khóa học."
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Controller
                   name="startYear"
                   control={control}
@@ -91,7 +120,11 @@ export function CourseFormShell({
                         placeholder="VD: 2026"
                         {...field}
                         value={field.value ?? ""}
-                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? Number(e.target.value) : undefined,
+                          )
+                        }
                         className={cn(fieldState.error && "border-destructive")}
                       />
                       {fieldState.error && (
@@ -100,7 +133,6 @@ export function CourseFormShell({
                     </FormFieldCol>
                   )}
                 />
-
                 <Controller
                   name="endYear"
                   control={control}
@@ -111,7 +143,11 @@ export function CourseFormShell({
                         placeholder="VD: 2030"
                         {...field}
                         value={field.value ?? ""}
-                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? Number(e.target.value) : undefined,
+                          )
+                        }
                         className={cn(fieldState.error && "border-destructive")}
                       />
                       {fieldState.error && (
@@ -120,63 +156,43 @@ export function CourseFormShell({
                     </FormFieldCol>
                   )}
                 />
-
-                <Controller
-                  name="departmentId"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <FormFieldCol label="Mã khoa">
-                      <Input
-                        type="number"
-                        placeholder="VD: 1"
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
-                        className={cn(fieldState.error && "border-destructive")}
-                      />
-                      {fieldState.error && (
-                        <FieldError>{fieldState.error.message}</FieldError>
-                      )}
-                    </FormFieldCol>
-                  )}
-                />
-              </CardContent>
-            </Card>
+              </div>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormMain>
 
-        <AdminFormSidebar>
-            <Card className="border border-border/70 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-                  <Hash className="size-5" />
-                  Trạng thái
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <FormFieldCol label="Trạng thái">
-                      <TreePicker
-                        value={String(field.value)}
-                        onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
-                        options={[
-                          { value: "1", label: "Hoạt động" },
-                          { value: "0", label: "Tắt" },
-                        ]}
-                        placeholder="Chọn trạng thái"
-                      />
-                    </FormFieldCol>
-                  )}
-                />
-                <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
-                  <p className="text-xs text-muted-foreground">
-                    Khóa học sau khi lưu có thể được sử dụng trong hệ thống.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+        <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Hash}
+              title="Trạng thái"
+              description="Trạng thái hoạt động của khóa học."
+            />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <FormFieldCol label="Trạng thái">
+                    <TreePicker
+                      value={String(field.value)}
+                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      options={[
+                        { value: "1", label: "Hoạt động" },
+                        { value: "0", label: "Tắt" },
+                      ]}
+                      placeholder="Chọn trạng thái"
+                    />
+                  </FormFieldCol>
+                )}
+              />
+              <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
+                <p className="text-xs text-muted-foreground">
+                  Khóa học sau khi lưu có thể được sử dụng trong hệ thống.
+                </p>
+              </div>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormSidebar>
       </AdminFormLayout>
     </>

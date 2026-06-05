@@ -58,6 +58,17 @@ function toIso(v: unknown): string | null {
   return null;
 }
 
+/** Chuẩn hóa ngày nhập dạng text (YYYY-MM-DD hoặc ISO) → YYYY-MM-DD hoặc null. */
+function normalizeAcademicYearDateInput(
+  value: string | null | undefined,
+): string | null {
+  const trimmed = typeof value === 'string' ? value.trim() : '';
+  if (!trimmed) return null;
+  const date = new Date(trimmed);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().slice(0, 10);
+}
+
 function mapRow(r: AcademicYear): AcademicYearRowDto {
   return {
     id: r.id,
@@ -142,11 +153,13 @@ export class AcademicYearsService {
     name: string;
     startDate?: string | null;
     endDate?: string | null;
+    status?: number;
   }): Promise<AcademicYearRowDto> {
     const entity = new AcademicYear();
     entity.name = data.name;
-    if (data.startDate !== undefined) entity.startDate = data.startDate;
-    if (data.endDate !== undefined) entity.endDate = data.endDate;
+    entity.startDate = normalizeAcademicYearDateInput(data.startDate);
+    entity.endDate = normalizeAcademicYearDateInput(data.endDate);
+    if (data.status != null) entity.status = data.status;
     await this.em.persistAndFlush(entity);
     return mapRow(entity);
   }
@@ -163,8 +176,12 @@ export class AcademicYearsService {
     const existing = await this.em.findOne(AcademicYear, { id });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
-    if (data.startDate !== undefined) existing.startDate = data.startDate;
-    if (data.endDate !== undefined) existing.endDate = data.endDate;
+    if (data.startDate !== undefined) {
+      existing.startDate = normalizeAcademicYearDateInput(data.startDate);
+    }
+    if (data.endDate !== undefined) {
+      existing.endDate = normalizeAcademicYearDateInput(data.endDate);
+    }
     if (data.status != null) existing.status = data.status;
     await this.em.persistAndFlush(existing);
     return mapRow(existing);

@@ -44,6 +44,17 @@ function TemplatesPageInner() {
       canUserAccess(user, PERMISSION_CODES.TEMPLATES_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.TEMPLATES_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TEMPLATES_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TEMPLATES_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_MANAGE)
+    : false
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["templates"] })
   }
@@ -116,12 +127,14 @@ function TemplatesPageInner() {
         openEdit: (r) => router.push(`/templates/${r.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<TemplateRow>[]>(
-    () => getTemplateColumns({ view: "trash", rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getTemplateColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
   return (
     <AdminPageSection>

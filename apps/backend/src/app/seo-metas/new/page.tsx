@@ -4,20 +4,36 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
+import { FileText, Globe } from "lucide-react";
+import {
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import { Input } from "@ui/components/input";
-import { Label } from "@ui/components/label";
-import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import { FormFieldCol } from "@ui/components/typing";
+import {
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { seoMetaFormSchema, type SeoMetaFormValues } from "../_component";
+import { cn } from "@ui/lib/utils";
 
 function NewSeoMetaPageInner() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SeoMetaFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SeoMetaFormValues>({
     resolver: zodResolver(seoMetaFormSchema),
     defaultValues: {
       page: "",
@@ -36,8 +52,7 @@ function NewSeoMetaPageInner() {
   };
 
   const createMutation = useMutation({
-    mutationFn: async (input: Record<string, unknown>) =>
-      api.seoMetas.create(input),
+    mutationFn: async (input: Record<string, unknown>) => api.seoMetas.create(input),
     onSuccess: async () => {
       await invalidateAll();
       toast.success("Đã tạo SEO metadata");
@@ -68,52 +83,60 @@ function NewSeoMetaPageInner() {
 
       <AdminFormLayout id="seo-meta-form" onSubmit={handleSubmit(onSubmit)}>
         <AdminFormMain>
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin SEO</CardTitle>
-              <CardDescription>Nhập thông tin SEO cho trang.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="page">Đường dẫn *</Label>
-                <Input id="page" placeholder="/vi du" {...register("page")} />
-                {errors.page && <p className="text-sm text-destructive">{errors.page.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="title">Title SEO</Label>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={FileText}
+              title="Thông tin SEO"
+              description="Nhập thông tin SEO cho trang."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FormFieldCol label="Đường dẫn" required>
+                <Input
+                  id="page"
+                  placeholder="/vi du"
+                  {...register("page")}
+                  className={cn(errors.page && "border-destructive")}
+                />
+                {errors.page && <FieldError>{errors.page.message}</FieldError>}
+              </FormFieldCol>
+              <FormFieldCol label="Title SEO">
                 <Input id="title" placeholder="Title hiển thị trên SEO" {...register("title")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Mô tả</Label>
+              </FormFieldCol>
+              <FormFieldCol label="Mô tả">
                 <Input id="description" placeholder="Mô tả meta" {...register("description")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="keywords">Từ khóa</Label>
-                <Input id="keywords" placeholder="Từ khóa, cách nhau bằng dấu phẩy" {...register("keywords")} />
-              </div>
-            </CardContent>
-          </Card>
+              </FormFieldCol>
+              <FormFieldCol label="Từ khóa">
+                <Input
+                  id="keywords"
+                  placeholder="Từ khóa, cách nhau bằng dấu phẩy"
+                  {...register("keywords")}
+                />
+              </FormFieldCol>
+            </FieldSetContent>
+          </FieldSet>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Open Graph</CardTitle>
-              <CardDescription>Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="ogTitle">OG Title</Label>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={Globe}
+              title="Open Graph"
+              description="Tùy chỉnh hiển thị khi chia sẻ lên mạng xã hội."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FormFieldCol label="OG Title">
                 <Input id="ogTitle" placeholder="Open Graph title" {...register("ogTitle")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogDescription">OG Mô tả</Label>
-                <Input id="ogDescription" placeholder="Open Graph description" {...register("ogDescription")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogImage">OG Ảnh (URL)</Label>
+              </FormFieldCol>
+              <FormFieldCol label="OG Mô tả">
+                <Input
+                  id="ogDescription"
+                  placeholder="Open Graph description"
+                  {...register("ogDescription")}
+                />
+              </FormFieldCol>
+              <FormFieldCol label="OG Ảnh (URL)">
                 <Input id="ogImage" placeholder="https://..." {...register("ogImage")} />
-              </div>
-            </CardContent>
-          </Card>
+              </FormFieldCol>
+            </FieldSetContent>
+          </FieldSet>
         </AdminFormMain>
       </AdminFormLayout>
     </AdminPageSection>

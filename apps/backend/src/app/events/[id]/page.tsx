@@ -22,14 +22,18 @@ import {
   ClipboardList,
   Mic,
   Link,
-  ImageIcon,
   Radio,
   Camera,
 } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Divider } from "@ui/components/layout"
 import { Badge } from "@ui/components/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionBadge,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminDataTable } from "@ui/components/data-table"
 import { buildEventDetailXlsxExport, AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader } from "@ui/components/admin"
@@ -109,171 +113,110 @@ function EventDetailInner() {
 
         <TabsContent value="info" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-3">
-            <div className="space-y-6 lg:col-span-2">
+            <div className="lg:col-span-2">
               {entity.content ? (
-                <Card className="border border-border/70 shadow-sm">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <FileText className="size-5 text-primary" /> Nội dung chi tiết
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={FileText}
+                    title="Nội dung chi tiết"
+                  />
+                  <FieldSetContent variant="section" className="pt-0">
                     <LexicalEditor
                       value={entity.content}
                       readOnly
-                      className="max-w-full"
+                      className="max-w-4xl mx-auto"
                     />
-                  </CardContent>
-                </Card>
+                  </FieldSetContent>
+                </FieldSet>
               ) : null}
             </div>
 
-            <div className="space-y-6 lg:col-span-1">
-              <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
-                <CardContent className="space-y-0">
-                  <Divider label="Thông tin sự kiện" className="my-6" />
-                  {posterUrl ? (
-                    <div className="mb-4 overflow-hidden rounded-lg border border-border/70">
-                      <p className="flex items-center gap-1.5 border-b border-border/70 bg-muted/30 px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <ImageIcon className="size-3" /> Hình đại diện
-                      </p>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={posterUrl}
-                        alt={entity.title}
-                        className="aspect-[16/10] w-full object-cover"
-                      />
-                    </div>
-                  ) : null}
-                  <div className="grid gap-4">
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <FileText className="size-3" /> Tiêu đề
-                      </p>
-                      <p className="mt-1 text-sm whitespace-pre-wrap text-foreground border border-border/70 rounded-lg p-2">
-                        {entity.title}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <Link className="size-3" /> Slug
-                      </p>
-                      <p className="mt-1 text-sm text-muted-foreground border border-border/70 rounded-lg p-2">
-                        {entity.slug}
-                      </p>
-                    </div>
-                  </div>
-                  <Divider label="Thời gian & Địa điểm" className="my-6" />
-                  {entity.description && (
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        Mô tả
-                      </p>
-                      <p className="mt-1 text-sm whitespace-pre-wrap text-foreground border border-border/70 rounded-lg p-2">
-                        {entity.description}
-                      </p>
-                    </div>
-                  )}
-                  <div className="mt-4 grid gap-4">
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <Calendar className="size-3" /> Bắt đầu
-                      </p>
-                      <p className="mt-1 text-sm text-foreground border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.startDate)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <Clock className="size-3" /> Kết thúc
-                      </p>
-                      <p className="mt-1 text-sm text-foreground border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.endDate)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                      <Building2 className="size-3" /> Đơn vị tổ chức
-                    </p>
-                    <p className="mt-1 text-sm text-foreground border border-border/70 rounded-lg p-2">
+            <div className="lg:col-span-1">
+              <div className="sticky top-2 flex max-h-[calc(100vh-6rem)] flex-col gap-4 overflow-y-auto">
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={Calendar}
+                    title="Thông tin sự kiện"
+                  />
+                  <FieldSetContent variant="section" className="space-y-4 pt-0">
+                    {posterUrl ? (
+                      <div className="overflow-hidden rounded-lg border border-border/70">
+                        <img
+                          src={posterUrl}
+                          alt={entity.title}
+                          className="aspect-[16/10] w-full object-cover"
+                        />
+                      </div>
+                    ) : null}
+                    <FieldSectionField label="Tiêu đề" icon={FileText}>
+                      <p className="whitespace-pre-wrap">{entity.title}</p>
+                    </FieldSectionField>
+                    <FieldSectionField label="Slug" icon={Link}>
+                      <p className="text-muted-foreground">{entity.slug}</p>
+                    </FieldSectionField>
+                  </FieldSetContent>
+                </FieldSet>
+
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={MapPin}
+                    title="Thời gian & Địa điểm"
+                  />
+                  <FieldSetContent variant="section" className="space-y-4 pt-0">
+                    {entity.description ? (
+                      <FieldSectionField label="Mô tả">
+                        <p className="whitespace-pre-wrap">{entity.description}</p>
+                      </FieldSectionField>
+                    ) : null}
+                    <FieldSectionField label="Bắt đầu" icon={Calendar}>
+                      {formatDateTime(entity.startDate)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Kết thúc" icon={Clock}>
+                      {formatDateTime(entity.endDate)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Đơn vị tổ chức" icon={Building2}>
                       {entity.organizer || "—"}
-                    </p>
-                  </div>
-                  <div className="mt-4">
-                    <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                      <MapPin className="size-3" /> Địa điểm
-                    </p>
-                    <p className="mt-1 text-sm text-foreground border border-border/70 rounded-lg p-2">
+                    </FieldSectionField>
+                    <FieldSectionField label="Địa điểm" icon={MapPin}>
                       {entity.location || "—"}
-                    </p>
-                  </div>
-                  <div className="mt-4">
-                    <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                      Địa chỉ
-                    </p>
-                    <p className="mt-1 text-sm text-foreground border border-border/70 rounded-lg p-2">
+                    </FieldSectionField>
+                    <FieldSectionField label="Địa chỉ">
                       {entity.address || "—"}
-                    </p>
-                  </div>
+                    </FieldSectionField>
+                  </FieldSetContent>
+                </FieldSet>
 
-                  <Divider label="Check-in & Đăng ký" className="my-6" />
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={Clock}
+                    title="Check-in & Đăng ký"
+                  />
+                  <FieldSetContent variant="section" className="space-y-3 pt-0">
+                    <FieldSectionField label="Check-in từ" icon={Clock}>
+                      {formatDateTime(entity.checkinStart)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Check-in đến">
+                      {formatDateTime(entity.checkinEnd)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Check-out từ" icon={Clock}>
+                      {formatDateTime(entity.checkoutStart)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Check-out đến">
+                      {formatDateTime(entity.checkoutEnd)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Đăng ký từ">
+                      {formatDateTime(entity.registrationStart)}
+                    </FieldSectionField>
+                    <FieldSectionField label="Đăng ký đến">
+                      {formatDateTime(entity.registrationEnd)}
+                    </FieldSectionField>
+                  </FieldSetContent>
+                </FieldSet>
 
-                  <div className="space-y-3">
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <Clock className="size-3" /> Check-in từ
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.checkinStart)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        Check-in đến
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.checkinEnd)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        <Clock className="size-3" /> Check-out từ
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.checkoutStart)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        Check-out đến
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.checkoutEnd)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        Đăng ký từ
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.registrationStart)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                        Đăng ký đến
-                      </p>
-                      <p className="mt-0.5 text-sm border border-border/70 rounded-lg p-2">
-                        {formatDateTime(entity.registrationEnd)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Divider label="Hình thức & Trạng thái" className="my-6" />
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div>
+                <FieldSet variant="section">
+                  <FieldSectionLegend title="Hình thức & Trạng thái" />
+                  <FieldSetContent variant="section" className="pt-0">
+                    <div className="flex flex-wrap items-center gap-3">
                       <Badge
                         variant={
                           entity.format === 1
@@ -289,23 +232,32 @@ function EventDetailInner() {
                             ? "Hybrid"
                             : "Offline"}
                       </Badge>
-                    </div>
-                    <div>
                       {entity.status === 1 ? (
                         <Badge variant="default">Hoạt động</Badge>
                       ) : (
                         <Badge variant="outline">Khóa</Badge>
                       )}
                     </div>
-                  </div>
+                  </FieldSetContent>
+                </FieldSet>
 
-                  <Divider label="Diễn giả" className="my-6" />
-
-                  <div>
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={Mic}
+                    title="Diễn giả"
+                    badge={
+                      speakers?.length ? (
+                        <FieldSectionBadge>{speakers.length}</FieldSectionBadge>
+                      ) : undefined
+                    }
+                  />
+                  <FieldSetContent variant="section" className="pt-0">
                     {loadingSpeakers ? (
                       <p className="text-sm text-muted-foreground">Đang tải...</p>
                     ) : !speakers?.length ? (
-                      <p className="text-sm text-muted-foreground">Chưa có diễn giả.</p>
+                      <p className="text-sm text-muted-foreground">
+                        Chưa có diễn giả.
+                      </p>
                     ) : (
                       <div className="space-y-3">
                         {speakers.map((s) => (
@@ -333,60 +285,66 @@ function EventDetailInner() {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </FieldSetContent>
+                </FieldSet>
 
-                  <Divider label="Thống kê" className="my-6" />
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-lg bg-muted/30 p-3 text-center">
-                      <p className="text-2xl font-bold text-primary">
-                        {entity.totalRegistrations}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Đăng ký</p>
+                <FieldSet variant="section">
+                  <FieldSectionLegend title="Thống kê" />
+                  <FieldSetContent variant="section" className="space-y-3 pt-0">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-muted/30 p-3 text-center">
+                        <p className="text-2xl font-bold text-primary">
+                          {entity.totalRegistrations}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Đăng ký</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3 text-center">
+                        <p className="text-2xl font-bold text-green-600">
+                          {entity.totalCheckins}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Check-in</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3 text-center">
+                        <p className="text-2xl font-bold text-amber-600">
+                          {entity.totalCheckouts}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Check-out</p>
+                      </div>
+                      <div className="rounded-lg bg-muted/30 p-3 text-center">
+                        <p className="text-2xl font-bold text-muted-foreground">
+                          {entity.maxParticipants || "∞"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Tối đa</p>
+                      </div>
                     </div>
-                    <div className="rounded-lg bg-muted/30 p-3 text-center">
-                      <p className="text-2xl font-bold text-green-600">
-                        {entity.totalCheckins}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Check-in</p>
-                    </div>
-                    <div className="rounded-lg bg-muted/30 p-3 text-center">
-                      <p className="text-2xl font-bold text-amber-600">
-                        {entity.totalCheckouts}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Check-out</p>
-                    </div>
-                    <div className="rounded-lg bg-muted/30 p-3 text-center">
-                      <p className="text-2xl font-bold text-muted-foreground">
-                        {entity.maxParticipants || "∞"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Tối đa</p>
-                    </div>
-                  </div>
-                  <div className="mt-3 space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckSquare className="size-4" />{" "}
-                      {entity.allowCheckin ? "Cho phép check-in" : "Không check-in"}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckSquare className="size-4" />{" "}
-                      {entity.allowCheckout
-                        ? "Cho phép check-out"
-                        : "Không check-out"}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckSquare className="size-4" />{" "}
-                      {entity.requireFaceId
-                        ? "Yêu cầu Face ID"
-                        : "Không yêu cầu Face ID"}
-                    </div>
-                    {(entity.checkinCameraName || entity.checkoutCameraName) && (
-                      <>
-                        <div className="flex items-start gap-2 text-sm pt-1">
-                          <Camera className="size-4 shrink-0 mt-0.5 text-muted-foreground" />
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckSquare className="size-4" />
+                        {entity.allowCheckin
+                          ? "Cho phép check-in"
+                          : "Không check-in"}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckSquare className="size-4" />
+                        {entity.allowCheckout
+                          ? "Cho phép check-out"
+                          : "Không check-out"}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckSquare className="size-4" />
+                        {entity.requireFaceId
+                          ? "Yêu cầu Face ID"
+                          : "Không yêu cầu Face ID"}
+                      </div>
+                      {(entity.checkinCameraName ||
+                        entity.checkoutCameraName) && (
+                        <div className="flex items-start gap-2 pt-1 text-sm">
+                          <Camera className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                           <div className="space-y-0.5">
                             <p>
-                              <span className="text-muted-foreground">Check-in: </span>
+                              <span className="text-muted-foreground">
+                                Check-in:{" "}
+                              </span>
                               {entity.checkinCameraName ?? "—"}
                               {entity.checkinCameraCode ? (
                                 <span className="font-mono text-xs text-muted-foreground">
@@ -396,7 +354,9 @@ function EventDetailInner() {
                               ) : null}
                             </p>
                             <p>
-                              <span className="text-muted-foreground">Check-out: </span>
+                              <span className="text-muted-foreground">
+                                Check-out:{" "}
+                              </span>
                               {entity.checkoutCameraName ?? "—"}
                               {entity.checkoutCameraCode ? (
                                 <span className="font-mono text-xs text-muted-foreground">
@@ -407,40 +367,35 @@ function EventDetailInner() {
                             </p>
                           </div>
                         </div>
-                      </>
-                    )}
-                  </div>
-
-                  <Divider label="Thời gian" className="my-6" />
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2.5 text-sm">
-                      <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                        <Calendar className="size-3.5 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Ngày tạo</p>
-                        <p className="text-sm font-medium">
-                          {formatDateTime(entity.createdAt)}
-                        </p>
-                      </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2.5 text-sm">
-                      <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-                        <Clock className="size-3.5 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">
-                          Cập nhật lần cuối
-                        </p>
-                        <p className="text-sm font-medium">
-                          {formatDateTime(entity.updatedAt)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </FieldSetContent>
+                </FieldSet>
+
+                <FieldSet variant="section">
+                  <FieldSectionLegend
+                    icon={Clock}
+                    title="Thời gian"
+                    description="Mốc tạo và cập nhật sự kiện."
+                  />
+                  <FieldSetContent variant="section" className="space-y-3 pt-0">
+                    <FieldSectionField
+                      label="Ngày tạo"
+                      icon={Calendar}
+                      valueClassName="font-medium"
+                    >
+                      {formatDateTime(entity.createdAt)}
+                    </FieldSectionField>
+                    <FieldSectionField
+                      label="Cập nhật lần cuối"
+                      icon={Clock}
+                      valueClassName="font-medium"
+                    >
+                      {formatDateTime(entity.updatedAt)}
+                    </FieldSectionField>
+                  </FieldSetContent>
+                </FieldSet>
+              </div>
             </div>
           </div>
         </TabsContent>

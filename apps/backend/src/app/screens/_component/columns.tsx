@@ -19,12 +19,18 @@ export function getScreenColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: ScreenRow) => void
   openEdit?: (row: ScreenRow) => void
   rowActions: AdminCrudRowHandlers<ScreenRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<ScreenRow>[] {
   const dataColumns: ColumnDef<ScreenRow>[] = [
     {
@@ -95,6 +101,8 @@ export function getScreenColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<ScreenRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -103,6 +111,8 @@ export function getScreenColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<ScreenRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

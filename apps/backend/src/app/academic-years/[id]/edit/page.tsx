@@ -34,13 +34,31 @@ function EditAcademicYearPageInner() {
 
   useEffect(() => {
     if (!entity) return;
+    const toDateInput = (value: string | null | undefined) => {
+      if (!value) return "";
+      const match = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim());
+      if (match) return match[1];
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    };
     form.reset({
       name: entity.name ?? "",
-      startDate: entity.startDate ?? "",
-      endDate: entity.endDate ?? "",
+      startDate: toDateInput(entity.startDate),
+      endDate: toDateInput(entity.endDate),
       status: entity.status ?? 1,
     });
-  }, [entity, form]);
+  }, [
+    entity?.id,
+    entity?.name,
+    entity?.startDate,
+    entity?.endDate,
+    entity?.status,
+    form.reset,
+  ]);
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["academic-years"] });

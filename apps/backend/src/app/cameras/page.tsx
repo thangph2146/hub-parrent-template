@@ -44,6 +44,17 @@ function CamerasPageInner() {
       canUserAccess(user, PERMISSION_CODES.CAMERAS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.CAMERAS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.CAMERAS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CAMERAS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.CAMERAS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.CAMERAS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.CAMERAS_MANAGE)
+    : false
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["cameras"] })
   }
@@ -116,12 +127,14 @@ function CamerasPageInner() {
         openEdit: (r) => router.push(`/cameras/${r.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<CameraRow>[]>(
-    () => getCameraColumns({ view: "trash", rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getCameraColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
   return (
     <AdminPageSection>

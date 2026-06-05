@@ -1,12 +1,24 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { Loader2, ArrowLeft } from "lucide-react";
-
+import { Loader2, ArrowLeft, Globe, Hash, FileText, Calendar, Clock, Trash2 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
-import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
+import {
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailPageHeader,
+  AdminDetailSidebar,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { useAuth } from "@/providers/auth-provider";
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { api } from "@/lib/api";
@@ -29,7 +41,7 @@ function SeoMetaDetailInner() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
+      <div className="flex min-h-[200px] items-center justify-center">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
       </div>
     );
@@ -58,89 +70,79 @@ function SeoMetaDetailInner() {
 
       <AdminDetailLayout>
         <AdminDetailMain>
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin cơ bản</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Đường dẫn</p>
-                <p className="text-sm font-mono">{detail.page}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Trạng thái</p>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={FileText}
+              title="Thông tin cơ bản"
+              description="Metadata SEO cho trang."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FieldSectionField label="Đường dẫn" icon={Hash} valueClassName="font-mono font-medium">
+                {detail.page}
+              </FieldSectionField>
+              <FieldSectionField label="Trạng thái" icon={FileText}>
                 {detail.status === 1 ? (
                   <Badge variant="default" className="text-[10px]">Hoạt động</Badge>
                 ) : (
                   <Badge variant="outline" className="text-[10px]">Tắt</Badge>
                 )}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Title SEO</p>
-                <p className="text-sm">{detail.title ?? "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Mô tả</p>
-                <p className="text-sm">{detail.description ?? "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Từ khóa</p>
-                <p className="text-sm">{detail.keywords ?? "—"}</p>
-              </div>
-            </CardContent>
-          </Card>
+              </FieldSectionField>
+              <FieldSectionDivider />
+              <FieldSectionField label="Title SEO" icon={FileText}>
+                {detail.title ?? "—"}
+              </FieldSectionField>
+              <FieldSectionField label="Mô tả" icon={FileText}>
+                {detail.description ?? "—"}
+              </FieldSectionField>
+              <FieldSectionField label="Từ khóa" icon={Hash}>
+                {detail.keywords ?? "—"}
+              </FieldSectionField>
+            </FieldSetContent>
+          </FieldSet>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Thời gian</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3 sm:grid-cols-3">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Tạo lúc</p>
-                <p className="text-sm">{formatDateTime(detail.createdAt)}</p>
+          <FieldSet variant="section">
+            <FieldSectionLegend icon={Calendar} title="Thời gian" />
+            <FieldSetContent variant="section" className="space-y-3 pt-0">
+              <div className="grid gap-4 sm:grid-cols-3">
+                <FieldSectionField label="Tạo lúc" icon={Calendar} valueClassName="font-medium">
+                  {formatDateTime(detail.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lúc" icon={Clock} valueClassName="font-medium">
+                  {formatDateTime(detail.updatedAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Xóa lúc" icon={Trash2} valueClassName="font-medium">
+                  {formatDateTime(detail.deletedAt)}
+                </FieldSectionField>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Cập nhật lúc</p>
-                <p className="text-sm">{formatDateTime(detail.updatedAt)}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Xóa lúc</p>
-                <p className="text-sm">{formatDateTime(detail.deletedAt)}</p>
-              </div>
-            </CardContent>
-          </Card>
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
 
         <AdminDetailSidebar>
-          <Card>
-            <CardHeader>
-              <CardTitle>Open Graph</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">OG Title</p>
-                <p className="text-sm">{detail.ogTitle ?? "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">OG Mô tả</p>
-                <p className="text-sm">{detail.ogDescription ?? "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">OG Ảnh</p>
-                {detail.ogImage ? (
-                  <div className="mt-1">
+          <div className="sticky top-2 flex flex-col gap-4">
+            <FieldSet variant="section">
+              <FieldSectionLegend icon={Globe} title="Open Graph" />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="OG Title" icon={Globe}>
+                  {detail.ogTitle ?? "—"}
+                </FieldSectionField>
+                <FieldSectionField label="OG Mô tả" icon={Globe}>
+                  {detail.ogDescription ?? "—"}
+                </FieldSectionField>
+                <FieldSectionField label="OG Ảnh" icon={Globe}>
+                  {detail.ogImage ? (
                     <img
                       src={detail.ogImage}
                       alt="OG Image"
-                      className="max-h-32 rounded border object-cover"
+                      className="mt-1 max-h-32 rounded border object-cover"
                     />
-                  </div>
-                ) : (
-                  <p className="text-sm">—</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  ) : (
+                    "—"
+                  )}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

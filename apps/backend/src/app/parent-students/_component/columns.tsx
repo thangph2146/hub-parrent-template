@@ -14,7 +14,9 @@ import {
   XCircle,
 } from "lucide-react"
 import {
+  DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
+  TABLE_ACTIONS_COLUMN_META,
   defineRelationExportColumns,
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
@@ -178,11 +180,11 @@ export function getParentStudentsColumns(
     ]),
     defineAdminUpdatedAtColumn<ParentStudent>({ defaultHidden: true }),
     {
-      id: "actions",
+      id: DATA_TABLE_ACTIONS_COLUMN_ID,
       header: "Thao tác",
       enableSorting: false,
-      enableColumnFilter: true,
-      filterFn: () => true,
+      enableColumnFilter: false,
+      meta: TABLE_ACTIONS_COLUMN_META,
       cell: ({ row }) => {
         const data = row.original
         const actions: DataTableRowActionItem[] = []

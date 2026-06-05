@@ -44,6 +44,17 @@ function MajorsPageInner() {
       canUserAccess(user, PERMISSION_CODES.MAJORS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.MAJORS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.MAJORS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.MAJORS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.MAJORS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.MAJORS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.MAJORS_MANAGE)
+    : false
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["majors"] })
@@ -152,13 +163,15 @@ function MajorsPageInner() {
         openEdit: (row) => router.push(`/majors/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
 
   const trashColumns = useMemo<ColumnDef<MajorRow>[]>(
-    () => getMajorColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getMajorColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
 
   return (

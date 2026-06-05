@@ -43,6 +43,17 @@ function TrainingLevelsPageInner() {
       canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["training-levels"] });
@@ -124,15 +135,17 @@ function TrainingLevelsPageInner() {
         openEdit: (row) => router.push(`/training-levels/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite],
+    [rowActions, router, canWrite, canDelete, canHardDelete],
   );
 
 
 
   const trashColumns = useMemo<ColumnDef<TrainingLevelRow>[]>(
-    () => getTrainingLevelColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite],
+    () => getTrainingLevelColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete],
   );
 
   return (

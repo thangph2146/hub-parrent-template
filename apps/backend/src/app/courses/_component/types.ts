@@ -21,7 +21,7 @@ export const courseFormSchema = z.object({
   name: z.string().min(1, "Tên khóa học không được để trống"),
   startYear: z.coerce.number().optional(),
   endYear: z.coerce.number().optional(),
-  departmentId: z.coerce.number().optional(),
+  departmentId: z.string().optional(),
   status: z.coerce.number(),
 });
 

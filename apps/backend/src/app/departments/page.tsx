@@ -45,6 +45,17 @@ function DepartmentsPageInner() {
       canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_MANAGE)
+    : false
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["departments"] })
@@ -157,13 +168,15 @@ function DepartmentsPageInner() {
         openEdit: (row) => router.push(`/departments/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
 
   const trashColumns = useMemo<ColumnDef<DepartmentRow>[]>(
-    () => getDepartmentColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getDepartmentColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
 
   return (

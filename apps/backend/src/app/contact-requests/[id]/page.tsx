@@ -5,10 +5,23 @@ import { useParams, useRouter } from "next/navigation";
 import { useContactRequestDetail } from "@/hooks/queries";
 import { useUpdateContactRequest } from "../_component/_query";
 import { Switch } from "@ui/components/switch";
-
-import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageLoading, AdminPageSection } from "@ui/components/admin";
+import {
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailPageHeader,
+  AdminDetailSidebar,
+  AdminPageGuard,
+  AdminPageLoading,
+  AdminPageSection,
+} from "@ui/components/admin";
 import { TreePicker } from "@ui/components/pickers";
-import { TypographyH3 } from "@ui/components/typography";
+import {
+  FieldSet,
+  FieldSetContent,
+  FieldSectionDivider,
+  FieldSectionField,
+  FieldSectionLegend,
+} from "@ui/components/field";
 import {
   Mail,
   Phone,
@@ -24,8 +37,6 @@ import {
   MessageSquare,
   type LucideIcon,
 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
-import { Divider } from "@ui/components/layout";
 import { formatDateTime } from "@workspace/api-client";
 import type { ContactRequest } from "../_component/types";
 import { CONTACT_REQUEST_STATUSES, CONTACT_REQUEST_STATUS_LABELS } from "../_component/types";
@@ -62,29 +73,25 @@ function ContactRequestDetailPageInner() {
     });
   }, [contactId, updateMutation]);
 
-  if (contactQuery.isLoading) {
-    return <AdminPageLoading />;
-  }
-
+  if (contactQuery.isLoading) return <AdminPageLoading />;
   if (!contact) return null;
 
-  // Parse structured content (key-value pairs)
   const parseStructuredContent = (content: string) => {
-    const lines = content.split('\n').filter(line => line.trim());
+    const lines = content.split("\n").filter((line) => line.trim());
     const structured: Array<{ key: string; value: string; icon?: LucideIcon }> = [];
-    let messageContent = '';
+    let messageContent = "";
 
     for (const line of lines) {
       const match = line.match(/^([^:]+):\s*(.+)$/);
       if (match) {
         const [, key, value] = match;
         const iconMap: Record<string, LucideIcon> = {
-          'Địa chỉ': MapPin,
-          'Chương trình': BookOpen,
-          'Ngành': GraduationCap,
-          'Đăng ký nhận thông tin tuyển sinh': Bell,
-          'Đăng ký tư vấn': Bell,
-          'Nội dung': MessageSquare,
+          "Địa chỉ": MapPin,
+          "Chương trình": BookOpen,
+          "Ngành": GraduationCap,
+          "Đăng ký nhận thông tin tuyển sinh": Bell,
+          "Đăng ký tư vấn": Bell,
+          "Nội dung": MessageSquare,
         };
         structured.push({
           key: key.trim(),
@@ -92,14 +99,16 @@ function ContactRequestDetailPageInner() {
           icon: iconMap[key.trim()] || undefined,
         });
       } else {
-        messageContent += line + '\n';
+        messageContent += line + "\n";
       }
     }
 
     return { structured, messageContent: messageContent.trim() };
   };
 
-  const { structured, messageContent } = parseStructuredContent(contact.content || contact.message || "");
+  const { structured, messageContent } = parseStructuredContent(
+    contact.content || contact.message || "",
+  );
 
   return (
     <AdminPageSection>
@@ -111,30 +120,29 @@ function ContactRequestDetailPageInner() {
 
       <AdminDetailLayout>
         <AdminDetailMain>
-          <Card className="border border-border/70 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <MessageSquare className="size-5 text-primary" />
-                Nội dung yêu cầu
-              </CardTitle>
-              <CardDescription>
-                Thông tin chi tiết về yêu cầu hoặc câu hỏi.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="mb-2 text-xs font-semibold text-muted-foreground">Tiêu đề</p>
-                <TypographyH3 className="text-base font-semibold text-foreground">
-                  {contact.subject}
-                </TypographyH3>
-              </div>
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={MessageSquare}
+              title="Nội dung yêu cầu"
+              description="Thông tin chi tiết về yêu cầu hoặc câu hỏi."
+            />
+            <FieldSetContent variant="section" className="space-y-4 pt-0">
+              <FieldSectionField label="Tiêu đề" icon={MessageSquare}>
+                <p className="text-base font-semibold">{contact.subject}</p>
+              </FieldSectionField>
+
               {structured.length > 0 && (
                 <div className="grid gap-3 md:grid-cols-2">
                   {structured.map((item, idx) => {
                     const Icon = item.icon;
                     return (
-                      <div key={idx} className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
-                        {Icon && <Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />}
+                      <div
+                        key={idx}
+                        className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3"
+                      >
+                        {Icon && (
+                          <Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                        )}
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-semibold text-muted-foreground">{item.key}</p>
                           <p className="text-sm font-medium">{item.value}</p>
@@ -144,156 +152,134 @@ function ContactRequestDetailPageInner() {
                   })}
                 </div>
               )}
+
               {messageContent && (
-                <div>
-                  <p className="mb-2 text-xs font-semibold text-muted-foreground">Nội dung</p>
-                  <p className="text-sm whitespace-pre-wrap bg-muted/30 rounded-lg p-4">
+                <FieldSectionField label="Nội dung" icon={MessageSquare}>
+                  <p className="whitespace-pre-wrap rounded-lg bg-muted/30 p-4 text-sm">
                     {messageContent}
                   </p>
-                </div>
+                </FieldSectionField>
               )}
-            </CardContent>
-          </Card>
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
 
         <AdminDetailSidebar>
-          <Card className="sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto border border-border/70 shadow-sm">
-            <Divider label={<><User className="size-3.5 text-primary" /><span>Liên hệ</span></>} />
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <User className="size-5 text-primary" />
-                Thông tin liên hệ
-              </CardTitle>
-              <CardDescription>
-                Thông tin người gửi yêu cầu.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-start gap-3">
-                <User className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-muted-foreground">Tên</p>
-                  <p className="text-sm font-medium">{contact.name}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-muted-foreground">Email</p>
-                  <p className="font-mono text-sm">{contact.email}</p>
-                </div>
-              </div>
-              {contact.phone && (
-                <div className="flex items-start gap-3">
-                  <Phone className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-muted-foreground">SĐT</p>
-                    <p className="font-mono text-sm">{formatPhoneNumber(contact.phone)}</p>
+          <div className="sticky top-2 flex max-h-[calc(100vh-6rem)] flex-col gap-4 overflow-y-auto">
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={User}
+                title="Thông tin liên hệ"
+                description="Thông tin người gửi yêu cầu."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Tên" icon={User} valueClassName="font-medium">
+                  {contact.name}
+                </FieldSectionField>
+                <FieldSectionField label="Email" icon={Mail} valueClassName="font-mono">
+                  {contact.email}
+                </FieldSectionField>
+                {contact.phone && (
+                  <FieldSectionField label="SĐT" icon={Phone} valueClassName="font-mono">
+                    {formatPhoneNumber(contact.phone)}
+                  </FieldSectionField>
+                )}
+              </FieldSetContent>
+            </FieldSet>
+
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={CircleDot}
+                title="Trạng thái xử lý"
+                description="Tình trạng và mức độ ưu tiên của yêu cầu."
+              />
+              <FieldSetContent variant="section" className="space-y-4 pt-0">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground">Trạng thái</p>
+                    <div className="mt-1.5">
+                      <TreePicker
+                        value={contact.status}
+                        onChange={(v) => v && handleStatusChange(v as string)}
+                        options={CONTACT_REQUEST_STATUSES.map((s) => ({
+                          value: s,
+                          label: CONTACT_REQUEST_STATUS_LABELS[s],
+                        }))}
+                        placeholder="Chọn trạng thái"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground">Đã đọc</p>
+                    <div className="mt-1.5 flex items-center justify-between rounded-lg border border-border px-3 py-2">
+                      <div className="flex items-center gap-1.5">
+                        {contact.isRead ? (
+                          <CircleCheck className="size-4 text-emerald-600" aria-hidden />
+                        ) : (
+                          <CircleDot className="size-4 text-muted-foreground" aria-hidden />
+                        )}
+                        <span
+                          className={cn(
+                            "text-sm font-medium",
+                            contact.isRead ? "text-emerald-600" : "text-muted-foreground",
+                          )}
+                        >
+                          {contact.isRead ? "Đã đọc" : "Chưa đọc"}
+                        </span>
+                      </div>
+                      <Switch
+                        checked={contact.isRead}
+                        onCheckedChange={handleToggleRead}
+                        disabled={updateMutation.isPending}
+                      />
+                    </div>
                   </div>
                 </div>
-              )}
-            </CardContent>
 
-            <Divider label={<><CircleDot className="size-3.5 text-primary" /><span>Xử lý</span></>} />
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <CircleDot className="size-5 text-primary" />
-                Trạng thái xử lý
-              </CardTitle>
-              <CardDescription>
-                Tình trạng và mức độ ưu tiên của yêu cầu.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldSectionDivider />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground">Trạng thái</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Ưu tiên</p>
                   <div className="mt-1.5">
                     <TreePicker
-                      value={contact.status}
-                      onChange={(v) => v && handleStatusChange(v as string)}
-                      options={CONTACT_REQUEST_STATUSES.map((s) => ({
-                        value: s,
-                        label: CONTACT_REQUEST_STATUS_LABELS[s],
-                      }))}
-                      placeholder="Chọn trạng thái"
+                      value={contact.priority || "MEDIUM"}
+                      onChange={(v) => v && handlePriorityChange(v as string)}
+                      options={[
+                        { value: "HIGH", label: "Cao" },
+                        { value: "MEDIUM", label: "Trung bình" },
+                        { value: "LOW", label: "Thấp" },
+                      ]}
+                      placeholder="Chọn mức ưu tiên"
                     />
                   </div>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground">Đã đọc</p>
-                  <div className="mt-1.5 flex items-center justify-between rounded-lg border border-border px-3 py-2">
-                    <div className="flex items-center gap-1.5">
-                      {contact.isRead ? (
-                        <CircleCheck className="size-4 text-emerald-600" aria-hidden />
-                      ) : (
-                        <CircleDot className="size-4 text-muted-foreground" aria-hidden />
-                      )}
-                      <span className={cn("text-sm font-medium", contact.isRead ? "text-emerald-600" : "text-muted-foreground")}>
-                        {contact.isRead ? "Đã đọc" : "Chưa đọc"}
-                      </span>
-                    </div>
-                    <Switch
-                      checked={contact.isRead}
-                      onCheckedChange={handleToggleRead}
-                      disabled={updateMutation.isPending}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="pt-2 border-t border-border/50">
-                <p className="text-xs font-semibold text-muted-foreground">Ưu tiên</p>
-                <div className="mt-1.5">
-                  <TreePicker
-                    value={contact.priority || "MEDIUM"}
-                    onChange={(v) => v && handlePriorityChange(v as string)}
-                    options={[
-                      { value: "HIGH", label: "Cao" },
-                      { value: "MEDIUM", label: "Trung bình" },
-                      { value: "LOW", label: "Thấp" },
-                    ]}
-                    placeholder="Chọn mức ưu tiên"
-                  />
-                </div>
-              </div>
-              {contact.assignedToName && (
-                <div className="flex items-start gap-3 pt-2 border-t border-border/50">
-                  <UserCircle className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-muted-foreground">Người phụ trách</p>
-                    <p className="text-sm font-medium">{contact.assignedToName}</p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
 
-            <Divider label={<><CalendarClock className="size-3.5 text-primary" /><span>Thời gian</span></>} />
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <CalendarClock className="size-5 text-primary" />
-                Thời gian
-              </CardTitle>
-              <CardDescription>
-                Mốc thời gian tạo và cập nhật yêu cầu.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-start gap-3">
-                <CalendarClock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-muted-foreground">Tạo lúc</p>
-                  <p className="text-sm">{formatDateTime(contact.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CalendarClock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-muted-foreground">Cập nhật lần cuối</p>
-                  <p className="text-sm">{formatDateTime(contact.updatedAt)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                {contact.assignedToName && (
+                  <>
+                    <FieldSectionDivider />
+                    <FieldSectionField label="Người phụ trách" icon={UserCircle} valueClassName="font-medium">
+                      {contact.assignedToName}
+                    </FieldSectionField>
+                  </>
+                )}
+              </FieldSetContent>
+            </FieldSet>
+
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={CalendarClock}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật yêu cầu."
+              />
+              <FieldSetContent variant="section" className="space-y-3 pt-0">
+                <FieldSectionField label="Tạo lúc" icon={CalendarClock}>
+                  {formatDateTime(contact.createdAt)}
+                </FieldSectionField>
+                <FieldSectionField label="Cập nhật lần cuối" icon={CalendarClock}>
+                  {formatDateTime(contact.updatedAt)}
+                </FieldSectionField>
+              </FieldSetContent>
+            </FieldSet>
+          </div>
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>

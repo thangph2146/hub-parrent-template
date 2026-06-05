@@ -43,6 +43,17 @@ function TrainingSystemsPageInner() {
       canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["training-systems"] });
@@ -124,15 +135,17 @@ function TrainingSystemsPageInner() {
         openEdit: (row) => router.push(`/training-systems/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite],
+    [rowActions, router, canWrite, canDelete, canHardDelete],
   );
 
 
 
   const trashColumns = useMemo<ColumnDef<TrainingSystemRow>[]>(
-    () => getTrainingSystemColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite],
+    () => getTrainingSystemColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete],
   );
 
   return (

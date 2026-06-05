@@ -38,7 +38,8 @@ function EditCoursePageInner() {
       name: entity.name ?? "",
       startYear: entity.startYear ?? undefined,
       endYear: entity.endYear ?? undefined,
-      departmentId: entity.departmentId ?? undefined,
+      departmentId:
+        entity.departmentId != null ? String(entity.departmentId) : "",
       status: entity.status ?? 1,
     });
   }, [entity, form]);

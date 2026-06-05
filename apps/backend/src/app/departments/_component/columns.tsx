@@ -20,12 +20,18 @@ export function getDepartmentColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: DepartmentRow) => void
   openEdit?: (row: DepartmentRow) => void
   rowActions: AdminCrudRowHandlers<DepartmentRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<DepartmentRow>[] {
   const dataColumns: ColumnDef<DepartmentRow>[] = [
     {
@@ -92,6 +98,8 @@ export function getDepartmentColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<DepartmentRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -100,6 +108,8 @@ export function getDepartmentColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<DepartmentRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

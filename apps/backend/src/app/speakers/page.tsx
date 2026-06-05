@@ -46,6 +46,17 @@ function SpeakersPageInner() {
       canUserAccess(user, PERMISSION_CODES.SPEAKERS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.SPEAKERS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SPEAKERS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SPEAKERS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.SPEAKERS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.SPEAKERS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.SPEAKERS_MANAGE)
+    : false
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["speakers"] })
@@ -158,13 +169,15 @@ function SpeakersPageInner() {
         openEdit: (row) => router.push(`/speakers/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
       }),
-    [rowActions, router, canWrite]
+    [rowActions, router, canWrite, canDelete, canHardDelete]
   )
 
   const trashColumns = useMemo<ColumnDef<SpeakerRow>[]>(
-    () => getSpeakerColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getSpeakerColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
 
   return (

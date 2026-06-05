@@ -22,12 +22,18 @@ export function getCameraColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: CameraRow) => void
   openEdit?: (row: CameraRow) => void
   rowActions: AdminCrudRowHandlers<CameraRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<CameraRow>[] {
   const dataColumns: ColumnDef<CameraRow>[] = [
     {
@@ -150,6 +156,8 @@ export function getCameraColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<CameraRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -158,6 +166,8 @@ export function getCameraColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<CameraRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,

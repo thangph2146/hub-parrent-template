@@ -43,6 +43,17 @@ function AcademicYearsPageInner() {
       canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_UPDATE)
     : false;
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_DELETE)
+    : false;
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_RESTORE)
+    : false;
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.ACADEMIC_YEARS_MANAGE)
+    : false;
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["academic-years"] });
@@ -125,13 +136,15 @@ function AcademicYearsPageInner() {
       openEdit: (row) => router.push(`/academic-years/${row.id}/edit`),
       rowActions,
       canWrite,
+      canDelete,
+      canHardDelete,
     }),
-    [rowActions, router, canWrite],
+    [rowActions, router, canWrite, canDelete, canHardDelete],
   );
 
   const trashColumns = useMemo<ColumnDef<AcademicYearRow>[]>(
-    () => getAcademicYearColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite],
+    () => getAcademicYearColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete],
   );
 
   return (

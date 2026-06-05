@@ -49,6 +49,17 @@ function EventsPageInner() {
       canUserAccess(user, PERMISSION_CODES.EVENTS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.EVENTS_UPDATE)
     : false
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.EVENTS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.EVENTS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.EVENTS_MANAGE) ||
+      canUserAccess(user, PERMISSION_CODES.EVENTS_RESTORE)
+    : false
+  const canHardDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.EVENTS_MANAGE)
+    : false
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["events"] })
@@ -167,6 +178,8 @@ function EventsPageInner() {
         openEdit: (row) => router.push(`/events/${row.id}/edit`),
         rowActions,
         canWrite,
+        canDelete,
+        canHardDelete,
         isTogglingFeaturedId: togglingFeaturedId,
         onToggleFeatured: canWrite
           ? (row) => {
@@ -178,12 +191,12 @@ function EventsPageInner() {
             }
           : undefined,
       }),
-    [rowActions, router, canWrite, togglingFeaturedId, featuredMutation]
+    [rowActions, router, canWrite, canDelete, canHardDelete, togglingFeaturedId, featuredMutation]
   )
 
   const trashColumns = useMemo<ColumnDef<EventRow>[]>(
-    () => getEventColumns({ view: "trash",  rowActions, canWrite }),
-    [rowActions, canWrite]
+    () => getEventColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    [rowActions, canWrite, canRestore, canHardDelete]
   )
 
   return (

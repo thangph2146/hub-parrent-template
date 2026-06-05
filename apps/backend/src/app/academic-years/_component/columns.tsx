@@ -26,12 +26,18 @@ export function getAcademicYearColumns({
   openEdit = () => {},
   rowActions,
   canWrite,
+  canDelete,
+  canRestore,
+  canHardDelete,
 }: {
   view?: AdminTableView
   openDetail?: (row: AcademicYearRow) => void
   openEdit?: (row: AcademicYearRow) => void
   rowActions: AdminCrudRowHandlers<AcademicYearRow>
   canWrite: boolean
+  canDelete?: boolean
+  canRestore?: boolean
+  canHardDelete?: boolean
 }): ColumnDef<AcademicYearRow>[] {
   const dataColumns: ColumnDef<AcademicYearRow>[] = [
     {
@@ -121,6 +127,8 @@ export function getAcademicYearColumns({
     dataColumns,
     listActionsColumn: defineAdminCrudActionsColumn<AcademicYearRow>({
       canWrite,
+      canDelete,
+      canHardDelete,
       onView: openDetail,
       onEdit: openEdit,
       onSoftDelete: rowActions.onSoftDelete,
@@ -129,6 +137,8 @@ export function getAcademicYearColumns({
     }),
     trashActionsColumn: defineAdminTrashActionsColumn<AcademicYearRow>({
       canWrite,
+      canRestore,
+      canHardDelete,
       onRestore: rowActions.onRestore,
       onPurge: rowActions.onPurge,
       getRecordLabel: rowActions.getRecordLabel,
