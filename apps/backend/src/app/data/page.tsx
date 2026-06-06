@@ -43,6 +43,7 @@ import {
   ImportProgressPanel,
   withSkippedRemaining,
 } from "./import-progress-panel";
+import { EntitySchemaPanel } from "./_component";
 import {
   pickExportDirectory,
   saveExportBlob,
@@ -700,6 +701,8 @@ function DataBackupPageInner() {
           </FieldSetContent>
         </FieldSet>
       ) : null}
+
+      <EntitySchemaPanel />
     </AdminPageSection>
   );
 }

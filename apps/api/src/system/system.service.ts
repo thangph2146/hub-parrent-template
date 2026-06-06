@@ -1511,11 +1511,16 @@ export class SystemService {
     });
   }
 
-  getDatabaseSchema() {
+  async getDatabaseSchema() {
     const tables: Array<{
       name: string;
+      entityName: string;
+      exportModelName: string;
       domain: string;
       description: string;
+      rowCount: number;
+      activeRowCount: number;
+      trashedRowCount: number;
       columns: Array<{
         name: string;
         type: string;
@@ -1585,6 +1590,23 @@ export class SystemService {
       VerificationToken: 'Token xac thuc email/password reset.',
     };
 
+    const pendingCounts: Array<{
+      tableName: string;
+      entityName: string;
+      exportModelName: string;
+      domain: string;
+      description: string;
+      columns: Array<{
+        name: string;
+        type: string;
+        kind: 'pk' | 'fk' | 'field';
+        nullable?: boolean;
+        references?: string;
+      }>;
+      entity: EntityName<any>;
+      hasSoftDelete: boolean;
+    }> = [];
+
     for (const modelName of this.modelOrder) {
       const entity = entityByModelName[modelName];
       if (!entity) continue;
@@ -1601,6 +1623,10 @@ export class SystemService {
       const tableName = meta.tableName || entityName;
       const domain = domainMapping[entityName] || 'System';
       const description = descriptionMapping[entityName] || '';
+      const hasSoftDelete = Object.prototype.hasOwnProperty.call(
+        meta.properties,
+        'deletedAt',
+      );
 
       const columns: Array<{
         name: string;
@@ -1639,11 +1665,63 @@ export class SystemService {
         });
       }
 
-      tables.push({
-        name: tableName,
+      pendingCounts.push({
+        tableName,
+        entityName,
+        exportModelName: modelName,
         domain,
         description,
         columns,
+        entity,
+        hasSoftDelete,
+      });
+    }
+
+    const countResults = await Promise.all(
+      pendingCounts.map(async (entry) => {
+        try {
+          const rowCount = await this.em.count(entry.entity, {});
+          if (!entry.hasSoftDelete) {
+            return {
+              rowCount,
+              activeRowCount: rowCount,
+              trashedRowCount: 0,
+            };
+          }
+          const activeRowCount = await this.em.count(entry.entity, {
+            deletedAt: null,
+          });
+          return {
+            rowCount,
+            activeRowCount,
+            trashedRowCount: Math.max(0, rowCount - activeRowCount),
+          };
+        } catch (error) {
+          this.logger.warn(
+            `getDatabaseSchema: count failed for ${entry.entityName}: ${getErrorMessage(error)}`,
+          );
+          return {
+            rowCount: -1,
+            activeRowCount: -1,
+            trashedRowCount: 0,
+          };
+        }
+      }),
+    );
+
+    for (let i = 0; i < pendingCounts.length; i++) {
+      const entry = pendingCounts[i]!;
+      const counts = countResults[i]!;
+      tables.push({
+        name: entry.tableName,
+        entityName: entry.entityName,
+        exportModelName: entry.exportModelName,
+        domain: entry.domain,
+        description: entry.description,
+        rowCount: counts.rowCount,
+        activeRowCount: counts.activeRowCount,
+        trashedRowCount: counts.trashedRowCount,
+        columns: entry.columns,
       });
     }
 
@@ -1710,7 +1788,16 @@ export class SystemService {
       }
     }
 
-    return { tables, relations };
+    const totalRows = tables.reduce(
+      (sum, table) => sum + Math.max(0, table.rowCount),
+      0,
+    );
+    const totalActiveRows = tables.reduce(
+      (sum, table) => sum + Math.max(0, table.activeRowCount),
+      0,
+    );
+
+    return { tables, relations, totalRows, totalActiveRows };
   }
 
   /** Giống `pnpm run seed:superadmin` — idempotent, dùng từ API bảo trì. */

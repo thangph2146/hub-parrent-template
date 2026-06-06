@@ -1,34 +1,41 @@
 import type { ApiClient } from "../client";
 import { getData } from "./_shared";
 
-type SchemaColumn = {
-  name: string
-  type: string
-  kind: "pk" | "fk" | "field"
-  nullable?: boolean
-  references?: string
-}
+export type SchemaColumn = {
+  name: string;
+  type: string;
+  kind: "pk" | "fk" | "field";
+  nullable?: boolean;
+  references?: string;
+};
 
-type SchemaTable = {
-  name: string
-  domain: string
-  description: string
-  columns: SchemaColumn[]
-}
+export type SchemaTable = {
+  name: string;
+  entityName: string;
+  exportModelName: string;
+  domain: string;
+  description: string;
+  rowCount: number;
+  activeRowCount: number;
+  trashedRowCount: number;
+  columns: SchemaColumn[];
+};
 
-type SchemaRelation = {
-  fromTable: string
-  fromColumn: string
-  toTable: string
-  toColumn: string
-  cardinality: "many-to-one" | "one-to-one" | "self"
-  deleteRule?: "cascade" | "set null" | "restrict"
-}
+export type SchemaRelation = {
+  fromTable: string;
+  fromColumn: string;
+  toTable: string;
+  toColumn: string;
+  cardinality: "many-to-one" | "one-to-one" | "self";
+  deleteRule?: "cascade" | "set null" | "restrict";
+};
 
-type DatabaseSchemaResponse = {
-  tables: SchemaTable[]
-  relations: SchemaRelation[]
-}
+export type DatabaseSchemaResponse = {
+  tables: SchemaTable[];
+  relations: SchemaRelation[];
+  totalRows: number;
+  totalActiveRows: number;
+};
 
 export class SystemApi {
   constructor(private readonly http: ApiClient) {}

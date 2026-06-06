@@ -404,7 +404,7 @@ export class SystemController {
         return res.status(statusCode).json(body);
       }
 
-      const data = this.systemService.getDatabaseSchema();
+      const data = await this.systemService.getDatabaseSchema();
       const { statusCode, body } = createSuccessResponse(data);
       return res.status(statusCode).json(body);
     } catch (error) {

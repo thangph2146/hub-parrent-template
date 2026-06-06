@@ -45,6 +45,12 @@ export { ContactRequestsApi } from "./resources/contact-requests"
 export { MyStudentsApi } from "./resources/my-students"
 export { ParentStudentsApi } from "./resources/parent-students"
 export { SystemApi } from "./resources/system"
+export type {
+  DatabaseSchemaResponse,
+  SchemaColumn,
+  SchemaRelation,
+  SchemaTable,
+} from "./resources/system"
 export { SpeakersApi } from "./resources/speakers"
 export { LocationsApi } from "./resources/locations"
 export { TrainingLevelsApi } from "./resources/training-levels"
