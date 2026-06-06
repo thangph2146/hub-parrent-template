@@ -73,7 +73,7 @@ export class UploadsController {
     this.logger.error(JSON.stringify(details));
   }
 
-  /** GET /api/admin/uploads?page=1&limit=50 hoặc ?listFolders=true */
+  /** GET /api/admin/uploads?page=1&limit=50 hoặc ?listFolders=true&type=images */
   @Get()
   async list(
     @Res() res: Response,
@@ -81,6 +81,7 @@ export class UploadsController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('listFolders') listFolders?: string,
+    @Query('type') type?: string,
     @Req() req?: Request,
   ) {
     const userId = this.getUserId(headers);
@@ -99,6 +100,7 @@ export class UploadsController {
       page: Math.max(1, parseInt(String(page), 10) || 1),
       limit: parseAdminListLimit(limit, 50),
       serveBaseUrl,
+      type: type === 'images' || type === 'files' ? type : undefined,
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
@@ -245,9 +247,13 @@ export class UploadsController {
     }
     const pathNorm = pathStr.replace(/\\/g, '/');
     try {
-      const { stream, contentType } =
+      const { stream, contentType, originalName } =
         await this.uploadsService.serveFile(pathNorm);
       res.setHeader('Content-Type', contentType);
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${encodeURIComponent(originalName)}"`,
+      );
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       stream.pipe(res);

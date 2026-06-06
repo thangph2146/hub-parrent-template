@@ -30,12 +30,17 @@ export class PublicUploadsController {
         .json({ success: false, message: 'Invalid width (50-2500)' });
     }
     try {
-      const { stream, contentType } = await this.uploadsService.serveResized(
-        pathStr.replace(/\\/g, '/'),
-        Math.round(width),
-        quality ?? 80,
-      );
+      const { stream, contentType, originalName } =
+        await this.uploadsService.serveResized(
+          pathStr.replace(/\\/g, '/'),
+          Math.round(width),
+          quality ?? 80,
+        );
       res.setHeader('Content-Type', contentType);
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${encodeURIComponent(originalName)}"`,
+      );
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       stream.pipe(res);
@@ -57,9 +62,13 @@ export class PublicUploadsController {
     }
     const pathNorm = pathStr.replace(/\\/g, '/');
     try {
-      const { stream, contentType } =
+      const { stream, contentType, originalName } =
         await this.uploadsService.serveFile(pathNorm);
       res.setHeader('Content-Type', contentType);
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${encodeURIComponent(originalName)}"`,
+      );
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       stream.pipe(res);

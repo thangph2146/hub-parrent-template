@@ -27,9 +27,10 @@ import {
   Search,
   LayoutTemplate,
   Monitor,
+  Image,
 } from "lucide-react"
-import { PERMISSION_CODES, type PermissionCode } from "@workspace/api-client"
-import type { AdminMenuLeaf, AdminMenuTreeItem } from "@ui/components/admin"
+import { PERMISSION_CODES } from "@workspace/api-client"
+import type { AdminMenuTreeItem } from "@ui/components/admin"
 
 const menuTree: AdminMenuTreeItem[] = [
   {
@@ -294,6 +295,16 @@ const menuTree: AdminMenuTreeItem[] = [
         icon: Network,
         permission: null,
         adminOnly: true,
+      },
+      {
+        href: "/file-storage",
+        label: "Kho lưu trữ file",
+        icon: Image,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.UPLOADS_VIEW,
+          PERMISSION_CODES.UPLOADS_MANAGE,
+        ],
       },
     ],
   },

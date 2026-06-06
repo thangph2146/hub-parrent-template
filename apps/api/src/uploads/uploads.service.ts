@@ -238,7 +238,7 @@ export class UploadsService {
     );
   }
 
-  /** Tạo đường dẫn lưu file (giống admin generateFilePath) */
+  /** Tạo đường dẫn lưu file — không tạo thư mục ngày tháng */
   generateFilePath(
     fileName: string,
     customFolderPath?: string,
@@ -246,14 +246,8 @@ export class UploadsService {
     serveBaseUrl = '',
     uploadKind: 'images' | 'files' = 'images',
   ): { relativePath: string; fullPath: string; urlPath: string } {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const dateDir = path.join(year.toString(), month, day);
-
     const baseDir = uploadKind === 'images' ? IMAGES_DIR : FILES_DIR;
-    const prefix = uploadKind; // "images" | "files"
+    const prefix = uploadKind;
 
     let fullPath: string;
     let relativePath: string;
@@ -265,27 +259,15 @@ export class UploadsService {
         .replace(/\/$/, '');
 
       if (isExistingFolder) {
-        // Nếu folder dạng date (YYYY/MM/DD) thì lưu trực tiếp vào folder đó.
-        // Còn nếu không phải date thì vẫn lưu theo cùng layout dưới baseDir.
-        const targetDir = this.hasDateStructure(clean)
-          ? path.join(clean)
-          : path.join(clean);
-        fullPath = path.normalize(path.join(baseDir, targetDir, fileName));
-        relativePath = path
-          .join(prefix, targetDir, fileName)
-          .replace(/\\/g, '/');
+        fullPath = path.normalize(path.join(baseDir, clean, fileName));
+        relativePath = path.join(prefix, clean, fileName).replace(/\\/g, '/');
       } else {
-        // Trường hợp "không phải folder đã tồn tại": lưu vào <clean>/<dateDir>
-        const finalPath = path.join(clean, dateDir);
-        fullPath = path.normalize(path.join(baseDir, finalPath, fileName));
-        relativePath = path
-          .join(prefix, finalPath, fileName)
-          .replace(/\\/g, '/');
+        fullPath = path.normalize(path.join(baseDir, clean, fileName));
+        relativePath = path.join(prefix, clean, fileName).replace(/\\/g, '/');
       }
     } else {
-      // Không chọn folder => lưu theo ngày tháng năm
-      fullPath = path.normalize(path.join(baseDir, dateDir, fileName));
-      relativePath = path.join(prefix, dateDir, fileName).replace(/\\/g, '/');
+      fullPath = path.normalize(path.join(baseDir, fileName));
+      relativePath = path.join(prefix, fileName).replace(/\\/g, '/');
     }
 
     const urlPath = serveBaseUrl
@@ -296,6 +278,10 @@ export class UploadsService {
   }
 
   /** Quét đệ quy lấy tất cả ảnh trong một thư mục */
+  private readOriginalName(_fullPath: string, fallback: string): string {
+    return fallback.replace(/_\d{13}(\.\w+)$/, '$1');
+  }
+
   private async scanImagesInDir(
     dirPath: string,
     baseRelative: string,
@@ -305,6 +291,7 @@ export class UploadsService {
     try {
       const entries = await readdir(dirPath, { withFileTypes: true });
       for (const entry of entries) {
+        if (entry.name.endsWith('.meta.json')) continue;
         const full = path.join(dirPath, entry.name);
         const rel = baseRelative ? `${baseRelative}/${entry.name}` : entry.name;
         if (entry.isDirectory()) {
@@ -319,9 +306,10 @@ export class UploadsService {
             const url = serveBaseUrl
               ? `${serveBaseUrl}/${rel}`
               : `/api/uploads/${rel}`;
+            const originalName = this.readOriginalName(full, entry.name);
             result.push({
               fileName: entry.name,
-              originalName: entry.name,
+              originalName,
               size: st.size,
               mimeType,
               url,
@@ -344,39 +332,45 @@ export class UploadsService {
     page: number;
     limit: number;
     serveBaseUrl?: string;
+    type?: 'images' | 'files';
   }): Promise<ListImagesResult> {
     const serveBaseUrl = (params.serveBaseUrl || '').replace(/\/$/, '');
     const allImages: ImageItemDto[] = [];
 
-    // Scan IMAGES_DIR (images/...)
-    const imagesRel = 'images';
-    const fromImages = await this.scanImagesInDir(
-      IMAGES_DIR,
-      imagesRel,
-      serveBaseUrl,
-    );
-    allImages.push(...fromImages);
+    if (!params.type || params.type === 'images') {
+      const fromImages = await this.scanImagesInDir(
+        IMAGES_DIR,
+        'images',
+        serveBaseUrl,
+      );
+      allImages.push(...fromImages);
+    }
 
-    // Scan FILES_DIR (files/...)
-    const filesRel = 'files';
-    const fromFiles = await this.scanImagesInDir(
-      FILES_DIR,
-      filesRel,
-      serveBaseUrl,
-    );
-    allImages.push(...fromFiles);
+    if (!params.type || params.type === 'files') {
+      const fromFiles = await this.scanImagesInDir(
+        FILES_DIR,
+        'files',
+        serveBaseUrl,
+      );
+      allImages.push(...fromFiles);
+    }
 
-    // Scan STORAGE_DIR nhưng bỏ qua thư mục 'uploads'
-    try {
-      const top = await readdir(STORAGE_DIR, { withFileTypes: true });
-      for (const entry of top) {
-        if (!entry.isDirectory() || entry.name === 'uploads') continue;
-        const full = path.join(STORAGE_DIR, entry.name);
-        const sub = await this.scanImagesInDir(full, entry.name, serveBaseUrl);
-        allImages.push(...sub);
+    if (!params.type) {
+      try {
+        const top = await readdir(STORAGE_DIR, { withFileTypes: true });
+        for (const entry of top) {
+          if (!entry.isDirectory() || entry.name === 'uploads') continue;
+          const full = path.join(STORAGE_DIR, entry.name);
+          const sub = await this.scanImagesInDir(
+            full,
+            entry.name,
+            serveBaseUrl,
+          );
+          allImages.push(...sub);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
 
     // Sắp xếp theo createdAt giảm dần
@@ -527,6 +521,23 @@ export class UploadsService {
   }
 
   /** Lưu file upload (buffer) và trả về metadata. Không cho phép upload trùng tên (cùng tên file trong cùng thư mục). */
+  private fixUtf8Filename(name: string): string {
+    // Busboy/Multer trên Windows đôi khi decode UTF-8 filename thành Latin-1.
+    // Nếu phát hiện ký tự lạ (Ã, Â, ¡, ¢...), thử re-encode.
+    if (
+      /[\u0080-\u00FF]/.test(name) &&
+      /[ÃÂÀÁÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüý]/.test(name)
+    ) {
+      try {
+        const decoded = Buffer.from(name, 'latin1').toString('utf8');
+        if (decoded !== name) return decoded;
+      } catch {
+        /* fallback */
+      }
+    }
+    return name;
+  }
+
   async saveFile(
     file: { buffer: Buffer; originalname: string; mimetype: string },
     folderPath?: string,
@@ -540,7 +551,8 @@ export class UploadsService {
     url: string;
     relativePath: string;
   }> {
-    const rawExt = path.extname(file.originalname).toLowerCase();
+    const originalName = this.fixUtf8Filename(file.originalname);
+    const rawExt = path.extname(originalName).toLowerCase();
     const mimePrimary = (file.mimetype || '')
       .split(';')[0]
       .trim()
@@ -580,9 +592,13 @@ export class UploadsService {
       : 'files';
 
     const stripForBase = rawExt || ext;
-    const baseName = path
-      .basename(file.originalname, stripForBase || undefined)
-      .replace(/[^a-zA-Z0-9-_]/g, '_');
+    let baseName = path.basename(originalName, stripForBase || undefined);
+    // Thay ký tự không hợp lệ thành dấu gạch ngang
+    baseName = baseName.replace(/[^[\]\p{L}\p{N}_-]/gu, '-');
+    // Rút gọn nhiều dấu gạch liên tiếp
+    baseName = baseName.replace(/[-_]+/g, '-');
+    // Xoá dấu gạch đầu/cuối
+    baseName = baseName.replace(/^-+|-+$/g, '');
 
     // Xử lý ảnh: resize + chuyển WebP để giảm dung lượng
     let writeBuffer = file.buffer;
@@ -640,7 +656,7 @@ export class UploadsService {
         : `/api/uploads/${existingRelative}`;
       return {
         fileName: existingFile,
-        originalName: file.originalname,
+        originalName,
         size: finalSize,
         mimeType: finalMime,
         url: existingUrl,
@@ -653,7 +669,7 @@ export class UploadsService {
 
     return {
       fileName: uniqueName,
-      originalName: file.originalname,
+      originalName,
       size: finalSize,
       mimeType: finalMime,
       url: urlPath,
@@ -752,10 +768,12 @@ export class UploadsService {
     };
   }
 
-  /** Stream file để serve (trả về stream + contentType) */
-  async serveFile(
-    relativePath: string,
-  ): Promise<{ stream: ReadStream; contentType: string }> {
+  /** Stream file để serve (trả về stream + contentType + originalName) */
+  async serveFile(relativePath: string): Promise<{
+    stream: ReadStream;
+    contentType: string;
+    originalName: string;
+  }> {
     const { fullPath, baseDir } = this.resolvePath(relativePath);
     if (!fullPath.startsWith(baseDir)) {
       throw new Error('Invalid path');
@@ -765,7 +783,11 @@ export class UploadsService {
     const ext = path.extname(fullPath).toLowerCase();
     const contentType = ALLOWED_MIME[ext] || 'application/octet-stream';
     const stream = createReadStream(fullPath);
-    return { stream, contentType };
+    const originalName = this.readOriginalName(
+      fullPath,
+      path.basename(relativePath),
+    );
+    return { stream, contentType, originalName };
   }
 
   /**
@@ -775,13 +797,22 @@ export class UploadsService {
     relativePath: string,
     width: number,
     quality: number,
-  ): Promise<{ stream: ReadStream; contentType: string }> {
+  ): Promise<{
+    stream: ReadStream;
+    contentType: string;
+    originalName: string;
+  }> {
     const { fullPath, baseDir } = this.resolvePath(relativePath);
     if (!fullPath.startsWith(baseDir)) {
       throw new Error('Invalid path');
     }
     const st = await stat(fullPath).catch(() => null);
     if (!st?.isFile()) throw new Error('Not a file');
+
+    const originalName = this.readOriginalName(
+      fullPath,
+      path.basename(relativePath),
+    );
 
     const cacheDir = path.join(STORAGE_DIR, IMAGE_RESIZE_CACHE_DIR);
     const relPathWithoutPrefix = relativePath.replace(
@@ -795,7 +826,11 @@ export class UploadsService {
 
     // Trả về cached nếu có
     if (existsSync(cachePath)) {
-      return { stream: createReadStream(cachePath), contentType: 'image/webp' };
+      return {
+        stream: createReadStream(cachePath),
+        contentType: 'image/webp',
+        originalName,
+      };
     }
 
     // Resize và cache
@@ -809,9 +844,13 @@ export class UploadsService {
       // Nếu resize thất bại, trả về file gốc
       const ext = path.extname(fullPath).toLowerCase();
       const contentType = ALLOWED_MIME[ext] || 'application/octet-stream';
-      return { stream: createReadStream(fullPath), contentType };
+      return { stream: createReadStream(fullPath), contentType, originalName };
     }
 
-    return { stream: createReadStream(cachePath), contentType: 'image/webp' };
+    return {
+      stream: createReadStream(cachePath),
+      contentType: 'image/webp',
+      originalName,
+    };
   }
 }

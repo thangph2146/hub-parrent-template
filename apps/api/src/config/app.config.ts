@@ -1,6 +1,8 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
 import * as path from 'path';
 import { APP_HEADERS } from './constants';
+
+config({ path: path.resolve(__dirname, '../../.env') });
 
 function getAllowedOrigins(): string[] | true {
   const raw = process.env.ALLOWED_ORIGINS;

@@ -31,6 +31,7 @@ import { RolesApi } from './resources/roles';
 import { SettingsApi } from './resources/settings';
 import { SeoMetasApi } from './resources/seo-metas';
 import { DashboardApi } from './resources/dashboard';
+import { UploadsApi } from './resources/uploads';
 import type { HealthStatus } from './types';
 
 /**
@@ -80,6 +81,7 @@ export class StoreSyncSdk {
   readonly settings: SettingsApi;
   readonly seoMetas: SeoMetasApi;
   readonly dashboard: DashboardApi;
+  readonly uploads: UploadsApi;
 
   constructor(options: ApiClientOptions) {
     this.http = new ApiClient(options);
@@ -115,6 +117,7 @@ export class StoreSyncSdk {
     this.settings = new SettingsApi(this.http);
     this.seoMetas = new SeoMetasApi(this.http);
     this.dashboard = new DashboardApi(this.http);
+    this.uploads = new UploadsApi(this.http);
   }
 
   health(): Promise<HealthStatus> {

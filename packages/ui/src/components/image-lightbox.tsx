@@ -245,14 +245,14 @@ export function ImageLightbox({
             </button>
 
             <div
-              className={cn(
-                "mx-auto max-h-[calc(100%-1rem)] max-w-[calc(100%-5rem)] overflow-hidden md:max-w-[calc(100%-7rem)]",
-                zoomScale > 1
-                  ? isDraggingImage
-                    ? "cursor-grabbing"
-                    : "cursor-grab"
-                  : "cursor-default"
-              )}
+className={cn(
+  "mx-auto max-h-[65vh] max-w-[calc(100%-5rem)] overflow-hidden md:max-w-[calc(100%-7rem)]",
+  zoomScale > 1
+    ? isDraggingImage
+      ? "cursor-grabbing"
+      : "cursor-grab"
+    : "cursor-default"
+)}
               onPointerDown={handleImagePointerDown}
               onPointerMove={handleImagePointerMove}
               onPointerUp={stopImageDragging}
@@ -262,7 +262,7 @@ export function ImageLightbox({
                 src={current.src}
                 alt={current.altText || "image"}
                 title={current.altText || "image"}
-                className="h-full w-full object-contain transition-transform duration-150 ease-out select-none"
+                className="max-h-[65vh] w-full object-contain transition-transform duration-150 ease-out select-none"
                 style={{
                   transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoomScale})`,
                 }}

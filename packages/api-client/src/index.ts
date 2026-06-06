@@ -66,6 +66,7 @@ export { RolesApi } from "./resources/roles"
 export { SettingsApi } from "./resources/settings"
 export { SeoMetasApi } from "./resources/seo-metas"
 export { DashboardApi } from "./resources/dashboard"
+export { UploadsApi, type ImageItem, type FolderItem, type ListImagesData } from "./resources/uploads"
 export { StoreSyncSdk, createStoreSyncSdk, DEFAULT_API_URL } from "./sdk"
 export {
   unwrapApiEnvelope,

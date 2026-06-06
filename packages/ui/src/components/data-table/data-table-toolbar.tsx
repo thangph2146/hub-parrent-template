@@ -142,66 +142,68 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="overflow-hidden rounded-lg border border-border/80 bg-card shadow-sm">
-      <div className="flex flex-wrap items-center gap-2 px-2.5 py-1.5">
-        {showGlobalFilter ? (
-          <div className="relative min-w-[min(100%,12rem)] flex-1">
-            <Search
-              className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
-            />
-            <Input
-              id={globalFilterControlId}
-              placeholder={globalFilterPlaceholder}
-              value={globalFilter}
-              onChange={(e) => onGlobalFilterChange(e.target.value)}
-              className="h-8 w-full rounded-md border-border/80 bg-background pl-7 text-sm shadow-none"
-            />
-          </div>
-        ) : null}
-
-        {showTopActions ? (
-          <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
-            {(showClearFiltersButton || xlsxExportEnabled || filterToolbarExtra) ? (
-              <ToolbarActionCluster>
-                {showClearFiltersButton ? (
-                  <ToolbarLabeledButton
-                    variant={"destructive"}
-                    onClick={onClearFilters}
-                    title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
-                  >
-                    <FilterX className="size-3.5 shrink-0" aria-hidden />
-                    Xóa bộ lọc
-                  </ToolbarLabeledButton>
-                ) : null}
-                {xlsxExportEnabled ? (
-                  <ToolbarLabeledButton
-                    variant="success"
-                    disabled={exportDisabled}
-                    onClick={onXlsxExport}
-                    title="Tải Excel theo cột đang hiển thị"
-                  >
-                    <Download className="size-3.5 shrink-0" aria-hidden />
-                    Xuất Excel
-                  </ToolbarLabeledButton>
-                ) : null}
-                {filterToolbarExtra}
-              </ToolbarActionCluster>
-            ) : null}
-
-            {hideableTableColumnOptions.length > 0 ? (
-              <TreeMultiSelectPicker
-                value={visibleTableColumnIds}
-                onChange={onTableColumnVisibilityChange}
-                options={hideableTableColumnOptions}
-                placeholder="Hiện cột"
-                showBulkActions
-                size="sm"
-                className="w-[9.5rem] sm:w-[9.5rem]"
+      {(showGlobalFilter || showTopActions) ? (
+        <div className="flex flex-wrap items-center gap-2 px-2.5 py-1.5">
+          {showGlobalFilter ? (
+            <div className="relative min-w-[min(100%,12rem)] flex-1">
+              <Search
+                className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
               />
-            ) : null}
-          </div>
-        ) : null}
-      </div>
+              <Input
+                id={globalFilterControlId}
+                placeholder={globalFilterPlaceholder}
+                value={globalFilter}
+                onChange={(e) => onGlobalFilterChange(e.target.value)}
+                className="h-8 w-full rounded-md border-border/80 bg-background pl-7 text-sm shadow-none"
+              />
+            </div>
+          ) : null}
+
+          {showTopActions ? (
+            <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
+              {(showClearFiltersButton || xlsxExportEnabled || filterToolbarExtra) ? (
+                <ToolbarActionCluster>
+                  {showClearFiltersButton ? (
+                    <ToolbarLabeledButton
+                      variant={"destructive"}
+                      onClick={onClearFilters}
+                      title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
+                    >
+                      <FilterX className="size-3.5 shrink-0" aria-hidden />
+                      Xóa bộ lọc
+                    </ToolbarLabeledButton>
+                  ) : null}
+                  {xlsxExportEnabled ? (
+                    <ToolbarLabeledButton
+                      variant="success"
+                      disabled={exportDisabled}
+                      onClick={onXlsxExport}
+                      title="Tải Excel theo cột đang hiển thị"
+                    >
+                      <Download className="size-3.5 shrink-0" aria-hidden />
+                      Xuất Excel
+                    </ToolbarLabeledButton>
+                  ) : null}
+                  {filterToolbarExtra}
+                </ToolbarActionCluster>
+              ) : null}
+
+              {hideableTableColumnOptions.length > 0 ? (
+                <TreeMultiSelectPicker
+                  value={visibleTableColumnIds}
+                  onChange={onTableColumnVisibilityChange}
+                  options={hideableTableColumnOptions}
+                  placeholder="Hiện cột"
+                  showBulkActions
+                  size="sm"
+                  className="w-[9.5rem] sm:w-[9.5rem]"
+                />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {hasBulkSelection ? (
         <div className="flex flex-wrap items-center gap-2 border-t border-primary/15 bg-primary/5 px-2.5 py-1.5">
