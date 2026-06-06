@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
@@ -28,6 +27,7 @@ import {
 } from "./_component";
 import type { SeoMetaRow } from "./_component";
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function SeoMetasPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/seo-metas", {
@@ -89,25 +89,37 @@ function SeoMetasPageInner() {
     filters: trashFilterParams,
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["seo-metas", "delete"],
     mutationFn: async (id: string) => api.seoMetas.remove(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["seo-metas", "restore"],
     mutationFn: async (id: string) => api.seoMetas.restore(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["seo-metas", "purge"],
     mutationFn: async (id: string) => api.seoMetas.purge(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: { action: "delete" | "restore" | "hard-delete"; ids: string[] }) =>
       api.seoMetas.bulk(input),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
   useEffect(() => { setTrashPage(1); }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
@@ -214,14 +226,12 @@ function SeoMetasPageInner() {
               const ids = rows.map((r) => r.id);
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
-              toast.success(`Đã đưa ${ids.length} SEO metadata vào thùng rác`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id);
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} SEO metadata`);
-            }}
+}}
           />
         </TabsContent>
 
@@ -254,14 +264,12 @@ function SeoMetasPageInner() {
                   const ids = rows.map((r) => r.id);
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "restore", ids });
-                  toast.success(`Đã khôi phục ${ids.length} SEO metadata`);
-                }}
+}}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id);
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} SEO metadata`);
-                }}
+}}
               />
             )}
           </TabsContent>

@@ -1,4 +1,5 @@
 import { ApiError, type ApiClient } from "../client";
+import { registerLocalMutationFromApiPath } from "../realtime/toast-coordinator";
 
 type ApiEnvelope<T> = {
   success?: boolean;
@@ -167,7 +168,9 @@ export async function postData<T>(
   options?: Parameters<ApiClient["post"]>[2],
 ): Promise<T> {
   const payload = await http.post<unknown>(path, body, options);
-  return unwrapApiEnvelope<T>(payload);
+  const result = unwrapApiEnvelope<T>(payload);
+  registerLocalMutationFromApiPath("POST", path, result);
+  return result;
 }
 
 export async function putData<T>(
@@ -177,7 +180,9 @@ export async function putData<T>(
   options?: Parameters<ApiClient["put"]>[2],
 ): Promise<T> {
   const payload = await http.put<unknown>(path, body, options);
-  return unwrapApiEnvelope<T>(payload);
+  const result = unwrapApiEnvelope<T>(payload);
+  registerLocalMutationFromApiPath("PUT", path, result);
+  return result;
 }
 
 export async function patchData<T>(
@@ -187,7 +192,9 @@ export async function patchData<T>(
   options?: Parameters<ApiClient["patch"]>[2],
 ): Promise<T> {
   const payload = await http.patch<unknown>(path, body, options);
-  return unwrapApiEnvelope<T>(payload);
+  const result = unwrapApiEnvelope<T>(payload);
+  registerLocalMutationFromApiPath("PATCH", path, result);
+  return result;
 }
 
 export async function deleteData<T>(
@@ -196,7 +203,9 @@ export async function deleteData<T>(
   options?: Parameters<ApiClient["delete"]>[1],
 ): Promise<T> {
   const payload = await http.delete<unknown>(path, options);
-  return unwrapApiEnvelope<T>(payload);
+  const result = unwrapApiEnvelope<T>(payload);
+  registerLocalMutationFromApiPath("DELETE", path, result);
+  return result;
 }
 
 /** Chuyển `filters` admin sang query `filter[columnId]`. */

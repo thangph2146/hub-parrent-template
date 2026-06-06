@@ -3,7 +3,7 @@ import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   ArchiveRestore,
@@ -69,6 +69,7 @@ import {
   ADMIN_DIALOG_CONTENT_LG_CLASS,
 } from "@ui/lib/layout-shell"
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 type PagedResult<T> = {
   items: T[]
   total: number
@@ -310,7 +311,14 @@ export default function RbacPage() {
     ])
   }, [queryClient])
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    mutationKey: ["rbac", "create"],
+    toast: {
+      loading: "Đang tạo vai trò…",
+      success: "Đã tạo vai trò thành công",
+      error: (error) =>
+        error instanceof Error ? error.message : "Không lưu được role",
+    },
     mutationFn: async (input: RoleFormState) =>
       api.roles.create<RoleRow>({
         name: input.code,
@@ -322,22 +330,27 @@ export default function RbacPage() {
     onSuccess: invalidateRoles,
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["rbac", "delete"],
     mutationFn: async (id: string) =>
       api.roles.bulk({ action: "delete", ids: [id] }),
     onSuccess: invalidateRoles,
   })
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["rbac", "restore"],
     mutationFn: async (id: string) =>
       api.roles.restore(id),
     onSuccess: invalidateRoles,
   })
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["rbac", "purge"],
     mutationFn: async (id: string) =>
       api.roles.purge(id),
     onSuccess: invalidateRoles,
   })
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    mutationKey: ["rbac", "bulk"],
+    toast: defaultBulkOperationToast,
     mutationFn: async ({ action, ids }: { action: string; ids: string[] }) =>
       api.roles.bulk({ action, ids }),
     onSuccess: invalidateRoles,
@@ -416,16 +429,9 @@ export default function RbacPage() {
       name,
       description: form.description.trim(),
     }
-    try {
-      const created = await createMutation.mutateAsync(payload)
-      toast.success(`Đã tạo role "${created.name || name}"`)
-      setDialogOpen(false)
-      crudNav.view(String(created.id))
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Không lưu được role"
-      )
-    }
+    const created = await createMutation.mutateAsync(payload)
+    setDialogOpen(false)
+    crudNav.view(String(created.id))
   }
 
   const columns = useMemo(
@@ -589,9 +595,6 @@ export default function RbacPage() {
                             action: "delete",
                             ids: rows.map((row) => row.id),
                           })
-                          toast.success(
-                            "Đã xóa tạm các role đã chọn (chuyển vào thùng rác)"
-                          )
                         },
                       },
                       {
@@ -603,9 +606,6 @@ export default function RbacPage() {
                             action: "hard-delete",
                             ids: rows.map((row) => row.id),
                           })
-                          toast.success(
-                            "Đã xóa vĩnh viễn các role đã chọn"
-                          )
                         },
                       },
                     ]
@@ -676,7 +676,6 @@ export default function RbacPage() {
                             action: "restore",
                             ids: rows.map((row) => row.id),
                           })
-                          toast.success("Đã khôi phục các role đã chọn")
                         },
                       },
                       {
@@ -688,7 +687,6 @@ export default function RbacPage() {
                             action: "hard-delete",
                             ids: rows.map((row) => row.id),
                           })
-                          toast.success("Đã xóa vĩnh viễn các role đã chọn")
                         },
                       },
                     ]
@@ -1039,7 +1037,6 @@ export default function RbacPage() {
           onConfirm={async () => {
             if (!deleteTarget) return
             await deleteMutation.mutateAsync(deleteTarget.id)
-            toast.success(`Đã xóa role "${deleteTarget.name}"`)
             setDeleteTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
@@ -1060,7 +1057,6 @@ export default function RbacPage() {
           onConfirm={async () => {
             if (!restoreTarget) return
             await restoreMutation.mutateAsync(restoreTarget.id)
-            toast.success(`Đã khôi phục role "${restoreTarget.name}"`)
             setRestoreTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
@@ -1082,7 +1078,6 @@ export default function RbacPage() {
           onConfirm={async () => {
             if (!purgeTarget) return
             await purgeMutation.mutateAsync(purgeTarget.id)
-            toast.success(`Đã xóa vĩnh viễn role "${purgeTarget.name}"`)
             setPurgeTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}

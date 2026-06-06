@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -15,6 +15,7 @@ import {
 } from "../../_component";
 import type { TagFormValues } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditTagPageInner() {
   const crudNav = useAdminCrudNavigation("/tags");
   const params = useParams();
@@ -44,18 +45,19 @@ function EditTagPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["media", "tags"] });
   };
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật thẻ "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật thẻ",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.tags.update(tagId, input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã cập nhật thẻ "${(variables.name as string)?.trim()}"`);
       crudNav.view(String(tagId));
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật thẻ";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

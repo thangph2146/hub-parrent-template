@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Save, Settings2 } from "lucide-react"
-import { toast } from "@ui/components/sonner"
 import { Button } from "@ui/components/button"
 import {
   Card,
@@ -27,6 +26,7 @@ import {
 import { api } from "@/lib/api"
 import { useAuth } from "@/providers/auth-provider"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 /** Giá trị settings từ API bị JSON double-encode (do MikroORM type:json).
  *  Parse thêm một lần để lấy chuỗi gốc. */
 export function extractSettingValue(
@@ -114,7 +114,12 @@ export default function SettingsPage() {
     siteDesc !== siteDescQuery.data ||
     defaultRole !== defaultRoleQuery.data
 
-  const saveMutation = useMutation({
+  const saveMutation = useAdminMutation({
+    toast: {
+      loading: "Đang lưu cài đặt…",
+      success: "Đã lưu cài đặt hệ thống",
+      error: "Không lưu được cài đặt",
+    },
     mutationFn: async () =>
       api.settings.update({
         site_name: siteName,
@@ -122,7 +127,6 @@ export default function SettingsPage() {
         default_new_user_role: defaultRole,
       }),
     onSuccess: () => {
-      toast.success("Đã lưu cài đặt hệ thống")
       void Promise.all([
         siteNameQuery.refetch(),
         siteDescQuery.refetch(),
@@ -130,7 +134,6 @@ export default function SettingsPage() {
         queryClient.invalidateQueries({ queryKey: ["settings", "site-config"] }),
       ])
     },
-    onError: () => toast.error("Không lưu được cài đặt"),
   })
 
   if (!session) return null

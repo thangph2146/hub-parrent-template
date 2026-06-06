@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -15,6 +15,7 @@ import {
 } from "../../_component";
 import type { MajorFormValues } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditMajorPageInner() {
   const crudNav = useAdminCrudNavigation("/majors");
   const params = useParams();
@@ -44,18 +45,19 @@ function EditMajorPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["majors"] });
   };
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật ngành học "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật ngành học",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.majors.update(id, input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã cập nhật ngành học "${(variables.name as string)?.trim()}"`);
       crudNav.view(String(id));
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật ngành học";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

@@ -11,6 +11,7 @@ import {
   formatDevResponsePayload,
   printDevApiCall,
   printDevApiNetworkError,
+  isAbortLikeError,
 } from "@workspace/logger"
 
 function readNodeEnv(): string | undefined {
@@ -229,7 +230,7 @@ export class ApiClient {
         signal: controller.signal,
       })
     } catch (err) {
-      if (this.devLogging) {
+      if (this.devLogging && !isAbortLikeError(err)) {
         const ms =
           (typeof performance !== "undefined" &&
           typeof performance.now === "function"

@@ -8,7 +8,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import {
@@ -264,14 +263,12 @@ function PostsPageInner() {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
-              toast.success(`Đã đưa ${ids.length} bài viết vào thùng rác`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} bài viết`);
-            }}
+}}
             canExport={canExport}
             canDelete={canDelete}
             listQuery={{
@@ -302,14 +299,12 @@ function PostsPageInner() {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "restore", ids });
-              toast.success(`Đã khôi phục ${ids.length} bài viết`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} bài viết`);
-            }}
+}}
             canExport={canExport}
             canRestore={canRestore}
             canDelete={canDelete}

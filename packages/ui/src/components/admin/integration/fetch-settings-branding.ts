@@ -17,30 +17,33 @@ function extractSettingString(res: unknown, fallback: string): string {
  * App truyền `http.get` (vd. api.http.get) — không import client app khác.
  */
 async function safeSettingGet(
-  get: (path: string) => Promise<unknown>,
+  get: (path: string, signal?: AbortSignal) => Promise<unknown>,
   path: string,
-  fallback: string
+  fallback: string,
+  signal?: AbortSignal
 ): Promise<string> {
   try {
-    return extractSettingString(await get(path), fallback)
+    return extractSettingString(await get(path, signal), fallback)
   } catch {
     return fallback
   }
 }
 
 export async function fetchAdminSettingsBranding(
-  get: (path: string) => Promise<unknown>,
+  get: (path: string, signal?: AbortSignal) => Promise<unknown>,
   defaults: AdminSiteBranding = {
     siteName: "HUB Parent",
     siteDescription: "Quản trị hệ thống",
-  }
+  },
+  signal?: AbortSignal
 ): Promise<AdminSiteBranding> {
   const [siteName, siteDescription] = await Promise.all([
-    safeSettingGet(get, "/admin/settings/site_name", defaults.siteName),
+    safeSettingGet(get, "/admin/settings/site_name", defaults.siteName, signal),
     safeSettingGet(
       get,
       "/admin/settings/site_description",
-      defaults.siteDescription
+      defaults.siteDescription,
+      signal
     ),
   ])
   return { siteName, siteDescription }

@@ -2,8 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Plus, BookOpen } from "lucide-react";
 import {
   AdminListPageHeader,
@@ -29,6 +28,7 @@ import {
   type GuideGroup,
 } from "./_component";
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function GuidesPageInner() {
   const { user } = useAuth();
   const canWrite = user ? canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_MANAGE) || canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_CREATE) || canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_UPDATE) : false;
@@ -52,14 +52,32 @@ function GuidesPageInner() {
     filters: listFilterParams,
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["guides", "delete"],
     mutationFn: async (id: string) => api.guides.remove(id),
-    onSuccess: async () => { await refetch(); },
+    onSuccess: async () => {
+      await refetch();
+    }
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["guides", "purge"],
     mutationFn: async (id: string) => api.guides.purge(id),
-    onSuccess: async () => { await refetch(); },
+    onSuccess: async () => {
+      await refetch();
+    }
+  });
+
+  const bulkPurgeMutation = useAdminMutation({
+    mutationKey: ["guides", "bulk"],
+    toast: defaultBulkOperationToast,
+    mutationFn: async (input: {
+      action: "hard-delete";
+      ids: string[];
+    }) => api.guides.bulk(input),
+    onSuccess: async () => {
+      await refetch();
+    },
   });
 
   const sortedGroups = useMemo(
@@ -92,13 +110,8 @@ function GuidesPageInner() {
 
   const handleBulkPurge = async (rows: GuideGroup[]) => {
     const ids = rows.map((r) => r.id);
-    try {
-      await api.guides.bulk({ action: "hard-delete", ids });
-      toast.success(`Đã xóa vĩnh viễn ${ids.length} nhóm hướng dẫn`);
-      await refetch();
-    } catch {
-      toast.error("Xóa vĩnh viễn thất bại");
-    }
+    if (!ids.length) return;
+    await bulkPurgeMutation.mutateAsync({ action: "hard-delete", ids });
   };
 
   return (

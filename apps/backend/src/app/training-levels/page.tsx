@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
@@ -33,6 +32,7 @@ import {
 } from "./_component";
 import type { TrainingLevelRow } from "./_component";
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function TrainingLevelsPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/training-levels", {
@@ -93,25 +93,37 @@ function TrainingLevelsPageInner() {
     filters: trashFilterParams,
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["training-levels", "delete"],
     mutationFn: async (id: string) => api.trainingLevels.remove(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["training-levels", "restore"],
     mutationFn: async (id: string) => api.trainingLevels.restore(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["training-levels", "purge"],
     mutationFn: async (id: string) => api.trainingLevels.purge(id),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: { action: "delete" | "restore" | "hard-delete"; ids: string[] }) =>
       api.trainingLevels.bulk(input),
-    onSuccess: async () => { await invalidateAll(); },
+    onSuccess: async () => {
+      await invalidateAll();
+    }
   });
 
   useEffect(() => { setTrashPage(1); }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
@@ -223,14 +235,12 @@ function TrainingLevelsPageInner() {
               const ids = rows.map((r) => r.id);
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
-              toast.success(`Đã đưa ${ids.length} bậc học vào thùng rác`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id);
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} bậc học`);
-            }}
+}}
           />
         </TabsContent>
 
@@ -267,14 +277,12 @@ function TrainingLevelsPageInner() {
                   const ids = rows.map((r) => r.id);
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "restore", ids });
-                  toast.success(`Đã khôi phục ${ids.length} bậc học`);
-                }}
+}}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id);
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} bậc học`);
-                }}
+}}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,
                   filters: trashFilterParams,

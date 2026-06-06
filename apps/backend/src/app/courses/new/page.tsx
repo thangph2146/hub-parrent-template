@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,6 +13,7 @@ import {
 } from "../_component";
 import type { CourseFormValues } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewCoursePageInner() {
   const crudNav = useAdminCrudNavigation("/courses");
   const queryClient = useQueryClient();
@@ -23,18 +23,19 @@ function NewCoursePageInner() {
     await queryClient.invalidateQueries({ queryKey: ["courses"] });
   };
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo khóa học "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo khóa học",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.courses.create(input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã tạo khóa học "${(variables.name as string)?.trim()}"`);
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo khóa học";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

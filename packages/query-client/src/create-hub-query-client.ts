@@ -1,4 +1,8 @@
-import { QueryClient, type DefaultOptions } from "@tanstack/react-query";
+import {
+  QueryClient,
+  type DefaultOptions,
+  type MutationCache,
+} from "@tanstack/react-query";
 
 /**
  * Retry mặc định: không retry lỗi 4xx (duck-typing `status`, không phụ thuộc class ApiError từng app).
@@ -32,8 +36,15 @@ export const hubQueryClientDefaultOptions: DefaultOptions = {
   },
 };
 
-export function createHubQueryClient(): QueryClient {
+export type CreateHubQueryClientOptions = {
+  mutationCache?: MutationCache;
+};
+
+export function createHubQueryClient(
+  options?: CreateHubQueryClientOptions,
+): QueryClient {
   return new QueryClient({
     defaultOptions: hubQueryClientDefaultOptions,
+    mutationCache: options?.mutationCache,
   });
 }

@@ -19,6 +19,7 @@ import {
 import type { Response } from 'express';
 import { ContactRequestsService } from './contact-requests.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { AdminRealtimeBroadcastService } from '../common/admin-realtime-broadcast.service';
 import { NotificationKind } from '../entities/notification.entity';
 import {
   createSuccessResponse,
@@ -84,7 +85,29 @@ export class ContactRequestsController {
   constructor(
     private readonly contactRequestsService: ContactRequestsService,
     private readonly notificationsService: NotificationsService,
+    private readonly adminRealtime: AdminRealtimeBroadcastService,
   ) {}
+
+  private broadcastContactStatusChange(
+    row: {
+      id: string;
+      status: ContactStatus;
+      subject: string;
+    },
+    actorUserId: string,
+    previousStatus?: ContactStatus,
+  ): void {
+    this.adminRealtime.statusChanged({
+      resource: 'contact-requests',
+      id: row.id,
+      status: row.status,
+      previousStatus,
+      title: 'Cập nhật yêu cầu liên hệ',
+      description: `${row.subject} → ${row.status}`,
+      actionUrl: `${ADMIN_ROUTES.CONTACT_REQUESTS}/${row.id}`,
+      actorUserId,
+    });
+  }
 
   private logActivity(
     userId: string,
@@ -263,8 +286,10 @@ export class ContactRequestsController {
       return this.unauthorized(res);
     }
 
+    const previous = await this.contactRequestsService.getById(id);
+    const parsedStatus = this.parseContactStatus(body?.status);
     const updated = await this.contactRequestsService.update(id, {
-      status: this.parseContactStatus(body?.status),
+      status: parsedStatus,
       priority: this.parseContactPriority(body?.priority),
       isRead: typeof body?.isRead === 'boolean' ? body.isRead : undefined,
       assignedToId: this.asOptionalNullableString(body?.assignedToId),
@@ -293,6 +318,9 @@ export class ContactRequestsController {
           resourceId: updated.id,
         },
       );
+      if (parsedStatus && previous && previous.status !== updated.status) {
+        this.broadcastContactStatusChange(updated, userId, previous.status);
+      }
     }
     const { statusCode, body: okBody } = createSuccessResponse(updated);
     return res.status(statusCode).json(okBody);
@@ -341,6 +369,15 @@ export class ContactRequestsController {
             status: body.status,
           },
         );
+        this.adminRealtime.statusChanged({
+          resource: 'contact-requests',
+          id: ids[0] ?? 'bulk',
+          status: parsedStatus,
+          title: `Cập nhật ${result.affectedCount} yêu cầu liên hệ`,
+          description: `Trạng thái mới: ${parsedStatus}`,
+          actionUrl: ADMIN_ROUTES.CONTACT_REQUESTS,
+          actorUserId: userId,
+        });
       }
       const { statusCode, body: okBody } = createSuccessResponse(
         { data: { affected: result.affectedCount }, message: result.message },

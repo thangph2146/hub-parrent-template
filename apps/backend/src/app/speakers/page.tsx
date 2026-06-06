@@ -6,9 +6,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -37,6 +36,7 @@ import {
 } from "./_component"
 import type { SpeakerRow } from "./_component"
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function SpeakersPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/speakers", {
@@ -102,35 +102,39 @@ function SpeakersPageInner() {
     filters: trashFilterParams,
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["speakers", "delete"],
     mutationFn: async (id: string) => api.speakers.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["speakers", "restore"],
     mutationFn: async (id: string) => api.speakers.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["speakers", "purge"],
     mutationFn: async (id: string) => api.speakers.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete"
       ids: string[]
     }) => api.speakers.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
   useEffect(() => {
@@ -278,13 +282,11 @@ function SpeakersPageInner() {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã đưa ${ids.length} diễn giả vào thùng rác`)
             }}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} diễn giả`)
             }}
             manualFiltering
           />
@@ -325,13 +327,11 @@ function SpeakersPageInner() {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} diễn giả`)
                 }}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} diễn giả`)
                 }}
                 manualFiltering
                 trashExportParams={{

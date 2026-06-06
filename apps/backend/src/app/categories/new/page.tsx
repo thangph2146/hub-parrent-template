@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback, useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -16,6 +15,7 @@ import {
 } from "../_component";
 import type { CategoryFormValues } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewCategoryPageInner() {
   const crudNav = useAdminCrudNavigation("/categories");
   const queryClient = useQueryClient();
@@ -31,18 +31,19 @@ function NewCategoryPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["categories"] });
   };
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo danh mục "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo danh mục",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.categories.create(input as Parameters<typeof api.categories.create>[0]),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã tạo danh mục "${(variables.name as string)?.trim()}"`);
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo danh mục";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

@@ -360,6 +360,23 @@ export function buildDevLogResponseJson(
   return { _shape: "primitive", value: payload }
 }
 
+/** Request bị hủy (React Query unmount, HMR, timeout) — không coi là lỗi mạng thật. */
+export function isAbortLikeError(err: unknown): boolean {
+  if (err instanceof DOMException && err.name === "AbortError") return true
+  if (err instanceof Error) {
+    if (err.name === "AbortError") return true
+    const msg = err.message.toLowerCase()
+    if (
+      msg.includes("aborted") ||
+      msg.includes("abort") ||
+      msg.includes("signal is aborted")
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export function printDevApiNetworkError(options: {
   tag: string
   method: string
@@ -370,6 +387,7 @@ export function printDevApiNetworkError(options: {
   err: unknown
 }): void {
   const { tag, method, path, url, ms, authSuffix, err } = options
+  if (isAbortLikeError(err)) return
   console.groupCollapsed(
     `%c${tag}%c ${method}%c ${path}%c lỗi mạng`,
     "color:#64748b;font-weight:600",

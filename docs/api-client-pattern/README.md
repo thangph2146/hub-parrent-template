@@ -168,3 +168,12 @@ interface PagedResult<T> {
 }
 ```
 Đây là type chuẩn cho mọi response phân trang, sử dụng ở frontend/backend app.
+
+## Realtime admin (Socket.IO)
+
+Hợp đồng event, type, query-key map và toast helper nằm tại:
+
+- **Package:** `@workspace/api-client/realtime`
+- **Chi tiết:** [REALTIME.md](./REALTIME.md)
+
+Backend mount một socket global (`AdminRealtimeSync`); API emit qua `SocketGateway` + `AdminRealtimeBroadcastService`. Không tạo socket riêng cho CRUD/duyệt trạng thái trừ event đặc thù (vd. `event:attendance`, phụ huynh `my-students`).

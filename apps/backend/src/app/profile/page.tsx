@@ -29,7 +29,6 @@ import {
   useStaffProfile,
   useUpdateStaffProfile,
 } from "@/hooks/queries"
-import { ApiError } from "@/lib/api"
 import { patchAdminSessionProfile } from "@/lib/auth-session"
 import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 
@@ -135,9 +134,8 @@ function AdminProfilePageInner() {
         image: u.avatar,
         updatedAt: u.updatedAt,
       })
-      toast.success("Đã cập nhật hồ sơ")
-    } catch (e) {
-      toast.error(e instanceof ApiError ? e.message : "Lỗi lưu hồ sơ")
+    } catch {
+      /* toast: MutationCache */
     }
   }
 
@@ -166,9 +164,8 @@ function AdminProfilePageInner() {
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
-      toast.success("Đã đổi mật khẩu")
-    } catch (e) {
-      toast.error(e instanceof ApiError ? e.message : "Không đổi được mật khẩu")
+    } catch {
+      /* toast: MutationCache */
     }
   }
 

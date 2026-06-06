@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,6 +13,7 @@ import {
 } from "../_component";
 import type { TrainingSystemFormValues } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewTrainingSystemPageInner() {
   const crudNav = useAdminCrudNavigation("/training-systems");
   const queryClient = useQueryClient();
@@ -23,18 +23,19 @@ function NewTrainingSystemPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["training-systems"] });
   };
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo hệ đào tạo "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo hệ đào tạo",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.trainingSystems.create(input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã tạo hệ đào tạo "${(variables.name as string)?.trim()}"`);
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo hệ đào tạo";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

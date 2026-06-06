@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { FileText, Globe } from "lucide-react";
 import {
   FieldError,
@@ -27,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { seoMetaFormSchema, type SeoMetaFormValues } from "../_component";
 import { cn } from "@ui/lib/utils";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewSeoMetaPageInner() {
   const crudNav = useAdminCrudNavigation("/seo-metas");
   const queryClient = useQueryClient();
@@ -52,17 +52,18 @@ function NewSeoMetaPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["seo-metas"] });
   };
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã tạo SEO metadata",
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo SEO metadata",
+    },
     mutationFn: async (input: Record<string, unknown>) => api.seoMetas.create(input),
     onSuccess: async () => {
       await invalidateAll();
-      toast.success("Đã tạo SEO metadata");
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo SEO metadata";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const onSubmit = useCallback(

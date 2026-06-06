@@ -6,9 +6,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -36,6 +35,7 @@ import {
 } from "./_component"
 import type { MajorRow } from "./_component"
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function MajorsPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/majors", {
@@ -97,35 +97,39 @@ function MajorsPageInner() {
     filters: trashFilterParams,
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["majors", "delete"],
     mutationFn: async (id: string) => api.majors.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["majors", "restore"],
     mutationFn: async (id: string) => api.majors.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["majors", "purge"],
     mutationFn: async (id: string) => api.majors.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete"
       ids: string[]
     }) => api.majors.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
   useEffect(() => {
@@ -269,13 +273,11 @@ function MajorsPageInner() {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã đưa ${ids.length} ngành học vào thùng rác`)
             }}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} ngành học`)
             }}
           />
         </TabsContent>
@@ -315,13 +317,11 @@ function MajorsPageInner() {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} ngành học`)
                 }}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} ngành học`)
                 }}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,

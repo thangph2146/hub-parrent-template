@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback, useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,6 +14,7 @@ import {
 import { useCategoriesQuery, useTagsQuery } from "../_component/_query";
 import type { PostFormValues } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewPostPageInner() {
   const crudNav = useAdminCrudNavigation("/posts");
   const queryClient = useQueryClient();
@@ -28,18 +28,19 @@ function NewPostPageInner() {
     [categoriesQuery.data],
   );
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo bài viết "${(variables.title as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo bài viết",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.posts.create(input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["media", "posts"] });
-      toast.success(`Đã tạo bài viết "${(variables.title as string)?.trim()}"`);
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo bài viết";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

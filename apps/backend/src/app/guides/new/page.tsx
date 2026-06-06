@@ -3,8 +3,7 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -16,6 +15,7 @@ import {
 } from "../_component";
 import type { GuideFormData } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewGuidePageInner() {
   const crudNav = useAdminCrudNavigation("/guides");
   const queryClient = useQueryClient();
@@ -29,7 +29,12 @@ function NewGuidePageInner() {
     await queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
   };
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo nhóm hướng dẫn "${variables.sectionKey}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo nhóm hướng dẫn",
+    },
     mutationFn: async (input: GuideFormData) => {
       await api.guides.create({
         pageKey: PAGE_KEY,
@@ -38,15 +43,11 @@ function NewGuidePageInner() {
         content: { ...input.content, order: nextOrder },
       });
     },
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã tạo nhóm hướng dẫn "${variables.sectionKey}"`);
       crudNav.list();
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể tạo nhóm hướng dẫn";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(async (values: GuideFormData) => {

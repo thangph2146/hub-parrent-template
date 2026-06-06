@@ -1,11 +1,11 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api"
 import type { RbacPermission, RbacRole } from "@workspace/api-client"
 import type { CreateRoleInput, UpdateRoleInput } from "../types"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 export type RoleRow = {
   id: string
   code: string
@@ -91,7 +91,12 @@ export function useRoleDetail(id: string) {
 export function useCreateRoleMutation() {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang tạo vai trò…",
+      success: "Đã tạo vai trò thành công",
+      error: (error) => `Lỗi tạo vai trò: ${error.message}`,
+    },
     mutationFn: async (data: CreateRoleInput) => {
       const role = await api.roles.create<Record<string, unknown>>({
         name: data.code,
@@ -105,10 +110,6 @@ export function useCreateRoleMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })
       queryClient.invalidateQueries({ queryKey: ["rbac", "roles", "list"] })
-      toast.success("Đã tạo vai trò thành công")
-    },
-    onError: (error: Error) => {
-      toast.error(`Lỗi tạo vai trò: ${error.message}`)
     },
   })
 }
@@ -116,7 +117,12 @@ export function useCreateRoleMutation() {
 export function useUpdateRoleMutation() {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang cập nhật vai trò…",
+      success: "Đã cập nhật vai trò thành công",
+      error: (error) => `Lỗi cập nhật vai trò: ${error.message}`,
+    },
     mutationFn: async ({ id, data }: { id: string; data: UpdateRoleInput }) => {
       const role = await api.roles.update<Record<string, unknown>>(id, {
         name: data.code,
@@ -131,10 +137,6 @@ export function useUpdateRoleMutation() {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.detail(variables.id) })
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })
       queryClient.invalidateQueries({ queryKey: ["rbac", "roles", "list"] })
-      toast.success("Đã cập nhật vai trò thành công")
-    },
-    onError: (error: Error) => {
-      toast.error(`Lỗi cập nhật vai trò: ${error.message}`)
     },
   })
 }
@@ -142,17 +144,18 @@ export function useUpdateRoleMutation() {
 export function useDeleteRoleMutation() {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang xóa vai trò…",
+      success: "Đã xóa vai trò thành công",
+      error: (error) => `Lỗi xóa vai trò: ${error.message}`,
+    },
     mutationFn: async (id: string) => {
       await api.roles.bulk({ action: "delete", ids: [id] })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })
       queryClient.invalidateQueries({ queryKey: ["rbac", "roles", "list"] })
-      toast.success("Đã xóa vai trò thành công")
-    },
-    onError: (error: Error) => {
-      toast.error(`Lỗi xóa vai trò: ${error.message}`)
     },
   })
 }

@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { SocketGateway } from '../socket/socket.gateway';
+import {
+  mapNotificationToPayload,
+  type NotificationLike,
+} from '../socket/notification-mapper';
 import {
   Notification,
   NotificationKind,
@@ -107,7 +112,11 @@ function mapRow(n: NotificationWithUser): NotificationItemDto {
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    @Inject(forwardRef(() => SocketGateway))
+    private readonly socketGateway: SocketGateway,
+  ) {}
 
   /**
    * Danh sách userId có role super_admin (dùng để gửi thông báo đăng nhập).
@@ -184,6 +193,17 @@ export class NotificationsService {
     entity.metadata = data.metadata ?? null;
     this.em.persist(entity);
     await this.em.flush();
+    const created = await this.em.findOne(
+      Notification,
+      { id: entity.id },
+      { populate: ['user'] },
+    );
+    if (created) {
+      const payload = mapNotificationToPayload(
+        created as unknown as NotificationLike,
+      );
+      this.socketGateway.emitNotificationToUser(data.userId, payload);
+    }
     return mapRow(entity as NotificationWithUser);
   }
 

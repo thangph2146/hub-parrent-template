@@ -91,6 +91,32 @@ export type EventAttendanceSocketPayload = {
   hasCheckout?: boolean;
 };
 
+/** Invalidate React Query cache trên admin clients sau mutation CRUD. */
+export type AdminCacheInvalidatePayload = {
+  resource: string;
+  action:
+    | 'create'
+    | 'update'
+    | 'delete'
+    | 'restore'
+    | 'purge'
+    | 'bulk'
+    | 'mutate';
+  id?: string;
+};
+
+/** Duyệt / đổi trạng thái — đồng bộ giữa nhiều tài khoản admin (hợp đồng @workspace/api-client/realtime). */
+export type AdminStatusChangePayload = {
+  resource: string;
+  id: string;
+  status: string;
+  previousStatus?: string;
+  title?: string;
+  description?: string | null;
+  actionUrl?: string | null;
+  actorUserId?: string;
+};
+
 /** Admin duyệt/từ chối liên kết phụ huynh – học sinh. */
 export type ParentStudentReviewSocketPayload = {
   id: string;
@@ -99,4 +125,5 @@ export type ParentStudentReviewSocketPayload = {
   studentName: string | null;
   status: 'approved' | 'rejected';
   reviewedAt: string;
+  reviewedBy?: string;
 };

@@ -1,4 +1,4 @@
-import type { ApiClient } from "../client";
+import type { ApiClient, RequestOptions } from "../client";
 import { getData } from "./_shared";
 
 export type SchemaColumn = {
@@ -46,10 +46,13 @@ export type ImportConfigResponse = {
 export class SystemApi {
   constructor(private readonly http: ApiClient) {}
 
-  async getDatabaseSchema(): Promise<DatabaseSchemaResponse> {
+  async getDatabaseSchema(
+    options?: RequestOptions,
+  ): Promise<DatabaseSchemaResponse> {
     return getData<DatabaseSchemaResponse>(
       this.http,
       "/admin/system/database-schema",
+      options,
     );
   }
 

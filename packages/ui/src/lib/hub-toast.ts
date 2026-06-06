@@ -1,6 +1,7 @@
 "use client"
 
 import { toast as baseToast, type ExternalToast } from "sonner"
+import { suppressRealtimeToastForEntity } from "./admin-toast-suppress"
 
 type ToastMessage = Parameters<typeof baseToast>[0]
 
@@ -25,7 +26,7 @@ async function copyToastText(text: string): Promise<void> {
 
 function withCopyAction(
   message: ToastMessage,
-  data?: ExternalToast
+  data?: ExternalToast,
 ): ExternalToast | undefined {
   if (data?.action) return data
   const copyText = extractCopyText(message, data)
@@ -42,16 +43,51 @@ function withCopyAction(
   }
 }
 
-type HubToast = typeof baseToast
+export type MutationSuccessSuppress = {
+  resource: string
+  id?: string
+  action?: string
+}
 
-/** Toast Sonner — `error` / `warning` có nút Sao chép nội dung. */
+/**
+ * Toast sau mutation API thành công (onSuccess) — chỉ gọi khi đã có response 2xx.
+ * Đăng ký suppress socket trùng qua toast-coordinator.
+ */
+export function mutationSuccess(
+  message: ToastMessage,
+  data?: ExternalToast,
+  suppress?: MutationSuccessSuppress,
+): string | number {
+  if (suppress?.resource) {
+    suppressRealtimeToastForEntity(
+      suppress.resource,
+      suppress.id,
+      suppress.action,
+    )
+  }
+  return baseToast.success(message, withCopyAction(message, data))
+}
+
+export type HubToast = typeof baseToast & {
+  mutationSuccess: typeof mutationSuccess
+}
+
+/** Toast Sonner — mọi loại đều có nút Sao chép (trừ khi đã có action khác). */
 export const toast: HubToast = Object.assign(
-  (message: ToastMessage, data?: ExternalToast) => baseToast(message, data),
+  (message: ToastMessage, data?: ExternalToast) =>
+    baseToast(message, withCopyAction(message, data)),
   {
     ...baseToast,
+    success: (message: ToastMessage, data?: ExternalToast) =>
+      baseToast.success(message, withCopyAction(message, data)),
     error: (message: ToastMessage, data?: ExternalToast) =>
       baseToast.error(message, withCopyAction(message, data)),
     warning: (message: ToastMessage, data?: ExternalToast) =>
       baseToast.warning(message, withCopyAction(message, data)),
-  }
+    info: (message: ToastMessage, data?: ExternalToast) =>
+      baseToast.info(message, withCopyAction(message, data)),
+    loading: (message: ToastMessage, data?: ExternalToast) =>
+      baseToast.loading(message, withCopyAction(message, data)),
+    mutationSuccess,
+  },
 )

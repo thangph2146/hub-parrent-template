@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
 import { NotificationsService } from './notifications.service';
+import { SocketGateway } from '../socket/socket.gateway';
 import {
   Notification,
   NotificationKind,
@@ -43,6 +44,10 @@ describe('NotificationsService', () => {
         {
           provide: EntityManager,
           useValue: em,
+        },
+        {
+          provide: SocketGateway,
+          useValue: { emitNotificationToUser: jest.fn() },
         },
       ],
     }).compile();

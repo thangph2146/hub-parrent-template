@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
 import type { TagConfirmAction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tagFormSchema, type TagFormValues } from "../types";
@@ -36,19 +35,12 @@ export function useHandleConfirmAction(
       try {
         if (kind === "delete") {
           await deleteMutation.mutateAsync(row.id);
-          toast.success(`Đã đưa «${row.name}» vào thùng rác`);
-        } else if (kind === "restore") {
+} else if (kind === "restore") {
           await restoreMutation.mutateAsync(row.id);
-          toast.success(`Đã khôi phục «${row.name}»`);
-        } else if (kind === "purge") {
+} else if (kind === "purge") {
           await purgeMutation.mutateAsync(row.id);
-          toast.success(`Đã xóa vĩnh viễn «${row.name}»`);
-        }
-      } catch (err: unknown) {
-        const message =
-          err instanceof Error ? err.message : "Không thể thực hiện thao tác";
-        toast.error(message);
-      } finally {
+}
+      } catch { /* toast: MutationCache */ } finally {
         setConfirmAction(null);
       }
     },

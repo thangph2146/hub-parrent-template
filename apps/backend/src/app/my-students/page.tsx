@@ -2,10 +2,9 @@
 
 import { useCallback, useMemo, useState } from "react"
 import type { ColumnFiltersState } from "@tanstack/react-table"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { GraduationCap, Plus, BarChart3 } from "lucide-react"
 import { Button } from "@ui/components/button"
-import { toast } from "@ui/components/sonner"
 import {
   AdminListPageHeader,
   AdminPageGuard,
@@ -30,6 +29,7 @@ import {
   useMyStudentsSocket,
 } from "./_component/use-my-students-socket"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 export default function MyStudentsPage() {
   const { user } = useAuth()
   const canCreate = user
@@ -71,18 +71,18 @@ export default function MyStudentsPage() {
     },
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    toast: {
+      loading: "Đang xóa liên kết…",
+      success: "Đã xóa liên kết sinh viên.",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể xóa liên kết sinh viên.",
+    },
     mutationFn: async (id: string) => {
       await api.myStudents.remove(id)
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.myStudents() })
-      toast.success("Đã xóa liên kết sinh viên.")
-    },
-    onError: (err: unknown) => {
-      toast.error(
-        err instanceof Error ? err.message : "Không thể xóa liên kết sinh viên.",
-      )
     },
   })
 

@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { ContactRequest } from '../entities/contact-request.entity';
+import { AdminRealtimeBroadcastService } from '../common/admin-realtime-broadcast.service';
+import { ADMIN_ROUTES } from '../config/constants';
 
 export interface CreateContactRequestDto {
   name?: string;
@@ -18,7 +20,10 @@ export interface CreateContactRequestDto {
 
 @Injectable()
 export class PublicContactRequestsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    private readonly adminRealtime: AdminRealtimeBroadcastService,
+  ) {}
 
   async create(dto: CreateContactRequestDto) {
     const resolvedName = dto.name?.trim() || dto.fullName?.trim() || '';
@@ -52,6 +57,15 @@ export class PublicContactRequestsService {
     contact.subject = subject;
     contact.content = content;
     await this.em.persistAndFlush(contact);
+
+    this.adminRealtime.pendingApproval({
+      resource: 'contact-requests',
+      id: contact.id,
+      status: 'NEW',
+      title: 'Yêu cầu liên hệ mới',
+      description: `${contact.subject} — ${resolvedName || contact.email}`,
+      actionUrl: `${ADMIN_ROUTES.CONTACT_REQUESTS}/${contact.id}`,
+    });
 
     return {
       id: contact.id,

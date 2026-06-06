@@ -27,11 +27,7 @@ export function EventPosterField({ value, onChange, eventTitle }: EventPosterFie
       const url = await uploadEventPoster(file);
       onChange(url);
       toast.success("Đã tải poster lên");
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Upload poster thất bại";
-      toast.error(message);
-    } finally {
+    } catch { /* toast: MutationCache */ } finally {
       setUploading(false);
     }
   };

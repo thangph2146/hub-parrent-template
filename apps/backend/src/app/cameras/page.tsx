@@ -5,9 +5,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -36,6 +35,7 @@ import {
 } from "./_component"
 import type { CameraRow } from "./_component"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function CamerasPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation(`/cameras`, {
@@ -88,19 +88,19 @@ function CamerasPageInner() {
     enabled: mainTab === "trash",
     filters: trashFilterParams,
   })
-  const delM = useMutation({
+  const delM = useAdminMutation({
     mutationFn: (id: string) => api.cameras.remove(id),
     onSuccess: invalidateAll,
   })
-  const resM = useMutation({
+  const resM = useAdminMutation({
     mutationFn: (id: string) => api.cameras.restore(id),
     onSuccess: invalidateAll,
   })
-  const purM = useMutation({
+  const purM = useAdminMutation({
     mutationFn: (id: string) => api.cameras.purge(id),
     onSuccess: invalidateAll,
   })
-  const bulM = useMutation({
+  const bulM = useAdminMutation({
     mutationFn: (i: { action: string; ids: string[] }) => api.cameras.bulk(i),
     onSuccess: invalidateAll,
   })
@@ -220,13 +220,11 @@ function CamerasPageInner() {
               const ids = rows.map((r: CameraRow) => r.id)
               if (!ids.length) return
               await bulM.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã xóa ${ids.length} camera`)
             }}
             onBulkPurge={async (rows: CameraRow[]) => {
               const ids = rows.map((r: CameraRow) => r.id)
               if (!ids.length) return
               await bulM.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} camera`)
             }}
           />
         </TabsContent>
@@ -262,13 +260,11 @@ function CamerasPageInner() {
                   const ids = rows.map((r: CameraRow) => r.id)
                   if (!ids.length) return
                   await bulM.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} camera`)
                 }}
                 onBulkPurge={async (rows: CameraRow[]) => {
                   const ids = rows.map((r: CameraRow) => r.id)
                   if (!ids.length) return
                   await bulM.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} camera`)
                 }}
                 trashExportParams={{
                   search: dQ.trim() || undefined,

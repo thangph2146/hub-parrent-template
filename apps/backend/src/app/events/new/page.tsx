@@ -3,13 +3,13 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 
 import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, buildEventPayload } from "../_component";
 import type { EventFormValues } from "../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function NewEventPageInner() {
   const crudNav = useAdminCrudNavigation("/events");
   const queryClient = useQueryClient();
@@ -17,14 +17,18 @@ function NewEventPageInner() {
 
   const invalidateAll = async () => { await queryClient.invalidateQueries({ queryKey: ["events"] }); };
 
-  const createMutation = useMutation({
-    mutationFn: async (input: Record<string, unknown>) => api.events.create(input),
-    onSuccess: async (_data, variables) => {
-      await invalidateAll();
-      toast.success(`Đã tạo sự kiện "${(variables.title as string)?.trim()}"`);
-      crudNav.list();
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã tạo sự kiện "${(variables.title as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể tạo sự kiện",
     },
-    onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : "Không thể tạo sự kiện"); },
+    mutationFn: async (input: Record<string, unknown>) => api.events.create(input),
+    onSuccess: async () => {
+      await invalidateAll();
+      crudNav.list();
+    }
+    
   });
 
   const handleSubmit = useCallback(async (values: EventFormValues) => {

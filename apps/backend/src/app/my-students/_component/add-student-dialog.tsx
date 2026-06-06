@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 import { Plus, AlertCircle } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
@@ -29,7 +29,14 @@ export function AddStudentDialog({
   const [note, setNote] = useState("")
   const [error, setError] = useState("")
 
-  const mutation = useMutation({
+  const mutation = useAdminMutation({
+    mutationKey: ["my-students", "create"],
+    toast: {
+      loading: "Đang gửi yêu cầu liên kết…",
+      success: "Đã gửi yêu cầu liên kết sinh viên",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không gửi được yêu cầu",
+    },
     mutationFn: async () => {
       await api.myStudents.add({ studentCode, studentName, note })
     },

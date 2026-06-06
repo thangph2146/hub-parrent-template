@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -20,6 +20,7 @@ import {
 } from "../../_component";
 import type { CategoryFormValues, CategoryDetail } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditCategoryForm({
   category,
   categoryTreeOptions,
@@ -35,17 +36,19 @@ function EditCategoryForm({
     defaultValues: getCategoryDefaultValues(category),
   });
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật danh mục "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật danh mục",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.categories.update(category.id, input as Parameters<typeof api.categories.update>[1]),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast.success(`Đã cập nhật danh mục "${(variables.name as string)?.trim()}"`);
       crudNav.view(String(category.id));
-    },
-    onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : "Không thể cập nhật danh mục");
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

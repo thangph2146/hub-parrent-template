@@ -10,7 +10,7 @@ const DEFAULT_BRANDING: AdminSiteBranding = {
 
 export function useAdminSiteBranding(options: {
   queryKey: readonly unknown[]
-  fetchBranding: () => Promise<AdminSiteBranding>
+  fetchBranding: (ctx: { signal: AbortSignal }) => Promise<AdminSiteBranding>
   defaults?: AdminSiteBranding
   staleTimeMs?: number
   /** false khi chưa đăng nhập — tránh gọi /admin/settings (401 thiếu X-User-Id). */
@@ -19,7 +19,7 @@ export function useAdminSiteBranding(options: {
   const defaults = options.defaults ?? DEFAULT_BRANDING
   const { data } = useQuery({
     queryKey: options.queryKey,
-    queryFn: options.fetchBranding,
+    queryFn: ({ signal }) => options.fetchBranding({ signal }),
     enabled: options.enabled ?? true,
     staleTime: options.staleTimeMs ?? 5 * 60 * 1000,
     retry: false,

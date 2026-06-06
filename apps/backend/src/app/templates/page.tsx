@@ -5,9 +5,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -36,6 +35,7 @@ import {
 } from "./_component"
 import type { TemplateRow } from "./_component"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function TemplatesPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation(`/templates`, {
@@ -88,19 +88,19 @@ function TemplatesPageInner() {
     enabled: mainTab === "trash",
     filters: trashFilterParams,
   })
-  const delM = useMutation({
+  const delM = useAdminMutation({
     mutationFn: (id: string) => api.templates.remove(id),
     onSuccess: invalidateAll,
   })
-  const resM = useMutation({
+  const resM = useAdminMutation({
     mutationFn: (id: string) => api.templates.restore(id),
     onSuccess: invalidateAll,
   })
-  const purM = useMutation({
+  const purM = useAdminMutation({
     mutationFn: (id: string) => api.templates.purge(id),
     onSuccess: invalidateAll,
   })
-  const bulM = useMutation({
+  const bulM = useAdminMutation({
     mutationFn: (i: { action: string; ids: string[] }) => api.templates.bulk(i),
     onSuccess: invalidateAll,
   })
@@ -220,13 +220,11 @@ function TemplatesPageInner() {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulM.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã xóa ${ids.length} mẫu hiển thị`)
             }}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulM.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} mẫu hiển thị`)
             }}
           />
         </TabsContent>
@@ -262,13 +260,11 @@ function TemplatesPageInner() {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulM.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} mẫu hiển thị`)
                 }}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulM.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} mẫu hiển thị`)
                 }}
                 trashExportParams={{
                   search: dQ.trim() || undefined,

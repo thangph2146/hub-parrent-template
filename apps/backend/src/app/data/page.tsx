@@ -148,13 +148,7 @@ function DataBackupPageInner() {
       if (!dir) return;
       setExportDirectory(dir);
       toast.success(`Đã chọn thư mục lưu: ${dir.name}`);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Không thể chọn thư mục lưu export.",
-      );
-    } finally {
+    } catch { /* toast: MutationCache */ } finally {
       setPickingDirectory(false);
     }
   };

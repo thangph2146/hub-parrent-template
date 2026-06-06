@@ -1,14 +1,23 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 export function useReviewParentStudentMutation(onSuccess?: () => void) {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) =>
+        variables.action === "approved"
+          ? "Đã duyệt yêu cầu liên kết."
+          : "Đã từ chối yêu cầu liên kết.",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể cập nhật yêu cầu liên kết.",
+    },
     mutationFn: async ({
       id,
       action,
@@ -18,22 +27,13 @@ export function useReviewParentStudentMutation(onSuccess?: () => void) {
     }) => {
       await api.parentStudents.review(id, { action });
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: ["admin", "parent-students"],
+      queryKey: ["admin", "parent-students"],
       });
       void queryClient.invalidateQueries({ queryKey: queryKeys.myStudents() });
-      toast.success(
-        variables.action === "approved"
-          ? "Đã duyệt yêu cầu liên kết."
-          : "Đã từ chối yêu cầu liên kết.",
-      );
       onSuccess?.();
-    },
-    onError: (err: unknown) => {
-      toast.error(
-        err instanceof Error ? err.message : "Không thể cập nhật yêu cầu liên kết.",
-      );
-    },
+    }
+    
   });
 }

@@ -6,7 +6,7 @@ import {
   normalizePageLimit,
   paginationMeta,
 } from '../common/pagination';
-import { SocketGateway } from '../socket/socket.gateway';
+import { AdminRealtimeBroadcastService } from '../common/admin-realtime-broadcast.service';
 import { applyColumnFilters } from '../common/apply-column-filters';
 import { PARENT_STUDENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -73,7 +73,7 @@ function mapRow(r: ParentStudent): ParentStudentRowDto {
 export class ParentStudentsService {
   constructor(
     private readonly em: EntityManager,
-    private readonly socketGateway: SocketGateway,
+    private readonly adminRealtime: AdminRealtimeBroadcastService,
   ) {}
 
   async listByParent(parentId: string): Promise<ParentStudentRowDto[]> {
@@ -215,7 +215,17 @@ export class ParentStudentsService {
     ps.note = data.note?.trim() ?? null;
     ps.status = 'pending';
     await this.em.persistAndFlush(ps);
-    return mapRow(ps);
+    const row = mapRow(ps);
+    this.adminRealtime.pendingApproval({
+      resource: 'parent-students',
+      id: row.id,
+      status: 'pending',
+      title: 'Yêu cầu liên kết phụ huynh mới',
+      description: `${row.studentCode}${row.studentName ? ` — ${row.studentName}` : ''}`,
+      actionUrl: '/admin/parent-students',
+      actorUserId: data.parentId,
+    });
+    return row;
   }
 
   async review(
@@ -230,13 +240,14 @@ export class ParentStudentsService {
     ps.reviewedAt = new Date();
     await this.em.persistAndFlush(ps);
     const row = mapRow(ps);
-    this.socketGateway.emitParentStudentReview({
+    this.adminRealtime.parentStudentReviewed({
       id: row.id,
       parentId: row.parentId,
       studentCode: row.studentCode,
       studentName: row.studentName,
       status: action,
       reviewedAt: row.reviewedAt ?? new Date().toISOString(),
+      reviewedBy,
     });
     return row;
   }

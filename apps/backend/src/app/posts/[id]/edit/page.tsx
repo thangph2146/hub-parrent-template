@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -17,6 +17,7 @@ import {
 import { usePostDetailQuery, useCategoriesQuery, useTagsQuery } from "../../_component/_query";
 import type { PostFormValues } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditPostPageInner() {
   const crudNav = useAdminCrudNavigation("/posts");
   const params = useParams();
@@ -56,18 +57,19 @@ function EditPostPageInner() {
     });
   }, [post, form]);
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật bài viết "${(variables.title as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật bài viết",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.posts.update(postId, input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["media", "posts"] });
-      toast.success(`Đã cập nhật bài viết "${(variables.title as string)?.trim()}"`);
       crudNav.view(String(postId));
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật bài viết";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -15,6 +15,7 @@ import {
 } from "../../_component";
 import type { SpeakerFormValues } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditSpeakerPageInner() {
   const crudNav = useAdminCrudNavigation("/speakers");
   const params = useParams();
@@ -49,18 +50,19 @@ function EditSpeakerPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["speakers"] });
   };
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật diễn giả "${(variables.name as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật diễn giả",
+    },
     mutationFn: async (input: Record<string, unknown>) =>
       api.speakers.update(id, input),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async () => {
       await invalidateAll();
-      toast.success(`Đã cập nhật diễn giả "${(variables.name as string)?.trim()}"`);
       crudNav.view(String(id));
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật diễn giả";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const handleSubmit = useCallback(

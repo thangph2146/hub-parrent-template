@@ -6,9 +6,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -41,6 +40,7 @@ import {
 } from "./_component"
 import type { EventRow } from "./_component"
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function EventsPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/events", {
@@ -100,45 +100,50 @@ function EventsPageInner() {
     filters: trashFilterParams,
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["events", "delete"],
     mutationFn: async (id: string) => api.events.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["events", "restore"],
     mutationFn: async (id: string) => api.events.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["events", "purge"],
     mutationFn: async (id: string) => api.events.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: { action: string; ids: string[] }) =>
       api.events.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
   const [togglingFeaturedId, setTogglingFeaturedId] = useState<string | null>(null)
-  const featuredMutation = useMutation({
-    mutationFn: async ({ id, isFeatured }: { id: string; isFeatured: boolean }) =>
-      api.events.update(id, { isFeatured }),
-    onSuccess: async (_data, variables) => {
-      await invalidateAll()
-      toast.success(
+  const featuredMutation = useAdminMutation({
+    toast: {
+      loading: "Đang cập nhật nổi bật…",
+      success: (_data, variables) =>
         variables.isFeatured
           ? "Đã đánh dấu sự kiện nổi bật"
           : "Đã bỏ đánh dấu nổi bật",
-      )
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể cập nhật nổi bật",
     },
-    onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : "Không thể cập nhật nổi bật")
+    mutationFn: async ({ id, isFeatured }: { id: string; isFeatured: boolean }) =>
+      api.events.update(id, { isFeatured }),
+    onSuccess: async () => {
+      await invalidateAll()
     },
     onSettled: () => setTogglingFeaturedId(null),
   })
@@ -286,13 +291,11 @@ function EventsPageInner() {
               const ids = rows.map((r: EventRow) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã đưa ${ids.length} sự kiện vào thùng rác`)
             }}
             onBulkPurge={async (rows: EventRow[]) => {
               const ids = rows.map((r: EventRow) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} sự kiện`)
             }}
           />
         </TabsContent>
@@ -332,13 +335,11 @@ function EventsPageInner() {
                   const ids = rows.map((r: EventRow) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} sự kiện`)
                 }}
                 onBulkPurge={async (rows: EventRow[]) => {
                   const ids = rows.map((r: EventRow) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} sự kiện`)
                 }}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,

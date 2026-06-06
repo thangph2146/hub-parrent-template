@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
+import { SocketModule } from '../socket/socket.module';
 import { PublicController } from './public.controller';
 import { PublicPostsService } from './public-posts.service';
 import { PublicCategoriesService } from './public-categories.service';
@@ -17,6 +18,7 @@ import { PublicEventRegistrationService } from './public-event-registration.serv
 
 @Module({
   imports: [
+    forwardRef(() => SocketModule),
     AdmissionResultsModule,
     PageContentsModule,
     UsersModule,

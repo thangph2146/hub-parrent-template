@@ -9,6 +9,7 @@ import {
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { BACKEND_ADMIN_LAYOUT_STATIC } from "@/config/admin-layout-static"
+import { AdminRealtimeSync } from "@/components/admin-realtime-sync"
 import { useAuth, useClientReady } from "@/providers/auth-provider"
 
 export function BackendAdminLayoutProvider({ children }: { children: ReactNode }) {
@@ -22,10 +23,12 @@ export function BackendAdminLayoutProvider({ children }: { children: ReactNode }
   const branding = useAdminSiteBranding({
     queryKey: ["settings", "site-config", user?.id ?? "guest"],
     enabled: clientReady && !!user,
-    fetchBranding: () =>
+    fetchBranding: ({ signal }) =>
       fetchAdminSettingsBranding(
-        (path: string) => api.http.get(path),
-        brandingDefaults
+        (path: string, reqSignal?: AbortSignal) =>
+          api.http.get(path, { signal: reqSignal ?? signal }),
+        brandingDefaults,
+        signal
       ),
     defaults: brandingDefaults,
   })
@@ -42,5 +45,10 @@ export function BackendAdminLayoutProvider({ children }: { children: ReactNode }
     [branding, clientReady, logout, user],
   )
 
-  return <AdminLayoutBridge value={value}>{children}</AdminLayoutBridge>
+  return (
+    <AdminLayoutBridge value={value}>
+      <AdminRealtimeSync />
+      {children}
+    </AdminLayoutBridge>
+  )
 }

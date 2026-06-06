@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ClipboardList,
   LogIn,
@@ -22,6 +22,7 @@ import {
 import { useEventAttendanceContext } from "./_live/event-attendance-provider"
 import { AttendanceStatusBadge } from "./attendance-status"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 type RegistrationRow = Record<string, unknown>
 
 type AttendanceAction =
@@ -46,7 +47,13 @@ export function RegistrationAttendanceActions({
   const hasCheckin = asAttendanceBool(row.hasCheckin)
   const hasCheckout = asAttendanceBool(row.hasCheckout)
 
-  const mutation = useMutation({
+  const mutation = useAdminMutation({
+    toast: {
+      loading: "Đang cập nhật điểm danh…",
+      success: "Đã cập nhật điểm danh",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không cập nhật được điểm danh",
+    },
     mutationFn: async (action: AttendanceAction) => {
       return api.eventRegistrations.setAttendance<RegistrationRow>(
         registrationId,

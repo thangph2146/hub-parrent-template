@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { Loader2, FileText, Globe } from "lucide-react";
 import {
@@ -28,6 +28,7 @@ import { seoMetaFormSchema, useSeoMetaDetailQuery } from "../../_component";
 import type { SeoMetaFormValues } from "../../_component";
 import { cn } from "@ui/lib/utils";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function EditSeoMetaPageInner() {
   const crudNav = useAdminCrudNavigation("/seo-metas");
   const params = useParams();
@@ -70,17 +71,18 @@ function EditSeoMetaPageInner() {
     await queryClient.invalidateQueries({ queryKey: ["seo-metas"] });
   };
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã cập nhật SEO metadata",
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật",
+    },
     mutationFn: async (input: Record<string, unknown>) => api.seoMetas.update(id, input),
     onSuccess: async () => {
       await invalidateAll();
-      toast.success("Đã cập nhật SEO metadata");
       crudNav.view(String(id));
-    },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Không thể cập nhật";
-      toast.error(message);
-    },
+    }
+    
   });
 
   const onSubmit = useCallback(

@@ -7,8 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
@@ -43,6 +42,7 @@ import {
 } from "./_component";
 import type { CategoryRow } from "./_component/types";
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function buildCategoryTree(rows: CategoryRow[]): CategoryRow[] {
   const byId = new Map<string, CategoryRow>();
   for (const row of rows) {
@@ -137,35 +137,39 @@ function CategoriesPageInner() {
     [categoriesOptionsQuery.data],
   );
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["categories", "delete"],
     mutationFn: async (id: string) => api.categories.remove(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["categories", "restore"],
     mutationFn: async (id: string) => api.categories.restore(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["categories", "purge"],
     mutationFn: async (id: string) => api.categories.purgeTrashed(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete";
       ids: string[];
     }) => api.categories.bulk(input),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
   useEffect(() => {
@@ -317,14 +321,12 @@ function CategoriesPageInner() {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
-              toast.success(`Đã đưa ${ids.length} danh mục vào thùng rác`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
-            }}
+}}
             canSelectRow={(row) => {
               const childCount = row.original._count?.children ?? 0;
               const linkedPosts = row.original.postCount ?? 0;
@@ -368,14 +370,12 @@ function CategoriesPageInner() {
                   const ids = rows.map((r) => String(r.id));
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "restore", ids });
-                  toast.success(`Đã khôi phục ${ids.length} danh mục`);
-                }}
+}}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => String(r.id));
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} danh mục`);
-                }}
+}}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,
                   filters: trashColumnFilterQuery,

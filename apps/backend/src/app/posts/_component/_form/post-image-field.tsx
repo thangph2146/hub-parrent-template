@@ -25,11 +25,7 @@ export function PostImageField({ value, onChange, postTitle }: PostImageFieldPro
       const url = await uploadPostImage(file);
       onChange(url);
       toast.success("Đã tải ảnh đại diện lên");
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Upload ảnh thất bại";
-      toast.error(message);
-    } finally {
+    } catch { /* toast: MutationCache */ } finally {
       setUploading(false);
     }
   };

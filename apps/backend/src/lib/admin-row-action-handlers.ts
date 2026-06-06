@@ -1,12 +1,7 @@
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { toast } from "@ui/components/sonner";
 
 type RowWithId = { id: string };
-
-function mutationErrorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
-}
 
 export type AdminCrudRowHandlers<T extends RowWithId> = {
   getRecordLabel: (row: T) => string;
@@ -24,55 +19,31 @@ export function useAdminCrudRowHandlers<T extends RowWithId>(
   purgeMutation?: UseMutationResult<unknown, Error, string>;
   },
 ): AdminCrudRowHandlers<T> {
-  const entity = options.entityLabel ?? "bản ghi";
   const { getRecordLabel, deleteMutation, restoreMutation, purgeMutation } =
     options;
 
   const onSoftDelete = useCallback(
     async (row: T) => {
       if (!deleteMutation) return;
-      const name = getRecordLabel(row);
-      try {
-        await deleteMutation.mutateAsync(row.id);
-        toast.success(`Đã đưa «${name}» vào thùng rác`);
-      } catch (err: unknown) {
-        toast.error(mutationErrorMessage(err, `Không thể xóa tạm ${entity}`));
-        throw err;
-      }
+      await deleteMutation.mutateAsync(row.id);
     },
-    [deleteMutation, entity, getRecordLabel],
+    [deleteMutation],
   );
 
   const onRestore = useCallback(
     async (row: T) => {
       if (!restoreMutation) return;
-      const name = getRecordLabel(row);
-      try {
-        await restoreMutation.mutateAsync(row.id);
-        toast.success(`Đã khôi phục «${name}»`);
-      } catch (err: unknown) {
-        toast.error(mutationErrorMessage(err, `Không thể khôi phục ${entity}`));
-        throw err;
-      }
+      await restoreMutation.mutateAsync(row.id);
     },
-    [restoreMutation, entity, getRecordLabel],
+    [restoreMutation],
   );
 
   const onPurge = useCallback(
     async (row: T) => {
       if (!purgeMutation) return;
-      const name = getRecordLabel(row);
-      try {
-        await purgeMutation.mutateAsync(row.id);
-        toast.success(`Đã xóa vĩnh viễn «${name}»`);
-      } catch (err: unknown) {
-        toast.error(
-          mutationErrorMessage(err, `Không thể xóa vĩnh viễn ${entity}`),
-        );
-        throw err;
-      }
+      await purgeMutation.mutateAsync(row.id);
     },
-    [purgeMutation, entity, getRecordLabel],
+    [purgeMutation],
   );
 
   return useMemo(

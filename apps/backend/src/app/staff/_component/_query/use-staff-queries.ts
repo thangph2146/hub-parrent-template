@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/api-client";
-import { toast } from "@ui/components/sonner";
 import { ApiError, api } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
 import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 type CreateStaffInput = Pick<
   CreateUserInput,
   "email" | "fullName" | "password" | "isActive" | "roleCodes" | "phone" | "address" | "citizenId"
@@ -22,7 +22,12 @@ export interface UseStaffMutationsProps {
 export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
   const queryClient = useQueryClient();
 
-  const createMutation = useMutation({
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã tạo tài khoản",
+      error: (error) => error instanceof ApiError ? error.message : "Không tạo được user",
+    },
     mutationFn: async (input: CreateStaffInput) => {
       return apiClient.users.create({
         email: input.email,
@@ -37,16 +42,18 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
     },
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
       ]);
-      toast.success("Đã tạo tài khoản");
-    },
-    onError: (error) => {
-      toast.error(error instanceof ApiError ? error.message : "Không tạo được user");
-    },
+    }
+    
   });
 
-  const updateMutation = useMutation({
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã cập nhật nhân sự",
+      error: (error) => error instanceof ApiError ? error.message : "Không lưu được",
+    },
     mutationFn: async ({ id, input }: { id: string; input: UpdateStaffInput }) => {
       return apiClient.users.update(id, {
         fullName: input.fullName,
@@ -61,70 +68,73 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
     },
     onSuccess: async (data, variables) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffProfile(variables.id) }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffProfile(variables.id) }),
       ]);
       await syncAdminSessionIfCurrentUser(variables.id, data);
-      toast.success("Đã cập nhật nhân sự");
-    },
-    onError: (error) => {
-      toast.error(error instanceof ApiError ? error.message : "Không lưu được");
-    },
+    }
+    
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã đưa tài khoản vào thùng rác",
+      error: (error) => error instanceof ApiError ? error.message : "Không xoá được",
+    },
     mutationFn: async (id: string) => apiClient.users.remove(id),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
       ]);
-      toast.success("Đã đưa tài khoản vào thùng rác");
-    },
-    onError: (error) => {
-      toast.error(error instanceof ApiError ? error.message : "Không xoá được");
-    },
+    }
+    
   });
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã khôi phục tài khoản",
+      error: (error) => error instanceof ApiError ? error.message : "Không khôi phục được",
+    },
     mutationFn: async (id: string) => apiClient.users.restore(id),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
       ]);
-      toast.success("Đã khôi phục tài khoản");
-    },
-    onError: (error) => {
-      toast.error(error instanceof ApiError ? error.message : "Không khôi phục được");
-    },
+    }
+    
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã xóa vĩnh viễn tài khoản",
+      error: (error) => error instanceof ApiError ? error.message : "Không xóa vĩnh viễn được",
+    },
     mutationFn: async (id: string) => apiClient.users.purgeTrashed(id),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
       ]);
-      toast.success("Đã xóa vĩnh viễn tài khoản");
-    },
-    onError: (error) => {
-      toast.error(error instanceof ApiError ? error.message : "Không xóa vĩnh viễn được");
-    },
+    }
+    
   });
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete";
       ids: string[];
     }) => api.http.post("/admin/users/bulk", input),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
       ]);
-    },
+    }
   });
 
   return {

@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type QueryClient,
-  type UseMutationResult,
-  type UseQueryResult,
-} from "@tanstack/react-query"
+import { useQuery, useQueryClient, type QueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 import {
   adminDetailPlaceholderFromList,
   adminDetailQueryOptions,
@@ -28,6 +21,7 @@ import {
   type ParentStudentAdmin,
 } from "@/lib/api"
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 export const queryKeys = {
   accountProfile: () => ["accounts", "profile"] as const,
   staffProfile: (id: string | number) =>
@@ -82,11 +76,11 @@ export const useUpdateAccountProfile = (): UseMutationResult<
   UpdateAccountInput
 > => {
   const qc = useQueryClient()
-  return useMutation({
+  return useAdminMutation({
     mutationFn: (input) => api.accounts.update(input),
     onSuccess: (profile) => {
       qc.setQueryData(queryKeys.accountProfile(), profile)
-    },
+    }
   })
 }
 
@@ -96,11 +90,11 @@ export const useChangeAccountPassword = (): UseMutationResult<
   ChangeAccountPasswordInput
 > => {
   const qc = useQueryClient()
-  return useMutation({
+  return useAdminMutation({
     mutationFn: (input) => api.accounts.changePassword(input),
     onSuccess: (profile) => {
       qc.setQueryData(queryKeys.accountProfile(), profile)
-    },
+    }
   })
 }
 
@@ -145,11 +139,17 @@ export const useUpdateStaffProfile = (): UseMutationResult<
   { id: string | number; input: UpdateProfileInput }
 > => {
   const qc = useQueryClient()
-  return useMutation({
+  return useAdminMutation({
+    mutationKey: ["profile", "update"],
+    toast: {
+      loading: "Đang lưu hồ sơ…",
+      success: "Đã cập nhật hồ sơ",
+      error: (err) => (err instanceof Error ? err.message : "Lỗi lưu hồ sơ"),
+    },
     mutationFn: ({ id, input }) => api.users.updateProfile(id, input),
     onSuccess: (u) => {
       qc.setQueryData(queryKeys.staffProfile(u.id), u)
-    },
+    }
   })
 }
 
@@ -158,7 +158,14 @@ export const useChangeStaffPassword = (): UseMutationResult<
   Error,
   { id: string | number; input: ChangePasswordInput }
 > => {
-  return useMutation({
+  return useAdminMutation({
+    mutationKey: ["profile", "change-password"],
+    toast: {
+      loading: "Đang đổi mật khẩu…",
+      success: "Đã đổi mật khẩu",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không đổi được mật khẩu",
+    },
     mutationFn: ({ id, input }) => api.users.changePassword(id, input),
   })
 }

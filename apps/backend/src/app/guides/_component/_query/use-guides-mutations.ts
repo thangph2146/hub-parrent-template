@@ -1,11 +1,11 @@
 "use client";
 
-import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { GuideFormData, UpdateGuideData, GuideGroup, ListResult } from "../types";
 import { PAGE_KEY, parseContent, applyOrderToGroups } from "../utils";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 interface CreateGuideVariables {
   api: StoreSyncSdk;
   data: GuideFormData;
@@ -78,52 +78,63 @@ function patchGuidesListOrderCache(
 export function useCreateGuideMutation() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã tạo nhóm hướng dẫn",
+      error: (error) => error.message || "Không thể tạo nhóm",
+    },
     mutationFn: createGuide,
     onSuccess: () => {
-      toast.success("Đã tạo nhóm hướng dẫn");
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Không thể tạo nhóm");
-    },
+    }
+    
   });
 }
 
 export function useUpdateGuideMutation() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã cập nhật",
+      error: (error) => error.message || "Không thể cập nhật",
+    },
     mutationFn: updateGuide,
     onSuccess: () => {
-      toast.success("Đã cập nhật");
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Không thể cập nhật");
-    },
+    }
+    
   });
 }
 
 export function useDeleteGuideMutation() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã xóa nhóm",
+      error: (error) => error.message || "Không thể xóa",
+    },
     mutationFn: ({ api, id }: { api: StoreSyncSdk; id: string }) => deleteGuide(api, id),
     onSuccess: () => {
-      toast.success("Đã xóa nhóm");
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Không thể xóa");
-    },
+    }
+    
   });
 }
 
 export function useReorderGuidesMutation() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: "Đã lưu thứ tự",
+      error: (error) => error.message || "Không thể lưu thứ tự",
+    },
     mutationFn: ({ api, ordered }: { api: StoreSyncSdk; ordered: GuideGroup[] }) =>
       reorderGuides(api, ordered),
     onMutate: async ({ ordered }) => {
@@ -132,14 +143,8 @@ export function useReorderGuidesMutation() {
       return { snapshots };
     },
     onSuccess: () => {
-      toast.success("Đã lưu thứ tự");
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
-    },
-    onError: (error: Error, _variables, context) => {
-      for (const { queryKey, previous } of context?.snapshots ?? []) {
-        queryClient.setQueryData(queryKey, previous);
-      }
-      toast.error(error.message || "Không thể lưu thứ tự");
-    },
+    }
+    
   });
 }

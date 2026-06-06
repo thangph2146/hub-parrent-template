@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import {
   AlertCircle,
@@ -42,6 +42,7 @@ import {
   type StaffRow,
 } from "./_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function StaffPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/staff", {
@@ -130,17 +131,17 @@ function StaffPageInner() {
     listParams: trashListParams,
   });
 
-  const bulkStaffMutation = useMutation({
+  const bulkStaffMutation = useAdminMutation({
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete" | "active" | "unactive";
       ids: string[];
     }) => api.users.bulk(input),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
       ]);
-    },
+    }
   });
 
   const roles = rbacQuery.data?.roles ?? [];
@@ -317,15 +318,13 @@ function StaffPageInner() {
       return;
     }
     await bulkStaffMutation.mutateAsync({ action: "delete", ids: [String(deleteTarget.id)] });
-    toast.success("Đã đưa tài khoản vào thùng rác");
-    setDeleteTarget(null);
+setDeleteTarget(null);
   }, [deleteTarget, session?.id, bulkStaffMutation]);
 
   const handleRestoreConfirm = useCallback(async () => {
     if (!restoreTarget) return;
     await bulkStaffMutation.mutateAsync({ action: "restore", ids: [String(restoreTarget.id)] });
-    toast.success(`Đã khôi phục ${restoreTarget.email}`);
-    setRestoreTarget(null);
+setRestoreTarget(null);
   }, [restoreTarget, bulkStaffMutation]);
 
   const handlePurgeConfirm = useCallback(async () => {
@@ -336,8 +335,7 @@ function StaffPageInner() {
       return;
     }
     await bulkStaffMutation.mutateAsync({ action: "hard-delete", ids: [String(purgeTarget.id)] });
-    toast.success(`Đã xóa vĩnh viễn ${purgeTarget.email}`);
-    setPurgeTarget(null);
+setPurgeTarget(null);
   }, [purgeTarget, session?.id, bulkStaffMutation]);
 
   const handleToggleActiveConfirm = useCallback(async () => {
@@ -347,19 +345,13 @@ function StaffPageInner() {
       action: nextActive ? "active" : "unactive",
       ids: [String(toggleTarget.id)],
     });
-    toast.success(
-      nextActive
-        ? `Đã kích hoạt ${toggleTarget.email}`
-        : `Đã khoá ${toggleTarget.email}`,
-    );
-    setToggleTarget(null);
+setToggleTarget(null);
   }, [toggleTarget, bulkStaffMutation]);
 
   const handleBulkActiveConfirm = useCallback(async () => {
     if (!bulkActiveTarget || bulkActiveTarget.length === 0) return;
     await bulkStaffMutation.mutateAsync({ action: "active", ids: bulkActiveTarget });
-    toast.success(`Đã kích hoạt ${bulkActiveTarget.length} tài khoản`);
-    setBulkActiveTarget(null);
+setBulkActiveTarget(null);
     setListStaffSelection({});
   }, [bulkActiveTarget, bulkStaffMutation]);
 
@@ -371,24 +363,21 @@ function StaffPageInner() {
       return;
     }
     await bulkStaffMutation.mutateAsync({ action: "unactive", ids: bulkUnactiveTarget });
-    toast.success(`Đã khoá ${bulkUnactiveTarget.length} tài khoản`);
-    setBulkUnactiveTarget(null);
+setBulkUnactiveTarget(null);
     setListStaffSelection({});
   }, [bulkUnactiveTarget, session?.id, bulkStaffMutation]);
 
   const handleBulkDeleteConfirm = useCallback(async () => {
     if (!bulkDeleteTarget || bulkDeleteTarget.length === 0) return;
     await bulkStaffMutation.mutateAsync({ action: "delete", ids: bulkDeleteTarget });
-    toast.success(`Đã đưa ${bulkDeleteTarget.length} tài khoản vào thùng rác`);
-    setBulkDeleteTarget(null);
+setBulkDeleteTarget(null);
     setListStaffSelection({});
   }, [bulkDeleteTarget, bulkStaffMutation]);
 
   const handleBulkRestoreConfirm = useCallback(async () => {
     if (!bulkRestoreTarget || bulkRestoreTarget.length === 0) return;
     await bulkStaffMutation.mutateAsync({ action: "restore", ids: bulkRestoreTarget });
-    toast.success(`Đã khôi phục ${bulkRestoreTarget.length} tài khoản`);
-    setBulkRestoreTarget(null);
+setBulkRestoreTarget(null);
     setTrashStaffSelection({});
   }, [bulkRestoreTarget, bulkStaffMutation]);
 
@@ -400,8 +389,7 @@ function StaffPageInner() {
       return;
     }
     await bulkStaffMutation.mutateAsync({ action: "hard-delete", ids: bulkPurgeTarget });
-    toast.success(`Đã xóa vĩnh viễn ${bulkPurgeTarget.length} tài khoản`);
-    setBulkPurgeTarget(null);
+setBulkPurgeTarget(null);
     setListStaffSelection({});
     setTrashStaffSelection({});
   }, [bulkPurgeTarget, session?.id, bulkStaffMutation]);

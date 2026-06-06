@@ -6,9 +6,8 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
-import { toast } from "@ui/components/sonner"
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
@@ -37,6 +36,7 @@ import {
 } from "./_component"
 import type { DepartmentRow } from "./_component"
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function DepartmentsPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/departments", {
@@ -102,35 +102,39 @@ function DepartmentsPageInner() {
     filters: trashFilterParams,
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["departments", "delete"],
     mutationFn: async (id: string) => api.departments.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["departments", "restore"],
     mutationFn: async (id: string) => api.departments.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["departments", "purge"],
     mutationFn: async (id: string) => api.departments.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete"
       ids: string[]
     }) => api.departments.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    },
+    }
   })
 
   useEffect(() => {
@@ -278,13 +282,11 @@ function DepartmentsPageInner() {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "delete", ids })
-              toast.success(`Đã đưa ${ids.length} phòng khoa vào thùng rác`)
             }}
             onBulkPurge={async (rows) => {
               const ids = rows.map((r) => r.id)
               if (!ids.length) return
               await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} phòng khoa`)
             }}
           />
         </TabsContent>
@@ -324,13 +326,11 @@ function DepartmentsPageInner() {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "restore", ids })
-                  toast.success(`Đã khôi phục ${ids.length} phòng khoa`)
                 }}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => r.id)
                   if (!ids.length) return
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids })
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} phòng khoa`)
                 }}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,

@@ -85,12 +85,7 @@ export function RegisterForm() {
       setForm(INITIAL_STATE);
       toast.success("Đăng ký thành công. Tài khoản của bạn đã được tạo với vai trò Phụ huynh.");
       router.replace(AUTH_LOGIN_PATH);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Không thể đăng ký tài khoản. Vui lòng thử lại.";
-      setError(message);
-      toast.error(message);
-    } finally {
+    } catch { /* toast: MutationCache */ } finally {
       setSubmitting(false);
     }
   }

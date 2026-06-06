@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
 import type { EventConfirmAction, EventFormValues } from "../types";
 import { eventFormSchema } from "../types";
 import { buildPosterPayload } from "../utils";
@@ -89,12 +88,10 @@ export function useHandleConfirmAction(
   return useCallback(
     async ({ kind, row }: EventConfirmAction) => {
       try {
-        if (kind === "delete") { await deleteMutation.mutateAsync(row.id); toast.success(`Đã đưa «${row.title}» vào thùng rác`); }
-        else if (kind === "restore") { await restoreMutation.mutateAsync(row.id); toast.success(`Đã khôi phục «${row.title}»`); }
-        else if (kind === "purge") { await purgeMutation.mutateAsync(row.id); toast.success(`Đã xóa vĩnh viễn «${row.title}»`); }
-      } catch (err: unknown) {
-        toast.error(err instanceof Error ? err.message : "Không thể thực hiện thao tác");
-      } finally { setConfirmAction(null); }
+        if (kind === "delete") { await deleteMutation.mutateAsync(row.id); }
+        else if (kind === "restore") { await restoreMutation.mutateAsync(row.id); }
+        else if (kind === "purge") { await purgeMutation.mutateAsync(row.id); }
+      } catch { /* toast: MutationCache */ } finally { setConfirmAction(null); }
     },
     [deleteMutation, restoreMutation, purgeMutation, setConfirmAction],
   );

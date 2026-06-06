@@ -7,8 +7,7 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
+
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
@@ -43,6 +42,7 @@ import {
 } from "./_component";
 import type { TagRow, TagTreeRow } from "./_component";
 
+import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
 function TagsPageInner() {
   const queryClient = useQueryClient();
   const crudNav = useAdminCrudNavigation("/tags", {
@@ -112,35 +112,39 @@ function TagsPageInner() {
     filters: trashFilterParams,
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useAdminMutation({
+    mutationKey: ["tags", "delete"],
     mutationFn: async (id: string) => api.tags.remove(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const restoreMutation = useMutation({
+  const restoreMutation = useAdminMutation({
+    mutationKey: ["tags", "restore"],
     mutationFn: async (id: string) => api.tags.restore(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const purgeMutation = useMutation({
+  const purgeMutation = useAdminMutation({
+    mutationKey: ["tags", "purge"],
     mutationFn: async (id: string) => api.tags.purge(id),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
-  const bulkMutation = useMutation({
+  const bulkMutation = useAdminMutation({
+    toast: defaultBulkOperationToast,
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete";
       ids: string[];
     }) => api.tags.bulk(input),
     onSuccess: async () => {
       await invalidateAll();
-    },
+    }
   });
 
   useEffect(() => {
@@ -292,14 +296,12 @@ function TagsPageInner() {
               const ids = rows.filter((r) => !r.isGroup).map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "delete", ids });
-              toast.success(`Đã đưa ${ids.length} thẻ vào thùng rác`);
-            }}
+}}
             onBulkPurge={async (rows) => {
               const ids = rows.filter((r) => !r.isGroup).map((r) => String(r.id));
               if (!ids.length) return;
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-              toast.success(`Đã xóa vĩnh viễn ${ids.length} thẻ`);
-            }}
+}}
           />
         </TabsContent>
 
@@ -338,14 +340,12 @@ function TagsPageInner() {
                   const ids = rows.map((r) => String(r.id));
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "restore", ids });
-                  toast.success(`Đã khôi phục ${ids.length} thẻ`);
-                }}
+}}
                 onBulkPurge={async (rows) => {
                   const ids = rows.map((r) => String(r.id));
                   if (!ids.length) return;
                   await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-                  toast.success(`Đã xóa vĩnh viễn ${ids.length} thẻ`);
-                }}
+}}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,
                   filters: trashExportFilterParams as Record<string, string>,

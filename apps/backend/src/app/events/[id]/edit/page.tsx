@@ -4,7 +4,7 @@ import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
@@ -12,6 +12,7 @@ import { EventFormShell, useEventForm, useEventDetailQuery, buildEventPayload } 
 import { getPosterUrlFromValue } from "../../_component/utils";
 import type { EventDetail, EventFormValues, EventFormSpeaker } from "../../_component";
 
+import { useAdminMutation } from "@/hooks/use-admin-mutation";
 function toDatetimeLocal(value: string | null | undefined): string {
   if (!value) return "";
   const d = new Date(value);
@@ -117,14 +118,18 @@ function EditEventPageInner() {
 
   const invalidateAll = async () => { await queryClient.invalidateQueries({ queryKey: ["events"] }); };
 
-  const updateMutation = useMutation({
-    mutationFn: async (input: Record<string, unknown>) => api.events.update(id, input),
-    onSuccess: async (_data, variables) => {
-      await invalidateAll();
-      toast.success(`Đã cập nhật sự kiện "${(variables.title as string)?.trim()}"`);
-      crudNav.view(String(id));
+  const updateMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) => `Đã cập nhật sự kiện "${(variables.title as string)?.trim()}"`,
+      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật sự kiện",
     },
-    onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : "Không thể cập nhật sự kiện"); },
+    mutationFn: async (input: Record<string, unknown>) => api.events.update(id, input),
+    onSuccess: async () => {
+      await invalidateAll();
+      crudNav.view(String(id));
+    }
+    
   });
 
   const handleSubmit = useCallback(async (values: EventFormValues) => {

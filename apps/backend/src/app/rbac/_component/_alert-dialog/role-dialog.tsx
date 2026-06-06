@@ -87,9 +87,7 @@ export function RoleDialog({ open, onClose, role, permissions }: RoleDialogProps
         toast.success("Đã tạo vai trò thành công");
       }
       onClose();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Không lưu được vai trò");
-    }
+    } catch { /* toast: MutationCache */ }
   };
 
   return (

@@ -21,14 +21,11 @@ export function useHandleConfirmActionWithAction(
     try {
       if (kind === "delete") {
         await deleteMutation.mutateAsync(row.id);
-        toast.success(`Đã đưa «${row.title}» vào thùng rác`);
-      } else if (kind === "restore") {
+} else if (kind === "restore") {
         await restoreMutation.mutateAsync(row.id);
-        toast.success(`Đã khôi phục «${row.title}»`);
-      } else {
+} else {
         await purgeMutation.mutateAsync(row.id);
-        toast.success(`Đã xóa vĩnh viễn «${row.title}»`);
-      }
+}
       setConfirmAction(null);
     } catch (error) {
       const fallback =

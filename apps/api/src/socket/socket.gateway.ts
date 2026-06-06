@@ -23,6 +23,8 @@ import {
   eventRoom,
   SOCKET_PATH,
   MAX_HTTP_BUFFER_SIZE,
+  type AdminCacheInvalidatePayload,
+  type AdminStatusChangePayload,
   type EventAttendanceSocketPayload,
   type ParentStudentReviewSocketPayload,
 } from './socket.types';
@@ -108,6 +110,34 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(userRoom(userId)).emit('notification:new', payload);
   }
 
+  emitNotificationToAdmins(payload: SocketNotificationPayload): void {
+    if (!this.server) return;
+    this.server.to(roleRoom('ADMIN')).emit('notification:admin', payload);
+  }
+
+  emitAdminStatusChange(payload: AdminStatusChangePayload): void {
+    if (!this.server) return;
+    this.server.to(roleRoom('ADMIN')).emit('admin:status-changed', payload);
+    if (payload.title?.trim()) {
+      this.emitNotificationToAdmins({
+        id: `status_${payload.resource}_${payload.id}_${Date.now()}`,
+        kind: 'success',
+        title: payload.title,
+        description: payload.description ?? null,
+        actionUrl: payload.actionUrl ?? null,
+        timestamp: Date.now(),
+        read: false,
+        metadata: {
+          resource: payload.resource,
+          resourceId: payload.id,
+          status: payload.status,
+          previousStatus: payload.previousStatus,
+          actorUserId: payload.actorUserId,
+        },
+      });
+    }
+  }
+
   emitGroupEvent(
     event: 'group:deleted' | 'group:hard-deleted' | 'group:restored',
     payload: { id: string },
@@ -129,6 +159,18 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server
       .to(userRoom(payload.parentId))
       .emit('parent-student:reviewed', payload);
+    this.server.to(roleRoom('ADMIN')).emit('parent-student:reviewed', payload);
+    const statusLabel =
+      payload.status === 'approved' ? 'đã duyệt' : 'đã từ chối';
+    this.emitAdminStatusChange({
+      resource: 'parent-students',
+      id: payload.id,
+      status: payload.status,
+      title: `Liên kết phụ huynh ${statusLabel}`,
+      description: `${payload.studentCode}${payload.studentName ? ` — ${payload.studentName}` : ''}`,
+      actionUrl: '/admin/parent-students',
+      actorUserId: payload.reviewedBy,
+    });
   }
 
   emitMessageNew(
@@ -160,16 +202,34 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  emitAdminCacheInvalidate(payload: AdminCacheInvalidatePayload): void {
+    if (!this.server) return;
+    this.server.to(roleRoom('ADMIN')).emit('admin:invalidate', payload);
+  }
+
   emitRoleUpsert(
     role: { id: string },
     previousStatus: 'active' | 'deleted' | null = 'active',
     newStatus: 'active' | 'deleted' = 'active',
   ): void {
     if (!this.server) return;
-    this.server.emit('role:upsert', {
+    const payload = {
       role,
       previousStatus,
       newStatus,
+    };
+    this.server.to(roleRoom('ADMIN')).emit('role:upsert', payload);
+    this.emitAdminCacheInvalidate({
+      resource: 'roles',
+      action:
+        newStatus === 'deleted'
+          ? 'delete'
+          : previousStatus === 'deleted'
+            ? 'restore'
+            : previousStatus === null
+              ? 'create'
+              : 'update',
+      id: role.id,
     });
   }
 
