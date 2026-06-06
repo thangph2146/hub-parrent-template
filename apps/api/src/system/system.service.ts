@@ -1247,10 +1247,12 @@ export class SystemService {
     );
     const jsonChunkSize = Math.max(
       1,
-      parseInt(process.env.SYSTEM_IMPORT_JSON_BATCH_SIZE || '20', 10) || 20,
+      parseInt(process.env.SYSTEM_IMPORT_JSON_BATCH_SIZE || '40', 10) || 40,
     );
     const proactiveChunkSize = JSON_HEAVY_IMPORT_MODELS.has(mName)
-      ? Math.min(jsonChunkSize, rows.length)
+      ? rows.length <= 200
+        ? rows.length
+        : Math.min(jsonChunkSize, rows.length)
       : rows.length;
 
     const insertManyChunks = async (
@@ -1653,10 +1655,10 @@ export class SystemService {
         10,
       ) || 500,
     );
-    const postChunk = Math.max(
-      1,
-      parseInt(process.env.SYSTEM_IMPORT_CLIENT_CHUNK_POST || '28', 10) || 28,
-    );
+    const postChunkRaw = process.env.SYSTEM_IMPORT_CLIENT_CHUNK_POST?.trim();
+    const postChunk = postChunkRaw
+      ? Math.max(1, parseInt(postChunkRaw, 10) || rowChunkSize)
+      : rowChunkSize;
     const contactChunk = Math.max(
       1,
       parseInt(process.env.SYSTEM_IMPORT_CLIENT_CHUNK_CONTACT || '800', 10) ||
@@ -1671,10 +1673,15 @@ export class SystemService {
       bundles: { ...IMPORT_MODEL_BUNDLES },
       rowChunkSize,
       modelChunkSizes: {
-        post: postChunk,
+        ...(postChunkRaw ? { post: postChunk } : {}),
         contactRequest: contactChunk,
       },
       parallelChunkConcurrency,
+      /** post insert song song gây lock InnoDB — mặc định tuần tự. */
+      modelParallelConcurrency: {
+        post: 1,
+        contactRequest: parallelChunkConcurrency,
+      },
     };
   }
 
