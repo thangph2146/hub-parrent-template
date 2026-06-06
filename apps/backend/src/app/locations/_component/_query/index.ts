@@ -1,5 +1,4 @@
-export {
+export { 
   useLocationDetailQuery,
   useLocationsListQuery,
-  useLocationsTrashQuery,
-} from "./use-locations-queries";
+  useLocationsTrashQuery, locationDetailQueryKey, prefetchLocationDetail } from "./use-locations-queries";

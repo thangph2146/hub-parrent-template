@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo } from "react"
 import dynamic from "next/dynamic"
-import { useRouter, useParams } from "next/navigation"
-import { toast } from "sonner"
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
 
 const LexicalEditor = dynamic(
   () =>
@@ -61,7 +62,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function EventDetailInner() {
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/events");
   const params = useParams()
   const id = params.id as string
   const { user } = useAuth()
@@ -74,9 +75,9 @@ function EventDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được sự kiện")
-      router.push("/events")
+      crudNav.list()
     }
-  }, [isError, router])
+  }, [isError, crudNav])
 
   if (isLoading)
     return (
@@ -92,9 +93,9 @@ function EventDetailInner() {
         title="Chi tiết sự kiện"
         subtitle="Quản lý sự kiện check-in."
         variant="module"
-        onBack={() => router.push("/events")}
+        onBack={() => crudNav.list()}
         onEdit={
-          canUpdate ? () => router.push(`/events/${id}/edit`) : undefined
+          canUpdate ? () => crudNav.edit(String(id)) : undefined
         }
       />
 

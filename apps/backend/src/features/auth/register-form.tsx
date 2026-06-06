@@ -17,7 +17,7 @@ import {
 import { Input } from "@ui/components/input";
 import { PointerHighlight } from "@ui/components/pointer-highlight";
 import { TypographyH2 } from "@ui/components/typography";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
 import { registerAccount } from "./auth-api";
 

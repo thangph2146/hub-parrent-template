@@ -20,6 +20,7 @@ export interface GuidesTableProps {
   onBulkPurge: (rows: GuideGroup[]) => Promise<void>;
   onRowReorder?: (orderedRows: GuideGroup[]) => void;
   isReordering?: boolean;
+  onRowPrefetch?: (row: GuideGroup) => void;
 }
 
 export function GuidesTable({
@@ -35,6 +36,7 @@ export function GuidesTable({
   onBulkPurge,
   onRowReorder,
   isReordering,
+  onRowPrefetch,
 }: GuidesTableProps) {
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
 
@@ -58,6 +60,11 @@ export function GuidesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo section key, tiêu đề..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       {...adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds)}
       bulkActions={[

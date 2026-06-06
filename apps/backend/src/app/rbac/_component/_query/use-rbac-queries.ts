@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { api } from "@/lib/api"
 import type { RbacPermission, RbacRole } from "@workspace/api-client"
 import type { CreateRoleInput, UpdateRoleInput } from "../types"

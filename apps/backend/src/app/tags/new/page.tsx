@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,7 +15,7 @@ import {
 import type { TagFormValues } from "../_component";
 
 function NewTagPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/tags");
   const queryClient = useQueryClient();
   const { form } = useTagForm();
 
@@ -28,7 +29,7 @@ function NewTagPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo thẻ "${(variables.name as string)?.trim()}"`);
-      router.push("/tags");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo thẻ";
@@ -50,7 +51,7 @@ function NewTagPageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        onBack={() => router.push("/tags")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

@@ -1,11 +1,10 @@
 export type { AcademicYearRow, AcademicYearFormValues, AcademicYearConfirmAction, AcademicYearDetail } from "./types";
 export { academicYearFormSchema } from "./types";
 export { getAcademicYearColumns } from "./columns";
-export {
+export { 
   useAcademicYearDetailQuery,
   useAcademicYearsListQuery,
-  useAcademicYearsTrashQuery,
-} from "./_query";
+  useAcademicYearsTrashQuery, academicYearDetailQueryKey, prefetchAcademicYearDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Save, Settings2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Button } from "@ui/components/button"
 import {
   Card,

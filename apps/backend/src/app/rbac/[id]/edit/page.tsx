@@ -1,6 +1,7 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useEffect, useMemo } from "react"
 import { useRoleForm } from "../../_component/_hooks"
 import { RoleFormShell } from "../../_component/_form"
@@ -18,7 +19,7 @@ import { ShieldAlert } from "lucide-react"
 
 function EditRolePageInner() {
   const params = useParams()
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/rbac");
   const { user: session } = useAuth()
   const roleId = params.id as string
 
@@ -61,7 +62,7 @@ function EditRolePageInner() {
           isActive: payload.isActive,
         },
       })
-      router.push(`/rbac/${roleId}`)
+      crudNav.view(String(roleId))
     } catch {
       // Error handled by mutation
     }
@@ -69,7 +70,7 @@ function EditRolePageInner() {
 
   const handleCancel = () => {
     resetForm()
-    router.push(`/rbac/${roleId}`)
+    crudNav.view(String(roleId))
   }
 
   if (!session || !canManageRoles) {
@@ -77,7 +78,7 @@ function EditRolePageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa vai trò"
-          onBack={() => router.push(`/rbac/${roleId}`)}
+          onBack={() => crudNav.view(String(roleId))}
           formId="role-form"
         />
         <div className="py-12 text-center">
@@ -92,7 +93,7 @@ function EditRolePageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa vai trò"
-          onBack={() => router.push(`/rbac/${roleId}`)}
+          onBack={() => crudNav.view(String(roleId))}
           formId="role-form"
         />
         <div className="py-12 text-center">
@@ -111,7 +112,7 @@ function EditRolePageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa vai trò"
-          onBack={() => router.push(`/rbac/${roleId}`)}
+          onBack={() => crudNav.view(String(roleId))}
           formId="role-form"
         />
         <Card>

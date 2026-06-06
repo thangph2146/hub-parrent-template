@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { FileText, Globe } from "lucide-react";
 import {
   FieldError,
@@ -27,7 +28,7 @@ import { seoMetaFormSchema, type SeoMetaFormValues } from "../_component";
 import { cn } from "@ui/lib/utils";
 
 function NewSeoMetaPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/seo-metas");
   const queryClient = useQueryClient();
   const {
     register,
@@ -56,7 +57,7 @@ function NewSeoMetaPageInner() {
     onSuccess: async () => {
       await invalidateAll();
       toast.success("Đã tạo SEO metadata");
-      router.push("/seo-metas");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo SEO metadata";
@@ -76,7 +77,7 @@ function NewSeoMetaPageInner() {
       <AdminFormPageHeader
         title="Thêm SEO metadata"
         subtitle="Tạo SEO metadata mới cho một trang."
-        onBack={() => router.push("/seo-metas")}
+        onBack={() => crudNav.list()}
         formId="seo-meta-form"
         submitting={isSubmitting}
       />

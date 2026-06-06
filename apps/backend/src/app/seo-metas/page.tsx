@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { AlertCircle, Search, Plus } from "lucide-react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useAuth } from "@/providers/auth-provider";
@@ -24,12 +24,15 @@ import {
   getSeoMetaColumns,
   useSeoMetasListQuery,
   useSeoMetasTrashQuery,
+  prefetchSeoMetaDetail,
 } from "./_component";
 import type { SeoMetaRow } from "./_component";
 
 function SeoMetasPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/seo-metas", {
+    prefetchDetail: (id) => prefetchSeoMetaDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
@@ -120,14 +123,14 @@ function SeoMetasPageInner() {
     () =>
       getSeoMetaColumns({
         view: "list",
-        openDetail: (row) => router.push(`/seo-metas/${row.id}`),
-        openEdit: (row) => router.push(`/seo-metas/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete],
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete],
   );
 
 
@@ -154,7 +157,7 @@ function SeoMetasPageInner() {
           <>{canWrite && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/seo-metas/new")}
+              onClick={() => crudNav.new()}
             >
               <Plus className="size-5" aria-hidden /> Thêm SEO
             </AdminPageHeaderPrimaryButton>
@@ -194,6 +197,8 @@ function SeoMetasPageInner() {
           ) : null}
 
           <SeoMetasTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

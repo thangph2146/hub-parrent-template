@@ -22,6 +22,7 @@ export function CamerasTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: {
   data: CameraRow[]
   columns: ColumnDef<CameraRow>[]
@@ -36,6 +37,7 @@ export function CamerasTable({
   onClearFilters: () => void
   onBulkDelete: (rows: CameraRow[]) => Promise<void>
   onBulkPurge: (rows: CameraRow[]) => Promise<void>
+  onRowPrefetch?: (row: CameraRow) => void
 }) {
   return (
     <AdminDataTable<CameraRow>
@@ -52,6 +54,11 @@ export function CamerasTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("cameras", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

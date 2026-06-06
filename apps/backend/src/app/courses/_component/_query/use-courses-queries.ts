@@ -1,18 +1,52 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
+import {
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { CourseDetail, CourseRow } from "../types";
+
+export const courseDetailQueryKey = (id: string) =>
+  ["courses", "detail", id] as const;
+
+export function prefetchCourseDetail(
+  queryClient: QueryClient,
+  apiParam: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    courseDetailQueryKey(id),
+    () => apiParam.courses.get<CourseDetail>(id)
+  );
+}
 
 export function useCourseDetailQuery(
   apiParam: StoreSyncSdk,
   id: string,
 ): UseQueryResult<CourseDetail> {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["courses", "detail", id],
-    queryFn: async (): Promise<CourseDetail> =>
-      apiParam.courses.get<CourseDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      courseDetailQueryKey(id),
+      async () => apiParam.courses.get<CourseDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<CourseRow, CourseDetail>(
+        queryClient,
+        ["courses", "list"],
+        id,
+        (row) => row as unknown as CourseDetail
+      ),
   });
 }
 

@@ -4,9 +4,15 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  type QueryClient,
   type UseMutationResult,
   type UseQueryResult,
 } from "@tanstack/react-query"
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query"
 import {
   api,
   type AccountProfile,
@@ -98,14 +104,40 @@ export const useChangeAccountPassword = (): UseMutationResult<
   })
 }
 
-export const useStaffProfile = (userId: string | number | null | undefined) =>
-  useQuery<User, Error>({
-    queryKey: queryKeys.staffProfile(userId ?? "missing"),
-    queryFn: () => api.users.get(userId as string | number),
-    enabled:
-      (typeof userId === "string" && userId.trim().length > 0) ||
-      (typeof userId === "number" && userId > 0),
+export function prefetchStaffProfile(
+  queryClient: QueryClient,
+  userId: string | number
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    queryKeys.staffProfile(userId),
+    () => api.users.get(userId)
+  )
+}
+
+export const useStaffProfile = (userId: string | number | null | undefined) => {
+  const queryClient = useQueryClient()
+  const id = userId ?? ""
+  const enabled =
+    (typeof userId === "string" && userId.trim().length > 0) ||
+    (typeof userId === "number" && userId > 0)
+
+  return useQuery<User, Error>({
+    ...adminDetailQueryOptions(
+      queryKeys.staffProfile(userId ?? "missing"),
+      async () => api.users.get(userId as string | number),
+      String(id)
+    ),
+    enabled,
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<User, User>(
+        queryClient,
+        queryKeys.staffUserList(),
+        String(id),
+        (row) => row
+      ),
   })
+}
 
 export const useUpdateStaffProfile = (): UseMutationResult<
   User,
@@ -228,14 +260,42 @@ export const useContactRequests = (opts?: {
     enabled: opts?.enabled ?? true,
   })
 
+export const contactRequestDetailQueryKey = (id: string | number) =>
+  ["contact-requests", id] as const
+
+export function prefetchContactRequestDetail(
+  queryClient: QueryClient,
+  id: string | number
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    contactRequestDetailQueryKey(id),
+    () => api.contactRequests.detail(id)
+  )
+}
+
 export const useContactRequestDetail = (
   id: string | number | null | undefined
-) =>
-  useQuery<ContactRequest, Error>({
-    queryKey: ["contact-requests", id],
-    queryFn: () => api.contactRequests.detail(id as string | number),
+) => {
+  const queryClient = useQueryClient()
+  const normalizedId = id != null ? String(id) : ""
+
+  return useQuery<ContactRequest, Error>({
+    ...adminDetailQueryOptions(
+      contactRequestDetailQueryKey(id ?? "missing"),
+      async () => api.contactRequests.detail(id as string | number),
+      normalizedId
+    ),
     enabled: !!id,
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<ContactRequest, ContactRequest>(
+        queryClient,
+        ["contact-requests"],
+        normalizedId,
+        (row) => row
+      ),
   })
+}
 
 // My Students hooks
 export const useMyStudents = (opts?: {

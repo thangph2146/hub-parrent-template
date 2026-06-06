@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, createElement } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -62,7 +63,8 @@ function ListItem({
 }
 
 function TagDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/tags");
+  const postsNav = useAdminCrudNavigation("/posts");
   const params = useParams();
   const tagId = params.id as string;
   const { user } = useAuth();
@@ -73,9 +75,9 @@ function TagDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được thẻ");
-      router.push("/tags");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!tag) return null;
@@ -99,9 +101,9 @@ function TagDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/tags")}
+        onBack={() => crudNav.list()}
         onEdit={
-          canUpdate ? () => router.push(`/tags/${tagId}/edit`) : undefined
+          canUpdate ? () => crudNav.edit(String(tagId)) : undefined
         }
       />
 
@@ -160,7 +162,7 @@ function TagDetailInner() {
                           {post.published ? "Đã đăng" : "Nháp"}
                         </Badge>
                       }
-                      onClick={() => router.push(`/posts/${post.id}`)}
+                      onClick={() => postsNav.view(String(post.id))}
                     />
                   ))}
                 </div>

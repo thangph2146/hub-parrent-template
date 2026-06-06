@@ -1,6 +1,6 @@
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 
 type RowWithId = { id: string };
 

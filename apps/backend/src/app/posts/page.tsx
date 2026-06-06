@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import type {
   ColumnDef,
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import {
@@ -41,6 +41,7 @@ import {
   useRestoreMutation,
   usePurgeMutation,
   useBulkMutation,
+  prefetchPostDetail,
 } from "./_component/_query";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import {
@@ -54,8 +55,10 @@ import {
   getPostColumns,
 } from "./_component";
 function PostsPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/posts", {
+    prefetchDetail: (id) => prefetchPostDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canCreate = user ? canUserAccess(user, PERMISSION_CODES.POSTS_CREATE) : false;
   const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.POSTS_UPDATE) : false;
@@ -140,13 +143,13 @@ function PostsPageInner() {
   const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
 
   const navigateToView = useCallback(
-    (id: string) => router.push(`/posts/${id}`),
-    [router],
+    (id: string) => crudNav.view(String(id)),
+    [crudNav],
   );
 
   const navigateToEdit = useCallback(
-    (id: string) => router.push(`/posts/${id}/edit`),
-    [router],
+    (id: string) => crudNav.edit(String(id)),
+    [crudNav],
   );
 
   const rowActions = useAdminCrudRowHandlers<PostListRow>({
@@ -198,7 +201,7 @@ function PostsPageInner() {
           <>
             {canCreate && (
               <AdminPageHeaderPrimaryButton
-                onClick={() => router.push("/posts/new")}
+                onClick={() => crudNav.new()}
               >
                 <Plus className="size-5" aria-hidden />
                 Thêm bài viết
@@ -240,6 +243,8 @@ function PostsPageInner() {
           ) : null}
 
           <PostsTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={postsQuery.data?.items ?? []}
             columns={columns}
             isLoading={postsQuery.isLoading}

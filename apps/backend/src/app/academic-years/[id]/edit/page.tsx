@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { AcademicYearFormValues } from "../../_component";
 
 function EditAcademicYearPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/academic-years");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditAcademicYearPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được niên khóa");
-      router.push("/academic-years");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -61,7 +62,7 @@ function EditAcademicYearPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật niên khóa "${(variables.name as string)?.trim()}"`);
-      router.push(`/academic-years/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật niên khóa";
@@ -78,7 +79,7 @@ function EditAcademicYearPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -91,7 +92,7 @@ function EditAcademicYearPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => router.push(`/academic-years/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         onReset={async () => { await refetch(); }}
       />
     </AdminPageSection>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { TrainingSystemFormValues } from "../../_component";
 
 function EditTrainingSystemPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/training-systems");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditTrainingSystemPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được hệ đào tạo");
-      router.push("/training-systems");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -49,7 +50,7 @@ function EditTrainingSystemPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật hệ đào tạo "${(variables.name as string)?.trim()}"`);
-      router.push(`/training-systems/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật hệ đào tạo";
@@ -66,7 +67,7 @@ function EditTrainingSystemPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -79,7 +80,7 @@ function EditTrainingSystemPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => router.push(`/training-systems/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         onReset={async () => { await refetch(); }}
       />
     </AdminPageSection>

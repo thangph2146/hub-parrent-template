@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -16,7 +17,7 @@ import {
 import type { GuideFormData } from "../_component";
 
 function NewGuidePageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/guides");
   const queryClient = useQueryClient();
   const { form, resetForm } = useGuideForm();
 
@@ -40,7 +41,7 @@ function NewGuidePageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo nhóm hướng dẫn "${variables.sectionKey}"`);
-      router.push("/guides");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo nhóm hướng dẫn";
@@ -59,7 +60,7 @@ function NewGuidePageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        onBack={() => router.push("/guides")}
+        onBack={() => crudNav.list()}
         onReset={resetForm}
       />
     </AdminPageSection>

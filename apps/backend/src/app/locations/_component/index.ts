@@ -1,11 +1,10 @@
 export type { LocationRow, LocationFormValues, LocationConfirmAction, LocationDetail } from "./types";
 export { locationFormSchema } from "./types";
 export { getLocationColumns } from "./columns";
-export {
+export { 
   useLocationDetailQuery,
   useLocationsListQuery,
-  useLocationsTrashQuery,
-} from "./_query";
+  useLocationsTrashQuery, locationDetailQueryKey, prefetchLocationDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

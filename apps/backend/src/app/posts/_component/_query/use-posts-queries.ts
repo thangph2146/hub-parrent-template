@@ -1,5 +1,10 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { PostDetail, PostListRow } from "../types";
 
@@ -9,16 +14,41 @@ function toFilterQuery(filters: Record<string, unknown>): Record<string, string 
   );
 }
 
+
+export const postDetailQueryKey = (postId: string) =>
+  ["media", "posts", "detail", postId] as const;
+
+export function prefetchPostDetail(
+  queryClient: QueryClient,
+  api: StoreSyncSdk,
+  postId: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    postDetailQueryKey(postId),
+    () => api.posts.get<PostDetail>(postId)
+  );
+}
+
 export function usePostDetailQuery(
   api: StoreSyncSdk,
-  postId: string,
-): UseQueryResult<PostDetail> {
+  postId: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["media", "posts", "detail", postId],
-    queryFn: async (): Promise<PostDetail> =>
-      api.posts.get<PostDetail>(postId),
-    enabled: !!postId,
-    staleTime: 2 * 60 * 1000,
+    ...adminDetailQueryOptions(
+      postDetailQueryKey(postId),
+      async () => api.posts.get<PostDetail>(postId),
+      postId
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<PostListRow, PostDetail>(
+        queryClient,
+        ["media", "posts"],
+        postId,
+        (row) => row as unknown as PostDetail
+      ),
   });
 }
 

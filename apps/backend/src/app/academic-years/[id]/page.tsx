@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, CalendarDays, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import {
@@ -49,7 +50,7 @@ function formatDateRange(
 }
 
 function AcademicYearDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/academic-years");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -60,9 +61,9 @@ function AcademicYearDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được niên khóa");
-      router.push("/academic-years");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -85,8 +86,8 @@ function AcademicYearDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/academic-years")}
-        onEdit={canUpdate ? () => router.push(`/academic-years/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

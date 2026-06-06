@@ -1,1 +1,1 @@
-export { useCameraDetailQuery, useCamerasListQuery, useCamerasTrashQuery } from "./use-cameras-queries";
+export {  useCameraDetailQuery, useCamerasListQuery, useCamerasTrashQuery , cameraDetailQueryKey, prefetchCameraDetail } from "./use-cameras-queries";

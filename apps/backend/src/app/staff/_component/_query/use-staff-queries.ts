@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/api-client";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { ApiError, api } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
 import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session";

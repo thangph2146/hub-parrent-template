@@ -34,14 +34,13 @@ export { useGuideForm, buildGuidePayload, guideFormSchema } from "./_hooks";
 export type { GuideFormValues } from "./_hooks";
 
 // Query hooks
-export {
+export { 
   useGuidesQuery,
   useGuideDetailQuery,
   useCreateGuideMutation,
   useUpdateGuideMutation,
   useDeleteGuideMutation,
-  useReorderGuidesMutation,
-} from "./_query";
+  useReorderGuidesMutation, guideDetailQueryKey, prefetchGuideDetail } from "./_query";
 
 // Form components
 export { GuideFormShell, StepEditor, ImageUploadField } from "./_form";

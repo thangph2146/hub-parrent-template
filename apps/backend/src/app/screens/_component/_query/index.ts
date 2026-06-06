@@ -1,1 +1,1 @@
-export { useScreenDetailQuery, useScreensListQuery, useScreensTrashQuery } from "./use-screens-queries";
+export {  useScreenDetailQuery, useScreensListQuery, useScreensTrashQuery , screenDetailQueryKey, prefetchScreenDetail } from "./use-screens-queries";

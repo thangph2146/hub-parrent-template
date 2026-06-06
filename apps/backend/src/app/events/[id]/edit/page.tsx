@@ -2,9 +2,10 @@
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, useEventDetailQuery, buildEventPayload } from "../../_component";
@@ -84,7 +85,7 @@ function buildFormValues(entity: EventDetail, speakers: EventFormSpeaker[]): Eve
 }
 
 function EditEventPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/events");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -92,7 +93,7 @@ function EditEventPageInner() {
   const { data: entity, isLoading, isError, refetch } = useEventDetailQuery(api, id);
   const [existingSpeakers, setExistingSpeakers] = useState<{ id: string; speakerId: number }[]>([]);
 
-  useEffect(() => { if (isError) { toast.error("Không tải được sự kiện"); router.push("/events"); } }, [isError, router]);
+  useEffect(() => { if (isError) { toast.error("Không tải được sự kiện"); crudNav.list(); } }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -121,7 +122,7 @@ function EditEventPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật sự kiện "${(variables.title as string)?.trim()}"`);
-      router.push(`/events/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : "Không thể cập nhật sự kiện"); },
   });
@@ -158,13 +159,13 @@ function EditEventPageInner() {
     ]);
   }, [updateMutation, existingSpeakers, id]);
 
-  if (isLoading) return <AdminPageLoading />;
+  if (isLoading) return <AdminPageLoading variant="form" />;
   if (!entity) return null;
 
   return (
     <AdminPageSection>
       <EventFormShell form={form} onSubmit={handleSubmit} submitting={updateMutation.isPending} editingId={id}
-        onBack={() => router.push(`/events/${id}`)} onReset={async () => { await refetch(); }} />
+        onBack={() => crudNav.view(String(id))} onReset={async () => { await refetch(); }} />
     </AdminPageSection>
   );
 }

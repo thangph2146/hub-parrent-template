@@ -24,6 +24,7 @@ export interface EventsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: EventRow[]) => Promise<void>
   onBulkPurge: (rows: EventRow[]) => Promise<void>
+  onRowPrefetch?: (row: EventRow) => void
 }
 
 export function EventsTable({
@@ -40,6 +41,7 @@ export function EventsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: EventsTableProps) {
   return (
     <AdminDataTable<EventRow>
@@ -56,6 +58,11 @@ export function EventsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("events", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

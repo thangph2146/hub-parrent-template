@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { AlertCircle, Building2, Plus } from "lucide-react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useAuth } from "@/providers/auth-provider";
@@ -23,17 +23,21 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   TrainingSystemsTable,
   TrainingSystemsTrashTable,
-  getTrainingSystemColumns,  useColumnFiltersChange,
+  getTrainingSystemColumns,
+  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useTrainingSystemsListQuery,
   useTrainingSystemsTrashQuery,
+  prefetchTrainingSystemDetail,
 } from "./_component";
 import type { TrainingSystemRow } from "./_component";
 
 function TrainingSystemsPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/training-systems", {
+    prefetchDetail: (id) => prefetchTrainingSystemDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.TRAINING_SYSTEMS_MANAGE) ||
@@ -128,14 +132,14 @@ function TrainingSystemsPageInner() {
     () =>
       getTrainingSystemColumns({
         view: "list",
-        openDetail: (row) => router.push(`/training-systems/${row.id}`),
-        openEdit: (row) => router.push(`/training-systems/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete],
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete],
   );
 
 
@@ -162,7 +166,7 @@ function TrainingSystemsPageInner() {
           <>{canWrite && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/training-systems/new")}
+              onClick={() => crudNav.new()}
             >
               <Plus className="size-5" aria-hidden /> Thêm hệ đào tạo
             </AdminPageHeaderPrimaryButton>
@@ -202,6 +206,8 @@ function TrainingSystemsPageInner() {
           ) : null}
 
           <TrainingSystemsTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

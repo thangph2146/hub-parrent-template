@@ -80,6 +80,8 @@ interface ContactRequestTableProps {
 
   onClearFilters: () => void;
 
+  onRowPrefetch?: (row: ContactRequest) => void;
+
   listParams: {
     search?: string;
     filters?: Record<string, string>;
@@ -147,6 +149,8 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
 
     onClearFilters,
 
+    onRowPrefetch,
+
     listParams,
 
   } = props;
@@ -213,6 +217,12 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
       globalFilterPlaceholder="Tìm theo tên, email, tiêu đề…"
 
       onClearFilters={onClearFilters}
+
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
 
       clearFiltersVariant="destructive"
 

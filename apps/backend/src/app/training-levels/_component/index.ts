@@ -1,11 +1,10 @@
 export type { TrainingLevelRow, TrainingLevelFormValues, TrainingLevelConfirmAction, TrainingLevelDetail } from "./types";
 export { entityFormSchema } from "./types";
 export { getTrainingLevelColumns } from "./columns";
-export {
+export { 
   useTrainingLevelDetailQuery,
   useTrainingLevelsListQuery,
-  useTrainingLevelsTrashQuery,
-} from "./_query";
+  useTrainingLevelsTrashQuery, trainingLevelDetailQueryKey, prefetchTrainingLevelDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

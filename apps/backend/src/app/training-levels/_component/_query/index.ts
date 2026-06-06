@@ -1,18 +1,49 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { TrainingLevelDetail, TrainingLevelRow } from "../types";
 
+
+export const trainingLevelDetailQueryKey = (id: string) =>
+  ["training-levels", "detail", id] as const;
+
+export function prefetchTrainingLevelDetail(
+  queryClient: QueryClient,
+  api: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    trainingLevelDetailQueryKey(id),
+    () => api.trainingLevels.get<TrainingLevelDetail>(id)
+  );
+}
+
 export function useTrainingLevelDetailQuery(
-  apiParam: StoreSyncSdk,
-  id: string,
-): UseQueryResult<TrainingLevelDetail> {
+  api: StoreSyncSdk,
+  id: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["training-levels", "detail", id],
-    queryFn: async (): Promise<TrainingLevelDetail> =>
-      apiParam.trainingLevels.get<TrainingLevelDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      trainingLevelDetailQueryKey(id),
+      async () => api.trainingLevels.get<TrainingLevelDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<TrainingLevelRow, TrainingLevelDetail>(
+        queryClient,
+        ["training-levels", "list"],
+        id,
+        (row) => row as unknown as TrainingLevelDetail
+      ),
   });
 }
 

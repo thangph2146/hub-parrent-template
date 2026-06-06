@@ -1,6 +1,7 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useEffect } from "react"
 import { useStaffForm, useStaffMutations } from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
@@ -15,7 +16,7 @@ import { canEditProtectedAdminUser } from "@/config/protected-admin"
 
 function EditStaffPageInner() {
   const params = useParams()
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/staff");
   const { user: session } = useAuth()
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
@@ -51,7 +52,7 @@ function EditStaffPageInner() {
     const payload = getPayload()
     try {
       await updateMutation.mutateAsync({ id: user.id, input: payload })
-      router.push(`/staff/${userId}`)
+      crudNav.view(String(userId))
     } catch {
       // Error handled by mutation
     }
@@ -59,7 +60,7 @@ function EditStaffPageInner() {
 
   const handleCancel = () => {
     resetForm()
-    router.push(`/staff/${userId}`)
+    crudNav.view(String(userId))
   }
 
   if (!session || !canManageUsers) {
@@ -67,7 +68,7 @@ function EditStaffPageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa nhân sự"
-          onBack={() => router.push(`/staff/${userId}`)}
+          onBack={() => crudNav.view(String(userId))}
           formId="staff-form"
         />
         <Card>
@@ -84,7 +85,7 @@ function EditStaffPageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa nhân sự"
-          onBack={() => router.push(`/staff/${userId}`)}
+          onBack={() => crudNav.view(String(userId))}
           formId="staff-form"
         />
         <div className="py-12 text-center">
@@ -99,7 +100,7 @@ function EditStaffPageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Sửa nhân sự"
-          onBack={() => router.push(`/staff/${userId}`)}
+          onBack={() => crudNav.view(String(userId))}
           formId="staff-form"
         />
         <Card>

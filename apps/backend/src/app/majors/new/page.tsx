@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,7 +15,7 @@ import {
 import type { MajorFormValues } from "../_component";
 
 function NewMajorPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/majors");
   const queryClient = useQueryClient();
   const { form } = useMajorForm();
 
@@ -28,7 +29,7 @@ function NewMajorPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo ngành học "${(variables.name as string)?.trim()}"`);
-      router.push("/majors");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo ngành học";
@@ -50,7 +51,7 @@ function NewMajorPageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        onBack={() => router.push("/majors")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

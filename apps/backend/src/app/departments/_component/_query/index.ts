@@ -1,1 +1,1 @@
-export { useDepartmentDetailQuery, useDepartmentsListQuery, useDepartmentsTrashQuery } from "./use-departments-queries";
+export {  useDepartmentDetailQuery, useDepartmentsListQuery, useDepartmentsTrashQuery , departmentDetailQueryKey, prefetchDepartmentDetail } from "./use-departments-queries";

@@ -1,11 +1,10 @@
 export type { TrainingSystemRow, TrainingSystemFormValues, TrainingSystemConfirmAction, TrainingSystemDetail } from "./types";
 export { entityFormSchema } from "./types";
 export { getTrainingSystemColumns } from "./columns";
-export {
+export { 
   useTrainingSystemDetailQuery,
   useTrainingSystemsListQuery,
-  useTrainingSystemsTrashQuery,
-} from "./_query";
+  useTrainingSystemsTrashQuery, trainingSystemDetailQueryKey, prefetchTrainingSystemDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

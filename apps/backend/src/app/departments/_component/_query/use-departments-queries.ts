@@ -1,13 +1,48 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { DepartmentDetail, DepartmentRow } from "../types";
 
-export function useDepartmentDetailQuery(api: StoreSyncSdk, id: string) {
+
+export const departmentDetailQueryKey = (id: string) =>
+  ["departments", "detail", id] as const;
+
+export function prefetchDepartmentDetail(
+  queryClient: QueryClient,
+  api: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    departmentDetailQueryKey(id),
+    () => api.departments.get<DepartmentDetail>(id)
+  );
+}
+
+export function useDepartmentDetailQuery(
+  api: StoreSyncSdk,
+  id: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["departments", "detail", id],
-    queryFn: () => api.departments.get<DepartmentDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      departmentDetailQueryKey(id),
+      async () => api.departments.get<DepartmentDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<DepartmentRow, DepartmentDetail>(
+        queryClient,
+        ["departments", "list"],
+        id,
+        (row) => row as unknown as DepartmentDetail
+      ),
   });
 }
 

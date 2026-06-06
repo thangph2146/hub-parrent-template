@@ -1,16 +1,20 @@
 "use client"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
 import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
+import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
 import { Headset } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import { useContactRequests } from "@/hooks/queries"
+import {
+  prefetchContactRequestDetail,
+  useContactRequests,
+} from "@/hooks/queries"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { useAuth } from "@/providers/auth-provider"
 import {
@@ -47,7 +51,10 @@ function ContactRequestsPageInner() {
     ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_UPDATE) ||
       canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_MANAGE)
     : false;
-  const router = useRouter()
+  const queryClient = useQueryClient()
+  const crudNav = useAdminCrudNavigation("/contact-requests", {
+    prefetchDetail: (id) => prefetchContactRequestDetail(queryClient, id),
+  })
 
   const [tab, setTab] = useState<"list" | "trash">("list")
   const [listSelection, setListSelection] = useState<RowSelectionState>({})
@@ -146,9 +153,9 @@ function ContactRequestsPageInner() {
 
   const handleView = useCallback(
     (contact: ContactRequest) => {
-      router.push(`/contact-requests/${contact.id}`)
+      crudNav.view(String(contact.id))
     },
-    [router]
+    [crudNav]
   )
 
   const handleDelete = useCallback(
@@ -271,6 +278,7 @@ function ContactRequestsPageInner() {
 
         <TabsContent value="list" className="mt-0">
           <ContactRequestTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
             data={activeItems}
             isLoading={activeQuery.isLoading}
             total={activeTotal}

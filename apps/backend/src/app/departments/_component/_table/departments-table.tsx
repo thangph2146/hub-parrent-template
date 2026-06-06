@@ -24,6 +24,7 @@ export interface DepartmentsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: DepartmentRow[]) => Promise<void>
   onBulkPurge: (rows: DepartmentRow[]) => Promise<void>
+  onRowPrefetch?: (row: DepartmentRow) => void
 }
 
 export function DepartmentsTable({
@@ -40,6 +41,7 @@ export function DepartmentsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: DepartmentsTableProps) {
   return (
     <AdminDataTable<DepartmentRow>
@@ -56,6 +58,11 @@ export function DepartmentsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("departments", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

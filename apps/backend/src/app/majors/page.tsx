@@ -8,10 +8,10 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { useRouter } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { AlertCircle, GraduationCap, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
@@ -32,12 +32,15 @@ import {
   useClearTrashFilters,
   useMajorsListQuery,
   useMajorsTrashQuery,
+  prefetchMajorDetail,
 } from "./_component"
 import type { MajorRow } from "./_component"
 
 function MajorsPageInner() {
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/majors", {
+    prefetchDetail: (id) => prefetchMajorDetail(queryClient, api, id),
+  });
   const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.MAJORS_MANAGE) ||
@@ -159,14 +162,14 @@ function MajorsPageInner() {
     () =>
       getMajorColumns({
         view: "list",
-        openDetail: (row) => router.push(`/majors/${row.id}`),
-        openEdit: (row) => router.push(`/majors/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete]
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
   )
 
   const trashColumns = useMemo<ColumnDef<MajorRow>[]>(
@@ -190,7 +193,7 @@ function MajorsPageInner() {
         }
         actions={
           canWrite ? (
-            <AdminPageHeaderPrimaryButton type="button" onClick={() => router.push("/majors/new")}>
+            <AdminPageHeaderPrimaryButton type="button" onClick={() => crudNav.new()}>
               <Plus className="size-5" aria-hidden /> Thêm ngành học
             </AdminPageHeaderPrimaryButton>
           ) : undefined
@@ -249,6 +252,8 @@ function MajorsPageInner() {
           ) : null}
 
           <MajorsTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

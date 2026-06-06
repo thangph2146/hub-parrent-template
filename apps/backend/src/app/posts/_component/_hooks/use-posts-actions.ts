@@ -1,6 +1,6 @@
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import type { PostConfirmAction, PostListRow } from "../types";
 
 export interface UsePostsActionsProps {

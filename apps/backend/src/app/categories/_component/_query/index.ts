@@ -1,18 +1,48 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { CategoryDetail, CategoryRow } from "../types";
 
+
+export const categoryDetailQueryKey = (categoryId: string) =>
+  ["categories", "detail", categoryId] as const;
+
+export function prefetchCategoryDetail(
+  queryClient: QueryClient,
+  api: StoreSyncSdk,
+  categoryId: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    categoryDetailQueryKey(categoryId),
+    () => api.categories.rawGet<CategoryDetail>(categoryId)
+  );
+}
+
 export function useCategoryDetailQuery(
   api: StoreSyncSdk,
-  categoryId: string,
-): UseQueryResult<CategoryDetail> {
+  categoryId: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["categories", "detail", categoryId],
-    queryFn: async (): Promise<CategoryDetail> =>
-      api.categories.rawGet<CategoryDetail>(categoryId),
-    enabled: !!categoryId,
-    staleTime: 2 * 60 * 1000,
+    ...adminDetailQueryOptions(
+      categoryDetailQueryKey(categoryId),
+      async () => api.categories.rawGet<CategoryDetail>(categoryId),
+      categoryId
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<CategoryRow, CategoryDetail>(
+        queryClient,
+        ["categories", "list"],
+        categoryId,
+        (row) => row as unknown as CategoryDetail
+      ),
   });
 }
 

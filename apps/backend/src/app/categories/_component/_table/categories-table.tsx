@@ -26,6 +26,7 @@ export interface CategoriesTableProps {
   onBulkDelete: (rows: CategoryRow[]) => Promise<void>
   onBulkPurge: (rows: CategoryRow[]) => Promise<void>
   canSelectRow?: (row: Row<CategoryRow>) => boolean
+  onRowPrefetch?: (row: CategoryRow) => void
 }
 
 export function CategoriesTable({
@@ -43,6 +44,7 @@ export function CategoriesTable({
   onBulkDelete,
   onBulkPurge,
   canSelectRow,
+  onRowPrefetch,
 }: CategoriesTableProps) {
   return (
     <AdminDataTable<CategoryRow>
@@ -61,8 +63,14 @@ export function CategoriesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên, slug, mô tả..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("categories", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("categories", { pageCount: data.length, total })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={canSelectRow}
       bulkActions={[
         {

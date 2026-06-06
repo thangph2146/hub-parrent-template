@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import type { LocationConfirmAction, LocationFormValues } from "../types";
 import { locationFormSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";

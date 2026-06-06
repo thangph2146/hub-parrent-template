@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useContactRequestDetail } from "@/hooks/queries";
 import { useUpdateContactRequest } from "../_component/_query";
 import { Switch } from "@ui/components/switch";
@@ -45,7 +46,7 @@ import { cn } from "@ui/lib/utils";
 
 function ContactRequestDetailPageInner() {
   const params = useParams();
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/contact-requests");
   const contactId = params.id as string;
   const contactQuery = useContactRequestDetail(contactId);
   const contact = contactQuery.data as ContactRequest | undefined;
@@ -115,7 +116,7 @@ function ContactRequestDetailPageInner() {
       <AdminDetailPageHeader
         title="Chi tiết yêu cầu liên hệ"
         variant="module"
-        onBack={() => router.push("/contact-requests")}
+        onBack={() => crudNav.list()}
       />
 
       <AdminDetailLayout>

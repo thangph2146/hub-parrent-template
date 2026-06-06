@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,7 +15,7 @@ import {
 import type { CourseFormValues } from "../_component";
 
 function NewCoursePageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/courses");
   const queryClient = useQueryClient();
   const { form } = useCourseForm();
 
@@ -28,7 +29,7 @@ function NewCoursePageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo khóa học "${(variables.name as string)?.trim()}"`);
-      router.push("/courses");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo khóa học";
@@ -50,7 +51,7 @@ function NewCoursePageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        onBack={() => router.push("/courses")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

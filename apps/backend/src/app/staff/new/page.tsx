@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useStaffForm, useStaffMutations } from "../_component";
 import { StaffFormShell } from "../_component/_form";
 import { useRbacCatalog } from "@/hooks/queries";
@@ -11,7 +12,7 @@ import { Card, CardContent } from "@ui/components/card";
 import { api } from "@/lib/api";
 
 function NewStaffPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/staff");
   const { user: session } = useAuth();
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE);
@@ -29,7 +30,7 @@ function NewStaffPageInner() {
       <AdminPageSection>
         <AdminFormPageHeader
           title="Thêm nhân sự mới"
-          onBack={() => router.push("/staff")}
+          onBack={() => crudNav.list()}
           formId="staff-form"
         />
         <Card>
@@ -50,7 +51,7 @@ function NewStaffPageInner() {
     const payload = getPayload();
     try {
       await createMutation.mutateAsync(payload);
-      router.push("/staff");
+      crudNav.list();
     } catch {
       // Error handled by mutation
     }
@@ -58,7 +59,7 @@ function NewStaffPageInner() {
 
   const handleCancel = () => {
     resetForm();
-    router.push("/staff");
+    crudNav.list();
   };
 
   return (

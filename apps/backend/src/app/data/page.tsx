@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Button } from "@ui/components/button";
 import { Input } from "@ui/components/input";
 import { Badge } from "@ui/components/badge";

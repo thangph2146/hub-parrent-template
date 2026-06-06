@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import NextTopLoader from "nextjs-toploader"
-import { Toaster, type ToasterProps } from "sonner"
+import { Toaster, type ToasterProps } from "../sonner"
 import { ThemeProvider } from "../theme-provider"
 import { TextSizeProvider } from "../text-size-provider"
 

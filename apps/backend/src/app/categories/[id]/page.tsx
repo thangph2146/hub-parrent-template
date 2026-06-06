@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, createElement } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -118,7 +119,8 @@ function DetailSidebar({ category, ParentIcon }: { category: CategoryDetail; Par
 }
 
 function CategoryDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/categories");
+  const postsNav = useAdminCrudNavigation("/posts");
   const params = useParams();
   const categoryId = params.id as string;
   const { user } = useAuth();
@@ -129,9 +131,9 @@ function CategoryDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được danh mục");
-      router.push("/categories");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
 
@@ -151,9 +153,9 @@ function CategoryDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/categories")}
+        onBack={() => crudNav.list()}
         onEdit={
-          canUpdate ? () => router.push(`/categories/${categoryId}/edit`) : undefined
+          canUpdate ? () => crudNav.edit(String(categoryId)) : undefined
         }
       />
 
@@ -215,7 +217,7 @@ function CategoryDetailInner() {
                           <span>{child.postCount} bài</span>
                         </div>
                       }
-                      onClick={() => router.push(`/categories/${child.id}`)}
+                      onClick={() => crudNav.view(String(child.id))}
                     />
                   ))}
                 </div>
@@ -244,7 +246,7 @@ function CategoryDetailInner() {
                           {post.published ? "Đã đăng" : "Nháp"}
                         </Badge>
                       }
-                      onClick={() => router.push(`/posts/${post.id}`)}
+                      onClick={() => postsNav.view(String(post.id))}
                     />
                   ))}
                 </div>

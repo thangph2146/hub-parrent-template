@@ -25,6 +25,7 @@ export interface SeoMetasTableProps {
   onBulkDelete?: (rows: SeoMetaRow[]) => Promise<void>
   onBulkRestore?: (rows: SeoMetaRow[]) => Promise<void>
   onBulkPurge?: (rows: SeoMetaRow[]) => Promise<void>
+  onRowPrefetch?: (row: SeoMetaRow) => void
 }
 
 export function SeoMetasTable({
@@ -42,6 +43,7 @@ export function SeoMetasTable({
   onBulkDelete,
   onBulkRestore,
   onBulkPurge,
+  onRowPrefetch,
 }: SeoMetasTableProps) {
   const bulkActions = [
     ...(onBulkRestore
@@ -111,6 +113,11 @@ export function SeoMetasTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo đường dẫn..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}

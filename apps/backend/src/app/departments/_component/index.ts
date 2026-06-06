@@ -1,11 +1,10 @@
 export type { DepartmentRow, DepartmentFormValues, DepartmentConfirmAction, DepartmentDetail } from "./types";
 export { departmentFormSchema } from "./types";
 export { getDepartmentColumns } from "./columns";
-export {
+export { 
   useDepartmentDetailQuery,
   useDepartmentsListQuery,
-  useDepartmentsTrashQuery,
-} from "./_query";
+  useDepartmentsTrashQuery, departmentDetailQueryKey, prefetchDepartmentDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

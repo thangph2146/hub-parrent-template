@@ -1,6 +1,11 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { EventDetail, EventRow } from "../types";
 
@@ -9,18 +14,44 @@ export type EventLiveQueryOptions = {
   refetchInterval?: number | false;
 };
 
+
+export const eventDetailQueryKey = (id: string) =>
+  ["events", "detail", id] as const;
+
+export function prefetchEventDetail(
+  queryClient: QueryClient,
+  apiParam: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    eventDetailQueryKey(id),
+    () => apiParam.events.get<EventDetail>(id)
+  );
+}
+
 export function useEventDetailQuery(
   apiParam: StoreSyncSdk,
   id: string,
-  options?: EventLiveQueryOptions,
-): UseQueryResult<EventDetail> {
+  options?: EventLiveQueryOptions
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["events", "detail", id],
-    queryFn: async (): Promise<EventDetail> => apiParam.events.get<EventDetail>(id),
+    ...adminDetailQueryOptions(
+      eventDetailQueryKey(id),
+      async () => apiParam.events.get<EventDetail>(id),
+      id
+    ),
+    ...options,
     enabled: !!id && (options?.enabled ?? true),
-    refetchInterval: options?.refetchInterval,
-    refetchIntervalInBackground: Boolean(options?.refetchInterval),
-    structuralSharing: false,
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<EventRow, EventDetail>(
+        queryClient,
+        ["events", "list"],
+        id,
+        (row) => row as unknown as EventDetail
+      ),
   });
 }
 

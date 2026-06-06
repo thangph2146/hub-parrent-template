@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -17,7 +18,7 @@ import { usePostDetailQuery, useCategoriesQuery, useTagsQuery } from "../../_com
 import type { PostFormValues } from "../../_component";
 
 function EditPostPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/posts");
   const params = useParams();
   const postId = params.id as string;
   const queryClient = useQueryClient();
@@ -35,9 +36,9 @@ function EditPostPageInner() {
   useEffect(() => {
     if (error) {
       toast.error("Không tải được bài viết");
-      router.push("/posts");
+      crudNav.list();
     }
-  }, [error, router]);
+  }, [error, crudNav]);
 
   useEffect(() => {
     if (!post) return;
@@ -61,7 +62,7 @@ function EditPostPageInner() {
     onSuccess: async (_data, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["media", "posts"] });
       toast.success(`Đã cập nhật bài viết "${(variables.title as string)?.trim()}"`);
-      router.push(`/posts/${postId}`);
+      crudNav.view(String(postId));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật bài viết";
@@ -89,7 +90,7 @@ function EditPostPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -104,7 +105,7 @@ function EditPostPageInner() {
         editingId={postId}
         categoryTreeOptions={categoryTreeOptions}
         tagsOptions={tagsQuery.data ?? []}
-        onBack={() => router.push(`/posts/${postId}`)}
+        onBack={() => crudNav.view(String(postId))}
         onReset={async () => {
           await refetch();
         }}

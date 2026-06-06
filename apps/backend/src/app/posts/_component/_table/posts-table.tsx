@@ -35,6 +35,7 @@ export interface PostsTableProps {
     search?: string
     filters?: Record<string, unknown>
   }
+  onRowPrefetch?: (row: PostListRow) => void
 }
 
 export function PostsTable({
@@ -58,6 +59,7 @@ export function PostsTable({
   canExport,
   canDelete,
   listQuery,
+  onRowPrefetch,
 }: PostsTableProps) {
   return (
     <AdminDataTable<PostListRow>
@@ -74,6 +76,11 @@ export function PostsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tiêu đề, slug..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={canExport ? buildAdminTableXlsxExport("posts", { pageCount: data.length, total }) : undefined}
       exportFetchPage={

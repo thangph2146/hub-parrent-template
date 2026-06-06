@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, GraduationCap, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import {
@@ -24,7 +25,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function MajorDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/majors");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -35,9 +36,9 @@ function MajorDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được ngành học");
-      router.push("/majors");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -54,8 +55,8 @@ function MajorDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/majors")}
-        onEdit={canUpdate ? () => router.push(`/majors/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

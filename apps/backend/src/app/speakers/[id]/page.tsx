@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -52,7 +53,7 @@ function initials(name: string): string {
 }
 
 function SpeakerDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/speakers");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -65,9 +66,9 @@ function SpeakerDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được diễn giả");
-      router.push("/speakers");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -78,8 +79,8 @@ function SpeakerDetailInner() {
         title={entity.name}
         subtitle={<span className="text-muted-foreground/60">Diễn giả</span>}
         variant="entity"
-        onBack={() => router.push("/speakers")}
-        onEdit={canUpdate ? () => router.push(`/speakers/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

@@ -1,18 +1,49 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { LocationDetail, LocationRow } from "../types";
 
+
+export const locationDetailQueryKey = (id: string) =>
+  ["locations", "detail", id] as const;
+
+export function prefetchLocationDetail(
+  queryClient: QueryClient,
+  apiParam: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    locationDetailQueryKey(id),
+    () => apiParam.locations.get<LocationDetail>(id)
+  );
+}
+
 export function useLocationDetailQuery(
   apiParam: StoreSyncSdk,
-  id: string,
-): UseQueryResult<LocationDetail> {
+  id: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["locations", "detail", id],
-    queryFn: async (): Promise<LocationDetail> =>
-      apiParam.locations.get<LocationDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      locationDetailQueryKey(id),
+      async () => apiParam.locations.get<LocationDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<LocationRow, LocationDetail>(
+        queryClient,
+        ["locations", "list"],
+        id,
+        (row) => row as unknown as LocationDetail
+      ),
   });
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Loader2, ImagePlus, X } from "lucide-react";
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";

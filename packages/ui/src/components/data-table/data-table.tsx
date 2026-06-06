@@ -266,6 +266,8 @@ export type AdminDataTableProps<TData> = {
   /** Mở toàn bộ nhánh cây lúc đầu */
   defaultExpandedAll?: boolean
   getRowClassName?: (row: Row<TData>) => string | undefined
+  /** Hover dòng — dùng prefetch route/detail trước khi user bấm Xem/Sửa. */
+  onRowPointerEnter?: (row: Row<TData>) => void
   /** Ô tìm nhanh (chuỗi do bạn cung cấp cho mỗi dòng) */
   getGlobalFilterText?: (row: TData) => string
   globalFilterPlaceholder?: string
@@ -711,6 +713,7 @@ export function AdminDataTable<TData>({
   emptyLabel = "Không có dữ liệu",
   defaultExpandedAll = true,
   getRowClassName,
+  onRowPointerEnter,
   getGlobalFilterText,
   globalFilterPlaceholder = "Tìm trong bảng…",
   manualFiltering = false,
@@ -1925,6 +1928,11 @@ export function AdminDataTable<TData>({
                                     ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
                                     : undefined,
                               }}
+                              onPointerEnter={
+                                onRowPointerEnter
+                                  ? () => onRowPointerEnter(row)
+                                  : undefined
+                              }
                             >
                               {row.getVisibleCells().map((cell) => {
                                 const colIndex = cell.column.getIndex()

@@ -7,10 +7,10 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { useRouter } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { AlertCircle, Monitor, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
@@ -32,12 +32,15 @@ import {
   useClearTrashFilters,
   useScreensListQuery,
   useScreensTrashQuery,
+  prefetchScreenDetail,
 } from "./_component"
 import type { ScreenRow } from "./_component"
 
 function ScreensPageInner() {
-  const router = useRouter(),
-    queryClient = useQueryClient(),
+  const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation(`/screens`, {
+    prefetchDetail: (id) => prefetchScreenDetail(queryClient, api, id),
+  }),
     { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.SCREENS_MANAGE) ||
@@ -123,14 +126,14 @@ function ScreensPageInner() {
     () =>
       getScreenColumns({
         view: "list",
-        openDetail: (r) => router.push(`/screens/${r.id}`),
-        openEdit: (r) => router.push(`/screens/${r.id}/edit`),
+        openDetail: (r) => crudNav.view(String(r.id)),
+        openEdit: (r) => crudNav.edit(String(r.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete]
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<ScreenRow>[]>(
     () => getScreenColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
@@ -144,7 +147,7 @@ function ScreensPageInner() {
         subtitle="Quản lý màn hình."
         actions={
           canWrite ? (
-            <AdminPageHeaderPrimaryButton onClick={() => router.push("/screens/new")}>
+            <AdminPageHeaderPrimaryButton onClick={() => crudNav.new()}>
               <Plus className="size-5" /> Thêm màn hình
             </AdminPageHeaderPrimaryButton>
           ) : undefined
@@ -200,6 +203,8 @@ function ScreensPageInner() {
             </div>
           ) : null}
           <ScreensTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQ.data ?? []}
             columns={cols}
             isLoading={listQ.isLoading}

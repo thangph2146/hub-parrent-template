@@ -24,6 +24,7 @@ export interface CoursesTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: CourseRow[]) => Promise<void>
   onBulkPurge: (rows: CourseRow[]) => Promise<void>
+  onRowPrefetch?: (row: CourseRow) => void
 }
 
 export function CoursesTable({
@@ -40,6 +41,7 @@ export function CoursesTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: CoursesTableProps) {
   return (
     <AdminDataTable<CourseRow>
@@ -56,8 +58,14 @@ export function CoursesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("courses", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("courses", { pageCount: data.length, total })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-course-delete",

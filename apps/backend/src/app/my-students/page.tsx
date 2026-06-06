@@ -5,7 +5,7 @@ import type { ColumnFiltersState } from "@tanstack/react-table"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { GraduationCap, Plus, BarChart3 } from "lucide-react"
 import { Button } from "@ui/components/button"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import {
   AdminListPageHeader,
   AdminPageGuard,

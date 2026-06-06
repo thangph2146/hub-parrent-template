@@ -23,7 +23,7 @@ import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar }
 import { Controller } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
 import type { StaffFormValues } from "../_hooks/use-staff-form"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 
 export interface StaffFormShellProps {
   isEdit: boolean

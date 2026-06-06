@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, BookOpen, CalendarDays, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import {
@@ -37,7 +38,7 @@ function formatDepartmentCode(value: number | null | undefined): string {
 }
 
 function CourseDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/courses");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -48,9 +49,9 @@ function CourseDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được khóa học");
-      router.push("/courses");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -73,8 +74,8 @@ function CourseDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/courses")}
-        onEdit={canUpdate ? () => router.push(`/courses/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

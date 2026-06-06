@@ -1,18 +1,49 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { MajorDetail, MajorRow } from "../types";
 
+
+export const majorDetailQueryKey = (id: string) =>
+  ["majors", "detail", id] as const;
+
+export function prefetchMajorDetail(
+  queryClient: QueryClient,
+  apiParam: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    majorDetailQueryKey(id),
+    () => apiParam.majors.get<MajorDetail>(id)
+  );
+}
+
 export function useMajorDetailQuery(
   apiParam: StoreSyncSdk,
-  id: string,
-): UseQueryResult<MajorDetail> {
+  id: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["majors", "detail", id],
-    queryFn: async (): Promise<MajorDetail> =>
-      apiParam.majors.get<MajorDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      majorDetailQueryKey(id),
+      async () => apiParam.majors.get<MajorDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<MajorRow, MajorDetail>(
+        queryClient,
+        ["majors", "list"],
+        id,
+        (row) => row as unknown as MajorDetail
+      ),
   });
 }
 

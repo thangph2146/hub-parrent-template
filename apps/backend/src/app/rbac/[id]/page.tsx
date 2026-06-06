@@ -1,7 +1,8 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useAuth } from "@/providers/auth-provider"
 import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import {
@@ -47,7 +48,7 @@ function formatDateTime(value?: string | null) {
 
 function RoleDetailPageInner() {
   const params = useParams()
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/rbac");
   const { user: session } = useAuth()
   const roleId = params.id as string
 
@@ -130,7 +131,7 @@ function RoleDetailPageInner() {
         <AdminDetailPageHeader
           title="Chi tiết vai trò"
           variant="module"
-          onBack={() => router.push("/rbac")}
+          onBack={() => crudNav.list()}
         />
         <div className="flex items-center justify-center py-12">
           <p className="text-muted-foreground">Đang tải...</p>
@@ -145,7 +146,7 @@ function RoleDetailPageInner() {
         <AdminDetailPageHeader
           title="Chi tiết vai trò"
           variant="module"
-          onBack={() => router.push("/rbac")}
+          onBack={() => crudNav.list()}
         />
         <div className="flex items-center justify-center py-12">
           <p className="text-muted-foreground">Không tìm thấy vai trò</p>
@@ -166,12 +167,12 @@ function RoleDetailPageInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/rbac")}
+        onBack={() => crudNav.list()}
         onEdit={
           canManageRoles &&
           (!isSuperAdminRoleCode(role.code) ||
             canEditSuperAdminRole(session?.email))
-            ? () => router.push(`/rbac/${roleId}/edit`)
+            ? () => crudNav.edit(String(roleId))
             : undefined
         }
       />
@@ -353,7 +354,8 @@ function RoleDetailPageInner() {
               description={`${role.permissions.length} quyền được chọn.`}
             />
             <FieldSetContent variant="section" className="pt-0">
-              <div className="space-y-2">
+              <ScrollArea className="h-[calc(100vh-520px)] rounded-lg border border-border/60 bg-muted/10">
+                <div className="space-y-2 p-4">
                 {overviewGroups.length === 0 ? (
                   <p className="py-4 text-center text-xs text-muted-foreground">
                     Chưa có quyền nào được chọn.
@@ -378,7 +380,8 @@ function RoleDetailPageInner() {
                     </div>
                   ))
                 )}
-              </div>
+                </div>
+              </ScrollArea>
             </FieldSetContent>
           </FieldSet>
         </AdminDetailSidebar>

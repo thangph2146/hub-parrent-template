@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Input } from "@ui/components/input";
 import { FormFieldCol } from "@ui/components/typing";
 import { uploadPostImage } from "../utils";

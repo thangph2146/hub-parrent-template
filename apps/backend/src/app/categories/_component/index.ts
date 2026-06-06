@@ -30,4 +30,4 @@ export {
 } from "./_query";
 export { CategoryFormShell } from "./_form";
 export type { CategoryDetail, ChildCategory, RelatedPost } from "./types";
-export { useCategoryDetailQuery } from "./_query";
+export {  useCategoryDetailQuery , categoryDetailQueryKey, prefetchCategoryDetail } from "./_query";

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { Loader2, ArrowLeft, Globe, Hash, FileText, Calendar, Clock, Trash2 } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
@@ -31,7 +32,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function SeoMetaDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/seo-metas");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -51,7 +52,7 @@ function SeoMetaDetailInner() {
     return (
       <AdminPageSection>
         <p className="text-destructive">Không tìm thấy SEO metadata.</p>
-        <Button type="button" variant="outline" onClick={() => router.push("/seo-metas")}>
+        <Button type="button" variant="outline" onClick={() => crudNav.list()}>
           <ArrowLeft className="size-4" /> Quay lại
         </Button>
       </AdminPageSection>
@@ -64,8 +65,8 @@ function SeoMetaDetailInner() {
         title={`SEO: ${detail.page}`}
         subtitle={`Chi tiết SEO metadata cho trang "${detail.page}"`}
         variant="module"
-        onBack={() => router.push("/seo-metas")}
-        onEdit={canUpdate ? () => router.push(`/seo-metas/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

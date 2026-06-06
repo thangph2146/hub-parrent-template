@@ -25,6 +25,7 @@ export interface SpeakersTableProps {
   onBulkDelete: (rows: SpeakerRow[]) => Promise<void>
   onBulkPurge: (rows: SpeakerRow[]) => Promise<void>
   manualFiltering?: boolean
+  onRowPrefetch?: (row: SpeakerRow) => void
 }
 
 export function SpeakersTable({
@@ -42,6 +43,7 @@ export function SpeakersTable({
   onBulkDelete,
   onBulkPurge,
   manualFiltering: manualFilteringProp,
+  onRowPrefetch,
 }: SpeakersTableProps) {
   return (
     <AdminDataTable<SpeakerRow>
@@ -58,7 +60,13 @@ export function SpeakersTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
-      xlsxExport={buildAdminTableXlsxExport("speakers", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
+      xlsxExport={buildAdminTableXlsxExport("speakers", { pageCount: data.length, total })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-speaker-delete",

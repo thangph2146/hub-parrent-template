@@ -24,6 +24,7 @@ export interface TrainingSystemsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: TrainingSystemRow[]) => Promise<void>
   onBulkPurge: (rows: TrainingSystemRow[]) => Promise<void>
+  onRowPrefetch?: (row: TrainingSystemRow) => void
 }
 
 export function TrainingSystemsTable({
@@ -40,6 +41,7 @@ export function TrainingSystemsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: TrainingSystemsTableProps) {
   return (
     <AdminDataTable<TrainingSystemRow>
@@ -56,6 +58,11 @@ export function TrainingSystemsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("training-systems", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

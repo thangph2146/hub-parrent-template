@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { TagFormValues } from "../../_component";
 
 function EditTagPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/tags");
   const params = useParams();
   const tagId = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditTagPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được thẻ");
-      router.push("/tags");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!tag) return;
@@ -49,7 +50,7 @@ function EditTagPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật thẻ "${(variables.name as string)?.trim()}"`);
-      router.push(`/tags/${tagId}`);
+      crudNav.view(String(tagId));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật thẻ";
@@ -66,7 +67,7 @@ function EditTagPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -79,7 +80,7 @@ function EditTagPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={tagId}
-        onBack={() => router.push(`/tags/${tagId}`)}
+        onBack={() => crudNav.view(String(tagId))}
         onReset={async () => {
           await refetch();
         }}

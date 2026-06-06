@@ -44,6 +44,7 @@ interface StaffTableProps {
     q?: string;
     filters?: Record<string, string>;
   };
+  onRowPrefetch?: (row: StaffRow) => void;
 }
 
 export function StaffTable(props: StaffTableProps) {
@@ -83,6 +84,7 @@ export function StaffTable(props: StaffTableProps) {
     onClearFilters,
     roleOptions,
     listParams,
+    onRowPrefetch,
   } = props;
 
   const columns = getStaffColumns({
@@ -120,6 +122,11 @@ export function StaffTable(props: StaffTableProps) {
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo email, họ tên (API)…"
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
       bulkActions={[

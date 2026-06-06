@@ -1,20 +1,50 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { TagDetail, TagRow } from "../types";
 import { api } from "@/lib/api";
 import { buildTagsFilterQuery, toFilterQuery } from "../utils";
 
+
+export const tagDetailQueryKey = (tagId: string) =>
+  ["media", "tags", "detail", tagId] as const;
+
+export function prefetchTagDetail(
+  queryClient: QueryClient,
+  api: StoreSyncSdk,
+  tagId: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    tagDetailQueryKey(tagId),
+    () => api.tags.get<TagDetail>(tagId)
+  );
+}
+
 export function useTagDetailQuery(
   api: StoreSyncSdk,
-  tagId: string,
-): UseQueryResult<TagDetail> {
+  tagId: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["media", "tags", "detail", tagId],
-    queryFn: async (): Promise<TagDetail> =>
-      api.tags.get<TagDetail>(tagId),
-    staleTime: 2 * 60 * 1000,
-    enabled: !!tagId,
+    ...adminDetailQueryOptions(
+      tagDetailQueryKey(tagId),
+      async () => api.tags.get<TagDetail>(tagId),
+      tagId
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<TagRow, TagDetail>(
+        queryClient,
+        ["media", "tags", "tree"],
+        tagId,
+        (row) => row as unknown as TagDetail
+      ),
   });
 }
 

@@ -1,18 +1,49 @@
+import {
+  adminDetailPlaceholderFromList,
+  adminDetailQueryOptions,
+  prefetchAdminDetailQuery,
+} from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { AcademicYearDetail, AcademicYearRow } from "../types";
 
+
+export const academicYearDetailQueryKey = (id: string) =>
+  ["academic-years", "detail", id] as const;
+
+export function prefetchAcademicYearDetail(
+  queryClient: QueryClient,
+  apiParam: StoreSyncSdk,
+  id: string
+) {
+  return prefetchAdminDetailQuery(
+    queryClient,
+    academicYearDetailQueryKey(id),
+    () => apiParam.academicYears.get<AcademicYearDetail>(id)
+  );
+}
+
 export function useAcademicYearDetailQuery(
   apiParam: StoreSyncSdk,
-  id: string,
-): UseQueryResult<AcademicYearDetail> {
+  id: string
+) {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryKey: ["academic-years", "detail", id],
-    queryFn: async (): Promise<AcademicYearDetail> =>
-      apiParam.academicYears.get<AcademicYearDetail>(id),
-    enabled: !!id,
+    ...adminDetailQueryOptions(
+      academicYearDetailQueryKey(id),
+      async () => apiParam.academicYears.get<AcademicYearDetail>(id),
+      id
+    ),
+    placeholderData: () =>
+      adminDetailPlaceholderFromList<AcademicYearRow, AcademicYearDetail>(
+        queryClient,
+        ["academic-years", "list"],
+        id,
+        (row) => row as unknown as AcademicYearDetail
+      ),
   });
 }
 

@@ -1,11 +1,10 @@
 export type { SpeakerRow, SpeakerFormValues, SpeakerConfirmAction, SpeakerDetail } from "./types";
 export { speakerFormSchema } from "./types";
 export { getSpeakerColumns } from "./columns";
-export {
+export { 
   useSpeakerDetailQuery,
   useSpeakersListQuery,
-  useSpeakersTrashQuery,
-} from "./_query";
+  useSpeakersTrashQuery, speakerDetailQueryKey, prefetchSpeakerDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

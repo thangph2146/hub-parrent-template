@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -46,7 +47,7 @@ const LexicalEditor = dynamic(
 );
 
 function PostDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/posts");
   const params = useParams();
   const postId = params.id as string;
   const { user } = useAuth();
@@ -59,9 +60,9 @@ function PostDetailInner() {
   useEffect(() => {
     if (error) {
       toast.error("Không tải được bài viết");
-      router.push("/posts");
+      crudNav.list();
     }
-  }, [error, router]);
+  }, [error, crudNav]);
 
   if (isLoading) {
     return <AdminPageLoading />;
@@ -78,9 +79,9 @@ function PostDetailInner() {
         title="Chi tiết bài viết"
         subtitle="Quản lý bài viết và nội dung xuất bản."
         variant="module"
-        onBack={() => router.push("/posts")}
+        onBack={() => crudNav.list()}
         onEdit={
-          canUpdate ? () => router.push(`/posts/${postId}/edit`) : undefined
+          canUpdate ? () => crudNav.edit(String(postId)) : undefined
         }
       />
 

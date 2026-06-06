@@ -22,6 +22,7 @@ export function TemplatesTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: {
   data: TemplateRow[]
   columns: ColumnDef<TemplateRow>[]
@@ -36,6 +37,7 @@ export function TemplatesTable({
   onClearFilters: () => void
   onBulkDelete: (rows: TemplateRow[]) => Promise<void>
   onBulkPurge: (rows: TemplateRow[]) => Promise<void>
+  onRowPrefetch?: (row: TemplateRow) => void
 }) {
   return (
     <AdminDataTable<TemplateRow>
@@ -52,6 +54,11 @@ export function TemplatesTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       xlsxExport={buildAdminTableXlsxExport("templates", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {

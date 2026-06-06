@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, MapPin, Globe } from "lucide-react";
 
 const LocationMap = dynamic(
@@ -40,7 +41,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function LocationDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/locations");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -53,9 +54,9 @@ function LocationDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được địa điểm");
-      router.push("/locations");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -66,8 +67,8 @@ function LocationDetailInner() {
         title={entity.name || "Địa điểm"}
         subtitle={<span className="text-muted-foreground/60">Địa điểm</span>}
         variant="entity"
-        onBack={() => router.push("/locations")}
-        onEdit={canUpdate ? () => router.push(`/locations/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

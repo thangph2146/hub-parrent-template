@@ -24,6 +24,7 @@ export interface AcademicYearsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: AcademicYearRow[]) => Promise<void>
   onBulkPurge: (rows: AcademicYearRow[]) => Promise<void>
+  onRowPrefetch?: (row: AcademicYearRow) => void
 }
 
 export function AcademicYearsTable({
@@ -40,6 +41,7 @@ export function AcademicYearsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: AcademicYearsTableProps) {
   return (
     <AdminDataTable<AcademicYearRow>
@@ -56,6 +58,11 @@ export function AcademicYearsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("academic-years", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

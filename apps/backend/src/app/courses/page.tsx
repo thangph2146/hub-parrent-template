@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { AlertCircle, BookOpen, Plus } from "lucide-react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useAuth } from "@/providers/auth-provider";
@@ -23,17 +23,21 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import {
   CoursesTable,
   CoursesTrashTable,
-  getCourseColumns,  useColumnFiltersChange,
+  getCourseColumns,
+  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useCoursesListQuery,
   useCoursesTrashQuery,
+  prefetchCourseDetail,
 } from "./_component";
 import type { CourseRow } from "./_component";
 
 function CoursesPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/courses", {
+    prefetchDetail: (id) => prefetchCourseDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.COURSES_MANAGE) ||
@@ -129,14 +133,14 @@ function CoursesPageInner() {
   const columns = useMemo<ColumnDef<CourseRow>[]>(
     () => getCourseColumns({
         view: "list",
-      openDetail: (row) => router.push(`/courses/${row.id}`),
-      openEdit: (row) => router.push(`/courses/${row.id}/edit`),
+      openDetail: (row) => crudNav.view(String(row.id)),
+      openEdit: (row) => crudNav.edit(String(row.id)),
       rowActions,
       canWrite,
       canDelete,
       canHardDelete,
     }),
-    [rowActions, router, canWrite, canDelete, canHardDelete],
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete],
   );
 
   const trashColumns = useMemo<ColumnDef<CourseRow>[]>(
@@ -161,7 +165,7 @@ function CoursesPageInner() {
           <>{canWrite && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/courses/new")}
+              onClick={() => crudNav.new()}
               className="flex h-12 items-center gap-2 rounded-lg px-6 font-bold shadow-md"
             >
               <Plus className="size-5" aria-hidden /> Thêm khóa học
@@ -225,6 +229,7 @@ function CoursesPageInner() {
               await bulkMutation.mutateAsync({ action: "hard-delete", ids });
               toast.success(`Đã xóa vĩnh viễn ${ids.length} khóa học`);
             }}
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
           />
         </TabsContent>
 

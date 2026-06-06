@@ -1,7 +1,6 @@
-export {
+export { 
   useGuidesQuery,
-  useGuideDetailQuery,
-} from "./use-guides-queries";
+  useGuideDetailQuery, guideDetailQueryKey, prefetchGuideDetail } from "./use-guides-queries";
 
 export {
   useCreateGuideMutation,

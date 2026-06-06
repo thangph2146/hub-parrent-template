@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Loader2, FileText, Globe } from "lucide-react";
 import {
   FieldError,
@@ -28,7 +29,7 @@ import type { SeoMetaFormValues } from "../../_component";
 import { cn } from "@ui/lib/utils";
 
 function EditSeoMetaPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/seo-metas");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -47,9 +48,9 @@ function EditSeoMetaPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được SEO metadata");
-      router.push("/seo-metas");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!detail) return;
@@ -74,7 +75,7 @@ function EditSeoMetaPageInner() {
     onSuccess: async () => {
       await invalidateAll();
       toast.success("Đã cập nhật SEO metadata");
-      router.push(`/seo-metas/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật";
@@ -102,7 +103,7 @@ function EditSeoMetaPageInner() {
       <AdminFormPageHeader
         title={`Chỉnh sửa SEO: ${detail?.page ?? ""}`}
         subtitle="Cập nhật thông tin SEO metadata."
-        onBack={() => router.push(`/seo-metas/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         formId="seo-meta-edit-form"
         isEdit
         submitting={isSubmitting}

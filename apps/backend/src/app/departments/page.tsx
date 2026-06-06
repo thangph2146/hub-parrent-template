@@ -8,10 +8,10 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { useRouter } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { AlertCircle, Building2, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
@@ -33,12 +33,15 @@ import {
   useClearTrashFilters,
   useDepartmentsListQuery,
   useDepartmentsTrashQuery,
+  prefetchDepartmentDetail,
 } from "./_component"
 import type { DepartmentRow } from "./_component"
 
 function DepartmentsPageInner() {
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/departments", {
+    prefetchDetail: (id) => prefetchDepartmentDetail(queryClient, api, id),
+  });
   const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_MANAGE) ||
@@ -164,14 +167,14 @@ function DepartmentsPageInner() {
     () =>
       getDepartmentColumns({
         view: "list",
-        openDetail: (row) => router.push(`/departments/${row.id}`),
-        openEdit: (row) => router.push(`/departments/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete]
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
   )
 
   const trashColumns = useMemo<ColumnDef<DepartmentRow>[]>(
@@ -198,7 +201,7 @@ function DepartmentsPageInner() {
           <>{canWrite && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/departments/new")}
+              onClick={() => crudNav.new()}
             >
               <Plus className="size-5" aria-hidden /> Thêm phòng khoa
             </AdminPageHeaderPrimaryButton>
@@ -258,6 +261,8 @@ function DepartmentsPageInner() {
           ) : null}
 
           <DepartmentsTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

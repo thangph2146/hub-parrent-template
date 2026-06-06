@@ -1,6 +1,6 @@
 "use client"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
-import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -12,7 +12,7 @@ import {
   Shield,
   Trash2,
 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import {
@@ -169,7 +169,7 @@ function roleCodeify(input: string): string {
 }
 
 export default function RbacPage() {
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/rbac")
   const queryClient = useQueryClient()
   const { user: session } = useAuth()
   const canReadRbac =
@@ -420,7 +420,7 @@ export default function RbacPage() {
       const created = await createMutation.mutateAsync(payload)
       toast.success(`Đã tạo role "${created.name || name}"`)
       setDialogOpen(false)
-      router.push(`/rbac/${created.id}`)
+      crudNav.view(String(created.id))
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Không lưu được role"
@@ -432,7 +432,7 @@ export default function RbacPage() {
     () =>
       getRbacColumns({
         view: "list",
-        onView: (role) => router.push(`/rbac/${role.id}`),
+        onView: (role) => crudNav.view(String(role.id)),
         onEdit: (role) => {
           if (
             isSuperAdminRoleCode(role.code) &&
@@ -443,7 +443,7 @@ export default function RbacPage() {
             )
             return
           }
-          router.push(`/rbac/${role.id}/edit`)
+          crudNav.edit(String(role.id))
         },
         onDelete: (role) => {
           if (isSuperAdminRoleCode(role.code)) {
@@ -463,14 +463,14 @@ export default function RbacPage() {
         canManageRoles,
         canEditSuperAdminRole: canEditProtectedSuperAdmin,
       }),
-    [canEditProtectedSuperAdmin, canManageRoles, router]
+    [canEditProtectedSuperAdmin, canManageRoles, crudNav]
   )
 
   const trashColumns = useMemo(
     () =>
       getRbacColumns({
         view: "trash",
-        onView: (role) => router.push(`/rbac/${role.id}`),
+        onView: (role) => crudNav.view(String(role.id)),
         onEdit: () => {},
         onDelete: () => {},
         onRestore: (role) => setRestoreTarget(role),
@@ -486,7 +486,7 @@ export default function RbacPage() {
         canManageRoles,
         canEditSuperAdminRole: canEditProtectedSuperAdmin,
       }),
-    [canEditProtectedSuperAdmin, canManageRoles, router]
+    [canEditProtectedSuperAdmin, canManageRoles, crudNav]
   )
 
   if (!session) return null

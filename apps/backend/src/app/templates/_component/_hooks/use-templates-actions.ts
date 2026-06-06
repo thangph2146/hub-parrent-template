@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import type { TemplateConfirmAction, TemplateFormValues } from "../types";
 import { templateFormSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";

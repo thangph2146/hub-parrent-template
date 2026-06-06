@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@ui/components/sonner";
 import { Plus, BookOpen } from "lucide-react";
 import {
   AdminListPageHeader,
@@ -16,7 +16,7 @@ import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import {
   useGuidesQuery,
   useGuidesActions,
@@ -25,13 +25,17 @@ import {
   PAGE_KEY,
   sortGroupsByOrder,
   parseContent,
+  prefetchGuideDetail,
   type GuideGroup,
 } from "./_component";
 
 function GuidesPageInner() {
   const { user } = useAuth();
   const canWrite = user ? canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_MANAGE) || canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_CREATE) || canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_UPDATE) : false;
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/guides", {
+    prefetchDetail: (id) => prefetchGuideDetail(queryClient, api, id),
+  });
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -78,12 +82,12 @@ function GuidesPageInner() {
   const columns = useMemo(
     () =>
       getGuidesColumns({
-        onView: (row) => router.push(`/guides/${row.id}`),
-        onEdit: (row) => router.push(`/guides/${row.id}/edit`),
+        onView: (row) => crudNav.view(String(row.id)),
+        onEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite,
       }),
-    [router, canWrite, rowActions],
+    [crudNav, canWrite, rowActions],
   );
 
   const handleBulkPurge = async (rows: GuideGroup[]) => {
@@ -105,7 +109,7 @@ function GuidesPageInner() {
         subtitle="Quản lý nhóm hướng dẫn sử dụng hệ thống"
         actions={
           canWrite ? (
-            <AdminPageHeaderPrimaryButton onClick={() => router.push("/guides/new")}>
+            <AdminPageHeaderPrimaryButton onClick={() => crudNav.new()}>
               <Plus className="size-4" />
               Thêm nhóm
             </AdminPageHeaderPrimaryButton>
@@ -114,6 +118,8 @@ function GuidesPageInner() {
       />
 
       <GuidesTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
         data={sortedGroups}
         columns={columns}
         isLoading={isLoading}

@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import { useCategoriesQuery, useTagsQuery } from "../_component/_query";
 import type { PostFormValues } from "../_component";
 
 function NewPostPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/posts");
   const queryClient = useQueryClient();
   const form = usePostForm();
 
@@ -33,7 +34,7 @@ function NewPostPageInner() {
     onSuccess: async (_data, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["media", "posts"] });
       toast.success(`Đã tạo bài viết "${(variables.title as string)?.trim()}"`);
-      router.push("/posts");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo bài viết";
@@ -68,7 +69,7 @@ function NewPostPageInner() {
         editingId={null}
         categoryTreeOptions={categoryTreeOptions}
         tagsOptions={tagsQuery.data ?? []}
-        onBack={() => router.push("/posts")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

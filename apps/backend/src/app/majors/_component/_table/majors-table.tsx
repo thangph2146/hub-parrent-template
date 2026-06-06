@@ -24,6 +24,7 @@ export interface MajorsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: MajorRow[]) => Promise<void>
   onBulkPurge: (rows: MajorRow[]) => Promise<void>
+  onRowPrefetch?: (row: MajorRow) => void
 }
 
 export function MajorsTable({
@@ -40,6 +41,7 @@ export function MajorsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: MajorsTableProps) {
   return (
     <AdminDataTable<MajorRow>
@@ -56,6 +58,11 @@ export function MajorsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("majors", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

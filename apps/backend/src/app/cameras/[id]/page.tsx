@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -41,7 +42,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function DetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/cameras");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -54,9 +55,9 @@ function DetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được camera");
-      router.push("/cameras");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!e) return null;
@@ -67,8 +68,8 @@ function DetailInner() {
         title={e.name || "Camera"}
         subtitle={<span className="text-muted-foreground/60">Camera</span>}
         variant="entity"
-        onBack={() => router.push("/cameras")}
-        onEdit={canUpdate ? () => router.push(`/cameras/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

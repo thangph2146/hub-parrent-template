@@ -22,6 +22,7 @@ export function ScreensTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: {
   data: ScreenRow[]
   columns: ColumnDef<ScreenRow>[]
@@ -36,6 +37,7 @@ export function ScreensTable({
   onClearFilters: () => void
   onBulkDelete: (rows: ScreenRow[]) => Promise<void>
   onBulkPurge: (rows: ScreenRow[]) => Promise<void>
+  onRowPrefetch?: (row: ScreenRow) => void
 }) {
   return (
     <AdminDataTable<ScreenRow>
@@ -52,6 +54,11 @@ export function ScreensTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("screens", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

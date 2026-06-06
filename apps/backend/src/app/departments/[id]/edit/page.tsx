@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { DepartmentFormValues } from "../../_component";
 
 function EditDepartmentPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/departments");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditDepartmentPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được phòng khoa");
-      router.push("/departments");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -50,7 +51,7 @@ function EditDepartmentPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật phòng khoa "${(variables.name as string)?.trim()}"`);
-      router.push(`/departments/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật phòng khoa";
@@ -67,7 +68,7 @@ function EditDepartmentPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -80,7 +81,7 @@ function EditDepartmentPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => router.push(`/departments/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         onReset={async () => { await refetch(); }}
       />
     </AdminPageSection>

@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -16,7 +17,7 @@ import {
 import type { CategoryFormValues } from "../_component";
 
 function NewCategoryPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/categories");
   const queryClient = useQueryClient();
   const form = useCategoryForm().form;
   const categoriesOptionsQuery = useCategoriesOptionsQuery(api);
@@ -36,7 +37,7 @@ function NewCategoryPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo danh mục "${(variables.name as string)?.trim()}"`);
-      router.push("/categories");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo danh mục";
@@ -59,7 +60,7 @@ function NewCategoryPageInner() {
         submitting={createMutation.isPending}
         editingId={null}
         categoryTreeOptions={categoryTreeOptions}
-        onBack={() => router.push("/categories")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import type { EventConfirmAction, EventFormValues } from "../types";
 import { eventFormSchema } from "../types";
 import { buildPosterPayload } from "../utils";

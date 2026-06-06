@@ -24,6 +24,7 @@ export interface LocationsTableProps {
   onClearFilters: () => void
   onBulkDelete: (rows: LocationRow[]) => Promise<void>
   onBulkPurge: (rows: LocationRow[]) => Promise<void>
+  onRowPrefetch?: (row: LocationRow) => void
 }
 
 export function LocationsTable({
@@ -40,6 +41,7 @@ export function LocationsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: LocationsTableProps) {
   return (
     <AdminDataTable<LocationRow>
@@ -56,6 +58,11 @@ export function LocationsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       clearFiltersVariant="destructive"
       xlsxExport={buildAdminTableXlsxExport("locations", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[

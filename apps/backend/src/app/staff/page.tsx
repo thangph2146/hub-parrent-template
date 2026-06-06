@@ -10,16 +10,22 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { TypographyH3 } from "@ui/components/typography";
 import { ADMIN_LIST_TABS_LIST_CLASS, ADMIN_LIST_TABS_TRIGGER_CLASS } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { AdminListPageHeader, AdminPageGuard, AdminPageHeaderPrimaryButton, AdminPageSection } from "@ui/components/admin";
-import { queryKeys, useRbacCatalog, useStaffUserList, useTrashedStaffUsers } from "@/hooks/queries";
+import {
+  prefetchStaffProfile,
+  queryKeys,
+  useRbacCatalog,
+  useStaffUserList,
+  useTrashedStaffUsers,
+} from "@/hooks/queries";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { api } from "@/lib/api";
 import { useAuth } from "@/providers/auth-provider";
@@ -37,8 +43,10 @@ import {
 } from "./_component";
 
 function StaffPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/staff", {
+    prefetchDetail: (id) => prefetchStaffProfile(queryClient, id),
+  });
   const { user: session } = useAuth();
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE);
@@ -185,8 +193,8 @@ function StaffPageInner() {
   }, []);
 
   const handleView = useCallback((user: StaffRow) => {
-    router.push(`/staff/${user.id}`);
-  }, [router]);
+    crudNav.view(String(user.id));
+  }, [crudNav]);
 
   const handleEdit = useCallback(
     (user: StaffRow) => {
@@ -196,9 +204,9 @@ function StaffPageInner() {
         );
         return;
       }
-      router.push(`/staff/${user.id}/edit`);
+      crudNav.edit(String(user.id));
     },
-    [router, session?.email],
+    [crudNav, session?.email],
   );
 
   const handleDelete = useCallback((user: StaffRow) => {
@@ -430,7 +438,7 @@ function StaffPageInner() {
         actions={
           <AdminPageHeaderPrimaryButton
             type="button"
-            onClick={() => router.push("/staff/new")}
+            onClick={() => crudNav.new()}
             disabled={!canCreate || busy || roles.length === 0}
           >
             <UserPlus className="size-4" aria-hidden />
@@ -494,6 +502,8 @@ function StaffPageInner() {
 
             {!usersQuery.isError ? (
               <StaffTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
                 data={roleFilteredUsers}
                 isLoading={usersQuery.isLoading}
                 total={staffTotal}

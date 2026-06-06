@@ -1,4 +1,6 @@
 export {
+  courseDetailQueryKey,
+  prefetchCourseDetail,
   useCourseDetailQuery,
   useCoursesListQuery,
   useCoursesTrashQuery,

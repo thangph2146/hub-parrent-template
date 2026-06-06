@@ -8,10 +8,10 @@ import type {
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import {
   AlertCircle,
   Hash,
@@ -39,12 +39,15 @@ import {
   useTrashQuery,
   buildTagsFilterQuery,
   toFilterQuery,
+  prefetchTagDetail,
 } from "./_component";
 import type { TagRow, TagTreeRow } from "./_component";
 
 function TagsPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/tags", {
+    prefetchDetail: (id) => prefetchTagDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canWriteTags = user
     ? canUserAccess(user, PERMISSION_CODES.TAGS_MANAGE) ||
@@ -171,28 +174,28 @@ function TagsPageInner() {
     () =>
       getTagColumns({
         view: "list",
-        openDetail: (row) => router.push(`/tags/${row.id}`),
-        openEdit: (row) => router.push(`/tags/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite: canWriteTags,
         canDelete: canDeleteTags,
         canHardDelete: canHardDeleteTags,
       }),
-    [rowActions, router, canWriteTags, canDeleteTags, canHardDeleteTags],
+    [rowActions, crudNav, canWriteTags, canDeleteTags, canHardDeleteTags],
   );
 
   const trashColumns = useMemo<ColumnDef<TagTreeRow>[]>(
     () =>
       getTagColumns({
         view: "trash",
-        openDetail: (row) => router.push(`/tags/${row.id}`),
-        openEdit: (row) => router.push(`/tags/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         canWrite: canWriteTags,
         canRestore: canRestoreTags,
         canHardDelete: canHardDeleteTags,
       }),
-    [rowActions, router, canWriteTags, canRestoreTags, canHardDeleteTags],
+    [rowActions, crudNav, canWriteTags, canRestoreTags, canHardDeleteTags],
   );
 
   return (
@@ -214,7 +217,7 @@ function TagsPageInner() {
           <>{canWriteTags && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/tags/new")}
+              onClick={() => crudNav.new()}
               className="flex h-12 items-center gap-2 rounded-lg px-6 font-bold shadow-md"
             >
               <Plus className="size-5" aria-hidden /> Thêm thẻ
@@ -272,6 +275,8 @@ function TagsPageInner() {
           ) : null}
 
           <TagsTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={treeRows}
             columns={columns}
             isLoading={listQuery.isLoading}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Eye, EyeOff } from "lucide-react"
 import { canAccessStaffAdmin, type AuthUser } from "@workspace/api-client"
 import { Button } from "@ui/components/button"

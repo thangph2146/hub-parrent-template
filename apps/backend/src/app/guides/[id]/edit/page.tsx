@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { GuideFormData } from "../../_component";
 
 function EditGuidePageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/guides");
   const params = useParams();
   const guideId = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditGuidePageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được nhóm hướng dẫn");
-      router.push("/guides");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!guide) return;
@@ -50,7 +51,7 @@ function EditGuidePageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật nhóm hướng dẫn "${variables.sectionKey}"`);
-      router.push("/guides");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật nhóm hướng dẫn";
@@ -64,7 +65,7 @@ function EditGuidePageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -77,7 +78,7 @@ function EditGuidePageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={guideId}
-        onBack={() => router.push("/guides")}
+        onBack={() => crudNav.list()}
         onReset={async () => {
           await refetch();
         }}

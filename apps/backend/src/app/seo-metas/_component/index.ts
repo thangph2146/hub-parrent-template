@@ -8,11 +8,10 @@ export {
 
 export { getSeoMetaColumns } from "./columns";
 
-export {
+export { 
   useSeoMetaDetailQuery,
   useSeoMetasListQuery,
-  useSeoMetasTrashQuery,
-} from "./_query";
+  useSeoMetasTrashQuery, seoMetaDetailQueryKey, prefetchSeoMetaDetail } from "./_query";
 
 export { SeoMetasTable } from "./_table/seo-metas-table";
 export { SeoMetasConfirmDialog } from "./_alert-dialog";

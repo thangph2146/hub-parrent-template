@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { SpeakerFormValues } from "../../_component";
 
 function EditSpeakerPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/speakers");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditSpeakerPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được diễn giả");
-      router.push("/speakers");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -54,7 +55,7 @@ function EditSpeakerPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật diễn giả "${(variables.name as string)?.trim()}"`);
-      router.push(`/speakers/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật diễn giả";
@@ -71,7 +72,7 @@ function EditSpeakerPageInner() {
 
   if (isLoading) {
     return (
-      <AdminPageLoading />
+      <AdminPageLoading variant="form" />
     );
   }
 
@@ -84,7 +85,7 @@ function EditSpeakerPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => router.push(`/speakers/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         onReset={async () => { await refetch(); }}
       />
     </AdminPageSection>

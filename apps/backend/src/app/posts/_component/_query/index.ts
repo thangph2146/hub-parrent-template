@@ -1,8 +1,7 @@
-export {
+export { 
   usePostsQuery,
   useTrashQuery,
-  usePostDetailQuery,
-} from "./use-posts-queries";
+  usePostDetailQuery, postDetailQueryKey, prefetchPostDetail } from "./use-posts-queries";
 export type {
   UsePostsQueriesProps,
   UseTrashQueryProps,

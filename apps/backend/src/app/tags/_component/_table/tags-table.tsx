@@ -19,6 +19,7 @@ export interface TagsTableProps {
   onClearFilters: () => void;
   onBulkDelete: (rows: TagTreeRow[]) => Promise<void>;
   onBulkPurge: (rows: TagTreeRow[]) => Promise<void>;
+  onRowPrefetch?: (row: TagTreeRow) => void;
 }
 
 export function TagsTable({
@@ -35,6 +36,7 @@ export function TagsTable({
   onClearFilters,
   onBulkDelete,
   onBulkPurge,
+  onRowPrefetch,
 }: TagsTableProps) {
   return (
     <AdminDataTable<TagTreeRow>
@@ -54,6 +56,11 @@ export function TagsTable({
       onGlobalFilterChange={onGlobalFilterChange}
       globalFilterPlaceholder="Tìm theo tên nhóm, tên thẻ hoặc slug..."
       onClearFilters={onClearFilters}
+      onRowPointerEnter={
+        onRowPrefetch
+          ? (row) => onRowPrefetch(row.original)
+          : undefined
+      }
       xlsxExport={buildAdminTableXlsxExport("tags", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => !row.original.isGroup}
       bulkActions={[

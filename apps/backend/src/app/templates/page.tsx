@@ -7,10 +7,10 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { useRouter } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { AlertCircle, LayoutTemplate, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAuth } from "@/providers/auth-provider"
@@ -32,12 +32,15 @@ import {
   useClearTrashFilters,
   useTemplatesListQuery,
   useTemplatesTrashQuery,
+  prefetchTemplateDetail,
 } from "./_component"
 import type { TemplateRow } from "./_component"
 
 function TemplatesPageInner() {
-  const router = useRouter(),
-    queryClient = useQueryClient(),
+  const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation(`/templates`, {
+    prefetchDetail: (id) => prefetchTemplateDetail(queryClient, api, id),
+  }),
     { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_MANAGE) ||
@@ -123,14 +126,14 @@ function TemplatesPageInner() {
     () =>
       getTemplateColumns({
         view: "list",
-        openDetail: (r) => router.push(`/templates/${r.id}`),
-        openEdit: (r) => router.push(`/templates/${r.id}/edit`),
+        openDetail: (r) => crudNav.view(String(r.id)),
+        openEdit: (r) => crudNav.edit(String(r.id)),
         rowActions,
         canWrite,
         canDelete,
         canHardDelete,
       }),
-    [rowActions, router, canWrite, canDelete, canHardDelete]
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<TemplateRow>[]>(
     () => getTemplateColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
@@ -144,7 +147,7 @@ function TemplatesPageInner() {
         subtitle="Quản lý mẫu hiển thị."
         actions={
           canWrite ? (
-            <AdminPageHeaderPrimaryButton onClick={() => router.push("/templates/new")}>
+            <AdminPageHeaderPrimaryButton onClick={() => crudNav.new()}>
               <Plus className="size-5" /> Thêm mẫu hiển thị
             </AdminPageHeaderPrimaryButton>
           ) : undefined
@@ -200,6 +203,8 @@ function TemplatesPageInner() {
             </div>
           ) : null}
           <TemplatesTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={listQ.data ?? []}
             columns={cols}
             isLoading={listQ.isLoading}

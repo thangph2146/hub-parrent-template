@@ -1,6 +1,7 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
 import { canEditProtectedAdminUser } from "@/config/protected-admin"
@@ -136,7 +137,7 @@ function AvatarDisplay({
 
 function StaffDetailPageInner() {
   const params = useParams()
-  const router = useRouter()
+  const crudNav = useAdminCrudNavigation("/staff");
   const { user: session } = useAuth()
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
@@ -158,7 +159,7 @@ function StaffDetailPageInner() {
         <AdminDetailPageHeader
           title="Chi tiết nhân sự"
           variant="module"
-          onBack={() => router.push("/staff")}
+          onBack={() => crudNav.list()}
         />
         <div className="flex items-center justify-center py-12">
           <p className="text-muted-foreground">Không có quyền truy cập</p>
@@ -173,7 +174,7 @@ function StaffDetailPageInner() {
         <AdminDetailPageHeader
           title="Chi tiết nhân sự"
           variant="module"
-          onBack={() => router.push("/staff")}
+          onBack={() => crudNav.list()}
         />
         <div className="flex items-center justify-center py-12">
           <p className="text-muted-foreground">Đang tải...</p>
@@ -194,10 +195,10 @@ function StaffDetailPageInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/staff")}
+        onBack={() => crudNav.list()}
         onEdit={
           canEditProtectedAdminUser(session?.email, user.email)
-            ? () => router.push(`/staff/${userId}/edit`)
+            ? () => crudNav.edit(String(userId))
             : undefined
         }
       />

@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -15,7 +16,7 @@ import {
 import type { CourseFormValues } from "../../_component";
 
 function EditCoursePageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/courses");
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
@@ -26,9 +27,9 @@ function EditCoursePageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được khóa học");
-      router.push("/courses");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   useEffect(() => {
     if (!entity) return;
@@ -52,7 +53,7 @@ function EditCoursePageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã cập nhật khóa học "${(variables.name as string)?.trim()}"`);
-      router.push(`/courses/${id}`);
+      crudNav.view(String(id));
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể cập nhật khóa học";
@@ -82,7 +83,7 @@ function EditCoursePageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => router.push(`/courses/${id}`)}
+        onBack={() => crudNav.view(String(id))}
         onReset={async () => { await refetch(); }}
       />
     </AdminPageSection>

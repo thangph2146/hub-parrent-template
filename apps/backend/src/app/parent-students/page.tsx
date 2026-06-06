@@ -5,7 +5,7 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { CheckCircle2, Trash2, UserCheck, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {

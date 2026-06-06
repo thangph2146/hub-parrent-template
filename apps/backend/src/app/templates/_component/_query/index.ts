@@ -1,1 +1,1 @@
-export { useTemplateDetailQuery, useTemplatesListQuery, useTemplatesTrashQuery } from "./use-templates-queries";
+export {  useTemplateDetailQuery, useTemplatesListQuery, useTemplatesTrashQuery , templateDetailQueryKey, prefetchTemplateDetail } from "./use-templates-queries";

@@ -2,7 +2,15 @@ export {
   AdminPageSection,
   type AdminPageSectionProps,
 } from "./admin-page-section"
-export { AdminPageLoading } from "./admin-page-loading"
+export {
+  AdminPageLoading,
+  type AdminPageLoadingVariant,
+} from "./admin-page-loading"
+export {
+  AdminDetailPageSkeleton,
+  AdminFormPageSkeleton,
+  AdminListPageSkeleton,
+} from "./admin-page-skeletons"
 export { AdminReadOnlyHint } from "./admin-read-only-hint"
 export {
   AdminListPageHeader,

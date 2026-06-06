@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { GuideFormData, UpdateGuideData, GuideGroup, ListResult } from "../types";
 import { PAGE_KEY, parseContent, applyOrderToGroups } from "../utils";

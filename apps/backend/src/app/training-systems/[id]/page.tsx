@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, Building2, Hash } from "lucide-react";
 import { Badge } from "@ui/components/badge";
 import {
@@ -24,7 +25,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function TrainingSystemDetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/training-systems");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -35,9 +36,9 @@ function TrainingSystemDetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được hệ đào tạo");
-      router.push("/training-systems");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!entity) return null;
@@ -54,8 +55,8 @@ function TrainingSystemDetailInner() {
           </>
         }
         variant="module"
-        onBack={() => router.push("/training-systems")}
-        onEdit={canUpdate ? () => router.push(`/training-systems/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

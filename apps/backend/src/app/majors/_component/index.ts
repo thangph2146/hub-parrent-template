@@ -1,11 +1,10 @@
 export type { MajorRow, MajorFormValues, MajorConfirmAction, MajorDetail } from "./types";
 export { majorFormSchema } from "./types";
 export { getMajorColumns } from "./columns";
-export {
+export { 
   useMajorDetailQuery,
   useMajorsListQuery,
-  useMajorsTrashQuery,
-} from "./_query";
+  useMajorsTrashQuery, majorDetailQueryKey, prefetchMajorDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

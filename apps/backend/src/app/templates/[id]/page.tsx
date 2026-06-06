@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { toast } from "@ui/components/sonner";
 import {
   Calendar,
   Clock,
@@ -39,7 +40,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function DetailInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/templates");
   const params = useParams();
   const id = params.id as string;
   const { user } = useAuth();
@@ -52,9 +53,9 @@ function DetailInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được mẫu");
-      router.push("/templates");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
   if (isLoading) return <AdminPageLoading />;
   if (!e) return null;
@@ -65,8 +66,8 @@ function DetailInner() {
         title={e.name || "Mẫu"}
         subtitle={<span className="text-muted-foreground/60">Mẫu hiển thị</span>}
         variant="entity"
-        onBack={() => router.push("/templates")}
-        onEdit={canUpdate ? () => router.push(`/templates/${id}/edit`) : undefined}
+        onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <AdminDetailLayout>

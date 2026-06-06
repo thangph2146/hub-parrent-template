@@ -12,11 +12,10 @@ export {
   toFilterQuery,
 } from "./utils";
 export { getTagColumns } from "./columns";
-export {
+export { 
   useTagDetailQuery,
   useTagsListQuery,
-  useTrashQuery,
-} from "./_query";
+  useTrashQuery, tagDetailQueryKey, prefetchTagDetail } from "./_query";
 export {
   useColumnFiltersChange,
   useClearListFilters,

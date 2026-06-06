@@ -8,10 +8,10 @@ import type {
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { Badge } from "@ui/components/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useRouter } from "next/navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import {
   AlertCircle,
   Tags,
@@ -39,6 +39,7 @@ import {
   useCategoriesQuery,
   useTrashQuery,
   useCategoriesOptionsQuery,
+  prefetchCategoryDetail,
 } from "./_component";
 import type { CategoryRow } from "./_component/types";
 
@@ -64,8 +65,10 @@ function buildCategoryTree(rows: CategoryRow[]): CategoryRow[] {
 }
 
 function CategoriesPageInner() {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const crudNav = useAdminCrudNavigation("/categories", {
+    prefetchDetail: (id) => prefetchCategoryDetail(queryClient, api, id),
+  });
   const { user } = useAuth();
   const canWriteCategories = user
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
@@ -189,15 +192,15 @@ function CategoriesPageInner() {
     () =>
       getCategoryColumns({
         view: "list",
-        openDetail: (row) => router.push(`/categories/${row.id}`),
-        openEdit: (row) => router.push(`/categories/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         categoryTreeOptions,
         canWriteCategories,
         canDeleteCategories,
         canHardDeleteCategories,
       }),
-    [rowActions, router, categoryTreeOptions, canWriteCategories, canDeleteCategories, canHardDeleteCategories],
+    [rowActions, crudNav, categoryTreeOptions, canWriteCategories, canDeleteCategories, canHardDeleteCategories],
   );
 
 
@@ -206,15 +209,15 @@ function CategoriesPageInner() {
     () =>
       getCategoryColumns({
         view: "trash",
-        openDetail: (row) => router.push(`/categories/${row.id}`),
-        openEdit: (row) => router.push(`/categories/${row.id}/edit`),
+        openDetail: (row) => crudNav.view(String(row.id)),
+        openEdit: (row) => crudNav.edit(String(row.id)),
         rowActions,
         categoryTreeOptions,
         canWriteCategories,
         canRestoreCategories,
         canHardDeleteCategories,
       }),
-    [rowActions, router, categoryTreeOptions, canWriteCategories, canRestoreCategories, canHardDeleteCategories],
+    [rowActions, crudNav, categoryTreeOptions, canWriteCategories, canRestoreCategories, canHardDeleteCategories],
   );
 
   return (
@@ -237,7 +240,7 @@ function CategoriesPageInner() {
           <>{canWriteCategories && (
             <AdminPageHeaderPrimaryButton
               type="button"
-              onClick={() => router.push("/categories/new")}
+              onClick={() => crudNav.new()}
             >
               <Plus className="size-5" aria-hidden /> Thêm danh mục
             </AdminPageHeaderPrimaryButton>
@@ -297,6 +300,8 @@ function CategoriesPageInner() {
           ) : null}
 
           <CategoriesTable
+            onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
+            
             data={buildCategoryTree(categoriesQuery.data?.items ?? [])}
             columns={columns}
             isLoading={categoriesQuery.isLoading}

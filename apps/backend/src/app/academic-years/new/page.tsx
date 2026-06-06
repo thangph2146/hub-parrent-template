@@ -1,9 +1,10 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -14,7 +15,7 @@ import {
 import type { AcademicYearFormValues } from "../_component";
 
 function NewAcademicYearPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/academic-years");
   const queryClient = useQueryClient();
   const { form } = useAcademicYearForm();
 
@@ -28,7 +29,7 @@ function NewAcademicYearPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo niên khóa "${(variables.name as string)?.trim()}"`);
-      router.push("/academic-years");
+      crudNav.list();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Không thể tạo niên khóa";
@@ -50,7 +51,7 @@ function NewAcademicYearPageInner() {
         onSubmit={handleSubmit}
         submitting={createMutation.isPending}
         editingId={null}
-        onBack={() => router.push("/academic-years")}
+        onBack={() => crudNav.list()}
         onReset={() => { form.reset(); }}
       />
     </AdminPageSection>

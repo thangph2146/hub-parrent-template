@@ -1,16 +1,17 @@
 "use client";
 
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { EventFormShell, useEventForm, buildEventPayload } from "../_component";
 import type { EventFormValues } from "../_component";
 
 function NewEventPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/events");
   const queryClient = useQueryClient();
   const { form } = useEventForm();
 
@@ -21,7 +22,7 @@ function NewEventPageInner() {
     onSuccess: async (_data, variables) => {
       await invalidateAll();
       toast.success(`Đã tạo sự kiện "${(variables.title as string)?.trim()}"`);
-      router.push("/events");
+      crudNav.list();
     },
     onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : "Không thể tạo sự kiện"); },
   });
@@ -45,7 +46,7 @@ function NewEventPageInner() {
   return (
     <AdminPageSection>
       <EventFormShell form={form} onSubmit={handleSubmit} submitting={createMutation.isPending} editingId={null}
-        onBack={() => router.push("/events")} onReset={() => { form.reset(); }} />
+        onBack={() => crudNav.list()} onReset={() => { form.reset(); }} />
     </AdminPageSection>
   );
 }

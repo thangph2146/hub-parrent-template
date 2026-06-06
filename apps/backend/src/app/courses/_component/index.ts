@@ -2,6 +2,8 @@ export type { CourseRow, CourseFormValues, CourseConfirmAction, CourseDetail } f
 export { courseFormSchema } from "./types";
 export { getCourseColumns } from "./columns";
 export {
+  courseDetailQueryKey,
+  prefetchCourseDetail,
   useCourseDetailQuery,
   useCoursesListQuery,
   useCoursesTrashQuery,

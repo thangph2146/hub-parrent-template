@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@ui/components/sonner";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -26,7 +27,7 @@ function EditCategoryForm({
   category: CategoryDetail;
   categoryTreeOptions: ReturnType<typeof buildCategoryOptionTree>;
 }) {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/categories");
   const queryClient = useQueryClient();
 
   const form = useForm<CategoryFormValues>({
@@ -40,7 +41,7 @@ function EditCategoryForm({
     onSuccess: async (_data, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success(`Đã cập nhật danh mục "${(variables.name as string)?.trim()}"`);
-      router.push(`/categories/${category.id}`);
+      crudNav.view(String(category.id));
     },
     onError: (err: unknown) => {
       toast.error(err instanceof Error ? err.message : "Không thể cập nhật danh mục");
@@ -62,7 +63,7 @@ function EditCategoryForm({
         submitting={updateMutation.isPending}
         editingId={category.id}
         categoryTreeOptions={categoryTreeOptions}
-        onBack={() => router.push(`/categories/${category.id}`)}
+        onBack={() => crudNav.view(String(category.id))}
         onReset={() => form.reset(getCategoryDefaultValues(category))}
       />
     </AdminPageSection>
@@ -70,7 +71,7 @@ function EditCategoryForm({
 }
 
 function EditCategoryPageInner() {
-  const router = useRouter();
+  const crudNav = useAdminCrudNavigation("/categories");
   const params = useParams();
   const categoryId = params.id as string;
 
@@ -85,11 +86,11 @@ function EditCategoryPageInner() {
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được danh mục");
-      router.push("/categories");
+      crudNav.list();
     }
-  }, [isError, router]);
+  }, [isError, crudNav]);
 
-  if (isLoading) return <AdminPageLoading />;
+  if (isLoading) return <AdminPageLoading variant="form" />;
   if (!category) return null;
 
   return (
