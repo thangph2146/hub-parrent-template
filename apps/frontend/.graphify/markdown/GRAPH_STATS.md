@@ -1,13 +1,13 @@
 # Thống kê graph — frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.100Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-06T18:22:06.674Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
 | `tsx` | 37 |
-| `directory` | 27 |
+| `directory` | 28 |
 | `ts` | 25 |
 | `page` | 9 |
 | `layout` | 3 |
@@ -19,7 +19,7 @@
 
 | relation | Số |
 |----------|-----|
-| `contains` | 102 |
+| `contains` | 103 |
 | `imports` | 93 |
 | `assets` | 2 |
 | `renders` | 2 |
@@ -75,4 +75,4 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 ## Làm mới
 
-Chạy `node apps/frontend/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.
+Chạy `node scripts/graphify-update.cjs apps/frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

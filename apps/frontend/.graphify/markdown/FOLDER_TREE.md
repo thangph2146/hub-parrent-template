@@ -1,6 +1,6 @@
 # Cây thư mục — frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.100Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-06T18:22:06.674Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -17,6 +17,7 @@ src/
 │   │   └── graphify/
 │   └── graph/
 ├── components/
+│   ├── graphify/
 │   ├── icons/
 │   └── shared/
 ├── features/
@@ -34,4 +35,4 @@ src/
 
 ## Làm mới
 
-Chạy `node apps/frontend/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.
+Chạy `node scripts/graphify-update.cjs apps/frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

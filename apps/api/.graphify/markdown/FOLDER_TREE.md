@@ -1,6 +1,6 @@
 # Cây thư mục — api (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.133Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-06T18:22:06.722Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -26,6 +26,7 @@ src/
 ├── face-data/
 ├── groups/
 ├── hanet/
+├── hero-slides/
 ├── imported-users/
 ├── locations/
 ├── majors/
@@ -60,4 +61,4 @@ src/
 
 ## Làm mới
 
-Chạy `node apps/api/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.
+Chạy `node scripts/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

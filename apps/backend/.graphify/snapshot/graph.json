@@ -37,6 +37,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_academic_years_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/academic-years/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/academic-years/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_academic_years_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/academic-years/new/page.tsx",
@@ -75,6 +85,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_academic_years__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/academic-years/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/academic-years/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_academic_years__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/academic-years/[id]/edit/page.tsx",
@@ -83,6 +103,16 @@
       "community": "src/app/academic-years/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_academic_years__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/academic-years/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/academic-years/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_academic_years__id__page_tsx",
@@ -315,6 +345,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_cameras_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/cameras/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/cameras/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_cameras_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/cameras/new/page.tsx",
@@ -353,6 +393,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_cameras__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/cameras/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/cameras/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_cameras__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/cameras/[id]/edit/page.tsx",
@@ -361,6 +411,16 @@
       "community": "src/app/cameras/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_cameras__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/cameras/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/cameras/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_cameras__id__page_tsx",
@@ -575,6 +635,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_categories_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/categories/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/categories/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_categories_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/categories/new/page.tsx",
@@ -613,6 +683,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_categories__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/categories/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/categories/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_categories__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/categories/[id]/edit/page.tsx",
@@ -621,6 +701,16 @@
       "community": "src/app/categories/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_categories__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/categories/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/categories/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_categories__id__page_tsx",
@@ -855,6 +945,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_contact_requests__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/contact-requests/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/contact-requests/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_contact_requests__id__page_tsx",
       "label": "page.tsx",
       "path": "src/app/contact-requests/[id]/page.tsx",
@@ -877,6 +977,26 @@
       "id": "file_src_app_contact_requests__component_columns_tsx",
       "label": "columns.tsx",
       "path": "src/app/contact-requests/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/contact-requests/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_contact_requests__component_contact_export_ts",
+      "label": "contact-export.ts",
+      "path": "src/app/contact-requests/_component/contact-export.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/contact-requests/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_contact_requests__component_contact_row_actions_tsx",
+      "label": "contact-row-actions.tsx",
+      "path": "src/app/contact-requests/_component/contact-row-actions.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/contact-requests/_component",
@@ -1029,6 +1149,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_courses_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/courses/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/courses/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_courses_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/courses/new/page.tsx",
@@ -1067,6 +1197,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_courses__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/courses/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/courses/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_courses__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/courses/[id]/edit/page.tsx",
@@ -1075,6 +1215,16 @@
       "community": "src/app/courses/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_courses__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/courses/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/courses/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_courses__id__page_tsx",
@@ -1280,6 +1430,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_data_import_progress_panel_tsx",
+      "label": "import-progress-panel.tsx",
+      "path": "src/app/data/import-progress-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/data",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_data_page_tsx",
       "label": "page.tsx",
       "path": "src/app/data/page.tsx",
@@ -1287,6 +1447,134 @@
       "size": 14,
       "community": "src/app/data",
       "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_data__component",
+      "label": "_component/",
+      "path": "src/app/data/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/data",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_data__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/data/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_data__component_entity_schema_panel_tsx",
+      "label": "entity-schema-panel.tsx",
+      "path": "src/app/data/_component/entity-schema-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_data__component_excel_to_import_data_ts",
+      "label": "excel-to-import-data.ts",
+      "path": "src/app/data/_component/excel-to-import-data.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_import_chunked_ts",
+      "label": "import-chunked.ts",
+      "path": "src/app/data/_component/import-chunked.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_import_error_message_ts",
+      "label": "import-error-message.ts",
+      "path": "src/app/data/_component/import-error-message.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_import_timing_ts",
+      "label": "import-timing.ts",
+      "path": "src/app/data/_component/import-timing.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/data/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/data/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component_utils_ts",
+      "label": "utils.ts",
+      "path": "src/app/data/_component/utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_data__component__hooks",
+      "label": "_hooks/",
+      "path": "src/app/data/_component/_hooks",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/data/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_data__component__hooks_index_ts",
+      "label": "index.ts",
+      "path": "src/app/data/_component/_hooks/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/data/_component/_hooks",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_data__component__hooks_use_database_schema_ts",
+      "label": "use-database-schema.ts",
+      "path": "src/app/data/_component/_hooks/use-database-schema.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/data/_component/_hooks",
+      "type": "ts",
       "client": true
     },
     {
@@ -1327,6 +1615,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_departments_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/departments/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/departments/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_departments_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/departments/new/page.tsx",
@@ -1365,6 +1663,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_departments__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/departments/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/departments/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_departments__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/departments/[id]/edit/page.tsx",
@@ -1373,6 +1681,16 @@
       "community": "src/app/departments/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_departments__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/departments/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/departments/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_departments__id__page_tsx",
@@ -1587,6 +1905,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_events_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/events/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/events/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_events_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/events/new/page.tsx",
@@ -1625,6 +1953,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_events__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/events/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/events/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_events__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/events/[id]/edit/page.tsx",
@@ -1633,6 +1971,16 @@
       "community": "src/app/events/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_events__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/events/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/events/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_events__id__page_tsx",
@@ -1988,6 +2336,152 @@
       "client": false
     },
     {
+      "id": "dir_src_app_file_storage",
+      "label": "file-storage/",
+      "path": "src/app/file-storage",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_file_storage_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/file-storage/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/file-storage",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_file_storage__component",
+      "label": "_component/",
+      "path": "src/app/file-storage/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/file-storage",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_file_storage__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/file-storage/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "label": "file-row-actions.tsx",
+      "path": "src/app/file-storage/_component/file-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/file-storage/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_file_storage__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/file-storage/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_file_storage__component_utils_ts",
+      "label": "utils.ts",
+      "path": "src/app/file-storage/_component/utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_file_storage__component__hooks",
+      "label": "_hooks/",
+      "path": "src/app/file-storage/_component/_hooks",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/file-storage/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_file_storage__component__hooks_index_ts",
+      "label": "index.ts",
+      "path": "src/app/file-storage/_component/_hooks/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_hooks",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "label": "use-file-storage-actions.ts",
+      "path": "src/app/file-storage/_component/_hooks/use-file-storage-actions.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "label": "use-file-storage-list.ts",
+      "path": "src/app/file-storage/_component/_hooks/use-file-storage-list.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_file_storage__component__table",
+      "label": "_table/",
+      "path": "src/app/file-storage/_component/_table",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/file-storage/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "label": "file-storage-table.tsx",
+      "path": "src/app/file-storage/_component/_table/file-storage-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_table",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component__table_index_ts",
+      "label": "index.ts",
+      "path": "src/app/file-storage/_component/_table/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_table",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_app_graph",
       "label": "graph/",
       "path": "src/app/graph",
@@ -2023,6 +2517,16 @@
       "size": 22,
       "community": "src/app/guides",
       "type": "directory"
+    },
+    {
+      "id": "file_src_app_guides_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/guides/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/guides/new",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_guides_new_page_tsx",
@@ -2063,6 +2567,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_guides__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/guides/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/guides/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_guides__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/guides/[id]/edit/page.tsx",
@@ -2071,6 +2585,16 @@
       "community": "src/app/guides/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_guides__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/guides/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/guides/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_guides__id__page_tsx",
@@ -2355,6 +2879,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_locations_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/locations/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/locations/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_locations_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/locations/new/page.tsx",
@@ -2393,6 +2927,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_locations__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/locations/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/locations/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_locations__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/locations/[id]/edit/page.tsx",
@@ -2401,6 +2945,16 @@
       "community": "src/app/locations/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_locations__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/locations/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/locations/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_locations__id__page_tsx",
@@ -2634,6 +3188,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_majors_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/majors/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/majors/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_majors_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/majors/new/page.tsx",
@@ -2672,6 +3236,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_majors__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/majors/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/majors/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_majors__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/majors/[id]/edit/page.tsx",
@@ -2680,6 +3254,16 @@
       "community": "src/app/majors/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_majors__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/majors/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/majors/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_majors__id__page_tsx",
@@ -2894,9 +3478,39 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_my_students__component_add_student_dialog_tsx",
+      "label": "add-student-dialog.tsx",
+      "path": "src/app/my-students/_component/add-student-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_my_students__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/my-students/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_my_students__component_detailed_scores_list_tsx",
       "label": "detailed-scores-list.tsx",
       "path": "src/app/my-students/_component/detailed-scores-list.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_my_students__component_grade_dialog_tsx",
+      "label": "grade-dialog.tsx",
+      "path": "src/app/my-students/_component/grade-dialog.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/my-students/_component",
@@ -2944,12 +3558,81 @@
       "client": true
     },
     {
+      "id": "file_src_app_my_students__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/my-students/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/my-students/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_my_students__component_use_my_students_socket_ts",
+      "label": "use-my-students-socket.ts",
+      "path": "src/app/my-students/_component/use-my-students-socket.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component",
+      "type": "ts",
+      "client": true
+    },
+    {
       "id": "file_src_app_my_students__component_year_averages_list_tsx",
       "label": "year-averages-list.tsx",
       "path": "src/app/my-students/_component/year-averages-list.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/my-students/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_my_students__component__table",
+      "label": "_table/",
+      "path": "src/app/my-students/_component/_table",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/my-students/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_my_students__component__table_index_ts",
+      "label": "index.ts",
+      "path": "src/app/my-students/_component/_table/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/my-students/_component/_table",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_my_students__component__table_my_students_data_table_tsx",
+      "label": "my-students-data-table.tsx",
+      "path": "src/app/my-students/_component/_table/my-students-data-table.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/my-students/_component/_table",
+      "type": "tsx",
+      "client": false
+    },
+    {
+      "id": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "label": "my-students-score-table.tsx",
+      "path": "src/app/my-students/_component/_table/my-students-score-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component/_table",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_my_students__component__table_my_students_table_tsx",
+      "label": "my-students-table.tsx",
+      "path": "src/app/my-students/_component/_table/my-students-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/my-students/_component/_table",
       "type": "tsx",
       "client": true
     },
@@ -3108,6 +3791,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_posts_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/posts/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/posts/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_posts_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/posts/new/page.tsx",
@@ -3144,6 +3837,16 @@
       "size": 22,
       "community": "src/app/posts/[id]",
       "type": "directory"
+    },
+    {
+      "id": "file_src_app_posts__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/posts/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/posts/[id]/edit",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_posts__id__edit_page_tsx",
@@ -3449,6 +4152,55 @@
       "client": true
     },
     {
+      "id": "dir_src_app_profile__components",
+      "label": "_components/",
+      "path": "src/app/profile/_components",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/profile",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_profile__components_profile_detail_section_tsx",
+      "label": "profile-detail-section.tsx",
+      "path": "src/app/profile/_components/profile-detail-section.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/profile/_components",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_profile__components_profile_edit_section_tsx",
+      "label": "profile-edit-section.tsx",
+      "path": "src/app/profile/_components/profile-edit-section.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/profile/_components",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_profile__components_profile_sidebar_tsx",
+      "label": "profile-sidebar.tsx",
+      "path": "src/app/profile/_components/profile-sidebar.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/profile/_components",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_profile__components_profile_utils_ts",
+      "label": "profile-utils.ts",
+      "path": "src/app/profile/_components/profile-utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/profile/_components",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_app_rbac",
       "label": "rbac/",
       "path": "src/app/rbac",
@@ -3486,6 +4238,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_rbac__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/rbac/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/rbac/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_rbac__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/rbac/[id]/edit/page.tsx",
@@ -3494,6 +4256,16 @@
       "community": "src/app/rbac/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_rbac__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/rbac/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/rbac/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_rbac__id__page_tsx",
@@ -3538,6 +4310,16 @@
       "id": "file_src_app_rbac__component_types_ts",
       "label": "types.ts",
       "path": "src/app/rbac/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/rbac/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_rbac__component_utils_ts",
+      "label": "utils.ts",
+      "path": "src/app/rbac/_component/utils.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/app/rbac/_component",
@@ -3698,6 +4480,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_screens_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/screens/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/screens/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_screens_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/screens/new/page.tsx",
@@ -3736,6 +4528,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_screens__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/screens/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/screens/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_screens__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/screens/[id]/edit/page.tsx",
@@ -3744,6 +4546,16 @@
       "community": "src/app/screens/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_screens__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/screens/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/screens/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_screens__id__page_tsx",
@@ -3958,6 +4770,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_seo_metas_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/seo-metas/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/seo-metas/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_seo_metas_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/seo-metas/new/page.tsx",
@@ -3996,6 +4818,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_seo_metas__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/seo-metas/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/seo-metas/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_seo_metas__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/seo-metas/[id]/edit/page.tsx",
@@ -4004,6 +4836,16 @@
       "community": "src/app/seo-metas/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_seo_metas__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/seo-metas/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/seo-metas/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_seo_metas__id__page_tsx",
@@ -4159,6 +5001,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_speakers_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/speakers/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/speakers/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_speakers_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/speakers/new/page.tsx",
@@ -4197,6 +5049,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_speakers__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/speakers/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/speakers/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_speakers__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/speakers/[id]/edit/page.tsx",
@@ -4205,6 +5067,16 @@
       "community": "src/app/speakers/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_speakers__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/speakers/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/speakers/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_speakers__id__page_tsx",
@@ -4429,6 +5301,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_staff_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/staff/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/staff/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_staff_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/staff/new/page.tsx",
@@ -4467,6 +5349,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_staff__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/staff/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/staff/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_staff__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/staff/[id]/edit/page.tsx",
@@ -4475,6 +5367,16 @@
       "community": "src/app/staff/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_staff__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/staff/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/staff/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_staff__id__page_tsx",
@@ -4514,6 +5416,16 @@
       "community": "src/app/staff/_component",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_app_staff__component_staff_personnel_info_section_tsx",
+      "label": "staff-personnel-info-section.tsx",
+      "path": "src/app/staff/_component/staff-personnel-info-section.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/staff/_component",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_app_staff__component_types_ts",
@@ -4709,6 +5621,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_tags_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/tags/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/tags/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_tags_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/tags/new/page.tsx",
@@ -4747,6 +5669,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_tags__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/tags/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/tags/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_tags__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/tags/[id]/edit/page.tsx",
@@ -4755,6 +5687,16 @@
       "community": "src/app/tags/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_tags__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/tags/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/tags/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_tags__id__page_tsx",
@@ -4979,6 +5921,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_templates_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/templates/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/templates/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_templates_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/templates/new/page.tsx",
@@ -5017,6 +5969,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_templates__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/templates/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/templates/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_templates__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/templates/[id]/edit/page.tsx",
@@ -5025,6 +5987,16 @@
       "community": "src/app/templates/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_templates__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/templates/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/templates/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_templates__id__page_tsx",
@@ -5239,6 +6211,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_training_levels_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-levels/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-levels/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_training_levels_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/training-levels/new/page.tsx",
@@ -5277,6 +6259,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_training_levels__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-levels/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-levels/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_training_levels__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/training-levels/[id]/edit/page.tsx",
@@ -5285,6 +6277,16 @@
       "community": "src/app/training-levels/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_training_levels__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-levels/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-levels/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_training_levels__id__page_tsx",
@@ -5489,6 +6491,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_training_systems_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-systems/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-systems/new",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_training_systems_new_page_tsx",
       "label": "page.tsx",
       "path": "src/app/training-systems/new/page.tsx",
@@ -5527,6 +6539,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_training_systems__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-systems/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-systems/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
       "id": "file_src_app_training_systems__id__edit_page_tsx",
       "label": "page.tsx",
       "path": "src/app/training-systems/[id]/edit/page.tsx",
@@ -5535,6 +6557,16 @@
       "community": "src/app/training-systems/[id]/edit",
       "type": "page",
       "client": true
+    },
+    {
+      "id": "file_src_app_training_systems__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/training-systems/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/training-systems/[id]",
+      "type": "loading",
+      "client": false
     },
     {
       "id": "file_src_app_training_systems__id__page_tsx",
@@ -5730,6 +6762,26 @@
       "type": "directory"
     },
     {
+      "id": "file_src_components_admin_realtime_sync_tsx",
+      "label": "admin-realtime-sync.tsx",
+      "path": "src/components/admin-realtime-sync.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/components",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_components_admin_route_loading_tsx",
+      "label": "admin-route-loading.tsx",
+      "path": "src/components/admin-route-loading.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/components",
+      "type": "tsx",
+      "client": false
+    },
+    {
       "id": "file_src_components_api_scope_notice_tsx",
       "label": "api-scope-notice.tsx",
       "path": "src/components/api-scope-notice.tsx",
@@ -5748,6 +6800,15 @@
       "community": "src/components",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "dir_src_components_graphify",
+      "label": "graphify/",
+      "path": "src/components/graphify",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/components",
+      "type": "directory"
     },
     {
       "id": "file_src_components_location_map_tsx",
@@ -5787,6 +6848,16 @@
       "community": "src/config",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_config_protected_admin_ts",
+      "label": "protected-admin.ts",
+      "path": "src/config/protected-admin.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "dir_src_features",
@@ -5896,6 +6967,26 @@
       "client": true
     },
     {
+      "id": "file_src_hooks_use_admin_mutation_ts",
+      "label": "use-admin-mutation.ts",
+      "path": "src/hooks/use-admin-mutation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_use_admin_realtime_sync_ts",
+      "label": "use-admin-realtime-sync.ts",
+      "path": "src/hooks/use-admin-realtime-sync.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
       "id": "file_src_hooks_use_admin_table_state_ts",
       "label": "use-admin-table-state.ts",
       "path": "src/hooks/use-admin-table-state.ts",
@@ -5935,9 +7026,109 @@
       "type": "directory"
     },
     {
+      "id": "file_src_lib_admin_detail_query_ts",
+      "label": "admin-detail-query.ts",
+      "path": "src/lib/admin-detail-query.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_navigation_ts",
+      "label": "admin-navigation.ts",
+      "path": "src/lib/admin-navigation.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_lib_admin_realtime_query_map_ts",
+      "label": "admin-realtime-query-map.ts",
+      "path": "src/lib/admin-realtime-query-map.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_row_action_handlers_ts",
+      "label": "admin-row-action-handlers.ts",
+      "path": "src/lib/admin-row-action-handlers.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_socket_ts",
+      "label": "admin-socket.ts",
+      "path": "src/lib/admin-socket.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_lib_admin_table_columns_tsx",
+      "label": "admin-table-columns.tsx",
+      "path": "src/lib/admin-table-columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/lib",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_lib_admin_table_config_ts",
+      "label": "admin-table-config.ts",
+      "path": "src/lib/admin-table-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_trash_export_ts",
+      "label": "admin-trash-export.ts",
+      "path": "src/lib/admin-trash-export.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_lib_admin_upload_ts",
       "label": "admin-upload.ts",
       "path": "src/lib/admin-upload.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_uploads_ts",
+      "label": "admin-uploads.ts",
+      "path": "src/lib/admin-uploads.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_xlsx_export_ts",
+      "label": "admin-xlsx-export.ts",
+      "path": "src/lib/admin-xlsx-export.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -5998,6 +7189,36 @@
       "id": "file_src_lib_dev_demo_accounts_ts",
       "label": "dev-demo-accounts.ts",
       "path": "src/lib/dev-demo-accounts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_export_file_save_ts",
+      "label": "export-file-save.ts",
+      "path": "src/lib/export-file-save.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_fetch_all_admin_list_ts",
+      "label": "fetch-all-admin-list.ts",
+      "path": "src/lib/fetch-all-admin-list.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_format_admin_datetime_ts",
+      "label": "format-admin-datetime.ts",
+      "path": "src/lib/format-admin-datetime.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -6180,6 +7401,11 @@
     },
     {
       "source": "dir_src_app_academic_years_new",
+      "target": "file_src_app_academic_years_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_academic_years_new",
       "target": "file_src_app_academic_years_new_page_tsx",
       "relation": "contains"
     },
@@ -6200,7 +7426,17 @@
     },
     {
       "source": "dir_src_app_academic_years__id__edit",
+      "target": "file_src_app_academic_years__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_academic_years__id__edit",
       "target": "file_src_app_academic_years__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_academic_years__id_",
+      "target": "file_src_app_academic_years__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -6325,6 +7561,11 @@
     },
     {
       "source": "dir_src_app_cameras_new",
+      "target": "file_src_app_cameras_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_cameras_new",
       "target": "file_src_app_cameras_new_page_tsx",
       "relation": "contains"
     },
@@ -6345,7 +7586,17 @@
     },
     {
       "source": "dir_src_app_cameras__id__edit",
+      "target": "file_src_app_cameras__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_cameras__id__edit",
       "target": "file_src_app_cameras__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_cameras__id_",
+      "target": "file_src_app_cameras__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -6460,6 +7711,11 @@
     },
     {
       "source": "dir_src_app_categories_new",
+      "target": "file_src_app_categories_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_categories_new",
       "target": "file_src_app_categories_new_page_tsx",
       "relation": "contains"
     },
@@ -6480,7 +7736,17 @@
     },
     {
       "source": "dir_src_app_categories__id__edit",
+      "target": "file_src_app_categories__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_categories__id__edit",
       "target": "file_src_app_categories__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_categories__id_",
+      "target": "file_src_app_categories__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -6605,6 +7871,11 @@
     },
     {
       "source": "dir_src_app_contact_requests__id_",
+      "target": "file_src_app_contact_requests__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_contact_requests__id_",
       "target": "file_src_app_contact_requests__id__page_tsx",
       "relation": "contains"
     },
@@ -6616,6 +7887,16 @@
     {
       "source": "dir_src_app_contact_requests__component",
       "target": "file_src_app_contact_requests__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_contact_requests__component",
+      "target": "file_src_app_contact_requests__component_contact_export_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_contact_requests__component",
+      "target": "file_src_app_contact_requests__component_contact_row_actions_tsx",
       "relation": "contains"
     },
     {
@@ -6695,6 +7976,11 @@
     },
     {
       "source": "dir_src_app_courses_new",
+      "target": "file_src_app_courses_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_courses_new",
       "target": "file_src_app_courses_new_page_tsx",
       "relation": "contains"
     },
@@ -6715,7 +8001,17 @@
     },
     {
       "source": "dir_src_app_courses__id__edit",
+      "target": "file_src_app_courses__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_courses__id__edit",
       "target": "file_src_app_courses__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_courses__id_",
+      "target": "file_src_app_courses__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -6825,7 +8121,77 @@
     },
     {
       "source": "dir_src_app_data",
+      "target": "file_src_app_data_import_progress_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data",
       "target": "file_src_app_data_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data",
+      "target": "dir_src_app_data__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_entity_schema_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_excel_to_import_data_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_import_chunked_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_import_error_message_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_import_timing_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "file_src_app_data__component_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component",
+      "target": "dir_src_app_data__component__hooks",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component__hooks",
+      "target": "file_src_app_data__component__hooks_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_data__component__hooks",
+      "target": "file_src_app_data__component__hooks_use_database_schema_ts",
       "relation": "contains"
     },
     {
@@ -6850,6 +8216,11 @@
     },
     {
       "source": "dir_src_app_departments_new",
+      "target": "file_src_app_departments_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_departments_new",
       "target": "file_src_app_departments_new_page_tsx",
       "relation": "contains"
     },
@@ -6870,7 +8241,17 @@
     },
     {
       "source": "dir_src_app_departments__id__edit",
+      "target": "file_src_app_departments__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_departments__id__edit",
       "target": "file_src_app_departments__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_departments__id_",
+      "target": "file_src_app_departments__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -6985,6 +8366,11 @@
     },
     {
       "source": "dir_src_app_events_new",
+      "target": "file_src_app_events_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_events_new",
       "target": "file_src_app_events_new_page_tsx",
       "relation": "contains"
     },
@@ -7005,7 +8391,17 @@
     },
     {
       "source": "dir_src_app_events__id__edit",
+      "target": "file_src_app_events__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_events__id__edit",
       "target": "file_src_app_events__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_events__id_",
+      "target": "file_src_app_events__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -7190,6 +8586,81 @@
     },
     {
       "source": "dir_src_app",
+      "target": "dir_src_app_file_storage",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage",
+      "target": "file_src_app_file_storage_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage",
+      "target": "dir_src_app_file_storage__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "dir_src_app_file_storage__component__hooks",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__hooks",
+      "target": "file_src_app_file_storage__component__hooks_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__hooks",
+      "target": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__hooks",
+      "target": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "dir_src_app_file_storage__component__table",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__table",
+      "target": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__table",
+      "target": "file_src_app_file_storage__component__table_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
       "target": "dir_src_app_graph",
       "relation": "contains"
     },
@@ -7206,6 +8677,11 @@
     {
       "source": "dir_src_app_guides",
       "target": "dir_src_app_guides_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_guides_new",
+      "target": "file_src_app_guides_new_loading_tsx",
       "relation": "contains"
     },
     {
@@ -7230,7 +8706,17 @@
     },
     {
       "source": "dir_src_app_guides__id__edit",
+      "target": "file_src_app_guides__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_guides__id__edit",
       "target": "file_src_app_guides__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_guides__id_",
+      "target": "file_src_app_guides__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -7380,6 +8866,11 @@
     },
     {
       "source": "dir_src_app_locations_new",
+      "target": "file_src_app_locations_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_locations_new",
       "target": "file_src_app_locations_new_page_tsx",
       "relation": "contains"
     },
@@ -7400,7 +8891,17 @@
     },
     {
       "source": "dir_src_app_locations__id__edit",
+      "target": "file_src_app_locations__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_locations__id__edit",
       "target": "file_src_app_locations__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_locations__id_",
+      "target": "file_src_app_locations__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -7525,6 +9026,11 @@
     },
     {
       "source": "dir_src_app_majors_new",
+      "target": "file_src_app_majors_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_majors_new",
       "target": "file_src_app_majors_new_page_tsx",
       "relation": "contains"
     },
@@ -7545,7 +9051,17 @@
     },
     {
       "source": "dir_src_app_majors__id__edit",
+      "target": "file_src_app_majors__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_majors__id__edit",
       "target": "file_src_app_majors__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_majors__id_",
+      "target": "file_src_app_majors__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -7660,7 +9176,22 @@
     },
     {
       "source": "dir_src_app_my_students__component",
+      "target": "file_src_app_my_students__component_add_student_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
+      "target": "file_src_app_my_students__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
       "target": "file_src_app_my_students__component_detailed_scores_list_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
+      "target": "file_src_app_my_students__component_grade_dialog_tsx",
       "relation": "contains"
     },
     {
@@ -7685,7 +9216,42 @@
     },
     {
       "source": "dir_src_app_my_students__component",
+      "target": "file_src_app_my_students__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
+      "target": "file_src_app_my_students__component_use_my_students_socket_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
       "target": "file_src_app_my_students__component_year_averages_list_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component",
+      "target": "dir_src_app_my_students__component__table",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component__table",
+      "target": "file_src_app_my_students__component__table_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component__table",
+      "target": "file_src_app_my_students__component__table_my_students_data_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component__table",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_my_students__component__table",
+      "target": "file_src_app_my_students__component__table_my_students_table_tsx",
       "relation": "contains"
     },
     {
@@ -7770,6 +9336,11 @@
     },
     {
       "source": "dir_src_app_posts_new",
+      "target": "file_src_app_posts_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_posts_new",
       "target": "file_src_app_posts_new_page_tsx",
       "relation": "contains"
     },
@@ -7786,6 +9357,11 @@
     {
       "source": "dir_src_app_posts__id_",
       "target": "dir_src_app_posts__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_posts__id__edit",
+      "target": "file_src_app_posts__id__edit_loading_tsx",
       "relation": "contains"
     },
     {
@@ -7944,6 +9520,31 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_app_profile",
+      "target": "dir_src_app_profile__components",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_profile__components",
+      "target": "file_src_app_profile__components_profile_detail_section_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_profile__components",
+      "target": "file_src_app_profile__components_profile_edit_section_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_profile__components",
+      "target": "file_src_app_profile__components_profile_sidebar_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_profile__components",
+      "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src_app",
       "target": "dir_src_app_rbac",
       "relation": "contains"
@@ -7965,7 +9566,17 @@
     },
     {
       "source": "dir_src_app_rbac__id__edit",
+      "target": "file_src_app_rbac__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_rbac__id__edit",
       "target": "file_src_app_rbac__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_rbac__id_",
+      "target": "file_src_app_rbac__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -7991,6 +9602,11 @@
     {
       "source": "dir_src_app_rbac__component",
       "target": "file_src_app_rbac__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_rbac__component",
+      "target": "file_src_app_rbac__component_utils_ts",
       "relation": "contains"
     },
     {
@@ -8075,6 +9691,11 @@
     },
     {
       "source": "dir_src_app_screens_new",
+      "target": "file_src_app_screens_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_screens_new",
       "target": "file_src_app_screens_new_page_tsx",
       "relation": "contains"
     },
@@ -8095,7 +9716,17 @@
     },
     {
       "source": "dir_src_app_screens__id__edit",
+      "target": "file_src_app_screens__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_screens__id__edit",
       "target": "file_src_app_screens__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_screens__id_",
+      "target": "file_src_app_screens__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8210,6 +9841,11 @@
     },
     {
       "source": "dir_src_app_seo_metas_new",
+      "target": "file_src_app_seo_metas_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_seo_metas_new",
       "target": "file_src_app_seo_metas_new_page_tsx",
       "relation": "contains"
     },
@@ -8230,7 +9866,17 @@
     },
     {
       "source": "dir_src_app_seo_metas__id__edit",
+      "target": "file_src_app_seo_metas__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_seo_metas__id__edit",
       "target": "file_src_app_seo_metas__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_seo_metas__id_",
+      "target": "file_src_app_seo_metas__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8315,6 +9961,11 @@
     },
     {
       "source": "dir_src_app_speakers_new",
+      "target": "file_src_app_speakers_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_speakers_new",
       "target": "file_src_app_speakers_new_page_tsx",
       "relation": "contains"
     },
@@ -8335,7 +9986,17 @@
     },
     {
       "source": "dir_src_app_speakers__id__edit",
+      "target": "file_src_app_speakers__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_speakers__id__edit",
       "target": "file_src_app_speakers__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_speakers__id_",
+      "target": "file_src_app_speakers__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8455,6 +10116,11 @@
     },
     {
       "source": "dir_src_app_staff_new",
+      "target": "file_src_app_staff_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_staff_new",
       "target": "file_src_app_staff_new_page_tsx",
       "relation": "contains"
     },
@@ -8475,7 +10141,17 @@
     },
     {
       "source": "dir_src_app_staff__id__edit",
+      "target": "file_src_app_staff__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_staff__id__edit",
       "target": "file_src_app_staff__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_staff__id_",
+      "target": "file_src_app_staff__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8496,6 +10172,11 @@
     {
       "source": "dir_src_app_staff__component",
       "target": "file_src_app_staff__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_staff__component",
+      "target": "file_src_app_staff__component_staff_personnel_info_section_tsx",
       "relation": "contains"
     },
     {
@@ -8600,6 +10281,11 @@
     },
     {
       "source": "dir_src_app_tags_new",
+      "target": "file_src_app_tags_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_tags_new",
       "target": "file_src_app_tags_new_page_tsx",
       "relation": "contains"
     },
@@ -8620,7 +10306,17 @@
     },
     {
       "source": "dir_src_app_tags__id__edit",
+      "target": "file_src_app_tags__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_tags__id__edit",
       "target": "file_src_app_tags__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_tags__id_",
+      "target": "file_src_app_tags__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8740,6 +10436,11 @@
     },
     {
       "source": "dir_src_app_templates_new",
+      "target": "file_src_app_templates_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_templates_new",
       "target": "file_src_app_templates_new_page_tsx",
       "relation": "contains"
     },
@@ -8760,7 +10461,17 @@
     },
     {
       "source": "dir_src_app_templates__id__edit",
+      "target": "file_src_app_templates__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_templates__id__edit",
       "target": "file_src_app_templates__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_templates__id_",
+      "target": "file_src_app_templates__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -8875,6 +10586,11 @@
     },
     {
       "source": "dir_src_app_training_levels_new",
+      "target": "file_src_app_training_levels_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_levels_new",
       "target": "file_src_app_training_levels_new_page_tsx",
       "relation": "contains"
     },
@@ -8895,7 +10611,17 @@
     },
     {
       "source": "dir_src_app_training_levels__id__edit",
+      "target": "file_src_app_training_levels__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_levels__id__edit",
       "target": "file_src_app_training_levels__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_levels__id_",
+      "target": "file_src_app_training_levels__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -9005,6 +10731,11 @@
     },
     {
       "source": "dir_src_app_training_systems_new",
+      "target": "file_src_app_training_systems_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_systems_new",
       "target": "file_src_app_training_systems_new_page_tsx",
       "relation": "contains"
     },
@@ -9025,7 +10756,17 @@
     },
     {
       "source": "dir_src_app_training_systems__id__edit",
+      "target": "file_src_app_training_systems__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_systems__id__edit",
       "target": "file_src_app_training_systems__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_training_systems__id_",
+      "target": "file_src_app_training_systems__id__loading_tsx",
       "relation": "contains"
     },
     {
@@ -9130,12 +10871,27 @@
     },
     {
       "source": "dir_src_components",
+      "target": "file_src_components_admin_realtime_sync_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components",
       "target": "file_src_components_api_scope_notice_tsx",
       "relation": "contains"
     },
     {
       "source": "dir_src_components",
       "target": "file_src_components_dashboard_charts_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components",
+      "target": "dir_src_components_graphify",
       "relation": "contains"
     },
     {
@@ -9156,6 +10912,11 @@
     {
       "source": "dir_src_config",
       "target": "file_src_config_admin_menu_tree_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
+      "target": "file_src_config_protected_admin_ts",
       "relation": "contains"
     },
     {
@@ -9215,6 +10976,16 @@
     },
     {
       "source": "dir_src_hooks",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
+      "target": "file_src_hooks_use_admin_realtime_sync_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
       "target": "file_src_hooks_use_admin_table_state_ts",
       "relation": "contains"
     },
@@ -9235,7 +11006,57 @@
     },
     {
       "source": "dir_src_lib",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_realtime_query_map_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_socket_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_table_config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
       "target": "file_src_lib_admin_upload_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_admin_xlsx_export_ts",
       "relation": "contains"
     },
     {
@@ -9266,6 +11087,21 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_dev_demo_accounts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_export_file_save_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_format_admin_datetime_ts",
       "relation": "contains"
     },
     {
@@ -9349,6 +11185,16 @@
       "relation": "renders"
     },
     {
+      "source": "file_src_app_academic_years_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_academic_years_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -9356,6 +11202,16 @@
     {
       "source": "file_src_app_academic_years_new_page_tsx",
       "target": "dir_src_app_academic_years__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9375,7 +11231,32 @@
     },
     {
       "source": "file_src_app_academic_years_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_page_tsx",
       "target": "dir_src_app_academic_years__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9386,6 +11267,21 @@
     {
       "source": "file_src_app_academic_years__id__edit_page_tsx",
       "target": "dir_src_app_academic_years__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9401,6 +11297,16 @@
     {
       "source": "file_src_app_academic_years__id__page_tsx",
       "target": "dir_src_app_academic_years__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -9470,6 +11376,16 @@
     },
     {
       "source": "file_src_app_academic_years__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__component__query_index_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__component__query_index_ts",
       "target": "file_src_app_academic_years__component_types_ts",
       "relation": "imports"
     },
@@ -9484,6 +11400,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_academic_years__component__table_academic_years_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_academic_years__component__table_academic_years_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_academic_years__component__table_index_ts",
       "target": "file_src_app_academic_years__component__table_academic_years_table_tsx",
       "relation": "imports"
@@ -9494,6 +11420,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_cameras_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_cameras_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -9501,6 +11437,16 @@
     {
       "source": "file_src_app_cameras_new_page_tsx",
       "target": "dir_src_app_cameras__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9520,7 +11466,32 @@
     },
     {
       "source": "file_src_app_cameras_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_page_tsx",
       "target": "dir_src_app_cameras__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9531,6 +11502,21 @@
     {
       "source": "file_src_app_cameras__id__edit_page_tsx",
       "target": "dir_src_app_cameras__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9546,6 +11532,16 @@
     {
       "source": "file_src_app_cameras__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -9635,6 +11631,16 @@
     },
     {
       "source": "file_src_app_cameras__component__query_use_cameras_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__component__query_use_cameras_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__component__query_use_cameras_queries_ts",
       "target": "file_src_app_cameras__component_types_ts",
       "relation": "imports"
     },
@@ -9649,6 +11655,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_cameras__component__table_cameras_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_cameras__component__table_cameras_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_cameras__component__table_index_ts",
       "target": "file_src_app_cameras__component__table_cameras_table_tsx",
       "relation": "imports"
@@ -9659,6 +11675,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_categories_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_categories_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -9666,6 +11692,16 @@
     {
       "source": "file_src_app_categories_new_page_tsx",
       "target": "dir_src_app_categories__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9685,12 +11721,32 @@
     },
     {
       "source": "file_src_app_categories_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories_page_tsx",
       "target": "dir_src_app_categories__component",
       "relation": "imports"
     },
     {
       "source": "file_src_app_categories_page_tsx",
       "target": "file_src_app_categories__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9701,6 +11757,21 @@
     {
       "source": "file_src_app_categories__id__edit_page_tsx",
       "target": "dir_src_app_categories__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9716,6 +11787,16 @@
     {
       "source": "file_src_app_categories__id__page_tsx",
       "target": "dir_src_app_categories__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -9800,6 +11881,11 @@
     },
     {
       "source": "file_src_app_categories__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__component__query_index_ts",
       "target": "file_src_app_categories__component_types_ts",
       "relation": "imports"
     },
@@ -9814,6 +11900,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_categories__component__table_categories_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_categories__component__table_categories_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_categories__component__table_index_ts",
       "target": "file_src_app_categories__component__table_categories_table_tsx",
       "relation": "imports"
@@ -9821,6 +11917,11 @@
     {
       "source": "file_src_app_categories__component__table_index_ts",
       "target": "file_src_app_categories__component__table_categories_trash_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9859,6 +11960,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_contact_requests__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_contact_requests__id__page_tsx",
       "target": "file_src_hooks_queries_ts",
       "relation": "imports"
@@ -9880,12 +11991,32 @@
     },
     {
       "source": "file_src_app_contact_requests__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component_columns_tsx",
       "target": "file_src_app_contact_requests__component_types_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app_contact_requests__component_columns_tsx",
       "target": "file_src_app_contact_requests__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component_columns_tsx",
+      "target": "file_src_app_contact_requests__component_contact_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component_contact_export_ts",
+      "target": "file_src_app_contact_requests__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component_contact_row_actions_tsx",
+      "target": "file_src_app_contact_requests__component_types_ts",
       "relation": "imports"
     },
     {
@@ -9939,6 +12070,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_contact_requests__component__query_use_contact_queries_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component__table_contact_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_contact_requests__component__table_contact_table_tsx",
       "target": "file_src_app_contact_requests__component_columns_tsx",
       "relation": "imports"
@@ -9950,7 +12091,22 @@
     },
     {
       "source": "file_src_app_contact_requests__component__table_contact_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component__table_contact_trash_table_tsx",
+      "target": "file_src_lib_admin_xlsx_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component__table_contact_trash_table_tsx",
       "target": "file_src_app_contact_requests__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_contact_requests__component__table_contact_trash_table_tsx",
+      "target": "file_src_app_contact_requests__component_contact_export_ts",
       "relation": "imports"
     },
     {
@@ -9969,6 +12125,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_courses_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_courses_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -9976,6 +12142,16 @@
     {
       "source": "file_src_app_courses_new_page_tsx",
       "target": "dir_src_app_courses__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -9995,7 +12171,32 @@
     },
     {
       "source": "file_src_app_courses_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_page_tsx",
       "target": "dir_src_app_courses__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10006,6 +12207,21 @@
     {
       "source": "file_src_app_courses__id__edit_page_tsx",
       "target": "dir_src_app_courses__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10021,6 +12237,16 @@
     {
       "source": "file_src_app_courses__id__page_tsx",
       "target": "dir_src_app_courses__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -10095,6 +12321,16 @@
     },
     {
       "source": "file_src_app_courses__component__query_use_courses_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__component__query_use_courses_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__component__query_use_courses_queries_ts",
       "target": "file_src_app_courses__component_types_ts",
       "relation": "imports"
     },
@@ -10109,6 +12345,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_courses__component__table_courses_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_courses__component__table_courses_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_courses__component__table_index_ts",
       "target": "file_src_app_courses__component__table_courses_table_tsx",
       "relation": "imports"
@@ -10116,6 +12362,16 @@
     {
       "source": "file_src_app_courses__component__table_index_ts",
       "target": "file_src_app_courses__component__table_courses_trash_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_import_progress_panel_tsx",
+      "target": "file_src_app_data__component_import_error_message_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_import_progress_panel_tsx",
+      "target": "file_src_app_data__component_import_timing_ts",
       "relation": "imports"
     },
     {
@@ -10129,8 +12385,133 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_data_page_tsx",
+      "target": "file_src_app_data_import_progress_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_page_tsx",
+      "target": "dir_src_app_data__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_page_tsx",
+      "target": "file_src_app_data__component_import_chunked_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_page_tsx",
+      "target": "file_src_app_data__component_excel_to_import_data_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data_page_tsx",
+      "target": "file_src_lib_export_file_save_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_columns_tsx",
+      "target": "file_src_app_data__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_columns_tsx",
+      "target": "file_src_app_data__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_entity_schema_panel_tsx",
+      "target": "file_src_app_data__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_entity_schema_panel_tsx",
+      "target": "dir_src_app_data__component__hooks",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_entity_schema_panel_tsx",
+      "target": "file_src_app_data__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_import_chunked_ts",
+      "target": "file_src_app_data_import_progress_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_import_chunked_ts",
+      "target": "file_src_app_data__component_import_error_message_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_import_chunked_ts",
+      "target": "file_src_app_data__component_import_timing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_import_error_message_ts",
+      "target": "file_src_app_data__component_import_timing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_index_ts",
+      "target": "file_src_app_data__component_entity_schema_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_index_ts",
+      "target": "file_src_app_data__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_index_ts",
+      "target": "dir_src_app_data__component__hooks",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_index_ts",
+      "target": "file_src_app_data__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_index_ts",
+      "target": "file_src_app_data__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component_utils_ts",
+      "target": "file_src_app_data__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component__hooks_index_ts",
+      "target": "file_src_app_data__component__hooks_use_database_schema_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component__hooks_use_database_schema_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_data__component__hooks_use_database_schema_ts",
+      "target": "file_src_app_data__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_database_schema_page_tsx",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10141,6 +12522,16 @@
     {
       "source": "file_src_app_departments_new_page_tsx",
       "target": "dir_src_app_departments__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10160,7 +12551,32 @@
     },
     {
       "source": "file_src_app_departments_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_page_tsx",
       "target": "dir_src_app_departments__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10171,6 +12587,21 @@
     {
       "source": "file_src_app_departments__id__edit_page_tsx",
       "target": "dir_src_app_departments__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10186,6 +12617,16 @@
     {
       "source": "file_src_app_departments__id__page_tsx",
       "target": "dir_src_app_departments__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -10260,6 +12701,16 @@
     },
     {
       "source": "file_src_app_departments__component__query_use_departments_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__component__query_use_departments_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__component__query_use_departments_queries_ts",
       "target": "file_src_app_departments__component_types_ts",
       "relation": "imports"
     },
@@ -10274,6 +12725,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_departments__component__table_departments_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_departments__component__table_departments_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_departments__component__table_index_ts",
       "target": "file_src_app_departments__component__table_departments_table_tsx",
       "relation": "imports"
@@ -10284,6 +12745,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_events_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_events_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -10291,6 +12762,16 @@
     {
       "source": "file_src_app_events_new_page_tsx",
       "target": "dir_src_app_events__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10310,7 +12791,37 @@
     },
     {
       "source": "file_src_app_events_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_page_tsx",
       "target": "dir_src_app_events__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__edit_page_tsx",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10326,6 +12837,21 @@
     {
       "source": "file_src_app_events__id__edit_page_tsx",
       "target": "file_src_app_events__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10366,6 +12892,16 @@
     {
       "source": "file_src_app_events__id__page_tsx",
       "target": "file_src_app_events__component_registration_avatar_cell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -10466,6 +13002,11 @@
     {
       "source": "file_src_app_events__component_registration_attendance_actions_tsx",
       "target": "file_src_app_events__component_attendance_status_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component_registration_attendance_actions_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
       "relation": "imports"
     },
     {
@@ -10650,7 +13191,22 @@
     },
     {
       "source": "file_src_app_events__component__query_use_event_sub_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component__query_use_event_sub_queries_ts",
       "target": "file_src_app_events__component__query_use_events_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component__query_use_events_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component__query_use_events_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
       "relation": "imports"
     },
     {
@@ -10669,6 +13225,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_events__component__table_events_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_events__component__table_events_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_events__component__table_index_ts",
       "target": "file_src_app_events__component__table_events_table_tsx",
       "relation": "imports"
@@ -10679,6 +13245,141 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "dir_src_app_file_storage__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_tsx",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_tsx",
+      "target": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "dir_src_app_file_storage__component__table",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "dir_src_app_file_storage__component__hooks",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_types_ts",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_index_ts",
+      "target": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_index_ts",
+      "target": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_lib_admin_upload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__table_index_ts",
+      "target": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_guides_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -10689,8 +13390,23 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_guides_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_guides_page_tsx",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
       "relation": "imports"
     },
     {
@@ -10700,7 +13416,27 @@
     },
     {
       "source": "file_src_app_guides_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_page_tsx",
       "target": "dir_src_app_guides__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10714,6 +13450,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_guides__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_guides__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
       "relation": "imports"
@@ -10726,6 +13477,11 @@
     {
       "source": "file_src_app_guides__id__page_tsx",
       "target": "dir_src_app_guides__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
       "relation": "imports"
     },
     {
@@ -10879,6 +13635,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_guides__component__query_use_guides_mutations_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__component__query_use_guides_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_guides__component__query_use_guides_queries_ts",
       "target": "file_src_app_guides__component_types_ts",
       "relation": "imports"
@@ -10891,6 +13657,11 @@
     {
       "source": "file_src_app_guides__component__table_guides_table_tsx",
       "target": "file_src_app_guides__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_guides__component__table_guides_table_tsx",
+      "target": "file_src_app_guides__component_utils_ts",
       "relation": "imports"
     },
     {
@@ -10914,6 +13685,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_locations_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -10921,6 +13707,16 @@
     {
       "source": "file_src_app_locations_new_page_tsx",
       "target": "dir_src_app_locations__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10940,7 +13736,32 @@
     },
     {
       "source": "file_src_app_locations_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_page_tsx",
       "target": "dir_src_app_locations__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10951,6 +13772,21 @@
     {
       "source": "file_src_app_locations__id__edit_page_tsx",
       "target": "dir_src_app_locations__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -10971,6 +13807,16 @@
     {
       "source": "file_src_app_locations__id__page_tsx",
       "target": "dir_src_app_locations__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -11045,6 +13891,16 @@
     },
     {
       "source": "file_src_app_locations__component__query_use_locations_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__component__query_use_locations_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__component__query_use_locations_queries_ts",
       "target": "file_src_app_locations__component_types_ts",
       "relation": "imports"
     },
@@ -11069,8 +13925,28 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_locations__component__table_locations_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_locations__component__table_locations_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_login_page_tsx",
       "target": "file_src_features_auth_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11081,6 +13957,16 @@
     {
       "source": "file_src_app_majors_new_page_tsx",
       "target": "dir_src_app_majors__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11100,7 +13986,32 @@
     },
     {
       "source": "file_src_app_majors_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_page_tsx",
       "target": "dir_src_app_majors__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11111,6 +14022,21 @@
     {
       "source": "file_src_app_majors__id__edit_page_tsx",
       "target": "dir_src_app_majors__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11126,6 +14052,16 @@
     {
       "source": "file_src_app_majors__id__page_tsx",
       "target": "dir_src_app_majors__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -11195,6 +14131,16 @@
     },
     {
       "source": "file_src_app_majors__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__component__query_index_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__component__query_index_ts",
       "target": "file_src_app_majors__component_types_ts",
       "relation": "imports"
     },
@@ -11219,6 +14165,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_majors__component__table_majors_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_majors__component__table_majors_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_my_students_page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
       "relation": "imports"
@@ -11230,12 +14186,52 @@
     },
     {
       "source": "file_src_app_my_students_page_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students_page_tsx",
       "target": "dir_src_app_my_students__component",
       "relation": "imports"
     },
     {
       "source": "file_src_app_my_students_page_tsx",
-      "target": "file_src_types_student_scores_ts",
+      "target": "file_src_app_my_students__component_use_my_students_socket_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_add_student_dialog_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_add_student_dialog_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_columns_tsx",
+      "target": "file_src_app_my_students__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_columns_tsx",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_detailed_scores_list_tsx",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
       "relation": "imports"
     },
     {
@@ -11246,6 +14242,21 @@
     {
       "source": "file_src_app_my_students__component_detailed_scores_list_tsx",
       "target": "file_src_app_my_students__component_score_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_grade_dialog_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_grade_dialog_tsx",
+      "target": "file_src_app_my_students__component_student_scores_section_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_grade_dialog_tsx",
+      "target": "file_src_types_student_scores_ts",
       "relation": "imports"
     },
     {
@@ -11274,6 +14285,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_my_students__component_index_ts",
+      "target": "file_src_app_my_students__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_index_ts",
+      "target": "file_src_app_my_students__component_add_student_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_index_ts",
+      "target": "file_src_app_my_students__component_grade_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_index_ts",
+      "target": "file_src_app_my_students__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_index_ts",
+      "target": "dir_src_app_my_students__component__table",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_my_students__component_student_scores_section_tsx",
       "target": "file_src_app_my_students__component_year_averages_list_tsx",
       "relation": "imports"
@@ -11295,6 +14331,11 @@
     },
     {
       "source": "file_src_app_my_students__component_term_averages_list_tsx",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_term_averages_list_tsx",
       "target": "file_src_types_student_scores_ts",
       "relation": "imports"
     },
@@ -11304,6 +14345,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_my_students__component_use_my_students_socket_ts",
+      "target": "file_src_lib_auth_session_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_my_students__component_year_averages_list_tsx",
       "target": "file_src_types_student_scores_ts",
       "relation": "imports"
@@ -11311,6 +14357,41 @@
     {
       "source": "file_src_app_my_students__component_year_averages_list_tsx",
       "target": "file_src_app_my_students__component_score_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component_year_averages_list_tsx",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_index_ts",
+      "target": "file_src_app_my_students__component__table_my_students_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_index_ts",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_index_ts",
+      "target": "file_src_app_my_students__component__table_my_students_data_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_my_students_data_table_tsx",
+      "target": "file_src_app_my_students__component__table_my_students_score_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_my_students_table_tsx",
+      "target": "file_src_app_my_students__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_my_students__component__table_my_students_table_tsx",
+      "target": "file_src_app_my_students__component_columns_tsx",
       "relation": "imports"
     },
     {
@@ -11375,6 +14456,16 @@
     },
     {
       "source": "file_src_app_parent_students__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_parent_students__component_columns_tsx",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_parent_students__component_columns_tsx",
       "target": "file_src_app_parent_students__component_types_ts",
       "relation": "imports"
     },
@@ -11409,13 +14500,38 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_parent_students__component__query_use_parent_students_queries_ts",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_parent_students__component__query_use_parent_students_queries_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_parent_students__component__table_index_ts",
       "target": "file_src_app_parent_students__component__table_parent_student_table_tsx",
       "relation": "imports"
     },
     {
       "source": "file_src_app_parent_students__component__table_parent_student_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_parent_students__component__table_parent_student_table_tsx",
       "target": "file_src_app_parent_students__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11431,6 +14547,16 @@
     {
       "source": "file_src_app_posts_new_page_tsx",
       "target": "dir_src_app_posts__component__query",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11450,12 +14576,12 @@
     },
     {
       "source": "file_src_app_posts_page_tsx",
-      "target": "dir_src_app_posts__component__alert_dialog",
+      "target": "dir_src_app_posts__component__hooks",
       "relation": "imports"
     },
     {
       "source": "file_src_app_posts_page_tsx",
-      "target": "dir_src_app_posts__component__hooks",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
       "relation": "imports"
     },
     {
@@ -11474,6 +14600,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_posts__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_posts__id__edit_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -11486,6 +14622,16 @@
     {
       "source": "file_src_app_posts__id__edit_page_tsx",
       "target": "dir_src_app_posts__component__query",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11506,6 +14652,16 @@
     {
       "source": "file_src_app_posts__id__page_tsx",
       "target": "dir_src_app_posts__component__query",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -11649,6 +14805,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_posts__component__query_use_posts_mutations_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__component__query_use_posts_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_posts__component__query_use_posts_queries_ts",
       "target": "file_src_app_posts__component_types_ts",
       "relation": "imports"
@@ -11674,8 +14840,18 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_posts__component__table_posts_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_posts__component__table_posts_trash_table_tsx",
       "target": "file_src_app_posts__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_posts__component__table_posts_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
     {
@@ -11690,17 +14866,42 @@
     },
     {
       "source": "file_src_app_profile_page_tsx",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_profile_page_tsx",
       "target": "file_src_lib_auth_session_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app_profile_page_tsx",
       "target": "file_src_lib_admin_upload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_profile__components_profile_detail_section_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_profile__components_profile_detail_section_tsx",
+      "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_profile__components_profile_edit_section_tsx",
+      "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_profile__components_profile_sidebar_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_profile__components_profile_sidebar_tsx",
+      "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11730,7 +14931,32 @@
     },
     {
       "source": "file_src_app_rbac_page_tsx",
+      "target": "file_src_config_protected_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac_page_tsx",
       "target": "file_src_app_rbac__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac_page_tsx",
+      "target": "file_src_app_rbac__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11754,8 +14980,28 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_rbac__id__edit_page_tsx",
+      "target": "file_src_config_protected_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_rbac__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__id__page_tsx",
+      "target": "file_src_config_protected_admin_ts",
       "relation": "imports"
     },
     {
@@ -11766,6 +15012,21 @@
     {
       "source": "file_src_app_rbac__id__page_tsx",
       "target": "file_src_lib_permission_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__component_columns_tsx",
+      "target": "file_src_lib_permission_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__component_columns_tsx",
+      "target": "file_src_app_rbac__component_utils_ts",
       "relation": "imports"
     },
     {
@@ -11791,6 +15052,16 @@
     {
       "source": "file_src_app_rbac__component_index_ts",
       "target": "dir_src_app_rbac__component__form",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__component_utils_ts",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_rbac__component_utils_ts",
+      "target": "file_src_lib_format_admin_datetime_ts",
       "relation": "imports"
     },
     {
@@ -11834,8 +15105,23 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_rbac__component__query_use_rbac_queries_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_register_page_tsx",
       "target": "file_src_features_auth_register_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11846,6 +15132,16 @@
     {
       "source": "file_src_app_screens_new_page_tsx",
       "target": "dir_src_app_screens__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11865,7 +15161,32 @@
     },
     {
       "source": "file_src_app_screens_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_page_tsx",
       "target": "dir_src_app_screens__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11876,6 +15197,21 @@
     {
       "source": "file_src_app_screens__id__edit_page_tsx",
       "target": "dir_src_app_screens__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -11891,6 +15227,16 @@
     {
       "source": "file_src_app_screens__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -11965,6 +15311,16 @@
     },
     {
       "source": "file_src_app_screens__component__query_use_screens_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__component__query_use_screens_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__component__query_use_screens_queries_ts",
       "target": "file_src_app_screens__component_types_ts",
       "relation": "imports"
     },
@@ -11989,6 +15345,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_screens__component__table_screens_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_screens__component__table_screens_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_seo_metas_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -11996,6 +15372,16 @@
     {
       "source": "file_src_app_seo_metas_new_page_tsx",
       "target": "dir_src_app_seo_metas__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12015,7 +15401,32 @@
     },
     {
       "source": "file_src_app_seo_metas_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_page_tsx",
       "target": "dir_src_app_seo_metas__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12026,6 +15437,21 @@
     {
       "source": "file_src_app_seo_metas__id__edit_page_tsx",
       "target": "dir_src_app_seo_metas__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12041,6 +15467,16 @@
     {
       "source": "file_src_app_seo_metas__id__page_tsx",
       "target": "dir_src_app_seo_metas__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12080,6 +15516,16 @@
     },
     {
       "source": "file_src_app_seo_metas__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__component__query_index_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_seo_metas__component__query_index_ts",
       "target": "file_src_app_seo_metas__component_types_ts",
       "relation": "imports"
     },
@@ -12099,6 +15545,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_settings_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_speakers_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -12106,6 +15567,16 @@
     {
       "source": "file_src_app_speakers_new_page_tsx",
       "target": "dir_src_app_speakers__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12125,7 +15596,32 @@
     },
     {
       "source": "file_src_app_speakers_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_page_tsx",
       "target": "dir_src_app_speakers__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12136,6 +15632,21 @@
     {
       "source": "file_src_app_speakers__id__edit_page_tsx",
       "target": "dir_src_app_speakers__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12151,6 +15662,16 @@
     {
       "source": "file_src_app_speakers__id__page_tsx",
       "target": "dir_src_app_speakers__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12235,6 +15756,16 @@
     },
     {
       "source": "file_src_app_speakers__component__query_use_speakers_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__component__query_use_speakers_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__component__query_use_speakers_queries_ts",
       "target": "file_src_app_speakers__component_types_ts",
       "relation": "imports"
     },
@@ -12259,6 +15790,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_speakers__component__table_speakers_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_speakers__component__table_speakers_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_staff_new_page_tsx",
       "target": "dir_src_app_staff__component",
       "relation": "imports"
@@ -12281,6 +15832,11 @@
     {
       "source": "file_src_app_staff_new_page_tsx",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12305,7 +15861,27 @@
     },
     {
       "source": "file_src_app_staff_page_tsx",
+      "target": "file_src_config_protected_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff_page_tsx",
       "target": "dir_src_app_staff__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12334,6 +15910,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_staff__id__edit_page_tsx",
+      "target": "file_src_config_protected_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_staff__id__page_tsx",
       "target": "file_src_hooks_queries_ts",
       "relation": "imports"
@@ -12341,6 +15932,11 @@
     {
       "source": "file_src_app_staff__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__id__page_tsx",
+      "target": "file_src_config_protected_admin_ts",
       "relation": "imports"
     },
     {
@@ -12360,7 +15956,17 @@
     },
     {
       "source": "file_src_app_staff__component_columns_tsx",
+      "target": "file_src_config_protected_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__component_columns_tsx",
       "target": "file_src_app_staff__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12401,6 +16007,11 @@
     {
       "source": "file_src_app_staff__component_index_ts",
       "target": "dir_src_app_staff__component__alert_dialog",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__component_staff_personnel_info_section_tsx",
+      "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
     {
@@ -12454,6 +16065,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_staff__component__query_use_staff_queries_ts",
+      "target": "file_src_lib_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_staff__component__query_use_staff_queries_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_staff__component__table_index_ts",
       "target": "file_src_app_staff__component__table_staff_table_tsx",
       "relation": "imports"
@@ -12474,6 +16095,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_staff__component__table_staff_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_staff__component__table_staff_trash_table_tsx",
       "target": "file_src_app_staff__component_columns_tsx",
       "relation": "imports"
@@ -12484,6 +16110,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_staff__component__table_staff_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_tags_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -12491,6 +16132,16 @@
     {
       "source": "file_src_app_tags_new_page_tsx",
       "target": "dir_src_app_tags__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12510,7 +16161,27 @@
     },
     {
       "source": "file_src_app_tags_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_page_tsx",
       "target": "dir_src_app_tags__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12521,6 +16192,21 @@
     {
       "source": "file_src_app_tags__id__edit_page_tsx",
       "target": "dir_src_app_tags__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12536,6 +16222,16 @@
     {
       "source": "file_src_app_tags__id__page_tsx",
       "target": "dir_src_app_tags__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12595,7 +16291,17 @@
     },
     {
       "source": "file_src_app_tags__component_utils_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component_utils_ts",
       "target": "file_src_app_tags__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component_utils_ts",
+      "target": "file_src_lib_format_admin_datetime_ts",
       "relation": "imports"
     },
     {
@@ -12635,6 +16341,11 @@
     },
     {
       "source": "file_src_app_tags__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component__query_index_ts",
       "target": "file_src_app_tags__component_types_ts",
       "relation": "imports"
     },
@@ -12669,6 +16380,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_tags__component__table_tags_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_tags__component__table_tags_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_templates_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -12676,6 +16407,16 @@
     {
       "source": "file_src_app_templates_new_page_tsx",
       "target": "dir_src_app_templates__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12695,7 +16436,32 @@
     },
     {
       "source": "file_src_app_templates_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_page_tsx",
       "target": "dir_src_app_templates__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12706,6 +16472,21 @@
     {
       "source": "file_src_app_templates__id__edit_page_tsx",
       "target": "dir_src_app_templates__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12721,6 +16502,16 @@
     {
       "source": "file_src_app_templates__id__page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12795,6 +16586,16 @@
     },
     {
       "source": "file_src_app_templates__component__query_use_templates_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__component__query_use_templates_queries_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__component__query_use_templates_queries_ts",
       "target": "file_src_app_templates__component_types_ts",
       "relation": "imports"
     },
@@ -12819,6 +16620,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_templates__component__table_templates_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_templates__component__table_templates_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_training_levels_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -12826,6 +16647,16 @@
     {
       "source": "file_src_app_training_levels_new_page_tsx",
       "target": "dir_src_app_training_levels__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12845,7 +16676,32 @@
     },
     {
       "source": "file_src_app_training_levels_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_page_tsx",
       "target": "dir_src_app_training_levels__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12856,6 +16712,21 @@
     {
       "source": "file_src_app_training_levels__id__edit_page_tsx",
       "target": "dir_src_app_training_levels__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12871,6 +16742,16 @@
     {
       "source": "file_src_app_training_levels__id__page_tsx",
       "target": "dir_src_app_training_levels__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -12940,6 +16821,16 @@
     },
     {
       "source": "file_src_app_training_levels__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__component__query_index_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__component__query_index_ts",
       "target": "file_src_app_training_levels__component_types_ts",
       "relation": "imports"
     },
@@ -12964,6 +16855,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_training_levels__component__table_training_levels_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_levels__component__table_training_levels_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_new_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_training_systems_new_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -12971,6 +16882,16 @@
     {
       "source": "file_src_app_training_systems_new_page_tsx",
       "target": "dir_src_app_training_systems__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -12990,7 +16911,32 @@
     },
     {
       "source": "file_src_app_training_systems_page_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_page_tsx",
       "target": "dir_src_app_training_systems__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__id__edit_loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -13001,6 +16947,21 @@
     {
       "source": "file_src_app_training_systems__id__edit_page_tsx",
       "target": "dir_src_app_training_systems__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__id__loading_tsx",
+      "target": "file_src_components_admin_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
     },
     {
@@ -13016,6 +16977,16 @@
     {
       "source": "file_src_app_training_systems__id__page_tsx",
       "target": "dir_src_app_training_systems__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "imports"
     },
     {
@@ -13085,6 +17056,16 @@
     },
     {
       "source": "file_src_app_training_systems__component__query_index_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component__query_index_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component__query_index_ts",
       "target": "file_src_app_training_systems__component_types_ts",
       "relation": "imports"
     },
@@ -13106,6 +17087,26 @@
     {
       "source": "file_src_app_training_systems__component__table_training_systems_trash_table_tsx",
       "target": "file_src_app_training_systems__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component__table_training_systems_trash_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_training_systems__component__table_training_systems_trash_table_tsx",
+      "target": "file_src_lib_admin_trash_export_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_admin_realtime_sync_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_admin_realtime_sync_tsx",
+      "target": "file_src_hooks_use_admin_realtime_sync_ts",
       "relation": "imports"
     },
     {
@@ -13190,7 +17191,37 @@
     },
     {
       "source": "file_src_hooks_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_queries_ts",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_queries_ts",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_admin_realtime_sync_ts",
+      "target": "file_src_lib_admin_socket_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_admin_realtime_sync_ts",
+      "target": "file_src_lib_admin_realtime_query_map_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_admin_realtime_sync_ts",
+      "target": "file_src_app_rbac__component__query_use_rbac_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_admin_realtime_sync_ts",
+      "target": "file_src_hooks_queries_ts",
       "relation": "imports"
     },
     {
@@ -13199,13 +17230,38 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_socket_ts",
+      "target": "file_src_lib_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_table_columns_tsx",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_table_config_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_admin_upload_ts",
       "target": "file_src_lib_auth_session_ts",
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_uploads_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_api_ts",
       "target": "file_src_lib_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_auth_session_ts",
+      "target": "file_src_features_auth_auth_api_ts",
       "relation": "imports"
     },
     {
@@ -13216,6 +17272,21 @@
     {
       "source": "file_src_lib_index_ts",
       "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_index_ts",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_index_ts",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_index_ts",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
       "relation": "imports"
     },
     {
@@ -13245,7 +17316,17 @@
     },
     {
       "source": "file_src_providers_backend_admin_layout_tsx",
+      "target": "file_src_components_admin_realtime_sync_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_backend_admin_layout_tsx",
       "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_query_provider_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
       "relation": "imports"
     }
   ]

@@ -297,6 +297,15 @@
       "type": "directory"
     },
     {
+      "id": "dir_src_components_graphify",
+      "label": "graphify/",
+      "path": "src/components/graphify",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/components",
+      "type": "directory"
+    },
+    {
       "id": "dir_src_components_icons",
       "label": "icons/",
       "path": "src/components/icons",
@@ -1162,6 +1171,11 @@
     {
       "source": "dir_src",
       "target": "dir_src_components",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components",
+      "target": "dir_src_components_graphify",
       "relation": "contains"
     },
     {

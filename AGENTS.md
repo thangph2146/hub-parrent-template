@@ -51,7 +51,7 @@ Khi task liên quan tới một package cụ thể, đọc thêm:
 - `docs/steps/step9_follow_up_rollback_legacy_tracking.md`
 - `docs/steps/step10_agent_task_automation.md`
 
-Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: chạy `node scripts/graphify-update.cjs apps/<app>` cho app đổi cây file → `pnpm graphify:ai-summary`, rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor (tùy chọn): `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
+Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node scripts/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
 
 ## Lệnh chuẩn bắt buộc
 
@@ -65,7 +65,7 @@ Nếu có thay đổi kiến trúc/module/routes: chạy `node scripts/graphify-
 pnpm check:full
 ```
 
-(`check:full` = `pnpm check` + `pnpm graphify:ai-summary`; không tự chạy `update.cjs` — xem checklist `.graphify/README.md`.)
+(`check:full` = `pnpm check` + `pnpm graphify:ai-summary`; không tự chạy `graphify-update` — xem checklist `.graphify/README.md`. Gộp snapshot + summary: `pnpm graphify:refresh`.)
 
 ## PM2 production — 2 composition
 
@@ -183,3 +183,18 @@ Chi tiết deploy server: `README.md` (mục PM2).
 - Ranh giới được kiểm soát bởi:
   - `packages/eslint-config/service-boundaries.js`
   - `scripts/verify-service-boundaries.mjs`
+
+## Pattern coding — agent phải tuân thủ
+
+### Toast admin (mutation + realtime)
+
+- Mutation CRUD: **`useAdminMutation`** (`packages/ui`) — loading → success/error sau response 2xx; **không** gọi `toast.success`/`toast.error` thủ công trong `onSuccess`/`onError`.
+- Socket trùng toast: `packages/api-client/src/realtime/toast-coordinator.ts` + `useAdminRealtimeSync` (`apps/backend`).
+- Chi tiết: `docs/api-client-pattern/REALTIME.md`, `packages/ui/src/hooks/use-admin-mutation.ts`.
+
+### Import dữ liệu (`/admin/data`)
+
+- Client chunk + timing: `apps/backend/src/app/data/_component/import-chunked.ts`, `import-timing.ts`.
+- API config + insert: `apps/api/src/system/system.service.ts` (`getImportConfig`, `insertSanitizedModel`).
+- `post` mặc định **1 lô**, pivot (`postCategory`/`postTag`) **request riêng**; `post` **không** song song (`modelParallelConcurrency.post = 1`).
+- Env API (tùy chọn): `SYSTEM_IMPORT_CLIENT_CHUNK_POST`, `SYSTEM_IMPORT_PARALLEL_CHUNKS`, `SYSTEM_IMPORT_JSON_BATCH_SIZE`.

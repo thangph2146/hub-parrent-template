@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/frontend`
-- **context.generatedAt:** 2026-06-04T07:12:48.232Z
+- **projectRoot:** `C:/HUB/source/hub-parent-template/apps/frontend`
+- **context.generatedAt:** 2026-06-06T18:20:20.016Z
 
 ## Mục lục artefact Graphify
 
@@ -154,5 +154,5 @@ Toàn bộ `.md` sinh tự động nằm trong **`apps/frontend/.graphify/markdo
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node apps/frontend/.graphify/update.cjs`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node scripts/graphify-update.cjs apps/frontend`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md` khi có graph).

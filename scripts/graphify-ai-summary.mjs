@@ -421,7 +421,7 @@ function writeGraphStatsMd(
   lines.push("## Làm mới")
   lines.push("")
   lines.push(
-    `Chạy \`node apps/${appDir}/.graphify/update.cjs\` rồi \`pnpm graphify:ai-summary\`.`
+    `Chạy \`node scripts/graphify-update.cjs apps/${appDir}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`
   )
   lines.push("")
 
@@ -473,9 +473,7 @@ function writeGraphArtifactsForApp(appDir) {
     "",
     "## Làm mới",
     "",
-    "Chạy `node apps/" +
-      appDir +
-      "/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.",
+    `Chạy \`node scripts/graphify-update.cjs apps/${appDir}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`,
     "",
   ].join("\n")
 
@@ -636,7 +634,7 @@ function writeGraphArtifactsForApp(appDir) {
   domainImportsLines.push("## Làm mới")
   domainImportsLines.push("")
   domainImportsLines.push(
-    "Chạy `node apps/api/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`."
+    "Chạy `node scripts/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`)."
   )
   domainImportsLines.push("")
 
@@ -786,7 +784,7 @@ function summarizeApp(appDir, label) {
   lines.push("## Làm mới")
   lines.push("")
   lines.push(
-    `- Cập nhật \`snapshot/context.json\` **và** \`snapshot/graph.json\`: \`node apps/${appDir}/.graphify/update.cjs\`.`
+    `- Cập nhật \`snapshot/context.json\` **và** \`snapshot/graph.json\`: \`node scripts/graphify-update.cjs apps/${appDir}\`.`
   )
   const graphExtras =
     appDir === "api"
@@ -1159,13 +1157,13 @@ function writeMonorepoRootSummary() {
   lines.push("## Ma trận artefact (clean scope)")
   lines.push("")
   lines.push(
-    "| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node …/update.cjs`) |"
+    "| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node scripts/graphify-update.cjs`) |"
   )
   lines.push(
     "|----------|---------------------------------------------|----------------------------------------|"
   )
   lines.push(
-    "| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node .graphify/update.cjs`) |"
+    "| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node scripts/graphify-update.cjs .`) |"
   )
   lines.push("| **`packages/`** | `packages/.graphify/markdown/*.md` | — |")
   lines.push(
@@ -1232,15 +1230,17 @@ function writeMonorepoRootSummary() {
   lines.push(
     "# Từng app (cập nhật snapshot/context.json + snapshot/graph.json)"
   )
-  lines.push("node apps/frontend/.graphify/update.cjs")
-  lines.push("node apps/backend/.graphify/update.cjs")
-  lines.push("node apps/api/.graphify/update.cjs")
+  lines.push("pnpm graphify:update")
+  lines.push("# hoặc từng app:")
+  lines.push("node scripts/graphify-update.cjs apps/frontend")
+  lines.push("node scripts/graphify-update.cjs apps/backend")
+  lines.push("node scripts/graphify-update.cjs apps/api")
   lines.push(
     "# (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep"
   )
-  lines.push("# node .graphify/update.cjs")
-  lines.push("# Root: SUMMARY cho AI (mọi app + packages + chỉ mục monorepo)")
+  lines.push("# node scripts/graphify-update.cjs .")
   lines.push("pnpm graphify:ai-summary")
+  lines.push("# gộp update + summary: pnpm graphify:refresh")
   lines.push("```")
   lines.push("")
   lines.push("## Đọc thêm")

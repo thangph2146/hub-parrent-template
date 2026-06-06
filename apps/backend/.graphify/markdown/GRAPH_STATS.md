@@ -1,16 +1,16 @@
 # Thống kê graph — backend (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.121Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-06T18:22:06.704Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `directory` | 219 |
-| `ts` | 217 |
-| `tsx` | 110 |
-| `page` | 87 |
-| `loading` | 3 |
+| `ts` | 254 |
+| `directory` | 228 |
+| `tsx` | 130 |
+| `page` | 88 |
+| `loading` | 59 |
 | `api-route` | 1 |
 | `layout` | 1 |
 
@@ -18,8 +18,8 @@
 
 | relation | Số |
 |----------|-----|
-| `imports` | 780 |
-| `contains` | 636 |
+| `imports` | 1229 |
+| `contains` | 759 |
 | `renders` | 1 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
@@ -28,26 +28,26 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 
 | File | Số cạnh imports |
 |------|-----------------|
+| `src/app/my-students/_component/index.ts` | 10 |
+| `src/app/rbac/page.tsx` | 10 |
+| `src/app/events/[id]/page.tsx` | 9 |
+| `src/app/posts/page.tsx` | 9 |
+| `src/app/academic-years/page.tsx` | 8 |
+| `src/app/cameras/page.tsx` | 8 |
 | `src/app/cameras/_component/index.ts` | 8 |
+| `src/app/categories/page.tsx` | 8 |
 | `src/app/categories/_component/index.ts` | 8 |
-| `src/app/events/[id]/page.tsx` | 8 |
+| `src/app/contact-requests/page.tsx` | 8 |
+| `src/app/courses/page.tsx` | 8 |
+| `src/app/departments/page.tsx` | 8 |
+| `src/app/events/page.tsx` | 8 |
 | `src/app/events/_component/index.ts` | 8 |
 | `src/app/guides/_component/index.ts` | 8 |
+| `src/app/locations/page.tsx` | 8 |
+| `src/app/majors/page.tsx` | 8 |
 | `src/app/parent-students/page.tsx` | 8 |
-| `src/app/posts/page.tsx` | 8 |
+| `src/app/screens/page.tsx` | 8 |
 | `src/app/screens/_component/index.ts` | 8 |
-| `src/app/staff/_component/index.ts` | 8 |
-| `src/app/tags/_component/index.ts` | 8 |
-| `src/app/templates/_component/index.ts` | 8 |
-| `src/app/academic-years/_component/index.ts` | 7 |
-| `src/app/contact-requests/page.tsx` | 7 |
-| `src/app/courses/_component/index.ts` | 7 |
-| `src/app/departments/_component/index.ts` | 7 |
-| `src/app/events/_component/_live/event-live-monitor-tab.tsx` | 7 |
-| `src/app/locations/_component/index.ts` | 7 |
-| `src/app/majors/_component/index.ts` | 7 |
-| `src/app/speakers/_component/index.ts` | 7 |
-| `src/app/training-levels/_component/index.ts` | 7 |
 
 ## Top file theo số cạnh `imports` đi vào (in-degree)
 
@@ -55,22 +55,22 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 | File | Số lần bị import |
 |------|------------------|
-| `src/lib/api.ts` | 93 |
-| `src/providers/auth-provider.tsx` | 51 |
+| `src/lib/api.ts` | 120 |
+| `src/lib/admin-navigation.ts` | 77 |
+| `src/hooks/use-admin-mutation.ts` | 64 |
+| `src/components/admin-route-loading.tsx` | 57 |
+| `src/providers/auth-provider.tsx` | 53 |
+| `src/lib/admin-row-action-handlers.ts` | 35 |
 | `src/hooks/use-debounced-value.ts` | 22 |
+| `src/lib/admin-table-columns.tsx` | 22 |
+| `src/lib/admin-detail-query.ts` | 18 |
+| `src/lib/fetch-all-admin-list.ts` | 17 |
 | `src/hooks/use-table-filters.ts` | 16 |
+| `src/lib/admin-trash-export.ts` | 14 |
+| `src/hooks/queries.ts` | 12 |
 | `src/app/posts/_component/types.ts` | 12 |
-| `src/app/guides/_component/types.ts` | 11 |
-| `src/hooks/queries.ts` | 9 |
-| `src/app/events/_component/types.ts` | 9 |
-| `src/app/categories/_component/types.ts` | 8 |
-| `src/lib/auth-session.ts` | 8 |
-| `src/app/tags/_component/types.ts` | 8 |
-| `src/app/academic-years/_component/types.ts` | 7 |
-| `src/app/cameras/_component/types.ts` | 7 |
-| `src/app/contact-requests/_component/types.ts` | 7 |
-| `src/app/courses/_component/types.ts` | 7 |
+| `src/lib/auth-session.ts` | 11 |
 
 ## Làm mới
 
-Chạy `node apps/backend/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.
+Chạy `node scripts/graphify-update.cjs apps/backend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

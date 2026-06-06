@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.144Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-06T18:22:06.742Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -35,9 +35,9 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 ## Ma trận artefact (clean scope)
 
-| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node …/update.cjs`) |
+| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node scripts/graphify-update.cjs`) |
 |----------|---------------------------------------------|----------------------------------------|
-| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node .graphify/update.cjs`) |
+| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node scripts/graphify-update.cjs .`) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
 | **Mỗi app** `apps/<x>/` | `apps/<x>/.graphify/markdown/*.md` | `apps/<x>/.graphify/snapshot/context.json` + `graph.json` |
 
@@ -58,9 +58,9 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 | App | Files trong context | generatedAt (context) | SUMMARY |
 |-----|--------------------|------------------------|---------|
-| `frontend` | 80 | 2026-06-04T07:12:48.232Z | [`apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `backend` | 421 | 2026-06-04T07:12:48.393Z | [`apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `api` | 228 | 2026-06-04T07:12:48.650Z | [`apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `frontend` | 80 | 2026-06-06T18:20:20.016Z | [`apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `backend` | 536 | 2026-06-06T18:20:20.361Z | [`apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `api` | 244 | 2026-06-06T18:20:21.170Z | [`apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 
 ## Artefact từ `snapshot/graph.json` / package scan (`pnpm graphify:ai-summary`)
 
@@ -73,13 +73,15 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 ```bash
 # Từng app (cập nhật snapshot/context.json + snapshot/graph.json)
-node apps/frontend/.graphify/update.cjs
-node apps/backend/.graphify/update.cjs
-node apps/api/.graphify/update.cjs
+pnpm graphify:update
+# hoặc từng app:
+node scripts/graphify-update.cjs apps/frontend
+node scripts/graphify-update.cjs apps/backend
+node scripts/graphify-update.cjs apps/api
 # (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep
-# node .graphify/update.cjs
-# Root: SUMMARY cho AI (mọi app + packages + chỉ mục monorepo)
+# node scripts/graphify-update.cjs .
 pnpm graphify:ai-summary
+# gộp update + summary: pnpm graphify:refresh
 ```
 
 ## Đọc thêm

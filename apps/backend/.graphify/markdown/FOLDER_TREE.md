@@ -1,6 +1,6 @@
 # Cây thư mục — backend (Graphify)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.121Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-06T18:22:06.704Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -54,6 +54,8 @@ src/
 │   │   │   └── edit/
 │   │   └── new/
 │   ├── data/
+│   │   └── _component/
+│   │       └── _hooks/
 │   ├── database-schema/
 │   ├── departments/
 │   │   ├── _component/
@@ -76,6 +78,10 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── file-storage/
+│   │   └── _component/
+│   │       ├── _hooks/
+│   │       └── _table/
 │   ├── graph/
 │   ├── guides/
 │   │   ├── _component/
@@ -110,6 +116,7 @@ src/
 │   │   └── new/
 │   ├── my-students/
 │   │   └── _component/
+│   │       └── _table/
 │   ├── parent-students/
 │   │   └── _component/
 │   │       ├── _query/
@@ -125,6 +132,7 @@ src/
 │   │   │   └── edit/
 │   │   └── new/
 │   ├── profile/
+│   │   └── _components/
 │   ├── rbac/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -214,6 +222,7 @@ src/
 │       │   └── edit/
 │       └── new/
 ├── components/
+│   └── graphify/
 ├── config/
 ├── features/
 │   └── auth/
@@ -225,4 +234,4 @@ src/
 
 ## Làm mới
 
-Chạy `node apps/backend/.graphify/update.cjs` rồi `pnpm graphify:ai-summary`.
+Chạy `node scripts/graphify-update.cjs apps/backend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

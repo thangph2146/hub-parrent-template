@@ -41,7 +41,7 @@ pnpm check
 
 ```bash
 # cập nhật snapshot cho app
-node apps/<app>/.graphify/update.cjs
+node scripts/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```

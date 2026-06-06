@@ -1,13 +1,13 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-04T07:32:10.140Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-06T18:22:06.733Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 
 | Package (from) | Phụ thuộc workspace | spec | Thư mục |
 |------------------|---------------------|------|---------|
-| `@thangph2146/lexical-editor` | `@workspace/eslint-config` | `workspace:*` | `packages/editor/` |
-| `@thangph2146/lexical-editor` | `@workspace/typescript-config` | `workspace:*` | `packages/editor/` |
+| `@editor` | `@workspace/eslint-config` | `workspace:*` | `packages/editor/` |
+| `@editor` | `@workspace/typescript-config` | `workspace:*` | `packages/editor/` |
 | `@workspace/api-client` | `@workspace/eslint-config` | `workspace:*` | `packages/api-client/` |
 | `@workspace/api-client` | `@workspace/logger` | `workspace:*` | `packages/api-client/` |
 | `@workspace/api-client` | `@workspace/typescript-config` | `workspace:*` | `packages/api-client/` |
@@ -34,10 +34,10 @@
 | `@frontend` | `@workspace/api-client` | `workspace:*` | `apps/frontend/` |
 | `@frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/frontend/` |
 | `@frontend` | `@workspace/query-client` | `workspace:*` | `apps/frontend/` |
-| `hub-event-checkin-frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `hub-event-checkin-frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `hub-event-checkin-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `hub-event-checkin-frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
+| `@hub-event-checkin-frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
+| `@hub-event-checkin-frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
+| `@hub-event-checkin-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
+| `@hub-event-checkin-frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
 
 ## Làm mới
 

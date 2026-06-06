@@ -34,8 +34,33 @@ Nếu đổi **cấu trúc file/route/module** nhiều và đã cập nhật `ap
 pnpm graphify:ai-summary
 ```
 
-Hoặc gộp kiểm tra + làm mới bản tóm tắt cho AI:
+Làm mới snapshot Graphify (sau đổi route/module/cây file):
+
+```bash
+pnpm graphify:refresh
+# = pnpm graphify:update && pnpm graphify:ai-summary
+```
+
+Hoặc gộp kiểm tra + làm mới bản tóm tắt Markdown cho AI:
 
 ```bash
 pnpm check:full
 ```
+
+(`check:full` không chạy `graphify-update` — nếu chưa refresh snapshot, chạy `pnpm graphify:refresh` trước.)
+
+## 3. Pattern bắt buộc khi sửa code
+
+| Chủ đề | Đọc / dùng |
+|--------|------------|
+| Admin page CRUD | `ADMIN_PAGE_PATTERN.md` + `useAdminMutation` (`@workspace/ui`) |
+| Toast mutation + socket | `docs/api-client-pattern/REALTIME.md`, `toast-coordinator.ts` |
+| API + client contract | `docs/api-pattern/README.md`, `docs/api-client-pattern/README.md` |
+| Import/backup data admin | `apps/backend/src/app/data/_component/`, `system.service.ts` |
+
+## 4. Vòng chuẩn hóa (kết thúc task lớn)
+
+1. `pnpm check`
+2. Nếu đổi kiến trúc: `pnpm graphify:refresh`
+3. Đối chiếu `.graphify/README.md` checklist
+4. Skill tự động: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md`

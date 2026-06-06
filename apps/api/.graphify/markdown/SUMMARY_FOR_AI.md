@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/api`
-- **context.generatedAt:** 2026-06-04T07:12:48.650Z
+- **projectRoot:** `C:/HUB/source/hub-parent-template/apps/api`
+- **context.generatedAt:** 2026-06-06T18:20:21.170Z
 
 ## Mục lục artefact Graphify
 
@@ -35,7 +35,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Phụ thuộc chéo giữa domain API:** [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md) — domain `src/<tên>` nào import domain nào (cạnh `imports` trong graph).
 
 ## Thống kê
-- **totalFiles:** 228
+- **totalFiles:** 244
 - **clientComponents:** 0
 
 ## Góc hệ thống (@api) — đường dẫn gợi ý
@@ -44,6 +44,11 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/config/app.config.ts`
 - `src/config/constants.ts`
 - `src/config/permissions.ts`
+- `src/config/protected-admin.ts`
+- `src/config/system-role.ts`
+
+### Guards
+- `src/common/permissions.guard.ts`
 
 ### Seeds / bootstrap
 - `src/seeds/superadmin-bootstrap.data.ts`
@@ -190,67 +195,84 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/entities/user.entity.ts`
 - `src/entities/verification-token.entity.ts`
 
+## Migrations (1)
+- `src/migrations/Migration20260605120000_standardize_legacy_table_names.ts`
+
 ## Module map (không có nội dung file)
 
 | File | Loại | Client | Exports | Imports |
 |------|------|--------|---------|---------|
 | `package.json` | config | — | — | — |
-| `src/academic-years/academic-years.controller.ts` | ts | no | AcademicYearsController | src/academic-years/academic-years.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/academic-years/academic-years.controller.ts` | ts | no | AcademicYearsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/bulk-actions.ts, src/academic-years/academic-years.service.ts, src/common/api-response.ts, src/config/constants.ts, src/commo |
 | `src/academic-years/academic-years.module.ts` | ts | no | AcademicYearsModule | src/academic-years/academic-years.controller.ts, src/academic-years/academic-years.service.ts |
-| `src/academic-years/academic-years.service.ts` | ts | no | AcademicYearRowDto, ListAcademicYearsParams, ListAcademicYearsResult, AcademicYearsService | src/entities/academic-year.entity.ts, src/common/pagination.ts |
-| `src/accounts/accounts.controller.ts` | ts | no | AccountsController | src/accounts/accounts.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/academic-years/academic-years.service.ts` | ts | no | AcademicYearRowDto, ListAcademicYearsParams, ListAcademicYearsResult, AcademicYearsService | src/entities/academic-year.entity.ts, src/common/pagination.ts, src/common/bulk-actions.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps.t |
+| `src/accounts/accounts.controller.ts` | ts | no | AccountsController | src/accounts/accounts.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts |
 | `src/accounts/accounts.module.ts` | ts | no | AccountsModule | src/accounts/accounts.controller.ts, src/accounts/accounts.service.ts |
 | `src/accounts/accounts.service.spec.ts` | ts | no |  | src/accounts/accounts.service.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/role.entity.ts |
-| `src/accounts/accounts.service.ts` | ts | no | AccountProfileDto, UpdateAccountDto, AccountsService | src/entities/user.entity.ts, src/entities/user-role.entity.ts |
-| `src/admission-results/admission-results.controller.ts` | ts | no | AdmissionResultsController | src/admission-results/admission-results.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/per |
+| `src/accounts/accounts.service.ts` | ts | no | AccountProfileDto, UpdateAccountDto, UpdateAccountResult, AccountsService | src/entities/user.entity.ts, src/entities/user-role.entity.ts |
+| `src/admission-results/admission-results.controller.ts` | ts | no | AdmissionResultsController | src/admission-results/admission-results.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/per |
 | `src/admission-results/admission-results.module.ts` | ts | no | AdmissionResultsModule | src/notifications/notifications.module.ts, src/admission-results/admission-results.service.ts, src/admission-results/admission-results.controller.ts |
 | `src/admission-results/admission-results.service.spec.ts` | ts | no |  | src/admission-results/admission-results.service.ts, src/entities/admission-result.entity.ts |
 | `src/admission-results/admission-results.service.ts` | ts | no | AdmissionResultRowDto, ListAdmissionResultsParams, ListAdmissionResultsResult, AdmissionResultsService | src/entities/admission-result.entity.ts, src/common/pagination.ts, src/common/date-utils.ts |
-| `src/app.module.ts` | ts | no | AppModule | src/mikro-orm/mikro-orm.module.ts, src/public/public.module.ts, src/socket/socket.module.ts, src/auth/auth.module.ts, src/notifications/notifications.module.ts, src/accounts/accounts.module.ts, src/se |
-| `src/auth/auth-admin.controller.ts` | ts | no | LoginDto, DevLoginDto, GoogleLoginDto, LogoutDto, AuthAdminController | src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/app.module.ts` | ts | no | AppModule | src/mikro-orm/mikro-orm.module.ts, src/common/permissions.guard.ts, src/public/public.module.ts, src/socket/socket.module.ts, src/auth/auth.module.ts, src/notifications/notifications.module.ts, src/ac |
+| `src/auth/auth-admin.controller.ts` | ts | no | LoginDto, DevLoginDto, GoogleLoginDto, LogoutDto, AuthAdminController | src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/public.decorator.ts |
 | `src/auth/auth.module.ts` | ts | no | AuthModule | src/auth/auth-admin.controller.ts, src/auth/auth.service.ts |
 | `src/auth/auth.service.spec.ts` | ts | no |  | src/auth/auth.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
 | `src/auth/auth.service.ts` | ts | no | LoginDto, GoogleProfileDto, AuthUserPayload, AuthService | src/config/constants.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/setting.entity.ts |
-| `src/cameras/cameras.controller.ts` | ts | no | CamerasController | src/cameras/cameras.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/cameras/cameras.controller.ts` | ts | no | CamerasController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/cameras/cameras.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-q |
 | `src/cameras/cameras.module.ts` | ts | no | CamerasModule | src/cameras/cameras.controller.ts, src/cameras/cameras.service.ts |
-| `src/cameras/cameras.service.ts` | ts | no | CameraRowDto, CamerasService | src/entities/camera.entity.ts, src/entities/event.entity.ts, src/common/pagination.ts |
-| `src/categories/categories.controller.ts` | ts | no | CategoriesController | src/categories/categories.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/cameras/cameras.service.ts` | ts | no | CameraRowDto, CamerasService | src/entities/camera.entity.ts, src/entities/event.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
+| `src/categories/categories.controller.ts` | ts | no | CategoriesController | src/categories/categories.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decor |
 | `src/categories/categories.module.ts` | ts | no | CategoriesModule | src/notifications/notifications.module.ts, src/categories/categories.service.ts, src/categories/categories.controller.ts |
 | `src/categories/categories.service.spec.ts` | ts | no |  | src/categories/categories.service.ts, src/entities/category.entity.ts |
 | `src/categories/categories.service.ts` | ts | no | CategoryRowDto, ChildCategoryDto, RelatedPostDto, ListCategoriesParams, ListCategoriesResult, CategoriesService | src/common/pagination.ts, src/entities/category.entity.ts, src/entities/post-category.entity.ts |
-| `src/comments/comments.controller.ts` | ts | no | CommentsController | src/comments/comments.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/comments/comments.controller.ts` | ts | no | CommentsController | src/comments/comments.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator |
 | `src/comments/comments.module.ts` | ts | no | CommentsModule | src/notifications/notifications.module.ts, src/comments/comments.service.ts, src/comments/comments.controller.ts |
 | `src/comments/comments.service.spec.ts` | ts | no |  | src/comments/comments.service.ts, src/entities/comment.entity.ts |
 | `src/comments/comments.service.ts` | ts | no | CommentRowDto, ListCommentsParams, ListCommentsResult, CommentsService | src/common/pagination.ts, src/entities/comment.entity.ts |
+| `src/common/admin-filter-configs.ts` | ts | no | CAMERA_COLUMN_FILTERS, DEPARTMENT_COLUMN_FILTERS, LOCATION_COLUMN_FILTERS, SCREEN_COLUMN_FILTERS, TEMPLATE_COLUMN_FILTERS, SPEAKER_COLUMN_FILTERS, SEO_META_COLUMN_FILTERS, ACADEMIC_YEAR_COLUMN_FILTERS | src/common/apply-column-filters.ts |
+| `src/common/admin-realtime-broadcast.service.ts` | ts | no | AdminRealtimeBroadcastService | src/socket/socket.gateway.ts, src/socket/socket.types.ts |
+| `src/common/admin-realtime.interceptor.ts` | ts | no | AdminRealtimeInterceptor | src/socket/socket.gateway.ts, src/common/admin-realtime.util.ts |
+| `src/common/admin-realtime.util.ts` | ts | no | AdminCacheInvalidateAction, AdminCacheInvalidatePayload, parseAdminRealtimeInvalidate |  |
 | `src/common/api-access.middleware.ts` | ts | no | ApiAccessMiddleware | src/config/constants.ts, src/common/request-id.middleware.ts |
 | `src/common/api-response.ts` | ts | no | ApiResponsePayload, createSuccessResponse, createErrorResponse |  |
+| `src/common/apply-column-filters.ts` | ts | no | AdminColumnFilterType, AdminColumnFilterField, AdminColumnFiltersConfig, applyColumnFilters, StandardAdminListParams, buildStandardAdminWhere |  |
+| `src/common/bulk-actions.ts` | ts | no | BulkAction, BulkResult, BulkOptions, BULK_ACTIONS, isBulkAction |  |
 | `src/common/database-http-exception.filter.ts` | ts | no | DatabaseHttpExceptionFilter | src/common/api-response.ts |
 | `src/common/date-utils.ts` | ts | no | safeIsoString, safeIsoStringNow |  |
 | `src/common/event-time-status.ts` | ts | no | EventTimeStatus, resolveEventTimeStatus |  |
 | `src/common/get-options.ts` | ts | no | GetOptionsColumnConfig, GetOptionsConfig |  |
 | `src/common/image-processor.ts` | ts | no | ImageProcessOptions, isImageMime, isImageExt |  |
+| `src/common/legacy-audit-timestamps.ts` | ts | no | LegacyAuditEntity, touchLegacyAuditTimestamps, backfillLegacyAuditTimestampsIfMissing |  |
 | `src/common/logging.interceptor.ts` | ts | no | LoggingInterceptor | src/config/app.config.ts, src/config/constants.ts, src/common/request-id.middleware.ts |
-| `src/common/pagination.ts` | ts | no | PaginationParams, normalizePageLimit, PaginationMeta, paginationMeta |  |
+| `src/common/pagination.ts` | ts | no | ADMIN_TABLE_MAX_LIMIT, ADMIN_TABLE_EXPORT_MAX_LIMIT, PaginationParams, normalizePageLimit, PaginationMeta, paginationMeta, normalizeExportPageLimit |  |
+| `src/common/parse-column-filters.ts` | ts | no | parseColumnFiltersFromQuery |  |
+| `src/common/parse-list-query.ts` | ts | no | parseAdminListLimit, parseAdminListPage, parseAdminListPagination | src/common/pagination.ts |
+| `src/common/permissions.decorator.ts` | ts | no | PERMISSIONS_KEY, Permissions |  |
+| `src/common/permissions.guard.ts` | ts | no | PermissionsGuard | src/auth/auth.service.ts, src/common/permissions.decorator.ts, src/common/public.decorator.ts, src/config/constants.ts |
 | `src/common/poster-normalize.ts` | ts | no | unwrapPosterUrl, normalizePosterField |  |
+| `src/common/public.decorator.ts` | ts | no | IS_PUBLIC_KEY, Public |  |
 | `src/common/request-id.middleware.ts` | ts | no | REQUEST_ID_HEADER, RequestIdMiddleware |  |
 | `src/common/resolve-relation-filters.ts` | ts | no | RelationFilterConfig, RelationFiltersConfig | src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/contact-request.entity.ts, src/entities/group.entity.ts, src/entities/message.entity.ts, src/entities/notificatio |
 | `src/config/app.config.ts` | ts | no | appConfig | src/config/constants.ts |
 | `src/config/constants.ts` | ts | no | APP_HEADERS, AUTH_ROLE_NAMES, AuthRoleName, ADMIN_ROUTES, PUBLIC_ROUTES |  |
 | `src/config/permissions.ts` | ts | no | RESOURCES, ACTIONS, Resource, Action, Permission, PERMISSIONS |  |
-| `src/contact-requests/contact-requests.controller.ts` | ts | no | ContactRequestsController | src/contact-requests/contact-requests.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permi |
-| `src/contact-requests/contact-requests.module.ts` | ts | no | ContactRequestsModule | src/notifications/notifications.module.ts, src/contact-requests/contact-requests.service.ts, src/contact-requests/contact-requests.controller.ts |
+| `src/config/protected-admin.ts` | ts | no | isProtectedAdminEmail, canEditProtectedAdminUser |  |
+| `src/config/system-role.ts` | ts | no | SYSTEM_SUPER_ADMIN_ROLE_NAME, isSystemSuperAdminRoleName |  |
+| `src/contact-requests/contact-requests.controller.ts` | ts | no | ContactRequestsController | src/contact-requests/contact-requests.service.ts, src/notifications/notifications.service.ts, src/common/admin-realtime-broadcast.service.ts, src/entities/notification.entity.ts, src/common/api-respon |
+| `src/contact-requests/contact-requests.module.ts` | ts | no | ContactRequestsModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/contact-requests/contact-requests.service.ts, src/contact-requests/contact-requests.controller.ts |
 | `src/contact-requests/contact-requests.service.spec.ts` | ts | no |  | src/contact-requests/contact-requests.service.ts, src/entities/contact-request.entity.ts |
 | `src/contact-requests/contact-requests.service.ts` | ts | no | ContactStatus, ContactPriority, ContactRequestRowDto, ListContactRequestsParams, ListContactRequestsResult, ContactRequestsService | src/entities/contact-request.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts, src/common/date-utils.ts |
-| `src/courses/courses.controller.ts` | ts | no | CoursesController | src/courses/courses.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/courses/courses.controller.ts` | ts | no | CoursesController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/courses/courses.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-q |
 | `src/courses/courses.module.ts` | ts | no | CoursesModule | src/courses/courses.controller.ts, src/courses/courses.service.ts |
-| `src/courses/courses.service.ts` | ts | no | CourseRowDto, ListCoursesParams, ListCoursesResult, CoursesService | src/entities/course.entity.ts, src/common/pagination.ts |
-| `src/dashboard/dashboard.controller.ts` | ts | no | DashboardController | src/dashboard/dashboard.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/courses/courses.service.ts` | ts | no | CourseRowDto, ListCoursesParams, ListCoursesResult, CoursesService | src/entities/course.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps.ts |
+| `src/dashboard/dashboard.controller.ts` | ts | no | DashboardController | src/dashboard/dashboard.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
 | `src/dashboard/dashboard.module.ts` | ts | no | DashboardModule | src/dashboard/dashboard.controller.ts, src/dashboard/dashboard.service.ts |
 | `src/dashboard/dashboard.service.spec.ts` | ts | no |  | src/dashboard/dashboard.service.ts |
 | `src/dashboard/dashboard.service.ts` | ts | no | DashboardOverviewDto, DashboardMonthlyItemDto, DashboardCategoryItemDto, DashboardTopPostDto, DashboardStatsDto, DashboardService | src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.entity.ts, src/entities/message.entity.ts, src/entities/notification.entity.ts, src/entities/post-category |
-| `src/departments/departments.controller.ts` | ts | no | DepartmentsController | src/departments/departments.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/departments/departments.controller.ts` | ts | no | DepartmentsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/departments/departments.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/pars |
 | `src/departments/departments.module.ts` | ts | no | DepartmentsModule | src/departments/departments.controller.ts, src/departments/departments.service.ts |
-| `src/departments/departments.service.ts` | ts | no | DepartmentRowDto, DepartmentsService | src/entities/department.entity.ts, src/common/pagination.ts |
+| `src/departments/departments.service.ts` | ts | no | DepartmentRowDto, DepartmentsService | src/entities/department.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
 | `src/entities/academic-year.entity.ts` | ts | no | AcademicYear |  |
 | `src/entities/account.entity.ts` | ts | no | Account | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/admission-result.entity.ts` | ts | no | AdmissionResult | src/entities/base.entity.ts |
@@ -293,82 +315,83 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/entities/user-role.entity.ts` | ts | no | UserRole | src/entities/base.entity.ts, src/entities/role.entity.ts, src/entities/user.entity.ts |
 | `src/entities/user.entity.ts` | ts | no | User | src/entities/base.entity.ts, src/entities/account.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.entity.ts, src/entities/group-member.entity.ts, src/entities/group.entity.ts,  |
 | `src/entities/verification-token.entity.ts` | ts | no | VerificationToken |  |
-| `src/event-checkins/event-checkins.controller.ts` | ts | no | EventCheckinsController | src/event-checkins/event-checkins.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-checkins/event-checkins.controller.ts` | ts | no | EventCheckinsController | src/event-checkins/event-checkins.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/commo |
 | `src/event-checkins/event-checkins.module.ts` | ts | no | EventCheckinsModule | src/event-checkins/event-checkins.controller.ts, src/event-checkins/event-checkins.service.ts |
-| `src/event-checkins/event-checkins.service.ts` | ts | no | EventCheckinRowDto, ListEventCheckinsParams, ListEventCheckinsResult, EventCheckinsService | src/entities/event-checkin.entity.ts, src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/common/pagination.ts |
-| `src/event-checkouts/event-checkouts.controller.ts` | ts | no | EventCheckoutsController | src/event-checkouts/event-checkouts.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-checkins/event-checkins.service.ts` | ts | no | EventCheckinRowDto, ListEventCheckinsParams, ListEventCheckinsResult, EventCheckinsService | src/entities/event-checkin.entity.ts, src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts |
+| `src/event-checkouts/event-checkouts.controller.ts` | ts | no | EventCheckoutsController | src/event-checkouts/event-checkouts.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/parse-list-query.ts |
 | `src/event-checkouts/event-checkouts.module.ts` | ts | no | EventCheckoutsModule | src/event-checkouts/event-checkouts.controller.ts, src/event-checkouts/event-checkouts.service.ts |
-| `src/event-checkouts/event-checkouts.service.ts` | ts | no | EventCheckoutRowDto, ListEventCheckoutsParams, ListEventCheckoutsResult, EventCheckoutsService | src/entities/event-registration.entity.ts, src/common/pagination.ts |
+| `src/event-checkouts/event-checkouts.service.ts` | ts | no | EventCheckoutRowDto, ListEventCheckoutsParams, ListEventCheckoutsResult, BulkClearCheckoutsResult, EventCheckoutsService | src/entities/event-registration.entity.ts, src/common/pagination.ts |
 | `src/event-registrations/event-registration-attendance.service.ts` | ts | no | AttendanceSource, ManualAttendanceAction, ApplyAttendanceResult, EventRegistrationAttendanceService | src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/socket/socket.gateway.ts, src/socket/socket.types.ts, src/event-registrations/event-registrations.service.ts |
-| `src/event-registrations/event-registrations.controller.ts` | ts | no | EventRegistrationsController | src/event-registrations/event-registration-attendance.service.ts, src/event-registrations/event-registrations.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-registrations/event-registrations.controller.ts` | ts | no | EventRegistrationsController | src/event-registrations/event-registration-attendance.service.ts, src/event-registrations/event-registrations.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/pe |
 | `src/event-registrations/event-registrations.module.ts` | ts | no | EventRegistrationsModule | src/socket/socket.module.ts, src/event-registrations/event-registration-attendance.service.ts, src/event-registrations/event-registrations.controller.ts, src/event-registrations/event-registrations.se |
-| `src/event-registrations/event-registrations.service.ts` | ts | no | EventRegistrationRowDto, ListEventRegistrationsParams, ListEventRegistrationsResult, PublicEventRegistrantDto, EventRegistrationsService | src/entities/event-registration.entity.ts, src/entities/event.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts |
-| `src/event-speakers/event-speakers.controller.ts` | ts | no | EventSpeakersController | src/event-speakers/event-speakers.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-registrations/event-registrations.service.ts` | ts | no | EventRegistrationRowDto, ListEventRegistrationsParams, ListEventRegistrationsResult, PublicEventRegistrantDto, EventRegistrationsService | src/entities/event-registration.entity.ts, src/entities/event.entity.ts, src/entities/user.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts |
+| `src/event-speakers/event-speakers.controller.ts` | ts | no | EventSpeakersController | src/event-speakers/event-speakers.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/commo |
 | `src/event-speakers/event-speakers.module.ts` | ts | no | EventSpeakersModule | src/event-speakers/event-speakers.controller.ts, src/event-speakers/event-speakers.service.ts |
-| `src/event-speakers/event-speakers.service.ts` | ts | no | EventSpeakerRowDto, ListEventSpeakersParams, ListEventSpeakersResult, EventSpeakersService | src/entities/event-speaker.entity.ts, src/entities/event.entity.ts, src/entities/speaker.entity.ts, src/common/pagination.ts |
-| `src/events/events.controller.ts` | ts | no | EventsController | src/events/events.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/event-speakers/event-speakers.service.ts` | ts | no | EventSpeakerRowDto, ListEventSpeakersParams, ListEventSpeakersResult, EventSpeakersService | src/entities/event-speaker.entity.ts, src/entities/event.entity.ts, src/entities/speaker.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts |
+| `src/events/events.controller.ts` | ts | no | EventsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/events/events.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-que |
 | `src/events/events.module.ts` | ts | no | EventsModule | src/events/events.controller.ts, src/events/events.service.ts |
-| `src/events/events.service.ts` | ts | no | EventRowDto, ListEventsParams, ListEventsResult, EventsService | src/entities/event.entity.ts, src/entities/camera.entity.ts, src/common/pagination.ts, src/common/poster-normalize.ts |
-| `src/face-data/face-data.controller.ts` | ts | no | FaceDataController | src/face-data/face-data.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/events/events.service.ts` | ts | no | EventRowDto, ListEventsParams, ListEventsResult, EventsService | src/entities/event.entity.ts, src/entities/camera.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/poster-normalize.ts, src/common/apply-column-filters.ts, src/common/admin- |
+| `src/face-data/face-data.controller.ts` | ts | no | FaceDataController | src/face-data/face-data.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-li |
 | `src/face-data/face-data.module.ts` | ts | no | FaceDataModule | src/face-data/face-data.controller.ts, src/face-data/face-data.service.ts |
-| `src/face-data/face-data.service.ts` | ts | no | FaceDataRowDto, ListFaceDataParams, ListFaceDataResult, FaceDataService | src/entities/face-data.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts |
+| `src/face-data/face-data.service.ts` | ts | no | FaceDataRowDto, ListFaceDataParams, ListFaceDataResult, FaceDataService | src/entities/face-data.entity.ts, src/entities/user.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts |
 | `src/groups/groups.controller.ts` | ts | no | GroupsController | src/groups/groups.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, src/config/constants.ts, src/co |
 | `src/groups/groups.module.ts` | ts | no | GroupsModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/groups/groups.controller.ts, src/groups/groups.service.ts |
 | `src/groups/groups.service.spec.ts` | ts | no |  | src/groups/groups.service.ts, src/entities/group.entity.ts, src/entities/group-member.entity.ts |
 | `src/groups/groups.service.ts` | ts | no | CreateGroupInput, ListGroupsInput, GroupsService | src/entities/group.entity.ts, src/entities/group-member.entity.ts, src/entities/message.entity.ts, src/entities/message-read.entity.ts, src/entities/user.entity.ts |
 | `src/hanet/hanet-payload.spec.ts` | ts | no |  | src/hanet/hanet-payload.ts |
 | `src/hanet/hanet-payload.ts` | ts | no | HANET_DEVICE_ID_KEYS, HANET_PERSON_NAME_KEYS, HANET_PERSON_ID_KEYS, parseHanetCompactTime, pickHanetString, pickHanetTimestamp, pickHanetAttendanceKind, pickHanetDeviceId, normalizeHanetBody | src/hanet/hanet.types.ts |
-| `src/hanet/hanet-webhook.controller.ts` | ts | no | HanetWebhookController | src/config/constants.ts, src/hanet/hanet-payload.ts, src/hanet/hanet-webhook.service.ts, src/hanet/hanet.types.ts |
+| `src/hanet/hanet-webhook.controller.ts` | ts | no | HanetWebhookController | src/config/constants.ts, src/common/public.decorator.ts, src/hanet/hanet-payload.ts, src/hanet/hanet-webhook.service.ts, src/hanet/hanet.types.ts |
 | `src/hanet/hanet-webhook.service.ts` | ts | no | HanetWebhookService | src/entities/event.entity.ts, src/entities/event-registration.entity.ts, src/entities/camera.entity.ts, src/event-registrations/event-registration-attendance.service.ts, src/hanet/hanet-payload.ts, sr |
 | `src/hanet/hanet.module.ts` | ts | no | HanetModule | src/event-registrations/event-registrations.module.ts, src/hanet/hanet-webhook.controller.ts, src/hanet/hanet-webhook.service.ts |
 | `src/hanet/hanet.types.ts` | ts | no | HanetWebhookBody, HanetCameraRole, HanetResolveContext, HanetWebhookResult |  |
-| `src/imported-users/imported-users.controller.ts` | ts | no | ImportedUsersController | src/imported-users/imported-users.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/imported-users/imported-users.controller.ts` | ts | no | ImportedUsersController | src/imported-users/imported-users.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/bulk-actions.ts, src/commo |
 | `src/imported-users/imported-users.module.ts` | ts | no | ImportedUsersModule | src/imported-users/imported-users.controller.ts, src/imported-users/imported-users.service.ts |
-| `src/imported-users/imported-users.service.ts` | ts | no | ImportedUserRowDto, ListImportedUsersParams, ListImportedUsersResult, ImportedUsersService | src/entities/imported-user.entity.ts, src/common/pagination.ts |
-| `src/locations/locations.controller.ts` | ts | no | LocationsController | src/locations/locations.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/imported-users/imported-users.service.ts` | ts | no | ImportedUserRowDto, ListImportedUsersParams, ListImportedUsersResult, ImportedUsersService | src/entities/imported-user.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts |
+| `src/locations/locations.controller.ts` | ts | no | LocationsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/locations/locations.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-li |
 | `src/locations/locations.module.ts` | ts | no | LocationsModule | src/locations/locations.controller.ts, src/locations/locations.service.ts |
-| `src/locations/locations.service.ts` | ts | no | LocationRowDto, ListLocationsParams, ListLocationsResult, LocationsService | src/entities/location.entity.ts, src/common/pagination.ts |
+| `src/locations/locations.service.ts` | ts | no | LocationRowDto, ListLocationsParams, ListLocationsResult, LocationsService | src/entities/location.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
 | `src/main.ts` | ts | no |  | src/app.module.ts, src/common/logging.interceptor.ts, src/config/app.config.ts, src/common/database-http-exception.filter.ts, src/common/request-id.middleware.ts, src/common/api-access.middleware.ts |
-| `src/majors/majors.controller.ts` | ts | no | MajorsController | src/majors/majors.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/majors/majors.controller.ts` | ts | no | MajorsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/majors/majors.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-que |
 | `src/majors/majors.module.ts` | ts | no | MajorsModule | src/majors/majors.controller.ts, src/majors/majors.service.ts |
-| `src/majors/majors.service.ts` | ts | no | MajorRowDto, ListMajorsParams, ListMajorsResult, MajorsService | src/entities/major.entity.ts, src/common/pagination.ts |
-| `src/messages/conversations.controller.ts` | ts | no | ConversationsController | src/common/api-response.ts, src/socket/socket.gateway.ts, src/entities/message.entity.ts, src/config/constants.ts |
+| `src/majors/majors.service.ts` | ts | no | MajorRowDto, ListMajorsParams, ListMajorsResult, MajorsService | src/entities/major.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps.ts |
+| `src/messages/conversations.controller.ts` | ts | no | ConversationsController | src/common/api-response.ts, src/socket/socket.gateway.ts, src/entities/message.entity.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
 | `src/messages/messages.controller.ts` | ts | no | MessagesController | src/socket/socket.gateway.ts, src/common/api-response.ts, src/entities/message.entity.ts, src/entities/message-read.entity.ts, src/entities/group-member.entity.ts, src/entities/group.entity.ts, src/en |
 | `src/messages/messages.module.ts` | ts | no | MessagesModule | src/socket/socket.module.ts, src/messages/messages.controller.ts, src/messages/conversations.controller.ts |
+| `src/migrations/Migration20260605120000_standardize_legacy_table_names.ts` | ts | no | Migration20260605120000_standardize_legacy_table_names |  |
 | `src/mikro-orm/mikro-orm.module.ts` | ts | no | createMikroConfig, DatabaseModule | src/mikro-orm/orm-entities.ts |
 | `src/mikro-orm/orm-entities.ts` | ts | no | ormEntities | src/entities/academic-year.entity.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/camera.entity.ts, src/entities/category.entity.ts, src/entities/comment.enti |
-| `src/notifications/notifications.controller.ts` | ts | no | NotificationsController | src/notifications/notifications.service.ts, src/common/api-response.ts, src/config/constants.ts |
-| `src/notifications/notifications.module.ts` | ts | no | NotificationsModule | src/notifications/notifications.service.ts, src/notifications/notifications.controller.ts |
-| `src/notifications/notifications.service.spec.ts` | ts | no |  | src/notifications/notifications.service.ts, src/entities/notification.entity.ts |
-| `src/notifications/notifications.service.ts` | ts | no | NotificationsListQuery, NotificationItemDto, NotificationsListResult, UnreadCountsResult, AdminTableRowDto, AdminTableQuery, AdminTableResult, NotificationsService | src/entities/notification.entity.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/message.entity.ts, src/entities/contact-request.entity.ts |
+| `src/notifications/notifications.controller.ts` | ts | no | NotificationsController | src/notifications/notifications.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts |
+| `src/notifications/notifications.module.ts` | ts | no | NotificationsModule | src/socket/socket.module.ts, src/notifications/notifications.service.ts, src/notifications/notifications.controller.ts |
+| `src/notifications/notifications.service.spec.ts` | ts | no |  | src/notifications/notifications.service.ts, src/socket/socket.gateway.ts, src/entities/notification.entity.ts |
+| `src/notifications/notifications.service.ts` | ts | no | NotificationsListQuery, NotificationItemDto, NotificationsListResult, UnreadCountsResult, AdminTableRowDto, AdminTableQuery, AdminTableResult, NotificationsService | src/socket/socket.gateway.ts, src/socket/notification-mapper.ts, src/entities/notification.entity.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/message.entity.ts, src |
 | `src/page-contents/page-contents.controller.ts` | ts | no | PageContentsController | src/page-contents/page-contents.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants. |
 | `src/page-contents/page-contents.module.ts` | ts | no | PageContentsModule | src/page-contents/page-contents.service.ts, src/page-contents/page-contents.controller.ts, src/notifications/notifications.module.ts, src/auth/auth.module.ts |
-| `src/page-contents/page-contents.service.ts` | ts | no | PageContentCreateInput, PageContentUpdateInput, PageContentsService | src/entities/page-content.entity.ts |
-| `src/parent-students/parent-students.controller.ts` | ts | no | ParentStudentsPublicController, ParentStudentsAdminController | src/parent-students/parent-students.service.ts, src/common/api-response.ts, src/config/constants.ts |
-| `src/parent-students/parent-students.module.ts` | ts | no | ParentStudentsModule | src/parent-students/parent-students.service.ts, src/parent-students/parent-students.controller.ts |
-| `src/parent-students/parent-students.service.ts` | ts | no | ParentStudentRowDto, ParentStudentsService | src/entities/parent-student.entity.ts, src/common/pagination.ts |
-| `src/posts/posts.controller.ts` | ts | no | PostsController | src/posts/posts.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/page-contents/page-contents.service.ts` | ts | no | PageContentCreateInput, PageContentUpdateInput, PageContentsService | src/entities/page-content.entity.ts, src/common/bulk-actions.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
+| `src/parent-students/parent-students.controller.ts` | ts | no | ParentStudentsPublicController, ParentStudentsAdminController | src/parent-students/parent-students.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/parse-list-query.ts, src |
+| `src/parent-students/parent-students.module.ts` | ts | no | ParentStudentsModule | src/parent-students/parent-students.service.ts, src/parent-students/parent-students.controller.ts, src/socket/socket.module.ts |
+| `src/parent-students/parent-students.service.ts` | ts | no | ParentStudentRowDto, ParentStudentsService | src/entities/parent-student.entity.ts, src/common/pagination.ts, src/common/admin-realtime-broadcast.service.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
+| `src/posts/posts.controller.ts` | ts | no | PostsController | src/posts/posts.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, s |
 | `src/posts/posts.module.ts` | ts | no | PostsModule | src/notifications/notifications.module.ts, src/posts/posts.service.ts, src/posts/posts.controller.ts |
 | `src/posts/posts.service.spec.ts` | ts | no |  | src/posts/posts.service.ts, src/entities/post.entity.ts, src/entities/category.entity.ts, src/entities/tag.entity.ts, src/entities/user.entity.ts |
 | `src/posts/posts.service.ts` | ts | no | PostRowDto, PostDetailDto, POSTS_FILTER_CATEGORIES_NONE, ListPostsParams, ListPostsResult, PostsService | src/common/resolve-relation-filters.ts, src/common/pagination.ts, src/common/get-options.ts, src/common/date-utils.ts, src/entities/post.entity.ts, src/entities/post-category.entity.ts, src/entities/p |
-| `src/proxy-image/proxy-image.controller.ts` | ts | no | ProxyImageController | src/config/constants.ts |
+| `src/proxy-image/proxy-image.controller.ts` | ts | no | ProxyImageController | src/config/constants.ts, src/common/public.decorator.ts |
 | `src/proxy-image/proxy-image.module.ts` | ts | no | ProxyImageModule | src/proxy-image/proxy-image.controller.ts |
 | `src/public/public-auth.service.ts` | ts | no | CreatePublicRegisterDto, PublicAuthService | src/entities/role.entity.ts, src/entities/setting.entity.ts, src/entities/user.entity.ts, src/auth/auth.service.ts, src/users/users.service.ts, src/config/constants.ts |
 | `src/public/public-categories.service.ts` | ts | no | PublicCategoryItem, PublicCategoriesService | src/entities/category.entity.ts |
-| `src/public/public-contact-requests.service.ts` | ts | no | CreateContactRequestDto, PublicContactRequestsService | src/entities/contact-request.entity.ts |
+| `src/public/public-contact-requests.service.ts` | ts | no | CreateContactRequestDto, PublicContactRequestsService | src/entities/contact-request.entity.ts, src/common/admin-realtime-broadcast.service.ts, src/config/constants.ts |
 | `src/public/public-event-categories.service.ts` | ts | no | PublicEventCategoryItem, PublicEventCategoriesService | src/entities/category.entity.ts |
 | `src/public/public-event-registration.service.ts` | ts | no | RegisterForEventResult, MyRegisteredEventItem, PublicEventRegistrationService | src/entities/event.entity.ts, src/entities/user.entity.ts, src/entities/event-registration.entity.ts, src/event-registrations/event-registrations.service.ts, src/common/poster-normalize.ts |
 | `src/public/public-events.service.ts` | ts | no | EventTimeFilter, PublicEventsQuery, PublicEventItem, PublicViewerRegistration, PublicEventSpeaker, PublicEventRegistrant, PublicEventDetail, PublicEventsService | src/entities/event.entity.ts, src/entities/user.entity.ts, src/common/pagination.ts, src/common/poster-normalize.ts, src/common/event-time-status.ts, src/event-registrations/event-registrations.servic |
 | `src/public/public-posts.service.ts` | ts | no | PublicPostsQuery, PublicPostsService | src/entities/post.entity.ts, src/entities/category.entity.ts, src/entities/tag.entity.ts, src/entities/setting.entity.ts, src/common/pagination.ts |
 | `src/public/public.controller.ts` | ts | no | PublicController | src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-events.service.ts, src/public/public-event-categories.serv |
-| `src/public/public.module.ts` | ts | no | PublicModule | src/public/public.controller.ts, src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/public-events.service.ts, src/pu |
-| `src/roles/roles.controller.ts` | ts | no | RolesController | src/roles/roles.service.ts, src/socket/socket.gateway.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/conf |
+| `src/public/public.module.ts` | ts | no | PublicModule | src/socket/socket.module.ts, src/public/public.controller.ts, src/public/public-posts.service.ts, src/public/public-categories.service.ts, src/public/public-contact-requests.service.ts, src/public/pub |
+| `src/roles/roles.controller.ts` | ts | no | RolesController | src/roles/roles.service.ts, src/socket/socket.gateway.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/comm |
 | `src/roles/roles.module.ts` | ts | no | RolesModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/roles/roles.controller.ts, src/roles/roles.service.ts |
 | `src/roles/roles.service.spec.ts` | ts | no |  | src/roles/roles.service.ts, src/entities/role.entity.ts |
-| `src/roles/roles.service.ts` | ts | no | RoleRowDto, ListRolesParams, ListRolesResult, RolesService | src/common/pagination.ts, src/common/get-options.ts, src/entities/role.entity.ts |
-| `src/screens/screens.controller.ts` | ts | no | ScreensController | src/screens/screens.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/roles/roles.service.ts` | ts | no | RoleRowDto, ListRolesParams, ListRolesResult, RolesService | src/common/pagination.ts, src/common/get-options.ts, src/config/protected-admin.ts, src/config/system-role.ts, src/entities/role.entity.ts, src/entities/user.entity.ts |
+| `src/screens/screens.controller.ts` | ts | no | ScreensController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/screens/screens.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-q |
 | `src/screens/screens.module.ts` | ts | no | ScreensModule | src/screens/screens.controller.ts, src/screens/screens.service.ts |
-| `src/screens/screens.service.ts` | ts | no | ScreenRowDto, ScreensService | src/entities/screen.entity.ts, src/common/pagination.ts |
+| `src/screens/screens.service.ts` | ts | no | ScreenRowDto, ScreensService | src/entities/screen.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
 | `src/scripts/mark-migrations-executed.ts` | ts | no |  | src/mikro-orm/mikro-orm.module.ts |
 | `src/seed-full-export.ts` | ts | no |  | src/mikro-orm/orm-entities.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.en |
 | `src/seed-guides.ts` | ts | no |  | src/entities/page-content.entity.ts |
@@ -376,47 +399,48 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/seeders/DatabaseSeeder.ts` | ts | no | DatabaseSeeder | src/seeds/superadmin-bootstrap.runner.ts |
 | `src/seeds/superadmin-bootstrap.data.ts` | ts | no | SUPERADMIN_ROLES_DATA, SUPERADMIN_USERS_DATA, SUPERADMIN_USER_ROLES_DATA |  |
 | `src/seeds/superadmin-bootstrap.runner.ts` | ts | no | SuperadminBootstrapResult | src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/page-content.entity.ts, src/seeds/superadmin-bootstrap.data.ts |
-| `src/seo-metas/seo-metas.controller.ts` | ts | no | SeoMetasController | src/seo-metas/seo-metas.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/seo-metas/seo-metas.controller.ts` | ts | no | SeoMetasController | src/seo-metas/seo-metas.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-li |
 | `src/seo-metas/seo-metas.module.ts` | ts | no | SeoMetasModule | src/seo-metas/seo-metas.controller.ts, src/seo-metas/seo-metas.service.ts |
-| `src/seo-metas/seo-metas.service.ts` | ts | no | SeoMetaRowDto, ListSeoMetasParams, ListSeoMetasResult, SeoMetasService | src/entities/seo-meta.entity.ts, src/common/pagination.ts |
+| `src/seo-metas/seo-metas.service.ts` | ts | no | SeoMetaRowDto, ListSeoMetasParams, ListSeoMetasResult, SeoMetasService | src/entities/seo-meta.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
 | `src/sessions/sessions.controller.ts` | ts | no | SessionsController | src/sessions/sessions.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, src/config/constants.ts, sr |
 | `src/sessions/sessions.module.ts` | ts | no | SessionsModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/sessions/sessions.service.ts, src/sessions/sessions.controller.ts |
 | `src/sessions/sessions.service.ts` | ts | no | SessionRowDto, ListSessionsParams, ListSessionsResult, AccountWithSessionStatusDto, ListAccountsWithSessionStatusParams, ListAccountsWithSessionStatusResult, SessionsService | src/entities/session.entity.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/role.entity.ts, src/common/resolve-relation-filters.ts, src/common/pagination.ts, src/config |
-| `src/settings/settings.controller.ts` | ts | no | SettingsController | src/settings/settings.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/settings/settings.controller.ts` | ts | no | SettingsController | src/settings/settings.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
 | `src/settings/settings.module.ts` | ts | no | SettingsModule | src/settings/settings.controller.ts, src/settings/settings.service.ts |
 | `src/settings/settings.service.spec.ts` | ts | no |  | src/settings/settings.service.ts, src/entities/setting.entity.ts |
 | `src/settings/settings.service.ts` | ts | no | SettingsService | src/entities/setting.entity.ts |
 | `src/socket/notification-mapper.ts` | ts | no | NotificationLike, mapNotificationToPayload | src/socket/socket.types.ts |
 | `src/socket/socket.gateway.ts` | ts | no | SocketGateway | src/sessions/sessions.service.ts, src/entities/notification.entity.ts, src/entities/user.entity.ts, src/socket/socket.types.ts, src/config/app.config.ts, src/socket/notification-mapper.ts |
-| `src/socket/socket.module.ts` | ts | no | SocketModule | src/socket/socket.gateway.ts, src/sessions/sessions.module.ts |
+| `src/socket/socket.module.ts` | ts | no | SocketModule | src/common/admin-realtime.interceptor.ts, src/common/admin-realtime-broadcast.service.ts, src/socket/socket.gateway.ts, src/sessions/sessions.module.ts |
 | `src/socket/socket.types.ts` | ts | no | SocketNotificationKind, SocketNotificationPayload, SocketData, SessionRowDto, MAX_HTTP_BUFFER_SIZE, SOCKET_PATH, userRoom, conversationRoom, sessionRoom, roleRoom, eventRoom, EventAttendanceSocketPayl |  |
-| `src/speakers/speakers.controller.ts` | ts | no | SpeakersController | src/speakers/speakers.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/speakers/speakers.controller.ts` | ts | no | SpeakersController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/speakers/speakers.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list |
 | `src/speakers/speakers.module.ts` | ts | no | SpeakersModule | src/speakers/speakers.controller.ts, src/speakers/speakers.service.ts |
-| `src/speakers/speakers.service.ts` | ts | no | SpeakerRowDto, ListSpeakersParams, ListSpeakersResult, SpeakersService | src/entities/speaker.entity.ts, src/common/pagination.ts |
-| `src/students/students.controller.ts` | ts | no | StudentsController | src/students/students.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/speakers/speakers.service.ts` | ts | no | SpeakerRowDto, ListSpeakersParams, ListSpeakersResult, SpeakersService | src/entities/speaker.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
+| `src/students/students.controller.ts` | ts | no | StudentsController | src/students/students.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator |
 | `src/students/students.module.ts` | ts | no | StudentsModule | src/notifications/notifications.module.ts, src/students/students.controller.ts, src/students/students.service.ts |
 | `src/students/students.service.spec.ts` | ts | no |  | src/students/students.service.ts, src/entities/student.entity.ts, src/entities/user.entity.ts |
 | `src/students/students.service.ts` | ts | no | StudentRowDto, ListStudentsParams, ListStudentsResult, StudentsService | src/entities/user.entity.ts, src/common/pagination.ts, src/common/get-options.ts, src/entities/student.entity.ts |
-| `src/system/import-helpers.ts` | ts | no | ImportRow, stripLegacyHeroSlideFromBundle, stripHeroSlidesPermissions, pivotFk, sanitizePivotRowsInExportJson, orderCategoryRowsForImport |  |
-| `src/system/system.controller.ts` | ts | no | SystemController | src/system/system.service.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/system/export-schema.ts` | ts | no | LEGACY_TABLE_TO_MODEL, LEGACY_IMPORT_FIELD_ALIASES, resolveLegacyTableModelName, normalizeLegacyImportRow |  |
+| `src/system/import-helpers.ts` | ts | no | ImportRow, stripLegacyHeroSlideFromBundle, isSkippableImportRowError, stripHeroSlidesPermissions, pivotFk, sanitizePivotRowsInExportJson, orderCategoryRowsForImport |  |
+| `src/system/system.controller.ts` | ts | no | SystemController | src/system/system.service.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
 | `src/system/system.module.ts` | ts | no | SystemModule | src/system/system.controller.ts, src/system/system.service.ts, src/auth/auth.module.ts |
-| `src/tags/tags.controller.ts` | ts | no | TagsController | src/tags/tags.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/config/permissions.ts |
+| `src/tags/tags.controller.ts` | ts | no | TagsController | src/tags/tags.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src |
 | `src/tags/tags.module.ts` | ts | no | TagsModule | src/notifications/notifications.module.ts, src/tags/tags.controller.ts, src/tags/tags.service.ts |
 | `src/tags/tags.service.spec.ts` | ts | no |  | src/tags/tags.service.ts, src/entities/tag.entity.ts |
 | `src/tags/tags.service.ts` | ts | no | RelatedPostDto, TagDetailDto, TagRowDto, ListTagsParams, ListTagsResult, TagsService | src/entities/tag.entity.ts, src/entities/post-tag.entity.ts, src/common/pagination.ts, src/common/get-options.ts |
-| `src/templates/templates.controller.ts` | ts | no | TemplatesController | src/templates/templates.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/templates/templates.controller.ts` | ts | no | TemplatesController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/templates/templates.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-li |
 | `src/templates/templates.module.ts` | ts | no | TemplatesModule | src/templates/templates.controller.ts, src/templates/templates.service.ts |
-| `src/templates/templates.service.ts` | ts | no | TemplateRowDto, TemplatesService | src/entities/template.entity.ts, src/common/pagination.ts |
-| `src/training-levels/training-levels.controller.ts` | ts | no | TrainingLevelsController | src/training-levels/training-levels.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/templates/templates.service.ts` | ts | no | TemplateRowDto, TemplatesService | src/entities/template.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
+| `src/training-levels/training-levels.controller.ts` | ts | no | TrainingLevelsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/training-levels/training-levels.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/com |
 | `src/training-levels/training-levels.module.ts` | ts | no | TrainingLevelsModule | src/training-levels/training-levels.controller.ts, src/training-levels/training-levels.service.ts |
-| `src/training-levels/training-levels.service.ts` | ts | no | TrainingLevelRowDto, ListTrainingLevelsParams, ListTrainingLevelsResult, TrainingLevelsService | src/entities/training-level.entity.ts, src/common/pagination.ts |
-| `src/training-systems/training-systems.controller.ts` | ts | no | TrainingSystemsController | src/training-systems/training-systems.service.ts, src/common/api-response.ts, src/config/constants.ts |
+| `src/training-levels/training-levels.service.ts` | ts | no | TrainingLevelRowDto, ListTrainingLevelsParams, ListTrainingLevelsResult, TrainingLevelsService | src/entities/training-level.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps. |
+| `src/training-systems/training-systems.controller.ts` | ts | no | TrainingSystemsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/training-systems/training-systems.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/c |
 | `src/training-systems/training-systems.module.ts` | ts | no | TrainingSystemsModule | src/training-systems/training-systems.controller.ts, src/training-systems/training-systems.service.ts |
-| `src/training-systems/training-systems.service.ts` | ts | no | TrainingSystemRowDto, ListTrainingSystemsParams, ListTrainingSystemsResult, TrainingSystemsService | src/entities/training-system.entity.ts, src/common/pagination.ts |
-| `src/uploads/public-uploads.controller.ts` | ts | no | PublicUploadsController | src/uploads/uploads.service.ts, src/config/constants.ts |
-| `src/uploads/uploads.controller.ts` | ts | no | UploadsController | src/uploads/uploads.service.ts, src/common/api-response.ts, src/config/app.config.ts, src/config/constants.ts |
+| `src/training-systems/training-systems.service.ts` | ts | no | TrainingSystemRowDto, ListTrainingSystemsParams, ListTrainingSystemsResult, TrainingSystemsService | src/entities/training-system.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps |
+| `src/uploads/public-uploads.controller.ts` | ts | no | PublicUploadsController | src/uploads/uploads.service.ts, src/config/constants.ts, src/common/public.decorator.ts |
+| `src/uploads/uploads.controller.ts` | ts | no | UploadsController | src/uploads/uploads.service.ts, src/common/api-response.ts, src/config/app.config.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/parse-list-que |
 | `src/uploads/uploads.module.ts` | ts | no | UploadsModule | src/uploads/uploads.service.ts, src/uploads/uploads.controller.ts, src/uploads/public-uploads.controller.ts |
-| `src/uploads/uploads.service.ts` | ts | no | ImageItemDto, FolderNodeDto, FolderItemDto, ListImagesResult, ListFoldersResult, UploadsService | src/config/app.config.ts, src/common/image-processor.ts |
+| `src/uploads/uploads.service.ts` | ts | no | ImageItemDto, FolderNodeDto, FolderItemDto, ListImagesResult, ListFoldersResult, UploadsService | src/config/app.config.ts, src/common/parse-list-query.ts, src/common/image-processor.ts |
 | `src/users/users.controller.ts` | ts | no | CreateUserDto, UpdateUserDto, BulkActionDto, UsersController | src/users/users.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/sessions/sessions.service.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, |
 | `src/users/users.module.ts` | ts | no | UsersModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/sessions/sessions.module.ts, src/users/users.service.ts, src/users/users.controller.ts |
 | `src/users/users.service.spec.ts` | ts | no |  | src/users/users.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
@@ -430,5 +454,5 @@ Toàn bộ `.md` sinh tự động nằm trong **`apps/api/.graphify/markdown/`*
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node apps/api/.graphify/update.cjs`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node scripts/graphify-update.cjs apps/api`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md`, `API_DOMAIN_IMPORTS.md` khi có graph).
