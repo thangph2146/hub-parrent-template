@@ -18,6 +18,7 @@ export {
   type ResolvedDataTableRowActionConfirm,
 } from "./row-action-confirm"
 export {
+  defineDataTableActionsColumn,
   normalizeDataTableColumns,
   resolveDataTableColumnId,
   dataTableColumnsHasActionsColumn,
@@ -61,8 +62,10 @@ export {
   type DataTableRowActionsMenuProps,
   type RowActionsMenuGroupConfig,
 } from "./table-row-actions-menu"
+export { getDisplayableRowActions } from "./row-actions-menu-shared"
 export {
   DataTableRowActionsRegistrar,
+  DataTableRowActionsClearRegistrar,
   DataTableRowActionsRegistryProvider,
   DataTableRowActionsRowProvider,
   DataTableScopeProvider,

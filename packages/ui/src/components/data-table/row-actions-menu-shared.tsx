@@ -80,13 +80,20 @@ export function defaultRowActionMenuIconStyles(
   }
 }
 
+/** Thao tác hiển thị trong menu ⋯ và chuột phải — ẩn khi `hidden` hoặc `disabled` (vd. không đủ quyền). */
+export function getDisplayableRowActions(
+  actions: DataTableRowActionItem[]
+): DataTableRowActionItem[] {
+  return actions.filter((action) => !action.hidden && !action.disabled)
+}
+
 export function groupRowActions(
   actions: DataTableRowActionItem[],
   groupsOverride?: Partial<
     Record<DataTableRowActionGroupId, RowActionsMenuGroupConfig>
   >
 ) {
-  const visible = actions.filter((action) => !action.hidden)
+  const visible = getDisplayableRowActions(actions)
   const groups = { ...ROW_ACTIONS_DEFAULT_GROUPS, ...groupsOverride }
   const byGroup = new Map<DataTableRowActionGroupId, DataTableRowActionItem[]>()
 

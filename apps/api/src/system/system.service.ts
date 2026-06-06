@@ -1188,7 +1188,7 @@ export class SystemService {
       const seenIds = new Set<string>();
       rows = rows
         .filter((r) => {
-          const id = String((r as Record<string, unknown>).id ?? '');
+          const id = String(r.id ?? '');
           if (!id || seenIds.has(id)) return false;
           seenIds.add(id);
           return true;

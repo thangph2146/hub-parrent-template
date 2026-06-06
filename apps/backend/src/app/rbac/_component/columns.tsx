@@ -265,9 +265,7 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
 
         if (isSuperAdmin) {
           return {
-            editHidden: !canEditSuperAdminRole,
-
-            editDisabled: !canManageRoles,
+            editHidden: !canEditSuperAdminRole || !canManageRoles,
 
             editTitle: canEditSuperAdminRole
               ? undefined
@@ -280,10 +278,8 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
         }
 
         return {
-          editDisabled: !canManageRoles,
-
+          editHidden: !canManageRoles,
           softDeleteDisabled: !canManageRoles,
-
           purgeDisabled: !canManageRoles,
         }
       },

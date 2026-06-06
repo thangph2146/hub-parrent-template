@@ -22,6 +22,7 @@ import {
   useRowActionConfirm,
 } from "./row-action-confirm"
 import {
+  getDisplayableRowActions,
   groupRowActions,
   RowActionMenuItemBody,
   RowActionsMenuGroups,
@@ -93,7 +94,7 @@ export function DataTableRowActionsMenu({
   )
 
   useRegisterDataTableRowActions({
-    actions,
+    actions: getDisplayableRowActions(actions),
     groups: groupsOverride,
     busy,
     autoConfirmDangerousActions,

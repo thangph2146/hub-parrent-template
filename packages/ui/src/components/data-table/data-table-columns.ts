@@ -71,3 +71,34 @@ export function normalizeDataTableColumns<TData>(
   })
   return applyDefaultDataColumnWidths(normalized)
 }
+
+type DefineDataTableActionsColumnOptions<TData> = {
+  header?: string
+  enableColumnFilter?: boolean
+  filterFn?: ColumnDef<TData, unknown>["filterFn"]
+  columnMeta?: ColumnDef<TData, unknown>["meta"]
+  cell: NonNullable<ColumnDef<TData, unknown>["cell"]>
+}
+
+/** Cột thao tác tùy chỉnh — tự gắn `id` + meta chuẩn để menu chuột phải đồng bộ với menu ⋯. */
+export function defineDataTableActionsColumn<TData>(
+  options: DefineDataTableActionsColumnOptions<TData>
+): ColumnDef<TData, unknown> {
+  const {
+    header = "Thao tác",
+    enableColumnFilter = false,
+    filterFn,
+    columnMeta,
+    cell,
+  } = options
+
+  return {
+    id: DATA_TABLE_ACTIONS_COLUMN_ID,
+    header,
+    enableSorting: false,
+    enableColumnFilter,
+    ...(filterFn ? { filterFn } : {}),
+    meta: { ...TABLE_ACTIONS_COLUMN_META, ...columnMeta },
+    cell,
+  }
+}

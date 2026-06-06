@@ -86,67 +86,63 @@ export function RegistrationAttendanceActions({
 
   const busy = mutation.isPending
 
-  const actions: DataTableRowActionItem[] = [
-    {
+  const actions: DataTableRowActionItem[] = []
+
+  if (!hasCheckin && !busy && registrationId) {
+    actions.push({
       key: "checkin",
       label: "Ghi nhận check-in",
-      hint: hasCheckin
-        ? "Đã có check-in — không ghi nhận lại"
-        : "Đánh dấu người tham dự đã vào sự kiện",
+      hint: "Đánh dấu người tham dự đã vào sự kiện",
       onClick: () => mutation.mutate("checkin"),
       icon: <LogIn />,
       group: "primary",
-      disabled: hasCheckin || busy || !registrationId,
-    },
-    {
+    })
+  }
+
+  if (!hasCheckout && hasCheckin && !busy && registrationId) {
+    actions.push({
       key: "checkout",
       label: "Ghi nhận check-out",
-      hint: hasCheckout
-        ? "Đã có check-out — không ghi nhận lại"
-        : !hasCheckin
-          ? "Cần check-in trước khi check-out"
-          : "Đánh dấu người tham dự đã rời sự kiện",
+      hint: "Đánh dấu người tham dự đã rời sự kiện",
       onClick: () => mutation.mutate("checkout"),
       icon: <LogOut />,
       group: "primary",
-      disabled: hasCheckout || !hasCheckin || busy || !registrationId,
-    },
-    {
+    })
+  }
+
+  if (hasCheckout && !busy && registrationId) {
+    actions.push({
       key: "reset-checkout",
       label: "Hoàn tác check-out",
-      hint: !hasCheckout
-        ? "Chưa có check-out để hoàn tác"
-        : "Bỏ trạng thái check-out, giữ check-in",
+      hint: "Bỏ trạng thái check-out, giữ check-in",
       onClick: () => mutation.mutate("reset-checkout"),
       icon: <Undo2 />,
       group: "status",
-      disabled: !hasCheckout || busy || !registrationId,
-    },
-    {
+    })
+  }
+
+  if (hasCheckin && !busy && registrationId) {
+    actions.push({
       key: "reset-checkin",
       label: "Hoàn tác check-in",
-      hint: !hasCheckin
-        ? "Chưa có check-in để hoàn tác"
-        : "Bỏ check-in (và check-out nếu có)",
+      hint: "Bỏ check-in (và check-out nếu có)",
       onClick: () => mutation.mutate("reset-checkin"),
       icon: <RotateCcw />,
       group: "status",
-      disabled: !hasCheckin || busy || !registrationId,
-    },
-    {
+    })
+  }
+
+  if ((hasCheckin || hasCheckout) && !busy && registrationId) {
+    actions.push({
       key: "reset-all",
       label: "Xóa toàn bộ trạng thái",
-      hint:
-        !hasCheckin && !hasCheckout
-          ? "Chưa có trạng thái để xóa"
-          : "Xóa cả check-in và check-out",
+      hint: "Xóa cả check-in và check-out",
       onClick: () => mutation.mutate("reset-all"),
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      disabled: (!hasCheckin && !hasCheckout) || busy || !registrationId,
-    },
-  ]
+    })
+  }
 
   if (compact) {
     return (

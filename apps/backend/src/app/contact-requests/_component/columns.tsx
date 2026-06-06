@@ -16,6 +16,7 @@ import {
 } from "@ui/components/usage-status-badge"
 import { defineAdminTrashActionsColumn } from "@ui/components/admin"
 import {
+  defineDataTableActionsColumn,
   defineLinkedUserColumns,
   resolveLinkedUser,
 } from "@ui/components/data-table"
@@ -34,7 +35,6 @@ import {
 import { formatPhoneNumber } from "./utils"
 import {
   ContactRequestRowActions,
-  contactRequestActionsColumnId,
   contactRequestActionsColumnMeta,
 } from "./contact-row-actions"
 
@@ -396,13 +396,10 @@ export function getContactRequestColumns(
     
   ]
 
-  const listActionsColumn: ColumnDef<ContactRequest> = {
-    id: contactRequestActionsColumnId,
-    header: "Thao tác",
-    enableSorting: false,
+  const listActionsColumn = defineDataTableActionsColumn<ContactRequest>({
     enableColumnFilter: true,
-      filterFn: () => true,
-    meta: contactRequestActionsColumnMeta,
+    filterFn: () => true,
+    columnMeta: contactRequestActionsColumnMeta,
     cell: ({ row }) => (
       <ContactRequestRowActions
         contact={row.original}
@@ -417,7 +414,7 @@ export function getContactRequestColumns(
         onSetPriority={(priority) => onSetPriority(row.original, priority)}
       />
     ),
-  }
+  })
 
   return dedupeAdminTableColumns(
     buildAdminTableColumns({

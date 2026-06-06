@@ -137,8 +137,17 @@ export function DataTableRowContextMenu({
   const scopeId = useDataTableScopeId()
   const runAction = useDataTableRowActionRunnerOptional()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [openEntry, setOpenEntry] =
-    useState<RegisteredDataTableRowActions | null>(null)
+
+  const resolveRowActions = () => {
+    if (!registry) return null
+    const entry = registry.getScoped(scopeId, rowId)
+    if (!entry || !registry.hasVisibleActionsScoped(scopeId, rowId)) {
+      return null
+    }
+    return entry
+  }
+
+  const openEntry = menuOpen ? resolveRowActions() : null
 
   if (!enabled || !registry) {
     return (
@@ -150,17 +159,19 @@ export function DataTableRowContextMenu({
 
   return (
     <ContextMenu
+      open={menuOpen}
       onOpenChange={(open) => {
         if (open) {
+          if (!resolveRowActions()) {
+            setMenuOpen(false)
+            return
+          }
           flushSync(() => {
-            const entry = registry.getScoped(scopeId, rowId)
-            setOpenEntry(entry)
             setMenuOpen(true)
           })
           return
         }
         setMenuOpen(false)
-        setOpenEntry(null)
       }}
     >
       <ContextMenuTrigger
@@ -174,6 +185,13 @@ export function DataTableRowContextMenu({
               {...restTrigger}
               className={cn(className, triggerClassName)}
               style={{ ...style, ...triggerStyle }}
+              onContextMenu={(event) => {
+                restTrigger.onContextMenu?.(event)
+                if (event.defaultPrevented) return
+                if (!resolveRowActions()) {
+                  event.preventDefault()
+                }
+              }}
               ref={(node) => {
                 if (typeof triggerRef === "function") {
                   triggerRef(node)

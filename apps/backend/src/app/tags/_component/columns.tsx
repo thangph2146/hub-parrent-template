@@ -6,6 +6,10 @@ import {
   AdminTableCrudRowActions,
   defineAdminTrashActionsColumn,
 } from "@ui/components/admin"
+import {
+  DataTableRowActionsClearRegistrar,
+  defineDataTableActionsColumn,
+} from "@ui/components/data-table"
 import type { AdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   type AdminTableView,
@@ -126,14 +130,13 @@ export function getTagColumns({
     },
   ]
 
-  const listActionsColumn: ColumnDef<TagTreeRow> = {
-    id: "actions",
-    header: "Thao tác",
-    enableSorting: false,
+  const listActionsColumn = defineDataTableActionsColumn<TagTreeRow>({
     enableColumnFilter: true,
-      filterFn: () => true,
+    filterFn: () => true,
     cell: ({ row }) =>
-      row.original.isGroup ? null : (
+      row.original.isGroup ? (
+        <DataTableRowActionsClearRegistrar />
+      ) : (
         <AdminTableCrudRowActions
           canWrite={canWrite}
           canDelete={canDelete}
@@ -153,7 +156,7 @@ export function getTagColumns({
           }
         />
       ),
-  }
+  })
 
   return buildAdminTableColumns({
     view,

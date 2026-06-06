@@ -5,6 +5,8 @@ import { Button } from "../button"
 import { cn } from "../../lib/utils"
 import type { DataTableRowActionConfirm } from "./row-action-confirm"
 import { useRowActionConfirm } from "./row-action-confirm"
+import { useRegisterDataTableRowActions } from "./data-table-row-actions-registry"
+import { getDisplayableRowActions } from "./row-actions-menu-shared"
 
 /** Id mặc định cột thao tác — DataTable tự gộp meta khi khớp id này. */
 export const DATA_TABLE_ACTIONS_COLUMN_ID = "actions"
@@ -32,9 +34,11 @@ export type DataTableRowActionItem = {
   icon?: ReactNode
   variant?: ComponentProps<typeof Button>["variant"]
   size?: ComponentProps<typeof Button>["size"]
+  /** Không hiển thị trong menu ⋯ / chuột phải (cùng hiệu lực với `hidden`). */
   disabled?: boolean
   title?: string
   className?: string
+  /** Ẩn hoàn toàn — dùng khi không đủ quyền. */
   hidden?: boolean
   /** Nhóm trong menu dropdown (mặc định: primary). */
   group?: DataTableRowActionGroupId
@@ -65,13 +69,22 @@ export function DataTableRowActions({
     autoConfirmDangerousActions
   )
 
+  const displayableActions = actions ? getDisplayableRowActions(actions) : null
+
+  useRegisterDataTableRowActions(
+    displayableActions
+      ? {
+          actions: displayableActions,
+          autoConfirmDangerousActions,
+        }
+      : null
+  )
+
   return (
     <>
       <div className={cn("flex flex-wrap items-center gap-2", className)}>
-        {actions
-          ? actions
-              .filter((action) => !action.hidden)
-              .map((action) => (
+        {displayableActions
+          ? displayableActions.map((action) => (
                 <DataTableRowActionButton
                   key={action.key}
                   label={action.label}

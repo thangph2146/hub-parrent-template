@@ -14,9 +14,8 @@ import {
   XCircle,
 } from "lucide-react"
 import {
-  DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
-  TABLE_ACTIONS_COLUMN_META,
+  defineDataTableActionsColumn,
   defineRelationExportColumns,
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
@@ -179,12 +178,7 @@ export function getParentStudentsColumns(
       },
     ]),
     defineAdminUpdatedAtColumn<ParentStudent>({ defaultHidden: true }),
-    {
-      id: DATA_TABLE_ACTIONS_COLUMN_ID,
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: TABLE_ACTIONS_COLUMN_META,
+    defineDataTableActionsColumn<ParentStudent>({
       cell: ({ row }) => {
         const data = row.original
         const actions: DataTableRowActionItem[] = []
@@ -232,6 +226,6 @@ export function getParentStudentsColumns(
           />
         )
       },
-    },
+    }),
   ]
 }

@@ -15,9 +15,8 @@ import {
   XCircle,
 } from "lucide-react"
 import {
-  DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
-  TABLE_ACTIONS_COLUMN_META,
+  defineDataTableActionsColumn,
   type DataTableRowActionItem,
 } from "@ui/components/data-table"
 import type { MyStudentRow } from "./types"
@@ -151,12 +150,7 @@ export function getMyStudentsColumns(
       [{ id: "parentId", header: "ID phụ huynh", getValue: (r) => r.parentId }],
       { enableColumnFilter: false }
     ),
-    {
-      id: DATA_TABLE_ACTIONS_COLUMN_ID,
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: TABLE_ACTIONS_COLUMN_META,
+    defineDataTableActionsColumn<MyStudentRow>({
       cell: ({ row }) => {
         const data = row.original
         const label = recordLabel(data)
@@ -213,7 +207,7 @@ export function getMyStudentsColumns(
           />
         )
       },
-    },
+    }),
   ]
 }
 

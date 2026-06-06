@@ -14,7 +14,10 @@ import type { DataTableRowActionGroupId } from "./table-row-actions"
 
 import type { DataTableRowActionItem } from "./table-row-actions"
 
-import type { RowActionsMenuGroupConfig } from "./row-actions-menu-shared"
+import {
+  getDisplayableRowActions,
+  type RowActionsMenuGroupConfig,
+} from "./row-actions-menu-shared"
 
 import {
   DataTableRowActionConfirmRunnerProvider,
@@ -87,7 +90,7 @@ function rowHasVisibleActions(
 ): boolean {
   if (!entry) return false
 
-  return entry.actions.some((action) => !action.hidden && !action.disabled)
+  return getDisplayableRowActions(entry.actions).length > 0
 }
 
 export function DataTableRowActionsRegistryProvider({
@@ -198,9 +201,16 @@ export function useRegisterDataTableRowActions(
 
   const registry = useDataTableRowActionsRegistryOptional()
 
+  // Đăng ký đồng bộ khi render — chuột phải đọc registry trong cùng commit với cell ⋯.
   if (registry && rowId) {
     registry.registerScoped(scopeId, rowId, entry)
   }
+
+  useLayoutEffect(() => {
+    if (!registry || !rowId) return
+
+    registry.registerScoped(scopeId, rowId, entry)
+  })
 
   useLayoutEffect(() => {
     if (!registry || !rowId) return
@@ -212,9 +222,16 @@ export function useRegisterDataTableRowActions(
 /** Chỉ đăng ký thao tác dòng (không render nút ⋯) — dùng khi cell tự quyết định UI. */
 
 export function DataTableRowActionsRegistrar(
-  entry: RegisteredDataTableRowActions | null
+  props: RegisteredDataTableRowActions | null
 ) {
-  useRegisterDataTableRowActions(entry)
+  useRegisterDataTableRowActions(props)
+
+  return null
+}
+
+/** Dòng không có menu ⋯ — tránh menu chuột phải trống (vd. hàng nhóm cây). */
+export function DataTableRowActionsClearRegistrar() {
+  useRegisterDataTableRowActions(null)
 
   return null
 }

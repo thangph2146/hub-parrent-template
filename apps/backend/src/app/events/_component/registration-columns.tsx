@@ -1,10 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import {
-  DATA_TABLE_ACTIONS_COLUMN_ID,
-  TABLE_ACTIONS_COLUMN_META,
-} from "@ui/components/data-table"
+import { defineDataTableActionsColumn } from "@ui/components/data-table"
 import {
   AttendanceStatusBadge,
   getAttendanceStatusLabel,
@@ -95,15 +92,10 @@ export function getEventRegistrationColumns(options: {
         />
       ),
     },
-    {
-      id: DATA_TABLE_ACTIONS_COLUMN_ID,
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      size: 120,
-      meta: {
-        ...TABLE_ACTIONS_COLUMN_META,
-        className: "w-[120px] min-w-[100px] max-w-[140px] px-1",
+    defineDataTableActionsColumn<EventRegistrationRow>({
+      columnMeta: {
+        className:
+          "w-[120px] min-w-[100px] max-w-[140px] px-1 text-center align-middle [&>div]:flex [&>div]:w-full [&>div]:justify-center",
       },
       cell: ({ row }) => (
         <RegistrationAttendanceActions
@@ -112,6 +104,6 @@ export function getEventRegistrationColumns(options: {
           compact={showSocketFallback}
         />
       ),
-    },
+    }),
   ]
 }

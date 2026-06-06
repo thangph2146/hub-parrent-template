@@ -145,6 +145,8 @@ export function AdminTableToggleActiveButton({
 }
 
 type AdminTableCrudRowActionsProps = {
+  /** Hiển thị «Xem chi tiết» — mặc định `true`. */
+  canView?: boolean
   canWrite: boolean
   /** Quyền xóa tạm — mặc định fallback về `canWrite`. */
   canDelete?: boolean
@@ -186,6 +188,13 @@ type AdminTableCrudRowActionsProps = {
   autoConfirmDangerousActions?: boolean
 }
 
+function shouldIncludeRowAction(
+  hidden?: boolean,
+  disabled?: boolean
+): boolean {
+  return !hidden && !disabled
+}
+
 function resolveActionConfirm(
   key: string,
   pageConfirm: boolean,
@@ -205,6 +214,7 @@ function resolveActionConfirm(
 }
 
 export function AdminTableCrudRowActions({
+  canView = true,
   canWrite,
   canDelete,
   canHardDelete,
@@ -231,70 +241,75 @@ export function AdminTableCrudRowActions({
   autoConfirmDangerousActions,
 }: AdminTableCrudRowActionsProps) {
   const useMenuConfirm = autoConfirmDangerousActions ?? !pageConfirm
-  const actions: DataTableRowActionItem[] = [
-    {
+  const actions: DataTableRowActionItem[] = []
+
+  if (canView) {
+    actions.push({
       key: "view",
       label: labels?.view ?? "Xem chi tiết",
       hint: "Mở trang thông tin đầy đủ",
       onClick: onView,
       icon: <Eye />,
       group: "primary",
-    },
-  ]
+    })
+  }
 
-  if (canWrite && onEdit && !editHidden) {
+  if (
+    canWrite &&
+    onEdit &&
+    shouldIncludeRowAction(editHidden, editDisabled)
+  ) {
     actions.push({
       key: "edit",
       label: labels?.edit ?? "Chỉnh sửa",
-      hint: editDisabled
-        ? (editTitle ?? "Không có quyền chỉnh sửa")
-        : "Cập nhật thông tin bản ghi",
+      hint: "Cập nhật thông tin bản ghi",
       onClick: onEdit,
       icon: <Pencil />,
       group: "primary",
-      disabled: editDisabled,
       title: editTitle,
     })
   }
 
   if (canWrite && onToggleActive && typeof isActive === "boolean") {
     const toggleKey = isActive ? "toggle-inactive" : "toggle-active"
-    actions.push({
-      key: toggleKey,
-      label: isActive
-        ? (labels?.lock ?? "Khoá tài khoản")
-        : (labels?.activate ?? "Kích hoạt"),
-      hint:
-        toggleTitle ??
-        (isActive
-          ? "Vô hiệu hóa và thu hồi phiên đăng nhập"
-          : "Cho phép đăng nhập lại"),
-      onClick: onToggleActive,
-      icon: isActive ? <Lock /> : <Unlock />,
-      group: "status",
-      disabled: toggleDisabled,
-      title: toggleTitle,
-      confirm: resolveActionConfirm(
-        toggleKey,
-        pageConfirm,
-        recordLabel,
-        labels
-      ),
-    })
+    if (shouldIncludeRowAction(false, toggleDisabled)) {
+      actions.push({
+        key: toggleKey,
+        label: isActive
+          ? (labels?.lock ?? "Khoá tài khoản")
+          : (labels?.activate ?? "Kích hoạt"),
+        hint:
+          toggleTitle ??
+          (isActive
+            ? "Vô hiệu hóa và thu hồi phiên đăng nhập"
+            : "Cho phép đăng nhập lại"),
+        onClick: onToggleActive,
+        icon: isActive ? <Lock /> : <Unlock />,
+        group: "status",
+        title: toggleTitle,
+        confirm: resolveActionConfirm(
+          toggleKey,
+          pageConfirm,
+          recordLabel,
+          labels
+        ),
+      })
+    }
   }
 
-  if ((canDelete ?? canWrite) && onSoftDelete) {
+  if (
+    (canDelete ?? canWrite) &&
+    onSoftDelete &&
+    shouldIncludeRowAction(false, softDeleteDisabled)
+  ) {
     actions.push({
       key: "soft-delete",
       label: labels?.softDelete ?? "Xóa tạm",
-      hint: softDeleteDisabled
-        ? (softDeleteTitle ?? "Không thể xóa tạm")
-        : "Đưa vào thùng rác, có thể khôi phục",
+      hint: "Đưa vào thùng rác, có thể khôi phục",
       onClick: onSoftDelete,
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      disabled: softDeleteDisabled,
       title: softDeleteTitle,
       confirm: resolveActionConfirm(
         "soft-delete",
@@ -305,18 +320,19 @@ export function AdminTableCrudRowActions({
     })
   }
 
-  if ((canHardDelete ?? canWrite) && onPurge) {
+  if (
+    (canHardDelete ?? canWrite) &&
+    onPurge &&
+    shouldIncludeRowAction(false, purgeDisabled)
+  ) {
     actions.push({
       key: "purge",
       label: labels?.purge ?? "Xóa vĩnh viễn",
-      hint: purgeDisabled
-        ? (purgeTitle ?? "Không thể xóa vĩnh viễn")
-        : "Xóa khỏi cơ sở dữ liệu, không hoàn tác",
+      hint: "Xóa khỏi cơ sở dữ liệu, không hoàn tác",
       onClick: onPurge,
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      disabled: purgeDisabled,
       title: purgeTitle,
       confirm: resolveActionConfirm("purge", pageConfirm, recordLabel, labels),
     })
@@ -380,17 +396,18 @@ export function AdminTableTrashRowActions({
 
   const actions: DataTableRowActionItem[] = []
 
-  if ((canRestore ?? canWrite) && onRestore) {
+  if (
+    (canRestore ?? canWrite) &&
+    onRestore &&
+    shouldIncludeRowAction(false, disabled)
+  ) {
     actions.push({
       key: "restore",
       label: labels?.restore ?? "Khôi phục",
-      hint: disabled
-        ? "Không thể khôi phục"
-        : "Đưa bản ghi trở lại danh sách chính",
+      hint: "Đưa bản ghi trở lại danh sách chính",
       onClick: onRestore,
       icon: <ArchiveRestore />,
       group: "primary",
-      disabled,
       confirm: resolveActionConfirm(
         "restore",
         pageConfirm,
@@ -400,18 +417,19 @@ export function AdminTableTrashRowActions({
     })
   }
 
-  if ((canHardDelete ?? canWrite) && onPurge) {
+  if (
+    (canHardDelete ?? canWrite) &&
+    onPurge &&
+    shouldIncludeRowAction(false, disabled)
+  ) {
     actions.push({
       key: "purge",
       label: labels?.purge ?? "Xóa vĩnh viễn",
-      hint: disabled
-        ? "Không thể xóa"
-        : "Xóa khỏi cơ sở dữ liệu, không hoàn tác",
+      hint: "Xóa khỏi cơ sở dữ liệu, không hoàn tác",
       onClick: onPurge,
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      disabled,
       title: "Xóa vĩnh viễn khỏi cơ sở dữ liệu",
       confirm: resolveActionConfirm("purge", pageConfirm, recordLabel, labels),
     })
@@ -431,6 +449,7 @@ export function AdminTableTrashRowActions({
 }
 
 type AdminCrudActionsColumnHandlers<T> = {
+  canView?: boolean
   canWrite: boolean
   canDelete?: boolean
   canHardDelete?: boolean
@@ -458,6 +477,7 @@ export function defineAdminCrudActionsColumn<T>(
   handlers: AdminCrudActionsColumnHandlers<T>
 ): ColumnDef<T, unknown> {
   const {
+    canView,
     canWrite,
     canDelete,
     canHardDelete,
@@ -489,6 +509,7 @@ export function defineAdminCrudActionsColumn<T>(
 
       return (
         <AdminTableCrudRowActions
+          canView={extra.canView ?? canView}
           canWrite={canWrite}
           canDelete={canDelete}
           canHardDelete={canHardDelete}

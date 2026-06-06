@@ -3,10 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@ui/components/badge";
 import { FileTypeIcon, FileTypeIconSm } from "@ui/components/file-type-icon";
-import {
-  DATA_TABLE_ACTIONS_COLUMN_ID,
-  TABLE_ACTIONS_COLUMN_META,
-} from "@ui/components/data-table";
+import { defineDataTableActionsColumn } from "@ui/components/data-table";
 import { FileImage } from "lucide-react";
 import { formatAdminDateTime } from "@/lib/format-admin-datetime";
 import { FileStorageRowActions } from "./file-row-actions";
@@ -117,12 +114,7 @@ export function getFileStorageColumns({
         </span>
       ),
     },
-    {
-      id: DATA_TABLE_ACTIONS_COLUMN_ID,
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: TABLE_ACTIONS_COLUMN_META,
+    defineDataTableActionsColumn<FileStorageRow>({
       cell: ({ row }) => (
         <FileStorageRowActions
           row={row.original}
@@ -137,6 +129,6 @@ export function getFileStorageColumns({
           onDelete={() => onDelete(row.original)}
         />
       ),
-    },
+    }),
   ];
 }

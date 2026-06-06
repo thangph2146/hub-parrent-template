@@ -70,7 +70,7 @@ export function FileStorageRowActions({
     });
   }
 
-  if (canDelete) {
+  if (canDelete && !deleting) {
     actions.push({
       key: "delete",
       label: "Xóa",
@@ -79,7 +79,6 @@ export function FileStorageRowActions({
       icon: <Trash2 />,
       group: "danger",
       menuVariant: "destructive",
-      disabled: deleting,
       confirm: deleteConfirm(row),
     });
   }
