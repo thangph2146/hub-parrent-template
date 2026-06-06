@@ -41,7 +41,6 @@ export function EventPosterField({ value, onChange, eventTitle }: EventPosterFie
       <div className="space-y-3">
         {displayUrl ? (
           <div className="relative overflow-hidden rounded-lg border border-border bg-muted/20">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={displayUrl}
               alt={eventTitle?.trim() || "Poster sự kiện"}

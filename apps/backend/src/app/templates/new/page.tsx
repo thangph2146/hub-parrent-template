@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { TemplateFormShell, useTemplateForm, buildTemplatePayload } from "../_component";

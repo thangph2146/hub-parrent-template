@@ -4,8 +4,6 @@ import { useCallback, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import {
@@ -51,14 +49,7 @@ function EditAcademicYearPageInner() {
       endDate: toDateInput(entity.endDate),
       status: entity.status ?? 1,
     });
-  }, [
-    entity?.id,
-    entity?.name,
-    entity?.startDate,
-    entity?.endDate,
-    entity?.status,
-    form.reset,
-  ]);
+  }, [entity, form]);
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["academic-years"] });

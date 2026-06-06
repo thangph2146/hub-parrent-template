@@ -9,7 +9,7 @@ import {
 export function MyStudentsScoreTable<TData>(
   props: AdminDataTableProps<TData>
 ) {
-  const { xlsxExport: _xlsxExport, ...rest } = props
+  const { ...rest } = props
   return (
     <AdminDataTable
       {...rest}

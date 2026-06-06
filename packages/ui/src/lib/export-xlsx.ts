@@ -185,7 +185,6 @@ function applySheetStyles(
       const isHeader = headerRowIndexes.includes(r)
       const isReportInfo = r === reportInfoRow
       const isSectionTitle = sectionTitleRows.includes(r)
-      const isDetailSection = r === detailSectionRow
       const isMetadataLabel =
         reportInfoRow >= 0 &&
         r > reportInfoRow &&

@@ -43,8 +43,11 @@ export function RoleFormShell(props: RoleFormShellProps) {
   const [permissionSearch, setPermissionSearch] = useState("")
   const [showSelectedOnly, setShowSelectedOnly] = useState(false)
 
-  const watchedPermissions =
-    useWatch({ control: form.control, name: "permissions" }) ?? []
+  const watchedPermissionsRaw = useWatch({ control: form.control, name: "permissions" })
+  const watchedPermissions = useMemo(
+    () => watchedPermissionsRaw ?? [],
+    [watchedPermissionsRaw],
+  )
 
   const visiblePermissions = useMemo(() => {
     const q = permissionSearch.trim().toLowerCase()

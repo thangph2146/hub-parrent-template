@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
 import { api } from "@/lib/api";
 import { ScreenFormShell, useScreenForm, useScreenDetailQuery, buildScreenPayload } from "../../_component";

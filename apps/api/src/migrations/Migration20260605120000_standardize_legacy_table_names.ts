@@ -5,7 +5,7 @@ import { Migration } from '@mikro-orm/migrations';
  * Chạy: pnpm --filter @api run db:migration:up
  */
 export class Migration20260605120000_standardize_legacy_table_names extends Migration {
-  override async up(): Promise<void> {
+  override up(): void {
     this.addSql(
       'alter table `nguoidung` drop foreign key `nguoidung_nam_hoc_id_foreign`;',
     );
@@ -69,7 +69,7 @@ export class Migration20260605120000_standardize_legacy_table_names extends Migr
     );
   }
 
-  override async down(): Promise<void> {
+  override down(): void {
     this.addSql(
       'alter table `imported_users` drop foreign key `imported_users_academic_year_id_foreign`;',
     );

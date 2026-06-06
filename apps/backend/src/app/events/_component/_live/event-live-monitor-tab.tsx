@@ -91,7 +91,7 @@ export function EventLiveMonitorTab({
         registrationsQuery.data,
         lastPayload,
       ),
-    [registrationsQuery.data, lastPayload, liveRevision],
+    [registrationsQuery.data, lastPayload],
   )
 
   const stats = detailQuery.data ?? initialStats

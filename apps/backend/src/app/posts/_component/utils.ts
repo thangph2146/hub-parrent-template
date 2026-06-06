@@ -2,7 +2,6 @@ import type { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import {
   buildAdminFilterQuery,
   COMMON_FILTER_MAPPINGS,
-  normalizeAdminFilterValue,
   normalizeAdminFilterValues,
 } from "@/lib";
 import { uploadAdminImage } from "@/lib/admin-upload";

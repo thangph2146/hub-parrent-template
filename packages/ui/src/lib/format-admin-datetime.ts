@@ -12,7 +12,7 @@ export function isParsableDateTime(value: unknown): boolean {
   if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) return true
   if (/^\d{2}\/\d{2}\/\d{4}/.test(trimmed)) return true
   const ms = Date.parse(trimmed)
-  return !Number.isNaN(ms) && /[T:\-\/]/.test(trimmed)
+  return !Number.isNaN(ms) && /[T:/-]/.test(trimmed)
 }
 
 /**

@@ -1,7 +1,6 @@
 "use client";
 
 import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
 import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
 import type { CategoryRow } from "../types";
 import { buildAdminTableXlsxExport } from "@ui/components/admin";

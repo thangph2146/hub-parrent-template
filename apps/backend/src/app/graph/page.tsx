@@ -1,7 +1,6 @@
 "use client";
 
 import { GraphifyPage } from "@ui/components/graphify/graphify-page";
-import { PageSection } from "@ui/components/layout";
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
 
 function GraphPageInner() {

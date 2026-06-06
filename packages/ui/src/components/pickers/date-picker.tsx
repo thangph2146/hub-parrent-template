@@ -79,7 +79,7 @@ export function DatePicker({
 
   useEffect(() => {
     if (dateValue) setMonth(dateValue)
-  }, [value])
+  }, [dateValue])
 
   const displayLabel =
     dateValue && !Number.isNaN(dateValue.getTime())

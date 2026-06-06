@@ -59,7 +59,6 @@ import {
   ChevronDown,
   ChevronRight,
   GripVertical,
-  Table2,
 } from "lucide-react"
 import {
   useCallback,
@@ -129,10 +128,7 @@ import {
   ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
 } from "./data-table-pagination"
 import { FieldSet, FieldSetContent } from "../field"
-import {
-  DataTablePanelLegend,
-  DataTableToolbar,
-} from "./data-table-toolbar"
+import { DataTableToolbar } from "./data-table-toolbar"
 import {
   dataTableColumnsHasActionsColumn,
   normalizeDataTableColumns,
@@ -1551,7 +1547,7 @@ export function AdminDataTable<TData>({
             table.getColumn(option.value)?.getIsVisible() !== false
         )
         .map((option) => option.value),
-    [hideableTableColumnOptions, table, columnVisibility]
+    [hideableTableColumnOptions, table]
   )
 
   const filterColumnVisibilityValue = useMemo(

@@ -40,7 +40,7 @@ export function EventRegistrationsLiveTable({
 
   const displayRows = useMemo(
     () => mergeRegistrationRowsForDisplay(registrations, lastPayload),
-    [registrations, lastPayload, liveRevision],
+    [registrations, lastPayload],
   )
 
   const [flashRegistrationId, setFlashRegistrationId] = useState<string | null>(

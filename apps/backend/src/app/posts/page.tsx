@@ -10,7 +10,6 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import {
   AlertCircle,

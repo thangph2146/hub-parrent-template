@@ -155,7 +155,10 @@ function StaffPageInner() {
     });
   }, [staffListItems, roleFilter]);
 
-  const trashedUsers = trashedStaffQuery.data?.items ?? [];
+  const trashedUsers = useMemo(
+    () => trashedStaffQuery.data?.items ?? [],
+    [trashedStaffQuery.data?.items],
+  );
   const trashStaffTotal = trashedStaffQuery.data?.total ?? 0;
 
   const busy = bulkStaffMutation.isPending || rbacQuery.isFetching;

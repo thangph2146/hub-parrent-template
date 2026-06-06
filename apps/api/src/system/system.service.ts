@@ -1883,8 +1883,7 @@ export class SystemService {
           bundleRowErrors.length > 0
             ? `Imported bundle with ${bundleRowErrors.length} row error(s)`
             : 'Data imported successfully',
-        rowErrors:
-          bundleRowErrors.length > 0 ? bundleRowErrors : undefined,
+        rowErrors: bundleRowErrors.length > 0 ? bundleRowErrors : undefined,
       };
     }
 

@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table"
 import {
   buildAdminTableXlsxExport,
   type AdminTableExportTemplateId,
-  type AdminTableXlsxBuiltConfig,
   type AdminTableXlsxExportOptions,
 } from "../components/admin/presets/table-xlsx-export"
 import {
@@ -23,7 +22,7 @@ import {
 
 export type { XlsxRelatedSection, XlsxSheetPayload }
 
-export type AdminTableExportData<T> = {
+export type AdminTableExportData = {
   headers: string[]
   rows: string[][]
   columnWidths?: Array<number | undefined>
@@ -52,7 +51,7 @@ export type DownloadAdminTableXlsxParams<T> = {
 
 function resolveExportData<T>(
   params: DownloadAdminTableXlsxParams<T>
-): AdminTableExportData<T> {
+): AdminTableExportData {
   if (params.fields?.length) {
     return buildExportFromFields(params.data, params.fields)
   }
