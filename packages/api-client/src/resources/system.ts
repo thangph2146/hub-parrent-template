@@ -37,6 +37,12 @@ export type DatabaseSchemaResponse = {
   totalActiveRows: number;
 };
 
+export type ImportConfigResponse = {
+  modelOrder: string[];
+  bundles: Record<string, readonly string[]>;
+  rowChunkSize: number;
+};
+
 export class SystemApi {
   constructor(private readonly http: ApiClient) {}
 
@@ -44,6 +50,13 @@ export class SystemApi {
     return getData<DatabaseSchemaResponse>(
       this.http,
       "/admin/system/database-schema",
+    );
+  }
+
+  async getImportConfig(): Promise<ImportConfigResponse> {
+    return getData<ImportConfigResponse>(
+      this.http,
+      "/admin/system/import-config",
     );
   }
 }

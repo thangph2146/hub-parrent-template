@@ -389,6 +389,34 @@ export class SystemController {
     }
   }
 
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
+  @Get('import-config')
+  async getImportConfig(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+  ) {
+    try {
+      if (!(await this.canAccessSystemMaintenance(headers))) {
+        const { statusCode, body } = createErrorResponse(
+          'Unauthorized: Super Admin or system manage permission required',
+          { status: 403 },
+        );
+        return res.status(statusCode).json(body);
+      }
+
+      const data = this.systemService.getImportConfig();
+      const { statusCode, body } = createSuccessResponse(data);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/admin/system/import-config', error);
+      const { statusCode, body } = createErrorResponse(
+        error instanceof Error ? error.message : 'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
   @Permissions(PERMISSIONS.SYSTEM_VIEW)
   @Get('database-schema')
   async getDatabaseSchema(

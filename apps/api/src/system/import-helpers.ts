@@ -13,6 +13,16 @@ export function stripLegacyHeroSlideFromBundle(
   return Array.isArray(raw) ? raw.length : 0;
 }
 
+/** Lỗi insert từng dòng có thể bỏ qua (trùng khóa / ràng buộc) thay vì fail cả request. */
+export function isSkippableImportRowError(errMsg: string): boolean {
+  const lower = errMsg.toLowerCase();
+  return (
+    lower.includes('duplicate') ||
+    lower.includes('unique') ||
+    lower.includes('constraint')
+  );
+}
+
 /** Bỏ quyền `hero_slides:*` khỏi mảng permissions (resource đã gỡ khỏi hệ thống). */
 export function stripHeroSlidesPermissions(permissions: unknown): unknown {
   if (!Array.isArray(permissions)) return permissions;

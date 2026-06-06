@@ -31,6 +31,7 @@ import {
 } from '../seeds/superadmin-bootstrap.runner';
 import type { SuperadminBootstrapResult } from '../seeds/superadmin-bootstrap.runner';
 import {
+  isSkippableImportRowError,
   orderCategoryRowsForImport,
   pivotFk,
   sanitizePivotRowsInExportJson,
@@ -1183,10 +1184,24 @@ export class SystemService {
     }
 
     if (mName === 'role') {
-      rows = rows.map((r) => ({
-        ...r,
-        permissions: stripHeroSlidesPermissions(r.permissions),
-      }));
+      const beforeDedupe = rows.length;
+      const seenIds = new Set<string>();
+      rows = rows
+        .filter((r) => {
+          const id = String((r as Record<string, unknown>).id ?? '');
+          if (!id || seenIds.has(id)) return false;
+          seenIds.add(id);
+          return true;
+        })
+        .map((r) => ({
+          ...r,
+          permissions: stripHeroSlidesPermissions(r.permissions),
+        }));
+      if (rows.length < beforeDedupe) {
+        this.logger.warn(
+          `${mName}: bỏ qua ${beforeDedupe - rows.length} dòng trùng id trong file import.`,
+        );
+      }
     }
 
     if (mName === 'pageContent') {
@@ -1233,10 +1248,7 @@ export class SystemService {
               skipped++;
               const errMsg = getErrorMessage(rowErr);
               onRowError?.(rowIndex, errMsg);
-              if (
-                !errMsg.toLowerCase().includes('unique') &&
-                !errMsg.toLowerCase().includes('constraint')
-              ) {
+              if (!isSkippableImportRowError(errMsg)) {
                 throw rowErr;
               }
             }
@@ -1281,6 +1293,44 @@ export class SystemService {
       .getConnection()
       .execute(`UPDATE \`${table}\` SET \`${parentCol}\` = NULL`);
     await em.nativeDelete(Category, {});
+  }
+
+  /** Xóa sạch bảng trước import — role cần xóa user_roles trước để tránh FK / dữ liệu còn sót. */
+  private async clearModelTableForImport(
+    em: EntityManager,
+    mName: string,
+    isMysqlFamily: boolean,
+    isSqlite: boolean,
+  ): Promise<void> {
+    if (mName === 'user') {
+      await this.detachNullableUserForeignKeys(em);
+      await em.nativeDelete(User, {});
+      em.clear();
+      return;
+    }
+    if (mName === 'category') {
+      await this.clearCategoryTableForImport(em);
+      em.clear();
+      return;
+    }
+    if (mName === 'role') {
+      const conn = em.getConnection();
+      if (isMysqlFamily || isSqlite) {
+        await conn.execute('DELETE FROM user_roles');
+        await conn.execute('DELETE FROM roles');
+      } else {
+        await em.nativeDelete(UserRole, {});
+        await em.nativeDelete(Role, {});
+      }
+      em.clear();
+      return;
+    }
+
+    const entity = entityByModelName[mName];
+    if (entity) {
+      await em.nativeDelete(entity, {});
+      em.clear();
+    }
   }
 
   /**
@@ -1329,16 +1379,12 @@ export class SystemService {
 
         if (!skipClear) {
           for (const mName of clearOrder) {
-            const entity = entityByModelName[mName];
-            if (!entity) continue;
-            if (mName === 'user') {
-              await this.detachNullableUserForeignKeys(em);
-            }
-            if (mName === 'category') {
-              await this.clearCategoryTableForImport(em);
-            } else {
-              await em.nativeDelete(entity, {});
-            }
+            await this.clearModelTableForImport(
+              em,
+              mName,
+              isMysqlFamily,
+              isSqlite,
+            );
           }
         }
 
@@ -1509,6 +1555,19 @@ export class SystemService {
         tableName: meta?.tableName ?? entityName,
       };
     });
+  }
+
+  /** Cấu hình import theo lô — client dùng để chia file JSON/Excel lớn thành nhiều request nhỏ. */
+  getImportConfig() {
+    const rowChunkSize = Math.max(
+      1,
+      parseInt(process.env.SYSTEM_IMPORT_DB_BATCH_SIZE || '500', 10) || 500,
+    );
+    return {
+      modelOrder: [...this.modelOrder],
+      bundles: { ...IMPORT_MODEL_BUNDLES },
+      rowChunkSize,
+    };
   }
 
   async getDatabaseSchema() {
@@ -1710,8 +1769,8 @@ export class SystemService {
     );
 
     for (let i = 0; i < pendingCounts.length; i++) {
-      const entry = pendingCounts[i]!;
-      const counts = countResults[i]!;
+      const entry = pendingCounts[i];
+      const counts = countResults[i];
       tables.push({
         name: entry.tableName,
         entityName: entry.entityName,
@@ -1996,22 +2055,16 @@ export class SystemService {
         if (!skipClear) {
           for (const mName of clearOrder) {
             try {
-              const entity = entityByModelName[mName];
-              if (entity) {
-                if (mName === 'user') {
-                  await this.detachNullableUserForeignKeys(em);
-                }
-                const startTime = Date.now();
-                if (mName === 'category') {
-                  await this.clearCategoryTableForImport(em);
-                } else {
-                  await em.nativeDelete(entity, {});
-                }
-                const duration = Date.now() - startTime;
-                this.logger.debug(
-                  `Cleared data from ${mName} in ${duration}ms`,
-                );
-              }
+              const startTime = Date.now();
+              await this.clearModelTableForImport(
+                em,
+                mName,
+                isMysqlFamily,
+                isSqlite,
+              );
+              this.logger.debug(
+                `Cleared data from ${mName} in ${Date.now() - startTime}ms`,
+              );
             } catch (error) {
               this.logger.error(`Error clearing model ${mName}:`, error);
               throw error;
@@ -2079,7 +2132,7 @@ export class SystemService {
       }
     });
     return {
-      success: true,
+      success: rowErrors.length === 0,
       message:
         rowErrors.length > 0
           ? `Imported with ${rowErrors.length} row error(s)`

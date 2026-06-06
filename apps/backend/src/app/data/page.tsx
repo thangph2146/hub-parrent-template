@@ -41,9 +41,14 @@ import {
 } from "lucide-react";
 import {
   ImportProgressPanel,
-  withSkippedRemaining,
+  type ImportProgressState,
 } from "./import-progress-panel";
 import { EntitySchemaPanel } from "./_component";
+import {
+  fetchImportConfig,
+  runChunkedImport,
+} from "./_component/import-chunked";
+import { parseExcelToImportData } from "./_component/excel-to-import-data";
 import {
   pickExportDirectory,
   saveExportBlob,
@@ -64,43 +69,6 @@ type ApiEnvelope<T> = {
 const FILE_INPUT_CLASS =
   "h-9 w-full border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 cursor-pointer text-sm file:mr-2 file:rounded-md file:border-0 file:bg-primary/10 file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-primary hover:file:bg-primary/15";
 
-async function readNdjsonStream(
-  response: Response,
-  onEvent: (event: Record<string, unknown>) => void,
-): Promise<void> {
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error("Response body not readable");
-
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      try {
-        onEvent(JSON.parse(trimmed) as Record<string, unknown>);
-      } catch {
-        /* skip malformed line */
-      }
-    }
-  }
-  if (buffer.trim()) {
-    try {
-      onEvent(JSON.parse(buffer.trim()) as Record<string, unknown>);
-    } catch {
-      /* skip */
-    }
-  }
-}
-
 function DataBackupPageInner() {
   const { user } = useAuth();
   const canExport = user
@@ -112,21 +80,7 @@ function DataBackupPageInner() {
       canUserAccess(user, PERMISSION_CODES.SETTINGS_MANAGE)
     : false;
   const [exporting, setExporting] = useState<"json" | "excel" | null>(null);
-  const [importProgress, setImportProgress] = useState<{
-    active: boolean;
-    models: Array<{
-      name: string;
-      records: number;
-      status: "pending" | "importing" | "done" | "error" | "skipped";
-      error?: string;
-    }>;
-    currentIndex: number;
-    total: number;
-    totalRecords: number;
-    cumulativeImported: number;
-    status: "idle" | "importing" | "done" | "error";
-    message?: string;
-  }>({
+  const [importProgress, setImportProgress] = useState<ImportProgressState>({
     active: false,
     models: [],
     currentIndex: 0,
@@ -148,12 +102,12 @@ function DataBackupPageInner() {
     return `${y}-${m}-${d}`;
   };
 
-  const authHeaders = (): HeadersInit => {
+  const authHeaders = useCallback((): HeadersInit => {
     const headers: Record<string, string> = {};
     const uid = readAdminSession()?.id;
     if (uid != null) headers["X-User-Id"] = String(uid);
     return headers;
-  };
+  }, []);
 
   const toastFetchError = useCallback(async (res: Response): Promise<string> => {
     let msg = "";
@@ -316,100 +270,39 @@ function DataBackupPageInner() {
     });
   }, []);
 
-  const handleImportStream = useCallback(
-    async (res: Response) => {
-      if (!res.ok) {
-        await toastFetchError(res);
-        resetImportProgress();
+  const runFileImport = useCallback(
+    async (data: Record<string, unknown[]>, sourceLabel: string) => {
+      const modelKeys = Object.keys(data).filter(
+        (key) => Array.isArray(data[key]) && data[key].length > 0,
+      );
+      if (modelKeys.length === 0) {
+        toast.error(`File ${sourceLabel} không chứa dữ liệu nào.`);
         return;
       }
 
-      setImportProgress((prev) => ({ ...prev, status: "importing" }));
+      setImportProgress((prev) => ({ ...prev, active: true }));
 
-      let errorMessage = "";
-
-      await readNdjsonStream(res, (event) => {
-        const type = event.type as string;
-
-        if (type === "start") {
-          const modelNames = (event.models as string[]) ?? [];
-          const records = (event.records as number[]) ?? [];
-          setImportProgress({
-            active: true,
-            models: modelNames.map((name, i) => ({
-              name,
-              records: records[i] ?? 0,
-              status: "pending" as const,
-            })),
-            currentIndex: 0,
-            total: (event.total as number) ?? modelNames.length,
-            totalRecords: (event.totalRecords as number) ?? 0,
-            cumulativeImported: 0,
-            status: "importing",
-          });
-        } else if (type === "model-start") {
-          const modelName = event.model as string;
-          setImportProgress((prev) => ({
-            ...prev,
-            currentIndex: (event.index as number) ?? prev.currentIndex,
-            models: prev.models.map((m) =>
-              m.name === modelName ? { ...m, status: "importing" as const } : m,
-            ),
-          }));
-        } else if (type === "model-end") {
-          const modelName = event.model as string;
-          const success = event.success as boolean;
-          const error = event.error as string | undefined;
-          const rowErrors = event.rowErrors as
-            | Array<{ model: string; index: number; message: string }>
-            | undefined;
-          setImportProgress((prev) => ({
-            ...prev,
-            cumulativeImported:
-              (event.cumulativeImported as number) ?? prev.cumulativeImported,
-            models: prev.models.map((m) => {
-              if (m.name !== modelName) return m;
-              const modelRowErr = rowErrors?.filter((r) => r.model === m.name);
-              const errMsg =
-                error ??
-                modelRowErr?.[0]?.message ??
-                (!success ? `Import ${modelName} thất bại` : undefined);
-              const ok = success && !errMsg;
-              return {
-                ...m,
-                status: ok ? ("done" as const) : ("error" as const),
-                error: errMsg,
-              };
-            }),
-          }));
-        } else if (type === "complete") {
-          const success = event.success as boolean;
-          const message = (event.message as string) ?? "";
-          setImportProgress((prev) => ({
-            ...prev,
-            status: success ? ("done" as const) : ("error" as const),
-            message,
-            models: success ? prev.models : withSkippedRemaining(prev.models),
-          }));
-          toast[success ? "success" : "error"](
-            message || (success ? "Import hoàn tất." : "Import có lỗi."),
-          );
-        } else if (type === "error") {
-          errorMessage = (event.message as string) ?? "Lỗi không xác định";
-        }
-      });
-
-      if (errorMessage) {
-        setImportProgress((prev) => ({
-          ...prev,
-          status: "error",
-          message: errorMessage,
-          models: withSkippedRemaining(prev.models),
-        }));
-        toast.error(errorMessage);
+      try {
+        const config = await fetchImportConfig(apiBase(), authHeaders);
+        const result = await runChunkedImport({
+          apiBase: apiBase(),
+          authHeaders,
+          config,
+          data,
+          onProgress: setImportProgress,
+          toastFetchError,
+        });
+        toast[result.success ? "success" : "error"](result.message);
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Lỗi mạng — kiểm tra API đang chạy.",
+        );
+        resetImportProgress();
       }
     },
-    [toastFetchError, resetImportProgress],
+    [authHeaders, resetImportProgress, toastFetchError],
   );
 
   const importJsonFile = async (file: File | null): Promise<void> => {
@@ -425,28 +318,12 @@ function DataBackupPageInner() {
         toast.error("File không phải JSON hợp lệ.");
         return;
       }
-
-      const modelKeys = Object.keys(body).filter(
-        (k) => Array.isArray(body[k]) && body[k].length > 0,
-      );
-      if (modelKeys.length === 0) {
-        toast.error("File JSON không chứa dữ liệu nào.");
-        return;
-      }
-
-      // Một request — API import theo thứ tự FK và gộp bảng liên quan (user+userRole, …)
-      const res = await fetch(
-        `${apiBase()}/admin/system/import?stream=true&skipClear=false`,
-        {
-          method: "POST",
-          headers: { ...authHeaders(), "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        },
-      );
-      await handleImportStream(res);
-    } catch (e) {
+      await runFileImport(body, "JSON");
+    } catch (error) {
       toast.error(
-        e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
+        error instanceof Error
+          ? error.message
+          : "Không đọc được file JSON.",
       );
       resetImportProgress();
     }
@@ -457,20 +334,14 @@ function DataBackupPageInner() {
     resetImportProgress();
 
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch(
-        `${apiBase()}/admin/system/import/excel?stream=true`,
-        {
-          method: "POST",
-          headers: authHeaders(),
-          body: fd,
-        },
-      );
-      await handleImportStream(res);
-    } catch (e) {
+      const buffer = await file.arrayBuffer();
+      const body = parseExcelToImportData(buffer);
+      await runFileImport(body, "Excel");
+    } catch (error) {
       toast.error(
-        e instanceof Error ? e.message : "Lỗi mạng — kiểm tra API đang chạy.",
+        error instanceof Error
+          ? error.message
+          : "Không đọc được file Excel.",
       );
       resetImportProgress();
     }
@@ -642,7 +513,8 @@ function DataBackupPageInner() {
                 </FieldSectionLabel>
                 <FieldDescription className="text-xs">
                   Xóa dữ liệu các bảng đã đăng ký rồi nạp lại — chỉ dùng khi đã
-                  sao lưu.
+                  sao lưu. File lớn được gửi theo từng lô (mặc định 500 bản
+                  ghi/lần) để tránh timeout MySQL.
                 </FieldDescription>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field className="gap-1.5">
