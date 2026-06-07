@@ -88,7 +88,7 @@ function EditRolePageInner() {
     )
   }
 
-  if (roleQuery.isLoading || !role) {
+  if (roleQuery.isLoading || catalogQuery.isLoading || !role) {
     return (
       <AdminPageSection>
         <AdminFormPageHeader

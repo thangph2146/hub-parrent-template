@@ -37,6 +37,7 @@ export {
   DATA_TABLE_DEFAULT_DATA_COLUMN_MIN_SIZE,
 } from "./data-table-column-width"
 export {
+  defineBooleanSelectExportMeta,
   defineLinkedUserColumns,
   defineRelationExportColumns,
   resolveLinkedUser,

@@ -484,3 +484,22 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
 }
+
+/* Admin loading / skeleton */
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes admin-loader-bar {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}

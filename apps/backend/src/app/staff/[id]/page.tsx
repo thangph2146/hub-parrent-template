@@ -49,7 +49,10 @@ import {
 import { usePostsByAuthor } from "@/app/posts/_component/_query/use-posts-queries"
 import Link from "next/link"
 import { api } from "@/lib/api"
-import { AdminDataTable } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  defineBooleanSelectExportMeta,
+} from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { PostListRow } from "@/app/posts/_component/types"
@@ -94,6 +97,7 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
     accessorKey: "published",
     header: "Trạng thái",
     enableColumnFilter: false,
+    meta: defineBooleanSelectExportMeta("Đã xuất bản", "Nháp"),
     cell: ({ row }) => (
       <UsageStatusFromValue
         value={row.original.published}

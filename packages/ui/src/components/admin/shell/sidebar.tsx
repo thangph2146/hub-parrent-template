@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useAdminNavLink } from "../../../lib/admin-nav-link"
 import { ShieldCheck, ChevronDown, ChevronsUpDown, LogOut } from "lucide-react"
 import { Button } from "../../button"
 import { cn } from "../../../lib/utils"
@@ -52,12 +53,16 @@ function SidebarLeafLink({
   nested?: boolean
 }) {
   const Icon = item.icon
+  const { isPending, prefetch, onClick: onNavClick } = useAdminNavLink(item.href)
 
   return (
     <Link
       href={item.href}
       title={item.label}
-      onClick={onClick}
+      prefetch
+      onMouseEnter={prefetch}
+      onFocus={prefetch}
+      onClick={(event) => onNavClick(event, onClick)}
       className={cn(
         "group relative flex items-center overflow-hidden rounded-lg transition-all duration-200",
         collapsed
@@ -65,6 +70,7 @@ function SidebarLeafLink({
           : nested
             ? "gap-3 px-3 py-1"
             : "gap-3 px-3 py-1",
+        isPending && !isActive && "opacity-75",
         isActive
           ? nested
             ? "bg-white/20 text-white"

@@ -28,7 +28,7 @@ export const queryKeys = {
     ["users", "staff-profile", id] as const,
   staffUserList: () => ["users", "staff-list"] as const,
   usersTrashed: () => ["users", "trashed"] as const,
-  rbacCatalog: () => ["rbac", "catalog"] as const,
+  rbacCatalog: () => ["rbac", "catalog", "full"] as const,
   contactRequests: (params?: {
     page?: number
     limit?: number
@@ -175,7 +175,7 @@ export const useRbacCatalog = (opts?: { enabled?: boolean }) =>
     queryKey: queryKeys.rbacCatalog(),
     queryFn: async () => {
       const [permissions, roles] = await Promise.all([
-        api.rbac.listPermissions(),
+        api.roles.listPermissions(),
         api.rbac.listRoles(),
       ])
       return { permissions, roles }

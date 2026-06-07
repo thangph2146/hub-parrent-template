@@ -1,6 +1,9 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { formatHierarchicalIndexFromPath } from "../components/data-table/data-table-row-index"
-import { formatExportDateTime } from "./format-export-value"
+import {
+  formatArrayCellForExport,
+  formatExportDateTime,
+} from "./format-export-value"
 
 type ExportColumnMeta<T> = {
   excludeFromExport?: boolean
@@ -8,12 +11,46 @@ type ExportColumnMeta<T> = {
   exportValue?: (row: T) => unknown
   exportWidth?: number
   exportWrap?: boolean
+  selectOptions?: Array<{ value: string; label: string }>
+}
+
+function normalizeSelectExportKey(raw: unknown): string {
+  if (raw === true) return "true"
+  if (raw === false) return "false"
+  if (raw == null) return ""
+  return String(raw)
+}
+
+/** Map value cột select/filter sang label khi xuất Excel/CSV. */
+export function resolveSelectExportLabel(
+  raw: unknown,
+  options: Array<{ value: string; label: string }> | undefined
+): string | undefined {
+  if (!options?.length || raw == null) return undefined
+  const key = normalizeSelectExportKey(raw)
+  if (!key) return undefined
+  const hit = options.find(
+    (option) =>
+      option.value === key ||
+      String(option.value) === key ||
+      normalizeSelectExportKey(option.value) === key
+  )
+  return hit?.label?.trim() || undefined
 }
 
 function stringifyCell(v: unknown): string {
   if (v == null) return ""
   const formattedDate = formatExportDateTime(v)
   if (formattedDate != null) return formattedDate
+  if (Array.isArray(v)) {
+    const formattedArray = formatArrayCellForExport(v)
+    if (formattedArray != null) return formattedArray
+    try {
+      return JSON.stringify(v)
+    } catch {
+      return ""
+    }
+  }
   if (typeof v === "boolean") return v ? "Có" : "Không"
   if (typeof v === "number") return Number.isFinite(v) ? String(v) : ""
   if (typeof v === "string") return v
@@ -45,18 +82,30 @@ function getByPath(row: unknown, path: string): unknown {
   }, row)
 }
 
+function formatExportCellValue(
+  raw: unknown,
+  selectOptions?: Array<{ value: string; label: string }>
+): string {
+  const selectLabel = resolveSelectExportLabel(raw, selectOptions)
+  if (selectLabel != null) return selectLabel
+  return stringifyCell(raw)
+}
+
 function cellText<T>(row: T, col: ColumnDef<T, unknown>): string {
   try {
     const meta = col.meta as ExportColumnMeta<T> | undefined
     if (meta?.exportValue) {
-      return stringifyCell(meta.exportValue(row))
+      const raw = meta.exportValue(row)
+      const selectLabel = resolveSelectExportLabel(raw, meta.selectOptions)
+      if (selectLabel != null) return selectLabel
+      return stringifyCell(raw)
     }
     if ("accessorFn" in col && typeof col.accessorFn === "function") {
-      return stringifyCell(col.accessorFn(row, 0))
+      return formatExportCellValue(col.accessorFn(row, 0), meta?.selectOptions)
     }
     if ("accessorKey" in col && col.accessorKey != null) {
       const key = String(col.accessorKey)
-      return stringifyCell(getByPath(row, key))
+      return formatExportCellValue(getByPath(row, key), meta?.selectOptions)
     }
   } catch {
     return ""

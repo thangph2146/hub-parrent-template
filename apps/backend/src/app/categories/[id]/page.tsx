@@ -1,9 +1,10 @@
-"use client";
+"use client"
 
-import { useEffect, createElement } from "react";
+import { useEffect, createElement, useMemo } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
+import Link from "next/link"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
 import {
   Calendar,
   Clock,
@@ -12,11 +13,12 @@ import {
   FileText,
   Layers,
   Hash,
-  ChevronRight,
   File,
-} from "lucide-react";
-import { resolveIcon } from "@ui/lib/icons";
-import { Badge } from "@ui/components/badge";
+  ArrowUpRight,
+} from "lucide-react"
+import { resolveIcon } from "@ui/lib/icons"
+import { Button } from "@ui/components/button"
+import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
 import {
   FieldSet,
   FieldSetContent,
@@ -24,67 +26,124 @@ import {
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { formatDateTime, useCategoryDetailQuery } from "../_component";
-import type { CategoryDetail } from "../_component";
-import type { LucideIcon } from "lucide-react";
+} from "@ui/components/field"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+  buildAdminTableXlsxExport,
+} from "@ui/components/admin"
+import {
+  AdminDataTable,
+  defineBooleanSelectExportMeta,
+} from "@ui/components/data-table"
+import { useAuth } from "@/providers/auth-provider"
+import {
+  PERMISSION_CODES,
+  canUserAccess,
+  formatDateTime,
+  type ChildCategory,
+  type RelatedPost,
+} from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useCategoryDetailQuery } from "../_component"
+import type { CategoryDetail } from "../_component"
+import type { ColumnDef } from "@tanstack/react-table"
 
+const childColumns: ColumnDef<ChildCategory, unknown>[] = [
+  {
+    accessorKey: "name",
+    header: "Tên danh mục",
+    enableColumnFilter: false,
+    cell: ({ row }) => (
+      <Link
+        href={`/categories/${row.original.id}`}
+        className="line-clamp-1 font-medium text-primary underline-offset-4 hover:underline"
+      >
+        {row.original.name}
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "slug",
+    header: "Slug",
+    enableColumnFilter: false,
+    cell: ({ row }) => (
+      <span className="font-mono text-xs text-muted-foreground">
+        /danh-muc/{row.original.slug}
+      </span>
+    ),
+  },
+  {
+    id: "childrenCount",
+    header: "Danh mục con",
+    enableColumnFilter: false,
+    accessorFn: (row) => row._count.children,
+    cell: ({ row }) => (
+      <span className="tabular-nums">{row.original._count.children}</span>
+    ),
+  },
+  {
+    accessorKey: "postCount",
+    header: "Bài viết",
+    enableColumnFilter: false,
+    cell: ({ row }) => (
+      <span className="tabular-nums">{row.original.postCount}</span>
+    ),
+  },
+]
 
-function SidebarInfoRow({ icon: Icon, label, value, children }: { icon: LucideIcon; label: string; value?: React.ReactNode; children?: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2.5 text-sm">
-      <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-        <Icon className="size-3.5 text-muted-foreground" />
-      </div>
-      <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        {children ?? (value ? <p className="text-sm font-medium">{value}</p> : null)}
-      </div>
-    </div>
-  );
-}
+const relatedPostColumns: ColumnDef<RelatedPost, unknown>[] = [
+  {
+    accessorKey: "title",
+    header: "Tiêu đề",
+    enableColumnFilter: false,
+    cell: ({ row }) => (
+      <Link
+        href={`/posts/${row.original.id}`}
+        className="line-clamp-1 font-medium text-primary underline-offset-4 hover:underline"
+      >
+        {row.original.title}
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "publishedAt",
+    header: "Ngày đăng",
+    enableColumnFilter: false,
+    cell: ({ row }) =>
+      row.original.publishedAt
+        ? formatDateTime(row.original.publishedAt)
+        : formatDateTime(row.original.createdAt),
+  },
+  {
+    accessorKey: "published",
+    header: "Trạng thái",
+    enableColumnFilter: false,
+    meta: defineBooleanSelectExportMeta("Đã xuất bản", "Nháp"),
+    cell: ({ row }) => (
+      <UsageStatusFromValue
+        value={row.original.published}
+        labels={{ active: "Đã xuất bản", locked: "Nháp" }}
+        className="text-[10px]"
+      />
+    ),
+  },
+]
 
-function ListItem({
-  icon: Icon,
-  iconClassName,
-  title,
-  subtitle,
-  badge,
-  onClick,
+function DetailSidebar({
+  category,
+  ParentIcon,
 }: {
-  icon: LucideIcon;
-  iconClassName?: string;
-  title: string;
-  subtitle: string;
-  badge?: React.ReactNode;
-  onClick: () => void;
+  category: CategoryDetail
+  ParentIcon: ReturnType<typeof resolveIcon> | null
 }) {
   return (
-    <button
-      type="button"
-      className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-muted/40 border-0 border-t border-slate-100 dark:border-border/60 first:border-t-0"
-      onClick={onClick}
-    >
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-muted">
-        <Icon className={iconClassName ?? "size-4 text-muted-foreground"} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{title}</p>
-        <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
-      </div>
-      {badge}
-      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-    </button>
-  );
-}
-
-function DetailSidebar({ category, ParentIcon }: { category: CategoryDetail; ParentIcon: ReturnType<typeof resolveIcon> | null }) {
-  return (
-    <div className="sticky top-2 flex flex-col gap-4">
+    <>
       <FieldSet variant="section">
         <FieldSectionLegend
           icon={Calendar}
@@ -92,8 +151,17 @@ function DetailSidebar({ category, ParentIcon }: { category: CategoryDetail; Par
           description="Mốc thời gian tạo và cập nhật."
         />
         <FieldSetContent variant="section" className="space-y-3 pt-0">
-          <SidebarInfoRow icon={Calendar} label="Ngày tạo" value={formatDateTime(category.createdAt)} />
-          <SidebarInfoRow icon={Clock} label="Cập nhật lần cuối" value={formatDateTime(category.updatedAt)} />
+          <FieldSectionField label="Ngày tạo" icon={Calendar}>
+            <span className="font-medium">
+              {formatDateTime(category.createdAt)}
+            </span>
+          </FieldSectionField>
+          <FieldSectionDivider />
+          <FieldSectionField label="Cập nhật lần cuối" icon={Clock}>
+            <span className="font-medium">
+              {formatDateTime(category.updatedAt)}
+            </span>
+          </FieldSectionField>
         </FieldSetContent>
       </FieldSet>
 
@@ -104,42 +172,62 @@ function DetailSidebar({ category, ParentIcon }: { category: CategoryDetail; Par
           description="Cấu trúc phân cấp và số lượng nội dung."
         />
         <FieldSetContent variant="section" className="space-y-3 pt-0">
-          <SidebarInfoRow icon={FolderTree} label="Danh mục cha">
-            <p className="flex items-center gap-1.5 text-sm font-medium">
-              {ParentIcon && createElement(ParentIcon, { className: "size-3.5 text-muted-foreground" })}
+          <FieldSectionField label="Danh mục cha" icon={FolderTree}>
+            <span className="flex items-center gap-1.5 font-medium">
+              {ParentIcon &&
+                createElement(ParentIcon, {
+                  className: "size-3.5 text-muted-foreground",
+                })}
               {category.parentName ?? "Cấp gốc"}
-            </p>
-          </SidebarInfoRow>
-          <SidebarInfoRow icon={Layers} label="Danh mục con" value={`${category._count.children} mục`} />
-          <SidebarInfoRow icon={FileText} label="Bài viết" value={`${category.postCount} bài`} />
+            </span>
+          </FieldSectionField>
+          <FieldSectionDivider />
+          <FieldSectionField label="Danh mục con" icon={Layers}>
+            <span className="font-medium">
+              {category._count.children} mục
+            </span>
+          </FieldSectionField>
+          <FieldSectionDivider />
+          <FieldSectionField label="Bài viết" icon={FileText}>
+            <span className="font-medium">{category.postCount} bài</span>
+          </FieldSectionField>
         </FieldSetContent>
       </FieldSet>
-    </div>
-  );
+    </>
+  )
 }
 
 function CategoryDetailInner() {
-  const crudNav = useAdminCrudNavigation("/categories");
-  const postsNav = useAdminCrudNavigation("/posts");
-  const params = useParams();
-  const categoryId = params.id as string;
-  const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE) : false;
+  const crudNav = useAdminCrudNavigation("/categories")
+  const params = useParams()
+  const categoryId = params.id as string
+  const { user } = useAuth()
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE)
+    : false
 
-  const { data: category, isLoading, isError } = useCategoryDetailQuery(api, categoryId);
+  const { data: category, isLoading, isError } = useCategoryDetailQuery(
+    api,
+    categoryId,
+  )
+
+  const children = useMemo(() => category?.children ?? [], [category?.children])
+  const posts = useMemo(() => category?.posts ?? [], [category?.posts])
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được danh mục");
-      crudNav.list();
+      toast.error("Không tải được danh mục")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
+  if (isLoading) return <AdminPageLoading />
 
-  if (!category) return null;
+  if (!category) return null
 
-  const ParentIcon = category.parentIcon ? resolveIcon(category.parentIcon) : null;
+  const ParentIcon = category.parentIcon
+    ? resolveIcon(category.parentIcon)
+    : null
 
   return (
     <AdminPageSection>
@@ -177,7 +265,10 @@ function CategoryDetailInner() {
                 </FieldSectionField>
                 <FieldSectionField label="Danh mục cha" icon={FolderTree}>
                   <p className="flex items-center gap-1.5 font-medium">
-                    {ParentIcon && createElement(ParentIcon, { className: "size-4 shrink-0 text-muted-foreground" })}
+                    {ParentIcon &&
+                      createElement(ParentIcon, {
+                        className: "size-4 shrink-0 text-muted-foreground",
+                      })}
                     {category.parentName ?? "Cấp gốc"}
                   </p>
                 </FieldSectionField>
@@ -194,65 +285,96 @@ function CategoryDetailInner() {
             </FieldSetContent>
           </FieldSet>
 
-          {category.children.length > 0 && (
-            <FieldSet variant="section">
-              <FieldSectionLegend
-                icon={FolderTree}
-                title="Danh mục con"
-                description="Các danh mục con trực thuộc."
-                badge={<FieldSectionBadge>{category.children.length}</FieldSectionBadge>}
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={FolderTree}
+              title="Danh mục con"
+              description="Các danh mục con trực thuộc."
+              badge={
+                children.length > 0 ? (
+                  <FieldSectionBadge>{category._count.children}</FieldSectionBadge>
+                ) : undefined
+              }
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              <AdminDataTable<ChildCategory>
+                data={children}
+                columns={childColumns}
+                getRowId={(row) => row.id}
+                emptyLabel="Chưa có danh mục con nào"
+                xlsxExport={buildAdminTableXlsxExport("category-children", {
+                  pageCount: children.length,
+                  total: category._count.children,
+                  extraMetadata: [
+                    { label: "Danh mục", value: category.name },
+                  ],
+                })}
+                footer={
+                  category._count.children > 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      Tổng số:{" "}
+                      <span className="font-semibold text-foreground">
+                        {category._count.children}
+                      </span>{" "}
+                      danh mục con
+                    </p>
+                  ) : null
+                }
               />
-              <FieldSetContent variant="section" className="px-0 pb-0 pt-0">
-                <div className="flex flex-col">
-                  {category.children.map((child) => (
-                    <ListItem
-                      key={child.id}
-                      icon={FolderTree}
-                      iconClassName="size-4 text-primary"
-                      title={child.name}
-                      subtitle={`/danh-muc/${child.slug}`}
-                      badge={
-                        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
-                          <span>{child._count.children} con</span>
-                          <span>{child.postCount} bài</span>
-                        </div>
-                      }
-                      onClick={() => crudNav.view(String(child.id))}
-                    />
-                  ))}
-                </div>
-              </FieldSetContent>
-            </FieldSet>
-          )}
+            </FieldSetContent>
+          </FieldSet>
 
-          {category.posts.length > 0 && (
-            <FieldSet variant="section">
-              <FieldSectionLegend
-                icon={File}
-                title="Bài viết liên quan"
-                description="Các bài viết được gắn danh mục này."
-                badge={<FieldSectionBadge>{category.postCount}</FieldSectionBadge>}
-              />
-              <FieldSetContent variant="section" className="px-0 pb-0 pt-0">
-                <div className="flex flex-col">
-                  {category.posts.map((post) => (
-                    <ListItem
-                      key={post.id}
-                      icon={File}
-                      title={post.title}
-                      subtitle={formatDateTime(post.createdAt)}
-                      badge={
-                        <Badge variant={post.published ? "default" : "outline"} className="shrink-0">
-                          {post.published ? "Đã đăng" : "Nháp"}
-                        </Badge>
-                      }
-                      onClick={() => postsNav.view(String(post.id))}
-                    />
-                  ))}
+          <FieldSet variant="section">
+            <FieldSectionLegend
+              icon={File}
+              title="Bài viết liên quan"
+              description="Các bài viết được gắn danh mục này."
+              badge={
+                category.postCount > 0 ? (
+                  <FieldSectionBadge>{category.postCount}</FieldSectionBadge>
+                ) : undefined
+              }
+            />
+            <FieldSetContent variant="section" className="pt-0">
+              {category.postCount > 10 && (
+                <div className="mb-3 flex justify-end">
+                  <Link href="/posts">
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      Xem tất cả
+                      <ArrowUpRight className="size-4" aria-hidden />
+                    </Button>
+                  </Link>
                 </div>
-              </FieldSetContent>
-            </FieldSet>
-          )}
+              )}
+              <AdminDataTable<RelatedPost>
+                data={posts}
+                columns={relatedPostColumns}
+                getRowId={(row) => row.id}
+                emptyLabel="Chưa có bài viết nào trong danh mục này"
+                xlsxExport={buildAdminTableXlsxExport("category-related-posts", {
+                  pageCount: posts.length,
+                  total: category.postCount,
+                  extraMetadata: [
+                    { label: "Danh mục", value: category.name },
+                  ],
+                })}
+                footer={
+                  category.postCount > 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      Tổng số:{" "}
+                      <span className="font-semibold text-foreground">
+                        {category.postCount}
+                      </span>{" "}
+                      bài viết
+                      {category.postCount > 10 && (
+                        <span className="ml-1">(hiện 10 mới nhất)</span>
+                      )}
+                    </p>
+                  ) : null
+                }
+              />
+            </FieldSetContent>
+          </FieldSet>
         </AdminDetailMain>
 
         <AdminDetailSidebar>
@@ -260,7 +382,7 @@ function CategoryDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function CategoryDetailPage() {
@@ -268,5 +390,5 @@ export default function CategoryDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <CategoryDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

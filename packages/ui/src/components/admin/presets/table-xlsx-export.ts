@@ -50,6 +50,8 @@ export type AdminTableExportTemplateId =
   | "student-term-averages"
   | "student-detailed-scores"
   | "staff-related-posts"
+  | "category-children"
+  | "category-related-posts"
 
 type AdminTableExportTemplate = {
   fileName: string
@@ -403,6 +405,20 @@ const ADMIN_TABLE_EXPORT_TEMPLATES: Record<
     fileName: "bai-viet-nhan-su.xlsx",
     sheetName: "Bai viet",
     title: "BÀI VIẾT LIÊN QUAN NHÂN SỰ",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "bài viết",
+  },
+  "category-children": {
+    fileName: "danh-muc-con.xlsx",
+    sheetName: "Danh muc con",
+    title: "DANH MỤC CON",
+    subtitle: ADMIN_EXPORT_SUBTITLE,
+    recordLabel: "danh mục con",
+  },
+  "category-related-posts": {
+    fileName: "bai-viet-danh-muc.xlsx",
+    sheetName: "Bai viet",
+    title: "BÀI VIẾT LIÊN QUAN DANH MỤC",
     subtitle: ADMIN_EXPORT_SUBTITLE,
     recordLabel: "bài viết",
   },

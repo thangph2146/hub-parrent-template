@@ -1,6 +1,6 @@
 import type { ApiClient } from "../client";
 import type { RbacPermission, RbacRole } from "../types";
-import { normalizePagedResult } from "./_shared";
+import { getData, normalizePagedResult } from "./_shared";
 
 type ApiRoleRow = {
   id?: string | number;
@@ -63,15 +63,7 @@ export class RbacApi {
 
   async listPermissions(): Promise<RbacPermission[]> {
     try {
-      const rows = await this.listRoleRows();
-      const codes = [...new Set(rows.flatMap((row) => normalizePermissionCodes(row.permissions)))];
-
-      return codes.map((code, index) => ({
-        id: index + 1,
-        code,
-        name: code,
-        description: null,
-      }));
+      return await getData<RbacPermission[]>(this.http, "/admin/roles/permissions");
     } catch {
       return [];
     }

@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { Button } from "../../button"
 import { cn } from "../../../lib/utils"
+import { useAdminRouteProgress } from "../../../lib/admin-route-progress"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ import { useTextSize } from "../../text-size-provider"
 import { useTheme } from "../../theme-provider"
 import { ScrollToTop } from "../../scroll-to-top"
 import { useAdminLayout } from "./layout-context"
+import { AdminAuthLoadingScreen } from "./admin-auth-loading-screen"
 import {
   ADMIN_HEADER_ROLE_LINE_CLASS,
   ADMIN_MAIN_SCROLL_CLASS,
@@ -80,14 +82,6 @@ function roleSummary(user: {
   return user.roles.map((r) => r.displayName || r.name).join(" · ")
 }
 
-function AuthLoadingScreen({ message }: { message: string }) {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 text-sm text-muted-foreground">
-      {message}
-    </div>
-  )
-}
-
 export function AdminShell({
   children,
   classMain,
@@ -99,9 +93,11 @@ export function AdminShell({
 }) {
   const pathname = usePathname()
   const router = useRouter()
+  const { startIfNavigating } = useAdminRouteProgress()
   const {
     user,
     clientReady,
+    siteName,
     loginPath,
     isAuthPath,
     canAccessApp,
@@ -197,10 +193,17 @@ export function AdminShell({
 
   if (onAuthRoute) {
     if (!clientReady) {
-      return <AuthLoadingScreen message="Đang tải…" />
+      return (
+        <AdminAuthLoadingScreen message="Đang tải…" siteName={siteName} />
+      )
     }
     if (user && canAccessApp(user)) {
-      return <AuthLoadingScreen message="Đang chuyển về bảng điều khiển…" />
+      return (
+        <AdminAuthLoadingScreen
+          message="Đang chuyển về bảng điều khiển…"
+          siteName={siteName}
+        />
+      )
     }
     return (
       <>
@@ -213,7 +216,9 @@ export function AdminShell({
   }
 
   if (!clientReady || !user) {
-    return <AuthLoadingScreen message="Đang tải…" />
+    return (
+      <AdminAuthLoadingScreen message="Đang tải…" siteName={siteName} />
+    )
   }
 
   const rolesDisplay = roleSummary(user)
@@ -345,7 +350,10 @@ export function AdminShell({
                   <DropdownMenuGroup>
                     <DropdownMenuItem
                       className="cursor-pointer rounded-md px-2 py-2"
-                      onClick={() => router.push(profilePath)}
+                      onClick={() => {
+                        startIfNavigating(profilePath)
+                        router.push(profilePath)
+                      }}
                     >
                       <UserCircle2 className="size-4 text-muted-foreground" />
                       Hồ sơ và tài khoản

@@ -59,11 +59,11 @@ function normalizeRole(raw: Record<string, unknown>): RoleRow {
 
 export const rbacQueryKeys = {
   all: ["rbac"] as const,
-  catalog: () => [...rbacQueryKeys.all, "catalog"] as const,
+  catalog: () => [...rbacQueryKeys.all, "catalog", "full"] as const,
   detail: (id: string) => [...rbacQueryKeys.all, "detail", id] as const,
 }
 
-export function useRbacCatalog() {
+export function useRbacCatalog(opts?: { enabled?: boolean }) {
   return useQuery({
     queryKey: rbacQueryKeys.catalog(),
     queryFn: async (): Promise<{ roles: RbacRole[]; permissions: RbacPermission[] }> => {
@@ -73,6 +73,7 @@ export function useRbacCatalog() {
       ])
       return { roles, permissions }
     },
+    enabled: opts?.enabled ?? true,
     staleTime: 5 * 60 * 1000,
   })
 }

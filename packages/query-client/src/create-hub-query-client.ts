@@ -24,12 +24,15 @@ export function hubDefaultQueryRetry(failureCount: number, error: unknown): bool
 /** Cấu hình mặc định dùng chung cho @frontend và @backend. */
 export const hubQueryClientDefaultOptions: DefaultOptions = {
   queries: {
-    staleTime: 30_000,
+    /** List/detail admin: hiển thị cache ngay khi quay lại trong cửa sổ này. */
+    staleTime: 60_000,
     gcTime: 10 * 60 * 1000,
     retry: hubDefaultQueryRetry,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
+    /** Chỉ refetch khi dữ liệu đã stale — tránh flash loading khi chuyển trang. */
     refetchOnMount: true,
+    structuralSharing: true,
   },
   mutations: {
     retry: false,

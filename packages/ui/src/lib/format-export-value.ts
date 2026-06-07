@@ -51,3 +51,50 @@ export function formatExportDateTime(value: unknown): string | null {
 
   return date.toLocaleString("vi-VN", VI_DATE_TIME)
 }
+
+type NamedExportItem = {
+  name?: string | null
+  label?: string | null
+  displayName?: string | null
+  title?: string | null
+}
+
+/** Danh mục / thẻ / taxonomy — xuất tên, không JSON. */
+export function formatNamedListForExport(
+  items: readonly NamedExportItem[] | null | undefined,
+  separator = ", "
+): string {
+  if (!items?.length) return ""
+  return items
+    .map((item) => {
+      const label =
+        item.name?.trim() ||
+        item.label?.trim() ||
+        item.displayName?.trim() ||
+        item.title?.trim() ||
+        ""
+      return label
+    })
+    .filter(Boolean)
+    .join(separator)
+}
+
+/** Chuỗi export cho mảng ô dữ liệu (taxonomy, tag, …). */
+export function formatArrayCellForExport(value: unknown[]): string | null {
+  if (!value.length) return ""
+
+  const stringItems = value.filter((item) => typeof item === "string") as string[]
+  if (stringItems.length === value.length) {
+    return stringItems.map((s) => s.trim()).filter(Boolean).join(", ")
+  }
+
+  const objectItems = value.filter(
+    (item) => item != null && typeof item === "object" && !Array.isArray(item)
+  ) as NamedExportItem[]
+  if (objectItems.length === value.length) {
+    const labels = formatNamedListForExport(objectItems)
+    return labels || null
+  }
+
+  return null
+}

@@ -11,6 +11,10 @@ export {
   AdminFormPageSkeleton,
   AdminListPageSkeleton,
 } from "./admin-page-skeletons"
+export {
+  AdminRouteLoading,
+  type AdminRouteLoadingVariant,
+} from "./admin-route-loading"
 export { AdminReadOnlyHint } from "./admin-read-only-hint"
 export {
   AdminListPageHeader,

@@ -2,6 +2,7 @@
 
 import { useCallback, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { useAdminRouteProgress } from "@ui/lib/admin-route-progress"
 
 export type AdminCrudNavigationOptions = {
   /** Prefetch React Query detail (gọi từ list / hover dòng). */
@@ -18,6 +19,7 @@ export function useAdminCrudNavigation(
 ) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const { startIfNavigating } = useAdminRouteProgress()
 
   const prefetchHref = useCallback(
     (href: string) => {
@@ -33,13 +35,14 @@ export function useAdminCrudNavigation(
   const navigate = useCallback(
     (href: string, beforePush?: () => void | Promise<void>) => {
       prefetchHref(href)
+      startIfNavigating(href)
       void Promise.resolve(beforePush?.()).finally(() => {
         startTransition(() => {
           router.push(href)
         })
       })
     },
-    [prefetchHref, router]
+    [prefetchHref, router, startIfNavigating]
   )
 
   const prefetchRecord = useCallback(

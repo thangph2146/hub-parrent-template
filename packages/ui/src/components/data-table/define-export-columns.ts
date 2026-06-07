@@ -39,6 +39,19 @@ function resolveRelationFilterVariant(fieldId: string): "text" | "date-range" {
   return "text"
 }
 
+/** `meta.selectOptions` cho cột boolean/xuất bản — dùng khi export Excel. */
+export function defineBooleanSelectExportMeta(
+  trueLabel: string,
+  falseLabel: string
+): { selectOptions: Array<{ value: string; label: string }> } {
+  return {
+    selectOptions: [
+      { value: "true", label: trueLabel },
+      { value: "false", label: falseLabel },
+    ],
+  }
+}
+
 function formatRelationCellValue(value: unknown): string {
   if (value == null || value === "") return ""
   if (typeof value === "boolean") return value ? "Có" : "Không"
