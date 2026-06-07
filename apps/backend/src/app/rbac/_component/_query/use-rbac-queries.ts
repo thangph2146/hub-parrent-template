@@ -74,7 +74,6 @@ export function useRbacCatalog(opts?: { enabled?: boolean }) {
       return { roles, permissions }
     },
     enabled: opts?.enabled ?? true,
-    staleTime: 5 * 60 * 1000,
   })
 }
 

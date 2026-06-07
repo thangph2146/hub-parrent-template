@@ -1,6 +1,6 @@
 # Cây thư mục — backend (Graphify)
 
-> **Sinh tự động:** `2026-06-06T18:22:06.704Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-07T08:18:41.941Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -161,6 +161,7 @@ src/
 │   │   │   └── edit/
 │   │   └── new/
 │   ├── settings/
+│   │   └── _component/
 │   ├── speakers/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/

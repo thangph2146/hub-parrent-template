@@ -18,6 +18,35 @@ export class SeoMetasApi {
     return getData<T>(this.http, `/admin/seo-metas/${id}`);
   }
 
+  async getByPage<T = unknown>(page: string): Promise<T | null> {
+    try {
+      return await getData<T>(this.http, "/admin/seo-metas/lookup", {
+        query: { page },
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  /** SEO công khai theo `page` — tab seo-global (`__site__`). */
+  async getPublicByPage<T = unknown>(
+    page: string,
+    options?: Parameters<ApiClient["get"]>[1],
+  ): Promise<T | null> {
+    try {
+      return await getData<T>(this.http, "/public/seo-meta", {
+        ...options,
+        query: { page, ...(options?.query as Record<string, unknown> | undefined) },
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  async upsertByPage<T = unknown>(body: Record<string, unknown>): Promise<T> {
+    return putData<T>(this.http, "/admin/seo-metas/upsert", body);
+  }
+
   async create<T = unknown>(body: Record<string, unknown>): Promise<T> {
     return postData<T>(this.http, "/admin/seo-metas", body);
   }

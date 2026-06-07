@@ -154,8 +154,6 @@ function TrainingLevelsPageInner() {
     [rowActions, crudNav, canWrite, canDelete, canHardDelete],
   );
 
-
-
   const trashColumns = useMemo<ColumnDef<TrainingLevelRow>[]>(
     () => getTrainingLevelColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
     [rowActions, canWrite, canRestore, canHardDelete],

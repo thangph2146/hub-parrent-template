@@ -23,4 +23,10 @@ export class SettingsApi {
   async remove(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/settings/${id}`);
   }
+
+  async getPublicBranding<
+    T = { siteName: string; siteDescription: string },
+  >(options?: Parameters<ApiClient["get"]>[1]): Promise<T> {
+    return getData<T>(this.http, "/public/site-branding", options);
+  }
 }

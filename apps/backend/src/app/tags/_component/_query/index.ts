@@ -1,10 +1,8 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { TagDetail, TagRow } from "../types";
 import { api } from "@/lib/api";
@@ -30,22 +28,13 @@ export function useTagDetailQuery(
   api: StoreSyncSdk,
   tagId: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       tagDetailQueryKey(tagId),
       async () => api.tags.get<TagDetail>(tagId),
       tagId
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<TagRow, TagDetail>(
-        queryClient,
-        ["media", "tags", "tree"],
-        tagId,
-        (row) => row as unknown as TagDetail
-      ),
-  });
+});
 }
 
 export function useTagsListQuery(
@@ -58,8 +47,6 @@ export function useTagsListQuery(
       const result = await api.tags.list<TagRow>({ page: 1, limit: 500, status: "active", filters });
       return result.items;
     },
-    staleTime: 5 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
     enabled,
   });
 }
@@ -95,8 +82,6 @@ export function useTrashQuery({
       filters,
     ],
     enabled,
-    staleTime: 2 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
     queryFn: async (): Promise<PagedResult<TagRow>> => {
       return api.tags.list<TagRow>({
         page: trashPage,

@@ -54,6 +54,7 @@ export function StudentPortalLayoutProvider({
         branding: {
           siteName: "HUB Events",
           siteDescription: "Cổng sinh viên",
+          isReady: true,
         },
         static: STUDENT_PORTAL_LAYOUT_STATIC,
       }),

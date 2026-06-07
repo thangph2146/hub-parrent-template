@@ -1,12 +1,12 @@
 # Thống kê graph — api (Graphify)
 
-> **Sinh tự động:** `2026-06-06T18:22:06.722Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-07T08:18:41.999Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `ts` | 243 |
+| `ts` | 244 |
 | `directory` | 54 |
 | `json` | 2 |
 
@@ -14,8 +14,8 @@
 
 | relation | Số |
 |----------|-----|
-| `imports` | 1016 |
-| `contains` | 298 |
+| `imports` | 1021 |
+| `contains` | 299 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
 
@@ -27,8 +27,8 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 | `src/mikro-orm/orm-entities.ts` | 41 |
 | `src/seed-full-export.ts` | 24 |
 | `src/system/system.service.ts` | 20 |
-| `src/public/public.module.ts` | 15 |
-| `src/public/public.controller.ts` | 14 |
+| `src/public/public.module.ts` | 17 |
+| `src/public/public.controller.ts` | 16 |
 | `src/common/resolve-relation-filters.ts` | 13 |
 | `src/entities/user.entity.ts` | 13 |
 | `src/dashboard/dashboard.service.ts` | 12 |

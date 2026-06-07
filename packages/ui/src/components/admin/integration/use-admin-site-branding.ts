@@ -2,31 +2,35 @@
 
 import { useQuery } from "@tanstack/react-query"
 import type { AdminSiteBranding } from "../types"
+import { ADMIN_BRANDING_FALLBACK } from "./admin-branding-fallbacks"
 
-const DEFAULT_BRANDING: AdminSiteBranding = {
-  siteName: "HUB",
-  siteDescription: "Quản trị hệ thống",
+export type AdminSiteBrandingState = AdminSiteBranding & {
+  /** Đã fetch xong (có data hoặc lỗi) — dùng để tránh flash fallback sai trên màn loading. */
+  isReady: boolean
 }
 
 export function useAdminSiteBranding(options: {
   queryKey: readonly unknown[]
   fetchBranding: (ctx: { signal: AbortSignal }) => Promise<AdminSiteBranding>
   defaults?: AdminSiteBranding
-  staleTimeMs?: number
-  /** false khi chưa đăng nhập — tránh gọi /admin/settings (401 thiếu X-User-Id). */
   enabled?: boolean
-}) {
-  const defaults = options.defaults ?? DEFAULT_BRANDING
-  const { data } = useQuery({
+}): AdminSiteBrandingState {
+  const defaults = options.defaults ?? ADMIN_BRANDING_FALLBACK
+
+  const { data, isFetched } = useQuery({
     queryKey: options.queryKey,
     queryFn: ({ signal }) => options.fetchBranding({ signal }),
     enabled: options.enabled ?? true,
-    staleTime: options.staleTimeMs ?? 5 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 0,
     retry: false,
   })
 
+  const resolved = data ?? (isFetched ? defaults : undefined)
+
   return {
-    siteName: data?.siteName ?? defaults.siteName,
-    siteDescription: data?.siteDescription ?? defaults.siteDescription,
+    siteName: resolved?.siteName ?? "",
+    siteDescription: resolved?.siteDescription ?? "",
+    isReady: Boolean(data) || isFetched,
   }
 }

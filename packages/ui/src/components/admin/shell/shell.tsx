@@ -42,8 +42,6 @@ import {
   ADMIN_SHEET_NAV_CLASS,
 } from "../../../lib/layout-shell"
 
-const SIDEBAR_COLLAPSED_KEY = "admin-sidebar-collapsed"
-
 const HEADER_ICON_BTN_MOBILE = cn(
   "h-11 min-h-11 w-11 min-w-11 shrink-0 rounded-lg border-border/70 bg-background/90 text-muted-foreground shadow-sm",
   "hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow active:scale-[0.98] md:hidden [&_svg]:size-5"
@@ -98,6 +96,8 @@ export function AdminShell({
     user,
     clientReady,
     siteName,
+    siteDescription,
+    brandingReady,
     loginPath,
     isAuthPath,
     canAccessApp,
@@ -116,22 +116,6 @@ export function AdminShell({
   const onAuthRoute = isAuthPath(pathname)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-
-  useEffect(() => {
-    try {
-      setSidebarCollapsed(localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1")
-    } catch {
-      /* ignore */
-    }
-  }, [])
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, sidebarCollapsed ? "1" : "0")
-    } catch {
-      /* ignore */
-    }
-  }, [sidebarCollapsed])
 
   // Force editor toolbar sticky via JS to overcome any CSS specificity issues
   useEffect(() => {
@@ -194,14 +178,19 @@ export function AdminShell({
   if (onAuthRoute) {
     if (!clientReady) {
       return (
-        <AdminAuthLoadingScreen message="Đang tải…" siteName={siteName} />
+        <AdminAuthLoadingScreen
+          message="Đang tải…"
+          siteName={brandingReady ? siteName : undefined}
+          siteDescription={brandingReady ? siteDescription : undefined}
+        />
       )
     }
     if (user && canAccessApp(user)) {
       return (
         <AdminAuthLoadingScreen
           message="Đang chuyển về bảng điều khiển…"
-          siteName={siteName}
+          siteName={brandingReady ? siteName : undefined}
+          siteDescription={brandingReady ? siteDescription : undefined}
         />
       )
     }
@@ -217,7 +206,11 @@ export function AdminShell({
 
   if (!clientReady || !user) {
     return (
-      <AdminAuthLoadingScreen message="Đang tải…" siteName={siteName} />
+      <AdminAuthLoadingScreen
+        message="Đang tải…"
+        siteName={brandingReady ? siteName : undefined}
+        siteDescription={brandingReady ? siteDescription : undefined}
+      />
     )
   }
 

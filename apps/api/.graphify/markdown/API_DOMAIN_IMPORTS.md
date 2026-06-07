@@ -1,6 +1,6 @@
 # API — phụ thuộc giữa các domain (`src/`)
 
-> **Sinh tự động:** `2026-06-06T18:22:06.722Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
+> **Sinh tự động:** `2026-06-07T08:18:41.999Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
 > **Domain** = thư mục cấp một dưới `src/` (ví dụ `posts`, `users`). File trực tiếp trong `src/*.ts` gom vào domain `_root`.
 
 Ý nghĩa: **domain hàng gọi (import) domain cột** — Nest module/controller/service trong một feature đang dùng code của feature khác hoặc layer dùng chung (`entities`, `common`, …).
@@ -169,6 +169,8 @@
 | `public` | `event-registrations` | 3 | public-event-registration.service.ts → event-registrations.service.ts; public-events.service.ts → event-registrations.service.ts; public.module.ts → event-registrations.module.ts |
 | `public` | `event-speakers` | 2 | public-events.service.ts → event-speakers.service.ts; public.module.ts → event-speakers.module.ts |
 | `public` | `page-contents` | 2 | public.controller.ts → page-contents.service.ts; public.module.ts → page-contents.module.ts |
+| `public` | `seo-metas` | 2 | public.controller.ts → seo-metas.service.ts; public.module.ts → seo-metas.module.ts |
+| `public` | `settings` | 2 | public.controller.ts → settings.service.ts; public.module.ts → settings.module.ts |
 | `public` | `socket` | 1 | public.module.ts → socket.module.ts |
 | `public` | `users` | 3 | public-auth.service.ts → users.service.ts; public.controller.ts → users.service.ts; public.module.ts → users.module.ts |
 | `roles` | `common` | 5 | roles.controller.ts → api-response.ts; roles.controller.ts → permissions.decorator.ts; roles.controller.ts → parse-list-query.ts; roles.service.ts → pagination.ts |
@@ -190,7 +192,7 @@
 | `sessions` | `entities` | 5 | sessions.controller.ts → notification.entity.ts; sessions.service.ts → session.entity.ts; sessions.service.ts → user.entity.ts; sessions.service.ts → user-role.entity.ts |
 | `sessions` | `notifications` | 2 | sessions.controller.ts → notifications.service.ts; sessions.module.ts → notifications.module.ts |
 | `sessions` | `socket` | 2 | sessions.controller.ts → socket.gateway.ts; sessions.module.ts → socket.module.ts |
-| `settings` | `common` | 2 | settings.controller.ts → api-response.ts; settings.controller.ts → permissions.decorator.ts |
+| `settings` | `common` | 3 | settings.controller.ts → api-response.ts; settings.controller.ts → permissions.decorator.ts; settings.service.ts → parse-setting-value.ts |
 | `settings` | `config` | 2 | settings.controller.ts → constants.ts; settings.controller.ts → permissions.ts |
 | `settings` | `entities` | 2 | settings.service.spec.ts → setting.entity.ts; settings.service.ts → setting.entity.ts |
 | `socket` | `common` | 2 | socket.module.ts → admin-realtime.interceptor.ts; socket.module.ts → admin-realtime-broadcast.service.ts |
@@ -236,7 +238,7 @@
 
 Liệt kê domain **đích** (`to`) được nhiều cạnh `imports` nhất; kèm các domain **nguồn** (`from`) nổi bật.
 
-- **`common`**: **266** cạnh từ **45** domain — `academic-years` (10), `courses` (10), `events` (10), `majors` (10), `training-levels` (10), `training-systems` (10), `cameras` (9), `departments` (9)
+- **`common`**: **267** cạnh từ **45** domain — `academic-years` (10), `courses` (10), `events` (10), `majors` (10), `training-levels` (10), `training-systems` (10), `cameras` (9), `departments` (9)
 - **`entities`**: **251** cạnh từ **46** domain — `mikro-orm` (41), `_root` (27), `system` (16), `public` (15), `common` (13), `dashboard` (12), `posts` (11), `groups` (8)
 - **`config`**: **100** cạnh từ **46** domain — `uploads` (5), `common` (4), `messages` (4), `roles` (4), `public` (3), `sessions` (3), `users` (3), `academic-years` (2)
 - **`notifications`**: **25** cạnh từ **13** domain — `admission-results` (2), `categories` (2), `comments` (2), `contact-requests` (2), `groups` (2), `page-contents` (2), `posts` (2), `roles` (2)
@@ -250,6 +252,8 @@ Liệt kê domain **đích** (`to`) được nhiều cạnh `imports` nhất; k�
 - **`event-speakers`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
 - **`page-contents`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
 - **`seeds`**: **3** cạnh từ **3** domain — `_root` (1), `seeders` (1), `system` (1)
+- **`seo-metas`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
+- **`settings`**: **3** cạnh từ **2** domain — `public` (2), `_root` (1)
 - **`system`**: **2** cạnh từ **1** domain — `_root` (2)
 - **`academic-years`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`accounts`**: **1** cạnh từ **1** domain — `_root` (1)
@@ -269,8 +273,6 @@ Liệt kê domain **đích** (`to`) được nhiều cạnh `imports` nhất; k�
 - **`imported-users`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`locations`**: **1** cạnh từ **1** domain — `_root` (1)
 - **`majors`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`messages`**: **1** cạnh từ **1** domain — `_root` (1)
-- **`parent-students`**: **1** cạnh từ **1** domain — `_root` (1)
 
 ## Sơ đồ Mermaid (tối đa 80 cặp domain, ưu tiên cạnh có trọng số lớn)
 
@@ -314,6 +316,7 @@ flowchart LR
     dom_seeds["seeds"]
     dom_seo_metas["seo-metas"]
     dom_sessions["sessions"]
+    dom_settings["settings"]
     dom_socket["socket"]
     dom_speakers["speakers"]
     dom_students["students"]
@@ -399,11 +402,11 @@ flowchart LR
     dom_public -->|3| dom_event_registrations
     dom_public -->|3| dom_users
     dom_sessions -->|3| dom_config
+    dom_settings -->|3| dom_common
     dom_users -->|3| dom_config
     dom_root -->|2| dom_mikro_orm
     dom_root -->|2| dom_system
     dom_academic_years -->|2| dom_config
-    dom_accounts -->|2| dom_common
 ```
 
 ## Ghi chú

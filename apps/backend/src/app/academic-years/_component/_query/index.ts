@@ -1,11 +1,9 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { AcademicYearDetail, AcademicYearRow } from "../types";
 
@@ -29,22 +27,13 @@ export function useAcademicYearDetailQuery(
   apiParam: StoreSyncSdk,
   id: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       academicYearDetailQueryKey(id),
       async () => apiParam.academicYears.get<AcademicYearDetail>(id),
       id
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<AcademicYearRow, AcademicYearDetail>(
-        queryClient,
-        ["academic-years", "list"],
-        id,
-        (row) => row as unknown as AcademicYearDetail
-      ),
-  });
+});
 }
 
 export function useAcademicYearsListQuery(

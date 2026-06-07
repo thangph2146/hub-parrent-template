@@ -15,6 +15,8 @@ import { AuthModule } from '../auth/auth.module';
 import { EventRegistrationsModule } from '../event-registrations/event-registrations.module';
 import { EventSpeakersModule } from '../event-speakers/event-speakers.module';
 import { PublicEventRegistrationService } from './public-event-registration.service';
+import { SeoMetasModule } from '../seo-metas/seo-metas.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { PublicEventRegistrationService } from './public-event-registration.serv
     AuthModule,
     EventRegistrationsModule,
     EventSpeakersModule,
+    SeoMetasModule,
+    SettingsModule,
   ],
   controllers: [PublicController],
   providers: [

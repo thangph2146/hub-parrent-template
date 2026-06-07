@@ -69,6 +69,79 @@ export class SeoMetasController {
     return res.status(statusCode).json(body);
   }
 
+  @Get('lookup')
+  async lookupByPage(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Query('page') page?: string,
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) return this.unauthorized(res);
+    const normalized = page?.trim();
+    if (!normalized) {
+      const { statusCode, body } = createErrorResponse('Thiếu query page', {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+    const row = await this.service.getByPage(normalized);
+    const { statusCode, body } = createSuccessResponse(row);
+    return res.status(statusCode).json(body);
+  }
+
+  @Put('upsert')
+  @Permissions(
+    PERMISSIONS.SEO_METAS_UPDATE,
+    PERMISSIONS.SEO_METAS_MANAGE,
+    PERMISSIONS.SETTINGS_UPDATE,
+    PERMISSIONS.SETTINGS_MANAGE,
+  )
+  async upsertByPage(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body()
+    body: {
+      page: string;
+      title?: string | null;
+      description?: string | null;
+      keywords?: string | null;
+      ogTitle?: string | null;
+      ogDescription?: string | null;
+      ogImage?: string | null;
+      status?: number;
+    },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) return this.unauthorized(res);
+    if (!body?.page?.trim()) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'page là bắt buộc',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    try {
+      const saved = await this.service.upsertByPage(body.page.trim(), {
+        title: body.title,
+        description: body.description,
+        keywords: body.keywords,
+        ogTitle: body.ogTitle,
+        ogDescription: body.ogDescription,
+        ogImage: body.ogImage,
+        status: body.status,
+      });
+      const { statusCode, body: okBody } = createSuccessResponse(saved);
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Không lưu được SEO meta';
+      const { statusCode, body: errBody } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
   @Get(':id')
   async getById(
     @Res() res: Response,

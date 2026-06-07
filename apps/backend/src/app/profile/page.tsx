@@ -32,8 +32,6 @@ import {
 import { patchAdminSessionProfile } from "@/lib/auth-session"
 import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 
-
-
 function getRoleCode(role: { code?: string; name?: string }) {
   return role.code ?? role.name ?? ""
 }

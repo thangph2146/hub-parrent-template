@@ -1,10 +1,8 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { PostDetail, PostListRow } from "../types";
 
@@ -34,22 +32,13 @@ export function usePostDetailQuery(
   api: StoreSyncSdk,
   postId: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       postDetailQueryKey(postId),
       async () => api.posts.get<PostDetail>(postId),
       postId
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<PostListRow, PostDetail>(
-        queryClient,
-        ["media", "posts"],
-        postId,
-        (row) => row as unknown as PostDetail
-      ),
-  });
+});
 }
 
 export interface UsePostsQueriesProps {
@@ -77,8 +66,6 @@ export function usePostsQuery({
         status: "active",
         ...toFilterQuery(postColumnFilterQuery),
       }),
-    staleTime: 2 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -102,7 +89,6 @@ export function useTrashQuery({
   return useQuery({
     queryKey: ["media", "posts", "trash", trashPage, trashPageSize, debouncedTrashQ, trashColumnFilterQuery],
     enabled,
-    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<PagedResult<PostListRow>> =>
       api.posts.list<PostListRow>({
         page: trashPage,
@@ -111,7 +97,6 @@ export function useTrashQuery({
         status: "deleted",
         ...toFilterQuery(trashColumnFilterQuery ?? {}),
       }),
-    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -137,7 +122,6 @@ export function usePostsByAuthor({
         status: "active",
         ...toFilterQuery({ authorId }),
       }),
-    staleTime: 2 * 60 * 1000,
     enabled: !!authorId,
   });
 }

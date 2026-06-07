@@ -1,12 +1,10 @@
 "use client";
 
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk } from "@workspace/api-client";
 import type { GuideGroup, ListResult } from "../types";
 import { PAGE_KEY } from "../utils";
@@ -45,7 +43,6 @@ export function useGuidesQuery({
         },
       };
     },
-    staleTime: 15_000,
   });
 }
 
@@ -69,20 +66,11 @@ export function useGuideDetailQuery(
   apiParam: StoreSyncSdk,
   guideId: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       guideDetailQueryKey(guideId),
       async () => apiParam.guides.get<GuideGroup>(guideId),
       guideId
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<GuideGroup, GuideGroup>(
-        queryClient,
-        ["admin", "guides"],
-        guideId,
-        (row) => row
-      ),
-  });
+});
 }

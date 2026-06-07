@@ -28,7 +28,6 @@ const TopPostsChart = dynamic(
   { ssr: false }
 )
 
-
 export default function AdminDashboardPage() {
   const { user } = useAuth()
 
@@ -37,9 +36,8 @@ export default function AdminDashboardPage() {
   const { data } = useQuery<DashboardStatsDto>({
     queryKey: ["dashboard", "stats"],
     queryFn: async () => api.dashboard.stats<DashboardStatsDto>(),
-    staleTime: 60_000,
-  })
 
+  })
 
   return (
     <AdminPageGuard>

@@ -72,4 +72,6 @@ export const PUBLIC_ROUTES = {
   EVENT_CATEGORIES: 'public/event-categories',
   PARENT_MY_STUDENTS: 'parent/my-students',
   HANET_WEBHOOK: 'public/hanet/webhook',
+  SEO_META: 'public/seo-meta',
+  SITE_BRANDING: 'public/site-branding',
 } as const;

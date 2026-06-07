@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/components/select"
+import { useAdminLayout } from "@ui/components/admin"
 import { useAuth, useClientReady } from "@/providers/auth-provider"
 import {
   fetchDevLoginOptions,
@@ -65,6 +66,7 @@ function decodeBridgeSession(raw: string): AuthUser | null {
 export function SignInForm() {
   const router = useRouter()
   const { login, loginDevelopment, loginGoogle } = useAuth()
+  const { siteName, siteDescription } = useAdminLayout()
   const clientReady = useClientReady()
   const isDevelopment = process.env.NODE_ENV === "development"
   const [email, setEmail] = useState("")
@@ -290,13 +292,14 @@ export function SignInForm() {
                     <div className="flex flex-col items-center gap-1">
                       <PointerHighlight>
                         <p className="relative z-10 text-lg font-bold tracking-tight text-primary uppercase sm:text-sm md:text-xl xl:text-2xl">
-                          Hệ thống Kết nối Phụ huynh
+                          {siteName}
                         </p>
                       </PointerHighlight>
-                      <p className="text-sm font-medium text-muted-foreground italic md:text-base">
-                        &quot;Tâm an lòng, con vững bước - Đồng hành cùng tương
-                        lai con tại HUB&quot;
-                      </p>
+                      {siteDescription ? (
+                        <p className="text-sm font-medium text-muted-foreground italic md:text-base">
+                          {siteDescription}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
 

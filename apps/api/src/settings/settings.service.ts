@@ -1,6 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { parseSettingValue } from '../common/parse-setting-value';
 import { Setting } from '../entities/setting.entity';
+
+export type PublicSiteBranding = {
+  siteName: string;
+  siteDescription: string;
+};
+
+const PUBLIC_BRANDING_DEFAULTS: PublicSiteBranding = {
+  siteName: 'HUB',
+  siteDescription: 'Quản trị hệ thống',
+};
 
 @Injectable()
 export class SettingsService {
@@ -42,22 +53,23 @@ export class SettingsService {
   }
 
   async bulkUpdate(settings: Record<string, any>) {
-    const updates = Object.entries(settings).map(async ([key, value]) => {
+    const results: Setting[] = [];
+    for (const [key, value] of Object.entries(settings)) {
       const existing = await this.em.findOne(Setting, { key });
       if (existing) {
         existing.value = value;
-        await this.em.persistAndFlush(existing);
-        return existing;
+        results.push(existing);
       } else {
         const created = new Setting();
         created.key = key;
         created.value = value;
         created.group = 'general';
-        await this.em.persistAndFlush(created);
-        return created;
+        results.push(created);
+        this.em.persist(created);
       }
-    });
-    return Promise.all(updates);
+    }
+    await this.em.flush();
+    return results;
   }
 
   async delete(id: string) {
@@ -65,5 +77,24 @@ export class SettingsService {
     if (!existing) return null;
     await this.em.removeAndFlush(existing);
     return existing;
+  }
+
+  /** Branding hiển thị công khai — không cần đăng nhập admin. */
+  async getPublicBranding(): Promise<PublicSiteBranding> {
+    const [nameRow, descRow] = await Promise.all([
+      this.getByKey('site_name'),
+      this.getByKey('site_description'),
+    ]);
+
+    return {
+      siteName: parseSettingValue(
+        nameRow?.value,
+        PUBLIC_BRANDING_DEFAULTS.siteName,
+      ),
+      siteDescription: parseSettingValue(
+        descRow?.value,
+        PUBLIC_BRANDING_DEFAULTS.siteDescription,
+      ),
+    };
   }
 }

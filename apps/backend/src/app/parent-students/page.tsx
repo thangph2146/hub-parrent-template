@@ -80,7 +80,7 @@ function AdminParentStudentsPageInner() {
       data: result.items,
       pagination: { page, limit: pageSize, total: result.total, totalPages: Math.ceil(result.total / pageSize) },
     }),
-    staleTime: 20_000,
+
   });
 
   const queryClient = useQueryClient();

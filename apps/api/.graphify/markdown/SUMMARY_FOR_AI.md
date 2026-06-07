@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `C:/HUB/source/hub-parent-template/apps/api`
-- **context.generatedAt:** 2026-06-06T18:20:21.170Z
+- **context.generatedAt:** 2026-06-07T08:18:37.108Z
 
 ## Mục lục artefact Graphify
 
@@ -35,7 +35,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Phụ thuộc chéo giữa domain API:** [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md) — domain `src/<tên>` nào import domain nào (cạnh `imports` trong graph).
 
 ## Thống kê
-- **totalFiles:** 244
+- **totalFiles:** 245
 - **clientComponents:** 0
 
 ## Góc hệ thống (@api) — đường dẫn gợi ý
@@ -248,6 +248,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/common/pagination.ts` | ts | no | ADMIN_TABLE_MAX_LIMIT, ADMIN_TABLE_EXPORT_MAX_LIMIT, PaginationParams, normalizePageLimit, PaginationMeta, paginationMeta, normalizeExportPageLimit |  |
 | `src/common/parse-column-filters.ts` | ts | no | parseColumnFiltersFromQuery |  |
 | `src/common/parse-list-query.ts` | ts | no | parseAdminListLimit, parseAdminListPage, parseAdminListPagination | src/common/pagination.ts |
+| `src/common/parse-setting-value.ts` | ts | no | parseSettingValue |  |
 | `src/common/permissions.decorator.ts` | ts | no | PERMISSIONS_KEY, Permissions |  |
 | `src/common/permissions.guard.ts` | ts | no | PermissionsGuard | src/auth/auth.service.ts, src/common/permissions.decorator.ts, src/common/public.decorator.ts, src/config/constants.ts |
 | `src/common/poster-normalize.ts` | ts | no | unwrapPosterUrl, normalizePosterField |  |
@@ -408,7 +409,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/settings/settings.controller.ts` | ts | no | SettingsController | src/settings/settings.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
 | `src/settings/settings.module.ts` | ts | no | SettingsModule | src/settings/settings.controller.ts, src/settings/settings.service.ts |
 | `src/settings/settings.service.spec.ts` | ts | no |  | src/settings/settings.service.ts, src/entities/setting.entity.ts |
-| `src/settings/settings.service.ts` | ts | no | SettingsService | src/entities/setting.entity.ts |
+| `src/settings/settings.service.ts` | ts | no | PublicSiteBranding, SettingsService | src/common/parse-setting-value.ts, src/entities/setting.entity.ts |
 | `src/socket/notification-mapper.ts` | ts | no | NotificationLike, mapNotificationToPayload | src/socket/socket.types.ts |
 | `src/socket/socket.gateway.ts` | ts | no | SocketGateway | src/sessions/sessions.service.ts, src/entities/notification.entity.ts, src/entities/user.entity.ts, src/socket/socket.types.ts, src/config/app.config.ts, src/socket/notification-mapper.ts |
 | `src/socket/socket.module.ts` | ts | no | SocketModule | src/common/admin-realtime.interceptor.ts, src/common/admin-realtime-broadcast.service.ts, src/socket/socket.gateway.ts, src/sessions/sessions.module.ts |

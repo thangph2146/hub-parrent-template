@@ -1887,6 +1887,16 @@
       "client": false
     },
     {
+      "id": "file_src_app_error_tsx",
+      "label": "error.tsx",
+      "path": "src/app/error.tsx",
+      "color": "#cc3333",
+      "size": 10,
+      "community": "src/app",
+      "type": "error",
+      "client": true
+    },
+    {
       "id": "dir_src_app_events",
       "label": "events/",
       "path": "src/app/events",
@@ -4983,6 +4993,95 @@
       "client": true
     },
     {
+      "id": "dir_src_app_settings__component",
+      "label": "_component/",
+      "path": "src/app/settings/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/settings",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_settings__component_constants_ts",
+      "label": "constants.ts",
+      "path": "src/app/settings/_component/constants.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_settings__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/settings/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_settings__component_settings_presets_ts",
+      "label": "settings-presets.ts",
+      "path": "src/app/settings/_component/settings-presets.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_settings__component_settings_quick_presets_tsx",
+      "label": "settings-quick-presets.tsx",
+      "path": "src/app/settings/_component/settings-quick-presets.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_settings__component_settings_seo_pages_presets_ts",
+      "label": "settings-seo-pages-presets.ts",
+      "path": "src/app/settings/_component/settings-seo-pages-presets.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "label": "settings-seo-pages-quick-presets.tsx",
+      "path": "src/app/settings/_component/settings-seo-pages-quick-presets.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "label": "settings-seo-pages-section.tsx",
+      "path": "src/app/settings/_component/settings-seo-pages-section.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_settings__component_utils_ts",
+      "label": "utils.ts",
+      "path": "src/app/settings/_component/utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/settings/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_app_speakers",
       "label": "speakers/",
       "path": "src/app/speakers",
@@ -5901,6 +6000,16 @@
       "community": "src/app/tags/_component/_table",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_app_template_tsx",
+      "label": "template.tsx",
+      "path": "src/app/template.tsx",
+      "color": "#ff6b35",
+      "size": 10,
+      "community": "src/app",
+      "type": "template",
+      "client": false
     },
     {
       "id": "dir_src_app_templates",
@@ -8356,6 +8465,11 @@
     },
     {
       "source": "dir_src_app",
+      "target": "file_src_app_error_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
       "target": "dir_src_app_events",
       "relation": "contains"
     },
@@ -9950,6 +10064,51 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_app_settings",
+      "target": "dir_src_app_settings__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_constants_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_settings_presets_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_settings_quick_presets_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_settings__component",
+      "target": "file_src_app_settings__component_utils_ts",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src_app",
       "target": "dir_src_app_speakers",
       "relation": "contains"
@@ -10422,6 +10581,11 @@
     {
       "source": "dir_src_app_tags__component__table",
       "target": "file_src_app_tags__component__table_tags_trash_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
+      "target": "file_src_app_template_tsx",
       "relation": "contains"
     },
     {
@@ -15547,6 +15711,111 @@
     {
       "source": "file_src_app_settings_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings_page_tsx",
+      "target": "dir_src_app_settings__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_settings_presets_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_settings_quick_presets_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_index_ts",
+      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_presets_ts",
+      "target": "file_src_app_settings__component_settings_presets_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
+      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "dir_src_lib",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "dir_src_app_seo_metas__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_app_settings__component_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
       "relation": "imports"
     },
     {

@@ -79,7 +79,6 @@ export function StudentGradeDialog({
       return api.myStudents.getDetailedScores<DetailedScore>(studentCode)
     },
     enabled: open && Boolean(studentCode),
-    staleTime: 5 * 60_000,
     retry: false,
   })
 
@@ -91,7 +90,6 @@ export function StudentGradeDialog({
         return api.myStudents.getYearAverages<YearAverage>(studentCode)
       },
       enabled: open && Boolean(studentCode),
-      staleTime: 5 * 60_000,
       retry: false,
     },
   )
@@ -104,7 +102,6 @@ export function StudentGradeDialog({
         return api.myStudents.getTermAverages<TermAverage>(studentCode)
       },
       enabled: open && Boolean(studentCode),
-      staleTime: 5 * 60_000,
       retry: false,
     },
   )
@@ -116,7 +113,6 @@ export function StudentGradeDialog({
       return api.myStudents.getOverallAverage<OverallAverage>(studentCode)
     },
     enabled: open && Boolean(studentCode),
-    staleTime: 5 * 60_000,
     retry: false,
   })
 

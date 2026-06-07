@@ -154,8 +154,6 @@ function TrainingSystemsPageInner() {
     [rowActions, crudNav, canWrite, canDelete, canHardDelete],
   );
 
-
-
   const trashColumns = useMemo<ColumnDef<TrainingSystemRow>[]>(
     () => getTrainingSystemColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
     [rowActions, canWrite, canRestore, canHardDelete],

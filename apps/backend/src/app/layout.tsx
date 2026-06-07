@@ -21,11 +21,11 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 })
 
+/** Fallback SSR — title/description thực tế được ghi từ settings qua `useAdminDocumentTitle`. */
 export const metadata: Metadata = createAdminMetadata({
-  titleDefault: "Quản trị HUB Parent",
-  titleTemplate: "%s | Quản trị HUB Parent",
-  description:
-    "Cổng quản trị nội bộ cho hệ thống HUB Parent, hỗ trợ nhà trường quản lý nội dung, tài khoản, phân quyền, yêu cầu liên hệ và liên kết phụ huynh - sinh viên.",
+  titleDefault: "Quản trị",
+  titleTemplate: "%s | Quản trị",
+  description: "Cổng quản trị nội bộ.",
 })
 
 export default function RootLayout({

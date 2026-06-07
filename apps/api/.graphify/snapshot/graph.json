@@ -532,6 +532,16 @@
       "client": false
     },
     {
+      "id": "file_src_common_parse_setting_value_ts",
+      "label": "parse-setting-value.ts",
+      "path": "src/common/parse-setting-value.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_permissions_decorator_ts",
       "label": "permissions.decorator.ts",
       "path": "src/common/permissions.decorator.ts",
@@ -3201,6 +3211,11 @@
     {
       "source": "dir_src_common",
       "target": "file_src_common_parse_list_query_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_parse_setting_value_ts",
       "relation": "contains"
     },
     {
@@ -7944,6 +7959,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_public_public_controller_ts",
+      "target": "file_src_seo_metas_seo_metas_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_public_public_controller_ts",
+      "target": "file_src_settings_settings_service_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_public_public_module_ts",
       "target": "file_src_socket_socket_module_ts",
       "relation": "imports"
@@ -8016,6 +8041,16 @@
     {
       "source": "file_src_public_public_module_ts",
       "target": "file_src_public_public_event_registration_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_public_public_module_ts",
+      "target": "file_src_seo_metas_seo_metas_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_public_public_module_ts",
+      "target": "file_src_settings_settings_module_ts",
       "relation": "imports"
     },
     {
@@ -8601,6 +8636,11 @@
     {
       "source": "file_src_settings_settings_service_spec_ts",
       "target": "file_src_entities_setting_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_settings_settings_service_ts",
+      "target": "file_src_common_parse_setting_value_ts",
       "relation": "imports"
     },
     {

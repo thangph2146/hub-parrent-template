@@ -18,6 +18,7 @@ import { Input } from "@ui/components/input";
 import { PointerHighlight } from "@ui/components/pointer-highlight";
 import { TypographyH2 } from "@ui/components/typography";
 import { toast } from "@ui/components/sonner";
+import { useAdminLayout } from "@ui/components/admin";
 import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
 import { registerAccount } from "./auth-api";
 
@@ -41,6 +42,7 @@ const INITIAL_STATE: RegisterFormState = {
 
 export function RegisterForm() {
   const router = useRouter();
+  const { siteName, siteDescription } = useAdminLayout();
   const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -103,12 +105,14 @@ export function RegisterForm() {
                   <div className="flex flex-col items-center gap-1">
                     <PointerHighlight>
                       <p className="relative z-10 text-xl font-bold uppercase tracking-tight text-primary sm:text-sm md:text-2xl">
-                        Hệ thống Kết nối Phụ huynh
+                        {siteName}
                       </p>
                     </PointerHighlight>
-                    <p className="text-xs font-medium italic text-muted-foreground sm:text-sm md:text-sm">
-                      &ldquo;Nắm bắt hành trình của con, an tâm tương lai vững chắc&rdquo;
-                    </p>
+                    {siteDescription ? (
+                      <p className="text-xs font-medium italic text-muted-foreground sm:text-sm md:text-sm">
+                        {siteDescription}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 

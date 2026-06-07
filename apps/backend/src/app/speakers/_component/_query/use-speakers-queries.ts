@@ -1,11 +1,9 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { SpeakerDetail, SpeakerRow } from "../types";
 
@@ -29,22 +27,13 @@ export function useSpeakerDetailQuery(
   apiParam: StoreSyncSdk,
   id: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       speakerDetailQueryKey(id),
       async () => apiParam.speakers.get<SpeakerDetail>(id),
       id
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<SpeakerRow, SpeakerDetail>(
-        queryClient,
-        ["speakers", "list"],
-        id,
-        (row) => row as unknown as SpeakerDetail
-      ),
-  });
+});
 }
 
 export function useSpeakersListQuery(

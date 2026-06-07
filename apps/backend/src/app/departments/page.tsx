@@ -166,7 +166,6 @@ function DepartmentsPageInner() {
     purgeMutation,
   });
 
-
   const columns = useMemo<ColumnDef<DepartmentRow>[]>(
     () =>
       getDepartmentColumns({

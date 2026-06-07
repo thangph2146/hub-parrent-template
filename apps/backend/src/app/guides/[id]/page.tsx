@@ -29,7 +29,6 @@ import { api } from "@/lib/api";
 import { formatDateTime, PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
 import { useGuideDetailQuery, parseContent } from "../_component";
 
-
 function GuideDetailInner() {
   const crudNav = useAdminCrudNavigation("/guides");
   const params = useParams();

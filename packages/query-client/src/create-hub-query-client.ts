@@ -21,16 +21,14 @@ export function hubDefaultQueryRetry(failureCount: number, error: unknown): bool
   return failureCount < 2;
 }
 
-/** Cấu hình mặc định dùng chung cho @frontend và @backend. */
+/** Cấu hình mặc định dùng chung cho @frontend và @hub-event-checkin-frontend. */
 export const hubQueryClientDefaultOptions: DefaultOptions = {
   queries: {
-    /** List/detail admin: hiển thị cache ngay khi quay lại trong cửa sổ này. */
     staleTime: 60_000,
     gcTime: 10 * 60 * 1000,
     retry: hubDefaultQueryRetry,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    /** Chỉ refetch khi dữ liệu đã stale — tránh flash loading khi chuyển trang. */
     refetchOnMount: true,
     structuralSharing: true,
   },
@@ -39,15 +37,32 @@ export const hubQueryClientDefaultOptions: DefaultOptions = {
   },
 };
 
+/** @backend — không giữ cache query; luôn refetch từ API. */
+export const hubAdminQueryClientDefaultOptions: DefaultOptions = {
+  queries: {
+    staleTime: 0,
+    gcTime: 0,
+    retry: hubDefaultQueryRetry,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    structuralSharing: false,
+  },
+  mutations: {
+    retry: false,
+  },
+};
+
 export type CreateHubQueryClientOptions = {
   mutationCache?: MutationCache;
+  defaultOptions?: DefaultOptions;
 };
 
 export function createHubQueryClient(
   options?: CreateHubQueryClientOptions,
 ): QueryClient {
   return new QueryClient({
-    defaultOptions: hubQueryClientDefaultOptions,
+    defaultOptions: options?.defaultOptions ?? hubQueryClientDefaultOptions,
     mutationCache: options?.mutationCache,
   });
 }

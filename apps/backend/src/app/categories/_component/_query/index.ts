@@ -1,10 +1,8 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { CategoryDetail, CategoryRow } from "../types";
 
@@ -28,22 +26,13 @@ export function useCategoryDetailQuery(
   api: StoreSyncSdk,
   categoryId: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       categoryDetailQueryKey(categoryId),
       async () => api.categories.rawGet<CategoryDetail>(categoryId),
       categoryId
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<CategoryRow, CategoryDetail>(
-        queryClient,
-        ["categories", "list"],
-        categoryId,
-        (row) => row as unknown as CategoryDetail
-      ),
-  });
+});
 }
 
 export interface UseCategoriesQueryProps {
@@ -67,8 +56,6 @@ export function useCategoriesQuery({
         status: "active",
         filters: columnFilterQuery,
       }),
-    staleTime: 2 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -92,8 +79,6 @@ export function useTrashQuery({
   return useQuery({
     queryKey: ["categories", "trash", trashPage, trashPageSize, debouncedTrashQ, trashColumnFilterQuery],
     enabled,
-    staleTime: 2 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
     queryFn: async (): Promise<PagedResult<CategoryRow>> =>
       api.categories.rawList<CategoryRow>({
         page: trashPage,
@@ -126,7 +111,5 @@ export function useCategoriesOptionsQuery(
       });
       return paged.items.map(normalizeCategoryRow);
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 }

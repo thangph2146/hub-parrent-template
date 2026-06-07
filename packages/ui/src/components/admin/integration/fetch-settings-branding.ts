@@ -1,50 +1,115 @@
-import type { AdminSiteBranding } from "../types"
+import type { AdminPublicSiteSeo, AdminSiteBranding } from "../types"
+import { ADMIN_BRANDING_FALLBACK } from "./admin-branding-fallbacks"
 
-function extractSettingString(res: unknown, fallback: string): string {
-  const envelope = res as { data?: { value?: unknown }; value?: unknown }
-  const raw = envelope.data?.value ?? envelope.value
-  if (typeof raw !== "string") return fallback
-  try {
-    const parsed = JSON.parse(raw)
-    return typeof parsed === "string" ? parsed : raw
-  } catch {
-    return raw
+function unwrapApiPayload<T extends Record<string, unknown>>(res: unknown): T {
+  if (res == null || typeof res !== "object") return {} as T
+  const envelope = res as {
+    success?: boolean
+    data?: T
+  } & T
+  if (
+    envelope.success === true &&
+    envelope.data != null &&
+    typeof envelope.data === "object"
+  ) {
+    return envelope.data
+  }
+  if (envelope.data != null && typeof envelope.data === "object") {
+    return envelope.data
+  }
+  return envelope as T
+}
+
+function extractPublicBranding(
+  res: unknown,
+  defaults: AdminSiteBranding = ADMIN_BRANDING_FALLBACK
+): AdminSiteBranding {
+  const payload = unwrapApiPayload<Partial<AdminSiteBranding>>(res)
+
+  return {
+    siteName:
+      typeof payload.siteName === "string"
+        ? payload.siteName
+        : defaults.siteName,
+    siteDescription:
+      typeof payload.siteDescription === "string"
+        ? payload.siteDescription
+        : defaults.siteDescription,
   }
 }
 
 /**
- * Đọc site_name + site_description từ API admin settings.
- * App truyền `http.get` (vd. api.http.get) — không import client app khác.
+ * Đọc site_name + site_description từ API public (không cần đăng nhập).
  */
-async function safeSettingGet(
+export async function fetchPublicAdminSettingsBranding(
   get: (path: string, signal?: AbortSignal) => Promise<unknown>,
-  path: string,
-  fallback: string,
+  defaults: AdminSiteBranding = ADMIN_BRANDING_FALLBACK,
   signal?: AbortSignal
-): Promise<string> {
+): Promise<AdminSiteBranding> {
   try {
-    return extractSettingString(await get(path, signal), fallback)
+    return extractPublicBranding(
+      await get("/public/site-branding", signal),
+      defaults
+    )
   } catch {
-    return fallback
+    return defaults
   }
 }
 
+/**
+ * Alias giữ tương thích — luôn dùng endpoint public.
+ */
 export async function fetchAdminSettingsBranding(
   get: (path: string, signal?: AbortSignal) => Promise<unknown>,
-  defaults: AdminSiteBranding = {
-    siteName: "HUB Parent",
-    siteDescription: "Quản trị hệ thống",
-  },
+  defaults: AdminSiteBranding = ADMIN_BRANDING_FALLBACK,
   signal?: AbortSignal
 ): Promise<AdminSiteBranding> {
-  const [siteName, siteDescription] = await Promise.all([
-    safeSettingGet(get, "/admin/settings/site_name", defaults.siteName, signal),
-    safeSettingGet(
-      get,
-      "/admin/settings/site_description",
-      defaults.siteDescription,
-      signal
-    ),
-  ])
-  return { siteName, siteDescription }
+  return fetchPublicAdminSettingsBranding(get, defaults, signal)
+}
+
+function extractPublicSiteSeo(res: unknown, page: string): AdminPublicSiteSeo | null {
+  if (res == null) return null
+
+  const payload = unwrapApiPayload<Partial<AdminPublicSiteSeo>>(res)
+
+  if (typeof payload.page !== "string") {
+    return {
+      page,
+      title: null,
+      description: null,
+      keywords: null,
+      ogTitle: null,
+      ogDescription: null,
+      ogImage: null,
+    }
+  }
+
+  const asString = (value: unknown) =>
+    typeof value === "string" ? value : value == null ? null : String(value)
+
+  return {
+    page: payload.page,
+    title: asString(payload.title),
+    description: asString(payload.description),
+    keywords: asString(payload.keywords),
+    ogTitle: asString(payload.ogTitle),
+    ogDescription: asString(payload.ogDescription),
+    ogImage: asString(payload.ogImage),
+  }
+}
+
+/** Đọc SEO mặc định từ API public (tab seo-global). Trả `null` khi chưa cấu hình (404). */
+export async function fetchPublicSiteSeo(
+  get: (path: string, signal?: AbortSignal) => Promise<unknown>,
+  page: string,
+  signal?: AbortSignal
+): Promise<AdminPublicSiteSeo | null> {
+  try {
+    return extractPublicSiteSeo(
+      await get(`/public/seo-meta?page=${encodeURIComponent(page)}`, signal),
+      page
+    )
+  } catch {
+    return null
+  }
 }

@@ -2,9 +2,14 @@
 
 import { useMemo, type ReactNode } from "react"
 import {
+  ADMIN_PUBLIC_BRANDING_QUERY_KEY,
+  ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,
+  ADMIN_SITE_SEO_PAGE_KEY,
   AdminLayoutBridge,
   buildAdminLayoutValue,
-  fetchAdminSettingsBranding,
+  useAdminDocumentHeadOverride,
+  useAdminDocumentTitle,
+  useAdminPublicSiteSeo,
   useAdminSiteBranding,
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
@@ -15,22 +20,34 @@ import { useAuth, useClientReady } from "@/providers/auth-provider"
 export function BackendAdminLayoutProvider({ children }: { children: ReactNode }) {
   const clientReady = useClientReady()
   const { user, logout } = useAuth()
-  const brandingDefaults = {
-    siteName: "HUB Parent",
-    siteDescription: "Quản trị hệ thống",
-  } as const
 
   const branding = useAdminSiteBranding({
-    queryKey: ["settings", "site-config", user?.id ?? "guest"],
-    enabled: clientReady && !!user,
+    queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,
     fetchBranding: ({ signal }) =>
-      fetchAdminSettingsBranding(
-        (path: string, reqSignal?: AbortSignal) =>
-          api.http.get(path, { signal: reqSignal ?? signal }),
-        brandingDefaults,
-        signal
-      ),
-    defaults: brandingDefaults,
+      api.settings.getPublicBranding({ signal }),
+  })
+
+  const siteSeo = useAdminPublicSiteSeo({
+    queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,
+    page: ADMIN_SITE_SEO_PAGE_KEY,
+    fetchSiteSeo: ({ signal, page }) =>
+      api.seoMetas.getPublicByPage(page, { signal }),
+  })
+
+  const documentHeadOverride = useAdminDocumentHeadOverride()
+
+  useAdminDocumentTitle({
+    siteName: documentHeadOverride?.siteName ?? branding.siteName,
+    siteDescription:
+      documentHeadOverride?.siteDescription ?? branding.siteDescription,
+    metaTitle:
+      documentHeadOverride?.metaTitle ??
+      (siteSeo.isReady ? siteSeo.data?.title : undefined),
+    metaDescription:
+      documentHeadOverride?.metaDescription ??
+      (siteSeo.isReady ? siteSeo.data?.description : undefined),
+    titleFallback: "Quản trị",
+    descriptionFallback: "Quản trị hệ thống",
   })
 
   const value = useMemo(

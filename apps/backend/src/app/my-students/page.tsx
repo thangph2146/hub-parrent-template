@@ -63,7 +63,7 @@ export default function MyStudentsPage() {
       const result = await api.myStudents.list()
       return result as unknown as MyStudentRow[]
     },
-    staleTime: 30_000,
+
     refetchInterval: (query) => {
       const rows = query.state.data as MyStudentRow[] | undefined
       const hasPending = (rows ?? []).some((row) => row.status === "pending")

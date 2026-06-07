@@ -28,6 +28,17 @@ export type AdminSiteBranding = {
   siteDescription: string
 }
 
+/** SEO mặc định toàn site — tab seo-global / GET /api/public/seo-meta. */
+export type AdminPublicSiteSeo = {
+  page: string
+  title: string | null
+  description: string | null
+  keywords: string | null
+  ogTitle: string | null
+  ogDescription: string | null
+  ogImage: string | null
+}
+
 /** Context value do app admin cung cấp qua `AdminLayoutBridge`. */
 export type AdminLayoutContextValue = {
   user: AdminLayoutUser | null
@@ -36,6 +47,8 @@ export type AdminLayoutContextValue = {
   menuTree: AdminMenuTreeItem[]
   siteName: string
   siteDescription: string
+  /** Branding từ tab display đã fetch — tránh flash tên fallback trên màn loading. */
+  brandingReady: boolean
   loginPath: string
   isAuthPath: (pathname: string) => boolean
   canAccessApp: (user: AdminLayoutUser) => boolean
@@ -54,5 +67,10 @@ export type AdminLayoutContextValue = {
 /** Cấu hình cố định mỗi app admin (menu, auth routes, …). */
 export type AdminLayoutStaticConfig = Omit<
   AdminLayoutContextValue,
-  "user" | "clientReady" | "logout" | "siteName" | "siteDescription"
+  | "user"
+  | "clientReady"
+  | "logout"
+  | "siteName"
+  | "siteDescription"
+  | "brandingReady"
 >

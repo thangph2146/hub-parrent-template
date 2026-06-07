@@ -24,7 +24,6 @@ import {
   CalendarDays,
   CalendarPlus,
   Camera,
-  Search,
   LayoutTemplate,
   Monitor,
   Image,
@@ -261,16 +260,11 @@ const menuTree: AdminMenuTreeItem[] = [
     children: [
       {
         href: "/settings",
-        label: "Cài đặt chung",
+        label: "Cài đặt & SEO",
         icon: Cog,
-        permission: PERMISSION_CODES.SETTINGS_MANAGE,
-      },
-      {
-        href: "/seo-metas",
-        label: "SEO Metadata",
-        icon: Search,
         permission: null,
         anyPermission: [
+          PERMISSION_CODES.SETTINGS_MANAGE,
           PERMISSION_CODES.SEO_METAS_VIEW,
           PERMISSION_CODES.SEO_METAS_MANAGE,
         ],

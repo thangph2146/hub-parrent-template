@@ -177,7 +177,6 @@ function EventsPageInner() {
     purgeMutation,
   });
 
-
   const columns = useMemo<ColumnDef<EventRow>[]>(
     () =>
       getEventColumns({

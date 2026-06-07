@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `C:/HUB/source/hub-parent-template/apps/backend`
-- **context.generatedAt:** 2026-06-06T18:20:20.361Z
+- **context.generatedAt:** 2026-06-07T08:18:38.034Z
 
 ## Mục lục artefact Graphify
 
@@ -34,8 +34,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Thống kê graph:** [`GRAPH_STATS.md`](GRAPH_STATS.md) — quy mô node/link, top file in/out-degree (điểm nóng import).
 
 ## Thống kê
-- **totalFiles:** 536
-- **clientComponents:** 220
+- **totalFiles:** 546
+- **clientComponents:** 224
 
 ## Trang (pages) (88)
 - `src/app/academic-years/new/page.tsx`
@@ -276,6 +276,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/departments/new/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/departments/new/page.tsx` | page | yes | NewDepartmentPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/departments/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/departments/page.tsx` | page | yes | DepartmentsPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib, src/lib/admin-row-action-handlers.ts, src/app/departments/_component, src/hooks |
+| `src/app/error.tsx` | error | yes | AdminError |  |
 | `src/app/events/[id]/edit/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/events/[id]/edit/page.tsx` | page | yes | EditEventPage | src/lib/fetch-all-admin-list.ts, src/lib/admin-navigation.ts, src/lib/api.ts, src/app/events/_component, src/app/events/_component/utils.ts, src/hooks/use-admin-mutation.ts |
 | `src/app/events/[id]/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
@@ -499,7 +500,15 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/seo-metas/new/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/seo-metas/new/page.tsx` | page | yes | NewSeoMetaPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/seo-metas/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/seo-metas/page.tsx` | page | yes | SeoMetasPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib, src/lib/admin-row-action-handlers.ts, src/app/seo-metas/_component, src/hooks/u |
-| `src/app/settings/page.tsx` | page | yes | extractSettingValue, SettingsPage | src/lib/api.ts, src/providers/auth-provider.tsx, src/hooks/use-admin-mutation.ts |
+| `src/app/settings/_component/constants.ts` | ts | no | SITE_SEO_PAGE_KEY, SettingsTabId, SETTINGS_TAB_LABELS |  |
+| `src/app/settings/_component/index.ts` | ts | no | SITE_SEO_PAGE_KEY, SETTINGS_TAB_LABELS, extractSettingValue, SettingsSeoPagesSection, SETTINGS_DISPLAY_PRESETS, SETTINGS_SEO_GLOBAL_PRESETS, getSettingsDisplayPreset, getSettingsSeoGlobalPreset, Setti | src/app/settings/_component/constants.ts, src/app/settings/_component/utils.ts, src/app/settings/_component/settings-seo-pages-section.tsx, src/app/settings/_component/settings-presets.ts, src/app/set |
+| `src/app/settings/_component/settings-presets.ts` | ts | no | DEFAULT_STOREFRONT_OG_IMAGE, SettingsDisplayPreset, SettingsSeoGlobalPreset, SETTINGS_DISPLAY_PRESETS, SETTINGS_SEO_GLOBAL_PRESETS, getSettingsDisplayPreset, getSettingsSeoGlobalPreset |  |
+| `src/app/settings/_component/settings-quick-presets.tsx` | tsx | yes | SettingsQuickPresetItem, SettingsQuickPresets |  |
+| `src/app/settings/_component/settings-seo-pages-presets.ts` | ts | no | SettingsSeoPagePreset, SettingsSeoPagesPresetGroup, SETTINGS_SEO_PAGES_PRESET_GROUPS, getSettingsSeoPagesPresetGroup, resolveSettingsSeoPagesSelection, listAllPresetPagePaths | src/app/settings/_component/settings-presets.ts |
+| `src/app/settings/_component/settings-seo-pages-quick-presets.tsx` | tsx | yes | SettingsSeoPagesQuickPresets | src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/settings/_component/settings-seo-pages-presets.ts |
+| `src/app/settings/_component/settings-seo-pages-section.tsx` | tsx | yes | SettingsSeoPagesSection | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/lib/api.ts, src/lib, src/lib/admin-row-action-handlers.ts, src/app/seo-metas/_component, src/hooks/use-admin-mutation.ts, src/app/set |
+| `src/app/settings/_component/utils.ts` | ts | no | extractSettingValue |  |
+| `src/app/settings/page.tsx` | page | yes | SettingsPage | src/lib/api.ts, src/providers/auth-provider.tsx, src/hooks/use-admin-mutation.ts, src/app/settings/_component |
 | `src/app/speakers/[id]/edit/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/speakers/[id]/edit/page.tsx` | page | yes | EditSpeakerPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/speakers/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/speakers/[id]/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
@@ -565,6 +574,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/tags/new/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/tags/new/page.tsx` | page | yes | NewTagPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/tags/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/tags/page.tsx` | page | yes | TagsPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib/admin-row-action-handlers.ts, src/app/tags/_component, src/hooks/use-admin-mutat |
+| `src/app/template.tsx` | template | no | Template |  |
 | `src/app/templates/[id]/edit/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
 | `src/app/templates/[id]/edit/page.tsx` | page | yes | EditTemplatePage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/templates/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/templates/[id]/loading.tsx` | loading | no | Loading | src/components/admin-route-loading.tsx |
@@ -624,7 +634,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/training-systems/new/page.tsx` | page | yes | NewTrainingSystemPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/training-systems/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/training-systems/page.tsx` | page | yes | TrainingSystemsPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib, src/lib/admin-row-action-handlers.ts, src/app/training-systems/_component, src/ |
 | `src/components/admin-realtime-sync.tsx` | tsx | yes | AdminRealtimeSync | src/providers/auth-provider.tsx, src/hooks/use-admin-realtime-sync.ts |
-| `src/components/admin-route-loading.tsx` | tsx | no | AdminRouteLoading |  |
+| `src/components/admin-route-loading.tsx` | tsx | no | AdminRouteLoading, default |  |
 | `src/components/api-scope-notice.tsx` | tsx | yes | ApiScopeNotice |  |
 | `src/components/dashboard-charts.tsx` | tsx | yes | MonthlyLineChart, MonthlyBarChart, CategoryDoughnutChart, TopPostsChart | src/types/dashboard.ts |
 | `src/components/location-map.tsx` | tsx | yes | LocationMap | src/lib/map-utils.ts |

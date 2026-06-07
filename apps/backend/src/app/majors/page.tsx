@@ -161,7 +161,6 @@ function MajorsPageInner() {
     purgeMutation,
   });
 
-
   const columns = useMemo<ColumnDef<MajorRow>[]>(
     () =>
       getMajorColumns({

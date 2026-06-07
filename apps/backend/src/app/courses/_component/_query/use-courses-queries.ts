@@ -1,15 +1,9 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
-import {
-  useQuery,
-  useQueryClient,
-  type QueryClient,
-} from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { CourseDetail, CourseRow } from "../types";
 
@@ -32,22 +26,13 @@ export function useCourseDetailQuery(
   apiParam: StoreSyncSdk,
   id: string,
 ): UseQueryResult<CourseDetail> {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       courseDetailQueryKey(id),
       async () => apiParam.courses.get<CourseDetail>(id),
       id
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<CourseRow, CourseDetail>(
-        queryClient,
-        ["courses", "list"],
-        id,
-        (row) => row as unknown as CourseDetail
-      ),
-  });
+});
 }
 
 export function useCoursesListQuery(

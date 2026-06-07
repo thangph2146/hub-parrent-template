@@ -36,12 +36,18 @@ import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
 import { Public } from '../common/public.decorator';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
+import { SeoMetasService } from '../seo-metas/seo-metas.service';
+import { SettingsService } from '../settings/settings.service';
 
 function setCacheControl(res: Response, ttl = 60): void {
   res.setHeader(
     'Cache-Control',
     `public, max-age=${ttl}, s-maxage=${ttl * 2}, stale-while-revalidate=${Math.floor(ttl / 2)}`,
   );
+}
+
+function setNoStoreCacheControl(res: Response): void {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
 }
 
 function parseQuery(query: Record<string, string | undefined>) {
@@ -76,6 +82,8 @@ export class PublicController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly publicEventRegistrationService: PublicEventRegistrationService,
+    private readonly seoMetasService: SeoMetasService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   private logApiError(api: string, error: unknown, metadata?: unknown): void {
@@ -802,6 +810,66 @@ export class PublicController {
         slug,
         track,
       });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Get('site-branding')
+  async getSiteBranding(@Res() res: Response) {
+    setNoStoreCacheControl(res);
+    try {
+      const branding = await this.settingsService.getPublicBranding();
+      const { statusCode, body } = createSuccessResponse(branding);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/site-branding', error);
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Get('seo-meta')
+  async getSeoMetaByPage(@Query('page') page: string, @Res() res: Response) {
+    const normalized = page?.trim();
+    // SEO mặc định toàn site (__site__) dùng cho admin <head> — không cache để cập nhật ngay sau lưu.
+    if (normalized === '__site__') {
+      setNoStoreCacheControl(res);
+    } else {
+      setCacheControl(res, 300);
+    }
+    if (!normalized) {
+      const { statusCode, body } = createErrorResponse('Thiếu query page', {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+    try {
+      const row = await this.seoMetasService.getByPage(normalized);
+      if (!row || row.status !== 1) {
+        const { statusCode, body } = createErrorResponse('Not Found', {
+          status: 404,
+        });
+        return res.status(statusCode).json(body);
+      }
+      const { statusCode, body } = createSuccessResponse({
+        page: row.page,
+        title: row.title,
+        description: row.description,
+        keywords: row.keywords,
+        ogTitle: row.ogTitle,
+        ogDescription: row.ogDescription,
+        ogImage: row.ogImage,
+      });
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/seo-meta', error, { page: normalized });
       const { statusCode, body } = createErrorResponse(
         'Internal Server Error',
         { status: 500 },

@@ -8,7 +8,6 @@ export function useCategoriesQuery(
 ): UseQueryResult<CategoryTreeOption[]> {
   return useQuery({
     queryKey: ["categories", "options"],
-    staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<CategoryTreeOption[]> => {
       const paged = await api.categories.rawList<CategoryTreeOption>({
         page: 1,
@@ -28,7 +27,6 @@ export function useCategoriesQuery(
 export function useTagsQuery(api: StoreSyncSdk): UseQueryResult<TaxonomyOption[]> {
   return useQuery({
     queryKey: ["tags", "options"],
-    staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<TaxonomyOption[]> => {
       const paged = await api.tags.list<TaxonomyOption>({
         page: 1,

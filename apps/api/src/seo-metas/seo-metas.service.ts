@@ -108,6 +108,55 @@ export class SeoMetasService {
     return row ? mapRow(row) : null;
   }
 
+  async getByPage(page: string): Promise<SeoMetaRowDto | null> {
+    const normalized = page.trim();
+    if (!normalized) return null;
+    const row = await this.em.findOne(SeoMeta, {
+      page: normalized,
+      deletedAt: null,
+    });
+    return row ? mapRow(row) : null;
+  }
+
+  async upsertByPage(
+    page: string,
+    data: {
+      title?: string | null;
+      description?: string | null;
+      keywords?: string | null;
+      ogTitle?: string | null;
+      ogDescription?: string | null;
+      ogImage?: string | null;
+      status?: number;
+    },
+  ): Promise<SeoMetaRowDto> {
+    const normalized = page.trim();
+    if (!normalized) {
+      throw new Error('page là bắt buộc');
+    }
+    const existing = await this.em.findOne(SeoMeta, {
+      page: normalized,
+      deletedAt: null,
+    });
+    if (existing) {
+      const updated = await this.update(existing.id, {
+        ...data,
+        page: normalized,
+      });
+      if (!updated) throw new Error('Không cập nhật được SEO meta');
+      return updated;
+    }
+    return this.create({
+      page: normalized,
+      title: data.title,
+      description: data.description,
+      keywords: data.keywords,
+      ogTitle: data.ogTitle,
+      ogDescription: data.ogDescription,
+      ogImage: data.ogImage,
+    });
+  }
+
   async create(data: {
     page: string;
     title?: string | null;

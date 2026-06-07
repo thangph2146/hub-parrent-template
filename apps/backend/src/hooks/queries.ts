@@ -2,7 +2,6 @@
 
 import { useQuery, useQueryClient, type QueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 import {
-  adminDetailPlaceholderFromList,
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query"
@@ -78,9 +77,9 @@ export const useUpdateAccountProfile = (): UseMutationResult<
   const qc = useQueryClient()
   return useAdminMutation({
     mutationFn: (input) => api.accounts.update(input),
-    onSuccess: (profile) => {
-      qc.setQueryData(queryKeys.accountProfile(), profile)
-    }
+    onSuccess: async () => {
+      await qc.refetchQueries({ queryKey: queryKeys.accountProfile() })
+    },
   })
 }
 
@@ -92,9 +91,9 @@ export const useChangeAccountPassword = (): UseMutationResult<
   const qc = useQueryClient()
   return useAdminMutation({
     mutationFn: (input) => api.accounts.changePassword(input),
-    onSuccess: (profile) => {
-      qc.setQueryData(queryKeys.accountProfile(), profile)
-    }
+    onSuccess: async () => {
+      await qc.refetchQueries({ queryKey: queryKeys.accountProfile() })
+    },
   })
 }
 
@@ -110,7 +109,6 @@ export function prefetchStaffProfile(
 }
 
 export const useStaffProfile = (userId: string | number | null | undefined) => {
-  const queryClient = useQueryClient()
   const id = userId ?? ""
   const enabled =
     (typeof userId === "string" && userId.trim().length > 0) ||
@@ -120,16 +118,9 @@ export const useStaffProfile = (userId: string | number | null | undefined) => {
     ...adminDetailQueryOptions(
       queryKeys.staffProfile(userId ?? "missing"),
       async () => api.users.get(userId as string | number),
-      String(id)
+      String(id),
     ),
     enabled,
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<User, User>(
-        queryClient,
-        queryKeys.staffUserList(),
-        String(id),
-        (row) => row
-      ),
   })
 }
 
@@ -147,9 +138,9 @@ export const useUpdateStaffProfile = (): UseMutationResult<
       error: (err) => (err instanceof Error ? err.message : "Lỗi lưu hồ sơ"),
     },
     mutationFn: ({ id, input }) => api.users.updateProfile(id, input),
-    onSuccess: (u) => {
-      qc.setQueryData(queryKeys.staffProfile(u.id), u)
-    }
+    onSuccess: async (_u, { id }) => {
+      await qc.refetchQueries({ queryKey: queryKeys.staffProfile(id) })
+    },
   })
 }
 
@@ -282,25 +273,17 @@ export function prefetchContactRequestDetail(
 }
 
 export const useContactRequestDetail = (
-  id: string | number | null | undefined
+  id: string | number | null | undefined,
 ) => {
-  const queryClient = useQueryClient()
   const normalizedId = id != null ? String(id) : ""
 
   return useQuery<ContactRequest, Error>({
     ...adminDetailQueryOptions(
       contactRequestDetailQueryKey(id ?? "missing"),
       async () => api.contactRequests.detail(id as string | number),
-      normalizedId
+      normalizedId,
     ),
     enabled: !!id,
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<ContactRequest, ContactRequest>(
-        queryClient,
-        ["contact-requests"],
-        normalizedId,
-        (row) => row
-      ),
   })
 }
 

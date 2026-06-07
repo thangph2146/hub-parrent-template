@@ -1,11 +1,9 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { EventDetail, EventRow } from "../types";
 
@@ -35,8 +33,6 @@ export function useEventDetailQuery(
   id: string,
   options?: EventLiveQueryOptions
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       eventDetailQueryKey(id),
@@ -45,14 +41,7 @@ export function useEventDetailQuery(
     ),
     ...options,
     enabled: !!id && (options?.enabled ?? true),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<EventRow, EventDetail>(
-        queryClient,
-        ["events", "list"],
-        id,
-        (row) => row as unknown as EventDetail
-      ),
-  });
+});
 }
 
 export function useEventsListQuery(apiParam: StoreSyncSdk, enabled: boolean, filters?: Record<string, string>): UseQueryResult<EventRow[]> {

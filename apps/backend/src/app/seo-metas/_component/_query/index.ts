@@ -1,11 +1,9 @@
-import {
-  adminDetailPlaceholderFromList,
-  adminDetailQueryOptions,
+import { adminDetailQueryOptions,
   prefetchAdminDetailQuery,
 } from "@/lib/admin-detail-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
 import type { SeoMetaDetail, SeoMetaRow } from "../types";
 
@@ -29,22 +27,13 @@ export function useSeoMetaDetailQuery(
   api: StoreSyncSdk,
   id: string
 ) {
-  const queryClient = useQueryClient();
-
   return useQuery({
     ...adminDetailQueryOptions(
       seoMetaDetailQueryKey(id),
       async () => api.seoMetas.get<SeoMetaDetail>(id),
       id
     ),
-    placeholderData: () =>
-      adminDetailPlaceholderFromList<SeoMetaRow, SeoMetaDetail>(
-        queryClient,
-        ["seo-metas", "list"],
-        id,
-        (row) => row as unknown as SeoMetaDetail
-      ),
-  });
+});
 }
 
 export function useSeoMetasListQuery(

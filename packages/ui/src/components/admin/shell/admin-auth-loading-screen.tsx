@@ -7,6 +7,7 @@ import { cn } from "../../../lib/utils"
 export type AdminAuthLoadingScreenProps = {
   message?: string
   siteName?: string
+  siteDescription?: string
   className?: string
 }
 
@@ -14,6 +15,7 @@ export type AdminAuthLoadingScreenProps = {
 export function AdminAuthLoadingScreen({
   message = "Đang tải…",
   siteName,
+  siteDescription,
   className,
 }: AdminAuthLoadingScreenProps) {
   return (
@@ -42,9 +44,14 @@ export function AdminAuthLoadingScreen({
         </div>
 
         {siteName ? (
-          <p className="text-center text-lg font-semibold tracking-tight text-foreground">
-            {siteName}
-          </p>
+          <div className="space-y-1 text-center">
+            <p className="text-lg font-semibold tracking-tight text-foreground">
+              {siteName}
+            </p>
+            {siteDescription ? (
+              <p className="text-sm text-muted-foreground">{siteDescription}</p>
+            ) : null}
+          </div>
         ) : null}
 
         <p className="text-center text-sm text-muted-foreground">{message}</p>

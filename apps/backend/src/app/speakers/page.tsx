@@ -166,7 +166,6 @@ function SpeakersPageInner() {
     purgeMutation,
   });
 
-
   const columns = useMemo<ColumnDef<SpeakerRow>[]>(
     () =>
       getSpeakerColumns({

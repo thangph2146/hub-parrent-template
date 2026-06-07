@@ -207,8 +207,6 @@ function CategoriesPageInner() {
     [rowActions, crudNav, categoryTreeOptions, canWriteCategories, canDeleteCategories, canHardDeleteCategories],
   );
 
-
-
   const trashColumns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({
