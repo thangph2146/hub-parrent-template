@@ -8,7 +8,8 @@
  */
 import { Injectable } from '@nestjs/common';
 import { createReadStream, existsSync } from 'fs';
-import { stat, readdir, mkdir, unlink, rmdir } from 'fs/promises';
+import { stat, readdir, mkdir, unlink, rmdir, writeFile } from 'fs/promises';
+import JSZip from 'jszip';
 import type { ReadStream } from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
@@ -186,6 +187,46 @@ export interface ListImagesResult {
 
 export interface ListFoldersResult {
   data: FolderItemDto[];
+}
+
+export interface ImportArchiveResult {
+  restored: number;
+  skipped: number;
+  failed: number;
+  errors: string[];
+}
+
+function normalizeZipEntryPath(raw: string): string | null {
+  const normalized = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  if (!normalized || normalized.endsWith('/')) return null;
+  if (normalized.includes('..')) return null;
+  if (normalized.startsWith('__MACOSX/') || normalized.includes('/__MACOSX/'))
+    return null;
+  const base = path.posix.basename(normalized);
+  if (base === '.DS_Store' || base.startsWith('._')) return null;
+  return normalized;
+}
+
+/** Bỏ wrapper folder (vd. kho-luu-tru/) khi ZIP không có images/ hoặc files/ ở root. */
+function mapZipPathToStoragePath(
+  zipPath: string,
+  allZipPaths: string[],
+): string {
+  if (zipPath.startsWith('images/') || zipPath.startsWith('files/')) {
+    return zipPath;
+  }
+  const roots = new Set(
+    allZipPaths.map((p) => p.split('/')[0]).filter(Boolean),
+  );
+  if (roots.size === 1) {
+    const root = [...roots][0];
+    if (root && root !== 'images' && root !== 'files') {
+      return zipPath.startsWith(`${root}/`)
+        ? zipPath.slice(root.length + 1)
+        : zipPath;
+    }
+  }
+  return zipPath;
 }
 
 @Injectable()
@@ -701,6 +742,82 @@ export class UploadsService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Khôi phục kho lưu trữ từ file ZIP (export từ admin).
+   * Ghi trực tiếp lên disk theo relativePath — không đổi tên / không nén lại ảnh.
+   */
+  async importArchive(
+    zipBuffer: Buffer,
+    options?: { overwrite?: boolean },
+  ): Promise<ImportArchiveResult> {
+    const overwrite = options?.overwrite === true;
+    const zip = await JSZip.loadAsync(zipBuffer);
+
+    const rawEntries: Array<{
+      zipPath: string;
+      entry: JSZip.JSZipObject;
+    }> = [];
+    for (const [zipPath, entry] of Object.entries(zip.files)) {
+      if (entry.dir) continue;
+      const normalized = normalizeZipEntryPath(zipPath);
+      if (!normalized) continue;
+      rawEntries.push({ zipPath: normalized, entry });
+    }
+
+    if (!rawEntries.length) {
+      throw new Error('File ZIP không chứa file hợp lệ');
+    }
+
+    const allZipPaths = rawEntries.map((item) => item.zipPath);
+    let restored = 0;
+    let skipped = 0;
+    let failed = 0;
+    const errors: string[] = [];
+
+    for (const { zipPath, entry } of rawEntries) {
+      const relativePath = mapZipPathToStoragePath(zipPath, allZipPaths);
+      const ext = path.extname(relativePath).toLowerCase();
+      if (!ALLOWED_EXT.includes(ext)) {
+        skipped += 1;
+        continue;
+      }
+
+      try {
+        const { fullPath, baseDir } = this.resolvePath(relativePath);
+        if (!fullPath.startsWith(baseDir)) {
+          failed += 1;
+          if (errors.length < 10) {
+            errors.push(`${relativePath}: đường dẫn không hợp lệ`);
+          }
+          continue;
+        }
+
+        const existing = await stat(fullPath).catch(() => null);
+        if (existing?.isFile() && !overwrite) {
+          skipped += 1;
+          continue;
+        }
+
+        const buffer = await entry.async('nodebuffer');
+        await this.ensureDir(path.dirname(fullPath));
+        await writeFile(fullPath, buffer);
+        restored += 1;
+      } catch (err) {
+        failed += 1;
+        if (errors.length < 10) {
+          const msg = err instanceof Error ? err.message : String(err);
+          errors.push(`${relativePath}: ${msg}`);
+        }
+      }
+    }
+
+    if (restored === 0 && skipped === 0) {
+      throw new Error('Không khôi phục được file nào từ ZIP');
+    }
+
+    return { restored, skipped, failed, errors };
   }
 
   /** Xóa file theo relativePath */

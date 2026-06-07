@@ -29,8 +29,10 @@ import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { parseAdminListLimit } from '../common/parse-list-query';
 
-/** Giới hạn kích thước file upload (multer); đồng bộ với appConfig.bodyLimit (50mb). */
+/** Giới hạn kích thước file upload đơn lẻ (multer). */
 const MAX_UPLOAD_FILE_BYTES = 50 * 1024 * 1024;
+/** Giới hạn file ZIP khôi phục kho lưu trữ. */
+const MAX_IMPORT_ARCHIVE_BYTES = 512 * 1024 * 1024;
 
 @Permissions(PERMISSIONS.UPLOADS_VIEW)
 @Controller(ADMIN_ROUTES.UPLOADS)
@@ -108,6 +110,57 @@ export class UploadsController {
       pagination: result.pagination,
     });
     return res.status(statusCode).json(body);
+  }
+
+  /** POST /api/admin/uploads/import - FormData: file (.zip), overwrite? */
+  @Post('import')
+  @Permissions(PERMISSIONS.UPLOADS_CREATE)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: MAX_IMPORT_ARCHIVE_BYTES },
+    }),
+  )
+  async importArchive(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Req() req: Request,
+    @UploadedFile()
+    file?: { buffer: Buffer; originalname: string; mimetype: string },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
+    if (!file?.buffer?.length) {
+      const { statusCode, body } = createErrorResponse('Thiếu file ZIP', {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+
+    const formData = req.body as Record<string, string>;
+    const overwrite = formData?.overwrite === 'true';
+
+    try {
+      const data = await this.uploadsService.importArchive(file.buffer, {
+        overwrite,
+      });
+      const { statusCode, body } = createSuccessResponse(data);
+      return res.status(statusCode).json(body);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Lỗi khôi phục kho lưu trữ';
+      this.logApiError(`POST ${ADMIN_ROUTES.UPLOADS}/import`, err, {
+        overwrite,
+        fileName: file.originalname ?? null,
+        size: file.buffer.length,
+      });
+      const { statusCode, body } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
   }
 
   /** POST /api/admin/uploads - FormData: action=createFolder + folderName + parentPath? hoặc file + folderPath? + isExistingFolder? */

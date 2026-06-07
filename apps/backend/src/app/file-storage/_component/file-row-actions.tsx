@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Download,
   ExternalLink,
   Eye,
   Settings2,
@@ -18,7 +19,9 @@ export type FileStorageRowActionsProps = {
   isImagesTab: boolean;
   canDelete: boolean;
   deleting?: boolean;
+  downloading?: boolean;
   onPreview?: () => void;
+  onDownload: () => void | Promise<void>;
   onDelete: () => void | Promise<void>;
 };
 
@@ -41,10 +44,21 @@ export function FileStorageRowActions({
   isImagesTab,
   canDelete,
   deleting,
+  downloading,
   onPreview,
+  onDownload,
   onDelete,
 }: FileStorageRowActionsProps) {
   const actions: DataTableRowActionItem[] = [
+    {
+      key: "download",
+      label: "Tải về",
+      hint: "Lưu file xuống máy",
+      onClick: onDownload,
+      icon: <Download />,
+      group: "primary",
+      confirm: false,
+    },
     {
       key: "open",
       label: "Mở tab mới",
@@ -86,7 +100,7 @@ export function FileStorageRowActions({
   return (
     <DataTableRowActionsMenu
       actions={actions}
-      busy={deleting}
+      busy={deleting || downloading}
       autoConfirmDangerousActions
       groups={{
         primary: { label: "Thao tác", icon: Settings2 },

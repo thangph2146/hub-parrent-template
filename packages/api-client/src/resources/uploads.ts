@@ -27,6 +27,13 @@ export interface ListImagesData {
 	};
 }
 
+export interface ImportArchiveResult {
+	restored: number;
+	skipped: number;
+	failed: number;
+	errors: string[];
+}
+
 export class UploadsApi {
 	constructor(private readonly http: ApiClient) {}
 
@@ -94,5 +101,20 @@ export class UploadsApi {
 		if (folderPath?.trim()) fd.append("folderPath", folderPath.trim());
 		if (isExistingFolder) fd.append("isExistingFolder", "true");
 		return postData<{ url: string }>(this.http, "/admin/uploads", fd);
+	}
+
+	/** Khôi phục kho lưu trữ từ file ZIP (export trước đó). */
+	async importArchive(
+		file: File,
+		options?: { overwrite?: boolean },
+	): Promise<ImportArchiveResult> {
+		const fd = new FormData();
+		fd.append("file", file);
+		if (options?.overwrite) fd.append("overwrite", "true");
+		return postData<ImportArchiveResult>(
+			this.http,
+			"/admin/uploads/import",
+			fd,
+		);
 	}
 }

@@ -67,6 +67,7 @@
     "express": "^5.0.0",
     "google-auth-library": "^10.6.2",
     "helmet": "^8.1.0",
+    "jszip": "^3.10.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.34.5",

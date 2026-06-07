@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import {
   AdminDataTable,
   adminTableRowSelectionProps,
@@ -25,6 +25,7 @@ export type FileStorageTableProps = {
   selectedRowIds: RowSelectionState;
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
   onBulkDelete: (rows: FileStorageRow[]) => Promise<void>;
+  onBulkDownload: (rows: FileStorageRow[]) => Promise<void>;
   canDelete: boolean;
 };
 
@@ -44,26 +45,35 @@ export function FileStorageTable({
   selectedRowIds,
   onSelectedRowIdsChange,
   onBulkDelete,
+  onBulkDownload,
   canDelete,
 }: FileStorageTableProps) {
-  const bulkActions: AdminDataTableBulkAction<FileStorageRow>[] = canDelete
-    ? [
-        {
-          id: "delete-selected",
-          label: "Xóa",
-          icon: <Trash2 className="size-4" />,
-          variant: "destructive",
-          confirm: {
-            title: "Xóa các file đã chọn?",
-            description: (rows) =>
-              `Bạn đã chọn ${rows.length} file. Các file sẽ bị xóa vĩnh viễn khỏi kho lưu trữ.`,
-            confirmLabel: "Xóa",
-            destructive: true,
+  const bulkActions: AdminDataTableBulkAction<FileStorageRow>[] = [
+    {
+      id: "download-selected",
+      label: "Tải về",
+      icon: <Download className="size-4" />,
+      onAction: onBulkDownload,
+    },
+    ...(canDelete
+      ? [
+          {
+            id: "delete-selected",
+            label: "Xóa",
+            icon: <Trash2 className="size-4" />,
+            variant: "destructive" as const,
+            confirm: {
+              title: "Xóa các file đã chọn?",
+              description: (rows: FileStorageRow[]) =>
+                `Bạn đã chọn ${rows.length} file. Các file sẽ bị xóa vĩnh viễn khỏi kho lưu trữ.`,
+              confirmLabel: "Xóa",
+              destructive: true,
+            },
+            onAction: onBulkDelete,
           },
-          onAction: onBulkDelete,
-        },
-      ]
-    : [];
+        ]
+      : []),
+  ];
 
   return (
     <AdminDataTable<FileStorageRow>

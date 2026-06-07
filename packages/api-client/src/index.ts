@@ -87,7 +87,13 @@ export {
   type DashboardCategoryItemDto,
   type DashboardTopPostDto,
 } from "./resources/dashboard"
-export { UploadsApi, type ImageItem, type FolderItem, type ListImagesData } from "./resources/uploads"
+export {
+  UploadsApi,
+  type ImageItem,
+  type FolderItem,
+  type ListImagesData,
+  type ImportArchiveResult,
+} from "./resources/uploads"
 export {
   PublicApi,
   createPublicApi,

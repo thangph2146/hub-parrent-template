@@ -14,7 +14,9 @@ export type FileStorageColumnsProps = {
   isImagesTab: boolean;
   canDelete: boolean;
   deletingPath: string | null;
+  downloadingPath: string | null;
   onPreview: (row: FileStorageRow) => void;
+  onDownload: (row: FileStorageRow) => void | Promise<void>;
   onDelete: (row: FileStorageRow) => void | Promise<void>;
 };
 
@@ -22,7 +24,9 @@ export function getFileStorageColumns({
   isImagesTab,
   canDelete,
   deletingPath,
+  downloadingPath,
   onPreview,
+  onDownload,
   onDelete,
 }: FileStorageColumnsProps): ColumnDef<FileStorageRow>[] {
   return [
@@ -121,11 +125,13 @@ export function getFileStorageColumns({
           isImagesTab={isImagesTab}
           canDelete={canDelete}
           deleting={deletingPath === row.original.relativePath}
+          downloading={downloadingPath === row.original.relativePath}
           onPreview={
             isImagesTab && isImageMime(row.original.mimeType)
               ? () => onPreview(row.original)
               : undefined
           }
+          onDownload={() => onDownload(row.original)}
           onDelete={() => onDelete(row.original)}
         />
       ),

@@ -16,7 +16,15 @@ import {
 } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
 import { useAuth } from "@/providers/auth-provider";
-import { File, FileImage, Image as ImageIcon, Loader2, Upload } from "lucide-react";
+import {
+  ArchiveRestore,
+  Download,
+  File,
+  FileImage,
+  Image as ImageIcon,
+  Loader2,
+  Upload,
+} from "lucide-react";
 import {
   FileStorageTable,
   getFileStorageColumns,
@@ -37,6 +45,10 @@ function FileStoragePageInner() {
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_DELETE) ||
       canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
     : false;
+  const canView = user
+    ? canUserAccess(user, PERMISSION_CODES.UPLOADS_VIEW) ||
+      canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
+    : false;
 
   const [activeTab, setActiveTab] = useState<FileStorageTab>("images");
   const [page, setPage] = useState(1);
@@ -53,13 +65,22 @@ function FileStoragePageInner() {
 
   const {
     fileInputRef,
+    importInputRef,
     uploading,
+    importing,
     deletingPath,
+    downloadingPath,
     uploadAccept,
     handleUpload,
+    handleImport,
+    handleDownload,
+    handleDownloadAll,
+    handleBulkDownload,
+    downloadingAll,
     handleDelete,
     handleBulkDelete,
     openUploadPicker,
+    openImportPicker,
   } = useFileStorageActions({ activeTab, reload });
 
   const isImagesTab = activeTab === "images";
@@ -99,10 +120,20 @@ function FileStoragePageInner() {
         isImagesTab,
         canDelete,
         deletingPath,
+        downloadingPath,
         onPreview: openPreview,
+        onDownload: handleDownload,
         onDelete: handleDelete,
       }),
-    [canDelete, deletingPath, handleDelete, isImagesTab, openPreview],
+    [
+      canDelete,
+      deletingPath,
+      downloadingPath,
+      handleDelete,
+      handleDownload,
+      isImagesTab,
+      openPreview,
+    ],
   );
 
   const wrappedBulkDelete = useCallback(
@@ -118,30 +149,69 @@ function FileStoragePageInner() {
       <AdminListPageHeader
         icon={ImageIcon}
         title="Kho lưu trữ file"
-        subtitle="Quản lý tệp tin, hình ảnh đã tải lên"
+        subtitle="Quản lý, sao lưu và khôi phục tệp tin, hình ảnh đã tải lên"
         actions={
-          canUpload ? (
+          canUpload || canView ? (
             <div className="flex items-center gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept={uploadAccept}
-                className="hidden"
-                onChange={(e) => void handleUpload(e)}
-              />
-              <Button
-                type="button"
-                onClick={openUploadPicker}
-                disabled={uploading}
-              >
-                {uploading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Upload className="size-4" />
-                )}
-                {uploading ? "Đang tải…" : "Tải lên"}
-              </Button>
+              {canUpload ? (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept={uploadAccept}
+                    className="hidden"
+                    onChange={(e) => void handleUpload(e)}
+                  />
+                  <input
+                    ref={importInputRef}
+                    type="file"
+                    accept=".zip,application/zip"
+                    className="hidden"
+                    onChange={(e) => void handleImport(e)}
+                  />
+                  <Button
+                    type="button"
+                    onClick={openUploadPicker}
+                    disabled={uploading || importing || downloadingAll}
+                  >
+                    {uploading ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Upload className="size-4" />
+                    )}
+                    {uploading ? "Đang tải…" : "Tải lên"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={openImportPicker}
+                    disabled={uploading || importing || downloadingAll}
+                  >
+                    {importing ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <ArchiveRestore className="size-4" />
+                    )}
+                    {importing ? "Đang khôi phục…" : "Khôi phục kho"}
+                  </Button>
+                </>
+              ) : null}
+              {canView ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void handleDownloadAll()}
+                  disabled={downloadingAll || uploading || importing}
+                >
+                  {downloadingAll ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Download className="size-4" />
+                  )}
+                  {downloadingAll ? "Đang tải…" : "Tải về tất cả"}
+                </Button>
+              ) : null}
             </div>
           ) : undefined
         }
@@ -176,6 +246,7 @@ function FileStoragePageInner() {
             selectedRowIds={selectedRowIds}
             onSelectedRowIdsChange={setSelectedRowIds}
             onBulkDelete={wrappedBulkDelete}
+            onBulkDownload={handleBulkDownload}
             canDelete={canDelete}
           />
         </TabsContent>
@@ -197,6 +268,7 @@ function FileStoragePageInner() {
             selectedRowIds={selectedRowIds}
             onSelectedRowIdsChange={setSelectedRowIds}
             onBulkDelete={wrappedBulkDelete}
+            onBulkDownload={handleBulkDownload}
             canDelete={canDelete}
           />
         </TabsContent>
