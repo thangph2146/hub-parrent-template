@@ -26,13 +26,13 @@ layout.tsx
 App cung cấp:
 
 - `static`: menu, `loginPath`, `isAuthPath`, … (`config/admin-layout-static.ts`)
-- `fetchAdminSettingsBranding` + `api.http.get`
+- `api.settings.getPublicBranding` + `api.seoMetas.getPublicByPage` (backend: `providers/backend-admin-layout.tsx`)
 - Auth: `user`, `logout`, `clientReady`
 
 ## Presets (`presets/`)
 
 - `AdminConfirmActionDialog`, `AdminTable*RowActions`, `buildAdminTableXlsxExport`, …
-- `createAdminImageUploader` — app gắn header phiên (backend: `lib/admin-upload.ts`)
+- `createAdminImageUploader` — wrapper `UploadsApi` (`@workspace/api-client`); backend khuyến nghị gọi trực tiếp `api.uploads.uploadFile` trong `lib/admin-upload.ts`
 
 ## Không đặt ở đây
 

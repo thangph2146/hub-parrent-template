@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/api-client";
-import { ApiError, api } from "@/lib/api";
+import { ApiError } from "@/lib/api";
 import { queryKeys } from "@/hooks/queries";
 import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session";
 
@@ -128,7 +128,7 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
     mutationFn: async (input: {
       action: "delete" | "restore" | "hard-delete";
       ids: string[];
-    }) => api.http.post("/admin/users/bulk", input),
+    }) => apiClient.users.bulk(input),
     onSuccess: async () => {
       await Promise.all([
       queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),

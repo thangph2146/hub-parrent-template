@@ -177,12 +177,13 @@ Chi tiết deploy server: `README.md` (mục PM2).
 - Frontend/Backend giao tiếp với API qua HTTP + `@workspace/api-client`.
 - Logic dùng chung đặt ở `packages/*` khi thật sự còn được sử dụng.
 - **Admin components PHẢI từ `@ui`** — không tạo local trong `apps/backend/src/components/` hay `apps/backend/src/app/**/_components/`. Nếu thiếu, thêm vào `packages/ui/src/components/admin/`.
-- **API Client** PHẢI qua `@workspace/api-client` — không tự viết fetch trực tiếp tới `apps/api`.
+- **API Client** PHẢI qua `@workspace/api-client` — không `fetch` trực tiếp tới `apps/api`, không gọi `api.http` / `sdk.http` từ app Next (dùng `api.users`, `api.public`, …).
 - Khi sửa API (`apps/api`): đọc `docs/api-pattern/README.md`.
 - Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.
 - Ranh giới được kiểm soát bởi:
-  - `packages/eslint-config/service-boundaries.js`
-  - `scripts/verify-service-boundaries.mjs`
+  - `packages/eslint-config/service-boundaries.js` (import boundaries + ESLint cấm `sdk.http`)
+  - `scripts/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
+  - `scripts/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
 
 ## Pattern coding — agent phải tuân thủ
 

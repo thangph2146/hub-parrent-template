@@ -8,7 +8,7 @@ import { toast } from "@ui/components/sonner";
 import { Calendar, Clock, MapPin, Globe } from "lucide-react";
 
 const LocationMap = dynamic(
-  () => import("@/components/location-map").then((m) => m.LocationMap),
+  () => import("@ui/components/admin/maps").then((m) => m.LocationMap),
   { ssr: false },
 );
 

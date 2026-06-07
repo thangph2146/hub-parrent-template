@@ -2,18 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
-import { DEFAULT_API_URL } from "@workspace/api-client";
-
-function publicApiBase() {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
-}
-
-type ApiEnvelope<T> = {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string | null;
-};
+import { api } from "@/lib/api";
 
 export function PublicPostViewBadge({
   slug,
@@ -26,26 +15,12 @@ export function PublicPostViewBadge({
 
   useEffect(() => {
     let cancelled = false;
-    const url = `${publicApiBase()}/public/posts/${encodeURIComponent(slug)}/view`;
 
     void (async () => {
       try {
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-        });
-        const payload = (await res.json().catch(() => null)) as ApiEnvelope<{
-          viewCount: number;
-        }> | null;
-        if (
-          cancelled ||
-          !res.ok ||
-          !payload?.success ||
-          typeof payload.data?.viewCount !== "number"
-        ) {
-          return;
-        }
-        setCount(payload.data.viewCount);
+        const data = await api.public.trackPostView(slug);
+        if (cancelled || typeof data.viewCount !== "number") return;
+        setCount(data.viewCount);
       } catch {
         // Giữ initialCount khi lỗi mạng
       }

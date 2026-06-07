@@ -1,30 +1,32 @@
 "use client"
 
 import { Sparkles } from "lucide-react"
-import { Button } from "@ui/components/button"
+import { Button } from "../../button"
 
-export type SettingsQuickPresetItem = {
+export type AdminQuickPresetItem = {
   id: string
   label: string
   hint?: string
 }
 
-type SettingsQuickPresetsProps = {
-  presets: SettingsQuickPresetItem[]
+type AdminQuickPresetsProps = {
+  presets: AdminQuickPresetItem[]
   onApply: (id: string) => void
   disabled?: boolean
+  label?: string
 }
 
-export function SettingsQuickPresets({
+export function AdminQuickPresets({
   presets,
   onApply,
   disabled,
-}: SettingsQuickPresetsProps) {
+  label = "Mẫu nhanh",
+}: AdminQuickPresetsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <Sparkles className="size-3.5 text-primary" aria-hidden />
-        Mẫu nhanh
+        {label}
       </span>
       {presets.map((preset) => (
         <Button

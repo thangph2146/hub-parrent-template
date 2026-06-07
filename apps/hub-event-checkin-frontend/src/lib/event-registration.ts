@@ -1,16 +1,5 @@
-import { DEFAULT_API_URL } from "@workspace/api-client";
-import { readEventSession } from "./event-auth";
-
-type ApiEnvelope<T> = {
-  success: boolean;
-  message?: string;
-  error?: string | null;
-  data?: T;
-};
-
-function getApiBase(): string {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
-}
+import { api } from "./api";
+import { readEventSession } from "./event-session";
 
 export type RegisterEventResult = {
   id: string;
@@ -28,27 +17,10 @@ export async function registerForEvent(
     throw new Error("Vui lòng đăng nhập trước khi đăng ký.");
   }
 
-  const res = await fetch(
-    `${getApiBase()}/public/events/${encodeURIComponent(eventSlug)}/register`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-User-Id": session.id,
-      },
-      body: JSON.stringify(phone?.trim() ? { phone: phone.trim() } : {}),
-    },
+  return api.public.registerForEvent<RegisterEventResult>(
+    eventSlug,
+    phone?.trim() ? { phone: phone.trim() } : {},
   );
-
-  const json = (await res.json().catch(() => null)) as ApiEnvelope<RegisterEventResult> | null;
-
-  if (!res.ok || !json?.success || !json.data) {
-    throw new Error(
-      json?.message || json?.error || "Không thể đăng ký sự kiện.",
-    );
-  }
-
-  return json.data;
 }
 
 export type RegistrationWindowState =

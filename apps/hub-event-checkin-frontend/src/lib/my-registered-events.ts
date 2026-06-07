@@ -1,22 +1,6 @@
-import { DEFAULT_API_URL } from "@workspace/api-client"
-import { readEventSession } from "./event-auth"
+import { api } from "./api"
+import { readEventSession } from "./event-session"
 import { computeEventStatus } from "./public-events"
-
-type ApiEnvelope<T> = {
-  success: boolean
-  message?: string
-  error?: string | null
-  data?: T
-}
-
-function getApiBase(): string {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "")
-}
-
-function authHeaders(): HeadersInit {
-  const session = readEventSession()
-  return session?.id ? { "X-User-Id": session.id } : {}
-}
 
 /** Khớp `RegistrationStatus` trên API (`event-registration.entity.ts`). */
 export const MY_REGISTRATION_STATUS = {
@@ -152,27 +136,13 @@ export function canCancelMyRegistration(row: MyRegisteredEvent): boolean {
   return getCancelRegistrationState(row).allowed
 }
 
-async function parseEnvelope<T>(res: Response): Promise<T> {
-  const json = (await res.json().catch(() => null)) as ApiEnvelope<T> | null
-  if (!res.ok || !json?.success || json.data === undefined) {
-    throw new Error(
-      json?.message || json?.error || `Request failed: ${res.status}`
-    )
-  }
-  return json.data
-}
-
 export async function fetchMyRegisteredEvents(): Promise<MyRegisteredEvent[]> {
   const session = readEventSession()
   if (!session?.id) {
     throw new Error("Vui lòng đăng nhập để xem sự kiện đã đăng ký.")
   }
 
-  const res = await fetch(`${getApiBase()}/public/me/events`, {
-    headers: { Accept: "application/json", ...authHeaders() },
-    cache: "no-store",
-  })
-  return parseEnvelope<MyRegisteredEvent[]>(res)
+  return api.public.listMyEvents<MyRegisteredEvent>()
 }
 
 export async function cancelMyEventRegistration(
@@ -183,14 +153,5 @@ export async function cancelMyEventRegistration(
     throw new Error("Vui lòng đăng nhập để hủy đăng ký.")
   }
 
-  const res = await fetch(
-    `${getApiBase()}/public/me/event-registrations/${encodeURIComponent(
-      registrationId
-    )}/cancel`,
-    {
-      method: "POST",
-      headers: { Accept: "application/json", ...authHeaders() },
-    }
-  )
-  return parseEnvelope<MyRegisteredEvent>(res)
+  return api.public.cancelMyEventRegistration<MyRegisteredEvent>(registrationId)
 }

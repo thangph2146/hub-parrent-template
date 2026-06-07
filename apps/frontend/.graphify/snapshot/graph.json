@@ -1599,6 +1599,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app__public__huong_dan_su_dung_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app__public__layout_tsx",
       "target": "file_src_components_shared_header_tsx",
       "relation": "imports"
@@ -1711,6 +1716,11 @@
     {
       "source": "file_src_components_shared_post_content_tsx",
       "target": "file_src_components_shared_post_content_renderer_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_public_post_view_badge_tsx",
+      "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
     {
@@ -2021,6 +2031,11 @@
     {
       "source": "file_src_hooks_usetodos_ts",
       "target": "file_src_lib_storage_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_public_posts_ts",
+      "target": "file_src_lib_api_ts",
       "relation": "imports"
     }
   ]

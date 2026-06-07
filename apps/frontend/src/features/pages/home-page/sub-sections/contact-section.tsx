@@ -31,16 +31,6 @@ type ContactFormState = {
   content: string;
 };
 
-type ContactEnvelope = {
-  success?: boolean;
-  message?: string;
-  error?: string | null;
-  data?: {
-    id?: string;
-    message?: string;
-  };
-};
-
 const INITIAL_FORM: ContactFormState = {
   name: "",
   email: "",
@@ -69,15 +59,6 @@ const contactChannels = [
     href: "https://hub.edu.vn",
   },
 ] as const;
-
-function unwrapEnvelope<T>(payload: unknown): T {
-  if (!payload || typeof payload !== "object") return payload as T;
-  const envelope = payload as ContactEnvelope;
-  if (envelope.success === false) {
-    throw new Error(envelope.message || envelope.error || "Yeu cau that bai");
-  }
-  return ("data" in envelope ? envelope.data : payload) as T;
-}
 
 export const ContactSection = ({ className }: ContactSectionProps) => {
   const [formData, setFormData] = useState<ContactFormState>(INITIAL_FORM);
@@ -109,9 +90,7 @@ export const ContactSection = ({ className }: ContactSectionProps) => {
 
     setBusy(true);
     try {
-      const result = unwrapEnvelope<{ id?: string; message?: string }>(
-        await api.http.post("/public/contact-requests", trimmedForm),
-      );
+      const result = await api.public.submitContactRequest(trimmedForm);
       toast.success(result.message || "Đã gửi liên hệ hỗ trợ thành công.");
       setFormData(INITIAL_FORM);
     } catch (error) {

@@ -1,4 +1,4 @@
-import AdminRouteLoading from "@/components/admin-route-loading"
+import { AdminRouteLoading } from "@ui/components/admin"
 
 export default function Loading() {
   return <AdminRouteLoading variant="list" />

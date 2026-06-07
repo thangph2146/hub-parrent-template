@@ -31,6 +31,8 @@ export type UpdateAccountInput = {
   address?: string | null;
   citizenId?: string | null;
   avatar?: string | null;
+  /** Một số client (cổng sinh viên) đặt mật khẩu mới qua PUT `/admin/accounts`. */
+  password?: string;
 };
 
 export type ChangeAccountPasswordInput = {
@@ -55,6 +57,7 @@ export class AccountsApi {
       address: input.address,
       citizenId: input.citizenId,
       avatar: input.avatar,
+      password: input.password,
     });
   }
 

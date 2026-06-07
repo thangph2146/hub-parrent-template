@@ -40,7 +40,8 @@ pnpm check:full
 ## Nếu kiểm tra không pass
 1. Đọc lỗi `pnpm check` trả về.
 2. Chia lỗi theo nhóm:
-   - `verify:bounds` → boundary/import sai
+   - `verify:bounds` → boundary/import sai (`package.json` workspace)
+   - `verify:sdk-http` → app Next gọi `api.http` thay vì resource SDK
    - `lint` → style/import/cấu trúc
    - `typecheck` → kiểu dữ liệu
 3. Sửa theo nhóm lỗi, rồi chạy lại `pnpm check`.

@@ -80,12 +80,30 @@ const nextForbiddenServerStack = {
     "Next không import Nest/MikroORM — chỉ @workspace/api-client hoặc HTTP.",
 };
 
+/** Cấm gọi `sdk.http` trực tiếp trong app Next — dùng resource API (`api.users.bulk`, …). */
+export const noRawSdkHttpSyntaxSelector = {
+  selector:
+    "MemberExpression[object.type='Identifier'][object.name=/^(api|apiClient|sdk)$/][property.name='http']",
+  message:
+    "Không gọi sdk.http trực tiếp — dùng resource trên StoreSyncSdk (vd. api.users.bulk, api.public.listPosts).",
+};
+
+/** @type {import("eslint").Linter.Config} */
+const nextNoRawSdkHttpBoundary = {
+  name: "store-sync/no-raw-sdk-http",
+  files: ["src/**/*.{ts,tsx}"],
+  rules: {
+    "no-restricted-syntax": ["error", noRawSdkHttpSyntaxSelector],
+  },
+};
+
 /**
  * Storefront Next (@frontend): không kéo admin app hay stack server.
  *
  * @type {import("eslint").Linter.Config[]}
  */
 export const nextFrontendServiceBoundary = [
+  nextNoRawSdkHttpBoundary,
   {
     name: "store-sync/boundary-next-frontend",
     files: ["src/**/*.{ts,tsx}"],

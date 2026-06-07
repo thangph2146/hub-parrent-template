@@ -1,6 +1,6 @@
 # Thống kê graph — frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-07T08:18:41.884Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-07T17:33:28.089Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
@@ -20,7 +20,7 @@
 | relation | Số |
 |----------|-----|
 | `contains` | 103 |
-| `imports` | 93 |
+| `imports` | 96 |
 | `assets` | 2 |
 | `renders` | 2 |
 
@@ -37,10 +37,10 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 | `src/app/(public)/bai-viet/[slug]/page.tsx` | 5 |
 | `src/features/pages/home-page/index.ts` | 4 |
 | `src/app/(public)/bai-viet/page.tsx` | 3 |
+| `src/app/(public)/huong-dan-su-dung/page.tsx` | 3 |
 | `src/components/shared/store-auth-gate.tsx` | 3 |
 | `src/features/pages/home-page/sub-sections/hero-section.tsx` | 3 |
 | `src/hooks/useTodos.ts` | 3 |
-| `src/app/(public)/huong-dan-su-dung/page.tsx` | 2 |
 | `src/app/(public)/lien-he/page.tsx` | 2 |
 | `src/app/(public)/page.tsx` | 2 |
 | `src/app/(public)/ve-chung-toi/page.tsx` | 2 |
@@ -61,6 +61,7 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 | `src/features/pages/about-page/constants.tsx` | 6 |
 | `src/features/auth/admin-bridge.ts` | 5 |
 | `src/features/pages/home-page/sub-sections/scroll-indicator.tsx` | 5 |
+| `src/lib/api.ts` | 4 |
 | `src/features/pages/home-page/constants.ts` | 4 |
 | `src/features/pages/home-page/sub-sections/contact-section.tsx` | 3 |
 | `src/lib/dev-route-log.ts` | 2 |
@@ -71,7 +72,6 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 | `src/features/pages/about-page/utils.tsx` | 2 |
 | `src/features/pages/home-page/sub-sections/hero-section.tsx` | 2 |
 | `src/features/pages/home-page/data.tsx` | 2 |
-| `src/features/pages/home-page/sub-sections/about-hub-section.tsx` | 2 |
 
 ## Làm mới
 

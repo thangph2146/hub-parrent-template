@@ -9,23 +9,26 @@ import { api } from "@/lib/api"
 import type { DashboardStatsDto } from "@/types/dashboard"
 
 const MonthlyLineChart = dynamic(
-  () => import("@/components/dashboard-charts").then((m) => m.MonthlyLineChart),
-  { ssr: false }
+  () =>
+    import("@ui/components/admin/dashboard").then((m) => m.MonthlyLineChart),
+  { ssr: false },
 )
 const MonthlyBarChart = dynamic(
-  () => import("@/components/dashboard-charts").then((m) => m.MonthlyBarChart),
-  { ssr: false }
+  () =>
+    import("@ui/components/admin/dashboard").then((m) => m.MonthlyBarChart),
+  { ssr: false },
 )
 const CategoryDoughnutChart = dynamic(
   () =>
-    import("@/components/dashboard-charts").then(
-      (m) => m.CategoryDoughnutChart
+    import("@ui/components/admin/dashboard").then(
+      (m) => m.CategoryDoughnutChart,
     ),
-  { ssr: false }
+  { ssr: false },
 )
 const TopPostsChart = dynamic(
-  () => import("@/components/dashboard-charts").then((m) => m.TopPostsChart),
-  { ssr: false }
+  () =>
+    import("@ui/components/admin/dashboard").then((m) => m.TopPostsChart),
+  { ssr: false },
 )
 
 export default function AdminDashboardPage() {
@@ -35,7 +38,7 @@ export default function AdminDashboardPage() {
 
   const { data } = useQuery<DashboardStatsDto>({
     queryKey: ["dashboard", "stats"],
-    queryFn: async () => api.dashboard.stats<DashboardStatsDto>(),
+    queryFn: async () => api.dashboard.stats(),
 
   })
 

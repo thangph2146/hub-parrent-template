@@ -70,9 +70,34 @@ export { ScreensApi } from "./resources/screens"
 export { DepartmentsApi } from "./resources/departments"
 export { RolesApi } from "./resources/roles"
 export { SettingsApi } from "./resources/settings"
+export {
+  AuthAdminApi,
+  createAuthAdminApi,
+  type AuthLoginPayload,
+  type RegisterRequestPayload,
+  type RegisterLeadPayload,
+  type DevLoginOption,
+} from "./resources/auth-admin"
 export { SeoMetasApi } from "./resources/seo-metas"
-export { DashboardApi } from "./resources/dashboard"
+export {
+  DashboardApi,
+  type DashboardStatsDto,
+  type DashboardOverviewDto,
+  type DashboardMonthlyItemDto,
+  type DashboardCategoryItemDto,
+  type DashboardTopPostDto,
+} from "./resources/dashboard"
 export { UploadsApi, type ImageItem, type FolderItem, type ListImagesData } from "./resources/uploads"
+export {
+  PublicApi,
+  createPublicApi,
+  publicSsrRequestOptions,
+  type PublicAuthPayload,
+  type PublicContactRequestInput,
+  type PublicContactRequestResult,
+  type PublicPagedPayload,
+  type PublicPaginationMeta,
+} from "./resources/public"
 export { StoreSyncSdk, createStoreSyncSdk, DEFAULT_API_URL } from "./sdk"
 export {
   unwrapApiEnvelope,

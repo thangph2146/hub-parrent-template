@@ -1,14 +1,25 @@
 "use client"
 
 import { useMemo } from "react"
+import { AdminConfigCopyButton } from "@ui/components/admin"
 import { SITE_SEO_PAGE_KEY } from "./constants"
 import { resolveSettingsDocumentHeadPreview } from "./settings-document-head-preview"
-import {
-  SettingsConfigCopyButton,
-  SettingsConfigCopyPanel,
-} from "./settings-config-copy-panel"
-import type { SettingsDisplayCopyValues } from "./settings-display-copy-panel"
-import type { SettingsSeoGlobalCopyValues } from "./settings-seo-global-copy-panel"
+
+export type SettingsDisplayCopyValues = {
+  siteName: string
+  siteDescription: string
+  defaultNewUserRole: string
+  defaultNewUserRoleLabel?: string | null
+}
+
+export type SettingsSeoGlobalCopyValues = {
+  title: string
+  description: string
+  keywords: string
+  ogTitle: string
+  ogDescription: string
+  ogImage: string
+}
 
 function useCombinedConfigText({
   display,
@@ -82,31 +93,9 @@ export function SettingsCombinedCopyButton({
   if (!display && !seoGlobal) return null
 
   return (
-    <SettingsConfigCopyButton
+    <AdminConfigCopyButton
       configText={configText}
       copySuccessMessage="Đã sao chép snapshot cấu hình"
-      hasUnsavedChanges={hasUnsavedChanges}
-    />
-  )
-}
-
-export function SettingsCombinedCopyPanel({
-  display,
-  seoGlobal,
-  hasUnsavedChanges = false,
-}: {
-  display?: SettingsDisplayCopyValues
-  seoGlobal?: SettingsSeoGlobalCopyValues
-  hasUnsavedChanges?: boolean
-}) {
-  const configText = useCombinedConfigText({ display, seoGlobal, hasUnsavedChanges })
-
-  if (!display && !seoGlobal) return null
-
-  return (
-    <SettingsConfigCopyPanel
-      configText={configText}
-      copySuccessMessage="Đã sao chép snapshot display + SEO + document head"
       hasUnsavedChanges={hasUnsavedChanges}
     />
   )

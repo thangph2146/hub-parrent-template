@@ -1,4 +1,4 @@
-import { DEFAULT_API_URL } from "@workspace/api-client"
+import { ApiClient, DEFAULT_API_URL, UploadsApi } from "@workspace/api-client"
 
 export type AdminUploadOptions = {
   folderPath: string
@@ -6,7 +6,7 @@ export type AdminUploadOptions = {
 }
 
 export type AdminImageUploaderConfig = {
-  /** Base URL API (không có slash cuối), mặc định từ env hoặc DEFAULT_API_URL. */
+  /** Base URL API (có prefix `/api`), mặc định từ env hoặc DEFAULT_API_URL. */
   getApiBase?: () => string
   getAuthHeaders?: () => Record<string, string>
 }
@@ -17,6 +17,7 @@ function defaultApiBase(): string {
 
 /**
  * Factory upload ảnh admin — app truyền header phiên (vd. X-User-Id).
+ * HTTP qua `@workspace/api-client` (`UploadsApi`), không `fetch` trực tiếp.
  */
 export function createAdminImageUploader(
   config: AdminImageUploaderConfig = {}
@@ -28,34 +29,23 @@ export function createAdminImageUploader(
     file: File,
     options: AdminUploadOptions
   ): Promise<string> {
-    const fd = new FormData()
-    fd.append("file", file)
-    fd.append("folderPath", options.folderPath)
-    if (options.isExistingFolder) {
-      fd.append("isExistingFolder", "true")
-    }
+    const authHeaders: Record<string, string> = getAuthHeaders()
+    const userId = authHeaders["X-User-Id"]
+    const restHeaders = { ...authHeaders }
+    delete restHeaders["X-User-Id"]
 
-    const res = await fetch(`${getApiBase()}/admin/uploads`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: fd,
+    const http = new ApiClient({
+      baseUrl: getApiBase(),
+      headers: restHeaders,
+      getUserId: () => userId ?? null,
     })
-
-    const json = (await res.json().catch(() => null)) as {
-      success?: boolean
-      message?: string
-      error?: string | null
-      data?: { url?: string }
-    } | null
-
-    if (!res.ok || json?.success === false) {
-      throw new Error(
-        json?.message || json?.error || `Upload thất bại (${res.status})`
-      )
-    }
-
-    const url = json?.data?.url?.trim()
-    if (!url) throw new Error("Không nhận được URL ảnh")
-    return url
+    const uploads = new UploadsApi(http)
+    const { url } = await uploads.uploadFile(file, {
+      folderPath: options.folderPath,
+      isExistingFolder: options.isExistingFolder,
+    })
+    const trimmed = url?.trim()
+    if (!trimmed) throw new Error("Không nhận được URL ảnh")
+    return trimmed
   }
 }

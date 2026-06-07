@@ -1,54 +1,29 @@
-import type { AuthUser } from "@workspace/api-client"
-import { DEFAULT_API_URL } from "@workspace/api-client"
 import {
-  printDevApiCall,
-  formatDevResponsePayload,
-  buildDevLogResponseJson,
-} from "@workspace/logger"
+  createAuthAdminApi,
+  DEFAULT_API_URL,
+  type AuthLoginPayload,
+  type AuthUser,
+  type DevLoginOption,
+  type RegisterLeadPayload,
+  type RegisterRequestPayload,
+} from "@workspace/api-client"
 
-type ApiEnvelope<T> = {
-  success: boolean
-  message?: string
-  error?: string | null
-  data?: T
+export type {
+  AuthLoginPayload,
+  RegisterRequestPayload,
+  RegisterLeadPayload,
+  DevLoginOption,
 }
 
-export type AuthLoginPayload = {
-  id: string
-  email: string
-  name: string | null
-  image: string | null
-  permissions: string[]
-  roles: Array<{ id: string; name: string; displayName: string }>
-}
-
-export type RegisterRequestPayload = {
-  fullName: string
-  email: string
-  password: string
-  phone?: string
-  address?: string
-}
-
-export type RegisterLeadPayload = {
-  fullName: string
-  phone: string
-  email: string
-  address?: string
-  program?: string
-  major?: string
-  subscribeNewsletter?: boolean
-  subscribeConsultation?: boolean
-  content?: string
-}
-
-export type DevLoginOption = {
-  id: string
-  email: string
-  name: string | null
-  roleNames: string[]
-  roleLabels: string[]
-  description: string
+function getAuthAdminApi() {
+  const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
+    /\/$/,
+    "",
+  )
+  return createAuthAdminApi({
+    baseUrl,
+    devLogTag: "HUB_ADMIN",
+  })
 }
 
 function normalizePermissionValues(value: unknown): string[] {
@@ -82,193 +57,27 @@ function normalizePermissionValues(value: unknown): string[] {
   return [...new Set(visit(value))]
 }
 
-function getApiBaseUrl() {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "")
-}
-
-function buildApiUrl(pathname: string) {
-  return `${getApiBaseUrl()}${pathname.startsWith("/") ? pathname : `/${pathname}`}`
-}
-
-async function postApi<TResponse, TBody>(
-  pathname: string,
-  body: TBody,
-  formatAuth?: (data: TResponse) => string
-) {
-  const url = buildApiUrl(pathname)
-  const isDev = process.env.NODE_ENV === "development"
-  const startTime = isDev ? performance.now() : 0
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  })
-
-  const payload = (await response
-    .json()
-    .catch(() => null)) as ApiEnvelope<TResponse> | null
-
-  if (!response.ok || !payload?.success || payload.data === undefined) {
-    const message =
-      payload?.message ||
-      payload?.error ||
-      `Request failed: ${response.status} ${response.statusText}`
-    throw new Error(message)
-  }
-
-  if (isDev) {
-    const ms = performance.now() - startTime
-    printDevApiCall({
-      tag: "HUB_ADMIN",
-      method: "POST",
-      path: pathname,
-      status: response.status,
-      ms,
-      authSuffix: formatAuth ? formatAuth(payload.data) : "",
-      respSummary: formatDevResponsePayload(
-        response.status,
-        payload,
-        response.ok
-      ),
-      responseJson: buildDevLogResponseJson(pathname, response.ok, payload),
-    })
-  }
-
-  return payload.data
-}
-
-async function getApi<TResponse>(
-  pathname: string,
-  formatAuth?: (data: TResponse) => string
-) {
-  const url = buildApiUrl(pathname)
-  const isDev = process.env.NODE_ENV === "development"
-  const startTime = isDev ? performance.now() : 0
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  })
-
-  const payload = (await response
-    .json()
-    .catch(() => null)) as ApiEnvelope<TResponse> | null
-
-  if (!response.ok || !payload?.success || payload.data === undefined) {
-    const message =
-      payload?.message ||
-      payload?.error ||
-      `Request failed: ${response.status} ${response.statusText}`
-    throw new Error(message)
-  }
-
-  if (isDev) {
-    const ms = performance.now() - startTime
-    printDevApiCall({
-      tag: "HUB_ADMIN",
-      method: "GET",
-      path: pathname,
-      status: response.status,
-      ms,
-      authSuffix: formatAuth ? formatAuth(payload.data) : "",
-      respSummary: formatDevResponsePayload(
-        response.status,
-        payload,
-        response.ok
-      ),
-      responseJson: buildDevLogResponseJson(pathname, response.ok, payload),
-    })
-  }
-
-  return payload.data
-}
-
-/** GET /auth/admin/me — permissions + roles mới nhất (cần X-User-Id). */
 export async function fetchAdminSessionPayload(userId: string) {
-  const url = buildApiUrl("/auth/admin/me")
-  const isDev = process.env.NODE_ENV === "development"
-  const startTime = isDev ? performance.now() : 0
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "X-User-Id": userId.trim(),
-    },
-  })
-
-  const payload = (await response
-    .json()
-    .catch(() => null)) as ApiEnvelope<AuthLoginPayload> | null
-
-  if (!response.ok || !payload?.success || payload.data === undefined) {
-    const message =
-      payload?.message ||
-      payload?.error ||
-      `Request failed: ${response.status} ${response.statusText}`
-    throw new Error(message)
-  }
-
-  if (isDev) {
-    const ms = performance.now() - startTime
-    const user = payload.data
-    printDevApiCall({
-      tag: "HUB_ADMIN",
-      method: "GET",
-      path: "/auth/admin/me",
-      status: response.status,
-      ms,
-      authSuffix: `ctx=user id=${user.id} email=${user.email} roles=[${user.roles.map((r) => r.name).join(",")}]`,
-      respSummary: formatDevResponsePayload(
-        response.status,
-        payload,
-        response.ok
-      ),
-      responseJson: buildDevLogResponseJson("/auth/admin/me", response.ok, payload),
-    })
-  }
-
-  return payload.data
+  return getAuthAdminApi().fetchAdminSession(userId)
 }
 
 export async function loginWithEmail(body: {
   email: string
   password: string
 }) {
-  return postApi<AuthLoginPayload, { email: string; password: string }>(
-    "/auth/admin/login",
-    body,
-    (user) =>
-      `ctx=user id=${user.id} email=${user.email} roles=[${user.roles.map((r) => r.name).join(",")}]`
-  )
+  return getAuthAdminApi().loginWithEmail(body)
 }
 
 export async function loginWithGoogle(credential: string) {
-  return postApi<AuthLoginPayload, { credential: string }>(
-    "/auth/admin/google",
-    { credential },
-    (user) =>
-      `ctx=user id=${user.id} email=${user.email} roles=[${user.roles.map((r) => r.name).join(",")}]`
-  )
+  return getAuthAdminApi().loginWithGoogle(credential)
 }
 
 export function fetchGoogleOAuthConfig() {
-  return getApi<{ clientId: string }>("/auth/admin/google/config")
+  return getAuthAdminApi().fetchGoogleOAuthConfig()
 }
 
 export async function loginWithDevelopmentUser(body: { userId: string }) {
-  return postApi<AuthLoginPayload, { userId: string }>(
-    "/auth/admin/dev-login",
-    body,
-    (user) =>
-      `ctx=user id=${user.id} email=${user.email} roles=[${user.roles.map((r) => r.name).join(",")}]`
-  )
+  return getAuthAdminApi().loginWithDevelopmentUser(body)
 }
 
 export function toAdminSessionUser(payload: AuthLoginPayload): AuthUser {
@@ -285,17 +94,11 @@ export function toAdminSessionUser(payload: AuthLoginPayload): AuthUser {
 }
 
 export function registerAccount(body: RegisterRequestPayload) {
-  return postApi<AuthLoginPayload, RegisterRequestPayload>(
-    "/public/register",
-    body
-  )
+  return getAuthAdminApi().registerAccount(body)
 }
 
 export function submitRegisterRequest(body: RegisterLeadPayload) {
-  return postApi<{ id: string; message: string }, RegisterLeadPayload>(
-    "/public/contact-requests",
-    body
-  )
+  return getAuthAdminApi().submitRegisterRequest(body)
 }
 
 export async function fetchDevLoginOptions() {
@@ -304,7 +107,7 @@ export async function fetchDevLoginOptions() {
   }
 
   try {
-    return await getApi<DevLoginOption[]>("/public/dev-login-options")
+    return await getAuthAdminApi().fetchDevLoginOptions()
   } catch {
     return []
   }

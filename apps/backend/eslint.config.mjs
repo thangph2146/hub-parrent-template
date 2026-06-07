@@ -1,5 +1,8 @@
 import { createNextAppConfig } from "@workspace/eslint-config/next-app";
-import { nextBackendServiceBoundary } from "@workspace/eslint-config/service-boundaries";
+import {
+  nextBackendServiceBoundary,
+  noRawSdkHttpSyntaxSelector,
+} from "@workspace/eslint-config/service-boundaries";
 export default createNextAppConfig([
   ...nextBackendServiceBoundary,
   {
@@ -7,6 +10,7 @@ export default createNextAppConfig([
     rules: {
       "no-restricted-syntax": [
         "error",
+        noRawSdkHttpSyntaxSelector,
         {
           selector:
             "JSXOpeningElement[name.name=/^(h1|h2|h3|h4|h5|h6)$/]",

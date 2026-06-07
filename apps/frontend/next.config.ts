@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: [
-    "@ui",
+    "@workspace/ui",
     "@workspace/api-client",
     "@workspace/query-client",
     "@thangph2146/lexical-editor",

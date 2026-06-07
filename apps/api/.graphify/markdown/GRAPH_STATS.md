@@ -1,6 +1,6 @@
 # Thống kê graph — api (Graphify)
 
-> **Sinh tự động:** `2026-06-07T08:18:41.999Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-07T17:33:28.166Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 

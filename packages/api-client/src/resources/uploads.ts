@@ -1,5 +1,5 @@
 import type { ApiClient } from "../client";
-import { normalizePagedResult } from "./_shared";
+import { normalizePagedResult, postData } from "./_shared";
 
 export interface ImageItem {
 	fileName: string;
@@ -73,5 +73,26 @@ export class UploadsApi {
 		await this.http.delete<unknown>("/admin/uploads", {
 			query: { path },
 		});
+	}
+
+	async uploadFile(
+		file: File,
+		folderPathOrOptions?:
+			| string
+			| { folderPath?: string; isExistingFolder?: boolean },
+	): Promise<{ url: string }> {
+		const fd = new FormData();
+		fd.append("file", file);
+		let folderPath: string | undefined;
+		let isExistingFolder: boolean | undefined;
+		if (typeof folderPathOrOptions === "string") {
+			folderPath = folderPathOrOptions;
+		} else if (folderPathOrOptions) {
+			folderPath = folderPathOrOptions.folderPath;
+			isExistingFolder = folderPathOrOptions.isExistingFolder;
+		}
+		if (folderPath?.trim()) fd.append("folderPath", folderPath.trim());
+		if (isExistingFolder) fd.append("isExistingFolder", "true");
+		return postData<{ url: string }>(this.http, "/admin/uploads", fd);
 	}
 }

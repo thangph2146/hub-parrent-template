@@ -1,8 +1,11 @@
-/** Ảnh OG mặc định storefront — khớp `apps/frontend/src/lib/seo.ts`. */
-export const DEFAULT_STOREFRONT_OG_IMAGE =
+/** Ảnh OG mặc định — dùng chung storefront, admin SEO preset, API public. */
+export const DEFAULT_OG_IMAGE_URL =
   "https://fileserver2.hub.edu.vn/IMAGES/2025/12/16/20251216103027-101020.png"
 
-export type SettingsDisplayPreset = {
+/** @deprecated Dùng `DEFAULT_OG_IMAGE_URL`. */
+export const DEFAULT_STOREFRONT_OG_IMAGE = DEFAULT_OG_IMAGE_URL
+
+export type HubDisplayPreset = {
   id: string
   label: string
   hint: string
@@ -11,7 +14,7 @@ export type SettingsDisplayPreset = {
   defaultNewUserRole: string
 }
 
-export type SettingsSeoGlobalPreset = {
+export type HubSeoGlobalPreset = {
   id: string
   label: string
   hint: string
@@ -23,8 +26,8 @@ export type SettingsSeoGlobalPreset = {
   ogImage: string
 }
 
-/** Mẫu thương hiệu admin + role mặc định theo từng composition PM2. */
-export const SETTINGS_DISPLAY_PRESETS: SettingsDisplayPreset[] = [
+/** Mẫu thương hiệu admin theo composition PM2 (hub-parent / hub-checkin). */
+export const HUB_DISPLAY_PRESETS: HubDisplayPreset[] = [
   {
     id: "hub-parent",
     label: "HUB Parent",
@@ -52,7 +55,7 @@ export const SETTINGS_DISPLAY_PRESETS: SettingsDisplayPreset[] = [
 ]
 
 /** Mẫu SEO mặc định toàn site (`page = __site__`). */
-export const SETTINGS_SEO_GLOBAL_PRESETS: SettingsSeoGlobalPreset[] = [
+export const HUB_SEO_GLOBAL_PRESETS: HubSeoGlobalPreset[] = [
   {
     id: "hub-parent",
     label: "HUB Parent",
@@ -64,7 +67,7 @@ export const SETTINGS_SEO_GLOBAL_PRESETS: SettingsSeoGlobalPreset[] = [
     ogTitle: "HUB Parent - Kết nối phụ huynh và nhà trường",
     ogDescription:
       "Theo dõi thông tin học tập, liên hệ và thông báo từ nhà trường trên một nền tảng thống nhất.",
-    ogImage: DEFAULT_STOREFRONT_OG_IMAGE,
+    ogImage: DEFAULT_OG_IMAGE_URL,
   },
   {
     id: "hub-checkin",
@@ -75,20 +78,23 @@ export const SETTINGS_SEO_GLOBAL_PRESETS: SettingsSeoGlobalPreset[] = [
       "Đăng ký tham dự sự kiện, nhận mã QR và check-in/check-out nhanh tại Trường Đại học Ngân hàng TP.HCM.",
     keywords: "hub sự kiện, check-in, đăng ký sự kiện, qr check-in",
     ogTitle: "Hệ thống Sự kiện HUB",
-    ogDescription:
-      "Đăng ký sự kiện, quản lý tham dự và check-in trực tuyến.",
-    ogImage: DEFAULT_STOREFRONT_OG_IMAGE,
+    ogDescription: "Đăng ký sự kiện, quản lý tham dự và check-in trực tuyến.",
+    ogImage: DEFAULT_OG_IMAGE_URL,
   },
 ]
 
-export function getSettingsDisplayPreset(
-  id: string,
-): SettingsDisplayPreset | undefined {
-  return SETTINGS_DISPLAY_PRESETS.find((preset) => preset.id === id)
+export function getHubDisplayPreset(id: string): HubDisplayPreset | undefined {
+  return HUB_DISPLAY_PRESETS.find((preset) => preset.id === id)
 }
 
-export function getSettingsSeoGlobalPreset(
-  id: string,
-): SettingsSeoGlobalPreset | undefined {
-  return SETTINGS_SEO_GLOBAL_PRESETS.find((preset) => preset.id === id)
+export function getHubSeoGlobalPreset(id: string): HubSeoGlobalPreset | undefined {
+  return HUB_SEO_GLOBAL_PRESETS.find((preset) => preset.id === id)
 }
+
+/** Alias tương thích admin settings. */
+export const SETTINGS_DISPLAY_PRESETS = HUB_DISPLAY_PRESETS
+export const SETTINGS_SEO_GLOBAL_PRESETS = HUB_SEO_GLOBAL_PRESETS
+export type SettingsDisplayPreset = HubDisplayPreset
+export type SettingsSeoGlobalPreset = HubSeoGlobalPreset
+export const getSettingsDisplayPreset = getHubDisplayPreset
+export const getSettingsSeoGlobalPreset = getHubSeoGlobalPreset

@@ -40,6 +40,7 @@ function extractPublicBranding(
 
 /**
  * Đọc site_name + site_description từ API public (không cần đăng nhập).
+ * @deprecated App admin dùng `api.settings.getPublicBranding()` — giữ cho inject `get()` legacy.
  */
 export async function fetchPublicAdminSettingsBranding(
   get: (path: string, signal?: AbortSignal) => Promise<unknown>,
@@ -58,6 +59,7 @@ export async function fetchPublicAdminSettingsBranding(
 
 /**
  * Alias giữ tương thích — luôn dùng endpoint public.
+ * @deprecated Dùng `api.settings.getPublicBranding()`.
  */
 export async function fetchAdminSettingsBranding(
   get: (path: string, signal?: AbortSignal) => Promise<unknown>,
@@ -98,7 +100,10 @@ function extractPublicSiteSeo(res: unknown, page: string): AdminPublicSiteSeo | 
   }
 }
 
-/** Đọc SEO mặc định từ API public (tab seo-global). Trả `null` khi chưa cấu hình (404). */
+/**
+ * Đọc SEO mặc định từ API public (tab seo-global). Trả `null` khi chưa cấu hình (404).
+ * @deprecated Dùng `api.seoMetas.getPublicByPage(page)`.
+ */
 export async function fetchPublicSiteSeo(
   get: (path: string, signal?: AbortSignal) => Promise<unknown>,
   page: string,

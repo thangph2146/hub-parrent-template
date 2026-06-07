@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `C:/HUB/source/hub-parent-template/apps/frontend`
-- **context.generatedAt:** 2026-06-06T18:20:20.016Z
+- **context.generatedAt:** 2026-06-07T17:33:26.048Z
 
 ## Mục lục artefact Graphify
 
@@ -72,7 +72,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/(public)/bai-viet/[slug]/page.tsx` | page | no |  | src/lib/dev-route-log.ts, src/lib/public-posts.ts, src/components/shared/post-content.tsx, src/components/shared/public-post-view-badge.tsx, src/lib/seo.ts |
 | `src/app/(public)/bai-viet/page.tsx` | page | no | metadata | src/lib/dev-route-log.ts, src/lib/public-posts.ts, src/lib/seo.ts |
 | `src/app/(public)/huong-dan-su-dung/guide-sections.tsx` | tsx | yes | GuideSections |  |
-| `src/app/(public)/huong-dan-su-dung/page.tsx` | page | no | metadata | src/lib/seo.ts, src/app/(public)/huong-dan-su-dung/guide-sections.tsx |
+| `src/app/(public)/huong-dan-su-dung/page.tsx` | page | no | metadata | src/lib/seo.ts, src/app/(public)/huong-dan-su-dung/guide-sections.tsx, src/lib/api.ts |
 | `src/app/(public)/layout.tsx` | layout | no | metadata, RootLayout | src/app/(public)/page.tsx, src/components/shared/header.tsx, src/components/shared/footer.tsx, src/providers/query-provider.tsx, src/components/shared/scroll-to-top.tsx, src/components/shared/store-au |
 | `src/app/(public)/lien-he/page.tsx` | page | no | metadata, ContactPage | src/features/pages/home-page/sub-sections/contact-section.tsx, src/lib/seo.ts |
 | `src/app/(public)/login/page.tsx` | page | no | LoginPage | src/features/auth/admin-bridge.ts |
@@ -91,7 +91,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/header.tsx` | tsx | yes | Header | src/features/auth/admin-bridge.ts, src/components/icons/logo.tsx |
 | `src/components/shared/post-content-renderer.tsx` | tsx | yes | PostContentRenderer |  |
 | `src/components/shared/post-content.tsx` | tsx | yes | PostContent | src/components/shared/post-content-renderer.tsx |
-| `src/components/shared/public-post-view-badge.tsx` | tsx | yes | PublicPostViewBadge |  |
+| `src/components/shared/public-post-view-badge.tsx` | tsx | yes | PublicPostViewBadge | src/lib/api.ts |
 | `src/components/shared/route-loading.tsx` | tsx | no | RouteLoading |  |
 | `src/components/shared/scroll-to-top.tsx` | tsx | yes | ScrollToTop | src/lib/scroll.ts |
 | `src/components/shared/store-auth-gate.tsx` | tsx | yes | StoreAuthGate | src/hooks/use-session.ts, src/hooks/use-client-ready.ts, src/lib/auth-routes.ts |
@@ -137,7 +137,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/category-icons.ts` | ts | no | CATEGORY_ICON_OPTIONS, resolveCategoryIcon |  |
 | `src/lib/dev-route-log.ts` | ts | no |  |  |
 | `src/lib/format.ts` | ts | no | formatVND, formatDate, formatDateShort |  |
-| `src/lib/public-posts.ts` | ts | no | PublicPostSummary, PublicPostDetail, PublicCategoryItem, formatPostDate |  |
+| `src/lib/public-posts.ts` | ts | no | PublicPostSummary, PublicPostDetail, PublicCategoryItem, formatPostDate | src/lib/api.ts |
 | `src/lib/scroll.ts` | ts | yes | getHeaderHeight, scrollToYWithHeaderOffset |  |
 | `src/lib/seo.ts` | ts | no | SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SITE_URL, OG_IMAGE_URL, absoluteUrl, buildSeoMetadata |  |
 | `src/lib/storage.ts` | ts | no | StorageLib |  |

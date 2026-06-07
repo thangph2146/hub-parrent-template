@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `C:/HUB/source/hub-parent-template/apps/api`
-- **context.generatedAt:** 2026-06-07T08:18:37.108Z
+- **context.generatedAt:** 2026-06-07T17:12:07.016Z
 
 ## Mục lục artefact Graphify
 

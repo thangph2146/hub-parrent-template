@@ -40,6 +40,50 @@ const user  = await api.users.get("abc-123")
 
 **Nguyên tắc**: Frontend/Backend KHÔNG gọi trực tiếp `apps/api`. Mọi request đều qua `@workspace/api-client`.
 
+App Next **không** gọi `api.http.get/post` trực tiếp — dùng resource trên SDK (`api.users.bulk`, `api.settings.getPublicBranding`, `api.public.submitContactRequest`, …). `StoreSyncSdk.http` chỉ dành cho wiring nội bộ package hoặc resource class mới trong `packages/api-client`.
+
+Enforce: ESLint `no-restricted-syntax` (`@workspace/eslint-config/service-boundaries`) + `pnpm verify:sdk-http`.
+
+## PublicApi (storefront / check-in)
+
+Endpoint công khai (`/public/*`) dùng class `PublicApi`, gắn trên SDK qua `api.public`:
+
+```typescript
+import { createStoreSyncSdk } from "@workspace/api-client"
+
+const api = createStoreSyncSdk({
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+})
+
+// SSR — cache GET (dev: no-store, prod: revalidate 60s)
+const posts = await api.public.listPosts({ page: 1, limit: 10 })
+
+// Client — không cần auth token
+const event = await api.public.getEventBySlug("workshop-2026")
+```
+
+**Standalone** (không cần full SDK):
+
+```typescript
+import { createPublicApi } from "@workspace/api-client"
+
+const publicApi = createPublicApi({ baseUrl: process.env.NEXT_PUBLIC_API_URL })
+```
+
+**SSR cache helper** — merge vào từng GET public:
+
+```typescript
+import { publicSsrRequestOptions } from "@workspace/api-client"
+
+await api.public.listPosts(params, publicSsrRequestOptions())
+```
+
+Methods chính: `listPosts`, `getPostBySlug`, `listEvents`, `getEventBySlug`, `registerForEvent`, `submitContactRequest`, `loginWithEmail`, `listMyEvents`, … — xem `packages/api-client/src/resources/public.ts`.
+
+Admin upload file: `api.uploads.uploadFile(file, { folderPath, isExistingFolder? })` — FormData qua `UploadsApi`, không `fetch` trực tiếp từ app.
+
+Admin CRUD vẫn dùng `api.posts`, `api.users`, …; auth admin qua `createAuthAdminApi` / cookie session — không trộn với `PublicApi`.
+
 ## ApiClient (`client.ts`)
 
 ### Options

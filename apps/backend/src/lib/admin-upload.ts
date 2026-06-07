@@ -1,14 +1,18 @@
-import { createAdminImageUploader } from "@ui/components/admin"
-import { readAdminSession } from "@/lib/auth-session"
+import type { AdminUploadOptions } from "@ui/components/admin"
+import { api } from "./api"
 
-export function adminUploadAuthHeaders(): Record<string, string> {
-  const uid = readAdminSession()?.id
-  return uid ? { "X-User-Id": String(uid) } : {}
+/** Upload ảnh admin — phiên qua SDK (`X-User-Id` từ `lib/api.ts`). */
+export async function uploadAdminImage(
+  file: File,
+  options: AdminUploadOptions,
+): Promise<string> {
+  const { url } = await api.uploads.uploadFile(file, {
+    folderPath: options.folderPath,
+    isExistingFolder: options.isExistingFolder,
+  })
+  const trimmed = url?.trim()
+  if (!trimmed) throw new Error("Không nhận được URL ảnh")
+  return trimmed
 }
-
-/** Upload ảnh admin — header phiên từ backend. */
-export const uploadAdminImage = createAdminImageUploader({
-  getAuthHeaders: adminUploadAuthHeaders,
-})
 
 export type { AdminUploadOptions } from "@ui/components/admin"

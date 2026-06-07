@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import type { Map as LeafletMap, DivIcon } from "leaflet"
-import { parseCoordsFromMapUrl } from "@/lib/map-utils"
+import { parseCoordsFromMapUrl } from "../../../lib/map-utils"
 import "leaflet/dist/leaflet.css"
 
-interface LocationMapProps {
+export type AdminLocationMapProps = {
   mapUrl: string
   name?: string
   address?: string
@@ -15,12 +15,11 @@ interface LocationMapProps {
 
 const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
-const RED_SVG =
-  [
-    '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41">',
-    '<path fill="#dc2626" d="M12.5 0C5.6 0 0 5.6 0 12.5 0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0z"/>',
-    '<circle cx="12.5" cy="12.5" r="5" fill="#fff"/></svg>',
-  ].join("")
+const RED_SVG = [
+  '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41">',
+  '<path fill="#dc2626" d="M12.5 0C5.6 0 0 5.6 0 12.5 0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0z"/>',
+  '<circle cx="12.5" cy="12.5" r="5" fill="#fff"/></svg>',
+].join("")
 
 function RedMarker({
   coords,
@@ -43,7 +42,7 @@ function RedMarker({
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34],
-        })
+        }),
       )
     })
   }, [])
@@ -58,23 +57,23 @@ function RedMarker({
     <Marker ref={markerRef} position={[coords.lat, coords.lng]} icon={icon}>
       <Popup>
         <strong>{name || "Địa điểm"}</strong>
-        {address && (
+        {address ? (
           <>
             <br />
             {address}
           </>
-        )}
+        ) : null}
       </Popup>
     </Marker>
   )
 }
 
-export function LocationMap({
+export function AdminLocationMap({
   mapUrl,
   name,
   address,
   className = "",
-}: LocationMapProps) {
+}: AdminLocationMapProps) {
   const [mounted, setMounted] = useState(false)
   const mapRef = useRef<LeafletMap | null>(null)
 
@@ -132,3 +131,6 @@ export function LocationMap({
     </div>
   )
 }
+
+/** Alias tương thích code admin cũ. */
+export const LocationMap = AdminLocationMap

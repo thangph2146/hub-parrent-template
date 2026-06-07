@@ -4,25 +4,32 @@ Tài liệu này là bản đồ nhanh để AI/agent hiểu đúng kiến trúc
 
 ## 1) Service Boundaries
 
-- `@api` (`apps/api`): NestJS + **MikroORM** (entity, migrations, seeders; cấu hình runtime `src/config/database.config.ts`, CLI `mikro-orm.config.ts`, script `orm` / `db:*` trong `apps/api/package.json`).
-- `@frontend` (`apps/frontend`): Storefront Next.js cho người dùng cuối.
-- `@backend` (`apps/backend`): Admin Next.js cho vận hành nội bộ.
+| Service | Thư mục | Chức năng riêng | Không được chứa |
+|---------|---------|-----------------|-----------------|
+| `@api` | `apps/api` | NestJS REST/WS, MikroORM entity/migration/seed, RBAC, business rules | React, Next, fetch từ client |
+| `@frontend` | `apps/frontend` | Storefront Next (HUB công khai), SSR/SEO trang public | DB, entity, admin CRUD logic |
+| `@backend` | `apps/backend` | Admin Next, route/page theo domain, query hooks, wiring auth | Entity, MikroORM, component admin generic |
+| `@hub-event-checkin-frontend` | `apps/hub-event-checkin-frontend` | Storefront check-in sự kiện (PM2 compo 2) | Cùng ranh giới như `@frontend` |
 
 Nguyên tắc:
 
 - Không import chéo source giữa các app trong `apps/*`.
-- Frontend/Backend gọi API qua HTTP và `@workspace/api-client`.
-- Logic chia sẻ không phụ thuộc runtime app đặt ở `packages/*` khi còn tồn tại trong workspace.
+- Mọi app Next gọi `@api` qua HTTP và `@workspace/api-client` (kể cả auth/public — dùng `AuthAdminApi` / `createAuthAdminApi`, không `fetch` rải rác).
+- Component admin **generic** (`AdminQuickPresets`, `AdminConfigCopyButton`, `AdminRouteLoading`, dashboard charts, `LocationMap`…) thuộc `@workspace/ui` (dashboard/maps qua subpath, không barrel); app chỉ giữ page orchestration + domain columns/query + wiring realtime (`providers/admin-realtime-sync.tsx`).
+- Logic/config dùng chung nhiều dự án → `packages/*` (không phụ thuộc runtime một app).
 
 ## 2) Shared Packages
 
-- `@workspace/api-client`: SDK/contract để gọi `@api`.
-- `@workspace/query-client`: cấu hình `QueryClient` / TanStack Query dùng chung cho Next apps.
-- `@workspace/ui` (`@ui`): component/UI primitives dùng cho Next apps.
-- `@thangph2146/lexical-editor`: editor Lexical (workspace package `packages/editor`).
-- `@workspace/logger`: dev logging (console output), dùng nội bộ bởi `@workspace/api-client`.
-- `@workspace/eslint-config`: lint rules + service boundaries.
-- `@workspace/typescript-config`: tsconfig dùng chung.
+| Package | Vai trò |
+|---------|---------|
+| `@workspace/api-client` | SDK HTTP tới `@api` — admin CRUD, `PublicApi` (storefront/check-in), `AuthAdminApi` |
+| `@workspace/site-config` | Constant/preset composition (HUB Parent vs Check-in, OG image) — không React/DB |
+| `@workspace/query-client` | `QueryClient` TanStack Query mặc định cho Next apps |
+| `@workspace/ui` | Shell admin, data-table, presets, typography — dùng `@workspace/api-client` cho permission types |
+| `@thangph2146/lexical-editor` | Editor Lexical (`packages/editor`) |
+| `@workspace/logger` | Dev logging — dùng bởi api-client |
+| `@workspace/eslint-config` | ESLint + `service-boundaries` |
+| `@workspace/typescript-config` | tsconfig cơ sở |
 
 ## 3) Graphify — theo dõi kiến trúc cho AI
 
@@ -66,6 +73,7 @@ pnpm check
 Bao gồm:
 
 - `pnpm verify:bounds`: kiểm tra phụ thuộc chéo sai trong `package.json`.
+- `pnpm verify:sdk-http`: Next apps không gọi `api.http` / `sdk.http` trực tiếp.
 - `pnpm lint`: kiểm tra import boundaries + style/lint.
 - `pnpm typecheck`: kiểm tra TypeScript.
 

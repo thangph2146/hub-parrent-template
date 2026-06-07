@@ -14,7 +14,7 @@ import {
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { BACKEND_ADMIN_LAYOUT_STATIC } from "@/config/admin-layout-static"
-import { AdminRealtimeSync } from "@/components/admin-realtime-sync"
+import { AdminRealtimeSync } from "@/providers/admin-realtime-sync"
 import { useAuth, useClientReady } from "@/providers/auth-provider"
 
 export function BackendAdminLayoutProvider({ children }: { children: ReactNode }) {

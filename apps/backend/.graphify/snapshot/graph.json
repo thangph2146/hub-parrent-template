@@ -5022,19 +5022,9 @@
       "client": false
     },
     {
-      "id": "file_src_app_settings__component_settings_presets_ts",
-      "label": "settings-presets.ts",
-      "path": "src/app/settings/_component/settings-presets.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/app/settings/_component",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_app_settings__component_settings_quick_presets_tsx",
-      "label": "settings-quick-presets.tsx",
-      "path": "src/app/settings/_component/settings-quick-presets.tsx",
+      "id": "file_src_app_settings__component_settings_combined_copy_panel_tsx",
+      "label": "settings-combined-copy-panel.tsx",
+      "path": "src/app/settings/_component/settings-combined-copy-panel.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/settings/_component",
@@ -5042,9 +5032,9 @@
       "client": true
     },
     {
-      "id": "file_src_app_settings__component_settings_seo_pages_presets_ts",
-      "label": "settings-seo-pages-presets.ts",
-      "path": "src/app/settings/_component/settings-seo-pages-presets.ts",
+      "id": "file_src_app_settings__component_settings_document_head_preview_ts",
+      "label": "settings-document-head-preview.ts",
+      "path": "src/app/settings/_component/settings-document-head-preview.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/app/settings/_component",
@@ -5052,19 +5042,9 @@
       "client": false
     },
     {
-      "id": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "label": "settings-seo-pages-quick-presets.tsx",
-      "path": "src/app/settings/_component/settings-seo-pages-quick-presets.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/app/settings/_component",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "label": "settings-seo-pages-section.tsx",
-      "path": "src/app/settings/_component/settings-seo-pages-section.tsx",
+      "id": "file_src_app_settings__component_settings_tab_skeletons_tsx",
+      "label": "settings-tab-skeletons.tsx",
+      "path": "src/app/settings/_component/settings-tab-skeletons.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/settings/_component",
@@ -6871,46 +6851,6 @@
       "type": "directory"
     },
     {
-      "id": "file_src_components_admin_realtime_sync_tsx",
-      "label": "admin-realtime-sync.tsx",
-      "path": "src/components/admin-realtime-sync.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/components",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_components_admin_route_loading_tsx",
-      "label": "admin-route-loading.tsx",
-      "path": "src/components/admin-route-loading.tsx",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/components",
-      "type": "tsx",
-      "client": false
-    },
-    {
-      "id": "file_src_components_api_scope_notice_tsx",
-      "label": "api-scope-notice.tsx",
-      "path": "src/components/api-scope-notice.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/components",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_components_dashboard_charts_tsx",
-      "label": "dashboard-charts.tsx",
-      "path": "src/components/dashboard-charts.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/components",
-      "type": "tsx",
-      "client": true
-    },
-    {
       "id": "dir_src_components_graphify",
       "label": "graphify/",
       "path": "src/components/graphify",
@@ -6918,16 +6858,6 @@
       "size": 22,
       "community": "src/components",
       "type": "directory"
-    },
-    {
-      "id": "file_src_components_location_map_tsx",
-      "label": "location-map.tsx",
-      "path": "src/components/location-map.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/components",
-      "type": "tsx",
-      "client": true
     },
     {
       "id": "dir_src_config",
@@ -7365,16 +7295,6 @@
       "client": false
     },
     {
-      "id": "file_src_lib_map_utils_ts",
-      "label": "map-utils.ts",
-      "path": "src/lib/map-utils.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/lib",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_lib_permission_labels_ts",
       "label": "permission-labels.ts",
       "path": "src/lib/permission-labels.ts",
@@ -7402,6 +7322,16 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "file_src_providers_admin_realtime_sync_tsx",
+      "label": "admin-realtime-sync.tsx",
+      "path": "src/providers/admin-realtime-sync.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_providers_auth_provider_tsx",
@@ -10080,27 +10010,17 @@
     },
     {
       "source": "dir_src_app_settings__component",
-      "target": "file_src_app_settings__component_settings_presets_ts",
+      "target": "file_src_app_settings__component_settings_combined_copy_panel_tsx",
       "relation": "contains"
     },
     {
       "source": "dir_src_app_settings__component",
-      "target": "file_src_app_settings__component_settings_quick_presets_tsx",
+      "target": "file_src_app_settings__component_settings_document_head_preview_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_app_settings__component",
-      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_settings__component",
-      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_settings__component",
-      "target": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_app_settings__component_settings_tab_skeletons_tsx",
       "relation": "contains"
     },
     {
@@ -11035,32 +10955,7 @@
     },
     {
       "source": "dir_src_components",
-      "target": "file_src_components_admin_realtime_sync_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
-      "target": "file_src_components_api_scope_notice_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
-      "target": "file_src_components_dashboard_charts_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
       "target": "dir_src_components_graphify",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
-      "target": "file_src_components_location_map_tsx",
       "relation": "contains"
     },
     {
@@ -11285,11 +11180,6 @@
     },
     {
       "source": "dir_src_lib",
-      "target": "file_src_lib_map_utils_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_lib",
       "target": "file_src_lib_permission_labels_ts",
       "relation": "contains"
     },
@@ -11301,6 +11191,11 @@
     {
       "source": "dir_src",
       "target": "dir_src_providers",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers",
+      "target": "file_src_providers_admin_realtime_sync_tsx",
       "relation": "contains"
     },
     {
@@ -11347,11 +11242,6 @@
       "source": "file_src_app_layout_tsx",
       "target": "file_src_app_page_tsx",
       "relation": "renders"
-    },
-    {
-      "source": "file_src_app_academic_years_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
     },
     {
       "source": "file_src_app_academic_years_new_page_tsx",
@@ -11414,11 +11304,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_academic_years__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_academic_years__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -11436,11 +11321,6 @@
     {
       "source": "file_src_app_academic_years__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_academic_years__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -11584,11 +11464,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_cameras_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_cameras_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -11649,11 +11524,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_cameras__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_cameras__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -11671,11 +11541,6 @@
     {
       "source": "file_src_app_cameras__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_cameras__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -11839,11 +11704,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_categories_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_categories_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -11904,11 +11764,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_categories__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_categories__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -11926,11 +11781,6 @@
     {
       "source": "file_src_app_categories__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_categories__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -12124,11 +11974,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_contact_requests__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_contact_requests__id__page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12289,11 +12134,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_courses_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_courses_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12354,11 +12194,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_courses__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_courses__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12376,11 +12211,6 @@
     {
       "source": "file_src_app_courses__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_courses__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -12669,11 +12499,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_departments_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_departments_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12734,11 +12559,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_departments__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_departments__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12756,11 +12576,6 @@
     {
       "source": "file_src_app_departments__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_departments__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -12909,11 +12724,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_events_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_events_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -12974,11 +12784,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_events__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_events__id__edit_page_tsx",
       "target": "file_src_lib_fetch_all_admin_list_ts",
       "relation": "imports"
@@ -13006,11 +12811,6 @@
     {
       "source": "file_src_app_events__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_events__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -13534,11 +13334,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_guides_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_guides_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -13594,11 +13389,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_guides__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_guides__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -13616,11 +13406,6 @@
     {
       "source": "file_src_app_guides__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_guides__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -13849,16 +13634,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_locations_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_locations_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -13919,11 +13694,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_locations__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_locations__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -13944,18 +13714,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_locations__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_locations__id__page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_locations__id__page_tsx",
-      "target": "file_src_components_location_map_tsx",
       "relation": "imports"
     },
     {
@@ -14104,11 +13864,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_majors_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_majors_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -14169,11 +13924,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_majors__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_majors__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -14191,11 +13941,6 @@
     {
       "source": "file_src_app_majors__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_majors__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -14574,11 +14319,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_page_tsx",
-      "target": "file_src_components_dashboard_charts_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_parent_students_page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
       "relation": "imports"
@@ -14689,11 +14429,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_posts_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_posts_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -14761,11 +14496,6 @@
     {
       "source": "file_src_app_posts_page_tsx",
       "target": "dir_src_app_posts__component",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_posts__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -15114,11 +14844,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_rbac__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_rbac__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15146,11 +14871,6 @@
     {
       "source": "file_src_app_rbac__id__edit_page_tsx",
       "target": "file_src_config_protected_admin_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_rbac__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -15279,11 +14999,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_screens_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_screens_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15344,11 +15059,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_screens__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_screens__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15366,11 +15076,6 @@
     {
       "source": "file_src_app_screens__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_screens__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -15519,11 +15224,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_seo_metas_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_seo_metas_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15584,11 +15284,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_seo_metas__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_seo_metas__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15606,11 +15301,6 @@
     {
       "source": "file_src_app_seo_metas__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_seo_metas__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -15719,6 +15409,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_settings_page_tsx",
+      "target": "file_src_app_settings__component_settings_tab_skeletons_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_settings__component_index_ts",
       "target": "file_src_app_settings__component_constants_ts",
       "relation": "imports"
@@ -15730,97 +15425,17 @@
     },
     {
       "source": "file_src_app_settings__component_index_ts",
-      "target": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "target": "file_src_app_settings__component_settings_combined_copy_panel_tsx",
       "relation": "imports"
     },
     {
-      "source": "file_src_app_settings__component_index_ts",
-      "target": "file_src_app_settings__component_settings_presets_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_index_ts",
-      "target": "file_src_app_settings__component_settings_quick_presets_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_index_ts",
-      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_index_ts",
-      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_presets_ts",
-      "target": "file_src_app_settings__component_settings_presets_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "target": "file_src_app_settings__component_settings_seo_pages_presets_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_lib_admin_navigation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_hooks_use_debounced_value_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "dir_src_lib",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_lib_admin_row_action_handlers_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "dir_src_app_seo_metas__component",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
+      "source": "file_src_app_settings__component_settings_combined_copy_panel_tsx",
       "target": "file_src_app_settings__component_constants_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_app_settings__component_settings_seo_pages_section_tsx",
-      "target": "file_src_app_settings__component_settings_seo_pages_quick_presets_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_speakers_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
+      "source": "file_src_app_settings__component_settings_combined_copy_panel_tsx",
+      "target": "file_src_app_settings__component_settings_document_head_preview_ts",
       "relation": "imports"
     },
     {
@@ -15884,11 +15499,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_speakers__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_speakers__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -15906,11 +15516,6 @@
     {
       "source": "file_src_app_speakers__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_speakers__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -16069,11 +15674,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_staff_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_staff_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16144,11 +15744,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_staff__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_staff__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16181,11 +15776,6 @@
     {
       "source": "file_src_app_staff__id__edit_page_tsx",
       "target": "file_src_config_protected_admin_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_staff__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -16384,11 +15974,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_tags_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_tags_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16444,11 +16029,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_tags__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_tags__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16466,11 +16046,6 @@
     {
       "source": "file_src_app_tags__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_tags__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -16659,11 +16234,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_templates_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_templates_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16724,11 +16294,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_templates__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_templates__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16746,11 +16311,6 @@
     {
       "source": "file_src_app_templates__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_templates__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -16899,11 +16459,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_training_levels_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_training_levels_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16964,11 +16519,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_training_levels__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_training_levels__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -16986,11 +16536,6 @@
     {
       "source": "file_src_app_training_levels__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_training_levels__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -17134,11 +16679,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_training_systems_new_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_training_systems_new_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -17199,11 +16739,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_training_systems__id__edit_loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_training_systems__id__edit_page_tsx",
       "target": "file_src_lib_admin_navigation_ts",
       "relation": "imports"
@@ -17221,11 +16756,6 @@
     {
       "source": "file_src_app_training_systems__id__edit_page_tsx",
       "target": "file_src_hooks_use_admin_mutation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_training_systems__id__loading_tsx",
-      "target": "file_src_components_admin_route_loading_tsx",
       "relation": "imports"
     },
     {
@@ -17369,26 +16899,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_components_admin_realtime_sync_tsx",
-      "target": "file_src_providers_auth_provider_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_admin_realtime_sync_tsx",
-      "target": "file_src_hooks_use_admin_realtime_sync_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_dashboard_charts_tsx",
-      "target": "file_src_types_dashboard_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_location_map_tsx",
-      "target": "file_src_lib_map_utils_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_config_admin_layout_static_ts",
       "target": "file_src_config_admin_menu_tree_tsx",
       "relation": "imports"
@@ -17515,7 +17025,7 @@
     },
     {
       "source": "file_src_lib_admin_upload_ts",
-      "target": "file_src_lib_auth_session_ts",
+      "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
     {
@@ -17559,6 +17069,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_providers_admin_realtime_sync_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_realtime_sync_tsx",
+      "target": "file_src_hooks_use_admin_realtime_sync_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_providers_auth_provider_tsx",
       "target": "file_src_features_auth_auth_api_ts",
       "relation": "imports"
@@ -17585,7 +17105,7 @@
     },
     {
       "source": "file_src_providers_backend_admin_layout_tsx",
-      "target": "file_src_components_admin_realtime_sync_tsx",
+      "target": "file_src_providers_admin_realtime_sync_tsx",
       "relation": "imports"
     },
     {

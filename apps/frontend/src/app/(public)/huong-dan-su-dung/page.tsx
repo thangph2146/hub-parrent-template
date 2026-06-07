@@ -10,7 +10,7 @@ import {
 } from "@ui/lib/layout-shell"
 import { buildSeoMetadata } from "@/lib/seo"
 import { GuideSections } from "./guide-sections"
-import { DEFAULT_API_URL } from "@workspace/api-client"
+import { api } from "@/lib/api"
 
 export const metadata: Metadata = buildSeoMetadata({
   title: "Hướng dẫn sử dụng",
@@ -66,22 +66,13 @@ function safeParseContent(raw: unknown): GuideSection["content"] {
 }
 
 async function fetchGuides(): Promise<GuideSection[]> {
-  const apiUrl = (
-    process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
-  ).replace(/\/$/, "")
   try {
-    const res = await fetch(
-      `${apiUrl}/public/page-contents/huong-dan-su-dung`,
-      {
-        next: { revalidate: 60 },
-        cache: "no-store",
-      }
+    const data = await api.public.getPageContents<Record<string, unknown>>(
+      "huong-dan-su-dung",
     )
-    if (!res.ok) return []
-    const json = (await res.json()) as { data?: unknown[] | unknown }
-    if (!json.data) return []
-    const rows = Array.isArray(json.data) ? json.data : [json.data]
-    return (rows as Record<string, unknown>[]).map((r) => ({
+    if (!data) return []
+    const rows = Array.isArray(data) ? data : [data]
+    return rows.map((r) => ({
       id: String(r.id ?? ""),
       pageKey: String(r.pageKey ?? ""),
       sectionKey: String(r.sectionKey ?? ""),

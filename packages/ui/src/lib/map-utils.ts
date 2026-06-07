@@ -5,14 +5,17 @@ const MAP_URL_COORDS_PATTERNS = [
 ]
 
 export function parseCoordsFromMapUrl(
-  url: string
+  url: string,
 ): { lat: number; lng: number } | null {
   if (!url) return null
   for (const { regex, latIdx, lngIdx } of MAP_URL_COORDS_PATTERNS) {
     const m = url.match(regex)
     if (m) {
-      const lat = Number.parseFloat(m[latIdx])
-      const lng = Number.parseFloat(m[lngIdx])
+      const latRaw = m[latIdx]
+      const lngRaw = m[lngIdx]
+      if (latRaw === undefined || lngRaw === undefined) continue
+      const lat = Number.parseFloat(latRaw)
+      const lng = Number.parseFloat(lngRaw)
       if (!Number.isNaN(lat) && !Number.isNaN(lng)) return { lat, lng }
     }
   }

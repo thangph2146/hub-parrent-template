@@ -1,18 +1,5 @@
-import { DEFAULT_API_URL } from "@workspace/api-client";
-
-type ApiEnvelope<T> = {
-  success: boolean;
-  message?: string;
-  error?: string | null;
-  data?: T;
-};
-
-type PaginationMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+import { ApiError } from "@workspace/api-client";
+import { api } from "@/lib/api";
 
 type PublicPostCategory = {
   category: {
@@ -52,11 +39,6 @@ export type PublicPostDetail = PublicPostSummary & {
   content?: unknown | null;
 };
 
-type PublicPostsPayload = {
-  data: PublicPostSummary[];
-  meta: PaginationMeta;
-};
-
 export type PublicCategoryItem = {
   id: string;
   name: string;
@@ -68,59 +50,6 @@ export type PublicCategoryItem = {
   postCount: number;
 };
 
-function getApiBaseUrl() {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
-}
-
-function buildApiUrl(pathname: string, query?: Record<string, string | number | undefined>) {
-  const url = new URL(`${getApiBaseUrl()}${pathname.startsWith("/") ? pathname : `/${pathname}`}`);
-
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      if (value === undefined || value === null || value === "") continue;
-      url.searchParams.set(key, String(value));
-    }
-  }
-
-  return url.toString();
-}
-
-async function fetchPublicApi<T>(
-  pathname: string,
-  query?: Record<string, string | number | undefined>,
-): Promise<T> {
-  const url = buildApiUrl(pathname, query);
-  const isDev = process.env.NODE_ENV === "development";
-
-  if (isDev) {
-    console.log(`[frontend][api] GET ${url}`);
-  }
-
-  const response = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-    },
-    cache: isDev ? "no-store" : undefined,
-    next: isDev ? undefined : { revalidate: 60 },
-  });
-
-  const payload = (await response.json().catch(() => null)) as ApiEnvelope<T> | null;
-
-  if (!response.ok || !payload?.success || payload.data === undefined) {
-    const message =
-      payload?.message ||
-      payload?.error ||
-      `Request failed: ${response.status} ${response.statusText}`;
-    throw new Error(message);
-  }
-
-  if (isDev) {
-    console.log(`[frontend][api] ${response.status} ${pathname}`);
-  }
-
-  return payload.data;
-}
-
 export async function getPublicPosts(params?: {
   page?: number;
   limit?: number;
@@ -128,14 +57,13 @@ export async function getPublicPosts(params?: {
   tagSlug?: string;
   search?: string;
 }) {
-  return fetchPublicApi<PublicPostsPayload>("/public/posts", params);
+  return api.public.listPosts<PublicPostSummary>(params);
 }
 
 export async function getPublicCategories(params?: { slug?: string }) {
-  return fetchPublicApi<PublicCategoryItem[]>("/public/categories", params);
+  return api.public.listPostCategories<PublicCategoryItem>(params);
 }
 
-// Request-level dedup cache: identical slug calls within same render pass share one fetch
 const _slugFetchCache = new Map<string, Promise<PublicPostDetail | null>>();
 
 export async function getPublicPostBySlug(slug: string) {
@@ -144,13 +72,19 @@ export async function getPublicPostBySlug(slug: string) {
 
   const promise = (async () => {
     try {
-      return await fetchPublicApi<PublicPostDetail>(
-        `/public/posts/${encodeURIComponent(slug)}`,
-        { track: "false" },
-      );
+      return await api.public.getPostBySlug<PublicPostDetail>(slug, {
+        track: false,
+      });
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      if (/not found/i.test(message)) return null;
+      const message =
+        error instanceof ApiError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : String(error);
+      if (/not found/i.test(message) || (error instanceof ApiError && error.status === 404)) {
+        return null;
+      }
       throw error;
     }
   })();

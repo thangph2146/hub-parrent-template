@@ -12,18 +12,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** @type {Record<string, readonly string[]>} */
 const FORBIDDEN_DEPS = {
-  "@api": ["@frontend", "@backend", "@ui", "@workspace/api-client"],
+  "@api": ["@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
   "@frontend": ["@backend", "@api"],
   "@backend": ["@frontend", "@api"],
-  "@workspace/api-client": ["@api", "@frontend", "@backend", "@ui"],
-  "@workspace/dealer-support": [
-    "@api",
-    "@frontend",
-    "@backend",
-    "@ui",
-    "@workspace/api-client",
-  ],
-  "@ui": ["@api", "@frontend", "@backend", "@workspace/api-client"],
+  "@hub-event-checkin-frontend": ["@backend", "@frontend", "@api"],
+  "@workspace/api-client": ["@api", "@frontend", "@backend", "@workspace/ui"],
+  "@workspace/site-config": ["@api", "@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
 };
 
 const DEP_FIELDS = [
@@ -72,7 +66,7 @@ function main() {
     console.error("[verify-service-boundaries] Vi phạm ranh giới package.json:\n");
     for (const e of errors) console.error(`  • ${e}`);
     console.error(
-      "\nGiao tiếp giữa service: HTTP/SDK (@workspace/api-client) hoặc package trung lập con song trong workspace.",
+      "\nGiao tiếp giữa service: HTTP/SDK (@workspace/api-client) hoặc package trung lập trong workspace.",
     );
     process.exit(1);
   }

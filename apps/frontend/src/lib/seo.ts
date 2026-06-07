@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { DEFAULT_OG_IMAGE_URL } from "@workspace/site-config"
 
 export const SITE_NAME = "HUB Parent"
 export const SITE_TITLE = "HUB Parent - Kết nối phụ huynh và nhà trường"
@@ -11,8 +12,7 @@ export const SITE_URL = (
   "https://hub.edu.vn"
 ).replace(/\/$/, "")
 
-export const OG_IMAGE_URL =
-  "https://fileserver2.hub.edu.vn/IMAGES/2025/12/16/20251216103027-101020.png"
+export const OG_IMAGE_URL = DEFAULT_OG_IMAGE_URL
 
 export function absoluteUrl(path = "/"): string {
   return new URL(path, `${SITE_URL}/`).toString()

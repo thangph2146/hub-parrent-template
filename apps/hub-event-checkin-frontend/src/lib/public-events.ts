@@ -1,18 +1,6 @@
-import { DEFAULT_API_URL } from "@workspace/api-client";
-
-type ApiEnvelope<T> = {
-  success: boolean;
-  message?: string;
-  error?: string | null;
-  data?: T;
-};
-
-type PaginationMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+import { ApiError } from "@workspace/api-client";
+import { api } from "./api";
+import { readEventSession } from "./event-session";
 
 export type PublicEventItem = {
   id: string;
@@ -93,60 +81,6 @@ export type PublicEventCategoryItem = {
 
 type EventTimeFilter = "upcoming" | "ongoing" | "past" | "all" | "featured";
 
-type PublicEventsPayload = {
-  data: PublicEventItem[];
-  meta: PaginationMeta;
-};
-
-function getApiBaseUrl() {
-  return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "");
-}
-
-function buildApiUrl(pathname: string, query?: Record<string, string | number | undefined>) {
-  const url = new URL(`${getApiBaseUrl()}${pathname.startsWith("/") ? pathname : `/${pathname}`}`);
-
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      if (value === undefined || value === null || value === "") continue;
-      url.searchParams.set(key, String(value));
-    }
-  }
-
-  return url.toString();
-}
-
-async function fetchPublicApi<T>(
-  pathname: string,
-  query?: Record<string, string | number | undefined>,
-): Promise<T> {
-  const url = buildApiUrl(pathname, query);
-  const isDev = process.env.NODE_ENV === "development";
-
-  if (isDev) {
-    console.log(`[event-checkin][api] GET ${url}`);
-  }
-
-  const response = await fetch(url, {
-    headers: { Accept: "application/json" },
-    cache: isDev ? "no-store" : undefined,
-    next: isDev ? undefined : { revalidate: 60 },
-  });
-
-  const payload = (await response.json().catch(() => null)) as ApiEnvelope<T> | null;
-
-  if (!response.ok || !payload?.success || payload.data === undefined) {
-    const message =
-      payload?.message || payload?.error || `Request failed: ${response.status} ${response.statusText}`;
-    throw new Error(message);
-  }
-
-  if (isDev) {
-    console.log(`[event-checkin][api] ${response.status} ${pathname}`);
-  }
-
-  return payload.data;
-}
-
 export async function getPublicEvents(params?: {
   page?: number;
   limit?: number;
@@ -154,7 +88,7 @@ export async function getPublicEvents(params?: {
   categorySlug?: string;
   search?: string;
 }) {
-  return fetchPublicApi<PublicEventsPayload>("/public/events", params);
+  return api.public.listEvents<PublicEventItem>(params);
 }
 
 export async function getFeaturedPublicEvents(limit = 12) {
@@ -166,34 +100,26 @@ export async function getPublicEventBySlug(
   options?: { userId?: string | null },
 ) {
   try {
-    const headers: Record<string, string> = { Accept: "application/json" };
-    const userId = options?.userId?.trim();
-    if (userId) headers["X-User-Id"] = userId;
-
-    const url = buildApiUrl(`/public/events/${encodeURIComponent(slug)}`);
-    const isDev = process.env.NODE_ENV === "development";
-    const response = await fetch(url, {
-      headers,
-      cache: isDev ? "no-store" : undefined,
-      next: isDev ? undefined : { revalidate: 60 },
+    const userId = options?.userId?.trim() ?? readEventSession()?.id ?? null;
+    return await api.public.getEventBySlug<PublicEventDetail>(slug, {
+      headers: userId ? { "X-User-Id": userId } : undefined,
     });
-    const payload = (await response.json().catch(() => null)) as ApiEnvelope<PublicEventDetail> | null;
-    if (!response.ok || !payload?.success || payload.data === undefined) {
-      const message =
-        payload?.message || payload?.error || `Request failed: ${response.status}`;
-      if (/not found/i.test(message)) return null;
-      throw new Error(message);
-    }
-    return payload.data;
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/not found/i.test(message)) return null;
+    const message =
+      error instanceof ApiError
+        ? error.message
+        : error instanceof Error
+          ? error.message
+          : String(error);
+    if (/not found/i.test(message) || (error instanceof ApiError && error.status === 404)) {
+      return null;
+    }
     throw error;
   }
 }
 
 export async function getPublicEventCategories(params?: { slug?: string }) {
-  return fetchPublicApi<PublicEventCategoryItem[]>("/public/event-categories", params);
+  return api.public.listEventCategories<PublicEventCategoryItem>(params);
 }
 
 export function formatEventDate(value?: string | null) {

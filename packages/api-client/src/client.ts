@@ -74,11 +74,21 @@ export interface ApiClientOptions {
     | Promise<string | Record<string, unknown> | null | undefined>
 }
 
+/** Tùy chọn cache Next.js `fetch` (ISR / RSC). */
+export type NextFetchRequestOptions = {
+  revalidate?: number | false
+  tags?: string[]
+}
+
 export interface RequestOptions {
   query?: Record<string, string | number | boolean | undefined | null>
   headers?: Record<string, string>
   signal?: AbortSignal
   timeoutMs?: number
+  /** Forward tới `fetch` — dùng cho SSR storefront (vd. `no-store`). */
+  cache?: RequestCache
+  /** Forward tới `fetch` — ISR trên Next.js App Router. */
+  next?: NextFetchRequestOptions
 }
 
 export class ApiError extends Error {
@@ -228,6 +238,8 @@ export class ApiClient {
               ? body
               : JSON.stringify(body),
         signal: controller.signal,
+        ...(options?.cache !== undefined ? { cache: options.cache } : {}),
+        ...(options?.next !== undefined ? { next: options.next } : {}),
       })
     } catch (err) {
       if (this.devLogging && !isAbortLikeError(err)) {
