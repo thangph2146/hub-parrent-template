@@ -8,6 +8,7 @@
  */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
+import { StorageFile } from '../entities/storage-file.entity';
 import { User } from '../entities/user.entity';
 import { createReadStream, existsSync } from 'fs';
 import {
@@ -86,7 +87,6 @@ import {
 } from './storage-path-resolver';
 import {
   buildStoredUploadFileName,
-  extractUploadOwnerIdFromFileName,
   resolveImageFileOwnerId,
   storedUploadFilePrefix,
 } from './upload-filename';
@@ -238,7 +238,7 @@ export interface ImageItemDto {
   storageTab: string;
   /** Dạng lưu trữ: images | files | videos. */
   storageRealm: StorageRealm;
-  /** ID người upload/chủ file — trích từ prefix tên file trên disk. */
+  /** ID người upload thực tế — từ bảng `storage_files`, không suy từ tên file. */
   uploadOwnerId: string | null;
   /** Họ tên (hoặc email) từ bảng users — null nếu không khớp. */
   uploadOwnerName: string | null;
@@ -430,6 +430,102 @@ export class UploadsService {
     return fallback.replace(/_\d{13}(\.\w+)$/, '$1');
   }
 
+  private normalizeStorageRelativePath(relativePath: string): string {
+    return relativePath.replace(/\\/g, '/').trim();
+  }
+
+  private async ensureStorageFileUploader(
+    relativePath: string,
+    uploadedByUserId?: string,
+  ): Promise<void> {
+    const uploader = uploadedByUserId?.trim();
+    if (!uploader) return;
+
+    const normalized = this.normalizeStorageRelativePath(relativePath);
+    const existing = await this.em.findOne(StorageFile, {
+      relativePath: normalized,
+    });
+    if (existing) return;
+
+    const now = new Date();
+    const record = this.em.create(StorageFile, {
+      relativePath: normalized,
+      uploadedByUserId: uploader,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await this.em.persistAndFlush(record);
+  }
+
+  private async deleteStorageFileMeta(relativePath: string): Promise<void> {
+    const normalized = this.normalizeStorageRelativePath(relativePath);
+    await this.em.nativeDelete(StorageFile, { relativePath: normalized });
+  }
+
+  private async moveStorageFileMeta(from: string, to: string): Promise<void> {
+    const fromPath = this.normalizeStorageRelativePath(from);
+    const toPath = this.normalizeStorageRelativePath(to);
+    const record = await this.em.findOne(StorageFile, {
+      relativePath: fromPath,
+    });
+    if (!record) return;
+    record.relativePath = toPath;
+    await this.em.flush();
+  }
+
+  private async resolveUploadedByUsersForPaths(
+    relativePaths: string[],
+  ): Promise<Map<string, string>> {
+    const map = new Map<string, string>();
+    const unique = [
+      ...new Set(
+        relativePaths
+          .map((p) => this.normalizeStorageRelativePath(p))
+          .filter(Boolean),
+      ),
+    ];
+    if (!unique.length) return map;
+
+    const chunkSize = 500;
+    for (let i = 0; i < unique.length; i += chunkSize) {
+      const chunk = unique.slice(i, i + chunkSize);
+      const rows = await this.em.find(
+        StorageFile,
+        { relativePath: { $in: chunk } },
+        { fields: ['relativePath', 'uploadedByUserId'] },
+      );
+      for (const row of rows) {
+        const uploader = row.uploadedByUserId?.trim();
+        if (uploader) map.set(row.relativePath, uploader);
+      }
+    }
+    return map;
+  }
+
+  private async findRelativePathsMatchingUploaderFilter(
+    query: string,
+  ): Promise<Set<string>> {
+    const trimmed = query.trim();
+    if (!trimmed) return new Set();
+
+    const matchedUserIds = await this.findUserIdsMatchingOwnerQuery(trimmed);
+    const like = `%${trimmed}%`;
+    const or: Array<Record<string, unknown>> = [
+      { uploadedByUserId: trimmed },
+      { uploadedByUserId: { $like: like } },
+    ];
+    if (matchedUserIds.size > 0) {
+      or.push({ uploadedByUserId: { $in: [...matchedUserIds] } });
+    }
+
+    const rows = await this.em.find(
+      StorageFile,
+      { $or: or },
+      { fields: ['relativePath'], limit: 5000 },
+    );
+    return new Set(rows.map((row) => row.relativePath));
+  }
+
   private withUploadOwnerId(
     item: Omit<ImageItemDto, 'uploadOwnerId' | 'uploadOwnerName'> & {
       uploadOwnerId?: string | null;
@@ -438,8 +534,7 @@ export class UploadsService {
   ): ImageItemDto {
     return {
       ...item,
-      uploadOwnerId:
-        item.uploadOwnerId ?? extractUploadOwnerIdFromFileName(item.fileName),
+      uploadOwnerId: item.uploadOwnerId ?? null,
       uploadOwnerName: item.uploadOwnerName ?? null,
     };
   }
@@ -675,15 +770,11 @@ export class UploadsService {
 
     const ownerQuery = params.uploadOwnerId?.trim();
     if (ownerQuery) {
-      const q = ownerQuery.toLowerCase();
-      const matchedUserIds =
-        await this.findUserIdsMatchingOwnerQuery(ownerQuery);
-      filtered = filtered.filter((item) => {
-        const id = item.uploadOwnerId;
-        if (!id) return false;
-        if (id.toLowerCase().includes(q)) return true;
-        return matchedUserIds.has(id);
-      });
+      const allowedPaths =
+        await this.findRelativePathsMatchingUploaderFilter(ownerQuery);
+      filtered = filtered.filter((item) =>
+        allowedPaths.has(this.normalizeStorageRelativePath(item.relativePath)),
+      );
     }
 
     const total = filtered.length;
@@ -692,17 +783,25 @@ export class UploadsService {
     const totalPages = Math.ceil(total / limit) || 1;
     const start = (page - 1) * limit;
     const pageItems = filtered.slice(start, start + limit);
-    const labelMap = await this.resolveUploadOwnerLabels(
-      pageItems
-        .map((item) => item.uploadOwnerId)
-        .filter((id): id is string => Boolean(id)),
+    const uploaderByPath = await this.resolveUploadedByUsersForPaths(
+      pageItems.map((item) => item.relativePath),
     );
-    const data = pageItems.map((item) => ({
-      ...item,
-      uploadOwnerName: item.uploadOwnerId
-        ? (labelMap.get(item.uploadOwnerId) ?? null)
-        : null,
-    }));
+    const labelMap = await this.resolveUploadOwnerLabels([
+      ...uploaderByPath.values(),
+    ]);
+    const data = pageItems.map((item) => {
+      const normalizedPath = this.normalizeStorageRelativePath(
+        item.relativePath,
+      );
+      const uploadOwnerId = uploaderByPath.get(normalizedPath) ?? null;
+      return {
+        ...item,
+        uploadOwnerId,
+        uploadOwnerName: uploadOwnerId
+          ? (labelMap.get(uploadOwnerId) ?? null)
+          : null,
+      };
+    });
 
     const folderTree = this.buildFolderTree(filtered);
 
@@ -789,6 +888,7 @@ export class UploadsService {
           continue;
         }
         await rename(fromFull, toFull);
+        await this.moveStorageFileMeta(from, to);
         result.moved += 1;
         if (to !== plannedTo) result.renamed += 1;
       } catch (err) {
@@ -1212,6 +1312,7 @@ export class UploadsService {
       const existingUrl = serveBaseUrl
         ? `${serveBaseUrl}/${existingRelative}`
         : `/api/uploads/${existingRelative}`;
+      await this.ensureStorageFileUploader(existingRelative, userId);
       return {
         fileName: existingFile,
         originalName,
@@ -1224,6 +1325,7 @@ export class UploadsService {
 
     const { writeFile } = await import('fs/promises');
     await writeFile(fullPath, writeBuffer);
+    await this.ensureStorageFileUploader(relativePath, userId);
 
     return {
       fileName: uniqueName,
@@ -1521,6 +1623,7 @@ export class UploadsService {
   async deleteFile(relativePath: string): Promise<void> {
     const { fullPath } = this.resolvePath(relativePath);
     await unlink(fullPath);
+    await this.deleteStorageFileMeta(relativePath);
   }
 
   /**

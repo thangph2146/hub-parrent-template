@@ -22,7 +22,10 @@ export function buildStoredUploadFileName(
 
 const UPLOAD_STAMP_SUFFIX_RE = /^(.+)_(\d{10,13})(\.[^.]+)$/i;
 
-/** Trích ID người upload/chủ file từ tên lưu disk (`{userId}_{base}_{timestamp}.ext`). */
+/**
+ * Trích prefix userId từ tên file (chủ ảnh / đại diện) — không dùng làm người upload.
+ * Người upload thực tế lưu trong bảng `storage_files`.
+ */
 export function extractUploadOwnerIdFromFileName(
   fileName: string,
 ): string | null {

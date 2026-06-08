@@ -30,6 +30,7 @@ export interface ImageItem {
 	storageTab: string;
 	storageRealm: StorageRealm;
 	/** ID người upload/chủ file — trích từ prefix tên file trên disk. */
+	/** Người upload thực tế (bảng `storage_files`), không suy từ prefix tên file. */
 	uploadOwnerId?: string | null;
 	/** Họ tên hoặc email từ bảng users. */
 	uploadOwnerName?: string | null;

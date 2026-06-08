@@ -712,6 +712,22 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "linkedEventId": {
+          "name": "linkedEventId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "ipAddress": {
           "name": "ipAddress",
           "type": "varchar(255)",
@@ -839,22 +855,6 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
-        },
-        "linkedEventId": {
-          "name": "linkedEventId",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 36,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
         }
       },
       "name": "cameras",
@@ -863,7 +863,7 @@
           "columnNames": [
             "linkedEventId"
           ],
-          "keyName": "cameras_linkedEventId_foreign",
+          "keyName": "cameras_linkedEventId_index",
           "unique": false,
           "primary": false,
           "constraint": false
@@ -979,6 +979,38 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "icon": {
+          "name": "icon",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "sortOrder": {
+          "name": "sortOrder",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 10,
+          "scale": 0,
+          "default": "0",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "datetime",
@@ -1042,38 +1074,6 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
-        },
-        "icon": {
-          "name": "icon",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 255,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
-        },
-        "sortOrder": {
-          "name": "sortOrder",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": 10,
-          "scale": 0,
-          "default": "0",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
         }
       },
       "name": "categories",
@@ -1690,35 +1690,35 @@
         },
         "startYear": {
           "name": "startYear",
-          "type": "int",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
           "unique": false,
-          "length": null,
-          "precision": 10,
-          "scale": 0,
-          "default": "NULL",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
           "comment": null,
           "enumItems": [],
-          "mappedType": "integer"
+          "mappedType": "string"
         },
         "endYear": {
           "name": "endYear",
-          "type": "int",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
           "unique": false,
-          "length": null,
-          "precision": 10,
-          "scale": 0,
-          "default": "NULL",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
           "comment": null,
           "enumItems": [],
-          "mappedType": "integer"
+          "mappedType": "string"
         },
         "departmentId": {
           "name": "departmentId",
@@ -2137,6 +2137,38 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "checkoutStart": {
+          "name": "checkoutStart",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "checkoutEnd": {
+          "name": "checkoutEnd",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "registrationStart": {
           "name": "registrationStart",
           "type": "varchar(255)",
@@ -2377,6 +2409,38 @@
           "enumItems": [],
           "mappedType": "boolean"
         },
+        "checkinCameraId": {
+          "name": "checkinCameraId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "checkoutCameraId": {
+          "name": "checkoutCameraId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "maxParticipants": {
           "name": "maxParticipants",
           "type": "int",
@@ -2504,70 +2568,6 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
-        },
-        "checkinCameraId": {
-          "name": "checkinCameraId",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 36,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
-        },
-        "checkoutCameraId": {
-          "name": "checkoutCameraId",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 36,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
-        },
-        "checkoutStart": {
-          "name": "checkoutStart",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 0,
-          "precision": null,
-          "scale": null,
-          "default": "NULL",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "checkoutEnd": {
-          "name": "checkoutEnd",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 0,
-          "precision": null,
-          "scale": null,
-          "default": "NULL",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
         }
       },
       "name": "events",
@@ -2576,7 +2576,7 @@
           "columnNames": [
             "checkinCameraId"
           ],
-          "keyName": "events_checkinCameraId_foreign",
+          "keyName": "events_checkinCameraId_index",
           "unique": false,
           "primary": false,
           "constraint": false
@@ -2585,7 +2585,7 @@
           "columnNames": [
             "checkoutCameraId"
           ],
-          "keyName": "events_checkoutCameraId_foreign",
+          "keyName": "events_checkoutCameraId_index",
           "unique": false,
           "primary": false,
           "constraint": false
@@ -4517,27 +4517,9 @@
       "indexes": [
         {
           "columnNames": [
-            "trainingLevelId"
-          ],
-          "keyName": "nguoidung_bac_hoc_id_index",
-          "unique": false,
-          "primary": false,
-          "constraint": false
-        },
-        {
-          "columnNames": [
-            "trainingSystemId"
-          ],
-          "keyName": "nguoidung_he_dao_tao_id_index",
-          "unique": false,
-          "primary": false,
-          "constraint": false
-        },
-        {
-          "columnNames": [
             "academicYearId"
           ],
-          "keyName": "nguoidung_nam_hoc_id_index",
+          "keyName": "imported_users_academicYearId_index",
           "unique": false,
           "primary": false,
           "constraint": false
@@ -4546,7 +4528,25 @@
           "columnNames": [
             "majorId"
           ],
-          "keyName": "nguoidung_nganh_id_index",
+          "keyName": "imported_users_majorId_index",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        },
+        {
+          "columnNames": [
+            "trainingLevelId"
+          ],
+          "keyName": "imported_users_trainingLevelId_index",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        },
+        {
+          "columnNames": [
+            "trainingSystemId"
+          ],
+          "keyName": "imported_users_trainingSystemId_index",
           "unique": false,
           "primary": false,
           "constraint": false
@@ -4563,11 +4563,11 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "imported_users_academic_year_id_foreign": {
+        "imported_users_academicYearId_foreign": {
           "columnNames": [
             "academicYearId"
           ],
-          "constraintName": "imported_users_academic_year_id_foreign",
+          "constraintName": "imported_users_academicYearId_foreign",
           "localTableName": "imported_users",
           "referencedTableName": "academic_years",
           "referencedColumnNames": [
@@ -4576,11 +4576,11 @@
           "updateRule": "cascade",
           "deleteRule": "set null"
         },
-        "imported_users_major_id_foreign": {
+        "imported_users_majorId_foreign": {
           "columnNames": [
             "majorId"
           ],
-          "constraintName": "imported_users_major_id_foreign",
+          "constraintName": "imported_users_majorId_foreign",
           "localTableName": "imported_users",
           "referencedTableName": "majors",
           "referencedColumnNames": [
@@ -4589,11 +4589,11 @@
           "updateRule": "cascade",
           "deleteRule": "set null"
         },
-        "imported_users_training_level_id_foreign": {
+        "imported_users_trainingLevelId_foreign": {
           "columnNames": [
             "trainingLevelId"
           ],
-          "constraintName": "imported_users_training_level_id_foreign",
+          "constraintName": "imported_users_trainingLevelId_foreign",
           "localTableName": "imported_users",
           "referencedTableName": "training_levels",
           "referencedColumnNames": [
@@ -4602,11 +4602,11 @@
           "updateRule": "cascade",
           "deleteRule": "set null"
         },
-        "imported_users_training_system_id_foreign": {
+        "imported_users_trainingSystemId_foreign": {
           "columnNames": [
             "trainingSystemId"
           ],
-          "constraintName": "imported_users_training_system_id_foreign",
+          "constraintName": "imported_users_trainingSystemId_foreign",
           "localTableName": "imported_users",
           "referencedTableName": "training_systems",
           "referencedColumnNames": [
@@ -7709,6 +7709,124 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "relativePath": {
+          "name": "relativePath",
+          "type": "varchar(512)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": true,
+          "length": 512,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "uploadedByUserId": {
+          "name": "uploadedByUserId",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 0,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 0,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "storage_files",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "keyName": "PRIMARY",
+          "unique": true,
+          "primary": true,
+          "constraint": true
+        },
+        {
+          "columnNames": [
+            "relativePath"
+          ],
+          "keyName": "storage_files_relative_path_unique",
+          "unique": true,
+          "primary": false,
+          "constraint": true
+        },
+        {
+          "columnNames": [
+            "uploadedByUserId"
+          ],
+          "keyName": "storage_files_uploaded_by_user_id_index",
+          "unique": false,
+          "primary": false,
+          "constraint": false
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {},
+      "comment": ""
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": 36,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -7937,6 +8055,22 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "icon": {
+          "name": "icon",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "datetime",
@@ -7971,22 +8105,6 @@
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 255,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
-        },
-        "icon": {
-          "name": "icon",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -8616,6 +8734,22 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "citizenId": {
+          "name": "citizenId",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'NULL'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "isActive": {
           "name": "isActive",
           "type": "tinyint(1)",
@@ -8666,22 +8800,6 @@
         },
         "deletedAt": {
           "name": "deletedAt",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 255,
-          "precision": null,
-          "scale": null,
-          "default": "'NULL'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
-        },
-        "citizenId": {
-          "name": "citizenId",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

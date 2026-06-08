@@ -31,6 +31,7 @@ import { Session } from '../entities/session.entity';
 import { SeoMeta } from '../entities/seo-meta.entity';
 import { Setting } from '../entities/setting.entity';
 import { Speaker } from '../entities/speaker.entity';
+import { StorageFile } from '../entities/storage-file.entity';
 import { Student } from '../entities/student.entity';
 import { Tag } from '../entities/tag.entity';
 import { Template } from '../entities/template.entity';
@@ -74,6 +75,7 @@ export const ormEntities = [
   SeoMeta,
   Setting,
   Speaker,
+  StorageFile,
   Student,
   Tag,
   Template,
