@@ -108,6 +108,11 @@ function FileStoragePageInner() {
   const [videoPreviewRow, setVideoPreviewRow] = useState<FileStorageRow | null>(
     null,
   );
+  const [folderRefreshKey, setFolderRefreshKey] = useState(0);
+
+  const bumpFolderList = useCallback(() => {
+    setFolderRefreshKey((key) => key + 1);
+  }, []);
 
   const uploadOwnerFilter = useMemo(() => {
     const raw = columnFilters.find((f) => f.id === "uploadOwnerId")?.value;
@@ -236,7 +241,8 @@ function FileStoragePageInner() {
     setColumnFilters([]);
     setPage(1);
     setSelectedRowIds({});
-  }, []);
+    bumpFolderList();
+  }, [bumpFolderList]);
 
   const handleFolderNavigate = useCallback((folderPath: string) => {
     setActiveFolderPath(folderPath);
@@ -249,9 +255,10 @@ function FileStoragePageInner() {
       setActiveFolderPath(resolveFolderPathAfterCreate(folderPath, activeRealm));
       setPage(1);
       setSelectedRowIds({});
+      bumpFolderList();
       await reload();
     },
-    [activeRealm, reload],
+    [activeRealm, bumpFolderList, reload],
   );
 
   const handleFolderDeleted = useCallback(async () => {
@@ -262,8 +269,9 @@ function FileStoragePageInner() {
     setActiveFolderPath(parentPath);
     setPage(1);
     setSelectedRowIds({});
+    bumpFolderList();
     await reload();
-  }, [breadcrumb, reload]);
+  }, [breadcrumb, bumpFolderList, reload]);
 
   const handleBulkMove = useCallback((selected: FileStorageRow[]) => {
     setMoveRows(selected);
@@ -505,38 +513,39 @@ function FileStoragePageInner() {
             <TabsContent key={realm.id} value={realm.id} className="space-y-4">
               {activeRealm === realm.id ? (
                 <div className="space-y-4">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <FileStorageFolderNav
-                      realmLabel={realm.label}
-                      breadcrumb={breadcrumb}
-                      childFolders={childFolders}
-                      activeFolderPath={activeFolderPath}
-                      includeDescendants={includeDescendants}
-                      onIncludeDescendantsChange={handleIncludeDescendantsChange}
-                      onNavigate={handleFolderNavigate}
-                      className="min-w-0 flex-1"
-                    />
-                    <div className="flex shrink-0 flex-wrap items-center gap-2">
-                      {canUpload ? (
-                        <FileStorageCreateFolderButton
-                          realm={activeRealm}
-                          parentFolderPath={activeFolderPath}
-                          parentLabel={currentFolderLabel}
-                          onCreated={handleFolderCreated}
-                          disabled={uploading || importing}
-                        />
-                      ) : null}
-                      {canDelete && activeFolderPath ? (
-                        <FileStorageDeleteFolderButton
-                          realm={activeRealm}
-                          folderPath={activeFolderPath}
-                          folderLabel={currentFolderLabel}
-                          onDeleted={handleFolderDeleted}
-                          disabled={uploading || importing}
-                        />
-                      ) : null}
-                    </div>
-                  </div>
+                  <FileStorageFolderNav
+                    realm={activeRealm}
+                    realmLabel={realm.label}
+                    breadcrumb={breadcrumb}
+                    childFolders={childFolders}
+                    activeFolderPath={activeFolderPath}
+                    includeDescendants={includeDescendants}
+                    onIncludeDescendantsChange={handleIncludeDescendantsChange}
+                    onNavigate={handleFolderNavigate}
+                    foldersRefreshKey={folderRefreshKey}
+                    actions={
+                      <>
+                        {canUpload ? (
+                          <FileStorageCreateFolderButton
+                            realm={activeRealm}
+                            parentFolderPath={activeFolderPath}
+                            parentLabel={currentFolderLabel}
+                            onCreated={handleFolderCreated}
+                            disabled={uploading || importing}
+                          />
+                        ) : null}
+                        {canDelete && activeFolderPath ? (
+                          <FileStorageDeleteFolderButton
+                            realm={activeRealm}
+                            folderPath={activeFolderPath}
+                            folderLabel={currentFolderLabel}
+                            onDeleted={handleFolderDeleted}
+                            disabled={uploading || importing}
+                          />
+                        ) : null}
+                      </>
+                    }
+                  />
                   <FileStorageTable
                     tableScope={`file-storage-${realm.id}-${activeFolderPath || "root"}`}
                     emptyLabel={

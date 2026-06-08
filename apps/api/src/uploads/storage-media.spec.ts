@@ -3,6 +3,7 @@ import {
   buildStorageRealms,
   buildStorageSubFolderTabs,
   classifyStorageMedia,
+  formatStorageTabLabel,
   getStorageRealm,
   getStorageTabId,
   matchesStorageRealm,
@@ -159,5 +160,19 @@ describe('matchesStorageTab', () => {
     expect(matchesStorageTab('images/admincp/other/a.jpg', 'admincp/buh')).toBe(
       false,
     );
+  });
+});
+
+describe('formatStorageTabLabel', () => {
+  it('giữ nguyên tên tiếng Việt', () => {
+    expect(formatStorageTabLabel('sự kiện 1')).toBe('sự kiện 1');
+  });
+
+  it('slug ASCII vẫn title-case', () => {
+    expect(formatStorageTabLabel('buh_slidehome')).toBe('Buh Slidehome');
+  });
+
+  it('map nhãn hệ thống', () => {
+    expect(formatStorageTabLabel('admincp')).toBe('Admin CP');
   });
 });

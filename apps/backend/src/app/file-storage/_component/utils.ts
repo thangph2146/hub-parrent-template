@@ -531,6 +531,47 @@ export function filterFoldersByRealm(
   });
 }
 
+function normalizeFolderSearchText(value: string): string {
+  return value.trim().toLocaleLowerCase("vi");
+}
+
+/** Lọc folder theo tên / path (UTF-8) trong một realm. */
+export function filterStorageFoldersByQuery(
+  folders: Array<{ path: string; name: string }>,
+  query: string,
+  realm: StorageRealmRef,
+  limit = 40,
+): Array<{ path: string; name: string }> {
+  const q = normalizeFolderSearchText(query);
+  if (!q) return [];
+
+  const inRealm = filterFoldersByRealm(folders, realm);
+  const matched = inRealm.filter((folder) => {
+    const path = normalizeFolderSearchText(folder.path.replace(/\\/g, "/"));
+    const name = normalizeFolderSearchText(folder.name);
+    const leaf = normalizeFolderSearchText(
+      folder.path.replace(/\\/g, "/").split("/").pop() ?? "",
+    );
+    return path.includes(q) || name.includes(q) || leaf.includes(q);
+  });
+
+  matched.sort((a, b) => {
+    const aPath = a.path.replace(/\\/g, "/");
+    const bPath = b.path.replace(/\\/g, "/");
+    const aLeaf = normalizeFolderSearchText(aPath.split("/").pop() ?? "");
+    const bLeaf = normalizeFolderSearchText(bPath.split("/").pop() ?? "");
+    const aExact = aLeaf === q ? 0 : 1;
+    const bExact = bLeaf === q ? 0 : 1;
+    if (aExact !== bExact) return aExact - bExact;
+    const aStarts = aLeaf.startsWith(q) ? 0 : 1;
+    const bStarts = bLeaf.startsWith(q) ? 0 : 1;
+    if (aStarts !== bStarts) return aStarts - bStarts;
+    return aPath.localeCompare(bPath, "vi");
+  });
+
+  return matched.slice(0, limit);
+}
+
 /** Gợi ý chuyển tab sau khi tạo folder mới. */
 /** Phạm vi cấu trúc lại folder theo folder đang mở. */
 export function resolveReorganizeScopePath(

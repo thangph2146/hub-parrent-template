@@ -302,6 +302,12 @@ export function getStorageTabId(relativePath: string): string {
 export function formatStorageTabLabel(tabId: string): string {
   if (STORAGE_TAB_LABELS[tabId]) return STORAGE_TAB_LABELS[tabId];
 
+  // Tên folder UTF-8 / có khoảng trắng — hiển thị đúng như trên disk.
+  // eslint-disable-next-line no-control-regex -- phát hiện ký tự ngoài ASCII
+  if (/[^\x00-\x7F]/.test(tabId) || /\s/.test(tabId)) {
+    return tabId;
+  }
+
   return tabId
 
     .replace(/[_-]+/g, ' ')

@@ -117,7 +117,7 @@ export function FileStorageCreateFolderButton({
             id="create-folder-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="vd. avatars, buh_slidehome, 2026/06"
+            placeholder="vd. sự kiện 1, avatars, 2026/06"
             disabled={creating}
             onKeyDown={(e) => {
               if (e.key === "Enter") {

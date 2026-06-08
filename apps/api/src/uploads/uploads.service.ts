@@ -85,6 +85,7 @@ import {
   resolveStorageRelativePath,
   stripStorageFolderPath,
 } from './storage-path-resolver';
+import { sanitizeStorageFolderName } from './storage-folder-name';
 import {
   buildStoredUploadFileName,
   resolveImageFileOwnerId,
@@ -1090,10 +1091,7 @@ export class UploadsService {
     resourceType: 'images' | 'files' | 'videos' | 'audio' = 'images',
     allowedExtensions?: string[],
   ): Promise<{ folderName: string; folderPath: string }> {
-    const safeName = folderName
-      .replace(/[^a-zA-Z0-9-_]/g, '_')
-      .replace(/\/+/g, '');
-    if (!safeName) throw new Error('Tên thư mục không hợp lệ');
+    const safeName = sanitizeStorageFolderName(folderName);
 
     let targetDir: string;
     let folderPath: string;
