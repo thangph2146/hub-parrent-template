@@ -31,13 +31,22 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler,
+  Filler
 )
 
 const MONTH_LABELS: Record<string, string> = {
-  "01": "Th1", "02": "Th2", "03": "Th3", "04": "Th4",
-  "05": "Th5", "06": "Th6", "07": "Th7", "08": "Th8",
-  "09": "Th9", "10": "Th10", "11": "Th11", "12": "Th12",
+  "01": "Th1",
+  "02": "Th2",
+  "03": "Th3",
+  "04": "Th4",
+  "05": "Th5",
+  "06": "Th6",
+  "07": "Th7",
+  "08": "Th8",
+  "09": "Th9",
+  "10": "Th10",
+  "11": "Th11",
+  "12": "Th12",
 }
 
 function formatMonth(key: string): string {
@@ -234,7 +243,7 @@ export function AdminMonthlyBarChart({
 }
 
 function flattenCategories(
-  items: DashboardCategoryItemDto[],
+  items: DashboardCategoryItemDto[]
 ): { name: string; count: number }[] {
   const result: { name: string; count: number }[] = []
   for (const item of items) {
@@ -264,7 +273,9 @@ export function AdminCategoryDoughnutChart({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Chưa có dữ liệu danh mục.</p>
+          <p className="text-sm text-muted-foreground">
+            Chưa có dữ liệu danh mục.
+          </p>
         </CardContent>
       </Card>
     )
@@ -334,17 +345,13 @@ export function AdminCategoryDoughnutChart({
   )
 }
 
-export function AdminTopPostsChart({
-  data,
-}: {
-  data: DashboardTopPostDto[]
-}) {
+export function AdminTopPostsChart({ data }: { data: DashboardTopPostDto[] }) {
   if (!data.length) return null
 
   const top = data.slice(0, 8)
   const chartData = {
     labels: top.map((p) =>
-      p.title.length > 30 ? `${p.title.slice(0, 30)}…` : p.title,
+      p.title.length > 30 ? `${p.title.slice(0, 30)}…` : p.title
     ),
     datasets: [
       {

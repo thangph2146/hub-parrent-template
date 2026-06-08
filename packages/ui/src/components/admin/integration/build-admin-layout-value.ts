@@ -1,7 +1,4 @@
-import type {
-  AdminLayoutContextValue,
-  AdminLayoutStaticConfig,
-} from "../types"
+import type { AdminLayoutContextValue, AdminLayoutStaticConfig } from "../types"
 import type { AdminSiteBrandingState } from "./use-admin-site-branding"
 
 export function buildAdminLayoutValue(params: {

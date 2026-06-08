@@ -15,7 +15,7 @@ function Skeleton({ className, shimmer = false, ...props }: SkeletonProps) {
         shimmer
           ? "relative overflow-hidden before:absolute before:inset-0 before:animate-[skeleton-shimmer_1.4s_ease-in-out_infinite] before:bg-gradient-to-r before:from-transparent before:via-foreground/10 before:to-transparent"
           : "animate-pulse",
-        className,
+        className
       )}
       {...props}
     />

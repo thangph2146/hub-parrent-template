@@ -175,6 +175,72 @@ export class ApiClient {
     return this.request<T>("DELETE", path, undefined, options)
   }
 
+  /** Tải binary (ZIP, file export) — không parse JSON. */
+  async downloadBlob(
+    path: string,
+    options?: RequestOptions
+  ): Promise<{ blob: Blob; headers: Headers }> {
+    const url = buildUrl(this.baseUrl, path, options?.query)
+
+    const headers: Record<string, string> = {
+      Accept: "application/zip, application/octet-stream, */*",
+      ...this.defaultHeaders,
+      ...(options?.headers ?? {}),
+    }
+
+    const token = this.getAuthToken ? await this.getAuthToken() : undefined
+    if (token) headers.Authorization = `Bearer ${token}`
+
+    const userId = this.getUserId ? await this.getUserId() : undefined
+    if (
+      userId !== undefined &&
+      userId !== null &&
+      String(userId).trim() !== ""
+    ) {
+      headers["X-User-Id"] = String(userId).trim()
+    }
+
+    const controller = new AbortController()
+    const timeoutMs = options?.timeoutMs ?? this.timeoutMs
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    if (options?.signal) {
+      options.signal.addEventListener("abort", () => controller.abort(), {
+        once: true,
+      })
+    }
+
+    try {
+      const response = await this.fetcher(url, {
+        method: "GET",
+        headers,
+        signal: controller.signal,
+        ...(options?.cache !== undefined ? { cache: options.cache } : {}),
+        ...(options?.next !== undefined ? { next: options.next } : {}),
+      })
+
+      if (!response.ok) {
+        const isJson = (response.headers.get("content-type") ?? "").includes(
+          "application/json"
+        )
+        const payload: unknown = isJson
+          ? await response.json().catch(() => null)
+          : await response.text().catch(() => null)
+        throw new ApiError(
+          response.status,
+          response.statusText,
+          payload,
+          extractMessage(payload) ??
+            `${response.status} ${response.statusText}`
+        )
+      }
+
+      const blob = await response.blob()
+      return { blob, headers: response.headers }
+    } finally {
+      clearTimeout(timer)
+    }
+  }
+
   private async request<T>(
     method: string,
     path: string,

@@ -7,6 +7,7 @@ import {
   Get,
   Post,
   Delete,
+  Body,
   Param,
   Query,
   Headers,
@@ -17,6 +18,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SkipThrottle } from '@nestjs/throttler';
 import type { Response, Request } from 'express';
 import { UploadsService } from './uploads.service';
 import {
@@ -75,15 +77,56 @@ export class UploadsController {
     this.logger.error(JSON.stringify(details));
   }
 
-  /** GET /api/admin/uploads?page=1&limit=50 hoặc ?listFolders=true&type=images */
+  /** GET /api/admin/uploads/export — ZIP toàn bộ kho (quét disk trên server). */
+  @Get('export')
+  @SkipThrottle()
+  async exportArchive(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
+    try {
+      const { buffer, fileCount, skipped } =
+        await this.uploadsService.exportArchive();
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="kho-luu-tru.zip"',
+      );
+      res.setHeader('X-Export-File-Count', String(fileCount));
+      if (skipped > 0) {
+        res.setHeader('X-Export-Skipped', String(skipped));
+      }
+      return res.status(200).send(buffer);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Lỗi xuất kho lưu trữ';
+      this.logApiError(`GET ${ADMIN_ROUTES.UPLOADS}/export`, err);
+      const { statusCode, body } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  /** GET /api/admin/uploads?page=1&limit=50&realm=images&tab=admincp hoặc ?listFolders=true */
   @Get()
+  @SkipThrottle()
   async list(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('listFolders') listFolders?: string,
+    @Query('realm') realm?: string,
+    @Query('folderPath') folderPath?: string,
+    @Query('tab') tab?: string,
     @Query('type') type?: string,
+    @Query('includeDescendants') includeDescendants?: string,
     @Req() req?: Request,
   ) {
     const userId = this.getUserId(headers);
@@ -98,15 +141,33 @@ export class UploadsController {
     }
 
     const serveBaseUrl = this.getServeBaseUrl(req);
+    const realmFilter =
+      realm === 'images' ||
+      realm === 'files' ||
+      realm === 'videos' ||
+      realm === 'audio'
+        ? realm
+        : undefined;
     const result = await this.uploadsService.listImages({
       page: Math.max(1, parseInt(String(page), 10) || 1),
       limit: parseAdminListLimit(limit, 50),
       serveBaseUrl,
+      realm: realmFilter,
+      folderPath: folderPath?.trim() || tab?.trim() || undefined,
+      tab: tab?.trim() || undefined,
       type: type === 'images' || type === 'files' ? type : undefined,
+      includeDescendants:
+        includeDescendants === 'true' || includeDescendants === '1',
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       folderTree: result.folderTree,
+      realms: result.realms,
+      tabs: result.tabs,
+      subTabs: result.subTabs,
+      childFolders: result.childFolders,
+      breadcrumb: result.breadcrumb,
+      folderPath: result.folderPath,
       pagination: result.pagination,
     });
     return res.status(statusCode).json(body);
@@ -182,18 +243,44 @@ export class UploadsController {
     if (action === 'createFolder') {
       const folderName = formData?.folderName;
       const parentPath = formData?.parentPath || null;
+      const resourceTypeRaw = formData?.resourceType;
       const resourceType =
-        formData?.resourceType === 'files' ? 'files' : 'images';
+        resourceTypeRaw === 'files' ||
+        resourceTypeRaw === 'videos' ||
+        resourceTypeRaw === 'audio' ||
+        resourceTypeRaw === 'images'
+          ? resourceTypeRaw
+          : 'images';
       if (!folderName?.trim()) {
         const { statusCode, body } = createErrorResponse('Thiếu folderName', {
           status: 400,
         });
         return res.status(statusCode).json(body);
       }
+      const allowedExtensionsRaw = formData?.allowedExtensions;
+      const allowedExtensions = allowedExtensionsRaw
+        ? (() => {
+            try {
+              const parsed = JSON.parse(allowedExtensionsRaw) as unknown;
+              return Array.isArray(parsed)
+                ? parsed.filter(
+                    (item): item is string => typeof item === 'string',
+                  )
+                : undefined;
+            } catch {
+              return allowedExtensionsRaw
+                .split(/[,\s;]+/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+            }
+          })()
+        : undefined;
+
       const data = await this.uploadsService.createFolder(
         folderName.trim(),
         parentPath || undefined,
         resourceType,
+        allowedExtensions,
       );
       const { statusCode, body } = createSuccessResponse(data);
       return res.status(statusCode).json(body);
@@ -237,6 +324,155 @@ export class UploadsController {
         status: 400,
       });
       return res.status(statusCode).json(body);
+    }
+  }
+
+  /**
+   * POST /api/admin/uploads/bulk-move — di chuyển file vào folder đích.
+   */
+  @Post('bulk-move')
+  @Permissions(PERMISSIONS.UPLOADS_MANAGE)
+  @SkipThrottle()
+  async bulkMove(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { paths?: unknown; destinationFolder?: string },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
+    const rawPaths = body?.paths;
+    if (!Array.isArray(rawPaths)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu hoặc sai định dạng paths',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    const paths = rawPaths
+      .map((p) => (typeof p === 'string' ? p.trim() : ''))
+      .filter(Boolean);
+    const destinationFolder = body?.destinationFolder?.trim();
+    if (!destinationFolder) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu destinationFolder',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const data = await this.uploadsService.bulkMoveFiles(
+        paths,
+        destinationFolder,
+      );
+      const { statusCode, body: okBody } = createSuccessResponse(data);
+      return res.status(statusCode).json(okBody);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Lỗi di chuyển file';
+      this.logApiError(`POST ${ADMIN_ROUTES.UPLOADS}/bulk-move`, err, {
+        count: paths.length,
+        destinationFolder,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  /**
+   * POST /api/admin/uploads/reorganize-date-folders
+   * Gom file từ folder YYYY/MM/DD (hoặc YYYY/MM, YYYY) về folder chính.
+   */
+  @Post('reorganize-date-folders')
+  @Permissions(PERMISSIONS.UPLOADS_MANAGE)
+  @SkipThrottle()
+  async reorganizeDateFolders(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { scopePath?: string; dryRun?: boolean },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
+    try {
+      const data = await this.uploadsService.reorganizeDateFolders({
+        scopePath: body?.scopePath,
+        dryRun: body?.dryRun === true,
+      });
+      const { statusCode, body: okBody } = createSuccessResponse(data);
+      return res.status(statusCode).json(okBody);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Lỗi cấu trúc lại folder';
+      this.logApiError(
+        `POST ${ADMIN_ROUTES.UPLOADS}/reorganize-date-folders`,
+        err,
+        { scopePath: body?.scopePath ?? null },
+      );
+      const { statusCode, body: errBody } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  /**
+   * POST /api/admin/uploads/bulk-delete — xóa nhiều file trong một request (server xử lý song song).
+   * Body: { paths: string[] }
+   */
+  @Post('bulk-delete')
+  @Permissions(PERMISSIONS.UPLOADS_DELETE)
+  @SkipThrottle()
+  async bulkDelete(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { paths?: unknown },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
+    const rawPaths = body?.paths;
+    if (!Array.isArray(rawPaths)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu hoặc sai định dạng paths (phải là mảng)',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    const paths = rawPaths
+      .map((p) => (typeof p === 'string' ? p.trim() : ''))
+      .filter(Boolean);
+    if (!paths.length) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Danh sách paths trống',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const data = await this.uploadsService.bulkDeleteFiles(paths);
+      const { statusCode, body: okBody } = createSuccessResponse(data);
+      return res.status(statusCode).json(okBody);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Lỗi xóa hàng loạt';
+      this.logApiError(`POST ${ADMIN_ROUTES.UPLOADS}/bulk-delete`, err, {
+        count: paths.length,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(errBody);
     }
   }
 
@@ -288,6 +524,7 @@ export class UploadsController {
    * @deprecated Legacy route kept for backward compatibility. New URLs use PublicUploadsController at /api/uploads/*path
    */
   @Get('serve/*path')
+  @SkipThrottle()
   async serve(
     @Param('path') relativePath: string | string[],
     @Res() res: Response,

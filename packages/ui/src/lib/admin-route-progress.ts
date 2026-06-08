@@ -28,7 +28,7 @@ export function useAdminRouteProgress() {
       if (target === current) return
       loader.start()
     },
-    [loader],
+    [loader]
   )
 
   return { startIfNavigating }

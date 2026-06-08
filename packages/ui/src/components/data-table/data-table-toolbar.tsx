@@ -7,12 +7,7 @@ import {
   ListFilter,
   Search,
 } from "lucide-react"
-import {
-  useEffect,
-  useState,
-  type ComponentType,
-  type ReactNode,
-} from "react"
+import { useEffect, useState, type ComponentType, type ReactNode } from "react"
 import type { ColumnFiltersState, Header } from "@tanstack/react-table"
 import { Button } from "../button"
 import { Input } from "../input"
@@ -142,7 +137,7 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="overflow-hidden rounded-lg border border-border/80 bg-card shadow-sm">
-      {(showGlobalFilter || showTopActions) ? (
+      {showGlobalFilter || showTopActions ? (
         <div className="flex flex-wrap items-center gap-2 px-2.5 py-1.5">
           {showGlobalFilter ? (
             <div className="relative min-w-[min(100%,12rem)] flex-1">
@@ -162,7 +157,9 @@ export function DataTableToolbar<TData>({
 
           {showTopActions ? (
             <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
-              {(showClearFiltersButton || xlsxExportEnabled || filterToolbarExtra) ? (
+              {showClearFiltersButton ||
+              xlsxExportEnabled ||
+              filterToolbarExtra ? (
                 <ToolbarActionCluster>
                   {showClearFiltersButton ? (
                     <ToolbarLabeledButton
@@ -218,8 +215,7 @@ export function DataTableToolbar<TData>({
               const requiresSelection = action.requiresSelection ?? true
               const disabledBySelection =
                 requiresSelection && selectedCount === 0
-              const disabledByAction =
-                action.disabled?.(selectedRows) ?? false
+              const disabledByAction = action.disabled?.(selectedRows) ?? false
               const isRunning = runningBulkActionId === action.id
               return (
                 <Button

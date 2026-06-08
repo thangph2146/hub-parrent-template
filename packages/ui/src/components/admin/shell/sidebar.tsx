@@ -53,7 +53,11 @@ function SidebarLeafLink({
   nested?: boolean
 }) {
   const Icon = item.icon
-  const { isPending, prefetch, onClick: onNavClick } = useAdminNavLink(item.href)
+  const {
+    isPending,
+    prefetch,
+    onClick: onNavClick,
+  } = useAdminNavLink(item.href)
 
   return (
     <Link

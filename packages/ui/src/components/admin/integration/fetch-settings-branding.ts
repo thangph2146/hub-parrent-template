@@ -69,7 +69,10 @@ export async function fetchAdminSettingsBranding(
   return fetchPublicAdminSettingsBranding(get, defaults, signal)
 }
 
-function extractPublicSiteSeo(res: unknown, page: string): AdminPublicSiteSeo | null {
+function extractPublicSiteSeo(
+  res: unknown,
+  page: string
+): AdminPublicSiteSeo | null {
   if (res == null) return null
 
   const payload = unwrapApiPayload<Partial<AdminPublicSiteSeo>>(res)

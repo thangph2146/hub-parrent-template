@@ -39,7 +39,7 @@ export function useAdminNavLink(href: string) {
         router.push(href)
       })
     },
-    [href, prefetch, router, startIfNavigating],
+    [href, prefetch, router, startIfNavigating]
   )
 
   return { isPending, prefetch, onClick }

@@ -2,6 +2,47 @@ packages:
   - "apps/*"
   - "packages/*"
 
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  '@scarf/scarf': true
+  core-js-pure: true
+  esbuild: true
+  faster-whisper-ts: true
+  koffi: true
+  msw: true
+  onnxruntime-node: true
+  sharp: true
+  sqlite3: true
+  tree-sitter-c: true
+  tree-sitter-c-sharp: true
+  tree-sitter-cli: true
+  tree-sitter-cpp: true
+  tree-sitter-elixir: true
+  tree-sitter-go: true
+  tree-sitter-java: true
+  tree-sitter-javascript: true
+  tree-sitter-julia: true
+  tree-sitter-kotlin: true
+  tree-sitter-lua: true
+  tree-sitter-objc: true
+  tree-sitter-php: true
+  tree-sitter-powershell: true
+  tree-sitter-python: true
+  tree-sitter-ruby: true
+  tree-sitter-rust: true
+  tree-sitter-scala: true
+  tree-sitter-swift: true
+  tree-sitter-typescript: true
+  tree-sitter-zig: true
+  unrs-resolver: true
+
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+peerDependencyRules:
+  ignoreMissing:
+    - tree-sitter
+  allowedVersions:
+    tree-sitter: "*"

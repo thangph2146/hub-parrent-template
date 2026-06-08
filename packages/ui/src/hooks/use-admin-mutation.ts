@@ -23,7 +23,9 @@ export type UseAdminMutationOptions<
   TContext = unknown,
 > = UseMutationOptions<TData, TError, TVariables, TContext> & {
   /** `false` = tắt toast; `undefined` = mặc định loading/success/error */
-  toast?: Partial<AdminOperationToastMessages<TData, TVariables, TError>> | false
+  toast?:
+    | Partial<AdminOperationToastMessages<TData, TVariables, TError>>
+    | false
   /** Chặn toast socket trùng sau khi API trả 2xx (mặc định suy từ mutationKey[0]/[1]). */
   suppressRealtime?: AdminToastSuppressMeta | false
 }
@@ -34,10 +36,15 @@ export function useAdminMutation<
   TVariables = void,
   TContext = unknown,
 >(
-  options: UseAdminMutationOptions<TData, TError, TVariables, TContext>,
+  options: UseAdminMutationOptions<TData, TError, TVariables, TContext>
 ): UseMutationResult<TData, TError, TVariables, TContext> {
-  const { toast: toastOverride, suppressRealtime, meta, mutationKey, ...rest } =
-    options
+  const {
+    toast: toastOverride,
+    suppressRealtime,
+    meta,
+    mutationKey,
+    ...rest
+  } = options
 
   let mergedMeta = meta
 

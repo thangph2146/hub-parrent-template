@@ -16,8 +16,8 @@ export function AdminPageTransition({
   return (
     <div
       className={cn(
-        "animate-in fade-in-0 duration-200 fill-mode-both motion-reduce:animate-none",
-        className,
+        "animate-in duration-200 fade-in-0 fill-mode-both motion-reduce:animate-none",
+        className
       )}
     >
       {children}

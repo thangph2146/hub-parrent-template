@@ -93,6 +93,13 @@ export {
   type FolderItem,
   type ListImagesData,
   type ImportArchiveResult,
+  type UploadsBulkDeleteResult,
+  type StorageTab,
+  type StorageMediaKind,
+  type StorageRealm,
+  type CreateStorageFolderResult,
+  type ReorganizeDateFoldersResult,
+  type BulkMoveFilesResult,
 } from "./resources/uploads"
 export {
   PublicApi,

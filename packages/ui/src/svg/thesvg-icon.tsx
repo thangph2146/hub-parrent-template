@@ -1,51 +1,51 @@
-"use client";
+"use client"
 
-import { forwardRef, useId, useMemo } from "react";
-import type { SVGProps } from "react";
+import { forwardRef, useId, useMemo } from "react"
+import type { SVGProps } from "react"
 
 export type TheSvgIconModule = {
-  title: string;
-  svg: string;
-};
+  title: string
+  svg: string
+}
 
 function namespaceSvgIds(svg: string, prefix: string): string {
-  const ids = new Set<string>();
-  const idRegex = /\bid="([^"]+)"/g;
-  let match: RegExpExecArray | null = idRegex.exec(svg);
+  const ids = new Set<string>()
+  const idRegex = /\bid="([^"]+)"/g
+  let match: RegExpExecArray | null = idRegex.exec(svg)
   while (match) {
-    const id = match[1];
-    if (id) ids.add(id);
-    match = idRegex.exec(svg);
+    const id = match[1]
+    if (id) ids.add(id)
+    match = idRegex.exec(svg)
   }
 
-  let result = svg;
+  let result = svg
   for (const id of ids) {
-    const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const namespaced = `${prefix}-${id}`;
+    const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const namespaced = `${prefix}-${id}`
     result = result
       .replace(new RegExp(`id="${escaped}"`, "g"), `id="${namespaced}"`)
       .replace(new RegExp(`url\\(#${escaped}\\)`, "g"), `url(#${namespaced})`)
-      .replace(new RegExp(`href="#${escaped}"`, "g"), `href="#${namespaced}"`);
+      .replace(new RegExp(`href="#${escaped}"`, "g"), `href="#${namespaced}"`)
   }
-  return result;
+  return result
 }
 
 function parseSvgMarkup(svg: string, idPrefix: string) {
-  const namespaced = namespaceSvgIds(svg, idPrefix);
-  const viewBox = namespaced.match(/viewBox="([^"]+)"/)?.[1] ?? "0 0 24 24";
+  const namespaced = namespaceSvgIds(svg, idPrefix)
+  const viewBox = namespaced.match(/viewBox="([^"]+)"/)?.[1] ?? "0 0 24 24"
   const innerHtml =
-    namespaced.match(/<svg[^>]*>([\s\S]*)<\/svg>/i)?.[1] ?? namespaced;
-  return { viewBox, innerHtml };
+    namespaced.match(/<svg[^>]*>([\s\S]*)<\/svg>/i)?.[1] ?? namespaced
+  return { viewBox, innerHtml }
 }
 
 export function createTheSvgIcon(icon: TheSvgIconModule) {
   const TheSvgIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>(
     function TheSvgIcon({ className, ...props }, ref) {
-      const uid = useId().replace(/:/g, "");
+      const uid = useId().replace(/:/g, "")
       const { viewBox, innerHtml } = useMemo(
         () => parseSvgMarkup(icon.svg, uid),
-        [uid],
-      );
+        [uid]
+      )
 
       return (
         <svg
@@ -58,10 +58,10 @@ export function createTheSvgIcon(icon: TheSvgIconModule) {
           {...props}
           dangerouslySetInnerHTML={{ __html: innerHtml }}
         />
-      );
-    },
-  );
+      )
+    }
+  )
 
-  TheSvgIcon.displayName = `${icon.title.replace(/\s+/g, "")}Icon`;
-  return TheSvgIcon;
+  TheSvgIcon.displayName = `${icon.title.replace(/\s+/g, "")}Icon`
+  return TheSvgIcon
 }

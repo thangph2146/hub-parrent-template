@@ -22,7 +22,7 @@ export function AdminAuthLoadingScreen({
     <div
       className={cn(
         "relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background via-muted/15 to-background px-4",
-        className,
+        className
       )}
       role="status"
       aria-live="polite"
@@ -37,10 +37,7 @@ export function AdminAuthLoadingScreen({
 
       <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-2xl border border-border/50 bg-card/90 p-8 shadow-lg ring-1 ring-black/5 backdrop-blur-md">
         <div className="relative flex size-14 items-center justify-center rounded-xl border border-primary/15 bg-gradient-to-br from-primary/15 to-primary/5 shadow-inner">
-          <Loader2
-            className="size-7 animate-spin text-primary"
-            aria-hidden
-          />
+          <Loader2 className="size-7 animate-spin text-primary" aria-hidden />
         </div>
 
         {siteName ? (

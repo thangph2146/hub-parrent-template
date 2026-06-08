@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import type { FC, SVGProps } from "react";
+import type { FC, SVGProps } from "react"
 import {
   WordIcon,
   ExcelIcon,
@@ -13,7 +13,7 @@ import {
   CodeIcon,
   TxtIcon,
   GenericDocIcon,
-} from "../svg";
+} from "../svg"
 
 const ICON_MAP: Record<string, FC<SVGProps<SVGSVGElement>>> = {
   doc: WordIcon,
@@ -73,32 +73,49 @@ const ICON_MAP: Record<string, FC<SVGProps<SVGSVGElement>>> = {
   rtf: TxtIcon,
   log: TxtIcon,
   md: TxtIcon,
-};
+}
 
 function getFileExtension(filename: string): string {
-  const dot = filename.lastIndexOf(".");
-  if (dot === -1) return "";
-  return filename.slice(dot + 1).toLowerCase();
+  const dot = filename.lastIndexOf(".")
+  if (dot === -1) return ""
+  return filename.slice(dot + 1).toLowerCase()
 }
 
-function FileTypeIcon({ filename, className = "" }: { filename: string; className?: string }) {
-  const ext = getFileExtension(filename);
-  const Icon = ICON_MAP[ext] || GenericDocIcon;
+function FileTypeIcon({
+  filename,
+  className = "",
+}: {
+  filename: string
+  className?: string
+}) {
+  const ext = getFileExtension(filename)
+  const Icon = ICON_MAP[ext] || GenericDocIcon
   return (
-    <div className={"flex size-12 items-center justify-center rounded-md border border-border bg-muted " + className}>
+    <div
+      className={
+        "flex size-12 items-center justify-center rounded-md border border-border bg-muted " +
+        className
+      }
+    >
       <Icon className="size-7" />
     </div>
-  );
+  )
 }
 
-function FileTypeIconSm({ filename, className = "" }: { filename: string; className?: string }) {
-  const ext = getFileExtension(filename);
-  const Icon = ICON_MAP[ext] || GenericDocIcon;
+function FileTypeIconSm({
+  filename,
+  className = "",
+}: {
+  filename: string
+  className?: string
+}) {
+  const ext = getFileExtension(filename)
+  const Icon = ICON_MAP[ext] || GenericDocIcon
   return (
     <span className={"inline-flex shrink-0 " + className}>
       <Icon className="size-4" />
     </span>
-  );
+  )
 }
 
-export { FileTypeIcon, FileTypeIconSm };
+export { FileTypeIcon, FileTypeIconSm }

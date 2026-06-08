@@ -43,7 +43,10 @@ export const defaultBulkOperationToast: AdminOperationToastMessages<
   error: (err) => resolveAdminOperationError(err),
 }
 
-const toastIds = new WeakMap<Mutation<unknown, unknown, unknown, unknown>, string | number>()
+const toastIds = new WeakMap<
+  Mutation<unknown, unknown, unknown, unknown>,
+  string | number
+>()
 
 function resolveMessage(
   message: string | ((...args: never[]) => string),
@@ -68,7 +71,7 @@ export function adminToastMeta<
   TVariables = unknown,
   TError = unknown,
 >(
-  messages: AdminOperationToastMessages<TData, TVariables, TError>,
+  messages: AdminOperationToastMessages<TData, TVariables, TError>
 ): { adminToast: AdminOperationToastMessages<TData, TVariables, TError> } {
   return { adminToast: messages }
 }
@@ -79,13 +82,13 @@ type AdminMutationMeta = {
 }
 
 function getAdminMutationMeta(
-  mutation: Mutation<unknown, unknown, unknown, unknown>,
+  mutation: Mutation<unknown, unknown, unknown, unknown>
 ): AdminMutationMeta | undefined {
   return mutation.meta as AdminMutationMeta | undefined
 }
 
 function getAdminToastMeta(
-  mutation: Mutation<unknown, unknown, unknown, unknown>,
+  mutation: Mutation<unknown, unknown, unknown, unknown>
 ): AdminOperationToastMessages | undefined {
   return getAdminMutationMeta(mutation)?.adminToast
 }
@@ -114,7 +117,7 @@ export function createAdminMutationCache(): MutationCache {
         mutation.options.mutationKey,
         meta?.adminToastSuppress,
         data,
-        variables,
+        variables
       )
     },
     onError: (error, variables, _context, mutation) => {
@@ -136,7 +139,7 @@ export function createAdminMutationCache(): MutationCache {
 
 /** Gợi ý toast theo mutationKey (tùy chọn). */
 export function inferAdminToastFromMutationKey(
-  key: MutationKey | undefined,
+  key: MutationKey | undefined
 ): Partial<AdminOperationToastMessages> | undefined {
   if (!key || !Array.isArray(key) || key.length === 0) return undefined
   const action = String(key[1] ?? "mutate")

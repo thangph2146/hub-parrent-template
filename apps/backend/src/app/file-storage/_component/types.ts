@@ -1,5 +1,8 @@
-import type { ImageItem } from "@/lib/admin-uploads";
+import type { ImageItem, StorageRealm, StorageTab } from "@/lib/admin-uploads";
 
 export type FileStorageRow = ImageItem;
 
-export type FileStorageTab = "images" | "files";
+/** Tab động theo folder hệ thống (admincp, avatars, files, …). */
+export type FileStorageTab = string;
+
+export type { StorageTab, StorageRealm };

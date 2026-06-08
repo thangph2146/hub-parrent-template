@@ -40,7 +40,7 @@ export function LexicalEditor({
   stickyTop,
 }: LexicalEditorProps) {
   const parseIncomingValue = (
-    incoming: unknown,
+    incoming: unknown
   ): SerializedEditorState | undefined => {
     if (incoming && typeof incoming === "object" && incoming !== null) {
       if (isValidSerializedEditorState(incoming)) return incoming
@@ -53,10 +53,7 @@ export function LexicalEditor({
       try {
         const parsed = JSON.parse(incoming)
         if (isValidSerializedEditorState(parsed)) return parsed
-        logger.error(
-          "[LexicalEditor] Invalid parsed JSON structure:",
-          parsed,
-        )
+        logger.error("[LexicalEditor] Invalid parsed JSON structure:", parsed)
       } catch (error) {
         logger.error("[LexicalEditor] Error parsing value string:", error)
       }

@@ -87,7 +87,9 @@ function DataTableRowContextMenuContent({
         groups={groups}
         byGroup={byGroup}
         renderSeparator={() => <ContextMenuSeparator />}
-        renderGroup={(children) => <ContextMenuGroup>{children}</ContextMenuGroup>}
+        renderGroup={(children) => (
+          <ContextMenuGroup>{children}</ContextMenuGroup>
+        )}
         renderGroupLabel={(config, GroupIcon) =>
           config.sublabel ? (
             <ContextMenuLabel className={rowActionsGroupLabelClassName(config)}>
@@ -151,7 +153,12 @@ export function DataTableRowContextMenu({
 
   if (!enabled || !registry) {
     return (
-      <TableRow ref={rowRef} className={className} style={style} {...tableRowProps}>
+      <TableRow
+        ref={rowRef}
+        className={className}
+        style={style}
+        {...tableRowProps}
+      >
         {children}
       </TableRow>
     )
@@ -176,8 +183,12 @@ export function DataTableRowContextMenu({
     >
       <ContextMenuTrigger
         render={(triggerProps) => {
-          const { ref: triggerRef, className: triggerClassName, style: triggerStyle, ...restTrigger } =
-            triggerProps
+          const {
+            ref: triggerRef,
+            className: triggerClassName,
+            style: triggerStyle,
+            ...restTrigger
+          } = triggerProps
 
           return (
             <TableRow

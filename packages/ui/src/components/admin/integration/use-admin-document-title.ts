@@ -89,7 +89,7 @@ export function useAdminDocumentTitle(options: {
           metaDescription: options.metaDescription ?? undefined,
           titleFallback,
           descriptionFallback,
-        }),
+        })
       )
     }
 

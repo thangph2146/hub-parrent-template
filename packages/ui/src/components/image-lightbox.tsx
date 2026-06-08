@@ -245,14 +245,14 @@ export function ImageLightbox({
             </button>
 
             <div
-className={cn(
-  "mx-auto max-h-[65vh] max-w-[calc(100%-5rem)] overflow-hidden md:max-w-[calc(100%-7rem)]",
-  zoomScale > 1
-    ? isDraggingImage
-      ? "cursor-grabbing"
-      : "cursor-grab"
-    : "cursor-default"
-)}
+              className={cn(
+                "mx-auto max-h-[65vh] max-w-[calc(100%-5rem)] overflow-hidden md:max-w-[calc(100%-7rem)]",
+                zoomScale > 1
+                  ? isDraggingImage
+                    ? "cursor-grabbing"
+                    : "cursor-grab"
+                  : "cursor-default"
+              )}
               onPointerDown={handleImagePointerDown}
               onPointerMove={handleImagePointerMove}
               onPointerUp={stopImageDragging}

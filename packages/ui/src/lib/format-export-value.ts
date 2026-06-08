@@ -83,9 +83,14 @@ export function formatNamedListForExport(
 export function formatArrayCellForExport(value: unknown[]): string | null {
   if (!value.length) return ""
 
-  const stringItems = value.filter((item) => typeof item === "string") as string[]
+  const stringItems = value.filter(
+    (item) => typeof item === "string"
+  ) as string[]
   if (stringItems.length === value.length) {
-    return stringItems.map((s) => s.trim()).filter(Boolean).join(", ")
+    return stringItems
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(", ")
   }
 
   const objectItems = value.filter(

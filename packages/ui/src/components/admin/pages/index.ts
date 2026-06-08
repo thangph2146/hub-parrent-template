@@ -44,3 +44,4 @@ export {
   AdminPageHeaderOutlineButton,
   AdminPageHeaderPrimaryButton,
 } from "./admin-page-header-buttons"
+export { AdminEmptyState, type AdminEmptyStateProps } from "./admin-empty-state"

@@ -126,7 +126,10 @@ export function RowActionsMenuGroups({
   renderItem: (action: DataTableRowActionItem) => ReactElement
   renderSeparator: () => ReactElement
   renderGroup: (children: ReactNode) => ReactElement
-  renderGroupLabel: (config: RowActionsMenuGroupConfig, GroupIcon?: ComponentType<{ className?: string }>) => ReactElement
+  renderGroupLabel: (
+    config: RowActionsMenuGroupConfig,
+    GroupIcon?: ComponentType<{ className?: string }>
+  ) => ReactElement
 }) {
   return (
     <>

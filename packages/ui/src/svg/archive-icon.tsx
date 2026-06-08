@@ -1,4 +1,4 @@
-import sevenZip from "./thesvg-sources/7zip";
-import { createTheSvgIcon } from "./thesvg-icon";
+import sevenZip from "./thesvg-sources/7zip"
+import { createTheSvgIcon } from "./thesvg-icon"
 
-export const ArchiveIcon = createTheSvgIcon(sevenZip);
+export const ArchiveIcon = createTheSvgIcon(sevenZip)

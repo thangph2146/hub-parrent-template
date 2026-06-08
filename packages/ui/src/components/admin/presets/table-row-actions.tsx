@@ -188,10 +188,7 @@ type AdminTableCrudRowActionsProps = {
   autoConfirmDangerousActions?: boolean
 }
 
-function shouldIncludeRowAction(
-  hidden?: boolean,
-  disabled?: boolean
-): boolean {
+function shouldIncludeRowAction(hidden?: boolean, disabled?: boolean): boolean {
   return !hidden && !disabled
 }
 
@@ -254,11 +251,7 @@ export function AdminTableCrudRowActions({
     })
   }
 
-  if (
-    canWrite &&
-    onEdit &&
-    shouldIncludeRowAction(editHidden, editDisabled)
-  ) {
+  if (canWrite && onEdit && shouldIncludeRowAction(editHidden, editDisabled)) {
     actions.push({
       key: "edit",
       label: labels?.edit ?? "Chỉnh sửa",

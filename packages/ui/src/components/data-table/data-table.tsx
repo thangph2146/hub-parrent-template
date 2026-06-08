@@ -55,11 +55,7 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
-import {
-  ChevronDown,
-  ChevronRight,
-  GripVertical,
-} from "lucide-react"
+import { ChevronDown, ChevronRight, GripVertical } from "lucide-react"
 import {
   useCallback,
   useEffect,
@@ -525,7 +521,8 @@ function stickyTableHeadClassName(options: {
   isReorderCol: boolean
 }): string {
   if (!options.enabled) return ""
-  const corner = options.isSelectionCol || options.isActionsCol || options.isReorderCol
+  const corner =
+    options.isSelectionCol || options.isActionsCol || options.isReorderCol
   return cn(
     "sticky top-0 shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]",
     corner ? "z-[25]" : "z-[15]",
@@ -702,8 +699,7 @@ function columnFilterToolbarLabel<TData>(
   return header.column.id
 }
 
-const DATA_TABLE_PANEL_FIELDSET_CLASS =
-  "overflow-hidden border-none p-0"
+const DATA_TABLE_PANEL_FIELDSET_CLASS = "overflow-hidden border-none p-0"
 
 export function AdminDataTable<TData>({
   data,
@@ -1546,8 +1542,7 @@ export function AdminDataTable<TData>({
     () =>
       hideableTableColumnOptions
         .filter(
-          (option) =>
-            table.getColumn(option.value)?.getIsVisible() !== false
+          (option) => table.getColumn(option.value)?.getIsVisible() !== false
         )
         .map((option) => option.value),
     [hideableTableColumnOptions, table]
@@ -1754,40 +1749,40 @@ export function AdminDataTable<TData>({
   return (
     <div className="flex flex-col gap-3">
       {showTableToolbar ? (
-      <DataTableToolbar
-        globalFilterControlId={globalFilterControlId}
-        showGlobalFilter={showGlobalFilter}
-        globalFilterPlaceholder={globalFilterPlaceholder}
-        globalFilter={globalFilter}
-        onGlobalFilterChange={setGlobalFilter}
-        showClearFiltersButton={showClearFiltersButton}
-        hasActiveFilters={hasActiveFilters}
-        onClearFilters={handleClearFilters}
-        xlsxExportEnabled={xlsxExportEnabled}
-        exportDisabled={data.length === 0}
-        onXlsxExport={handleXlsxExport}
-        filterToolbarExtra={filterToolbarExtra}
-        showBulkBar={showBulkBar}
-        selectedCount={selectedCount}
-        bulkActions={bulkActions}
-        selectedRows={selectedRows}
-        runningBulkActionId={runningBulkActionId}
-        onRunBulkAction={runBulkAction}
-        filterableHeadersCount={toolbarFilterableHeaders.length}
-        visibleFilterableHeaders={toolbarVisibleFilterableHeaders}
-        renderColumnFilter={renderOutsideColumnFilter}
-        columnFilterToolbarLabel={columnFilterToolbarLabel}
-        showFilterColumnPicker={
-          showColumnFilters && Boolean(resolvedFilterColumnVisibilityKey)
-        }
-        filterColumnOptions={filterColumnOptions}
-        filterColumnVisibilityValue={filterColumnVisibilityValue}
-        onFilterColumnVisibilityChange={handleFilterColumnVisibilityChange}
-        hideableTableColumnOptions={toolbarHideableColumnOptions}
-        visibleTableColumnIds={visibleTableColumnIds}
-        onTableColumnVisibilityChange={handleTableColumnVisibilityChange}
-        columnFilters={showColumnFilters ? columnFilters : []}
-      />
+        <DataTableToolbar
+          globalFilterControlId={globalFilterControlId}
+          showGlobalFilter={showGlobalFilter}
+          globalFilterPlaceholder={globalFilterPlaceholder}
+          globalFilter={globalFilter}
+          onGlobalFilterChange={setGlobalFilter}
+          showClearFiltersButton={showClearFiltersButton}
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={handleClearFilters}
+          xlsxExportEnabled={xlsxExportEnabled}
+          exportDisabled={data.length === 0}
+          onXlsxExport={handleXlsxExport}
+          filterToolbarExtra={filterToolbarExtra}
+          showBulkBar={showBulkBar}
+          selectedCount={selectedCount}
+          bulkActions={bulkActions}
+          selectedRows={selectedRows}
+          runningBulkActionId={runningBulkActionId}
+          onRunBulkAction={runBulkAction}
+          filterableHeadersCount={toolbarFilterableHeaders.length}
+          visibleFilterableHeaders={toolbarVisibleFilterableHeaders}
+          renderColumnFilter={renderOutsideColumnFilter}
+          columnFilterToolbarLabel={columnFilterToolbarLabel}
+          showFilterColumnPicker={
+            showColumnFilters && Boolean(resolvedFilterColumnVisibilityKey)
+          }
+          filterColumnOptions={filterColumnOptions}
+          filterColumnVisibilityValue={filterColumnVisibilityValue}
+          onFilterColumnVisibilityChange={handleFilterColumnVisibilityChange}
+          hideableTableColumnOptions={toolbarHideableColumnOptions}
+          visibleTableColumnIds={visibleTableColumnIds}
+          onTableColumnVisibilityChange={handleTableColumnVisibilityChange}
+          columnFilters={showColumnFilters ? columnFilters : []}
+        />
       ) : null}
       <FieldSet
         variant="custom"
@@ -1800,294 +1795,288 @@ export function AdminDataTable<TData>({
                 enabled={horizontalScrollButtons}
                 watchKey={`${isLoading}-${data.length}`}
               >
-                  <Table
-                    className="min-w-[640px]"
-                    scrollContainerClassName={
-                      resolvedTableScrollMaxHeight != null
-                        ? "overflow-auto"
-                        : undefined
-                    }
-                    scrollContainerStyle={tableScrollContainerStyle}
-                  >
-                    <TableHeader className="bg-primary text-primary-foreground">
-                      {headerGroups.map((hg) => (
-                        <TableRow key={hg.id} className="hover:bg-transparent">
-                          {hg.headers.map((header) => {
-                            const isSelectionCol =
-                              header.column.id ===
-                              DATA_TABLE_SELECTION_COLUMN_ID
-                            const isReorderCol =
-                              header.column.id ===
-                              DATA_TABLE_REORDER_COLUMN_ID
-                            const headerMeta = header.column.columnDef.meta as
-                              | ColumnMeta
-                              | undefined
-                            const isActionsCol = isDataTableActionsColumn(
-                              header.column.id,
-                              headerMeta
-                            )
-                            const headBoxStyle = isSelectionCol
-                              ? selectionColumnBoxStyle(
-                                  resolvedSelectionColumnWidth
-                                )
-                              : columnSizeBoxStyle(header.column)
-                            return (
-                              <TableHead
-                                key={header.id}
-                                className={cn(
-                                  "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
-                                  header.column.getCanSort() &&
-                                    "cursor-pointer select-none",
-                                  dataTableCellWidthClassName(
-                                    header.column.id,
-                                    headerMeta,
-                                    header.column.columnDef
-                                  ),
-                                  stickyPinnedHeadCellClassName({
-                                    isSelectionCol,
-                                    isActionsCol,
-                                    isReorderCol,
-                                    stickyTableHeader,
-                                  }),
-                                  stickyTableHeadClassName({
-                                    enabled: stickyTableHeader,
-                                    isSelectionCol,
-                                    isActionsCol,
-                                    isReorderCol,
-                                  })
-                                )}
-                                style={{
-                                  ...headBoxStyle,
-                                  ...stickyTableHeadTopStyle(
-                                    stickyTableHeader,
-                                    stickyTableHeaderTop
-                                  ),
-                                }}
-                                onClick={
-                                  header.column.getCanSort()
-                                    ? header.column.getToggleSortingHandler()
-                                    : undefined
-                                }
-                              >
-                                {header.isPlaceholder ? null : (
-                                  <div
-                                    className={cn(
-                                      "flex h-full gap-1",
-                                      isSelectionCol || isActionsCol || isReorderCol
-                                        ? "flex-row items-center justify-center"
-                                        : "flex-col items-start justify-center"
-                                    )}
-                                  >
-                                    <span className="flex items-center gap-1">
-                                      {flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                      )}
-                                      {header.column.getIsSorted() === "asc"
-                                        ? " ↑"
-                                        : header.column.getIsSorted() === "desc"
-                                          ? " ↓"
-                                          : null}
-                                    </span>
-                                  </div>
-                                )}
-                              </TableHead>
-                            )
-                          })}
-                        </TableRow>
-                      ))}
-                    </TableHeader>
-                    <TableBody>
-                      {rows.length === 0 ? (
-                        <TableRow>
-                          <TableCell
-                            colSpan={tableColumns.length}
-                            className="h-24 text-center text-muted-foreground"
-                          >
-                            {emptyLabel}
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        rows.map((row) => (
-                          <DataTableRowActionsRowProvider
-                            key={row.id}
-                            rowId={row.id}
-                          >
-                            <DataTableRowContextMenu
-                              rowId={row.id}
-                              enabled={rowContextMenuEnabled}
-                              data-depth={row.depth}
-                              className={dataTableRowBodyClassName({
-                                rowIndex: row.index,
-                                isSelected: row.getIsSelected(),
-                                extra: getRowClassName?.(row),
-                              })}
+                <Table
+                  className="min-w-[640px]"
+                  scrollContainerClassName={
+                    resolvedTableScrollMaxHeight != null
+                      ? "overflow-auto"
+                      : undefined
+                  }
+                  scrollContainerStyle={tableScrollContainerStyle}
+                >
+                  <TableHeader className="bg-primary text-primary-foreground">
+                    {headerGroups.map((hg) => (
+                      <TableRow key={hg.id} className="hover:bg-transparent">
+                        {hg.headers.map((header) => {
+                          const isSelectionCol =
+                            header.column.id === DATA_TABLE_SELECTION_COLUMN_ID
+                          const isReorderCol =
+                            header.column.id === DATA_TABLE_REORDER_COLUMN_ID
+                          const headerMeta = header.column.columnDef.meta as
+                            | ColumnMeta
+                            | undefined
+                          const isActionsCol = isDataTableActionsColumn(
+                            header.column.id,
+                            headerMeta
+                          )
+                          const headBoxStyle = isSelectionCol
+                            ? selectionColumnBoxStyle(
+                                resolvedSelectionColumnWidth
+                              )
+                            : columnSizeBoxStyle(header.column)
+                          return (
+                            <TableHead
+                              key={header.id}
+                              className={cn(
+                                "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
+                                header.column.getCanSort() &&
+                                  "cursor-pointer select-none",
+                                dataTableCellWidthClassName(
+                                  header.column.id,
+                                  headerMeta,
+                                  header.column.columnDef
+                                ),
+                                stickyPinnedHeadCellClassName({
+                                  isSelectionCol,
+                                  isActionsCol,
+                                  isReorderCol,
+                                  stickyTableHeader,
+                                }),
+                                stickyTableHeadClassName({
+                                  enabled: stickyTableHeader,
+                                  isSelectionCol,
+                                  isActionsCol,
+                                  isReorderCol,
+                                })
+                              )}
                               style={{
-                                borderLeft:
-                                  row.depth > 0
-                                    ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
-                                    : undefined,
+                                ...headBoxStyle,
+                                ...stickyTableHeadTopStyle(
+                                  stickyTableHeader,
+                                  stickyTableHeaderTop
+                                ),
                               }}
-                              onPointerEnter={
-                                onRowPointerEnter
-                                  ? () => onRowPointerEnter(row)
+                              onClick={
+                                header.column.getCanSort()
+                                  ? header.column.getToggleSortingHandler()
                                   : undefined
                               }
                             >
-                              {row.getVisibleCells().map((cell) => {
-                                const colIndex = cell.column.getIndex()
-                                // Cột dữ liệu đầu tiên — sau checkbox, STT, expander (theo thứ tự đó).
-                                const firstDataColumnIndex =
-                                  (rowSelectionActive ? 1 : 0) +
-                                  (rowReorderColumnEnabled ? 1 : 0) +
-                                  (indexColumnEnabled ? 1 : 0) +
-                                  (getSubRows ? 1 : 0)
-                                const indent =
-                                  getSubRows &&
-                                  colIndex === firstDataColumnIndex
-                                    ? row.depth * 24
-                                    : 0
-                                const isSelectionCol =
-                                  cell.column.id ===
-                                  DATA_TABLE_SELECTION_COLUMN_ID
-                                const isReorderCol =
-                                  cell.column.id ===
-                                  DATA_TABLE_REORDER_COLUMN_ID
-                                const cellMeta = cell.column.columnDef.meta as
-                                  | ColumnMeta
-                                  | undefined
-                                const isActionsCol = isDataTableActionsColumn(
-                                  cell.column.id,
-                                  cellMeta
-                                )
-                                const isPinnedCol =
-                                  isSelectionCol ||
-                                  isReorderCol ||
-                                  isActionsCol
-                                return (
-                                  <TableCell
-                                    key={cell.id}
-                                    className={cn(
-                                      dataTableCellWidthClassName(
-                                        cell.column.id,
-                                        cellMeta,
-                                        cell.column.columnDef
-                                      ),
-                                      isPinnedCol &&
-                                        stickyPinnedBodyCellClassName({
-                                          rowIndex: row.index,
-                                          isSelected: row.getIsSelected(),
-                                          side: isSelectionCol || isReorderCol
+                              {header.isPlaceholder ? null : (
+                                <div
+                                  className={cn(
+                                    "flex h-full gap-1",
+                                    isSelectionCol ||
+                                      isActionsCol ||
+                                      isReorderCol
+                                      ? "flex-row items-center justify-center"
+                                      : "flex-col items-start justify-center"
+                                  )}
+                                >
+                                  <span className="flex items-center gap-1">
+                                    {flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
+                                    {header.column.getIsSorted() === "asc"
+                                      ? " ↑"
+                                      : header.column.getIsSorted() === "desc"
+                                        ? " ↓"
+                                        : null}
+                                  </span>
+                                </div>
+                              )}
+                            </TableHead>
+                          )
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {rows.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={tableColumns.length}
+                          className="h-24 text-center text-muted-foreground"
+                        >
+                          {emptyLabel}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      rows.map((row) => (
+                        <DataTableRowActionsRowProvider
+                          key={row.id}
+                          rowId={row.id}
+                        >
+                          <DataTableRowContextMenu
+                            rowId={row.id}
+                            enabled={rowContextMenuEnabled}
+                            data-depth={row.depth}
+                            className={dataTableRowBodyClassName({
+                              rowIndex: row.index,
+                              isSelected: row.getIsSelected(),
+                              extra: getRowClassName?.(row),
+                            })}
+                            style={{
+                              borderLeft:
+                                row.depth > 0
+                                  ? `3px solid hsl(var(--primary) / ${0.15 + row.depth * 0.1})`
+                                  : undefined,
+                            }}
+                            onPointerEnter={
+                              onRowPointerEnter
+                                ? () => onRowPointerEnter(row)
+                                : undefined
+                            }
+                          >
+                            {row.getVisibleCells().map((cell) => {
+                              const colIndex = cell.column.getIndex()
+                              // Cột dữ liệu đầu tiên — sau checkbox, STT, expander (theo thứ tự đó).
+                              const firstDataColumnIndex =
+                                (rowSelectionActive ? 1 : 0) +
+                                (rowReorderColumnEnabled ? 1 : 0) +
+                                (indexColumnEnabled ? 1 : 0) +
+                                (getSubRows ? 1 : 0)
+                              const indent =
+                                getSubRows && colIndex === firstDataColumnIndex
+                                  ? row.depth * 24
+                                  : 0
+                              const isSelectionCol =
+                                cell.column.id ===
+                                DATA_TABLE_SELECTION_COLUMN_ID
+                              const isReorderCol =
+                                cell.column.id === DATA_TABLE_REORDER_COLUMN_ID
+                              const cellMeta = cell.column.columnDef.meta as
+                                | ColumnMeta
+                                | undefined
+                              const isActionsCol = isDataTableActionsColumn(
+                                cell.column.id,
+                                cellMeta
+                              )
+                              const isPinnedCol =
+                                isSelectionCol || isReorderCol || isActionsCol
+                              return (
+                                <TableCell
+                                  key={cell.id}
+                                  className={cn(
+                                    dataTableCellWidthClassName(
+                                      cell.column.id,
+                                      cellMeta,
+                                      cell.column.columnDef
+                                    ),
+                                    isPinnedCol &&
+                                      stickyPinnedBodyCellClassName({
+                                        rowIndex: row.index,
+                                        isSelected: row.getIsSelected(),
+                                        side:
+                                          isSelectionCol || isReorderCol
                                             ? "left"
                                             : "right",
-                                        }),
-                                      isSelectionCol && "px-0",
-                                      isReorderCol && "px-0",
-                                      isActionsCol && "px-1"
-                                    )}
-                                    style={{
-                                      ...(isSelectionCol
-                                        ? selectionColumnBoxStyle(
-                                            resolvedSelectionColumnWidth
-                                          )
-                                        : columnSizeBoxStyle(cell.column)),
-                                      paddingLeft:
-                                        indent > 0
-                                          ? `calc(0.5rem + ${indent}px)`
-                                          : undefined,
-                                    }}
-                                  >
-                                    {(() => {
-                                      if (isReorderCol) {
-                                        const draggable =
-                                          row.depth === 0 &&
-                                          rowReorderDndEnabled === true
-
-                                        const droppingDisabled =
-                                          !rowReorderDndEnabled ||
-                                          row.depth > 0
-
-                                        return (
-                                          <button
-                                            type="button"
-                                            draggable={draggable}
-                                            aria-label={
-                                              rowReorderHandleAriaLabel
-                                            }
-                                            disabled={droppingDisabled}
-                                            onDragStart={(e) => {
-                                              if (!draggable) return
-                                              e.dataTransfer.effectAllowed =
-                                                "move"
-                                              e.dataTransfer.setData(
-                                                "text/plain",
-                                                row.id
-                                              )
-                                              setDraggingRowId(row.id)
-                                            }}
-                                            onDragOver={(e) => {
-                                              if (droppingDisabled) return
-                                              e.preventDefault()
-                                            }}
-                                            onDrop={(e) => {
-                                              e.preventDefault()
-                                              if (droppingDisabled) return
-                                              const activeId =
-                                                e.dataTransfer.getData(
-                                                  "text/plain"
-                                                )
-                                              if (!activeId) return
-                                              reorderTopLevelByIds(
-                                                activeId,
-                                                row.id
-                                              )
-                                              setDraggingRowId(null)
-                                            }}
-                                            onDragEnd={() => {
-                                              setDraggingRowId(null)
-                                            }}
-                                            className={cn(
-                                              "flex size-8 items-center justify-center rounded-md transition-colors",
-                                              droppingDisabled
-                                                ? "cursor-not-allowed opacity-50"
-                                                : draggingRowId === row.id
-                                                  ? "cursor-grabbing opacity-70"
-                                                  : "cursor-grab hover:bg-muted/50 active:cursor-grabbing"
-                                            )}
-                                          >
-                                            <GripVertical
-                                              className="size-3.5 text-muted-foreground"
-                                              aria-hidden
-                                            />
-                                          </button>
+                                      }),
+                                    isSelectionCol && "px-0",
+                                    isReorderCol && "px-0",
+                                    isActionsCol && "px-1"
+                                  )}
+                                  style={{
+                                    ...(isSelectionCol
+                                      ? selectionColumnBoxStyle(
+                                          resolvedSelectionColumnWidth
                                         )
-                                      }
+                                      : columnSizeBoxStyle(cell.column)),
+                                    paddingLeft:
+                                      indent > 0
+                                        ? `calc(0.5rem + ${indent}px)`
+                                        : undefined,
+                                  }}
+                                >
+                                  {(() => {
+                                    if (isReorderCol) {
+                                      const draggable =
+                                        row.depth === 0 &&
+                                        rowReorderDndEnabled === true
 
-                                      const cellContent = flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                      )
-                                      const clampClass =
-                                        dataTableCellContentClampClassName(
-                                          cell.column.id,
-                                          cellMeta
-                                        )
-                                      if (!clampClass) return cellContent
+                                      const droppingDisabled =
+                                        !rowReorderDndEnabled || row.depth > 0
+
                                       return (
-                                        <div className={clampClass}>
-                                          {cellContent}
-                                        </div>
+                                        <button
+                                          type="button"
+                                          draggable={draggable}
+                                          aria-label={rowReorderHandleAriaLabel}
+                                          disabled={droppingDisabled}
+                                          onDragStart={(e) => {
+                                            if (!draggable) return
+                                            e.dataTransfer.effectAllowed =
+                                              "move"
+                                            e.dataTransfer.setData(
+                                              "text/plain",
+                                              row.id
+                                            )
+                                            setDraggingRowId(row.id)
+                                          }}
+                                          onDragOver={(e) => {
+                                            if (droppingDisabled) return
+                                            e.preventDefault()
+                                          }}
+                                          onDrop={(e) => {
+                                            e.preventDefault()
+                                            if (droppingDisabled) return
+                                            const activeId =
+                                              e.dataTransfer.getData(
+                                                "text/plain"
+                                              )
+                                            if (!activeId) return
+                                            reorderTopLevelByIds(
+                                              activeId,
+                                              row.id
+                                            )
+                                            setDraggingRowId(null)
+                                          }}
+                                          onDragEnd={() => {
+                                            setDraggingRowId(null)
+                                          }}
+                                          className={cn(
+                                            "flex size-8 items-center justify-center rounded-md transition-colors",
+                                            droppingDisabled
+                                              ? "cursor-not-allowed opacity-50"
+                                              : draggingRowId === row.id
+                                                ? "cursor-grabbing opacity-70"
+                                                : "cursor-grab hover:bg-muted/50 active:cursor-grabbing"
+                                          )}
+                                        >
+                                          <GripVertical
+                                            className="size-3.5 text-muted-foreground"
+                                            aria-hidden
+                                          />
+                                        </button>
                                       )
-                                    })()}
-                                  </TableCell>
-                                )
-                              })}
-                            </DataTableRowContextMenu>
-                          </DataTableRowActionsRowProvider>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
+                                    }
+
+                                    const cellContent = flexRender(
+                                      cell.column.columnDef.cell,
+                                      cell.getContext()
+                                    )
+                                    const clampClass =
+                                      dataTableCellContentClampClassName(
+                                        cell.column.id,
+                                        cellMeta
+                                      )
+                                    if (!clampClass) return cellContent
+                                    return (
+                                      <div className={clampClass}>
+                                        {cellContent}
+                                      </div>
+                                    )
+                                  })()}
+                                </TableCell>
+                              )
+                            })}
+                          </DataTableRowContextMenu>
+                        </DataTableRowActionsRowProvider>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
               </DataTableHorizontalScroll>
             </DataTableScopeProvider>
           </DataTableRowActionsRegistryProvider>
@@ -2194,4 +2183,3 @@ function BulkActionConfirmDialog<TData>({
     </AlertDialog>
   )
 }
-

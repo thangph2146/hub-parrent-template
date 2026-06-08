@@ -5,7 +5,7 @@ const MAP_URL_COORDS_PATTERNS = [
 ]
 
 export function parseCoordsFromMapUrl(
-  url: string,
+  url: string
 ): { lat: number; lng: number } | null {
   if (!url) return null
   for (const { regex, latIdx, lngIdx } of MAP_URL_COORDS_PATTERNS) {

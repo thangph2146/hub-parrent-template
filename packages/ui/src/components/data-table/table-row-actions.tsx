@@ -85,18 +85,18 @@ export function DataTableRowActions({
       <div className={cn("flex flex-wrap items-center gap-2", className)}>
         {displayableActions
           ? displayableActions.map((action) => (
-                <DataTableRowActionButton
-                  key={action.key}
-                  label={action.label}
-                  onClick={() => runAction(action)}
-                  icon={action.icon}
-                  variant={action.variant}
-                  size={action.size}
-                  disabled={action.disabled}
-                  title={action.title}
-                  className={action.className}
-                />
-              ))
+              <DataTableRowActionButton
+                key={action.key}
+                label={action.label}
+                onClick={() => runAction(action)}
+                icon={action.icon}
+                variant={action.variant}
+                size={action.size}
+                disabled={action.disabled}
+                title={action.title}
+                className={action.className}
+              />
+            ))
           : children}
       </div>
       {confirmDialog}

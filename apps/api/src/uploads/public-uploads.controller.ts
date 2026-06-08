@@ -1,10 +1,13 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { UploadsService } from './uploads.service';
 import { PUBLIC_ROUTES } from '../config/constants';
 import { Public } from '../common/public.decorator';
 
+/** Serve ảnh/tệp công khai — không áp rate limit (trang admin có thể tải hàng chục thumbnail cùng lúc). */
 @Public()
+@SkipThrottle()
 @Controller(PUBLIC_ROUTES.SERVE_UPLOADS)
 export class PublicUploadsController {
   constructor(private readonly uploadsService: UploadsService) {}

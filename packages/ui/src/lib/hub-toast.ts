@@ -26,7 +26,7 @@ async function copyToastText(text: string): Promise<void> {
 
 function withCopyAction(
   message: ToastMessage,
-  data?: ExternalToast,
+  data?: ExternalToast
 ): ExternalToast | undefined {
   if (data?.action) return data
   const copyText = extractCopyText(message, data)
@@ -56,13 +56,13 @@ export type MutationSuccessSuppress = {
 export function mutationSuccess(
   message: ToastMessage,
   data?: ExternalToast,
-  suppress?: MutationSuccessSuppress,
+  suppress?: MutationSuccessSuppress
 ): string | number {
   if (suppress?.resource) {
     suppressRealtimeToastForEntity(
       suppress.resource,
       suppress.id,
-      suppress.action,
+      suppress.action
     )
   }
   return baseToast.success(message, withCopyAction(message, data))
@@ -89,5 +89,5 @@ export const toast: HubToast = Object.assign(
     loading: (message: ToastMessage, data?: ExternalToast) =>
       baseToast.loading(message, withCopyAction(message, data)),
     mutationSuccess,
-  },
+  }
 )

@@ -2,55 +2,55 @@
 
 import { useCallback, useRef, useState } from "react";
 import { toast } from "@ui/components/sonner";
-import { uploadAdminImage } from "@/lib/admin-upload";
 import {
   deleteUploadedFile,
-  fetchAllStoredFileStorageRows,
+  deleteUploadedFilesBulk,
+  exportFileStorageArchive,
+  fetchAllFileStorageRows,
   importFileStorageArchive,
 } from "@/lib/admin-uploads";
-import type { FileStorageRow, FileStorageTab } from "../types";
-import { downloadStorageFile, downloadStorageFilesAsZip } from "../utils";
+import type { FileStorageImportConfirmState } from "../file-storage-import-confirm-dialogs";
+import {
+  buildAcceptAttribute,
+  getRealmDefaultExtensions,
+} from "../storage-upload-policy";
+import type { FileStorageRow, StorageRealm } from "../types";
+import { downloadStorageFile } from "../utils";
+
+function triggerBrowserDownload(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
 
 type UseFileStorageActionsOptions = {
-  activeTab: FileStorageTab;
+  activeRealm: StorageRealm;
+  activeFolderPath: string;
+  includeDescendants: boolean;
   reload: () => Promise<void>;
 };
 
 export function useFileStorageActions({
-  activeTab,
+  activeRealm,
+  activeFolderPath,
+  includeDescendants,
   reload,
 }: UseFileStorageActionsOptions) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [deletingPath, setDeletingPath] = useState<string | null>(null);
   const [downloadingPath, setDownloadingPath] = useState<string | null>(null);
   const [downloadingAll, setDownloadingAll] = useState(false);
-
-  const handleUpload = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files ?? []);
-      if (!files.length) return;
-      setUploading(true);
-      let success = 0;
-      let fail = 0;
-      for (const file of files) {
-        try {
-          await uploadAdminImage(file, { folderPath: "" });
-          success++;
-        } catch {
-          fail++;
-        }
-      }
-      if (success > 0) toast.success(`Đã tải lên ${success} file`);
-      if (fail > 0) toast.error(`${fail} file tải lên thất bại`);
-      await reload();
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    },
-    [reload],
-  );
+  const [importConfirm, setImportConfirm] =
+    useState<FileStorageImportConfirmState | null>(null);
 
   const handleDelete = useCallback(
     async (row: FileStorageRow) => {
@@ -90,29 +90,23 @@ export function useFileStorageActions({
   const handleDownloadAll = useCallback(async () => {
     if (downloadingAll || downloadingPath) return;
     setDownloadingAll(true);
-    const listToast = toast.loading("Đang lấy danh sách kho lưu trữ…");
+    const listToast = toast.loading("Đang xuất toàn bộ kho lưu trữ trên server…");
     try {
-      const allRows = await fetchAllStoredFileStorageRows();
-      if (!allRows.length) {
+      const { blob, meta } = await exportFileStorageArchive();
+      if (!blob.size) {
         toast.error("Không có file để tải về", { id: listToast });
         return;
       }
-      toast.loading(`Đang tải và nén ${allRows.length} file…`, {
-        id: listToast,
-      });
-      const { success, fail } = await downloadStorageFilesAsZip(
-        allRows,
-        "kho-luu-tru.zip",
-        (done, total) => {
-          toast.loading(`Đang tải file ${done}/${total}…`, { id: listToast });
-        },
-      );
-      if (fail > 0) {
-        toast.success(`Đã tải về ${success} file (${fail} lỗi)`, {
+      triggerBrowserDownload(blob, "kho-luu-tru.zip");
+      if (meta.skipped > 0) {
+        toast.success(
+          `Đã xuất ${meta.fileCount} file (${meta.skipped} file bỏ qua)`,
+          { id: listToast },
+        );
+      } else {
+        toast.success(`Đã xuất toàn bộ ${meta.fileCount} file`, {
           id: listToast,
         });
-      } else {
-        toast.success(`Đã tải về tất cả ${success} file`, { id: listToast });
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Lỗi tải về tất cả", {
@@ -143,58 +137,103 @@ export function useFileStorageActions({
     }
   }, []);
 
-  const handleBulkDelete = useCallback(
-    async (selectedRows: FileStorageRow[]) => {
-      const paths = selectedRows.map((r) => r.relativePath);
+  const runBulkDeletePaths = useCallback(
+    async (paths: string[]) => {
       if (!paths.length) return;
+      const pending = toast.loading(`Đang xóa ${paths.length} file…`);
       try {
-        await Promise.all(paths.map((p) => deleteUploadedFile(p)));
-        toast.success(`Đã xóa ${paths.length} file`);
+        const result = await deleteUploadedFilesBulk(paths);
+        if (result.failed > 0) {
+          const sample = result.errors
+            .slice(0, 2)
+            .map((entry) => entry.message)
+            .join("; ");
+          toast.warning(
+            `Đã xóa ${result.deleted}/${paths.length} file (${result.failed} lỗi)${sample ? `: ${sample}` : ""}`,
+            { id: pending },
+          );
+        } else {
+          toast.success(`Đã xóa ${result.deleted} file`, { id: pending });
+        }
         await reload();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi xóa hàng loạt");
+        toast.error(err instanceof Error ? err.message : "Lỗi xóa hàng loạt", {
+          id: pending,
+        });
         throw err;
       }
     },
     [reload],
   );
 
-  const handleImport = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (!file.name.toLowerCase().endsWith(".zip")) {
-        toast.error("Vui lòng chọn file ZIP backup (kho-luu-tru.zip)");
-        if (importInputRef.current) importInputRef.current.value = "";
+  const handleBulkDelete = useCallback(
+    async (selectedRows: FileStorageRow[]) => {
+      const paths = selectedRows.map((r) => r.relativePath);
+      await runBulkDeletePaths(paths);
+    },
+    [runBulkDeletePaths],
+  );
+
+  const handleDeleteAllInTab = useCallback(async () => {
+    const listToast = toast.loading("Đang lấy danh sách file trong tab…");
+    try {
+      const allRows = await fetchAllFileStorageRows(
+        activeRealm,
+        activeFolderPath || undefined,
+        { includeDescendants },
+      );
+      if (!allRows.length) {
+        toast.error("Không có file để xóa", { id: listToast });
         return;
       }
+      toast.dismiss(listToast);
+      await runBulkDeletePaths(allRows.map((r) => r.relativePath));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Lỗi xóa toàn tab", {
+        id: listToast,
+      });
+      throw err;
+    }
+  }, [activeFolderPath, activeRealm, includeDescendants, runBulkDeletePaths]);
 
-      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-      const confirmed = window.confirm(
-        `Khôi phục kho lưu trữ từ "${file.name}" (${sizeMb} MB)?\n\n` +
-          "• File trùng đường dẫn sẽ được bỏ qua\n" +
-          "• Chỉ chấp nhận file ZIP xuất từ trang này",
-      );
-      if (!confirmed) {
-        if (importInputRef.current) importInputRef.current.value = "";
-        return;
-      }
+  const fetchAllRowsInScope = useCallback(async () => {
+    return fetchAllFileStorageRows(activeRealm, activeFolderPath || undefined, {
+      includeDescendants,
+    });
+  }, [activeFolderPath, activeRealm, includeDescendants]);
 
-      const overwrite = window.confirm(
-        "Ghi đè file trùng đường dẫn?\n\nOK = Ghi đè\nCancel = Bỏ qua file trùng",
-      );
+  const clearImportConfirm = useCallback(() => {
+    setImportConfirm(null);
+    if (importInputRef.current) importInputRef.current.value = "";
+  }, []);
 
+  const runImportArchive = useCallback(
+    async (file: File, overwrite: boolean) => {
       setImporting(true);
       const importToast = toast.loading("Đang khôi phục kho lưu trữ…");
       try {
         const result = await importFileStorageArchive(file, { overwrite });
-        const parts = [`Đã khôi phục ${result.restored} file`];
-        if (result.skipped > 0) parts.push(`bỏ qua ${result.skipped}`);
+        const total =
+          result.totalEntries ??
+          result.restored + result.skipped + result.failed;
+        const parts = [
+          `Đã khôi phục ${result.restored}/${total} file trong ZIP`,
+        ];
+        if ((result.skippedDuplicates ?? 0) > 0) {
+          parts.push(`bỏ qua ${result.skippedDuplicates} file trùng`);
+        }
+        if ((result.skippedUnsupportedExt ?? 0) > 0) {
+          parts.push(`${result.skippedUnsupportedExt} định dạng không hỗ trợ`);
+        }
         if (result.failed > 0) parts.push(`${result.failed} lỗi`);
-        toast.success(parts.join(", "), { id: importToast });
+        if ((result.listedTotal ?? 0) > 0) {
+          parts.push(`${result.listedTotal} file trong kho`);
+        }
+        toast.success(parts.join(" · "), { id: importToast });
         if (result.failed > 0 && result.errors.length) {
           toast.error(result.errors.slice(0, 3).join("\n"));
         }
+        setImportConfirm(null);
         await reload();
       } catch (err) {
         toast.error(
@@ -209,21 +248,54 @@ export function useFileStorageActions({
     [reload],
   );
 
+  const handleImport = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".zip")) {
+      toast.error("Vui lòng chọn file ZIP backup (kho-luu-tru.zip)");
+      if (importInputRef.current) importInputRef.current.value = "";
+      return;
+    }
+
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+    setImportConfirm({ file, sizeMb, step: "restore" });
+  }, []);
+
+  const handleImportConfirmRestore = useCallback(() => {
+    setImportConfirm((current) =>
+      current ? { ...current, step: "overwrite" } : null,
+    );
+  }, []);
+
+  const handleImportConfirmOverwrite = useCallback(() => {
+    if (!importConfirm?.file) return;
+    void runImportArchive(importConfirm.file, true);
+  }, [importConfirm, runImportArchive]);
+
+  const handleImportSkipOverwrite = useCallback(() => {
+    if (!importConfirm?.file) {
+      clearImportConfirm();
+      return;
+    }
+    void runImportArchive(importConfirm.file, false);
+  }, [clearImportConfirm, importConfirm, runImportArchive]);
+
   const openUploadPicker = useCallback(() => {
-    fileInputRef.current?.click();
+    setUploadDialogOpen(true);
   }, []);
 
   const openImportPicker = useCallback(() => {
     importInputRef.current?.click();
   }, []);
 
-  const uploadAccept =
-    activeTab === "images"
-      ? "image/*"
-      : "application/pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.mp4,.webm,image/*";
+  const uploadAccept = buildAcceptAttribute(
+    getRealmDefaultExtensions(activeRealm),
+  );
 
   return {
-    fileInputRef,
+    uploadDialogOpen,
+    setUploadDialogOpen,
+    setUploading,
     importInputRef,
     uploading,
     importing,
@@ -231,13 +303,19 @@ export function useFileStorageActions({
     downloadingPath,
     downloadingAll,
     uploadAccept,
-    handleUpload,
     handleImport,
+    importConfirm,
+    clearImportConfirm,
+    handleImportConfirmRestore,
+    handleImportConfirmOverwrite,
+    handleImportSkipOverwrite,
     handleDownload,
     handleDownloadAll,
     handleBulkDownload,
     handleDelete,
     handleBulkDelete,
+    handleDeleteAllInTab,
+    fetchAllRowsInScope,
     openUploadPicker,
     openImportPicker,
   };

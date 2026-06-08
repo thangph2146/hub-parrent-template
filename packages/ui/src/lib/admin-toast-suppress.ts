@@ -11,21 +11,25 @@ export type AdminToastSuppressMeta = {
   action?: string
 }
 
-function inferResourceFromMutationKey(key: MutationKey | undefined): string | undefined {
+function inferResourceFromMutationKey(
+  key: MutationKey | undefined
+): string | undefined {
   if (!key || !Array.isArray(key) || key.length === 0) return undefined
   const head = String(key[0] ?? "").trim()
   return head || undefined
 }
 
-function inferActionFromMutationKey(key: MutationKey | undefined): string | undefined {
+function inferActionFromMutationKey(
+  key: MutationKey | undefined
+): string | undefined {
   if (!key || !Array.isArray(key) || key.length < 2) return undefined
   const action = String(key[1] ?? "").trim()
   return action || undefined
 }
 
-export function adminToastSuppressMeta(
-  meta: AdminToastSuppressMeta,
-): { adminToastSuppress: AdminToastSuppressMeta } {
+export function adminToastSuppressMeta(meta: AdminToastSuppressMeta): {
+  adminToastSuppress: AdminToastSuppressMeta
+} {
   return { adminToastSuppress: meta }
 }
 
@@ -34,11 +38,10 @@ export function suppressRealtimeToastAfterMutation(
   mutationKey: MutationKey | undefined,
   suppressMeta: AdminToastSuppressMeta | undefined,
   data: unknown,
-  variables: unknown,
+  variables: unknown
 ): void {
   const resource =
-    suppressMeta?.resource?.trim() ||
-    inferResourceFromMutationKey(mutationKey)
+    suppressMeta?.resource?.trim() || inferResourceFromMutationKey(mutationKey)
   if (!resource) return
 
   registerLocalMutationFromMeta(resource, {
@@ -51,7 +54,7 @@ export function suppressRealtimeToastAfterMutation(
 export function suppressRealtimeToastForEntity(
   resource: string,
   id?: string,
-  action?: string,
+  action?: string
 ): void {
   registerLocalMutationFromMeta(resource, { id, action })
 }

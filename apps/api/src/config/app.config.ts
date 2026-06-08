@@ -63,6 +63,7 @@ export const appConfig = {
       APP_HEADERS.USER_ID,
       APP_HEADERS.VIEW_ALL,
     ] as string[],
+    exposedHeaders: ['X-Export-File-Count', 'X-Export-Skipped'] as string[],
     credentials: true,
   },
 } as const;
