@@ -125,6 +125,7 @@ import {
 } from "./data-table-pagination"
 import { FieldSet, FieldSetContent } from "../field"
 import { DataTableToolbar } from "./data-table-toolbar"
+import { DataTableUserSearchFilter } from "./data-table-user-search-filter"
 import {
   dataTableColumnsHasActionsColumn,
   normalizeDataTableColumns,
@@ -1710,6 +1711,31 @@ export function AdminDataTable<TData>({
           controlId={controlId}
           placeholder={ph}
           type="number"
+        />
+      )
+    }
+
+    if (variant === "user-search") {
+      const handlers = meta?.userSearchHandlers
+      if (!handlers) {
+        return (
+          <DebouncedFilterInput
+            column={col}
+            controlId={controlId}
+            placeholder={ph}
+          />
+        )
+      }
+      const raw = col.getFilterValue()
+      const filterValue = raw == null ? "" : String(raw)
+      return (
+        <DataTableUserSearchFilter
+          controlId={controlId}
+          value={filterValue}
+          placeholder={ph}
+          disabled={isLoading}
+          handlers={handlers}
+          onChange={(next) => col.setFilterValue(next)}
         />
       )
     }

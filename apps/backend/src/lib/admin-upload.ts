@@ -9,6 +9,7 @@ export async function uploadAdminImage(
   const { url } = await api.uploads.uploadFile(file, {
     folderPath: options.folderPath,
     isExistingFolder: options.isExistingFolder,
+    ownerUserId: options.ownerUserId,
   })
   const trimmed = url?.trim()
   if (!trimmed) throw new Error("Không nhận được URL ảnh")

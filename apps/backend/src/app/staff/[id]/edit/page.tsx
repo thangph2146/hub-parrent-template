@@ -126,6 +126,7 @@ function EditStaffPageInner() {
         isEdit={true}
         form={form}
         roles={roles}
+        subjectUserId={userId}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         submitting={updateMutation.isPending}

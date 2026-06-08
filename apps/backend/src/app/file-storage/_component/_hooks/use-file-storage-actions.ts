@@ -33,6 +33,7 @@ type UseFileStorageActionsOptions = {
   activeRealm: StorageRealm;
   activeFolderPath: string;
   includeDescendants: boolean;
+  uploadOwnerFilter?: string;
   reload: () => Promise<void>;
 };
 
@@ -40,6 +41,7 @@ export function useFileStorageActions({
   activeRealm,
   activeFolderPath,
   includeDescendants,
+  uploadOwnerFilter = "",
   reload,
 }: UseFileStorageActionsOptions) {
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -180,7 +182,10 @@ export function useFileStorageActions({
       const allRows = await fetchAllFileStorageRows(
         activeRealm,
         activeFolderPath || undefined,
-        { includeDescendants },
+        {
+          includeDescendants,
+          uploadOwnerId: uploadOwnerFilter.trim() || undefined,
+        },
       );
       if (!allRows.length) {
         toast.error("Không có file để xóa", { id: listToast });
@@ -194,13 +199,20 @@ export function useFileStorageActions({
       });
       throw err;
     }
-  }, [activeFolderPath, activeRealm, includeDescendants, runBulkDeletePaths]);
+  }, [
+    activeFolderPath,
+    activeRealm,
+    includeDescendants,
+    uploadOwnerFilter,
+    runBulkDeletePaths,
+  ]);
 
   const fetchAllRowsInScope = useCallback(async () => {
     return fetchAllFileStorageRows(activeRealm, activeFolderPath || undefined, {
       includeDescendants,
+      uploadOwnerId: uploadOwnerFilter.trim() || undefined,
     });
-  }, [activeFolderPath, activeRealm, includeDescendants]);
+  }, [activeFolderPath, activeRealm, includeDescendants, uploadOwnerFilter]);
 
   const clearImportConfirm = useCallback(() => {
     setImportConfirm(null);

@@ -3,6 +3,8 @@ import { ApiClient, DEFAULT_API_URL, UploadsApi } from "@workspace/api-client"
 export type AdminUploadOptions = {
   folderPath: string
   isExistingFolder?: boolean
+  /** ID tài khoản chủ ảnh (vd. ảnh đại diện — profile cá nhân hoặc nhân sự đang sửa). */
+  ownerUserId?: string
 }
 
 export type AdminImageUploaderConfig = {
@@ -43,6 +45,7 @@ export function createAdminImageUploader(
     const { url } = await uploads.uploadFile(file, {
       folderPath: options.folderPath,
       isExistingFolder: options.isExistingFolder,
+      ownerUserId: options.ownerUserId,
     })
     const trimmed = url?.trim()
     if (!trimmed) throw new Error("Không nhận được URL ảnh")

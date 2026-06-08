@@ -98,7 +98,10 @@ function AdminProfilePageInner() {
     setUploadingAvatar(true)
     try {
       const { uploadAdminImage } = await import("@/lib/admin-upload")
-      const url = await uploadAdminImage(file, { folderPath: "avatars" })
+      const url = await uploadAdminImage(file, {
+        folderPath: "avatars",
+        ownerUserId: userId,
+      })
       setAvatar(url)
       toast.success("Đã tải ảnh đại diện")
     } catch (e) {

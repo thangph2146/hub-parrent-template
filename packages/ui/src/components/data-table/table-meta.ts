@@ -1,4 +1,5 @@
 import type { RowData } from "@tanstack/react-table"
+import type { DataTableUserSearchHandlers } from "./data-table-user-search-filter"
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,7 +13,10 @@ declare module "@tanstack/react-table" {
       | "number"
       | "date"
       | "date-range"
+      | "user-search"
     filterPlaceholder?: string
+    /** Gợi ý người dùng khi `filterVariant: "user-search"`. */
+    userSearchHandlers?: DataTableUserSearchHandlers
     /** Nhãn ô lọc ngoài bảng (mặc định: header cột) */
     filterLabel?: string
     selectOptions?: { value: string; label: string }[]

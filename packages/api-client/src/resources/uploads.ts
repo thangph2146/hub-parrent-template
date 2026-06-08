@@ -29,6 +29,10 @@ export interface ImageItem {
 	mediaKind: StorageMediaKind;
 	storageTab: string;
 	storageRealm: StorageRealm;
+	/** ID người upload/chủ file — trích từ prefix tên file trên disk. */
+	uploadOwnerId?: string | null;
+	/** Họ tên hoặc email từ bảng users. */
+	uploadOwnerName?: string | null;
 }
 
 export interface FolderItem {
@@ -114,6 +118,7 @@ export class UploadsApi {
 			folderPath?: string;
 			tab?: string;
 			includeDescendants?: boolean;
+			uploadOwnerId?: string;
 		},
 	): Promise<ListImagesData> {
 		const query: Record<string, string> = {
@@ -124,6 +129,9 @@ export class UploadsApi {
 		const folderPath = options?.folderPath?.trim() || options?.tab?.trim();
 		if (folderPath) query.folderPath = folderPath;
 		if (options?.includeDescendants) query.includeDescendants = "true";
+		if (options?.uploadOwnerId?.trim()) {
+			query.uploadOwnerId = options.uploadOwnerId.trim();
+		}
 		const payload = await this.http.get<unknown>("/admin/uploads", { query });
 		const body = unwrapApiEnvelope<ListImagesData>(payload);
 		if (
@@ -272,20 +280,29 @@ export class UploadsApi {
 		file: File,
 		folderPathOrOptions?:
 			| string
-			| { folderPath?: string; isExistingFolder?: boolean },
+			| {
+					folderPath?: string;
+					isExistingFolder?: boolean;
+					ownerUserId?: string;
+			  },
 	): Promise<{ url: string }> {
 		const fd = new FormData();
 		fd.append("file", file);
 		let folderPath: string | undefined;
 		let isExistingFolder: boolean | undefined;
+		let ownerUserId: string | undefined;
 		if (typeof folderPathOrOptions === "string") {
 			folderPath = folderPathOrOptions;
 		} else if (folderPathOrOptions) {
 			folderPath = folderPathOrOptions.folderPath;
 			isExistingFolder = folderPathOrOptions.isExistingFolder;
+			ownerUserId = folderPathOrOptions.ownerUserId;
 		}
 		if (folderPath?.trim()) fd.append("folderPath", folderPath.trim());
 		if (isExistingFolder) fd.append("isExistingFolder", "true");
+		if (ownerUserId?.trim()) {
+			fd.append("ownerUserId", ownerUserId.trim());
+		}
 		return postData<{ url: string }>(this.http, "/admin/uploads", fd);
 	}
 

@@ -84,6 +84,11 @@ export {
   type DataTableHorizontalScrollProps,
 } from "./data-table-horizontal-scroll"
 export {
+  DataTableUserSearchFilter,
+  type DataTableUserSearchHandlers,
+  type DataTableUserSearchOption,
+} from "./data-table-user-search-filter"
+export {
   AdminDataTable,
   DataTable,
   AdminDataTablePagination,

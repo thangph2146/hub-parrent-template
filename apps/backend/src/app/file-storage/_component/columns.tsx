@@ -6,7 +6,10 @@ import { Badge } from "@ui/components/badge"
 
 import { FileTypeIcon, FileTypeIconSm } from "@ui/components/file-type-icon"
 
-import { defineDataTableActionsColumn } from "@ui/components/data-table"
+import {
+  defineDataTableActionsColumn,
+  type DataTableUserSearchHandlers,
+} from "@ui/components/data-table"
 
 import { Film, Play } from "lucide-react"
 
@@ -18,6 +21,7 @@ import type { FileStorageRow } from "./types"
 
 import {
   formatFileSize,
+  formatUploadOwnerCell,
   isImageStorageRow,
   isVideoStorageRow,
   resolveStorageAssetUrl,
@@ -38,6 +42,8 @@ export type FileStorageColumnsProps = {
   onDownload: (row: FileStorageRow) => void | Promise<void>
 
   onDelete: (row: FileStorageRow) => void | Promise<void>
+
+  uploadOwnerSearchHandlers: DataTableUserSearchHandlers
 }
 
 export function getFileStorageColumns({
@@ -54,6 +60,8 @@ export function getFileStorageColumns({
   onDownload,
 
   onDelete,
+
+  uploadOwnerSearchHandlers,
 }: FileStorageColumnsProps): ColumnDef<FileStorageRow>[] {
   return [
     {
@@ -170,6 +178,54 @@ export function getFileStorageColumns({
             {label}
           </Badge>
         )
+      },
+    },
+
+    {
+      id: "uploadOwnerId",
+
+      accessorFn: (row) => row.uploadOwnerId ?? "",
+
+      header: "Người upload",
+
+      enableSorting: false,
+
+      enableColumnFilter: true,
+
+      filterFn: () => true,
+
+      size: 160,
+
+      meta: {
+        className: "w-[160px] min-w-[160px] max-w-[200px]",
+        filterVariant: "user-search",
+        filterLabel: "Người upload",
+        filterPlaceholder: "Tên, email hoặc ID tài khoản…",
+        userSearchHandlers: uploadOwnerSearchHandlers,
+      },
+
+      cell: ({ row }) => {
+        const { primary, title } = formatUploadOwnerCell(row.original);
+        if (primary === "—") {
+          return (
+            <span className="text-xs text-muted-foreground" title={title}>
+              —
+            </span>
+          );
+        }
+        const id = row.original.uploadOwnerId?.trim();
+        return (
+          <div className="min-w-0 space-y-0.5" title={title}>
+            <span className="block truncate text-xs font-medium text-foreground">
+              {primary}
+            </span>
+            {id ? (
+              <code className="block truncate text-[10px] text-muted-foreground">
+                {id.length > 22 ? `${id.slice(0, 10)}…${id.slice(-6)}` : id}
+              </code>
+            ) : null}
+          </div>
+        );
       },
     },
 

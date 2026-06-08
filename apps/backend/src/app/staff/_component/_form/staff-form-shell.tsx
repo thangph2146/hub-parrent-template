@@ -29,13 +29,23 @@ export interface StaffFormShellProps {
   isEdit: boolean
   form: UseFormReturn<StaffFormValues>
   roles: Array<{ code: string; name: string }>
+  /** ID tài khoản nhân sự đang sửa — dùng đặt tên file ảnh đại diện. */
+  subjectUserId?: string
   onSubmit: () => Promise<void> | void
   onCancel: () => void
   submitting: boolean
 }
 
 export function StaffFormShell(props: StaffFormShellProps) {
-  const { isEdit, form, roles, onSubmit, onCancel, submitting } = props
+  const {
+    isEdit,
+    form,
+    roles,
+    subjectUserId,
+    onSubmit,
+    onCancel,
+    submitting,
+  } = props
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
@@ -45,7 +55,10 @@ export function StaffFormShell(props: StaffFormShellProps) {
     setUploadingAvatar(true)
     try {
       const { uploadAdminImage } = await import("@/lib/admin-upload")
-      const url = await uploadAdminImage(file, { folderPath: "avatars" })
+      const url = await uploadAdminImage(file, {
+        folderPath: "avatars",
+        ownerUserId: subjectUserId,
+      })
       form.setValue("avatar", url, { shouldDirty: true })
       toast.success("Đã tải ảnh đại diện")
     } catch (e) {

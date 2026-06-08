@@ -1,6 +1,11 @@
 "use client";
 
-import type { ColumnDef, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table";
 import { Download, FolderInput, Trash2 } from "lucide-react";
 import {
   ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
@@ -16,6 +21,7 @@ export type FileStorageTableProps = {
   data: FileStorageRow[];
   columns: ColumnDef<FileStorageRow>[];
   isLoading: boolean;
+  isFetching?: boolean;
   emptyLabel: string;
   itemLabel: string;
   emptySummary: string;
@@ -26,6 +32,9 @@ export type FileStorageTableProps = {
   onPageSizeChange: (pageSize: number) => void;
   selectedRowIds: RowSelectionState;
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
+  columnFilters: ColumnFiltersState;
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
+  onClearFilters: () => void;
   onBulkDelete: (rows: FileStorageRow[]) => Promise<void>;
   onBulkDownload: (rows: FileStorageRow[]) => Promise<void>;
   onBulkMove?: (rows: FileStorageRow[]) => void;
@@ -45,6 +54,7 @@ export function FileStorageTable({
   data,
   columns,
   isLoading,
+  isFetching = false,
   emptyLabel,
   itemLabel,
   emptySummary,
@@ -55,6 +65,9 @@ export function FileStorageTable({
   onPageSizeChange,
   selectedRowIds,
   onSelectedRowIdsChange,
+  columnFilters,
+  onColumnFiltersChange,
+  onClearFilters,
   onBulkDelete,
   onBulkDownload,
   onBulkMove,
@@ -67,10 +80,24 @@ export function FileStorageTable({
   uploading = false,
   onUpload,
 }: FileStorageTableProps) {
-  if (!isLoading && data.length === 0 && tabLabel) {
+  const hasActiveColumnFilters = columnFilters.some((filter) => {
+    const value = filter.value;
+    if (value == null) return false;
+    if (typeof value === "string") return value.trim().length > 0;
+    if (Array.isArray(value)) return value.length > 0;
+    return true;
+  });
+
+  const showTabEmptyState =
+    !isLoading &&
+    data.length === 0 &&
+    Boolean(tabLabel) &&
+    !hasActiveColumnFilters;
+
+  if (showTabEmptyState) {
     return (
       <FileStorageTabEmpty
-        tabLabel={tabLabel}
+        tabLabel={tabLabel!}
         canUpload={canUpload}
         uploading={uploading}
         onUpload={onUpload}
@@ -169,15 +196,19 @@ export function FileStorageTable({
       emptyLabel={emptyLabel}
       manualFiltering
       showIndexColumn
+      columnFilters={columnFilters}
+      onColumnFiltersChange={onColumnFiltersChange}
+      onClearFilters={onClearFilters}
+      clearFiltersVariant="destructive"
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={bulkActions}
-      showColumnFilters={false}
+      showColumnFilters
       showTableColumnPicker={false}
       pagination={{
         page,
         pageSize,
         total,
-        isLoading,
+        isLoading: isFetching,
         onPageChange,
         onPageSizeChange,
         emptySummary,

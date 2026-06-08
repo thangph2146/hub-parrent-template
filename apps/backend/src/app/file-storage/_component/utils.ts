@@ -152,6 +152,37 @@ export async function downloadStorageFilesAsZip(
   return { success, fail };
 }
 
+/** Hiển thị ID người upload trong bảng file-storage. */
+export function formatUploadOwnerLabel(
+  uploadOwnerId?: string | null,
+): string {
+  const id = uploadOwnerId?.trim();
+  if (!id) return "—";
+  if (id.length <= 24) return id;
+  return `${id.slice(0, 10)}…${id.slice(-8)}`;
+}
+
+export function formatUploadOwnerCell(row: {
+  uploadOwnerId?: string | null;
+  uploadOwnerName?: string | null;
+}): { primary: string; title: string } {
+  const id = row.uploadOwnerId?.trim();
+  const name = row.uploadOwnerName?.trim();
+  if (!id && !name) {
+    return { primary: "—", title: "File cũ hoặc không có prefix ID" };
+  }
+  if (name) {
+    return {
+      primary: name,
+      title: id ? `${name} (${id})` : name,
+    };
+  }
+  return {
+    primary: formatUploadOwnerLabel(id),
+    title: id ?? "",
+  };
+}
+
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

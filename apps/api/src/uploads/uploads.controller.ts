@@ -127,6 +127,7 @@ export class UploadsController {
     @Query('tab') tab?: string,
     @Query('type') type?: string,
     @Query('includeDescendants') includeDescendants?: string,
+    @Query('uploadOwnerId') uploadOwnerId?: string,
     @Req() req?: Request,
   ) {
     const userId = this.getUserId(headers);
@@ -158,6 +159,7 @@ export class UploadsController {
       type: type === 'images' || type === 'files' ? type : undefined,
       includeDescendants:
         includeDescendants === 'true' || includeDescendants === '1',
+      uploadOwnerId: uploadOwnerId?.trim() || undefined,
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
@@ -294,8 +296,14 @@ export class UploadsController {
       return res.status(statusCode).json(body);
     }
 
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+
     const folderPath = formData?.folderPath;
     const isExistingFolder = formData?.isExistingFolder === 'true';
+    const ownerUserId = formData?.ownerUserId?.trim() || undefined;
     const serveBaseUrl = this.getServeBaseUrl(req);
 
     try {
@@ -308,6 +316,8 @@ export class UploadsController {
         folderPath || undefined,
         isExistingFolder,
         serveBaseUrl,
+        userId,
+        ownerUserId,
       );
       const { statusCode, body } = createSuccessResponse(data);
       return res.status(statusCode).json(body);

@@ -7,6 +7,8 @@
  * VD: STORAGE_DIR=D:/HUB/data hoặc STORAGE_DIR=../shared-data
  */
 import { Injectable } from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/core';
+import { User } from '../entities/user.entity';
 import { createReadStream, existsSync } from 'fs';
 import {
   stat,
@@ -82,6 +84,12 @@ import {
   resolveStorageRelativePath,
   stripStorageFolderPath,
 } from './storage-path-resolver';
+import {
+  buildStoredUploadFileName,
+  extractUploadOwnerIdFromFileName,
+  resolveImageFileOwnerId,
+  storedUploadFilePrefix,
+} from './upload-filename';
 
 const STORAGE_DIR = path.normalize(appConfig.storageDir);
 const UPLOADS_DIR = path.normalize(path.join(STORAGE_DIR, 'uploads'));
@@ -230,6 +238,10 @@ export interface ImageItemDto {
   storageTab: string;
   /** Dạng lưu trữ: images | files | videos. */
   storageRealm: StorageRealm;
+  /** ID người upload/chủ file — trích từ prefix tên file trên disk. */
+  uploadOwnerId: string | null;
+  /** Họ tên (hoặc email) từ bảng users — null nếu không khớp. */
+  uploadOwnerName: string | null;
 }
 
 export interface FolderNodeDto {
@@ -320,6 +332,8 @@ const STORAGE_LEGACY_SKIP_DIRS = new Set([
 
 @Injectable()
 export class UploadsService {
+  constructor(private readonly em: EntityManager) {}
+
   private getImagesDir(): string {
     return IMAGES_DIR;
   }
@@ -416,6 +430,62 @@ export class UploadsService {
     return fallback.replace(/_\d{13}(\.\w+)$/, '$1');
   }
 
+  private withUploadOwnerId(
+    item: Omit<ImageItemDto, 'uploadOwnerId' | 'uploadOwnerName'> & {
+      uploadOwnerId?: string | null;
+      uploadOwnerName?: string | null;
+    },
+  ): ImageItemDto {
+    return {
+      ...item,
+      uploadOwnerId:
+        item.uploadOwnerId ?? extractUploadOwnerIdFromFileName(item.fileName),
+      uploadOwnerName: item.uploadOwnerName ?? null,
+    };
+  }
+
+  private async resolveUploadOwnerLabels(
+    ids: string[],
+  ): Promise<Map<string, string>> {
+    const map = new Map<string, string>();
+    const unique = [...new Set(ids.map((id) => id.trim()).filter(Boolean))];
+    if (!unique.length) return map;
+
+    const users = await this.em.find(
+      User,
+      { id: { $in: unique } },
+      { fields: ['id', 'name', 'email'] },
+    );
+    for (const user of users) {
+      const label = user.name?.trim() || user.email?.trim() || user.id;
+      map.set(user.id, label);
+    }
+    return map;
+  }
+
+  private async findUserIdsMatchingOwnerQuery(
+    query: string,
+  ): Promise<Set<string>> {
+    const trimmed = query.trim();
+    if (!trimmed) return new Set();
+
+    const like = `%${trimmed}%`;
+    const users = await this.em.find(
+      User,
+      {
+        deletedAt: null,
+        $or: [
+          { id: trimmed },
+          { id: { $like: like } },
+          { email: { $like: like } },
+          { name: { $like: like } },
+        ],
+      },
+      { fields: ['id'], limit: 100 },
+    );
+    return new Set(users.map((user) => user.id));
+  }
+
   /** Quét thư mục legacy ngoài uploads/ (file import / khôi phục giữ folder gốc). */
   private async scanLegacyStorageDirs(
     serveBaseUrl: string,
@@ -474,18 +544,22 @@ export class UploadsService {
               : `/api/uploads/${rel}`;
             const originalName = this.readOriginalName(full, entry.name);
             const mediaKind = classifyStorageMedia(ext, mimeType);
-            result.push({
-              fileName: entry.name,
-              originalName,
-              size: st.size,
-              mimeType,
-              url,
-              relativePath: rel,
-              createdAt: st.mtimeMs,
-              mediaKind,
-              storageTab: getStorageTabId(rel),
-              storageRealm: getStorageRealm(rel, mediaKind),
-            });
+            result.push(
+              this.withUploadOwnerId({
+                fileName: entry.name,
+                originalName,
+                size: st.size,
+                mimeType,
+                url,
+                relativePath: rel,
+                createdAt: st.mtimeMs,
+                mediaKind,
+                storageTab: getStorageTabId(rel),
+                storageRealm: getStorageRealm(rel, mediaKind),
+                uploadOwnerId: null,
+                uploadOwnerName: null,
+              }),
+            );
           } catch {
             // skip unreadable
           }
@@ -533,8 +607,12 @@ export class UploadsService {
     type?: 'images' | 'files';
     /** true = gồm file trong mọi subfolder dưới folderPath. */
     includeDescendants?: boolean;
+    /** Lọc theo ID người upload (khớp một phần, không phân biệt hoa thường). */
+    uploadOwnerId?: string;
   }): Promise<ListImagesResult> {
-    const merged = await this.collectAllStorageItems(params.serveBaseUrl);
+    const merged = (await this.collectAllStorageItems(params.serveBaseUrl)).map(
+      (item) => this.withUploadOwnerId(item),
+    );
     const realms = buildStorageRealms(merged);
 
     let realmFilter = params.realm;
@@ -584,7 +662,7 @@ export class UploadsService {
         : [];
 
     const includeDescendants = params.includeDescendants === true;
-    const filtered = realmFilter
+    let filtered = realmFilter
       ? inRealm.filter((item) =>
           matchesStorageFolderScope(
             item.relativePath,
@@ -595,12 +673,36 @@ export class UploadsService {
         )
       : merged;
 
+    const ownerQuery = params.uploadOwnerId?.trim();
+    if (ownerQuery) {
+      const q = ownerQuery.toLowerCase();
+      const matchedUserIds =
+        await this.findUserIdsMatchingOwnerQuery(ownerQuery);
+      filtered = filtered.filter((item) => {
+        const id = item.uploadOwnerId;
+        if (!id) return false;
+        if (id.toLowerCase().includes(q)) return true;
+        return matchedUserIds.has(id);
+      });
+    }
+
     const total = filtered.length;
     const page = Math.max(1, params.page);
     const limit = parseAdminListLimit(params.limit, 20);
     const totalPages = Math.ceil(total / limit) || 1;
     const start = (page - 1) * limit;
-    const data = filtered.slice(start, start + limit);
+    const pageItems = filtered.slice(start, start + limit);
+    const labelMap = await this.resolveUploadOwnerLabels(
+      pageItems
+        .map((item) => item.uploadOwnerId)
+        .filter((id): id is string => Boolean(id)),
+    );
+    const data = pageItems.map((item) => ({
+      ...item,
+      uploadOwnerName: item.uploadOwnerId
+        ? (labelMap.get(item.uploadOwnerId) ?? null)
+        : null,
+    }));
 
     const folderTree = this.buildFolderTree(filtered);
 
@@ -977,6 +1079,8 @@ export class UploadsService {
     folderPath?: string,
     isExistingFolder?: boolean,
     serveBaseUrl?: string,
+    userId?: string,
+    ownerUserId?: string,
   ): Promise<{
     fileName: string;
     originalName: string;
@@ -1073,7 +1177,15 @@ export class UploadsService {
       }
     }
 
-    const uniqueName = `${baseName}_${Date.now()}${isImage ? '.webp' : finalExt}`;
+    const nameUserId =
+      uploadKind === 'images'
+        ? resolveImageFileOwnerId(ownerUserId, userId)
+        : undefined;
+    const uniqueName = buildStoredUploadFileName(
+      baseName,
+      isImage ? '.webp' : finalExt,
+      { userId: nameUserId },
+    );
 
     const { fullPath, relativePath, urlPath } = this.generateFilePath(
       uniqueName,
@@ -1091,6 +1203,7 @@ export class UploadsService {
       targetDir,
       baseName,
       finalExt,
+      nameUserId,
     );
     if (existingFile) {
       const existingRelative = path
@@ -1130,10 +1243,11 @@ export class UploadsService {
     dirPath: string,
     baseName: string,
     ext: string,
+    userId?: string,
   ): Promise<string | null> {
     try {
       const entries = await readdir(dirPath, { withFileTypes: true });
-      const prefix = baseName + '_';
+      const prefix = storedUploadFilePrefix(baseName, { userId });
       const prefixLower = prefix.toLowerCase();
       const extLower = ext.toLowerCase();
       const found = entries.find(

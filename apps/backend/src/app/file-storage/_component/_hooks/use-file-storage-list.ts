@@ -11,6 +11,7 @@ export function useFileStorageList(
   page: number,
   pageSize: number,
   includeDescendants = false,
+  uploadOwnerFilter = "",
 ) {
   const [rows, setRows] = useState<FileStorageRow[]>([]);
   const [realms, setRealms] = useState<StorageTab[]>([]);
@@ -19,15 +20,17 @@ export function useFileStorageList(
     Array<{ id: string; label: string }>
   >([]);
   const [loading, setLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [total, setTotal] = useState(0);
 
   const reload = useCallback(async () => {
-    setLoading(true);
+    setIsFetching(true);
     try {
       const data = await fetchImages(page, pageSize, {
         realm: activeRealm,
         folderPath: activeFolderPath || undefined,
         includeDescendants,
+        uploadOwnerId: uploadOwnerFilter.trim() || undefined,
       });
       setRows(data.data);
       setRealms(data.realms ?? []);
@@ -38,12 +41,29 @@ export function useFileStorageList(
       toast.error(err instanceof Error ? err.message : "Lỗi tải danh sách");
     } finally {
       setLoading(false);
+      setIsFetching(false);
     }
-  }, [activeFolderPath, activeRealm, includeDescendants, page, pageSize]);
+  }, [
+    activeFolderPath,
+    activeRealm,
+    includeDescendants,
+    page,
+    pageSize,
+    uploadOwnerFilter,
+  ]);
 
   useEffect(() => {
     void reload();
   }, [reload]);
 
-  return { rows, realms, childFolders, breadcrumb, loading, total, reload };
+  return {
+    rows,
+    realms,
+    childFolders,
+    breadcrumb,
+    loading,
+    isFetching,
+    total,
+    reload,
+  };
 }

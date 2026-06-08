@@ -59,12 +59,14 @@ export async function fetchImages(
 		folderPath?: FileStorageTabId
 		tab?: FileStorageTabId
 		includeDescendants?: boolean
+		uploadOwnerId?: string
 	},
 ): Promise<ListImagesData> {
 	return api.uploads.list(page, limit, {
 		realm: options?.realm,
 		folderPath: options?.folderPath ?? options?.tab,
 		includeDescendants: options?.includeDescendants,
+		uploadOwnerId: options?.uploadOwnerId,
 	})
 }
 
@@ -96,13 +98,14 @@ export async function deleteUploadedFilesBulk(
 export async function fetchAllFileStorageRows(
 	realm: StorageRealm,
 	tab?: FileStorageTabId,
-	options?: { includeDescendants?: boolean },
+	options?: { includeDescendants?: boolean; uploadOwnerId?: string },
 ): Promise<ImageItem[]> {
 	return fetchAllAdminList(async ({ page, limit }) => {
 		const data = await fetchImages(page, limit, {
 			realm,
 			folderPath: tab,
 			includeDescendants: options?.includeDescendants,
+			uploadOwnerId: options?.uploadOwnerId,
 		})
 		return { items: data.data, total: data.pagination.total }
 	})

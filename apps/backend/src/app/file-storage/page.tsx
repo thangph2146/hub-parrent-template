@@ -1,7 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import type { RowSelectionState } from "@tanstack/react-table";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type {
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table";
 import { Button } from "@ui/components/button";
 import {
   AdminListPageHeader,
@@ -16,7 +20,13 @@ import {
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell";
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+import type { DataTableUserSearchHandlers } from "@ui/components/data-table";
 import { useAuth } from "@/providers/auth-provider";
+import { api } from "@/lib/api";
+import { normalizeAdminFilterValue } from "@/lib/build-admin-filter-query";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
+
+const UPLOAD_OWNER_FILTER_DEBOUNCE_MS = 400;
 import {
   ArchiveRestore,
   Download,
@@ -89,6 +99,7 @@ function FileStoragePageInner() {
   const [activeRealm, setActiveRealm] = useState<StorageRealm>("images");
   const [activeFolderPath, setActiveFolderPath] = useState("");
   const [includeDescendants, setIncludeDescendants] = useState(false);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
@@ -98,13 +109,24 @@ function FileStoragePageInner() {
     null,
   );
 
-  const { rows, realms, childFolders, breadcrumb, loading, total, reload } =
+  const uploadOwnerFilter = useMemo(() => {
+    const raw = columnFilters.find((f) => f.id === "uploadOwnerId")?.value;
+    return normalizeAdminFilterValue(raw) ?? "";
+  }, [columnFilters]);
+
+  const debouncedUploadOwnerFilter = useDebouncedValue(
+    uploadOwnerFilter,
+    UPLOAD_OWNER_FILTER_DEBOUNCE_MS,
+  );
+
+  const { rows, realms, childFolders, breadcrumb, loading, isFetching, total, reload } =
     useFileStorageList(
       activeRealm,
       activeFolderPath,
       page,
       pageSize,
       includeDescendants,
+      debouncedUploadOwnerFilter,
     );
 
   const totalInStorage = useMemo(
@@ -163,6 +185,7 @@ function FileStoragePageInner() {
     activeRealm,
     activeFolderPath,
     includeDescendants,
+    uploadOwnerFilter: debouncedUploadOwnerFilter,
     reload,
   });
 
@@ -210,6 +233,7 @@ function FileStoragePageInner() {
   const handleRealmChange = useCallback((value: string) => {
     setActiveRealm(value as StorageRealm);
     setActiveFolderPath("");
+    setColumnFilters([]);
     setPage(1);
     setSelectedRowIds({});
   }, []);
@@ -264,6 +288,46 @@ function FileStoragePageInner() {
     setSelectedRowIds({});
   }, []);
 
+  const handleColumnFiltersChange = useCallback<OnChangeFn<ColumnFiltersState>>(
+    (updater) => {
+      setColumnFilters(updater);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setPage(1);
+    setSelectedRowIds({});
+  }, [debouncedUploadOwnerFilter]);
+
+  const handleClearFilters = useCallback(() => {
+    setColumnFilters([]);
+    setPage(1);
+    setSelectedRowIds({});
+  }, []);
+
+  const uploadOwnerSearchHandlers = useMemo<DataTableUserSearchHandlers>(
+    () => ({
+      onSearch: async (q) => {
+        const res = await api.users.list({ q, page: 1, limit: 10 });
+        return res.items.map((user) => ({
+          id: user.id,
+          label: user.fullName?.trim() || user.email,
+          sublabel: user.email,
+        }));
+      },
+      onResolveUser: async (id) => {
+        const user = await api.users.get(id);
+        return {
+          id: user.id,
+          label: user.fullName?.trim() || user.email,
+          sublabel: user.email,
+        };
+      },
+    }),
+    [],
+  );
+
   const columns = useMemo(
     () =>
       getFileStorageColumns({
@@ -274,6 +338,7 @@ function FileStoragePageInner() {
         onPreviewVideo: openVideoPreview,
         onDownload: handleDownload,
         onDelete: handleDelete,
+        uploadOwnerSearchHandlers,
       }),
     [
       canDelete,
@@ -283,6 +348,7 @@ function FileStoragePageInner() {
       handleDownload,
       openImagePreview,
       openVideoPreview,
+      uploadOwnerSearchHandlers,
     ],
   );
 
@@ -298,6 +364,7 @@ function FileStoragePageInner() {
     data: rows,
     columns,
     isLoading: loading,
+    isFetching,
     itemLabel: "file" as const,
     page,
     pageSize,
@@ -311,6 +378,9 @@ function FileStoragePageInner() {
     onBulkMove: canManage ? handleBulkMove : undefined,
     onMoveAllInScope: canManage ? handleMoveAllInScope : undefined,
     onDeleteAllInTab: canDelete ? handleDeleteAllInTab : undefined,
+    columnFilters,
+    onColumnFiltersChange: handleColumnFiltersChange,
+    onClearFilters: handleClearFilters,
     includeDescendants,
     canDelete,
     canUpload,
@@ -469,8 +539,16 @@ function FileStoragePageInner() {
                   </div>
                   <FileStorageTable
                     tableScope={`file-storage-${realm.id}-${activeFolderPath || "root"}`}
-                    emptyLabel={`Chưa có file trong «${currentFolderLabel}».`}
-                    emptySummary={`Không có file trong ${currentFolderLabel}`}
+                    emptyLabel={
+                      debouncedUploadOwnerFilter
+                        ? "Không có file khớp bộ lọc người upload."
+                        : `Chưa có file trong «${currentFolderLabel}».`
+                    }
+                    emptySummary={
+                      debouncedUploadOwnerFilter
+                        ? "Không có file khớp bộ lọc"
+                        : `Không có file trong ${currentFolderLabel}`
+                    }
                     tabLabel={currentFolderLabel}
                     {...tableProps}
                   />
