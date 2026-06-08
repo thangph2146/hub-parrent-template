@@ -18,7 +18,6 @@ import type { FileStorageRow } from "./types"
 
 import {
   formatFileSize,
-  getShortMimeType,
   isImageStorageRow,
   isVideoStorageRow,
   resolveStorageAssetUrl,

@@ -23,8 +23,6 @@ export type {
 } from "./types";
 export {
   formatFileSize,
-  getShortMimeType,
-  isImageMime,
   isImageStorageRow,
   isPreviewableStorageRow,
   isVideoStorageRow,

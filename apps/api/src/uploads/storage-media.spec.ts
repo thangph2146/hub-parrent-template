@@ -2,7 +2,6 @@ import {
   buildStorageFolderTabs,
   buildStorageRealms,
   buildStorageSubFolderTabs,
-  folderBelongsToRealm,
   classifyStorageMedia,
   getStorageRealm,
   getStorageTabId,

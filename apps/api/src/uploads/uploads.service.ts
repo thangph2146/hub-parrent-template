@@ -55,7 +55,6 @@ import {
   isAudioStorageFile,
   isVideoStorageFile,
   matchesStorageRealm,
-  matchesStorageTab,
   type StorageMediaKind,
   type StorageRealm,
   type StorageTabDto,

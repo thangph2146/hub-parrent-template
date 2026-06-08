@@ -191,34 +191,6 @@ export function inferRealmFromDiskFolderPath(
   return 'images';
 }
 
-export function parseAllowedExtensionsInput(
-  raw: string | string[] | undefined,
-  realm: StorageRealm,
-): string[] | undefined {
-  if (!raw) return undefined;
-  if (Array.isArray(raw)) {
-    const normalized = normalizeExtensions(raw);
-    return normalized.length ? normalized : undefined;
-  }
-  const trimmed = raw.trim();
-  if (!trimmed) return undefined;
-  try {
-    const parsed = JSON.parse(trimmed) as unknown;
-    if (Array.isArray(parsed)) {
-      const normalized = normalizeExtensions(
-        parsed.filter((item): item is string => typeof item === 'string'),
-      );
-      return normalized.length ? normalized : undefined;
-    }
-  } catch {
-    const normalized = normalizeExtensions(
-      trimmed.split(/[,\s;]+/).filter(Boolean),
-    );
-    return normalized.length ? normalized : undefined;
-  }
-  return undefined;
-}
-
 export function buildFolderPolicy(
   realm: StorageRealm,
   allowedExtensions?: string[],

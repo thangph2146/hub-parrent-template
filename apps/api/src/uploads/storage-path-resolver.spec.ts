@@ -61,9 +61,7 @@ describe('resolveCreateFolderTarget', () => {
 
   it('không nhân đôi files khi parent là files/docs', () => {
     const target = resolveCreateFolderTarget('files/docs', '2026', roots);
-    expect(target?.targetDir).toBe(
-      path.join(roots.filesDir, 'docs', '2026'),
-    );
+    expect(target?.targetDir).toBe(path.join(roots.filesDir, 'docs', '2026'));
     expect(target?.folderPath).toBe('files/docs/2026');
   });
 });

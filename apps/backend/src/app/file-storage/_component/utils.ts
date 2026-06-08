@@ -186,35 +186,6 @@ export function isVideoStorageRow(
   return row.mediaKind === "video" || isVideoMime(row.mimeType);
 }
 
-export function getShortMimeType(mime: string): string {
-  const map: Record<string, string> = {
-    "application/pdf": "PDF",
-    "application/msword": "DOC",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-      "DOCX",
-    "application/vnd.ms-excel": "XLS",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "XLSX",
-    "application/vnd.ms-powerpoint": "PPT",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-      "PPTX",
-    "application/zip": "ZIP",
-    "application/x-rar-compressed": "RAR",
-    "application/x-7z-compressed": "7Z",
-    "text/plain": "TXT",
-    "text/csv": "CSV",
-    "image/jpeg": "JPEG",
-    "image/png": "PNG",
-    "image/gif": "GIF",
-    "image/webp": "WebP",
-    "image/svg+xml": "SVG",
-    "video/mp4": "MP4",
-    "video/webm": "WebM",
-    "audio/mpeg": "MP3",
-  };
-  const tail = mime.split("/").pop();
-  return map[mime] ?? (tail ? tail.toUpperCase() : mime.toUpperCase());
-}
-
 export type StorageFolderRef = { path: string; name: string };
 
 export type StorageFolderTreeNode = {
@@ -525,13 +496,7 @@ export function filterFoldersByRealm(
           path !== "audio")
       );
     }
-    if (realm === "files") {
-      return path === "files" || path.startsWith("files/");
-    }
-    if (realm === "videos") {
-      return path === "videos" || path.startsWith("videos/");
-    }
-    return path === "audio" || path.startsWith("audio/");
+    return path === root || path.startsWith(`${root}/`);
   });
 }
 

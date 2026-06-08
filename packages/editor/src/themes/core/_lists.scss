@@ -349,9 +349,8 @@
       padding-inline-start: calc(
         #{$editor-list-padding-left} +
           #{if(
-            $depth == 1,
-            $editor-ol-marker-align-extra,
-            $editor-ul-marker-align-extra
+            sass($depth == 1): $editor-ol-marker-align-extra;
+            else: $editor-ul-marker-align-extra
           )}
       );
 
