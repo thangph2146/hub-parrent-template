@@ -32,7 +32,15 @@ export {
   parseGiftRulesFromFulfillmentNote,
   getLegacyGiftRuleForUnit,
   normalizeGiftRuleUnitType,
+  isGiftLinkedToCatalogProduct,
+  giftRuleCatalogProductId,
+  giftRuleLegacyProductSku,
+  catalogProductHref,
+  isGiftProductBrowsable,
+  collectGiftCatalogLookups,
+  buildGiftCatalogHrefMap,
   type LegacyFulfillmentGiftRule,
+  type GiftCatalogLookup,
 } from "./gift-rules"
 export {
   PERMISSION_CODES,

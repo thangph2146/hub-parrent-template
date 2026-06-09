@@ -58,12 +58,15 @@ describe('order-checkout', () => {
 
   it('từ chối đặt vượt tồn theo loại hàng', () => {
     const product = mockProduct({
+      stock: 0,
       unitTypes: [
         {
           type: 'thung',
           label: 'Thùng',
           sku: 'SP-001-THUNG',
           retailPrice: 100000,
+          wholesalePrice: 90000,
+          minWholesaleQty: 0,
           qtyPerUnit: 30,
           stock: 80,
         },
@@ -77,22 +80,60 @@ describe('order-checkout', () => {
     ).toThrow(/chỉ còn 80/);
   });
 
-  it('chia pool sp gốc — thùng tồn 0 vẫn bán được từ gói lẻ', () => {
+  it('pool chỉ trên product.stock — từ chối vượt tồn', () => {
     const product = mockProduct({
+      stock: 200,
       unitTypes: [
         {
           type: 'goi',
           label: 'Gói lẻ',
           retailPrice: 5000,
+          wholesalePrice: 4500,
+          minWholesaleQty: 0,
           qtyPerUnit: 1,
-          stock: 200,
         },
         {
           type: 'thung',
           label: 'Thùng',
           retailPrice: 120000,
+          wholesalePrice: 110000,
+          minWholesaleQty: 0,
           qtyPerUnit: 30,
-          stock: 0,
+        },
+      ],
+    });
+    const items = buildOrderItemsFromProducts(
+      [{ productId: 1, quantity: 6, unitType: 'thung' }],
+      new Map([[1, product]]),
+    );
+    expect(items[0]?.quantity).toBe(6);
+    expect(() =>
+      buildOrderItemsFromProducts(
+        [{ productId: 1, quantity: 7, unitType: 'thung' }],
+        new Map([[1, product]]),
+      ),
+    ).toThrow(/chỉ còn 6/);
+  });
+
+  it('chia pool sp gốc — thùng tồn 0 vẫn bán được từ gói lẻ', () => {
+    const product = mockProduct({
+      stock: 200,
+      unitTypes: [
+        {
+          type: 'goi',
+          label: 'Gói lẻ',
+          retailPrice: 5000,
+          wholesalePrice: 4500,
+          minWholesaleQty: 0,
+          qtyPerUnit: 1,
+        },
+        {
+          type: 'thung',
+          label: 'Thùng',
+          retailPrice: 120000,
+          wholesalePrice: 110000,
+          minWholesaleQty: 0,
+          qtyPerUnit: 30,
         },
       ],
     });

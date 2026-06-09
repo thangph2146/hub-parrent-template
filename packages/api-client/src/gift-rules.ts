@@ -1,4 +1,4 @@
-import type { ProductGiftRule, ProductUnitType } from './types';
+import type { Product, ProductGiftRule, ProductUnitType } from './types';
 
 /** Chuẩn hoá để khớp `unitType` trong note với `ProductUnitType.type`. */
 export function normalizeGiftRuleUnitType(raw: string): string {
@@ -100,4 +100,84 @@ export function getLegacyGiftRuleForUnit(
       (r) => normalizeGiftRuleUnitType(r.unitType) === key,
     ) ?? null
   );
+}
+
+/** Admin chọn tab「Từ kho SP」— quà gắn `gift.productId`. */
+export function isGiftLinkedToCatalogProduct(rule: ProductGiftRule): boolean {
+  const id = rule.gift.productId;
+  return typeof id === 'number' && Number.isFinite(id) && id > 0;
+}
+
+export function giftRuleCatalogProductId(rule: ProductGiftRule): number | null {
+  if (!isGiftLinkedToCatalogProduct(rule)) return null;
+  return Math.floor(rule.gift.productId as number);
+}
+
+/** SKU SP gốc (legacy fulfillment) — chỉ dùng khi chưa có productId. */
+export function giftRuleLegacyProductSku(rule: ProductGiftRule): string | null {
+  if (isGiftLinkedToCatalogProduct(rule)) return null;
+  const sku = rule.gift.sku?.trim();
+  return sku || null;
+}
+
+export function catalogProductHref(productId: number): string {
+  return `/catalog/${productId}`;
+}
+
+/** SP quà còn hiển thị trên storefront (không yêu cầu tồn > 0). */
+export function isGiftProductBrowsable(
+  product: Pick<Product, 'id' | 'isActive'>,
+): boolean {
+  return product.isActive !== false;
+}
+
+export type GiftCatalogLookup = {
+  /** productId cần fetch/kiểm tra — từ `gift.productId`. */
+  productIds: number[];
+  /** SKU SP gốc legacy — chỉ khi rule không có productId. */
+  skus: string[];
+};
+
+export function collectGiftCatalogLookups(
+  rules: readonly ProductGiftRule[],
+): GiftCatalogLookup {
+  const productIds = new Set<number>();
+  const skus = new Set<string>();
+  for (const rule of rules) {
+    if (!rule?.id || !rule.gift?.name?.trim()) continue;
+    const linkedId = giftRuleCatalogProductId(rule);
+    if (linkedId) {
+      productIds.add(linkedId);
+      continue;
+    }
+    const legacySku = giftRuleLegacyProductSku(rule);
+    if (legacySku) skus.add(legacySku);
+  }
+  return {
+    productIds: [...productIds],
+    skus: [...skus],
+  };
+}
+
+/** Map `rule.id` → href catalog khi SP quà còn bán trên storefront. */
+export function buildGiftCatalogHrefMap(
+  rules: readonly ProductGiftRule[],
+  productsById: ReadonlyMap<number, Pick<Product, 'id' | 'isActive'>>,
+  productsBySku: ReadonlyMap<string, Pick<Product, 'id' | 'isActive'>>,
+): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const rule of rules) {
+    if (!rule?.id) continue;
+    const linkedId = giftRuleCatalogProductId(rule);
+    const product =
+      (linkedId ? productsById.get(linkedId) : undefined) ??
+      (() => {
+        const sku = giftRuleLegacyProductSku(rule);
+        return sku ? productsBySku.get(sku) : undefined;
+      })();
+    if (product && isGiftProductBrowsable(product)) {
+      map.set(rule.id, catalogProductHref(product.id));
+    }
+  }
+  return map;
 }

@@ -27,12 +27,14 @@ import {
   Truck,
 } from "lucide-react";
 import {
+  cartStore,
   mergeLinesForCreateOrder,
   useCart,
   useCartStockSync,
 } from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
-import { useCreateOrder, useProducts } from "@/hooks/queries";
+import { useCartStockProducts, useCreateOrder } from "@/hooks/queries";
+import { useGiftHrefForRulesFromLines } from "@/hooks/use-gift-product-catalog";
 import { ApiError } from "@/lib/api";
 import { formatVND } from "@/lib/format";
 import { CartLineItem } from "@/components/shared/cart-line-item";
@@ -40,9 +42,15 @@ import { CheckoutPromoField } from "@/components/shared/cart-order-summary";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { data: products } = useProducts();
-  useCartStockSync(products);
   const cart = useCart();
+  const cartProductIds = [...new Set(cart.lines.map((l) => l.productId))];
+  const {
+    data: products,
+    refetch: refetchProducts,
+    isFetching: isRefreshingStock,
+  } = useCartStockProducts(cartProductIds);
+  useCartStockSync(products);
+  const giftHrefForRule = useGiftHrefForRulesFromLines(cart.lines);
   const session = useSession();
   const createOrder = useCreateOrder();
 
@@ -83,6 +91,27 @@ export default function CheckoutPage() {
       return;
     }
 
+    const freshResult = await refetchProducts();
+    const catalog = freshResult.data ?? products ?? [];
+    if (catalog.length) {
+      cartStore.syncStocksFromProducts(catalog);
+    }
+    const stockIssues = cartStore.validateStockAgainstProducts(catalog);
+    if (stockIssues.length > 0) {
+      toast.error(stockIssues[0], {
+        description:
+          stockIssues.length > 1
+            ? `Và ${stockIssues.length - 1} sản phẩm khác cần điều chỉnh.`
+            : "Vui lòng cập nhật số lượng trong giỏ.",
+      });
+      return;
+    }
+    const cartLines = cartStore.getState().lines;
+    if (cartLines.some((line) => line.quantity <= 0)) {
+      toast.error("Giỏ hàng có sản phẩm đã hết hàng — vui lòng xóa hoặc giảm số lượng");
+      return;
+    }
+
     try {
       const order = await createOrder.mutateAsync({
         customerId: session.id,
@@ -92,7 +121,7 @@ export default function CheckoutPage() {
         shippingAddress,
         notes: notes || undefined,
         paymentMethod: "cod",
-        items: mergeLinesForCreateOrder(cart.lines),
+        items: mergeLinesForCreateOrder(cartLines),
         couponCode: cart.couponCodeForOrder,
       });
       cart.clear();
@@ -171,6 +200,7 @@ export default function CheckoutPage() {
                           <CartLineItem
                             key={`${line.productId}:${line.unitType}`}
                             line={line}
+                            giftHrefForRule={giftHrefForRule}
                             onQuantityChange={(next) =>
                               cart.setQuantity(
                                 line.productId,
@@ -306,13 +336,17 @@ export default function CheckoutPage() {
                         type="submit"
                         size="lg"
                         className="w-full h-16 text-xl font-black rounded-2xl shadow-2xl"
-                        disabled={isEmpty || createOrder.isPending}
+                        disabled={
+                          isEmpty || createOrder.isPending || isRefreshingStock
+                        }
                       >
                         {createOrder.isPending
                           ? "Đang đặt hàng..."
-                          : isEmpty
-                            ? "Giỏ hàng trống"
-                            : "ĐẶT HÀNG NGAY"}
+                          : isRefreshingStock
+                            ? "Đang kiểm tra tồn kho..."
+                            : isEmpty
+                              ? "Giỏ hàng trống"
+                              : "ĐẶT HÀNG NGAY"}
                       </Button>
 
                       <div className="p-4 bg-muted/30 rounded-2xl border border-outline-variant/30">

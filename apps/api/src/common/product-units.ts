@@ -85,21 +85,73 @@ export function getUnitStock(unit: ProductUnitType): number | null {
   return null;
 }
 
+/** Có tồn bán rõ ràng trên từng loại hàng (legacy); pool-only chỉ dùng `product.stock`. */
+export function hasExplicitSellableUnitStock(product: Product): boolean {
+  return (product.unitTypes ?? []).some((u) => {
+    const sell = getUnitStock(u);
+    return sell !== null && sell > 0;
+  });
+}
+
+/** Đồng bộ `product.stock` từ tổng pool các loại hàng (khi có `unit.stock`). */
+export function syncProductStockFromUnits(product: Product): void {
+  const units = product.unitTypes ?? [];
+  const hasUnitStock = units.some(
+    (u) => u.stock !== undefined && u.stock !== null,
+  );
+  if (hasUnitStock) {
+    product.stock = sumUnitStocks(product);
+  }
+}
+
+/**
+ * Trừ tồn sp gốc khỏi sản phẩm (mutate entity).
+ * Pool-only: chỉ giảm `product.stock`. Legacy: trừ trên `unit.stock` rồi sync.
+ */
+export function applyProductStockDeduction(
+  product: Product,
+  deductBase: number,
+  preferUnitType?: string,
+): void {
+  const base = productBaseStock(product);
+  const deduct = Math.max(0, Math.floor(deductBase));
+  if (deduct <= 0) return;
+  if (base < deduct) {
+    const label = preferUnitType?.trim() || product.unit;
+    throw new Error(`Loại "${label}" của "${product.name}" không đủ tồn kho`);
+  }
+
+  if (hasExplicitSellableUnitStock(product) && product.unitTypes?.length) {
+    deductBaseStockFromUnits(product, deduct, preferUnitType);
+    syncProductStockFromUnits(product);
+    const after = productBaseStock(product);
+    if (after !== base - deduct) {
+      throw new Error(
+        `Loại "${preferUnitType ?? product.unit}" của "${product.name}" không đủ tồn kho`,
+      );
+    }
+    return;
+  }
+
+  product.stock = base - deduct;
+}
+
 /** Tổng tồn sp gốc — cộng `stock × qtyPerUnit` mọi loại hàng. */
 export function productBaseStock(product: Product): number {
+  const pool = Math.max(0, Math.floor(product.stock || 0));
+  if (pool > 0) return pool;
+
   const units = product.unitTypes ?? [];
   const withStock = units.filter(
     (u) => u.stock !== undefined && u.stock !== null,
   );
-  if (withStock.length) {
-    const fromUnits = withStock.reduce((sum, u) => {
-      const sell = Math.max(0, Math.floor(Number(u.stock) || 0));
-      const per = Math.max(1, Math.floor(Number(u.qtyPerUnit) || 1));
-      return sum + sell * per;
-    }, 0);
-    if (fromUnits > 0) return fromUnits;
-  }
-  return Math.max(0, Math.floor(product.stock || 0));
+  if (withStock.length === 0) return 0;
+
+  return withStock.reduce((sum, u) => {
+    const sell = Math.max(0, Math.floor(Number(u.stock) || 0));
+    const per = Math.max(1, Math.floor(Number(u.qtyPerUnit) || 1));
+    return sum + sell * per;
+  }, 0);
 }
 
 /** SL tối đa loại hàng sau khi trừ sp gốc đã giữ (giỏ / dòng đơn trước). */

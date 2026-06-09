@@ -8,8 +8,9 @@ import { formatVND } from "@/lib/format";
 import {
   giftRulesForCartLine,
   isCartGiftRuleUnlocked,
-  summarizeCartGiftRule,
 } from "@/lib/cart-gift-rules";
+import type { ProductGiftRule } from "@workspace/api-client";
+import { CartGiftRuleText } from "@/components/shared/cart-gift-rule-text";
 
 export function cartLineMaxQty(line: CartLine): number {
   return Math.max(0, Math.floor(line.stock));
@@ -19,6 +20,8 @@ type CartLineItemProps = {
   line: CartLine;
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
+  /** Link catalog cho tên quà khi SP quà còn trên kho. */
+  giftHrefForRule?: (rule: ProductGiftRule) => string | undefined;
 };
 
 /** Một dòng giỏ — layout giống danh sách sản phẩm ở trang checkout (ảnh, badge đơn vị, stepper). */
@@ -26,6 +29,7 @@ export function CartLineItem({
   line,
   onQuantityChange,
   onRemove,
+  giftHrefForRule,
 }: CartLineItemProps) {
   const maxQty = cartLineMaxQty(line);
   const listUnit = line.listUnitPrice ?? line.unitPrice;
@@ -82,11 +86,15 @@ export function CartLineItem({
                   }`}
                 >
                   {unlocked ? "Đủ điều kiện quà: " : "Quà tặng: "}
-                  {summarizeCartGiftRule(rule)}
-                  {!unlocked && minQty > 0
-                    ? ` (cần thêm ${Math.max(0, minQty - line.quantity)} ${line.unitType})`
-                    : null}
-                  .
+                  <CartGiftRuleText
+                    rule={rule}
+                    giftHref={giftHrefForRule?.(rule)}
+                  >
+                    {!unlocked && minQty > 0
+                      ? ` (cần thêm ${Math.max(0, minQty - line.quantity)} ${line.unitType})`
+                      : null}
+                    .
+                  </CartGiftRuleText>
                 </li>
               );
             })}

@@ -48,7 +48,7 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const session = useSession();
-  const { unitCount } = useCart();
+  const { itemCount } = useCart();
   const openCart = useOpenCartDrawer();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -92,12 +92,12 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={openCart}
-            aria-label={`Giỏ hàng${unitCount > 0 ? `, ${unitCount} món` : ""}`}
+            aria-label={`Giỏ hàng${itemCount > 0 ? `, ${itemCount} loại` : ""}`}
             className="relative inline-flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             <ShoppingCart className="size-5" />
             <CartCountBadge
-              count={unitCount}
+              count={itemCount}
               className="-right-0.5 -top-0.5 h-4 min-w-4 text-[9px]"
             />
           </Button>
@@ -185,13 +185,13 @@ export function Header() {
               size="icon"
               onClick={openCart}
               aria-label={
-                unitCount > 0 ? `Giỏ hàng, ${unitCount} món` : "Giỏ hàng"
+                itemCount > 0 ? `Giỏ hàng, ${itemCount} loại` : "Giỏ hàng"
               }
               className="relative inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
             >
               <ShoppingCart className="size-5" />
               <CartCountBadge
-                count={unitCount}
+                count={itemCount}
                 className="-right-1 -top-1 h-5 min-w-5 text-[10px]"
               />
             </Button>

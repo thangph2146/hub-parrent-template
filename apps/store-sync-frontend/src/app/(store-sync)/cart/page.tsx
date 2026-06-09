@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProducts } from "@/hooks/queries";
+import { useCartStockProducts } from "@/hooks/queries";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import {
@@ -19,14 +19,17 @@ import {
 } from "@ui/lib/layout-shell";
 import { ArrowLeft, Package2, Trash2 } from "lucide-react";
 import { useCart, useCartStockSync } from "@/hooks/use-cart";
+import { useGiftHrefForRulesFromLines } from "@/hooks/use-gift-product-catalog";
 import { CartLineItem } from "@/components/shared/cart-line-item";
 import { CartOrderSummary } from "@/components/shared/cart-order-summary";
 
 export default function CartPage() {
   const router = useRouter();
-  const { data: products } = useProducts();
-  useCartStockSync(products);
   const { lines, unitCount, setQuantity, remove, clear } = useCart();
+  const cartProductIds = [...new Set(lines.map((l) => l.productId))];
+  const { data: products } = useCartStockProducts(cartProductIds);
+  useCartStockSync(products);
+  const giftHrefForRule = useGiftHrefForRulesFromLines(lines);
   const isEmpty = lines.length === 0;
 
   return (
@@ -99,6 +102,7 @@ export default function CartPage() {
                         <CartLineItem
                           key={`${line.productId}:${line.unitType}`}
                           line={line}
+                          giftHrefForRule={giftHrefForRule}
                           onQuantityChange={(next) =>
                             setQuantity(line.productId, line.unitType, next)
                           }

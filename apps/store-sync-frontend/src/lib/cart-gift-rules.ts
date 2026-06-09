@@ -27,9 +27,24 @@ export function isCartGiftRuleUnlocked(
   return matchesQuantityCondition(effectiveQty, rule.trigger);
 }
 
-export function summarizeCartGiftRule(rule: ProductGiftRule): string {
+export function describeCartGiftRuleParts(rule: ProductGiftRule): {
+  conditionText: string;
+  giftQty: number;
+  giftName: string;
+} {
   const minQty = rule.trigger.minQty;
-  const cond =
-    minQty != null && minQty > 0 ? `từ ${minQty} ${rule.trigger.scope === "product" ? "sp (mọi loại)" : "sp"}` : "theo điều kiện";
-  return `${cond} — tặng ${rule.gift.qty} ${rule.gift.name}`;
+  const conditionText =
+    minQty != null && minQty > 0
+      ? `từ ${minQty} ${rule.trigger.scope === "product" ? "sp (mọi loại)" : "sp"}`
+      : "theo điều kiện";
+  return {
+    conditionText,
+    giftQty: rule.gift.qty,
+    giftName: rule.gift.name,
+  };
+}
+
+export function summarizeCartGiftRule(rule: ProductGiftRule): string {
+  const { conditionText, giftQty, giftName } = describeCartGiftRuleParts(rule);
+  return `${conditionText} — tặng ${giftQty} ${giftName}`;
 }

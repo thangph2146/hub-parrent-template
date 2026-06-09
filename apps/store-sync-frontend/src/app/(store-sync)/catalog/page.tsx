@@ -218,8 +218,16 @@ function CatalogPageInner() {
     unit: ProductUnitType,
     quantity: number,
   ): void => {
-    cart.add(product, unit, quantity);
-    toast.success(`Đã thêm ${quantity} ${unit.label} – ${product.name}`, {
+    const result = cart.add(product, unit, quantity);
+    if (!result.ok) {
+      toast.error(
+        result.reason === "out_of_stock"
+          ? `${unit.label} đã hết hàng hoặc vượt tồn kho`
+          : "Số lượng không hợp lệ",
+      );
+      return;
+    }
+    toast.success(`Đã thêm ${result.added} ${unit.label} – ${product.name}`, {
       description: "Mở giỏ hàng để xem chi tiết",
     });
   };
@@ -333,7 +341,7 @@ function CatalogPageInner() {
                         className="h-11 w-full rounded-xl px-5 font-bold sm:w-auto"
                       >
                         <ShoppingCart className="size-4" />
-                        Giỏ ({cart.unitCount})
+                        Giỏ ({cart.itemCount})
                       </Button>
                     </Link>
                   </div>

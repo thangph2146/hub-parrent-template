@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { EntityManager, LockMode, type FilterQuery } from '@mikro-orm/core';
 import { Product } from '../entities/product.entity';
 import type { ProductUnitType } from '../common/product-types';
 import {
-  deductBaseStockFromUnits,
-  productBaseStock,
+  applyProductStockDeduction,
   resolveUnit,
-  sumUnitStocks,
+  syncProductStockFromUnits,
 } from '../common/product-units';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
@@ -37,16 +36,6 @@ export interface ProductRowDto {
 function toIso(value: Date | undefined | null): string {
   if (!value) return new Date().toISOString();
   return value.toISOString();
-}
-
-function syncProductStockFromUnits(row: Product): void {
-  const units = row.unitTypes ?? [];
-  const hasUnitStock = units.some(
-    (u) => u.stock !== undefined && u.stock !== null,
-  );
-  if (hasUnitStock) {
-    row.stock = sumUnitStocks(row);
-  }
 }
 
 function mapProduct(row: Product): ProductRowDto {
@@ -158,6 +147,27 @@ export class ProductsService {
     });
   }
 
+  /** Đọc SP đang bán kèm khóa ghi — dùng trong checkout để tránh race tồn kho. */
+  async findActiveByIdsForUpdate(
+    em: EntityManager,
+    ids: number[],
+  ): Promise<Product[]> {
+    const unique = [...new Set(ids.filter((id) => Number.isFinite(id)))].sort(
+      (a, b) => a - b,
+    );
+    if (!unique.length) return [];
+    const rows: Product[] = [];
+    for (const id of unique) {
+      const row = await em.findOne(
+        Product,
+        { id, deletedAt: null, isActive: true },
+        { lockMode: LockMode.PESSIMISTIC_WRITE },
+      );
+      if (row) rows.push(row);
+    }
+    return rows;
+  }
+
   async create(data: Partial<Product>): Promise<ProductRowDto> {
     const now = new Date();
     const row = this.em.create(Product, {
@@ -249,26 +259,17 @@ export class ProductsService {
     quantity: number,
     unitType?: string,
   ): Promise<void> {
-    const row = await em.findOne(Product, { id: productId, deletedAt: null });
+    const row = await em.findOne(
+      Product,
+      { id: productId, deletedAt: null },
+      { lockMode: LockMode.PESSIMISTIC_WRITE },
+    );
     if (!row) throw new Error(`Sản phẩm #${productId} không tồn tại`);
     const q = Math.max(1, Math.floor(quantity));
     const typeKey = unitType?.trim();
     const unit = typeKey ? resolveUnit(row, typeKey) : null;
     const per = Math.max(1, Math.floor(unit?.qtyPerUnit || 1));
     const deductBase = q * per;
-    const base = productBaseStock(row);
-
-    if (base < deductBase) {
-      const label = unit?.label ?? row.unit;
-      throw new Error(`Loại "${label}" của "${row.name}" không đủ tồn kho`);
-    }
-
-    if (row.unitTypes?.length) {
-      deductBaseStockFromUnits(row, deductBase, typeKey);
-      syncProductStockFromUnits(row);
-      return;
-    }
-
-    row.stock = Math.max(0, base - deductBase);
+    applyProductStockDeduction(row, deductBase, typeKey);
   }
 }

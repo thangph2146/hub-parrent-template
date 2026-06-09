@@ -5,10 +5,12 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { toast } from "sonner";
 import {
   Drawer,
   DrawerContent,
@@ -31,14 +33,22 @@ import {
   X,
   Gift,
 } from "lucide-react";
-import { useCart } from "@/hooks/use-cart";
+import {
+  cartNeedsStockSync,
+  cartStore,
+  useCart,
+  useCartStockSync,
+} from "@/hooks/use-cart";
+import { useCartStockProducts } from "@/hooks/queries";
 import { formatVND } from "@/lib/format";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { cn } from "@ui/lib/utils";
 import {
   giftRulesForCartLine,
   isCartGiftRuleUnlocked,
-  summarizeCartGiftRule,
 } from "@/lib/cart-gift-rules";
+import { useGiftProductCatalogMap } from "@/hooks/use-gift-product-catalog";
+import { CartGiftRuleText } from "@/components/shared/cart-gift-rule-text";
 
 type CartDrawerContextValue = {
   openCart: () => void;
@@ -55,7 +65,13 @@ export function useOpenCartDrawer(): () => void {
   return ctx.openCart;
 }
 
-function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
+function CartDrawerPanel({
+  onNavigate,
+  drawerOpen,
+}: {
+  onNavigate: () => void;
+  drawerOpen: boolean;
+}) {
   const {
     lines,
     unitCount,
@@ -67,6 +83,47 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
     clear,
   } = useCart();
   const isEmpty = lines.length === 0;
+  const productIds = useMemo(
+    () => [...new Set(lines.map((l) => l.productId))],
+    [lines],
+  );
+  const {
+    data: stockProducts,
+    refetch: refetchStock,
+    isFetching: isRefreshingStock,
+  } = useCartStockProducts(productIds);
+  useCartStockSync(stockProducts);
+
+  useEffect(() => {
+    if (!drawerOpen || !productIds.length) return;
+    void refetchStock();
+  }, [drawerOpen, productIds, refetchStock]);
+
+  const stockIssues = useMemo(
+    () =>
+      stockProducts?.length
+        ? cartStore.validateStockAgainstProducts(stockProducts)
+        : [],
+    [stockProducts],
+  );
+  const stockPending = cartNeedsStockSync(lines) && isRefreshingStock;
+  const canCheckout =
+    !isEmpty &&
+    !stockPending &&
+    stockIssues.length === 0 &&
+    lines.every((l) => l.quantity > 0 && l.stock > 0);
+
+  const handleCheckoutClick = (
+    event: { preventDefault: () => void },
+  ): void => {
+    if (canCheckout) return;
+    event.preventDefault();
+    if (stockPending) {
+      toast.message("Đang kiểm tra tồn kho…");
+      return;
+    }
+    toast.error(stockIssues[0] ?? "Giỏ hàng chưa hợp lệ — vui lòng điều chỉnh số lượng");
+  };
   const productSellTotals = useMemo(() => {
     const map = new Map<number, number>();
     for (const line of lines) {
@@ -77,6 +134,16 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
     }
     return map;
   }, [lines]);
+
+  const cartGiftRules = useMemo(
+    () => lines.flatMap((line) => giftRulesForCartLine(line)),
+    [lines],
+  );
+  const { data: giftCatalogMap } = useGiftProductCatalogMap(cartGiftRules);
+  const giftHrefForRule = useCallback(
+    (rule: { id: string }) => giftCatalogMap?.get(rule.id),
+    [giftCatalogMap],
+  );
 
   return (
     <DrawerContent className="flex h-full max-h-svh w-full max-w-md flex-col border-l border-outline-variant p-0 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:max-w-md data-[vaul-drawer-direction=right]:sm:max-w-md">
@@ -107,6 +174,28 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
       </DrawerHeader>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-6 py-4">
+        {!isEmpty && (stockPending || stockIssues.length > 0) && (
+          <div
+            className={cn(
+              "flex items-start gap-2 rounded-xl border px-3 py-2.5 text-xs leading-relaxed",
+              stockIssues.length > 0
+                ? "border-destructive/30 bg-destructive/5 text-destructive"
+                : "border-outline-variant/40 bg-muted/30 text-muted-foreground",
+            )}
+          >
+            {stockPending ? (
+              <Loader2 className="mt-0.5 size-4 shrink-0 animate-spin" aria-hidden />
+            ) : (
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+            )}
+            <p>
+              {stockPending
+                ? "Đang đồng bộ tồn kho từ server…"
+                : stockIssues[0]}
+            </p>
+          </div>
+        )}
+
         {isEmpty && (
           <div className="space-y-3 py-16 text-center">
             <Package2 className="mx-auto size-16 text-outline-variant opacity-30" />
@@ -127,7 +216,8 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
         )}
 
         {lines.map((line) => {
-          const maxQty = Math.max(0, Math.floor(line.stock));
+          const maxQty =
+            line.stock > 0 ? Math.max(0, Math.floor(line.stock)) : line.quantity;
           const listUnit = line.listUnitPrice ?? line.unitPrice;
           const unitNow = line.unitPrice;
           const showListStrike = listUnit > unitNow;
@@ -288,7 +378,12 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
                               : "Ưu đãi quà tặng"}
                           </p>
                           <p className="mt-0.5 text-foreground">
-                            {summarizeCartGiftRule(rule)}.
+                            <CartGiftRuleText
+                              rule={rule}
+                              giftHref={giftHrefForRule(rule)}
+                            >
+                              .
+                            </CartGiftRuleText>
                           </p>
                           {!giftUnlocked && minQty > 0 ? (
                             <p className="mt-0.5 text-[10px] opacity-90 sm:text-xs">
@@ -303,6 +398,16 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
                       );
                     })}
                   </div>
+                ) : null}
+
+                {line.stock > 0 ? (
+                  <p className="mt-1 text-[10px] text-muted-foreground">
+                    Tối đa{" "}
+                    <span className="font-semibold text-foreground tabular-nums">
+                      {line.stock}
+                    </span>{" "}
+                    {line.unitType} trong kho
+                  </p>
                 ) : null}
 
                 <div className="mt-2 flex items-center justify-between gap-2">
@@ -398,10 +503,23 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
           </p>
           <Button
             nativeButton={false}
-            render={<Link href="/checkout" onClick={onNavigate} />}
+            disabled={!canCheckout}
+            render={
+              <Link
+                href="/checkout"
+                onClick={(e) => {
+                  handleCheckoutClick(e);
+                  if (canCheckout) onNavigate();
+                }}
+              />
+            }
             className="h-12 w-full rounded-xl font-bold"
           >
-            Tiến hành đặt hàng
+            {stockPending
+              ? "Đang kiểm tra tồn…"
+              : !canCheckout
+                ? "Không đủ tồn kho"
+                : "Tiến hành đặt hàng"}
           </Button>
           <Button
             nativeButton={false}
@@ -436,7 +554,7 @@ export function CartDrawerHost({ children }: { children: ReactNode }) {
         shouldScaleBackground={false}
       >
         {children}
-        <CartDrawerPanel onNavigate={closeCart} />
+        <CartDrawerPanel onNavigate={closeCart} drawerOpen={open} />
       </Drawer>
     </CartDrawerContext.Provider>
   );

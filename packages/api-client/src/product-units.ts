@@ -82,31 +82,20 @@ export function productBaseStock(
 
 ): number {
 
+  const pool = Math.max(0, Math.floor(Number(product.stock) || 0));
+  if (pool > 0) return pool;
+
   const units = getProductUnits(product as Product);
-
   const withStock = units.filter(
-
     (u) => u.stock !== undefined && u.stock !== null,
-
   );
+  if (withStock.length === 0) return 0;
 
-  if (withStock.length > 0) {
-
-    const fromUnits = withStock.reduce((sum, u) => {
-
-      const sell = Math.max(0, Math.floor(Number(u.stock) || 0));
-
-      const per = Math.max(1, Math.floor(Number(u.qtyPerUnit) || 1));
-
-      return sum + sell * per;
-
-    }, 0);
-
-    if (fromUnits > 0) return fromUnits;
-
-  }
-
-  return Math.max(0, Math.floor(Number(product.stock) || 0));
+  return withStock.reduce((sum, u) => {
+    const sell = Math.max(0, Math.floor(Number(u.stock) || 0));
+    const per = Math.max(1, Math.floor(Number(u.qtyPerUnit) || 1));
+    return sum + sell * per;
+  }, 0);
 
 }
 

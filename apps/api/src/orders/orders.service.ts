@@ -239,12 +239,16 @@ export class OrdersService {
     options?: { uploadedByUserId?: string; serveBaseUrl?: string },
   ): Promise<OrderRowDto> {
     const merged = mergeCreateOrderLines(input.items ?? []);
-    const productIds = merged.map((l) => l.productId);
-    const products = await this.productsService.findActiveByIds(productIds);
-    const productsById = new Map(products.map((p) => [p.id, p]));
-    const items = buildOrderItemsFromProducts(merged, productsById);
-    const gifts = evaluateOrderGifts(merged, productsById);
-    const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    const productIds = [...new Set(merged.map((l) => l.productId))];
+
+    const productsPreview =
+      await this.productsService.findActiveByIds(productIds);
+    const previewById = new Map(productsPreview.map((p) => [p.id, p]));
+    const previewItems = buildOrderItemsFromProducts(merged, previewById);
+    const previewSubtotal = previewItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0,
+    );
 
     const couponRaw = input.couponCode?.trim();
     let discountAmount = 0;
@@ -257,7 +261,7 @@ export class OrdersService {
       if (!promo) {
         throw new Error('Mã khuyến mãi không hợp lệ hoặc đã hết hạn');
       }
-      const promoResult = computePromoDiscount(subtotal, promo);
+      const promoResult = computePromoDiscount(previewSubtotal, promo);
       if (promoResult.discountAmount <= 0) {
         throw new Error(
           `Mã "${promo.code}" không áp dụng được — đơn chưa đạt điều kiện tối thiểu`,
@@ -269,7 +273,6 @@ export class OrdersService {
     }
 
     const shippingFee = 0;
-    const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
 
     let customer: User | null = null;
     if (input.customerId?.trim()) {
@@ -277,30 +280,18 @@ export class OrdersService {
     }
 
     const now = new Date();
-    const order = this.em.create(Order, {
-      orderNumber: buildOrderNumber(),
-      customer: customer ?? undefined,
-      customerName: input.customerName.trim(),
-      customerEmail: input.customerEmail.trim(),
-      customerPhone: input.customerPhone?.trim() || null,
-      shippingAddress: input.shippingAddress?.trim() || null,
-      items,
-      gifts,
-      subtotal,
-      discountAmount,
-      shippingFee,
-      totalAmount,
-      status: 'pending',
-      couponCode: appliedCouponCode,
-      notes: input.notes?.trim() || null,
-      paymentMethod: input.paymentMethod ?? 'cod',
-      paymentStatus: 'unpaid',
-      isPaid: false,
-      createdAt: now,
-      updatedAt: now,
-    });
+    let items: OrderItemSnapshot[] = [];
+    let gifts: OrderGiftSnapshot[] = [];
 
-    await this.em.transactional(async (em) => {
+    const order = await this.em.transactional(async (em) => {
+      const lockedProducts =
+        await this.productsService.findActiveByIdsForUpdate(em, productIds);
+      const productsById = new Map(lockedProducts.map((p) => [p.id, p]));
+      items = buildOrderItemsFromProducts(merged, productsById);
+      gifts = evaluateOrderGifts(merged, productsById);
+      const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
+      const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
+
       for (const line of merged) {
         await this.productsService.decrementStock(
           em,
@@ -309,11 +300,35 @@ export class OrdersService {
           line.unitType,
         );
       }
-      em.persist(order);
+
+      const row = em.create(Order, {
+        orderNumber: buildOrderNumber(),
+        customer: customer ?? undefined,
+        customerName: input.customerName.trim(),
+        customerEmail: input.customerEmail.trim(),
+        customerPhone: input.customerPhone?.trim() || null,
+        shippingAddress: input.shippingAddress?.trim() || null,
+        items,
+        gifts,
+        subtotal,
+        discountAmount,
+        shippingFee,
+        totalAmount,
+        status: 'pending',
+        couponCode: appliedCouponCode,
+        notes: input.notes?.trim() || null,
+        paymentMethod: input.paymentMethod ?? 'cod',
+        paymentStatus: 'unpaid',
+        isPaid: false,
+        createdAt: now,
+        updatedAt: now,
+      });
+      em.persist(row);
       await em.flush();
       if (redeemPromoId) {
         await this.promoCodesService.incrementUsage(em, redeemPromoId);
       }
+      return row;
     });
 
     const lineKey = (productId: number, sku: string) => `${productId}:${sku}`;

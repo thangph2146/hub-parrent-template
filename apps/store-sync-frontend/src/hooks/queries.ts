@@ -72,10 +72,19 @@ async function fetchActiveProductsSample(): Promise<Product[]> {
   return res.items;
 }
 
-export const useProducts = (): UseQueryResult<Product[], Error> =>
+type UseProductsOptions = {
+  /** Polling tồn kho (ms); dùng trên giỏ/checkout. */
+  stockPollMs?: number;
+};
+
+export const useProducts = (
+  options?: UseProductsOptions,
+): UseQueryResult<Product[], Error> =>
   useQuery<Product[], Error>({
     queryKey: ["products", "active-all"],
     queryFn: fetchActiveProductsSample,
+    refetchInterval: options?.stockPollMs,
+    refetchIntervalInBackground: !!options?.stockPollMs,
   });
 
 export const useCatalogProducts = (
@@ -101,6 +110,25 @@ export const useProduct = (id: number | null | undefined) =>
     queryFn: () => api.products.getPublic(id as number),
     enabled: typeof id === "number" && id > 0,
   });
+
+/** Tồn realtime cho SP đang có trong giỏ — fetch từng SP, polling 10s. */
+export function useCartStockProducts(productIds: number[]) {
+  const sortedKey = [...productIds].sort((a, b) => a - b);
+  return useQuery<Product[], Error>({
+    queryKey: ["cart-stock", sortedKey] as const,
+    queryFn: async () => {
+      const results = await Promise.all(
+        sortedKey.map((id) => api.products.getPublic(id)),
+      );
+      return results;
+    },
+    enabled: sortedKey.length > 0,
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    staleTime: 5_000,
+  });
+}
 
 export const useProductBySku = (sku: string | null | undefined) =>
   useQuery({
