@@ -6,8 +6,6 @@ import {
   ArrowLeft,
   ShoppingCart,
   Truck,
-  Gift,
-  Percent,
   AlertTriangle,
   CheckCircle2,
 } from "lucide-react";
@@ -21,6 +19,8 @@ import {
   ProductDetailLayout,
   ProductDetailMetaGrid,
   ProductDetailOrderRow,
+  ProductDetailPromoGiftsSection,
+  hasUnitWholesalePromo,
   ProductDetailPurchaseCard,
   ProductDetailPurchaseCardSection,
   ProductDetailUnitPicker,
@@ -30,7 +30,8 @@ import type { Product, ProductUnitType } from "@/lib/api";
 import { unitSellingAndListPrice } from "@/lib/product-price";
 import { getProductUnits } from "@/lib/catalog-filters";
 import { cartLineQuantity, useCart } from "@/hooks/use-cart";
-import { getActiveGiftRuleForUnit } from "@/lib/gift-rules-from-fulfillment-note";
+import { resolveGiftRulesForUnit } from "@/lib/gift-rules-from-fulfillment-note";
+import { ProductSuggestions } from "@/components/shared/product-suggestions";
 
 type ProductDetailProps = {
   product: Product;
@@ -77,12 +78,10 @@ export function ProductDetail({
   );
 
   const minPurchaseQty = 1;
-  const minPromoQty =
-    selectedUnit.minWholesaleQty > 0 ? selectedUnit.minWholesaleQty : 1;
-  const maxQty = Math.max(
-    1,
-    Math.floor(product.stock / Math.max(selectedUnit.qtyPerUnit, 1)),
-  );
+  const unitStockCount =
+    selectedUnit.stock ??
+    Math.floor(product.stock / Math.max(selectedUnit.qtyPerUnit, 1));
+  const maxQty = Math.max(0, unitStockCount);
   const [qty, setQty] = useState(1);
 
   const qtyInCart = cartLineQuantity(
@@ -91,21 +90,19 @@ export function ProductDetail({
     selectedUnit.type,
   );
   const pricingQty = qtyInCart + qty;
-  const activeGiftRule = useMemo(
-    () => getActiveGiftRuleForUnit(product.fulfillmentNote, selectedUnit.type),
-    [product.fulfillmentNote, selectedUnit.type],
+  const productSellQty = useMemo(() => {
+    const fromCart = cart.lines
+      .filter((line) => line.productId === product.id)
+      .reduce((sum, line) => sum + line.quantity, 0);
+    return fromCart + qty;
+  }, [cart.lines, product.id, qty]);
+  const giftRules = useMemo(
+    () => resolveGiftRulesForUnit(selectedUnit, product.fulfillmentNote),
+    [selectedUnit, product.fulfillmentNote],
   );
-  const isGiftUnlocked = activeGiftRule != null && pricingQty >= activeGiftRule.minQty;
 
-  const isWholesale = selectedUnit.wholesalePrice !== null;
-  const priceDiscountPercent = useMemo(() => {
-    const wholesale = selectedUnit.wholesalePrice;
-    if (wholesale == null) return 0;
-    const retail = Math.max(0, Math.floor(selectedUnit.retailPrice || 0));
-    const promo = Math.max(0, Math.floor(wholesale || 0));
-    if (retail <= 0 || promo <= 0 || promo >= retail) return 0;
-    return Math.round(((retail - promo) / retail) * 100);
-  }, [selectedUnit.retailPrice, selectedUnit.wholesalePrice]);
+  const isWholesale = hasUnitWholesalePromo(selectedUnit);
+  const showPromoGiftsSection = isWholesale || giftRules.length > 0;
   const { current: unitPrice, list: listPrice } = unitSellingAndListPrice(
     selectedUnit,
     pricingQty,
@@ -113,7 +110,7 @@ export function ProductDetail({
 
   const totalUnits = qty * Math.max(selectedUnit.qtyPerUnit, 1);
   const totalPrice = unitPrice * qty;
-  const stockWarning = totalUnits > product.stock * 0.8;
+  const stockWarning = maxQty > 0 && qty > maxQty * 0.8;
   const outOfStock = maxQty <= 0 || qty > maxQty;
 
   const clampQty = (value: number) =>
@@ -143,7 +140,7 @@ export function ProductDetail({
       label: unit.label,
       currentPriceLabel: formatProductVnd(current),
       listPriceLabel: list != null ? formatProductVnd(list) : null,
-      hasPromo: unit.wholesalePrice !== null,
+      hasPromo: hasUnitWholesalePromo(unit),
     };
   });
 
@@ -155,6 +152,7 @@ export function ProductDetail({
         </Button>
       </Link>
 
+      <div className="space-y-8">
       <ProductDetailLayout
         gallery={
           <ProductDetailGallery images={displayImages} alt={product.name} />
@@ -195,7 +193,7 @@ export function ProductDetail({
                   maxQty={maxQty}
                   equivalentTotal={totalUnits}
                   equivalentUnit={product.unit}
-                  stockCount={product.stock}
+                  stockCount={unitStockCount}
                   stockStatus={
                     outOfStock ? "out" : stockWarning ? "low" : "ok"
                   }
@@ -220,44 +218,14 @@ export function ProductDetail({
                 />
               </ProductDetailPurchaseCardSection>
 
-              {isWholesale && minPromoQty > 1 ? (
-                <ProductDetailPurchaseCardSection variant="muted" className="space-y-2">
-                  <ProductDetailCallout
-                    tone={pricingQty >= minPromoQty ? "success" : "warning"}
-                    icon={Percent}
-                    title={
-                      pricingQty >= minPromoQty
-                        ? "Đã áp giá khuyến mãi"
-                        : `Cần từ ${minPromoQty} ${selectedUnit.type} để giảm giá`
-                    }
-                  >
-                    {priceDiscountPercent > 0 ? (
-                      <>
-                        Giảm{" "}
-                        <span className="font-bold">{priceDiscountPercent}%</span>{" "}
-                        khi đủ số lượng.
-                      </>
-                    ) : null}
-                  </ProductDetailCallout>
-                </ProductDetailPurchaseCardSection>
-              ) : null}
-
-              {activeGiftRule ? (
+              {showPromoGiftsSection ? (
                 <ProductDetailPurchaseCardSection variant="muted">
-                  <ProductDetailCallout
-                    tone={isGiftUnlocked ? "success" : "warning"}
-                    icon={Gift}
-                    title={
-                      isGiftUnlocked
-                        ? "Đủ điều kiện nhận quà"
-                        : "Quà tặng kèm"
-                    }
-                  >
-                    Từ {activeGiftRule.minQty} {selectedUnit.type}: tặng{" "}
-                    <span className="font-bold">
-                      {activeGiftRule.giftQty} {activeGiftRule.giftName}
-                    </span>
-                  </ProductDetailCallout>
+                  <ProductDetailPromoGiftsSection
+                    unit={selectedUnit}
+                    giftRules={giftRules}
+                    pricingQty={pricingQty}
+                    productSellQty={productSellQty}
+                  />
                 </ProductDetailPurchaseCardSection>
               ) : null}
             </ProductDetailPurchaseCard>
@@ -318,6 +286,9 @@ export function ProductDetail({
           </>
         }
       />
+
+      <ProductSuggestions productId={product.id} category={product.category} />
+      </div>
     </>
   );
 }

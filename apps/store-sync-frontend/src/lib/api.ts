@@ -29,6 +29,7 @@ export type {
   ProductListParams,
   ProductPagedResponse,
   ProductUnitType,
+  ProductGiftRule,
   Order,
   OrderItem,
   User,

@@ -14,6 +14,8 @@ import { Button } from "@ui/components/button";
 import { Input } from "@ui/components/input";
 import { Badge } from "@ui/components/badge";
 import { Container, Page, PageContent } from "@ui/components/layout";
+import { cn } from "@ui/lib/utils";
+import { CatalogProductCard } from "@/components/shared/catalog-product-card";
 import {
   STORE_CONTAINER_INSET,
   STORE_CONTAINER_MAX_DEFAULT,
@@ -25,10 +27,8 @@ import {
   ShoppingCart,
   Package2,
   Layers,
-  Tag,
-  Minus,
-  Plus,
   FilterX,
+  SlidersHorizontal,
   X,
   Loader2,
   ChevronLeft,
@@ -41,13 +41,8 @@ import {
   useCategoryUsage,
 } from "@/hooks/queries";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { cartLineQuantity, useCart } from "@/hooks/use-cart";
-import { formatVND } from "@/lib/format";
-import {
-  getProductUnits,
-  scoreProductSearchMatch,
-} from "@/lib/catalog-filters";
-import { unitSellingAndListPrice } from "@/lib/product-price";
+import { useCart } from "@/hooks/use-cart";
+import { scoreProductSearchMatch } from "@/lib/catalog-filters";
 import { resolveCategoryIcon } from "@/lib/category-icons";
 
 const PURCHASE_TYPE_OPTS = [
@@ -66,6 +61,29 @@ const UNIT_FILTER_OPTS = [
 ];
 
 const CATALOG_PAGE_SIZE = 24;
+
+function CatalogFilterPill({
+  active,
+  label,
+  onClick,
+  tone = "primary",
+}: {
+  active: boolean;
+  label: string;
+  onClick: () => void;
+  tone?: "primary" | "secondary";
+}) {
+  return (
+    <Badge
+      render={<button type="button" onClick={onClick} />}
+      variant={active ? (tone === "primary" ? "promo" : "category") : "muted"}
+      size="sm"
+      className="cursor-pointer"
+    >
+      {label}
+    </Badge>
+  );
+}
 
 function CatalogPageInner() {
   const router = useRouter();
@@ -284,285 +302,315 @@ function CatalogPageInner() {
       <PageContent className={STORE_PAGE_CONTENT_CLASS}>
         <section>
           <Container max={STORE_CONTAINER_MAX_DEFAULT} className={`${STORE_CONTAINER_INSET} space-y-6`}>
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-surface p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant">
-              <div className="min-w-0">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-2 tracking-tight">
-                  Danh mục sản phẩm
-                </h1>
-                <p className="text-base sm:text-lg text-muted-foreground font-medium">
-                  Dữ liệu lọc theo trang từ API (đang bán, tìm kiếm, danh mục, đơn
-                  vị, giá ban đầu/KM). URL lưu bộ lọc để chia sẻ.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto lg:min-w-[min(100%,28rem)]">
-                <Link href="/cart" className="hidden sm:block shrink-0">
-                  <Button
-                    type="button"
-                    className="h-14 px-6 text-base rounded-2xl font-bold shadow-sm w-full sm:w-auto"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    Giỏ ({cart.unitCount})
-                  </Button>
-                </Link>
-                <div className="relative flex-1 min-w-0">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 pointer-events-none" />
-                  <Input
-                    type="search"
-                    enterKeyHint="search"
-                    autoComplete="off"
-                    aria-label="Tìm sản phẩm"
-                    placeholder="SKU, tên, thương hiệu, danh mục…"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-11 h-14 text-base sm:text-lg w-full rounded-2xl bg-background border-outline-variant shadow-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1"
-              role="tablist"
-              aria-label="Danh mục"
-            >
-              {categoryTabs.map((tab) => {
-                const Icon = tab.icon;
-                const active = categoryTab === tab.key;
-                const count =
-                  tab.key === "ALL"
-                    ? totalCatalogCount
-                    : (usageMap.get(tab.key) ?? 0);
-                return (
-                  <Button
-                    key={tab.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setCategoryTab(tab.key)}
-                    className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap border transition-all shrink-0 ${active
-                        ? "bg-primary text-primary-foreground border-primary shadow-md"
-                        : "bg-background border-outline-variant text-muted-foreground hover:bg-muted"
-                      }`}
-                  >
-                    <Icon className="w-4 h-4 shrink-0" aria-hidden />
-                    {tab.label}
-                    <Badge
-                      className={`ml-0.5 text-[10px] px-1.5 py-0 tabular-nums ${active ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"}`}
-                    >
-                      {count}
-                    </Badge>
-                  </Button>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-col gap-3 bg-surface border border-outline-variant rounded-2xl p-4 sm:p-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <Tag className="w-5 h-5 text-primary shrink-0" aria-hidden />
-                <span className="font-bold text-foreground text-sm">
-                  Kiểu mua &amp; đơn vị
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 sm:items-center">
-                <div className="flex gap-2 flex-wrap">
-                  {PURCHASE_TYPE_OPTS.map((opt) => (
-                    <Button
-                      key={opt.key}
-                      type="button"
-                      size="sm"
-                      onClick={() => setPurchaseType(opt.key)}
-                      className={`rounded-lg text-sm font-semibold border transition-all ${purchaseType === opt.key
-                          ? "bg-primary/10 text-primary border-primary/40"
-                          : "bg-background border-outline-variant text-muted-foreground hover:bg-muted"
-                        }`}
-                    >
-                      {opt.label}
-                    </Button>
-                  ))}
-                </div>
-                <div className="hidden sm:block w-px h-7 bg-border shrink-0" />
-                <div className="flex gap-2 flex-wrap">
-                  {UNIT_FILTER_OPTS.map((opt) => (
-                    <Button
-                      key={opt.key}
-                      type="button"
-                      size="sm"
-                      onClick={() => setUnitFilter(opt.key)}
-                      className={`rounded-lg text-xs font-semibold border transition-all ${unitFilter === opt.key
-                          ? "bg-secondary/15 text-secondary-foreground border-secondary/40"
-                          : "bg-background border-outline-variant text-muted-foreground hover:bg-muted"
-                        }`}
-                    >
-                      {opt.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {activeChips.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-muted-foreground">
-                  Đang lọc:
-                </span>
-                {activeChips.map((c) => (
-                  <Button
-                    key={c.key}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={c.onRemove}
-                    className="h-auto gap-1 rounded-full border border-primary/25 bg-primary/5 px-2.5 py-0.5 text-xs font-medium text-foreground hover:bg-primary/10"
-                  >
-                    {c.label}
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full hover:bg-primary/15">
-                      <X className="h-3 w-3" aria-hidden />
-                    </span>
-                  </Button>
-                ))}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1 text-muted-foreground"
-                  onClick={clearAllFilters}
-                >
-                  <FilterX className="h-3.5 w-3.5" />
-                  Xóa hết
-                </Button>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <p className="text-sm text-muted-foreground font-medium">
-                Trang{" "}
-                <span className="font-bold text-foreground tabular-nums">
-                  {page}
-                </span>
-                /{totalPages} —{" "}
-                <span className="font-bold text-foreground tabular-nums">
-                  {displayProducts.length}
-                </span>
-                /{totalProducts} sản phẩm khớp bộ lọc
-                {debouncedSearch !== searchTerm && searchTerm.trim() ? (
-                  <span className="text-muted-foreground text-xs ml-2">
-                    (đang gõ…)
-                  </span>
-                ) : null}
-              </p>
-              {hasActiveFilters && activeChips.length === 0 ? (
-                <Button
-                  type="button"
-                  variant="link"
-                  onClick={clearAllFilters}
-                  className="text-sm text-primary font-semibold h-auto p-0 sm:self-auto"
-                >
-                  Xóa bộ lọc
-                </Button>
-              ) : null}
-            </div>
-
-            {error && (
-              <div className="text-center py-12 bg-destructive/5 border border-destructive/20 rounded-2xl">
-                <p className="text-lg font-bold text-destructive">Không tải được dữ liệu sản phẩm</p>
-                <p className="text-sm text-muted-foreground mt-1">{error.message}</p>
-              </div>
-            )}
-
-            {isLoading && !error && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-96 rounded-3xl bg-muted/40 animate-pulse"
-                  />
-                ))}
-              </div>
-            )}
-
-            {!isLoading && !error && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                  {displayProducts.map((p) => (
-                    <ProductCardWithUnitSelector
-                      key={p.id}
-                      product={p}
-                      categoryLabel={categoryMap.get(p.category) ?? p.category}
-                      onAddToCart={handleAddToCart}
-                    />
-                  ))}
-                </div>
-
-                {totalPages > 1 ? (
-                  <nav
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10 pb-2"
-                    aria-label="Phân trang danh mục"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-xl h-11 w-11 shrink-0"
-                        disabled={page <= 1 || isLoading}
-                        onClick={() => {
-                          setPage((prev) => Math.max(1, prev - 1));
-                          window.scrollTo({
-                            top: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                        aria-label="Trang trước"
-                      >
-                        <ChevronLeft className="h-5 w-5" aria-hidden />
-                      </Button>
-                      <span className="text-sm font-semibold tabular-nums min-w-[5.5rem] text-center px-2">
-                        {page} / {totalPages}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-xl h-11 w-11 shrink-0"
-                        disabled={page >= totalPages || isLoading}
-                        onClick={() => {
-                          setPage((prev) => Math.min(totalPages, prev + 1));
-                          window.scrollTo({
-                            top: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                        aria-label="Trang sau"
-                      >
-                        <ChevronRight className="h-5 w-5" aria-hidden />
-                      </Button>
-                    </div>
-                  </nav>
-                ) : null}
-
-                {displayProducts.length === 0 && (
-                  <div className="text-center py-16 px-4 bg-muted/20 border border-dashed border-outline-variant rounded-2xl">
-                    <Package2 className="w-16 h-16 mx-auto text-outline-variant opacity-30 mb-4" aria-hidden />
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">
-                      Không tìm thấy sản phẩm phù hợp
+            <header className="overflow-hidden rounded-2xl border border-outline-variant/30 bg-card shadow-md ring-1 ring-black/[0.03] dark:ring-white/[0.04]">
+              <div className="border-b border-outline-variant/25 bg-gradient-to-r from-primary/[0.06] via-background to-muted/20 px-5 py-5 sm:px-8 sm:py-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-xs font-bold uppercase tracking-widest text-primary">
+                      Store catalog
                     </p>
-                    <p className="text-muted-foreground mt-2 max-w-md mx-auto text-sm">
-                      Thử bỏ bớt bộ lọc hoặc từ khóa ngắn hơn (SKU, tên, thương hiệu).
-                    </p>
-                    {hasActiveFilters ? (
-                      <Button
-                        type="button"
-                        className="mt-6 rounded-xl font-bold"
-                        onClick={clearAllFilters}
-                      >
-                        <FilterX className="w-4 h-4 mr-2" />
-                        Xóa bộ lọc
-                      </Button>
-                    ) : null}
+                    <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+                      Danh mục sản phẩm
+                    </h1>
                   </div>
-                )}
-              </>
-            )}
+                  <div className="flex w-full flex-col gap-3 sm:max-w-lg sm:flex-row">
+                    <div className="relative min-w-0 flex-1">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        enterKeyHint="search"
+                        autoComplete="off"
+                        aria-label="Tìm sản phẩm"
+                        placeholder="SKU, tên, thương hiệu…"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="h-11 w-full rounded-xl border-outline-variant/50 bg-background pl-11 text-base shadow-sm"
+                      />
+                    </div>
+                    <Link href="/cart" className="shrink-0">
+                      <Button
+                        type="button"
+                        className="h-11 w-full rounded-xl px-5 font-bold sm:w-auto"
+                      >
+                        <ShoppingCart className="size-4" />
+                        Giỏ ({cart.unitCount})
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+              <aside
+                className="w-full shrink-0 lg:sticky lg:top-24 lg:w-72 lg:max-h-[calc(100vh-6.5rem)] lg:overflow-y-auto xl:w-80"
+                aria-label="Bộ lọc danh mục"
+              >
+                <div className="space-y-4 rounded-2xl border border-outline-variant/35 bg-card p-4 shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.04] sm:p-5">
+                  <div>
+                    <p className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      Danh mục
+                    </p>
+                    <nav
+                      className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
+                      role="tablist"
+                      aria-label="Danh mục"
+                    >
+                      {categoryTabs.map((tab) => {
+                        const Icon = tab.icon;
+                        const active = categoryTab === tab.key;
+                        const count =
+                          tab.key === "ALL"
+                            ? totalCatalogCount
+                            : (usageMap.get(tab.key) ?? 0);
+                        return (
+                          <button
+                            key={tab.key}
+                            type="button"
+                            role="tab"
+                            aria-selected={active}
+                            onClick={() => setCategoryTab(tab.key)}
+                            className={cn(
+                              "flex w-full shrink-0 items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm font-bold transition-all lg:px-3.5",
+                              active
+                                ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                                : "border-outline-variant/40 bg-background text-muted-foreground hover:border-primary/20 hover:bg-muted/40",
+                            )}
+                          >
+                            <span className="flex min-w-0 items-center gap-2">
+                              <Icon className="size-4 shrink-0" aria-hidden />
+                              <span className="truncate">{tab.label}</span>
+                            </span>
+                            <Badge
+                              variant="muted"
+                              size="xs"
+                              className={cn(
+                                "shrink-0 tabular-nums",
+                                active &&
+                                  "border-primary-foreground/25 bg-primary-foreground/15 text-primary-foreground",
+                              )}
+                            >
+                              {count}
+                            </Badge>
+                          </button>
+                        );
+                      })}
+                    </nav>
+                  </div>
+
+                  <div className="border-t border-outline-variant/25 pt-4">
+                    <div className="mb-3 flex items-center gap-2">
+                      <SlidersHorizontal
+                        className="size-4 shrink-0 text-primary"
+                        aria-hidden
+                      />
+                      <span className="text-sm font-bold text-foreground">
+                        Kiểu mua
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {PURCHASE_TYPE_OPTS.map((opt) => (
+                        <CatalogFilterPill
+                          key={opt.key}
+                          active={purchaseType === opt.key}
+                          label={opt.label}
+                          onClick={() => setPurchaseType(opt.key)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-outline-variant/25 pt-4">
+                    <p className="mb-3 text-sm font-bold text-foreground">
+                      Đơn vị
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {UNIT_FILTER_OPTS.map((opt) => (
+                        <CatalogFilterPill
+                          key={opt.key}
+                          active={unitFilter === opt.key}
+                          label={opt.label}
+                          onClick={() => setUnitFilter(opt.key)}
+                          tone="secondary"
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {activeChips.length > 0 ? (
+                    <div className="space-y-2 border-t border-outline-variant/25 pt-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge variant="muted" size="sm">
+                          Đang lọc
+                        </Badge>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 gap-1 text-xs text-muted-foreground"
+                          onClick={clearAllFilters}
+                        >
+                          <FilterX className="size-3.5" />
+                          Xóa hết
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {activeChips.map((c) => (
+                          <Badge
+                            key={c.key}
+                            render={<button type="button" onClick={c.onRemove} />}
+                            variant="category"
+                            size="sm"
+                            shape="pill"
+                            className="cursor-pointer gap-1"
+                          >
+                            {c.label}
+                            <X className="size-3" aria-hidden />
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </aside>
+
+              <div className="min-w-0 flex-1 space-y-5">
+                <div className="flex flex-col gap-2 rounded-xl border border-outline-variant/30 bg-muted/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Trang{" "}
+                    <span className="font-bold text-foreground tabular-nums">
+                      {page}
+                    </span>
+                    /{totalPages} —{" "}
+                    <span className="font-bold text-foreground tabular-nums">
+                      {displayProducts.length}
+                    </span>
+                    /{totalProducts} sản phẩm
+                    {debouncedSearch !== searchTerm && searchTerm.trim() ? (
+                      <span className="ml-2 text-xs">(đang gõ…)</span>
+                    ) : null}
+                  </p>
+                  {hasActiveFilters && activeChips.length === 0 ? (
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={clearAllFilters}
+                      className="h-auto p-0 text-sm font-semibold text-primary"
+                    >
+                      Xóa bộ lọc
+                    </Button>
+                  ) : null}
+                </div>
+
+                {error ? (
+                  <div className="rounded-2xl border border-destructive/20 bg-destructive/5 py-12 text-center">
+                    <p className="text-lg font-bold text-destructive">
+                      Không tải được dữ liệu sản phẩm
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {error.message}
+                    </p>
+                  </div>
+                ) : null}
+
+                {isLoading && !error ? (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-96 animate-pulse rounded-3xl bg-muted/40"
+                      />
+                    ))}
+                  </div>
+                ) : null}
+
+                {!isLoading && !error ? (
+                  <>
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                      {displayProducts.map((p) => (
+                        <CatalogProductCard
+                          key={p.id}
+                          product={p}
+                          categoryLabel={
+                            categoryMap.get(p.category) ?? p.category
+                          }
+                          onAddToCart={handleAddToCart}
+                        />
+                      ))}
+                    </div>
+
+                    {totalPages > 1 ? (
+                      <nav
+                        className="flex items-center justify-center gap-4 pb-2 pt-6"
+                        aria-label="Phân trang danh mục"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-11 shrink-0 rounded-xl"
+                            disabled={page <= 1 || isLoading}
+                            onClick={() => {
+                              setPage((prev) => Math.max(1, prev - 1));
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
+                            aria-label="Trang trước"
+                          >
+                            <ChevronLeft className="size-5" aria-hidden />
+                          </Button>
+                          <span className="min-w-[5.5rem] px-2 text-center text-sm font-semibold tabular-nums">
+                            {page} / {totalPages}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-11 shrink-0 rounded-xl"
+                            disabled={page >= totalPages || isLoading}
+                            onClick={() => {
+                              setPage((prev) =>
+                                Math.min(totalPages, prev + 1),
+                              );
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
+                            aria-label="Trang sau"
+                          >
+                            <ChevronRight className="size-5" aria-hidden />
+                          </Button>
+                        </div>
+                      </nav>
+                    ) : null}
+
+                    {displayProducts.length === 0 ? (
+                      <div className="rounded-2xl border border-dashed border-outline-variant bg-muted/20 px-4 py-16 text-center">
+                        <Package2
+                          className="mx-auto mb-4 size-16 text-outline-variant opacity-30"
+                          aria-hidden
+                        />
+                        <p className="text-xl font-bold text-foreground sm:text-2xl">
+                          Không tìm thấy sản phẩm phù hợp
+                        </p>
+                        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                          Thử bỏ bớt bộ lọc hoặc từ khóa ngắn hơn (SKU, tên,
+                          thương hiệu).
+                        </p>
+                        {hasActiveFilters ? (
+                          <Button
+                            type="button"
+                            className="mt-6 rounded-xl font-bold"
+                            onClick={clearAllFilters}
+                          >
+                            <FilterX className="mr-2 size-4" />
+                            Xóa bộ lọc
+                          </Button>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </>
+                ) : null}
+              </div>
+            </div>
           </Container>
         </section>
       </PageContent>
@@ -589,217 +637,3 @@ export default function CatalogPage() {
   );
 }
 
-function ProductCardWithUnitSelector({
-  product: p,
-  categoryLabel,
-  onAddToCart,
-}: {
-  product: Product;
-  categoryLabel: string;
-  onAddToCart: (product: Product, unit: ProductUnitType, qty: number) => void;
-}) {
-  const cart = useCart();
-  const units = useMemo(() => getProductUnits(p), [p]);
-  const [selectedUnit, setSelectedUnit] = useState<ProductUnitType>(units[0]!);
-  const [quantity, setQuantity] = useState(1);
-
-  const qtyInCart = cartLineQuantity(cart.lines, p.id, selectedUnit.type);
-  const pricingQty = qtyInCart + quantity;
-
-  const isWholesale = selectedUnit.wholesalePrice !== null;
-  const { current: displayPrice, list: listPrice } = unitSellingAndListPrice(
-    selectedUnit,
-    pricingQty,
-  );
-
-  const maxQty = Math.max(
-    1,
-    Math.floor(p.stock / Math.max(selectedUnit.qtyPerUnit, 1)),
-  );
-  /** Luôn cho mua từ 1; `minWholesaleQty` chỉ quyết định giá KM hay giá ban đầu. */
-  const minPurchaseQty = 1;
-  const outOfStock = maxQty <= 0;
-
-  const primaryImage = p.images?.[0];
-  const firstCoupon = p.coupons?.[0];
-
-  const changeUnit = (u: ProductUnitType) => {
-    setSelectedUnit(u);
-    setQuantity(1);
-  };
-
-  return (
-    <div className="bg-background border border-outline-variant rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col">
-      <Link href={`/catalog/${p.id}`} className="block relative overflow-hidden bg-white">
-        {primaryImage ? (
-          <img
-            src={primaryImage}
-            alt={p.name}
-            className="w-full aspect-[4/5] max-h-80 object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full aspect-[4/5] max-h-80 flex items-center justify-center bg-muted/30">
-            <Package2 className="w-12 h-12 text-outline-variant" aria-hidden />
-          </div>
-        )}
-        {firstCoupon && (
-          <div className="absolute top-3 left-3 max-w-[60%] rounded-lg bg-destructive px-2 py-1 text-[10px] font-bold leading-tight text-white whitespace-normal break-words shadow-sm">
-            {firstCoupon}
-          </div>
-        )}
-        <Badge className="absolute top-3 right-3 bg-primary/90 text-white text-xs px-2 py-0.5">
-          {categoryLabel}
-        </Badge>
-      </Link>
-
-      <div className="p-5 flex flex-col gap-3 flex-grow">
-        <Link href={`/catalog/${p.id}`}>
-          <h3 className="font-bold text-lg leading-snug hover:text-primary transition-colors line-clamp-2">
-            {p.name}
-          </h3>
-        </Link>
-        <p className="text-xs text-muted-foreground font-medium">
-          {[p.brand, p.origin].filter(Boolean).join(" · ")}
-        </p>
-
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
-            Chọn loại hàng:
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {units.map((u) => {
-              const active = selectedUnit.type === u.type;
-              const isSi = u.wholesalePrice !== null;
-              return (
-                <Button
-                  key={u.type}
-                  onClick={() => changeUnit(u)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${active
-                      ? isSi
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-secondary text-secondary-foreground border-secondary"
-                      : "bg-muted/50 text-muted-foreground border-outline-variant hover:bg-muted"
-                    }`}
-                >
-                  {u.label}
-                  {isSi && (
-                    <span className="ml-1 opacity-70">• Khuyến mãi</span>
-                  )}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 mt-auto pt-2 border-t border-outline-variant/30">
-          <div>
-            <div className="flex flex-wrap items-baseline gap-2">
-              {listPrice != null && (
-                <p className="text-sm font-semibold text-muted-foreground line-through">
-                  {formatVND(listPrice)}
-                </p>
-              )}
-              <p className="text-2xl font-black text-primary">{formatVND(displayPrice)}</p>
-            </div>
-            {isWholesale && selectedUnit.minWholesaleQty > 0 && (
-              <p className="text-xs text-muted-foreground">
-                Giá KM khi đặt ≥ {selectedUnit.minWholesaleQty} {selectedUnit.type}
-                {qtyInCart > 0 && (
-                  <span className="block text-[10px] mt-0.5 text-muted-foreground">
-                    Giỏ: {qtyInCart} · Lần này: {quantity} → tổng xét giá:{" "}
-                    <span className="font-semibold text-foreground">
-                      {pricingQty}
-                    </span>
-                  </span>
-                )}
-                {pricingQty < selectedUnit.minWholesaleQty && (
-                  <span className="block text-[10px] mt-0.5 text-muted-foreground">
-                    Tổng {pricingQty} vẫn chưa đủ điều kiện KM — có thể mua 1.
-                  </span>
-                )}
-                {pricingQty >= selectedUnit.minWholesaleQty && qtyInCart > 0 && (
-                  <span className="block text-[10px] mt-0.5 text-emerald-700 dark:text-emerald-400 font-medium">
-                    Gộp giỏ + lần này đủ điều kiện KM.
-                  </span>
-                )}
-              </p>
-            )}
-            {!isWholesale && (
-              <p className="text-xs text-muted-foreground">
-                Giá ban đầu / {selectedUnit.type}
-              </p>
-            )}
-          </div>
-          <div className="ml-auto text-right">
-            {isWholesale ? (
-              <Badge
-                className={
-                  listPrice != null
-                    ? "bg-primary/10 text-primary border-primary/20 font-bold text-xs"
-                    : "bg-secondary/10 text-secondary-foreground border-secondary/20 font-bold text-xs"
-                }
-              >
-                {listPrice != null ? "Giá KM (đủ SL)" : "Giá ban đầu"}
-              </Badge>
-            ) : (
-              <Badge className="bg-secondary/10 text-muted-foreground border-secondary/20 font-bold text-xs p-0">
-                Giá ban đầu
-              </Badge>
-            )}
-            <p className="text-[10px] text-muted-foreground mt-1 font-medium">
-              Tồn: {maxQty} {selectedUnit.type}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex items-center bg-surface border border-outline-variant rounded-xl overflow-hidden h-11">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-11 w-11 rounded-none"
-              onClick={() =>
-                setQuantity((q) => Math.max(minPurchaseQty, q - 1))
-              }
-              disabled={outOfStock || quantity <= minPurchaseQty}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <input
-              type="number"
-              value={quantity}
-              min={minPurchaseQty}
-              max={maxQty}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                if (Number.isFinite(n)) {
-                  setQuantity(
-                    Math.min(Math.max(n, minPurchaseQty), maxQty),
-                  );
-                }
-              }}
-              className="w-12 text-center font-extrabold bg-transparent border-0 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-11 w-11 rounded-none"
-              onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
-              disabled={outOfStock || quantity >= maxQty}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-          <Button
-            className="flex-grow rounded-xl font-bold h-11"
-            onClick={() => onAddToCart(p, selectedUnit, quantity)}
-            disabled={outOfStock}
-          >
-            <ShoppingCart className="w-4 h-4 mr-1" />
-            {outOfStock ? "Hết hàng" : "Thêm vào giỏ"}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}

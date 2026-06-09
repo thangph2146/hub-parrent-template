@@ -15,7 +15,7 @@ import {
   defineDataTableActionsColumn,
 } from "../../data-table"
 import { AdminTablePurgeButton } from "../presets/table-row-actions"
-import { Badge } from "../../badge"
+import { AdminMediaCountBadge } from "./admin-form-badge"
 import { Button } from "../../button"
 import {
   Collapsible,
@@ -256,11 +256,7 @@ export function ImageUrlListField({
             Thêm
           </Button>
         </div>
-        {rows.length > 0 ? (
-          <Badge variant="secondary" className="ml-auto">
-            {rows.length} ảnh
-          </Badge>
-        ) : null}
+        {rows.length > 0 ? <AdminMediaCountBadge count={rows.length} /> : null}
       </div>
 
       {rows.length > 0 ? (

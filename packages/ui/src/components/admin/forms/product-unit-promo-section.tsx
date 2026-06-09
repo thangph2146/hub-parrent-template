@@ -4,7 +4,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import type { LucideIcon } from "lucide-react"
 import { ChevronDown } from "lucide-react"
 import { cn } from "../../../lib/utils"
-import { Badge } from "../../badge"
+import type { AdminFormBadgeVariant } from "./admin-form-badge"
+import {
+  AdminGiftQtyOverlayBadge,
+  AdminOptionalSectionOffBadge,
+  AdminOptionalSectionSummaryBadge,
+} from "./admin-form-badge"
 import {
   Collapsible,
   CollapsibleContent,
@@ -103,6 +108,8 @@ export type ProductUnitOptionalSectionProps = {
   enabled: boolean
   onEnabledChange: (enabled: boolean) => void
   summary?: string | null
+  /** Variant badge tóm tắt — mặc định `promo`. */
+  summaryVariant?: AdminFormBadgeVariant
   children: ReactNode
   className?: string
 }
@@ -114,6 +121,7 @@ export function ProductUnitOptionalSection({
   enabled,
   onEnabledChange,
   summary,
+  summaryVariant = "promo",
   children,
   className,
 }: ProductUnitOptionalSectionProps) {
@@ -157,21 +165,11 @@ export function ProductUnitOptionalSection({
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm leading-snug font-semibold">{title}</p>
               {enabled && summary ? (
-                <Badge
-                  variant="secondary"
-                  className="max-w-full truncate font-normal"
-                >
+                <AdminOptionalSectionSummaryBadge variant={summaryVariant}>
                   {summary}
-                </Badge>
+                </AdminOptionalSectionSummaryBadge>
               ) : null}
-              {!enabled ? (
-                <Badge
-                  variant="outline"
-                  className="font-normal text-muted-foreground"
-                >
-                  Tắt
-                </Badge>
-              ) : null}
+              {!enabled ? <AdminOptionalSectionOffBadge /> : null}
             </div>
             {description ? (
               <p className="text-xs leading-relaxed text-muted-foreground">
@@ -282,11 +280,7 @@ export function ProductUnitGiftPreview({
               <Gift className="size-6 text-muted-foreground/50" aria-hidden />
             </div>
           )}
-          {hasQty ? (
-            <span className="absolute right-0.5 bottom-0.5 rounded bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
-              ×{qty}
-            </span>
-          ) : null}
+          {hasQty ? <AdminGiftQtyOverlayBadge qty={qty} /> : null}
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="text-sm leading-snug font-semibold">{displayName}</p>

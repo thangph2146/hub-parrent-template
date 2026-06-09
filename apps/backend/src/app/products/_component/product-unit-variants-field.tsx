@@ -8,6 +8,7 @@ import {
   type UseFormReturn,
 } from "react-hook-form"
 import {
+  AdminDefaultVariantBadge,
   ImageUrlListField,
   ProductUnitFormSubsection,
   ProductUnitOptionalSection,
@@ -113,6 +114,7 @@ function UnitPromoSections({
         description="Một mức giá ưu đãi cố định khi khách mua đủ số lượng — khác bậc giá (giảm theo từng mức SL)."
         enabled={wholesaleEnabled}
         summary={wholesaleSummary}
+        summaryVariant="promo"
         onEnabledChange={(on) => {
           setWholesaleDraft(on)
           if (!on) {
@@ -159,6 +161,7 @@ function UnitPromoSections({
         description="Giảm đơn giá khi đạt ngưỡng SL — nhãn hiển thị trên storefront (vd. «Mua 5+»)."
         enabled={tierEnabled}
         summary={tierSummary}
+        summaryVariant="category"
         onEnabledChange={(on) => {
           setTierDraft(on)
           if (!on) {
@@ -213,6 +216,7 @@ function UnitPromoSections({
         description="Tặng thêm sản phẩm khi khách mua đủ số lượng."
         enabled={giftEnabled}
         summary={giftSummary}
+        summaryVariant="coupon"
         onEnabledChange={(on) => {
           setGiftDraft(on)
           if (on && gifts.length === 0) {
@@ -290,9 +294,7 @@ export function ProductUnitVariantsField({
                   </span>
                 ) : null}
                 {isDefault ? (
-                  <span className="ml-2 text-xs font-normal text-muted-foreground">
-                    (mặc định)
-                  </span>
+                  <AdminDefaultVariantBadge className="ml-2 align-middle" />
                 ) : null}
               </p>
               <div className="flex gap-2">

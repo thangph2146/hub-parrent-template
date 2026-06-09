@@ -8,9 +8,9 @@ export type ProductDetailCalloutTone = "success" | "warning" | "info"
 
 const toneClass: Record<ProductDetailCalloutTone, string> = {
   success:
-    "border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300",
+    "border-success/30 bg-success/10 text-success dark:bg-success/15",
   warning:
-    "border-amber-500/35 bg-amber-500/10 text-amber-900 dark:text-amber-200",
+    "border-warning/30 bg-warning/10 text-warning dark:bg-warning/15",
   info: "border-primary/25 bg-primary/5 text-foreground",
 }
 

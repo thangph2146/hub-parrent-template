@@ -1,3 +1,5 @@
+import type { ProductGiftRule, ProductUnitType } from "@/lib/api";
+
 /**
  * Parse điều kiện quà tặng từ `Product.fulfillmentNote` (định dạng do kho/backend quản lý).
  * Giữ parser tập trung một chỗ để CTSP, giỏ, checkout cùng đọc một nguồn.
@@ -73,4 +75,38 @@ export function getActiveGiftRuleForUnit(
       (r) => normalizeGiftRuleUnitType(r.unitType) === key,
     ) ?? null
   );
+}
+
+function legacyGiftRulesAsProductGiftRules(
+  fulfillmentNote: string | null | undefined,
+  unitType: string,
+): ProductGiftRule[] {
+  const key = normalizeGiftRuleUnitType(unitType);
+  return parseGiftRulesFromFulfillmentNote(fulfillmentNote)
+    .filter((r) => normalizeGiftRuleUnitType(r.unitType) === key)
+    .map((r, index) => ({
+      id: `legacy-gift-${index}`,
+      label: r.giftName,
+      trigger: { scope: "line" as const, minQty: r.minQty },
+      gift: {
+        name: r.giftName,
+        sku: r.giftSku || undefined,
+        qty: r.giftQty,
+      },
+    }));
+}
+
+/**
+ * Quà tặng theo loại hàng: ưu tiên `unit.giftRules` (admin/API),
+ * fallback parser `fulfillmentNote` cho dữ liệu cũ.
+ */
+export function resolveGiftRulesForUnit(
+  unit: ProductUnitType,
+  fulfillmentNote?: string | null,
+): ProductGiftRule[] {
+  const fromUnit = (unit.giftRules ?? []).filter(
+    (rule) => rule?.id && rule.gift?.name?.trim(),
+  );
+  if (fromUnit.length > 0) return fromUnit;
+  return legacyGiftRulesAsProductGiftRules(fulfillmentNote, unit.type);
 }

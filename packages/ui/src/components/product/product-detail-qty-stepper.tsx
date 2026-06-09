@@ -182,7 +182,10 @@ function QtyStepperControl({
       className={cn(
         "inline-flex items-stretch",
         unitInline
-          ? "h-11 w-full overflow-hidden rounded-lg border border-outline-variant/30 bg-muted/20"
+          ? cn(
+              "w-full overflow-hidden rounded-lg border border-outline-variant/30 bg-muted/20",
+              size === "sm" ? "h-10" : "h-11"
+            )
           : "items-center gap-1 rounded-xl bg-background/80 p-1 ring-1 ring-outline-variant/30"
       )}
       role="group"
@@ -338,14 +341,23 @@ export function ProductDetailQtyStepper({
   )
 
   if (layout === "embedded") {
+    const showHeader = showLabel || stockCount != null
     return (
-      <div className={cn("w-full space-y-2 sm:max-w-[11.5rem]", className)}>
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-medium text-muted-foreground">Số lượng</p>
-          {stockCount != null ? (
-            <StockQtyBadge count={stockCount} status={stockStatus} />
-          ) : null}
-        </div>
+      <div className={cn("w-full space-y-2", className)}>
+        {showHeader ? (
+          <div className="flex items-center justify-between gap-2">
+            {showLabel ? (
+              <p className="text-xs font-medium text-muted-foreground">
+                Số lượng
+              </p>
+            ) : (
+              <span className="sr-only">Số lượng</span>
+            )}
+            {stockCount != null ? (
+              <StockQtyBadge count={stockCount} status={stockStatus} />
+            ) : null}
+          </div>
+        ) : null}
         {control}
       </div>
     )

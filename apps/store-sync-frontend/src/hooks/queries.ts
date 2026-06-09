@@ -24,6 +24,11 @@ export const queryKeys = {
     ["products", "catalog", p] as const,
   product: (id: number) => ["products", id] as const,
   productBySku: (sku: string) => ["products", "sku", sku] as const,
+  suggestedProducts: (
+    productId: number,
+    category: string,
+    limit: number,
+  ) => ["products", "suggested", productId, category, limit] as const,
   categories: (activeOnly?: boolean) =>
     ["products", "categories", { activeOnly: !!activeOnly }] as const,
   categoryUsage: () => ["products", "category-usage"] as const,
@@ -102,6 +107,58 @@ export const useProductBySku = (sku: string | null | undefined) =>
     queryKey: queryKeys.productBySku(sku ?? ""),
     queryFn: () => api.products.bySkuPublic(sku as string),
     enabled: !!sku,
+  });
+
+const SUGGESTED_PRODUCTS_LIMIT = 4;
+
+async function fetchSuggestedProducts(
+  productId: number,
+  category: string,
+  limit: number,
+): Promise<Product[]> {
+  const categorySlug = category.trim() || "general";
+  const sameCategory = await api.products.listPublic({
+    page: 1,
+    limit: limit + 1,
+    category: categorySlug,
+    activeOnly: true,
+  });
+
+  const picked: Product[] = [];
+  const seen = new Set<number>([productId]);
+
+  for (const item of sameCategory.items) {
+    if (seen.has(item.id)) continue;
+    picked.push(item);
+    seen.add(item.id);
+    if (picked.length >= limit) return picked;
+  }
+
+  const fallback = await api.products.listPublic({
+    page: 1,
+    limit: limit + 8,
+    activeOnly: true,
+  });
+
+  for (const item of fallback.items) {
+    if (seen.has(item.id)) continue;
+    picked.push(item);
+    seen.add(item.id);
+    if (picked.length >= limit) break;
+  }
+
+  return picked;
+}
+
+export const useSuggestedProducts = (
+  productId: number,
+  category: string,
+  limit = SUGGESTED_PRODUCTS_LIMIT,
+) =>
+  useQuery<Product[], Error>({
+    queryKey: queryKeys.suggestedProducts(productId, category, limit),
+    queryFn: () => fetchSuggestedProducts(productId, category, limit),
+    enabled: productId > 0,
   });
 
 export const useCategories = (activeOnly = false) =>

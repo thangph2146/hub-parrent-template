@@ -7,6 +7,15 @@ import {
   ProductDetailQtyStepper,
   type ProductDetailQtyStockStatus,
 } from "./product-detail-qty-stepper"
+
+const stockBadgeVariant: Record<
+  ProductDetailQtyStockStatus,
+  "success" | "warning" | "destructive"
+> = {
+  ok: "success",
+  low: "warning",
+  out: "destructive",
+}
 import { cn } from "../../lib/utils"
 
 export type ProductDetailOrderRowProps = {
@@ -24,6 +33,8 @@ export type ProductDetailOrderRowProps = {
   equivalentTotal?: number
   equivalentUnit?: string
   footer?: ReactNode
+  /** Thẻ catalog hẹp — giá và stepper xếp dọc. */
+  stacked?: boolean
   className?: string
 }
 
@@ -42,6 +53,7 @@ export function ProductDetailOrderRow({
   equivalentTotal,
   equivalentUnit,
   footer,
+  stacked = false,
   className,
 }: ProductDetailOrderRowProps) {
   const showEquivalent =
@@ -52,34 +64,72 @@ export function ProductDetailOrderRow({
   return (
     <div
       className={cn(
-        "rounded-xl border border-outline-variant/25 bg-background/70 p-4 shadow-sm",
+        "rounded-xl border border-outline-variant/20 bg-muted/15",
+        stacked ? "p-3" : "border-outline-variant/25 bg-background/70 p-4 shadow-sm",
         className
       )}
     >
-      <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_11.5rem] sm:items-center sm:gap-6">
-        <div className="min-w-0 space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-xs font-medium text-muted-foreground">Đơn giá</p>
-            {hasWholesale ? (
+      <div
+        className={cn(
+          stacked
+            ? "grid gap-2.5"
+            : "grid gap-5 sm:grid-cols-[minmax(0,1fr)_11.5rem] sm:items-center sm:gap-6"
+        )}
+      >
+        <div className="min-w-0 space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+              <p className="text-[11px] font-medium text-muted-foreground">
+                Đơn giá
+              </p>
+              {hasWholesale && !stacked ? (
+                <Badge
+                  variant={listPrice != null ? "promo" : "retail"}
+                  size="xs"
+                >
+                  {listPrice != null ? "Giá KM" : "Giá lẻ"}
+                </Badge>
+              ) : null}
+            </div>
+            {stacked && stockCount != null ? (
               <Badge
-                variant={listPrice != null ? "promo" : "retail"}
+                variant={stockBadgeVariant[stockStatus]}
                 size="xs"
+                shape="pill"
+                className="shrink-0 tabular-nums"
               >
-                {listPrice != null ? "Giá KM" : "Giá lẻ"}
+                Tồn{" "}
+                <span className="font-bold">
+                  {stockCount.toLocaleString("vi-VN")}
+                </span>
               </Badge>
             ) : null}
           </div>
 
-          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
             {listPrice != null ? (
-              <p className="text-sm font-medium text-muted-foreground line-through tabular-nums">
+              <p className="text-xs font-medium text-muted-foreground line-through tabular-nums">
                 {formatProductVnd(listPrice)}
               </p>
             ) : null}
-            <p className="text-[1.625rem] font-black leading-none tracking-tight text-primary tabular-nums sm:text-[1.75rem]">
+            <p
+              className={cn(
+                "font-black leading-none tracking-tight text-primary tabular-nums",
+                stacked ? "text-xl" : "text-[1.625rem] sm:text-[1.75rem]"
+              )}
+            >
               {formatProductVnd(unitPrice)}
             </p>
-            <p className="text-sm text-muted-foreground">/ {unitLabel}</p>
+            <p className="text-xs text-muted-foreground">/ {unitLabel}</p>
+            {stacked && hasWholesale ? (
+              <Badge
+                variant={listPrice != null ? "promo" : "retail"}
+                size="xs"
+                className="mb-0.5"
+              >
+                {listPrice != null ? "Giá KM" : "Giá lẻ"}
+              </Badge>
+            ) : null}
           </div>
 
           {showEquivalent ? (
@@ -99,14 +149,25 @@ export function ProductDetailOrderRow({
           onQtyChange={onQtyChange}
           minQty={minQty}
           maxQty={maxQty}
-          stockCount={stockCount}
+          stockCount={stacked ? undefined : stockCount}
           stockStatus={stockStatus}
           layout="embedded"
           unitInline
+          showLabel={false}
+          compact={stacked}
         />
       </div>
 
-      {footer ? <div className="mt-3 border-t border-outline-variant/20 pt-3">{footer}</div> : null}
+      {footer ? (
+        <div
+          className={cn(
+            "border-t border-outline-variant/15",
+            stacked ? "mt-2.5 space-y-2 pt-2.5" : "mt-3 pt-3"
+          )}
+        >
+          {footer}
+        </div>
+      ) : null}
     </div>
   )
 }

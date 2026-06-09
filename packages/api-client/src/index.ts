@@ -14,6 +14,10 @@ export {
   unitSellingAndListPrice,
 } from "./unit-pricing"
 export {
+  effectiveQuantityForCondition,
+  matchesQuantityCondition,
+} from "./quantity-conditions"
+export {
   PERMISSION_CODES,
   STAFF_ADMIN_ROLE_CODES,
   hasPermission,

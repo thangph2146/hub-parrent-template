@@ -34,6 +34,11 @@ export {
   type ProductDetailCalloutTone,
 } from "./product-detail-callout"
 export {
+  ProductDetailPromoGiftsSection,
+  hasUnitWholesalePromo,
+  type ProductDetailPromoGiftsSectionProps,
+} from "./product-detail-promo-gifts-section"
+export {
   ProductDetailQtyStepper,
   type ProductDetailQtyStepperProps,
   type ProductDetailQtyStockStatus,

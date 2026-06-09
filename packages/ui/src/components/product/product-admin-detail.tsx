@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Gift, Layers, Pencil, Sparkles, Tag } from "lucide-react"
+import { Gift, Layers, Package, Sparkles, Tag } from "lucide-react"
 import type {
   Product,
   ProductGiftRule,
@@ -10,7 +10,6 @@ import type {
 } from "@workspace/api-client"
 import { unitSellingAndListPrice } from "@workspace/api-client"
 import { Badge } from "../badge"
-import { Button } from "../button"
 import {
   FieldSectionBadge,
   FieldSectionField,
@@ -121,12 +120,24 @@ export function ProductAdminDetail({
   return (
     <AdminDetailLayout className={className}>
       <AdminDetailMain>
-        <ProductDetailLayout
-          gallery={
-            <ProductDetailGallery images={images} alt={product.name} />
-          }
-          details={
-            <>
+        <FieldSet variant="section">
+          <FieldSectionLegend
+            icon={Package}
+            title="Xem trước cửa hàng"
+            description="Ảnh, giá và thông tin như khách thấy trên storefront."
+            badge={
+              units.length > 1 ? (
+                <FieldSectionBadge>{units.length}</FieldSectionBadge>
+              ) : undefined
+            }
+          />
+          <FieldSetContent variant="section" className="pt-0">
+            <ProductDetailLayout
+              gallery={
+                <ProductDetailGallery images={images} alt={product.name} />
+              }
+              details={
+                <>
               <ProductDetailInfoHeader
             categoryLabel={category}
             title={product.name}
@@ -221,9 +232,11 @@ export function ProductAdminDetail({
               {product.fulfillmentNote}
             </div>
           ) : null}
-            </>
-          }
-        />
+                </>
+              }
+            />
+          </FieldSetContent>
+        </FieldSet>
       </AdminDetailMain>
 
       {units.length > 1 ? (
