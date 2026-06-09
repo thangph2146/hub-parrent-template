@@ -152,10 +152,21 @@ export function ProductDetail({
       }
       return;
     }
-    cart.add(product, selectedUnit, safeQty);
-    toast.success(`Đã thêm ${safeQty} ${selectedUnit.label} vào giỏ hàng`, {
-      description: `${product.name} · Tổng: ${formatProductVnd(unitPrice * safeQty)}`,
-    });
+    const result = cart.add(product, selectedUnit, safeQty);
+    if (!result.ok) {
+      toast.error(
+        result.reason === "out_of_stock"
+          ? `Chỉ còn ${availableQty} ${selectedUnit.type} trong kho`
+          : "Số lượng không hợp lệ",
+      );
+      return;
+    }
+    toast.success(
+      `Đã thêm ${result.added} ${selectedUnit.label} vào giỏ hàng`,
+      {
+        description: `${product.name} · Tổng: ${formatProductVnd(unitPrice * result.added)}`,
+      },
+    );
   };
 
   const unitOptions = units.map((unit) => {
