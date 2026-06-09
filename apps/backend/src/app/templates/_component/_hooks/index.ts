@@ -1,1 +1,6 @@
-export { buildTemplatePayload, useTemplateForm, useHandleConfirmAction, useConfirmAction } from "./use-templates-actions";
+export {
+  buildTemplatePayload,
+  useTemplateForm,
+  useHandleConfirmAction,
+  useConfirmAction,
+} from "./use-templates-actions"

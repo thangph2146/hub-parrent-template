@@ -1,1 +1,1 @@
-export { CategoryFormShell } from "./category-form-shell";
+export { CategoryFormShell } from "./category-form-shell"

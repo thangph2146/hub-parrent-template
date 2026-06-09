@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { DatePicker, TreePicker } from "@ui/components/pickers";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { CalendarDays, Hash } from "lucide-react";
-import type { AcademicYearFormValues } from "../types";
+} from "@ui/components/admin"
+import { DatePicker, TreePicker } from "@ui/components/pickers"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { CalendarDays, Hash } from "lucide-react"
+import type { AcademicYearFormValues } from "../types"
 
 export interface AcademicYearFormShellProps {
-  form: UseFormReturn<AcademicYearFormValues>;
-  onSubmit: (values: AcademicYearFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<AcademicYearFormValues>
+  onSubmit: (values: AcademicYearFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function AcademicYearFormShell({
@@ -37,7 +37,7 @@ export function AcademicYearFormShell({
   onBack,
   onReset,
 }: AcademicYearFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -144,7 +144,9 @@ export function AcademicYearFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Tắt" },
@@ -156,7 +158,8 @@ export function AcademicYearFormShell({
               />
               <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
                 <p className="text-xs text-muted-foreground">
-                  Niên khóa sau khi lưu có thể được sử dụng trong các chức năng liên quan.
+                  Niên khóa sau khi lưu có thể được sử dụng trong các chức năng
+                  liên quan.
                 </p>
               </div>
             </FieldSetContent>
@@ -164,5 +167,5 @@ export function AcademicYearFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

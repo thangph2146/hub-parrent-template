@@ -18,7 +18,7 @@ export type {
 function getAuthAdminApi() {
   const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
     /\/$/,
-    "",
+    ""
   )
   return createAuthAdminApi({
     baseUrl,

@@ -1,1 +1,1 @@
-export { AcademicYearFormShell } from "./academic-year-form-shell";
+export { AcademicYearFormShell } from "./academic-year-form-shell"

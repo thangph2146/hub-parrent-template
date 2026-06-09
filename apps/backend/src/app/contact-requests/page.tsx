@@ -10,7 +10,11 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { Headset } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import {
   prefetchContactRequestDetail,
   useContactRequests,
@@ -44,13 +48,17 @@ import {
 } from "@ui/lib/layout-shell"
 
 function ContactRequestsPageInner() {
-  const { user } = useAuth();
-  const canDelete = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_DELETE) : false;
-  const canRestore = user ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_RESTORE) : false;
+  const { user } = useAuth()
+  const canDelete = user
+    ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_DELETE)
+    : false
+  const canRestore = user
+    ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_RESTORE)
+    : false
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_UPDATE) ||
       canUserAccess(user, PERMISSION_CODES.CONTACT_REQUESTS_MANAGE)
-    : false;
+    : false
   const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/contact-requests", {
     prefetchDetail: (id) => prefetchContactRequestDetail(queryClient, id),
@@ -162,7 +170,7 @@ function ContactRequestsPageInner() {
     async (contact: ContactRequest) => {
       await deleteMutation.mutateAsync(contact.id)
     },
-    [deleteMutation],
+    [deleteMutation]
   )
 
   const handleRestore = useCallback((contact: ContactRequest) => {
@@ -177,24 +185,24 @@ function ContactRequestsPageInner() {
     (contact: ContactRequest, status: ContactRequest["status"]) => {
       updateMutation.mutate({ id: contact.id, input: { status } })
     },
-    [updateMutation],
+    [updateMutation]
   )
 
   const handleSetRead = useCallback(
     (contact: ContactRequest, isRead: boolean) => {
       updateMutation.mutate({ id: contact.id, input: { isRead } })
     },
-    [updateMutation],
+    [updateMutation]
   )
 
   const handleSetPriority = useCallback(
     (
       contact: ContactRequest,
-      priority: NonNullable<ContactRequest["priority"]>,
+      priority: NonNullable<ContactRequest["priority"]>
     ) => {
       updateMutation.mutate({ id: contact.id, input: { priority } })
     },
-    [updateMutation],
+    [updateMutation]
   )
 
   const handleBulkDelete = useCallback(async (ids: string[]) => {
@@ -264,13 +272,19 @@ function ContactRequestsPageInner() {
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Đang hoạt động
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
               {activeTotal}
             </Badge>
           </TabsTrigger>
           <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Thùng rác
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
               {trashTotal}
             </Badge>
           </TabsTrigger>
@@ -310,7 +324,7 @@ function ContactRequestsPageInner() {
               search: debouncedGlobalFilter.trim() || undefined,
               filters: buildAdminFilterQuery(
                 columnFilters,
-                COMMON_FILTER_MAPPINGS.contactRequests,
+                COMMON_FILTER_MAPPINGS.contactRequests
               ),
             }}
           />

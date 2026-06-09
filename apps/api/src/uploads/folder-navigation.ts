@@ -1,5 +1,9 @@
 import type { StorageRealm } from './storage-media';
-import { formatStorageTabLabel, getStorageRealm } from './storage-media';
+import { getStorageRealm } from './storage-media';
+import {
+  resolveStorageFolderDisplayLabel,
+  type StorageFolderLabelLookup,
+} from './storage-folder-labels';
 
 export interface StorageTabDto {
   id: string;
@@ -179,6 +183,7 @@ export function buildChildFolderTabs(
   realm: StorageRealm,
   parentFolderPath: string,
   diskFolders?: string[],
+  labelLookup?: StorageFolderLabelLookup,
 ): StorageTabDto[] {
   type Media = { relativePath: string; mediaKind: StorageMediaKind };
   const scoped = items.filter(
@@ -222,7 +227,11 @@ export function buildChildFolderTabs(
   return [...counts.entries()]
     .map(([id, count]) => ({
       id,
-      label: formatStorageTabLabel(id.split('/').pop() ?? id),
+      label: resolveStorageFolderDisplayLabel(
+        id.split('/').pop() ?? id,
+        id,
+        labelLookup,
+      ),
       count,
     }))
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'vi'));
@@ -231,6 +240,7 @@ export function buildChildFolderTabs(
 export function buildStorageBreadcrumb(
   realm: StorageRealm,
   folderPath: string,
+  labelLookup?: StorageFolderLabelLookup,
 ): Array<{ id: string; label: string }> {
   const nav = folderPath.trim().replace(/\\/g, '/').replace(/\/$/, '');
   if (!nav) return [];
@@ -241,7 +251,7 @@ export function buildStorageBreadcrumb(
     current = current ? `${current}/${part}` : part;
     crumbs.push({
       id: current,
-      label: formatStorageTabLabel(part),
+      label: resolveStorageFolderDisplayLabel(part, current, labelLookup),
     });
   }
   return crumbs;

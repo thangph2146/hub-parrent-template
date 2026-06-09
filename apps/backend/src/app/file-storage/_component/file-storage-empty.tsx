@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { Button } from "@ui/components/button";
-import { AdminEmptyState } from "@ui/components/admin";
+import { Button } from "@ui/components/button"
+import { AdminEmptyState } from "@ui/components/admin"
 import {
   ArchiveRestore,
   CloudUpload,
@@ -9,15 +9,15 @@ import {
   FolderOpen,
   Loader2,
   Upload,
-} from "lucide-react";
+} from "lucide-react"
 
 type FileStorageGlobalEmptyProps = {
-  canUpload: boolean;
-  uploading: boolean;
-  importing: boolean;
-  onUpload: () => void;
-  onImport: () => void;
-};
+  canUpload: boolean
+  uploading: boolean
+  importing: boolean
+  onUpload: () => void
+  onImport: () => void
+}
 
 export function FileStorageGlobalEmpty({
   canUpload,
@@ -68,15 +68,15 @@ export function FileStorageGlobalEmpty({
         ) : undefined
       }
     />
-  );
+  )
 }
 
 type FileStorageTabEmptyProps = {
-  tabLabel: string;
-  canUpload: boolean;
-  uploading: boolean;
-  onUpload?: () => void;
-};
+  tabLabel: string
+  canUpload: boolean
+  uploading: boolean
+  onUpload?: () => void
+}
 
 export function FileStorageTabEmpty({
   tabLabel,
@@ -113,5 +113,5 @@ export function FileStorageTabEmpty({
         ) : undefined
       }
     />
-  );
+  )
 }

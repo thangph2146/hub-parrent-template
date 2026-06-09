@@ -16,7 +16,7 @@ import {
 export type EventRegistrationRow = Record<string, unknown>
 
 export function getEventRegistrationGlobalFilterText(
-  row: EventRegistrationRow,
+  row: EventRegistrationRow
 ): string {
   const attendanceText = getAttendanceStatusLabel({
     hasCheckin: asAttendanceBool(row.hasCheckin),

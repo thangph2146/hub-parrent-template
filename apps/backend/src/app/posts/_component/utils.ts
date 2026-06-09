@@ -1,20 +1,17 @@
-import type { SerializedEditorState, SerializedLexicalNode } from "lexical";
+import type { SerializedEditorState, SerializedLexicalNode } from "lexical"
 import {
   buildAdminFilterQuery,
   COMMON_FILTER_MAPPINGS,
   normalizeAdminFilterValues,
-} from "@/lib";
-import { uploadAdminImage } from "@/lib/admin-upload";
-import type {
-  EditorParagraphNodeShape,
-  EditorStateShape,
-} from "./types";
+} from "@/lib"
+import { uploadAdminImage } from "@/lib/admin-upload"
+import type { EditorParagraphNodeShape, EditorStateShape } from "./types"
 
 export function uploadPostImage(file: File): Promise<string> {
   return uploadAdminImage(file, {
     folderPath: "posts",
     isExistingFolder: true,
-  });
+  })
 }
 
 export {
@@ -24,7 +21,7 @@ export {
   unwrapApiEnvelope as unwrapEnvelope,
   normalizePagedResult as normalizePaged,
   type CategoryTreeNode,
-} from "@workspace/api-client";
+} from "@workspace/api-client"
 
 export function createParagraphNode(text = ""): EditorParagraphNodeShape {
   return {
@@ -48,7 +45,7 @@ export function createParagraphNode(text = ""): EditorParagraphNodeShape {
     textStyle: "",
     type: "paragraph",
     version: 1,
-  };
+  }
 }
 
 export function createSerializedEditorState(
@@ -63,8 +60,8 @@ export function createSerializedEditorState(
       type: "root",
       version: 1,
     },
-  };
-  return state as SerializedEditorState;
+  }
+  return state as SerializedEditorState
 }
 
 export function getSeoStatus(
@@ -77,46 +74,46 @@ export function getSeoStatus(
       label: "Chưa có nội dung",
       tone: "destructive" as const,
       hint: `Nên nhập khoảng ${recommendedMin}-${recommendedMax} ký tự.`,
-    };
+    }
   }
   if (length < recommendedMin) {
     return {
       label: "Hơi ngắn",
       tone: "secondary" as const,
       hint: `Nên tăng lên khoảng ${recommendedMin}-${recommendedMax} ký tự.`,
-    };
+    }
   }
   if (length > recommendedMax) {
     return {
       label: "Hơi dài",
       tone: "secondary" as const,
       hint: `Nên rút xuống khoảng ${recommendedMin}-${recommendedMax} ký tự.`,
-    };
+    }
   }
   return {
     label: "Tốt cho SEO",
     tone: "default" as const,
     hint: `Độ dài đang nằm trong khoảng gợi ý ${recommendedMin}-${recommendedMax} ký tự.`,
-  };
+  }
 }
 
 export function buildPostsFilterQuery(
-  filters: { id: string; value: unknown }[],
+  filters: { id: string; value: unknown }[]
 ): Record<string, string> {
-  const query = buildAdminFilterQuery(filters, COMMON_FILTER_MAPPINGS.posts);
+  const query = buildAdminFilterQuery(filters, COMMON_FILTER_MAPPINGS.posts)
   for (const filter of filters) {
     if (filter.id === "published") {
-      const values = normalizeAdminFilterValues(filter.value);
-      if (values.length) query.published = values.join(",");
+      const values = normalizeAdminFilterValues(filter.value)
+      if (values.length) query.published = values.join(",")
     } else if (filter.id === "categoryId") {
-      const values = normalizeAdminFilterValues(filter.value);
-      if (values.length) query.categoryId = values.join(",");
+      const values = normalizeAdminFilterValues(filter.value)
+      if (values.length) query.categoryId = values.join(",")
     } else if (filter.id === "tagId") {
-      const values = normalizeAdminFilterValues(filter.value);
-      if (values.length) query.tagId = values.join(",");
+      const values = normalizeAdminFilterValues(filter.value)
+      if (values.length) query.tagId = values.join(",")
     }
   }
-  return query;
+  return query
 }
 
 export function isSerializedEditorState(
@@ -127,63 +124,69 @@ export function isSerializedEditorState(
     value !== null &&
     "root" in value &&
     typeof (value as Record<string, unknown>).root === "object"
-  );
+  )
 }
 
 export function fromLocalInputValue(value: string): string {
-  if (!value) return "";
+  if (!value) return ""
   try {
-    const date = new Date(value);
+    const date = new Date(value)
     if (!isNaN(date.getTime())) {
-      return date.toISOString();
+      return date.toISOString()
     }
   } catch {
     // Ignore
   }
-  return value;
+  return value
 }
 
 export function toLocalInputValue(value: string): string {
-  if (!value) return "";
+  if (!value) return ""
   try {
-    const date = new Date(value);
+    const date = new Date(value)
     if (!isNaN(date.getTime())) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, "0")
+      const day = String(date.getDate()).padStart(2, "0")
+      const hours = String(date.getHours()).padStart(2, "0")
+      const minutes = String(date.getMinutes()).padStart(2, "0")
+      return `${year}-${month}-${day}T${hours}:${minutes}`
     }
   } catch {
     // Ignore
   }
-  return value;
+  return value
 }
 
-const EMPTY_EDITOR_PARAGRAPHS: EditorParagraphNodeShape[] = [createParagraphNode()];
-const EMPTY_EDITOR_STATE = createSerializedEditorState(EMPTY_EDITOR_PARAGRAPHS);
+const EMPTY_EDITOR_PARAGRAPHS: EditorParagraphNodeShape[] = [
+  createParagraphNode(),
+]
+const EMPTY_EDITOR_STATE = createSerializedEditorState(EMPTY_EDITOR_PARAGRAPHS)
 
 function createEditorStateFromPlainText(raw: string): SerializedEditorState {
   const lines = raw
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line, index, arr) => line !== "" || index < arr.length - 1);
+    .filter((line, index, arr) => line !== "" || index < arr.length - 1)
   const paragraphs =
-    lines.length > 0 ? lines.map((line) => createParagraphNode(line)) : EMPTY_EDITOR_PARAGRAPHS;
+    lines.length > 0
+      ? lines.map((line) => createParagraphNode(line))
+      : EMPTY_EDITOR_PARAGRAPHS
 
-  return createSerializedEditorState(paragraphs);
+  return createSerializedEditorState(paragraphs)
 }
 
-export function normalizeContentForEditor(value: unknown): SerializedEditorState {
-  if (isSerializedEditorState(value)) return value;
+export function normalizeContentForEditor(
+  value: unknown
+): SerializedEditorState {
+  if (isSerializedEditorState(value)) return value
   if (typeof value === "string") {
-    const trimmed = value.trim();
+    const trimmed = value.trim()
     if (trimmed.startsWith("{")) {
       try {
-        const parsed = JSON.parse(trimmed) as unknown;
+        const parsed = JSON.parse(trimmed) as unknown
         if (isSerializedEditorState(parsed)) {
-          return parsed;
+          return parsed
         }
       } catch {
         // Fallback to plain text import below.
@@ -192,9 +195,10 @@ export function normalizeContentForEditor(value: unknown): SerializedEditorState
 
     const plainText =
       typeof window !== "undefined" && /<[^>]+>/.test(value)
-        ? new DOMParser().parseFromString(value, "text/html").body.textContent ?? value
-        : value;
-    return createEditorStateFromPlainText(plainText);
+        ? (new DOMParser().parseFromString(value, "text/html").body
+            .textContent ?? value)
+        : value
+    return createEditorStateFromPlainText(plainText)
   }
-  return EMPTY_EDITOR_STATE;
+  return EMPTY_EDITOR_STATE
 }

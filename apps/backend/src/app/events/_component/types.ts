@@ -1,52 +1,52 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type EventRow = {
-  id: string;
-  title: string;
-  slug: string | null;
-  poster: unknown;
-  description: string | null;
-  content: unknown;
-  startDate: string | null;
-  endDate: string | null;
-  checkinStart: string | null;
-  checkinEnd: string | null;
-  checkoutStart: string | null;
-  checkoutEnd: string | null;
-  registrationStart: string | null;
-  registrationEnd: string | null;
-  organizer: string | null;
-  location: string | null;
-  address: string | null;
-  qrCode: string | null;
-  status: number;
-  totalRegistrations: number;
-  totalCheckins: number;
-  totalCheckouts: number;
-  allowCheckin: boolean;
-  allowCheckout: boolean;
-  requireFaceId: boolean;
-  maxParticipants: number;
-  format: number;
-  onlineLink: string | null;
-  schedule: unknown;
-  createdBy: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  isFeatured: boolean;
-  featuredOrder: number;
-  checkinCameraId: string | null;
-  checkoutCameraId: string | null;
-  checkinCameraName: string | null;
-  checkoutCameraName: string | null;
-  checkinCameraCode: string | null;
-  checkoutCameraCode: string | null;
-};
+  id: string
+  title: string
+  slug: string | null
+  poster: unknown
+  description: string | null
+  content: unknown
+  startDate: string | null
+  endDate: string | null
+  checkinStart: string | null
+  checkinEnd: string | null
+  checkoutStart: string | null
+  checkoutEnd: string | null
+  registrationStart: string | null
+  registrationEnd: string | null
+  organizer: string | null
+  location: string | null
+  address: string | null
+  qrCode: string | null
+  status: number
+  totalRegistrations: number
+  totalCheckins: number
+  totalCheckouts: number
+  allowCheckin: boolean
+  allowCheckout: boolean
+  requireFaceId: boolean
+  maxParticipants: number
+  format: number
+  onlineLink: string | null
+  schedule: unknown
+  createdBy: string | null
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+  isFeatured: boolean
+  featuredOrder: number
+  checkinCameraId: string | null
+  checkoutCameraId: string | null
+  checkinCameraName: string | null
+  checkoutCameraName: string | null
+  checkinCameraCode: string | null
+  checkoutCameraCode: string | null
+}
 
 export interface EventConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: EventRow;
+  kind: "delete" | "restore" | "purge"
+  row: EventRow
 }
 
 export const eventFormSchema = z.object({
@@ -77,21 +77,25 @@ export const eventFormSchema = z.object({
   format: z.coerce.number().optional(),
   onlineLink: z.string().optional(),
   content: z.any().optional(),
-  speakers: z.array(z.object({
-    speakerId: z.coerce.number(),
-    role: z.string().optional(),
-    presentationTitle: z.string().optional(),
-    duration: z.coerce.number().optional(),
-  })).optional(),
-});
+  speakers: z
+    .array(
+      z.object({
+        speakerId: z.coerce.number(),
+        role: z.string().optional(),
+        presentationTitle: z.string().optional(),
+        duration: z.coerce.number().optional(),
+      })
+    )
+    .optional(),
+})
 
-export type EventFormValues = z.infer<typeof eventFormSchema>;
+export type EventFormValues = z.infer<typeof eventFormSchema>
 
-export type EventDetail = EventRow;
+export type EventDetail = EventRow
 
 export type EventFormSpeaker = {
-  speakerId: number;
-  role?: string;
-  presentationTitle?: string;
-  duration?: number;
-};
+  speakerId: number
+  role?: string
+  presentationTitle?: string
+  duration?: number
+}

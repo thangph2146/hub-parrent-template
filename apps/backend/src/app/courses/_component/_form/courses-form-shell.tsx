@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { TreePicker } from "@ui/components/pickers";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { BookOpen, CalendarDays, Hash } from "lucide-react";
-import type { CourseFormValues } from "../types";
+} from "@ui/components/admin"
+import { TreePicker } from "@ui/components/pickers"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { BookOpen, CalendarDays, Hash } from "lucide-react"
+import type { CourseFormValues } from "../types"
 
 export interface CourseFormShellProps {
-  form: UseFormReturn<CourseFormValues>;
-  onSubmit: (values: CourseFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<CourseFormValues>
+  onSubmit: (values: CourseFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function CourseFormShell({
@@ -37,7 +37,7 @@ export function CourseFormShell({
   onBack,
   onReset,
 }: CourseFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -51,10 +51,7 @@ export function CourseFormShell({
         isEdit={Boolean(editingId)}
       />
 
-      <AdminFormLayout
-        id="course-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <AdminFormLayout id="course-form" onSubmit={form.handleSubmit(onSubmit)}>
         <AdminFormMain>
           <FieldSet variant="section">
             <FieldSectionLegend
@@ -90,7 +87,7 @@ export function CourseFormShell({
                       value={field.value ?? ""}
                       className={cn(
                         "font-mono text-sm",
-                        fieldState.error && "border-destructive",
+                        fieldState.error && "border-destructive"
                       )}
                     />
                     {fieldState.error && (
@@ -122,7 +119,7 @@ export function CourseFormShell({
                         value={field.value ?? ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                         className={cn(fieldState.error && "border-destructive")}
@@ -145,7 +142,7 @@ export function CourseFormShell({
                         value={field.value ?? ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                         className={cn(fieldState.error && "border-destructive")}
@@ -176,7 +173,9 @@ export function CourseFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Tắt" },
@@ -196,5 +195,5 @@ export function CourseFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

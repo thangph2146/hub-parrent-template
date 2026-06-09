@@ -10,6 +10,7 @@ This skill enforces the **mandatory workflow** from `AGENTS.md` before any code 
 ## Trigger
 
 Use when the user asks to:
+
 - Implement a feature, fix a bug, refactor code, or modify any source file
 - Work on `apps/frontend`, `apps/backend`, `apps/api`, or `packages/*`
 - Any task that involves reading or changing `.ts`, `.tsx`, `.js`, `.svelte`, `.vue`, `.css`, `.html`, or config files within the project
@@ -33,10 +34,10 @@ Before making changes, read these files:
 4. `docs/admin-pattern/FRONTEND_UX.md` (only when working on `apps/frontend`)
 5. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (when implementing admin pages in `apps/backend`)
 6. `.graphify/markdown/SUMMARY_FOR_AI.md` (monorepo index)
-6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (workspace packages)
-7. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching frontend)
-8. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching backend)
-9. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching api)
+7. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (workspace packages)
+8. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching frontend)
+9. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching backend)
+10. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md` (when touching api)
 
 After reading the `.graphify` summaries, use the **topic guide** section within those files to pick the right companion docs: `FOLDER_TREE.md`, `GRAPH_STATS.md`, `API_DOMAIN_IMPORTS.md`, or `WORKSPACE_DEPS.md` from the same `markdown/` directory.
 
@@ -44,15 +45,15 @@ After reading the `.graphify` summaries, use the **topic guide** section within 
 
 When the task relates to a specific workspace package, consult the corresponding doc:
 
-| Package | Path | Resource |
-|---------|------|----------|
-| `@workspace/ui` | `packages/ui/` | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` |
-| `@workspace/api-client` | `packages/api-client/` | `docs/api-client-pattern/README.md` |
-| `@thangph2146/lexical-editor` | `packages/editor/` | `packages/editor/README.md` |
-| `@workspace/logger` | `packages/logger/` | `docs/logger-pattern/README.md` |
-| `@workspace/query-client` | `packages/query-client/` | `docs/query-client-pattern/README.md` |
-| `@workspace/eslint-config` | `packages/eslint-config/` | config files, no doc needed |
-| `@workspace/typescript-config` | `packages/typescript-config/` | config files, no doc needed |
+| Package                        | Path                          | Resource                                              |
+| ------------------------------ | ----------------------------- | ----------------------------------------------------- |
+| `@workspace/ui`                | `packages/ui/`                | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` |
+| `@workspace/api-client`        | `packages/api-client/`        | `docs/api-client-pattern/README.md`                   |
+| `@thangph2146/lexical-editor`  | `packages/editor/`            | `packages/editor/README.md`                           |
+| `@workspace/logger`            | `packages/logger/`            | `docs/logger-pattern/README.md`                       |
+| `@workspace/query-client`      | `packages/query-client/`      | `docs/query-client-pattern/README.md`                 |
+| `@workspace/eslint-config`     | `packages/eslint-config/`     | config files, no doc needed                           |
+| `@workspace/typescript-config` | `packages/typescript-config/` | config files, no doc needed                           |
 
 ### Step 4: Read Step Docs (relevant ones)
 

@@ -183,9 +183,7 @@ function DetailSidebar({
           </FieldSectionField>
           <FieldSectionDivider />
           <FieldSectionField label="Danh mục con" icon={Layers}>
-            <span className="font-medium">
-              {category._count.children} mục
-            </span>
+            <span className="font-medium">{category._count.children} mục</span>
           </FieldSectionField>
           <FieldSectionDivider />
           <FieldSectionField label="Bài viết" icon={FileText}>
@@ -206,10 +204,11 @@ function CategoryDetailInner() {
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE)
     : false
 
-  const { data: category, isLoading, isError } = useCategoryDetailQuery(
-    api,
-    categoryId,
-  )
+  const {
+    data: category,
+    isLoading,
+    isError,
+  } = useCategoryDetailQuery(api, categoryId)
 
   const children = useMemo(() => category?.children ?? [], [category?.children])
   const posts = useMemo(() => category?.posts ?? [], [category?.posts])
@@ -242,9 +241,7 @@ function CategoryDetailInner() {
         }
         variant="module"
         onBack={() => crudNav.list()}
-        onEdit={
-          canUpdate ? () => crudNav.edit(String(categoryId)) : undefined
-        }
+        onEdit={canUpdate ? () => crudNav.edit(String(categoryId)) : undefined}
       />
 
       <AdminDetailLayout>
@@ -292,7 +289,9 @@ function CategoryDetailInner() {
               description="Các danh mục con trực thuộc."
               badge={
                 children.length > 0 ? (
-                  <FieldSectionBadge>{category._count.children}</FieldSectionBadge>
+                  <FieldSectionBadge>
+                    {category._count.children}
+                  </FieldSectionBadge>
                 ) : undefined
               }
             />
@@ -305,9 +304,7 @@ function CategoryDetailInner() {
                 xlsxExport={buildAdminTableXlsxExport("category-children", {
                   pageCount: children.length,
                   total: category._count.children,
-                  extraMetadata: [
-                    { label: "Danh mục", value: category.name },
-                  ],
+                  extraMetadata: [{ label: "Danh mục", value: category.name }],
                 })}
                 footer={
                   category._count.children > 0 ? (
@@ -351,13 +348,16 @@ function CategoryDetailInner() {
                 columns={relatedPostColumns}
                 getRowId={(row) => row.id}
                 emptyLabel="Chưa có bài viết nào trong danh mục này"
-                xlsxExport={buildAdminTableXlsxExport("category-related-posts", {
-                  pageCount: posts.length,
-                  total: category.postCount,
-                  extraMetadata: [
-                    { label: "Danh mục", value: category.name },
-                  ],
-                })}
+                xlsxExport={buildAdminTableXlsxExport(
+                  "category-related-posts",
+                  {
+                    pageCount: posts.length,
+                    total: category.postCount,
+                    extraMetadata: [
+                      { label: "Danh mục", value: category.name },
+                    ],
+                  }
+                )}
                 footer={
                   category.postCount > 0 ? (
                     <p className="text-xs text-muted-foreground">

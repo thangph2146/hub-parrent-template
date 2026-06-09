@@ -1,32 +1,51 @@
-import { useQueryClient } from "@tanstack/react-query";
-import type { CreateUserInput, StoreSyncSdk, UpdateUserInput } from "@workspace/api-client";
-import { ApiError } from "@/lib/api";
-import { queryKeys } from "@/hooks/queries";
-import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session";
+import { useQueryClient } from "@tanstack/react-query"
+import type {
+  CreateUserInput,
+  StoreSyncSdk,
+  UpdateUserInput,
+} from "@workspace/api-client"
+import { ApiError } from "@/lib/api"
+import { queryKeys } from "@/hooks/queries"
+import { syncAdminSessionIfCurrentUser } from "@/lib/auth-session"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 type CreateStaffInput = Pick<
   CreateUserInput,
-  "email" | "fullName" | "password" | "isActive" | "roleCodes" | "phone" | "address" | "citizenId"
->;
+  | "email"
+  | "fullName"
+  | "password"
+  | "isActive"
+  | "roleCodes"
+  | "phone"
+  | "address"
+  | "citizenId"
+>
 
 type UpdateStaffInput = Pick<
   UpdateUserInput,
-  "fullName" | "password" | "isActive" | "roleCodes" | "avatar" | "phone" | "address" | "citizenId"
->;
+  | "fullName"
+  | "password"
+  | "isActive"
+  | "roleCodes"
+  | "avatar"
+  | "phone"
+  | "address"
+  | "citizenId"
+>
 
 export interface UseStaffMutationsProps {
-  api: StoreSyncSdk;
+  api: StoreSyncSdk
 }
 
 export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   const createMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã tạo tài khoản",
-      error: (error) => error instanceof ApiError ? error.message : "Không tạo được user",
+      error: (error) =>
+        error instanceof ApiError ? error.message : "Không tạo được user",
     },
     mutationFn: async (input: CreateStaffInput) => {
       return apiClient.users.create({
@@ -38,23 +57,29 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
         phone: input.phone,
         address: input.address,
         citizenId: input.citizenId,
-      });
+      })
     },
     onSuccess: async () => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      ]);
-    }
-    
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+      ])
+    },
+  })
 
   const updateMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã cập nhật nhân sự",
-      error: (error) => error instanceof ApiError ? error.message : "Không lưu được",
+      error: (error) =>
+        error instanceof ApiError ? error.message : "Không lưu được",
     },
-    mutationFn: async ({ id, input }: { id: string; input: UpdateStaffInput }) => {
+    mutationFn: async ({
+      id,
+      input,
+    }: {
+      id: string
+      input: UpdateStaffInput
+    }) => {
       return apiClient.users.update(id, {
         fullName: input.fullName,
         isActive: input.isActive,
@@ -64,78 +89,79 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
         phone: input.phone,
         address: input.address,
         citizenId: input.citizenId,
-      });
+      })
     },
     onSuccess: async (data, variables) => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffProfile(variables.id) }),
-      ]);
-      await syncAdminSessionIfCurrentUser(variables.id, data);
-    }
-    
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.staffProfile(variables.id),
+        }),
+      ])
+      await syncAdminSessionIfCurrentUser(variables.id, data)
+    },
+  })
 
   const deleteMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã đưa tài khoản vào thùng rác",
-      error: (error) => error instanceof ApiError ? error.message : "Không xoá được",
+      error: (error) =>
+        error instanceof ApiError ? error.message : "Không xoá được",
     },
     mutationFn: async (id: string) => apiClient.users.remove(id),
     onSuccess: async () => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
-      ]);
-    }
-    
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      ])
+    },
+  })
 
   const restoreMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã khôi phục tài khoản",
-      error: (error) => error instanceof ApiError ? error.message : "Không khôi phục được",
+      error: (error) =>
+        error instanceof ApiError ? error.message : "Không khôi phục được",
     },
     mutationFn: async (id: string) => apiClient.users.restore(id),
     onSuccess: async () => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
-      ]);
-    }
-    
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      ])
+    },
+  })
 
   const purgeMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã xóa vĩnh viễn tài khoản",
-      error: (error) => error instanceof ApiError ? error.message : "Không xóa vĩnh viễn được",
+      error: (error) =>
+        error instanceof ApiError ? error.message : "Không xóa vĩnh viễn được",
     },
     mutationFn: async (id: string) => apiClient.users.purgeTrashed(id),
     onSuccess: async () => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
-      ]);
-    }
-    
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      ])
+    },
+  })
 
   const bulkMutation = useAdminMutation({
     mutationFn: async (input: {
-      action: "delete" | "restore" | "hard-delete";
-      ids: string[];
+      action: "delete" | "restore" | "hard-delete"
+      ids: string[]
     }) => apiClient.users.bulk(input),
     onSuccess: async () => {
       await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
-      ]);
-    }
-  });
+        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.usersTrashed() }),
+      ])
+    },
+  })
 
   return {
     createMutation,
@@ -144,5 +170,5 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
     restoreMutation,
     purgeMutation,
     bulkMutation,
-  };
+  }
 }

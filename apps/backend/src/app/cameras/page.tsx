@@ -5,7 +5,7 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -18,7 +18,12 @@ import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
@@ -35,12 +40,12 @@ import {
 } from "./_component"
 import type { CameraRow } from "./_component"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 function CamerasPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation(`/cameras`, {
-    prefetchDetail: (id) => prefetchCameraDetail(queryClient, api, id),
-  }),
+      prefetchDetail: (id) => prefetchCameraDetail(queryClient, api, id),
+    }),
     { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.CAMERAS_MANAGE) ||
@@ -136,7 +141,14 @@ function CamerasPageInner() {
     [rowActions, crudNav, canWrite, canDelete, canHardDelete]
   )
   const tCols = useMemo<ColumnDef<CameraRow>[]>(
-    () => getCameraColumns({ view: "trash", rowActions, canWrite, canRestore, canHardDelete }),
+    () =>
+      getCameraColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
     [rowActions, canWrite, canRestore, canHardDelete]
   )
   return (
@@ -161,10 +173,7 @@ function CamerasPageInner() {
         className="space-y-6"
       >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger
-            value="list"
-            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-          >
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge
               variant="secondary"
@@ -204,7 +213,6 @@ function CamerasPageInner() {
           ) : null}
           <CamerasTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQ.data ?? []}
             columns={cols}
             isLoading={listQ.isLoading}

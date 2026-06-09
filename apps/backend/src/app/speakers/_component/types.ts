@@ -1,23 +1,23 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type SpeakerRow = {
-  id: string;
-  name: string;
-  title: string | null;
-  organization: string | null;
-  bio: string | null;
-  avatar: string | null;
-  email: string | null;
-  phone: string | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+  id: string
+  name: string
+  title: string | null
+  organization: string | null
+  bio: string | null
+  avatar: string | null
+  email: string | null
+  phone: string | null
+  status: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
 
 export interface SpeakerConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: SpeakerRow;
+  kind: "delete" | "restore" | "purge"
+  row: SpeakerRow
 }
 
 export const speakerFormSchema = z.object({
@@ -29,8 +29,8 @@ export const speakerFormSchema = z.object({
   email: z.string().optional(),
   phone: z.string().optional(),
   status: z.coerce.number(),
-});
+})
 
-export type SpeakerFormValues = z.infer<typeof speakerFormSchema>;
+export type SpeakerFormValues = z.infer<typeof speakerFormSchema>
 
-export type SpeakerDetail = SpeakerRow;
+export type SpeakerDetail = SpeakerRow

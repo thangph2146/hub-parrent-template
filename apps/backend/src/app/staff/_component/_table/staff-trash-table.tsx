@@ -3,11 +3,14 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import { getStaffColumns } from "../columns"
 import type { StaffRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 
 interface StaffTrashTableProps {
   data: StaffRow[]
@@ -131,15 +134,18 @@ export function StaffTrashTable(props: StaffTrashTableProps) {
           : []),
       ]}
       onClearFilters={onClearFilters}
-      xlsxExport={buildAdminTableXlsxExport("staff-trash", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("staff-trash", {
+        pageCount: data.length,
+        total,
+      })}
       exportFetchPage={async ({ page: exportPage, limit }) => {
         const res = await api.users.listTrashed({
           page: exportPage,
           limit,
           q: listParams.q,
           filters: listParams.filters,
-        });
-        return { items: res.items, total: res.total };
+        })
+        return { items: res.items, total: res.total }
       }}
       pagination={{
         page,

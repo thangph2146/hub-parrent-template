@@ -1,31 +1,33 @@
-"use client";
+"use client"
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react"
 import type {
   ColumnDef,
   ColumnFiltersState,
   RowSelectionState,
-} from "@tanstack/react-table";
-import { useQueryClient } from "@tanstack/react-query";
+} from "@tanstack/react-table"
+import { useQueryClient } from "@tanstack/react-query"
 
-import { Badge } from "@ui/components/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import {
-  AlertCircle,
-  Tags,
-  Plus,
-} from "lucide-react";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useAuth } from "@/providers/auth-provider";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+import { Badge } from "@ui/components/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { AlertCircle, Tags, Plus } from "lucide-react"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { useAuth } from "@/providers/auth-provider"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell";
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
-import { api } from "@/lib/api";
-import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+} from "@ui/lib/layout-shell"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminReadOnlyHint,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
+import { api } from "@/lib/api"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   CategoriesTable,
   CategoriesTrashTable,
@@ -39,87 +41,93 @@ import {
   useTrashQuery,
   useCategoriesOptionsQuery,
   prefetchCategoryDetail,
-} from "./_component";
-import type { CategoryRow } from "./_component/types";
+} from "./_component"
+import type { CategoryRow } from "./_component/types"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function buildCategoryTree(rows: CategoryRow[]): CategoryRow[] {
-  const byId = new Map<string, CategoryRow>();
+  const byId = new Map<string, CategoryRow>()
   for (const row of rows) {
-    byId.set(row.id, { ...row, subRows: [] });
+    byId.set(row.id, { ...row, subRows: [] })
   }
-  const roots: CategoryRow[] = [];
+  const roots: CategoryRow[] = []
   for (const row of byId.values()) {
-    const parentId = row.parentId ?? null;
+    const parentId = row.parentId ?? null
     if (parentId && byId.has(parentId)) {
-      byId.get(parentId)!.subRows!.push(row);
+      byId.get(parentId)!.subRows!.push(row)
     } else {
-      roots.push(row);
+      roots.push(row)
     }
   }
   const sortTree = (items: CategoryRow[]): CategoryRow[] =>
     [...items]
       .sort((a, b) => a.name.localeCompare(b.name, "vi"))
-      .map((item) => ({ ...item, subRows: sortTree(item.subRows ?? []) }));
-  return sortTree(roots);
+      .map((item) => ({ ...item, subRows: sortTree(item.subRows ?? []) }))
+  return sortTree(roots)
 }
 
 function CategoriesPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/categories", {
     prefetchDetail: (id) => prefetchCategoryDetail(queryClient, api, id),
-  });
-  const { user } = useAuth();
+  })
+  const { user } = useAuth()
   const canWriteCategories = user
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_UPDATE)
-    : false;
+    : false
   const canDeleteCategories = user
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_DELETE)
-    : false;
+    : false
   const canRestoreCategories = user
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_RESTORE)
-    : false;
+    : false
   const canHardDeleteCategories = user
     ? canUserAccess(user, PERMISSION_CODES.CATEGORIES_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.CATEGORIES_HARD_DELETE)
-    : false;
+    : false
 
   const invalidateAll = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["categories"] });
-  };
+    await queryClient.invalidateQueries({ queryKey: ["categories"] })
+  }
 
-  const [mainTab, setMainTab] = useState<"list" | "trash">("list");
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [trashPage, setTrashPage] = useState(1);
-  const [trashPageSize, setTrashPageSize] = useState(10);
-  const [trashGlobalFilter, setTrashGlobalFilter] = useState("");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [trashColumnFilters, setTrashColumnFilters] = useState<ColumnFiltersState>([]);
-  const [listCategorySelection, setListCategorySelection] = useState<RowSelectionState>({});
-  const [trashCategorySelection, setTrashCategorySelection] = useState<RowSelectionState>({});
+  const [mainTab, setMainTab] = useState<"list" | "trash">("list")
+  const [globalFilter, setGlobalFilter] = useState("")
+  const [trashPage, setTrashPage] = useState(1)
+  const [trashPageSize, setTrashPageSize] = useState(10)
+  const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [trashColumnFilters, setTrashColumnFilters] =
+    useState<ColumnFiltersState>([])
+  const [listCategorySelection, setListCategorySelection] =
+    useState<RowSelectionState>({})
+  const [trashCategorySelection, setTrashCategorySelection] =
+    useState<RowSelectionState>({})
 
-  const debouncedQ = useDebouncedValue(globalFilter, 300);
-  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 300);
+  const debouncedQ = useDebouncedValue(globalFilter, 300)
+  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 300)
 
   const listColumnFilterQuery = useMemo(
     () => buildCategoriesFilterQuery(columnFilters),
-    [columnFilters],
-  );
+    [columnFilters]
+  )
 
   const trashColumnFilterQuery = useMemo(
     () => buildCategoriesFilterQuery(trashColumnFilters),
-    [trashColumnFilters],
-  );
+    [trashColumnFilters]
+  )
 
   const categoriesQuery = useCategoriesQuery({
     api,
     debouncedQ,
     columnFilterQuery: listColumnFilterQuery,
-  });
+  })
 
   const trashQuery = useTrashQuery({
     api,
@@ -128,70 +136,78 @@ function CategoriesPageInner() {
     debouncedTrashQ,
     trashColumnFilterQuery,
     enabled: mainTab === "trash",
-  });
+  })
 
-  const categoriesOptionsQuery = useCategoriesOptionsQuery(api);
+  const categoriesOptionsQuery = useCategoriesOptionsQuery(api)
 
   const categoryTreeOptions = useMemo(
     () => buildCategoryOptionTree(categoriesOptionsQuery.data ?? []),
-    [categoriesOptionsQuery.data],
-  );
+    [categoriesOptionsQuery.data]
+  )
 
   const deleteMutation = useAdminMutation({
     mutationKey: ["categories", "delete"],
     mutationFn: async (id: string) => api.categories.remove(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const restoreMutation = useAdminMutation({
     mutationKey: ["categories", "restore"],
     mutationFn: async (id: string) => api.categories.restore(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const purgeMutation = useAdminMutation({
     mutationKey: ["categories", "purge"],
     mutationFn: async (id: string) => api.categories.purgeTrashed(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const bulkMutation = useAdminMutation({
     toast: defaultBulkOperationToast,
     mutationFn: async (input: {
-      action: "delete" | "restore" | "hard-delete";
-      ids: string[];
+      action: "delete" | "restore" | "hard-delete"
+      ids: string[]
     }) => api.categories.bulk(input),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   useEffect(() => {
-    setTrashPage(1);
-  }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
+    setTrashPage(1)
+  }, [trashColumnFilters, debouncedTrashQ, trashPageSize])
 
   useEffect(() => {
-    setListCategorySelection({});
-    setTrashCategorySelection({});
-  }, [mainTab]);
+    setListCategorySelection({})
+    setTrashCategorySelection({})
+  }, [mainTab])
 
-  const handleColumnFiltersChange = useColumnFiltersChange(setColumnFilters);
-  const clearListFilters = useClearListFilters(setColumnFilters, setGlobalFilter);
-  const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
-  const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
+  const handleColumnFiltersChange = useColumnFiltersChange(setColumnFilters)
+  const clearListFilters = useClearListFilters(
+    setColumnFilters,
+    setGlobalFilter
+  )
+  const clearTrashFilters = useClearTrashFilters(
+    setTrashGlobalFilter,
+    setTrashColumnFilters
+  )
+  const handleTrashColumnFiltersChange = useColumnFiltersChange(
+    setTrashColumnFilters
+  )
   const rowActions = useAdminCrudRowHandlers<CategoryRow>({
     getRecordLabel: (row) => row.name,
     entityLabel: "danh mục",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
   const columns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
       getCategoryColumns({
@@ -204,8 +220,15 @@ function CategoriesPageInner() {
         canDeleteCategories,
         canHardDeleteCategories,
       }),
-    [rowActions, crudNav, categoryTreeOptions, canWriteCategories, canDeleteCategories, canHardDeleteCategories],
-  );
+    [
+      rowActions,
+      crudNav,
+      categoryTreeOptions,
+      canWriteCategories,
+      canDeleteCategories,
+      canHardDeleteCategories,
+    ]
+  )
 
   const trashColumns = useMemo<ColumnDef<CategoryRow>[]>(
     () =>
@@ -219,8 +242,15 @@ function CategoriesPageInner() {
         canRestoreCategories,
         canHardDeleteCategories,
       }),
-    [rowActions, crudNav, categoryTreeOptions, canWriteCategories, canRestoreCategories, canHardDeleteCategories],
-  );
+    [
+      rowActions,
+      crudNav,
+      categoryTreeOptions,
+      canWriteCategories,
+      canRestoreCategories,
+      canHardDeleteCategories,
+    ]
+  )
 
   return (
     <AdminPageSection>
@@ -239,29 +269,28 @@ function CategoriesPageInner() {
           ) : undefined
         }
         actions={
-          <>{canWriteCategories && (
-            <AdminPageHeaderPrimaryButton
-              type="button"
-              onClick={() => crudNav.new()}
-            >
-              <Plus className="size-5" aria-hidden /> Thêm danh mục
-            </AdminPageHeaderPrimaryButton>
-          )}</>
+          <>
+            {canWriteCategories && (
+              <AdminPageHeaderPrimaryButton
+                type="button"
+                onClick={() => crudNav.new()}
+              >
+                <Plus className="size-5" aria-hidden /> Thêm danh mục
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
         }
       />
 
       <Tabs
         value={mainTab}
         onValueChange={(v) => {
-          if (v === "list" || v === "trash") setMainTab(v);
+          if (v === "list" || v === "trash") setMainTab(v)
         }}
         className="space-y-6"
       >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger
-            value="list"
-            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-          >
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge
               variant="secondary"
@@ -303,7 +332,6 @@ function CategoriesPageInner() {
 
           <CategoriesTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={buildCategoryTree(categoriesQuery.data?.items ?? [])}
             columns={columns}
             isLoading={categoriesQuery.isLoading}
@@ -316,19 +344,19 @@ function CategoriesPageInner() {
             total={categoriesQuery.data?.total ?? 0}
             onClearFilters={clearListFilters}
             onBulkDelete={async (rows) => {
-              const ids = rows.map((r) => String(r.id));
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "delete", ids });
-}}
+              const ids = rows.map((r) => String(r.id))
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "delete", ids })
+            }}
             onBulkPurge={async (rows) => {
-              const ids = rows.map((r) => String(r.id));
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+              const ids = rows.map((r) => String(r.id))
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+            }}
             canSelectRow={(row) => {
-              const childCount = row.original._count?.children ?? 0;
-              const linkedPosts = row.original.postCount ?? 0;
-              return !(childCount > 0 || linkedPosts > 0);
+              const childCount = row.original._count?.children ?? 0
+              const linkedPosts = row.original.postCount ?? 0
+              return !(childCount > 0 || linkedPosts > 0)
             }}
           />
         </TabsContent>
@@ -365,15 +393,15 @@ function CategoriesPageInner() {
                 onPageSizeChange={setTrashPageSize}
                 onClearFilters={clearTrashFilters}
                 onBulkRestore={async (rows) => {
-                  const ids = rows.map((r) => String(r.id));
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "restore", ids });
-}}
+                  const ids = rows.map((r) => String(r.id))
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "restore", ids })
+                }}
                 onBulkPurge={async (rows) => {
-                  const ids = rows.map((r) => String(r.id));
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+                  const ids = rows.map((r) => String(r.id))
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+                }}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,
                   filters: trashColumnFilterQuery,
@@ -384,7 +412,7 @@ function CategoriesPageInner() {
         ) : null}
       </Tabs>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function CategoriesPage() {
@@ -392,5 +420,5 @@ export default function CategoriesPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <CategoriesPageInner />
     </AdminPageGuard>
-  );
+  )
 }

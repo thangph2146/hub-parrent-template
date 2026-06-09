@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type {
   ColumnFiltersState,
   OnChangeFn,
   RowSelectionState,
-} from "@tanstack/react-table";
-import { Button } from "@ui/components/button";
+} from "@tanstack/react-table"
+import { Button } from "@ui/components/button"
 import {
   AdminListPageHeader,
   AdminPageGuard,
   AdminPageLoading,
   AdminPageSection,
-} from "@ui/components/admin";
-import { ImageLightbox } from "@ui/components/image-lightbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
+} from "@ui/components/admin"
+import { ImageLightbox } from "@ui/components/image-lightbox"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
-import type { DataTableUserSearchHandlers } from "@ui/components/data-table";
-import { useAuth } from "@/providers/auth-provider";
-import { api } from "@/lib/api";
-import { normalizeAdminFilterValue } from "@/lib/build-admin-filter-query";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
+} from "@ui/lib/layout-shell"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
+import type { DataTableUserSearchHandlers } from "@ui/components/data-table"
+import { useAuth } from "@/providers/auth-provider"
+import { api } from "@/lib/api"
+import { normalizeAdminFilterValue } from "@/lib/build-admin-filter-query"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
 
-const UPLOAD_OWNER_FILTER_DEBOUNCE_MS = 400;
+const UPLOAD_OWNER_FILTER_DEBOUNCE_MS = 400
 import {
   ArchiveRestore,
   Download,
@@ -37,11 +37,11 @@ import {
   Upload,
   Video,
   Music,
-} from "lucide-react";
+} from "lucide-react"
 import {
   formatExtensionsSummary,
   getRealmDefaultExtensions,
-} from "./_component/storage-upload-policy";
+} from "./_component/storage-upload-policy"
 import {
   FileStorageCreateFolderButton,
   FileStorageDeleteFolderButton,
@@ -58,91 +58,99 @@ import {
   useFileStorageList,
   type FileStorageRow,
   type StorageRealm,
-} from "./_component";
+} from "./_component"
 import {
   isImageStorageRow,
   resolveStorageAssetUrl,
   resolveFolderPathAfterCreate,
-} from "./_component/utils";
+} from "./_component/utils"
 
-const REALM_ORDER: StorageRealm[] = ["images", "files", "videos", "audio"];
+const REALM_ORDER: StorageRealm[] = ["images", "files", "videos", "audio"]
 
 const REALM_ICONS: Record<StorageRealm, typeof ImageIcon> = {
   images: ImageIcon,
   files: FileText,
   videos: Video,
   audio: Music,
-};
+}
 
 function FileStoragePageInner() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const canUpload = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
-    : false;
+    : false
   const canDelete = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_DELETE) ||
       canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
-    : false;
+    : false
   const canView = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_VIEW) ||
       canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
-    : false;
+    : false
   const canManage = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_MANAGE)
-    : false;
+    : false
 
-  const [reorganizeOpen, setReorganizeOpen] = useState(false);
-  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
-  const [moveRows, setMoveRows] = useState<FileStorageRow[]>([]);
+  const [reorganizeOpen, setReorganizeOpen] = useState(false)
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false)
+  const [moveRows, setMoveRows] = useState<FileStorageRow[]>([])
 
-  const [activeRealm, setActiveRealm] = useState<StorageRealm>("images");
-  const [activeFolderPath, setActiveFolderPath] = useState("");
-  const [includeDescendants, setIncludeDescendants] = useState(false);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
-  const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [activeRealm, setActiveRealm] = useState<StorageRealm>("images")
+  const [activeFolderPath, setActiveFolderPath] = useState("")
+  const [includeDescendants, setIncludeDescendants] = useState(false)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
+  const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({})
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
   const [videoPreviewRow, setVideoPreviewRow] = useState<FileStorageRow | null>(
-    null,
-  );
-  const [folderRefreshKey, setFolderRefreshKey] = useState(0);
+    null
+  )
+  const [folderRefreshKey, setFolderRefreshKey] = useState(0)
 
   const bumpFolderList = useCallback(() => {
-    setFolderRefreshKey((key) => key + 1);
-  }, []);
+    setFolderRefreshKey((key) => key + 1)
+  }, [])
 
   const uploadOwnerFilter = useMemo(() => {
-    const raw = columnFilters.find((f) => f.id === "uploadOwnerId")?.value;
-    return normalizeAdminFilterValue(raw) ?? "";
-  }, [columnFilters]);
+    const raw = columnFilters.find((f) => f.id === "uploadOwnerId")?.value
+    return normalizeAdminFilterValue(raw) ?? ""
+  }, [columnFilters])
 
   const debouncedUploadOwnerFilter = useDebouncedValue(
     uploadOwnerFilter,
-    UPLOAD_OWNER_FILTER_DEBOUNCE_MS,
-  );
+    UPLOAD_OWNER_FILTER_DEBOUNCE_MS
+  )
 
-  const { rows, realms, childFolders, breadcrumb, loading, isFetching, total, reload } =
-    useFileStorageList(
-      activeRealm,
-      activeFolderPath,
-      page,
-      pageSize,
-      includeDescendants,
-      debouncedUploadOwnerFilter,
-    );
+  const {
+    rows,
+    realms,
+    childFolders,
+    breadcrumb,
+    loading,
+    isFetching,
+    total,
+    reload,
+  } = useFileStorageList(
+    activeRealm,
+    activeFolderPath,
+    page,
+    pageSize,
+    includeDescendants,
+    debouncedUploadOwnerFilter
+  )
 
   const totalInStorage = useMemo(
     () => realms.reduce((sum, realm) => sum + realm.count, 0),
-    [realms],
-  );
+    [realms]
+  )
 
   const realmTabs = useMemo(() => {
-    const byId = new Map(realms.map((r) => [r.id, r]));
+    const byId = new Map(realms.map((r) => [r.id, r]))
     return REALM_ORDER.map((id) => {
-      const fromApi = byId.get(id);
+      const fromApi = byId.get(id)
       return (
         fromApi ?? {
           id,
@@ -156,9 +164,9 @@ function FileStoragePageInner() {
                   : "Âm thanh",
           count: 0,
         }
-      );
-    });
-  }, [realms]);
+      )
+    })
+  }, [realms])
 
   const {
     uploadDialogOpen,
@@ -192,21 +200,21 @@ function FileStoragePageInner() {
     includeDescendants,
     uploadOwnerFilter: debouncedUploadOwnerFilter,
     reload,
-  });
+  })
 
-  const activeRealmMeta = realmTabs.find((r) => r.id === activeRealm);
+  const activeRealmMeta = realmTabs.find((r) => r.id === activeRealm)
   const currentFolderLabel =
     breadcrumb[breadcrumb.length - 1]?.label ??
     activeRealmMeta?.label ??
-    activeRealm;
+    activeRealm
   const activeTabLabel = breadcrumb.length
     ? `${activeRealmMeta?.label ?? activeRealm} · ${breadcrumb.map((c) => c.label).join(" / ")}`
-    : activeRealmMeta?.label;
+    : activeRealmMeta?.label
 
   const realmUploadHint = useMemo(
     () => formatExtensionsSummary(getRealmDefaultExtensions(activeRealm)),
-    [activeRealm],
-  );
+    [activeRealm]
+  )
 
   const lightboxImages = useMemo(
     () =>
@@ -217,124 +225,125 @@ function FileStoragePageInner() {
           src: resolveStorageAssetUrl(r),
           altText: r.originalName,
         })),
-    [rows],
-  );
+    [rows]
+  )
 
   const openImagePreview = useCallback(
     (row: FileStorageRow) => {
-      const idx = lightboxImages.findIndex((li) => li.key === row.relativePath);
+      const idx = lightboxImages.findIndex((li) => li.key === row.relativePath)
       if (idx >= 0) {
-        setLightboxIndex(idx);
-        setLightboxOpen(true);
+        setLightboxIndex(idx)
+        setLightboxOpen(true)
       }
     },
-    [lightboxImages],
-  );
+    [lightboxImages]
+  )
 
   const openVideoPreview = useCallback((row: FileStorageRow) => {
-    setVideoPreviewRow(row);
-  }, []);
+    setVideoPreviewRow(row)
+  }, [])
 
-  const handleRealmChange = useCallback((value: string) => {
-    setActiveRealm(value as StorageRealm);
-    setActiveFolderPath("");
-    setColumnFilters([]);
-    setPage(1);
-    setSelectedRowIds({});
-    bumpFolderList();
-  }, [bumpFolderList]);
+  const handleRealmChange = useCallback(
+    (value: string) => {
+      setActiveRealm(value as StorageRealm)
+      setActiveFolderPath("")
+      setColumnFilters([])
+      setPage(1)
+      setSelectedRowIds({})
+      bumpFolderList()
+    },
+    [bumpFolderList]
+  )
 
   const handleFolderNavigate = useCallback((folderPath: string) => {
-    setActiveFolderPath(folderPath);
-    setPage(1);
-    setSelectedRowIds({});
-  }, []);
+    setActiveFolderPath(folderPath)
+    setPage(1)
+    setSelectedRowIds({})
+  }, [])
 
   const handleFolderCreated = useCallback(
     async (folderPath: string) => {
-      setActiveFolderPath(resolveFolderPathAfterCreate(folderPath, activeRealm));
-      setPage(1);
-      setSelectedRowIds({});
-      bumpFolderList();
-      await reload();
+      setActiveFolderPath(resolveFolderPathAfterCreate(folderPath, activeRealm))
+      setPage(1)
+      setSelectedRowIds({})
+      bumpFolderList()
+      await reload()
     },
-    [activeRealm, bumpFolderList, reload],
-  );
+    [activeRealm, bumpFolderList, reload]
+  )
 
   const handleFolderDeleted = useCallback(async () => {
     const parentPath =
-      breadcrumb.length >= 2
-        ? breadcrumb[breadcrumb.length - 2].id
-        : "";
-    setActiveFolderPath(parentPath);
-    setPage(1);
-    setSelectedRowIds({});
-    bumpFolderList();
-    await reload();
-  }, [breadcrumb, bumpFolderList, reload]);
+      breadcrumb.length >= 2 ? breadcrumb[breadcrumb.length - 2].id : ""
+    setActiveFolderPath(parentPath)
+    setPage(1)
+    setSelectedRowIds({})
+    bumpFolderList()
+    await reload()
+  }, [breadcrumb, bumpFolderList, reload])
 
   const handleBulkMove = useCallback((selected: FileStorageRow[]) => {
-    setMoveRows(selected);
-    setMoveDialogOpen(true);
-  }, []);
+    setMoveRows(selected)
+    setMoveDialogOpen(true)
+  }, [])
 
   const handleMoveCompleted = useCallback(async () => {
-    setSelectedRowIds({});
-    await reload();
-  }, [reload]);
+    setSelectedRowIds({})
+    await reload()
+  }, [reload])
 
   const handleMoveAllInScope = useCallback(async () => {
-    const allRows = await fetchAllRowsInScope();
-    if (!allRows.length) return;
-    setMoveRows(allRows);
-    setMoveDialogOpen(true);
-  }, [fetchAllRowsInScope]);
+    const allRows = await fetchAllRowsInScope()
+    if (!allRows.length) return
+    setMoveRows(allRows)
+    setMoveDialogOpen(true)
+  }, [fetchAllRowsInScope])
 
   const handleIncludeDescendantsChange = useCallback((value: boolean) => {
-    setIncludeDescendants(value);
-    setPage(1);
-    setSelectedRowIds({});
-  }, []);
+    setIncludeDescendants(value)
+    setPage(1)
+    setSelectedRowIds({})
+  }, [])
 
   const handleColumnFiltersChange = useCallback<OnChangeFn<ColumnFiltersState>>(
     (updater) => {
-      setColumnFilters(updater);
+      setColumnFilters(updater)
     },
-    [],
-  );
+    []
+  )
 
   useEffect(() => {
-    setPage(1);
-    setSelectedRowIds({});
-  }, [debouncedUploadOwnerFilter]);
+    setPage(1)
+    setSelectedRowIds({})
+  }, [debouncedUploadOwnerFilter])
 
   const handleClearFilters = useCallback(() => {
-    setColumnFilters([]);
-    setPage(1);
-    setSelectedRowIds({});
-  }, []);
+    setColumnFilters([])
+    setPage(1)
+    setSelectedRowIds({})
+  }, [])
 
   const uploadOwnerSearchHandlers = useMemo<DataTableUserSearchHandlers>(
     () => ({
       onSearch: async (q) => {
-        const res = await api.users.list({ q, page: 1, limit: 10 });
+        const res = await api.users.list({ q, page: 1, limit: 10 })
         return res.items.map((user) => ({
           id: user.id,
           label: user.fullName?.trim() || user.email,
           sublabel: user.email,
-        }));
+        }))
       },
       onResolveUser: async (id) => {
-        const user = await api.users.get(id);
+        const user = await api.users.get(id)
         return {
           id: user.id,
           label: user.fullName?.trim() || user.email,
           sublabel: user.email,
-        };
+        }
       },
     }),
-    [],
-  );
+    []
+  )
 
   const columns = useMemo(
     () =>
@@ -357,16 +366,16 @@ function FileStoragePageInner() {
       openImagePreview,
       openVideoPreview,
       uploadOwnerSearchHandlers,
-    ],
-  );
+    ]
+  )
 
   const wrappedBulkDelete = useCallback(
     async (selected: FileStorageRow[]) => {
-      await handleBulkDelete(selected);
-      setSelectedRowIds({});
+      await handleBulkDelete(selected)
+      setSelectedRowIds({})
     },
-    [handleBulkDelete],
-  );
+    [handleBulkDelete]
+  )
 
   const tableProps = {
     data: rows,
@@ -394,7 +403,7 @@ function FileStoragePageInner() {
     canUpload,
     uploading,
     onUpload: openUploadPicker,
-  };
+  }
 
   return (
     <AdminPageSection>
@@ -487,7 +496,7 @@ function FileStoragePageInner() {
           <div className="flex flex-wrap items-center gap-2">
             <TabsList className={`${ADMIN_LIST_TABS_LIST_CLASS} flex-wrap`}>
               {realmTabs.map((realm) => {
-                const Icon = REALM_ICONS[realm.id as StorageRealm] ?? ImageIcon;
+                const Icon = REALM_ICONS[realm.id as StorageRealm] ?? ImageIcon
                 return (
                   <TabsTrigger
                     key={realm.id}
@@ -500,7 +509,7 @@ function FileStoragePageInner() {
                       ({realm.count})
                     </span>
                   </TabsTrigger>
-                );
+                )
               })}
             </TabsList>
             <p className="w-full text-xs text-muted-foreground">
@@ -626,7 +635,7 @@ function FileStoragePageInner() {
         />
       ) : null}
     </AdminPageSection>
-  );
+  )
 }
 
 export default function FileStoragePage() {
@@ -634,5 +643,5 @@ export default function FileStoragePage() {
     <AdminPageGuard permission="uploads:view">
       <FileStoragePageInner />
     </AdminPageGuard>
-  );
+  )
 }

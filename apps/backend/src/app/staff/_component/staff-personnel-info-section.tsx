@@ -33,7 +33,9 @@ type StaffPersonnelInfoSectionProps = {
   >
 }
 
-export function StaffPersonnelInfoSection({ user }: StaffPersonnelInfoSectionProps) {
+export function StaffPersonnelInfoSection({
+  user,
+}: StaffPersonnelInfoSectionProps) {
   return (
     <FieldSet variant="section">
       <FieldSectionLegend
@@ -64,10 +66,10 @@ export function StaffPersonnelInfoSection({ user }: StaffPersonnelInfoSectionPro
 
           <div className="min-w-0 flex-1 space-y-5">
             <div className="rounded-lg border border-border/50 bg-muted/10 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 Họ và tên
               </p>
-              <p className="mt-1 text-xl font-semibold leading-snug tracking-tight text-foreground">
+              <p className="mt-1 text-xl leading-snug font-semibold tracking-tight text-foreground">
                 {user.fullName}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -79,7 +81,7 @@ export function StaffPersonnelInfoSection({ user }: StaffPersonnelInfoSectionPro
               <FieldSectionField label="Email" icon={Mail}>
                 <a
                   href={`mailto:${user.email}`}
-                  className="break-all font-mono text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  className="font-mono text-sm font-medium break-all text-primary underline-offset-4 hover:underline"
                 >
                   {user.email}
                 </a>

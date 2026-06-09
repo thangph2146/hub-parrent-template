@@ -1,28 +1,28 @@
-import { Archive, ArchiveRestore, Lock, Trash2, Unlock } from "lucide-react";
-import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell";
-import { AdminConfirmActionDialog } from "@ui/components/admin";
-import type { StaffRow, StaffBulkActionKind } from "../types";
+import { Archive, ArchiveRestore, Lock, Trash2, Unlock } from "lucide-react"
+import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell"
+import { AdminConfirmActionDialog } from "@ui/components/admin"
+import type { StaffRow, StaffBulkActionKind } from "../types"
 
 interface StaffConfirmDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  action: StaffBulkActionKind;
-  target: StaffRow | null;
-  onConfirm: () => Promise<void> | void;
-  loading?: boolean;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  action: StaffBulkActionKind
+  target: StaffRow | null
+  onConfirm: () => Promise<void> | void
+  loading?: boolean
 }
 
 interface StaffBulkConfirmDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  action: StaffBulkActionKind;
-  count: number;
-  onConfirm: () => Promise<void> | void;
-  loading?: boolean;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  action: StaffBulkActionKind
+  count: number
+  onConfirm: () => Promise<void> | void
+  loading?: boolean
 }
 
 export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
-  const { open, onOpenChange, action, target, onConfirm, loading } = props;
+  const { open, onOpenChange, action, target, onConfirm, loading } = props
 
   if (action === "delete") {
     return (
@@ -31,13 +31,15 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={<Archive className="size-5 shrink-0 text-destructive" aria-hidden />}
+        icon={
+          <Archive className="size-5 shrink-0 text-destructive" aria-hidden />
+        }
         title="Đưa tài khoản vào thùng rác?"
         description={
           target ? (
             <>
-              <strong>{target.fullName}</strong> ({target.email}) sẽ không
-              đăng nhập được. Có thể khôi phục trong tab Thùng rác.
+              <strong>{target.fullName}</strong> ({target.email}) sẽ không đăng
+              nhập được. Có thể khôi phục trong tab Thùng rác.
             </>
           ) : null
         }
@@ -47,7 +49,7 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "purge") {
@@ -57,14 +59,16 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={<Trash2 className="size-5 shrink-0 text-destructive" aria-hidden />}
+        icon={
+          <Trash2 className="size-5 shrink-0 text-destructive" aria-hidden />
+        }
         title="Xóa vĩnh viễn tài khoản?"
         description={
           target ? (
             <>
               Tài khoản <strong>{target.fullName}</strong> ({target.email}) sẽ
-              bị xoá khỏi cơ sở dữ liệu. Các dữ liệu liên quan sẽ được gỡ liên kết khỏi
-              tài khoản này. Không thể hoàn tác.
+              bị xoá khỏi cơ sở dữ liệu. Các dữ liệu liên quan sẽ được gỡ liên
+              kết khỏi tài khoản này. Không thể hoàn tác.
             </>
           ) : null
         }
@@ -74,7 +78,7 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "restore") {
@@ -85,7 +89,10 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
         icon={
-          <ArchiveRestore className="size-5 shrink-0 text-primary" aria-hidden />
+          <ArchiveRestore
+            className="size-5 shrink-0 text-primary"
+            aria-hidden
+          />
         }
         title="Khôi phục tài khoản?"
         description={
@@ -101,7 +108,7 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "unactive") {
@@ -116,9 +123,9 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         description={
           target ? (
             <>
-              Tài khoản <strong>{target.fullName}</strong> ({target.email}) sẽ bị
-              khoá, không thể đăng nhập cho đến khi kích hoạt lại. Phiên đăng nhập
-              hiện tại sẽ bị thu hồi.
+              Tài khoản <strong>{target.fullName}</strong> ({target.email}) sẽ
+              bị khoá, không thể đăng nhập cho đến khi kích hoạt lại. Phiên đăng
+              nhập hiện tại sẽ bị thu hồi.
             </>
           ) : null
         }
@@ -128,7 +135,7 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "active") {
@@ -138,9 +145,7 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={
-          <Unlock className="size-5 shrink-0 text-green-600" aria-hidden />
-        }
+        icon={<Unlock className="size-5 shrink-0 text-green-600" aria-hidden />}
         title="Kích hoạt tài khoản?"
         description={
           target ? (
@@ -155,14 +160,14 @@ export function StaffConfirmDialog(props: StaffConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
-  return null;
+  return null
 }
 
 export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
-  const { open, onOpenChange, action, count, onConfirm, loading } = props;
+  const { open, onOpenChange, action, count, onConfirm, loading } = props
 
   if (action === "delete") {
     return (
@@ -171,7 +176,9 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={<Archive className="size-5 shrink-0 text-destructive" aria-hidden />}
+        icon={
+          <Archive className="size-5 shrink-0 text-destructive" aria-hidden />
+        }
         title="Đưa tài khoản vào thùng rác?"
         description={
           <>
@@ -185,7 +192,7 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "purge") {
@@ -195,7 +202,9 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={<Trash2 className="size-5 shrink-0 text-destructive" aria-hidden />}
+        icon={
+          <Trash2 className="size-5 shrink-0 text-destructive" aria-hidden />
+        }
         title="Xóa vĩnh viễn tài khoản?"
         description={
           <>
@@ -209,7 +218,7 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "restore") {
@@ -220,7 +229,10 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
         icon={
-          <ArchiveRestore className="size-5 shrink-0 text-primary" aria-hidden />
+          <ArchiveRestore
+            className="size-5 shrink-0 text-primary"
+            aria-hidden
+          />
         }
         title="Khôi phục tài khoản?"
         description={
@@ -233,7 +245,7 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "unactive") {
@@ -257,7 +269,7 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
   if (action === "active") {
@@ -267,9 +279,7 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         onOpenChange={onOpenChange}
         contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         footerClassName="gap-2"
-        icon={
-          <Unlock className="size-5 shrink-0 text-green-600" aria-hidden />
-        }
+        icon={<Unlock className="size-5 shrink-0 text-green-600" aria-hidden />}
         title="Kích hoạt các tài khoản đã chọn?"
         description={
           <>
@@ -282,8 +292,8 @@ export function StaffBulkConfirmDialog(props: StaffBulkConfirmDialogProps) {
         confirmLoading={loading}
         onConfirm={() => void onConfirm()}
       />
-    );
+    )
   }
 
-  return null;
+  return null
 }

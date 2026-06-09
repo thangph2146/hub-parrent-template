@@ -1,15 +1,15 @@
-import { adminDetailQueryOptions,
+import {
+  adminDetailQueryOptions,
   prefetchAdminDetailQuery,
-} from "@/lib/admin-detail-query";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, type QueryClient } from "@tanstack/react-query";
-import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
-import type { TrainingLevelDetail, TrainingLevelRow } from "../types";
-
+} from "@/lib/admin-detail-query"
+import type { UseQueryResult } from "@tanstack/react-query"
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list"
+import { useQuery, type QueryClient } from "@tanstack/react-query"
+import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
+import type { TrainingLevelDetail, TrainingLevelRow } from "../types"
 
 export const trainingLevelDetailQueryKey = (id: string) =>
-  ["training-levels", "detail", id] as const;
+  ["training-levels", "detail", id] as const
 
 export function prefetchTrainingLevelDetail(
   queryClient: QueryClient,
@@ -20,55 +20,57 @@ export function prefetchTrainingLevelDetail(
     queryClient,
     trainingLevelDetailQueryKey(id),
     () => api.trainingLevels.get<TrainingLevelDetail>(id)
-  );
+  )
 }
 
-export function useTrainingLevelDetailQuery(
-  api: StoreSyncSdk,
-  id: string
-) {
+export function useTrainingLevelDetailQuery(api: StoreSyncSdk, id: string) {
   return useQuery({
     ...adminDetailQueryOptions(
       trainingLevelDetailQueryKey(id),
       async () => api.trainingLevels.get<TrainingLevelDetail>(id),
       id
     ),
-});
+  })
 }
 
 export function useTrainingLevelsListQuery(
   apiParam: StoreSyncSdk,
   enabled: boolean,
-  filters?: Record<string, string>,
+  filters?: Record<string, string>
 ): UseQueryResult<TrainingLevelRow[]> {
   return useQuery({
     queryKey: ["training-levels", "list", filters],
     queryFn: async (): Promise<TrainingLevelRow[]> => {
-      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
-      const items: TrainingLevelRow[] = [];
-      let page = 1;
-      let total = Number.POSITIVE_INFINITY;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT
+      const items: TrainingLevelRow[] = []
+      let page = 1
+      let total = Number.POSITIVE_INFINITY
 
       while (items.length < total) {
-        const result = await apiParam.trainingLevels.list<TrainingLevelRow>({ page, limit, status: "active", filters });
-        items.push(...result.items);
-        total = result.total;
-        if (result.items.length === 0) break;
-        page += 1;
+        const result = await apiParam.trainingLevels.list<TrainingLevelRow>({
+          page,
+          limit,
+          status: "active",
+          filters,
+        })
+        items.push(...result.items)
+        total = result.total
+        if (result.items.length === 0) break
+        page += 1
       }
 
-      return items;
+      return items
     },
     enabled,
-  });
+  })
 }
 
 export interface UseTrashQueryProps {
-  api: StoreSyncSdk;
-  trashPage: number;
-  trashPageSize: number;
-  debouncedTrashQ: string;
-  enabled: boolean;
+  api: StoreSyncSdk
+  trashPage: number
+  trashPageSize: number
+  debouncedTrashQ: string
+  enabled: boolean
 }
 
 export function useTrainingLevelsTrashQuery({
@@ -78,9 +80,18 @@ export function useTrainingLevelsTrashQuery({
   debouncedTrashQ,
   enabled,
   filters,
-}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<PagedResult<TrainingLevelRow>> {
+}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<
+  PagedResult<TrainingLevelRow>
+> {
   return useQuery({
-    queryKey: ["training-levels", "trash", trashPage, trashPageSize, debouncedTrashQ, filters],
+    queryKey: [
+      "training-levels",
+      "trash",
+      trashPage,
+      trashPageSize,
+      debouncedTrashQ,
+      filters,
+    ],
     enabled,
     queryFn: async (): Promise<PagedResult<TrainingLevelRow>> => {
       return apiParam.trainingLevels.list<TrainingLevelRow>({
@@ -89,7 +100,7 @@ export function useTrainingLevelsTrashQuery({
         search: debouncedTrashQ.trim() || undefined,
         status: "deleted",
         ...filters,
-      });
+      })
     },
-  });
+  })
 }

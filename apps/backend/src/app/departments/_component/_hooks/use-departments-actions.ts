@@ -1,55 +1,69 @@
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { DepartmentConfirmAction, DepartmentFormValues } from "../types";
-import { departmentFormSchema } from "../types";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useState } from "react"
+import { useForm } from "react-hook-form"
+import type { UseMutationResult } from "@tanstack/react-query"
+import type { DepartmentConfirmAction, DepartmentFormValues } from "../types"
+import { departmentFormSchema } from "../types"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-const EMPTY_VALUES: DepartmentFormValues = { name: "", code: "", description: "", status: 1 };
+const EMPTY_VALUES: DepartmentFormValues = {
+  name: "",
+  code: "",
+  description: "",
+  status: 1,
+}
 
-export function buildDepartmentPayload(values: DepartmentFormValues): Record<string, unknown> {
+export function buildDepartmentPayload(
+  values: DepartmentFormValues
+): Record<string, unknown> {
   return {
     name: values.name.trim(),
     code: values.code.trim(),
     description: values.description?.trim() || null,
     status: values.status,
-  };
+  }
 }
 
 export function useDepartmentForm() {
   const form = useForm<DepartmentFormValues>({
     resolver: zodResolver(departmentFormSchema),
     defaultValues: EMPTY_VALUES,
-  });
-  const resetForm = useCallback(() => { form.reset(EMPTY_VALUES); }, [form]);
-  return { form, resetForm };
+  })
+  const resetForm = useCallback(() => {
+    form.reset(EMPTY_VALUES)
+  }, [form])
+  return { form, resetForm }
 }
 
 export function useHandleConfirmAction(
   deleteMutation: UseMutationResult<unknown, Error, string>,
   restoreMutation: UseMutationResult<unknown, Error, string>,
   purgeMutation: UseMutationResult<unknown, Error, string>,
-  setConfirmAction: React.Dispatch<React.SetStateAction<DepartmentConfirmAction | null>>,
+  setConfirmAction: React.Dispatch<
+    React.SetStateAction<DepartmentConfirmAction | null>
+  >
 ) {
   return useCallback(
     async ({ kind, row }: DepartmentConfirmAction) => {
       try {
         if (kind === "delete") {
-          await deleteMutation.mutateAsync(row.id);
-} else if (kind === "restore") {
-          await restoreMutation.mutateAsync(row.id);
-} else if (kind === "purge") {
-          await purgeMutation.mutateAsync(row.id);
-}
-      } catch { /* toast: MutationCache */ } finally {
-        setConfirmAction(null);
+          await deleteMutation.mutateAsync(row.id)
+        } else if (kind === "restore") {
+          await restoreMutation.mutateAsync(row.id)
+        } else if (kind === "purge") {
+          await purgeMutation.mutateAsync(row.id)
+        }
+      } catch {
+        /* toast: MutationCache */
+      } finally {
+        setConfirmAction(null)
       }
     },
-    [deleteMutation, restoreMutation, purgeMutation, setConfirmAction],
-  );
+    [deleteMutation, restoreMutation, purgeMutation, setConfirmAction]
+  )
 }
 
 export function useConfirmAction() {
-  const [confirmAction, setConfirmAction] = useState<DepartmentConfirmAction | null>(null);
-  return { confirmAction, setConfirmAction };
+  const [confirmAction, setConfirmAction] =
+    useState<DepartmentConfirmAction | null>(null)
+  return { confirmAction, setConfirmAction }
 }

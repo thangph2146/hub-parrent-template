@@ -3,7 +3,11 @@
 import dynamic from "next/dynamic"
 import { LayoutDashboard, TrendingUp } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
-import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { api } from "@/lib/api"
 import type { DashboardStatsDto } from "@/types/dashboard"
@@ -11,24 +15,22 @@ import type { DashboardStatsDto } from "@/types/dashboard"
 const MonthlyLineChart = dynamic(
   () =>
     import("@ui/components/admin/dashboard").then((m) => m.MonthlyLineChart),
-  { ssr: false },
+  { ssr: false }
 )
 const MonthlyBarChart = dynamic(
-  () =>
-    import("@ui/components/admin/dashboard").then((m) => m.MonthlyBarChart),
-  { ssr: false },
+  () => import("@ui/components/admin/dashboard").then((m) => m.MonthlyBarChart),
+  { ssr: false }
 )
 const CategoryDoughnutChart = dynamic(
   () =>
     import("@ui/components/admin/dashboard").then(
-      (m) => m.CategoryDoughnutChart,
+      (m) => m.CategoryDoughnutChart
     ),
-  { ssr: false },
+  { ssr: false }
 )
 const TopPostsChart = dynamic(
-  () =>
-    import("@ui/components/admin/dashboard").then((m) => m.TopPostsChart),
-  { ssr: false },
+  () => import("@ui/components/admin/dashboard").then((m) => m.TopPostsChart),
+  { ssr: false }
 )
 
 export default function AdminDashboardPage() {
@@ -39,7 +41,6 @@ export default function AdminDashboardPage() {
   const { data } = useQuery<DashboardStatsDto>({
     queryKey: ["dashboard", "stats"],
     queryFn: async () => api.dashboard.stats(),
-
   })
 
   return (
@@ -47,11 +48,15 @@ export default function AdminDashboardPage() {
       <AdminPageSection>
         <AdminListPageHeader
           title="Tổng quan hệ thống"
-          subtitle={<>
-            Xin chào,{" "}
-            <span className="font-semibold text-foreground">{displayName}</span>.
-            Đây là bảng điều khiển quản trị HUB Parent.
-          </>}
+          subtitle={
+            <>
+              Xin chào,{" "}
+              <span className="font-semibold text-foreground">
+                {displayName}
+              </span>
+              . Đây là bảng điều khiển quản trị HUB Parent.
+            </>
+          }
           icon={LayoutDashboard}
         />
         {/* Charts */}

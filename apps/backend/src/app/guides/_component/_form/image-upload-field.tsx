@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
-import { useState, useRef } from "react";
-import { toast } from "@ui/components/sonner";
-import { Loader2, ImagePlus, X } from "lucide-react";
-import { Input } from "@ui/components/input";
-import { Label } from "@ui/components/label";
-import { uploadAdminImage } from "@/lib/admin-upload";
+import { useState, useRef } from "react"
+import { toast } from "@ui/components/sonner"
+import { Loader2, ImagePlus, X } from "lucide-react"
+import { Input } from "@ui/components/input"
+import { Label } from "@ui/components/label"
+import { uploadAdminImage } from "@/lib/admin-upload"
 
 interface ImageUploadFieldProps {
-  value: string;
-  onChange: (url: string) => void;
+  value: string
+  onChange: (url: string) => void
 }
 
 export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
 
   const handleFile = async (file: File) => {
-    setUploading(true);
+    setUploading(true)
     try {
-      const url = await uploadAdminImage(file, { folderPath: "guides" });
-      onChange(url);
+      const url = await uploadAdminImage(file, { folderPath: "guides" })
+      onChange(url)
     } catch {
-      toast.error("Upload ảnh thất bại");
+      toast.error("Upload ảnh thất bại")
     } finally {
-      setUploading(false);
+      setUploading(false)
     }
-  };
+  }
 
   return (
     <div className="space-y-1.5">
@@ -37,7 +37,7 @@ export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+            className="absolute top-1.5 right-1.5 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
           >
             <X className="size-3.5" />
           </button>
@@ -68,9 +68,9 @@ export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
         accept="image/*"
         className="hidden"
         onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) void handleFile(f);
-          e.target.value = "";
+          const f = e.target.files?.[0]
+          if (f) void handleFile(f)
+          e.target.value = ""
         }}
       />
       {value && (
@@ -78,9 +78,9 @@ export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="URL ảnh"
-          className="h-7 text-xs font-mono"
+          className="h-7 font-mono text-xs"
         />
       )}
     </div>
-  );
+  )
 }

@@ -40,8 +40,12 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         },
         cell: ({ row }) => (
           <div>
-            <div className="text-sm font-medium">{row.original.curriculumName}</div>
-            <div className="text-xs text-muted-foreground">{row.original.curriculumID}</div>
+            <div className="text-sm font-medium">
+              {row.original.curriculumName}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {row.original.curriculumID}
+            </div>
           </div>
         ),
       },
@@ -51,7 +55,11 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         accessorKey: "mark10",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark10, "10")
-          return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
+          return (
+            <div className={cn("w-full text-center tabular-nums", f.color)}>
+              {f.text}
+            </div>
+          )
         },
       },
       {
@@ -60,7 +68,11 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
         accessorKey: "mark4",
         cell: ({ row }) => {
           const f = formatScore(row.original.mark4, "4")
-          return <div className={cn("w-full text-center tabular-nums", f.color)}>{f.text}</div>
+          return (
+            <div className={cn("w-full text-center tabular-nums", f.color)}>
+              {f.text}
+            </div>
+          )
         },
       },
       {
@@ -71,7 +83,9 @@ function SubjectTable({ subjects }: { subjects: DetailedScore[] }) {
           const g = formatGrade(row.original.markLetter)
           return (
             <div className="flex justify-center">
-              <Badge variant="outline" className={cn("px-1.5 py-0", g.color)}>{g.text}</Badge>
+              <Badge variant="outline" className={cn("px-1.5 py-0", g.color)}>
+                {g.text}
+              </Badge>
             </div>
           )
         },

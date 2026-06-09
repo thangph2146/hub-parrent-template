@@ -20,11 +20,14 @@ import { Major } from '../entities/major.entity';
 import { Message } from '../entities/message.entity';
 import { MessageRead } from '../entities/message-read.entity';
 import { Notification } from '../entities/notification.entity';
+import { Order } from '../entities/order.entity';
 import { PageContent } from '../entities/page-content.entity';
 import { ParentStudent } from '../entities/parent-student.entity';
 import { Post } from '../entities/post.entity';
 import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
+import { Product } from '../entities/product.entity';
+import { PromoCode } from '../entities/promo-code.entity';
 import { Role } from '../entities/role.entity';
 import { Screen } from '../entities/screen.entity';
 import { Session } from '../entities/session.entity';
@@ -64,11 +67,14 @@ export const ormEntities = [
   Message,
   MessageRead,
   Notification,
+  Order,
   PageContent,
   ParentStudent,
   Post,
   PostCategory,
   PostTag,
+  Product,
+  PromoCode,
   Role,
   Screen,
   Session,

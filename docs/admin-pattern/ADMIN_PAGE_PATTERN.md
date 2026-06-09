@@ -5,6 +5,7 @@
 Mọi component UI admin — guard, page header, layout grid, table actions, confirm dialog, button, input, card, badge, icon — **PHẢI** import từ `@ui/components/...`.
 
 **KHÔNG** được:
+
 - Tạo file `.tsx` mới trong `apps/backend/src/components/`, `apps/backend/src/app/**/_components/`, hay bất kỳ thư mục `components/` nào trong apps
 - Định nghĩa lại `AdminPageGuard`, `AdminListPageHeader`, `AdminFormLayout`, `AdminCrudConfirmDialog`, `AdminTableCrudRowActions`, `Button`, `Input`, `Badge`, `Card`, v.v.
 - Tạo wrapper confirm dialog riêng cho từng module — dùng `AdminCrudConfirmDialog` từ `@ui/components/admin`
@@ -24,9 +25,9 @@ import {
   // ── Loading ──
   AdminPageLoading,
   // ── Page headers ──
-  AdminListPageHeader,         // List pages
-  AdminFormPageHeader,         // Create/Edit pages
-  AdminDetailPageHeader,       // Detail pages
+  AdminListPageHeader, // List pages
+  AdminFormPageHeader, // Create/Edit pages
+  AdminDetailPageHeader, // Detail pages
   // ── Layout grids ──
   AdminFormLayout,
   AdminFormMain,
@@ -66,7 +67,9 @@ export default function XxxPage() {
           icon={ListIcon}
           title="Danh sách XXX"
           subtitle="Quản lý XXX"
-          readOnlyHint={!canWrite ? <AdminReadOnlyHint>Chỉ xem</AdminReadOnlyHint> : null}
+          readOnlyHint={
+            !canWrite ? <AdminReadOnlyHint>Chỉ xem</AdminReadOnlyHint> : null
+          }
           actions={
             canWrite ? (
               <AdminPageHeaderPrimaryButton onClick={openCreateDialog}>
@@ -184,7 +187,9 @@ export function getXxxColumns({
           canWrite={canWrite}
           onView={() => onView(row.original)}
           onEdit={onEdit ? () => onEdit(row.original) : undefined}
-          onSoftDelete={onSoftDelete ? () => onSoftDelete(row.original) : undefined}
+          onSoftDelete={
+            onSoftDelete ? () => onSoftDelete(row.original) : undefined
+          }
           onPurge={onPurge ? () => onPurge(row.original) : undefined}
         />
       ),
@@ -215,20 +220,21 @@ export function getXxxColumns({
 
 ## Admin page header: so sánh component
 
-| Component | Dùng cho | Props chính |
-|---|---|---|
-| `AdminListPageHeader` | Danh sách (list) | `icon`, `title`, `subtitle`, `readOnlyHint`, `actions` |
-| `AdminFormPageHeader` | Thêm/Sửa (form) | `title`, `subtitle`, `onBack`, `onReset`, `formId`, `submitting`, `isEdit`, `saveLabel`, `resetLabel`, `backLabel`, `extraActions` |
-| `AdminDetailPageHeader` | Chi tiết (detail) | `title`, `subtitle`, `onBack`, `backLabel`, `variant` (`"entity"` / `"module"`), `onEdit`, `editLabel`, `actions` |
+| Component               | Dùng cho          | Props chính                                                                                                                        |
+| ----------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `AdminListPageHeader`   | Danh sách (list)  | `icon`, `title`, `subtitle`, `readOnlyHint`, `actions`                                                                             |
+| `AdminFormPageHeader`   | Thêm/Sửa (form)   | `title`, `subtitle`, `onBack`, `onReset`, `formId`, `submitting`, `isEdit`, `saveLabel`, `resetLabel`, `backLabel`, `extraActions` |
+| `AdminDetailPageHeader` | Chi tiết (detail) | `title`, `subtitle`, `onBack`, `backLabel`, `variant` (`"entity"` / `"module"`), `onEdit`, `editLabel`, `actions`                  |
 
 ## Admin layout grid: so sánh
 
-| Components | Dùng cho | Grid CSS |
-|---|---|---|
-| `AdminFormLayout` / `AdminFormMain` / `AdminFormSidebar` | Form (create/edit) | `grid gap-6 lg:grid-cols-3`, form wrapper |
-| `AdminDetailLayout` / `AdminDetailMain` / `AdminDetailSidebar` | Detail page | `grid gap-6 lg:grid-cols-3`, div wrapper |
+| Components                                                     | Dùng cho           | Grid CSS                                  |
+| -------------------------------------------------------------- | ------------------ | ----------------------------------------- |
+| `AdminFormLayout` / `AdminFormMain` / `AdminFormSidebar`       | Form (create/edit) | `grid gap-6 lg:grid-cols-3`, form wrapper |
+| `AdminDetailLayout` / `AdminDetailMain` / `AdminDetailSidebar` | Detail page        | `grid gap-6 lg:grid-cols-3`, div wrapper  |
 
 Grid class reference (trong `@ui/lib/layout-shell`):
+
 - `ADMIN_PAGE_GRID_CLASS` = `grid gap-6 lg:grid-cols-3`
 - `ADMIN_PAGE_GRID_MAIN_CLASS` = `space-y-6 lg:col-span-2`
 - `ADMIN_PAGE_GRID_SIDEBAR_CLASS` = `space-y-6 lg:col-span-1`
@@ -253,6 +259,7 @@ Grid class reference (trong `@ui/lib/layout-shell`):
 ```
 
 `AdminPageGuard` behavior:
+
 - `user === null` → render `null` (chờ loading)
 - `user` có role `super_admin` hoặc `admin` → bypass luôn, render children
 - `roles` được chỉ định → kiểm tra `user.roles` có chứa
@@ -275,7 +282,12 @@ import { AdminCrudConfirmDialog } from "@ui/components/admin"
 
 // Trong page, confirmAction đến từ useConfirmAction() hook:
 const { confirmAction, setConfirmAction } = useConfirmAction()
-const handleConfirmAction = useHandleConfirmAction(delM, resM, purM, setConfirmAction)
+const handleConfirmAction = useHandleConfirmAction(
+  delM,
+  resM,
+  purM,
+  setConfirmAction
+)
 
 return (
   <AdminCrudConfirmDialog
@@ -283,8 +295,12 @@ return (
     deleteMutation={delM}
     restoreMutation={resM}
     purgeMutation={purM}
-    onOpenChange={(o) => { if (!o) setConfirmAction(null) }}
-    onConfirm={() => { if (confirmAction) void handleConfirmAction(confirmAction) }}
+    onOpenChange={(o) => {
+      if (!o) setConfirmAction(null)
+    }}
+    onConfirm={() => {
+      if (confirmAction) void handleConfirmAction(confirmAction)
+    }}
     contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
     entityLabel="sự kiện"
     getName={(r) => r.title}
@@ -293,6 +309,7 @@ return (
 ```
 
 Nếu module có `code` (vd hệ đào tạo, bậc học), thêm `getSubInfo`:
+
 ```tsx
 getSubInfo={(r) => r.code || "N/A"}
 ```
@@ -370,8 +387,12 @@ import {
   AdminListPageHeader,
   AdminFormPageHeader,
   AdminDetailPageHeader,
-  AdminFormLayout, AdminFormMain, AdminFormSidebar,
-  AdminDetailLayout, AdminDetailMain, AdminDetailSidebar,
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormSidebar,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
   AdminPageHeaderBackButton,
   AdminPageHeaderOutlineButton,
   AdminPageHeaderPrimaryButton,

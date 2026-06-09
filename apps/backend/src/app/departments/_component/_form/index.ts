@@ -1,1 +1,1 @@
-export { DepartmentFormShell } from "./department-form-shell";
+export { DepartmentFormShell } from "./department-form-shell"

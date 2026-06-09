@@ -1,1 +1,1 @@
-export { useStaffMutations } from "./use-staff-queries";
+export { useStaffMutations } from "./use-staff-queries"

@@ -16,19 +16,47 @@ import {
   type AdminToastSuppressMeta,
 } from "../lib/admin-toast-suppress"
 
+type AdminMutationLifecycleCallbacks<
+  TData = unknown,
+  TError = Error,
+  TVariables = void,
+> = {
+  /** TanStack Query v5 không còn gọi callback trên `useMutation` — hook này tự forward. */
+  onSuccess?: (
+    data: TData,
+    variables: TVariables,
+    ...rest: unknown[]
+  ) => void | Promise<void>
+  onError?: (
+    error: TError,
+    variables: TVariables,
+    ...rest: unknown[]
+  ) => void | Promise<void>
+  onSettled?: (
+    data: TData | undefined,
+    error: TError | null,
+    variables: TVariables,
+    ...rest: unknown[]
+  ) => void | Promise<void>
+}
+
 export type UseAdminMutationOptions<
   TData = unknown,
   TError = Error,
   TVariables = void,
   TContext = unknown,
-> = UseMutationOptions<TData, TError, TVariables, TContext> & {
-  /** `false` = tắt toast; `undefined` = mặc định loading/success/error */
-  toast?:
-    | Partial<AdminOperationToastMessages<TData, TVariables, TError>>
-    | false
-  /** Chặn toast socket trùng sau khi API trả 2xx (mặc định suy từ mutationKey[0]/[1]). */
-  suppressRealtime?: AdminToastSuppressMeta | false
-}
+> = Omit<
+  UseMutationOptions<TData, TError, TVariables, TContext>,
+  "onSuccess" | "onError" | "onSettled"
+> &
+  AdminMutationLifecycleCallbacks<TData, TError, TVariables> & {
+    /** `false` = tắt toast; `undefined` = mặc định loading/success/error */
+    toast?:
+      | Partial<AdminOperationToastMessages<TData, TVariables, TError>>
+      | false
+    /** Chặn toast socket trùng sau khi API trả 2xx (mặc định suy từ mutationKey[0]/[1]). */
+    suppressRealtime?: AdminToastSuppressMeta | false
+  }
 
 export function useAdminMutation<
   TData = unknown,
@@ -43,6 +71,10 @@ export function useAdminMutation<
     suppressRealtime,
     meta,
     mutationKey,
+    onSuccess: userOnSuccess,
+    onError: userOnError,
+    onSettled: userOnSettled,
+    mutationFn,
     ...rest
   } = options
 
@@ -89,9 +121,58 @@ export function useAdminMutation<
     mergedMeta = { ...meta, ...adminToastMeta(messages) }
   }
 
-  return useMutation<TData, TError, TVariables, TContext>({
+  const mutation = useMutation<TData, TError, TVariables, TContext>({
     ...rest,
     mutationKey,
     meta: mergedMeta,
+    mutationFn: mutationFn!,
   })
+
+  return {
+    ...mutation,
+    mutate: (variables, mutateOptions) => {
+      mutation.mutate(variables, {
+        ...mutateOptions,
+        onSuccess: (data, vars, _ctx, mutateCtx) => {
+          void userOnSuccess?.(data, vars, _ctx, mutateCtx)
+          mutateOptions?.onSuccess?.(data, vars, _ctx, mutateCtx)
+        },
+        onError: (error, vars, _ctx, mutateCtx) => {
+          void userOnError?.(error, vars, _ctx, mutateCtx)
+          mutateOptions?.onError?.(error, vars, _ctx, mutateCtx)
+        },
+        onSettled: (data, error, vars, _ctx, mutateCtx) => {
+          void userOnSettled?.(data, error, vars, _ctx, mutateCtx)
+          mutateOptions?.onSettled?.(data, error, vars, _ctx, mutateCtx)
+        },
+      })
+    },
+    mutateAsync: async (variables, mutateOptions) => {
+      let settledCtx: unknown
+      let settledMutateCtx: unknown
+      try {
+        const data = await mutation.mutateAsync(variables, {
+          ...mutateOptions,
+          onSuccess: (result, vars, ctx, mCtx) => {
+            settledCtx = ctx
+            settledMutateCtx = mCtx
+            mutateOptions?.onSuccess?.(result, vars, ctx, mCtx)
+          },
+        })
+        await userOnSuccess?.(data, variables, settledCtx, settledMutateCtx)
+        await userOnSettled?.(
+          data,
+          null,
+          variables,
+          settledCtx,
+          settledMutateCtx
+        )
+        return data
+      } catch (error) {
+        await userOnError?.(error as TError, variables)
+        await userOnSettled?.(undefined, error as TError, variables)
+        throw error
+      }
+    },
+  }
 }

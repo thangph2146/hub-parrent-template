@@ -23,7 +23,7 @@ function recountFromRegistrations(regs: RegistrationRow[]) {
 function patchEventDetailCounts(
   queryClient: QueryClient,
   eventId: string,
-  regs: RegistrationRow[],
+  regs: RegistrationRow[]
 ): void {
   const { totalCheckins, totalCheckouts } = recountFromRegistrations(regs)
   queryClient.setQueryData<EventDetail>(
@@ -35,7 +35,7 @@ function patchEventDetailCounts(
         totalCheckins,
         totalCheckouts,
       }
-    },
+    }
   )
 }
 
@@ -49,7 +49,7 @@ function cloneRegistrations(regs: RegistrationRow[]): RegistrationRow[] {
  */
 export function mergeRegistrationRowsForDisplay(
   rows: RegistrationRow[] | undefined,
-  lastPayload: EventAttendanceSocketPayload | null,
+  lastPayload: EventAttendanceSocketPayload | null
 ): RegistrationRow[] {
   const base = cloneRegistrations(rows ?? [])
   if (!lastPayload?.registrationId) return base
@@ -95,7 +95,7 @@ export function buildManualAttendancePayload(
     | "checkout"
     | "reset-checkin"
     | "reset-checkout"
-    | "reset-all",
+    | "reset-all"
 ): EventAttendanceSocketPayload {
   const at = new Date().toISOString()
   let hasCheckin = asAttendanceBool(row.hasCheckin)
@@ -137,7 +137,7 @@ export function buildManualAttendancePayload(
 
 export function buildPayloadFromRegistrationRow(
   eventId: string,
-  row: RegistrationRow,
+  row: RegistrationRow
 ): EventAttendanceSocketPayload {
   return {
     kind: asAttendanceBool(row.hasCheckout) ? "checkout" : "checkin",
@@ -158,7 +158,7 @@ export function buildPayloadFromRegistrationRow(
 export function syncEventAttendanceUi(
   queryClient: QueryClient,
   eventId: string,
-  payload: EventAttendanceSocketPayload,
+  payload: EventAttendanceSocketPayload
 ): void {
   patchRegistrationAttendanceCache(queryClient, eventId, payload)
 
@@ -185,7 +185,7 @@ export function applyOptimisticRegistrationAttendance(
     | "checkout"
     | "reset-checkin"
     | "reset-checkout"
-    | "reset-all",
+    | "reset-all"
 ): RegistrationRow[] | undefined {
   if (!rows?.length) return rows
   const at = new Date().toISOString()
@@ -235,4 +235,3 @@ export function applyOptimisticRegistrationAttendance(
     }
   })
 }
-

@@ -1,25 +1,33 @@
-"use client";
+"use client"
 
-import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
-import type { TrainingLevelRow } from "../types";
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
+import type { TrainingLevelRow } from "../types"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface TrainingLevelsTableProps {
-  data: TrainingLevelRow[];
-  columns: ColumnDef<TrainingLevelRow>[];
-  isLoading: boolean;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  globalFilter: string;
-  onGlobalFilterChange: OnChangeFn<string>;
-  selectedRowIds: RowSelectionState;
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
-  total: number;
-  onClearFilters: () => void;
-  onBulkDelete: (rows: TrainingLevelRow[]) => Promise<void>;
-  onBulkPurge: (rows: TrainingLevelRow[]) => Promise<void>;
-  onRowPrefetch?: (row: TrainingLevelRow) => void;
+  data: TrainingLevelRow[]
+  columns: ColumnDef<TrainingLevelRow>[]
+  isLoading: boolean
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  globalFilter: string
+  onGlobalFilterChange: OnChangeFn<string>
+  selectedRowIds: RowSelectionState
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
+  total: number
+  onClearFilters: () => void
+  onBulkDelete: (rows: TrainingLevelRow[]) => Promise<void>
+  onBulkPurge: (rows: TrainingLevelRow[]) => Promise<void>
+  onRowPrefetch?: (row: TrainingLevelRow) => void
 }
 
 export function TrainingLevelsTable({
@@ -54,11 +62,13 @@ export function TrainingLevelsTable({
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
-      xlsxExport={buildAdminTableXlsxExport("training-levels", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("training-levels", {
+        pageCount: data.length,
+        total,
+      })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-training-level-delete",
@@ -95,5 +105,5 @@ export function TrainingLevelsTable({
         </div>
       }
     />
-  );
+  )
 }

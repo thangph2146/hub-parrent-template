@@ -177,6 +177,14 @@ export const ADMIN_DIALOG_CONTENT_POST_CLASS = "max-w-[90vw]"
 export const ADMIN_DIALOG_CONTENT_INVENTORY_FULL_CLASS =
   "flex-col gap-0 p-0 sm:max-w-7xl"
 
+/** Dialog admin full-bleed (header/body/footer, không padding content). */
+export const ADMIN_DIALOG_CONTENT_FULL_BLEED_CLASS =
+  "flex max-h-[92vh] flex-col gap-0 overflow-hidden p-0"
+
+/** Footer dialog khi `DialogContent` dùng `p-0` — huỷ offset `-mx-4 -mb-4` mặc định. */
+export const ADMIN_DIALOG_FOOTER_FLUSH_CLASS =
+  "mx-0 mb-0 shrink-0 gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+
 /** Lưới form/chi tiết admin: nội dung chính 2 cột + sidebar 1 cột. */
 export const ADMIN_PAGE_GRID_CLASS = "grid gap-6 lg:grid-cols-3"
 

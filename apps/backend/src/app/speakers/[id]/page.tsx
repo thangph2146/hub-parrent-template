@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import Image from "next/image";
-import { toast } from "@ui/components/sonner";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import Image from "next/image"
+import { toast } from "@ui/components/sonner"
 import {
   Calendar,
   Clock,
@@ -14,15 +14,15 @@ import {
   Mail,
   Phone,
   FileText,
-} from "lucide-react";
-import { Badge } from "@ui/components/badge";
+} from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminPageGuard,
   AdminPageSection,
@@ -31,47 +31,47 @@ import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
-} from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { useSpeakerDetailQuery } from "../_component";
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useSpeakerDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "Chưa ghi nhận";
-  const date = new Date(value);
+  if (!value) return "Chưa ghi nhận"
+  const date = new Date(value)
   return Number.isNaN(date.getTime())
     ? "Chưa ghi nhận"
-    : date.toLocaleString("vi-VN");
+    : date.toLocaleString("vi-VN")
 }
 
 function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return "?"
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
 }
 
 function SpeakerDetailInner() {
-  const crudNav = useAdminCrudNavigation("/speakers");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
+  const crudNav = useAdminCrudNavigation("/speakers")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.SPEAKERS_UPDATE)
-    : false;
+    : false
 
-  const { data: entity, isLoading, isError } = useSpeakerDetailQuery(api, id);
+  const { data: entity, isLoading, isError } = useSpeakerDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được diễn giả");
-      crudNav.list();
+      toast.error("Không tải được diễn giả")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!entity) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!entity) return null
 
   return (
     <AdminPageSection>
@@ -114,11 +114,17 @@ function SpeakerDetailInner() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-2xl font-bold">{entity.name}</p>
                     {entity.status === 1 ? (
-                      <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                      <Badge
+                        variant="default"
+                        className="rounded-full px-3 py-0.5 shadow-sm"
+                      >
                         Hoạt động
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="rounded-full px-3 py-0.5">
+                      <Badge
+                        variant="outline"
+                        className="rounded-full px-3 py-0.5"
+                      >
                         Khóa
                       </Badge>
                     )}
@@ -126,19 +132,35 @@ function SpeakerDetailInner() {
 
                   <FieldSectionDivider />
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldSectionField label="Email" icon={Mail} valueClassName="font-medium">
+                    <FieldSectionField
+                      label="Email"
+                      icon={Mail}
+                      valueClassName="font-medium"
+                    >
                       {entity.email || "—"}
                     </FieldSectionField>
-                    <FieldSectionField label="Số điện thoại" icon={Phone} valueClassName="font-medium">
+                    <FieldSectionField
+                      label="Số điện thoại"
+                      icon={Phone}
+                      valueClassName="font-medium"
+                    >
                       {entity.phone || "—"}
                     </FieldSectionField>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldSectionField label="Chức danh" icon={Briefcase} valueClassName="font-medium">
+                    <FieldSectionField
+                      label="Chức danh"
+                      icon={Briefcase}
+                      valueClassName="font-medium"
+                    >
                       {entity.title || "—"}
                     </FieldSectionField>
-                    <FieldSectionField label="Tổ chức" icon={Building2} valueClassName="font-medium">
+                    <FieldSectionField
+                      label="Tổ chức"
+                      icon={Building2}
+                      valueClassName="font-medium"
+                    >
                       {entity.organization || "—"}
                     </FieldSectionField>
                   </div>
@@ -161,10 +183,18 @@ function SpeakerDetailInner() {
             <FieldSet variant="section">
               <FieldSectionLegend icon={Calendar} title="Thời gian" />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -173,7 +203,7 @@ function SpeakerDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function SpeakerDetailPage() {
@@ -181,5 +211,5 @@ export default function SpeakerDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <SpeakerDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

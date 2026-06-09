@@ -1,6 +1,12 @@
 "use client"
 
-import { useQuery, useQueryClient, type QueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+  type UseMutationResult,
+  type UseQueryResult,
+} from "@tanstack/react-query"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -20,7 +26,7 @@ import {
   type ParentStudentAdmin,
 } from "@/lib/api"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 export const queryKeys = {
   accountProfile: () => ["accounts", "profile"] as const,
   staffProfile: (id: string | number) =>
@@ -118,7 +124,7 @@ export const useStaffProfile = (userId: string | number | null | undefined) => {
     ...adminDetailQueryOptions(
       queryKeys.staffProfile(userId ?? "missing"),
       async () => api.users.get(userId as string | number),
-      String(id),
+      String(id)
     ),
     enabled,
   })
@@ -273,7 +279,7 @@ export function prefetchContactRequestDetail(
 }
 
 export const useContactRequestDetail = (
-  id: string | number | null | undefined,
+  id: string | number | null | undefined
 ) => {
   const normalizedId = id != null ? String(id) : ""
 
@@ -281,7 +287,7 @@ export const useContactRequestDetail = (
     ...adminDetailQueryOptions(
       contactRequestDetailQueryKey(id ?? "missing"),
       async () => api.contactRequests.detail(id as string | number),
-      normalizedId,
+      normalizedId
     ),
     enabled: !!id,
   })

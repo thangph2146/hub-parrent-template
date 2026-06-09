@@ -4,7 +4,14 @@ import { useMemo, useState } from "react"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminDetailLayout, AdminDetailMain, AdminDetailPageHeader, AdminDetailSidebar, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailPageHeader,
+  AdminDetailSidebar,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import {
   Shield,
   ShieldHalf,
@@ -31,7 +38,10 @@ import {
   PERMISSION_CODES,
 } from "@workspace/api-client"
 import { canEditSuperAdminRole } from "@/config/protected-admin"
-import { useRoleDetail, useRbacCatalog } from "../_component/_query/use-rbac-queries"
+import {
+  useRoleDetail,
+  useRbacCatalog,
+} from "../_component/_query/use-rbac-queries"
 import type { RbacPermission } from "@workspace/api-client"
 import {
   permissionGroupKey,
@@ -48,7 +58,7 @@ function formatDateTime(value?: string | null) {
 
 function RoleDetailPageInner() {
   const params = useParams()
-  const crudNav = useAdminCrudNavigation("/rbac");
+  const crudNav = useAdminCrudNavigation("/rbac")
   const { user: session } = useAuth()
   const roleId = params.id as string
 
@@ -201,7 +211,9 @@ function RoleDetailPageInner() {
                 {role.description ? (
                   <span>{role.description}</span>
                 ) : (
-                  <span className="italic text-muted-foreground/60">Chưa có mô tả</span>
+                  <span className="text-muted-foreground/60 italic">
+                    Chưa có mô tả
+                  </span>
                 )}
               </FieldSectionField>
 
@@ -325,13 +337,17 @@ function RoleDetailPageInner() {
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               {role.createdAt && (
                 <FieldSectionField label="Ngày tạo" icon={CalendarClock}>
-                  <span className="font-medium">{formatDateTime(role.createdAt)}</span>
+                  <span className="font-medium">
+                    {formatDateTime(role.createdAt)}
+                  </span>
                 </FieldSectionField>
               )}
               {role.createdAt && role.updatedAt && <FieldSectionDivider />}
               {role.updatedAt && (
                 <FieldSectionField label="Cập nhật lần cuối" icon={Clock}>
-                  <span className="font-medium">{formatDateTime(role.updatedAt)}</span>
+                  <span className="font-medium">
+                    {formatDateTime(role.updatedAt)}
+                  </span>
                 </FieldSectionField>
               )}
               {role.deletedAt && (
@@ -356,30 +372,30 @@ function RoleDetailPageInner() {
             <FieldSetContent variant="section" className="pt-0">
               <ScrollArea className="h-[calc(100vh-520px)] rounded-lg border border-border/60 bg-muted/10">
                 <div className="space-y-2 p-4">
-                {overviewGroups.length === 0 ? (
-                  <p className="py-4 text-center text-xs text-muted-foreground">
-                    Chưa có quyền nào được chọn.
-                  </p>
-                ) : (
-                  overviewGroups.map((group) => (
-                    <div
-                      key={group.key}
-                      className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2"
-                    >
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-foreground">
-                          {group.label}
-                        </p>
-                        <p className="font-mono text-[10px] text-muted-foreground uppercase">
-                          {group.key}
-                        </p>
+                  {overviewGroups.length === 0 ? (
+                    <p className="py-4 text-center text-xs text-muted-foreground">
+                      Chưa có quyền nào được chọn.
+                    </p>
+                  ) : (
+                    overviewGroups.map((group) => (
+                      <div
+                        key={group.key}
+                        className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-foreground">
+                            {group.label}
+                          </p>
+                          <p className="font-mono text-[10px] text-muted-foreground uppercase">
+                            {group.key}
+                          </p>
+                        </div>
+                        <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
+                          {group.items.length}
+                        </span>
                       </div>
-                      <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
-                        {group.items.length}
-                      </span>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
                 </div>
               </ScrollArea>
             </FieldSetContent>

@@ -32,34 +32,40 @@ apps/api/src/
 ## Controller pattern
 
 ### Route prefix
+
 ```typescript
 @Controller(ADMIN_ROUTES.POSTS)  // = 'admin/posts'
 ```
 
 ### Endpoints chuẩn cho mọi resource CRUD
-| Method | Route | Handler | Mục đích |
-|--------|-------|---------|----------|
-| GET | `/` | `list()` | Danh sách phân trang + filter |
-| GET | `/options` | `options()` | Dropdown options |
-| GET | `/:id` | `getById()` | Chi tiết |
-| POST | `/` | `create()` | Tạo mới |
-| PUT | `/:id` | `update()` | Cập nhật |
-| POST | `/bulk` | `bulk()` | Hành động bulk |
-| DELETE | `/:id/hard-delete` | `purge()` | Xoá vĩnh viễn |
-| DELETE | `/:id` | `softDelete()` | Xoá mềm |
-| POST | `/:id/restore` | `restore()` | Khôi phục |
+
+| Method | Route              | Handler        | Mục đích                      |
+| ------ | ------------------ | -------------- | ----------------------------- |
+| GET    | `/`                | `list()`       | Danh sách phân trang + filter |
+| GET    | `/options`         | `options()`    | Dropdown options              |
+| GET    | `/:id`             | `getById()`    | Chi tiết                      |
+| POST   | `/`                | `create()`     | Tạo mới                       |
+| PUT    | `/:id`             | `update()`     | Cập nhật                      |
+| POST   | `/bulk`            | `bulk()`       | Hành động bulk                |
+| DELETE | `/:id/hard-delete` | `purge()`      | Xoá vĩnh viễn                 |
+| DELETE | `/:id`             | `softDelete()` | Xoá mềm                       |
+| POST   | `/:id/restore`     | `restore()`    | Khôi phục                     |
 
 ### X-User-Id header
+
 Mọi endpoint đều gọi `this.getUserId(headers)` ở đầu handler. Nếu thiếu → 401.
 
 ### Filter convention
+
 Query params dạng `filter[key]=value` được parse bằng regex `/^filter\[(.+)\]$/`:
+
 ```typescript
-const m = key.match(/^filter\[(.+)\]$/);
-if (m && value) filters[m[1]] = value;
+const m = key.match(/^filter\[(.+)\]$/)
+if (m && value) filters[m[1]] = value
 ```
 
 ### Error handling
+
 ```typescript
 try {
   const result = await this.service.list({...});
@@ -74,23 +80,28 @@ try {
 ```
 
 ### Swagger
+
 Mỗi handler đều có decorators `@ApiOperation`, `@ApiHeader`, `@ApiQuery`/`@ApiParam`, `@ApiResponse`.
 
 ## Service pattern
 
 ### Constructor
+
 ```typescript
 constructor(private readonly em: EntityManager) {}
 ```
 
 ### BuildWhere
+
 Hàm `buildWhere()` xây dựng MikroORM filter object:
+
 - `status === 'active'` → `deletedAt = null`
 - `status === 'deleted'` → `deletedAt != null`
 - Các filter key: `authorId` → `baseWhere.author = v`, `published` → boolean, `categories`/`tags` → relation filter
 - `search` → `$or` trên title/slug/excerpt
 
 ### Two-step query (tránh "Out of sort memory" MySQL)
+
 ```typescript
 // Bước 1: Chỉ lấy IDs + phân trang
 const [idsOnly, total] = await Promise.all([
@@ -105,16 +116,23 @@ const rows = await this.em.find(Entity, { id: { $in: ids } }, { populate: [...],
 **Lưu ý**: `fields` chỉ chứa scalar properties, KHÔNG chứa relation names. Relations đi trong `populate`.
 
 ### mapRow — DTO mapping
+
 Hàm `mapRow` chuyển entity → RowDto. Relations (author, categories, tags) được extract và transform.
 
 ### Pagination
+
 ```typescript
-const { page, limit, skip } = normalizePageLimit(params.page, params.limit, maxLimit);
+const { page, limit, skip } = normalizePageLimit(
+  params.page,
+  params.limit,
+  maxLimit
+)
 // ... query ...
-return { data, pagination: paginationMeta(page, limit, total) };
+return { data, pagination: paginationMeta(page, limit, total) }
 ```
 
 ### CRUD operations
+
 - **Create**: `new Entity()`, set fields, `em.persist(entity)`, `em.flush()`, refetch via `getById`
 - **Update**: `em.findOne`, set fields conditionally, `em.flush()`
 - **Soft delete**: `row.deletedAt = new Date()`, `em.flush()`
@@ -125,26 +143,31 @@ return { data, pagination: paginationMeta(page, limit, total) };
 ## Common utilities
 
 ### api-response.ts
+
 ```typescript
 createSuccessResponse(data, { message?, status? })  // → { success:true, message, error:null, data }
 createErrorResponse(message, { status?, error?, data? })  // → { success:false, message, error, data }
 ```
 
 ### pagination.ts
+
 ```typescript
 normalizePageLimit(page, limit, maxLimit?)  // → { page, limit, skip }
 paginationMeta(page, limit, total)           // → { page, limit, total, totalPages }
 ```
 
 ### resolve-relation-filters.ts
+
 Chuyển filter name → UUID bằng batch lookup trên entity. Config:
+
 ```typescript
 const RELATION_FILTERS: RelationFiltersConfig = {
-  categories: { model: 'category', nameField: 'name', softDelete: true },
-};
+  categories: { model: "category", nameField: "name", softDelete: true },
+}
 ```
 
 ### get-options.ts
+
 `getOptionsFromModel(repo, baseWhere, column, config, search?, limit?)` → `Array<{label, value}>`
 
 ## Entity pattern
@@ -157,6 +180,7 @@ const RELATION_FILTERS: RelationFiltersConfig = {
 - **JSON column**: `@Property({ type: 'json' })`
 
 ## Module pattern
+
 ```typescript
 @Module({
   imports: [NotificationsModule],

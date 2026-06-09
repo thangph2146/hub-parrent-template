@@ -1,1 +1,1 @@
-export { LocationFormShell } from "./location-form-shell";
+export { LocationFormShell } from "./location-form-shell"

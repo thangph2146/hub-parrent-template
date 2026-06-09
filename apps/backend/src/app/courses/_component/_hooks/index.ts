@@ -2,10 +2,10 @@ export {
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-} from "@/hooks/use-table-filters";
+} from "@/hooks/use-table-filters"
 export {
   buildCoursePayload,
   useCourseForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./use-courses-actions";
+} from "./use-courses-actions"

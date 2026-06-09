@@ -1,39 +1,43 @@
-"use client";
+"use client"
 
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
-import { useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { AdminPageGuard, AdminPageSection } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { useCallback } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { api } from "@/lib/api"
 import {
   GuideFormShell,
   useGuideForm,
   useGuidesQuery,
   PAGE_KEY,
   sortGroupsByOrder,
-} from "../_component";
-import type { GuideFormData } from "../_component";
+} from "../_component"
+import type { GuideFormData } from "../_component"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 function NewGuidePageInner() {
-  const crudNav = useAdminCrudNavigation("/guides");
-  const queryClient = useQueryClient();
-  const { form, resetForm } = useGuideForm();
+  const crudNav = useAdminCrudNavigation("/guides")
+  const queryClient = useQueryClient()
+  const { form, resetForm } = useGuideForm()
 
-  const { data } = useGuidesQuery({ api, page: 1, limit: 1000, search: "" });
-  const existingGroups = sortGroupsByOrder((data?.data ?? []).filter((g) => g.pageKey === PAGE_KEY));
-  const nextOrder = existingGroups.length + 1;
+  const { data } = useGuidesQuery({ api, page: 1, limit: 1000, search: "" })
+  const existingGroups = sortGroupsByOrder(
+    (data?.data ?? []).filter((g) => g.pageKey === PAGE_KEY)
+  )
+  const nextOrder = existingGroups.length + 1
 
   const invalidateAll = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["admin", "guides"] });
-  };
+    await queryClient.invalidateQueries({ queryKey: ["admin", "guides"] })
+  }
 
   const createMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
-      success: (_data, variables) => `Đã tạo nhóm hướng dẫn "${variables.sectionKey}"`,
-      error: (err) => err instanceof Error ? err.message : "Không thể tạo nhóm hướng dẫn",
+      success: (_data, variables) =>
+        `Đã tạo nhóm hướng dẫn "${variables.sectionKey}"`,
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể tạo nhóm hướng dẫn",
     },
     mutationFn: async (input: GuideFormData) => {
       await api.guides.create({
@@ -41,18 +45,20 @@ function NewGuidePageInner() {
         sectionKey: input.sectionKey,
         isVisible: input.isVisible,
         content: { ...input.content, order: nextOrder },
-      });
+      })
     },
     onSuccess: async () => {
-      await invalidateAll();
-      crudNav.list();
-    }
-    
-  });
+      await invalidateAll()
+      crudNav.list()
+    },
+  })
 
-  const handleSubmit = useCallback(async (values: GuideFormData) => {
-    await createMutation.mutateAsync(values);
-  }, [createMutation]);
+  const handleSubmit = useCallback(
+    async (values: GuideFormData) => {
+      await createMutation.mutateAsync(values)
+    },
+    [createMutation]
+  )
 
   return (
     <AdminPageSection>
@@ -65,7 +71,7 @@ function NewGuidePageInner() {
         onReset={resetForm}
       />
     </AdminPageSection>
-  );
+  )
 }
 
 export default function NewGuidePage() {
@@ -73,5 +79,5 @@ export default function NewGuidePage() {
     <AdminPageGuard permission="page_contents:create">
       <NewGuidePageInner />
     </AdminPageGuard>
-  );
+  )
 }

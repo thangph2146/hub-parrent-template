@@ -1,33 +1,33 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { Textarea } from "@ui/components/textarea";
-import { FormFieldCol } from "@ui/components/typing";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { Textarea } from "@ui/components/textarea"
+import { FormFieldCol } from "@ui/components/typing"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { TreePicker } from "@ui/components/pickers";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { MapPin, Hash, Globe } from "lucide-react";
-import type { LocationFormValues } from "../types";
+} from "@ui/components/admin"
+import { TreePicker } from "@ui/components/pickers"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { MapPin, Hash, Globe } from "lucide-react"
+import type { LocationFormValues } from "../types"
 
 export interface LocationFormShellProps {
-  form: UseFormReturn<LocationFormValues>;
-  onSubmit: (values: LocationFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<LocationFormValues>
+  onSubmit: (values: LocationFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function LocationFormShell({
@@ -38,7 +38,7 @@ export function LocationFormShell({
   onBack,
   onReset,
 }: LocationFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -79,7 +79,9 @@ export function LocationFormShell({
                     )}
                     <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                       <Globe className="size-3 shrink-0" />
-                      <span>Nhập Google Maps Embed URL để hiển thị bản đồ.</span>
+                      <span>
+                        Nhập Google Maps Embed URL để hiển thị bản đồ.
+                      </span>
                     </div>
                   </FormFieldCol>
                 )}
@@ -124,7 +126,9 @@ export function LocationFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value ?? 1)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Khóa" },
@@ -144,5 +148,5 @@ export function LocationFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

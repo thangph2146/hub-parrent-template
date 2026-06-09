@@ -1,1 +1,1 @@
-export { MajorsFormShell } from "./majors-form-shell";
+export { MajorsFormShell } from "./majors-form-shell"

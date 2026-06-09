@@ -1,9 +1,9 @@
-import { Badge } from "@ui/components/badge";
-import type { TaxonomyOption } from "./types";
+import { Badge } from "@ui/components/badge"
+import type { TaxonomyOption } from "./types"
 
 export function SummaryBadges({ items }: { items: TaxonomyOption[] }) {
   if (!items.length) {
-    return <span className="text-xs text-muted-foreground">—</span>;
+    return <span className="text-xs text-muted-foreground">—</span>
   }
   return (
     <div className="flex flex-wrap gap-1">
@@ -18,5 +18,5 @@ export function SummaryBadges({ items }: { items: TaxonomyOption[] }) {
         </Badge>
       ) : null}
     </div>
-  );
+  )
 }

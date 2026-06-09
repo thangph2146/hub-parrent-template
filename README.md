@@ -13,14 +13,14 @@ pnpm install
 
 ## Cấu trúc thư mục
 
-| Đường dẫn | Mô tả |
-|-----------|--------|
-| `apps/api` | REST API NestJS, RBAC, MikroORM — cổng mặc định **3002**, prefix `/api` |
-| `apps/backend` | Trang quản trị (admin) Next.js — thường **3001** |
-| `apps/frontend` | Cửa hàng (storefront) Next.js — thường **3000** |
-| `packages/api-client` | SDK HTTP + kiểu dùng cho frontend/backend |
-| `packages/ui` | Component UI dùng chung (shadcn) |
-| `docker-compose.yml` | Postgres + build API/backend/frontend (tuỳ chọn) |
+| Đường dẫn             | Mô tả                                                                   |
+| --------------------- | ----------------------------------------------------------------------- |
+| `apps/api`            | REST API NestJS, RBAC, MikroORM — cổng mặc định **3002**, prefix `/api` |
+| `apps/backend`        | Trang quản trị (admin) Next.js — thường **3001**                        |
+| `apps/frontend`       | Cửa hàng (storefront) Next.js — thường **3000**                         |
+| `packages/api-client` | SDK HTTP + kiểu dùng cho frontend/backend                               |
+| `packages/ui`         | Component UI dùng chung (shadcn)                                        |
+| `docker-compose.yml`  | Postgres + build API/backend/frontend (tuỳ chọn)                        |
 
 ## Biến môi trường
 
@@ -90,10 +90,10 @@ pnpm --filter @api exec mikro-orm migration:up
 
 ### Hai hướng làm schema (cần phân biệt)
 
-| Cách | Lệnh (trong `apps/api` hoặc qua `pnpm db --`) | Khi nào dùng |
-|------|-----------------------------------------------|--------------|
+| Cách                 | Lệnh (trong `apps/api` hoặc qua `pnpm db --`)                      | Khi nào dùng                                                                                                               |
+| -------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | **Schema từ entity** | `schema:fresh --run --seed` (script: `pnpm db:fresh` trong `@api`) | Local: xóa DB, tạo lại bảng theo **entity**, chạy **seeder**. **Không** chạy file migration `.ts` trong `src/migrations/`. |
-| **Chuỗi migration** | `migration:up` / `migration:list` / `migration:down` | Môi trường có lịch sử thay đổi qua file migration; CI/production. |
+| **Chuỗi migration**  | `migration:up` / `migration:list` / `migration:down`               | Môi trường có lịch sử thay đổi qua file migration; CI/production.                                                          |
 
 **Lưu ý quan trọng**
 

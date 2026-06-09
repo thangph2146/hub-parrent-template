@@ -1,19 +1,19 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type LocationRow = {
-  id: string;
-  mapUrl: string;
-  name: string | null;
-  address: string | null;
-  status: number | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+  id: string
+  mapUrl: string
+  name: string | null
+  address: string | null
+  status: number | null
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
 
 export interface LocationConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: LocationRow;
+  kind: "delete" | "restore" | "purge"
+  row: LocationRow
 }
 
 export const locationFormSchema = z.object({
@@ -21,8 +21,8 @@ export const locationFormSchema = z.object({
   name: z.string().optional(),
   address: z.string().optional(),
   status: z.coerce.number().optional(),
-});
+})
 
-export type LocationFormValues = z.infer<typeof locationFormSchema>;
+export type LocationFormValues = z.infer<typeof locationFormSchema>
 
-export type LocationDetail = LocationRow;
+export type LocationDetail = LocationRow

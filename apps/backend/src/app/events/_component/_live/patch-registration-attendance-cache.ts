@@ -10,19 +10,21 @@ type RegistrationRow = Record<string, unknown>
 
 function rowMatchesPayload(
   row: RegistrationRow,
-  payload: EventAttendanceSocketPayload,
+  payload: EventAttendanceSocketPayload
 ): boolean {
   if (payload.registrationId && String(row.id) === payload.registrationId) {
     return true
   }
-  const rowEmail = String(row.email ?? "").trim().toLowerCase()
+  const rowEmail = String(row.email ?? "")
+    .trim()
+    .toLowerCase()
   const payloadEmail = payload.email.trim().toLowerCase()
   return Boolean(rowEmail && payloadEmail && rowEmail === payloadEmail)
 }
 
 function resolveFlags(
   row: RegistrationRow,
-  payload: EventAttendanceSocketPayload,
+  payload: EventAttendanceSocketPayload
 ): { hasCheckin: boolean; hasCheckout: boolean } {
   if (payload.hasCheckin !== undefined || payload.hasCheckout !== undefined) {
     return {
@@ -50,7 +52,7 @@ function resolveFlags(
 export function patchRegistrationAttendanceCache(
   queryClient: QueryClient,
   eventId: string,
-  payload: EventAttendanceSocketPayload,
+  payload: EventAttendanceSocketPayload
 ): boolean {
   let matched = false
 
@@ -80,9 +82,8 @@ export function patchRegistrationAttendanceCache(
       })
 
       return next
-    },
+    }
   )
 
   return matched
 }
-

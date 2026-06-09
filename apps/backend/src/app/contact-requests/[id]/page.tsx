@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useCallback } from "react";
+import { useCallback } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useContactRequestDetail } from "@/hooks/queries";
-import { useUpdateContactRequest } from "../_component/_query";
-import { Switch } from "@ui/components/switch";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { useContactRequestDetail } from "@/hooks/queries"
+import { useUpdateContactRequest } from "../_component/_query"
+import { Switch } from "@ui/components/switch"
 import {
   AdminDetailLayout,
   AdminDetailMain,
@@ -14,15 +14,15 @@ import {
   AdminPageGuard,
   AdminPageLoading,
   AdminPageSection,
-} from "@ui/components/admin";
-import { TreePicker } from "@ui/components/pickers";
+} from "@ui/components/admin"
+import { TreePicker } from "@ui/components/pickers"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   Mail,
   Phone,
@@ -37,79 +37,89 @@ import {
   Bell,
   MessageSquare,
   type LucideIcon,
-} from "lucide-react";
-import { formatDateTime } from "@workspace/api-client";
-import type { ContactRequest } from "../_component/types";
-import { CONTACT_REQUEST_STATUSES, CONTACT_REQUEST_STATUS_LABELS } from "../_component/types";
-import { formatPhoneNumber } from "../_component/utils";
-import { cn } from "@ui/lib/utils";
+} from "lucide-react"
+import { formatDateTime } from "@workspace/api-client"
+import type { ContactRequest } from "../_component/types"
+import {
+  CONTACT_REQUEST_STATUSES,
+  CONTACT_REQUEST_STATUS_LABELS,
+} from "../_component/types"
+import { formatPhoneNumber } from "../_component/utils"
+import { cn } from "@ui/lib/utils"
 
 function ContactRequestDetailPageInner() {
-  const params = useParams();
-  const crudNav = useAdminCrudNavigation("/contact-requests");
-  const contactId = params.id as string;
-  const contactQuery = useContactRequestDetail(contactId);
-  const contact = contactQuery.data as ContactRequest | undefined;
-  const updateMutation = useUpdateContactRequest();
+  const params = useParams()
+  const crudNav = useAdminCrudNavigation("/contact-requests")
+  const contactId = params.id as string
+  const contactQuery = useContactRequestDetail(contactId)
+  const contact = contactQuery.data as ContactRequest | undefined
+  const updateMutation = useUpdateContactRequest()
 
   const handleToggleRead = useCallback(() => {
-    if (!contact) return;
+    if (!contact) return
     updateMutation.mutate({
       id: contactId,
       input: { isRead: !contact.isRead },
-    });
-  }, [contact, contactId, updateMutation]);
+    })
+  }, [contact, contactId, updateMutation])
 
-  const handleStatusChange = useCallback((value: string) => {
-    updateMutation.mutate({
-      id: contactId,
-      input: { status: value as ContactRequest["status"] },
-    });
-  }, [contactId, updateMutation]);
+  const handleStatusChange = useCallback(
+    (value: string) => {
+      updateMutation.mutate({
+        id: contactId,
+        input: { status: value as ContactRequest["status"] },
+      })
+    },
+    [contactId, updateMutation]
+  )
 
-  const handlePriorityChange = useCallback((value: string) => {
-    updateMutation.mutate({
-      id: contactId,
-      input: { priority: value as "HIGH" | "MEDIUM" | "LOW" },
-    });
-  }, [contactId, updateMutation]);
+  const handlePriorityChange = useCallback(
+    (value: string) => {
+      updateMutation.mutate({
+        id: contactId,
+        input: { priority: value as "HIGH" | "MEDIUM" | "LOW" },
+      })
+    },
+    [contactId, updateMutation]
+  )
 
-  if (contactQuery.isLoading) return <AdminPageLoading />;
-  if (!contact) return null;
+  if (contactQuery.isLoading) return <AdminPageLoading />
+  if (!contact) return null
 
   const parseStructuredContent = (content: string) => {
-    const lines = content.split("\n").filter((line) => line.trim());
-    const structured: Array<{ key: string; value: string; icon?: LucideIcon }> = [];
-    let messageContent = "";
+    const lines = content.split("\n").filter((line) => line.trim())
+    const structured: Array<{ key: string; value: string; icon?: LucideIcon }> =
+      []
+    let messageContent = ""
 
     for (const line of lines) {
-      const match = line.match(/^([^:]+):\s*(.+)$/);
+      const match = line.match(/^([^:]+):\s*(.+)$/)
       if (match) {
-        const [, key, value] = match;
+        const [, key, value] = match
         const iconMap: Record<string, LucideIcon> = {
           "Địa chỉ": MapPin,
           "Chương trình": BookOpen,
-          "Ngành": GraduationCap,
+          Ngành: GraduationCap,
           "Đăng ký nhận thông tin tuyển sinh": Bell,
           "Đăng ký tư vấn": Bell,
           "Nội dung": MessageSquare,
-        };
+        }
         structured.push({
           key: key.trim(),
           value: value.trim(),
           icon: iconMap[key.trim()] || undefined,
-        });
+        })
       } else {
-        messageContent += line + "\n";
+        messageContent += line + "\n"
       }
     }
 
-    return { structured, messageContent: messageContent.trim() };
-  };
+    return { structured, messageContent: messageContent.trim() }
+  }
 
   const { structured, messageContent } = parseStructuredContent(
-    contact.content || contact.message || "",
-  );
+    contact.content || contact.message || ""
+  )
 
   return (
     <AdminPageSection>
@@ -135,28 +145,33 @@ function ContactRequestDetailPageInner() {
               {structured.length > 0 && (
                 <div className="grid gap-3 md:grid-cols-2">
                   {structured.map((item, idx) => {
-                    const Icon = item.icon;
+                    const Icon = item.icon
                     return (
                       <div
                         key={idx}
                         className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3"
                       >
                         {Icon && (
-                          <Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                          <Icon
+                            className="mt-0.5 size-4 shrink-0 text-primary"
+                            aria-hidden
+                          />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-semibold text-muted-foreground">{item.key}</p>
+                          <p className="text-xs font-semibold text-muted-foreground">
+                            {item.key}
+                          </p>
                           <p className="text-sm font-medium">{item.value}</p>
                         </div>
                       </div>
-                    );
+                    )
                   })}
                 </div>
               )}
 
               {messageContent && (
                 <FieldSectionField label="Nội dung" icon={MessageSquare}>
-                  <p className="whitespace-pre-wrap rounded-lg bg-muted/30 p-4 text-sm">
+                  <p className="rounded-lg bg-muted/30 p-4 text-sm whitespace-pre-wrap">
                     {messageContent}
                   </p>
                 </FieldSectionField>
@@ -174,14 +189,26 @@ function ContactRequestDetailPageInner() {
                 description="Thông tin người gửi yêu cầu."
               />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Tên" icon={User} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Tên"
+                  icon={User}
+                  valueClassName="font-medium"
+                >
                   {contact.name}
                 </FieldSectionField>
-                <FieldSectionField label="Email" icon={Mail} valueClassName="font-mono">
+                <FieldSectionField
+                  label="Email"
+                  icon={Mail}
+                  valueClassName="font-mono"
+                >
                   {contact.email}
                 </FieldSectionField>
                 {contact.phone && (
-                  <FieldSectionField label="SĐT" icon={Phone} valueClassName="font-mono">
+                  <FieldSectionField
+                    label="SĐT"
+                    icon={Phone}
+                    valueClassName="font-mono"
+                  >
                     {formatPhoneNumber(contact.phone)}
                   </FieldSectionField>
                 )}
@@ -197,7 +224,9 @@ function ContactRequestDetailPageInner() {
               <FieldSetContent variant="section" className="space-y-4 pt-0">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground">Trạng thái</p>
+                    <p className="text-xs font-semibold text-muted-foreground">
+                      Trạng thái
+                    </p>
                     <div className="mt-1.5">
                       <TreePicker
                         value={contact.status}
@@ -211,18 +240,28 @@ function ContactRequestDetailPageInner() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground">Đã đọc</p>
+                    <p className="text-xs font-semibold text-muted-foreground">
+                      Đã đọc
+                    </p>
                     <div className="mt-1.5 flex items-center justify-between rounded-lg border border-border px-3 py-2">
                       <div className="flex items-center gap-1.5">
                         {contact.isRead ? (
-                          <CircleCheck className="size-4 text-emerald-600" aria-hidden />
+                          <CircleCheck
+                            className="size-4 text-emerald-600"
+                            aria-hidden
+                          />
                         ) : (
-                          <CircleDot className="size-4 text-muted-foreground" aria-hidden />
+                          <CircleDot
+                            className="size-4 text-muted-foreground"
+                            aria-hidden
+                          />
                         )}
                         <span
                           className={cn(
                             "text-sm font-medium",
-                            contact.isRead ? "text-emerald-600" : "text-muted-foreground",
+                            contact.isRead
+                              ? "text-emerald-600"
+                              : "text-muted-foreground"
                           )}
                         >
                           {contact.isRead ? "Đã đọc" : "Chưa đọc"}
@@ -239,7 +278,9 @@ function ContactRequestDetailPageInner() {
 
                 <FieldSectionDivider />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground">Ưu tiên</p>
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    Ưu tiên
+                  </p>
                   <div className="mt-1.5">
                     <TreePicker
                       value={contact.priority || "MEDIUM"}
@@ -257,7 +298,11 @@ function ContactRequestDetailPageInner() {
                 {contact.assignedToName && (
                   <>
                     <FieldSectionDivider />
-                    <FieldSectionField label="Người phụ trách" icon={UserCircle} valueClassName="font-medium">
+                    <FieldSectionField
+                      label="Người phụ trách"
+                      icon={UserCircle}
+                      valueClassName="font-medium"
+                    >
                       {contact.assignedToName}
                     </FieldSectionField>
                   </>
@@ -275,7 +320,10 @@ function ContactRequestDetailPageInner() {
                 <FieldSectionField label="Tạo lúc" icon={CalendarClock}>
                   {formatDateTime(contact.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={CalendarClock}>
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={CalendarClock}
+                >
                   {formatDateTime(contact.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -284,7 +332,7 @@ function ContactRequestDetailPageInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function ContactRequestDetailPage() {
@@ -292,5 +340,5 @@ export default function ContactRequestDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin"]}>
       <ContactRequestDetailPageInner />
     </AdminPageGuard>
-  );
+  )
 }

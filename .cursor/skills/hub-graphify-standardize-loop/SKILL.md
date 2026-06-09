@@ -48,13 +48,13 @@ pnpm graphify:ai-summary
 
 ### 3. Đối chiếu artefact (đọc, không mở full context.json)
 
-| File | Kiểm tra |
-|------|----------|
-| `.graphify/markdown/SUMMARY_FOR_AI.md` | Bảng app, chỉ dẫn theo chủ đề, `generatedAt` |
-| `apps/<app>/.graphify/markdown/FOLDER_TREE.md` | Cây `src/` khớp refactor |
-| `apps/<app>/.graphify/markdown/GRAPH_STATS.md` | Điểm nóng import |
-| `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` | Domain mới |
-| `packages/.graphify/markdown/WORKSPACE_DEPS.md` | Cạnh `workspace:*` |
+| File                                                | Kiểm tra                                     |
+| --------------------------------------------------- | -------------------------------------------- |
+| `.graphify/markdown/SUMMARY_FOR_AI.md`              | Bảng app, chỉ dẫn theo chủ đề, `generatedAt` |
+| `apps/<app>/.graphify/markdown/FOLDER_TREE.md`      | Cây `src/` khớp refactor                     |
+| `apps/<app>/.graphify/markdown/GRAPH_STATS.md`      | Điểm nóng import                             |
+| `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` | Domain mới                                   |
+| `packages/.graphify/markdown/WORKSPACE_DEPS.md`     | Cạnh `workspace:*`                           |
 
 ### 4. Cập nhật docs agent (nếu pattern mới)
 

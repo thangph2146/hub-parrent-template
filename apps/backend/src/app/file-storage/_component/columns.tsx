@@ -205,15 +205,15 @@ export function getFileStorageColumns({
       },
 
       cell: ({ row }) => {
-        const { primary, title } = formatUploadOwnerCell(row.original);
+        const { primary, title } = formatUploadOwnerCell(row.original)
         if (primary === "—") {
           return (
             <span className="text-xs text-muted-foreground" title={title}>
               —
             </span>
-          );
+          )
         }
-        const id = row.original.uploadOwnerId?.trim();
+        const id = row.original.uploadOwnerId?.trim()
         return (
           <div className="min-w-0 space-y-0.5" title={title}>
             <span className="block truncate text-xs font-medium text-foreground">
@@ -225,7 +225,7 @@ export function getFileStorageColumns({
               </code>
             ) : null}
           </div>
-        );
+        )
       },
     },
 

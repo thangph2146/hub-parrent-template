@@ -1,1 +1,1 @@
-export { GuidesTable } from "./guides-table";
+export { GuidesTable } from "./guides-table"

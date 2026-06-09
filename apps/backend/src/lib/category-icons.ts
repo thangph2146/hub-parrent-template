@@ -10,7 +10,7 @@ import {
   Apple,
   Cookie,
   type LucideIcon,
-} from "lucide-react";
+} from "lucide-react"
 
 const ICONS: Record<string, LucideIcon> = {
   Coffee,
@@ -23,11 +23,11 @@ const ICONS: Record<string, LucideIcon> = {
   Box,
   Apple,
   Cookie,
-};
+}
 
-export const CATEGORY_ICON_OPTIONS = Object.keys(ICONS);
+export const CATEGORY_ICON_OPTIONS = Object.keys(ICONS)
 
 export function resolveCategoryIcon(name?: string | null): LucideIcon {
-  if (!name) return Package2;
-  return ICONS[name] ?? Package2;
+  if (!name) return Package2
+  return ICONS[name] ?? Package2
 }

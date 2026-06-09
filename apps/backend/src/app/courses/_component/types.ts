@@ -1,20 +1,20 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type CourseRow = {
-  id: string;
-  name: string;
-  startYear: number | null;
-  endYear: number | null;
-  departmentId: number | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+  id: string
+  name: string
+  startYear: number | null
+  endYear: number | null
+  departmentId: number | null
+  status: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
 
 export interface CourseConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: CourseRow;
+  kind: "delete" | "restore" | "purge"
+  row: CourseRow
 }
 
 export const courseFormSchema = z.object({
@@ -23,8 +23,8 @@ export const courseFormSchema = z.object({
   endYear: z.coerce.number().optional(),
   departmentId: z.string().optional(),
   status: z.coerce.number(),
-});
+})
 
-export type CourseFormValues = z.infer<typeof courseFormSchema>;
+export type CourseFormValues = z.infer<typeof courseFormSchema>
 
-export type CourseDetail = CourseRow;
+export type CourseDetail = CourseRow

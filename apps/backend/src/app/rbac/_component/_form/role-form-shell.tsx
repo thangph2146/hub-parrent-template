@@ -11,13 +11,23 @@ import {
   Shield,
 } from "lucide-react"
 import { Checkbox } from "@ui/components/checkbox"
-import { FieldError, FieldSet, FieldSetContent, FieldSectionLegend } from "@ui/components/field"
+import {
+  FieldError,
+  FieldSet,
+  FieldSetContent,
+  FieldSectionLegend,
+} from "@ui/components/field"
 import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
 import { Switch } from "@ui/components/switch"
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Button } from "@ui/components/button"
-import { AdminFormLayout, AdminFormMain, AdminFormPageHeader, AdminFormSidebar } from "@ui/components/admin"
+import {
+  AdminFormLayout,
+  AdminFormMain,
+  AdminFormPageHeader,
+  AdminFormSidebar,
+} from "@ui/components/admin"
 import { Controller, useWatch } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
 import type { RbacPermission } from "@workspace/api-client"
@@ -43,10 +53,13 @@ export function RoleFormShell(props: RoleFormShellProps) {
   const [permissionSearch, setPermissionSearch] = useState("")
   const [showSelectedOnly, setShowSelectedOnly] = useState(false)
 
-  const watchedPermissionsRaw = useWatch({ control: form.control, name: "permissions" })
+  const watchedPermissionsRaw = useWatch({
+    control: form.control,
+    name: "permissions",
+  })
   const watchedPermissions = useMemo(
     () => watchedPermissionsRaw ?? [],
-    [watchedPermissionsRaw],
+    [watchedPermissionsRaw]
   )
 
   const visiblePermissions = useMemo(() => {
@@ -98,7 +111,10 @@ export function RoleFormShell(props: RoleFormShellProps) {
 
       <AdminFormLayout
         id="role-form"
-        onSubmit={(e) => { e.preventDefault(); void onSubmit() }}
+        onSubmit={(e) => {
+          e.preventDefault()
+          void onSubmit()
+        }}
       >
         <AdminFormMain>
           <FieldSet variant="section">
@@ -156,7 +172,7 @@ export function RoleFormShell(props: RoleFormShellProps) {
                   <FormFieldCol label="Mô tả">
                     <textarea
                       id="role-description"
-                      className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="Mô tả rõ vai trò này phục vụ bộ phận nào..."
                       value={field.value ?? ""}
                       onChange={field.onChange}
@@ -171,7 +187,11 @@ export function RoleFormShell(props: RoleFormShellProps) {
             <FieldSectionLegend
               icon={KeyRound}
               title="Quyền hạn"
-              description={isEdit ? "Chọn quyền hạn cho vai trò (thay thế toàn bộ khi lưu)." : "Chọn quyền hạn cho vai trò mới."}
+              description={
+                isEdit
+                  ? "Chọn quyền hạn cho vai trò (thay thế toàn bộ khi lưu)."
+                  : "Chọn quyền hạn cho vai trò mới."
+              }
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
               <Controller
@@ -206,7 +226,9 @@ export function RoleFormShell(props: RoleFormShellProps) {
                       <div className="flex flex-wrap items-center gap-1.5">
                         <Button
                           type="button"
-                          variant={allVisibleSelected ? "destructive" : "outline"}
+                          variant={
+                            allVisibleSelected ? "destructive" : "outline"
+                          }
                           disabled={visiblePermissions.length === 0}
                           onClick={toggleAllVisible}
                           title={
@@ -216,13 +238,17 @@ export function RoleFormShell(props: RoleFormShellProps) {
                           }
                         >
                           {allVisibleSelected ? <Eraser /> : <CheckCheck />}
-                          {allVisibleSelected ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                          {allVisibleSelected
+                            ? "Bỏ chọn tất cả"
+                            : "Chọn tất cả"}
                         </Button>
                         <Button
                           type="button"
                           variant="outline"
                           onClick={() => setShowSelectedOnly((prev) => !prev)}
-                          title={showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"}
+                          title={
+                            showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"
+                          }
                         >
                           {showSelectedOnly ? "Hiện tất cả" : "Chỉ đã chọn"}
                         </Button>
@@ -262,15 +288,20 @@ export function RoleFormShell(props: RoleFormShellProps) {
                                   <div className="flex min-w-0 items-center gap-2">
                                     <Checkbox
                                       checked={
-                                        selectedInGroup === group.items.length &&
+                                        selectedInGroup ===
+                                          group.items.length &&
                                         group.items.length > 0
                                       }
                                       onCheckedChange={(checked) => {
-                                        const codes = group.items.map((p) => p.code)
+                                        const codes = group.items.map(
+                                          (p) => p.code
+                                        )
                                         onChange(
                                           checked === true
                                             ? [...new Set([...value, ...codes])]
-                                            : value.filter((c) => !codes.includes(c))
+                                            : value.filter(
+                                                (c) => !codes.includes(c)
+                                              )
                                         )
                                       }}
                                     />
@@ -293,18 +324,26 @@ export function RoleFormShell(props: RoleFormShellProps) {
                                     return (
                                       <label
                                         key={perm.code}
-                                        className={`flex cursor-pointer items-center gap-2 rounded-md border px-2.5 py-1.5 transition-colors ${isSelected
+                                        className={`flex cursor-pointer items-center gap-2 rounded-md border px-2.5 py-1.5 transition-colors ${
+                                          isSelected
                                             ? "border-primary/40 bg-primary/5"
                                             : "border-border/60 bg-background/90 hover:border-border hover:bg-muted/30"
-                                          }`}
+                                        }`}
                                       >
                                         <Checkbox
                                           checked={isSelected}
                                           onCheckedChange={(checked) => {
                                             onChange(
                                               checked === true
-                                                ? [...new Set([...value, perm.code])]
-                                                : value.filter((c) => c !== perm.code)
+                                                ? [
+                                                    ...new Set([
+                                                      ...value,
+                                                      perm.code,
+                                                    ]),
+                                                  ]
+                                                : value.filter(
+                                                    (c) => c !== perm.code
+                                                  )
                                             )
                                           }}
                                         />
@@ -338,7 +377,11 @@ export function RoleFormShell(props: RoleFormShellProps) {
             <FieldSectionLegend
               icon={isEdit ? CheckCircle2 : Lock}
               title={isEdit ? "Trạng thái" : "Kích hoạt"}
-              description={isEdit ? "Tắt để vô hiệu hoá vai trò này." : "Tắt để tạo vai trò ở trạng thái không hoạt động."}
+              description={
+                isEdit
+                  ? "Tắt để vô hiệu hoá vai trò này."
+                  : "Tắt để tạo vai trò ở trạng thái không hoạt động."
+              }
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
               <Controller
@@ -382,7 +425,9 @@ export function RoleFormShell(props: RoleFormShellProps) {
                   ) : (
                     permissionGroups
                       .filter((group) =>
-                        group.items.some((p) => watchedPermissions.includes(p.code))
+                        group.items.some((p) =>
+                          watchedPermissions.includes(p.code)
+                        )
                       )
                       .map((group) => {
                         const selectedInGroup = group.items.filter((p) =>

@@ -1,82 +1,81 @@
-import type { ColumnFiltersState, RowSelectionState, OnChangeFn } from "@tanstack/react-table";
+import type {
+  ColumnFiltersState,
+  RowSelectionState,
+  OnChangeFn,
+} from "@tanstack/react-table"
 
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table";
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
-import { api } from "@/lib/api";
+import { api } from "@/lib/api"
 
-import { downloadAdminTableXlsx } from "@/lib/admin-xlsx-export";
+import { downloadAdminTableXlsx } from "@/lib/admin-xlsx-export"
 
-import { getContactRequestColumns } from "../columns";
+import { getContactRequestColumns } from "../columns"
 
-import { getContactRequestExportFields } from "../contact-export";
+import { getContactRequestExportFields } from "../contact-export"
 
-import type { ContactRequest } from "../types";
-
-
+import type { ContactRequest } from "../types"
 
 interface ContactRequestTrashTableProps {
+  data: ContactRequest[]
 
-  data: ContactRequest[];
+  isLoading: boolean
 
-  isLoading: boolean;
+  total: number
 
-  total: number;
+  page: number
 
-  page: number;
+  pageSize: number
 
-  pageSize: number;
+  appliedPage?: number
 
-  appliedPage?: number;
+  appliedPageSize?: number
 
-  appliedPageSize?: number;
+  onPageChange: (page: number) => void
 
-  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void
 
-  onPageSizeChange: (pageSize: number) => void;
+  columnFilters: ColumnFiltersState
 
-  columnFilters: ColumnFiltersState;
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
 
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
+  globalFilter: string
 
-  globalFilter: string;
+  onGlobalFilterChange: OnChangeFn<string>
 
-  onGlobalFilterChange: OnChangeFn<string>;
+  selectedRowIds: RowSelectionState
 
-  selectedRowIds: RowSelectionState;
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
 
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
+  onRestore: (contact: ContactRequest) => void
 
-  onRestore: (contact: ContactRequest) => void;
+  onPurge: (contact: ContactRequest) => void
 
-  onPurge: (contact: ContactRequest) => void;
+  busy: boolean
 
-  busy: boolean;
+  canRestore?: boolean
 
-  canRestore?: boolean;
+  canDelete?: boolean
 
-  canDelete?: boolean;
+  onBulkRestore: (ids: string[]) => void
 
-  onBulkRestore: (ids: string[]) => void;
+  onBulkPurge: (ids: string[]) => void
 
-  onBulkPurge: (ids: string[]) => void;
-
-  onClearFilters: () => void;
+  onClearFilters: () => void
 
   listParams: {
-    search?: string;
-    filters?: Record<string, string>;
-  };
-
+    search?: string
+    filters?: Record<string, string>
+  }
 }
 
-
-
 export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
-
   const {
-
     data,
 
     isLoading,
@@ -124,10 +123,7 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
     onClearFilters,
 
     listParams,
-
-  } = props;
-
-
+  } = props
 
   const columns = getContactRequestColumns({
     view: "trash",
@@ -141,58 +137,34 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
     busy,
     canRestore,
     canDelete,
-  });
-
-
+  })
 
   const exportConfig = buildAdminTableXlsxExport("contact-requests-trash", {
     pageCount: data.length,
     total,
-  });
-
-
+  })
 
   return (
-
     <AdminDataTable<ContactRequest>
       tableScope="contact-requests-trash"
-
       data={data}
-
       getRowId={(row) => String(row.id)}
-
       columns={columns}
-
       isLoading={isLoading}
-
       emptyLabel="Thùng rác trống hoặc không khớp bộ lọc."
-
       manualFiltering
-
       columnFilters={columnFilters}
-
       onColumnFiltersChange={onColumnFiltersChange}
-
       globalFilter={globalFilter}
-
       onGlobalFilterChange={onGlobalFilterChange}
-
       globalFilterPlaceholder="Tìm theo tên, email, tiêu đề…"
-
       onClearFilters={onClearFilters}
-
       clearFiltersVariant="destructive"
-
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
-
       bulkActions={[
-
         ...(canRestore
-
           ? [
-
               {
-
                 id: "bulk-contact-restore" as const,
 
                 label: "Khôi phục đã chọn",
@@ -200,27 +172,19 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
                 variant: "default" as const,
 
                 onAction: async (rows: ContactRequest[]) => {
+                  const ids = rows.map((c) => String(c.id))
 
-                  const ids = rows.map((c) => String(c.id));
+                  if (!ids.length) return
 
-                  if (!ids.length) return;
-
-                  await onBulkRestore(ids);
-
+                  await onBulkRestore(ids)
                 },
-
               },
-
             ]
-
           : []),
 
         ...(canDelete
-
           ? [
-
               {
-
                 id: "bulk-contact-purge" as const,
 
                 label: "Xóa vĩnh viễn đã chọn",
@@ -228,30 +192,20 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
                 variant: "destructive" as const,
 
                 onAction: async (rows: ContactRequest[]) => {
+                  const ids = rows.map((c) => String(c.id))
 
-                  const ids = rows.map((c) => String(c.id));
+                  if (!ids.length) return
 
-                  if (!ids.length) return;
-
-                  await onBulkPurge(ids);
-
+                  await onBulkPurge(ids)
                 },
-
               },
-
             ]
-
           : []),
-
       ]}
-
       xlsxExport={{
-
         ...exportConfig,
         runExport: () =>
-
           downloadAdminTableXlsx({
-
             templateId: "contact-requests-trash",
 
             data,
@@ -259,9 +213,7 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
             fields: getContactRequestExportFields("trash"),
 
             options: { pageCount: data.length, total },
-
           }),
-
       }}
       exportFetchPage={async ({ page: exportPage, limit }) => {
         const result = await api.contactRequests.list({
@@ -270,10 +222,9 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
           search: listParams.search,
           trash: true,
           filters: listParams.filters,
-        });
-        return { items: result.items, total: result.total };
+        })
+        return { items: result.items, total: result.total }
       }}
-
       pagination={{
         page,
         pageSize,
@@ -286,10 +237,6 @@ export function ContactRequestTrashTable(props: ContactRequestTrashTableProps) {
         emptySummary: "Không có yêu cầu trong thùng rác",
         itemLabel: "yêu cầu",
       }}
-
     />
-
-  );
-
+  )
 }
-

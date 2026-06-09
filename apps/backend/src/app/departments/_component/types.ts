@@ -1,19 +1,19 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type DepartmentRow = {
-  id: string;
-  name: string;
-  code: string;
-  description: string | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+  id: string
+  name: string
+  code: string
+  description: string | null
+  status: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
 
 export interface DepartmentConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: DepartmentRow;
+  kind: "delete" | "restore" | "purge"
+  row: DepartmentRow
 }
 
 export const departmentFormSchema = z.object({
@@ -21,8 +21,8 @@ export const departmentFormSchema = z.object({
   code: z.string().min(1, "Mã phòng khoa không được để trống"),
   description: z.string().optional(),
   status: z.coerce.number(),
-});
+})
 
-export type DepartmentFormValues = z.infer<typeof departmentFormSchema>;
+export type DepartmentFormValues = z.infer<typeof departmentFormSchema>
 
-export type DepartmentDetail = DepartmentRow;
+export type DepartmentDetail = DepartmentRow

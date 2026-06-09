@@ -92,7 +92,10 @@ export function PostFormShell({
               title="Nội dung chi tiết"
               description="Nội dung phong phú cho bài viết (hỗ trợ rich text)."
             />
-            <FieldSetContent variant="section" className="overflow-visible pt-0">
+            <FieldSetContent
+              variant="section"
+              className="overflow-visible pt-0"
+            >
               <div className="mx-auto max-w-4xl overflow-visible">
                 <Controller
                   name="content"

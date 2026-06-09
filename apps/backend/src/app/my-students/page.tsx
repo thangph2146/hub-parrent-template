@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react"
 import type { ColumnFiltersState } from "@tanstack/react-table"
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { GraduationCap, Plus, BarChart3 } from "lucide-react"
 import { Button } from "@ui/components/button"
 import {
@@ -29,7 +29,7 @@ import {
   useMyStudentsSocket,
 } from "./_component/use-my-students-socket"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 export default function MyStudentsPage() {
   const { user } = useAuth()
   const canCreate = user
@@ -54,7 +54,7 @@ export default function MyStudentsPage() {
 
   const { connected: socketConnected } = useMyStudentsSocket(
     true,
-    handleStudentReviewed,
+    handleStudentReviewed
   )
 
   const { data: students, isLoading } = useQuery<MyStudentRow[]>({
@@ -76,7 +76,9 @@ export default function MyStudentsPage() {
       loading: "Đang xóa liên kết…",
       success: "Đã xóa liên kết sinh viên.",
       error: (err) =>
-        err instanceof Error ? err.message : "Không thể xóa liên kết sinh viên.",
+        err instanceof Error
+          ? err.message
+          : "Không thể xóa liên kết sinh viên.",
     },
     mutationFn: async (id: string) => {
       await api.myStudents.remove(id)
@@ -90,7 +92,7 @@ export default function MyStudentsPage() {
     async (row: MyStudentRow) => {
       await deleteMutation.mutateAsync(row.id)
     },
-    [deleteMutation],
+    [deleteMutation]
   )
 
   const handleViewGrades = useCallback((row: MyStudentRow) => {
@@ -108,7 +110,7 @@ export default function MyStudentsPage() {
         canDelete,
         deleteBusy: deleteMutation.isPending,
       }),
-    [canDelete, deleteMutation.isPending, handleDelete, handleViewGrades],
+    [canDelete, deleteMutation.isPending, handleDelete, handleViewGrades]
   )
 
   const clearFilters = useCallback(() => {
@@ -145,7 +147,9 @@ export default function MyStudentsPage() {
           subtitle={
             <>
               Xin chào,{" "}
-              <span className="font-semibold text-foreground">{displayName}</span>
+              <span className="font-semibold text-foreground">
+                {displayName}
+              </span>
               . Quản lý liên kết sinh viên và theo dõi kết quả học tập.
             </>
           }

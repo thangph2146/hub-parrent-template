@@ -1,1 +1,4 @@
-export { StaffConfirmDialog, StaffBulkConfirmDialog } from "./staff-confirm-dialog";
+export {
+  StaffConfirmDialog,
+  StaffBulkConfirmDialog,
+} from "./staff-confirm-dialog"

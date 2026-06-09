@@ -70,7 +70,10 @@ export function SettingsSeoGlobalTabSkeleton() {
           <div className="grid gap-4 md:grid-cols-2">
             <Skeleton shimmer className="h-10 w-full rounded-lg" />
             <Skeleton shimmer className="h-10 w-full rounded-lg" />
-            <Skeleton shimmer className="h-20 w-full rounded-lg md:col-span-2" />
+            <Skeleton
+              shimmer
+              className="h-20 w-full rounded-lg md:col-span-2"
+            />
           </div>
         </FieldSetContent>
       </FieldSet>

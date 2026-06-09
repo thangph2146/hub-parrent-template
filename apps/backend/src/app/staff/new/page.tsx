@@ -1,29 +1,33 @@
-"use client";
+"use client"
 
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
-import { useStaffForm, useStaffMutations } from "../_component";
-import { StaffFormShell } from "../_component/_form";
-import { useRbacCatalog } from "@/hooks/queries";
-import { useAuth } from "@/providers/auth-provider";
-import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
-import { Card, CardContent } from "@ui/components/card";
-import { api } from "@/lib/api";
+import { useStaffForm, useStaffMutations } from "../_component"
+import { StaffFormShell } from "../_component/_form"
+import { useRbacCatalog } from "@/hooks/queries"
+import { useAuth } from "@/providers/auth-provider"
+import {
+  AdminFormPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
+import { Card, CardContent } from "@ui/components/card"
+import { api } from "@/lib/api"
 
 function NewStaffPageInner() {
-  const crudNav = useAdminCrudNavigation("/staff");
-  const { user: session } = useAuth();
+  const crudNav = useAdminCrudNavigation("/staff")
+  const { user: session } = useAuth()
   const canManageUsers =
-    session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE);
-  const { createMutation } = useStaffMutations({ api });
-  const { form, resetForm, getPayload } = useStaffForm();
+    session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
+  const { createMutation } = useStaffMutations({ api })
+  const { form, resetForm, getPayload } = useStaffForm()
 
   const rbacQuery = useRbacCatalog({
     enabled: Boolean(session) && canManageUsers,
-  });
+  })
 
-  const roles = rbacQuery.data?.roles ?? [];
+  const roles = rbacQuery.data?.roles ?? []
 
   if (!session || !canManageUsers) {
     return (
@@ -39,28 +43,28 @@ function NewStaffPageInner() {
           </CardContent>
         </Card>
       </AdminPageSection>
-    );
+    )
   }
 
   const handleSubmit = async () => {
-    const isValid = await form.trigger();
+    const isValid = await form.trigger()
     if (!isValid) {
-      return;
+      return
     }
 
-    const payload = getPayload();
+    const payload = getPayload()
     try {
-      await createMutation.mutateAsync(payload);
-      crudNav.list();
+      await createMutation.mutateAsync(payload)
+      crudNav.list()
     } catch {
       // Error handled by mutation
     }
-  };
+  }
 
   const handleCancel = () => {
-    resetForm();
-    crudNav.list();
-  };
+    resetForm()
+    crudNav.list()
+  }
 
   return (
     <AdminPageSection>
@@ -73,7 +77,7 @@ function NewStaffPageInner() {
         submitting={createMutation.isPending}
       />
     </AdminPageSection>
-  );
+  )
 }
 
 export default function NewStaffPage() {
@@ -81,5 +85,5 @@ export default function NewStaffPage() {
     <AdminPageGuard roles={["super_admin", "admin"]}>
       <NewStaffPageInner />
     </AdminPageGuard>
-  );
+  )
 }

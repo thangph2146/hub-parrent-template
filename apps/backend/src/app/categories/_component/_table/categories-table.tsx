@@ -7,9 +7,12 @@ import type {
   RowSelectionState,
   Row,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { CategoryRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface CategoriesTableProps {
   data: CategoryRow[]
@@ -64,12 +67,13 @@ export function CategoriesTable({
       globalFilterPlaceholder="Tìm theo tên, slug, mô tả..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("categories", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("categories", {
+        pageCount: data.length,
+        total,
+      })}
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={canSelectRow}
       bulkActions={[

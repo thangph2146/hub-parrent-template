@@ -1,1 +1,1 @@
-export { SpeakerFormShell } from "./speaker-form-shell";
+export { SpeakerFormShell } from "./speaker-form-shell"

@@ -9,7 +9,10 @@ export type {
   ParentStudent as ParentStudentAdmin,
   UpdateParentStudentInput,
 } from "./resources/parent-students"
-export { effectiveLineUnitPrice } from "./unit-pricing"
+export {
+  effectiveLineUnitPrice,
+  unitSellingAndListPrice,
+} from "./unit-pricing"
 export {
   PERMISSION_CODES,
   STAFF_ADMIN_ROLE_CODES,
@@ -37,6 +40,9 @@ export {
   type ChangeAccountPasswordInput,
 } from "./resources/accounts"
 export { PostsApi } from "./resources/posts"
+export { ProductsApi } from "./resources/products"
+export { OrdersApi } from "./resources/orders"
+export { PromoCodesApi } from "./resources/promo-codes"
 export { CategoriesApi } from "./resources/categories"
 export { TagsApi } from "./resources/tags"
 export { GuidesApi } from "./resources/guides"
@@ -124,6 +130,7 @@ export {
 } from "./resources/_shared"
 export {
   slugify,
+  resolveStorageFolderSlugPath,
   formatDateTime,
   buildCategoryOptionTree,
   type CategoryTreeNode,

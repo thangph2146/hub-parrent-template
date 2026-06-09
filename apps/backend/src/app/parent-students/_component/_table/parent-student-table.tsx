@@ -6,7 +6,10 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import type { ParentStudent } from "../types"

@@ -2,10 +2,10 @@ export {
   useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
-} from "@/hooks/use-table-filters";
+} from "@/hooks/use-table-filters"
 export {
   buildSpeakerPayload,
   useSpeakerForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./use-speakers-actions";
+} from "./use-speakers-actions"

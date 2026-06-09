@@ -1,15 +1,15 @@
-import type { User } from "@workspace/api-client";
+import type { User } from "@workspace/api-client"
 
-export type StaffRow = User;
+export type StaffRow = User
 
 export type StaffBulkActionKind =
   | "delete"
   | "restore"
   | "purge"
   | "active"
-  | "unactive";
+  | "unactive"
 
 export interface StaffConfirmAction {
-  kind: StaffBulkActionKind;
-  row: StaffRow;
+  kind: StaffBulkActionKind
+  row: StaffRow
 }

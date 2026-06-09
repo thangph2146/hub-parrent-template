@@ -1,1 +1,1 @@
-export { EventFormShell } from "./event-form-shell";
+export { EventFormShell } from "./event-form-shell"

@@ -1,10 +1,18 @@
-export type { LocationRow, LocationFormValues, LocationConfirmAction, LocationDetail } from "./types";
-export { locationFormSchema } from "./types";
-export { getLocationColumns } from "./columns";
-export { 
+export type {
+  LocationRow,
+  LocationFormValues,
+  LocationConfirmAction,
+  LocationDetail,
+} from "./types"
+export { locationFormSchema } from "./types"
+export { getLocationColumns } from "./columns"
+export {
   useLocationDetailQuery,
   useLocationsListQuery,
-  useLocationsTrashQuery, locationDetailQueryKey, prefetchLocationDetail } from "./_query";
+  useLocationsTrashQuery,
+  locationDetailQueryKey,
+  prefetchLocationDetail,
+} from "./_query"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -13,7 +21,7 @@ export {
   useLocationForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./_hooks";
-export { LocationFormShell } from "./_form";
-export { LocationsConfirmDialog } from "./_alert-dialog";
-export { LocationsTable, LocationsTrashTable } from "./_table";
+} from "./_hooks"
+export { LocationFormShell } from "./_form"
+export { LocationsConfirmDialog } from "./_alert-dialog"
+export { LocationsTable, LocationsTrashTable } from "./_table"

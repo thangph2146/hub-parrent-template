@@ -12,7 +12,7 @@ function initialsFromName(name: string): string {
 
 /** URL ảnh đại diện từ nhiều shape row (đăng ký, diễn giả sự kiện, …). */
 export function resolveRegistrationAvatarUrl(
-  row: Record<string, unknown>,
+  row: Record<string, unknown>
 ): string {
   const raw = row.avatar ?? row.speakerAvatar ?? null
   return getPosterUrlFromValue(raw)
@@ -34,9 +34,7 @@ export function RegistrationAvatarCell({
 
   return (
     <Avatar size={size} className="size-9">
-      {src ? (
-        <AvatarImage src={src} alt={fullName || "Avatar"} />
-      ) : null}
+      {src ? <AvatarImage src={src} alt={fullName || "Avatar"} /> : null}
       <AvatarFallback className="text-xs font-semibold">
         {initialsFromName(fullName || "?")}
       </AvatarFallback>

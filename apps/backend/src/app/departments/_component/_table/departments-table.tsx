@@ -6,9 +6,12 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { DepartmentRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface DepartmentsTableProps {
   data: DepartmentRow[]
@@ -59,12 +62,14 @@ export function DepartmentsTable({
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("departments", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("departments", {
+        pageCount: data.length,
+        total,
+      })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-department-delete",

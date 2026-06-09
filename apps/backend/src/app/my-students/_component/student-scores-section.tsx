@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { YearAveragesList } from "./year-averages-list"
 import { TermAveragesList } from "./term-averages-list"
 import { DetailedScoresList } from "./detailed-scores-list"
-import type { DetailedScore, YearAverage, TermAverage } from "@/types/student-scores"
+import type {
+  DetailedScore,
+  YearAverage,
+  TermAverage,
+} from "@/types/student-scores"
 
 interface StudentScoresSectionProps {
   isActive?: boolean
@@ -35,7 +39,9 @@ export const StudentScoresSection = ({
     return (
       <Alert variant="destructive">
         <AlertCircle className="size-4" />
-        <AlertDescription>Vui lòng kích hoạt sinh viên để xem dữ liệu điểm số.</AlertDescription>
+        <AlertDescription>
+          Vui lòng kích hoạt sinh viên để xem dữ liệu điểm số.
+        </AlertDescription>
       </Alert>
     )
   }
@@ -57,7 +63,10 @@ export const StudentScoresSection = ({
 
       <div className="mt-4">
         <TabsContent value="detailed">
-          <DetailedScoresList scores={detailedScores} isLoading={isLoadingDetailed} />
+          <DetailedScoresList
+            scores={detailedScores}
+            isLoading={isLoadingDetailed}
+          />
         </TabsContent>
         <TabsContent value="term">
           <TermAveragesList averages={termAverages} isLoading={isLoadingTerm} />

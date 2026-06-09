@@ -1,61 +1,61 @@
-"use client";
+"use client"
 
-import { useEffect, useMemo, useState } from "react";
-import { cn } from "@ui/lib/utils";
+import { useEffect, useMemo, useState } from "react"
+import { cn } from "@ui/lib/utils"
 import {
   ChevronDown,
   ChevronRight,
   Folder,
   FolderOpen,
   HardDrive,
-} from "lucide-react";
-import type { StorageFolderTreeNode } from "./utils";
+} from "lucide-react"
+import type { StorageFolderTreeNode } from "./utils"
 import {
   buildRealmFolderTree,
   buildStorageFolderTree,
   collectStorageFolderExpandablePaths,
   expandStorageFolderAncestors,
   filterStorageFolderTree,
-} from "./utils";
-import type { FolderItem } from "@/lib/admin-uploads";
-import type { StorageRealm } from "./types";
+} from "./utils"
+import type { FolderItem } from "@/lib/admin-uploads"
+import type { StorageRealm } from "./types"
 
-export const STORAGE_ROOT_IMAGES = "__root_images__";
-export const STORAGE_ROOT_FILES = "__root_files__";
-export const STORAGE_ROOT_VIDEOS = "__root_videos__";
-export const STORAGE_ROOT_AUDIO = "__root_audio__";
+export const STORAGE_ROOT_IMAGES = "__root_images__"
+export const STORAGE_ROOT_FILES = "__root_files__"
+export const STORAGE_ROOT_VIDEOS = "__root_videos__"
+export const STORAGE_ROOT_AUDIO = "__root_audio__"
 
 export type FileStorageVirtualRoot = {
-  value: string;
-  label: string;
-};
+  value: string
+  label: string
+}
 
 type FileStorageFolderTreeProps = {
-  folders: FolderItem[];
-  filter: string;
-  selectedPath: string;
-  onSelect: (path: string) => void;
-  disabled?: boolean;
+  folders: FolderItem[]
+  filter: string
+  selectedPath: string
+  onSelect: (path: string) => void
+  disabled?: boolean
   /** Hiện 2 nút gốc ảnh/files — dùng khi chọn thư mục cha (tab Tạo mới). */
-  showVirtualRoots?: boolean;
+  showVirtualRoots?: boolean
   /** Gốc ảnh tùy chỉnh (vd. chỉ «images» khi di chuyển). */
-  virtualRoots?: FileStorageVirtualRoot[];
+  virtualRoots?: FileStorageVirtualRoot[]
   /** Bỏ nút images/files/videos — cây bắt đầu từ admincp, docs, … */
-  realm?: StorageRealm;
+  realm?: StorageRealm
   /** Tự mở các nhánh cấp 1 khi render cây. */
-  autoExpandRoots?: boolean;
-  className?: string;
-};
+  autoExpandRoots?: boolean
+  className?: string
+}
 
 type TreeRowProps = {
-  node: StorageFolderTreeNode;
-  depth: number;
-  selectedPath: string;
-  expandedPaths: Set<string>;
-  onToggleExpand: (path: string) => void;
-  onSelect: (path: string) => void;
-  disabled?: boolean;
-};
+  node: StorageFolderTreeNode
+  depth: number
+  selectedPath: string
+  expandedPaths: Set<string>
+  onToggleExpand: (path: string) => void
+  onSelect: (path: string) => void
+  disabled?: boolean
+}
 
 function TreeRow({
   node,
@@ -66,9 +66,9 @@ function TreeRow({
   onSelect,
   disabled,
 }: TreeRowProps) {
-  const hasChildren = node.children.length > 0;
-  const isExpanded = expandedPaths.has(node.path);
-  const isSelected = selectedPath === node.path;
+  const hasChildren = node.children.length > 0
+  const isExpanded = expandedPaths.has(node.path)
+  const isSelected = selectedPath === node.path
 
   return (
     <div role="none">
@@ -77,7 +77,7 @@ function TreeRow({
           "flex w-full items-center gap-0.5 rounded-md pr-1 text-sm transition-colors",
           isSelected
             ? "bg-primary/10 text-foreground ring-1 ring-primary/20"
-            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
         )}
         style={{ paddingLeft: `${8 + depth * 16}px` }}
       >
@@ -130,7 +130,7 @@ function TreeRow({
           ))
         : null}
     </div>
-  );
+  )
 }
 
 export function FileStorageFolderTree({
@@ -145,24 +145,26 @@ export function FileStorageFolderTree({
   autoExpandRoots = false,
   className,
 }: FileStorageFolderTreeProps) {
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
+  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
   const tree = useMemo(
     () =>
-      realm ? buildRealmFolderTree(folders, realm) : buildStorageFolderTree(folders),
-    [folders, realm],
-  );
+      realm
+        ? buildRealmFolderTree(folders, realm)
+        : buildStorageFolderTree(folders),
+    [folders, realm]
+  )
   const filteredTree = useMemo(
     () => filterStorageFolderTree(tree, filter),
-    [filter, tree],
-  );
+    [filter, tree]
+  )
 
   useEffect(() => {
     setExpandedPaths((prev) => {
-      const next = new Set(prev);
+      const next = new Set(prev)
       if (autoExpandRoots) {
         for (const node of filteredTree) {
-          if (node.children.length > 0) next.add(node.path);
+          if (node.children.length > 0) next.add(node.path)
         }
       }
       if (
@@ -172,26 +174,26 @@ export function FileStorageFolderTree({
         selectedPath !== STORAGE_ROOT_VIDEOS &&
         selectedPath !== STORAGE_ROOT_AUDIO
       ) {
-        expandStorageFolderAncestors(selectedPath, next);
+        expandStorageFolderAncestors(selectedPath, next)
       }
       if (filter.trim()) {
-        collectStorageFolderExpandablePaths(filteredTree, next);
+        collectStorageFolderExpandablePaths(filteredTree, next)
       }
-      return next;
-    });
-  }, [autoExpandRoots, filter, filteredTree, selectedPath]);
+      return next
+    })
+  }, [autoExpandRoots, filter, filteredTree, selectedPath])
 
   const toggleExpand = (path: string) => {
     setExpandedPaths((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) next.delete(path);
-      else next.add(path);
-      return next;
-    });
-  };
+      const next = new Set(prev)
+      if (next.has(path)) next.delete(path)
+      else next.add(path)
+      return next
+    })
+  }
 
   const virtualRootRow = (value: string, label: string) => {
-    const isSelected = selectedPath === value;
+    const isSelected = selectedPath === value
     return (
       <button
         key={value}
@@ -202,14 +204,14 @@ export function FileStorageFolderTree({
           "flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm transition-colors",
           isSelected
             ? "bg-primary/10 text-foreground ring-1 ring-primary/20"
-            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
         )}
       >
         <HardDrive className="size-4 shrink-0 text-primary" />
         <span className="font-medium">{label}</span>
       </button>
-    );
-  };
+    )
+  }
 
   const rootOptions = virtualRoots?.length
     ? virtualRoots
@@ -232,9 +234,9 @@ export function FileStorageFolderTree({
             label: "Gốc — thư mục âm thanh (audio/)",
           },
         ]
-      : [];
+      : []
 
-  const isEmpty = filteredTree.length === 0 && rootOptions.length === 0;
+  const isEmpty = filteredTree.length === 0 && rootOptions.length === 0
 
   return (
     <div className={cn("space-y-1 p-1", className)}>
@@ -263,5 +265,5 @@ export function FileStorageFolderTree({
         ))
       )}
     </div>
-  );
+  )
 }

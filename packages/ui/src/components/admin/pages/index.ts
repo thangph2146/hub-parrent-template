@@ -45,3 +45,7 @@ export {
   AdminPageHeaderPrimaryButton,
 } from "./admin-page-header-buttons"
 export { AdminEmptyState, type AdminEmptyStateProps } from "./admin-empty-state"
+export {
+  AdminMediaGallery,
+  type AdminMediaGalleryProps,
+} from "./admin-media-gallery"

@@ -11,6 +11,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const NEXT_APPS = [
   "apps/frontend",
+  "apps/store-sync-frontend",
   "apps/backend",
   "apps/hub-event-checkin-frontend",
 ];

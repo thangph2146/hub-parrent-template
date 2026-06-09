@@ -1,26 +1,34 @@
-﻿"use client";
+﻿"use client"
 
-import { useState } from "react";
-import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
-import type { GuideGroup } from "../types";
-import { applyOrderToGroups } from "../utils";
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { useState } from "react"
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
+import type { GuideGroup } from "../types"
+import { applyOrderToGroups } from "../utils"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface GuidesTableProps {
-  data: GuideGroup[];
-  columns: ColumnDef<GuideGroup>[];
-  isLoading: boolean;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  globalFilter: string;
-  onGlobalFilterChange: OnChangeFn<string>;
-  total: number;
-  onClearFilters: () => void;
-  onBulkPurge: (rows: GuideGroup[]) => Promise<void>;
-  onRowReorder?: (orderedRows: GuideGroup[]) => void;
-  isReordering?: boolean;
-  onRowPrefetch?: (row: GuideGroup) => void;
+  data: GuideGroup[]
+  columns: ColumnDef<GuideGroup>[]
+  isLoading: boolean
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  globalFilter: string
+  onGlobalFilterChange: OnChangeFn<string>
+  total: number
+  onClearFilters: () => void
+  onBulkPurge: (rows: GuideGroup[]) => Promise<void>
+  onRowReorder?: (orderedRows: GuideGroup[]) => void
+  isReordering?: boolean
+  onRowPrefetch?: (row: GuideGroup) => void
 }
 
 export function GuidesTable({
@@ -38,7 +46,7 @@ export function GuidesTable({
   isReordering,
   onRowPrefetch,
 }: GuidesTableProps) {
-  const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
+  const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({})
 
   return (
     <AdminDataTable<GuideGroup>
@@ -61,9 +69,7 @@ export function GuidesTable({
       globalFilterPlaceholder="Tìm theo section key, tiêu đề..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
       {...adminTableRowSelectionProps(selectedRowIds, setSelectedRowIds)}
@@ -73,12 +79,14 @@ export function GuidesTable({
           label: "Xóa vĩnh viễn đã chọn",
           variant: "destructive",
           onAction: async (rows) => {
-            await onBulkPurge(rows);
+            await onBulkPurge(rows)
           },
         },
       ]}
-
-      xlsxExport={buildAdminTableXlsxExport("guides", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("guides", {
+        pageCount: data.length,
+        total,
+      })}
       footer={
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
@@ -87,5 +95,5 @@ export function GuidesTable({
         </div>
       }
     />
-  );
+  )
 }

@@ -47,6 +47,9 @@ import { FaceDataModule } from './face-data/face-data.module';
 import { EventSpeakersModule } from './event-speakers/event-speakers.module';
 import { SeoMetasModule } from './seo-metas/seo-metas.module';
 import { HanetModule } from './hanet/hanet.module';
+import { ProductsModule } from './products/products.module';
+import { OrdersModule } from './orders/orders.module';
+import { PromoCodesModule } from './promo-codes/promo-codes.module';
 
 @Module({
   imports: [
@@ -101,6 +104,9 @@ import { HanetModule } from './hanet/hanet.module';
     EventSpeakersModule,
     SeoMetasModule,
     HanetModule,
+    ProductsModule,
+    OrdersModule,
+    PromoCodesModule,
   ],
   providers: [
     {

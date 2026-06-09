@@ -3,11 +3,13 @@
 Đây là bước dành cho việc tự động hóa task của agent và đóng vòng hoàn chỉnh trước khi dừng.
 
 ## Mục tiêu
+
 - Giúp agent đi theo quy trình đã định một cách có hệ thống.
 - Tự động hóa các bước lặp lại khi đọc và sửa code.
 - Hoàn tất vòng kiểm tra cuối cùng.
 
 ## Agent task automation
+
 1. Nhận task và xác định scope.
 2. Đọc các bước step 1–9 theo thứ tự:
    - `step1_system_overview`
@@ -23,6 +25,7 @@
 4. Nếu task cần code, mở file source mục tiêu sau khi đã đọc đủ docs và Graphify.
 
 ## Final checklist
+
 - [ ] Đã xác nhận scope task.
 - [ ] Đã đọc `docs/admin-pattern/PRE_CODE_PROTOCOL.md`.
 - [ ] Đã đọc docs feature tương ứng nếu cần.
@@ -34,4 +37,5 @@
 - [ ] Đã cập nhật docs nếu hệ thống thay đổi.
 
 ## Kết luận
+
 Bước 10 là bước tổng kết để đảm bảo agent không bỏ sót bước nào và có thể dừng lại sau khi hoàn thành task theo quy trình.

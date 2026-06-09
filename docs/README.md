@@ -3,12 +3,15 @@
 Thư mục này tổ chức tài liệu cho agent/AI đọc nhanh và làm việc theo quy trình.
 
 ## Mục tiêu chính
+
 - `docs/steps/*.md` là chuỗi bước step-by-step cho agent.
 - `docs/admin-pattern/` chứa tài liệu kiến trúc, quy trình bắt buộc và UX frontend.
 - `docs/pages/` chứa guide implementation chi tiết cho các feature backend.
 
 ## Primary agent workflow
+
 Agent nên dùng các file step-by-step này làm lộ trình chính:
+
 - `docs/steps/step1_system_overview.md`
 - `docs/steps/step2_clean_code_guidelines.md`
 - `docs/steps/step3_admin_pattern_docs.md`
@@ -21,6 +24,7 @@ Agent nên dùng các file step-by-step này làm lộ trình chính:
 - `docs/steps/step10_agent_task_automation.md`
 
 ## Supporting docs
+
 - `docs/admin-pattern/README.md` — giới thiệu nội dung thư mục `hub-parent` + bản đồ packages.
 - `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
 - `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và ranh giới.
@@ -36,11 +40,13 @@ Agent nên dùng các file step-by-step này làm lộ trình chính:
 - `docs/api-pattern/README.md` — `apps/api` NestJS pattern.
 
 ## Cách dùng
+
 - Bắt đầu với `docs/steps/step1_system_overview.md` và dọc theo chuỗi step-by-step.
 - Khi gặp task cụ thể, dùng `docs/steps/step5_feature_implementation_guides.md` để tìm `docs/pages/<feature>...`.
 - Khi cần hiểu kiến trúc hoặc ranh giới service, mở `docs/admin-pattern/*`.
 
 ## Tham chiếu nhanh
+
 - `AGENTS.md` — entry point cho agent.
 - `.graphify/markdown/SUMMARY_FOR_AI.md` — bản đồ monorepo.
 - `packages/.graphify/markdown/SUMMARY_FOR_AI.md` — tóm tắt packages.

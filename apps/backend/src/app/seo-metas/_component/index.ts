@@ -4,14 +4,17 @@ export {
   type SeoMetaConfirmAction,
   type SeoMetaFormValues,
   type SeoMetaDetail,
-} from "./types";
+} from "./types"
 
-export { getSeoMetaColumns } from "./columns";
+export { getSeoMetaColumns } from "./columns"
 
-export { 
+export {
   useSeoMetaDetailQuery,
   useSeoMetasListQuery,
-  useSeoMetasTrashQuery, seoMetaDetailQueryKey, prefetchSeoMetaDetail } from "./_query";
+  useSeoMetasTrashQuery,
+  seoMetaDetailQueryKey,
+  prefetchSeoMetaDetail,
+} from "./_query"
 
-export { SeoMetasTable } from "./_table/seo-metas-table";
-export { SeoMetasConfirmDialog } from "./_alert-dialog";
+export { SeoMetasTable } from "./_table/seo-metas-table"
+export { SeoMetasConfirmDialog } from "./_alert-dialog"

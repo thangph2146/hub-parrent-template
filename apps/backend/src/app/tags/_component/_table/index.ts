@@ -1,2 +1,2 @@
-export { TagsTable } from "./tags-table";
-export { TagsTrashTable } from "./tags-trash-table";
+export { TagsTable } from "./tags-table"
+export { TagsTrashTable } from "./tags-trash-table"

@@ -1,6 +1,12 @@
 import * as path from 'path';
 
 import { isImageExt } from '../common/image-processor';
+import {
+  resolveStorageFolderDisplayLabel,
+  type StorageFolderLabelLookup,
+} from './storage-folder-labels';
+
+export type { StorageFolderLabelLookup } from './storage-folder-labels';
 
 export type StorageMediaKind =
   | 'image'
@@ -66,6 +72,8 @@ const STORAGE_TAB_LABELS: Record<string, string> = {
   events: 'Sự kiện',
 
   guides: 'Hướng dẫn',
+
+  'san-pham': 'Sản phẩm',
 
   files: 'Tệp tin',
 
@@ -357,6 +365,7 @@ export function buildStorageFolderTabs(
   realm?: StorageRealm,
 
   diskFolders?: string[],
+  labelLookup?: StorageFolderLabelLookup,
 ): StorageTabDto[] {
   const scoped = realm
     ? items.filter(
@@ -387,7 +396,7 @@ export function buildStorageFolderTabs(
     .map(([id, count]) => ({
       id,
 
-      label: formatStorageTabLabel(id),
+      label: resolveStorageFolderDisplayLabel(id, id, labelLookup),
 
       count,
     }))
@@ -404,6 +413,7 @@ export function buildStorageSubFolderTabs(
   realm: StorageRealm,
   parentTabId: string,
   diskFolders?: string[],
+  labelLookup?: StorageFolderLabelLookup,
 ): StorageTabDto[] {
   const parent = parentTabId.trim();
   if (!parent || parent.includes('/')) return [];
@@ -437,7 +447,7 @@ export function buildStorageSubFolderTabs(
       const segment = id.split('/').pop() ?? id;
       return {
         id,
-        label: formatStorageTabLabel(segment),
+        label: resolveStorageFolderDisplayLabel(segment, id, labelLookup),
         count,
       };
     })

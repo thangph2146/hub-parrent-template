@@ -1,6 +1,6 @@
 # Cây thư mục — api (Graphify)
 
-> **Sinh tự động:** `2026-06-07T17:33:28.166Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-08T08:15:50.818Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -26,7 +26,6 @@ src/
 ├── face-data/
 ├── groups/
 ├── hanet/
-├── hero-slides/
 ├── imported-users/
 ├── locations/
 ├── majors/
@@ -34,9 +33,12 @@ src/
 ├── migrations/
 ├── mikro-orm/
 ├── notifications/
+├── orders/
 ├── page-contents/
 ├── parent-students/
 ├── posts/
+├── products/
+├── promo-codes/
 ├── proxy-image/
 ├── public/
 ├── roles/

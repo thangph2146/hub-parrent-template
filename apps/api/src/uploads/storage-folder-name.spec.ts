@@ -1,23 +1,48 @@
 import {
+  resolveStorageFolderSegment,
+  resolveStorageFolderSlugPath,
   sanitizeStorageFolderName,
-  sanitizeStorageFolderSegment,
+  slugifyStorageFolderSegment,
 } from './storage-folder-name';
 
 describe('storage-folder-name', () => {
-  it('giữ tiếng Việt UTF-8', () => {
-    expect(sanitizeStorageFolderSegment('sự kiện 1')).toBe('sự kiện 1');
-    expect(sanitizeStorageFolderName('sự kiện 1')).toBe('sự kiện 1');
+  it('slug tiếng Việt — value ASCII, label giữ dấu', () => {
+    expect(resolveStorageFolderSegment('Sự kiện 1')).toEqual({
+      slug: 'su-kien-1',
+      label: 'Sự kiện 1',
+    });
+    expect(resolveStorageFolderSlugPath('Sự kiện 1')).toEqual({
+      slugPath: 'su-kien-1',
+      leafLabel: 'Sự kiện 1',
+    });
+    expect(sanitizeStorageFolderName('Sự kiện 1')).toBe('su-kien-1');
   });
 
   it('hỗ trợ nhiều cấp', () => {
-    expect(sanitizeStorageFolderName('2026/06/sự kiện 1')).toBe(
-      '2026/06/sự kiện 1',
-    );
+    expect(resolveStorageFolderSlugPath('2026/06/Sự kiện 1')).toEqual({
+      slugPath: '2026/06/su-kien-1',
+      leafLabel: 'Sự kiện 1',
+    });
+  });
+
+  it('giữ segment ASCII sẵn có', () => {
+    expect(resolveStorageFolderSegment('events')).toEqual({
+      slug: 'events',
+      label: 'events',
+    });
+    expect(resolveStorageFolderSegment('2026')).toEqual({
+      slug: '2026',
+      label: '2026',
+    });
+  });
+
+  it('slugify giống bài viết', () => {
+    expect(slugifyStorageFolderSegment('Sự kiện 1')).toBe('su-kien-1');
   });
 
   it('loại ký tự path nguy hiểm', () => {
-    expect(sanitizeStorageFolderSegment('a/b')).toBe('ab');
-    expect(() => sanitizeStorageFolderSegment('..')).toThrow(
+    expect(resolveStorageFolderSegment('a/b').label).toBe('ab');
+    expect(() => resolveStorageFolderSegment('..')).toThrow(
       'Tên thư mục không hợp lệ',
     );
   });

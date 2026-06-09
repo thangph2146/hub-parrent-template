@@ -1,50 +1,57 @@
-import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table";
-import { getStaffColumns } from "../columns";
-import type { StaffRow } from "../types";
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import type {
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
+import { getStaffColumns } from "../columns"
+import type { StaffRow } from "../types"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 
 interface StaffTableProps {
-  data: StaffRow[];
-  isLoading: boolean;
-  total: number;
-  page: number;
-  pageSize: number;
-  appliedPage?: number;
-  appliedPageSize?: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  globalFilter: string;
-  onGlobalFilterChange: OnChangeFn<string>;
-  selectedRowIds: RowSelectionState;
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
-  onView: (user: StaffRow) => void;
-  onEdit: (user: StaffRow) => void;
-  onDelete: (user: StaffRow) => void;
-  onPurge: (user: StaffRow) => void;
-  onToggleActive: (user: StaffRow) => void;
-  busy: boolean;
-  currentUserId?: string;
-  actorEmail?: string;
-  isProtected: (user: StaffRow) => boolean;
-  canUpdate: boolean;
-  canDelete: boolean;
-  canRestore: boolean;
-  canHardDelete: boolean;
-  onBulkDelete: (ids: string[]) => void;
-  onBulkPurge: (ids: string[]) => void;
-  onBulkActive: (ids: string[]) => void;
-  onBulkUnactive: (ids: string[]) => void;
-  onClearFilters: () => void;
-  roleOptions?: { value: string; label: string }[];
+  data: StaffRow[]
+  isLoading: boolean
+  total: number
+  page: number
+  pageSize: number
+  appliedPage?: number
+  appliedPageSize?: number
+  onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: number) => void
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  globalFilter: string
+  onGlobalFilterChange: OnChangeFn<string>
+  selectedRowIds: RowSelectionState
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
+  onView: (user: StaffRow) => void
+  onEdit: (user: StaffRow) => void
+  onDelete: (user: StaffRow) => void
+  onPurge: (user: StaffRow) => void
+  onToggleActive: (user: StaffRow) => void
+  busy: boolean
+  currentUserId?: string
+  actorEmail?: string
+  isProtected: (user: StaffRow) => boolean
+  canUpdate: boolean
+  canDelete: boolean
+  canRestore: boolean
+  canHardDelete: boolean
+  onBulkDelete: (ids: string[]) => void
+  onBulkPurge: (ids: string[]) => void
+  onBulkActive: (ids: string[]) => void
+  onBulkUnactive: (ids: string[]) => void
+  onClearFilters: () => void
+  roleOptions?: { value: string; label: string }[]
   listParams: {
-    q?: string;
-    filters?: Record<string, string>;
-  };
-  onRowPrefetch?: (row: StaffRow) => void;
+    q?: string
+    filters?: Record<string, string>
+  }
+  onRowPrefetch?: (row: StaffRow) => void
 }
 
 export function StaffTable(props: StaffTableProps) {
@@ -85,7 +92,7 @@ export function StaffTable(props: StaffTableProps) {
     roleOptions,
     listParams,
     onRowPrefetch,
-  } = props;
+  } = props
 
   const columns = getStaffColumns({
     view: "list",
@@ -104,7 +111,7 @@ export function StaffTable(props: StaffTableProps) {
     canDelete: canDeletePerm,
     canRestore: canRestorePerm,
     canHardDelete: canHardDeletePerm,
-  });
+  })
 
   return (
     <AdminDataTable<StaffRow>
@@ -123,12 +130,12 @@ export function StaffTable(props: StaffTableProps) {
       globalFilterPlaceholder="Tìm theo email, họ tên (API)…"
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
-      canSelectRow={(row) => String(row.original.id) !== String(currentUserId ?? "")}
+      canSelectRow={(row) =>
+        String(row.original.id) !== String(currentUserId ?? "")
+      }
       bulkActions={[
         ...(canUpdate
           ? [
@@ -142,11 +149,11 @@ export function StaffTable(props: StaffTableProps) {
                       (u) =>
                         String(u.id) !== String(currentUserId ?? "") &&
                         !isProtected(u) &&
-                        !u.isActive,
+                        !u.isActive
                     )
-                    .map((u) => String(u.id));
-                  if (!ids.length) return;
-                  await onBulkActive(ids);
+                    .map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkActive(ids)
                 },
               },
               {
@@ -159,11 +166,11 @@ export function StaffTable(props: StaffTableProps) {
                       (u) =>
                         String(u.id) !== String(currentUserId ?? "") &&
                         !isProtected(u) &&
-                        u.isActive,
+                        u.isActive
                     )
-                    .map((u) => String(u.id));
-                  if (!ids.length) return;
-                  await onBulkUnactive(ids);
+                    .map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkUnactive(ids)
                 },
               },
             ]
@@ -179,11 +186,11 @@ export function StaffTable(props: StaffTableProps) {
                     .filter(
                       (u) =>
                         String(u.id) !== String(currentUserId ?? "") &&
-                        !isProtected(u),
+                        !isProtected(u)
                     )
-                    .map((u) => String(u.id));
-                  if (!ids.length) return;
-                  await onBulkDelete(ids);
+                    .map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkDelete(ids)
                 },
               },
             ]
@@ -199,25 +206,28 @@ export function StaffTable(props: StaffTableProps) {
                     .filter(
                       (u) =>
                         String(u.id) !== String(currentUserId ?? "") &&
-                        !isProtected(u),
+                        !isProtected(u)
                     )
-                    .map((u) => String(u.id));
-                  if (!ids.length) return;
-                  await onBulkPurge(ids);
+                    .map((u) => String(u.id))
+                  if (!ids.length) return
+                  await onBulkPurge(ids)
                 },
               },
             ]
           : []),
       ]}
-      xlsxExport={buildAdminTableXlsxExport("staff", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("staff", {
+        pageCount: data.length,
+        total,
+      })}
       exportFetchPage={async ({ page: exportPage, limit }) => {
         const res = await api.users.list({
           q: listParams.q,
           page: exportPage,
           limit,
           filters: listParams.filters,
-        });
-        return { items: res.items, total: res.total };
+        })
+        return { items: res.items, total: res.total }
       }}
       pagination={{
         page,
@@ -232,5 +242,5 @@ export function StaffTable(props: StaffTableProps) {
         itemLabel: "tài khoản",
       }}
     />
-  );
+  )
 }

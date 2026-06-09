@@ -1,1 +1,1 @@
-export { SpeakersConfirmDialog } from "./speakers-confirm-dialog";
+export { SpeakersConfirmDialog } from "./speakers-confirm-dialog"

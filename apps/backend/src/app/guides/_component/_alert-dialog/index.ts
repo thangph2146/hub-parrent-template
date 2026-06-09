@@ -1,1 +1,1 @@
-export { GuidesConfirmDialog } from "./guides-confirm-dialog";
+export { GuidesConfirmDialog } from "./guides-confirm-dialog"

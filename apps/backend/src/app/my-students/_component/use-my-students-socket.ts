@@ -19,7 +19,7 @@ export type ParentStudentReviewSocketPayload = {
 function getSocketOrigin(): string {
   const api = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
     /\/$/,
-    "",
+    ""
   )
   return api.replace(/\/api$/i, "")
 }
@@ -35,7 +35,7 @@ const POLL_WHEN_CONNECTED_MS = 45_000
 
 export function useMyStudentsSocket(
   enabled: boolean,
-  onReviewed?: (payload: ParentStudentReviewSocketPayload) => void,
+  onReviewed?: (payload: ParentStudentReviewSocketPayload) => void
 ): {
   connected: boolean
   socketError: boolean
@@ -126,7 +126,7 @@ export function useMyStudentsSocket(
 
 export function myStudentsPollInterval(
   connected: boolean,
-  hasPending: boolean,
+  hasPending: boolean
 ): number | false {
   if (!hasPending) return false
   return connected ? POLL_WHEN_CONNECTED_MS : POLL_WHEN_DISCONNECTED_MS

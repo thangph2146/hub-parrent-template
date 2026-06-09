@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `C:/HUB/source/hub-parent-template/apps/backend`
-- **context.generatedAt:** 2026-06-07T17:33:25.759Z
+- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/backend`
+- **context.generatedAt:** 2026-06-08T08:15:49.896Z
 
 ## Mục lục artefact Graphify
 
@@ -34,10 +34,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Thống kê graph:** [`GRAPH_STATS.md`](GRAPH_STATS.md) — quy mô node/link, top file in/out-degree (điểm nóng import).
 
 ## Thống kê
-- **totalFiles:** 539
-- **clientComponents:** 220
+- **totalFiles:** 574
+- **clientComponents:** 248
 
-## Trang (pages) (88)
+## Trang (pages) (97)
 - `src/app/academic-years/new/page.tsx`
 - `src/app/academic-years/page.tsx`
 - `src/app/academic-years/[id]/edit/page.tsx`
@@ -82,13 +82,22 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/majors/[id]/edit/page.tsx`
 - `src/app/majors/[id]/page.tsx`
 - `src/app/my-students/page.tsx`
+- `src/app/orders/page.tsx`
+- `src/app/orders/[id]/page.tsx`
 - `src/app/page.tsx`
 - `src/app/parent-students/page.tsx`
 - `src/app/posts/new/page.tsx`
 - `src/app/posts/page.tsx`
 - `src/app/posts/[id]/edit/page.tsx`
 - `src/app/posts/[id]/page.tsx`
+- `src/app/products/new/page.tsx`
+- `src/app/products/page.tsx`
+- `src/app/products/[id]/edit/page.tsx`
+- `src/app/products/[id]/page.tsx`
 - `src/app/profile/page.tsx`
+- `src/app/promo-codes/new/page.tsx`
+- `src/app/promo-codes/page.tsx`
+- `src/app/promo-codes/[id]/edit/page.tsx`
 - `src/app/rbac/page.tsx`
 - `src/app/rbac/[id]/edit/page.tsx`
 - `src/app/rbac/[id]/page.tsx`
@@ -312,17 +321,30 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/events/new/loading.tsx` | loading | no | Loading |  |
 | `src/app/events/new/page.tsx` | page | yes | NewEventPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/events/_component, src/hooks/use-admin-mutation.ts |
 | `src/app/events/page.tsx` | page | yes | EventsPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib, src/lib/admin-row-action-handlers.ts, src/app/events/_component, src/hooks/use- |
-| `src/app/file-storage/_component/_hooks/index.ts` | ts | no | useFileStorageList, useFileStorageActions | src/app/file-storage/_component/_hooks/use-file-storage-list.ts, src/app/file-storage/_component/_hooks/use-file-storage-actions.ts |
-| `src/app/file-storage/_component/_hooks/use-file-storage-actions.ts` | ts | yes | useFileStorageActions | src/lib/admin-upload.ts, src/lib/admin-uploads.ts, src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/_component/_hooks/index.ts` | ts | no | useFileStorageList, useFileStorageActions, useStorageFolders | src/app/file-storage/_component/_hooks/use-file-storage-list.ts, src/app/file-storage/_component/_hooks/use-file-storage-actions.ts, src/app/file-storage/_component/_hooks/use-storage-folders.ts |
+| `src/app/file-storage/_component/_hooks/use-file-storage-actions.ts` | ts | yes | useFileStorageActions | src/lib/admin-uploads.ts, src/app/file-storage/_component/file-storage-import-confirm-dialogs.tsx, src/app/file-storage/_component/storage-upload-policy.ts, src/app/file-storage/_component/types.ts, s |
 | `src/app/file-storage/_component/_hooks/use-file-storage-list.ts` | ts | yes | useFileStorageList | src/lib/admin-uploads.ts, src/app/file-storage/_component/types.ts |
-| `src/app/file-storage/_component/_table/file-storage-table.tsx` | tsx | yes | FileStorageTableProps, FileStorageTable | src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/_component/_hooks/use-storage-folders.ts` | ts | yes | useStorageFolders | src/lib/admin-uploads.ts |
+| `src/app/file-storage/_component/_table/file-storage-table.tsx` | tsx | yes | FileStorageTableProps, FileStorageTable | src/app/file-storage/_component/file-storage-empty.tsx, src/app/file-storage/_component/types.ts |
 | `src/app/file-storage/_component/_table/index.ts` | ts | no | FileStorageTable | src/app/file-storage/_component/_table/file-storage-table.tsx |
 | `src/app/file-storage/_component/columns.tsx` | tsx | yes | FileStorageColumnsProps, getFileStorageColumns | src/lib/format-admin-datetime.ts, src/app/file-storage/_component/file-row-actions.tsx, src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
 | `src/app/file-storage/_component/file-row-actions.tsx` | tsx | yes | FileStorageRowActionsProps, FileStorageRowActions | src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
-| `src/app/file-storage/_component/index.ts` | ts | no | getFileStorageColumns, FileStorageRowActions, FileStorageTable, useFileStorageActions, useFileStorageList, formatFileSize, getShortMimeType, isImageMime | src/app/file-storage/_component/columns.tsx, src/app/file-storage/_component/file-row-actions.tsx, src/app/file-storage/_component/_table, src/app/file-storage/_component/_hooks, src/app/file-storage/ |
+| `src/app/file-storage/_component/file-storage-allowed-extensions-picker.tsx` | tsx | yes | FileStorageAllowedExtensionsPicker | src/app/file-storage/_component/types.ts, src/app/file-storage/_component/storage-upload-policy.ts |
+| `src/app/file-storage/_component/file-storage-create-folder-button.tsx` | tsx | yes | FileStorageCreateFolderButton | src/lib/admin-uploads.ts, src/app/file-storage/_component/file-storage-allowed-extensions-picker.tsx, src/app/file-storage/_component/storage-upload-policy.ts, src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/_component/file-storage-delete-folder-button.tsx` | tsx | yes | FileStorageDeleteFolderButton | src/lib/admin-uploads.ts, src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
+| `src/app/file-storage/_component/file-storage-empty.tsx` | tsx | yes | FileStorageGlobalEmpty, FileStorageTabEmpty |  |
+| `src/app/file-storage/_component/file-storage-folder-nav.tsx` | tsx | yes | FileStorageFolderNav | src/hooks/use-debounced-value.ts, src/app/file-storage/_component/_hooks/use-storage-folders.ts, src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
+| `src/app/file-storage/_component/file-storage-folder-tree.tsx` | tsx | yes | STORAGE_ROOT_IMAGES, STORAGE_ROOT_FILES, STORAGE_ROOT_VIDEOS, STORAGE_ROOT_AUDIO, FileStorageVirtualRoot, FileStorageFolderTree | src/app/file-storage/_component/utils.ts, src/lib/admin-uploads.ts, src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/_component/file-storage-import-confirm-dialogs.tsx` | tsx | yes | FileStorageImportConfirmState, FileStorageImportConfirmDialogs |  |
+| `src/app/file-storage/_component/file-storage-move-dialog.tsx` | tsx | yes | FileStorageMoveDialog | src/lib/admin-uploads.ts, src/app/file-storage/_component/file-storage-folder-tree.tsx, src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
+| `src/app/file-storage/_component/file-storage-reorganize-dialog.tsx` | tsx | yes | FileStorageReorganizeDialog | src/lib/admin-uploads.ts, src/app/file-storage/_component/types.ts, src/app/file-storage/_component/utils.ts |
+| `src/app/file-storage/_component/file-storage-upload-dialog.tsx` | tsx | yes | FileStorageUploadDialog | src/lib/admin-uploads.ts, src/lib/admin-upload.ts, src/app/file-storage/_component/file-storage-allowed-extensions-picker.tsx, src/app/file-storage/_component/file-storage-folder-tree.tsx, src/app/fil |
+| `src/app/file-storage/_component/index.ts` | ts | no | getFileStorageColumns, FileStorageRowActions, StorageVideoPreview, FileStorageGlobalEmpty, FileStorageTabEmpty, FileStorageUploadDialog, FileStorageCreateFolderButton, FileStorageDeleteFolderButton, F | src/app/file-storage/_component/columns.tsx, src/app/file-storage/_component/file-row-actions.tsx, src/app/file-storage/_component/storage-video-preview.tsx, src/app/file-storage/_component/file-stora |
+| `src/app/file-storage/_component/storage-upload-policy.ts` | ts | no | StorageExtensionGroupId, StorageExtensionGroup, STORAGE_EXTENSION_GROUPS, REALM_EXTENSION_GROUP_IDS, getRealmDefaultGroupIds, normalizeExtension, normalizeExtensions, getRealmDefaultExtensions, extens | src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/_component/storage-video-preview.tsx` | tsx | yes | StorageVideoPreview | src/app/file-storage/_component/utils.ts, src/app/file-storage/_component/types.ts |
 | `src/app/file-storage/_component/types.ts` | ts | no | FileStorageRow, FileStorageTab | src/lib/admin-uploads.ts |
-| `src/app/file-storage/_component/utils.ts` | ts | no | formatFileSize, isImageMime, getShortMimeType |  |
-| `src/app/file-storage/page.tsx` | page | yes | FileStoragePage | src/providers/auth-provider.tsx, src/app/file-storage/_component, src/app/file-storage/_component/utils.ts |
+| `src/app/file-storage/_component/utils.ts` | ts | no | resolveStorageAssetUrl, storageThumbnailUrl, storageZipEntryPath, formatUploadOwnerLabel, formatUploadOwnerCell, formatFileSize, isImageMime, isVideoMime, isPreviewableStorageRow, isImageStorageRow, i | src/app/file-storage/_component/types.ts |
+| `src/app/file-storage/page.tsx` | page | yes | FileStoragePage | src/providers/auth-provider.tsx, src/lib/api.ts, src/lib/build-admin-filter-query.ts, src/hooks/use-debounced-value.ts, src/app/file-storage/_component/storage-upload-policy.ts, src/app/file-storage/_ |
 | `src/app/graph/page.tsx` | page | yes | GraphPage |  |
 | `src/app/guides/[id]/edit/loading.tsx` | loading | no | Loading |  |
 | `src/app/guides/[id]/edit/page.tsx` | page | yes | EditGuidePage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/guides/_component, src/hooks/use-admin-mutation.ts |
@@ -407,6 +429,12 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/my-students/_component/use-my-students-socket.ts` | ts | yes | MY_STUDENTS_SOCKET_PATH, ParentStudentReviewSocketPayload, useMyStudentsSocket, myStudentsPollInterval | src/lib/auth-session.ts |
 | `src/app/my-students/_component/year-averages-list.tsx` | tsx | yes | YearAveragesList | src/types/student-scores.ts, src/app/my-students/_component/score-utils.ts, src/app/my-students/_component/_table/my-students-score-table.tsx |
 | `src/app/my-students/page.tsx` | page | yes | MyStudentsPage | src/providers/auth-provider.tsx, src/lib/api.ts, src/hooks/queries.ts, src/app/my-students/_component, src/app/my-students/_component/use-my-students-socket.ts, src/hooks/use-admin-mutation.ts |
+| `src/app/orders/[id]/page.tsx` | page | yes | OrderDetailPage | src/lib/admin-navigation.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/orders/_component |
+| `src/app/orders/_component/columns.tsx` | tsx | yes | getOrderColumns | src/app/orders/_component/types.ts |
+| `src/app/orders/_component/index.ts` | ts | no |  | src/app/orders/_component/types.ts, src/app/orders/_component/columns.tsx, src/app/orders/_component/use-orders-queries.ts |
+| `src/app/orders/_component/types.ts` | ts | no | OrderRow, mapOrderRow, ORDER_STATUS_LABELS |  |
+| `src/app/orders/_component/use-orders-queries.ts` | ts | no | orderDetailQueryKey, prefetchOrderDetail, useOrderDetailQuery, useOrdersListQuery, useOrderStatusCountsQuery | src/lib/admin-detail-query.ts, src/app/orders/_component/types.ts |
+| `src/app/orders/page.tsx` | page | yes | OrdersPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/lib/api.ts, src/app/orders/_component |
 | `src/app/page.tsx` | page | yes | AdminDashboardPage | src/providers/auth-provider.tsx, src/lib/api.ts, src/types/dashboard.ts |
 | `src/app/parent-students/_component/_query/index.ts` | ts | no |  | src/app/parent-students/_component/_query/use-parent-students-queries.ts |
 | `src/app/parent-students/_component/_query/use-parent-students-queries.ts` | ts | yes | useReviewParentStudentMutation | src/lib/api.ts, src/hooks/queries.ts, src/hooks/use-admin-mutation.ts |
@@ -444,11 +472,26 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/posts/new/loading.tsx` | loading | no | Loading |  |
 | `src/app/posts/new/page.tsx` | page | yes | NewPostPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/app/posts/_component, src/app/posts/_component/_query, src/hooks/use-admin-mutation.ts |
 | `src/app/posts/page.tsx` | page | yes | PostsPage | src/lib/admin-navigation.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/app/posts/_component/_table, src/app/posts/_component/_hooks, src/lib/admin-row-action-handlers.ts, src/app/posts/_com |
+| `src/app/products/[id]/edit/page.tsx` | page | yes | EditProductPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/products/_component |
+| `src/app/products/[id]/page.tsx` | page | yes | ProductDetailPage | src/lib/admin-navigation.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/app/products/_component |
+| `src/app/products/_component/columns.tsx` | tsx | yes | getProductColumns | src/lib/admin-row-action-handlers.ts, src/lib/admin-table-columns.tsx, src/app/products/_component/types.ts |
+| `src/app/products/_component/index.ts` | ts | no | ProductsTable, ProductFormShell, useProductForm, buildProductPayload, productToFormValues, ProductUnitVariantsField | src/app/products/_component/types.ts, src/app/products/_component/columns.tsx, src/app/products/_component/use-products-queries.ts, src/app/products/_component/products-table.tsx, src/app/products/_co |
+| `src/app/products/_component/product-form.tsx` | tsx | yes | useProductForm, productToFormValues, buildProductPayload, ProductFormShell | src/app/products/_component/types.ts, src/app/products/_component/product-unit-variants-field.tsx |
+| `src/app/products/_component/product-unit-variants-field.tsx` | tsx | yes | ProductUnitVariantsField | src/lib/storage-image-picker-dialog.tsx, src/app/products/_component/types.ts |
+| `src/app/products/_component/products-table.tsx` | tsx | yes | ProductsTable | src/app/products/_component/types.ts |
+| `src/app/products/_component/types.ts` | ts | no | ProductRow, mapProductRow, ProductUnitFormRow, ProductFormValues, EMPTY_UNIT_ROW, parseImageUrls, formatImageUrls |  |
+| `src/app/products/_component/use-products-queries.ts` | ts | no | productDetailQueryKey, prefetchProductDetail, useProductDetailQuery, useProductsListQuery, useProductsTrashQuery | src/lib/admin-detail-query.ts, src/app/products/_component/types.ts |
+| `src/app/products/new/page.tsx` | page | yes | NewProductPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/products/_component |
+| `src/app/products/page.tsx` | page | yes | ProductsPage | src/lib/admin-navigation.ts, src/hooks/use-debounced-value.ts, src/providers/auth-provider.tsx, src/lib/api.ts, src/lib/admin-row-action-handlers.ts, src/hooks/use-admin-mutation.ts, src/app/products/ |
 | `src/app/profile/_components/profile-detail-section.tsx` | tsx | yes | ProfileDetailSection | src/lib/api.ts, src/app/profile/_components/profile-utils.ts |
 | `src/app/profile/_components/profile-edit-section.tsx` | tsx | yes | ProfileEditFormState, ProfileEditSection | src/app/profile/_components/profile-utils.ts |
 | `src/app/profile/_components/profile-sidebar.tsx` | tsx | yes | ProfileSidebar | src/lib/api.ts, src/app/profile/_components/profile-utils.ts |
 | `src/app/profile/_components/profile-utils.ts` | ts | no | formatProfileDateTime, profileInitials, telHref, PROFILE_FIELD_CLASS, PROFILE_TEXTAREA_CLASS, PROFILE_ACTION_BAR_CLASS |  |
 | `src/app/profile/page.tsx` | page | yes | AdminProfilePage | src/providers/auth-provider.tsx, src/hooks/queries.ts, src/lib/auth-session.ts, src/lib/admin-upload.ts |
+| `src/app/promo-codes/[id]/edit/page.tsx` | page | yes | EditPromoPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/promo-codes/_component/promo-form.tsx |
+| `src/app/promo-codes/_component/promo-form.tsx` | tsx | yes | PromoFormValues, usePromoForm, promoToFormValues, buildPromoPayload, buildPromoUpdatePayload, PromoFormShell |  |
+| `src/app/promo-codes/new/page.tsx` | page | yes | NewPromoPage | src/lib/admin-navigation.ts, src/lib/api.ts, src/hooks/use-admin-mutation.ts, src/app/promo-codes/_component/promo-form.tsx |
+| `src/app/promo-codes/page.tsx` | page | yes | PromoCodesPage | src/lib/admin-navigation.ts, src/lib/api.ts |
 | `src/app/rbac/[id]/edit/loading.tsx` | loading | no | Loading |  |
 | `src/app/rbac/[id]/edit/page.tsx` | page | yes | EditRolePage | src/lib/admin-navigation.ts, src/app/rbac/_component/_hooks, src/app/rbac/_component/_form, src/app/rbac/_component/_query, src/providers/auth-provider.tsx, src/config/protected-admin.ts |
 | `src/app/rbac/[id]/loading.tsx` | loading | no | Loading |  |
@@ -656,7 +699,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/admin-table-config.ts` | ts | no | adminTableStorageKeys, createAdminShowAllHandler, buildAdminTableExportConfig | src/lib/fetch-all-admin-list.ts |
 | `src/lib/admin-trash-export.ts` | ts | no | AdminTrashExportParams, createAdminTrashExportFetchPage |  |
 | `src/lib/admin-upload.ts` | ts | no |  | src/lib/api.ts |
-| `src/lib/admin-uploads.ts` | ts | no |  | src/lib/api.ts |
+| `src/lib/admin-uploads.ts` | ts | no | FileStorageTabId | src/lib/api.ts, src/lib/fetch-all-admin-list.ts |
 | `src/lib/admin-xlsx-export.ts` | ts | no | downloadAdminTableXlsx, buildExportFromFields, buildCsvFromColumns, downloadXlsxFile, downloadXlsxWorkbook, appendExportDateToXlsxFileName, buildAdminTableXlsxExport, buildEventDetailXlsxExport |  |
 | `src/lib/api.ts` | ts | no | api, ApiError | src/lib/auth-session.ts |
 | `src/lib/auth-routes.ts` | ts | no | AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, AUTH_PATHS, AuthPath, isAuthPath, getAdminAppHomeExternalPath, getAdminLoginExternalPath |  |
@@ -672,6 +715,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/index.ts` | ts | no | buildAdminFilterQuery, identityFilterMapping, COMMON_FILTER_MAPPINGS, normalizeAdminFilterValue, normalizeAdminFilterValues, formatVND, formatDate, formatAdminDateTime, isParsableDateTime, adminDateRa | src/lib/build-admin-filter-query.ts, src/lib/format.ts, src/lib/format-admin-datetime.ts, src/lib/admin-table-columns.tsx, src/lib/admin-row-action-handlers.ts |
 | `src/lib/permission-labels.ts` | ts | no | PERMISSION_LABEL_VI, permissionLabelVi, permissionGroupKey, permissionGroupLabelVi |  |
 | `src/lib/product-price.ts` | ts | no | unitSellingAndListPrice |  |
+| `src/lib/storage-image-picker-dialog.tsx` | tsx | yes | StorageImagePickerDialog | src/lib/admin-uploads.ts, src/app/file-storage/_component/utils.ts |
 | `src/providers/admin-realtime-sync.tsx` | tsx | yes | AdminRealtimeSync | src/providers/auth-provider.tsx, src/hooks/use-admin-realtime-sync.ts |
 | `src/providers/auth-provider.tsx` | tsx | yes | StaffLoginResult, AuthProvider, useAuth, useClientReady | src/features/auth/auth-api.ts, src/lib/auth-session.ts, src/lib/auth-routes.ts |
 | `src/providers/backend-admin-layout.tsx` | tsx | yes | BackendAdminLayoutProvider | src/lib/api.ts, src/config/admin-layout-static.ts, src/providers/admin-realtime-sync.tsx, src/providers/auth-provider.tsx |

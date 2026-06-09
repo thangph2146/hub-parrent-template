@@ -1,9 +1,9 @@
-import { Skeleton } from "@ui/components/skeleton";
+import { Skeleton } from "@ui/components/skeleton"
 
 export default function PostsLoading() {
   return (
-    <div className="space-y-6 p-6 animate-pulse">
-      <div className="flex justify-between items-center">
+    <div className="animate-pulse space-y-6 p-6">
+      <div className="flex items-center justify-between">
         <div className="space-y-2">
           <Skeleton className="h-8 w-[250px]" />
           <Skeleton className="h-4 w-[350px]" />
@@ -26,5 +26,5 @@ export default function PostsLoading() {
         ))}
       </div>
     </div>
-  );
+  )
 }

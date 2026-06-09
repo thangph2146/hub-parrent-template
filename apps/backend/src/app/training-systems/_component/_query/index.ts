@@ -1,15 +1,15 @@
-import { adminDetailQueryOptions,
+import {
+  adminDetailQueryOptions,
   prefetchAdminDetailQuery,
-} from "@/lib/admin-detail-query";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, type QueryClient } from "@tanstack/react-query";
-import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
-import type { TrainingSystemDetail, TrainingSystemRow } from "../types";
-
+} from "@/lib/admin-detail-query"
+import type { UseQueryResult } from "@tanstack/react-query"
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list"
+import { useQuery, type QueryClient } from "@tanstack/react-query"
+import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
+import type { TrainingSystemDetail, TrainingSystemRow } from "../types"
 
 export const trainingSystemDetailQueryKey = (id: string) =>
-  ["training-systems", "detail", id] as const;
+  ["training-systems", "detail", id] as const
 
 export function prefetchTrainingSystemDetail(
   queryClient: QueryClient,
@@ -20,55 +20,57 @@ export function prefetchTrainingSystemDetail(
     queryClient,
     trainingSystemDetailQueryKey(id),
     () => api.trainingSystems.get<TrainingSystemDetail>(id)
-  );
+  )
 }
 
-export function useTrainingSystemDetailQuery(
-  api: StoreSyncSdk,
-  id: string
-) {
+export function useTrainingSystemDetailQuery(api: StoreSyncSdk, id: string) {
   return useQuery({
     ...adminDetailQueryOptions(
       trainingSystemDetailQueryKey(id),
       async () => api.trainingSystems.get<TrainingSystemDetail>(id),
       id
     ),
-});
+  })
 }
 
 export function useTrainingSystemsListQuery(
   apiParam: StoreSyncSdk,
   enabled: boolean,
-  filters?: Record<string, string>,
+  filters?: Record<string, string>
 ): UseQueryResult<TrainingSystemRow[]> {
   return useQuery({
     queryKey: ["training-systems", "list", filters],
     queryFn: async (): Promise<TrainingSystemRow[]> => {
-      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
-      const items: TrainingSystemRow[] = [];
-      let page = 1;
-      let total = Number.POSITIVE_INFINITY;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT
+      const items: TrainingSystemRow[] = []
+      let page = 1
+      let total = Number.POSITIVE_INFINITY
 
       while (items.length < total) {
-        const result = await apiParam.trainingSystems.list<TrainingSystemRow>({ page, limit, status: "active", filters });
-        items.push(...result.items);
-        total = result.total;
-        if (result.items.length === 0) break;
-        page += 1;
+        const result = await apiParam.trainingSystems.list<TrainingSystemRow>({
+          page,
+          limit,
+          status: "active",
+          filters,
+        })
+        items.push(...result.items)
+        total = result.total
+        if (result.items.length === 0) break
+        page += 1
       }
 
-      return items;
+      return items
     },
     enabled,
-  });
+  })
 }
 
 export interface UseTrashQueryProps {
-  api: StoreSyncSdk;
-  trashPage: number;
-  trashPageSize: number;
-  debouncedTrashQ: string;
-  enabled: boolean;
+  api: StoreSyncSdk
+  trashPage: number
+  trashPageSize: number
+  debouncedTrashQ: string
+  enabled: boolean
 }
 
 export function useTrainingSystemsTrashQuery({
@@ -78,9 +80,18 @@ export function useTrainingSystemsTrashQuery({
   debouncedTrashQ,
   enabled,
   filters,
-}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<PagedResult<TrainingSystemRow>> {
+}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<
+  PagedResult<TrainingSystemRow>
+> {
   return useQuery({
-    queryKey: ["training-systems", "trash", trashPage, trashPageSize, debouncedTrashQ, filters],
+    queryKey: [
+      "training-systems",
+      "trash",
+      trashPage,
+      trashPageSize,
+      debouncedTrashQ,
+      filters,
+    ],
     enabled,
     queryFn: async (): Promise<PagedResult<TrainingSystemRow>> => {
       return apiParam.trainingSystems.list<TrainingSystemRow>({
@@ -89,7 +100,7 @@ export function useTrainingSystemsTrashQuery({
         search: debouncedTrashQ.trim() || undefined,
         status: "deleted",
         ...filters,
-      });
+      })
     },
-  });
+  })
 }

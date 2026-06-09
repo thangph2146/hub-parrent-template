@@ -6,10 +6,13 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { PostListRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 
 export interface PostsTrashTableProps {
   data: PostListRow[]
@@ -77,7 +80,14 @@ export function PostsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={canExport ? buildAdminTableXlsxExport("posts-trash", { pageCount: data.length, total }) : undefined}
+      xlsxExport={
+        canExport
+          ? buildAdminTableXlsxExport("posts-trash", {
+              pageCount: data.length,
+              total,
+            })
+          : undefined
+      }
       exportFetchPage={
         canExport
           ? async ({ page: exportPage, limit }) => {
@@ -85,16 +95,16 @@ export function PostsTrashTable({
                 Object.entries(listQuery.filters ?? {}).map(([key, value]) => [
                   `filter[${key}]`,
                   value as string | number | boolean | undefined | null,
-                ]),
-              );
+                ])
+              )
               const result = await api.posts.list<PostListRow>({
                 page: exportPage,
                 limit,
                 search: listQuery.search,
                 status: "deleted",
                 ...filterQuery,
-              });
-              return { items: result.items, total: result.total };
+              })
+              return { items: result.items, total: result.total }
             }
           : undefined
       }

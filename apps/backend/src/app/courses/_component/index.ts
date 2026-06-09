@@ -1,13 +1,18 @@
-export type { CourseRow, CourseFormValues, CourseConfirmAction, CourseDetail } from "./types";
-export { courseFormSchema } from "./types";
-export { getCourseColumns } from "./columns";
+export type {
+  CourseRow,
+  CourseFormValues,
+  CourseConfirmAction,
+  CourseDetail,
+} from "./types"
+export { courseFormSchema } from "./types"
+export { getCourseColumns } from "./columns"
 export {
   courseDetailQueryKey,
   prefetchCourseDetail,
   useCourseDetailQuery,
   useCoursesListQuery,
   useCoursesTrashQuery,
-} from "./_query";
+} from "./_query"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -16,7 +21,7 @@ export {
   useCourseForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./_hooks";
-export { CourseFormShell } from "./_form";
-export { CoursesConfirmDialog } from "./_alert-dialog";
-export { CoursesTable, CoursesTrashTable } from "./_table";
+} from "./_hooks"
+export { CourseFormShell } from "./_form"
+export { CoursesConfirmDialog } from "./_alert-dialog"
+export { CoursesTable, CoursesTrashTable } from "./_table"

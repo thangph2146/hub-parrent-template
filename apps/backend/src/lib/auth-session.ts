@@ -1,29 +1,29 @@
-import type { AuthUser, User } from "@workspace/api-client";
+import type { AuthUser, User } from "@workspace/api-client"
 import {
   fetchAdminSessionPayload,
   toAdminSessionUser,
-} from "@/features/auth/auth-api";
+} from "@/features/auth/auth-api"
 
-export const ADMIN_SESSION_KEY = "storesync_admin_session";
+export const ADMIN_SESSION_KEY = "storesync_admin_session"
 
-export const ADMIN_SESSION_EVENT = "HUB_ADMIN-session";
+export const ADMIN_SESSION_EVENT = "HUB_ADMIN-session"
 
 /** Cùng một chuỗi sessionStorage → cùng reference `AuthUser` (bắt buộc cho useSyncExternalStore). */
 let sessionReadCache: { raw: string | null; user: AuthUser | null } | null =
-  null;
+  null
 
 function normalizePermissionValues(value: unknown): string[] {
   const visit = (input: unknown): string[] => {
     if (Array.isArray(input)) {
-      return input.flatMap((item) => visit(item));
+      return input.flatMap((item) => visit(item))
     }
     if (typeof input !== "string") {
-      return [];
+      return []
     }
 
-    const trimmed = input.trim();
+    const trimmed = input.trim()
     if (!trimmed) {
-      return [];
+      return []
     }
 
     if (
@@ -31,29 +31,29 @@ function normalizePermissionValues(value: unknown): string[] {
       (trimmed.startsWith('"') && trimmed.endsWith('"'))
     ) {
       try {
-        return visit(JSON.parse(trimmed));
+        return visit(JSON.parse(trimmed))
       } catch {
-        return [trimmed];
+        return [trimmed]
       }
     }
 
-    return [trimmed];
-  };
+    return [trimmed]
+  }
 
-  return [...new Set(visit(value))];
+  return [...new Set(visit(value))]
 }
 
 function parseAdminSessionRaw(raw: string | null): AuthUser | null {
-  if (!raw) return null;
+  if (!raw) return null
   try {
-    const data = JSON.parse(raw) as AuthUser;
+    const data = JSON.parse(raw) as AuthUser
     const dataRecord = data as unknown as {
-      id?: string | number;
-      email?: string;
-      name?: string | null;
-      permissions?: unknown[];
-      roles?: unknown[];
-    };
+      id?: string | number
+      email?: string
+      name?: string | null
+      permissions?: unknown[]
+      roles?: unknown[]
+    }
     if (
       !(
         (typeof dataRecord.id === "number" && Number.isFinite(dataRecord.id)) ||
@@ -68,51 +68,51 @@ function parseAdminSessionRaw(raw: string | null): AuthUser | null {
       ) ||
       !Array.isArray(dataRecord.roles)
     ) {
-      return null;
+      return null
     }
     return {
       ...data,
       permissions: normalizePermissionValues(dataRecord.permissions),
-    };
+    }
   } catch {
-    return null;
+    return null
   }
 }
 
 export function readAdminSession(): AuthUser | null {
-  if (typeof window === "undefined") return null;
-  const raw = sessionStorage.getItem(ADMIN_SESSION_KEY);
+  if (typeof window === "undefined") return null
+  const raw = sessionStorage.getItem(ADMIN_SESSION_KEY)
   if (sessionReadCache && sessionReadCache.raw === raw) {
-    return sessionReadCache.user;
+    return sessionReadCache.user
   }
-  const user = parseAdminSessionRaw(raw);
-  sessionReadCache = { raw, user };
-  return user;
+  const user = parseAdminSessionRaw(raw)
+  sessionReadCache = { raw, user }
+  return user
 }
 
 export function writeAdminSession(user: AuthUser): void {
-  sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(user));
+  sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(user))
   sessionReadCache = {
     raw: sessionStorage.getItem(ADMIN_SESSION_KEY),
     user,
-  };
+  }
 }
 
 /** Sau khi cập nhật hồ sơ qua API — giữ nguyên permissions từ phiên đăng nhập. */
 export function patchAdminSessionProfile(
   fields: Partial<
     Pick<AuthUser, "name" | "phone" | "address" | "image" | "updatedAt">
-  >,
+  >
 ): void {
-  const prev = readAdminSession();
-  if (!prev) return;
-  writeAdminSession({ ...prev, ...fields });
-  notifyAdminSessionChanged();
+  const prev = readAdminSession()
+  if (!prev) return
+  writeAdminSession({ ...prev, ...fields })
+  notifyAdminSessionChanged()
 }
 
 function notifyAdminSessionChanged(): void {
   if (typeof window !== "undefined") {
-    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
+    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
   }
 }
 
@@ -125,23 +125,23 @@ export async function syncAdminSessionIfCurrentUser(
   profileFromUpdate?: Pick<
     User,
     "fullName" | "phone" | "address" | "avatar" | "updatedAt"
-  >,
+  >
 ): Promise<void> {
-  const sessionId = getAdminUserId();
+  const sessionId = getAdminUserId()
   if (sessionId == null || String(sessionId) !== String(updatedUserId)) {
-    return;
+    return
   }
 
-  const prev = readAdminSession();
+  const prev = readAdminSession()
   try {
-    const payload = await fetchAdminSessionPayload(String(sessionId));
+    const payload = await fetchAdminSessionPayload(String(sessionId))
     writeAdminSession({
       ...toAdminSessionUser(payload),
       phone: profileFromUpdate?.phone ?? prev?.phone ?? null,
       address: profileFromUpdate?.address ?? prev?.address ?? null,
       updatedAt: profileFromUpdate?.updatedAt ?? prev?.updatedAt,
-    });
-    notifyAdminSessionChanged();
+    })
+    notifyAdminSessionChanged()
   } catch {
     if (profileFromUpdate) {
       patchAdminSessionProfile({
@@ -150,18 +150,18 @@ export async function syncAdminSessionIfCurrentUser(
         address: profileFromUpdate.address,
         image: profileFromUpdate.avatar,
         updatedAt: profileFromUpdate.updatedAt,
-      });
+      })
     }
   }
 }
 
 export function clearAdminSession(): void {
-  sessionStorage.removeItem(ADMIN_SESSION_KEY);
-  sessionReadCache = null;
+  sessionStorage.removeItem(ADMIN_SESSION_KEY)
+  sessionReadCache = null
 }
 
 export function getAdminUserId(): string | number | null {
-  return readAdminSession()?.id ?? null;
+  return readAdminSession()?.id ?? null
 }
 
 /**
@@ -170,15 +170,15 @@ export function getAdminUserId(): string | number | null {
  */
 export function getAdminDevAuthLogContext(): string {
   if (typeof window === "undefined") {
-    return "ctx=SSR";
+    return "ctx=SSR"
   }
-  const u = readAdminSession();
+  const u = readAdminSession()
   if (!u) {
-    return "ctx=guest x-user-id=(none)";
+    return "ctx=guest x-user-id=(none)"
   }
-  const roleCodes = u.roles.map((r) => r.name).join(",");
+  const roleCodes = u.roles.map((r) => r.name).join(",")
   const permSummary = u.permissions.includes("*")
     ? "perms=* (super)"
-    : `perms=n=${u.permissions.length} sample=[${u.permissions.slice(0, 6).join(",")}${u.permissions.length > 6 ? ",…" : ""}]`;
-  return `ctx=user id=${u.id} email=${u.email} roles=[${roleCodes}] ${permSummary} x-user-id=${u.id}`;
+    : `perms=n=${u.permissions.length} sample=[${u.permissions.slice(0, 6).join(",")}${u.permissions.length > 6 ? ",…" : ""}]`
+  return `ctx=user id=${u.id} email=${u.email} roles=[${roleCodes}] ${permSummary} x-user-id=${u.id}`
 }

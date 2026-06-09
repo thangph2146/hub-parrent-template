@@ -6,9 +6,12 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { SpeakerRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface SpeakersTableProps {
   data: SpeakerRow[]
@@ -61,11 +64,12 @@ export function SpeakersTable({
       globalFilterPlaceholder="Tìm theo tên..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
-      xlsxExport={buildAdminTableXlsxExport("speakers", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("speakers", {
+        pageCount: data.length,
+        total,
+      })}
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {

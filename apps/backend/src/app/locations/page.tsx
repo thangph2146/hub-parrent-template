@@ -1,24 +1,34 @@
-"use client";
+"use client"
 
-import { useEffect, useMemo, useState } from "react";
-import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
-import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react"
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import { useQueryClient } from "@tanstack/react-query"
 
-import { Badge } from "@ui/components/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { AlertCircle, MapPin, Plus } from "lucide-react";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useAuth } from "@/providers/auth-provider";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+import { Badge } from "@ui/components/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { AlertCircle, MapPin, Plus } from "lucide-react"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { useAuth } from "@/providers/auth-provider"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell";
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
+} from "@ui/lib/layout-shell"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminReadOnlyHint,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
 import { api } from "@/lib/api"
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
-import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   LocationsTable,
   LocationsTrashTable,
@@ -29,60 +39,73 @@ import {
   useLocationsListQuery,
   useLocationsTrashQuery,
   prefetchLocationDetail,
-} from "./_component";
-import type { LocationRow } from "./_component";
+} from "./_component"
+import type { LocationRow } from "./_component"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function LocationsPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/locations", {
     prefetchDetail: (id) => prefetchLocationDetail(queryClient, api, id),
-  });
-  const { user } = useAuth();
+  })
+  const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_UPDATE)
-    : false;
+    : false
   const canDelete = user
     ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_DELETE)
-    : false;
+    : false
   const canRestore = user
     ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.LOCATIONS_RESTORE)
-    : false;
+    : false
   const canHardDelete = user
     ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_MANAGE)
-    : false;
+    : false
 
   const invalidateAll = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["locations"] });
-  };
+    await queryClient.invalidateQueries({ queryKey: ["locations"] })
+  }
 
-  const [mainTab, setMainTab] = useState<"list" | "trash">("list");
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [trashPage, setTrashPage] = useState(1);
-  const [trashPageSize, setTrashPageSize] = useState(15);
-  const [trashGlobalFilter, setTrashGlobalFilter] = useState("");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [trashColumnFilters, setTrashColumnFilters] = useState<ColumnFiltersState>([]);
-  const [listSelection, setListSelection] = useState<RowSelectionState>({});
-  const [trashSelection, setTrashSelection] = useState<RowSelectionState>({});
+  const [mainTab, setMainTab] = useState<"list" | "trash">("list")
+  const [globalFilter, setGlobalFilter] = useState("")
+  const [trashPage, setTrashPage] = useState(1)
+  const [trashPageSize, setTrashPageSize] = useState(15)
+  const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [trashColumnFilters, setTrashColumnFilters] =
+    useState<ColumnFiltersState>([])
+  const [listSelection, setListSelection] = useState<RowSelectionState>({})
+  const [trashSelection, setTrashSelection] = useState<RowSelectionState>({})
 
-  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350);
+  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350)
 
   const listFilterParams = useMemo(
-    () => buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.locations),
+    () =>
+      buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.locations),
     [columnFilters]
-  );
+  )
 
   const trashFilterParams = useMemo(
-    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.locations),
+    () =>
+      buildAdminFilterQuery(
+        trashColumnFilters,
+        COMMON_FILTER_MAPPINGS.locations
+      ),
     [trashColumnFilters]
-  );
+  )
 
-  const listQuery = useLocationsListQuery(api, canWrite || true, listFilterParams);
+  const listQuery = useLocationsListQuery(
+    api,
+    canWrite || true,
+    listFilterParams
+  )
 
   const trashQuery = useLocationsTrashQuery({
     api,
@@ -91,55 +114,70 @@ function LocationsPageInner() {
     debouncedTrashQ,
     enabled: mainTab === "trash",
     filters: trashFilterParams,
-  });
+  })
 
   const deleteMutation = useAdminMutation({
     mutationKey: ["locations", "delete"],
     mutationFn: async (id: string) => api.locations.remove(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const restoreMutation = useAdminMutation({
     mutationKey: ["locations", "restore"],
     mutationFn: async (id: string) => api.locations.restore(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const purgeMutation = useAdminMutation({
     mutationKey: ["locations", "purge"],
     mutationFn: async (id: string) => api.locations.purge(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const bulkMutation = useAdminMutation({
     toast: defaultBulkOperationToast,
-    mutationFn: async (input: { action: "delete" | "restore" | "hard-delete"; ids: string[] }) =>
-      api.locations.bulk(input),
+    mutationFn: async (input: {
+      action: "delete" | "restore" | "hard-delete"
+      ids: string[]
+    }) => api.locations.bulk(input),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
-  useEffect(() => { setTrashPage(1); }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
-  useEffect(() => { setListSelection({}); setTrashSelection({}); }, [mainTab]);
+  useEffect(() => {
+    setTrashPage(1)
+  }, [trashColumnFilters, debouncedTrashQ, trashPageSize])
+  useEffect(() => {
+    setListSelection({})
+    setTrashSelection({})
+  }, [mainTab])
 
-  const handleColumnFiltersChange = useColumnFiltersChange(setColumnFilters);
-  const clearListFilters = useClearListFilters(setColumnFilters, setGlobalFilter);
-  const clearTrashFilters = useClearTrashFilters(setTrashGlobalFilter, setTrashColumnFilters);
-  const handleTrashColumnFiltersChange = useColumnFiltersChange(setTrashColumnFilters);
+  const handleColumnFiltersChange = useColumnFiltersChange(setColumnFilters)
+  const clearListFilters = useClearListFilters(
+    setColumnFilters,
+    setGlobalFilter
+  )
+  const clearTrashFilters = useClearTrashFilters(
+    setTrashGlobalFilter,
+    setTrashColumnFilters
+  )
+  const handleTrashColumnFiltersChange = useColumnFiltersChange(
+    setTrashColumnFilters
+  )
   const rowActions = useAdminCrudRowHandlers<LocationRow>({
     getRecordLabel: (row) => row.name || row.mapUrl,
     entityLabel: "địa điểm",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
   const columns = useMemo<ColumnDef<LocationRow>[]>(
     () =>
       getLocationColumns({
@@ -151,13 +189,20 @@ function LocationsPageInner() {
         canDelete,
         canHardDelete,
       }),
-    [rowActions, crudNav, canWrite, canDelete, canHardDelete],
-  );
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
+  )
 
   const trashColumns = useMemo<ColumnDef<LocationRow>[]>(
-    () => getLocationColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
-    [rowActions, canWrite, canRestore, canHardDelete],
-  );
+    () =>
+      getLocationColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
+    [rowActions, canWrite, canRestore, canHardDelete]
+  )
 
   return (
     <AdminPageSection>
@@ -168,34 +213,53 @@ function LocationsPageInner() {
         readOnlyHint={
           user && !canWrite ? (
             <AdminReadOnlyHint>
-              Chỉ xem: cần quyền <span className="font-mono">locations:manage</span> để thêm/sửa/xoá.
+              Chỉ xem: cần quyền{" "}
+              <span className="font-mono">locations:manage</span> để
+              thêm/sửa/xoá.
             </AdminReadOnlyHint>
           ) : undefined
         }
         actions={
-          <>{canWrite && (
-            <AdminPageHeaderPrimaryButton
-              type="button"
-              onClick={() => crudNav.new()}
-            >
-              <Plus className="size-5" aria-hidden /> Thêm địa điểm
-            </AdminPageHeaderPrimaryButton>
-          )}</>
+          <>
+            {canWrite && (
+              <AdminPageHeaderPrimaryButton
+                type="button"
+                onClick={() => crudNav.new()}
+              >
+                <Plus className="size-5" aria-hidden /> Thêm địa điểm
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
         }
       />
 
-      <Tabs value={mainTab} onValueChange={(v) => { if (v === "list" || v === "trash") setMainTab(v); }} className="space-y-6">
+      <Tabs
+        value={mainTab}
+        onValueChange={(v) => {
+          if (v === "list" || v === "trash") setMainTab(v)
+        }}
+        className="space-y-6"
+      >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
               {listQuery.data?.length ?? 0}
             </Badge>
           </TabsTrigger>
           {canWrite && (
-            <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+            <TabsTrigger
+              value="trash"
+              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+            >
               Thùng rác
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
                 {trashQuery.data?.total ?? 0}
               </Badge>
             </TabsTrigger>
@@ -209,7 +273,9 @@ function LocationsPageInner() {
                 <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                 <div>
                   <p className="font-semibold">Không tải được danh sách</p>
-                  <p className="mt-1 text-sm opacity-90">{listQuery.error.message}</p>
+                  <p className="mt-1 text-sm opacity-90">
+                    {listQuery.error.message}
+                  </p>
                 </div>
               </div>
             </div>
@@ -217,7 +283,6 @@ function LocationsPageInner() {
 
           <LocationsTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}
@@ -230,15 +295,15 @@ function LocationsPageInner() {
             total={listQuery.data?.length ?? 0}
             onClearFilters={clearListFilters}
             onBulkDelete={async (rows) => {
-              const ids = rows.map((r) => r.id);
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "delete", ids });
-}}
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "delete", ids })
+            }}
             onBulkPurge={async (rows) => {
-              const ids = rows.map((r) => r.id);
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+            }}
           />
         </TabsContent>
 
@@ -250,7 +315,9 @@ function LocationsPageInner() {
                   <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                   <div>
                     <p className="font-semibold">Không tải được thùng rác</p>
-                    <p className="mt-1 text-sm opacity-90">{trashQuery.error.message}</p>
+                    <p className="mt-1 text-sm opacity-90">
+                      {trashQuery.error.message}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -272,15 +339,15 @@ function LocationsPageInner() {
                 onPageSizeChange={setTrashPageSize}
                 onClearFilters={clearTrashFilters}
                 onBulkRestore={async (rows) => {
-                  const ids = rows.map((r) => r.id);
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "restore", ids });
-}}
+                  const ids = rows.map((r) => r.id)
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "restore", ids })
+                }}
                 onBulkPurge={async (rows) => {
-                  const ids = rows.map((r) => r.id);
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+                  const ids = rows.map((r) => r.id)
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+                }}
                 trashExportParams={{
                   search: debouncedTrashQ.trim() || undefined,
                   filters: trashFilterParams,
@@ -291,7 +358,7 @@ function LocationsPageInner() {
         )}
       </Tabs>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function LocationsPage() {
@@ -299,5 +366,5 @@ export default function LocationsPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <LocationsPageInner />
     </AdminPageGuard>
-  );
+  )
 }

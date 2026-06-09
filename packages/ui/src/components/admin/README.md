@@ -4,13 +4,13 @@ Module layout dùng chung cho **mọi app admin** Next. App chỉ import từ `@
 
 ## Cấu trúc
 
-| Thư mục / file | Trách nhiệm |
-|----------------|-------------|
-| `types.ts` | `AdminLayoutContextValue`, menu types, branding |
-| `menu-utils.ts` | Lọc menu theo role / permission |
-| `shell/` | `AdminShell`, `Sidebar`, `AdminPageGuard`, context, scroll-to-top |
-| `integration/` | `AdminLayoutBridge`, `AdminRootProviders`, branding hook, metadata |
-| `presets/` | Dialog/bảng/upload mặc định tiếng Việt (HUB admin) |
+| Thư mục / file  | Trách nhiệm                                                        |
+| --------------- | ------------------------------------------------------------------ |
+| `types.ts`      | `AdminLayoutContextValue`, menu types, branding                    |
+| `menu-utils.ts` | Lọc menu theo role / permission                                    |
+| `shell/`        | `AdminShell`, `Sidebar`, `AdminPageGuard`, context, scroll-to-top  |
+| `integration/`  | `AdminLayoutBridge`, `AdminRootProviders`, branding hook, metadata |
+| `presets/`      | Dialog/bảng/upload mặc định tiếng Việt (HUB admin)                 |
 
 ## Luồng tích hợp app (vd. `apps/backend`)
 

@@ -1,12 +1,12 @@
-import type { UseMutationResult } from "@tanstack/react-query";
+import type { UseMutationResult } from "@tanstack/react-query"
 
-import type { StoreSyncSdk } from "@workspace/api-client";
-import type { PostListRow } from "../types";
+import type { StoreSyncSdk } from "@workspace/api-client"
+import type { PostListRow } from "../types"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 export interface UsePostsMutationsProps {
-  api: StoreSyncSdk;
-  invalidateAll: () => Promise<void>;
+  api: StoreSyncSdk
+  invalidateAll: () => Promise<void>
 }
 
 export function useDeleteMutation({
@@ -16,18 +16,22 @@ export function useDeleteMutation({
   return useAdminMutation({
     mutationFn: async (id: string) => api.posts.remove(id),
     onSuccess: invalidateAll,
-  });
+  })
 }
 
 export function useRestoreMutation({
   api,
   invalidateAll,
-}: UsePostsMutationsProps): UseMutationResult<PostListRow, Error, string, unknown> {
+}: UsePostsMutationsProps): UseMutationResult<
+  PostListRow,
+  Error,
+  string,
+  unknown
+> {
   return useAdminMutation({
-    mutationFn: async (id: string) =>
-      api.posts.restore<PostListRow>(id),
+    mutationFn: async (id: string) => api.posts.restore<PostListRow>(id),
     onSuccess: invalidateAll,
-  });
+  })
 }
 
 export function usePurgeMutation({
@@ -37,18 +41,23 @@ export function usePurgeMutation({
   return useAdminMutation({
     mutationFn: async (id: string) => api.posts.purge(id),
     onSuccess: invalidateAll,
-  });
+  })
 }
 
 export function useBulkMutation({
   api,
   invalidateAll,
-}: UsePostsMutationsProps): UseMutationResult<unknown, Error, { action: "delete" | "restore" | "hard-delete"; ids: string[] }, unknown> {
+}: UsePostsMutationsProps): UseMutationResult<
+  unknown,
+  Error,
+  { action: "delete" | "restore" | "hard-delete"; ids: string[] },
+  unknown
+> {
   return useAdminMutation({
     mutationFn: async (input: {
-      action: "delete" | "restore" | "hard-delete";
-      ids: string[];
+      action: "delete" | "restore" | "hard-delete"
+      ids: string[]
     }) => api.posts.bulk(input),
     onSuccess: invalidateAll,
-  });
+  })
 }

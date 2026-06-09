@@ -1,10 +1,18 @@
-export type { MajorRow, MajorFormValues, MajorConfirmAction, MajorDetail } from "./types";
-export { majorFormSchema } from "./types";
-export { getMajorColumns } from "./columns";
-export { 
+export type {
+  MajorRow,
+  MajorFormValues,
+  MajorConfirmAction,
+  MajorDetail,
+} from "./types"
+export { majorFormSchema } from "./types"
+export { getMajorColumns } from "./columns"
+export {
   useMajorDetailQuery,
   useMajorsListQuery,
-  useMajorsTrashQuery, majorDetailQueryKey, prefetchMajorDetail } from "./_query";
+  useMajorsTrashQuery,
+  majorDetailQueryKey,
+  prefetchMajorDetail,
+} from "./_query"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -13,7 +21,7 @@ export {
   useMajorForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./_hooks";
-export { MajorsFormShell } from "./_form";
-export { MajorsConfirmDialog } from "./_alert-dialog";
-export { MajorsTable, MajorsTrashTable } from "./_table";
+} from "./_hooks"
+export { MajorsFormShell } from "./_form"
+export { MajorsConfirmDialog } from "./_alert-dialog"
+export { MajorsTable, MajorsTrashTable } from "./_table"

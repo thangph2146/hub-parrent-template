@@ -6,9 +6,12 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { MajorRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface MajorsTableProps {
   data: MajorRow[]
@@ -59,12 +62,14 @@ export function MajorsTable({
       globalFilterPlaceholder="Tìm theo tên hoặc mã..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("majors", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("majors", {
+        pageCount: data.length,
+        total,
+      })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={[
         {
           id: "bulk-major-delete",

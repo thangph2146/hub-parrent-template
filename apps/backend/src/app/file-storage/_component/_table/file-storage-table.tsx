@@ -1,53 +1,53 @@
-"use client";
+"use client"
 
 import type {
   ColumnDef,
   ColumnFiltersState,
   OnChangeFn,
   RowSelectionState,
-} from "@tanstack/react-table";
-import { Download, FolderInput, Trash2 } from "lucide-react";
+} from "@tanstack/react-table"
+import { Download, FolderInput, Trash2 } from "lucide-react"
 import {
   ADMIN_DATA_TABLE_MAX_PAGE_SIZE,
   AdminDataTable,
   adminTableRowSelectionProps,
   type AdminDataTableBulkAction,
-} from "@ui/components/data-table";
-import { FileStorageTabEmpty } from "../file-storage-empty";
-import type { FileStorageRow } from "../types";
+} from "@ui/components/data-table"
+import { FileStorageTabEmpty } from "../file-storage-empty"
+import type { FileStorageRow } from "../types"
 
 export type FileStorageTableProps = {
-  tableScope: string;
-  data: FileStorageRow[];
-  columns: ColumnDef<FileStorageRow>[];
-  isLoading: boolean;
-  isFetching?: boolean;
-  emptyLabel: string;
-  itemLabel: string;
-  emptySummary: string;
-  page: number;
-  pageSize: number;
-  total: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
-  selectedRowIds: RowSelectionState;
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  onClearFilters: () => void;
-  onBulkDelete: (rows: FileStorageRow[]) => Promise<void>;
-  onBulkDownload: (rows: FileStorageRow[]) => Promise<void>;
-  onBulkMove?: (rows: FileStorageRow[]) => void;
-  onMoveAllInScope?: () => Promise<void>;
-  onDeleteAllInTab?: () => Promise<void>;
-  includeDescendants?: boolean;
-  canDelete: boolean;
+  tableScope: string
+  data: FileStorageRow[]
+  columns: ColumnDef<FileStorageRow>[]
+  isLoading: boolean
+  isFetching?: boolean
+  emptyLabel: string
+  itemLabel: string
+  emptySummary: string
+  page: number
+  pageSize: number
+  total: number
+  onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: number) => void
+  selectedRowIds: RowSelectionState
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  onClearFilters: () => void
+  onBulkDelete: (rows: FileStorageRow[]) => Promise<void>
+  onBulkDownload: (rows: FileStorageRow[]) => Promise<void>
+  onBulkMove?: (rows: FileStorageRow[]) => void
+  onMoveAllInScope?: () => Promise<void>
+  onDeleteAllInTab?: () => Promise<void>
+  includeDescendants?: boolean
+  canDelete: boolean
   /** Nhãn tab — dùng empty state đẹp khi không có dòng. */
-  tabLabel?: string;
-  canUpload?: boolean;
-  uploading?: boolean;
-  onUpload?: () => void;
-};
+  tabLabel?: string
+  canUpload?: boolean
+  uploading?: boolean
+  onUpload?: () => void
+}
 
 export function FileStorageTable({
   tableScope,
@@ -81,18 +81,18 @@ export function FileStorageTable({
   onUpload,
 }: FileStorageTableProps) {
   const hasActiveColumnFilters = columnFilters.some((filter) => {
-    const value = filter.value;
-    if (value == null) return false;
-    if (typeof value === "string") return value.trim().length > 0;
-    if (Array.isArray(value)) return value.length > 0;
-    return true;
-  });
+    const value = filter.value
+    if (value == null) return false
+    if (typeof value === "string") return value.trim().length > 0
+    if (Array.isArray(value)) return value.length > 0
+    return true
+  })
 
   const showTabEmptyState =
     !isLoading &&
     data.length === 0 &&
     Boolean(tabLabel) &&
-    !hasActiveColumnFilters;
+    !hasActiveColumnFilters
 
   if (showTabEmptyState) {
     return (
@@ -102,7 +102,7 @@ export function FileStorageTable({
         uploading={uploading}
         onUpload={onUpload}
       />
-    );
+    )
   }
 
   const bulkActions: AdminDataTableBulkAction<FileStorageRow>[] = [
@@ -119,7 +119,7 @@ export function FileStorageTable({
             label: "Di chuyển",
             icon: <FolderInput className="size-4" />,
             onAction: async (rows: FileStorageRow[]) => {
-              onBulkMove(rows);
+              onBulkMove(rows)
             },
           },
           ...(onMoveAllInScope && total > 0
@@ -138,7 +138,7 @@ export function FileStorageTable({
                     confirmLabel: "Tiếp tục",
                   },
                   onAction: async () => {
-                    await onMoveAllInScope();
+                    await onMoveAllInScope()
                   },
                 },
               ]
@@ -177,14 +177,14 @@ export function FileStorageTable({
                     destructive: true,
                   },
                   onAction: async () => {
-                    await onDeleteAllInTab();
+                    await onDeleteAllInTab()
                   },
                 },
               ]
             : []),
         ]
       : []),
-  ];
+  ]
 
   return (
     <AdminDataTable<FileStorageRow>
@@ -218,5 +218,5 @@ export function FileStorageTable({
         pageSizeOptions: [10, 20, 50, 100, 200, 500, 1000],
       }}
     />
-  );
+  )
 }

@@ -37,7 +37,6 @@ export function getCourseColumns({
   canRestore,
 
   canHardDelete,
-
 }: {
   view?: AdminTableView
 

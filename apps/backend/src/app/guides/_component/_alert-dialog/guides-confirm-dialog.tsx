@@ -1,21 +1,21 @@
-"use client";
+"use client"
 
-import { Trash2 } from "lucide-react";
-import { AdminConfirmActionDialog } from "@ui/components/admin";
-import type { GuideConfirmAction } from "../types";
+import { Trash2 } from "lucide-react"
+import { AdminConfirmActionDialog } from "@ui/components/admin"
+import type { GuideConfirmAction } from "../types"
 
 export interface GuidesConfirmDialogProps {
-  confirmAction: GuideConfirmAction | null;
+  confirmAction: GuideConfirmAction | null
   deleteMutation: {
-    isPending: boolean;
-  };
+    isPending: boolean
+  }
   purgeMutation: {
-    isPending: boolean;
-  };
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-  onPurgeConfirm: () => void;
-  contentClassName?: string;
+    isPending: boolean
+  }
+  onOpenChange: (open: boolean) => void
+  onConfirm: () => void
+  onPurgeConfirm: () => void
+  contentClassName?: string
 }
 
 export function GuidesConfirmDialog({
@@ -27,9 +27,9 @@ export function GuidesConfirmDialog({
   onPurgeConfirm,
   contentClassName,
 }: GuidesConfirmDialogProps) {
-  if (!confirmAction) return null;
+  if (!confirmAction) return null
 
-  const { kind, row } = confirmAction;
+  const { kind, row } = confirmAction
 
   if (kind === "delete" && row) {
     return (
@@ -46,10 +46,10 @@ export function GuidesConfirmDialog({
         confirmDisabled={deleteMutation.isPending}
         confirmLoading={deleteMutation.isPending}
         onConfirm={() => {
-          void onConfirm();
+          void onConfirm()
         }}
       />
-    );
+    )
   }
 
   if (kind === "purge" && row) {
@@ -67,11 +67,11 @@ export function GuidesConfirmDialog({
         confirmDisabled={purgeMutation.isPending}
         confirmLoading={purgeMutation.isPending}
         onConfirm={() => {
-          void onPurgeConfirm();
+          void onPurgeConfirm()
         }}
       />
-    );
+    )
   }
 
-  return null;
+  return null
 }

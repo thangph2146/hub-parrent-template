@@ -88,7 +88,11 @@ export function SettingsCombinedCopyButton({
   seoGlobal?: SettingsSeoGlobalCopyValues
   hasUnsavedChanges?: boolean
 }) {
-  const configText = useCombinedConfigText({ display, seoGlobal, hasUnsavedChanges })
+  const configText = useCombinedConfigText({
+    display,
+    seoGlobal,
+    hasUnsavedChanges,
+  })
 
   if (!display && !seoGlobal) return null
 

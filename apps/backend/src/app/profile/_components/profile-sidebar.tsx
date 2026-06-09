@@ -14,8 +14,18 @@ import { Input } from "@ui/components/input"
 import { Badge } from "@ui/components/badge"
 import type { AccountProfile } from "@/lib/api"
 import { isSuperAdminRoleCode } from "@workspace/api-client"
-import { CalendarClock, CheckCircle2, KeyRound, Loader2, ShieldHalf } from "lucide-react"
-import { formatProfileDateTime, PROFILE_FIELD_CLASS, PROFILE_ACTION_BAR_CLASS } from "./profile-utils"
+import {
+  CalendarClock,
+  CheckCircle2,
+  KeyRound,
+  Loader2,
+  ShieldHalf,
+} from "lucide-react"
+import {
+  formatProfileDateTime,
+  PROFILE_FIELD_CLASS,
+  PROFILE_ACTION_BAR_CLASS,
+} from "./profile-utils"
 
 type ProfileSidebarProps = {
   profile: AccountProfile | undefined
@@ -68,7 +78,7 @@ export function ProfileSidebar({
                   </Badge>
                 ))
               ) : (
-                <span className="text-sm italic text-muted-foreground">
+                <span className="text-sm text-muted-foreground italic">
                   Chưa gán vai trò
                 </span>
               )}
@@ -107,7 +117,9 @@ export function ProfileSidebar({
           ) : (
             <>
               <Field>
-                <FieldLabel htmlFor="profile-current-pw">Mật khẩu hiện tại</FieldLabel>
+                <FieldLabel htmlFor="profile-current-pw">
+                  Mật khẩu hiện tại
+                </FieldLabel>
                 <FieldContent>
                   <Input
                     id="profile-current-pw"

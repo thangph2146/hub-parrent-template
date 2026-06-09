@@ -1,11 +1,11 @@
 "use client"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import type { RbacPermission, RbacRole } from "@workspace/api-client"
 import type { CreateRoleInput, UpdateRoleInput } from "../types"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 export type RoleRow = {
   id: string
   code: string
@@ -36,14 +36,14 @@ function normalizePermissions(value: unknown): string[] {
 }
 
 function normalizeRole(raw: Record<string, unknown>): RoleRow {
-  const perms = (normalizePermissions(raw.permissions).length > 0
-    ? normalizePermissions(raw.permissions)
-    : normalizePermissions(raw.permissionCodes).length > 0
-      ? normalizePermissions(raw.permissionCodes)
-      : normalizePermissions(raw.permissionsList).length > 0
-        ? normalizePermissions(raw.permissionsList)
-        : []
-  )
+  const perms =
+    normalizePermissions(raw.permissions).length > 0
+      ? normalizePermissions(raw.permissions)
+      : normalizePermissions(raw.permissionCodes).length > 0
+        ? normalizePermissions(raw.permissionCodes)
+        : normalizePermissions(raw.permissionsList).length > 0
+          ? normalizePermissions(raw.permissionsList)
+          : []
   return {
     id: String(raw.id ?? ""),
     code: String(raw.name ?? ""),
@@ -66,7 +66,10 @@ export const rbacQueryKeys = {
 export function useRbacCatalog(opts?: { enabled?: boolean }) {
   return useQuery({
     queryKey: rbacQueryKeys.catalog(),
-    queryFn: async (): Promise<{ roles: RbacRole[]; permissions: RbacPermission[] }> => {
+    queryFn: async (): Promise<{
+      roles: RbacRole[]
+      permissions: RbacPermission[]
+    }> => {
       const [roles, permissions] = await Promise.all([
         api.roles.listAll<RbacRole>(),
         api.roles.listPermissions(),
@@ -134,7 +137,9 @@ export function useUpdateRoleMutation() {
       return normalizeRole(role)
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: rbacQueryKeys.detail(variables.id) })
+      queryClient.invalidateQueries({
+        queryKey: rbacQueryKeys.detail(variables.id),
+      })
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })
       queryClient.invalidateQueries({ queryKey: ["rbac", "roles", "list"] })
     },

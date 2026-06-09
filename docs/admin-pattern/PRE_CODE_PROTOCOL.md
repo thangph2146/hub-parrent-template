@@ -42,6 +42,7 @@ Trước khi sửa **bất kỳ page nào** trong `apps/backend/src/app/`, agent
 Docs feature cho từng module đã được gộp vào file `docs/pages/README.md` và `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`. Các file task list riêng lẻ cũ đã được xoá.
 
 Khi cần hiểu chi tiết về một module, agent đọc:
+
 - `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — pattern chuẩn cho mọi page admin
 - `docs/pages/README.md` — kiến trúc file, import chuẩn, quy tắc
 - App Graphify summaries + `FOLDER_TREE.md` để định vị file cụ thể

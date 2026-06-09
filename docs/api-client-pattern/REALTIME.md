@@ -34,11 +34,11 @@ Backend đã mount global listener: `AdminRealtimeSync` → `useAdminRealtimeSyn
 
 ## Ba lớp realtime
 
-| Lớp | Event | Khi nào | Client làm gì |
-|-----|-------|---------|----------------|
-| **Cache** | `admin:invalidate` | Mọi mutation `POST/PUT/PATCH/DELETE` `/admin/{resource}` 2xx | `invalidateQueries` theo `ADMIN_RESOURCE_QUERY_PREFIX` |
-| **Duyệt trạng thái** | `admin:status-changed` | Tạo yêu cầu chờ duyệt / đổi status | Chỉ invalidate list (không toast) |
-| **Thông báo** | `notification:admin`, `notification:new` | Kèm `admin:status-changed` hoặc activity log | Toast + invalidate `notifications`, `dashboard` (trừ `actorUserId`) |
+| Lớp                  | Event                                    | Khi nào                                                      | Client làm gì                                                       |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| **Cache**            | `admin:invalidate`                       | Mọi mutation `POST/PUT/PATCH/DELETE` `/admin/{resource}` 2xx | `invalidateQueries` theo `ADMIN_RESOURCE_QUERY_PREFIX`              |
+| **Duyệt trạng thái** | `admin:status-changed`                   | Tạo yêu cầu chờ duyệt / đổi status                           | Chỉ invalidate list (không toast)                                   |
+| **Thông báo**        | `notification:admin`, `notification:new` | Kèm `admin:status-changed` hoặc activity log                 | Toast + invalidate `notifications`, `dashboard` (trừ `actorUserId`) |
 
 Event đặc thù (giữ nguyên): `parent-student:reviewed`, `event:attendance`, `session:*`, `role:upsert`.
 
@@ -51,25 +51,25 @@ Event đặc thù (giữ nguyên): `parent-student:reviewed`, `event:attendance`
 ```typescript
 // Chờ duyệt (public hoặc user gửi)
 this.adminRealtime.pendingApproval({
-  resource: 'my-resource',
+  resource: "my-resource",
   id: row.id,
-  status: 'pending',
-  title: 'Tiêu đề thông báo',
-  description: 'Mô tả ngắn',
-  actionUrl: '/admin/my-resource',
-});
+  status: "pending",
+  title: "Tiêu đề thông báo",
+  description: "Mô tả ngắn",
+  actionUrl: "/admin/my-resource",
+})
 
 // Đã duyệt / đổi status
 this.adminRealtime.statusChanged({
-  resource: 'my-resource',
+  resource: "my-resource",
   id: row.id,
-  status: 'approved',
-  previousStatus: 'pending',
-  title: 'Đã duyệt …',
-  description: '…',
+  status: "approved",
+  previousStatus: "pending",
+  title: "Đã duyệt …",
+  description: "…",
   actionUrl: `/admin/my-resource/${row.id}`,
   actorUserId: adminUserId,
-});
+})
 ```
 
 3. **Notification lưu DB** — `NotificationsService.create()` tự emit `notification:new` tới `user:{userId}`.
@@ -88,17 +88,17 @@ Nếu page dùng query key khác pattern, map đúng prefix để `invalidateQue
 
 ## Module đã có broadcast duyệt
 
-| Resource | Trigger |
-|----------|---------|
-| `parent-students` | Phụ huynh gửi yêu cầu; admin duyệt/từ chối |
-| `contact-requests` | Public gửi form; admin đổi status |
+| Resource           | Trigger                                    |
+| ------------------ | ------------------------------------------ |
+| `parent-students`  | Phụ huynh gửi yêu cầu; admin duyệt/từ chối |
+| `contact-requests` | Public gửi form; admin đổi status          |
 
 Các mutation CRUD admin khác: chỉ `admin:invalidate` (list/detail refetch, không toast mặc định).
 
 ## Toast — một lần khi API trả kết quả (không trùng socket)
 
-| Tab đang thao tác | Tab / user khác |
-|-------------------|-----------------|
+| Tab đang thao tác                                                                      | Tab / user khác                                                               |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `useAdminMutation` → `MutationCache` hiện loading → success/error **sau response 2xx** | Socket `notification:admin` / `notification:new` (qua `useAdminRealtimeSync`) |
 
 ### Ba lớp chống trùng (`toast-coordinator` + `@workspace/ui`)
@@ -110,7 +110,10 @@ Các mutation CRUD admin khác: chỉ `admin:invalidate` (list/detail refetch, k
 **Không** gọi `toast.success` / `toast.error` thủ công trong `onSuccess` / `onError` của mutation — chỉ dùng option `toast:` hoặc mặc định từ `mutationKey`.
 
 ```typescript
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation"
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 
 const saveMutation = useAdminMutation({
   mutationKey: ["contact-requests", "update"],

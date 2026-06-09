@@ -6,10 +6,13 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { PostListRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 
 export interface PostsTableProps {
   data: PostListRow[]
@@ -77,12 +80,17 @@ export function PostsTable({
       globalFilterPlaceholder="Tìm theo tiêu đề, slug..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
-      xlsxExport={canExport ? buildAdminTableXlsxExport("posts", { pageCount: data.length, total }) : undefined}
+      xlsxExport={
+        canExport
+          ? buildAdminTableXlsxExport("posts", {
+              pageCount: data.length,
+              total,
+            })
+          : undefined
+      }
       exportFetchPage={
         canExport
           ? async ({ page: exportPage, limit }) => {
@@ -90,48 +98,52 @@ export function PostsTable({
                 Object.entries(listQuery.filters ?? {}).map(([key, value]) => [
                   `filter[${key}]`,
                   value as string | number | boolean | undefined | null,
-                ]),
-              );
+                ])
+              )
               const result = await api.posts.list<PostListRow>({
                 page: exportPage,
                 limit,
                 search: listQuery.search,
                 status: "active",
                 ...filterQuery,
-              });
-              return { items: result.items, total: result.total };
+              })
+              return { items: result.items, total: result.total }
             }
           : undefined
       }
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
-      bulkActions={canDelete ? [
-        {
-          id: "bulk-post-delete",
-          label: "Xóa tạm đã chọn",
-          variant: "destructive",
-          confirm: {
-            title: "Đưa các bài viết đã chọn vào thùng rác?",
-            description: (rows) =>
-              `Bạn đã chọn ${rows.length} bài viết. Các bài viết sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
-            confirmLabel: "Xóa tạm",
-            destructive: true,
-          },
-          onAction: onBulkDelete,
-        },
-        {
-          id: "bulk-post-purge",
-          label: "Xóa vĩnh viễn đã chọn",
-          variant: "destructive",
-          confirm: {
-            title: "Xóa vĩnh viễn các bài viết đã chọn?",
-            description: (rows) =>
-              `Bạn đã chọn ${rows.length} bài viết. Hành động này không thể hoàn tác!`,
-            confirmLabel: "Xóa vĩnh viễn",
-            destructive: true,
-          },
-          onAction: onBulkPurge,
-        },
-      ] : []}
+      bulkActions={
+        canDelete
+          ? [
+              {
+                id: "bulk-post-delete",
+                label: "Xóa tạm đã chọn",
+                variant: "destructive",
+                confirm: {
+                  title: "Đưa các bài viết đã chọn vào thùng rác?",
+                  description: (rows) =>
+                    `Bạn đã chọn ${rows.length} bài viết. Các bài viết sẽ được chuyển vào thùng rác và có thể khôi phục sau.`,
+                  confirmLabel: "Xóa tạm",
+                  destructive: true,
+                },
+                onAction: onBulkDelete,
+              },
+              {
+                id: "bulk-post-purge",
+                label: "Xóa vĩnh viễn đã chọn",
+                variant: "destructive",
+                confirm: {
+                  title: "Xóa vĩnh viễn các bài viết đã chọn?",
+                  description: (rows) =>
+                    `Bạn đã chọn ${rows.length} bài viết. Hành động này không thể hoàn tác!`,
+                  confirmLabel: "Xóa vĩnh viễn",
+                  destructive: true,
+                },
+                onAction: onBulkPurge,
+              },
+            ]
+          : []
+      }
       pagination={{
         page,
         pageSize,

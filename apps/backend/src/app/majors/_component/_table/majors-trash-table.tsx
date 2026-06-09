@@ -6,14 +6,17 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { MajorRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 import {
   createAdminTrashExportFetchPage,
   type AdminTrashExportParams,
-} from "@/lib/admin-trash-export";
+} from "@/lib/admin-trash-export"
 
 export interface MajorsTrashTableProps {
   data: MajorRow[]
@@ -72,12 +75,15 @@ export function MajorsTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("majors-trash", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("majors-trash", {
+        pageCount: data.length,
+        total,
+      })}
       exportFetchPage={
         trashExportParams
           ? createAdminTrashExportFetchPage<MajorRow>(
               (params) => api.majors.list<MajorRow>(params),
-              trashExportParams,
+              trashExportParams
             )
           : undefined
       }

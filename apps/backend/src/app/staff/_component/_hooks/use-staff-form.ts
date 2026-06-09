@@ -1,28 +1,32 @@
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useCallback } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 export const staffFormSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   fullName: z.string().min(1, "Họ tên không được để trống"),
-  password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự").optional().or(z.literal("")),
+  password: z
+    .string()
+    .min(6, "Mật khẩu tối thiểu 6 ký tự")
+    .optional()
+    .or(z.literal("")),
   isActive: z.boolean(),
   roleCodes: z.array(z.string()).min(1, "Vui lòng chọn ít nhất một vai trò"),
   avatar: z.string().optional(),
   phone: z.string().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
   citizenId: z.string().optional().or(z.literal("")),
-});
+})
 
-export type StaffFormValues = z.infer<typeof staffFormSchema>;
+export type StaffFormValues = z.infer<typeof staffFormSchema>
 
 interface UseStaffFormOptions {
-  editingId?: string | null;
+  editingId?: string | null
 }
 
 export function useStaffForm(options: UseStaffFormOptions = {}) {
-  const { editingId } = options;
+  const { editingId } = options
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
@@ -38,7 +42,7 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       citizenId: "",
     },
     mode: "onChange",
-  });
+  })
 
   const resetForm = useCallback(() => {
     form.reset({
@@ -50,63 +54,75 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       phone: "",
       address: "",
       citizenId: "",
-    });
-  }, [form]);
+    })
+  }, [form])
 
-  const populateForm = useCallback((user: {
-    email: string;
-    fullName: string;
-    isActive: boolean;
-    roles: { code: string }[];
-    avatar?: string | null;
-    phone?: string | null;
-    address?: string | null;
-    citizenId?: string | null;
-  }) => {
-    form.reset({
-      email: user.email,
-      fullName: user.fullName,
-      password: "",
-      isActive: user.isActive,
-      roleCodes: user.roles.map((r) => r.code),
-      avatar: user.avatar ?? "",
-      phone: user.phone ?? "",
-      address: user.address ?? "",
-      citizenId: user.citizenId ?? "",
-    });
-  }, [form]);
+  const populateForm = useCallback(
+    (user: {
+      email: string
+      fullName: string
+      isActive: boolean
+      roles: { code: string }[]
+      avatar?: string | null
+      phone?: string | null
+      address?: string | null
+      citizenId?: string | null
+    }) => {
+      form.reset({
+        email: user.email,
+        fullName: user.fullName,
+        password: "",
+        isActive: user.isActive,
+        roleCodes: user.roles.map((r) => r.code),
+        avatar: user.avatar ?? "",
+        phone: user.phone ?? "",
+        address: user.address ?? "",
+        citizenId: user.citizenId ?? "",
+      })
+    },
+    [form]
+  )
 
-  const toggleRole = useCallback((code: string, checked: boolean) => {
-    const currentRoles = form.getValues("roleCodes");
-    if (checked) {
-      form.setValue("roleCodes", [...new Set([...currentRoles, code])], { shouldDirty: true });
-    } else {
-      form.setValue("roleCodes", currentRoles.filter((c) => c !== code), { shouldDirty: true });
-    }
-  }, [form]);
+  const toggleRole = useCallback(
+    (code: string, checked: boolean) => {
+      const currentRoles = form.getValues("roleCodes")
+      if (checked) {
+        form.setValue("roleCodes", [...new Set([...currentRoles, code])], {
+          shouldDirty: true,
+        })
+      } else {
+        form.setValue(
+          "roleCodes",
+          currentRoles.filter((c) => c !== code),
+          { shouldDirty: true }
+        )
+      }
+    },
+    [form]
+  )
 
   const getPayload = useCallback((): {
-    email: string;
-    fullName: string;
-    password: string;
-    isActive: boolean;
-    roleCodes: string[];
-    avatar?: string | null;
-    phone?: string | null;
-    address?: string | null;
-    citizenId?: string | null;
-} => {
-    const values = form.getValues();
+    email: string
+    fullName: string
+    password: string
+    isActive: boolean
+    roleCodes: string[]
+    avatar?: string | null
+    phone?: string | null
+    address?: string | null
+    citizenId?: string | null
+  } => {
+    const values = form.getValues()
     const payload: {
-      email: string;
-      fullName: string;
-      password: string;
-      isActive: boolean;
-      roleCodes: string[];
-      avatar?: string | null;
-      phone?: string | null;
-      address?: string | null;
-      citizenId?: string | null;
+      email: string
+      fullName: string
+      password: string
+      isActive: boolean
+      roleCodes: string[]
+      avatar?: string | null
+      phone?: string | null
+      address?: string | null
+      citizenId?: string | null
     } = {
       fullName: values.fullName.trim(),
       isActive: values.isActive,
@@ -117,19 +133,19 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       phone: values.phone?.trim() || null,
       address: values.address?.trim() || null,
       citizenId: values.citizenId?.trim() || null,
-    };
-
-    if (!editingId) {
-      payload.email = values.email.trim();
-      payload.password = values.password?.trim() || "";
-    } else {
-      payload.email = values.email.trim();
-      const pw = values.password?.trim();
-      payload.password = pw || "";
     }
 
-    return payload;
-  }, [form, editingId]);
+    if (!editingId) {
+      payload.email = values.email.trim()
+      payload.password = values.password?.trim() || ""
+    } else {
+      payload.email = values.email.trim()
+      const pw = values.password?.trim()
+      payload.password = pw || ""
+    }
+
+    return payload
+  }, [form, editingId])
 
   return {
     form,
@@ -137,5 +153,5 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
     populateForm,
     toggleRole,
     getPayload,
-  };
+  }
 }

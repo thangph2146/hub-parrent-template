@@ -3,14 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  Globe,
-  Loader2,
-  Monitor,
-  Save,
-  Search,
-  Settings2,
-} from "lucide-react"
+import { Globe, Loader2, Monitor, Save, Search, Settings2 } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
@@ -107,7 +100,7 @@ export default function SettingsPage() {
       params.set("tab", tab)
       router.replace(`/settings?${params.toString()}`)
     },
-    [router, searchParams],
+    [router, searchParams]
   )
 
   const publicBrandingQuery = useQuery({
@@ -122,10 +115,9 @@ export default function SettingsPage() {
   const publicSiteSeoQuery = useQuery({
     queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,
     queryFn: ({ signal }) =>
-      api.seoMetas.getPublicByPage<PublicSiteSeoRow>(
-        ADMIN_SITE_SEO_PAGE_KEY,
-        { signal },
-      ),
+      api.seoMetas.getPublicByPage<PublicSiteSeoRow>(ADMIN_SITE_SEO_PAGE_KEY, {
+        signal,
+      }),
     enabled: Boolean(session) && (canManageSettings || canViewSeo),
     staleTime: 0,
     gcTime: 0,
@@ -137,7 +129,7 @@ export default function SettingsPage() {
     queryFn: async () =>
       extractSettingValue(
         await api.settings.get("site_name"),
-        ADMIN_BRANDING_FALLBACK.siteName,
+        ADMIN_BRANDING_FALLBACK.siteName
       ),
     enabled: Boolean(session) && canManageSettings,
   })
@@ -146,7 +138,7 @@ export default function SettingsPage() {
     queryFn: async () =>
       extractSettingValue(
         await api.settings.get("site_description"),
-        "Quản trị hệ thống",
+        "Quản trị hệ thống"
       ),
     enabled: Boolean(session) && canManageSettings,
   })
@@ -155,22 +147,23 @@ export default function SettingsPage() {
     queryFn: async () =>
       extractSettingValue(
         await api.settings.get("default_new_user_role"),
-        "parent",
+        "parent"
       ),
     enabled: Boolean(session) && canManageSettings,
   })
   const siteSeoQuery = useQuery({
     queryKey: ["seo-metas", "site", SITE_SEO_PAGE_KEY],
-    queryFn: async () => api.seoMetas.getByPage<{
-      id: string
-      page: string
-      title: string | null
-      description: string | null
-      keywords: string | null
-      ogTitle: string | null
-      ogDescription: string | null
-      ogImage: string | null
-    }>(SITE_SEO_PAGE_KEY),
+    queryFn: async () =>
+      api.seoMetas.getByPage<{
+        id: string
+        page: string
+        title: string | null
+        description: string | null
+        keywords: string | null
+        ogTitle: string | null
+        ogDescription: string | null
+        ogImage: string | null
+      }>(SITE_SEO_PAGE_KEY),
     enabled: Boolean(session) && (canManageSettings || canViewSeo),
   })
 
@@ -247,7 +240,7 @@ export default function SettingsPage() {
     setSeoKeywords((prev) => (prev === "" ? (row.keywords ?? "") : prev))
     setSeoOgTitle((prev) => (prev === "" ? (row.ogTitle ?? "") : prev))
     setSeoOgDescription((prev) =>
-      prev === "" ? (row.ogDescription ?? "") : prev,
+      prev === "" ? (row.ogDescription ?? "") : prev
     )
     setSeoOgImage((prev) => (prev === "" ? (row.ogImage ?? "") : prev))
   }, [publicSiteSeoQuery.data])
@@ -394,7 +387,7 @@ export default function SettingsPage() {
   useEffect(() => {
     if (searchParams.get("tab") === "seo-pages" && visibleTabs[0]) {
       setActiveTab(
-        visibleTabs.includes("seo-global") ? "seo-global" : visibleTabs[0],
+        visibleTabs.includes("seo-global") ? "seo-global" : visibleTabs[0]
       )
       return
     }
@@ -410,7 +403,7 @@ export default function SettingsPage() {
       metaTitle: seoTitle,
       metaDescription: seoDescription,
     }),
-    [siteName, siteDesc, seoTitle, seoDescription],
+    [siteName, siteDesc, seoTitle, seoDescription]
   )
 
   if (!session) return null
@@ -433,285 +426,301 @@ export default function SettingsPage() {
   return (
     <AdminDocumentHeadOverrideProvider value={documentHeadOverride}>
       <AdminPageGuard roles={["super_admin", "admin"]}>
-      <AdminPageSection className="space-y-4">
-        <AdminListPageHeader
-          title="Cài đặt hệ thống"
-          subtitle="Thương hiệu admin và SEO mặc định toàn site."
-          icon={Settings2}
-          actions={
-            canManageSettings || canViewSeo ? (
-              <SettingsCombinedCopyButton
-                display={
-                  canManageSettings
-                    ? {
-                        siteName,
-                        siteDescription: siteDesc,
-                        defaultNewUserRole: defaultRole,
-                        defaultNewUserRoleLabel: defaultRoleLabel,
-                      }
-                    : undefined
-                }
-                seoGlobal={
-                  canManageSettings || canViewSeo
-                    ? {
-                        title: seoTitle,
-                        description: seoDescription,
-                        keywords: seoKeywords,
-                        ogTitle: seoOgTitle,
-                        ogDescription: seoOgDescription,
-                        ogImage: seoOgImage,
-                      }
-                    : undefined
-                }
-                hasUnsavedChanges={
-                  (canManageSettings && displayDirty) ||
-                  (canWriteSeo && seoGlobalDirty)
-                }
-              />
-            ) : null
-          }
-        />
-
-        <Tabs
-          value={activeTab}
-          onValueChange={(v) => {
-            if (TAB_IDS.includes(v as SettingsTabId)) {
-              setActiveTab(v as SettingsTabId)
+        <AdminPageSection className="space-y-4">
+          <AdminListPageHeader
+            title="Cài đặt hệ thống"
+            subtitle="Thương hiệu admin và SEO mặc định toàn site."
+            icon={Settings2}
+            actions={
+              canManageSettings || canViewSeo ? (
+                <SettingsCombinedCopyButton
+                  display={
+                    canManageSettings
+                      ? {
+                          siteName,
+                          siteDescription: siteDesc,
+                          defaultNewUserRole: defaultRole,
+                          defaultNewUserRoleLabel: defaultRoleLabel,
+                        }
+                      : undefined
+                  }
+                  seoGlobal={
+                    canManageSettings || canViewSeo
+                      ? {
+                          title: seoTitle,
+                          description: seoDescription,
+                          keywords: seoKeywords,
+                          ogTitle: seoOgTitle,
+                          ogDescription: seoOgDescription,
+                          ogImage: seoOgImage,
+                        }
+                      : undefined
+                  }
+                  hasUnsavedChanges={
+                    (canManageSettings && displayDirty) ||
+                    (canWriteSeo && seoGlobalDirty)
+                  }
+                />
+              ) : null
             }
-          }}
-          className="space-y-4"
-        >
-          <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-            {canManageSettings ? (
-              <TabsTrigger
-                value="display"
-                className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-              >
-                <Monitor className="size-4" aria-hidden />
-                Hiển thị & hệ thống
-              </TabsTrigger>
-            ) : null}
-            {canManageSettings || canViewSeo ? (
-              <TabsTrigger
-                value="seo-global"
-                className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-              >
-                <Globe className="size-4" aria-hidden />
-                SEO mặc định
-              </TabsTrigger>
-            ) : null}
-          </TabsList>
+          />
 
-          {canManageSettings ? (
-            <TabsContent value="display" className="mt-0 space-y-4">
-              {displayTabLoading ? <SettingsDisplayTabSkeleton /> : null}
-              {!displayTabLoading ? (
-              <>
-              <SettingsQuickPresets
-                presets={SETTINGS_DISPLAY_PRESETS}
-                onApply={applyDisplayPreset}
-                disabled={saveDisplayMutation.isPending}
-              />
-              <FieldSet variant="section">
-                <FieldSectionLegend
-                  icon={Monitor}
-                  title="Hiển thị & hệ thống"
-                  description="Thương hiệu admin và role mặc định cho tài khoản mới."
-                />
-                <FieldSetContent variant="section" className="space-y-5 pt-0">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="site-name">Tên ứng dụng</Label>
-                      <Input
-                        id="site-name"
-                        value={siteName}
-                        onChange={(e) => setSiteName(e.target.value)}
-                        placeholder="HUB Parent"
-                      />
-                      <TypographyPSmallMuted>
-                        Sidebar và tiêu đề trang quản trị.
-                      </TypographyPSmallMuted>
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="site-desc">Mô tả ngắn</Label>
-                      <Input
-                        id="site-desc"
-                        value={siteDesc}
-                        onChange={(e) => setSiteDesc(e.target.value)}
-                        placeholder="Quản trị hệ thống"
-                      />
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="space-y-2">
-                    <Label htmlFor="default-role">Role mặc định</Label>
-                    <SelectPicker
-                      id="default-role"
-                      value={defaultRole}
-                      onChange={(v) =>
-                        setDefaultRole(typeof v === "string" ? v : "")
-                      }
-                      options={(rolesQuery.data?.items ?? []).map(
-                        (r): SelectPickerOption => ({
-                          value: r.code,
-                          label: r.name,
-                        }),
-                      )}
-                      placeholder="Chọn role mặc định"
-                    />
-                    <TypographyPSmallMuted>
-                      Gán cho tài khoản đăng nhập lần đầu.
-                    </TypographyPSmallMuted>
-                  </div>
-                </FieldSetContent>
-              </FieldSet>
-
-              <div className="flex justify-end">
-                <Button
-                  type="button"
-                  onClick={() => saveDisplayMutation.mutate()}
-                  disabled={!displayDirty || saveDisplayMutation.isPending}
-                  className="min-w-[8rem] rounded-lg"
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => {
+              if (TAB_IDS.includes(v as SettingsTabId)) {
+                setActiveTab(v as SettingsTabId)
+              }
+            }}
+            className="space-y-4"
+          >
+            <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+              {canManageSettings ? (
+                <TabsTrigger
+                  value="display"
+                  className={ADMIN_LIST_TABS_TRIGGER_CLASS}
                 >
-                  {saveDisplayMutation.isPending ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Save className="size-4" />
-                  )}
-                  Lưu hiển thị
-                </Button>
-              </div>
-              </>
+                  <Monitor className="size-4" aria-hidden />
+                  Hiển thị & hệ thống
+                </TabsTrigger>
               ) : null}
-            </TabsContent>
-          ) : null}
-
-          {canManageSettings || canViewSeo ? (
-            <TabsContent value="seo-global" className="mt-0 space-y-4">
-              {seoGlobalTabLoading ? <SettingsSeoGlobalTabSkeleton /> : null}
-              {!seoGlobalTabLoading ? (
-              <>
-              {canWriteSeo ? (
-                <SettingsQuickPresets
-                  presets={SETTINGS_SEO_GLOBAL_PRESETS}
-                  onApply={applySeoGlobalPreset}
-                  disabled={saveSiteSeoMutation.isPending}
-                />
+              {canManageSettings || canViewSeo ? (
+                <TabsTrigger
+                  value="seo-global"
+                  className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                >
+                  <Globe className="size-4" aria-hidden />
+                  SEO mặc định
+                </TabsTrigger>
               ) : null}
-              <FieldSet variant="section">
-                <FieldSectionLegend
-                  icon={Globe}
-                  title="SEO mặc định toàn site"
-                  description="Title, mô tả và từ khóa mặc định cho toàn hệ thống."
-                />
-                <FieldSetContent variant="section" className="space-y-4 pt-0">
-                  {!canWriteSeo ? (
-                    <AdminReadOnlyHint>
-                      Chỉ xem — cần quyền SEO hoặc cài đặt để chỉnh sửa.
-                    </AdminReadOnlyHint>
-                  ) : null}
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="seo-title">Title SEO</Label>
-                      <Input
-                        id="seo-title"
-                        value={seoTitle}
-                        onChange={(e) => setSeoTitle(e.target.value)}
-                        disabled={!canWriteSeo}
-                        placeholder="HUB Parent - Kết nối phụ huynh và nhà trường"
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="seo-description">Mô tả meta</Label>
-                      <Textarea
-                        id="seo-description"
-                        value={seoDescription}
-                        onChange={(e) => setSeoDescription(e.target.value)}
-                        disabled={!canWriteSeo}
-                        rows={3}
-                        placeholder="Mô tả ngắn hiển thị trên Google và mạng xã hội"
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="seo-keywords">Từ khóa</Label>
-                      <Input
-                        id="seo-keywords"
-                        value={seoKeywords}
-                        onChange={(e) => setSeoKeywords(e.target.value)}
-                        disabled={!canWriteSeo}
-                        placeholder="hub parent, phụ huynh, nhà trường"
-                      />
-                    </div>
-                  </div>
-                </FieldSetContent>
-              </FieldSet>
+            </TabsList>
 
-              <FieldSet variant="section">
-                <FieldSectionLegend
-                  icon={Search}
-                  title="Open Graph"
-                  description="Khi chia sẻ link trên mạng xã hội."
-                />
-                <FieldSetContent variant="section" className="space-y-4 pt-0">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="seo-og-title">OG Title</Label>
-                      <Input
-                        id="seo-og-title"
-                        value={seoOgTitle}
-                        onChange={(e) => setSeoOgTitle(e.target.value)}
-                        disabled={!canWriteSeo}
+            {canManageSettings ? (
+              <TabsContent value="display" className="mt-0 space-y-4">
+                {displayTabLoading ? <SettingsDisplayTabSkeleton /> : null}
+                {!displayTabLoading ? (
+                  <>
+                    <SettingsQuickPresets
+                      presets={SETTINGS_DISPLAY_PRESETS}
+                      onApply={applyDisplayPreset}
+                      disabled={saveDisplayMutation.isPending}
+                    />
+                    <FieldSet variant="section">
+                      <FieldSectionLegend
+                        icon={Monitor}
+                        title="Hiển thị & hệ thống"
+                        description="Thương hiệu admin và role mặc định cho tài khoản mới."
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="seo-og-image">OG Ảnh (URL)</Label>
-                      <Input
-                        id="seo-og-image"
-                        value={seoOgImage}
-                        onChange={(e) => setSeoOgImage(e.target.value)}
-                        disabled={!canWriteSeo}
-                        placeholder="https://..."
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="seo-og-description">OG Mô tả</Label>
-                      <Textarea
-                        id="seo-og-description"
-                        value={seoOgDescription}
-                        onChange={(e) => setSeoOgDescription(e.target.value)}
-                        disabled={!canWriteSeo}
-                        rows={2}
-                      />
-                    </div>
-                  </div>
-                </FieldSetContent>
-              </FieldSet>
+                      <FieldSetContent
+                        variant="section"
+                        className="space-y-5 pt-0"
+                      >
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="site-name">Tên ứng dụng</Label>
+                            <Input
+                              id="site-name"
+                              value={siteName}
+                              onChange={(e) => setSiteName(e.target.value)}
+                              placeholder="HUB Parent"
+                            />
+                            <TypographyPSmallMuted>
+                              Sidebar và tiêu đề trang quản trị.
+                            </TypographyPSmallMuted>
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="site-desc">Mô tả ngắn</Label>
+                            <Input
+                              id="site-desc"
+                              value={siteDesc}
+                              onChange={(e) => setSiteDesc(e.target.value)}
+                              placeholder="Quản trị hệ thống"
+                            />
+                          </div>
+                        </div>
+                        <Separator />
+                        <div className="space-y-2">
+                          <Label htmlFor="default-role">Role mặc định</Label>
+                          <SelectPicker
+                            id="default-role"
+                            value={defaultRole}
+                            onChange={(v) =>
+                              setDefaultRole(typeof v === "string" ? v : "")
+                            }
+                            options={(rolesQuery.data?.items ?? []).map(
+                              (r): SelectPickerOption => ({
+                                value: r.code,
+                                label: r.name,
+                              })
+                            )}
+                            placeholder="Chọn role mặc định"
+                          />
+                          <TypographyPSmallMuted>
+                            Gán cho tài khoản đăng nhập lần đầu.
+                          </TypographyPSmallMuted>
+                        </div>
+                      </FieldSetContent>
+                    </FieldSet>
 
-              {canWriteSeo ? (
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    onClick={() => saveSiteSeoMutation.mutate()}
-                    disabled={!seoGlobalDirty || saveSiteSeoMutation.isPending}
-                    className="min-w-[8rem] rounded-lg"
-                  >
-                    {saveSiteSeoMutation.isPending ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Save className="size-4" />
-                    )}
-                    Lưu SEO mặc định
-                  </Button>
-                </div>
-              ) : null}
-              </>
-              ) : null}
-            </TabsContent>
-          ) : null}
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        onClick={() => saveDisplayMutation.mutate()}
+                        disabled={
+                          !displayDirty || saveDisplayMutation.isPending
+                        }
+                        className="min-w-[8rem] rounded-lg"
+                      >
+                        {saveDisplayMutation.isPending ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Save className="size-4" />
+                        )}
+                        Lưu hiển thị
+                      </Button>
+                    </div>
+                  </>
+                ) : null}
+              </TabsContent>
+            ) : null}
 
-        </Tabs>
-      </AdminPageSection>
-    </AdminPageGuard>
+            {canManageSettings || canViewSeo ? (
+              <TabsContent value="seo-global" className="mt-0 space-y-4">
+                {seoGlobalTabLoading ? <SettingsSeoGlobalTabSkeleton /> : null}
+                {!seoGlobalTabLoading ? (
+                  <>
+                    {canWriteSeo ? (
+                      <SettingsQuickPresets
+                        presets={SETTINGS_SEO_GLOBAL_PRESETS}
+                        onApply={applySeoGlobalPreset}
+                        disabled={saveSiteSeoMutation.isPending}
+                      />
+                    ) : null}
+                    <FieldSet variant="section">
+                      <FieldSectionLegend
+                        icon={Globe}
+                        title="SEO mặc định toàn site"
+                        description="Title, mô tả và từ khóa mặc định cho toàn hệ thống."
+                      />
+                      <FieldSetContent
+                        variant="section"
+                        className="space-y-4 pt-0"
+                      >
+                        {!canWriteSeo ? (
+                          <AdminReadOnlyHint>
+                            Chỉ xem — cần quyền SEO hoặc cài đặt để chỉnh sửa.
+                          </AdminReadOnlyHint>
+                        ) : null}
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="seo-title">Title SEO</Label>
+                            <Input
+                              id="seo-title"
+                              value={seoTitle}
+                              onChange={(e) => setSeoTitle(e.target.value)}
+                              disabled={!canWriteSeo}
+                              placeholder="HUB Parent - Kết nối phụ huynh và nhà trường"
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="seo-description">Mô tả meta</Label>
+                            <Textarea
+                              id="seo-description"
+                              value={seoDescription}
+                              onChange={(e) =>
+                                setSeoDescription(e.target.value)
+                              }
+                              disabled={!canWriteSeo}
+                              rows={3}
+                              placeholder="Mô tả ngắn hiển thị trên Google và mạng xã hội"
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="seo-keywords">Từ khóa</Label>
+                            <Input
+                              id="seo-keywords"
+                              value={seoKeywords}
+                              onChange={(e) => setSeoKeywords(e.target.value)}
+                              disabled={!canWriteSeo}
+                              placeholder="hub parent, phụ huynh, nhà trường"
+                            />
+                          </div>
+                        </div>
+                      </FieldSetContent>
+                    </FieldSet>
+
+                    <FieldSet variant="section">
+                      <FieldSectionLegend
+                        icon={Search}
+                        title="Open Graph"
+                        description="Khi chia sẻ link trên mạng xã hội."
+                      />
+                      <FieldSetContent
+                        variant="section"
+                        className="space-y-4 pt-0"
+                      >
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="seo-og-title">OG Title</Label>
+                            <Input
+                              id="seo-og-title"
+                              value={seoOgTitle}
+                              onChange={(e) => setSeoOgTitle(e.target.value)}
+                              disabled={!canWriteSeo}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="seo-og-image">OG Ảnh (URL)</Label>
+                            <Input
+                              id="seo-og-image"
+                              value={seoOgImage}
+                              onChange={(e) => setSeoOgImage(e.target.value)}
+                              disabled={!canWriteSeo}
+                              placeholder="https://..."
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="seo-og-description">OG Mô tả</Label>
+                            <Textarea
+                              id="seo-og-description"
+                              value={seoOgDescription}
+                              onChange={(e) =>
+                                setSeoOgDescription(e.target.value)
+                              }
+                              disabled={!canWriteSeo}
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      </FieldSetContent>
+                    </FieldSet>
+
+                    {canWriteSeo ? (
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          onClick={() => saveSiteSeoMutation.mutate()}
+                          disabled={
+                            !seoGlobalDirty || saveSiteSeoMutation.isPending
+                          }
+                          className="min-w-[8rem] rounded-lg"
+                        >
+                          {saveSiteSeoMutation.isPending ? (
+                            <Loader2 className="size-4 animate-spin" />
+                          ) : (
+                            <Save className="size-4" />
+                          )}
+                          Lưu SEO mặc định
+                        </Button>
+                      </div>
+                    ) : null}
+                  </>
+                ) : null}
+              </TabsContent>
+            ) : null}
+          </Tabs>
+        </AdminPageSection>
+      </AdminPageGuard>
     </AdminDocumentHeadOverrideProvider>
   )
 }

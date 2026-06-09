@@ -13,11 +13,13 @@ Một thư viện soạn thảo văn bản (Rich Text Editor) dựa trên [Lexic
 ## Cài đặt
 
 Sử dụng `npm`:
+
 ```bash
 npm install @thangph2146/lexical-editor lexical @lexical/react
 ```
 
 Sử dụng `pnpm`:
+
 ```bash
 pnpm add @thangph2146/lexical-editor lexical @lexical/react
 ```

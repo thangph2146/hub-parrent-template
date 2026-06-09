@@ -1,37 +1,37 @@
-import type { ColumnFiltersState } from "@tanstack/react-table";
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
+import type { ColumnFiltersState } from "@tanstack/react-table"
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 
 export type RoleRow = {
-  id: string;
-  code: string;
-  name: string;
-  description: string | null;
-  permissions: string[];
-  isActive: boolean;
-  createdAt: string | null;
-  updatedAt: string | null;
-  deletedAt: string | null;
-};
+  id: string
+  code: string
+  name: string
+  description: string | null
+  permissions: string[]
+  isActive: boolean
+  createdAt: string | null
+  updatedAt: string | null
+  deletedAt: string | null
+}
 
 export function normalizePermissionCodes(value: unknown): string[] {
   const visit = (input: unknown): string[] => {
-    if (Array.isArray(input)) return input.flatMap((item) => visit(item));
-    if (typeof input !== "string") return [];
-    const trimmed = input.trim();
-    if (!trimmed) return [];
+    if (Array.isArray(input)) return input.flatMap((item) => visit(item))
+    if (typeof input !== "string") return []
+    const trimmed = input.trim()
+    if (!trimmed) return []
     if (
       (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
       (trimmed.startsWith('"') && trimmed.endsWith('"'))
     ) {
       try {
-        return visit(JSON.parse(trimmed));
+        return visit(JSON.parse(trimmed))
       } catch {
-        return [trimmed];
+        return [trimmed]
       }
     }
-    return [trimmed];
-  };
-  return [...new Set(visit(value))].sort((a, b) => a.localeCompare(b));
+    return [trimmed]
+  }
+  return [...new Set(visit(value))].sort((a, b) => a.localeCompare(b))
 }
 
 export function mapRoleRow(row: Record<string, unknown>): RoleRow {
@@ -45,13 +45,13 @@ export function mapRoleRow(row: Record<string, unknown>): RoleRow {
     createdAt: (row.createdAt as string | null | undefined) ?? null,
     updatedAt: (row.updatedAt as string | null | undefined) ?? null,
     deletedAt: (row.deletedAt as string | null | undefined) ?? null,
-  };
+  }
 }
 
 export function buildRolesFilterQuery(
-  columnFilters: ColumnFiltersState,
+  columnFilters: ColumnFiltersState
 ): Record<string, string> {
-  return buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.roles);
+  return buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.roles)
 }
 
-export { formatAdminDateTime as formatRoleDateTime } from "@/lib/format-admin-datetime";
+export { formatAdminDateTime as formatRoleDateTime } from "@/lib/format-admin-datetime"

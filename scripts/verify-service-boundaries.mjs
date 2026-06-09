@@ -14,7 +14,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const FORBIDDEN_DEPS = {
   "@api": ["@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
   "@frontend": ["@backend", "@api"],
-  "@backend": ["@frontend", "@api"],
+  "@store-sync-frontend": ["@backend", "@api"],
+  "@backend": ["@frontend", "@api", "@store-sync-frontend"],
   "@hub-event-checkin-frontend": ["@backend", "@frontend", "@api"],
   "@workspace/api-client": ["@api", "@frontend", "@backend", "@workspace/ui"],
   "@workspace/site-config": ["@api", "@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],

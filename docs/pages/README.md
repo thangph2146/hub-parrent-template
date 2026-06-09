@@ -39,23 +39,30 @@ Mọi admin page trong `apps/backend/src/app/<module>/` đều theo cấu trúc:
 
 ## Quy tắc bắt buộc (xem chi tiết trong `docs/admin-pattern/`)
 
-| Rule | File |
-|------|------|
-| Stack UI pattern (guard, header, layout, table actions, confirm dialog) | `ADMIN_PAGE_PATTERN.md` |
-| Microservice boundaries, ORM, package responsibilities | `MICROSERVICE_SYSTEM_MAP.md` |
-| Quy trình agent trước khi code | `PRE_CODE_PROTOCOL.md` |
-| Lệnh kiểm tra (`pnpm check`, `check:full`) | `AGENTS_GUIDE.md` |
-| Graphify summaries & snapshot | `.graphify/markdown/SUMMARY_FOR_AI.md` |
+| Rule                                                                    | File                                   |
+| ----------------------------------------------------------------------- | -------------------------------------- |
+| Stack UI pattern (guard, header, layout, table actions, confirm dialog) | `ADMIN_PAGE_PATTERN.md`                |
+| Microservice boundaries, ORM, package responsibilities                  | `MICROSERVICE_SYSTEM_MAP.md`           |
+| Quy trình agent trước khi code                                          | `PRE_CODE_PROTOCOL.md`                 |
+| Lệnh kiểm tra (`pnpm check`, `check:full`)                              | `AGENTS_GUIDE.md`                      |
+| Graphify summaries & snapshot                                           | `.graphify/markdown/SUMMARY_FOR_AI.md` |
 
 ## Import chuẩn
 
 ```tsx
 // Page guard + layout
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader } from "@ui/components/admin"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+} from "@ui/components/admin"
 
 // Data table + actions
 import { TABLE_ACTIONS_COLUMN_META } from "@ui/components/data-table"
-import { AdminTableCrudRowActions, AdminTableTrashRowActions } from "@ui/components/admin"
+import {
+  AdminTableCrudRowActions,
+  AdminTableTrashRowActions,
+} from "@ui/components/admin"
 
 // Confirm dialog (dùng chung, không tạo wrapper riêng)
 import { AdminCrudConfirmDialog } from "@ui/components/admin"

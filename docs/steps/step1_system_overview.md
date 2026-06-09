@@ -3,23 +3,27 @@
 Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trước khi phát triển.
 
 ## Dịch vụ chính
+
 - `apps/api` — NestJS + MikroORM: entities, migrations, seeders, controllers, services.
 - `apps/frontend` — Storefront Next.js (public-facing).
 - `apps/backend` — Admin Next.js (internal admin).
 
 ## Packages chia sẻ
+
 - `packages/api-client` — SDK gọi `apps/api` (HTTP).
 - `packages/query-client` — cấu hình TanStack Query dùng chung.
 - `packages/ui`, `packages/editor` — UI / editor components.
 - `packages/eslint-config`, `packages/typescript-config` — quy tắc lint/tsconfig chung.
 
 ## Nguyên tắc ranh giới
+
 - KHÔNG import chéo source giữa `apps/*`.
 - Next apps gọi `apps/api` qua HTTP hoặc `@workspace/api-client`.
 - Logic DB (entities, migrations, seeders) chỉ ở `apps/api`.
 - Logic dùng chung đặt ở `packages/*` nếu thực sự cần chia sẻ.
 
 ## Tài liệu quan trọng (đọc trước khi sửa code)
+
 - `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
 - `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và checklist.
 - `docs/admin-pattern/AGENTS_GUIDE.md` — hướng dẫn đọc thứ tự và chạy `pnpm check`.
@@ -27,6 +31,7 @@ Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trướ
 - Nếu task liên quan page/feature: `docs/pages/<feature>-implementation.md`.
 
 ## Quy trình thay đổi (tối thiểu)
+
 1. Xác định phạm vi (app/package/feature).
 2. Đọc các tài liệu trong mục "Tài liệu quan trọng" theo thứ tự.
 3. Mở `apps/<app>/.graphify/markdown/FOLDER_TREE.md` để định vị file mục tiêu.
@@ -47,9 +52,11 @@ pnpm check:full
 ```
 
 ## Kiểm tra hoàn thành
+
 - `pnpm check` phải pass.
 - Không vi phạm `service-boundaries` (xem `packages/eslint-config/service-boundaries.js`).
 - Không thêm phụ thuộc sai vào `package.json` của app/package.
 
-----
+---
+
 File này là tóm tắt; tham khảo chi tiết trong `docs/admin-pattern/` và `.graphify/markdown/`.

@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { TreePicker } from "@ui/components/pickers";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { Hash, Tag } from "lucide-react";
-import type { TrainingLevelFormValues } from "../types";
+} from "@ui/components/admin"
+import { TreePicker } from "@ui/components/pickers"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { Hash, Tag } from "lucide-react"
+import type { TrainingLevelFormValues } from "../types"
 
 export interface TrainingLevelFormShellProps {
-  form: UseFormReturn<TrainingLevelFormValues>;
-  onSubmit: (values: TrainingLevelFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<TrainingLevelFormValues>
+  onSubmit: (values: TrainingLevelFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function TrainingLevelFormShell({
@@ -37,7 +37,7 @@ export function TrainingLevelFormShell({
   onBack,
   onReset,
 }: TrainingLevelFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -110,7 +110,9 @@ export function TrainingLevelFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Tắt" },
@@ -130,5 +132,5 @@ export function TrainingLevelFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

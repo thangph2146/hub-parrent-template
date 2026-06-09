@@ -80,6 +80,8 @@ export type StorageFolderPolicy = {
   version: 1;
   realm: StorageRealm;
   allowedExtensions: string[];
+  /** Nhãn hiển thị (tiếng Việt) — path trên disk dùng slug ASCII. */
+  label?: string;
 };
 
 export function normalizeExtension(ext: string): string {
@@ -194,13 +196,16 @@ export function inferRealmFromDiskFolderPath(
 export function buildFolderPolicy(
   realm: StorageRealm,
   allowedExtensions?: string[],
+  label?: string,
 ): StorageFolderPolicy {
   const exts = allowedExtensions?.length
     ? normalizeExtensions(allowedExtensions)
     : getRealmDefaultExtensions(realm);
+  const trimmedLabel = label?.trim();
   return {
     version: 1,
     realm,
     allowedExtensions: exts,
+    ...(trimmedLabel ? { label: trimmedLabel } : {}),
   };
 }

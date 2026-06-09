@@ -11,7 +11,7 @@ const LexicalEditor = dynamic(
     import("@thangph2146/lexical-editor").then((mod) => ({
       default: mod.LexicalEditor,
     })),
-  { ssr: false },
+  { ssr: false }
 )
 import {
   Calendar,
@@ -37,14 +37,17 @@ import {
 } from "@ui/components/field"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AdminDataTable } from "@ui/components/data-table"
-import { buildEventDetailXlsxExport, AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader } from "@ui/components/admin"
+import {
+  buildEventDetailXlsxExport,
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+} from "@ui/components/admin"
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"
-import {
-  useEventDetailQuery,
-  useEventSpeakersQuery,
-} from "../_component"
+import { useEventDetailQuery, useEventSpeakersQuery } from "../_component"
 import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
 import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
 import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
@@ -62,7 +65,7 @@ function formatDateTime(value: string | null | undefined): string {
 }
 
 function EventDetailInner() {
-  const crudNav = useAdminCrudNavigation("/events");
+  const crudNav = useAdminCrudNavigation("/events")
   const params = useParams()
   const id = params.id as string
   const { user } = useAuth()
@@ -70,7 +73,10 @@ function EventDetailInner() {
     ? canUserAccess(user, PERMISSION_CODES.EVENTS_UPDATE)
     : false
   const { data: entity, isLoading, isError } = useEventDetailQuery(api, id)
-  const { data: speakers, isLoading: loadingSpeakers } = useEventSpeakersQuery(api, id)
+  const { data: speakers, isLoading: loadingSpeakers } = useEventSpeakersQuery(
+    api,
+    id
+  )
 
   useEffect(() => {
     if (isError) {
@@ -79,10 +85,7 @@ function EventDetailInner() {
     }
   }, [isError, crudNav])
 
-  if (isLoading)
-    return (
-      <AdminPageLoading />
-    )
+  if (isLoading) return <AdminPageLoading />
   if (!entity) return null
 
   const posterUrl = getPosterUrlFromValue(entity.poster)
@@ -94,9 +97,7 @@ function EventDetailInner() {
         subtitle="Quản lý sự kiện check-in."
         variant="module"
         onBack={() => crudNav.list()}
-        onEdit={
-          canUpdate ? () => crudNav.edit(String(id)) : undefined
-        }
+        onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
       />
 
       <Tabs defaultValue="info" className="my-6">
@@ -125,7 +126,7 @@ function EventDetailInner() {
                     <LexicalEditor
                       value={entity.content}
                       readOnly
-                      className="max-w-4xl mx-auto"
+                      className="mx-auto max-w-4xl"
                     />
                   </FieldSetContent>
                 </FieldSet>
@@ -166,7 +167,9 @@ function EventDetailInner() {
                   <FieldSetContent variant="section" className="space-y-4 pt-0">
                     {entity.description ? (
                       <FieldSectionField label="Mô tả">
-                        <p className="whitespace-pre-wrap">{entity.description}</p>
+                        <p className="whitespace-pre-wrap">
+                          {entity.description}
+                        </p>
                       </FieldSectionField>
                     ) : null}
                     <FieldSectionField label="Bắt đầu" icon={Calendar}>
@@ -188,10 +191,7 @@ function EventDetailInner() {
                 </FieldSet>
 
                 <FieldSet variant="section">
-                  <FieldSectionLegend
-                    icon={Clock}
-                    title="Check-in & Đăng ký"
-                  />
+                  <FieldSectionLegend icon={Clock} title="Check-in & Đăng ký" />
                   <FieldSetContent variant="section" className="space-y-3 pt-0">
                     <FieldSectionField label="Check-in từ" icon={Clock}>
                       {formatDateTime(entity.checkinStart)}
@@ -254,7 +254,9 @@ function EventDetailInner() {
                   />
                   <FieldSetContent variant="section" className="pt-0">
                     {loadingSpeakers ? (
-                      <p className="text-sm text-muted-foreground">Đang tải...</p>
+                      <p className="text-sm text-muted-foreground">
+                        Đang tải...
+                      </p>
                     ) : !speakers?.length ? (
                       <p className="text-sm text-muted-foreground">
                         Chưa có diễn giả.
@@ -303,13 +305,17 @@ function EventDetailInner() {
                         <p className="text-2xl font-bold text-green-600">
                           {entity.totalCheckins}
                         </p>
-                        <p className="text-xs text-muted-foreground">Check-in</p>
+                        <p className="text-xs text-muted-foreground">
+                          Check-in
+                        </p>
                       </div>
                       <div className="rounded-lg bg-muted/30 p-3 text-center">
                         <p className="text-2xl font-bold text-amber-600">
                           {entity.totalCheckouts}
                         </p>
-                        <p className="text-xs text-muted-foreground">Check-out</p>
+                        <p className="text-xs text-muted-foreground">
+                          Check-out
+                        </p>
                       </div>
                       <div className="rounded-lg bg-muted/30 p-3 text-center">
                         <p className="text-2xl font-bold text-muted-foreground">
@@ -430,10 +436,7 @@ function EventDetailInner() {
               />
             </TabsContent>
             <TabsContent value="speakers" className="mt-4">
-              <SpeakersTab
-                eventId={id}
-                eventTitle={entity.title}
-              />
+              <SpeakersTab eventId={id} eventTitle={entity.title} />
             </TabsContent>
           </Tabs>
         </TabsContent>
@@ -464,33 +467,56 @@ function SpeakersTab({
 }) {
   const { data: speakers, isLoading } = useEventSpeakersQuery(api, eventId)
   const rows = speakers ?? []
-  const columns = useMemo<ColumnDef<Dict>[]>(() => [
-    {
-      id: "avatar",
-      header: "Avatar",
-      enableColumnFilter: false,
-      size: 56,
-      meta: {
-        exportHeader: "Avatar",
-        exportValue: (row) => resolveRegistrationAvatarUrl(row) || "",
-        exportWidth: 36,
+  const columns = useMemo<ColumnDef<Dict>[]>(
+    () => [
+      {
+        id: "avatar",
+        header: "Avatar",
+        enableColumnFilter: false,
+        size: 56,
+        meta: {
+          exportHeader: "Avatar",
+          exportValue: (row) => resolveRegistrationAvatarUrl(row) || "",
+          exportWidth: 36,
+        },
+        cell: ({ row }) => <RegistrationAvatarCell row={row.original} />,
       },
-      cell: ({ row }) => <RegistrationAvatarCell row={row.original} />,
-    },
-    { accessorKey: "speakerName", header: "Diễn giả", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "speakerTitle", header: "Chức danh", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "role", header: "Vai trò", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "presentationTitle", header: "Chủ đề", enableColumnFilter: false,
-      cell: ({ getValue }) => (getValue() as string) || "—" },
-    { accessorKey: "duration", header: "Thời lượng", enableColumnFilter: false,
-      cell: ({ getValue }) => {
-        const v = getValue() as number | null
-        return v ? `${v} phút` : "—"
-      } },
-  ], [])
+      {
+        accessorKey: "speakerName",
+        header: "Diễn giả",
+        enableColumnFilter: false,
+        cell: ({ getValue }) => (getValue() as string) || "—",
+      },
+      {
+        accessorKey: "speakerTitle",
+        header: "Chức danh",
+        enableColumnFilter: false,
+        cell: ({ getValue }) => (getValue() as string) || "—",
+      },
+      {
+        accessorKey: "role",
+        header: "Vai trò",
+        enableColumnFilter: false,
+        cell: ({ getValue }) => (getValue() as string) || "—",
+      },
+      {
+        accessorKey: "presentationTitle",
+        header: "Chủ đề",
+        enableColumnFilter: false,
+        cell: ({ getValue }) => (getValue() as string) || "—",
+      },
+      {
+        accessorKey: "duration",
+        header: "Thời lượng",
+        enableColumnFilter: false,
+        cell: ({ getValue }) => {
+          const v = getValue() as number | null
+          return v ? `${v} phút` : "—"
+        },
+      },
+    ],
+    []
+  )
   return (
     <AdminDataTable<Dict>
       data={rows}
@@ -500,7 +526,9 @@ function SpeakersTab({
       emptyLabel="Chưa có diễn giả nào."
       globalFilterPlaceholder="Tìm theo tên, vai trò, chủ đề…"
       getGlobalFilterText={(row) =>
-        [row.speakerName, row.speakerTitle, row.role, row.presentationTitle].filter(Boolean).join(" ")
+        [row.speakerName, row.speakerTitle, row.role, row.presentationTitle]
+          .filter(Boolean)
+          .join(" ")
       }
       xlsxExport={buildEventDetailXlsxExport("speakers", {
         eventId,

@@ -1,16 +1,19 @@
-"use client";
+"use client"
 
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
-import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
-import { Input } from "@ui/components/input";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@ui/components/tooltip";
-import { cn } from "@ui/lib/utils";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react"
+import { Badge } from "@ui/components/badge"
+import { Button } from "@ui/components/button"
+import { Input } from "@ui/components/input"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@ui/components/tooltip"
+import { cn } from "@ui/lib/utils"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import {
   ChevronRight,
   FolderOpen,
@@ -19,43 +22,47 @@ import {
   Loader2,
   Search,
   X,
-} from "lucide-react";
-import { useStorageFolders } from "./_hooks/use-storage-folders";
-import type { StorageRealm, StorageTab } from "./types";
+} from "lucide-react"
+import { useStorageFolders } from "./_hooks/use-storage-folders"
+import type { StorageRealm, StorageTab } from "./types"
 import {
   filterStorageFoldersByQuery,
   resolveFolderPathAfterCreate,
-} from "./utils";
+} from "./utils"
 
-const FOLDER_SEARCH_DEBOUNCE_MS = 300;
+const FOLDER_SEARCH_DEBOUNCE_MS = 300
 
 type FileStorageFolderNavProps = {
-  realm: StorageRealm;
-  realmLabel: string;
-  breadcrumb: Array<{ id: string; label: string }>;
-  childFolders: StorageTab[];
-  activeFolderPath: string;
-  includeDescendants: boolean;
-  onIncludeDescendantsChange: (value: boolean) => void;
-  onNavigate: (folderPath: string) => void;
-  foldersRefreshKey?: number;
-  actions?: ReactNode;
-  className?: string;
-};
-
-function folderPathToNavPath(realm: StorageRealm, diskPath: string): string {
-  return resolveFolderPathAfterCreate(diskPath.replace(/\\/g, "/"), realm);
+  realm: StorageRealm
+  realmLabel: string
+  breadcrumb: Array<{ id: string; label: string }>
+  childFolders: StorageTab[]
+  activeFolderPath: string
+  includeDescendants: boolean
+  onIncludeDescendantsChange: (value: boolean) => void
+  onNavigate: (folderPath: string) => void
+  foldersRefreshKey?: number
+  actions?: ReactNode
+  className?: string
 }
 
-function folderDisplayLabel(folder: { path: string; name: string }): string {
-  const leaf = folder.path.replace(/\\/g, "/").split("/").pop();
-  return folder.name?.trim() || leaf || folder.path;
+function folderPathToNavPath(realm: StorageRealm, diskPath: string): string {
+  return resolveFolderPathAfterCreate(diskPath.replace(/\\/g, "/"), realm)
+}
+
+function folderDisplayLabel(folder: {
+  path: string
+  name: string
+  label?: string
+}): string {
+  const leaf = folder.path.replace(/\\/g, "/").split("/").pop()
+  return folder.label?.trim() || folder.name?.trim() || leaf || folder.path
 }
 
 function formatFolderPathHint(diskPath: string, realm: StorageRealm): string {
-  const normalized = diskPath.replace(/\\/g, "/");
-  const nav = folderPathToNavPath(realm, normalized);
-  return nav || normalized;
+  const normalized = diskPath.replace(/\\/g, "/")
+  const nav = folderPathToNavPath(realm, normalized)
+  return nav || normalized
 }
 
 export function FileStorageFolderNav({
@@ -71,55 +78,54 @@ export function FileStorageFolderNav({
   actions,
   className,
 }: FileStorageFolderNavProps) {
-  const searchInputId = useId();
-  const listId = `${searchInputId}-results`;
-  const searchRootRef = useRef<HTMLDivElement>(null);
-  const [folderQuery, setFolderQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputId = useId()
+  const listId = `${searchInputId}-results`
+  const searchRootRef = useRef<HTMLDivElement>(null)
+  const [folderQuery, setFolderQuery] = useState("")
+  const [searchOpen, setSearchOpen] = useState(false)
   const debouncedFolderQuery = useDebouncedValue(
     folderQuery,
-    FOLDER_SEARCH_DEBOUNCE_MS,
-  );
+    FOLDER_SEARCH_DEBOUNCE_MS
+  )
   const { folders, loading: loadingFolders } =
-    useStorageFolders(foldersRefreshKey);
+    useStorageFolders(foldersRefreshKey)
 
-  const searchActive = debouncedFolderQuery.trim().length > 0;
-  const isSearching = folderQuery.trim().length > 0;
-  const showSearchPanel = searchOpen && isSearching;
+  const searchActive = debouncedFolderQuery.trim().length > 0
+  const isSearching = folderQuery.trim().length > 0
+  const showSearchPanel = searchOpen && isSearching
 
   const searchResults = useMemo(() => {
-    if (!searchActive) return [];
-    return filterStorageFoldersByQuery(folders, debouncedFolderQuery, realm);
-  }, [debouncedFolderQuery, folders, realm, searchActive]);
+    if (!searchActive) return []
+    return filterStorageFoldersByQuery(folders, debouncedFolderQuery, realm)
+  }, [debouncedFolderQuery, folders, realm, searchActive])
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
       if (!searchRootRef.current?.contains(event.target as Node)) {
-        setSearchOpen(false);
+        setSearchOpen(false)
       }
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
-  }, []);
+    }
+    document.addEventListener("mousedown", onPointerDown)
+    return () => document.removeEventListener("mousedown", onPointerDown)
+  }, [])
 
   const handleNavigate = (navPath: string) => {
-    setFolderQuery("");
-    setSearchOpen(false);
-    onNavigate(navPath);
-  };
+    setFolderQuery("")
+    setSearchOpen(false)
+    onNavigate(navPath)
+  }
 
   const handlePickSearchResult = (diskPath: string) => {
-    handleNavigate(folderPathToNavPath(realm, diskPath));
-  };
+    handleNavigate(folderPathToNavPath(realm, diskPath))
+  }
 
-  const currentLabel =
-    breadcrumb[breadcrumb.length - 1]?.label ?? realmLabel;
+  const currentLabel = breadcrumb[breadcrumb.length - 1]?.label ?? realmLabel
 
   return (
     <section
       className={cn(
         "overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm",
-        className,
+        className
       )}
     >
       <div className="flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
@@ -139,14 +145,19 @@ export function FileStorageFolderNav({
               <span className="max-w-[8rem] truncate">{realmLabel}</span>
             </Button>
             {breadcrumb.map((crumb) => (
-              <div key={crumb.id} className="flex shrink-0 items-center gap-0.5">
+              <div
+                key={crumb.id}
+                className="flex shrink-0 items-center gap-0.5"
+              >
                 <ChevronRight
                   className="size-3.5 shrink-0 text-muted-foreground/70"
                   aria-hidden
                 />
                 <Button
                   type="button"
-                  variant={activeFolderPath === crumb.id ? "secondary" : "ghost"}
+                  variant={
+                    activeFolderPath === crumb.id ? "secondary" : "ghost"
+                  }
                   size="sm"
                   className="h-7 max-w-[10rem] truncate px-2 text-xs"
                   onClick={() => handleNavigate(crumb.id)}
@@ -173,7 +184,9 @@ export function FileStorageFolderNav({
                   variant={includeDescendants ? "secondary" : "outline"}
                   size="sm"
                   className="size-8 p-0"
-                  onClick={() => onIncludeDescendantsChange(!includeDescendants)}
+                  onClick={() =>
+                    onIncludeDescendantsChange(!includeDescendants)
+                  }
                   aria-pressed={includeDescendants}
                   aria-label={
                     includeDescendants
@@ -190,7 +203,10 @@ export function FileStorageFolderNav({
             </TooltipContent>
           </Tooltip>
 
-          <div ref={searchRootRef} className="relative w-full min-w-[11rem] sm:w-52">
+          <div
+            ref={searchRootRef}
+            className="relative w-full min-w-[11rem] sm:w-52"
+          >
             <Search
               className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               aria-hidden
@@ -199,12 +215,12 @@ export function FileStorageFolderNav({
               id={searchInputId}
               value={folderQuery}
               onChange={(e) => {
-                setFolderQuery(e.target.value);
-                setSearchOpen(true);
+                setFolderQuery(e.target.value)
+                setSearchOpen(true)
               }}
               onFocus={() => setSearchOpen(true)}
               placeholder="Tìm folder…"
-              className="h-8 border-border/80 bg-background pl-8 pr-7 text-xs shadow-none"
+              className="h-8 border-border/80 bg-background pr-7 pl-8 text-xs shadow-none"
               role="combobox"
               aria-expanded={showSearchPanel}
               aria-controls={showSearchPanel ? listId : undefined}
@@ -216,8 +232,8 @@ export function FileStorageFolderNav({
                 type="button"
                 className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                 onClick={() => {
-                  setFolderQuery("");
-                  setSearchOpen(false);
+                  setFolderQuery("")
+                  setSearchOpen(false)
                 }}
                 aria-label="Xóa tìm kiếm"
               >
@@ -238,9 +254,9 @@ export function FileStorageFolderNav({
                   </p>
                 ) : searchResults.length > 0 ? (
                   searchResults.map((folder) => {
-                    const navPath = folderPathToNavPath(realm, folder.path);
-                    const label = folderDisplayLabel(folder);
-                    const hint = formatFolderPathHint(folder.path, realm);
+                    const navPath = folderPathToNavPath(realm, folder.path)
+                    const label = folderDisplayLabel(folder)
+                    const hint = formatFolderPathHint(folder.path, realm)
                     return (
                       <button
                         key={folder.path}
@@ -249,7 +265,7 @@ export function FileStorageFolderNav({
                         aria-selected={activeFolderPath === navPath}
                         className={cn(
                           "flex w-full flex-col items-start rounded-md px-2.5 py-1.5 text-left transition-colors hover:bg-accent",
-                          activeFolderPath === navPath && "bg-accent/70",
+                          activeFolderPath === navPath && "bg-accent/70"
                         )}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => handlePickSearchResult(folder.path)}
@@ -257,11 +273,11 @@ export function FileStorageFolderNav({
                         <span className="text-xs font-medium text-foreground">
                           {label}
                         </span>
-                        <span className="truncate text-[10px] text-muted-foreground">
+                        <span className="truncate font-mono text-[10px] text-muted-foreground">
                           {hint}
                         </span>
                       </button>
-                    );
+                    )
                   })
                 ) : (
                   <p className="px-2.5 py-2 text-xs text-muted-foreground">
@@ -289,7 +305,10 @@ export function FileStorageFolderNav({
             >
               <FolderOpen className="size-3.5 text-amber-600/90 dark:text-amber-500" />
               <span className="font-medium">{folder.label}</span>
-              <Badge variant="secondary" className="h-4 px-1.5 text-[10px] tabular-nums">
+              <Badge
+                variant="secondary"
+                className="h-4 px-1.5 text-[10px] tabular-nums"
+              >
                 {folder.count}
               </Badge>
             </button>
@@ -297,5 +316,5 @@ export function FileStorageFolderNav({
         </div>
       ) : null}
     </section>
-  );
+  )
 }

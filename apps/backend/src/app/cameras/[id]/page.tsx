@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
 import {
   Calendar,
   Clock,
@@ -12,15 +12,15 @@ import {
   User,
   Cable,
   Fingerprint,
-} from "lucide-react";
-import { Badge } from "@ui/components/badge";
+} from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminPageGuard,
   AdminPageSection,
@@ -29,38 +29,38 @@ import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
-} from "@ui/components/admin";
-import { api } from "@/lib/api";
-import { useCameraDetailQuery } from "../_component";
-import { useAuth } from "@/providers/auth-provider";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+} from "@ui/components/admin"
+import { api } from "@/lib/api"
+import { useCameraDetailQuery } from "../_component"
+import { useAuth } from "@/providers/auth-provider"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN")
 }
 
 function DetailInner() {
-  const crudNav = useAdminCrudNavigation("/cameras");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
+  const crudNav = useAdminCrudNavigation("/cameras")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.CAMERAS_UPDATE)
-    : false;
+    : false
 
-  const { data: e, isLoading, isError } = useCameraDetailQuery(api, id);
+  const { data: e, isLoading, isError } = useCameraDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được camera");
-      crudNav.list();
+      toast.error("Không tải được camera")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!e) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!e) return null
 
   return (
     <AdminPageSection>
@@ -88,7 +88,10 @@ function DetailInner() {
                     Khóa
                   </Badge>
                 ) : (
-                  <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                  <Badge
+                    variant="default"
+                    className="rounded-full px-3 py-0.5 shadow-sm"
+                  >
                     Hoạt động
                   </Badge>
                 )}
@@ -114,10 +117,18 @@ function DetailInner() {
 
               <FieldSectionDivider />
               <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Cổng" icon={Monitor} valueClassName="font-mono">
+                <FieldSectionField
+                  label="Cổng"
+                  icon={Monitor}
+                  valueClassName="font-mono"
+                >
                   {e.port || "—"}
                 </FieldSectionField>
-                <FieldSectionField label="Tên đăng nhập" icon={User} valueClassName="font-mono">
+                <FieldSectionField
+                  label="Tên đăng nhập"
+                  icon={User}
+                  valueClassName="font-mono"
+                >
                   {e.username || "—"}
                 </FieldSectionField>
               </div>
@@ -128,12 +139,24 @@ function DetailInner() {
         <AdminDetailSidebar>
           <div className="sticky top-2 flex flex-col gap-4">
             <FieldSet variant="section">
-              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật."
+              />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(e.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(e.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -142,7 +165,7 @@ function DetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function CameraDetailPage() {
@@ -150,5 +173,5 @@ export default function CameraDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <DetailInner />
     </AdminPageGuard>
-  );
+  )
 }

@@ -26,31 +26,34 @@ export function EventRegistrationsLiveTable({
   eventId: string
   eventTitle: string
 }) {
-  const {
-    connected,
-    socketError,
-    lastPayload,
-    liveRevision,
-  } = useEventAttendanceContext()
+  const { connected, socketError, lastPayload, liveRevision } =
+    useEventAttendanceContext()
 
-  const { data: registrations, isLoading, refetch, isFetching } =
-    useEventRegistrationsQuery(api, eventId, {
-      enabled: true,
-    })
+  const {
+    data: registrations,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useEventRegistrationsQuery(api, eventId, {
+    enabled: true,
+  })
 
   const displayRows = useMemo(
     () => mergeRegistrationRowsForDisplay(registrations, lastPayload),
-    [registrations, lastPayload],
+    [registrations, lastPayload]
   )
 
   const [flashRegistrationId, setFlashRegistrationId] = useState<string | null>(
-    null,
+    null
   )
 
   useEffect(() => {
     if (!lastPayload?.registrationId) return
     setFlashRegistrationId(String(lastPayload.registrationId))
-    const timer = window.setTimeout(() => setFlashRegistrationId(null), HIGHLIGHT_MS)
+    const timer = window.setTimeout(
+      () => setFlashRegistrationId(null),
+      HIGHLIGHT_MS
+    )
     return () => window.clearTimeout(timer)
   }, [lastPayload, liveRevision])
 
@@ -60,7 +63,7 @@ export function EventRegistrationsLiveTable({
         eventId,
         showSocketFallback: !connected,
       }),
-    [eventId, connected],
+    [eventId, connected]
   )
 
   const showSocketFallback = !connected
@@ -90,7 +93,10 @@ export function EventRegistrationsLiveTable({
               {socketError ? "Socket lỗi" : "Mất realtime"}
             </Badge>
           ) : null}
-          <Badge variant={connected ? "default" : "secondary"} className="gap-1">
+          <Badge
+            variant={connected ? "default" : "secondary"}
+            className="gap-1"
+          >
             <Radio
               className={cn("size-3", connected && "animate-pulse")}
               aria-hidden
@@ -126,9 +132,7 @@ export function EventRegistrationsLiveTable({
         isLoading,
       }}
       footer={
-        <span>
-          Cập nhật khi check-in/check-out (socket hoặc thủ công).
-        </span>
+        <span>Cập nhật khi check-in/check-out (socket hoặc thủ công).</span>
       }
     />
   )

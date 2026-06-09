@@ -27,9 +27,8 @@ type EventAttendanceContextValue = {
   applyAttendance: (payload: EventAttendanceSocketPayload) => void
 }
 
-const EventAttendanceContext = createContext<EventAttendanceContextValue | null>(
-  null,
-)
+const EventAttendanceContext =
+  createContext<EventAttendanceContextValue | null>(null)
 
 /** Socket + cache đăng ký luôn sống trên trang chi tiết sự kiện. */
 export function EventAttendanceProvider({
@@ -52,13 +51,13 @@ export function EventAttendanceProvider({
       setLiveRevision((r) => r + 1)
       syncEventAttendanceUi(queryClient, eventId, payload)
     },
-    [queryClient, eventId],
+    [queryClient, eventId]
   )
 
   const { connected, socketError } = useEventAttendanceSocket(
     eventId,
     enabled,
-    applyAttendance,
+    applyAttendance
   )
 
   const pollMs = eventRegistrationsPollInterval(connected)
@@ -76,13 +75,7 @@ export function EventAttendanceProvider({
       liveRevision,
       applyAttendance,
     }),
-    [
-      applyAttendance,
-      connected,
-      lastPayload,
-      liveRevision,
-      socketError,
-    ],
+    [applyAttendance, connected, lastPayload, liveRevision, socketError]
   )
 
   return (

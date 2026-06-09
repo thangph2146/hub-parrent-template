@@ -2,8 +2,11 @@
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type {
+  ColumnFiltersState,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   AlertCircle,
   ArchiveRestore,
@@ -32,21 +35,27 @@ import {
 } from "@ui/components/dialog"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import { AdminListPageHeader, AdminPageGuard, AdminPageHeaderPrimaryButton, AdminPageSection } from "@ui/components/admin";
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageHeaderPrimaryButton,
+  AdminPageSection,
+} from "@ui/components/admin"
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { Textarea } from "@ui/components/textarea"
-import {
-  TypographyPSmallMuted,
-} from "@ui/components/typography"
+import { TypographyPSmallMuted } from "@ui/components/typography"
 import {
   canUserAccess,
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { AdminConfirmActionDialog } from "@ui/components/admin";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import { AdminConfirmActionDialog } from "@ui/components/admin"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useRbacCatalog } from "@/hooks/queries"
@@ -69,7 +78,10 @@ import {
   ADMIN_DIALOG_CONTENT_LG_CLASS,
 } from "@ui/lib/layout-shell"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 type PagedResult<T> = {
   items: T[]
   total: number
@@ -270,7 +282,15 @@ export default function RbacPage() {
   }
 
   const listQuery = useQuery({
-    queryKey: ["rbac", "roles", "list", page, pageSize, debouncedQ, listFilters],
+    queryKey: [
+      "rbac",
+      "roles",
+      "list",
+      page,
+      pageSize,
+      debouncedQ,
+      listFilters,
+    ],
     queryFn: (): Promise<PagedResult<RoleRow>> =>
       fetchRoles({
         page,
@@ -338,14 +358,12 @@ export default function RbacPage() {
   })
   const restoreMutation = useAdminMutation({
     mutationKey: ["rbac", "restore"],
-    mutationFn: async (id: string) =>
-      api.roles.restore(id),
+    mutationFn: async (id: string) => api.roles.restore(id),
     onSuccess: invalidateRoles,
   })
   const purgeMutation = useAdminMutation({
     mutationKey: ["rbac", "purge"],
-    mutationFn: async (id: string) =>
-      api.roles.purge(id),
+    mutationFn: async (id: string) => api.roles.purge(id),
     onSuccess: invalidateRoles,
   })
   const bulkMutation = useAdminMutation({
@@ -440,10 +458,7 @@ export default function RbacPage() {
         view: "list",
         onView: (role) => crudNav.view(String(role.id)),
         onEdit: (role) => {
-          if (
-            isSuperAdminRoleCode(role.code) &&
-            !canEditProtectedSuperAdmin
-          ) {
+          if (isSuperAdminRoleCode(role.code) && !canEditProtectedSuperAdmin) {
             toast.error(
               "Chỉ tài khoản trong NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS mới được chỉnh sửa vai trò Super Admin."
             )
@@ -453,14 +468,18 @@ export default function RbacPage() {
         },
         onDelete: (role) => {
           if (isSuperAdminRoleCode(role.code)) {
-            toast.error("Vai trò Super Admin là vai trò hệ thống, không thể xóa.")
+            toast.error(
+              "Vai trò Super Admin là vai trò hệ thống, không thể xóa."
+            )
             return
           }
           setDeleteTarget(role)
         },
         onPurge: (role) => {
           if (isSuperAdminRoleCode(role.code)) {
-            toast.error("Vai trò Super Admin là vai trò hệ thống, không thể xóa.")
+            toast.error(
+              "Vai trò Super Admin là vai trò hệ thống, không thể xóa."
+            )
             return
           }
           setPurgeTarget(role)
@@ -501,10 +520,7 @@ export default function RbacPage() {
     return (
       <AdminPageGuard roles={["super_admin"]}>
         <AdminPageSection>
-          <AdminListPageHeader
-            title="Phân quyền"
-            icon={Shield}
-          />
+          <AdminListPageHeader title="Phân quyền" icon={Shield} />
           <Card className="border-destructive/30 bg-destructive/5">
             <CardHeader className="flex flex-row items-start gap-3 space-y-0">
               <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
@@ -513,7 +529,8 @@ export default function RbacPage() {
                   Không có quyền truy cập
                 </CardTitle>
                 <CardDescription className="mt-1">
-                  Cần quyền <span className="font-mono text-xs">rbac.read</span>.
+                  Cần quyền <span className="font-mono text-xs">rbac.read</span>
+                  .
                 </CardDescription>
               </div>
             </CardHeader>
@@ -547,15 +564,27 @@ export default function RbacPage() {
           }
         >
           <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
-            <TabsTrigger value="list" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="list"
+              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               Danh sách
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
                 {listQuery.data?.total ?? 0}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="trash" className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="trash"
+              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               Thùng rác
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
                 {trashQuery.data?.total ?? 0}
               </Badge>
             </TabsTrigger>
@@ -626,17 +655,17 @@ export default function RbacPage() {
                 return { items: result.items, total: result.total }
               }}
               pagination={{
-        page,
-        pageSize,
-        total: listQuery.data?.total ?? 0,
-        appliedPage: listQuery.data?.page,
-        appliedPageSize: listQuery.data?.limit,
-        isLoading: listQuery.isLoading,
-        onPageChange: setPage,
-        onPageSizeChange: setPageSize,
-        emptySummary: "Không có vai trò",
-        itemLabel: "vai trò",
-      }}
+                page,
+                pageSize,
+                total: listQuery.data?.total ?? 0,
+                appliedPage: listQuery.data?.page,
+                appliedPageSize: listQuery.data?.limit,
+                isLoading: listQuery.isLoading,
+                onPageChange: setPage,
+                onPageSizeChange: setPageSize,
+                emptySummary: "Không có vai trò",
+                itemLabel: "vai trò",
+              }}
             />
           </TabsContent>
 
@@ -707,17 +736,17 @@ export default function RbacPage() {
                 return { items: result.items, total: result.total }
               }}
               pagination={{
-        page: trashPage,
-        pageSize: trashPageSize,
-        total: trashQuery.data?.total ?? 0,
-        appliedPage: trashQuery.data?.page,
-        appliedPageSize: trashQuery.data?.limit,
-        isLoading: trashQuery.isLoading,
-        onPageChange: setTrashPage,
-        onPageSizeChange: setTrashPageSize,
-        emptySummary: "Không có vai trò trong thùng rác",
-        itemLabel: "vai trò",
-      }}
+                page: trashPage,
+                pageSize: trashPageSize,
+                total: trashQuery.data?.total ?? 0,
+                appliedPage: trashQuery.data?.page,
+                appliedPageSize: trashQuery.data?.limit,
+                isLoading: trashQuery.isLoading,
+                onPageChange: setTrashPage,
+                onPageSizeChange: setTrashPageSize,
+                emptySummary: "Không có vai trò trong thùng rác",
+                itemLabel: "vai trò",
+              }}
             />
           </TabsContent>
         </Tabs>

@@ -1,4 +1,4 @@
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 
 export {
   slugify,
@@ -7,13 +7,10 @@ export {
   unwrapApiEnvelope as unwrapEnvelope,
   normalizePagedResult as normalizePaged,
   type CategoryTreeNode,
-} from "@workspace/api-client";
+} from "@workspace/api-client"
 
 export function buildCategoriesFilterQuery(
-  columnFilters: { id: string; value: unknown }[],
+  columnFilters: { id: string; value: unknown }[]
 ): Record<string, string> {
-  return buildAdminFilterQuery(
-    columnFilters,
-    COMMON_FILTER_MAPPINGS.categories,
-  );
+  return buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.categories)
 }

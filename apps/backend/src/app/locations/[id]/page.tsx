@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import dynamic from "next/dynamic";
+import { useEffect } from "react"
+import dynamic from "next/dynamic"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
-import { Calendar, Clock, MapPin, Globe } from "lucide-react";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
+import { Calendar, Clock, MapPin, Globe } from "lucide-react"
 
 const LocationMap = dynamic(
   () => import("@ui/components/admin/maps").then((m) => m.LocationMap),
-  { ssr: false },
-);
+  { ssr: false }
+)
 
-import { Badge } from "@ui/components/badge";
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminPageGuard,
   AdminPageSection,
@@ -28,38 +28,38 @@ import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
-} from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { useLocationDetailQuery } from "../_component";
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useLocationDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
 }
 
 function LocationDetailInner() {
-  const crudNav = useAdminCrudNavigation("/locations");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
+  const crudNav = useAdminCrudNavigation("/locations")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.LOCATIONS_UPDATE)
-    : false;
+    : false
 
-  const { data: entity, isLoading, isError } = useLocationDetailQuery(api, id);
+  const { data: entity, isLoading, isError } = useLocationDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được địa điểm");
-      crudNav.list();
+      toast.error("Không tải được địa điểm")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!entity) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!entity) return null
 
   return (
     <AdminPageSection>
@@ -87,7 +87,10 @@ function LocationDetailInner() {
                     Khóa
                   </Badge>
                 ) : (
-                  <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                  <Badge
+                    variant="default"
+                    className="rounded-full px-3 py-0.5 shadow-sm"
+                  >
                     Hoạt động
                   </Badge>
                 )}
@@ -97,7 +100,7 @@ function LocationDetailInner() {
                 <>
                   <FieldSectionDivider />
                   <FieldSectionField label="Địa chỉ" icon={MapPin}>
-                      {entity.address}
+                    {entity.address}
                   </FieldSectionField>
                 </>
               )}
@@ -121,12 +124,24 @@ function LocationDetailInner() {
         <AdminDetailSidebar>
           <div className="sticky top-2 flex flex-col gap-4">
             <FieldSet variant="section">
-              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật."
+              />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -135,7 +150,7 @@ function LocationDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function LocationDetailPage() {
@@ -143,5 +158,5 @@ export default function LocationDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <LocationDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

@@ -75,13 +75,13 @@ export function PanelDialog({
           "flex flex-col gap-0 overflow-hidden p-0",
           sizeClass.maxWidth,
           sizeClass.maxHeight,
-          contentClassName,
+          contentClassName
         )}
       >
         <DialogHeader
           className={cn(
             "relative shrink-0 gap-0 border-b border-border/60 bg-gradient-to-br from-primary/[0.08] via-background to-background px-6 py-5",
-            headerClassName,
+            headerClassName
           )}
         >
           <div className="flex items-start gap-3 pr-10">
@@ -109,7 +109,7 @@ export function PanelDialog({
         <div
           className={cn(
             "min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-5",
-            bodyClassName,
+            bodyClassName
           )}
         >
           {children}
@@ -123,7 +123,7 @@ export function PanelDialog({
               footerLeading
                 ? "sm:flex-row sm:items-center sm:justify-between"
                 : "sm:flex-row sm:justify-end",
-              footerClassName,
+              footerClassName
             )}
           >
             {footerLeading ? (
@@ -196,7 +196,7 @@ export function PanelDialogDestination({
       <MapPin
         className={cn(
           "mt-0.5 size-4 shrink-0",
-          ready ? "text-primary" : "text-muted-foreground",
+          ready ? "text-primary" : "text-muted-foreground"
         )}
         aria-hidden
       />
@@ -206,8 +206,8 @@ export function PanelDialogDestination({
         </p>
         <p
           className={cn(
-            "break-all font-mono text-sm leading-snug",
-            ready ? "font-medium text-foreground" : "text-muted-foreground",
+            "font-mono text-sm leading-snug break-all",
+            ready ? "font-medium text-foreground" : "text-muted-foreground"
           )}
         >
           {value}
@@ -233,7 +233,7 @@ export function PanelDialogTreePanel({
       className={cn(
         "rounded-xl border border-border/70 bg-card/50 shadow-sm ring-1 ring-foreground/[0.03]",
         heightClassName,
-        className,
+        className
       )}
     >
       {children}
@@ -254,7 +254,7 @@ export function PanelDialogLoading({
     <div
       className={cn(
         "flex items-center justify-center gap-2 rounded-xl border border-dashed bg-muted/20 py-10 text-sm text-muted-foreground",
-        className,
+        className
       )}
     >
       <Loader2 className="size-4 animate-spin text-primary" />
@@ -276,7 +276,7 @@ export function PanelDialogEmpty({
     <p
       className={cn(
         "rounded-xl border border-dashed bg-muted/15 px-4 py-6 text-center text-sm text-muted-foreground",
-        className,
+        className
       )}
     >
       {children}
@@ -294,7 +294,7 @@ export function PanelDialogHint({ children, className }: PanelDialogHintProps) {
     <p
       className={cn(
         "rounded-lg border border-border/60 bg-muted/25 px-3 py-2 text-xs leading-relaxed text-muted-foreground",
-        className,
+        className
       )}
     >
       {children}
@@ -319,7 +319,7 @@ export function PanelDialogInfoCard({
     <div
       className={cn(
         "space-y-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm shadow-sm",
-        className,
+        className
       )}
     >
       <div className="flex items-start gap-2.5">

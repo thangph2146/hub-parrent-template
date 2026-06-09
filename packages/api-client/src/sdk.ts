@@ -33,6 +33,9 @@ import { SeoMetasApi } from './resources/seo-metas';
 import { DashboardApi } from './resources/dashboard';
 import { UploadsApi } from './resources/uploads';
 import { PublicApi } from './resources/public';
+import { ProductsApi } from './resources/products';
+import { OrdersApi } from './resources/orders';
+import { PromoCodesApi } from './resources/promo-codes';
 import type { HealthStatus } from './types';
 
 /**
@@ -83,6 +86,9 @@ export class StoreSyncSdk {
   readonly seoMetas: SeoMetasApi;
   readonly dashboard: DashboardApi;
   readonly uploads: UploadsApi;
+  readonly products: ProductsApi;
+  readonly orders: OrdersApi;
+  readonly promoCodes: PromoCodesApi;
   readonly public: PublicApi;
 
   constructor(options: ApiClientOptions) {
@@ -120,6 +126,9 @@ export class StoreSyncSdk {
     this.seoMetas = new SeoMetasApi(this.http);
     this.dashboard = new DashboardApi(this.http);
     this.uploads = new UploadsApi(this.http);
+    this.products = new ProductsApi(this.http);
+    this.orders = new OrdersApi(this.http);
+    this.promoCodes = new PromoCodesApi(this.http);
     this.public = new PublicApi(this.http);
   }
 

@@ -2,7 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Home, Info, Mail, CircleHelp, SlidersHorizontal, Type } from "lucide-react";
+import {
+  FileText,
+  Home,
+  Info,
+  Mail,
+  CircleHelp,
+  SlidersHorizontal,
+  Type,
+  ShoppingCart,
+  Package,
+} from "lucide-react";
+import { Badge } from "@ui/components/badge";
+import { useCart } from "@/hooks/use-cart";
+import { useOpenCartDrawer } from "@/components/shared/cart-drawer";
+import { useSession } from "@/hooks/use-session";
 import { Button } from "@ui/components/button";
 import {
   NavigationMenu,
@@ -28,6 +42,11 @@ const primaryLinks = [
     label: "Trang chủ",
     href: "/",
     icon: Home,
+  },
+  {
+    label: "Cửa hàng",
+    href: "/catalog",
+    icon: ShoppingCart,
   },
   {
     label: "Bài viết",
@@ -65,11 +84,15 @@ const isExactOrNestedPath = (pathname: string, href: string) => {
 export function Header() {
   const pathname = usePathname();
   const { size, setSize } = useTextSize();
+  const session = useSession();
+  const { unitCount } = useCart();
+  const openCart = useOpenCartDrawer();
   const adminLoginUrl = getAdminLoginUrl();
   const adminRegisterUrl = getAdminRegisterUrl();
   const isSupportActive = supportLinks.some((link) => isExactOrNestedPath(pathname, link.href));
   const isLoginActive = isExactOrNestedPath(pathname, "/login");
   const isRegisterActive = isExactOrNestedPath(pathname, "/register");
+  const isOrdersActive = isExactOrNestedPath(pathname, "/orders");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur">
@@ -168,6 +191,34 @@ export function Header() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          {session ? (
+            <Button
+              asChild
+              variant={isOrdersActive ? "default" : "outline"}
+              size="sm"
+              className="hidden sm:inline-flex"
+            >
+              <Link href="/orders">
+                <Package className="mr-1.5 size-4" />
+                Đơn hàng
+              </Link>
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="relative"
+            onClick={openCart}
+            aria-label={`Giỏ hàng${unitCount > 0 ? `, ${unitCount} món` : ""}`}
+          >
+            <ShoppingCart className="size-4" />
+            {unitCount > 0 ? (
+              <Badge className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px]">
+                {unitCount > 99 ? "99+" : unitCount}
+              </Badge>
+            ) : null}
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -223,21 +274,29 @@ export function Header() {
               </div>
               <DropdownMenuItem
                 className={cn(
-                  "cursor-pointer rounded-md px-2 py-2 bg-primary text-primary-foreground mb-2",
+                  "cursor-pointer rounded-md px-2 py-2 mb-2",
                   isLoginActive ? "bg-primary/10 text-primary" : undefined
                 )}
+                onClick={() => {
+                  window.location.assign(session ? "/profile" : "/login");
+                }}
+              >
+                {session ? "Hồ sơ cửa hàng" : "Đăng nhập cửa hàng"}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-md px-2 py-2 mb-2 text-muted-foreground"
                 onClick={() => window.location.assign(adminLoginUrl)}
               >
-                Đăng nhập
+                Cổng quản trị
               </DropdownMenuItem>
               <DropdownMenuItem
                 className={cn(
-                  "cursor-pointer rounded-md px-2 py-2 bg-destructive text-destructive-foreground mb-2",
-                  isRegisterActive ? "bg-destructive/30" : undefined
+                  "cursor-pointer rounded-md px-2 py-2 text-muted-foreground",
+                  isRegisterActive ? "bg-muted" : undefined
                 )}
                 onClick={() => window.location.assign(adminRegisterUrl)}
               >
-                Đăng ký
+                Đăng ký quản trị
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

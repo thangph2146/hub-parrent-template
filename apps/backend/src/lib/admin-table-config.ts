@@ -19,7 +19,7 @@ export function adminTableStorageKeys(scope: string) {
 export function createAdminShowAllHandler(
   total: number,
   setPage: (page: number) => void,
-  setPageSize: (size: number) => void,
+  setPageSize: (size: number) => void
 ) {
   return () => {
     setPage(1)
@@ -37,7 +37,7 @@ type BuildExportOpts<T> = AdminTableXlsxExportOptions & {
 /** Xuất Excel + tùy chọn tải toàn bộ từ API phân trang. */
 export function buildAdminTableExportConfig<T>(
   templateId: AdminTableExportTemplateId,
-  options: BuildExportOpts<T>,
+  options: BuildExportOpts<T>
 ) {
   const base = buildAdminTableXlsxExport(templateId, options)
   if (!options.fetchPage) return base

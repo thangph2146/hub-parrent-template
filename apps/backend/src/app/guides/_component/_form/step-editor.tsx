@@ -1,15 +1,21 @@
-"use client";
+"use client"
 
-import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
-import { Button } from "@ui/components/button";
-import { Input } from "@ui/components/input";
-import { Textarea } from "@ui/components/textarea";
-import { ImageUploadField } from "./image-upload-field";
-import type { GuideStep } from "../types";
+import {
+  Plus,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  GripVertical,
+} from "lucide-react"
+import { Button } from "@ui/components/button"
+import { Input } from "@ui/components/input"
+import { Textarea } from "@ui/components/textarea"
+import { ImageUploadField } from "./image-upload-field"
+import type { GuideStep } from "../types"
 
 interface StepEditorProps {
-  steps: GuideStep[];
-  onChange: (steps: GuideStep[]) => void;
+  steps: GuideStep[]
+  onChange: (steps: GuideStep[]) => void
 }
 
 export function StepEditor({ steps, onChange }: StepEditorProps) {
@@ -17,32 +23,32 @@ export function StepEditor({ steps, onChange }: StepEditorProps) {
     onChange([
       ...steps,
       { order: steps.length + 1, title: "", description: "", imageUrl: "" },
-    ]);
+    ])
 
   const removeStep = (i: number) =>
     onChange(
       steps
         .filter((_, idx) => idx !== i)
         .map((s, idx) => ({ ...s, order: idx + 1 }))
-    );
+    )
 
   const update = (i: number, patch: Partial<GuideStep>) =>
-    onChange(steps.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
+    onChange(steps.map((s, idx) => (idx === i ? { ...s, ...patch } : s)))
 
   const move = (i: number, dir: -1 | 1) => {
-    const j = i + dir;
-    if (j < 0 || j >= steps.length) return;
-    const next = [...steps];
-    [next[i], next[j]] = [next[j], next[i]];
-    onChange(next.map((s, idx) => ({ ...s, order: idx + 1 })));
-  };
+    const j = i + dir
+    if (j < 0 || j >= steps.length) return
+    const next = [...steps]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onChange(next.map((s, idx) => ({ ...s, order: idx + 1 })))
+  }
 
   return (
     <div className="space-y-3">
       {steps.map((step, i) => (
-        <div key={i} className="rounded-lg border bg-muted/20 p-3 space-y-3">
+        <div key={i} className="space-y-3 rounded-lg border bg-muted/20 p-3">
           <div className="flex items-center gap-2">
-            <div className="flex flex-col gap-0.5 justify-center align-center items-center">
+            <div className="align-center flex flex-col items-center justify-center gap-0.5">
               <button
                 type="button"
                 onClick={() => move(i, -1)}
@@ -91,10 +97,16 @@ export function StepEditor({ steps, onChange }: StepEditorProps) {
           />
         </div>
       ))}
-      <Button type="button" variant="outline" size="sm" onClick={addStep} className="gap-1.5">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={addStep}
+        className="gap-1.5"
+      >
         <Plus className="size-3.5" />
         Thêm bước
       </Button>
     </div>
-  );
+  )
 }

@@ -1,21 +1,21 @@
-"use client";
+"use client"
 
-import { useCallback, useState } from "react";
-import { Button } from "@ui/components/button";
-import { ConfirmActionDialog } from "@ui/components/dialogs";
-import { toast } from "@ui/components/sonner";
-import { deleteStorageFolder } from "@/lib/admin-uploads";
-import { FolderX, Loader2 } from "lucide-react";
-import type { StorageRealm } from "./types";
-import { resolveStorageFolderDiskPath } from "./utils";
+import { useCallback, useState } from "react"
+import { Button } from "@ui/components/button"
+import { ConfirmActionDialog } from "@ui/components/dialogs"
+import { toast } from "@ui/components/sonner"
+import { deleteStorageFolder } from "@/lib/admin-uploads"
+import { FolderX, Loader2 } from "lucide-react"
+import type { StorageRealm } from "./types"
+import { resolveStorageFolderDiskPath } from "./utils"
 
 type FileStorageDeleteFolderButtonProps = {
-  realm: StorageRealm;
-  folderPath: string;
-  folderLabel: string;
-  onDeleted: () => Promise<void>;
-  disabled?: boolean;
-};
+  realm: StorageRealm
+  folderPath: string
+  folderLabel: string
+  onDeleted: () => Promise<void>
+  disabled?: boolean
+}
 
 export function FileStorageDeleteFolderButton({
   realm,
@@ -24,30 +24,33 @@ export function FileStorageDeleteFolderButton({
   onDeleted,
   disabled = false,
 }: FileStorageDeleteFolderButtonProps) {
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const diskPath = resolveStorageFolderDiskPath(realm, folderPath);
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const diskPath = resolveStorageFolderDiskPath(realm, folderPath)
 
   const runDelete = useCallback(async () => {
-    if (!diskPath) return;
+    if (!diskPath) return
 
-    setDeleting(true);
-    const pending = toast.loading("Đang xóa thư mục…");
+    setDeleting(true)
+    const pending = toast.loading("Đang xóa thư mục…")
     try {
-      await deleteStorageFolder(diskPath);
-      toast.success(`Đã xóa thư mục «${folderLabel}»`, { id: pending });
-      setConfirmOpen(false);
-      await onDeleted();
+      await deleteStorageFolder(diskPath)
+      toast.success(`Đã xóa thư mục «${folderLabel}»`, { id: pending })
+      setConfirmOpen(false)
+      await onDeleted()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Không xóa được thư mục", {
-        id: pending,
-      });
+      toast.error(
+        err instanceof Error ? err.message : "Không xóa được thư mục",
+        {
+          id: pending,
+        }
+      )
     } finally {
-      setDeleting(false);
+      setDeleting(false)
     }
-  }, [diskPath, folderLabel, onDeleted]);
+  }, [diskPath, folderLabel, onDeleted])
 
-  if (!diskPath) return null;
+  if (!diskPath) return null
 
   return (
     <>
@@ -91,5 +94,5 @@ export function FileStorageDeleteFolderButton({
         onConfirm={runDelete}
       />
     </>
-  );
+  )
 }

@@ -1,36 +1,36 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { FormFieldCol } from "@ui/components/typing";
-import { Input } from "@ui/components/input";
-import { Label } from "@ui/components/label";
-import { Textarea } from "@ui/components/textarea";
-import { Switch } from "@ui/components/switch";
-import { Badge } from "@ui/components/badge";
+} from "@ui/components/field"
+import { FormFieldCol } from "@ui/components/typing"
+import { Input } from "@ui/components/input"
+import { Label } from "@ui/components/label"
+import { Textarea } from "@ui/components/textarea"
+import { Switch } from "@ui/components/switch"
+import { Badge } from "@ui/components/badge"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { BookOpen, Layers, ListOrdered } from "lucide-react";
-import { StepEditor } from "./step-editor";
-import type { GuideFormData } from "../types";
+} from "@ui/components/admin"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { BookOpen, Layers, ListOrdered } from "lucide-react"
+import { StepEditor } from "./step-editor"
+import type { GuideFormData } from "../types"
 
 export interface GuideFormShellProps {
-  form: UseFormReturn<GuideFormData>;
-  onSubmit: (values: GuideFormData) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<GuideFormData>
+  onSubmit: (values: GuideFormData) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function GuideFormShell({
@@ -41,19 +41,21 @@ export function GuideFormShell({
   onBack,
   onReset,
 }: GuideFormShellProps) {
-  const { control, watch } = form;
-  const watchedSectionKey = watch("sectionKey");
-  const watchedTitle = watch("content.title");
-  const watchedDescription = watch("content.description");
+  const { control, watch } = form
+  const watchedSectionKey = watch("sectionKey")
+  const watchedTitle = watch("content.title")
+  const watchedDescription = watch("content.description")
 
-  const sectionKeyLength = watchedSectionKey?.trim().length ?? 0;
-  const titleLength = watchedTitle?.trim().length ?? 0;
-  const descLength = watchedDescription?.trim().length ?? 0;
+  const sectionKeyLength = watchedSectionKey?.trim().length ?? 0
+  const titleLength = watchedTitle?.trim().length ?? 0
+  const descLength = watchedDescription?.trim().length ?? 0
 
   return (
     <>
       <AdminFormPageHeader
-        title={editingId ? "Chỉnh sửa nhóm hướng dẫn" : "Tạo nhóm hướng dẫn mới"}
+        title={
+          editingId ? "Chỉnh sửa nhóm hướng dẫn" : "Tạo nhóm hướng dẫn mới"
+        }
         subtitle="Mỗi nhóm gồm tiêu đề, mô tả và danh sách các bước kèm ảnh minh họa."
         onBack={onBack}
         onReset={onReset}
@@ -62,10 +64,7 @@ export function GuideFormShell({
         isEdit={!!editingId}
       />
 
-      <AdminFormLayout
-        id="guide-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <AdminFormLayout id="guide-form" onSubmit={form.handleSubmit(onSubmit)}>
         <AdminFormMain>
           <FieldSet variant="section">
             <FieldSectionLegend
@@ -113,9 +112,16 @@ export function GuideFormShell({
                     {fieldState.error && (
                       <FieldError>{fieldState.error.message}</FieldError>
                     )}
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                    <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                       <span>Slug duy nhất, không dấu, dùng gạch ngang.</span>
-                      <Badge variant={sectionKeyLength > 50 ? "destructive" : "outline"} className="ml-auto">{sectionKeyLength} ký tự</Badge>
+                      <Badge
+                        variant={
+                          sectionKeyLength > 50 ? "destructive" : "outline"
+                        }
+                        className="ml-auto"
+                      >
+                        {sectionKeyLength} ký tự
+                      </Badge>
                     </div>
                   </FormFieldCol>
                 )}
@@ -136,9 +142,14 @@ export function GuideFormShell({
                     {fieldState.error && (
                       <FieldError>{fieldState.error.message}</FieldError>
                     )}
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                    <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                       <span>Tiêu đề ngắn gọn, dễ hiểu.</span>
-                      <Badge variant={titleLength > 100 ? "destructive" : "outline"} className="ml-auto">{titleLength} ký tự</Badge>
+                      <Badge
+                        variant={titleLength > 100 ? "destructive" : "outline"}
+                        className="ml-auto"
+                      >
+                        {titleLength} ký tự
+                      </Badge>
                     </div>
                   </FormFieldCol>
                 )}
@@ -157,7 +168,7 @@ export function GuideFormShell({
                       rows={3}
                       className="resize-none"
                     />
-                    <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
+                    <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                       <span>Mô tả ngắn giúp phân biệt nhóm.</span>
                       <Badge variant="outline">{descLength} ký tự</Badge>
                     </div>
@@ -188,7 +199,9 @@ export function GuideFormShell({
                       <Label htmlFor="visible" className="cursor-pointer">
                         Hiển thị công khai
                       </Label>
-                      <p className="text-xs text-muted-foreground">Tắt để ẩn nhóm này khỏi trang frontend.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Tắt để ẩn nhóm này khỏi trang frontend.
+                      </p>
                     </div>
                   </div>
                 )}
@@ -197,20 +210,20 @@ export function GuideFormShell({
           </FieldSet>
 
           <FieldSet variant="section">
-            <FieldSectionLegend
-              icon={Layers}
-              title="Tổng quan"
-            />
+            <FieldSectionLegend icon={Layers} title="Tổng quan" />
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Trạng thái</p>
+                <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  Trạng thái
+                </p>
                 <p className="mt-1 text-sm font-medium">
                   {editingId ? "Đang chỉnh sửa" : "Tạo mới"}
                 </p>
               </div>
               <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
                 <p className="text-xs text-muted-foreground">
-                  Nhóm hướng dẫn sau khi lưu sẽ hiển thị trên trang hướng dẫn sử dụng cho người dùng.
+                  Nhóm hướng dẫn sau khi lưu sẽ hiển thị trên trang hướng dẫn sử
+                  dụng cho người dùng.
                 </p>
               </div>
             </FieldSetContent>
@@ -218,5 +231,5 @@ export function GuideFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

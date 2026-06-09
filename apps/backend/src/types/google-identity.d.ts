@@ -18,7 +18,7 @@ declare global {
               text?: string
               size?: string
               width?: number
-            },
+            }
           ) => void
         }
       }

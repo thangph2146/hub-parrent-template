@@ -90,7 +90,11 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     order: "order",
     stepsCount: "stepsCount",
     isVisible: (v: unknown) =>
-      v === "true" || v === "1" ? "true" : v === "false" || v === "0" ? "false" : undefined,
+      v === "true" || v === "1"
+        ? "true"
+        : v === "false" || v === "0"
+          ? "false"
+          : undefined,
   } as FilterMapping,
 
   // Users/Staff

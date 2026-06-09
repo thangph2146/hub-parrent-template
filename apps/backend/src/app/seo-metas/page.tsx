@@ -1,84 +1,106 @@
-"use client";
+"use client"
 
-import { useEffect, useMemo, useState } from "react";
-import type { ColumnDef, ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
-import { useQueryClient } from "@tanstack/react-query";
-import { Badge } from "@ui/components/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { AlertCircle, Search, Plus } from "lucide-react";
-import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useAuth } from "@/providers/auth-provider";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+import { useEffect, useMemo, useState } from "react"
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import { useQueryClient } from "@tanstack/react-query"
+import { Badge } from "@ui/components/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { AlertCircle, Search, Plus } from "lucide-react"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { useAuth } from "@/providers/auth-provider"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell";
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin";
+} from "@ui/lib/layout-shell"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminReadOnlyHint,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
 import { api } from "@/lib/api"
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib";
-import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers";
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
+import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   SeoMetasTable,
   getSeoMetaColumns,
   useSeoMetasListQuery,
   useSeoMetasTrashQuery,
   prefetchSeoMetaDetail,
-} from "./_component";
-import type { SeoMetaRow } from "./_component";
+} from "./_component"
+import type { SeoMetaRow } from "./_component"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function SeoMetasPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/seo-metas", {
     prefetchDetail: (id) => prefetchSeoMetaDetail(queryClient, api, id),
-  });
-  const { user } = useAuth();
+  })
+  const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_CREATE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_UPDATE)
-    : false;
+    : false
   const canDelete = user
     ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_DELETE)
-    : false;
+    : false
   const canRestore = user
     ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_RESTORE)
-    : false;
+    : false
   const canHardDelete = user
     ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_MANAGE) ||
       canUserAccess(user, PERMISSION_CODES.SEO_METAS_HARD_DELETE)
-    : false;
+    : false
 
   const invalidateAll = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["seo-metas"] });
-  };
+    await queryClient.invalidateQueries({ queryKey: ["seo-metas"] })
+  }
 
-  const [mainTab, setMainTab] = useState<"list" | "trash">("list");
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [trashPage, setTrashPage] = useState(1);
-  const [trashPageSize] = useState(15);
-  const [trashGlobalFilter, setTrashGlobalFilter] = useState("");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [trashColumnFilters, setTrashColumnFilters] = useState<ColumnFiltersState>([]);
-  const [listSelection, setListSelection] = useState<RowSelectionState>({});
-  const [trashSelection, setTrashSelection] = useState<RowSelectionState>({});
+  const [mainTab, setMainTab] = useState<"list" | "trash">("list")
+  const [globalFilter, setGlobalFilter] = useState("")
+  const [trashPage, setTrashPage] = useState(1)
+  const [trashPageSize] = useState(15)
+  const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [trashColumnFilters, setTrashColumnFilters] =
+    useState<ColumnFiltersState>([])
+  const [listSelection, setListSelection] = useState<RowSelectionState>({})
+  const [trashSelection, setTrashSelection] = useState<RowSelectionState>({})
 
-  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350);
+  const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350)
 
   const listFilterParams = useMemo(
     () => buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.seoMetas),
     [columnFilters]
-  );
+  )
 
   const trashFilterParams = useMemo(
-    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.seoMetas),
+    () =>
+      buildAdminFilterQuery(
+        trashColumnFilters,
+        COMMON_FILTER_MAPPINGS.seoMetas
+      ),
     [trashColumnFilters]
-  );
+  )
 
-  const listQuery = useSeoMetasListQuery(api, canWrite || true, listFilterParams);
+  const listQuery = useSeoMetasListQuery(
+    api,
+    canWrite || true,
+    listFilterParams
+  )
 
   const trashQuery = useSeoMetasTrashQuery({
     api,
@@ -87,50 +109,57 @@ function SeoMetasPageInner() {
     debouncedTrashQ,
     enabled: mainTab === "trash",
     filters: trashFilterParams,
-  });
+  })
 
   const deleteMutation = useAdminMutation({
     mutationKey: ["seo-metas", "delete"],
     mutationFn: async (id: string) => api.seoMetas.remove(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const restoreMutation = useAdminMutation({
     mutationKey: ["seo-metas", "restore"],
     mutationFn: async (id: string) => api.seoMetas.restore(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const purgeMutation = useAdminMutation({
     mutationKey: ["seo-metas", "purge"],
     mutationFn: async (id: string) => api.seoMetas.purge(id),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
   const bulkMutation = useAdminMutation({
     toast: defaultBulkOperationToast,
-    mutationFn: async (input: { action: "delete" | "restore" | "hard-delete"; ids: string[] }) =>
-      api.seoMetas.bulk(input),
+    mutationFn: async (input: {
+      action: "delete" | "restore" | "hard-delete"
+      ids: string[]
+    }) => api.seoMetas.bulk(input),
     onSuccess: async () => {
-      await invalidateAll();
-    }
-  });
+      await invalidateAll()
+    },
+  })
 
-  useEffect(() => { setTrashPage(1); }, [trashColumnFilters, debouncedTrashQ, trashPageSize]);
-  useEffect(() => { setListSelection({}); setTrashSelection({}); }, [mainTab]);
+  useEffect(() => {
+    setTrashPage(1)
+  }, [trashColumnFilters, debouncedTrashQ, trashPageSize])
+  useEffect(() => {
+    setListSelection({})
+    setTrashSelection({})
+  }, [mainTab])
   const rowActions = useAdminCrudRowHandlers<SeoMetaRow>({
     getRecordLabel: (row) => row.page,
     entityLabel: "SEO metadata",
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
   const columns = useMemo<ColumnDef<SeoMetaRow>[]>(
     () =>
       getSeoMetaColumns({
@@ -142,13 +171,20 @@ function SeoMetasPageInner() {
         canDelete,
         canHardDelete,
       }),
-    [rowActions, crudNav, canWrite, canDelete, canHardDelete],
-  );
+    [rowActions, crudNav, canWrite, canDelete, canHardDelete]
+  )
 
   const trashColumns = useMemo<ColumnDef<SeoMetaRow>[]>(
-    () => getSeoMetaColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
-    [rowActions, canWrite, canRestore, canHardDelete],
-  );
+    () =>
+      getSeoMetaColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
+    [rowActions, canWrite, canRestore, canHardDelete]
+  )
 
   return (
     <AdminPageSection>
@@ -159,34 +195,53 @@ function SeoMetasPageInner() {
         readOnlyHint={
           user && !canWrite ? (
             <AdminReadOnlyHint>
-              Chỉ xem: cần quyền <span className="font-mono">seo_metas:manage</span> để thêm/sửa/xoá.
+              Chỉ xem: cần quyền{" "}
+              <span className="font-mono">seo_metas:manage</span> để
+              thêm/sửa/xoá.
             </AdminReadOnlyHint>
           ) : undefined
         }
         actions={
-          <>{canWrite && (
-            <AdminPageHeaderPrimaryButton
-              type="button"
-              onClick={() => crudNav.new()}
-            >
-              <Plus className="size-5" aria-hidden /> Thêm SEO
-            </AdminPageHeaderPrimaryButton>
-          )}</>
+          <>
+            {canWrite && (
+              <AdminPageHeaderPrimaryButton
+                type="button"
+                onClick={() => crudNav.new()}
+              >
+                <Plus className="size-5" aria-hidden /> Thêm SEO
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
         }
       />
 
-      <Tabs value={mainTab} onValueChange={(v) => { if (v === "list" || v === "trash") setMainTab(v); }} className="space-y-6">
+      <Tabs
+        value={mainTab}
+        onValueChange={(v) => {
+          if (v === "list" || v === "trash") setMainTab(v)
+        }}
+        className="space-y-6"
+      >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 text-[10px] tabular-nums"
+            >
               {listQuery.data?.length ?? 0}
             </Badge>
           </TabsTrigger>
           {canWrite && (
-            <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+            <TabsTrigger
+              value="trash"
+              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+            >
               Thùng rác
-              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+              <Badge
+                variant="secondary"
+                className="px-1.5 py-0 text-[10px] tabular-nums"
+              >
                 {trashQuery.data?.total ?? 0}
               </Badge>
             </TabsTrigger>
@@ -200,7 +255,9 @@ function SeoMetasPageInner() {
                 <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                 <div>
                   <p className="font-semibold">Không tải được danh sách</p>
-                  <p className="mt-1 text-sm opacity-90">{listQuery.error.message}</p>
+                  <p className="mt-1 text-sm opacity-90">
+                    {listQuery.error.message}
+                  </p>
                 </div>
               </div>
             </div>
@@ -208,7 +265,6 @@ function SeoMetasPageInner() {
 
           <SeoMetasTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}
@@ -219,17 +275,20 @@ function SeoMetasPageInner() {
             selectedRowIds={listSelection}
             onSelectedRowIdsChange={setListSelection}
             total={listQuery.data?.length ?? 0}
-            onClearFilters={() => { setColumnFilters([]); setGlobalFilter(""); }}
+            onClearFilters={() => {
+              setColumnFilters([])
+              setGlobalFilter("")
+            }}
             onBulkDelete={async (rows) => {
-              const ids = rows.map((r) => r.id);
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "delete", ids });
-}}
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "delete", ids })
+            }}
             onBulkPurge={async (rows) => {
-              const ids = rows.map((r) => r.id);
-              if (!ids.length) return;
-              await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+              const ids = rows.map((r) => r.id)
+              if (!ids.length) return
+              await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+            }}
           />
         </TabsContent>
 
@@ -241,7 +300,9 @@ function SeoMetasPageInner() {
                   <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                   <div>
                     <p className="font-semibold">Không tải được thùng rác</p>
-                    <p className="mt-1 text-sm opacity-90">{trashQuery.error.message}</p>
+                    <p className="mt-1 text-sm opacity-90">
+                      {trashQuery.error.message}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -257,24 +318,27 @@ function SeoMetasPageInner() {
                 selectedRowIds={trashSelection}
                 onSelectedRowIdsChange={setTrashSelection}
                 total={trashQuery.data?.total ?? 0}
-                onClearFilters={() => { setTrashColumnFilters([]); setTrashGlobalFilter(""); }}
+                onClearFilters={() => {
+                  setTrashColumnFilters([])
+                  setTrashGlobalFilter("")
+                }}
                 onBulkRestore={async (rows) => {
-                  const ids = rows.map((r) => r.id);
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "restore", ids });
-}}
+                  const ids = rows.map((r) => r.id)
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "restore", ids })
+                }}
                 onBulkPurge={async (rows) => {
-                  const ids = rows.map((r) => r.id);
-                  if (!ids.length) return;
-                  await bulkMutation.mutateAsync({ action: "hard-delete", ids });
-}}
+                  const ids = rows.map((r) => r.id)
+                  if (!ids.length) return
+                  await bulkMutation.mutateAsync({ action: "hard-delete", ids })
+                }}
               />
             )}
           </TabsContent>
         )}
       </Tabs>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function SeoMetasPage() {
@@ -282,5 +346,5 @@ export default function SeoMetasPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <SeoMetasPageInner />
     </AdminPageGuard>
-  );
+  )
 }

@@ -338,6 +338,30 @@ export const PERMISSION_CODES = {
   FACE_DATA_RESTORE: "face_data:restore",
   FACE_DATA_HARD_DELETE: "face_data:hard-delete",
 
+  // ─── Storefront catalog & orders ─────────────────────────────
+  PRODUCTS_VIEW: "products:view",
+  PRODUCTS_CREATE: "products:create",
+  PRODUCTS_UPDATE: "products:update",
+  PRODUCTS_DELETE: "products:delete",
+  PRODUCTS_MANAGE: "products:manage",
+  PRODUCTS_EXPORT: "products:export",
+  PRODUCTS_RESTORE: "products:restore",
+
+  ORDERS_VIEW: "orders:view",
+  ORDERS_CREATE: "orders:create",
+  ORDERS_UPDATE: "orders:update",
+  ORDERS_DELETE: "orders:delete",
+  ORDERS_MANAGE: "orders:manage",
+  ORDERS_EXPORT: "orders:export",
+  ORDERS_CHECKOUT: "orders:checkout",
+
+  PROMO_CODES_VIEW: "promo_codes:view",
+  PROMO_CODES_CREATE: "promo_codes:create",
+  PROMO_CODES_UPDATE: "promo_codes:update",
+  PROMO_CODES_DELETE: "promo_codes:delete",
+  PROMO_CODES_MANAGE: "promo_codes:manage",
+  PROMO_CODES_EXPORT: "promo_codes:export",
+
   // ─── Legacy (dot-notation, giữ để không vỡ code cũ) ──────────
   /** @deprecated Dùng USERS_MANAGE khi API có tương ứng */
   USERS_CART_OWN: "users.cart_own",
@@ -353,16 +377,6 @@ export const PERMISSION_CODES = {
   CATEGORIES_READ: "categories.read",
   /** @deprecated Dùng CATEGORIES_CREATE hoặc CATEGORIES_UPDATE */
   CATEGORIES_WRITE: "categories.write",
-  /** @deprecated Dùng PRODUCTS_VIEW, PRODUCTS_WRITE từ API khi có */
-  PRODUCTS_READ: "products.read",
-  /** @deprecated */
-  PRODUCTS_WRITE: "products.write",
-  /** @deprecated */
-  ORDERS_READ: "orders.read",
-  /** @deprecated */
-  ORDERS_WRITE: "orders.write",
-  /** @deprecated */
-  ORDERS_CHECKOUT: "orders.checkout",
 } as const;
 
 export type PermissionCode =

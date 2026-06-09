@@ -6,7 +6,7 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -20,14 +20,21 @@ import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminReadOnlyHint,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   DepartmentsTable,
   DepartmentsTrashTable,
-  getDepartmentColumns,  useColumnFiltersChange,
+  getDepartmentColumns,
+  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useDepartmentsListQuery,
@@ -36,12 +43,15 @@ import {
 } from "./_component"
 import type { DepartmentRow } from "./_component"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function DepartmentsPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/departments", {
     prefetchDetail: (id) => prefetchDepartmentDetail(queryClient, api, id),
-  });
+  })
   const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.DEPARTMENTS_MANAGE) ||
@@ -78,12 +88,17 @@ function DepartmentsPageInner() {
   const debouncedTrashQ = useDebouncedValue(trashGlobalFilter, 350)
 
   const listFilterParams = useMemo(
-    () => buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.departments),
+    () =>
+      buildAdminFilterQuery(columnFilters, COMMON_FILTER_MAPPINGS.departments),
     [columnFilters]
   )
 
   const trashFilterParams = useMemo(
-    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.departments),
+    () =>
+      buildAdminFilterQuery(
+        trashColumnFilters,
+        COMMON_FILTER_MAPPINGS.departments
+      ),
     [trashColumnFilters]
   )
 
@@ -107,7 +122,7 @@ function DepartmentsPageInner() {
     mutationFn: async (id: string) => api.departments.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const restoreMutation = useAdminMutation({
@@ -115,7 +130,7 @@ function DepartmentsPageInner() {
     mutationFn: async (id: string) => api.departments.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const purgeMutation = useAdminMutation({
@@ -123,7 +138,7 @@ function DepartmentsPageInner() {
     mutationFn: async (id: string) => api.departments.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const bulkMutation = useAdminMutation({
@@ -134,7 +149,7 @@ function DepartmentsPageInner() {
     }) => api.departments.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   useEffect(() => {
@@ -164,7 +179,7 @@ function DepartmentsPageInner() {
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
 
   const columns = useMemo<ColumnDef<DepartmentRow>[]>(
     () =>
@@ -181,7 +196,14 @@ function DepartmentsPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<DepartmentRow>[]>(
-    () => getDepartmentColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    () =>
+      getDepartmentColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
     [rowActions, canWrite, canRestore, canHardDelete]
   )
 
@@ -201,14 +223,16 @@ function DepartmentsPageInner() {
           ) : undefined
         }
         actions={
-          <>{canWrite && (
-            <AdminPageHeaderPrimaryButton
-              type="button"
-              onClick={() => crudNav.new()}
-            >
-              <Plus className="size-5" aria-hidden /> Thêm phòng khoa
-            </AdminPageHeaderPrimaryButton>
-          )}</>
+          <>
+            {canWrite && (
+              <AdminPageHeaderPrimaryButton
+                type="button"
+                onClick={() => crudNav.new()}
+              >
+                <Plus className="size-5" aria-hidden /> Thêm phòng khoa
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
         }
       />
 
@@ -220,10 +244,7 @@ function DepartmentsPageInner() {
         className="space-y-6"
       >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger
-            value="list"
-            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-          >
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge
               variant="secondary"
@@ -265,7 +286,6 @@ function DepartmentsPageInner() {
 
           <DepartmentsTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

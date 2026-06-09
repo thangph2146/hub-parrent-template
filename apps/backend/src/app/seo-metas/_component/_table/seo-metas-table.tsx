@@ -6,9 +6,12 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { SeoMetaRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface SeoMetasTableProps {
   data: SeoMetaRow[]
@@ -96,7 +99,7 @@ export function SeoMetasTable({
           },
         ]
       : []),
-  ];
+  ]
 
   return (
     <AdminDataTable<SeoMetaRow>
@@ -114,12 +117,13 @@ export function SeoMetasTable({
       globalFilterPlaceholder="Tìm theo đường dẫn..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("seo-metas", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("seo-metas", {
+        pageCount: data.length,
+        total,
+      })}
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       bulkActions={bulkActions}
       footer={

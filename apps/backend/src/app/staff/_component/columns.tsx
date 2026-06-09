@@ -219,7 +219,6 @@ export function getStaffColumns(
 
         getValue: (u) => u.citizenId ?? "",
       },
-
     ]),
     defineAdminCreatedAtColumn<StaffRow>({ defaultHidden: true }),
     defineAdminUpdatedAtColumn<StaffRow>({ defaultHidden: true }),

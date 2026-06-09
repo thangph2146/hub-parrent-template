@@ -1,34 +1,38 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
-import { SelectPicker, TreePicker, type SelectPickerOption } from "@ui/components/pickers";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
+import {
+  SelectPicker,
+  TreePicker,
+  type SelectPickerOption,
+} from "@ui/components/pickers"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { Hash, Monitor } from "lucide-react";
-import type { ScreenFormValues } from "../types";
+} from "@ui/components/admin"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { Hash, Monitor } from "lucide-react"
+import type { ScreenFormValues } from "../types"
 
 export interface ScreenFormShellProps {
-  form: UseFormReturn<ScreenFormValues>;
-  onSubmit: (v: ScreenFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  cameraOptions: SelectPickerOption[];
-  templateOptions: SelectPickerOption[];
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<ScreenFormValues>
+  onSubmit: (v: ScreenFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  cameraOptions: SelectPickerOption[]
+  templateOptions: SelectPickerOption[]
+  onBack: () => void
+  onReset: () => void
 }
 
 export function ScreenFormShell({
@@ -41,7 +45,7 @@ export function ScreenFormShell({
   onBack,
   onReset,
 }: ScreenFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -97,9 +101,9 @@ export function ScreenFormShell({
                       <SelectPicker
                         value={field.value}
                         onChange={(value) => {
-                          field.onChange(value);
-                          const s = cameraOptions.find((o) => o.value === value);
-                          form.setValue("cameraName", s?.label ?? "");
+                          field.onChange(value)
+                          const s = cameraOptions.find((o) => o.value === value)
+                          form.setValue("cameraName", s?.label ?? "")
                         }}
                         options={cameraOptions}
                         placeholder="Chọn camera"
@@ -116,9 +120,9 @@ export function ScreenFormShell({
                     <SelectPicker
                       value={field.value}
                       onChange={(value) => {
-                        field.onChange(value);
-                        const s = templateOptions.find((o) => o.value === value);
-                        form.setValue("templateName", s?.label ?? "");
+                        field.onChange(value)
+                        const s = templateOptions.find((o) => o.value === value)
+                        form.setValue("templateName", s?.label ?? "")
                       }}
                       options={templateOptions}
                       placeholder="Chọn template"
@@ -132,7 +136,11 @@ export function ScreenFormShell({
 
         <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
           <FieldSet variant="section">
-            <FieldSectionLegend icon={Hash} title="Trạng thái" description="Trạng thái hoạt động của màn hình." />
+            <FieldSectionLegend
+              icon={Hash}
+              title="Trạng thái"
+              description="Trạng thái hoạt động của màn hình."
+            />
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               <Controller
                 name="status"
@@ -141,7 +149,9 @@ export function ScreenFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Khóa" },
@@ -156,5 +166,5 @@ export function ScreenFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

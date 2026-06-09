@@ -9,15 +9,12 @@ import {
 } from "@ui/components/field"
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
 import type { AccountProfile } from "@/lib/api"
+import { Fingerprint, FileText, Mail, MapPin, Phone, User } from "lucide-react"
 import {
-  Fingerprint,
-  FileText,
-  Mail,
-  MapPin,
-  Phone,
-  User,
-} from "lucide-react"
-import { formatProfileDateTime, profileInitials, telHref } from "./profile-utils"
+  formatProfileDateTime,
+  profileInitials,
+  telHref,
+} from "./profile-utils"
 
 function DetailEmpty({ label }: { label: string }) {
   return (
@@ -64,10 +61,10 @@ export function ProfileDetailSection({ profile }: ProfileDetailSectionProps) {
 
           <div className="min-w-0 flex-1 space-y-5">
             <div className="rounded-lg border border-border/50 bg-muted/10 px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 Họ và tên
               </p>
-              <p className="mt-1 text-xl font-semibold leading-snug tracking-tight">
+              <p className="mt-1 text-xl leading-snug font-semibold tracking-tight">
                 {displayName}
               </p>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
@@ -79,7 +76,7 @@ export function ProfileDetailSection({ profile }: ProfileDetailSectionProps) {
               <FieldSectionField label="Email" icon={Mail}>
                 <a
                   href={`mailto:${profile.email}`}
-                  className="break-all font-mono text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  className="font-mono text-sm font-medium break-all text-primary underline-offset-4 hover:underline"
                 >
                   {profile.email}
                 </a>
@@ -114,7 +111,7 @@ export function ProfileDetailSection({ profile }: ProfileDetailSectionProps) {
                 className="sm:col-span-2"
               >
                 {profile.address ? (
-                  <p className="font-medium leading-relaxed whitespace-pre-wrap">
+                  <p className="leading-relaxed font-medium whitespace-pre-wrap">
                     {profile.address}
                   </p>
                 ) : (

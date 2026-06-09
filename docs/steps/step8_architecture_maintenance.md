@@ -3,11 +3,13 @@
 Đây là bước dành cho bảo trì kiến trúc, cập nhật docs, và giữ hệ thống sạch lâu dài.
 
 ## Mục tiêu
+
 - Duy trì kiến trúc hệ thống sau khi hoàn thành task.
 - Cập nhật tài liệu nội bộ khi hệ thống thay đổi.
 - Kiểm tra và giữ clean các ranh giới service.
 
 ## Những việc cần làm
+
 1. Kiểm tra lại các thay đổi kiến trúc sau khi merge:
    - route mới
    - module mới
@@ -19,6 +21,7 @@
 5. Nếu có thay đổi dependency workspace, chạy `pnpm graphify:ai-summary`.
 
 ## Khi cần bảo trì Graphify
+
 - Sau khi thêm hoặc di chuyển module/route: chạy
 
 ```bash
@@ -30,6 +33,7 @@ pnpm graphify:ai-summary
 - Nếu chỉ sửa code nội bộ nhỏ không thay đổi module/route: `pnpm check` vẫn đủ.
 
 ## Ghi nhớ thay đổi hệ thống
+
 - Ghi lại trong PR hoặc commit message nếu:
   - đổi ranh giới `apps/*`
   - thêm package workspace mới
@@ -42,4 +46,5 @@ pnpm graphify:ai-summary
   - reviewer đã xác nhận không sai boundary
 
 ## Kết luận
+
 Step 8 là bước dành cho việc giữ nhịp hệ thống sau khi thay đổi đã được thực hiện, để duy trì tính sạch, nhất quán và dễ đọc cho agent AI.

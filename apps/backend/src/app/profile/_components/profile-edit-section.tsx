@@ -193,7 +193,9 @@ export function ProfileEditSection({
             </div>
 
             <Field>
-              <FieldLabel htmlFor="profile-address">Địa chỉ / văn phòng</FieldLabel>
+              <FieldLabel htmlFor="profile-address">
+                Địa chỉ / văn phòng
+              </FieldLabel>
               <FieldContent>
                 <Textarea
                   id="profile-address"

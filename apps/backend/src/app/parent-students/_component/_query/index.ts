@@ -1,1 +1,1 @@
-export * from "./use-parent-students-queries";
+export * from "./use-parent-students-queries"

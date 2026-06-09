@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
 import {
   Calendar,
   Clock,
@@ -13,8 +13,8 @@ import {
   Hash,
   Layers,
   ListOrdered,
-} from "lucide-react";
-import { Badge } from "@ui/components/badge";
+} from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
@@ -22,39 +22,51 @@ import {
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { api } from "@/lib/api";
-import { formatDateTime, PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { useGuideDetailQuery, parseContent } from "../_component";
+} from "@ui/components/field"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { api } from "@/lib/api"
+import {
+  formatDateTime,
+  PERMISSION_CODES,
+  canUserAccess,
+} from "@workspace/api-client"
+import { useGuideDetailQuery, parseContent } from "../_component"
 
 function GuideDetailInner() {
-  const crudNav = useAdminCrudNavigation("/guides");
-  const params = useParams();
-  const guideId = params.id as string;
-  const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_UPDATE) : false;
+  const crudNav = useAdminCrudNavigation("/guides")
+  const params = useParams()
+  const guideId = params.id as string
+  const { user } = useAuth()
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.PAGE_CONTENTS_UPDATE)
+    : false
 
-  const { data: guide, isLoading, isError } = useGuideDetailQuery(api, guideId);
+  const { data: guide, isLoading, isError } = useGuideDetailQuery(api, guideId)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được nhóm hướng dẫn");
-      crudNav.list();
+      toast.error("Không tải được nhóm hướng dẫn")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
   if (isLoading) {
-    return (
-      <AdminPageLoading />
-    );
+    return <AdminPageLoading />
   }
 
-  if (!guide) return null;
+  if (!guide) return null
 
-  const content = parseContent(guide.content);
-  const steps = content.steps ?? [];
+  const content = parseContent(guide.content)
+  const steps = content.steps ?? []
 
   return (
     <AdminPageSection>
@@ -69,9 +81,7 @@ function GuideDetailInner() {
         }
         variant="module"
         onBack={() => crudNav.list()}
-        onEdit={
-          canUpdate ? () => crudNav.edit(String(guideId)) : undefined
-        }
+        onEdit={canUpdate ? () => crudNav.edit(String(guideId)) : undefined}
       />
 
       <AdminDetailLayout>
@@ -86,12 +96,14 @@ function GuideDetailInner() {
               <FieldSetContent variant="section" className="space-y-4 pt-0">
                 {steps.map((step, idx) => (
                   <div key={idx} className="flex gap-4">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                       {step.order ?? idx + 1}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="font-medium">{step.title}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {step.description}
+                      </p>
                       {step.imageUrl && (
                         <img
                           src={step.imageUrl}
@@ -129,7 +141,9 @@ function GuideDetailInner() {
                   <>
                     <FieldSectionDivider />
                     <FieldSectionField label="Mô tả">
-                      <p className="text-sm leading-relaxed">{content.description}</p>
+                      <p className="text-sm leading-relaxed">
+                        {content.description}
+                      </p>
                     </FieldSectionField>
                   </>
                 )}
@@ -143,10 +157,18 @@ function GuideDetailInner() {
                 description="Mốc tạo và cập nhật nhóm hướng dẫn."
               />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(guide.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(guide.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -159,7 +181,10 @@ function GuideDetailInner() {
                 description="Hiển thị công khai trên frontend."
               />
               <FieldSetContent variant="section" className="pt-0">
-                <FieldSectionField label="Hiển thị" icon={guide.isVisible ? Eye : EyeOff}>
+                <FieldSectionField
+                  label="Hiển thị"
+                  icon={guide.isVisible ? Eye : EyeOff}
+                >
                   <Badge variant={guide.isVisible ? "default" : "secondary"}>
                     {guide.isVisible ? "Công khai" : "Ẩn"}
                   </Badge>
@@ -170,7 +195,7 @@ function GuideDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function GuideDetailPage() {
@@ -178,5 +203,5 @@ export default function GuideDetailPage() {
     <AdminPageGuard permission="page_contents:view">
       <GuideDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

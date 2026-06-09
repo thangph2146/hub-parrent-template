@@ -46,7 +46,9 @@ export default function RootLayout({
         <AdminRootProviders>
           <QueryProvider>
             <AuthProvider>
-              <BackendAdminLayoutProvider>{children}</BackendAdminLayoutProvider>
+              <BackendAdminLayoutProvider>
+                {children}
+              </BackendAdminLayoutProvider>
             </AuthProvider>
           </QueryProvider>
         </AdminRootProviders>

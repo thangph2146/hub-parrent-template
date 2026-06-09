@@ -67,38 +67,52 @@ function SchemaCanvas({
 }) {
   const canvasRef = useRef<HTMLDivElement>(null)
   const [zoom, setZoom] = useState(1)
-  const [positions, setPositions] = useState<Record<string, TablePosition>>(() => {
-    // Auto-layout tables in a grid by domain with dynamic spacing
-    // Identity (users) placed in the middle
-    const domainOrder = ["Auth", "Student", "Support", "Identity", "Content", "Messaging", "System"]
-    const pos: Record<string, TablePosition> = {}
-    const domainPositions: Record<string, { x: number; nextY: number }> = {}
-    const domainSpacing = 700
+  const [positions, setPositions] = useState<Record<string, TablePosition>>(
+    () => {
+      // Auto-layout tables in a grid by domain with dynamic spacing
+      // Identity (users) placed in the middle
+      const domainOrder = [
+        "Auth",
+        "Student",
+        "Support",
+        "Identity",
+        "Content",
+        "Messaging",
+        "System",
+      ]
+      const pos: Record<string, TablePosition> = {}
+      const domainPositions: Record<string, { x: number; nextY: number }> = {}
+      const domainSpacing = 700
 
-    domainOrder.forEach((domain, idx) => {
-      domainPositions[domain] = { x: idx * domainSpacing, nextY: 0 }
-    })
+      domainOrder.forEach((domain, idx) => {
+        domainPositions[domain] = { x: idx * domainSpacing, nextY: 0 }
+      })
 
-    tables.forEach((table) => {
-      const domainPos = domainPositions[table.domain] || { x: 0, nextY: 0 }
-      const tableHeight = Math.max(250, table.columns.length * 50 + 100)
-      pos[table.name] = {
-        x: domainPos.x,
-        y: domainPos.nextY,
-        width: 480,
-        height: tableHeight,
-      }
-      // Update next Y position for this domain with padding
-      domainPositions[table.domain] = {
-        x: domainPos.x,
-        nextY: domainPos.nextY + tableHeight + 80, // 80px padding between tables
-      }
-    })
+      tables.forEach((table) => {
+        const domainPos = domainPositions[table.domain] || { x: 0, nextY: 0 }
+        const tableHeight = Math.max(250, table.columns.length * 50 + 100)
+        pos[table.name] = {
+          x: domainPos.x,
+          y: domainPos.nextY,
+          width: 480,
+          height: tableHeight,
+        }
+        // Update next Y position for this domain with padding
+        domainPositions[table.domain] = {
+          x: domainPos.x,
+          nextY: domainPos.nextY + tableHeight + 80, // 80px padding between tables
+        }
+      })
 
-    return pos
-  })
+      return pos
+    }
+  )
 
-  const [dragging, setDragging] = useState<{ table: string; offsetX: number; offsetY: number } | null>(null)
+  const [dragging, setDragging] = useState<{
+    table: string
+    offsetX: number
+    offsetY: number
+  } | null>(null)
 
   const handleMouseDown = (e: React.MouseEvent, tableName: string) => {
     const pos = positions[tableName]
@@ -139,8 +153,10 @@ function SchemaCanvas({
   }
 
   // Calculate canvas dimensions to fit all tables
-  const canvasWidth = Math.max(...Object.values(positions).map(p => p.x + p.width)) + 100
-  const canvasHeight = Math.max(...Object.values(positions).map(p => p.y + p.height)) + 100
+  const canvasWidth =
+    Math.max(...Object.values(positions).map((p) => p.x + p.width)) + 100
+  const canvasHeight =
+    Math.max(...Object.values(positions).map((p) => p.y + p.height)) + 100
 
   return (
     <>
@@ -153,11 +169,7 @@ function SchemaCanvas({
         >
           <ZoomOut className="size-4" />
         </Button>
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={handleResetZoom}
-        >
+        <Button size="sm" variant="secondary" onClick={handleResetZoom}>
           <RotateCcw className="size-4" />
         </Button>
         <Button
@@ -168,15 +180,15 @@ function SchemaCanvas({
         >
           <ZoomIn className="size-4" />
         </Button>
-        <span className="flex items-center text-sm font-mono bg-background px-2 py-1 rounded border">
+        <span className="flex items-center rounded border bg-background px-2 py-1 font-mono text-sm">
           {Math.round(zoom * 100)}%
         </span>
       </div>
 
       <div
         ref={canvasRef}
-        className="relative w-full overflow-auto border bg-muted/20 p-4 rounded-lg"
-        style={{ height: 'calc(100vh - 300px)', minHeight: '80vh' }}
+        className="relative w-full overflow-auto rounded-lg border bg-muted/20 p-4"
+        style={{ height: "calc(100vh - 300px)", minHeight: "80vh" }}
       >
         {/* Zoom Controls */}
 
@@ -186,13 +198,13 @@ function SchemaCanvas({
             width: canvasWidth,
             height: canvasHeight,
             transform: `scale(${zoom})`,
-            transformOrigin: 'top left',
+            transformOrigin: "top left",
           }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
+          <svg className="pointer-events-none absolute inset-0 h-full w-full">
             {relations.map((rel, idx) => {
               const fromPos = positions[rel.fromTable]
               const toPos = positions[rel.toTable]
@@ -218,8 +230,20 @@ function SchemaCanvas({
                     strokeWidth="3"
                     className="text-muted-foreground opacity-60"
                   />
-                  <circle cx={fromX} cy={fromY} r="6" fill="currentColor" className="text-primary" />
-                  <circle cx={toX} cy={toY} r="6" fill="currentColor" className="text-primary" />
+                  <circle
+                    cx={fromX}
+                    cy={fromY}
+                    r="6"
+                    fill="currentColor"
+                    className="text-primary"
+                  />
+                  <circle
+                    cx={toX}
+                    cy={toY}
+                    r="6"
+                    fill="currentColor"
+                    className="text-primary"
+                  />
                   {/* Cardinality label */}
                   <rect
                     x={midX - 20}
@@ -238,7 +262,11 @@ function SchemaCanvas({
                     fill="currentColor"
                     className="text-primary-foreground"
                   >
-                    {rel.cardinality === 'many-to-one' ? 'N:1' : rel.cardinality === 'one-to-one' ? '1:1' : 'self'}
+                    {rel.cardinality === "many-to-one"
+                      ? "N:1"
+                      : rel.cardinality === "one-to-one"
+                        ? "1:1"
+                        : "self"}
                   </text>
                 </g>
               )
@@ -263,12 +291,17 @@ function SchemaCanvas({
                 <div
                   className={cn(
                     "border-b-2 bg-muted/40 px-4 py-3",
-                    domainClassNames[table.domain],
+                    domainClassNames[table.domain]
                   )}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-base font-bold">{table.name}</span>
-                    <Badge variant="outline" className={cn("text-xs", domainClassNames[table.domain])}>
+                    <span className="font-mono text-base font-bold">
+                      {table.name}
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className={cn("text-xs", domainClassNames[table.domain])}
+                    >
                       {table.domain}
                     </Badge>
                   </div>
@@ -281,16 +314,24 @@ function SchemaCanvas({
                       className="flex items-center justify-between gap-2 py-2 text-sm"
                     >
                       <div className="flex min-w-0 items-center gap-2">
-                        {column.kind === "pk" && <KeyRound className="size-4 text-primary" />}
-                        {column.kind === "fk" && <GitBranch className="size-4 text-muted-foreground" />}
-                        <span className="truncate font-mono font-medium">{column.name}</span>
+                        {column.kind === "pk" && (
+                          <KeyRound className="size-4 text-primary" />
+                        )}
+                        {column.kind === "fk" && (
+                          <GitBranch className="size-4 text-muted-foreground" />
+                        )}
+                        <span className="truncate font-mono font-medium">
+                          {column.name}
+                        </span>
                         {column.nullable && (
                           <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                             NULL
                           </span>
                         )}
                       </div>
-                      <span className="font-mono text-muted-foreground text-sm">{column.type}</span>
+                      <span className="font-mono text-sm text-muted-foreground">
+                        {column.type}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -304,7 +345,10 @@ function SchemaCanvas({
 }
 
 function DatabaseSchemaPageInner() {
-  const [schema, setSchema] = useState<{ tables: SchemaTable[]; relations: SchemaRelation[] } | null>(null)
+  const [schema, setSchema] = useState<{
+    tables: SchemaTable[]
+    relations: SchemaRelation[]
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -316,8 +360,10 @@ function DatabaseSchemaPageInner() {
         const response = await api.system.getDatabaseSchema()
         setSchema(response)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load database schema')
-        console.error('Failed to load database schema:', err)
+        setError(
+          err instanceof Error ? err.message : "Failed to load database schema"
+        )
+        console.error("Failed to load database schema:", err)
       } finally {
         setLoading(false)
       }
@@ -339,7 +385,7 @@ function DatabaseSchemaPageInner() {
     return (
       <AdminPageSection>
         <div className="flex items-center justify-center py-20">
-          <p className="text-destructive">{error || 'Không thể tải dữ liệu'}</p>
+          <p className="text-destructive">{error || "Không thể tải dữ liệu"}</p>
         </div>
       </AdminPageSection>
     )

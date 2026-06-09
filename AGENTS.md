@@ -31,6 +31,7 @@ Sau `.graphify/markdown/SUMMARY_FOR_AI.md`, dùng mục **Chỉ dẫn theo chủ
 ### Tài liệu bổ trợ theo package
 
 Khi task liên quan tới một package cụ thể, đọc thêm:
+
 - **`@workspace/ui`** (`packages/ui/`): `docs/ui-pattern/README.md` + `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`
 - **`@workspace/api-client`** (`packages/api-client/`): `docs/api-client-pattern/README.md`
 - **`@thangph2146/lexical-editor`** (`packages/editor/`): `packages/editor/README.md`
@@ -40,6 +41,7 @@ Khi task liên quan tới một package cụ thể, đọc thêm:
 - **`@workspace/typescript-config`** (`packages/typescript-config/`): config files, không cần doc riêng
 
 ### Step-by-step docs cho agent
+
 - `docs/steps/step1_system_overview.md`
 - `docs/steps/step2_clean_code_guidelines.md`
 - `docs/steps/step3_admin_pattern_docs.md`
@@ -71,19 +73,19 @@ pnpm check:full
 
 Factory chung: `ecosystem.shared.cjs`. Hai file stack:
 
-| # | Composition (3 app) | File PM2 | Alias |
-|---|---|---|---|
-| **1** | `apps/api` + `apps/backend` + `apps/frontend` | `ecosystem.main.cjs` | `ecosystem.config.cjs` |
-| **2** | `apps/api` + `apps/backend` + `apps/hub-event-checkin-frontend` | `ecosystem.checkin.cjs` | — |
+| #     | Composition (3 app)                                             | File PM2                | Alias                  |
+| ----- | --------------------------------------------------------------- | ----------------------- | ---------------------- |
+| **1** | `apps/api` + `apps/backend` + `apps/frontend`                   | `ecosystem.main.cjs`    | `ecosystem.config.cjs` |
+| **2** | `apps/api` + `apps/backend` + `apps/hub-event-checkin-frontend` | `ecosystem.checkin.cjs` | —                      |
 
 **Không chạy đồng thời** compo 1 và compo 2 trên cùng máy — trùng port 3000 / 3001 / 3002.
 
 ### Compo 1 — site chính (`ecosystem.main.cjs`)
 
-| Thư mục | Package | Tên PM2 | Port |
-|---|---|---|---|
-| `apps/api` | `@api` | `hub-parent-api` | 3002 |
-| `apps/backend` | `@backend` | `hub-parent-backend` | 3001 |
+| Thư mục         | Package     | Tên PM2               | Port |
+| --------------- | ----------- | --------------------- | ---- |
+| `apps/api`      | `@api`      | `hub-parent-api`      | 3002 |
+| `apps/backend`  | `@backend`  | `hub-parent-backend`  | 3001 |
 | `apps/frontend` | `@frontend` | `hub-parent-frontend` | 3000 |
 
 ```bash
@@ -97,10 +99,10 @@ pnpm pm2:stop
 
 ### Compo 2 — check-in sự kiện (`ecosystem.checkin.cjs`)
 
-| Thư mục | Package | Tên PM2 | Port |
-|---|---|---|---|
-| `apps/api` | `@api` | `hub-checkin-api` | 3002 |
-| `apps/backend` | `@backend` | `hub-checkin-backend` | 3001 |
+| Thư mục                           | Package                       | Tên PM2                | Port |
+| --------------------------------- | ----------------------------- | ---------------------- | ---- |
+| `apps/api`                        | `@api`                        | `hub-checkin-api`      | 3002 |
+| `apps/backend`                    | `@backend`                    | `hub-checkin-backend`  | 3001 |
 | `apps/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | `hub-checkin-frontend` | 3000 |
 
 ```bash
@@ -152,11 +154,11 @@ Script `scripts/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2
 
 `pm2 delete ecosystem.checkin` **chỉ** xóa process tên `ecosystem.checkin` (lỗi PM2 parse `.cjs`). **Không** xóa `hub-parent-*` hay `hub-checkin-*`.
 
-| Muốn dừng stack | Lệnh |
-|---|---|
-| Compo 1 — `hub-parent-api`, `hub-parent-backend`, `hub-parent-frontend` | `pnpm pm2:delete` (tự bỏ qua nếu không tìm thấy; dọn cả tên cũ `hub-main-*`) hoặc `pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend` |
-| Compo 2 — `hub-checkin-api`, `hub-checkin-backend`, `hub-checkin-frontend` | `pnpm pm2:delete:checkin` hoặc `pm2 delete hub-checkin-api hub-checkin-backend hub-checkin-frontend` |
-| Process lỗi `ecosystem.checkin` | `pm2 delete ecosystem.checkin` |
+| Muốn dừng stack                                                            | Lệnh                                                                                                                                                 |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Compo 1 — `hub-parent-api`, `hub-parent-backend`, `hub-parent-frontend`    | `pnpm pm2:delete` (tự bỏ qua nếu không tìm thấy; dọn cả tên cũ `hub-main-*`) hoặc `pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend` |
+| Compo 2 — `hub-checkin-api`, `hub-checkin-backend`, `hub-checkin-frontend` | `pnpm pm2:delete:checkin` hoặc `pm2 delete hub-checkin-api hub-checkin-backend hub-checkin-frontend`                                                 |
+| Process lỗi `ecosystem.checkin`                                            | `pm2 delete ecosystem.checkin`                                                                                                                       |
 
 ### Chuyển compo (ví dụ: site chính → check-in)
 

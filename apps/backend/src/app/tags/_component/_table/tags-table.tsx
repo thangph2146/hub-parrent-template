@@ -1,25 +1,33 @@
-"use client";
+"use client"
 
-import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
-import type { TagTreeRow } from "../types";
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
+import type { TagTreeRow } from "../types"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface TagsTableProps {
-  data: TagTreeRow[];
-  columns: ColumnDef<TagTreeRow>[];
-  isLoading: boolean;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  globalFilter: string;
-  onGlobalFilterChange: OnChangeFn<string>;
-  selectedRowIds: RowSelectionState;
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
-  total: number;
-  onClearFilters: () => void;
-  onBulkDelete: (rows: TagTreeRow[]) => Promise<void>;
-  onBulkPurge: (rows: TagTreeRow[]) => Promise<void>;
-  onRowPrefetch?: (row: TagTreeRow) => void;
+  data: TagTreeRow[]
+  columns: ColumnDef<TagTreeRow>[]
+  isLoading: boolean
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  globalFilter: string
+  onGlobalFilterChange: OnChangeFn<string>
+  selectedRowIds: RowSelectionState
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
+  total: number
+  onClearFilters: () => void
+  onBulkDelete: (rows: TagTreeRow[]) => Promise<void>
+  onBulkPurge: (rows: TagTreeRow[]) => Promise<void>
+  onRowPrefetch?: (row: TagTreeRow) => void
 }
 
 export function TagsTable({
@@ -57,11 +65,13 @@ export function TagsTable({
       globalFilterPlaceholder="Tìm theo tên nhóm, tên thẻ hoặc slug..."
       onClearFilters={onClearFilters}
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
-      xlsxExport={buildAdminTableXlsxExport("tags", { pageCount: data.length, total })}      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
+      xlsxExport={buildAdminTableXlsxExport("tags", {
+        pageCount: data.length,
+        total,
+      })}
+      {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
       canSelectRow={(row) => !row.original.isGroup}
       bulkActions={[
         {
@@ -99,5 +109,5 @@ export function TagsTable({
         </div>
       }
     />
-  );
+  )
 }

@@ -1,1 +1,1 @@
-export { SeoMetasConfirmDialog } from "./seo-metas-confirm-dialog";
+export { SeoMetasConfirmDialog } from "./seo-metas-confirm-dialog"

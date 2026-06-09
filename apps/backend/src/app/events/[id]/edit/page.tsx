@@ -1,34 +1,46 @@
-"use client";
-import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
+"use client"
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list"
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "@ui/components/sonner";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading } from "@ui/components/admin";
-import { api } from "@/lib/api";
-import { EventFormShell, useEventForm, useEventDetailQuery, buildEventPayload } from "../../_component";
-import { getPosterUrlFromValue } from "../../_component/utils";
-import type { EventDetail, EventFormValues, EventFormSpeaker } from "../../_component";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "@ui/components/sonner"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+} from "@ui/components/admin"
+import { api } from "@/lib/api"
+import {
+  EventFormShell,
+  useEventForm,
+  useEventDetailQuery,
+  buildEventPayload,
+} from "../../_component"
+import { getPosterUrlFromValue } from "../../_component/utils"
+import type {
+  EventDetail,
+  EventFormValues,
+  EventFormSpeaker,
+} from "../../_component"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 function toDatetimeLocal(value: string | null | undefined): string {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  if (!value) return ""
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ""
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-function normalizeContent(
-  value: unknown,
-): EventFormValues["content"] {
+function normalizeContent(value: unknown): EventFormValues["content"] {
   if (value && typeof value === "object" && "root" in value) return value
   if (typeof value === "string") {
     try {
       const parsed = JSON.parse(value)
-      if (parsed && typeof parsed === "object" && "root" in parsed) return parsed
+      if (parsed && typeof parsed === "object" && "root" in parsed)
+        return parsed
     } catch {}
   }
   return {
@@ -52,7 +64,10 @@ function normalizeContent(
   }
 }
 
-function buildFormValues(entity: EventDetail, speakers: EventFormSpeaker[]): EventFormValues {
+function buildFormValues(
+  entity: EventDetail,
+  speakers: EventFormSpeaker[]
+): EventFormValues {
   return {
     title: entity.title ?? "",
     slug: entity.slug ?? "",
@@ -82,99 +97,144 @@ function buildFormValues(entity: EventDetail, speakers: EventFormSpeaker[]): Eve
     onlineLink: entity.onlineLink ?? "",
     content: normalizeContent(entity.content),
     speakers,
-  };
+  }
 }
 
 function EditEventPageInner() {
-  const crudNav = useAdminCrudNavigation("/events");
-  const params = useParams();
-  const id = params.id as string;
-  const queryClient = useQueryClient();
-  const { form } = useEventForm();
-  const { data: entity, isLoading, isError, refetch } = useEventDetailQuery(api, id);
-  const [existingSpeakers, setExistingSpeakers] = useState<{ id: string; speakerId: number }[]>([]);
-
-  useEffect(() => { if (isError) { toast.error("Không tải được sự kiện"); crudNav.list(); } }, [isError, crudNav]);
+  const crudNav = useAdminCrudNavigation("/events")
+  const params = useParams()
+  const id = params.id as string
+  const queryClient = useQueryClient()
+  const { form } = useEventForm()
+  const {
+    data: entity,
+    isLoading,
+    isError,
+    refetch,
+  } = useEventDetailQuery(api, id)
+  const [existingSpeakers, setExistingSpeakers] = useState<
+    { id: string; speakerId: number }[]
+  >([])
 
   useEffect(() => {
-    if (!entity) return;
-    api.eventSpeakers.list<EventFormSpeaker & { id: string }>({ eventId: id, limit: ADMIN_LIST_EXPORT_FETCH_LIMIT })
+    if (isError) {
+      toast.error("Không tải được sự kiện")
+      crudNav.list()
+    }
+  }, [isError, crudNav])
+
+  useEffect(() => {
+    if (!entity) return
+    api.eventSpeakers
+      .list<EventFormSpeaker & { id: string }>({
+        eventId: id,
+        limit: ADMIN_LIST_EXPORT_FETCH_LIMIT,
+      })
       .then((res) => {
         const assignments = res.items.map((a) => ({
           id: a.id,
           speakerId: a.speakerId as number,
-        }));
-        setExistingSpeakers(assignments);
+        }))
+        setExistingSpeakers(assignments)
         const speakers = res.items.map((a) => ({
           speakerId: a.speakerId as number,
           role: (a.role as string) ?? undefined,
           presentationTitle: (a.presentationTitle as string) ?? undefined,
           duration: a.duration != null ? (a.duration as number) : undefined,
-        }));
-        form.reset(buildFormValues(entity, speakers));
+        }))
+        form.reset(buildFormValues(entity, speakers))
       })
-      .catch(() => form.reset(buildFormValues(entity, [])));
-  }, [entity, form, id]);
+      .catch(() => form.reset(buildFormValues(entity, [])))
+  }, [entity, form, id])
 
-  const invalidateAll = async () => { await queryClient.invalidateQueries({ queryKey: ["events"] }); };
+  const invalidateAll = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["events"] })
+  }
 
   const updateMutation = useAdminMutation({
     toast: {
       loading: "Đang thực hiện…",
-      success: (_data, variables) => `Đã cập nhật sự kiện "${(variables.title as string)?.trim()}"`,
-      error: (err) => err instanceof Error ? err.message : "Không thể cập nhật sự kiện",
+      success: (_data, variables) =>
+        `Đã cập nhật sự kiện "${(variables.title as string)?.trim()}"`,
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể cập nhật sự kiện",
     },
-    mutationFn: async (input: Record<string, unknown>) => api.events.update(id, input),
+    mutationFn: async (input: Record<string, unknown>) =>
+      api.events.update(id, input),
     onSuccess: async () => {
-      await invalidateAll();
-      crudNav.view(String(id));
-    }
-    
-  });
+      await invalidateAll()
+      crudNav.view(String(id))
+    },
+  })
 
-  const handleSubmit = useCallback(async (values: EventFormValues) => {
-    await updateMutation.mutateAsync(buildEventPayload(values));
-    const newSpeakers = values.speakers ?? [];
-    const existingMap = new Map(existingSpeakers.map((a) => [a.speakerId, a]));
-    const newIds = newSpeakers.map((s) => s.speakerId);
-    const existingIds = existingSpeakers.map((a) => a.speakerId);
-    const toCreate = newSpeakers.filter((s) => !existingIds.includes(s.speakerId));
-    const toUpdate = newSpeakers.filter((s) => existingIds.includes(s.speakerId));
-    const toRemove = existingSpeakers.filter((a) => !newIds.includes(a.speakerId));
-    await Promise.all([
-      ...toCreate.map((s) =>
-        api.eventSpeakers.create({
-          eventId: id,
-          speakerId: s.speakerId,
-          role: s.role?.trim() || null,
-          presentationTitle: s.presentationTitle?.trim() || null,
-          duration: s.duration ?? null,
-        }).catch(() => {})
-      ),
-      ...toUpdate.map((s) => {
-        const existing = existingMap.get(s.speakerId);
-        if (!existing) return Promise.resolve();
-        return api.eventSpeakers.update(existing.id, {
-          role: s.role?.trim() || null,
-          presentationTitle: s.presentationTitle?.trim() || null,
-          duration: s.duration ?? null,
-        }).catch(() => {});
-      }),
-      ...toRemove.map((a) => api.eventSpeakers.remove(a.id).catch(() => {})),
-    ]);
-  }, [updateMutation, existingSpeakers, id]);
+  const handleSubmit = useCallback(
+    async (values: EventFormValues) => {
+      await updateMutation.mutateAsync(buildEventPayload(values))
+      const newSpeakers = values.speakers ?? []
+      const existingMap = new Map(existingSpeakers.map((a) => [a.speakerId, a]))
+      const newIds = newSpeakers.map((s) => s.speakerId)
+      const existingIds = existingSpeakers.map((a) => a.speakerId)
+      const toCreate = newSpeakers.filter(
+        (s) => !existingIds.includes(s.speakerId)
+      )
+      const toUpdate = newSpeakers.filter((s) =>
+        existingIds.includes(s.speakerId)
+      )
+      const toRemove = existingSpeakers.filter(
+        (a) => !newIds.includes(a.speakerId)
+      )
+      await Promise.all([
+        ...toCreate.map((s) =>
+          api.eventSpeakers
+            .create({
+              eventId: id,
+              speakerId: s.speakerId,
+              role: s.role?.trim() || null,
+              presentationTitle: s.presentationTitle?.trim() || null,
+              duration: s.duration ?? null,
+            })
+            .catch(() => {})
+        ),
+        ...toUpdate.map((s) => {
+          const existing = existingMap.get(s.speakerId)
+          if (!existing) return Promise.resolve()
+          return api.eventSpeakers
+            .update(existing.id, {
+              role: s.role?.trim() || null,
+              presentationTitle: s.presentationTitle?.trim() || null,
+              duration: s.duration ?? null,
+            })
+            .catch(() => {})
+        }),
+        ...toRemove.map((a) => api.eventSpeakers.remove(a.id).catch(() => {})),
+      ])
+    },
+    [updateMutation, existingSpeakers, id]
+  )
 
-  if (isLoading) return <AdminPageLoading variant="form" />;
-  if (!entity) return null;
+  if (isLoading) return <AdminPageLoading variant="form" />
+  if (!entity) return null
 
   return (
     <AdminPageSection>
-      <EventFormShell form={form} onSubmit={handleSubmit} submitting={updateMutation.isPending} editingId={id}
-        onBack={() => crudNav.view(String(id))} onReset={async () => { await refetch(); }} />
+      <EventFormShell
+        form={form}
+        onSubmit={handleSubmit}
+        submitting={updateMutation.isPending}
+        editingId={id}
+        onBack={() => crudNav.view(String(id))}
+        onReset={async () => {
+          await refetch()
+        }}
+      />
     </AdminPageSection>
-  );
+  )
 }
 
 export default function EditEventPage() {
-  return <AdminPageGuard roles={["super_admin", "admin", "manager"]}><EditEventPageInner /></AdminPageGuard>;
+  return (
+    <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
+      <EditEventPageInner />
+    </AdminPageGuard>
+  )
 }

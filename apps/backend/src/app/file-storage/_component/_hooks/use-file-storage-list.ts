@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "@ui/components/sonner";
-import { fetchImages } from "@/lib/admin-uploads";
-import type { FileStorageRow, StorageRealm, StorageTab } from "../types";
+import { useCallback, useEffect, useState } from "react"
+import { toast } from "@ui/components/sonner"
+import { fetchImages } from "@/lib/admin-uploads"
+import type { FileStorageRow, StorageRealm, StorageTab } from "../types"
 
 export function useFileStorageList(
   activeRealm: StorageRealm,
@@ -11,37 +11,37 @@ export function useFileStorageList(
   page: number,
   pageSize: number,
   includeDescendants = false,
-  uploadOwnerFilter = "",
+  uploadOwnerFilter = ""
 ) {
-  const [rows, setRows] = useState<FileStorageRow[]>([]);
-  const [realms, setRealms] = useState<StorageTab[]>([]);
-  const [childFolders, setChildFolders] = useState<StorageTab[]>([]);
+  const [rows, setRows] = useState<FileStorageRow[]>([])
+  const [realms, setRealms] = useState<StorageTab[]>([])
+  const [childFolders, setChildFolders] = useState<StorageTab[]>([])
   const [breadcrumb, setBreadcrumb] = useState<
     Array<{ id: string; label: string }>
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
-  const [total, setTotal] = useState(0);
+  >([])
+  const [loading, setLoading] = useState(true)
+  const [isFetching, setIsFetching] = useState(false)
+  const [total, setTotal] = useState(0)
 
   const reload = useCallback(async () => {
-    setIsFetching(true);
+    setIsFetching(true)
     try {
       const data = await fetchImages(page, pageSize, {
         realm: activeRealm,
         folderPath: activeFolderPath || undefined,
         includeDescendants,
         uploadOwnerId: uploadOwnerFilter.trim() || undefined,
-      });
-      setRows(data.data);
-      setRealms(data.realms ?? []);
-      setChildFolders(data.childFolders ?? data.tabs ?? []);
-      setBreadcrumb(data.breadcrumb ?? []);
-      setTotal(data.pagination.total);
+      })
+      setRows(data.data)
+      setRealms(data.realms ?? [])
+      setChildFolders(data.childFolders ?? data.tabs ?? [])
+      setBreadcrumb(data.breadcrumb ?? [])
+      setTotal(data.pagination.total)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lỗi tải danh sách");
+      toast.error(err instanceof Error ? err.message : "Lỗi tải danh sách")
     } finally {
-      setLoading(false);
-      setIsFetching(false);
+      setLoading(false)
+      setIsFetching(false)
     }
   }, [
     activeFolderPath,
@@ -50,11 +50,11 @@ export function useFileStorageList(
     page,
     pageSize,
     uploadOwnerFilter,
-  ]);
+  ])
 
   useEffect(() => {
-    void reload();
-  }, [reload]);
+    void reload()
+  }, [reload])
 
   return {
     rows,
@@ -65,5 +65,5 @@ export function useFileStorageList(
     isFetching,
     total,
     reload,
-  };
+  }
 }

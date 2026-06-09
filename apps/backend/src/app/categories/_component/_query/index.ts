@@ -1,14 +1,14 @@
-import { adminDetailQueryOptions,
+import {
+  adminDetailQueryOptions,
   prefetchAdminDetailQuery,
-} from "@/lib/admin-detail-query";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, type QueryClient } from "@tanstack/react-query";
-import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
-import type { CategoryDetail, CategoryRow } from "../types";
-
+} from "@/lib/admin-detail-query"
+import type { UseQueryResult } from "@tanstack/react-query"
+import { useQuery, type QueryClient } from "@tanstack/react-query"
+import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
+import type { CategoryDetail, CategoryRow } from "../types"
 
 export const categoryDetailQueryKey = (categoryId: string) =>
-  ["categories", "detail", categoryId] as const;
+  ["categories", "detail", categoryId] as const
 
 export function prefetchCategoryDetail(
   queryClient: QueryClient,
@@ -19,26 +19,23 @@ export function prefetchCategoryDetail(
     queryClient,
     categoryDetailQueryKey(categoryId),
     () => api.categories.rawGet<CategoryDetail>(categoryId)
-  );
+  )
 }
 
-export function useCategoryDetailQuery(
-  api: StoreSyncSdk,
-  categoryId: string
-) {
+export function useCategoryDetailQuery(api: StoreSyncSdk, categoryId: string) {
   return useQuery({
     ...adminDetailQueryOptions(
       categoryDetailQueryKey(categoryId),
       async () => api.categories.rawGet<CategoryDetail>(categoryId),
       categoryId
     ),
-});
+  })
 }
 
 export interface UseCategoriesQueryProps {
-  api: StoreSyncSdk;
-  debouncedQ: string;
-  columnFilterQuery: Record<string, unknown>;
+  api: StoreSyncSdk
+  debouncedQ: string
+  columnFilterQuery: Record<string, unknown>
 }
 
 export function useCategoriesQuery({
@@ -56,16 +53,16 @@ export function useCategoriesQuery({
         status: "active",
         filters: columnFilterQuery,
       }),
-  });
+  })
 }
 
 export interface UseTrashQueryProps {
-  api: StoreSyncSdk;
-  trashPage: number;
-  trashPageSize: number;
-  debouncedTrashQ: string;
-  trashColumnFilterQuery?: Record<string, unknown>;
-  enabled: boolean;
+  api: StoreSyncSdk
+  trashPage: number
+  trashPageSize: number
+  debouncedTrashQ: string
+  trashColumnFilterQuery?: Record<string, unknown>
+  enabled: boolean
 }
 
 export function useTrashQuery({
@@ -77,7 +74,14 @@ export function useTrashQuery({
   enabled,
 }: UseTrashQueryProps): UseQueryResult<PagedResult<CategoryRow>> {
   return useQuery({
-    queryKey: ["categories", "trash", trashPage, trashPageSize, debouncedTrashQ, trashColumnFilterQuery],
+    queryKey: [
+      "categories",
+      "trash",
+      trashPage,
+      trashPageSize,
+      debouncedTrashQ,
+      trashColumnFilterQuery,
+    ],
     enabled,
     queryFn: async (): Promise<PagedResult<CategoryRow>> =>
       api.categories.rawList<CategoryRow>({
@@ -87,7 +91,7 @@ export function useTrashQuery({
         status: "deleted",
         filters: trashColumnFilterQuery,
       }),
-  });
+  })
 }
 
 function normalizeCategoryRow(raw: CategoryRow): CategoryRow {
@@ -95,7 +99,7 @@ function normalizeCategoryRow(raw: CategoryRow): CategoryRow {
     ...raw,
     id: String(raw.id),
     parentId: raw.parentId != null ? String(raw.parentId) : null,
-  };
+  }
 }
 
 export function useCategoriesOptionsQuery(
@@ -108,8 +112,8 @@ export function useCategoriesOptionsQuery(
         page: 1,
         limit: 1000,
         status: "active",
-      });
-      return paged.items.map(normalizeCategoryRow);
+      })
+      return paged.items.map(normalizeCategoryRow)
     },
-  });
+  })
 }

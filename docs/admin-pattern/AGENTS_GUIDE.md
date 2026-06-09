@@ -6,15 +6,15 @@ Tài liệu tổng quan kiến trúc microservice: `docs/admin-pattern/MICROSERV
 
 ## 1. Đọc theo thứ tự (bản đồ trước, chi tiết sau)
 
-| Thứ tự | Nội dung | Mục đích |
-|--------|----------|----------|
-| 1 | `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` | Storefront Next, route, import |
-| 1b | `docs/admin-pattern/FRONTEND_UX.md` | Token màu / UX / a11y storefront (khi sửa UI) |
-| 1c | `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` | Pattern admin page (khi sửa `apps/backend`) |
-| 2 | `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md` | Admin Next |
-| 3 | `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md` | Nest API: module, controller, entity (**MikroORM**) |
-| 4 | `packages/eslint-config/service-boundaries.js` | Ranh giới import giữa service |
-| 5 | Source cụ thể (`*.ts`, `*.tsx`) | Chỉ mở khi đã biết file/module liên quan |
+| Thứ tự | Nội dung                                             | Mục đích                                            |
+| ------ | ---------------------------------------------------- | --------------------------------------------------- |
+| 1      | `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` | Storefront Next, route, import                      |
+| 1b     | `docs/admin-pattern/FRONTEND_UX.md`                  | Token màu / UX / a11y storefront (khi sửa UI)       |
+| 1c     | `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`           | Pattern admin page (khi sửa `apps/backend`)         |
+| 2      | `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`  | Admin Next                                          |
+| 3      | `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`      | Nest API: module, controller, entity (**MikroORM**) |
+| 4      | `packages/eslint-config/service-boundaries.js`       | Ranh giới import giữa service                       |
+| 5      | Source cụ thể (`*.ts`, `*.tsx`)                      | Chỉ mở khi đã biết file/module liên quan            |
 
 **Tránh** đọc toàn bộ `context.json` (rất dài, nhúng full source). Chỉ tra theo path khi cần đoạn code.
 
@@ -51,12 +51,12 @@ pnpm check:full
 
 ## 3. Pattern bắt buộc khi sửa code
 
-| Chủ đề | Đọc / dùng |
-|--------|------------|
-| Admin page CRUD | `ADMIN_PAGE_PATTERN.md` + `useAdminMutation` (`@workspace/ui`) |
-| Toast mutation + socket | `docs/api-client-pattern/REALTIME.md`, `toast-coordinator.ts` |
-| API + client contract | `docs/api-pattern/README.md`, `docs/api-client-pattern/README.md` |
-| Import/backup data admin | `apps/backend/src/app/data/_component/`, `system.service.ts` |
+| Chủ đề                   | Đọc / dùng                                                        |
+| ------------------------ | ----------------------------------------------------------------- |
+| Admin page CRUD          | `ADMIN_PAGE_PATTERN.md` + `useAdminMutation` (`@workspace/ui`)    |
+| Toast mutation + socket  | `docs/api-client-pattern/REALTIME.md`, `toast-coordinator.ts`     |
+| API + client contract    | `docs/api-pattern/README.md`, `docs/api-client-pattern/README.md` |
+| Import/backup data admin | `apps/backend/src/app/data/_component/`, `system.service.ts`      |
 
 ## 4. Vòng chuẩn hóa (kết thúc task lớn)
 

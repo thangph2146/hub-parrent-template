@@ -21,8 +21,7 @@ export const adminDateRangeFilterFn: FilterFn<unknown> = (
   return true
 }
 
-const DEFAULT_ADMIN_DATE_COLUMN_CLASS =
-  "w-[180px] min-w-[180px] max-w-[185px]"
+const DEFAULT_ADMIN_DATE_COLUMN_CLASS = "w-[180px] min-w-[180px] max-w-[185px]"
 
 /** @deprecated Dùng `adminDateRangeFilterFn`. */
 export const adminDeletedAtDateRangeFilterFn = adminDateRangeFilterFn
@@ -38,7 +37,10 @@ type AdminDateColumnOptions = {
 function defineAdminDateColumn<TData>(
   accessorKey: "createdAt" | "updatedAt" | "deletedAt",
   defaults: Required<
-    Pick<AdminDateColumnOptions, "header" | "enableColumnFilter" | "defaultHidden">
+    Pick<
+      AdminDateColumnOptions,
+      "header" | "enableColumnFilter" | "defaultHidden"
+    >
   >,
   options: AdminDateColumnOptions = {}
 ): ColumnDef<TData> {
@@ -96,22 +98,30 @@ function defineAdminDateColumn<TData>(
 export function defineAdminCreatedAtColumn<TData>(
   options: AdminDateColumnOptions = {}
 ): ColumnDef<TData> {
-  return defineAdminDateColumn<TData>("createdAt", {
-    header: "Tạo lúc",
-    enableColumnFilter: true,
-    defaultHidden: false,
-  }, options)
+  return defineAdminDateColumn<TData>(
+    "createdAt",
+    {
+      header: "Tạo lúc",
+      enableColumnFilter: true,
+      defaultHidden: false,
+    },
+    options
+  )
 }
 
 /** Cột `updatedAt` — lọc khoảng ngày. */
 export function defineAdminUpdatedAtColumn<TData>(
   options: AdminDateColumnOptions = {}
 ): ColumnDef<TData> {
-  return defineAdminDateColumn<TData>("updatedAt", {
-    header: "Cập nhật lúc",
-    enableColumnFilter: true,
-    defaultHidden: false,
-  }, options)
+  return defineAdminDateColumn<TData>(
+    "updatedAt",
+    {
+      header: "Cập nhật lúc",
+      enableColumnFilter: true,
+      defaultHidden: false,
+    },
+    options
+  )
 }
 
 type DeletedAtColumnOptions = {
@@ -157,15 +167,13 @@ export function buildAdminTableColumns<TData>({
   /** Tùy chỉnh cột xóa lúc; chỉ ghép khi `view === "trash"`. */
   deletedAtColumn?: ColumnDef<TData>
 }): ColumnDef<TData>[] {
-  const actionColumn =
-    view === "trash" ? trashActionsColumn : listActionsColumn
+  const actionColumn = view === "trash" ? trashActionsColumn : listActionsColumn
 
   if (view !== "trash") {
     return [...dataColumns, actionColumn]
   }
 
-  const deletedAt =
-    deletedAtColumn ?? defineAdminDeletedAtColumn<TData>()
+  const deletedAt = deletedAtColumn ?? defineAdminDeletedAtColumn<TData>()
 
   return [...dataColumns, deletedAt, actionColumn]
 }

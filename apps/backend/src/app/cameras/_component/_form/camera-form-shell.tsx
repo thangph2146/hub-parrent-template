@@ -1,35 +1,35 @@
-"use client";
+"use client"
 
-import { useMemo } from "react";
+import { useMemo } from "react"
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
-import { TreePicker } from "@ui/components/pickers";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
+import { TreePicker } from "@ui/components/pickers"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { Hash, Camera, Link2 } from "lucide-react";
-import { api } from "@/lib/api";
-import { useEventsListQuery } from "@/app/events/_component/_query";
-import type { CameraFormValues } from "../types";
+} from "@ui/components/admin"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { Hash, Camera, Link2 } from "lucide-react"
+import { api } from "@/lib/api"
+import { useEventsListQuery } from "@/app/events/_component/_query"
+import type { CameraFormValues } from "../types"
 
 export interface CameraFormShellProps {
-  form: UseFormReturn<CameraFormValues>;
-  onSubmit: (v: CameraFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<CameraFormValues>
+  onSubmit: (v: CameraFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function CameraFormShell({
@@ -40,8 +40,8 @@ export function CameraFormShell({
   onBack,
   onReset,
 }: CameraFormShellProps) {
-  const { control } = form;
-  const { data: events } = useEventsListQuery(api, true);
+  const { control } = form
+  const { data: events } = useEventsListQuery(api, true)
   const eventOptions = useMemo(
     () => [
       { value: "", label: "— Không gắn sự kiện —" },
@@ -50,8 +50,8 @@ export function CameraFormShell({
         label: ev.title?.trim() ? ev.title : ev.id,
       })),
     ],
-    [events],
-  );
+    [events]
+  )
 
   return (
     <>
@@ -100,7 +100,7 @@ export function CameraFormShell({
                         {...field}
                         className={cn(
                           "font-mono text-sm",
-                          fieldState.error && "border-destructive",
+                          fieldState.error && "border-destructive"
                         )}
                       />
                       {fieldState.error ? (
@@ -109,8 +109,8 @@ export function CameraFormShell({
                         <p className="text-xs text-muted-foreground">
                           Copy đúng mã thiết bị từ HANET — khớp trường{" "}
                           <code className="text-[10px]">deviceID</code> /{" "}
-                          <code className="text-[10px]">camera_id</code> khi webhook
-                          gửi về.
+                          <code className="text-[10px]">camera_id</code> khi
+                          webhook gửi về.
                         </p>
                       )}
                     </FormFieldCol>
@@ -138,7 +138,7 @@ export function CameraFormShell({
                         value={field.value ?? ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                       />
@@ -170,8 +170,12 @@ export function CameraFormShell({
 
         <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="flex flex-col gap-4">
-          <FieldSet variant="section">
-              <FieldSectionLegend icon={Hash} title="Trạng thái" description="Trạng thái hoạt động của camera." />
+            <FieldSet variant="section">
+              <FieldSectionLegend
+                icon={Hash}
+                title="Trạng thái"
+                description="Trạng thái hoạt động của camera."
+              />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <Controller
                   name="status"
@@ -180,7 +184,9 @@ export function CameraFormShell({
                     <FormFieldCol label="Trạng thái">
                       <TreePicker
                         value={String(field.value)}
-                        onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                        onChange={(v) =>
+                          field.onChange(v != null ? Number(v) : 1)
+                        }
                         options={[
                           { value: "1", label: "Hoạt động" },
                           { value: "0", label: "Khóa" },
@@ -201,8 +207,8 @@ export function CameraFormShell({
               <FieldSetContent variant="section" className="space-y-3 pt-0">
                 <ul className="list-inside list-disc space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
                   <li>
-                    <strong className="text-foreground">Mã camera</strong> = deviceID
-                    trên{" "}
+                    <strong className="text-foreground">Mã camera</strong> =
+                    deviceID trên{" "}
                     <a
                       href="https://developers.hanet.ai"
                       target="_blank"
@@ -212,7 +218,9 @@ export function CameraFormShell({
                       developers.hanet.ai
                     </a>
                   </li>
-                  <li>Webhook cấu hình trên App HANET (tab realtime sự kiện)</li>
+                  <li>
+                    Webhook cấu hình trên App HANET (tab realtime sự kiện)
+                  </li>
                   <li>IP / user / pass: không dùng cho webhook HANET</li>
                 </ul>
                 <Controller
@@ -235,5 +243,5 @@ export function CameraFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

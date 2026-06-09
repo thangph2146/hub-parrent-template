@@ -1,2 +1,2 @@
-export { CategoriesTable } from "./categories-table";
-export { CategoriesTrashTable } from "./categories-trash-table";
+export { CategoriesTable } from "./categories-table"
+export { CategoriesTrashTable } from "./categories-trash-table"

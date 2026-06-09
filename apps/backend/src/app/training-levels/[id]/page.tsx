@@ -1,47 +1,61 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
-import { Calendar, Clock, GraduationCap, Hash } from "lucide-react";
-import { Badge } from "@ui/components/badge";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
+import { Calendar, Clock, GraduationCap, Hash } from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { AdminPageGuard, AdminPageSection, AdminPageLoading, AdminDetailPageHeader, AdminDetailLayout, AdminDetailMain, AdminDetailSidebar } from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { useTrainingLevelDetailQuery } from "../_component";
+} from "@ui/components/field"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminPageLoading,
+  AdminDetailPageHeader,
+  AdminDetailLayout,
+  AdminDetailMain,
+  AdminDetailSidebar,
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useTrainingLevelDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
 }
 
 function TrainingLevelDetailInner() {
-  const crudNav = useAdminCrudNavigation("/training-levels");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_UPDATE) : false;
+  const crudNav = useAdminCrudNavigation("/training-levels")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.TRAINING_LEVELS_UPDATE)
+    : false
 
-  const { data: entity, isLoading, isError } = useTrainingLevelDetailQuery(api, id);
+  const {
+    data: entity,
+    isLoading,
+    isError,
+  } = useTrainingLevelDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được bậc học");
-      crudNav.list();
+      toast.error("Không tải được bậc học")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!entity) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!entity) return null
 
   return (
     <AdminPageSection>
@@ -69,7 +83,11 @@ function TrainingLevelDetailInner() {
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
               <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Mã bậc học" icon={Hash} valueClassName="font-mono font-medium">
+                <FieldSectionField
+                  label="Mã bậc học"
+                  icon={Hash}
+                  valueClassName="font-mono font-medium"
+                >
                   {entity.code || "—"}
                 </FieldSectionField>
                 <FieldSectionField label="Trạng thái" icon={GraduationCap}>
@@ -87,12 +105,24 @@ function TrainingLevelDetailInner() {
         <AdminDetailSidebar>
           <div className="sticky top-2 flex flex-col gap-4">
             <FieldSet variant="section">
-              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật."
+              />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -101,7 +131,7 @@ function TrainingLevelDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function TrainingLevelDetailPage() {
@@ -109,5 +139,5 @@ export default function TrainingLevelDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <TrainingLevelDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

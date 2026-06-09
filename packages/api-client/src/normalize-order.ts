@@ -1,4 +1,4 @@
-import type { Order, OrderItem } from './types';
+import type { Order, OrderGiftSnapshot, OrderItem } from './types';
 
 function toNum(v: unknown, fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
@@ -41,8 +41,56 @@ function normalizeOneItem(row: unknown): OrderItem | null {
         ? undefined
         : toNum(o.listUnitPrice),
     unitLabel: typeof o.unitLabel === 'string' ? o.unitLabel : undefined,
+    variantSku:
+      typeof o.variantSku === 'string'
+        ? o.variantSku
+        : typeof o.sku === 'string'
+          ? o.sku
+          : undefined,
   };
   return item;
+}
+
+function normalizeOneGift(row: unknown): OrderGiftSnapshot | null {
+  if (!row || typeof row !== 'object') return null;
+  const o = row as Record<string, unknown>;
+  const name = typeof o.name === 'string' ? o.name.trim() : '';
+  if (!name) return null;
+  const qty = Math.max(1, Math.floor(toNum(o.qty, 1)));
+  return {
+    ruleId: typeof o.ruleId === 'string' ? o.ruleId : undefined,
+    label: typeof o.label === 'string' ? o.label : name,
+    sku: typeof o.sku === 'string' ? o.sku : undefined,
+    name,
+    qty,
+    image: typeof o.image === 'string' ? o.image : undefined,
+    productId:
+      o.productId === undefined || o.productId === null
+        ? undefined
+        : toNum(o.productId),
+    unitType: typeof o.unitType === 'string' ? o.unitType : undefined,
+  };
+}
+
+export function normalizeOrderGifts(raw: unknown): OrderGiftSnapshot[] {
+  let arr: unknown[] = [];
+  if (Array.isArray(raw)) arr = raw;
+  else if (typeof raw === 'string') {
+    const t = raw.trim();
+    if (!t) return [];
+    try {
+      const p = JSON.parse(t) as unknown;
+      arr = Array.isArray(p) ? p : [];
+    } catch {
+      return [];
+    }
+  }
+  const out: OrderGiftSnapshot[] = [];
+  for (const row of arr) {
+    const n = normalizeOneGift(row);
+    if (n) out.push(n);
+  }
+  return out;
 }
 
 /**
@@ -71,8 +119,10 @@ export function normalizeOrderItems(raw: unknown): OrderItem[] {
 }
 
 export function normalizeOrder(order: Order): Order {
+  const raw = order as Order & { items?: unknown; gifts?: unknown };
   return {
     ...order,
-    items: normalizeOrderItems((order as Order & { items?: unknown }).items),
+    items: normalizeOrderItems(raw.items),
+    gifts: normalizeOrderGifts(raw.gifts),
   };
 }

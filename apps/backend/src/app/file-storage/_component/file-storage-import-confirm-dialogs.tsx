@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { ConfirmActionDialog } from "@ui/components/dialogs";
-import { ArchiveRestore } from "lucide-react";
+import { ConfirmActionDialog } from "@ui/components/dialogs"
+import { ArchiveRestore } from "lucide-react"
 
 export type FileStorageImportConfirmState = {
-  file: File;
-  sizeMb: string;
-  step: "restore" | "overwrite";
-};
+  file: File
+  sizeMb: string
+  step: "restore" | "overwrite"
+}
 
 type FileStorageImportConfirmDialogsProps = {
-  state: FileStorageImportConfirmState | null;
-  importing: boolean;
-  onClose: () => void;
-  onConfirmRestore: () => void;
-  onConfirmOverwrite: () => void;
-  onSkipOverwrite: () => void;
-};
+  state: FileStorageImportConfirmState | null
+  importing: boolean
+  onClose: () => void
+  onConfirmRestore: () => void
+  onConfirmOverwrite: () => void
+  onSkipOverwrite: () => void
+}
 
 export function FileStorageImportConfirmDialogs({
   state,
@@ -26,14 +26,14 @@ export function FileStorageImportConfirmDialogs({
   onConfirmOverwrite,
   onSkipOverwrite,
 }: FileStorageImportConfirmDialogsProps) {
-  const fileName = state?.file.name ?? "";
+  const fileName = state?.file.name ?? ""
 
   return (
     <>
       <ConfirmActionDialog
         open={state?.step === "restore"}
         onOpenChange={(open) => {
-          if (!open) onClose();
+          if (!open) onClose()
         }}
         title="Khôi phục kho lưu trữ?"
         icon={<ArchiveRestore className="size-5 text-primary" />}
@@ -57,7 +57,7 @@ export function FileStorageImportConfirmDialogs({
       <ConfirmActionDialog
         open={state?.step === "overwrite"}
         onOpenChange={(open) => {
-          if (!open) onSkipOverwrite();
+          if (!open) onSkipOverwrite()
         }}
         title="Chế độ khôi phục"
         icon={<ArchiveRestore className="size-5 text-primary" />}
@@ -80,5 +80,5 @@ export function FileStorageImportConfirmDialogs({
         onConfirm={onConfirmOverwrite}
       />
     </>
-  );
+  )
 }

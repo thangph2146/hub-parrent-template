@@ -1,10 +1,18 @@
-export type { DepartmentRow, DepartmentFormValues, DepartmentConfirmAction, DepartmentDetail } from "./types";
-export { departmentFormSchema } from "./types";
-export { getDepartmentColumns } from "./columns";
-export { 
+export type {
+  DepartmentRow,
+  DepartmentFormValues,
+  DepartmentConfirmAction,
+  DepartmentDetail,
+} from "./types"
+export { departmentFormSchema } from "./types"
+export { getDepartmentColumns } from "./columns"
+export {
   useDepartmentDetailQuery,
   useDepartmentsListQuery,
-  useDepartmentsTrashQuery, departmentDetailQueryKey, prefetchDepartmentDetail } from "./_query";
+  useDepartmentsTrashQuery,
+  departmentDetailQueryKey,
+  prefetchDepartmentDetail,
+} from "./_query"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -13,7 +21,7 @@ export {
   useDepartmentForm,
   useHandleConfirmAction,
   useConfirmAction,
-} from "./_hooks";
-export { DepartmentFormShell } from "./_form";
-export { DepartmentsConfirmDialog } from "./_alert-dialog";
-export { DepartmentsTable, DepartmentsTrashTable } from "./_table";
+} from "./_hooks"
+export { DepartmentFormShell } from "./_form"
+export { DepartmentsConfirmDialog } from "./_alert-dialog"
+export { DepartmentsTable, DepartmentsTrashTable } from "./_table"

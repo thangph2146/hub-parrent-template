@@ -6,7 +6,7 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -20,14 +20,21 @@ import {
   ADMIN_LIST_TABS_LIST_CLASS,
   ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
-import { AdminPageGuard, AdminPageSection, AdminListPageHeader, AdminReadOnlyHint, AdminPageHeaderPrimaryButton } from "@ui/components/admin"
+import {
+  AdminPageGuard,
+  AdminPageSection,
+  AdminListPageHeader,
+  AdminReadOnlyHint,
+  AdminPageHeaderPrimaryButton,
+} from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   SpeakersTable,
   SpeakersTrashTable,
-  getSpeakerColumns,  useColumnFiltersChange,
+  getSpeakerColumns,
+  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useSpeakersListQuery,
@@ -36,12 +43,15 @@ import {
 } from "./_component"
 import type { SpeakerRow } from "./_component"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function SpeakersPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/speakers", {
     prefetchDetail: (id) => prefetchSpeakerDetail(queryClient, api, id),
-  });
+  })
   const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.SPEAKERS_MANAGE) ||
@@ -83,7 +93,11 @@ function SpeakersPageInner() {
   )
 
   const trashFilterParams = useMemo(
-    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.speakers),
+    () =>
+      buildAdminFilterQuery(
+        trashColumnFilters,
+        COMMON_FILTER_MAPPINGS.speakers
+      ),
     [trashColumnFilters]
   )
 
@@ -107,7 +121,7 @@ function SpeakersPageInner() {
     mutationFn: async (id: string) => api.speakers.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const restoreMutation = useAdminMutation({
@@ -115,7 +129,7 @@ function SpeakersPageInner() {
     mutationFn: async (id: string) => api.speakers.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const purgeMutation = useAdminMutation({
@@ -123,7 +137,7 @@ function SpeakersPageInner() {
     mutationFn: async (id: string) => api.speakers.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   const bulkMutation = useAdminMutation({
@@ -134,7 +148,7 @@ function SpeakersPageInner() {
     }) => api.speakers.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
 
   useEffect(() => {
@@ -164,7 +178,7 @@ function SpeakersPageInner() {
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
 
   const columns = useMemo<ColumnDef<SpeakerRow>[]>(
     () =>
@@ -181,7 +195,14 @@ function SpeakersPageInner() {
   )
 
   const trashColumns = useMemo<ColumnDef<SpeakerRow>[]>(
-    () => getSpeakerColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    () =>
+      getSpeakerColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
     [rowActions, canWrite, canRestore, canHardDelete]
   )
 
@@ -201,14 +222,16 @@ function SpeakersPageInner() {
           ) : undefined
         }
         actions={
-          <>{canWrite && (
-            <AdminPageHeaderPrimaryButton
-              type="button"
-              onClick={() => crudNav.new()}
-            >
-              <Plus className="size-5" aria-hidden /> Thêm diễn giả
-            </AdminPageHeaderPrimaryButton>
-          )}</>
+          <>
+            {canWrite && (
+              <AdminPageHeaderPrimaryButton
+                type="button"
+                onClick={() => crudNav.new()}
+              >
+                <Plus className="size-5" aria-hidden /> Thêm diễn giả
+              </AdminPageHeaderPrimaryButton>
+            )}
+          </>
         }
       />
 
@@ -220,10 +243,7 @@ function SpeakersPageInner() {
         className="space-y-6"
       >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger
-            value="list"
-            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-          >
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge
               variant="secondary"
@@ -265,7 +285,6 @@ function SpeakersPageInner() {
 
           <SpeakersTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

@@ -75,23 +75,19 @@ export function EventLiveMonitorTab({
           : LIVE_POLL_MS
         : false,
     }),
-    [liveEnabled, socketConnected],
+    [liveEnabled, socketConnected]
   )
 
   const detailQuery = useEventDetailQuery(api, eventId, pollOptions)
   const registrationsQuery = useEventRegistrationsQuery(
     api,
     eventId,
-    pollOptions,
+    pollOptions
   )
 
   const registrations = useMemo(
-    () =>
-      mergeRegistrationRowsForDisplay(
-        registrationsQuery.data,
-        lastPayload,
-      ),
-    [registrationsQuery.data, lastPayload],
+    () => mergeRegistrationRowsForDisplay(registrationsQuery.data, lastPayload),
+    [registrationsQuery.data, lastPayload]
   )
 
   const stats = detailQuery.data ?? initialStats
@@ -109,7 +105,7 @@ export function EventLiveMonitorTab({
 
   const activities = useMemo(
     () => buildLiveActivitiesFromRegistrations(registrations),
-    [registrations],
+    [registrations]
   )
 
   const activityColumns = useMemo(() => getEventLiveActivityColumns(), [])
@@ -117,9 +113,9 @@ export function EventLiveMonitorTab({
   const pendingCheckin = useMemo(
     () =>
       registrations.filter(
-        (r) => !asAttendanceBool(r.hasCheckin) && r.status !== 2,
+        (r) => !asAttendanceBool(r.hasCheckin) && r.status !== 2
       ).length,
-    [registrations],
+    [registrations]
   )
 
   const seenIdsRef = useRef<Set<string>>(new Set())
@@ -128,11 +124,10 @@ export function EventLiveMonitorTab({
 
   const newActivityCount = useMemo(
     () => activities.filter((a) => newActivityIds.has(a.id)).length,
-    [activities, newActivityIds],
+    [activities, newActivityIds]
   )
 
-  const isFetching =
-    detailQuery.isFetching || registrationsQuery.isFetching
+  const isFetching = detailQuery.isFetching || registrationsQuery.isFetching
 
   const isLoading = registrationsQuery.isLoading
 
@@ -199,7 +194,7 @@ export function EventLiveMonitorTab({
           <span
             className={cn(
               "relative flex size-2.5 rounded-full",
-              liveEnabled ? "bg-emerald-500" : "bg-muted-foreground/40",
+              liveEnabled ? "bg-emerald-500" : "bg-muted-foreground/40"
             )}
           >
             {liveEnabled ? (
@@ -361,7 +356,7 @@ function StatCard({
           "mt-2 text-2xl font-bold tabular-nums",
           tone === "emerald" && "text-emerald-600",
           tone === "amber" && "text-amber-600",
-          !tone && "text-primary",
+          !tone && "text-primary"
         )}
       >
         {value}

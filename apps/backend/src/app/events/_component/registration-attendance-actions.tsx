@@ -1,6 +1,6 @@
 "use client"
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query"
 import {
   ClipboardList,
   LogIn,
@@ -22,7 +22,7 @@ import {
 import { useEventAttendanceContext } from "./_live/event-attendance-provider"
 import { AttendanceStatusBadge } from "./attendance-status"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation";
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
 type RegistrationRow = Record<string, unknown>
 
 type AttendanceAction =
@@ -57,7 +57,7 @@ export function RegistrationAttendanceActions({
     mutationFn: async (action: AttendanceAction) => {
       return api.eventRegistrations.setAttendance<RegistrationRow>(
         registrationId,
-        { action },
+        { action }
       )
     },
     onMutate: async (action) => {
@@ -65,7 +65,7 @@ export function RegistrationAttendanceActions({
         eventId,
         registrationId,
         row,
-        action,
+        action
       )
       applyAttendance(payload)
       await queryClient.cancelQueries({
@@ -78,11 +78,12 @@ export function RegistrationAttendanceActions({
       ])
       return { previous, payload }
     },
-    onError: (_err, _action, context) => {
+    onError: (_err, _action, ...rest) => {
+      const context = rest[0] as { previous?: RegistrationRow[] } | undefined
       if (context?.previous) {
         queryClient.setQueryData(
           ["events", eventId, "registrations"],
-          context.previous,
+          context.previous
         )
       }
     },

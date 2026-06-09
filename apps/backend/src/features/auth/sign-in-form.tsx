@@ -187,7 +187,9 @@ export function SignInForm() {
               toast.success("Đăng nhập Google thành công.")
               router.replace("/")
             } else if (result === "staff_only") {
-              toast.error("Tài khoản Google này không có quyền truy cập cổng quản trị.")
+              toast.error(
+                "Tài khoản Google này không có quyền truy cập cổng quản trị."
+              )
             } else {
               toast.error("Đăng nhập Google thất bại.")
             }

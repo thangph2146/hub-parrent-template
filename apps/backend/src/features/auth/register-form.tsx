@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { FormEvent, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, MailPlus, Smartphone } from "lucide-react";
-import { Button } from "@ui/components/button";
-import { Card, CardContent } from "@ui/components/card";
+import { FormEvent, useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Eye, EyeOff, MailPlus, Smartphone } from "lucide-react"
+import { Button } from "@ui/components/button"
+import { Card, CardContent } from "@ui/components/card"
 import {
   Field,
   FieldDescription,
@@ -13,23 +13,23 @@ import {
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { PointerHighlight } from "@ui/components/pointer-highlight";
-import { TypographyH2 } from "@ui/components/typography";
-import { toast } from "@ui/components/sonner";
-import { useAdminLayout } from "@ui/components/admin";
-import { AUTH_LOGIN_PATH } from "@/lib/auth-routes";
-import { registerAccount } from "./auth-api";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { PointerHighlight } from "@ui/components/pointer-highlight"
+import { TypographyH2 } from "@ui/components/typography"
+import { toast } from "@ui/components/sonner"
+import { useAdminLayout } from "@ui/components/admin"
+import { AUTH_LOGIN_PATH } from "@/lib/auth-routes"
+import { registerAccount } from "./auth-api"
 
 type RegisterFormState = {
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  password: string;
-  confirmPassword: string;
-};
+  fullName: string
+  email: string
+  phone: string
+  address: string
+  password: string
+  confirmPassword: string
+}
 
 const INITIAL_STATE: RegisterFormState = {
   fullName: "",
@@ -38,57 +38,61 @@ const INITIAL_STATE: RegisterFormState = {
   address: "",
   password: "",
   confirmPassword: "",
-};
+}
 
 export function RegisterForm() {
-  const router = useRouter();
-  const { siteName, siteDescription } = useAdminLayout();
-  const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter()
+  const { siteName, siteDescription } = useAdminLayout()
+  const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE)
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   function updateField<Key extends keyof RegisterFormState>(
     key: Key,
-    value: RegisterFormState[Key],
+    value: RegisterFormState[Key]
   ) {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => ({ ...current, [key]: value }))
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+    event.preventDefault()
+    setError(null)
 
     if (!form.fullName.trim() || !form.email.trim() || !form.password) {
-      setError("Vui lòng nhập đầy đủ họ tên, email và mật khẩu.");
-      return;
+      setError("Vui lòng nhập đầy đủ họ tên, email và mật khẩu.")
+      return
     }
 
     if (form.password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự.");
-      return;
+      setError("Mật khẩu phải có ít nhất 6 ký tự.")
+      return
     }
 
     if (form.password !== form.confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp.");
-      return;
+      setError("Mật khẩu xác nhận không khớp.")
+      return
     }
 
     try {
-      setSubmitting(true);
+      setSubmitting(true)
       await registerAccount({
         fullName: form.fullName.trim(),
         email: form.email.trim(),
         password: form.password,
         phone: form.phone.trim() || undefined,
         address: form.address.trim() || undefined,
-      });
-      setForm(INITIAL_STATE);
-      toast.success("Đăng ký thành công. Tài khoản của bạn đã được tạo với vai trò Phụ huynh.");
-      router.replace(AUTH_LOGIN_PATH);
-    } catch { /* toast: MutationCache */ } finally {
-      setSubmitting(false);
+      })
+      setForm(INITIAL_STATE)
+      toast.success(
+        "Đăng ký thành công. Tài khoản của bạn đã được tạo với vai trò Phụ huynh."
+      )
+      router.replace(AUTH_LOGIN_PATH)
+    } catch {
+      /* toast: MutationCache */
+    } finally {
+      setSubmitting(false)
     }
   }
   return (
@@ -104,12 +108,12 @@ export function RegisterForm() {
                   </TypographyH2>
                   <div className="flex flex-col items-center gap-1">
                     <PointerHighlight>
-                      <p className="relative z-10 text-xl font-bold uppercase tracking-tight text-primary sm:text-sm md:text-2xl">
+                      <p className="relative z-10 text-xl font-bold tracking-tight text-primary uppercase sm:text-sm md:text-2xl">
                         {siteName}
                       </p>
                     </PointerHighlight>
                     {siteDescription ? (
-                      <p className="text-xs font-medium italic text-muted-foreground sm:text-sm md:text-sm">
+                      <p className="text-xs font-medium text-muted-foreground italic sm:text-sm md:text-sm">
                         {siteDescription}
                       </p>
                     ) : null}
@@ -117,14 +121,19 @@ export function RegisterForm() {
                 </div>
 
                 <Field>
-                  <FieldLabel htmlFor="fullName" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="fullName"
+                    className="font-medium text-primary"
+                  >
                     Họ và tên
                   </FieldLabel>
                   <Input
                     id="fullName"
                     autoComplete="name"
                     value={form.fullName}
-                    onChange={(event) => updateField("fullName", event.target.value)}
+                    onChange={(event) =>
+                      updateField("fullName", event.target.value)
+                    }
                     placeholder="Họ và tên"
                     required
                     disabled={submitting}
@@ -132,7 +141,10 @@ export function RegisterForm() {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="email" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="email"
+                    className="font-medium text-primary"
+                  >
                     Email
                   </FieldLabel>
                   <Input
@@ -140,7 +152,9 @@ export function RegisterForm() {
                     type="email"
                     autoComplete="email"
                     value={form.email}
-                    onChange={(event) => updateField("email", event.target.value)}
+                    onChange={(event) =>
+                      updateField("email", event.target.value)
+                    }
                     placeholder="example@email.com"
                     required
                     disabled={submitting}
@@ -148,7 +162,10 @@ export function RegisterForm() {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="phone" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="phone"
+                    className="font-medium text-primary"
+                  >
                     Số điện thoại
                   </FieldLabel>
                   <div className="relative">
@@ -156,19 +173,27 @@ export function RegisterForm() {
                       id="phone"
                       autoComplete="tel"
                       value={form.phone}
-                      onChange={(event) => updateField("phone", event.target.value)}
+                      onChange={(event) =>
+                        updateField("phone", event.target.value)
+                      }
                       placeholder="Nhập số điện thoại của bạn"
                       disabled={submitting}
                       className="pr-10"
                     />
-                    <div className="pointer-events-none absolute right-0 top-0 flex h-full items-center px-3">
-                      <Smartphone className="size-4 text-muted-foreground" aria-hidden />
+                    <div className="pointer-events-none absolute top-0 right-0 flex h-full items-center px-3">
+                      <Smartphone
+                        className="size-4 text-muted-foreground"
+                        aria-hidden
+                      />
                     </div>
                   </div>
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="password" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="password"
+                    className="font-medium text-primary"
+                  >
                     Mật khẩu
                   </FieldLabel>
                   <div className="relative">
@@ -177,7 +202,9 @@ export function RegisterForm() {
                       type={showPassword ? "text" : "password"}
                       autoComplete="new-password"
                       value={form.password}
-                      onChange={(event) => updateField("password", event.target.value)}
+                      onChange={(event) =>
+                        updateField("password", event.target.value)
+                      }
                       placeholder="Tạo mật khẩu"
                       required
                       disabled={submitting}
@@ -186,7 +213,7 @@ export function RegisterForm() {
                     <Button
                       type="button"
                       variant="ghost"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword((value) => !value)}
                       disabled={submitting}
                     >
@@ -200,7 +227,10 @@ export function RegisterForm() {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="confirmPassword" className="font-medium text-primary">
+                  <FieldLabel
+                    htmlFor="confirmPassword"
+                    className="font-medium text-primary"
+                  >
                     Xác nhận mật khẩu
                   </FieldLabel>
                   <div className="relative">
@@ -209,7 +239,9 @@ export function RegisterForm() {
                       type={showConfirmPassword ? "text" : "password"}
                       autoComplete="new-password"
                       value={form.confirmPassword}
-                      onChange={(event) => updateField("confirmPassword", event.target.value)}
+                      onChange={(event) =>
+                        updateField("confirmPassword", event.target.value)
+                      }
                       placeholder="Xác nhận mật khẩu của bạn"
                       required
                       disabled={submitting}
@@ -218,7 +250,7 @@ export function RegisterForm() {
                     <Button
                       type="button"
                       variant="ghost"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowConfirmPassword((value) => !value)}
                       disabled={submitting}
                     >
@@ -254,7 +286,9 @@ export function RegisterForm() {
                     variant="outline"
                     className="min-h-[44px] w-full border-secondary/30 hover:bg-secondary/10"
                     onClick={() =>
-                      toast.info("Đăng ký Google cho hệ thống phụ huynh chưa được cấu hình.")
+                      toast.info(
+                        "Đăng ký Google cho hệ thống phụ huynh chưa được cấu hình."
+                      )
                     }
                   >
                     <span className="text-xl font-bold text-secondary">G</span>
@@ -292,5 +326,5 @@ export function RegisterForm() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

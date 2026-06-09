@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `C:/HUB/source/hub-parent-template/apps/api`
-- **context.generatedAt:** 2026-06-07T17:12:07.016Z
+- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/api`
+- **context.generatedAt:** 2026-06-08T08:15:50.126Z
 
 ## Mục lục artefact Graphify
 
@@ -35,7 +35,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Phụ thuộc chéo giữa domain API:** [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md) — domain `src/<tên>` nào import domain nào (cạnh `imports` trong graph).
 
 ## Thống kê
-- **totalFiles:** 245
+- **totalFiles:** 297
 - **clientComponents:** 0
 
 ## Góc hệ thống (@api) — đường dẫn gợi ý
@@ -51,12 +51,14 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/common/permissions.guard.ts`
 
 ### Seeds / bootstrap
+- `src/seeds/products-sample.runner.ts`
+- `src/seeds/promo-codes-sample.runner.ts`
 - `src/seeds/superadmin-bootstrap.data.ts`
 - `src/seeds/superadmin-bootstrap.runner.ts`
 
 > **DB:** entity `src/entities/`, migration `src/migrations/` — xem thêm bảng *Module map* và `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` (MikroORM).
 
-## Nest — module (46)
+## Nest — module (49)
 - `src/academic-years/academic-years.module.ts`
 - `src/accounts/accounts.module.ts`
 - `src/admission-results/admission-results.module.ts`
@@ -83,9 +85,12 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/messages/messages.module.ts`
 - `src/mikro-orm/mikro-orm.module.ts`
 - `src/notifications/notifications.module.ts`
+- `src/orders/orders.module.ts`
 - `src/page-contents/page-contents.module.ts`
 - `src/parent-students/parent-students.module.ts`
 - `src/posts/posts.module.ts`
+- `src/products/products.module.ts`
+- `src/promo-codes/promo-codes.module.ts`
 - `src/proxy-image/proxy-image.module.ts`
 - `src/public/public.module.ts`
 - `src/roles/roles.module.ts`
@@ -104,7 +109,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/uploads/uploads.module.ts`
 - `src/users/users.module.ts`
 
-## Nest — controller (45)
+## Nest — controller (50)
 - `src/academic-years/academic-years.controller.ts`
 - `src/accounts/accounts.controller.ts`
 - `src/admission-results/admission-results.controller.ts`
@@ -130,9 +135,14 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/messages/conversations.controller.ts`
 - `src/messages/messages.controller.ts`
 - `src/notifications/notifications.controller.ts`
+- `src/orders/orders.controller.ts`
+- `src/orders/public-orders.controller.ts`
 - `src/page-contents/page-contents.controller.ts`
 - `src/parent-students/parent-students.controller.ts`
 - `src/posts/posts.controller.ts`
+- `src/products/products.controller.ts`
+- `src/products/public-products.controller.ts`
+- `src/promo-codes/promo-codes.controller.ts`
 - `src/proxy-image/proxy-image.controller.ts`
 - `src/public/public.controller.ts`
 - `src/roles/roles.controller.ts`
@@ -151,7 +161,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/uploads/uploads.controller.ts`
 - `src/users/users.controller.ts`
 
-## Entities (42)
+## Entities (46)
 - `src/entities/academic-year.entity.ts`
 - `src/entities/account.entity.ts`
 - `src/entities/admission-result.entity.ts`
@@ -175,17 +185,21 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/entities/message-read.entity.ts`
 - `src/entities/message.entity.ts`
 - `src/entities/notification.entity.ts`
+- `src/entities/order.entity.ts`
 - `src/entities/page-content.entity.ts`
 - `src/entities/parent-student.entity.ts`
 - `src/entities/post-category.entity.ts`
 - `src/entities/post-tag.entity.ts`
 - `src/entities/post.entity.ts`
+- `src/entities/product.entity.ts`
+- `src/entities/promo-code.entity.ts`
 - `src/entities/role.entity.ts`
 - `src/entities/screen.entity.ts`
 - `src/entities/seo-meta.entity.ts`
 - `src/entities/session.entity.ts`
 - `src/entities/setting.entity.ts`
 - `src/entities/speaker.entity.ts`
+- `src/entities/storage-file.entity.ts`
 - `src/entities/student.entity.ts`
 - `src/entities/tag.entity.ts`
 - `src/entities/template.entity.ts`
@@ -195,8 +209,12 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/entities/user.entity.ts`
 - `src/entities/verification-token.entity.ts`
 
-## Migrations (1)
+## Migrations (5)
 - `src/migrations/Migration20260605120000_standardize_legacy_table_names.ts`
+- `src/migrations/Migration20260608120000_add_storage_files.ts`
+- `src/migrations/Migration20260609120000_add_products_orders.ts`
+- `src/migrations/Migration20260610120000_add_order_gifts.ts`
+- `src/migrations/Migration20260611120000_add_promo_codes.ts`
 
 ## Module map (không có nội dung file)
 
@@ -242,6 +260,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/common/date-utils.ts` | ts | no | safeIsoString, safeIsoStringNow |  |
 | `src/common/event-time-status.ts` | ts | no | EventTimeStatus, resolveEventTimeStatus |  |
 | `src/common/get-options.ts` | ts | no | GetOptionsColumnConfig, GetOptionsConfig |  |
+| `src/common/gift-rules.spec.ts` | ts | no |  | src/common/gift-rules.ts, src/entities/product.entity.ts |
+| `src/common/gift-rules.ts` | ts | no | CheckoutLineContext, evaluateOrderGifts | src/common/product-types.ts, src/entities/product.entity.ts, src/common/product-units.ts |
 | `src/common/image-processor.ts` | ts | no | ImageProcessOptions, isImageMime, isImageExt |  |
 | `src/common/legacy-audit-timestamps.ts` | ts | no | LegacyAuditEntity, touchLegacyAuditTimestamps, backfillLegacyAuditTimestampsIfMissing |  |
 | `src/common/logging.interceptor.ts` | ts | no | LoggingInterceptor | src/config/app.config.ts, src/config/constants.ts, src/common/request-id.middleware.ts |
@@ -252,9 +272,15 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/common/permissions.decorator.ts` | ts | no | PERMISSIONS_KEY, Permissions |  |
 | `src/common/permissions.guard.ts` | ts | no | PermissionsGuard | src/auth/auth.service.ts, src/common/permissions.decorator.ts, src/common/public.decorator.ts, src/config/constants.ts |
 | `src/common/poster-normalize.ts` | ts | no | unwrapPosterUrl, normalizePosterField |  |
+| `src/common/product-types.ts` | ts | no | QuantityCountMode, QuantityScope, QuantityCondition, ProductPriceTier, ProductGiftRule, ProductUnitType, OrderItemSnapshot, OrderGiftSnapshot |  |
+| `src/common/product-units.ts` | ts | no | resolveUnit, resolveUnitImage, resolveLineSku, effectiveQuantityForCondition, matchesQuantityCondition, getUnitStock, sumUnitStocks | src/common/product-types.ts, src/entities/product.entity.ts |
+| `src/common/promo-checkout.spec.ts` | ts | no |  | src/common/promo-checkout.ts, src/entities/promo-code.entity.ts |
+| `src/common/promo-checkout.ts` | ts | no | PromoDiscountResult, computePromoDiscount, isPromoRedeemable | src/entities/promo-code.entity.ts |
 | `src/common/public.decorator.ts` | ts | no | IS_PUBLIC_KEY, Public |  |
 | `src/common/request-id.middleware.ts` | ts | no | REQUEST_ID_HEADER, RequestIdMiddleware |  |
 | `src/common/resolve-relation-filters.ts` | ts | no | RelationFilterConfig, RelationFiltersConfig | src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/contact-request.entity.ts, src/entities/group.entity.ts, src/entities/message.entity.ts, src/entities/notificatio |
+| `src/common/unit-pricing.spec.ts` | ts | no |  | src/common/unit-pricing.ts |
+| `src/common/unit-pricing.ts` | ts | no | LinePricingResult, effectiveLineUnitPrice | src/common/product-types.ts |
 | `src/config/app.config.ts` | ts | no | appConfig | src/config/constants.ts |
 | `src/config/constants.ts` | ts | no | APP_HEADERS, AUTH_ROLE_NAMES, AuthRoleName, ADMIN_ROUTES, PUBLIC_ROUTES |  |
 | `src/config/permissions.ts` | ts | no | RESOURCES, ACTIONS, Resource, Action, Permission, PERMISSIONS |  |
@@ -297,17 +323,21 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/entities/message-read.entity.ts` | ts | no | MessageRead | src/entities/base.entity.ts, src/entities/message.entity.ts, src/entities/user.entity.ts |
 | `src/entities/message.entity.ts` | ts | no | MessageType, Message | src/entities/base.entity.ts, src/entities/group.entity.ts, src/entities/message-read.entity.ts, src/entities/user.entity.ts |
 | `src/entities/notification.entity.ts` | ts | no | NotificationKind, Notification | src/entities/base.entity.ts, src/entities/user.entity.ts |
+| `src/entities/order.entity.ts` | ts | no | OrderStatus, PaymentMethod, PaymentStatus, Order | src/common/product-types.ts, src/entities/user.entity.ts |
 | `src/entities/page-content.entity.ts` | ts | no | PageContent | src/entities/base.entity.ts |
 | `src/entities/parent-student.entity.ts` | ts | no | ParentStudentStatus, ParentStudent | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/post-category.entity.ts` | ts | no | PostCategory | src/entities/post.entity.ts, src/entities/category.entity.ts |
 | `src/entities/post-tag.entity.ts` | ts | no | PostTag | src/entities/post.entity.ts, src/entities/tag.entity.ts |
 | `src/entities/post.entity.ts` | ts | no | Post | src/entities/base.entity.ts, src/entities/comment.entity.ts, src/entities/post-category.entity.ts, src/entities/post-tag.entity.ts, src/entities/user.entity.ts |
+| `src/entities/product.entity.ts` | ts | no | Product | src/common/product-types.ts |
+| `src/entities/promo-code.entity.ts` | ts | no | PromoDiscountKind, PromoCode |  |
 | `src/entities/role.entity.ts` | ts | no | Role | src/entities/base.entity.ts, src/entities/user-role.entity.ts |
 | `src/entities/screen.entity.ts` | ts | no | Screen | src/entities/base.entity.ts, src/entities/camera.entity.ts, src/entities/template.entity.ts |
 | `src/entities/seo-meta.entity.ts` | ts | no | SeoMeta | src/entities/base.entity.ts |
 | `src/entities/session.entity.ts` | ts | no | Session | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/setting.entity.ts` | ts | no | Setting | src/entities/base.entity.ts |
 | `src/entities/speaker.entity.ts` | ts | no | Speaker |  |
+| `src/entities/storage-file.entity.ts` | ts | no | StorageFile | src/entities/base.entity.ts |
 | `src/entities/student.entity.ts` | ts | no | Student | src/entities/base.entity.ts, src/entities/user.entity.ts |
 | `src/entities/tag.entity.ts` | ts | no | Tag | src/entities/base.entity.ts, src/entities/post-tag.entity.ts |
 | `src/entities/template.entity.ts` | ts | no | Template | src/entities/base.entity.ts |
@@ -359,12 +389,22 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/messages/messages.controller.ts` | ts | no | MessagesController | src/socket/socket.gateway.ts, src/common/api-response.ts, src/entities/message.entity.ts, src/entities/message-read.entity.ts, src/entities/group-member.entity.ts, src/entities/group.entity.ts, src/en |
 | `src/messages/messages.module.ts` | ts | no | MessagesModule | src/socket/socket.module.ts, src/messages/messages.controller.ts, src/messages/conversations.controller.ts |
 | `src/migrations/Migration20260605120000_standardize_legacy_table_names.ts` | ts | no | Migration20260605120000_standardize_legacy_table_names |  |
+| `src/migrations/Migration20260608120000_add_storage_files.ts` | ts | no | Migration20260608120000_add_storage_files |  |
+| `src/migrations/Migration20260609120000_add_products_orders.ts` | ts | no | Migration20260609120000_add_products_orders |  |
+| `src/migrations/Migration20260610120000_add_order_gifts.ts` | ts | no | Migration20260610120000_add_order_gifts |  |
+| `src/migrations/Migration20260611120000_add_promo_codes.ts` | ts | no | Migration20260611120000_add_promo_codes |  |
 | `src/mikro-orm/mikro-orm.module.ts` | ts | no | createMikroConfig, DatabaseModule | src/mikro-orm/orm-entities.ts |
 | `src/mikro-orm/orm-entities.ts` | ts | no | ormEntities | src/entities/academic-year.entity.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/camera.entity.ts, src/entities/category.entity.ts, src/entities/comment.enti |
 | `src/notifications/notifications.controller.ts` | ts | no | NotificationsController | src/notifications/notifications.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts |
 | `src/notifications/notifications.module.ts` | ts | no | NotificationsModule | src/socket/socket.module.ts, src/notifications/notifications.service.ts, src/notifications/notifications.controller.ts |
 | `src/notifications/notifications.service.spec.ts` | ts | no |  | src/notifications/notifications.service.ts, src/socket/socket.gateway.ts, src/entities/notification.entity.ts |
 | `src/notifications/notifications.service.ts` | ts | no | NotificationsListQuery, NotificationItemDto, NotificationsListResult, UnreadCountsResult, AdminTableRowDto, AdminTableQuery, AdminTableResult, NotificationsService | src/socket/socket.gateway.ts, src/socket/notification-mapper.ts, src/entities/notification.entity.ts, src/entities/user.entity.ts, src/entities/user-role.entity.ts, src/entities/message.entity.ts, src |
+| `src/orders/order-checkout.spec.ts` | ts | no |  | src/orders/order-checkout.ts, src/entities/product.entity.ts |
+| `src/orders/order-checkout.ts` | ts | no | CreateOrderLineInput, mergeCreateOrderLines, buildOrderItemsFromProducts, buildOrderNumber | src/common/product-types.ts, src/common/unit-pricing.ts, src/common/product-units.ts, src/entities/product.entity.ts |
+| `src/orders/orders.controller.ts` | ts | no | OrdersController | src/orders/orders.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/parse-list-query.ts, src/entities/order.en |
+| `src/orders/orders.module.ts` | ts | no | OrdersModule | src/products/products.module.ts, src/promo-codes/promo-codes.module.ts, src/uploads/uploads.module.ts, src/orders/orders.service.ts, src/orders/orders.controller.ts, src/orders/public-orders.controlle |
+| `src/orders/orders.service.ts` | ts | no | OrderRowDto, CreateOrderDto, OrdersService | src/entities/order.entity.ts, src/entities/user.entity.ts, src/common/product-types.ts, src/common/gift-rules.ts, src/common/promo-checkout.ts, src/promo-codes/promo-codes.service.ts, src/products/pro |
+| `src/orders/public-orders.controller.ts` | ts | no | PublicOrdersController | src/orders/orders.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/public.decorator.ts |
 | `src/page-contents/page-contents.controller.ts` | ts | no | PageContentsController | src/page-contents/page-contents.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants. |
 | `src/page-contents/page-contents.module.ts` | ts | no | PageContentsModule | src/page-contents/page-contents.service.ts, src/page-contents/page-contents.controller.ts, src/notifications/notifications.module.ts, src/auth/auth.module.ts |
 | `src/page-contents/page-contents.service.ts` | ts | no | PageContentCreateInput, PageContentUpdateInput, PageContentsService | src/entities/page-content.entity.ts, src/common/bulk-actions.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts |
@@ -375,6 +415,13 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/posts/posts.module.ts` | ts | no | PostsModule | src/notifications/notifications.module.ts, src/posts/posts.service.ts, src/posts/posts.controller.ts |
 | `src/posts/posts.service.spec.ts` | ts | no |  | src/posts/posts.service.ts, src/entities/post.entity.ts, src/entities/category.entity.ts, src/entities/tag.entity.ts, src/entities/user.entity.ts |
 | `src/posts/posts.service.ts` | ts | no | PostRowDto, PostDetailDto, POSTS_FILTER_CATEGORIES_NONE, ListPostsParams, ListPostsResult, PostsService | src/common/resolve-relation-filters.ts, src/common/pagination.ts, src/common/get-options.ts, src/common/date-utils.ts, src/entities/post.entity.ts, src/entities/post-category.entity.ts, src/entities/p |
+| `src/products/products.controller.ts` | ts | no | ProductsController | src/products/products.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/parse-list-query.ts |
+| `src/products/products.module.ts` | ts | no | ProductsModule | src/products/products.service.ts, src/products/products.controller.ts, src/products/public-products.controller.ts |
+| `src/products/products.service.ts` | ts | no | ProductRowDto, ProductsService | src/entities/product.entity.ts, src/common/product-types.ts, src/common/product-units.ts, src/common/pagination.ts |
+| `src/products/public-products.controller.ts` | ts | no | PublicProductsController | src/products/products.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/public.decorator.ts |
+| `src/promo-codes/promo-codes.controller.ts` | ts | no | PromoCodesController | src/promo-codes/promo-codes.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/common/parse-list-query.ts |
+| `src/promo-codes/promo-codes.module.ts` | ts | no | PromoCodesModule | src/promo-codes/promo-codes.service.ts, src/promo-codes/promo-codes.controller.ts |
+| `src/promo-codes/promo-codes.service.ts` | ts | no | PromoCodeRowDto, PromoCodesService | src/entities/promo-code.entity.ts, src/common/promo-checkout.ts, src/common/pagination.ts |
 | `src/proxy-image/proxy-image.controller.ts` | ts | no | ProxyImageController | src/config/constants.ts, src/common/public.decorator.ts |
 | `src/proxy-image/proxy-image.module.ts` | ts | no | ProxyImageModule | src/proxy-image/proxy-image.controller.ts |
 | `src/public/public-auth.service.ts` | ts | no | CreatePublicRegisterDto, PublicAuthService | src/entities/role.entity.ts, src/entities/setting.entity.ts, src/entities/user.entity.ts, src/auth/auth.service.ts, src/users/users.service.ts, src/config/constants.ts |
@@ -397,7 +444,9 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/seed-full-export.ts` | ts | no |  | src/mikro-orm/orm-entities.ts, src/entities/account.entity.ts, src/entities/admission-result.entity.ts, src/entities/category.entity.ts, src/entities/comment.entity.ts, src/entities/contact-request.en |
 | `src/seed-guides.ts` | ts | no |  | src/entities/page-content.entity.ts |
 | `src/seed-superadmin.ts` | ts | no |  | src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/page-content.entity.ts, src/seeds/superadmin-bootstrap.runner.ts |
-| `src/seeders/DatabaseSeeder.ts` | ts | no | DatabaseSeeder | src/seeds/superadmin-bootstrap.runner.ts |
+| `src/seeders/DatabaseSeeder.ts` | ts | no | DatabaseSeeder | src/seeds/superadmin-bootstrap.runner.ts, src/seeds/products-sample.runner.ts, src/seeds/promo-codes-sample.runner.ts |
+| `src/seeds/products-sample.runner.ts` | ts | no |  | src/entities/product.entity.ts |
+| `src/seeds/promo-codes-sample.runner.ts` | ts | no |  | src/entities/promo-code.entity.ts |
 | `src/seeds/superadmin-bootstrap.data.ts` | ts | no | SUPERADMIN_ROLES_DATA, SUPERADMIN_USERS_DATA, SUPERADMIN_USER_ROLES_DATA |  |
 | `src/seeds/superadmin-bootstrap.runner.ts` | ts | no | SuperadminBootstrapResult | src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/page-content.entity.ts, src/seeds/superadmin-bootstrap.data.ts |
 | `src/seo-metas/seo-metas.controller.ts` | ts | no | SeoMetasController | src/seo-metas/seo-metas.service.ts, src/common/api-response.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-li |
@@ -438,10 +487,31 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/training-systems/training-systems.controller.ts` | ts | no | TrainingSystemsController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/training-systems/training-systems.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/c |
 | `src/training-systems/training-systems.module.ts` | ts | no | TrainingSystemsModule | src/training-systems/training-systems.controller.ts, src/training-systems/training-systems.service.ts |
 | `src/training-systems/training-systems.service.ts` | ts | no | TrainingSystemRowDto, ListTrainingSystemsParams, ListTrainingSystemsResult, TrainingSystemsService | src/entities/training-system.entity.ts, src/common/bulk-actions.ts, src/common/pagination.ts, src/common/apply-column-filters.ts, src/common/admin-filter-configs.ts, src/common/legacy-audit-timestamps |
+| `src/uploads/folder-navigation.spec.ts` | ts | no |  | src/uploads/folder-navigation.ts |
+| `src/uploads/folder-navigation.ts` | ts | no | StorageTabDto, normalizeParentFolderPath, parentFolderPrefixes, fileUnderFolderPath, extractImmediateChildFolder, extractImmediateChildFromDiskFolder, fileDirectlyInFolderPath, matchesStorageFolderPat | src/uploads/storage-media.ts, src/uploads/storage-folder-labels.ts |
+| `src/uploads/folder-reorganize.spec.ts` | ts | no |  | src/uploads/folder-reorganize.ts |
+| `src/uploads/folder-reorganize.ts` | ts | no | FlattenDatePathResult, isYearSegment, isMonthSegment, isDaySegment, countTrailingDateSegments, flattenDateStoragePath, isUnderReorganizeScope, uniqueFlattenTargetPath, collectDateFolderCleanupPaths |  |
+| `src/uploads/order-image-snapshot.spec.ts` | ts | no |  | src/uploads/order-image-snapshot.ts |
+| `src/uploads/order-image-snapshot.ts` | ts | no | sanitizeOrderFolderSegment, extractStorageRelativePathFromAssetRef, buildOrderSnapshotFolderRelativePath, buildOrderSnapshotFileName, buildOrderSnapshotRelativePath, OrderLineSnapshotInput, OrderLineS |  |
 | `src/uploads/public-uploads.controller.ts` | ts | no | PublicUploadsController | src/uploads/uploads.service.ts, src/config/constants.ts, src/common/public.decorator.ts |
+| `src/uploads/storage-folder-labels.spec.ts` | ts | no |  | src/uploads/storage-folder-labels.ts |
+| `src/uploads/storage-folder-labels.ts` | ts | no | StorageFolderLabelLookup, buildStorageFolderLabelLookup, resolveStorageFolderDisplayLabel | src/uploads/storage-media.ts |
+| `src/uploads/storage-folder-name.spec.ts` | ts | no |  | src/uploads/storage-folder-name.ts |
+| `src/uploads/storage-folder-name.ts` | ts | no | slugifyStorageFolderSegment, sanitizeStorageFolderSegment, resolveStorageFolderSegment, resolveStorageFolderSlugPath, sanitizeStorageFolderName |  |
+| `src/uploads/storage-media.spec.ts` | ts | no |  | src/uploads/storage-media.ts |
+| `src/uploads/storage-media.ts` | ts | no | StorageMediaKind, StorageRealm, StorageTabDto, classifyStorageMedia, isVideoStorageFile, isAudioStorageFile, getStorageRealm, folderBelongsToRealm, getFolderTabIdFromDiskPath, parentStoragePrefixes, f | src/common/image-processor.ts, src/uploads/storage-folder-labels.ts |
+| `src/uploads/storage-path-resolver.spec.ts` | ts | no |  | src/uploads/storage-path-resolver.ts |
+| `src/uploads/storage-path-resolver.ts` | ts | no | StorageRealmDir, StoragePathRoots, stripStorageFolderPath, resolveCreateFolderTarget, resolveStorageRelativePath |  |
+| `src/uploads/storage-protected-paths.spec.ts` | ts | no |  | src/uploads/storage-protected-paths.ts |
+| `src/uploads/storage-protected-paths.ts` | ts | no | ORDER_SNAPSHOT_IMAGES_PREFIX, isProtectedStorageRelativePath, assertStoragePathMutable |  |
+| `src/uploads/storage-upload-policy.spec.ts` | ts | no |  | src/uploads/storage-upload-policy.ts |
+| `src/uploads/storage-upload-policy.ts` | ts | no | STORAGE_POLICY_FILENAME, StorageExtensionGroupId, StorageExtensionGroup, STORAGE_EXTENSION_GROUPS, REALM_EXTENSION_GROUP_IDS, StorageFolderPolicy, normalizeExtension, normalizeExtensions, getRealmDefa | src/uploads/storage-media.ts |
+| `src/uploads/upload-filename.spec.ts` | ts | no |  | src/uploads/upload-filename.ts |
+| `src/uploads/upload-filename.ts` | ts | no | sanitizeUploadUserId, buildStoredUploadFileName, extractUploadOwnerIdFromFileName, resolveImageFileOwnerId, storedUploadFilePrefix |  |
 | `src/uploads/uploads.controller.ts` | ts | no | UploadsController | src/uploads/uploads.service.ts, src/common/api-response.ts, src/config/app.config.ts, src/common/permissions.decorator.ts, src/config/permissions.ts, src/config/constants.ts, src/common/parse-list-que |
 | `src/uploads/uploads.module.ts` | ts | no | UploadsModule | src/uploads/uploads.service.ts, src/uploads/uploads.controller.ts, src/uploads/public-uploads.controller.ts |
-| `src/uploads/uploads.service.ts` | ts | no | ImageItemDto, FolderNodeDto, FolderItemDto, ListImagesResult, ListFoldersResult, UploadsService | src/config/app.config.ts, src/common/parse-list-query.ts, src/common/image-processor.ts |
+| `src/uploads/zip-path-mapper.spec.ts` | ts | no |  | src/uploads/zip-path-mapper.ts |
+| `src/uploads/zip-path-mapper.ts` | ts | no | normalizeZipEntryPath, mapZipPathToStoragePath |  |
 | `src/users/users.controller.ts` | ts | no | CreateUserDto, UpdateUserDto, BulkActionDto, UsersController | src/users/users.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/sessions/sessions.service.ts, src/socket/socket.gateway.ts, src/common/api-response.ts, |
 | `src/users/users.module.ts` | ts | no | UsersModule | src/notifications/notifications.module.ts, src/socket/socket.module.ts, src/sessions/sessions.module.ts, src/users/users.service.ts, src/users/users.controller.ts |
 | `src/users/users.service.spec.ts` | ts | no |  | src/users/users.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |

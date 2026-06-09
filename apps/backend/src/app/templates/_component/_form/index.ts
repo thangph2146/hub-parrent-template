@@ -1,1 +1,1 @@
-export { TemplateFormShell } from "./template-form-shell";
+export { TemplateFormShell } from "./template-form-shell"

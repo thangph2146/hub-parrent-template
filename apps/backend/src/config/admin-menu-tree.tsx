@@ -27,6 +27,8 @@ import {
   LayoutTemplate,
   Monitor,
   Image,
+  Package,
+  ShoppingCart,
 } from "lucide-react"
 import { PERMISSION_CODES } from "@workspace/api-client"
 import type { AdminMenuTreeItem } from "@ui/components/admin"
@@ -122,6 +124,43 @@ const menuTree: AdminMenuTreeItem[] = [
   },
   {
     type: "group",
+    label: "Cửa hàng",
+    icon: ShoppingCart,
+    children: [
+      {
+        href: "/products",
+        label: "Sản phẩm",
+        icon: Package,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.PRODUCTS_VIEW,
+          PERMISSION_CODES.PRODUCTS_MANAGE,
+        ],
+      },
+      {
+        href: "/orders",
+        label: "Đơn hàng",
+        icon: ShoppingCart,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.ORDERS_VIEW,
+          PERMISSION_CODES.ORDERS_MANAGE,
+        ],
+      },
+      {
+        href: "/promo-codes",
+        label: "Mã khuyến mãi",
+        icon: Tags,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.PROMO_CODES_VIEW,
+          PERMISSION_CODES.PROMO_CODES_MANAGE,
+        ],
+      },
+    ],
+  },
+  {
+    type: "group",
     label: "Truyền thông",
     icon: FolderTree,
     children: [
@@ -137,7 +176,7 @@ const menuTree: AdminMenuTreeItem[] = [
         icon: FileText,
         anyPermission: [PERMISSION_CODES.POSTS_VIEW],
         permission: null,
-      }
+      },
     ],
   },
   {
@@ -150,49 +189,70 @@ const menuTree: AdminMenuTreeItem[] = [
         label: "Sự kiện",
         icon: CalendarPlus,
         permission: null,
-        anyPermission: [PERMISSION_CODES.EVENTS_VIEW, PERMISSION_CODES.EVENTS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
       },
       {
         href: "/cameras",
         label: "Camera",
         icon: Camera,
         permission: null,
-        anyPermission: [PERMISSION_CODES.CAMERAS_VIEW, PERMISSION_CODES.CAMERAS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.CAMERAS_VIEW,
+          PERMISSION_CODES.CAMERAS_MANAGE,
+        ],
       },
       {
         href: "/templates",
         label: "Mẫu hiển thị",
         icon: LayoutTemplate,
         permission: null,
-        anyPermission: [PERMISSION_CODES.TEMPLATES_VIEW, PERMISSION_CODES.TEMPLATES_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.TEMPLATES_VIEW,
+          PERMISSION_CODES.TEMPLATES_MANAGE,
+        ],
       },
       {
         href: "/screens",
         label: "Màn hình",
         icon: Monitor,
         permission: null,
-        anyPermission: [PERMISSION_CODES.SCREENS_VIEW, PERMISSION_CODES.SCREENS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.SCREENS_VIEW,
+          PERMISSION_CODES.SCREENS_MANAGE,
+        ],
       },
       {
         href: "/departments",
         label: "Phòng khoa",
         icon: Building2,
         permission: null,
-        anyPermission: [PERMISSION_CODES.DEPARTMENTS_VIEW, PERMISSION_CODES.DEPARTMENTS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.DEPARTMENTS_VIEW,
+          PERMISSION_CODES.DEPARTMENTS_MANAGE,
+        ],
       },
       {
         href: "/speakers",
         label: "Diễn giả",
         icon: Mic,
         permission: null,
-        anyPermission: [PERMISSION_CODES.SPEAKERS_VIEW, PERMISSION_CODES.SPEAKERS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.SPEAKERS_VIEW,
+          PERMISSION_CODES.SPEAKERS_MANAGE,
+        ],
       },
       {
         href: "/locations",
         label: "Địa điểm",
         icon: MapPin,
         permission: null,
-        anyPermission: [PERMISSION_CODES.LOCATIONS_VIEW, PERMISSION_CODES.LOCATIONS_MANAGE],
+        anyPermission: [
+          PERMISSION_CODES.LOCATIONS_VIEW,
+          PERMISSION_CODES.LOCATIONS_MANAGE,
+        ],
       },
     ],
   },

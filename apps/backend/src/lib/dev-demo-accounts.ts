@@ -2,11 +2,11 @@
  * Khớp user mặc định trong `apps/api` DatabaseSeeder — chỉ dùng gợi ý đăng nhập khi dev.
  */
 export type DevDemoAccount = {
-  label: string;
-  description: string;
-  email: string;
-  password: string;
-};
+  label: string
+  description: string
+  email: string
+  password: string
+}
 
 export const DEV_DEMO_ACCOUNTS: readonly DevDemoAccount[] = [
   {
@@ -45,8 +45,8 @@ export const DEV_DEMO_ACCOUNTS: readonly DevDemoAccount[] = [
     email: "khach-demo@storesync.local",
     password: "demo",
   },
-] as const;
+] as const
 
 export function isDevDemoLoginEnabled(): boolean {
-  return process.env.NODE_ENV === "development";
+  return process.env.NODE_ENV === "development"
 }

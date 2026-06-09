@@ -1,1 +1,1 @@
-export * from "./use-contact-queries";
+export * from "./use-contact-queries"

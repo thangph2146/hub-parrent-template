@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
-import { TreePicker } from "@ui/components/pickers";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
+import { TreePicker } from "@ui/components/pickers"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { LayoutTemplate } from "lucide-react";
-import type { TemplateFormValues } from "../types";
+} from "@ui/components/admin"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { LayoutTemplate } from "lucide-react"
+import type { TemplateFormValues } from "../types"
 
 export interface TemplateFormShellProps {
-  form: UseFormReturn<TemplateFormValues>;
-  onSubmit: (v: TemplateFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<TemplateFormValues>
+  onSubmit: (v: TemplateFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function TemplateFormShell({
@@ -37,7 +37,7 @@ export function TemplateFormShell({
   onBack,
   onReset,
 }: TemplateFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -50,7 +50,10 @@ export function TemplateFormShell({
         submitting={submitting}
         isEdit={!!editingId}
       />
-      <AdminFormLayout id="template-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <AdminFormLayout
+        id="template-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <AdminFormMain>
           <FieldSet variant="section">
             <FieldSectionLegend
@@ -90,7 +93,11 @@ export function TemplateFormShell({
 
         <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
           <FieldSet variant="section">
-            <FieldSectionLegend icon={LayoutTemplate} title="Trạng thái" description="Trạng thái hoạt động của mẫu hiển thị." />
+            <FieldSectionLegend
+              icon={LayoutTemplate}
+              title="Trạng thái"
+              description="Trạng thái hoạt động của mẫu hiển thị."
+            />
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               <Controller
                 name="status"
@@ -99,7 +106,9 @@ export function TemplateFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Khóa" },
@@ -114,5 +123,5 @@ export function TemplateFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

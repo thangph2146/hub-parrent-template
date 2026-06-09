@@ -6,14 +6,17 @@ import type {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 import type { SpeakerRow } from "../types"
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
 import {
   createAdminTrashExportFetchPage,
   type AdminTrashExportParams,
-} from "@/lib/admin-trash-export";
+} from "@/lib/admin-trash-export"
 
 export interface SpeakersTrashTableProps {
   data: SpeakerRow[]
@@ -74,12 +77,15 @@ export function SpeakersTrashTable({
       globalFilterPlaceholder="Tìm trong thùng rác..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("speakers-trash", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("speakers-trash", {
+        pageCount: data.length,
+        total,
+      })}
       exportFetchPage={
         trashExportParams
           ? createAdminTrashExportFetchPage<SpeakerRow>(
               (params) => api.speakers.list<SpeakerRow>(params),
-              trashExportParams,
+              trashExportParams
             )
           : undefined
       }

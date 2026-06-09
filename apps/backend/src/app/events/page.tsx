@@ -6,7 +6,7 @@ import type {
   ColumnFiltersState,
   RowSelectionState,
 } from "@tanstack/react-table"
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -31,7 +31,8 @@ import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
 import {
   EventsTable,
   EventsTrashTable,
-  getEventColumns,  useColumnFiltersChange,
+  getEventColumns,
+  useColumnFiltersChange,
   useClearListFilters,
   useClearTrashFilters,
   useEventsListQuery,
@@ -40,12 +41,15 @@ import {
 } from "./_component"
 import type { EventRow } from "./_component"
 
-import { useAdminMutation, defaultBulkOperationToast } from "@/hooks/use-admin-mutation";
+import {
+  useAdminMutation,
+  defaultBulkOperationToast,
+} from "@/hooks/use-admin-mutation"
 function EventsPageInner() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/events", {
     prefetchDetail: (id) => prefetchEventDetail(queryClient, api, id),
-  });
+  })
   const { user } = useAuth()
   const canWrite = user
     ? canUserAccess(user, PERMISSION_CODES.EVENTS_MANAGE) ||
@@ -86,7 +90,8 @@ function EventsPageInner() {
   )
 
   const trashFilterParams = useMemo(
-    () => buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.events),
+    () =>
+      buildAdminFilterQuery(trashColumnFilters, COMMON_FILTER_MAPPINGS.events),
     [trashColumnFilters]
   )
 
@@ -105,21 +110,21 @@ function EventsPageInner() {
     mutationFn: async (id: string) => api.events.remove(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
   const restoreMutation = useAdminMutation({
     mutationKey: ["events", "restore"],
     mutationFn: async (id: string) => api.events.restore(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
   const purgeMutation = useAdminMutation({
     mutationKey: ["events", "purge"],
     mutationFn: async (id: string) => api.events.purge(id),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
   const bulkMutation = useAdminMutation({
     toast: defaultBulkOperationToast,
@@ -127,9 +132,11 @@ function EventsPageInner() {
       api.events.bulk(input),
     onSuccess: async () => {
       await invalidateAll()
-    }
+    },
   })
-  const [togglingFeaturedId, setTogglingFeaturedId] = useState<string | null>(null)
+  const [togglingFeaturedId, setTogglingFeaturedId] = useState<string | null>(
+    null
+  )
   const featuredMutation = useAdminMutation({
     toast: {
       loading: "Đang cập nhật nổi bật…",
@@ -140,8 +147,13 @@ function EventsPageInner() {
       error: (err) =>
         err instanceof Error ? err.message : "Không thể cập nhật nổi bật",
     },
-    mutationFn: async ({ id, isFeatured }: { id: string; isFeatured: boolean }) =>
-      api.events.update(id, { isFeatured }),
+    mutationFn: async ({
+      id,
+      isFeatured,
+    }: {
+      id: string
+      isFeatured: boolean
+    }) => api.events.update(id, { isFeatured }),
     onSuccess: async () => {
       await invalidateAll()
     },
@@ -175,7 +187,7 @@ function EventsPageInner() {
     deleteMutation,
     restoreMutation,
     purgeMutation,
-  });
+  })
 
   const columns = useMemo<ColumnDef<EventRow>[]>(
     () =>
@@ -198,11 +210,26 @@ function EventsPageInner() {
             }
           : undefined,
       }),
-    [rowActions, crudNav, canWrite, canDelete, canHardDelete, togglingFeaturedId, featuredMutation]
+    [
+      rowActions,
+      crudNav,
+      canWrite,
+      canDelete,
+      canHardDelete,
+      togglingFeaturedId,
+      featuredMutation,
+    ]
   )
 
   const trashColumns = useMemo<ColumnDef<EventRow>[]>(
-    () => getEventColumns({ view: "trash",  rowActions, canWrite, canRestore, canHardDelete }),
+    () =>
+      getEventColumns({
+        view: "trash",
+        rowActions,
+        canWrite,
+        canRestore,
+        canHardDelete,
+      }),
     [rowActions, canWrite, canRestore, canHardDelete]
   )
 
@@ -229,10 +256,7 @@ function EventsPageInner() {
         className="space-y-6"
       >
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger
-            value="list"
-            className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-          >
+          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
             <Badge
               variant="secondary"
@@ -274,7 +298,6 @@ function EventsPageInner() {
 
           <EventsTable
             onRowPrefetch={(row) => crudNav.prefetch(String(row.id))}
-            
             data={listQuery.data ?? []}
             columns={columns}
             isLoading={listQuery.isLoading}

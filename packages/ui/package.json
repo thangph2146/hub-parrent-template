@@ -70,6 +70,8 @@
     "./components/admin": "./src/components/admin/index.ts",
     "./components/admin/dashboard": "./src/components/admin/dashboard/index.ts",
     "./components/admin/maps": "./src/components/admin/maps/index.ts",
+    "./components/admin/storage": "./src/components/admin/storage/index.ts",
+    "./components/product": "./src/components/product/index.ts",
     "./components/site": "./src/components/site/index.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./data/*": "./src/data/*.json",

@@ -3,38 +3,38 @@ import type {
   PageContentStep,
   CreatePageContentInput,
   UpdatePageContentInput,
-} from "@workspace/api-client";
+} from "@workspace/api-client"
 
 /** Re-export shared types từ api-client */
-export type GuideStep = PageContentStep;
-export type GuideGroup = PageContent;
-export type CreateGuideInput = CreatePageContentInput;
-export type UpdateGuideInput = UpdatePageContentInput;
+export type GuideStep = PageContentStep
+export type GuideGroup = PageContent
+export type CreateGuideInput = CreatePageContentInput
+export type UpdateGuideInput = UpdatePageContentInput
 
 /** Types local cho UI */
 export interface ListResult {
-  data: GuideGroup[];
+  data: GuideGroup[]
   pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
 }
 
 export interface GuideFormData {
-  sectionKey: string;
-  isVisible: boolean;
-  content: GuideGroup["content"];
+  sectionKey: string
+  isVisible: boolean
+  content: GuideGroup["content"]
 }
 
 export interface UpdateGuideData {
-  isVisible: boolean;
-  content: GuideGroup["content"];
+  isVisible: boolean
+  content: GuideGroup["content"]
 }
 
 export type GuideConfirmAction =
   | { kind: "delete"; row: GuideGroup }
   | { kind: "purge"; row: GuideGroup }
   | { kind: "create"; row: null }
-  | { kind: "update"; row: GuideGroup };
+  | { kind: "update"; row: GuideGroup }

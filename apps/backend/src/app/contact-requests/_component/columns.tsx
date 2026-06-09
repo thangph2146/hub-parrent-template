@@ -393,7 +393,6 @@ export function getContactRequestColumns(
       header: "Cập nhật lúc",
       meta: { className: COL_DATE },
     }),
-    
   ]
 
   const listActionsColumn = defineDataTableActionsColumn<ContactRequest>({

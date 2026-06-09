@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   CircleCheck,
@@ -10,25 +10,25 @@ import {
   Mail,
   Settings2,
   Trash2,
-} from "lucide-react";
+} from "lucide-react"
 import {
   DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableRowActionsMenu,
   TABLE_ACTIONS_COLUMN_META,
   type DataTableRowActionConfirm,
   type DataTableRowActionItem,
-} from "@ui/components/data-table";
+} from "@ui/components/data-table"
 import {
   UsageStatusBadge,
   type UsageStatusTone,
-} from "@ui/components/usage-status-badge";
-import type { ContactRequest } from "./types";
+} from "@ui/components/usage-status-badge"
+import type { ContactRequest } from "./types"
 import {
   CONTACT_REQUEST_PRIORITIES,
   CONTACT_REQUEST_PRIORITY_LABELS,
   CONTACT_REQUEST_STATUSES,
   CONTACT_REQUEST_STATUS_LABELS,
-} from "./types";
+} from "./types"
 
 const STATUS_VISUAL: Record<
   ContactRequest["status"],
@@ -38,7 +38,7 @@ const STATUS_VISUAL: Record<
   "in-progress": { icon: CircleDashed, tone: "warning" },
   resolved: { icon: CircleCheck, tone: "success" },
   archived: { icon: CircleCheck, tone: "danger" },
-};
+}
 
 const PRIORITY_TONE: Record<
   NonNullable<ContactRequest["priority"]>,
@@ -47,24 +47,26 @@ const PRIORITY_TONE: Record<
   HIGH: "danger",
   MEDIUM: "warning",
   LOW: "success",
-};
+}
 
 export type ContactRequestRowActionsProps = {
-  contact: ContactRequest;
-  canUpdate: boolean;
-  canDelete: boolean;
-  busy?: boolean;
-  onView: () => void;
-  onDelete?: () => void;
-  onPurge?: () => void;
-  onStatusChange: (status: ContactRequest["status"]) => void | Promise<void>;
-  onSetRead: (isRead: boolean) => void | Promise<void>;
+  contact: ContactRequest
+  canUpdate: boolean
+  canDelete: boolean
+  busy?: boolean
+  onView: () => void
+  onDelete?: () => void
+  onPurge?: () => void
+  onStatusChange: (status: ContactRequest["status"]) => void | Promise<void>
+  onSetRead: (isRead: boolean) => void | Promise<void>
   onSetPriority: (
-    priority: NonNullable<ContactRequest["priority"]>,
-  ) => void | Promise<void>;
-};
+    priority: NonNullable<ContactRequest["priority"]>
+  ) => void | Promise<void>
+}
 
-function contactDeleteConfirm(contact: ContactRequest): DataTableRowActionConfirm {
+function contactDeleteConfirm(
+  contact: ContactRequest
+): DataTableRowActionConfirm {
   return {
     title: "Đưa yêu cầu vào thùng rác?",
     description: (
@@ -75,10 +77,12 @@ function contactDeleteConfirm(contact: ContactRequest): DataTableRowActionConfir
     ),
     confirmLabel: "Xóa tạm",
     destructive: true,
-  };
+  }
 }
 
-function contactPurgeConfirm(contact: ContactRequest): DataTableRowActionConfirm {
+function contactPurgeConfirm(
+  contact: ContactRequest
+): DataTableRowActionConfirm {
   return {
     title: "Xóa vĩnh viễn yêu cầu?",
     description: (
@@ -89,18 +93,18 @@ function contactPurgeConfirm(contact: ContactRequest): DataTableRowActionConfirm
     ),
     confirmLabel: "Xóa vĩnh viễn",
     destructive: true,
-  };
+  }
 }
 
 function ContactStatusBadge({ status }: { status: ContactRequest["status"] }) {
-  const cfg = STATUS_VISUAL[status];
-  const Icon = cfg.icon;
+  const cfg = STATUS_VISUAL[status]
+  const Icon = cfg.icon
   return (
     <UsageStatusBadge tone={cfg.tone} className="gap-1 text-[10px]">
       <Icon className="size-3 shrink-0" aria-hidden />
       {CONTACT_REQUEST_STATUS_LABELS[status]}
     </UsageStatusBadge>
-  );
+  )
 }
 
 export function ContactRequestRowActions({
@@ -124,13 +128,13 @@ export function ContactRequestRowActions({
       icon: <Eye />,
       group: "primary",
     },
-  ];
+  ]
 
   if (canUpdate) {
     for (const status of CONTACT_REQUEST_STATUSES) {
-      if (status === contact.status) continue;
-      const cfg = STATUS_VISUAL[status];
-      const StatusIcon = cfg.icon;
+      if (status === contact.status) continue
+      const cfg = STATUS_VISUAL[status]
+      const StatusIcon = cfg.icon
       actions.push({
         key: `status-${status}`,
         label: CONTACT_REQUEST_STATUS_LABELS[status],
@@ -138,7 +142,7 @@ export function ContactRequestRowActions({
         onClick: () => onStatusChange(status),
         icon: <StatusIcon />,
         group: "status",
-      });
+      })
     }
 
     actions.push({
@@ -150,11 +154,11 @@ export function ContactRequestRowActions({
       onClick: () => onSetRead(!contact.isRead),
       icon: contact.isRead ? <Mail /> : <MailOpen />,
       group: "status",
-    });
+    })
 
-    const currentPriority = contact.priority ?? "MEDIUM";
+    const currentPriority = contact.priority ?? "MEDIUM"
     for (const priority of CONTACT_REQUEST_PRIORITIES) {
-      if (priority === currentPriority) continue;
+      if (priority === currentPriority) continue
       actions.push({
         key: `priority-${priority}`,
         label: `Ưu tiên: ${CONTACT_REQUEST_PRIORITY_LABELS[priority]}`,
@@ -162,7 +166,7 @@ export function ContactRequestRowActions({
         onClick: () => onSetPriority(priority),
         icon: <Flag />,
         group: "status",
-      });
+      })
     }
   }
 
@@ -176,7 +180,7 @@ export function ContactRequestRowActions({
       group: "danger",
       menuVariant: "destructive",
       confirm: contactDeleteConfirm(contact),
-    });
+    })
   }
 
   if (canDelete && onPurge) {
@@ -189,10 +193,10 @@ export function ContactRequestRowActions({
       group: "danger",
       menuVariant: "destructive",
       confirm: contactPurgeConfirm(contact),
-    });
+    })
   }
 
-  const priority = contact.priority ?? "MEDIUM";
+  const priority = contact.priority ?? "MEDIUM"
 
   return (
     <DataTableRowActionsMenu
@@ -225,12 +229,12 @@ export function ContactRequestRowActions({
         danger: { label: "Xóa", sublabel: true },
       }}
     />
-  );
+  )
 }
 
 export const contactRequestActionsColumnMeta = {
   ...TABLE_ACTIONS_COLUMN_META,
   className: `${TABLE_ACTIONS_COLUMN_META.className} sticky right-0 z-[10]`,
-};
+}
 
-export const contactRequestActionsColumnId = DATA_TABLE_ACTIONS_COLUMN_ID;
+export const contactRequestActionsColumnId = DATA_TABLE_ACTIONS_COLUMN_ID

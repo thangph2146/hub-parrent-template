@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
 import {
   Calendar,
   Clock,
   LayoutTemplate,
   Fingerprint,
   FileJson,
-} from "lucide-react";
-import { Badge } from "@ui/components/badge";
+} from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminPageGuard,
   AdminPageSection,
@@ -27,44 +27,46 @@ import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
-} from "@ui/components/admin";
-import { api } from "@/lib/api";
-import { useTemplateDetailQuery } from "../_component";
-import { useAuth } from "@/providers/auth-provider";
-import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client";
+} from "@ui/components/admin"
+import { api } from "@/lib/api"
+import { useTemplateDetailQuery } from "../_component"
+import { useAuth } from "@/providers/auth-provider"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("vi-VN")
 }
 
 function DetailInner() {
-  const crudNav = useAdminCrudNavigation("/templates");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
+  const crudNav = useAdminCrudNavigation("/templates")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
   const canUpdate = user
     ? canUserAccess(user, PERMISSION_CODES.TEMPLATES_UPDATE)
-    : false;
+    : false
 
-  const { data: e, isLoading, isError } = useTemplateDetailQuery(api, id);
+  const { data: e, isLoading, isError } = useTemplateDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được mẫu");
-      crudNav.list();
+      toast.error("Không tải được mẫu")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!e) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!e) return null
 
   return (
     <AdminPageSection>
       <AdminDetailPageHeader
         title={e.name || "Mẫu"}
-        subtitle={<span className="text-muted-foreground/60">Mẫu hiển thị</span>}
+        subtitle={
+          <span className="text-muted-foreground/60">Mẫu hiển thị</span>
+        }
         variant="entity"
         onBack={() => crudNav.list()}
         onEdit={canUpdate ? () => crudNav.edit(String(id)) : undefined}
@@ -86,7 +88,10 @@ function DetailInner() {
                     Khóa
                   </Badge>
                 ) : (
-                  <Badge variant="default" className="rounded-full px-3 py-0.5 shadow-sm">
+                  <Badge
+                    variant="default"
+                    className="rounded-full px-3 py-0.5 shadow-sm"
+                  >
                     Hoạt động
                   </Badge>
                 )}
@@ -96,7 +101,7 @@ function DetailInner() {
                 <>
                   <FieldSectionDivider />
                   <FieldSectionField label="Mã mẫu" icon={Fingerprint}>
-                      {e.code}
+                    {e.code}
                   </FieldSectionField>
                 </>
               )}
@@ -120,12 +125,24 @@ function DetailInner() {
         <AdminDetailSidebar>
           <div className="sticky top-2 flex flex-col gap-4">
             <FieldSet variant="section">
-              <FieldSectionLegend icon={Calendar} title="Thời gian" description="Mốc thời gian tạo và cập nhật." />
+              <FieldSectionLegend
+                icon={Calendar}
+                title="Thời gian"
+                description="Mốc thời gian tạo và cập nhật."
+              />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(e.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(e.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -134,7 +151,7 @@ function DetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function TemplateDetailPage() {
@@ -142,5 +159,5 @@ export default function TemplateDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <DetailInner />
     </AdminPageGuard>
-  );
+  )
 }

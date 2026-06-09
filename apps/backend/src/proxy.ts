@@ -1,19 +1,19 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server"
 
 export function proxy(request: NextRequest) {
   if (process.env.NODE_ENV === "development") {
-    const { pathname, search } = request.nextUrl;
+    const { pathname, search } = request.nextUrl
     console.log(
-      `[backend] ${request.method} ${pathname}${search ? search : ""}`,
-    );
+      `[backend] ${request.method} ${pathname}${search ? search : ""}`
+    )
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-};
+}

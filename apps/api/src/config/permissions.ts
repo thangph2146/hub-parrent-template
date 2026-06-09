@@ -45,6 +45,9 @@ export const RESOURCES = {
   IMPORTED_USERS: 'imported_users',
   SYSTEM: 'system',
   PARENT_STUDENTS: 'parent_students',
+  PRODUCTS: 'products',
+  ORDERS: 'orders',
+  PROMO_CODES: 'promo_codes',
 } as const;
 
 // Action types
@@ -67,6 +70,7 @@ export const ACTIONS = {
   UNACTIVE: 'unactive',
   /** Thu hồi mọi phiên của một user (audit log; quyền API: sessions:manage). */
   REVOKE_BY_USER: 'revoke_by_user',
+  CHECKOUT: 'checkout',
 } as const;
 
 export type Resource = (typeof RESOURCES)[keyof typeof RESOURCES];
@@ -311,4 +315,14 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   // Parent Students (duyệt yêu cầu liên kết phụ huynh–sinh viên)
   ...generateResourcePermissions(RESOURCES.PARENT_STUDENTS),
+
+  // Products (catalog storefront)
+  ...generateResourcePermissions(RESOURCES.PRODUCTS),
+  PRODUCTS_RESTORE: `${RESOURCES.PRODUCTS}:${ACTIONS.RESTORE}` as Permission,
+
+  // Orders (checkout + quản lý đơn)
+  ...generateResourcePermissions(RESOURCES.ORDERS),
+  ORDERS_CHECKOUT: `${RESOURCES.ORDERS}:${ACTIONS.CHECKOUT}` as Permission,
+
+  ...generateResourcePermissions(RESOURCES.PROMO_CODES),
 } as const;

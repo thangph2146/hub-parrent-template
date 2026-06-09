@@ -90,13 +90,53 @@ export type ChangePasswordInput = {
   newPassword: string;
 };
 
+export type QuantityCountMode = 'sell_unit' | 'base_unit';
+export type QuantityScope = 'line' | 'product';
+
+export interface QuantityCondition {
+  scope?: QuantityScope;
+  minQty?: number;
+  maxQty?: number;
+  exactQty?: number;
+  stepQty?: number;
+  countMode?: QuantityCountMode;
+}
+
+export interface ProductPriceTier {
+  minQty: number;
+  unitPrice: number;
+  label?: string;
+}
+
+export interface ProductGiftRule {
+  id: string;
+  label: string;
+  trigger: QuantityCondition;
+  gift: {
+    name: string;
+    sku?: string;
+    productId?: number;
+    qty: number;
+    image?: string;
+    qtyMultiplier?: 'once' | 'per_min_qty' | 'per_step';
+  };
+  applyPer?: 'order' | 'line';
+}
+
 export interface ProductUnitType {
   type: string;
   label: string;
+  sku?: string;
   wholesalePrice: number | null;
   retailPrice: number;
   minWholesaleQty: number;
   qtyPerUnit: number;
+  stock?: number;
+  images?: string[];
+  priceTiers?: ProductPriceTier[];
+  giftRules?: ProductGiftRule[];
+  isDefault?: boolean;
+  isActive?: boolean;
 }
 
 /** Tham số lọc GET /products (admin / storefront có thể dùng từng phần). */
@@ -233,6 +273,11 @@ export interface OrderItem {
   unitPrice: number;
   totalPrice: number;
   qtyPerUnit?: number;
+  /**
+   * URL ảnh tại thời điểm đặt.
+   * Checkout nên copy file nội bộ sang `images/orders/{orderId}/` (UploadsService.snapshotOrderLineImages)
+   * rồi lưu URL mới — đơn cũ không phụ thuộc catalog/ảnh sản phẩm sau này.
+   */
   image?: string;
   /** Bản chụp ghi chú quà kèm từ sản phẩm lúc đặt hàng. */
   giftNote?: string;
@@ -240,6 +285,19 @@ export interface OrderItem {
   listUnitPrice?: number;
   /** Nhãn đơn vị tại thời điểm đặt. */
   unitLabel?: string;
+  /** SKU biến thể tại thời điểm đặt. */
+  variantSku?: string;
+}
+
+export interface OrderGiftSnapshot {
+  ruleId?: string;
+  label: string;
+  sku?: string;
+  name: string;
+  qty: number;
+  image?: string;
+  productId?: number;
+  unitType?: string;
 }
 
 /** User được gán làm shipper cho đơn (populate từ API). */
@@ -254,6 +312,7 @@ export interface Order extends AuditFields {
   customerPhone?: string | null;
   shippingAddress?: string | null;
   items: OrderItem[];
+  gifts?: OrderGiftSnapshot[];
   subtotal: number;
   discountAmount: number;
   shippingFee: number;
@@ -319,7 +378,7 @@ export type UpdatePromoCodeInput = Partial<
 >;
 
 export interface CreateOrderInput {
-  customerId?: number | null;
+  customerId?: string | null;
   customerName: string;
   customerEmail: string;
   customerPhone?: string;

@@ -1,31 +1,39 @@
-"use client";
+"use client"
 
-import type { ColumnDef, ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table";
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table"
-import type { CategoryRow } from "../types";
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
-import { api } from "@/lib/api";
-import { type AdminTrashExportParams } from "@/lib/admin-trash-export";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table"
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
+import type { CategoryRow } from "../types"
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
+import { api } from "@/lib/api"
+import { type AdminTrashExportParams } from "@/lib/admin-trash-export"
 
 export interface CategoriesTrashTableProps {
-  data: CategoryRow[];
-  columns: ColumnDef<CategoryRow>[];
-  isLoading: boolean;
-  columnFilters: ColumnFiltersState;
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
-  globalFilter: string;
-  onGlobalFilterChange: OnChangeFn<string>;
-  selectedRowIds: RowSelectionState;
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
-  page: number;
-  pageSize: number;
-  total: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
-  onClearFilters: () => void;
-  onBulkRestore: (rows: CategoryRow[]) => Promise<void>;
-  onBulkPurge: (rows: CategoryRow[]) => Promise<void>;
-  trashExportParams?: AdminTrashExportParams;
+  data: CategoryRow[]
+  columns: ColumnDef<CategoryRow>[]
+  isLoading: boolean
+  columnFilters: ColumnFiltersState
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
+  globalFilter: string
+  onGlobalFilterChange: OnChangeFn<string>
+  selectedRowIds: RowSelectionState
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
+  page: number
+  pageSize: number
+  total: number
+  onPageChange: (page: number) => void
+  onPageSizeChange: (size: number) => void
+  onClearFilters: () => void
+  onBulkRestore: (rows: CategoryRow[]) => Promise<void>
+  onBulkPurge: (rows: CategoryRow[]) => Promise<void>
+  trashExportParams?: AdminTrashExportParams
 }
 
 export function CategoriesTrashTable({
@@ -66,7 +74,10 @@ export function CategoriesTrashTable({
       globalFilterPlaceholder="Tìm theo tên, slug..."
       onClearFilters={onClearFilters}
       clearFiltersVariant="destructive"
-      xlsxExport={buildAdminTableXlsxExport("categories-trash", { pageCount: data.length, total })}
+      xlsxExport={buildAdminTableXlsxExport("categories-trash", {
+        pageCount: data.length,
+        total,
+      })}
       exportFetchPage={
         trashExportParams
           ? async ({ page, limit }) => {
@@ -76,8 +87,8 @@ export function CategoriesTrashTable({
                 q: trashExportParams.search,
                 status: "deleted",
                 filters: trashExportParams.filters,
-              });
-              return { items: result.items, total: result.total };
+              })
+              return { items: result.items, total: result.total }
             }
           : undefined
       }
@@ -121,5 +132,5 @@ export function CategoriesTrashTable({
         itemLabel: "danh mục",
       }}
     />
-  );
+  )
 }

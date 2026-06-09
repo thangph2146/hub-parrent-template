@@ -5,9 +5,17 @@ import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useEffect, useMemo } from "react"
 import { useRoleForm } from "../../_component/_hooks"
 import { RoleFormShell } from "../../_component/_form"
-import { useRbacCatalog, useRoleDetail, useUpdateRoleMutation } from "../../_component/_query"
+import {
+  useRbacCatalog,
+  useRoleDetail,
+  useUpdateRoleMutation,
+} from "../../_component/_query"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminFormPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import {
   canUserAccess,
   isSuperAdminRoleCode,
@@ -19,7 +27,7 @@ import { ShieldAlert } from "lucide-react"
 
 function EditRolePageInner() {
   const params = useParams()
-  const crudNav = useAdminCrudNavigation("/rbac");
+  const crudNav = useAdminCrudNavigation("/rbac")
   const { user: session } = useAuth()
   const roleId = params.id as string
 
@@ -122,7 +130,9 @@ function EditRolePageInner() {
               <p className="text-base font-semibold">Vai trò hệ thống</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Chỉ tài khoản trong{" "}
-                <span className="font-mono text-xs">NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS</span>{" "}
+                <span className="font-mono text-xs">
+                  NEXT_PUBLIC_PROTECTED_ADMIN_EMAILS
+                </span>{" "}
                 mới được chỉnh sửa vai trò Super Admin.
               </p>
             </div>

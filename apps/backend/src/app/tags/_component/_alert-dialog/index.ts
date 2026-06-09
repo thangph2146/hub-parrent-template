@@ -1,1 +1,1 @@
-export { TagsConfirmDialog } from "./tags-confirm-dialog";
+export { TagsConfirmDialog } from "./tags-confirm-dialog"

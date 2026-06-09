@@ -1,35 +1,37 @@
-import type { ColumnFiltersState, OnChangeFn } from "@tanstack/react-table";
-import { useCallback } from "react";
+import type { ColumnFiltersState, OnChangeFn } from "@tanstack/react-table"
+import { useCallback } from "react"
 
 export function useColumnFiltersChange(
-  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
+  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
 ): OnChangeFn<ColumnFiltersState> {
   return useCallback<OnChangeFn<ColumnFiltersState>>(
     (updater) => {
       setColumnFilters((prev) =>
-        typeof updater === "function" ? updater(prev) : updater,
-      );
+        typeof updater === "function" ? updater(prev) : updater
+      )
     },
-    [setColumnFilters],
-  );
+    [setColumnFilters]
+  )
 }
 
 export function useClearListFilters(
   setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
-  setGlobalFilter: React.Dispatch<React.SetStateAction<string>>,
+  setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
 ) {
   return useCallback(() => {
-    setColumnFilters([]);
-    setGlobalFilter("");
-  }, [setColumnFilters, setGlobalFilter]);
+    setColumnFilters([])
+    setGlobalFilter("")
+  }, [setColumnFilters, setGlobalFilter])
 }
 
 export function useClearTrashFilters(
   setTrashGlobalFilter: React.Dispatch<React.SetStateAction<string>>,
-  setTrashColumnFilters?: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
+  setTrashColumnFilters?: React.Dispatch<
+    React.SetStateAction<ColumnFiltersState>
+  >
 ) {
   return useCallback(() => {
-    setTrashGlobalFilter("");
-    setTrashColumnFilters?.([]);
-  }, [setTrashGlobalFilter, setTrashColumnFilters]);
+    setTrashGlobalFilter("")
+    setTrashColumnFilters?.([])
+  }, [setTrashGlobalFilter, setTrashColumnFilters])
 }

@@ -1,1 +1,1 @@
-export { AdminCrudConfirmDialog as ScreensConfirmDialog } from "@ui/components/admin";
+export { AdminCrudConfirmDialog as ScreensConfirmDialog } from "@ui/components/admin"

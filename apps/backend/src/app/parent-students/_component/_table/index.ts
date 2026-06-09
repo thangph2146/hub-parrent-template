@@ -1,1 +1,1 @@
-export * from "./parent-student-table";
+export * from "./parent-student-table"

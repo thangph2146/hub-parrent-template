@@ -33,3 +33,21 @@ export function effectiveLineUnitPrice(
     isSaleActive: eligible,
   };
 }
+
+/** Giá hiển thị và giá gạch tại một số lượng dòng — dùng chung storefront + admin. */
+export function unitSellingAndListPrice(
+  unit: Pick<
+    ProductUnitType,
+    'retailPrice' | 'wholesalePrice' | 'minWholesaleQty'
+  >,
+  quantity = 1,
+): { current: number; list: number | null } {
+  const { unitPrice, listUnitPrice, isSaleActive } = effectiveLineUnitPrice(
+    unit,
+    quantity,
+  );
+  return {
+    current: unitPrice,
+    list: isSaleActive && listUnitPrice > unitPrice ? listUnitPrice : null,
+  };
+}

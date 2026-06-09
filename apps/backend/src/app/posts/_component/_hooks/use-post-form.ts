@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createSerializedEditorState, createParagraphNode } from "../utils";
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { createSerializedEditorState, createParagraphNode } from "../utils"
 
 export const postFormSchema = z.object({
   id: z.string().optional(),
@@ -16,9 +16,9 @@ export const postFormSchema = z.object({
   publishedAt: z.string(),
   categoryIds: z.array(z.string()),
   tagIds: z.array(z.string()),
-});
+})
 
-export type PostFormValues = z.infer<typeof postFormSchema>;
+export type PostFormValues = z.infer<typeof postFormSchema>
 
 const EMPTY_VALUES: PostFormValues = {
   title: "",
@@ -30,11 +30,11 @@ const EMPTY_VALUES: PostFormValues = {
   publishedAt: "",
   categoryIds: [],
   tagIds: [],
-};
+}
 
 export function usePostForm(defaultValues?: Partial<PostFormValues>) {
   return useForm<PostFormValues>({
     resolver: zodResolver(postFormSchema),
     defaultValues: { ...EMPTY_VALUES, ...defaultValues },
-  });
+  })
 }

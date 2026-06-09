@@ -4,4 +4,4 @@ export {
   useCourseDetailQuery,
   useCoursesListQuery,
   useCoursesTrashQuery,
-} from "./use-courses-queries";
+} from "./use-courses-queries"

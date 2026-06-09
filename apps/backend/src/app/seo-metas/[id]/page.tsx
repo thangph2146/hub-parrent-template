@@ -1,17 +1,26 @@
-"use client";
+"use client"
 
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { Loader2, ArrowLeft, Globe, Hash, FileText, Calendar, Clock, Trash2 } from "lucide-react";
-import { Badge } from "@ui/components/badge";
-import { Button } from "@ui/components/button";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import {
+  Loader2,
+  ArrowLeft,
+  Globe,
+  Hash,
+  FileText,
+  Calendar,
+  Clock,
+  Trash2,
+} from "lucide-react"
+import { Badge } from "@ui/components/badge"
+import { Button } from "@ui/components/button"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminDetailLayout,
   AdminDetailMain,
@@ -19,33 +28,35 @@ import {
   AdminDetailSidebar,
   AdminPageGuard,
   AdminPageSection,
-} from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { useSeoMetaDetailQuery } from "../_component";
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useSeoMetaDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
 }
 
 function SeoMetaDetailInner() {
-  const crudNav = useAdminCrudNavigation("/seo-metas");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_UPDATE) : false;
+  const crudNav = useAdminCrudNavigation("/seo-metas")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.SEO_METAS_UPDATE)
+    : false
 
-  const { data: detail, isLoading, isError } = useSeoMetaDetailQuery(api, id);
+  const { data: detail, isLoading, isError } = useSeoMetaDetailQuery(api, id)
 
   if (isLoading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
       </div>
-    );
+    )
   }
 
   if (isError || !detail) {
@@ -56,7 +67,7 @@ function SeoMetaDetailInner() {
           <ArrowLeft className="size-4" /> Quay lại
         </Button>
       </AdminPageSection>
-    );
+    )
   }
 
   return (
@@ -78,14 +89,22 @@ function SeoMetaDetailInner() {
               description="Metadata SEO cho trang."
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
-              <FieldSectionField label="Đường dẫn" icon={Hash} valueClassName="font-mono font-medium">
+              <FieldSectionField
+                label="Đường dẫn"
+                icon={Hash}
+                valueClassName="font-mono font-medium"
+              >
                 {detail.page}
               </FieldSectionField>
               <FieldSectionField label="Trạng thái" icon={FileText}>
                 {detail.status === 1 ? (
-                  <Badge variant="default" className="text-[10px]">Hoạt động</Badge>
+                  <Badge variant="default" className="text-[10px]">
+                    Hoạt động
+                  </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-[10px]">Tắt</Badge>
+                  <Badge variant="outline" className="text-[10px]">
+                    Tắt
+                  </Badge>
                 )}
               </FieldSectionField>
               <FieldSectionDivider />
@@ -105,13 +124,25 @@ function SeoMetaDetailInner() {
             <FieldSectionLegend icon={Calendar} title="Thời gian" />
             <FieldSetContent variant="section" className="space-y-3 pt-0">
               <div className="grid gap-4 sm:grid-cols-3">
-                <FieldSectionField label="Tạo lúc" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Tạo lúc"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(detail.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lúc" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lúc"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(detail.updatedAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Xóa lúc" icon={Trash2} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Xóa lúc"
+                  icon={Trash2}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(detail.deletedAt)}
                 </FieldSectionField>
               </div>
@@ -147,7 +178,7 @@ function SeoMetaDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function SeoMetaDetailPage() {
@@ -155,5 +186,5 @@ export default function SeoMetaDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <SeoMetaDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

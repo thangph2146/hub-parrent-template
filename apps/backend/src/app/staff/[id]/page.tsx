@@ -141,7 +141,7 @@ function AvatarDisplay({
 
 function StaffDetailPageInner() {
   const params = useParams()
-  const crudNav = useAdminCrudNavigation("/staff");
+  const crudNav = useAdminCrudNavigation("/staff")
   const { user: session } = useAuth()
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)

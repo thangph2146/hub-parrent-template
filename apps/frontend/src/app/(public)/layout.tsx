@@ -12,6 +12,8 @@ import NextTopLoader from "nextjs-toploader"
 import { QueryProvider } from "@/providers/query-provider"
 import { ScrollToTop } from "@/components/shared/scroll-to-top"
 import { StoreAuthGate } from "@/components/shared/store-auth-gate"
+import { PromoRulesSync } from "@/components/shared/promo-rules-sync"
+import { CartDrawerHost } from "@/components/shared/cart-drawer"
 import {
   absoluteUrl,
   buildSeoMetadata,
@@ -106,7 +108,10 @@ export default function RootLayout({
         <ThemeProvider>
           <TextSizeProvider>
             <QueryProvider>
-              <Header />
+              <PromoRulesSync />
+              <CartDrawerHost>
+                <Header />
+              </CartDrawerHost>
               <StoreAuthGate>
                 <main id="main-content" className="flex-1">
                   {children}

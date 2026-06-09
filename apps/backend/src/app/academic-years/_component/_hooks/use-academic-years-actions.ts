@@ -1,60 +1,77 @@
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { AcademicYearConfirmAction, AcademicYearFormValues } from "../types";
-import { academicYearFormSchema } from "../types";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useState } from "react"
+import { useForm } from "react-hook-form"
+import type { UseMutationResult } from "@tanstack/react-query"
+import type {
+  AcademicYearConfirmAction,
+  AcademicYearFormValues,
+} from "../types"
+import { academicYearFormSchema } from "../types"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-const EMPTY_VALUES: AcademicYearFormValues = { name: "", startDate: "", endDate: "", status: 1 };
-
-function normalizeDateField(value: string | undefined): string | null {
-  const trimmed = value?.trim();
-  return trimmed || null;
+const EMPTY_VALUES: AcademicYearFormValues = {
+  name: "",
+  startDate: "",
+  endDate: "",
+  status: 1,
 }
 
-export function buildAcademicYearPayload(values: AcademicYearFormValues): Record<string, unknown> {
+function normalizeDateField(value: string | undefined): string | null {
+  const trimmed = value?.trim()
+  return trimmed || null
+}
+
+export function buildAcademicYearPayload(
+  values: AcademicYearFormValues
+): Record<string, unknown> {
   return {
     name: values.name.trim(),
     startDate: normalizeDateField(values.startDate),
     endDate: normalizeDateField(values.endDate),
     status: values.status,
-  };
+  }
 }
 
 export function useAcademicYearForm() {
   const form = useForm<AcademicYearFormValues>({
     resolver: zodResolver(academicYearFormSchema),
     defaultValues: EMPTY_VALUES,
-  });
-  const resetForm = useCallback(() => { form.reset(EMPTY_VALUES); }, [form]);
-  return { form, resetForm };
+  })
+  const resetForm = useCallback(() => {
+    form.reset(EMPTY_VALUES)
+  }, [form])
+  return { form, resetForm }
 }
 
 export function useHandleConfirmAction(
   deleteMutation: UseMutationResult<unknown, Error, string>,
   restoreMutation: UseMutationResult<unknown, Error, string>,
   purgeMutation: UseMutationResult<unknown, Error, string>,
-  setConfirmAction: React.Dispatch<React.SetStateAction<AcademicYearConfirmAction | null>>,
+  setConfirmAction: React.Dispatch<
+    React.SetStateAction<AcademicYearConfirmAction | null>
+  >
 ) {
   return useCallback(
     async ({ kind, row }: AcademicYearConfirmAction) => {
       try {
         if (kind === "delete") {
-          await deleteMutation.mutateAsync(row.id);
-} else if (kind === "restore") {
-          await restoreMutation.mutateAsync(row.id);
-} else if (kind === "purge") {
-          await purgeMutation.mutateAsync(row.id);
-}
-      } catch { /* toast: MutationCache */ } finally {
-        setConfirmAction(null);
+          await deleteMutation.mutateAsync(row.id)
+        } else if (kind === "restore") {
+          await restoreMutation.mutateAsync(row.id)
+        } else if (kind === "purge") {
+          await purgeMutation.mutateAsync(row.id)
+        }
+      } catch {
+        /* toast: MutationCache */
+      } finally {
+        setConfirmAction(null)
       }
     },
-    [deleteMutation, restoreMutation, purgeMutation, setConfirmAction],
-  );
+    [deleteMutation, restoreMutation, purgeMutation, setConfirmAction]
+  )
 }
 
 export function useConfirmAction() {
-  const [confirmAction, setConfirmAction] = useState<AcademicYearConfirmAction | null>(null);
-  return { confirmAction, setConfirmAction };
+  const [confirmAction, setConfirmAction] =
+    useState<AcademicYearConfirmAction | null>(null)
+  return { confirmAction, setConfirmAction }
 }

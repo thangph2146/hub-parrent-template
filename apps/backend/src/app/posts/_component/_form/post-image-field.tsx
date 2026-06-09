@@ -1,34 +1,40 @@
-"use client";
+"use client"
 
-import { useRef, useState } from "react";
-import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react";
-import { toast } from "@ui/components/sonner";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
-import { uploadPostImage } from "../utils";
+import { useRef, useState } from "react"
+import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react"
+import { toast } from "@ui/components/sonner"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
+import { uploadPostImage } from "../utils"
 
 type PostImageFieldProps = {
-  value: string;
-  onChange: (url: string) => void;
-  postTitle?: string;
-};
+  value: string
+  onChange: (url: string) => void
+  postTitle?: string
+}
 
 /** Upload + preview ảnh đại diện — cùng pattern với EventPosterField. */
-export function PostImageField({ value, onChange, postTitle }: PostImageFieldProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const displayUrl = value.trim();
+export function PostImageField({
+  value,
+  onChange,
+  postTitle,
+}: PostImageFieldProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const displayUrl = value.trim()
 
   const handleFile = async (file: File) => {
-    setUploading(true);
+    setUploading(true)
     try {
-      const url = await uploadPostImage(file);
-      onChange(url);
-      toast.success("Đã tải ảnh đại diện lên");
-    } catch { /* toast: MutationCache */ } finally {
-      setUploading(false);
+      const url = await uploadPostImage(file)
+      onChange(url)
+      toast.success("Đã tải ảnh đại diện lên")
+    } catch {
+      /* toast: MutationCache */
+    } finally {
+      setUploading(false)
     }
-  };
+  }
 
   return (
     <FormFieldCol label="Hình ảnh đại diện">
@@ -43,7 +49,7 @@ export function PostImageField({ value, onChange, postTitle }: PostImageFieldPro
             <button
               type="button"
               onClick={() => onChange("")}
-              className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
+              className="absolute top-2 right-2 rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
               aria-label="Xóa ảnh đại diện"
             >
               <X className="size-4" />
@@ -75,15 +81,16 @@ export function PostImageField({ value, onChange, postTitle }: PostImageFieldPro
           accept="image/*"
           className="hidden"
           onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) void handleFile(file);
-            e.target.value = "";
+            const file = e.target.files?.[0]
+            if (file) void handleFile(file)
+            e.target.value = ""
           }}
         />
         <div className="flex items-start gap-2 rounded-lg border border-dashed border-border/70 bg-muted/15 px-3 py-2 text-xs text-muted-foreground">
           <ImageIcon className="mt-0.5 size-3.5 shrink-0" />
           <span>
-            Upload qua API (port 3002). URL hiển thị trực tiếp — cùng cách với poster sự kiện.
+            Upload qua API (port 3002). URL hiển thị trực tiếp — cùng cách với
+            poster sự kiện.
           </span>
         </div>
         <Input
@@ -94,5 +101,5 @@ export function PostImageField({ value, onChange, postTitle }: PostImageFieldPro
         />
       </div>
     </FormFieldCol>
-  );
+  )
 }

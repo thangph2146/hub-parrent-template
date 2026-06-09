@@ -6,7 +6,7 @@ import {
 import type { ContactRequest } from "./types"
 
 export function parseContactStructuredContent(
-  content: string | undefined,
+  content: string | undefined
 ): Record<string, string> {
   if (!content) return {}
   const parsed: Record<string, string> = {}
@@ -125,7 +125,7 @@ const TRASH_EXPORT_FIELDS: ExportFieldDef<ContactRequest>[] = [
 ]
 
 export function getContactRequestExportFields(
-  kind: "active" | "trash",
+  kind: "active" | "trash"
 ): ExportFieldDef<ContactRequest>[] {
   return kind === "trash" ? TRASH_EXPORT_FIELDS : ACTIVE_EXPORT_FIELDS
 }

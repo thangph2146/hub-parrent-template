@@ -3,6 +3,7 @@
 Đây là bước đọc các tài liệu `docs/admin-pattern/` để nắm quy trình và ranh giới microservice.
 
 ## Các file cần đọc
+
 1. `docs/admin-pattern/README.md`
    - Giới thiệu mục đích của thư mục `docs/admin-pattern/`.
    - Làm rõ đây là bộ tài liệu cho AI/agent.
@@ -27,6 +28,7 @@
    - Đọc khi sửa `packages/api-client` hoặc gọi API từ app (ApiClient, resource classes, SDK).
 
 ## Mục tiêu bước này
+
 - Xác định đúng phạm vi của task: app, package, feature.
 - Hiểu rõ ranh giới không import chéo giữa `apps/*`.
 - Hiểu các quy tắc agent phải tuân thủ khi đọc, sửa và kiểm tra.
@@ -37,6 +39,7 @@
 - Mỗi package có doc riêng: `docs/ui-pattern/README.md`, `docs/api-client-pattern/README.md`, `docs/logger-pattern/README.md`, `docs/query-client-pattern/README.md`, `packages/editor/README.md`.
 
 ## Gợi ý
+
 - Nếu sửa `apps/frontend`, hãy đọc thêm `FRONTEND_UX.md`.
 - Nếu task là admin page/backend, bắt buộc đọc `ADMIN_PAGE_PATTERN.md` trước.
 - Nếu task sửa `apps/api`, đọc `docs/api-pattern/README.md`.

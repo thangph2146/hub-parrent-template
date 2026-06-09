@@ -1,100 +1,95 @@
-import type { ColumnFiltersState, RowSelectionState, OnChangeFn } from "@tanstack/react-table";
+import type {
+  ColumnFiltersState,
+  RowSelectionState,
+  OnChangeFn,
+} from "@tanstack/react-table"
 
-import { AdminDataTable, adminTableRowSelectionProps } from "@ui/components/data-table";
+import {
+  AdminDataTable,
+  adminTableRowSelectionProps,
+} from "@ui/components/data-table"
 
-import { buildAdminTableXlsxExport } from "@ui/components/admin";
+import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
-import { api } from "@/lib/api";
+import { api } from "@/lib/api"
 
-import { getContactRequestColumns } from "../columns";
+import { getContactRequestColumns } from "../columns"
 
-import type { ContactRequest } from "../types";
-
-
+import type { ContactRequest } from "../types"
 
 interface ContactRequestTableProps {
+  data: ContactRequest[]
 
-  data: ContactRequest[];
+  isLoading: boolean
 
-  isLoading: boolean;
+  total: number
 
-  total: number;
+  page: number
 
-  page: number;
+  pageSize: number
 
-  pageSize: number;
+  appliedPage?: number
 
-  appliedPage?: number;
+  appliedPageSize?: number
 
-  appliedPageSize?: number;
+  onPageChange: (page: number) => void
 
-  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void
 
-  onPageSizeChange: (pageSize: number) => void;
+  columnFilters: ColumnFiltersState
 
-  columnFilters: ColumnFiltersState;
+  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
 
-  onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
+  globalFilter: string
 
-  globalFilter: string;
+  onGlobalFilterChange: OnChangeFn<string>
 
-  onGlobalFilterChange: OnChangeFn<string>;
+  selectedRowIds: RowSelectionState
 
-  selectedRowIds: RowSelectionState;
+  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
 
-  onSelectedRowIdsChange: OnChangeFn<RowSelectionState>;
+  onView: (contact: ContactRequest) => void
 
-  onView: (contact: ContactRequest) => void;
+  onDelete: (contact: ContactRequest) => void
 
-  onDelete: (contact: ContactRequest) => void;
-
-  onPurge: (contact: ContactRequest) => void;
+  onPurge: (contact: ContactRequest) => void
 
   onStatusChange: (
-
     contact: ContactRequest,
 
-    status: ContactRequest["status"],
+    status: ContactRequest["status"]
+  ) => void | Promise<void>
 
-  ) => void | Promise<void>;
-
-  onSetRead: (contact: ContactRequest, isRead: boolean) => void | Promise<void>;
+  onSetRead: (contact: ContactRequest, isRead: boolean) => void | Promise<void>
 
   onSetPriority: (
-
     contact: ContactRequest,
 
-    priority: NonNullable<ContactRequest["priority"]>,
+    priority: NonNullable<ContactRequest["priority"]>
+  ) => void | Promise<void>
 
-  ) => void | Promise<void>;
+  busy: boolean
 
-  busy: boolean;
+  canUpdate?: boolean
 
-  canUpdate?: boolean;
+  canDelete?: boolean
 
-  canDelete?: boolean;
+  onBulkDelete: (ids: string[]) => void
 
-  onBulkDelete: (ids: string[]) => void;
+  onBulkPurge: (ids: string[]) => void
 
-  onBulkPurge: (ids: string[]) => void;
+  onClearFilters: () => void
 
-  onClearFilters: () => void;
-
-  onRowPrefetch?: (row: ContactRequest) => void;
+  onRowPrefetch?: (row: ContactRequest) => void
 
   listParams: {
-    search?: string;
-    filters?: Record<string, string>;
-  };
-
+    search?: string
+    filters?: Record<string, string>
+  }
 }
 
-
-
 export function ContactRequestTable(props: ContactRequestTableProps) {
-
   const {
-
     data,
 
     isLoading,
@@ -152,10 +147,7 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
     onRowPrefetch,
 
     listParams,
-
-  } = props;
-
-
+  } = props
 
   const columns = getContactRequestColumns({
     view: "list",
@@ -175,67 +167,38 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
     canUpdate,
 
     canDelete,
-
-  });
-
-
+  })
 
   const exportConfig = buildAdminTableXlsxExport("contact-requests", {
     pageCount: data.length,
     total,
-  });
-
-
+  })
 
   return (
-
     <AdminDataTable<ContactRequest>
       tableScope="contact-requests"
-
       data={data}
-
       getRowId={(row) => String(row.id)}
-
       columns={columns}
-
       isLoading={isLoading}
-
       emptyLabel="Không có yêu cầu liên hệ khớp tìm kiếm hoặc bộ lọc."
-
       defaultExpandedAll={false}
-
       manualFiltering
-
       columnFilters={columnFilters}
-
       onColumnFiltersChange={onColumnFiltersChange}
-
       globalFilter={globalFilter}
-
       onGlobalFilterChange={onGlobalFilterChange}
-
       globalFilterPlaceholder="Tìm theo tên, email, tiêu đề…"
-
       onClearFilters={onClearFilters}
-
       onRowPointerEnter={
-        onRowPrefetch
-          ? (row) => onRowPrefetch(row.original)
-          : undefined
+        onRowPrefetch ? (row) => onRowPrefetch(row.original) : undefined
       }
-
       clearFiltersVariant="destructive"
-
       {...adminTableRowSelectionProps(selectedRowIds, onSelectedRowIdsChange)}
-
       bulkActions={[
-
         ...(canDelete
-
           ? [
-
               {
-
                 id: "bulk-contact-delete" as const,
 
                 label: "Xóa tạm đã chọn",
@@ -243,27 +206,19 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
                 variant: "destructive" as const,
 
                 onAction: async (rows: ContactRequest[]) => {
+                  const ids = rows.map((c) => String(c.id))
 
-                  const ids = rows.map((c) => String(c.id));
+                  if (!ids.length) return
 
-                  if (!ids.length) return;
-
-                  await onBulkDelete(ids);
-
+                  await onBulkDelete(ids)
                 },
-
               },
-
             ]
-
           : []),
 
         ...(canDelete
-
           ? [
-
               {
-
                 id: "bulk-contact-purge" as const,
 
                 label: "Xóa vĩnh viễn đã chọn",
@@ -271,23 +226,16 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
                 variant: "destructive" as const,
 
                 onAction: async (rows: ContactRequest[]) => {
+                  const ids = rows.map((c) => String(c.id))
 
-                  const ids = rows.map((c) => String(c.id));
+                  if (!ids.length) return
 
-                  if (!ids.length) return;
-
-                  await onBulkPurge(ids);
-
+                  await onBulkPurge(ids)
                 },
-
               },
-
             ]
-
           : []),
-
       ]}
-
       xlsxExport={exportConfig}
       exportFetchPage={async ({ page: exportPage, limit }) => {
         const result = await api.contactRequests.list({
@@ -295,10 +243,9 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
           limit,
           search: listParams.search,
           filters: listParams.filters,
-        });
-        return { items: result.items, total: result.total };
+        })
+        return { items: result.items, total: result.total }
       }}
-
       pagination={{
         page,
         pageSize,
@@ -311,10 +258,6 @@ export function ContactRequestTable(props: ContactRequestTableProps) {
         emptySummary: "Không có yêu cầu liên hệ",
         itemLabel: "yêu cầu",
       }}
-
     />
-
-  );
-
+  )
 }
-

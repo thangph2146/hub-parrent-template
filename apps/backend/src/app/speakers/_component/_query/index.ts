@@ -1,4 +1,7 @@
-export { 
+export {
   useSpeakerDetailQuery,
   useSpeakersListQuery,
-  useSpeakersTrashQuery, speakerDetailQueryKey, prefetchSpeakerDetail } from "./use-speakers-queries";
+  useSpeakersTrashQuery,
+  speakerDetailQueryKey,
+  prefetchSpeakerDetail,
+} from "./use-speakers-queries"

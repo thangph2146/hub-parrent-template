@@ -38,7 +38,10 @@ export interface ImageItem {
 
 export interface FolderItem {
 	path: string;
+	/** Slug basename trên disk. */
 	name: string;
+	/** Nhãn hiển thị (tiếng Việt). */
+	label?: string;
 	allowedExtensions?: string[];
 	realm?: StorageRealm;
 }
@@ -87,6 +90,7 @@ export interface UploadsBulkDeleteResult {
 export interface CreateStorageFolderResult {
 	folderName: string;
 	folderPath: string;
+	folderLabel?: string;
 }
 
 export interface BulkMoveFilesResult {

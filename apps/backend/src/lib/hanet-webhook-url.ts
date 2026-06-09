@@ -4,7 +4,7 @@ import { DEFAULT_API_URL } from "@workspace/api-client"
 export function getApiOrigin(): string {
   const base = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
     /\/$/,
-    "",
+    ""
   )
   return base.replace(/\/api$/i, "")
 }

@@ -20,19 +20,22 @@ import {
   rename,
   writeFile,
   readFile,
+  copyFile,
 } from 'fs/promises';
 import JSZip from 'jszip';
 import type { ReadStream } from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
 import { appConfig } from '../config/app.config';
+import { unlinkWithRetry } from '../common/fs-unlink-retry';
 import { parseAdminListLimit } from '../common/parse-list-query';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 /** Số file tối đa mỗi lần gọi bulk-delete (khớp export admin). */
 export const UPLOADS_BULK_DELETE_MAX_PATHS = ADMIN_TABLE_EXPORT_MAX_LIMIT;
 
-const UPLOADS_BULK_DELETE_CONCURRENCY = 32;
+/** Windows: giảm song song để tránh EBUSY khi ảnh vừa được serve/resize. */
+const UPLOADS_BULK_DELETE_CONCURRENCY = process.platform === 'win32' ? 4 : 32;
 
 export type UploadsBulkDeleteResult = {
   deleted: number;
@@ -73,6 +76,7 @@ import {
   buildStorageBreadcrumb,
   matchesStorageFolderScope,
 } from './folder-navigation';
+import { buildStorageFolderLabelLookup } from './storage-folder-labels';
 import {
   STORAGE_POLICY_FILENAME,
   buildFolderPolicy,
@@ -85,7 +89,12 @@ import {
   resolveStorageRelativePath,
   stripStorageFolderPath,
 } from './storage-path-resolver';
-import { sanitizeStorageFolderName } from './storage-folder-name';
+import { resolveStorageFolderSlugPath } from './storage-folder-name';
+import {
+  planOrderLineImageSnapshots,
+  type OrderLineSnapshotInput,
+} from './order-image-snapshot';
+import { assertStoragePathMutable } from './storage-protected-paths';
 import {
   buildStoredUploadFileName,
   resolveImageFileOwnerId,
@@ -254,7 +263,10 @@ export interface FolderNodeDto {
 
 export interface FolderItemDto {
   path: string;
+  /** Slug segment trên disk (basename). */
   name: string;
+  /** Nhãn hiển thị (tiếng Việt) nếu có trong policy. */
+  label?: string;
   allowedExtensions?: string[];
   realm?: StorageRealm;
 }
@@ -726,22 +738,29 @@ export class UploadsService {
 
     const folderList = await this.listFolders();
     const diskFolders = folderList.data.map((folder) => folder.path);
+    const labelLookup = buildStorageFolderLabelLookup(folderList.data);
 
     const folderFilter =
       params.folderPath?.trim() || params.tab?.trim() || null;
 
-    const tabs = buildStorageFolderTabs(merged, realmFilter, diskFolders);
+    const tabs = buildStorageFolderTabs(
+      merged,
+      realmFilter,
+      diskFolders,
+      labelLookup,
+    );
     const childFolders = realmFilter
       ? buildChildFolderTabs(
           merged,
           realmFilter,
           folderFilter ?? '',
           diskFolders,
+          labelLookup,
         )
       : [];
     const breadcrumb =
       realmFilter && folderFilter
-        ? buildStorageBreadcrumb(realmFilter, folderFilter)
+        ? buildStorageBreadcrumb(realmFilter, folderFilter, labelLookup)
         : [];
 
     const parentTabForSubTabs = folderFilter?.includes('/')
@@ -754,6 +773,7 @@ export class UploadsService {
             realmFilter,
             parentTabForSubTabs,
             diskFolders,
+            labelLookup,
           )
         : [];
 
@@ -987,9 +1007,11 @@ export class UploadsService {
     const data: FolderItemDto[] = await Promise.all(
       sorted.map(async (p) => {
         const policy = await this.readPolicyForRelativeFolder(p);
+        const basename = path.basename(p);
         return {
           path: p,
-          name: path.basename(p),
+          name: basename,
+          label: policy?.label?.trim() || undefined,
           allowedExtensions: policy?.allowedExtensions,
           realm: policy?.realm,
         };
@@ -1090,8 +1112,9 @@ export class UploadsService {
     parentPath?: string | null,
     resourceType: 'images' | 'files' | 'videos' | 'audio' = 'images',
     allowedExtensions?: string[],
-  ): Promise<{ folderName: string; folderPath: string }> {
-    const safeName = sanitizeStorageFolderName(folderName);
+  ): Promise<{ folderName: string; folderPath: string; folderLabel: string }> {
+    const { slugPath: safeName, leafLabel } =
+      resolveStorageFolderSlugPath(folderName);
 
     let targetDir: string;
     let folderPath: string;
@@ -1144,14 +1167,24 @@ export class UploadsService {
       }
     }
 
+    assertStoragePathMutable(folderPath);
+
     await this.ensureDir(targetDir);
+    const policyRealm = inferRealmFromDiskFolderPath(folderPath);
+    const policy = buildFolderPolicy(
+      allowedExtensions?.length ? resourceType : policyRealm,
+      allowedExtensions,
+      leafLabel,
+    );
+    await this.writePolicyFile(targetDir, policy);
 
-    if (allowedExtensions?.length) {
-      const policy = buildFolderPolicy(resourceType, allowedExtensions);
-      await this.writePolicyFile(targetDir, policy);
-    }
-
-    return { folderName: safeName, folderPath };
+    return {
+      folderName: safeName.includes('/')
+        ? (safeName.split('/').pop() ?? safeName)
+        : safeName,
+      folderPath,
+      folderLabel: leafLabel,
+    };
   }
 
   /** Lưu file upload (buffer) và trả về metadata. Không cho phép upload trùng tên (cùng tên file trong cùng thư mục). */
@@ -1232,6 +1265,9 @@ export class UploadsService {
             : 'files';
 
     const uploadPolicy = await this.resolveUploadPolicy(folderPath, uploadKind);
+    if (folderPath?.trim()) {
+      assertStoragePathMutable(folderPath);
+    }
     if (!isExtensionAllowed(ext, uploadPolicy.allowedExtensions)) {
       throw new Error(
         `Định dạng ${ext} không được phép trong thư mục đích. Cho phép: ${uploadPolicy.allowedExtensions.join(', ')}`,
@@ -1617,10 +1653,47 @@ export class UploadsService {
     return result;
   }
 
+  /** Xóa bản cache resize (thumbnail) của một ảnh gốc. */
+  private async deleteResizedCacheFor(relativePath: string): Promise<void> {
+    const normalized = relativePath.replace(/\\/g, '/');
+    const relPathWithoutPrefix = normalized.replace(
+      /^(images\/|files\/|videos\/|audio\/)/,
+      '',
+    );
+    const cacheFileDir = path.join(
+      STORAGE_DIR,
+      IMAGE_RESIZE_CACHE_DIR,
+      path.dirname(relPathWithoutPrefix),
+    );
+    const baseFile = path.basename(relPathWithoutPrefix);
+    const cachePrefix = `${baseFile}_w`;
+
+    let entries: string[];
+    try {
+      entries = await readdir(cacheFileDir);
+    } catch {
+      return;
+    }
+
+    await Promise.all(
+      entries
+        .filter(
+          (name) => name.startsWith(cachePrefix) && name.endsWith('.webp'),
+        )
+        .map((name) =>
+          unlinkWithRetry(path.join(cacheFileDir, name), {
+            ignoreMissing: true,
+          }),
+        ),
+    );
+  }
+
   /** Xóa file theo relativePath */
   async deleteFile(relativePath: string): Promise<void> {
+    assertStoragePathMutable(relativePath);
     const { fullPath } = this.resolvePath(relativePath);
-    await unlink(fullPath);
+    await this.deleteResizedCacheFor(relativePath);
+    await unlinkWithRetry(fullPath);
     await this.deleteStorageFileMeta(relativePath);
   }
 
@@ -1654,6 +1727,7 @@ export class UploadsService {
         const relativePath = unique[index];
         if (!relativePath) continue;
         try {
+          assertStoragePathMutable(relativePath);
           await this.deleteFile(relativePath);
           deleted += 1;
         } catch (err) {
@@ -1678,13 +1752,14 @@ export class UploadsService {
       if (entry.isDirectory()) {
         await this.deleteDirRecursive(full);
       } else {
-        await unlink(full);
+        await unlinkWithRetry(full);
       }
     }
     await rmdir(dirPath);
   }
 
   async deleteFolder(relativePath: string): Promise<void> {
+    assertStoragePathMutable(relativePath);
     const clean = relativePath.replace(/\/$/, '').replace(/\.\./g, '');
     let fullPath: string;
     let baseDir: string;
@@ -1808,5 +1883,94 @@ export class UploadsService {
       contentType: 'image/webp',
       originalName,
     };
+  }
+
+  /**
+   * Checkout: copy ảnh sản phẩm vào `images/orders/{orderId}/` và trả URL snapshot.
+   * URL ngoài kho (`cdn…`) giữ nguyên; file nội bộ được copy (không move) để catalog vẫn dùng ảnh gốc.
+   */
+  async snapshotOrderLineImages(params: {
+    orderId: string;
+    lines: OrderLineSnapshotInput[];
+    uploadedByUserId?: string;
+    serveBaseUrl?: string;
+  }): Promise<Array<{ productId: number; sku: string; image: string | null }>> {
+    const plans = planOrderLineImageSnapshots(params.orderId, params.lines);
+    const out: Array<{ productId: number; sku: string; image: string | null }> =
+      [];
+
+    for (const plan of plans) {
+      const fallback = plan.sourceImageRef?.trim() || null;
+      if (!plan.sourceRelativePath || !plan.destinationRelativePath) {
+        out.push({
+          productId: plan.productId,
+          sku: plan.sku,
+          image: fallback,
+        });
+        continue;
+      }
+
+      const copied = await this.copyStorageFileToRelativePath({
+        fromRelative: plan.sourceRelativePath,
+        toRelative: plan.destinationRelativePath,
+        uploadedByUserId: params.uploadedByUserId,
+      });
+
+      out.push({
+        productId: plan.productId,
+        sku: plan.sku,
+        image: copied
+          ? this.buildUploadPublicUrl(
+              plan.destinationRelativePath,
+              params.serveBaseUrl,
+            )
+          : fallback,
+      });
+    }
+
+    return out;
+  }
+
+  private buildUploadPublicUrl(
+    relativePath: string,
+    serveBaseUrl?: string,
+  ): string {
+    const normalized = this.normalizeStorageRelativePath(relativePath);
+    const base = serveBaseUrl?.replace(/\/$/, '') ?? '';
+    return base ? `${base}/${normalized}` : `/api/uploads/${normalized}`;
+  }
+
+  private async copyStorageFileToRelativePath(params: {
+    fromRelative: string;
+    toRelative: string;
+    uploadedByUserId?: string;
+  }): Promise<boolean> {
+    try {
+      const { fullPath: fromFull, baseDir: fromBase } = this.resolvePath(
+        params.fromRelative,
+      );
+      const { fullPath: toFull, baseDir: toBase } = this.resolvePath(
+        params.toRelative,
+      );
+      if (!fromFull.startsWith(fromBase) || !toFull.startsWith(toBase)) {
+        return false;
+      }
+
+      const st = await stat(fromFull);
+      if (!st.isFile()) return false;
+
+      await this.ensureDir(path.dirname(toFull));
+      if (!existsSync(toFull)) {
+        await copyFile(fromFull, toFull);
+        await this.ensureStorageFileUploader(
+          params.toRelative,
+          params.uploadedByUserId,
+        );
+      }
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

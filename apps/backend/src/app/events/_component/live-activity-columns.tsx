@@ -40,7 +40,7 @@ export function checkinTypeLabel(value: unknown): string {
 
 /** Luồng check-in/out từ danh sách đăng ký (cùng nguồn realtime). */
 export function buildLiveActivitiesFromRegistrations(
-  registrations: RegistrationDict[],
+  registrations: RegistrationDict[]
 ): EventLiveActivityRow[] {
   const items: EventLiveActivityRow[] = []
 
@@ -81,12 +81,12 @@ export function buildLiveActivitiesFromRegistrations(
   }
 
   return items.sort(
-    (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime(),
+    (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()
   )
 }
 
 export function getEventLiveActivityGlobalFilterText(
-  row: EventLiveActivityRow,
+  row: EventLiveActivityRow
 ): string {
   const kindLabel = row.kind === "checkin" ? "Check-in" : "Check-out"
   return [
@@ -148,7 +148,7 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
                 "flex size-7 shrink-0 items-center justify-center rounded-full",
                 isCheckin
                   ? "bg-emerald-500/15 text-emerald-700"
-                  : "bg-amber-500/15 text-amber-700",
+                  : "bg-amber-500/15 text-amber-700"
               )}
             >
               {isCheckin ? (
@@ -199,7 +199,7 @@ export function getEventLiveActivityColumns(): ColumnDef<EventLiveActivityRow>[]
         exportWidth: 20,
       },
       cell: ({ row }) => (
-        <span className="tabular-nums text-sm">
+        <span className="text-sm tabular-nums">
           {formatDateTime(row.original.at)}
         </span>
       ),

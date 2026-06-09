@@ -1,15 +1,15 @@
-import { adminDetailQueryOptions,
+import {
+  adminDetailQueryOptions,
   prefetchAdminDetailQuery,
-} from "@/lib/admin-detail-query";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list";
-import { useQuery, type QueryClient } from "@tanstack/react-query";
-import type { StoreSyncSdk, PagedResult } from "@workspace/api-client";
-import type { AcademicYearDetail, AcademicYearRow } from "../types";
-
+} from "@/lib/admin-detail-query"
+import type { UseQueryResult } from "@tanstack/react-query"
+import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list"
+import { useQuery, type QueryClient } from "@tanstack/react-query"
+import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
+import type { AcademicYearDetail, AcademicYearRow } from "../types"
 
 export const academicYearDetailQueryKey = (id: string) =>
-  ["academic-years", "detail", id] as const;
+  ["academic-years", "detail", id] as const
 
 export function prefetchAcademicYearDetail(
   queryClient: QueryClient,
@@ -20,55 +20,57 @@ export function prefetchAcademicYearDetail(
     queryClient,
     academicYearDetailQueryKey(id),
     () => apiParam.academicYears.get<AcademicYearDetail>(id)
-  );
+  )
 }
 
-export function useAcademicYearDetailQuery(
-  apiParam: StoreSyncSdk,
-  id: string
-) {
+export function useAcademicYearDetailQuery(apiParam: StoreSyncSdk, id: string) {
   return useQuery({
     ...adminDetailQueryOptions(
       academicYearDetailQueryKey(id),
       async () => apiParam.academicYears.get<AcademicYearDetail>(id),
       id
     ),
-});
+  })
 }
 
 export function useAcademicYearsListQuery(
   apiParam: StoreSyncSdk,
   enabled: boolean,
-  filters?: Record<string, string>,
+  filters?: Record<string, string>
 ): UseQueryResult<AcademicYearRow[]> {
   return useQuery({
     queryKey: ["academic-years", "list", filters],
     queryFn: async (): Promise<AcademicYearRow[]> => {
-      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT;
-      const items: AcademicYearRow[] = [];
-      let page = 1;
-      let total = Number.POSITIVE_INFINITY;
+      const limit = ADMIN_LIST_EXPORT_FETCH_LIMIT
+      const items: AcademicYearRow[] = []
+      let page = 1
+      let total = Number.POSITIVE_INFINITY
 
       while (items.length < total) {
-        const result = await apiParam.academicYears.list<AcademicYearRow>({ page, limit, status: "active", filters });
-        items.push(...result.items);
-        total = result.total;
-        if (result.items.length === 0) break;
-        page += 1;
+        const result = await apiParam.academicYears.list<AcademicYearRow>({
+          page,
+          limit,
+          status: "active",
+          filters,
+        })
+        items.push(...result.items)
+        total = result.total
+        if (result.items.length === 0) break
+        page += 1
       }
 
-      return items;
+      return items
     },
     enabled,
-  });
+  })
 }
 
 export interface UseTrashQueryProps {
-  api: StoreSyncSdk;
-  trashPage: number;
-  trashPageSize: number;
-  debouncedTrashQ: string;
-  enabled: boolean;
+  api: StoreSyncSdk
+  trashPage: number
+  trashPageSize: number
+  debouncedTrashQ: string
+  enabled: boolean
 }
 
 export function useAcademicYearsTrashQuery({
@@ -78,9 +80,18 @@ export function useAcademicYearsTrashQuery({
   debouncedTrashQ,
   enabled,
   filters,
-}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<PagedResult<AcademicYearRow>> {
+}: UseTrashQueryProps & { filters?: Record<string, string> }): UseQueryResult<
+  PagedResult<AcademicYearRow>
+> {
   return useQuery({
-    queryKey: ["academic-years", "trash", trashPage, trashPageSize, debouncedTrashQ, filters],
+    queryKey: [
+      "academic-years",
+      "trash",
+      trashPage,
+      trashPageSize,
+      debouncedTrashQ,
+      filters,
+    ],
     enabled,
     queryFn: async (): Promise<PagedResult<AcademicYearRow>> => {
       return apiParam.academicYears.list<AcademicYearRow>({
@@ -89,7 +100,7 @@ export function useAcademicYearsTrashQuery({
         search: debouncedTrashQ.trim() || undefined,
         status: "deleted",
         ...filters,
-      });
+      })
     },
-  });
+  })
 }

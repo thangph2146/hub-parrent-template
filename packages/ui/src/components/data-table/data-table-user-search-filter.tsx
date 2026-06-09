@@ -63,7 +63,9 @@ export function DataTableUserSearchFilter({
   const [inputText, setInputText] = useState("")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState<DataTableUserSearchOption[]>([])
+  const [suggestions, setSuggestions] = useState<DataTableUserSearchOption[]>(
+    []
+  )
   const [debouncedSearch, setDebouncedSearch] = useState("")
 
   const debouncedSetSearch = useMemo(
@@ -206,7 +208,9 @@ export function DataTableUserSearchFilter({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => applyUser(user)}
               >
-                <span className="font-medium text-foreground">{user.label}</span>
+                <span className="font-medium text-foreground">
+                  {user.label}
+                </span>
                 {user.sublabel ? (
                   <span className="font-mono text-[10px] text-muted-foreground">
                     {user.sublabel}

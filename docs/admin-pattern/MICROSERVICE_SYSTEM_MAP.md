@@ -4,12 +4,12 @@ Tài liệu này là bản đồ nhanh để AI/agent hiểu đúng kiến trúc
 
 ## 1) Service Boundaries
 
-| Service | Thư mục | Chức năng riêng | Không được chứa |
-|---------|---------|-----------------|-----------------|
-| `@api` | `apps/api` | NestJS REST/WS, MikroORM entity/migration/seed, RBAC, business rules | React, Next, fetch từ client |
-| `@frontend` | `apps/frontend` | Storefront Next (HUB công khai), SSR/SEO trang public | DB, entity, admin CRUD logic |
-| `@backend` | `apps/backend` | Admin Next, route/page theo domain, query hooks, wiring auth | Entity, MikroORM, component admin generic |
-| `@hub-event-checkin-frontend` | `apps/hub-event-checkin-frontend` | Storefront check-in sự kiện (PM2 compo 2) | Cùng ranh giới như `@frontend` |
+| Service                       | Thư mục                           | Chức năng riêng                                                      | Không được chứa                           |
+| ----------------------------- | --------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `@api`                        | `apps/api`                        | NestJS REST/WS, MikroORM entity/migration/seed, RBAC, business rules | React, Next, fetch từ client              |
+| `@frontend`                   | `apps/frontend`                   | Storefront Next (HUB công khai), SSR/SEO trang public                | DB, entity, admin CRUD logic              |
+| `@backend`                    | `apps/backend`                    | Admin Next, route/page theo domain, query hooks, wiring auth         | Entity, MikroORM, component admin generic |
+| `@hub-event-checkin-frontend` | `apps/hub-event-checkin-frontend` | Storefront check-in sự kiện (PM2 compo 2)                            | Cùng ranh giới như `@frontend`            |
 
 Nguyên tắc:
 
@@ -20,28 +20,28 @@ Nguyên tắc:
 
 ## 2) Shared Packages
 
-| Package | Vai trò |
-|---------|---------|
-| `@workspace/api-client` | SDK HTTP tới `@api` — admin CRUD, `PublicApi` (storefront/check-in), `AuthAdminApi` |
-| `@workspace/site-config` | Constant/preset composition (HUB Parent vs Check-in, OG image) — không React/DB |
-| `@workspace/query-client` | `QueryClient` TanStack Query mặc định cho Next apps |
-| `@workspace/ui` | Shell admin, data-table, presets, typography — dùng `@workspace/api-client` cho permission types |
-| `@thangph2146/lexical-editor` | Editor Lexical (`packages/editor`) |
-| `@workspace/logger` | Dev logging — dùng bởi api-client |
-| `@workspace/eslint-config` | ESLint + `service-boundaries` |
-| `@workspace/typescript-config` | tsconfig cơ sở |
+| Package                        | Vai trò                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `@workspace/api-client`        | SDK HTTP tới `@api` — admin CRUD, `PublicApi` (storefront/check-in), `AuthAdminApi`              |
+| `@workspace/site-config`       | Constant/preset composition (HUB Parent vs Check-in, OG image) — không React/DB                  |
+| `@workspace/query-client`      | `QueryClient` TanStack Query mặc định cho Next apps                                              |
+| `@workspace/ui`                | Shell admin, data-table, presets, typography — dùng `@workspace/api-client` cho permission types |
+| `@thangph2146/lexical-editor`  | Editor Lexical (`packages/editor`)                                                               |
+| `@workspace/logger`            | Dev logging — dùng bởi api-client                                                                |
+| `@workspace/eslint-config`     | ESLint + `service-boundaries`                                                                    |
+| `@workspace/typescript-config` | tsconfig cơ sở                                                                                   |
 
 ## 3) Graphify — theo dõi kiến trúc cho AI
 
 - **Chỉ mục monorepo:** `.graphify/markdown/SUMMARY_FOR_AI.md` (liên kết tới từng app + `packages/.graphify/markdown/`).
-- **Chỉ dẫn theo chủ đề (AI):** mục *Chỉ dẫn theo chủ đề* trong `.graphify/markdown/SUMMARY_FOR_AI.md` — bảng *mục tiêu → file đọc trước*.
+- **Chỉ dẫn theo chủ đề (AI):** mục _Chỉ dẫn theo chủ đề_ trong `.graphify/markdown/SUMMARY_FOR_AI.md` — bảng _mục tiêu → file đọc trước_.
 - **Danh sách package:** `packages/.graphify/markdown/SUMMARY_FOR_AI.md`.
 - **Phụ thuộc `workspace:*`:** `packages/.graphify/markdown/WORKSPACE_DEPS.md`.
 - **Từng dịch vụ:** `apps/<frontend|backend|api>/.graphify/markdown/SUMMARY_FOR_AI.md` (sinh từ `snapshot/context.json`).
 - **Cây thư mục / thống kê graph:** `apps/<app>/.graphify/markdown/FOLDER_TREE.md`, `GRAPH_STATS.md`.
 - **Phụ thuộc domain API:** `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` (bảng, inbound, Mermaid).
 - Làm mới snapshot: `pnpm graphify:refresh` (hoặc `node scripts/graphify-update.cjs apps/<app>` rồi `pnpm graphify:ai-summary`) từ root.
-- **Checklist sau chuẩn hóa:** `.graphify/README.md` (mục *Checklist sau chuẩn hóa / refactor kiến trúc*).
+- **Checklist sau chuẩn hóa:** `.graphify/README.md` (mục _Checklist sau chuẩn hóa / refactor kiến trúc_).
 
 ## 4) Thứ Tự Đọc Khuyến Nghị Cho AI
 

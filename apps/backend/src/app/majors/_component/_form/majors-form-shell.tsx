@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
 import {
   FieldError,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-} from "@ui/components/field";
-import { Input } from "@ui/components/input";
-import { FormFieldCol } from "@ui/components/typing";
+} from "@ui/components/field"
+import { Input } from "@ui/components/input"
+import { FormFieldCol } from "@ui/components/typing"
 import {
   AdminFormLayout,
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
-} from "@ui/components/admin";
-import { TreePicker } from "@ui/components/pickers";
-import { Controller, type UseFormReturn } from "react-hook-form";
-import { cn } from "@ui/lib/utils";
-import { FileText, Hash } from "lucide-react";
-import type { MajorFormValues } from "../types";
+} from "@ui/components/admin"
+import { TreePicker } from "@ui/components/pickers"
+import { Controller, type UseFormReturn } from "react-hook-form"
+import { cn } from "@ui/lib/utils"
+import { FileText, Hash } from "lucide-react"
+import type { MajorFormValues } from "../types"
 
 export interface MajorsFormShellProps {
-  form: UseFormReturn<MajorFormValues>;
-  onSubmit: (values: MajorFormValues) => Promise<void>;
-  submitting: boolean;
-  editingId: string | null;
-  onBack: () => void;
-  onReset: () => void;
+  form: UseFormReturn<MajorFormValues>
+  onSubmit: (values: MajorFormValues) => Promise<void>
+  submitting: boolean
+  editingId: string | null
+  onBack: () => void
+  onReset: () => void
 }
 
 export function MajorsFormShell({
@@ -37,7 +37,7 @@ export function MajorsFormShell({
   onBack,
   onReset,
 }: MajorsFormShellProps) {
-  const { control } = form;
+  const { control } = form
 
   return (
     <>
@@ -51,10 +51,7 @@ export function MajorsFormShell({
         isEdit={Boolean(editingId)}
       />
 
-      <AdminFormLayout
-        id="majors-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <AdminFormLayout id="majors-form" onSubmit={form.handleSubmit(onSubmit)}>
         <AdminFormMain>
           <FieldSet variant="section">
             <FieldSectionLegend
@@ -110,7 +107,9 @@ export function MajorsFormShell({
                   <FormFieldCol label="Trạng thái">
                     <TreePicker
                       value={String(field.value)}
-                      onChange={(v) => field.onChange(v != null ? Number(v) : 1)}
+                      onChange={(v) =>
+                        field.onChange(v != null ? Number(v) : 1)
+                      }
                       options={[
                         { value: "1", label: "Hoạt động" },
                         { value: "0", label: "Tắt" },
@@ -122,7 +121,8 @@ export function MajorsFormShell({
               />
               <div className="rounded-lg border border-dashed border-border/70 bg-muted/10 p-3">
                 <p className="text-xs text-muted-foreground">
-                  Ngành học sau khi lưu có thể được sử dụng trong các chức năng liên quan.
+                  Ngành học sau khi lưu có thể được sử dụng trong các chức năng
+                  liên quan.
                 </p>
               </div>
             </FieldSetContent>
@@ -130,5 +130,5 @@ export function MajorsFormShell({
         </AdminFormSidebar>
       </AdminFormLayout>
     </>
-  );
+  )
 }

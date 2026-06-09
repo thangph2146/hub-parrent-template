@@ -472,6 +472,26 @@
       "client": false
     },
     {
+      "id": "file_src_common_gift_rules_spec_ts",
+      "label": "gift-rules.spec.ts",
+      "path": "src/common/gift-rules.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_gift_rules_ts",
+      "label": "gift-rules.ts",
+      "path": "src/common/gift-rules.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_image_processor_ts",
       "label": "image-processor.ts",
       "path": "src/common/image-processor.ts",
@@ -572,6 +592,46 @@
       "client": false
     },
     {
+      "id": "file_src_common_product_types_ts",
+      "label": "product-types.ts",
+      "path": "src/common/product-types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_product_units_ts",
+      "label": "product-units.ts",
+      "path": "src/common/product-units.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_promo_checkout_spec_ts",
+      "label": "promo-checkout.spec.ts",
+      "path": "src/common/promo-checkout.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_promo_checkout_ts",
+      "label": "promo-checkout.ts",
+      "path": "src/common/promo-checkout.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_public_decorator_ts",
       "label": "public.decorator.ts",
       "path": "src/common/public.decorator.ts",
@@ -595,6 +655,26 @@
       "id": "file_src_common_resolve_relation_filters_ts",
       "label": "resolve-relation-filters.ts",
       "path": "src/common/resolve-relation-filters.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_unit_pricing_spec_ts",
+      "label": "unit-pricing.spec.ts",
+      "path": "src/common/unit-pricing.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_unit_pricing_ts",
+      "label": "unit-pricing.ts",
+      "path": "src/common/unit-pricing.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/common",
@@ -1076,6 +1156,16 @@
       "client": false
     },
     {
+      "id": "file_src_entities_order_entity_ts",
+      "label": "order.entity.ts",
+      "path": "src/entities/order.entity.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/entities",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_entities_page_content_entity_ts",
       "label": "page-content.entity.ts",
       "path": "src/entities/page-content.entity.ts",
@@ -1119,6 +1209,26 @@
       "id": "file_src_entities_post_entity_ts",
       "label": "post.entity.ts",
       "path": "src/entities/post.entity.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/entities",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_entities_product_entity_ts",
+      "label": "product.entity.ts",
+      "path": "src/entities/product.entity.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/entities",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_entities_promo_code_entity_ts",
+      "label": "promo-code.entity.ts",
+      "path": "src/entities/promo-code.entity.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/entities",
@@ -1179,6 +1289,16 @@
       "id": "file_src_entities_speaker_entity_ts",
       "label": "speaker.entity.ts",
       "path": "src/entities/speaker.entity.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/entities",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_entities_storage_file_entity_ts",
+      "label": "storage-file.entity.ts",
+      "path": "src/entities/storage-file.entity.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/entities",
@@ -1638,15 +1758,6 @@
       "client": false
     },
     {
-      "id": "dir_src_hero_slides",
-      "label": "hero-slides/",
-      "path": "src/hero-slides",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
       "id": "dir_src_imported_users",
       "label": "imported-users/",
       "path": "src/imported-users",
@@ -1842,6 +1953,46 @@
       "client": false
     },
     {
+      "id": "file_src_migrations_migration20260608120000_add_storage_files_ts",
+      "label": "Migration20260608120000_add_storage_files.ts",
+      "path": "src/migrations/Migration20260608120000_add_storage_files.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_migrations_migration20260609120000_add_products_orders_ts",
+      "label": "Migration20260609120000_add_products_orders.ts",
+      "path": "src/migrations/Migration20260609120000_add_products_orders.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_migrations_migration20260610120000_add_order_gifts_ts",
+      "label": "Migration20260610120000_add_order_gifts.ts",
+      "path": "src/migrations/Migration20260610120000_add_order_gifts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_migrations_migration20260611120000_add_promo_codes_ts",
+      "label": "Migration20260611120000_add_promo_codes.ts",
+      "path": "src/migrations/Migration20260611120000_add_promo_codes.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_mikro_orm",
       "label": "mikro-orm/",
       "path": "src/mikro-orm",
@@ -1916,6 +2067,75 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/notifications",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_orders",
+      "label": "orders/",
+      "path": "src/orders",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_orders_order_checkout_spec_ts",
+      "label": "order-checkout.spec.ts",
+      "path": "src/orders/order-checkout.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_orders_order_checkout_ts",
+      "label": "order-checkout.ts",
+      "path": "src/orders/order-checkout.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_orders_orders_controller_ts",
+      "label": "orders.controller.ts",
+      "path": "src/orders/orders.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_orders_orders_module_ts",
+      "label": "orders.module.ts",
+      "path": "src/orders/orders.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_orders_orders_service_ts",
+      "label": "orders.service.ts",
+      "path": "src/orders/orders.service.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_orders_public_orders_controller_ts",
+      "label": "public-orders.controller.ts",
+      "path": "src/orders/public-orders.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/orders",
       "type": "ts",
       "client": false
     },
@@ -2043,6 +2263,94 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/posts",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_products",
+      "label": "products/",
+      "path": "src/products",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_products_products_controller_ts",
+      "label": "products.controller.ts",
+      "path": "src/products/products.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/products",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_products_products_module_ts",
+      "label": "products.module.ts",
+      "path": "src/products/products.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/products",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_products_products_service_ts",
+      "label": "products.service.ts",
+      "path": "src/products/products.service.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/products",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_products_public_products_controller_ts",
+      "label": "public-products.controller.ts",
+      "path": "src/products/public-products.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/products",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_promo_codes",
+      "label": "promo-codes/",
+      "path": "src/promo-codes",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_promo_codes_promo_codes_controller_ts",
+      "label": "promo-codes.controller.ts",
+      "path": "src/promo-codes/promo-codes.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/promo-codes",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_promo_codes_promo_codes_module_ts",
+      "label": "promo-codes.module.ts",
+      "path": "src/promo-codes/promo-codes.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/promo-codes",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_promo_codes_promo_codes_service_ts",
+      "label": "promo-codes.service.ts",
+      "path": "src/promo-codes/promo-codes.service.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/promo-codes",
       "type": "ts",
       "client": false
     },
@@ -2338,6 +2646,26 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "file_src_seeds_products_sample_runner_ts",
+      "label": "products-sample.runner.ts",
+      "path": "src/seeds/products-sample.runner.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/seeds",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_seeds_promo_codes_sample_runner_ts",
+      "label": "promo-codes-sample.runner.ts",
+      "path": "src/seeds/promo-codes-sample.runner.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/seeds",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_seeds_superadmin_bootstrap_data_ts",
@@ -2858,9 +3186,209 @@
       "type": "directory"
     },
     {
+      "id": "file_src_uploads_folder_navigation_spec_ts",
+      "label": "folder-navigation.spec.ts",
+      "path": "src/uploads/folder-navigation.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_folder_navigation_ts",
+      "label": "folder-navigation.ts",
+      "path": "src/uploads/folder-navigation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_folder_reorganize_spec_ts",
+      "label": "folder-reorganize.spec.ts",
+      "path": "src/uploads/folder-reorganize.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_folder_reorganize_ts",
+      "label": "folder-reorganize.ts",
+      "path": "src/uploads/folder-reorganize.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_order_image_snapshot_spec_ts",
+      "label": "order-image-snapshot.spec.ts",
+      "path": "src/uploads/order-image-snapshot.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_order_image_snapshot_ts",
+      "label": "order-image-snapshot.ts",
+      "path": "src/uploads/order-image-snapshot.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_uploads_public_uploads_controller_ts",
       "label": "public-uploads.controller.ts",
       "path": "src/uploads/public-uploads.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_folder_labels_spec_ts",
+      "label": "storage-folder-labels.spec.ts",
+      "path": "src/uploads/storage-folder-labels.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_folder_labels_ts",
+      "label": "storage-folder-labels.ts",
+      "path": "src/uploads/storage-folder-labels.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_folder_name_spec_ts",
+      "label": "storage-folder-name.spec.ts",
+      "path": "src/uploads/storage-folder-name.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_folder_name_ts",
+      "label": "storage-folder-name.ts",
+      "path": "src/uploads/storage-folder-name.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_media_spec_ts",
+      "label": "storage-media.spec.ts",
+      "path": "src/uploads/storage-media.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_media_ts",
+      "label": "storage-media.ts",
+      "path": "src/uploads/storage-media.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_path_resolver_spec_ts",
+      "label": "storage-path-resolver.spec.ts",
+      "path": "src/uploads/storage-path-resolver.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_path_resolver_ts",
+      "label": "storage-path-resolver.ts",
+      "path": "src/uploads/storage-path-resolver.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_protected_paths_spec_ts",
+      "label": "storage-protected-paths.spec.ts",
+      "path": "src/uploads/storage-protected-paths.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_protected_paths_ts",
+      "label": "storage-protected-paths.ts",
+      "path": "src/uploads/storage-protected-paths.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_upload_policy_spec_ts",
+      "label": "storage-upload-policy.spec.ts",
+      "path": "src/uploads/storage-upload-policy.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_storage_upload_policy_ts",
+      "label": "storage-upload-policy.ts",
+      "path": "src/uploads/storage-upload-policy.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_upload_filename_spec_ts",
+      "label": "upload-filename.spec.ts",
+      "path": "src/uploads/upload-filename.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_upload_filename_ts",
+      "label": "upload-filename.ts",
+      "path": "src/uploads/upload-filename.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/uploads",
@@ -2891,6 +3419,26 @@
       "id": "file_src_uploads_uploads_service_ts",
       "label": "uploads.service.ts",
       "path": "src/uploads/uploads.service.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_zip_path_mapper_spec_ts",
+      "label": "zip-path-mapper.spec.ts",
+      "path": "src/uploads/zip-path-mapper.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/uploads",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_uploads_zip_path_mapper_ts",
+      "label": "zip-path-mapper.ts",
+      "path": "src/uploads/zip-path-mapper.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/uploads",
@@ -3185,6 +3733,16 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_gift_rules_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_gift_rules_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_image_processor_ts",
       "relation": "contains"
     },
@@ -3235,6 +3793,26 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_product_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_product_units_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_promo_checkout_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_public_decorator_ts",
       "relation": "contains"
     },
@@ -3246,6 +3824,16 @@
     {
       "source": "dir_src_common",
       "target": "file_src_common_resolve_relation_filters_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_unit_pricing_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_unit_pricing_ts",
       "relation": "contains"
     },
     {
@@ -3490,6 +4078,11 @@
     },
     {
       "source": "dir_src_entities",
+      "target": "file_src_entities_order_entity_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_entities",
       "target": "file_src_entities_page_content_entity_ts",
       "relation": "contains"
     },
@@ -3511,6 +4104,16 @@
     {
       "source": "dir_src_entities",
       "target": "file_src_entities_post_entity_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_entities",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_entities",
+      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "contains"
     },
     {
@@ -3541,6 +4144,11 @@
     {
       "source": "dir_src_entities",
       "target": "file_src_entities_speaker_entity_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_entities",
+      "target": "file_src_entities_storage_file_entity_ts",
       "relation": "contains"
     },
     {
@@ -3775,11 +4383,6 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_hero_slides",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_imported_users",
       "relation": "contains"
     },
@@ -3879,6 +4482,26 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260608120000_add_storage_files_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260609120000_add_products_orders_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260610120000_add_order_gifts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260611120000_add_promo_codes_ts",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src",
       "target": "dir_src_mikro_orm",
       "relation": "contains"
@@ -3916,6 +4539,41 @@
     {
       "source": "dir_src_notifications",
       "target": "file_src_notifications_notifications_service_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_orders",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_order_checkout_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_order_checkout_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_orders_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_orders_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_orders_service_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_orders",
+      "target": "file_src_orders_public_orders_controller_ts",
       "relation": "contains"
     },
     {
@@ -3981,6 +4639,51 @@
     {
       "source": "dir_src_posts",
       "target": "file_src_posts_posts_service_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_products",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_products",
+      "target": "file_src_products_products_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_products",
+      "target": "file_src_products_products_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_products",
+      "target": "file_src_products_products_service_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_products",
+      "target": "file_src_products_public_products_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_promo_codes",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_promo_codes",
+      "target": "file_src_promo_codes_promo_codes_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_promo_codes",
+      "target": "file_src_promo_codes_promo_codes_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_promo_codes",
+      "target": "file_src_promo_codes_promo_codes_service_ts",
       "relation": "contains"
     },
     {
@@ -4131,6 +4834,16 @@
     {
       "source": "dir_src",
       "target": "dir_src_seeds",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_seeds",
+      "target": "file_src_seeds_products_sample_runner_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_seeds",
+      "target": "file_src_seeds_promo_codes_sample_runner_ts",
       "relation": "contains"
     },
     {
@@ -4400,7 +5113,107 @@
     },
     {
       "source": "dir_src_uploads",
+      "target": "file_src_uploads_folder_navigation_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_folder_navigation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_folder_reorganize_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_folder_reorganize_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_order_image_snapshot_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_order_image_snapshot_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
       "target": "file_src_uploads_public_uploads_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_folder_labels_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_folder_labels_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_folder_name_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_folder_name_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_media_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_path_resolver_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_path_resolver_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_protected_paths_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_protected_paths_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_upload_policy_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_storage_upload_policy_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_upload_filename_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_upload_filename_ts",
       "relation": "contains"
     },
     {
@@ -4416,6 +5229,16 @@
     {
       "source": "dir_src_uploads",
       "target": "file_src_uploads_uploads_service_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_zip_path_mapper_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_uploads",
+      "target": "file_src_uploads_zip_path_mapper_ts",
       "relation": "contains"
     },
     {
@@ -4899,6 +5722,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_module_ts",
+      "target": "file_src_products_products_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_module_ts",
+      "target": "file_src_orders_orders_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_module_ts",
+      "target": "file_src_promo_codes_promo_codes_module_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_auth_auth_admin_controller_ts",
       "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
@@ -5249,6 +6087,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_common_gift_rules_spec_ts",
+      "target": "file_src_common_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_spec_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_common_product_units_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_common_logging_interceptor_ts",
       "target": "file_src_config_app_config_ts",
       "relation": "imports"
@@ -5286,6 +6149,31 @@
     {
       "source": "file_src_common_permissions_guard_ts",
       "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_spec_ts",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_spec_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "imports"
     },
     {
@@ -5351,6 +6239,16 @@
     {
       "source": "file_src_common_resolve_relation_filters_ts",
       "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_unit_pricing_spec_ts",
+      "target": "file_src_common_unit_pricing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_unit_pricing_ts",
+      "target": "file_src_common_product_types_ts",
       "relation": "imports"
     },
     {
@@ -5954,6 +6852,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_entities_order_entity_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_entities_order_entity_ts",
+      "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_entities_page_content_entity_ts",
       "target": "file_src_entities_base_entity_ts",
       "relation": "imports"
@@ -6014,6 +6922,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_entities_product_entity_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_entities_role_entity_ts",
       "target": "file_src_entities_base_entity_ts",
       "relation": "imports"
@@ -6055,6 +6968,11 @@
     },
     {
       "source": "file_src_entities_setting_entity_ts",
+      "target": "file_src_entities_base_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_entities_storage_file_entity_ts",
       "target": "file_src_entities_base_entity_ts",
       "relation": "imports"
     },
@@ -7255,6 +8173,11 @@
     },
     {
       "source": "file_src_mikro_orm_orm_entities_ts",
+      "target": "file_src_entities_order_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_mikro_orm_orm_entities_ts",
       "target": "file_src_entities_page_content_entity_ts",
       "relation": "imports"
     },
@@ -7276,6 +8199,16 @@
     {
       "source": "file_src_mikro_orm_orm_entities_ts",
       "target": "file_src_entities_post_tag_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_mikro_orm_orm_entities_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_mikro_orm_orm_entities_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "imports"
     },
     {
@@ -7306,6 +8239,11 @@
     {
       "source": "file_src_mikro_orm_orm_entities_ts",
       "target": "file_src_entities_speaker_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_mikro_orm_orm_entities_ts",
+      "target": "file_src_entities_storage_file_entity_ts",
       "relation": "imports"
     },
     {
@@ -7436,6 +8374,171 @@
     {
       "source": "file_src_notifications_notifications_service_ts",
       "target": "file_src_entities_contact_request_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_spec_ts",
+      "target": "file_src_orders_order_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_spec_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_ts",
+      "target": "file_src_common_unit_pricing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_ts",
+      "target": "file_src_common_product_units_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_order_checkout_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_orders_orders_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_common_parse_list_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_controller_ts",
+      "target": "file_src_entities_order_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_products_products_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_promo_codes_promo_codes_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_uploads_uploads_module_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_orders_orders_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_orders_orders_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_module_ts",
+      "target": "file_src_orders_public_orders_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_entities_order_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_common_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_promo_codes_promo_codes_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_products_products_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_uploads_uploads_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_orders_service_ts",
+      "target": "file_src_orders_order_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_public_orders_controller_ts",
+      "target": "file_src_orders_orders_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_public_orders_controller_ts",
+      "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_public_orders_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_orders_public_orders_controller_ts",
+      "target": "file_src_common_public_decorator_ts",
       "relation": "imports"
     },
     {
@@ -7731,6 +8834,146 @@
     {
       "source": "file_src_posts_posts_service_ts",
       "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_products_products_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_controller_ts",
+      "target": "file_src_common_parse_list_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_module_ts",
+      "target": "file_src_products_products_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_module_ts",
+      "target": "file_src_products_products_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_module_ts",
+      "target": "file_src_products_public_products_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_service_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_service_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_service_ts",
+      "target": "file_src_common_product_units_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_products_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_public_products_controller_ts",
+      "target": "file_src_products_products_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_public_products_controller_ts",
+      "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_public_products_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_products_public_products_controller_ts",
+      "target": "file_src_common_public_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_promo_codes_promo_codes_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_controller_ts",
+      "target": "file_src_common_parse_list_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_module_ts",
+      "target": "file_src_promo_codes_promo_codes_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_module_ts",
+      "target": "file_src_promo_codes_promo_codes_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_service_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_service_ts",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_promo_codes_promo_codes_service_ts",
+      "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
@@ -8391,6 +9634,26 @@
     {
       "source": "file_src_seeders_databaseseeder_ts",
       "target": "file_src_seeds_superadmin_bootstrap_runner_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeders_databaseseeder_ts",
+      "target": "file_src_seeds_products_sample_runner_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeders_databaseseeder_ts",
+      "target": "file_src_seeds_promo_codes_sample_runner_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeds_products_sample_runner_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeds_promo_codes_sample_runner_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "imports"
     },
     {
@@ -9334,6 +10597,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_uploads_folder_navigation_spec_ts",
+      "target": "file_src_uploads_folder_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_folder_navigation_ts",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_folder_navigation_ts",
+      "target": "file_src_uploads_storage_folder_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_folder_reorganize_spec_ts",
+      "target": "file_src_uploads_folder_reorganize_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_order_image_snapshot_spec_ts",
+      "target": "file_src_uploads_order_image_snapshot_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_uploads_public_uploads_controller_ts",
       "target": "file_src_uploads_uploads_service_ts",
       "relation": "imports"
@@ -9346,6 +10634,61 @@
     {
       "source": "file_src_uploads_public_uploads_controller_ts",
       "target": "file_src_common_public_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_folder_labels_spec_ts",
+      "target": "file_src_uploads_storage_folder_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_folder_labels_ts",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_folder_name_spec_ts",
+      "target": "file_src_uploads_storage_folder_name_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_media_spec_ts",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_media_ts",
+      "target": "file_src_common_image_processor_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_media_ts",
+      "target": "file_src_uploads_storage_folder_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_path_resolver_spec_ts",
+      "target": "file_src_uploads_storage_path_resolver_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_protected_paths_spec_ts",
+      "target": "file_src_uploads_storage_protected_paths_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_upload_policy_spec_ts",
+      "target": "file_src_uploads_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_storage_upload_policy_ts",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_upload_filename_spec_ts",
+      "target": "file_src_uploads_upload_filename_ts",
       "relation": "imports"
     },
     {
@@ -9400,6 +10743,16 @@
     },
     {
       "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_entities_storage_file_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
       "target": "file_src_config_app_config_ts",
       "relation": "imports"
     },
@@ -9410,7 +10763,72 @@
     },
     {
       "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
       "target": "file_src_common_image_processor_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_zip_path_mapper_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_folder_reorganize_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_folder_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_folder_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_path_resolver_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_folder_name_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_order_image_snapshot_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_storage_protected_paths_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_uploads_upload_filename_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_zip_path_mapper_spec_ts",
+      "target": "file_src_uploads_zip_path_mapper_ts",
       "relation": "imports"
     },
     {

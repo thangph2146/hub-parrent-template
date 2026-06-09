@@ -27,6 +27,55 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+const FORBIDDEN_FOLDER_CHARS =
+  // eslint-disable-next-line no-control-regex -- loại control chars khỏi tên folder
+  /[\x00-\x1f\x7f\\/:*?"<>|]/g;
+
+function sanitizeFolderInputSegment(name: string): string {
+  return name
+    .trim()
+    .replace(FORBIDDEN_FOLDER_CHARS, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isPlainAsciiPathSegment(segment: string): boolean {
+  return (
+    /^[a-z0-9][a-z0-9_-]*$/i.test(segment) &&
+    // eslint-disable-next-line no-control-regex -- phát hiện ký tự ngoài ASCII
+    !/[^\x00-\x7F]/.test(segment)
+  );
+}
+
+/** Preview slug path khi tạo folder kho lưu trữ (khớp logic API). */
+export function resolveStorageFolderSlugPath(folderName: string): {
+  slugPath: string;
+  leafLabel: string;
+} | null {
+  const normalized = folderName.trim().replace(/\\/g, "/");
+  if (!normalized) return null;
+
+  const segments = normalized
+    .split("/")
+    .map((segment) => sanitizeFolderInputSegment(segment))
+    .filter(Boolean);
+
+  if (!segments.length) return null;
+
+  const resolved = segments.map((label) => {
+    const slugCandidate = slugify(label);
+    const slug = isPlainAsciiPathSegment(label)
+      ? label.toLowerCase().replace(/_/g, "-")
+      : slugCandidate;
+    return { slug: slug || label, label };
+  });
+
+  return {
+    slugPath: resolved.map((entry) => entry.slug).join("/"),
+    leafLabel: resolved[resolved.length - 1]?.label ?? "",
+  };
+}
+
 export function formatDateTime(value: string): string {
   if (!value) return "";
   try {

@@ -3,13 +3,20 @@ import { PERMISSION_CODES } from "@workspace/api-client"
 /** Nhãn tiếng Việt cho UI (hồ sơ, ma trận RBAC). */
 export const PERMISSION_LABEL_VI: Record<string, string> = {
   [PERMISSION_CODES.ALL]: "Toàn quyền (*)",
-  [PERMISSION_CODES.PRODUCTS_READ]: "Xem dữ liệu học tập",
-  [PERMISSION_CODES.PRODUCTS_WRITE]: "Cập nhật dữ liệu học tập",
+  [PERMISSION_CODES.PRODUCTS_VIEW]: "Xem sản phẩm",
+  [PERMISSION_CODES.PRODUCTS_CREATE]: "Tạo sản phẩm",
+  [PERMISSION_CODES.PRODUCTS_UPDATE]: "Cập nhật sản phẩm",
+  [PERMISSION_CODES.PRODUCTS_DELETE]: "Xóa sản phẩm",
   [PERMISSION_CODES.CATEGORIES_READ]: "Xem danh mục nội dung",
   [PERMISSION_CODES.CATEGORIES_WRITE]: "Sửa danh mục nội dung",
-  [PERMISSION_CODES.ORDERS_READ]: "Xem yêu cầu phụ huynh",
-  [PERMISSION_CODES.ORDERS_WRITE]: "Xử lý yêu cầu phụ huynh",
-  [PERMISSION_CODES.ORDERS_CHECKOUT]: "Tạo yêu cầu phụ huynh",
+  [PERMISSION_CODES.ORDERS_VIEW]: "Xem đơn hàng",
+  [PERMISSION_CODES.ORDERS_CREATE]: "Tạo đơn hàng",
+  [PERMISSION_CODES.ORDERS_UPDATE]: "Cập nhật đơn hàng",
+  [PERMISSION_CODES.ORDERS_CHECKOUT]: "Đặt hàng (checkout)",
+  [PERMISSION_CODES.PROMO_CODES_VIEW]: "Xem mã khuyến mãi",
+  [PERMISSION_CODES.PROMO_CODES_CREATE]: "Tạo mã khuyến mãi",
+  [PERMISSION_CODES.PROMO_CODES_UPDATE]: "Cập nhật mã KM",
+  [PERMISSION_CODES.PROMO_CODES_MANAGE]: "Quản lý mã KM",
   [PERMISSION_CODES.USERS_MANAGE]: "Quản lý nhân sự & tài khoản",
   [PERMISSION_CODES.USERS_CART_OWN]: "Xem dữ liệu cá nhân",
   [PERMISSION_CODES.RBAC_READ]: "Xem vai trò & quyền",
@@ -72,6 +79,8 @@ const RESOURCE_LABEL_VI: Record<string, string> = {
   seo_metas: "SEO meta",
   system: "hệ thống",
   parent_students: "phụ huynh–sinh viên",
+  products: "sản phẩm",
+  orders: "đơn hàng",
 }
 
 const ACTION_LABEL_VI: Record<string, string> = {
@@ -92,6 +101,7 @@ const ACTION_LABEL_VI: Record<string, string> = {
   unactive: "Vô hiệu hóa",
   "hard-delete": "Xóa vĩnh viễn",
   "revoke-by-user": "Thu hồi theo người dùng",
+  checkout: "Đặt hàng",
 }
 
 function titleCaseToken(token: string): string {

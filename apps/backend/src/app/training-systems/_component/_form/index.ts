@@ -1,1 +1,1 @@
-export { TrainingSystemFormShell } from "./training-system-form-shell";
+export { TrainingSystemFormShell } from "./training-system-form-shell"

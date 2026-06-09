@@ -1,23 +1,23 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type SeoMetaRow = {
-  id: string;
-  page: string;
-  title: string | null;
-  description: string | null;
-  keywords: string | null;
-  ogTitle: string | null;
-  ogDescription: string | null;
-  ogImage: string | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+  id: string
+  page: string
+  title: string | null
+  description: string | null
+  keywords: string | null
+  ogTitle: string | null
+  ogDescription: string | null
+  ogImage: string | null
+  status: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
 
 export interface SeoMetaConfirmAction {
-  kind: "delete" | "restore" | "purge";
-  row: SeoMetaRow;
+  kind: "delete" | "restore" | "purge"
+  row: SeoMetaRow
 }
 
 export const seoMetaFormSchema = z.object({
@@ -29,8 +29,8 @@ export const seoMetaFormSchema = z.object({
   ogDescription: z.string().optional(),
   ogImage: z.string().optional(),
   status: z.coerce.number(),
-});
+})
 
-export type SeoMetaFormValues = z.infer<typeof seoMetaFormSchema>;
+export type SeoMetaFormValues = z.infer<typeof seoMetaFormSchema>
 
-export type SeoMetaDetail = SeoMetaRow;
+export type SeoMetaDetail = SeoMetaRow

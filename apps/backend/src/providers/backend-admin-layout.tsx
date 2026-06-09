@@ -17,14 +17,17 @@ import { BACKEND_ADMIN_LAYOUT_STATIC } from "@/config/admin-layout-static"
 import { AdminRealtimeSync } from "@/providers/admin-realtime-sync"
 import { useAuth, useClientReady } from "@/providers/auth-provider"
 
-export function BackendAdminLayoutProvider({ children }: { children: ReactNode }) {
+export function BackendAdminLayoutProvider({
+  children,
+}: {
+  children: ReactNode
+}) {
   const clientReady = useClientReady()
   const { user, logout } = useAuth()
 
   const branding = useAdminSiteBranding({
     queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,
-    fetchBranding: ({ signal }) =>
-      api.settings.getPublicBranding({ signal }),
+    fetchBranding: ({ signal }) => api.settings.getPublicBranding({ signal }),
   })
 
   const siteSeo = useAdminPublicSiteSeo({
@@ -59,7 +62,7 @@ export function BackendAdminLayoutProvider({ children }: { children: ReactNode }
         branding,
         static: BACKEND_ADMIN_LAYOUT_STATIC,
       }),
-    [branding, clientReady, logout, user],
+    [branding, clientReady, logout, user]
   )
 
   return (

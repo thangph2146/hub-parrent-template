@@ -25,11 +25,11 @@ import { queryKeys } from "@/hooks/queries"
 
 function invalidateAdminPayload(
   queryClient: QueryClient,
-  payload: AdminCacheInvalidatePayload,
+  payload: AdminCacheInvalidatePayload
 ) {
   for (const prefix of queryPrefixesForAdminResource(
     payload.resource,
-    payload.id,
+    payload.id
   )) {
     void queryClient.invalidateQueries({ queryKey: [...prefix] })
   }
@@ -37,7 +37,7 @@ function invalidateAdminPayload(
 
 function invalidateStatusChange(
   queryClient: QueryClient,
-  payload: AdminStatusChangePayload,
+  payload: AdminStatusChangePayload
 ) {
   invalidateAdminPayload(queryClient, {
     resource: payload.resource,
@@ -49,7 +49,7 @@ function invalidateStatusChange(
 
 function invalidateRoleUpsert(
   queryClient: QueryClient,
-  payload: { role?: { id?: string } },
+  payload: { role?: { id?: string } }
 ) {
   void queryClient.invalidateQueries({ queryKey: rbacQueryKeys.all })
   const id = payload.role?.id
@@ -61,10 +61,11 @@ function invalidateRoleUpsert(
 
 function showRealtimeToast(
   payload: SocketNotificationPayload,
-  currentUserId: string | null,
+  currentUserId: string | null
 ) {
   if (!shouldShowRealtimeSyncToast(payload, currentUserId)) return
-  const { method, title, description } = resolveRealtimeNotificationToast(payload)
+  const { method, title, description } =
+    resolveRealtimeNotificationToast(payload)
   const data = description ? { description } : undefined
   if (method === "success") toast.success(title, data)
   else if (method === "warning") toast.warning(title, data)
@@ -84,7 +85,7 @@ function invalidateNotificationQueries(queryClient: QueryClient) {
  */
 export function useAdminRealtimeSync(
   enabled: boolean,
-  queryClient: QueryClient,
+  queryClient: QueryClient
 ): { connected: boolean; socketError: boolean } {
   const queryClientRef = useRef(queryClient)
   const [connected, setConnected] = useState(false)
@@ -176,7 +177,7 @@ export function useAdminRealtimeSync(
     }
 
     const onParentStudentReviewed = (
-      payload: ParentStudentReviewSocketPayload,
+      payload: ParentStudentReviewSocketPayload
     ) => {
       if (disposed || !payload?.id) return
       invalidateAdminPayload(queryClientRef.current, {
@@ -202,7 +203,7 @@ export function useAdminRealtimeSync(
     socket.on(ADMIN_SOCKET_EVENTS.notificationNew, onNotificationNew)
     socket.on(
       ADMIN_SOCKET_EVENTS.parentStudentReviewed,
-      onParentStudentReviewed,
+      onParentStudentReviewed
     )
 
     return () => {
@@ -220,7 +221,7 @@ export function useAdminRealtimeSync(
       socket.off(ADMIN_SOCKET_EVENTS.notificationNew, onNotificationNew)
       socket.off(
         ADMIN_SOCKET_EVENTS.parentStudentReviewed,
-        onParentStudentReviewed,
+        onParentStudentReviewed
       )
       socket.close()
       setConnected(false)

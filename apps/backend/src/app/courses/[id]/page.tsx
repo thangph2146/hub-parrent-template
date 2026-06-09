@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useAdminCrudNavigation } from "@/lib/admin-navigation";
-import { toast } from "@ui/components/sonner";
-import { Calendar, Clock, BookOpen, CalendarDays, Hash } from "lucide-react";
-import { Badge } from "@ui/components/badge";
+import { useAdminCrudNavigation } from "@/lib/admin-navigation"
+import { toast } from "@ui/components/sonner"
+import { Calendar, Clock, BookOpen, CalendarDays, Hash } from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionField,
   FieldSectionLegend,
-} from "@ui/components/field";
+} from "@ui/components/field"
 import {
   AdminPageGuard,
   AdminPageSection,
@@ -20,43 +20,45 @@ import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
-} from "@ui/components/admin";
-import { useAuth } from "@/providers/auth-provider";
-import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client";
-import { api } from "@/lib/api";
-import { useCourseDetailQuery } from "../_component";
+} from "@ui/components/admin"
+import { useAuth } from "@/providers/auth-provider"
+import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { api } from "@/lib/api"
+import { useCourseDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN");
+  if (!value) return "—"
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("vi-VN")
 }
 
 function formatDepartmentCode(value: number | null | undefined): string {
-  if (value == null) return "—";
-  return String(value);
+  if (value == null) return "—"
+  return String(value)
 }
 
 function CourseDetailInner() {
-  const crudNav = useAdminCrudNavigation("/courses");
-  const params = useParams();
-  const id = params.id as string;
-  const { user } = useAuth();
-  const canUpdate = user ? canUserAccess(user, PERMISSION_CODES.COURSES_UPDATE) : false;
+  const crudNav = useAdminCrudNavigation("/courses")
+  const params = useParams()
+  const id = params.id as string
+  const { user } = useAuth()
+  const canUpdate = user
+    ? canUserAccess(user, PERMISSION_CODES.COURSES_UPDATE)
+    : false
 
-  const { data: entity, isLoading, isError } = useCourseDetailQuery(api, id);
+  const { data: entity, isLoading, isError } = useCourseDetailQuery(api, id)
 
   useEffect(() => {
     if (isError) {
-      toast.error("Không tải được khóa học");
-      crudNav.list();
+      toast.error("Không tải được khóa học")
+      crudNav.list()
     }
-  }, [isError, crudNav]);
+  }, [isError, crudNav])
 
-  if (isLoading) return <AdminPageLoading />;
-  if (!entity) return null;
+  if (isLoading) return <AdminPageLoading />
+  if (!entity) return null
 
-  const departmentCode = formatDepartmentCode(entity.departmentId);
+  const departmentCode = formatDepartmentCode(entity.departmentId)
 
   return (
     <AdminPageSection>
@@ -87,7 +89,11 @@ function CourseDetailInner() {
               description="Mã khoa liên kết."
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
-              <FieldSectionField label="Mã khoa" icon={Hash} valueClassName="font-mono font-medium">
+              <FieldSectionField
+                label="Mã khoa"
+                icon={Hash}
+                valueClassName="font-mono font-medium"
+              >
                 {departmentCode}
               </FieldSectionField>
             </FieldSetContent>
@@ -101,10 +107,18 @@ function CourseDetailInner() {
             />
             <FieldSetContent variant="section" className="pt-0">
               <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Năm bắt đầu" icon={CalendarDays} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Năm bắt đầu"
+                  icon={CalendarDays}
+                  valueClassName="font-medium"
+                >
                   {entity.startYear ?? "—"}
                 </FieldSectionField>
-                <FieldSectionField label="Năm kết thúc" icon={CalendarDays} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Năm kết thúc"
+                  icon={CalendarDays}
+                  valueClassName="font-medium"
+                >
                   {entity.endYear ?? "—"}
                 </FieldSectionField>
               </div>
@@ -138,10 +152,18 @@ function CourseDetailInner() {
                 description="Mốc thời gian tạo và cập nhật."
               />
               <FieldSetContent variant="section" className="space-y-3 pt-0">
-                <FieldSectionField label="Ngày tạo" icon={Calendar} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Ngày tạo"
+                  icon={Calendar}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.createdAt)}
                 </FieldSectionField>
-                <FieldSectionField label="Cập nhật lần cuối" icon={Clock} valueClassName="font-medium">
+                <FieldSectionField
+                  label="Cập nhật lần cuối"
+                  icon={Clock}
+                  valueClassName="font-medium"
+                >
                   {formatDateTime(entity.updatedAt)}
                 </FieldSectionField>
               </FieldSetContent>
@@ -150,7 +172,7 @@ function CourseDetailInner() {
         </AdminDetailSidebar>
       </AdminDetailLayout>
     </AdminPageSection>
-  );
+  )
 }
 
 export default function CourseDetailPage() {
@@ -158,5 +180,5 @@ export default function CourseDetailPage() {
     <AdminPageGuard roles={["super_admin", "admin", "manager"]}>
       <CourseDetailInner />
     </AdminPageGuard>
-  );
+  )
 }

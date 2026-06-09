@@ -2394,6 +2394,106 @@
       "client": true
     },
     {
+      "id": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "label": "file-storage-allowed-extensions-picker.tsx",
+      "path": "src/app/file-storage/_component/file-storage-allowed-extensions-picker.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "label": "file-storage-create-folder-button.tsx",
+      "path": "src/app/file-storage/_component/file-storage-create-folder-button.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "label": "file-storage-delete-folder-button.tsx",
+      "path": "src/app/file-storage/_component/file-storage-delete-folder-button.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_empty_tsx",
+      "label": "file-storage-empty.tsx",
+      "path": "src/app/file-storage/_component/file-storage-empty.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "label": "file-storage-folder-nav.tsx",
+      "path": "src/app/file-storage/_component/file-storage-folder-nav.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "label": "file-storage-folder-tree.tsx",
+      "path": "src/app/file-storage/_component/file-storage-folder-tree.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_import_confirm_dialogs_tsx",
+      "label": "file-storage-import-confirm-dialogs.tsx",
+      "path": "src/app/file-storage/_component/file-storage-import-confirm-dialogs.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "label": "file-storage-move-dialog.tsx",
+      "path": "src/app/file-storage/_component/file-storage-move-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "label": "file-storage-reorganize-dialog.tsx",
+      "path": "src/app/file-storage/_component/file-storage-reorganize-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "label": "file-storage-upload-dialog.tsx",
+      "path": "src/app/file-storage/_component/file-storage-upload-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_file_storage__component_index_ts",
       "label": "index.ts",
       "path": "src/app/file-storage/_component/index.ts",
@@ -2402,6 +2502,26 @@
       "community": "src/app/file-storage/_component",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "label": "storage-upload-policy.ts",
+      "path": "src/app/file-storage/_component/storage-upload-policy.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_file_storage__component_storage_video_preview_tsx",
+      "label": "storage-video-preview.tsx",
+      "path": "src/app/file-storage/_component/storage-video-preview.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_app_file_storage__component_types_ts",
@@ -2456,6 +2576,16 @@
       "id": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
       "label": "use-file-storage-list.ts",
       "path": "src/app/file-storage/_component/_hooks/use-file-storage-list.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component__hooks_use_storage_folders_ts",
+      "label": "use-storage-folders.ts",
+      "path": "src/app/file-storage/_component/_hooks/use-storage-folders.ts",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/file-storage/_component/_hooks",
@@ -3647,6 +3777,93 @@
       "client": true
     },
     {
+      "id": "dir_src_app_orders",
+      "label": "orders/",
+      "path": "src/app/orders",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_orders_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/orders/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/orders",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_orders__id_",
+      "label": "[id]/",
+      "path": "src/app/orders/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/orders",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_orders__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/orders/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/orders/[id]",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_orders__component",
+      "label": "_component/",
+      "path": "src/app/orders/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/orders",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_orders__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/orders/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_orders__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/orders/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_orders__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/orders/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_orders__component_use_orders_queries_ts",
+      "label": "use-orders-queries.ts",
+      "path": "src/app/orders/_component/use-orders-queries.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_app_page_tsx",
       "label": "page.tsx",
       "path": "src/app/page.tsx",
@@ -4143,6 +4360,161 @@
       "client": true
     },
     {
+      "id": "dir_src_app_products",
+      "label": "products/",
+      "path": "src/app/products",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_products_new",
+      "label": "new/",
+      "path": "src/app/products/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/products",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_products_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/products/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/products/new",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/products/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/products",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_products__id_",
+      "label": "[id]/",
+      "path": "src/app/products/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/products",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_products__id__edit",
+      "label": "edit/",
+      "path": "src/app/products/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/products/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_products__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/products/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/products/[id]/edit",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/products/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/products/[id]",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_products__component",
+      "label": "_component/",
+      "path": "src/app/products/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/products",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_products__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/products/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/products/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_products__component_product_form_tsx",
+      "label": "product-form.tsx",
+      "path": "src/app/products/_component/product-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "label": "product-unit-variants-field.tsx",
+      "path": "src/app/products/_component/product-unit-variants-field.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__component_products_table_tsx",
+      "label": "products-table.tsx",
+      "path": "src/app/products/_component/products-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/products/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_products__component_use_products_queries_ts",
+      "label": "use-products-queries.ts",
+      "path": "src/app/products/_component/use-products-queries.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_app_profile",
       "label": "profile/",
       "path": "src/app/profile",
@@ -4209,6 +4581,91 @@
       "community": "src/app/profile/_components",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "dir_src_app_promo_codes",
+      "label": "promo-codes/",
+      "path": "src/app/promo-codes",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_promo_codes_new",
+      "label": "new/",
+      "path": "src/app/promo-codes/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_promo_codes_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/promo-codes/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/promo-codes/new",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "file_src_app_promo_codes_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/promo-codes/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/promo-codes",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_promo_codes__id_",
+      "label": "[id]/",
+      "path": "src/app/promo-codes/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_promo_codes__id__edit",
+      "label": "edit/",
+      "path": "src/app/promo-codes/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/promo-codes/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_promo_codes__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/promo-codes/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/promo-codes/[id]/edit",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_promo_codes__component",
+      "label": "_component/",
+      "path": "src/app/promo-codes/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_promo_codes__component_promo_form_tsx",
+      "label": "promo-form.tsx",
+      "path": "src/app/promo-codes/_component/promo-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/promo-codes/_component",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "dir_src_app_rbac",
@@ -6842,24 +7299,6 @@
       "client": true
     },
     {
-      "id": "dir_src_components",
-      "label": "components/",
-      "path": "src/components",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "dir_src_components_graphify",
-      "label": "graphify/",
-      "path": "src/components/graphify",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/components",
-      "type": "directory"
-    },
-    {
       "id": "dir_src_config",
       "label": "config/",
       "path": "src/config",
@@ -7313,6 +7752,16 @@
       "community": "src/lib",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_lib_storage_image_picker_dialog_tsx",
+      "label": "storage-image-picker-dialog.tsx",
+      "path": "src/lib/storage-image-picker-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/lib",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "dir_src_providers",
@@ -8655,7 +9104,67 @@
     },
     {
       "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_empty_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_import_confirm_dialogs_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
       "target": "file_src_app_file_storage__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_storage_video_preview_tsx",
       "relation": "contains"
     },
     {
@@ -8686,6 +9195,11 @@
     {
       "source": "dir_src_app_file_storage__component__hooks",
       "target": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__hooks",
+      "target": "file_src_app_file_storage__component__hooks_use_storage_folders_ts",
       "relation": "contains"
     },
     {
@@ -9300,6 +9814,51 @@
     },
     {
       "source": "dir_src_app",
+      "target": "dir_src_app_orders",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders",
+      "target": "file_src_app_orders_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders",
+      "target": "dir_src_app_orders__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__id_",
+      "target": "file_src_app_orders__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders",
+      "target": "dir_src_app_orders__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_use_orders_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
       "target": "file_src_app_page_tsx",
       "relation": "contains"
     },
@@ -9555,6 +10114,86 @@
     },
     {
       "source": "dir_src_app",
+      "target": "dir_src_app_products",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products",
+      "target": "dir_src_app_products_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products_new",
+      "target": "file_src_app_products_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products",
+      "target": "file_src_app_products_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products",
+      "target": "dir_src_app_products__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__id_",
+      "target": "dir_src_app_products__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__id__edit",
+      "target": "file_src_app_products__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__id_",
+      "target": "file_src_app_products__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products",
+      "target": "dir_src_app_products__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_product_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_products_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_use_products_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
       "target": "dir_src_app_profile",
       "relation": "contains"
     },
@@ -9586,6 +10225,51 @@
     {
       "source": "dir_src_app_profile__components",
       "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
+      "target": "dir_src_app_promo_codes",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes",
+      "target": "dir_src_app_promo_codes_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes_new",
+      "target": "file_src_app_promo_codes_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes",
+      "target": "file_src_app_promo_codes_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes",
+      "target": "dir_src_app_promo_codes__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__id_",
+      "target": "dir_src_app_promo_codes__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__id__edit",
+      "target": "file_src_app_promo_codes__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes",
+      "target": "dir_src_app_promo_codes__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__component",
+      "target": "file_src_app_promo_codes__component_promo_form_tsx",
       "relation": "contains"
     },
     {
@@ -10950,16 +11634,6 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_components",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_components",
-      "target": "dir_src_components_graphify",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_config",
       "relation": "contains"
     },
@@ -11186,6 +11860,11 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_product_price_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_storage_image_picker_dialog_tsx",
       "relation": "contains"
     },
     {
@@ -13215,6 +13894,26 @@
     },
     {
       "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_lib_build_admin_filter_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage_page_tsx",
       "target": "dir_src_app_file_storage__component",
       "relation": "imports"
     },
@@ -13254,6 +13953,161 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "target": "file_src_app_file_storage__component__hooks_use_storage_folders_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_lib_admin_upload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_allowed_extensions_picker_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_file_storage__component_index_ts",
       "target": "file_src_app_file_storage__component_columns_tsx",
       "relation": "imports"
@@ -13261,6 +14115,56 @@
     {
       "source": "file_src_app_file_storage__component_index_ts",
       "target": "file_src_app_file_storage__component_file_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_storage_video_preview_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_empty_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_upload_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_create_folder_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_delete_folder_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_folder_nav_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_import_confirm_dialogs_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_folder_tree_tsx",
       "relation": "imports"
     },
     {
@@ -13284,8 +14188,28 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_storage_video_preview_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_storage_video_preview_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_file_storage__component_types_ts",
       "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_utils_ts",
+      "target": "file_src_app_file_storage__component_types_ts",
       "relation": "imports"
     },
     {
@@ -13299,8 +14223,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
-      "target": "file_src_lib_admin_upload_ts",
+      "source": "file_src_app_file_storage__component__hooks_index_ts",
+      "target": "file_src_app_file_storage__component__hooks_use_storage_folders_ts",
       "relation": "imports"
     },
     {
@@ -13310,7 +14234,22 @@
     },
     {
       "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_app_file_storage__component_file_storage_import_confirm_dialogs_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
       "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_file_storage_actions_ts",
+      "target": "file_src_app_file_storage__component_utils_ts",
       "relation": "imports"
     },
     {
@@ -13321,6 +14260,16 @@
     {
       "source": "file_src_app_file_storage__component__hooks_use_file_storage_list_ts",
       "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__hooks_use_storage_folders_ts",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_empty_tsx",
       "relation": "imports"
     },
     {
@@ -14304,6 +15253,81 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_orders_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders_page_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders_page_tsx",
+      "target": "dir_src_app_orders__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__page_tsx",
+      "target": "dir_src_app_orders__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_columns_tsx",
+      "target": "file_src_app_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_index_ts",
+      "target": "file_src_app_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_index_ts",
+      "target": "file_src_app_orders__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_index_ts",
+      "target": "file_src_app_orders__component_use_orders_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_use_orders_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_use_orders_queries_ts",
+      "target": "file_src_app_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
       "relation": "imports"
@@ -14749,6 +15773,181 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_products_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_new_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_new_page_tsx",
+      "target": "dir_src_app_products__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products_page_tsx",
+      "target": "dir_src_app_products__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__edit_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__edit_page_tsx",
+      "target": "dir_src_app_products__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__id__page_tsx",
+      "target": "dir_src_app_products__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_columns_tsx",
+      "target": "file_src_lib_admin_table_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_columns_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_use_products_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_products_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_product_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_index_ts",
+      "target": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_form_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_form_tsx",
+      "target": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "target": "file_src_lib_storage_image_picker_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_products_table_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_use_products_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_use_products_queries_ts",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_profile_page_tsx",
       "target": "file_src_providers_auth_provider_tsx",
       "relation": "imports"
@@ -14791,6 +15990,56 @@
     {
       "source": "file_src_app_profile__components_profile_sidebar_tsx",
       "target": "file_src_app_profile__components_profile_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_new_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_new_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_new_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_new_page_tsx",
+      "target": "file_src_app_promo_codes__component_promo_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__edit_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__edit_page_tsx",
+      "target": "file_src_app_promo_codes__component_promo_form_tsx",
       "relation": "imports"
     },
     {
@@ -17034,6 +18283,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_uploads_ts",
+      "target": "file_src_lib_fetch_all_admin_list_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_api_ts",
       "target": "file_src_lib_auth_session_ts",
       "relation": "imports"
@@ -17066,6 +18320,16 @@
     {
       "source": "file_src_lib_index_ts",
       "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_storage_image_picker_dialog_tsx",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_storage_image_picker_dialog_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
       "relation": "imports"
     },
     {

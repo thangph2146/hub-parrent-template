@@ -42,7 +42,9 @@ function TermTable({ items }: { items: TermAverage[] }) {
         accessorFn: (row) => row.termID ?? "",
         meta: {
           exportValue: (row: TermAverage) =>
-            row.orderTerm ? `${row.termID} (HK${row.orderTerm})` : row.termID ?? "",
+            row.orderTerm
+              ? `${row.termID} (HK${row.orderTerm})`
+              : (row.termID ?? ""),
         },
         cell: ({ row }) => (
           <div className="flex items-center gap-1.5">

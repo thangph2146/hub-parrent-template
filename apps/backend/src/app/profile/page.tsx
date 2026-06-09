@@ -15,13 +15,7 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Textarea } from "@ui/components/textarea"
-import {
-  Camera,
-  KeyRound,
-  Loader2,
-  MapPin,
-  Save,
-} from "lucide-react"
+import { Camera, KeyRound, Loader2, MapPin, Save } from "lucide-react"
 import { useAuth } from "@/providers/auth-provider"
 
 import {
@@ -30,7 +24,11 @@ import {
   useUpdateStaffProfile,
 } from "@/hooks/queries"
 import { patchAdminSessionProfile } from "@/lib/auth-session"
-import { AdminListPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminListPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 
 function getRoleCode(role: { code?: string; name?: string }) {
   return role.code ?? role.name ?? ""
@@ -198,7 +196,7 @@ function AdminProfilePageInner() {
             <FieldSetContent variant="section" className="space-y-5">
               <div className="flex items-start gap-4">
                 <div className="flex flex-col gap-2.5">
-                  <div className="relative aspect-[3/4] w-40 sm:w-60 shrink-0">
+                  <div className="relative aspect-[3/4] w-40 shrink-0 sm:w-60">
                     {avatar ? (
                       <img
                         src={avatar}
@@ -262,15 +260,30 @@ function AdminProfilePageInner() {
                       placeholder="https://example.com/avatar.jpg"
                       className={PROFILE_FIELD_CLASS}
                     />
-                   {isStudent && avatar && (
-                    <div className="mt-2 flex items-start gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                      <span>
-                        Bạn chỉ được tải ảnh đại diện{" "}
-                        <strong>một lần duy nhất</strong>.
-                      </span>
-                    </div>
-                  )}
+                    {isStudent && avatar && (
+                      <div className="mt-2 flex items-start gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mt-0.5 shrink-0"
+                        >
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                          <line x1="12" y1="9" x2="12" y2="13" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <span>
+                          Bạn chỉ được tải ảnh đại diện{" "}
+                          <strong>một lần duy nhất</strong>.
+                        </span>
+                      </div>
+                    )}
                     {isStudent && !avatar && (
                       <div className="mt-2 flex items-start gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
                         <svg
@@ -300,9 +313,9 @@ function AdminProfilePageInner() {
                   <FieldSectionField label="Email">
                     <span className="font-mono text-sm">{email}</span>
                   </FieldSectionField>
-                  <p className="text-xs leading-relaxed text-muted-foreground -mt-3">
-                    Email đăng nhập đang được quản trị tập trung từ hệ thống
-                    và không chỉnh trực tiếp ở màn này.
+                  <p className="-mt-3 text-xs leading-relaxed text-muted-foreground">
+                    Email đăng nhập đang được quản trị tập trung từ hệ thống và
+                    không chỉnh trực tiếp ở màn này.
                   </p>
                   <Field>
                     <FieldLabel htmlFor="admin-fullName">Họ và tên</FieldLabel>
@@ -331,7 +344,9 @@ function AdminProfilePageInner() {
                     </FieldContent>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="admin-address">Địa chỉ / văn phòng</FieldLabel>
+                    <FieldLabel htmlFor="admin-address">
+                      Địa chỉ / văn phòng
+                    </FieldLabel>
                     <FieldContent>
                       <Textarea
                         id="admin-address"
@@ -366,7 +381,7 @@ function AdminProfilePageInner() {
           </FieldSet>
         </div>
         <div className="space-y-6">
-        <FieldSet variant="section">
+          <FieldSet variant="section">
             <FieldSectionLegend
               icon={KeyRound}
               title="Đổi mật khẩu"
@@ -374,7 +389,9 @@ function AdminProfilePageInner() {
             />
             <FieldSetContent variant="section" className="space-y-5">
               <Field>
-                <FieldLabel htmlFor="admin-current-pw">Mật khẩu hiện tại</FieldLabel>
+                <FieldLabel htmlFor="admin-current-pw">
+                  Mật khẩu hiện tại
+                </FieldLabel>
                 <FieldContent>
                   <Input
                     id="admin-current-pw"
@@ -402,7 +419,9 @@ function AdminProfilePageInner() {
                 </FieldContent>
               </Field>
               <Field>
-                <FieldLabel htmlFor="admin-confirm-pw">Nhập lại mật khẩu mới</FieldLabel>
+                <FieldLabel htmlFor="admin-confirm-pw">
+                  Nhập lại mật khẩu mới
+                </FieldLabel>
                 <FieldContent>
                   <Input
                     id="admin-confirm-pw"

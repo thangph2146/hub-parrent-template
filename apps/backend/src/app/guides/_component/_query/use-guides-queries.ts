@@ -1,20 +1,21 @@
-"use client";
+"use client"
 
-import { adminDetailQueryOptions,
+import {
+  adminDetailQueryOptions,
   prefetchAdminDetailQuery,
-} from "@/lib/admin-detail-query";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery, type QueryClient } from "@tanstack/react-query";
-import type { StoreSyncSdk } from "@workspace/api-client";
-import type { GuideGroup, ListResult } from "../types";
-import { PAGE_KEY } from "../utils";
+} from "@/lib/admin-detail-query"
+import type { UseQueryResult } from "@tanstack/react-query"
+import { useQuery, type QueryClient } from "@tanstack/react-query"
+import type { StoreSyncSdk } from "@workspace/api-client"
+import type { GuideGroup, ListResult } from "../types"
+import { PAGE_KEY } from "../utils"
 
 export interface UseGuidesQueryProps {
-  api: StoreSyncSdk;
-  page: number;
-  limit?: number;
-  search?: string;
-  filters?: Record<string, string>;
+  api: StoreSyncSdk
+  page: number
+  limit?: number
+  search?: string
+  filters?: Record<string, string>
 }
 
 export function useGuidesQuery({
@@ -32,7 +33,7 @@ export function useGuidesQuery({
         limit,
         search: search.trim() || PAGE_KEY,
         filters,
-      });
+      })
       return {
         data: payload.items,
         pagination: {
@@ -41,14 +42,13 @@ export function useGuidesQuery({
           total: payload.total,
           totalPages: Math.ceil(payload.total / limit),
         },
-      };
+      }
     },
-  });
+  })
 }
 
-
 export const guideDetailQueryKey = (guideId: string) =>
-  ["guides", "detail", guideId] as const;
+  ["guides", "detail", guideId] as const
 
 export function prefetchGuideDetail(
   queryClient: QueryClient,
@@ -59,18 +59,15 @@ export function prefetchGuideDetail(
     queryClient,
     guideDetailQueryKey(guideId),
     () => apiParam.guides.get<GuideGroup>(guideId)
-  );
+  )
 }
 
-export function useGuideDetailQuery(
-  apiParam: StoreSyncSdk,
-  guideId: string
-) {
+export function useGuideDetailQuery(apiParam: StoreSyncSdk, guideId: string) {
   return useQuery({
     ...adminDetailQueryOptions(
       guideDetailQueryKey(guideId),
       async () => apiParam.guides.get<GuideGroup>(guideId),
       guideId
     ),
-});
+  })
 }

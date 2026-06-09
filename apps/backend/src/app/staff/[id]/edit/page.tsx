@@ -7,7 +7,11 @@ import { useStaffForm, useStaffMutations } from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
 import { useRbacCatalog, useStaffProfile } from "@/hooks/queries"
 import { useAuth } from "@/providers/auth-provider"
-import { AdminFormPageHeader, AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import {
+  AdminFormPageHeader,
+  AdminPageGuard,
+  AdminPageSection,
+} from "@ui/components/admin"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import { Card, CardContent } from "@ui/components/card"
 import { api } from "@/lib/api"
@@ -16,7 +20,7 @@ import { canEditProtectedAdminUser } from "@/config/protected-admin"
 
 function EditStaffPageInner() {
   const params = useParams()
-  const crudNav = useAdminCrudNavigation("/staff");
+  const crudNav = useAdminCrudNavigation("/staff")
   const { user: session } = useAuth()
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
@@ -110,8 +114,8 @@ function EditStaffPageInner() {
               <p className="text-base font-semibold">Tài khoản hệ thống</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Tài khoản{" "}
-                <span className="font-mono font-medium">{user.email}</span> chỉ được
-                chỉnh sửa khi đăng nhập đúng tài khoản đó.
+                <span className="font-mono font-medium">{user.email}</span> chỉ
+                được chỉnh sửa khi đăng nhập đúng tài khoản đó.
               </p>
             </div>
           </CardContent>

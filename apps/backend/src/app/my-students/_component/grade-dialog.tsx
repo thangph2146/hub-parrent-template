@@ -1,18 +1,8 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import {
-  Star,
-  BookCheck,
-  Award,
-  ScrollText,
-} from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@ui/components/card"
+import { Star, BookCheck, Award, ScrollText } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
 import {
   Dialog,
   DialogContent,
@@ -31,16 +21,64 @@ import type {
 } from "@/types/student-scores"
 
 const MOCK_DETAILED_SCORES: DetailedScore[] = [
-  { studyUnitID: "1", studyUnitAlias: "IT101-01", curriculumID: "IT101", curriculumName: "Nhập môn lập trình", yearStudy: "2024-2025", termID: "1", classStudentID: "C01", classStudentName: "Lớp 01", studyProgramID: "P01", studyProgramName: "Cử nhân CNTT", studyTypeID: "T01", studyTypeName: "Chính quy", mark10: 8.5, mark4: 3.5, markLetter: "A" },
-  { studyUnitID: "2", studyUnitAlias: "IT102-01", curriculumID: "IT102", curriculumName: "Cấu trúc dữ liệu & Giải thuật", yearStudy: "2024-2025", termID: "1", classStudentID: "C01", classStudentName: "Lớp 01", studyProgramID: "P01", studyProgramName: "Cử nhân CNTT", studyTypeID: "T01", studyTypeName: "Chính quy", mark10: 7.2, mark4: 2.8, markLetter: "B" },
+  {
+    studyUnitID: "1",
+    studyUnitAlias: "IT101-01",
+    curriculumID: "IT101",
+    curriculumName: "Nhập môn lập trình",
+    yearStudy: "2024-2025",
+    termID: "1",
+    classStudentID: "C01",
+    classStudentName: "Lớp 01",
+    studyProgramID: "P01",
+    studyProgramName: "Cử nhân CNTT",
+    studyTypeID: "T01",
+    studyTypeName: "Chính quy",
+    mark10: 8.5,
+    mark4: 3.5,
+    markLetter: "A",
+  },
+  {
+    studyUnitID: "2",
+    studyUnitAlias: "IT102-01",
+    curriculumID: "IT102",
+    curriculumName: "Cấu trúc dữ liệu & Giải thuật",
+    yearStudy: "2024-2025",
+    termID: "1",
+    classStudentID: "C01",
+    classStudentName: "Lớp 01",
+    studyProgramID: "P01",
+    studyProgramName: "Cử nhân CNTT",
+    studyTypeID: "T01",
+    studyTypeName: "Chính quy",
+    mark10: 7.2,
+    mark4: 2.8,
+    markLetter: "B",
+  },
 ]
 
 const MOCK_YEAR_AVERAGES: YearAverage[] = [
-  { yearStudy: "2024-2025", averageScore10: 7.4, averageScore4: 2.8, averageGatherScore10: 7.4, averageGatherScore4: 2.8, updateDate: "2025-06-15" },
+  {
+    yearStudy: "2024-2025",
+    averageScore10: 7.4,
+    averageScore4: 2.8,
+    averageGatherScore10: 7.4,
+    averageGatherScore4: 2.8,
+    updateDate: "2025-06-15",
+  },
 ]
 
 const MOCK_TERM_AVERAGES: TermAverage[] = [
-  { yearStudy: "2024-2025", termID: "1", orderTerm: 1, averageScore10: 7.55, averageScore4: 2.88, averageGatherScore10: 7.55, averageGatherScore4: 2.88, updateDate: "2025-01-15" },
+  {
+    yearStudy: "2024-2025",
+    termID: "1",
+    orderTerm: 1,
+    averageScore10: 7.55,
+    averageScore4: 2.88,
+    averageGatherScore10: 7.55,
+    averageGatherScore4: 2.88,
+    updateDate: "2025-01-15",
+  },
 ]
 
 const MOCK_OVERALL_AVERAGE: OverallAverage = {
@@ -82,29 +120,29 @@ export function StudentGradeDialog({
     retry: false,
   })
 
-  const { data: yearAverages, isLoading: isLoadingYear } = useQuery<YearAverage[]>(
-    {
-      queryKey: ["student-averages", "year", studentCode],
-      queryFn: async () => {
-        if (isDev) return MOCK_YEAR_AVERAGES
-        return api.myStudents.getYearAverages<YearAverage>(studentCode)
-      },
-      enabled: open && Boolean(studentCode),
-      retry: false,
+  const { data: yearAverages, isLoading: isLoadingYear } = useQuery<
+    YearAverage[]
+  >({
+    queryKey: ["student-averages", "year", studentCode],
+    queryFn: async () => {
+      if (isDev) return MOCK_YEAR_AVERAGES
+      return api.myStudents.getYearAverages<YearAverage>(studentCode)
     },
-  )
+    enabled: open && Boolean(studentCode),
+    retry: false,
+  })
 
-  const { data: termAverages, isLoading: isLoadingTerm } = useQuery<TermAverage[]>(
-    {
-      queryKey: ["student-averages", "terms", studentCode],
-      queryFn: async () => {
-        if (isDev) return MOCK_TERM_AVERAGES
-        return api.myStudents.getTermAverages<TermAverage>(studentCode)
-      },
-      enabled: open && Boolean(studentCode),
-      retry: false,
+  const { data: termAverages, isLoading: isLoadingTerm } = useQuery<
+    TermAverage[]
+  >({
+    queryKey: ["student-averages", "terms", studentCode],
+    queryFn: async () => {
+      if (isDev) return MOCK_TERM_AVERAGES
+      return api.myStudents.getTermAverages<TermAverage>(studentCode)
     },
-  )
+    enabled: open && Boolean(studentCode),
+    retry: false,
+  })
 
   const { data: overallAverage } = useQuery<OverallAverage | null>({
     queryKey: ["student-averages", "overall", studentCode],
@@ -226,7 +264,7 @@ export function StudentGradeDialog({
                     <div
                       className={cn(
                         "flex size-6 items-center justify-center rounded",
-                        s.iconBg,
+                        s.iconBg
                       )}
                     >
                       <Icon className="size-3.5" />
@@ -238,8 +276,8 @@ export function StudentGradeDialog({
                   <CardContent className="pt-0">
                     <div
                       className={cn(
-                        "text-lg font-bold leading-tight tracking-tight",
-                        s.color,
+                        "text-lg leading-tight font-bold tracking-tight",
+                        s.color
                       )}
                     >
                       {s.value ?? "—"}

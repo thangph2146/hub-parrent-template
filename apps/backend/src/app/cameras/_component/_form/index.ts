@@ -1,1 +1,1 @@
-export { CameraFormShell } from "./camera-form-shell";
+export { CameraFormShell } from "./camera-form-shell"

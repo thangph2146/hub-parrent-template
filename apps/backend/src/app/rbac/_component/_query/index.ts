@@ -1,1 +1,1 @@
-export * from "./use-rbac-queries";
+export * from "./use-rbac-queries"

@@ -1,1 +1,1 @@
-export { AdminCrudConfirmDialog as SeoMetasConfirmDialog } from "@ui/components/admin";
+export { AdminCrudConfirmDialog as SeoMetasConfirmDialog } from "@ui/components/admin"
