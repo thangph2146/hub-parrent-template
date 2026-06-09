@@ -11,10 +11,15 @@ declare module "@tanstack/react-table" {
       | "tree-select"
       | "tree-multi-select"
       | "number"
+      | "number-range"
       | "date"
       | "date-range"
       | "user-search"
     filterPlaceholder?: string
+    /** Placeholder ô min khi `filterVariant: "number-range"`. */
+    numberRangeMinPlaceholder?: string
+    /** Placeholder ô max khi `filterVariant: "number-range"`. */
+    numberRangeMaxPlaceholder?: string
     /** Gợi ý người dùng khi `filterVariant: "user-search"`. */
     userSearchHandlers?: DataTableUserSearchHandlers
     /** Nhãn ô lọc ngoài bảng (mặc định: header cột) */

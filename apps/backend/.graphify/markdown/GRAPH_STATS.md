@@ -1,15 +1,15 @@
 # Thống kê graph — backend (Graphify)
 
-> **Sinh tự động:** `2026-06-08T08:15:50.804Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-09T04:50:01.506Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `ts` | 265 |
-| `directory` | 240 |
-| `tsx` | 146 |
-| `page` | 97 |
+| `ts` | 271 |
+| `directory` | 241 |
+| `tsx` | 154 |
+| `page` | 99 |
 | `loading` | 59 |
 | `api-route` | 1 |
 | `error` | 1 |
@@ -20,8 +20,8 @@
 
 | relation | Số |
 |----------|-----|
-| `imports` | 1292 |
-| `contains` | 809 |
+| `imports` | 1347 |
+| `contains` | 826 |
 | `renders` | 1 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
@@ -30,7 +30,7 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 
 | File | Số cạnh imports |
 |------|-----------------|
-| `src/app/file-storage/_component/index.ts` | 16 |
+| `src/app/file-storage/_component/index.ts` | 18 |
 | `src/app/my-students/_component/index.ts` | 10 |
 | `src/app/rbac/page.tsx` | 10 |
 | `src/app/events/[id]/page.tsx` | 9 |
@@ -57,19 +57,19 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 | File | Số lần bị import |
 |------|------------------|
-| `src/lib/api.ts` | 131 |
-| `src/lib/admin-navigation.ts` | 86 |
-| `src/hooks/use-admin-mutation.ts` | 70 |
-| `src/providers/auth-provider.tsx` | 56 |
-| `src/lib/admin-row-action-handlers.ts` | 37 |
-| `src/hooks/use-debounced-value.ts` | 26 |
+| `src/lib/api.ts` | 135 |
+| `src/lib/admin-navigation.ts` | 88 |
+| `src/hooks/use-admin-mutation.ts` | 73 |
+| `src/providers/auth-provider.tsx` | 60 |
+| `src/lib/admin-row-action-handlers.ts` | 39 |
+| `src/hooks/use-debounced-value.ts` | 27 |
 | `src/lib/admin-table-columns.tsx` | 23 |
-| `src/lib/admin-detail-query.ts` | 20 |
+| `src/lib/admin-detail-query.ts` | 21 |
+| `src/app/file-storage/_component/types.ts` | 19 |
 | `src/lib/fetch-all-admin-list.ts` | 18 |
-| `src/app/file-storage/_component/types.ts` | 17 |
 | `src/hooks/use-table-filters.ts` | 16 |
+| `src/app/file-storage/_component/utils.ts` | 15 |
 | `src/lib/admin-trash-export.ts` | 14 |
-| `src/app/file-storage/_component/utils.ts` | 14 |
 | `src/hooks/queries.ts` | 12 |
 | `src/app/posts/_component/types.ts` | 12 |
 

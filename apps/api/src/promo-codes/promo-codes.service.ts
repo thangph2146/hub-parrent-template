@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { PromoCode } from '../entities/promo-code.entity';
 import { isPromoRedeemable } from '../common/promo-checkout';
+import { applyColumnFilters } from '../common/apply-column-filters';
+import { PROMO_CODE_COLUMN_FILTERS } from '../common/admin-filter-configs';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
@@ -58,7 +60,7 @@ export class PromoCodesService {
     page: number;
     limit: number;
     q?: string;
-    activeOnly?: boolean;
+    filters?: Record<string, string>;
   }) {
     const { page, limit, skip } = normalizePageLimit(
       params.page,
@@ -66,7 +68,11 @@ export class PromoCodesService {
       ADMIN_TABLE_EXPORT_MAX_LIMIT,
     );
     const where: FilterQuery<PromoCode> = { deletedAt: null };
-    if (params.activeOnly) where.isActive = true;
+    applyColumnFilters(
+      where as Record<string, unknown>,
+      params.filters,
+      PROMO_CODE_COLUMN_FILTERS,
+    );
     if (params.q?.trim()) {
       const q = `%${params.q.trim()}%`;
       where.$or = [{ code: { $like: q } }, { label: { $like: q } }];

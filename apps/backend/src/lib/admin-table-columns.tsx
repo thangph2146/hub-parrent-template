@@ -94,6 +94,48 @@ function defineAdminDateColumn<TData>(
   }
 }
 
+type AdminNumberRangeColumnOptions<TData> = {
+  accessorKey: string
+  header: string
+  filterLabel?: string
+  minPlaceholder?: string
+  maxPlaceholder?: string
+  enableColumnFilter?: boolean
+  cell?: ColumnDef<TData>["cell"]
+  meta?: ColumnDef<TData>["meta"]
+}
+
+/** Cột số — lọc khoảng min/max (vd. tổng tiền, lượt dùng). */
+export function defineAdminNumberRangeColumn<TData>(
+  options: AdminNumberRangeColumnOptions<TData>
+): ColumnDef<TData> {
+  const {
+    accessorKey,
+    header,
+    filterLabel,
+    minPlaceholder = "Từ",
+    maxPlaceholder = "Đến",
+    enableColumnFilter = true,
+    cell,
+    meta: extraMeta,
+  } = options
+
+  return {
+    accessorKey,
+    header,
+    enableColumnFilter,
+    enableSorting: false,
+    meta: {
+      filterVariant: enableColumnFilter ? "number-range" : undefined,
+      filterLabel: filterLabel ?? header,
+      numberRangeMinPlaceholder: minPlaceholder,
+      numberRangeMaxPlaceholder: maxPlaceholder,
+      ...extraMeta,
+    },
+    cell,
+  } as ColumnDef<TData>
+}
+
 /** Cột `createdAt` — lọc khoảng ngày giống `updatedAt` / `deletedAt`. */
 export function defineAdminCreatedAtColumn<TData>(
   options: AdminDateColumnOptions = {}

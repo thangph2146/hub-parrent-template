@@ -2,6 +2,7 @@ export type AdminColumnFilterType =
   | 'text'
   | 'exact'
   | 'number'
+  | 'numberRange'
   | 'dateRange'
   | 'boolean'
   | 'uuid';
@@ -94,6 +95,18 @@ function applyFieldFilter(
       const parsed = Number(value);
       if (Number.isFinite(parsed)) {
         setNestedWhere(where, path, parsed);
+      }
+      return;
+    }
+    case 'numberRange': {
+      const [minStr = '', maxStr = ''] = value.split(',');
+      const min = minStr.trim() ? Number(minStr) : undefined;
+      const max = maxStr.trim() ? Number(maxStr) : undefined;
+      const range: { $gte?: number; $lte?: number } = {};
+      if (min != null && Number.isFinite(min)) range.$gte = min;
+      if (max != null && Number.isFinite(max)) range.$lte = max;
+      if (Object.keys(range).length > 0) {
+        setNestedWhere(where, path, range);
       }
       return;
     }

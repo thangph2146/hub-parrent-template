@@ -71,6 +71,7 @@ import { Input } from "../input"
 import {
   DatePicker,
   DateRangePicker,
+  NumberRangePicker,
   MultiSelectPicker,
   SelectPicker,
   TreeMultiSelectPicker,
@@ -228,6 +229,14 @@ function resolveBulkActionConfirmDestructive<TData>(
 
 export type DataTableBulkAction<TData> = AdminDataTableBulkAction<TData>
 
+export type AdminDataTableBulkToolbarContext<TData> = {
+  selectedRows: TData[]
+  selectedCount: number
+  runningBulkActionId: string | null
+  clearSelection: () => void
+  runBulkAction: (action: AdminDataTableBulkAction<TData>) => void
+}
+
 export type AdminDataTableXlsxExportConfig =
   | boolean
   | {
@@ -310,6 +319,10 @@ export type AdminDataTableProps<TData> = {
   selectedRowIds?: RowSelectionState
   onSelectedRowIdsChange?: OnChangeFn<RowSelectionState>
   bulkActions?: AdminDataTableBulkAction<TData>[]
+  /** Tuỳ chỉnh thanh bulk (vd. dropdown đổi trạng thái thay vì nhiều nút). */
+  renderBulkToolbarExtra?: (
+    ctx: AdminDataTableBulkToolbarContext<TData>
+  ) => ReactNode
   /**
    * Phạm vi bảng admin — tự sinh key localStorage:
    * `{scope}-table-filters` và `{scope}-table-columns`.
@@ -653,6 +666,20 @@ function getDateRangeFilterFn<TData>(): FilterFn<TData> {
   }
 }
 
+function getNumberRangeFilterFn<TData>(): FilterFn<TData> {
+  return (row, columnId, filterValue) => {
+    if (filterValue == null || filterValue === "") return true
+    const raw = Number(row.getValue(columnId))
+    if (Number.isNaN(raw)) return false
+    const [minStr = "", maxStr = ""] = String(filterValue).split(",")
+    const min = minStr.trim() ? Number(minStr) : undefined
+    const max = maxStr.trim() ? Number(maxStr) : undefined
+    if (min != null && !Number.isNaN(min) && raw < min) return false
+    if (max != null && !Number.isNaN(max) && raw > max) return false
+    return true
+  }
+}
+
 function getDateFilterFn<TData>(): FilterFn<TData> {
   return (row, columnId, filterValue) => {
     if (filterValue == null || filterValue === "") return true
@@ -677,9 +704,11 @@ function applyDefaultFilterFns<TData>(
       column.filterFn ??
       (variant === "date-range"
         ? getDateRangeFilterFn<TData>()
-        : variant === "date"
-          ? getDateFilterFn<TData>()
-          : undefined)
+        : variant === "number-range"
+          ? getNumberRangeFilterFn<TData>()
+          : variant === "date"
+            ? getDateFilterFn<TData>()
+            : undefined)
 
     if (!children && !filterFn) return column
     return {
@@ -731,6 +760,7 @@ export function AdminDataTable<TData>({
   selectedRowIds: selectedRowIdsControlled,
   onSelectedRowIdsChange,
   bulkActions = [],
+  renderBulkToolbarExtra,
   tableScope,
   filterColumnVisibilityKey,
   tableColumnVisibilityKey,
@@ -858,8 +888,12 @@ export function AdminDataTable<TData>({
   const showGlobalFilter =
     getGlobalFilterText != null || onGlobalFilterChange != null
   const xlsxExportEnabled = Boolean(xlsxExport)
-  const hasBulkActions = bulkActions.length > 0
+  const hasBulkActions =
+    bulkActions.length > 0 || Boolean(renderBulkToolbarExtra)
   const rowSelectionActive = rowSelectionEnabled ?? hasBulkActions
+  const clearRowSelection = useCallback(() => {
+    setSelectedRowIds({})
+  }, [setSelectedRowIds])
   const exportFileNameProp =
     typeof xlsxExport === "object" && xlsxExport != null
       ? xlsxExport.fileName?.trim()
@@ -1467,6 +1501,23 @@ export function AdminDataTable<TData>({
     [runningBulkActionId, selectedRows, table]
   )
 
+  const bulkToolbarContext = useMemo(
+    (): AdminDataTableBulkToolbarContext<TData> => ({
+      selectedRows,
+      selectedCount,
+      runningBulkActionId,
+      clearSelection: clearRowSelection,
+      runBulkAction,
+    }),
+    [
+      clearRowSelection,
+      runBulkAction,
+      runningBulkActionId,
+      selectedCount,
+      selectedRows,
+    ]
+  )
+
   const handleConfirmAction = useCallback(async () => {
     if (!confirmAction) return
     setRunningBulkActionId(confirmAction.id)
@@ -1704,6 +1755,19 @@ export function AdminDataTable<TData>({
       )
     }
 
+    if (variant === "number-range") {
+      return (
+        <NumberRangePicker
+          id={controlId}
+          size="sm"
+          value={col.getFilterValue()}
+          onChange={(v: unknown) => col.setFilterValue(v)}
+          minPlaceholder={meta?.numberRangeMinPlaceholder ?? "Từ"}
+          maxPlaceholder={meta?.numberRangeMaxPlaceholder ?? "Đến"}
+        />
+      )
+    }
+
     if (variant === "number") {
       return (
         <DebouncedFilterInput
@@ -1791,6 +1855,8 @@ export function AdminDataTable<TData>({
           showBulkBar={showBulkBar}
           selectedCount={selectedCount}
           bulkActions={bulkActions}
+          bulkToolbarExtra={renderBulkToolbarExtra?.(bulkToolbarContext)}
+          onClearRowSelection={clearRowSelection}
           selectedRows={selectedRows}
           runningBulkActionId={runningBulkActionId}
           onRunBulkAction={runBulkAction}

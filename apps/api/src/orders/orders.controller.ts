@@ -25,6 +25,7 @@ import {
   parseAdminListLimit,
   parseAdminListPage,
 } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 import type { OrderStatus } from '../entities/order.entity';
 
 const ORDER_STATUSES = new Set<OrderStatus | 'all'>([
@@ -70,24 +71,34 @@ export class OrdersController {
     @Query('status') status?: string,
     @Query('search') search?: string,
     @Query('trash') trash?: string,
+    @Query() query?: Record<string, string>,
   ) {
     if (!headers[APP_HEADERS.USER_ID]?.trim()) return this.unauthorized(res);
-    const statusFilter =
-      status && ORDER_STATUSES.has(status as OrderStatus | 'all')
-        ? (status as OrderStatus | 'all')
-        : 'all';
-    const result = await this.ordersService.list({
-      page: parseAdminListPage(page),
-      limit: parseAdminListLimit(limit),
-      status: statusFilter,
-      search,
-      trash: trash === 'true',
-    });
-    const { statusCode, body } = createSuccessResponse({
-      data: result.data,
-      pagination: result.pagination,
-    });
-    return res.status(statusCode).json(body);
+    try {
+      const statusFilter =
+        status && ORDER_STATUSES.has(status as OrderStatus | 'all')
+          ? (status as OrderStatus | 'all')
+          : 'all';
+      const result = await this.ordersService.list({
+        page: parseAdminListPage(page),
+        limit: parseAdminListLimit(limit),
+        status: statusFilter,
+        search,
+        trash: trash === 'true',
+        filters: parseColumnFiltersFromQuery(query),
+      });
+      const { statusCode, body } = createSuccessResponse({
+        data: result.data,
+        pagination: result.pagination,
+      });
+      return res.status(statusCode).json(body);
+    } catch (err) {
+      this.logger.error(err);
+      const { statusCode, body } = createErrorResponse(
+        err instanceof Error ? err.message : 'Lỗi danh sách đơn hàng',
+      );
+      return res.status(statusCode).json(body);
+    }
   }
 
   @Get(':id')

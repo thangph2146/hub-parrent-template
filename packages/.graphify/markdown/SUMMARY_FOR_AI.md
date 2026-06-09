@@ -1,20 +1,22 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-08T08:15:50.826Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-09T04:50:01.540Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 
 - Package **không** thay cho `@api`; app Next gọi API qua HTTP + `@workspace/api-client` hoặc `fetch` public.
 - **Không import** source `apps/frontend`, `apps/backend`, `apps/api` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`).
 
-## Package (8)
+## Package (10)
 
 | Package | Thư mục | Ghi chú |
 |---------|----------|---------|
 | `@thangph2146/lexical-editor` | `packages/editor/` | Editor Lexical workspace; tiêu thụ bởi Next apps + có thể tái xuất UI. |
 | `@workspace/api-client` | `packages/api-client/` | SDK HTTP tới `@api`; không import app Nest/Next. |
+| `@workspace/dealer-support` | `packages/dealer-support/` | — |
 | `@workspace/eslint-config` | `packages/eslint-config/` | ESLint flat + `service-boundaries` (ranh giới import). |
 | `@workspace/logger` | `packages/logger/` | — |
+| `@workspace/promo-codes` | `packages/promo-codes/` | — |
 | `@workspace/query-client` | `packages/query-client/` | `QueryClient` + retry/stale mặc định TanStack Query (dùng chung Next apps). |
 | `@workspace/site-config` | `packages/site-config/` | — |
 | `@workspace/typescript-config` | `packages/typescript-config/` | tsconfig cơ sở cho package/app. |

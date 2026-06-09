@@ -15,6 +15,7 @@ import {
 import { LogOut, ShieldCheck, Store } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
 import { cartStore } from "@/hooks/use-cart";
+import { resetCartHydration } from "@/lib/cart-sync";
 
 const STORAGE_KEY = "storesync_session";
 
@@ -32,6 +33,7 @@ export default function ProfilePage() {
   }
 
   const handleLogout = () => {
+    resetCartHydration();
     localStorage.removeItem(STORAGE_KEY);
     cartStore.clear();
     window.dispatchEvent(new Event("storesync-session"));

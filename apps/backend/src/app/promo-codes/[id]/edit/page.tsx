@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "@ui/components/sonner"
 import {
   AdminPageGuard,
@@ -17,8 +17,9 @@ import {
   usePromoForm,
   buildPromoUpdatePayload,
   promoToFormValues,
+  usePromoDetailQuery,
   type PromoFormValues,
-} from "../../_component/promo-form"
+} from "../../_component"
 
 function EditPromoPageInner() {
   const crudNav = useAdminCrudNavigation("/promo-codes")
@@ -27,10 +28,7 @@ function EditPromoPageInner() {
   const queryClient = useQueryClient()
   const { form } = usePromoForm()
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["promo-codes", "detail", id],
-    queryFn: () => api.promoCodes.get(Number(id)),
-  })
+  const { data, isLoading, isError } = usePromoDetailQuery(api, id)
 
   useEffect(() => {
     if (data) form.reset(promoToFormValues(data))

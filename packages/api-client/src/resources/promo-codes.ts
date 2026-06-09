@@ -29,7 +29,7 @@ export class PromoCodesApi {
   constructor(private readonly http: ApiClient) {}
 
   async list(
-    params?: AdminListQueryParams & { q?: string; active?: boolean },
+    params?: AdminListQueryParams & { q?: string },
   ): Promise<{ items: PromoCode[]; total: number }> {
     const payload = await this.http.get<unknown>("/admin/promo-codes", {
       query: buildAdminListQuery(params, { page: 1, limit: 20 }),

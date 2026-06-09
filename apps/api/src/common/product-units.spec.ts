@@ -69,9 +69,7 @@ describe('applyProductStockDeduction', () => {
       ],
     });
     expect(productBaseStock(product)).toBe(30);
-    expect(
-      Math.floor(productBaseStock(product) / 30),
-    ).toBe(1);
+    expect(Math.floor(productBaseStock(product) / 30)).toBe(1);
   });
 
   it('trừ legacy qua unit.stock rồi sync product.stock', () => {

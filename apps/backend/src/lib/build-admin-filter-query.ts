@@ -295,6 +295,17 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     "id"
   ),
 
+  orders: identityFilterMapping("status", "totalAmount", "createdAt"),
+
+  promoCodes: identityFilterMapping(
+    "code",
+    "label",
+    "discountKind",
+    "minOrderSubtotal",
+    "usageCount",
+    "isActive"
+  ),
+
   // Contact requests
   contactRequests: {
     name: "name",

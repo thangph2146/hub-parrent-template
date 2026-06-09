@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { CartCountBadge } from "@ui/components/product";
 import { useCart, cartStore } from "@/hooks/use-cart";
+import { resetCartHydration } from "@/lib/cart-sync";
 import { ThemeToggle } from "@ui/components/theme-toggle";
 import { TextSizeToggle } from "@ui/components/text-size-toggle";
 import { Separator } from "@ui/components/separator";
@@ -69,6 +70,7 @@ export function Header() {
   const profileHref = "/profile";
 
   const handleLogout = () => {
+    resetCartHydration();
     localStorage.removeItem("storesync_session");
     cartStore.clear();
     window.dispatchEvent(new Event("storesync-session"));

@@ -33,6 +33,7 @@ import {
   useCartStockSync,
 } from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
+import { clearServerCart } from "@/lib/cart-sync";
 import { useCartStockProducts, useCreateOrder } from "@/hooks/queries";
 import { useGiftHrefForRulesFromLines } from "@/hooks/use-gift-product-catalog";
 import { ApiError } from "@/lib/api";
@@ -125,6 +126,7 @@ export default function CheckoutPage() {
         couponCode: cart.couponCodeForOrder,
       });
       cart.clear();
+      void clearServerCart();
       toast.success(`Đặt hàng thành công – ${order.orderNumber}`, {
         description: "Đơn được giao tận nơi và thu tiền khi nhận hàng (COD).",
       });

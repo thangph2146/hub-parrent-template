@@ -3,6 +3,10 @@ import type { AdminColumnFiltersConfig } from './apply-column-filters';
 const text = (path: string | string[]) => ({ type: 'text' as const, path });
 const exact = (path: string | string[]) => ({ type: 'exact' as const, path });
 const number = (path: string | string[]) => ({ type: 'number' as const, path });
+const numberRange = (path: string | string[]) => ({
+  type: 'numberRange' as const,
+  path,
+});
 const dateRange = (path: string | string[]) => ({
   type: 'dateRange' as const,
   path,
@@ -194,6 +198,21 @@ export const GUIDE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   id: uuid('id'),
+};
+
+export const ORDER_COLUMN_FILTERS: AdminColumnFiltersConfig = {
+  status: exact('status'),
+  totalAmount: numberRange('totalAmount'),
+  createdAt: dateRange('createdAt'),
+};
+
+export const PROMO_CODE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
+  code: text('code'),
+  label: text('label'),
+  discountKind: exact('discountKind'),
+  minOrderSubtotal: numberRange('minOrderSubtotal'),
+  usageCount: numberRange('usageCount'),
+  isActive: boolean('isActive'),
 };
 
 export const PARENT_STUDENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {

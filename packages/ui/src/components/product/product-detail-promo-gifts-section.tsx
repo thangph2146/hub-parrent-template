@@ -55,6 +55,8 @@ export type ProductDetailPromoGiftsSectionProps = {
   pricingQty: number
   /** Tổng SL sell_unit mọi loại cùng SP — rule scope `product`. */
   productSellQty: number
+  /** Link catalog cho tên quà (storefront truyền vào). */
+  giftHrefForRule?: (rule: ProductGiftRule) => string | undefined
   className?: string
 }
 
@@ -63,6 +65,7 @@ export function ProductDetailPromoGiftsSection({
   giftRules,
   pricingQty,
   productSellQty,
+  giftHrefForRule,
   className,
 }: ProductDetailPromoGiftsSectionProps) {
   const showPromo = hasUnitWholesalePromo(unit)
@@ -106,6 +109,7 @@ export function ProductDetailPromoGiftsSection({
           unit={unit}
           lineSellQty={pricingQty}
           productSellQty={productSellQty}
+          giftHref={giftHrefForRule?.(rule)}
         />
       ))}
     </div>
@@ -117,11 +121,13 @@ function ProductDetailGiftRuleCard({
   unit,
   lineSellQty,
   productSellQty,
+  giftHref,
 }: {
   rule: ProductGiftRule
   unit: Pick<ProductUnitType, "label" | "qtyPerUnit">
   lineSellQty: number
   productSellQty: number
+  giftHref?: string
 }) {
   const scope = giftScopeFromRule(rule)
   const sellQty = scope === "product" ? productSellQty : lineSellQty
@@ -169,7 +175,16 @@ function ProductDetailGiftRuleCard({
       </div>
       <div className="min-w-0 flex-1 space-y-1 text-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="font-semibold">{rule.gift.name}</p>
+          {giftHref ? (
+            <a
+              href={giftHref}
+              className="font-semibold underline underline-offset-2 transition-colors hover:text-primary"
+            >
+              {rule.gift.name}
+            </a>
+          ) : (
+            <p className="font-semibold">{rule.gift.name}</p>
+          )}
           <Badge variant={unlocked ? "success" : "muted"} size="xs">
             {unlocked ? "Đủ điều kiện" : "Chưa đủ SL"}
           </Badge>

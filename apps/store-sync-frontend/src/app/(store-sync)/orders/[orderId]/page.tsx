@@ -18,10 +18,12 @@ import {
   CheckCircle2,
   CircleDot,
   Clock3,
+  Gift,
   Loader2,
   Package,
   Truck,
 } from "lucide-react";
+import { catalogProductHref } from "@workspace/api-client";
 import type { Order } from "@/lib/api";
 import { useOrder } from "@/hooks/queries";
 import { formatDate, formatVND } from "@/lib/format";
@@ -148,7 +150,43 @@ function OrderCard({ order }: { order: Order }) {
           </div>
         )}
 
+        <div className="rounded-xl border border-outline-variant/40 bg-surface/30 p-4 space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Tạm tính</span>
+            <span className="font-semibold tabular-nums">{formatVND(order.subtotal)}</span>
+          </div>
+          {order.discountAmount > 0 ? (
+            <div className="flex justify-between text-success">
+              <span>
+                Giảm giá
+                {order.couponCode ? ` (${order.couponCode})` : ""}
+              </span>
+              <span className="font-semibold tabular-nums">
+                −{formatVND(order.discountAmount)}
+              </span>
+            </div>
+          ) : null}
+          {order.shippingFee > 0 ? (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Phí giao hàng</span>
+              <span className="font-semibold tabular-nums">
+                {formatVND(order.shippingFee)}
+              </span>
+            </div>
+          ) : null}
+          <div className="flex justify-between border-t border-outline-variant/40 pt-2 text-base">
+            <span className="font-bold">Thành tiền</span>
+            <span className="font-black text-primary tabular-nums">
+              {formatVND(order.totalAmount)}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Thanh toán COD — thu tiền khi nhận hàng
+          </p>
+        </div>
+
         <div className="space-y-3">
+          <p className="text-sm font-semibold text-muted-foreground">Sản phẩm đã đặt</p>
           {order.items.map((item, idx) => (
             <div
               key={`${order.id}-${idx}`}
@@ -196,6 +234,57 @@ function OrderCard({ order }: { order: Order }) {
             </div>
           ))}
         </div>
+
+        {order.gifts && order.gifts.length > 0 ? (
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+              <Gift className="size-4 text-primary" aria-hidden />
+              Quà tặng kèm đơn
+            </p>
+            <div className="space-y-2">
+              {order.gifts.map((gift, idx) => {
+                const giftHref =
+                  gift.productId && gift.productId > 0
+                    ? catalogProductHref(gift.productId)
+                    : undefined;
+                return (
+                  <div
+                    key={`${gift.ruleId ?? gift.sku ?? gift.name}-${idx}`}
+                    className="flex gap-3 rounded-xl border border-dashed border-primary/30 bg-primary/5 p-4"
+                  >
+                    {gift.image ? (
+                      <img
+                        src={gift.image}
+                        alt=""
+                        className="size-14 shrink-0 rounded-lg border object-cover"
+                      />
+                    ) : (
+                      <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border bg-muted/50">
+                        <Gift className="size-5 text-muted-foreground" aria-hidden />
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      {giftHref ? (
+                        <Link
+                          href={giftHref}
+                          className="font-bold hover:text-primary transition-colors underline-offset-2 hover:underline"
+                        >
+                          {gift.name}
+                        </Link>
+                      ) : (
+                        <p className="font-bold">{gift.name}</p>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        {gift.label} · SL {gift.qty}
+                        {gift.sku ? ` · ${gift.sku}` : ""}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
 
         <div className="pt-2 flex flex-wrap gap-3">
           <Link href="/catalog">

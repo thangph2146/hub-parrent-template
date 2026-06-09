@@ -107,6 +107,7 @@ export {
 } from "./data-table"
 export type {
   AdminDataTableBulkAction,
+  AdminDataTableBulkToolbarContext,
   AdminDataTableProps,
   AdminDataTableXlsxExportConfig,
   AdminDataTablePaginationConfig,

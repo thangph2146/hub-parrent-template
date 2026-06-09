@@ -1,11 +1,13 @@
 "use client"
 
 import {
+  CheckSquare,
   ChevronDown,
   Download,
   FilterX,
   ListFilter,
   Search,
+  X,
 } from "lucide-react"
 import { useEffect, useState, type ComponentType, type ReactNode } from "react"
 import type { ColumnFiltersState, Header } from "@tanstack/react-table"
@@ -59,6 +61,8 @@ type DataTableToolbarProps<TData> = {
   showBulkBar: boolean
   selectedCount: number
   bulkActions: AdminDataTableBulkAction<TData>[]
+  bulkToolbarExtra?: ReactNode
+  onClearRowSelection?: () => void
   selectedRows: TData[]
   runningBulkActionId: string | null
   onRunBulkAction: (action: AdminDataTableBulkAction<TData>) => void
@@ -92,6 +96,8 @@ export function DataTableToolbar<TData>({
   showBulkBar,
   selectedCount,
   bulkActions,
+  bulkToolbarExtra,
+  onClearRowSelection,
   selectedRows,
   runningBulkActionId,
   onRunBulkAction,
@@ -203,44 +209,67 @@ export function DataTableToolbar<TData>({
       ) : null}
 
       {hasBulkSelection ? (
-        <div className="flex flex-wrap items-center gap-2 border-t border-primary/15 bg-primary/5 px-2.5 py-1.5">
-          <span className="text-xs text-muted-foreground">
-            Đã chọn{" "}
-            <span className="font-semibold text-foreground tabular-nums">
+        <div className="flex flex-wrap items-center gap-2 border-t border-primary/20 bg-gradient-to-r from-primary/[0.07] via-primary/[0.04] to-transparent px-3 py-2">
+          <div className="flex items-center gap-1.5 rounded-full border border-primary/15 bg-background/90 px-2.5 py-1 shadow-sm">
+            <CheckSquare
+              className="size-3.5 shrink-0 text-primary"
+              aria-hidden
+            />
+            <span className="text-xs font-medium tabular-nums text-primary">
               {selectedCount}
             </span>
-          </span>
-          <div className="flex flex-wrap items-center gap-1">
-            {bulkActions.map((action) => {
-              const requiresSelection = action.requiresSelection ?? true
-              const disabledBySelection =
-                requiresSelection && selectedCount === 0
-              const disabledByAction = action.disabled?.(selectedRows) ?? false
-              const isRunning = runningBulkActionId === action.id
-              return (
-                <Button
-                  key={action.id}
-                  type="button"
-                  size="sm"
-                  variant={action.variant ?? "outline"}
-                  className={cn(
-                    "h-7 gap-1 rounded-md px-2 text-xs",
-                    action.className
-                  )}
-                  disabled={
-                    isRunning ||
-                    runningBulkActionId != null ||
-                    disabledBySelection ||
-                    disabledByAction
-                  }
-                  onClick={() => onRunBulkAction(action)}
-                >
-                  {action.icon}
-                  {action.label}
-                </Button>
-              )
-            })}
+            <span className="text-xs text-muted-foreground">đã chọn</span>
+            {onClearRowSelection ? (
+              <button
+                type="button"
+                className="ml-0.5 inline-flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                onClick={onClearRowSelection}
+                aria-label="Bỏ chọn tất cả"
+                title="Bỏ chọn"
+              >
+                <X className="size-3" aria-hidden />
+              </button>
+            ) : null}
           </div>
+          {bulkToolbarExtra ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {bulkToolbarExtra}
+            </div>
+          ) : null}
+          {bulkActions.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {bulkActions.map((action) => {
+                const requiresSelection = action.requiresSelection ?? true
+                const disabledBySelection =
+                  requiresSelection && selectedCount === 0
+                const disabledByAction =
+                  action.disabled?.(selectedRows) ?? false
+                const isRunning = runningBulkActionId === action.id
+                return (
+                  <Button
+                    key={action.id}
+                    type="button"
+                    size="sm"
+                    variant={action.variant ?? "outline"}
+                    className={cn(
+                      "h-7 gap-1.5 rounded-md px-2.5 text-xs shadow-sm",
+                      action.className
+                    )}
+                    disabled={
+                      isRunning ||
+                      runningBulkActionId != null ||
+                      disabledBySelection ||
+                      disabledByAction
+                    }
+                    onClick={() => onRunBulkAction(action)}
+                  >
+                    {action.icon}
+                    {action.label}
+                  </Button>
+                )
+              })}
+            </div>
+          ) : null}
         </div>
       ) : null}
 

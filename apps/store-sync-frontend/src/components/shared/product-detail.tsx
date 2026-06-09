@@ -37,6 +37,7 @@ import {
   unitStock,
 } from "@workspace/api-client";
 import { cartLineQuantity, useCart } from "@/hooks/use-cart";
+import { useGiftProductCatalogMap } from "@/hooks/use-gift-product-catalog";
 import { resolveGiftRulesForUnit } from "@/lib/gift-rules-from-fulfillment-note";
 import { ProductSuggestions } from "@/components/shared/product-suggestions";
 
@@ -117,6 +118,11 @@ export function ProductDetail({
   const giftRules = useMemo(
     () => resolveGiftRulesForUnit(selectedUnit, product.fulfillmentNote),
     [selectedUnit, product.fulfillmentNote],
+  );
+  const { data: giftCatalogMap } = useGiftProductCatalogMap(giftRules);
+  const giftHrefForRule = useMemo(
+    () => (rule: (typeof giftRules)[number]) => giftCatalogMap?.get(rule.id),
+    [giftCatalogMap],
   );
 
   const isWholesale = hasUnitWholesalePromo(selectedUnit);
@@ -285,6 +291,7 @@ export function ProductDetail({
                     giftRules={giftRules}
                     pricingQty={pricingQty}
                     productSellQty={productSellQty}
+                    giftHrefForRule={giftHrefForRule}
                   />
                 </ProductDetailPurchaseCardSection>
               ) : null}

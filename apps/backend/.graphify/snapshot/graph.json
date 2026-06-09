@@ -2374,6 +2374,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_app_file_storage__component_columns_picker_tsx",
+      "label": "columns-picker.tsx",
+      "path": "src/app/file-storage/_component/columns-picker.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_file_storage__component_columns_tsx",
       "label": "columns.tsx",
       "path": "src/app/file-storage/_component/columns.tsx",
@@ -2467,6 +2477,16 @@
       "id": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
       "label": "file-storage-move-dialog.tsx",
       "path": "src/app/file-storage/_component/file-storage-move-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
+      "label": "file-storage-picker-panel.tsx",
+      "path": "src/app/file-storage/_component/file-storage-picker-panel.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/file-storage/_component",
@@ -2600,6 +2620,16 @@
       "size": 22,
       "community": "src/app/file-storage/_component",
       "type": "directory"
+    },
+    {
+      "id": "file_src_app_file_storage__component__table_file_storage_picker_table_tsx",
+      "label": "file-storage-picker-table.tsx",
+      "path": "src/app/file-storage/_component/_table/file-storage-picker-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/file-storage/_component/_table",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_app_file_storage__component__table_file_storage_table_tsx",
@@ -3805,6 +3835,25 @@
       "type": "directory"
     },
     {
+      "id": "dir_src_app_orders__id__edit",
+      "label": "edit/",
+      "path": "src/app/orders/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/orders/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_orders__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/orders/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/orders/[id]/edit",
+      "type": "page",
+      "client": true
+    },
+    {
       "id": "file_src_app_orders__id__page_tsx",
       "label": "page.tsx",
       "path": "src/app/orders/[id]/page.tsx",
@@ -3842,6 +3891,26 @@
       "community": "src/app/orders/_component",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_app_orders__component_order_row_actions_tsx",
+      "label": "order-row-actions.tsx",
+      "path": "src/app/orders/_component/order-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_orders__component_order_status_cell_tsx",
+      "label": "order-status-cell.tsx",
+      "path": "src/app/orders/_component/order-status-cell.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/orders/_component",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_app_orders__component_types_ts",
@@ -4465,9 +4534,39 @@
       "client": false
     },
     {
+      "id": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "label": "product-catalog-picker-dialog.tsx",
+      "path": "src/app/products/_component/product-catalog-picker-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_products__component_product_form_tsx",
       "label": "product-form.tsx",
       "path": "src/app/products/_component/product-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_products__component_product_image_storage_ts",
+      "label": "product-image-storage.ts",
+      "path": "src/app/products/_component/product-image-storage.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/products/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_products__component_product_unit_gifts_field_tsx",
+      "label": "product-unit-gifts-field.tsx",
+      "path": "src/app/products/_component/product-unit-gifts-field.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/app/products/_component",
@@ -4649,6 +4748,16 @@
       "client": true
     },
     {
+      "id": "file_src_app_promo_codes__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/promo-codes/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/promo-codes/[id]",
+      "type": "page",
+      "client": true
+    },
+    {
       "id": "dir_src_app_promo_codes__component",
       "label": "_component/",
       "path": "src/app/promo-codes/_component",
@@ -4656,6 +4765,26 @@
       "size": 22,
       "community": "src/app/promo-codes",
       "type": "directory"
+    },
+    {
+      "id": "file_src_app_promo_codes__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/promo-codes/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/promo-codes/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_promo_codes__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/promo-codes/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/promo-codes/_component",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_app_promo_codes__component_promo_form_tsx",
@@ -4666,6 +4795,26 @@
       "community": "src/app/promo-codes/_component",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_app_promo_codes__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/promo-codes/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/promo-codes/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_promo_codes__component_use_promo_queries_ts",
+      "label": "use-promo-queries.ts",
+      "path": "src/app/promo-codes/_component/use-promo-queries.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/promo-codes/_component",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "dir_src_app_rbac",
@@ -7554,6 +7703,16 @@
       "client": true
     },
     {
+      "id": "file_src_lib_admin_storage_picker_adapters_ts",
+      "label": "admin-storage-picker-adapters.ts",
+      "path": "src/lib/admin-storage-picker-adapters.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_lib_admin_table_columns_tsx",
       "label": "admin-table-columns.tsx",
       "path": "src/lib/admin-table-columns.tsx",
@@ -7647,6 +7806,16 @@
       "id": "file_src_lib_build_admin_filter_query_ts",
       "label": "build-admin-filter-query.ts",
       "path": "src/lib/build-admin-filter-query.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_build_product_storage_picker_config_ts",
+      "label": "build-product-storage-picker-config.ts",
+      "path": "src/lib/build-product-storage-picker-config.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -9094,6 +9263,11 @@
     },
     {
       "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_columns_picker_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
       "target": "file_src_app_file_storage__component_columns_tsx",
       "relation": "contains"
     },
@@ -9140,6 +9314,11 @@
     {
       "source": "dir_src_app_file_storage__component",
       "target": "file_src_app_file_storage__component_file_storage_move_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component",
+      "target": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
       "relation": "contains"
     },
     {
@@ -9205,6 +9384,11 @@
     {
       "source": "dir_src_app_file_storage__component",
       "target": "dir_src_app_file_storage__component__table",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_file_storage__component__table",
+      "target": "file_src_app_file_storage__component__table_file_storage_picker_table_tsx",
       "relation": "contains"
     },
     {
@@ -9829,6 +10013,16 @@
     },
     {
       "source": "dir_src_app_orders__id_",
+      "target": "dir_src_app_orders__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__id__edit",
+      "target": "file_src_app_orders__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__id_",
       "target": "file_src_app_orders__id__page_tsx",
       "relation": "contains"
     },
@@ -9845,6 +10039,16 @@
     {
       "source": "dir_src_app_orders__component",
       "target": "file_src_app_orders__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_order_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_orders__component",
+      "target": "file_src_app_orders__component_order_status_cell_tsx",
       "relation": "contains"
     },
     {
@@ -10169,7 +10373,22 @@
     },
     {
       "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
       "target": "file_src_app_products__component_product_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_product_image_storage_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_products__component",
+      "target": "file_src_app_products__component_product_unit_gifts_field_tsx",
       "relation": "contains"
     },
     {
@@ -10263,13 +10482,38 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_app_promo_codes__id_",
+      "target": "file_src_app_promo_codes__id__page_tsx",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src_app_promo_codes",
       "target": "dir_src_app_promo_codes__component",
       "relation": "contains"
     },
     {
       "source": "dir_src_app_promo_codes__component",
+      "target": "file_src_app_promo_codes__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__component",
+      "target": "file_src_app_promo_codes__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__component",
       "target": "file_src_app_promo_codes__component_promo_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__component",
+      "target": "file_src_app_promo_codes__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_promo_codes__component",
+      "target": "file_src_app_promo_codes__component_use_promo_queries_ts",
       "relation": "contains"
     },
     {
@@ -11764,6 +12008,11 @@
     },
     {
       "source": "dir_src_lib",
+      "target": "file_src_lib_admin_storage_picker_adapters_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
       "target": "file_src_lib_admin_table_columns_tsx",
       "relation": "contains"
     },
@@ -11810,6 +12059,11 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_build_admin_filter_query_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_build_product_storage_picker_config_ts",
       "relation": "contains"
     },
     {
@@ -13923,6 +14177,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage__component_columns_picker_tsx",
+      "target": "file_src_lib_format_admin_datetime_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_picker_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_columns_picker_tsx",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_file_storage__component_columns_tsx",
       "target": "file_src_lib_format_admin_datetime_ts",
       "relation": "imports"
@@ -14058,6 +14327,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
+      "target": "file_src_lib_admin_storage_picker_adapters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
+      "target": "file_src_lib_build_product_storage_picker_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
+      "target": "file_src_app_products__component_product_image_storage_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_file_storage__component_file_storage_reorganize_dialog_tsx",
       "target": "file_src_lib_admin_uploads_ts",
       "relation": "imports"
@@ -14174,6 +14458,16 @@
     },
     {
       "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_file_storage__component_file_storage_picker_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
+      "target": "file_src_app_products__component_product_image_storage_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component_index_ts",
       "target": "dir_src_app_file_storage__component__hooks",
       "relation": "imports"
     },
@@ -14268,6 +14562,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_file_storage__component__table_file_storage_picker_table_tsx",
+      "target": "file_src_app_file_storage__component_file_storage_empty_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__table_file_storage_picker_table_tsx",
+      "target": "file_src_app_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_file_storage__component__table_file_storage_table_tsx",
       "target": "file_src_app_file_storage__component_file_storage_empty_tsx",
       "relation": "imports"
@@ -14280,6 +14584,11 @@
     {
       "source": "file_src_app_file_storage__component__table_index_ts",
       "target": "file_src_app_file_storage__component__table_file_storage_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_file_storage__component__table_index_ts",
+      "target": "file_src_app_file_storage__component__table_file_storage_picker_table_tsx",
       "relation": "imports"
     },
     {
@@ -15264,11 +15573,46 @@
     },
     {
       "source": "file_src_app_orders_page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app_orders_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders_page_tsx",
+      "target": "dir_src_app_orders__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__edit_page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__edit_page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__edit_page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__edit_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__id__edit_page_tsx",
       "target": "dir_src_app_orders__component",
       "relation": "imports"
     },
@@ -15299,6 +15643,16 @@
     },
     {
       "source": "file_src_app_orders__component_columns_tsx",
+      "target": "file_src_app_orders__component_order_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_columns_tsx",
+      "target": "file_src_app_orders__component_order_status_cell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_columns_tsx",
       "target": "file_src_app_orders__component_types_ts",
       "relation": "imports"
     },
@@ -15314,7 +15668,27 @@
     },
     {
       "source": "file_src_app_orders__component_index_ts",
+      "target": "file_src_app_orders__component_order_status_cell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_index_ts",
+      "target": "file_src_app_orders__component_order_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_index_ts",
       "target": "file_src_app_orders__component_use_orders_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_order_row_actions_tsx",
+      "target": "file_src_app_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_orders__component_order_status_cell_tsx",
+      "target": "file_src_app_orders__component_types_ts",
       "relation": "imports"
     },
     {
@@ -15913,6 +16287,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "target": "file_src_app_products__component_use_products_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_products__component_product_form_tsx",
       "target": "file_src_app_products__component_types_ts",
       "relation": "imports"
@@ -15923,6 +16312,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_products__component_product_image_storage_ts",
+      "target": "file_src_lib_admin_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_image_storage_ts",
+      "target": "file_src_app_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_image_storage_ts",
+      "target": "file_src_app_file_storage__component_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_gifts_field_tsx",
+      "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_products__component_product_unit_variants_field_tsx",
       "target": "file_src_lib_storage_image_picker_dialog_tsx",
       "relation": "imports"
@@ -15930,6 +16339,21 @@
     {
       "source": "file_src_app_products__component_product_unit_variants_field_tsx",
       "target": "file_src_app_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "target": "file_src_app_products__component_product_image_storage_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "target": "file_src_app_products__component_product_catalog_picker_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_products__component_product_unit_variants_field_tsx",
+      "target": "file_src_app_products__component_product_unit_gifts_field_tsx",
       "relation": "imports"
     },
     {
@@ -16019,7 +16443,32 @@
     },
     {
       "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_hooks_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "file_src_hooks_use_admin_mutation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes_page_tsx",
+      "target": "dir_src_app_promo_codes__component",
       "relation": "imports"
     },
     {
@@ -16039,7 +16488,67 @@
     },
     {
       "source": "file_src_app_promo_codes__id__edit_page_tsx",
+      "target": "dir_src_app_promo_codes__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__page_tsx",
+      "target": "file_src_lib_admin_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__page_tsx",
+      "target": "file_src_providers_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__page_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__id__page_tsx",
+      "target": "dir_src_app_promo_codes__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_columns_tsx",
+      "target": "file_src_lib_admin_row_action_handlers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_columns_tsx",
+      "target": "file_src_app_promo_codes__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_index_ts",
+      "target": "file_src_app_promo_codes__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_index_ts",
+      "target": "file_src_app_promo_codes__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_index_ts",
+      "target": "file_src_app_promo_codes__component_use_promo_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_index_ts",
       "target": "file_src_app_promo_codes__component_promo_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_use_promo_queries_ts",
+      "target": "file_src_lib_admin_detail_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_promo_codes__component_use_promo_queries_ts",
+      "target": "file_src_app_promo_codes__component_types_ts",
       "relation": "imports"
     },
     {
@@ -18263,6 +18772,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_storage_picker_adapters_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_admin_table_columns_tsx",
       "target": "file_src_lib_format_admin_datetime_ts",
       "relation": "imports"
@@ -18298,6 +18812,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_build_product_storage_picker_config_ts",
+      "target": "file_src_app_products__component_product_image_storage_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_build_product_storage_picker_config_ts",
+      "target": "file_src_lib_admin_upload_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_index_ts",
       "target": "file_src_lib_build_admin_filter_query_ts",
       "relation": "imports"
@@ -18324,12 +18848,17 @@
     },
     {
       "source": "file_src_lib_storage_image_picker_dialog_tsx",
-      "target": "file_src_lib_admin_uploads_ts",
+      "target": "file_src_app_products__component_product_image_storage_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_lib_storage_image_picker_dialog_tsx",
-      "target": "file_src_app_file_storage__component_utils_ts",
+      "target": "file_src_lib_admin_storage_picker_adapters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_storage_image_picker_dialog_tsx",
+      "target": "file_src_lib_build_product_storage_picker_config_ts",
       "relation": "imports"
     },
     {

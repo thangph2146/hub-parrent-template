@@ -331,6 +331,35 @@ export interface Order extends AuditFields {
   deletedAt?: Iso8601 | null;
 }
 
+/** Dòng giỏ lưu server — không có `stock` (client sync từ catalog). */
+export interface CustomerCartLine {
+  productId: number;
+  sku: string;
+  name: string;
+  image?: string;
+  category: string;
+  unitType: string;
+  unitLabel: string;
+  unitPrice: number;
+  listUnitPrice: number;
+  promoUnitPrice: number | null;
+  minPromoQty: number;
+  qtyPerUnit: number;
+  quantity: number;
+  isWholesale: boolean;
+  fulfillmentNote?: string | null;
+  giftRules?: ProductGiftRule[];
+}
+
+export interface CustomerCartPayload {
+  lines: CustomerCartLine[];
+  appliedPromoCode: string | null;
+}
+
+export interface CustomerCartResponse extends CustomerCartPayload {
+  updatedAt: string;
+}
+
 /**
  * Item storefront gửi lên; server gộp trùng (cùng product + đơn vị), tính giá
  * theo catalog tại thời điểm đặt và lưu bản chụp vào `Order.items` (không đổi sau này).

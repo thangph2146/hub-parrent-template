@@ -36,6 +36,7 @@ export function useOrdersListQuery(
     limit: number
     status?: string
     search?: string
+    filters?: Record<string, string>
     enabled?: boolean
   }
 ) {
@@ -48,6 +49,7 @@ export function useOrdersListQuery(
         status:
           params.status && params.status !== "all" ? params.status : undefined,
         search: params.search,
+        filters: params.filters,
       })
       return {
         items: result.items.map(mapOrderRow),

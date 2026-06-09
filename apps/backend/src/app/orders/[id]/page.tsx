@@ -6,6 +6,7 @@ import { useParams } from "next/navigation"
 import { ShoppingCart } from "lucide-react"
 import { toast } from "@ui/components/sonner"
 import { Badge } from "@ui/components/badge"
+import { StoreOrderStatusBadge } from "@ui/components/product"
 import {
   Select,
   SelectContent,
@@ -85,6 +86,7 @@ function OrderDetailInner() {
         title={order.orderNumber}
         subtitle={order.customerName}
         onBack={() => crudNav.list()}
+        onEdit={canUpdate ? () => crudNav.edit(id) : undefined}
       />
       <AdminDetailLayout>
         <AdminDetailMain className="space-y-6">
@@ -240,7 +242,7 @@ function OrderDetailInner() {
                   </SelectContent>
                 </Select>
               ) : (
-                <Badge>{ORDER_STATUS_LABELS[order.status]}</Badge>
+                <StoreOrderStatusBadge status={order.status} />
               )}
             </FieldSetContent>
           </FieldSet>

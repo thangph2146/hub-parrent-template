@@ -6,6 +6,7 @@ import { Category } from '../entities/category.entity';
 import { Comment } from '../entities/comment.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 import { Course } from '../entities/course.entity';
+import { CustomerCart } from '../entities/customer-cart.entity';
 import { Department } from '../entities/department.entity';
 import { Event } from '../entities/event.entity';
 import { EventCheckin } from '../entities/event-checkin.entity';
@@ -53,6 +54,7 @@ export const ormEntities = [
   Comment,
   ContactRequest,
   Course,
+  CustomerCart,
   Department,
   Event,
   EventCheckin,

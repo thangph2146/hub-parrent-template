@@ -296,7 +296,11 @@ const write = (next: CartState): void => {
     try {
       const persisted = {
         appliedPromoCode: next.appliedPromoCode,
-        lines: next.lines.map(({ stock: _stock, ...line }) => line),
+        lines: next.lines.map((line) => {
+          const { stock, ...rest } = line;
+          void stock;
+          return rest;
+        }),
       };
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
     } catch {

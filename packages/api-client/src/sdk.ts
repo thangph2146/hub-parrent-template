@@ -36,6 +36,7 @@ import { PublicApi } from './resources/public';
 import { ProductsApi } from './resources/products';
 import { OrdersApi } from './resources/orders';
 import { PromoCodesApi } from './resources/promo-codes';
+import { CartsApi } from './resources/carts';
 import type { HealthStatus } from './types';
 
 /**
@@ -89,6 +90,7 @@ export class StoreSyncSdk {
   readonly products: ProductsApi;
   readonly orders: OrdersApi;
   readonly promoCodes: PromoCodesApi;
+  readonly carts: CartsApi;
   readonly public: PublicApi;
 
   constructor(options: ApiClientOptions) {
@@ -129,6 +131,7 @@ export class StoreSyncSdk {
     this.products = new ProductsApi(this.http);
     this.orders = new OrdersApi(this.http);
     this.promoCodes = new PromoCodesApi(this.http);
+    this.carts = new CartsApi(this.http);
     this.public = new PublicApi(this.http);
   }
 

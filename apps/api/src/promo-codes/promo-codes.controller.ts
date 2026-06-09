@@ -25,6 +25,7 @@ import {
   parseAdminListLimit,
   parseAdminListPage,
 } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 
 @Permissions(PERMISSIONS.PROMO_CODES_VIEW)
 @Controller(ADMIN_ROUTES.PROMO_CODES)
@@ -47,14 +48,14 @@ export class PromoCodesController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('q') q?: string,
-    @Query('active') active?: string,
+    @Query() query?: Record<string, string>,
   ) {
     if (!headers[APP_HEADERS.USER_ID]?.trim()) return this.unauthorized(res);
     const result = await this.promoCodesService.list({
       page: parseAdminListPage(page),
       limit: parseAdminListLimit(limit, 20),
       q,
-      activeOnly: active === 'true',
+      filters: parseColumnFiltersFromQuery(query),
     });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,

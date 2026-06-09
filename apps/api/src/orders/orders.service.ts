@@ -11,6 +11,8 @@ import { computePromoDiscount } from '../common/promo-checkout';
 import { PromoCodesService } from '../promo-codes/promo-codes.service';
 import { ProductsService } from '../products/products.service';
 import { UploadsService } from '../uploads/uploads.service';
+import { buildStandardAdminWhere } from '../common/apply-column-filters';
+import { ORDER_COLUMN_FILTERS } from '../common/admin-filter-configs';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 import {
@@ -71,17 +73,40 @@ export type CreateOrderDto = {
   items: CreateOrderLineInput[];
 };
 
-function toIso(value: Date | undefined | null): string | null {
-  if (!value) return null;
-  return value.toISOString();
+function toIso(value: Date | string | undefined | null): string | null {
+  if (value == null) return null;
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'string') {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? value : parsed.toISOString();
+  }
+  return null;
+}
+
+function parseJsonArray<T>(raw: unknown): T[] {
+  if (Array.isArray(raw)) return raw as T[];
+  if (typeof raw === 'string') {
+    const t = raw.trim();
+    if (!t) return [];
+    try {
+      const parsed = JSON.parse(t) as unknown;
+      return Array.isArray(parsed) ? (parsed as T[]) : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }
 
 function mapUserRef(user: User | null | undefined) {
   if (!user) return null;
+  const name = user.name?.trim();
+  const email = user.email?.trim();
+  if (!name && !email) return null;
   return {
     id: user.id,
-    fullName: user.name?.trim() || user.email?.trim() || user.id,
-    email: user.email?.trim() || '',
+    fullName: name || email || user.id,
+    email: email || '',
   };
 }
 
@@ -95,8 +120,8 @@ function mapOrder(row: Order): OrderRowDto {
     customerEmail: row.customerEmail,
     customerPhone: row.customerPhone ?? null,
     shippingAddress: row.shippingAddress ?? null,
-    items: row.items ?? [],
-    gifts: row.gifts ?? [],
+    items: parseJsonArray<OrderItemSnapshot>(row.items),
+    gifts: parseJsonArray<OrderGiftSnapshot>(row.gifts),
     subtotal: row.subtotal,
     discountAmount: row.discountAmount,
     shippingFee: row.shippingFee,
@@ -133,6 +158,7 @@ export class OrdersService {
     status?: OrderStatus | 'all';
     search?: string;
     trash?: boolean;
+    filters?: Record<string, string>;
   }): Promise<{
     data: OrderRowDto[];
     pagination: ReturnType<typeof paginationMeta>;
@@ -142,27 +168,26 @@ export class OrdersService {
       params.limit,
       ADMIN_TABLE_EXPORT_MAX_LIMIT,
     );
-    const where: FilterQuery<Order> = {};
-    if (params.trash) {
-      where.deletedAt = { $ne: null };
-    } else {
-      where.deletedAt = null;
-    }
-    if (params.status && params.status !== 'all') {
-      where.status = params.status;
-    }
-    if (params.search?.trim()) {
-      const q = `%${params.search.trim()}%`;
-      where.$or = [
-        { orderNumber: { $like: q } },
-        { customerName: { $like: q } },
-        { customerEmail: { $like: q } },
-        { customerPhone: { $like: q } },
-      ];
+    const whereBase = buildStandardAdminWhere({
+      status: params.trash ? 'deleted' : 'active',
+      search: params.search,
+      searchFields: [
+        'orderNumber',
+        'customerName',
+        'customerEmail',
+        'customerPhone',
+      ],
+      filters: params.filters,
+      filterConfig: ORDER_COLUMN_FILTERS,
+    });
+
+    if (!params.filters?.status && params.status && params.status !== 'all') {
+      whereBase.status = params.status;
     }
 
+    const where = whereBase as FilterQuery<Order>;
+
     const [rows, total] = await this.em.findAndCount(Order, where, {
-      populate: ['customer', 'assignedShipper'],
       orderBy: { createdAt: 'DESC' },
       limit,
       offset: skip,
@@ -174,11 +199,7 @@ export class OrdersService {
   }
 
   async getById(id: number): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(
-      Order,
-      { id, deletedAt: null },
-      { populate: ['customer', 'assignedShipper'] },
-    );
+    const row = await this.em.findOne(Order, { id, deletedAt: null });
     return row ? mapOrder(row) : null;
   }
 
@@ -189,7 +210,6 @@ export class OrdersService {
       Order,
       { customerEmail: normalized, deletedAt: null },
       {
-        populate: ['customer', 'assignedShipper'],
         orderBy: { createdAt: 'DESC' },
         limit: 100,
       },
@@ -198,11 +218,7 @@ export class OrdersService {
   }
 
   async getPublicById(id: number, email?: string): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(
-      Order,
-      { id, deletedAt: null },
-      { populate: ['customer', 'assignedShipper'] },
-    );
+    const row = await this.em.findOne(Order, { id, deletedAt: null });
     if (!row) return null;
     if (email?.trim()) {
       const normalized = email.trim().toLowerCase();
@@ -372,7 +388,6 @@ export class OrdersService {
 
     await this.em.flush();
 
-    await this.em.populate(order, ['customer', 'assignedShipper']);
     return mapOrder(order);
   }
 
@@ -381,11 +396,7 @@ export class OrdersService {
     status: OrderStatus,
     actorUserId?: string,
   ): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(
-      Order,
-      { id, deletedAt: null },
-      { populate: ['customer', 'assignedShipper'] },
-    );
+    const row = await this.em.findOne(Order, { id, deletedAt: null });
     if (!row) return null;
     row.status = status;
     const now = new Date();
