@@ -1,21 +1,13 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Badge } from "../badge"
+import { ProductPriceTierBadge, ProductStockBadge } from "../badge-presets"
 import { formatProductVnd } from "./product-money"
 import {
   ProductDetailQtyStepper,
   type ProductDetailQtyStockStatus,
 } from "./product-detail-qty-stepper"
 
-const stockBadgeVariant: Record<
-  ProductDetailQtyStockStatus,
-  "success" | "warning" | "destructive"
-> = {
-  ok: "success",
-  low: "warning",
-  out: "destructive",
-}
 import { cn } from "../../lib/utils"
 
 export type ProductDetailOrderRowProps = {
@@ -83,26 +75,15 @@ export function ProductDetailOrderRow({
                 Đơn giá
               </p>
               {hasWholesale && !stacked ? (
-                <Badge
-                  variant={listPrice != null ? "promo" : "retail"}
-                  size="xs"
-                >
-                  {listPrice != null ? "Giá KM" : "Giá lẻ"}
-                </Badge>
+                <ProductPriceTierBadge isPromoActive={listPrice != null} />
               ) : null}
             </div>
             {stacked && stockCount != null ? (
-              <Badge
-                variant={stockBadgeVariant[stockStatus]}
-                size="xs"
-                shape="pill"
-                className="shrink-0 tabular-nums"
-              >
-                Tồn{" "}
-                <span className="font-bold">
-                  {stockCount.toLocaleString("vi-VN")}
-                </span>
-              </Badge>
+              <ProductStockBadge
+                count={stockCount}
+                status={stockStatus}
+                className="shrink-0"
+              />
             ) : null}
           </div>
 
@@ -122,13 +103,10 @@ export function ProductDetailOrderRow({
             </p>
             <p className="text-xs text-muted-foreground">/ {unitLabel}</p>
             {stacked && hasWholesale ? (
-              <Badge
-                variant={listPrice != null ? "promo" : "retail"}
-                size="xs"
+              <ProductPriceTierBadge
+                isPromoActive={listPrice != null}
                 className="mb-0.5"
-              >
-                {listPrice != null ? "Giá KM" : "Giá lẻ"}
-              </Badge>
+              />
             ) : null}
           </div>
 
@@ -146,7 +124,15 @@ export function ProductDetailOrderRow({
         <ProductDetailQtyStepper
           qty={qty}
           unitType={unitType}
-          onQtyChange={onQtyChange}
+          onQtyChange={(next) => {
+            const capped =
+              maxQty != null
+                ? maxQty <= 0
+                  ? Math.max(0, Math.min(next, 0))
+                  : Math.max(minQty, Math.min(next, maxQty))
+                : Math.max(minQty, next)
+            onQtyChange(capped)
+          }}
           minQty={minQty}
           maxQty={maxQty}
           stockCount={stacked ? undefined : stockCount}

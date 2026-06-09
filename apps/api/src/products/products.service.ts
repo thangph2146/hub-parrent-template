@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Product } from '../entities/product.entity';
 import type { ProductUnitType } from '../common/product-types';
-import { getUnitStock, sumUnitStocks } from '../common/product-units';
+import {
+  deductBaseStockFromUnits,
+  productBaseStock,
+  resolveUnit,
+  sumUnitStocks,
+} from '../common/product-units';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
@@ -237,7 +242,7 @@ export class ProductsService {
     return mapProduct(row);
   }
 
-  /** Giảm tồn kho sau checkout — ưu tiên stock theo unitType. */
+  /** Giảm tồn kho sau checkout — trừ sp gốc từ pool chung các loại hàng. */
   async decrementStock(
     em: EntityManager,
     productId: number,
@@ -248,31 +253,22 @@ export class ProductsService {
     if (!row) throw new Error(`Sản phẩm #${productId} không tồn tại`);
     const q = Math.max(1, Math.floor(quantity));
     const typeKey = unitType?.trim();
+    const unit = typeKey ? resolveUnit(row, typeKey) : null;
+    const per = Math.max(1, Math.floor(unit?.qtyPerUnit || 1));
+    const deductBase = q * per;
+    const base = productBaseStock(row);
 
-    if (typeKey && row.unitTypes?.length) {
-      const idx = row.unitTypes.findIndex((u) => u.type === typeKey);
-      if (idx >= 0) {
-        const unit = row.unitTypes[idx];
-        if (!unit) return;
-        const unitStock = getUnitStock(unit);
-        if (unitStock !== null) {
-          if (unitStock < q) {
-            throw new Error(
-              `Loại "${unit.label}" của "${row.name}" không đủ tồn kho`,
-            );
-          }
-          const nextUnits = [...row.unitTypes];
-          nextUnits[idx] = { ...unit, stock: unitStock - q };
-          row.unitTypes = nextUnits;
-          syncProductStockFromUnits(row);
-          return;
-        }
-      }
+    if (base < deductBase) {
+      const label = unit?.label ?? row.unit;
+      throw new Error(`Loại "${label}" của "${row.name}" không đủ tồn kho`);
     }
 
-    if (row.stock < q) {
-      throw new Error(`Sản phẩm "${row.name}" không đủ tồn kho`);
+    if (row.unitTypes?.length) {
+      deductBaseStockFromUnits(row, deductBase, typeKey);
+      syncProductStockFromUnits(row);
+      return;
     }
-    row.stock -= q;
+
+    row.stock = Math.max(0, base - deductBase);
   }
 }

@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@ui/components/badge"
+import { ActiveStatusBadge } from "@ui/components/product"
 import {
   defineAdminCrudActionsColumn,
   defineAdminTrashActionsColumn,
@@ -84,11 +85,7 @@ export function getProductColumns({
     {
       accessorKey: "isActive",
       header: "Bán",
-      cell: ({ getValue }) => (
-        <Badge variant={getValue() ? "default" : "secondary"}>
-          {getValue() ? "Đang bán" : "Ẩn"}
-        </Badge>
-      ),
+      cell: ({ getValue }) => <ActiveStatusBadge active={Boolean(getValue())} />,
     },
     defineAdminCreatedAtColumn<ProductRow>({ defaultHidden: true }),
     defineAdminUpdatedAtColumn<ProductRow>({ header: "Cập nhật" }),

@@ -25,7 +25,6 @@ export type ProductUnitFormRow = {
   wholesalePrice: string
   minWholesaleQty: string
   qtyPerUnit: string
-  stock: string
   imageUrls: string
   tierMinQty: string
   tierUnitPrice: string
@@ -52,6 +51,8 @@ export type ProductFormValues = {
   description: string
   isActive: boolean
   fulfillmentNote: string
+  /** Tồn sp gốc dùng chung — storefront chia SL tối đa từng loại hàng. */
+  baseStock: string
   units: ProductUnitFormRow[]
 }
 
@@ -63,7 +64,6 @@ export const EMPTY_UNIT_ROW: ProductUnitFormRow = {
   wholesalePrice: "0",
   minWholesaleQty: "0",
   qtyPerUnit: "1",
-  stock: "0",
   imageUrls: "",
   tierMinQty: "",
   tierUnitPrice: "",

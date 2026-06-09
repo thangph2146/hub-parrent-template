@@ -2,6 +2,7 @@ import type { OrderItemSnapshot } from '../common/product-types';
 import { effectiveLineUnitPrice } from '../common/unit-pricing';
 import {
   resolveLineSku,
+  resolveSellableUnitStock,
   resolveUnit,
   resolveUnitImage,
 } from '../common/product-units';
@@ -38,6 +39,8 @@ export function buildOrderItemsFromProducts(
   productsById: Map<number, Product>,
 ): OrderItemSnapshot[] {
   const items: OrderItemSnapshot[] = [];
+  const reservedBaseByProduct = new Map<number, number>();
+
   for (const line of mergedLines) {
     const product = productsById.get(line.productId);
     if (!product) {
@@ -49,6 +52,15 @@ export function buildOrderItemsFromProducts(
     if (unit.isActive === false) {
       throw new Error(
         `Loại hàng "${unit.label}" của "${product.name}" không còn bán`,
+      );
+    }
+    const reservedBase = reservedBaseByProduct.get(line.productId) ?? 0;
+    const available = resolveSellableUnitStock(unit, product, reservedBase);
+    if (line.quantity > available) {
+      throw new Error(
+        available <= 0
+          ? `Loại "${unit.label}" của "${product.name}" đã hết hàng`
+          : `Loại "${unit.label}" của "${product.name}" chỉ còn ${available} trong kho`,
       );
     }
     const pricing = effectiveLineUnitPrice(unit, line.quantity);
@@ -76,6 +88,9 @@ export function buildOrderItemsFromProducts(
       listUnitPrice: pricing.listUnitPrice,
       unitLabel: unit.label,
     });
+
+    const lineBase = line.quantity * qtyPerUnit;
+    reservedBaseByProduct.set(line.productId, reservedBase + lineBase);
   }
   if (!items.length) {
     throw new Error('Đơn hàng phải có ít nhất một sản phẩm hợp lệ');

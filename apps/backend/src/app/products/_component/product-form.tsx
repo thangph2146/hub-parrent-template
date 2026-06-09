@@ -8,23 +8,20 @@ import {
   AdminFormMain,
   AdminFormPageHeader,
   AdminFormSidebar,
+  ProductFormSidebar,
 } from "@ui/components/admin"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
 } from "@ui/components/field"
-import { FormFieldCol } from "@ui/components/typing"
-import { Input } from "@ui/components/input"
-import { Textarea } from "@ui/components/textarea"
-import { Switch } from "@ui/components/switch"
-import { Package } from "lucide-react"
 import type {
   CreateProductInput,
   Product,
   ProductGiftRule,
   ProductUnitType,
 } from "@workspace/api-client"
+import { productBaseStock } from "@workspace/api-client"
 import {
   EMPTY_UNIT_ROW,
   formatImageUrls,
@@ -42,7 +39,6 @@ const unitRowSchema = z.object({
   wholesalePrice: z.string(),
   minWholesaleQty: z.string(),
   qtyPerUnit: z.string(),
-  stock: z.string(),
   imageUrls: z.string(),
   tierMinQty: z.string(),
   tierUnitPrice: z.string(),
@@ -69,6 +65,7 @@ const schema = z.object({
   description: z.string(),
   isActive: z.boolean(),
   fulfillmentNote: z.string(),
+  baseStock: z.string(),
   units: z.array(unitRowSchema).min(1, "Cần ít nhất một loại hàng"),
 })
 
@@ -77,7 +74,6 @@ function unitRowToApi(row: ProductUnitFormRow, index: number): ProductUnitType {
   const wholesaleRaw = Math.floor(Number(row.wholesalePrice) || 0)
   const wholesale = wholesaleRaw > 0 ? wholesaleRaw : null
   const minQ = Math.max(0, Math.floor(Number(row.minWholesaleQty) || 0))
-  const stock = Math.max(0, Math.floor(Number(row.stock) || 0))
   const images = parseImageUrls(row.imageUrls)
 
   const tierMin = Math.floor(Number(row.tierMinQty) || 0)
@@ -123,7 +119,6 @@ function unitRowToApi(row: ProductUnitFormRow, index: number): ProductUnitType {
     wholesalePrice: wholesale,
     minWholesaleQty: minQ,
     qtyPerUnit: Math.max(1, Math.floor(Number(row.qtyPerUnit) || 1)),
-    stock,
     images: images.length ? images : undefined,
     priceTiers,
     giftRules: giftRulesOrUndefined,
@@ -142,6 +137,7 @@ export function useProductForm(defaults?: Partial<ProductFormValues>) {
       description: "",
       isActive: true,
       fulfillmentNote: "",
+      baseStock: "0",
       units: [{ ...EMPTY_UNIT_ROW }],
       ...defaults,
     },
@@ -162,7 +158,6 @@ function unitToFormRow(
     wholesalePrice: String(unit.wholesalePrice ?? 0),
     minWholesaleQty: String(unit.minWholesaleQty ?? 0),
     qtyPerUnit: String(unit.qtyPerUnit ?? 1),
-    stock: String(unit.stock ?? 0),
     imageUrls: formatImageUrls(unit.images),
     tierMinQty: tier ? String(tier.minQty) : "",
     tierUnitPrice: tier ? String(tier.unitPrice) : "",
@@ -193,7 +188,6 @@ export function productToFormValues(product: Product): ProductFormValues {
             wholesalePrice: product.wholesalePrice,
             minWholesaleQty: 0,
             qtyPerUnit: 1,
-            stock: product.stock,
             images: product.images ?? undefined,
           },
           true
@@ -211,6 +205,7 @@ export function productToFormValues(product: Product): ProductFormValues {
     description: product.description ?? "",
     isActive: product.isActive,
     fulfillmentNote: product.fulfillmentNote ?? "",
+    baseStock: String(productBaseStock(product)),
     units,
   }
 }
@@ -221,7 +216,7 @@ export function buildProductPayload(
   const unitTypes = values.units.map((row, index) => unitRowToApi(row, index))
   const defaultUnit = unitTypes.find((u) => u.isDefault) ?? unitTypes[0]!
   const allImages = unitTypes.flatMap((u) => u.images ?? [])
-  const totalStock = unitTypes.reduce((sum, u) => sum + (u.stock ?? 0), 0)
+  const totalStock = Math.max(0, Math.floor(Number(values.baseStock) || 0))
 
   return {
     sku: values.sku.trim(),
@@ -257,6 +252,8 @@ export function ProductFormShell({
 }) {
   const { register, watch, setValue } = form
   const isActive = watch("isActive")
+  const units = watch("units") ?? []
+  const baseStock = watch("baseStock")
 
   return (
     <>
@@ -274,7 +271,7 @@ export function ProductFormShell({
           <FieldSet variant="section">
             <FieldSectionLegend
               title="Loại hàng (biến thể)"
-              description="Giá, ảnh, tồn, bậc giá và quà tặng theo từng loại."
+              description="Giá, ảnh, tồn pool chung, bậc giá và quà tặng theo từng loại."
             />
             <FieldSetContent variant="section" className="pt-0">
               <ProductUnitVariantsField
@@ -284,52 +281,14 @@ export function ProductFormShell({
             </FieldSetContent>
           </FieldSet>
         </AdminFormMain>
-        <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] space-y-6 overflow-y-auto">
-          <FieldSet variant="section">
-            <FieldSectionLegend
-              icon={Package}
-              title="Thông tin chung"
-              description="SKU cha và danh mục."
-            />
-            <FieldSetContent variant="section" className="grid gap-4 pt-0">
-              <FormFieldCol label="SKU cha" required>
-                <Input {...register("sku")} />
-              </FormFieldCol>
-              <FormFieldCol label="Danh mục" required>
-                <Input {...register("category")} />
-              </FormFieldCol>
-            </FieldSetContent>
-          </FieldSet>
-          <FieldSet variant="section">
-            <FieldSectionLegend
-              title="Chi tiết sản phẩm"
-              description="Tên hiển thị và mô tả trên storefront."
-            />
-            <FieldSetContent variant="section" className="grid gap-4 pt-0">
-              <FormFieldCol label="Tên" required>
-                <Input {...register("name")} />
-              </FormFieldCol>
-              <FormFieldCol label="Ghi chú kho / quà chung">
-                <Textarea rows={2} {...register("fulfillmentNote")} />
-              </FormFieldCol>
-              <FormFieldCol label="Mô tả">
-                <Textarea rows={3} {...register("description")} />
-              </FormFieldCol>
-            </FieldSetContent>
-          </FieldSet>
-          <FieldSet variant="section">
-            <FieldSectionLegend title="Trạng thái" />
-            <FieldSetContent
-              variant="section"
-              className="flex items-center justify-between pt-0"
-            >
-              <span>Đang bán</span>
-              <Switch
-                checked={isActive}
-                onCheckedChange={(v) => setValue("isActive", v)}
-              />
-            </FieldSetContent>
-          </FieldSet>
+        <AdminFormSidebar className="sticky top-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+          <ProductFormSidebar
+            register={register}
+            isActive={isActive}
+            onIsActiveChange={(v) => setValue("isActive", v)}
+            baseStock={baseStock}
+            units={units}
+          />
         </AdminFormSidebar>
       </AdminFormLayout>
     </>

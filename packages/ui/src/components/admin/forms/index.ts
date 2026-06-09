@@ -40,6 +40,23 @@ export {
   type ProductUnitStockBlockProps,
 } from "./product-unit-qty-fields"
 export {
+  ProductFormSidebar,
+  type ProductFormSidebarFields,
+  type ProductFormSidebarProps,
+} from "./product-form-sidebar"
+export {
+  ProductUnitStockPoolBanner,
+  ProductUnitStockPoolSidebar,
+  ProductUnitVariantCardHeader,
+  computeFormUnitStockPool,
+  maxSellableFromPool,
+  parseFormBaseStock,
+  type FormUnitStockRow,
+  type ProductUnitStockPoolBannerProps,
+  type ProductUnitStockPoolSidebarProps,
+  type ProductUnitVariantCardHeaderProps,
+} from "./product-unit-stock-pool"
+export {
   ProductUnitPromoRuleCard,
   type ProductUnitPromoRuleCardProps,
 } from "./product-unit-promo-compact"

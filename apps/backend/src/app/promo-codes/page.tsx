@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Plus, Ticket } from "lucide-react"
 import { Badge } from "@ui/components/badge"
+import { ActiveStatusBadge } from "@ui/components/product"
 import { AdminDataTable } from "@ui/components/data-table"
 import {
   AdminListPageHeader,
@@ -90,9 +91,11 @@ function PromoCodesPageInner() {
         accessorKey: "isActive",
         header: "TT",
         cell: ({ getValue }) => (
-          <Badge variant={getValue() ? "default" : "secondary"}>
-            {getValue() ? "Bật" : "Tắt"}
-          </Badge>
+          <ActiveStatusBadge
+            active={Boolean(getValue())}
+            activeLabel="Bật"
+            inactiveLabel="Tắt"
+          />
         ),
       },
     ],

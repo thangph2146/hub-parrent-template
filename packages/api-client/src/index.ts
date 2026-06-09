@@ -18,6 +18,23 @@ export {
   matchesQuantityCondition,
 } from "./quantity-conditions"
 export {
+  getProductUnits,
+  productBaseStock,
+  cartReservedBase,
+  maxPurchasableUnitQty,
+  unitStock,
+  remainingUnitStock,
+  clampSellQty,
+  hasUnitWholesalePromo,
+} from "./product-units"
+export {
+  resolveGiftRulesForUnit,
+  parseGiftRulesFromFulfillmentNote,
+  getLegacyGiftRuleForUnit,
+  normalizeGiftRuleUnitType,
+  type LegacyFulfillmentGiftRule,
+} from "./gift-rules"
+export {
   PERMISSION_CODES,
   STAFF_ADMIN_ROLE_CODES,
   hasPermission,

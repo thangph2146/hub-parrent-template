@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Package2, ShoppingCart, Tag } from "lucide-react";
 import { Badge } from "@ui/components/badge";
@@ -9,7 +9,14 @@ import {
   ProductDetailOrderRow,
   ProductDetailUnitPicker,
   formatProductVnd,
+  hasUnitWholesalePromo,
 } from "@ui/components/product";
+import {
+  cartReservedBase,
+  clampSellQty,
+  remainingUnitStock,
+  unitStock,
+} from "@workspace/api-client";
 import type { Product, ProductUnitType } from "@/lib/api";
 import { getProductUnits } from "@/lib/catalog-filters";
 import { unitSellingAndListPrice } from "@/lib/product-price";
@@ -32,23 +39,29 @@ export function CatalogProductCard({
   const [quantity, setQuantity] = useState(1);
 
   const qtyInCart = cartLineQuantity(cart.lines, p.id, selectedUnit.type);
+  const reservedBase = cartReservedBase(cart.lines, p.id);
   const pricingQty = qtyInCart + quantity;
 
-  const isWholesale = selectedUnit.wholesalePrice !== null;
+  const isWholesale = hasUnitWholesalePromo(selectedUnit);
+  const unitStockCount = unitStock(selectedUnit, p);
+  const availableQty = remainingUnitStock(selectedUnit, p, reservedBase);
   const { current: displayPrice, list: listPrice } = unitSellingAndListPrice(
     selectedUnit,
     pricingQty,
   );
 
-  const maxQty = Math.max(
-    1,
-    Math.floor(p.stock / Math.max(selectedUnit.qtyPerUnit, 1)),
-  );
-  const minPurchaseQty = 1;
-  const outOfStock = maxQty <= 0;
-  const totalUnits = quantity * Math.max(selectedUnit.qtyPerUnit, 1);
-  const stockWarning = totalUnits > p.stock * 0.8;
+  const maxQty = availableQty;
+  const minPurchaseQty = availableQty > 0 ? 1 : 0;
+  const outOfStock = availableQty <= 0;
+  const stockWarning = availableQty > 0 && quantity > availableQty * 0.8;
   const stockStatus = outOfStock ? "out" : stockWarning ? "low" : "ok";
+
+  useEffect(() => {
+    setQuantity((current) => {
+      if (availableQty <= 0) return 0;
+      return Math.max(1, Math.min(current || 1, availableQty));
+    });
+  }, [availableQty, selectedUnit.type]);
 
   const primaryImage = p.images?.[0];
   const firstCoupon = p.coupons?.[0];
@@ -65,7 +78,7 @@ export function CatalogProductCard({
           label: unit.label,
           currentPriceLabel: formatProductVnd(current),
           listPriceLabel: list != null ? formatProductVnd(list) : null,
-          hasPromo: unit.wholesalePrice !== null,
+          hasPromo: hasUnitWholesalePromo(unit),
         };
       }),
     [units, quantity, cart.lines, p.id],
@@ -75,11 +88,13 @@ export function CatalogProductCard({
     const next = units.find((unit) => unit.type === type);
     if (!next) return;
     setSelectedUnit(next);
-    setQuantity(1);
+    const nextReserved = cartReservedBase(cart.lines, p.id);
+    const nextAvailable = remainingUnitStock(next, p, nextReserved);
+    setQuantity(nextAvailable > 0 ? 1 : 0);
   };
 
   const clampQty = (value: number) =>
-    Math.max(minPurchaseQty, Math.min(value, maxQty));
+    clampSellQty(value, minPurchaseQty, availableQty);
 
   const promoHint =
     isWholesale &&
@@ -175,7 +190,7 @@ export function CatalogProductCard({
             onQtyChange={(next) => setQuantity(clampQty(next))}
             minQty={minPurchaseQty}
             maxQty={maxQty}
-            stockCount={maxQty}
+            stockCount={unitStockCount}
             stockStatus={stockStatus}
             footer={
               <>
@@ -183,7 +198,10 @@ export function CatalogProductCard({
                 <Button
                   type="button"
                   className="h-10 w-full rounded-xl text-sm font-bold"
-                  onClick={() => onAddToCart(p, selectedUnit, quantity)}
+                  onClick={() => {
+                    if (outOfStock || quantity > availableQty) return;
+                    onAddToCart(p, selectedUnit, quantity);
+                  }}
                   disabled={outOfStock}
                 >
                   <ShoppingCart className="mr-1.5 size-4" />

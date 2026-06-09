@@ -85,16 +85,81 @@ export function getUnitStock(unit: ProductUnitType): number | null {
   return null;
 }
 
-export function sumUnitStocks(product: Product): number {
+/** Tổng tồn sp gốc — cộng `stock × qtyPerUnit` mọi loại hàng. */
+export function productBaseStock(product: Product): number {
   const units = product.unitTypes ?? [];
   const withStock = units.filter(
     (u) => u.stock !== undefined && u.stock !== null,
   );
   if (withStock.length) {
-    return withStock.reduce(
-      (sum, u) => sum + Math.max(0, Math.floor(Number(u.stock) || 0)),
-      0,
-    );
+    const fromUnits = withStock.reduce((sum, u) => {
+      const sell = Math.max(0, Math.floor(Number(u.stock) || 0));
+      const per = Math.max(1, Math.floor(Number(u.qtyPerUnit) || 1));
+      return sum + sell * per;
+    }, 0);
+    if (fromUnits > 0) return fromUnits;
   }
   return Math.max(0, Math.floor(product.stock || 0));
+}
+
+/** SL tối đa loại hàng sau khi trừ sp gốc đã giữ (giỏ / dòng đơn trước). */
+export function maxPurchasableUnitQty(
+  unit: ProductUnitType,
+  product: Product,
+  reservedBase = 0,
+): number {
+  const base = productBaseStock(product);
+  const reserved = Math.max(0, Math.floor(Number(reservedBase) || 0));
+  const remaining = Math.max(0, base - reserved);
+  const per = Math.max(1, Math.floor(unit.qtyPerUnit || 1));
+  return Math.floor(remaining / per);
+}
+
+/** Tồn có thể bán theo loại hàng — chia từ pool sp gốc. */
+export function resolveSellableUnitStock(
+  unit: ProductUnitType,
+  product: Product,
+  reservedBase = 0,
+): number {
+  return maxPurchasableUnitQty(unit, product, reservedBase);
+}
+
+/** Đồng bộ `product.stock` = tổng sp gốc từ các loại hàng. */
+export function sumUnitStocks(product: Product): number {
+  return productBaseStock(product);
+}
+
+/** Trừ tồn sp gốc khỏi các loại hàng (ưu tiên loại đang bán). */
+export function deductBaseStockFromUnits(
+  product: Product,
+  deductBase: number,
+  preferUnitType?: string,
+): void {
+  let remaining = Math.max(0, Math.floor(deductBase));
+  if (remaining <= 0 || !product.unitTypes?.length) return;
+
+  const nextUnits = [...product.unitTypes];
+  const order: number[] = [];
+  const preferIdx = preferUnitType
+    ? nextUnits.findIndex((u) => u.type === preferUnitType)
+    : -1;
+  if (preferIdx >= 0) order.push(preferIdx);
+  for (let i = 0; i < nextUnits.length; i++) {
+    if (i !== preferIdx) order.push(i);
+  }
+
+  for (const idx of order) {
+    if (remaining <= 0) break;
+    const unit = nextUnits[idx];
+    if (!unit) continue;
+    const unitSell = getUnitStock(unit);
+    if (unitSell === null || unitSell <= 0) continue;
+    const per = Math.max(1, Math.floor(unit.qtyPerUnit || 1));
+    const sellRemove = Math.min(unitSell, Math.floor(remaining / per));
+    if (sellRemove <= 0) continue;
+    nextUnits[idx] = { ...unit, stock: unitSell - sellRemove };
+    remaining -= sellRemove * per;
+  }
+
+  product.unitTypes = nextUnits;
 }

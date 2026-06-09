@@ -1,32 +1,29 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Gift, Layers, Package, Sparkles, Tag } from "lucide-react"
-import type {
-  Product,
-  ProductGiftRule,
-  ProductUnitType,
-  QuantityScope,
+import { Boxes, Gift, Layers, Package, Sparkles, Tag } from "lucide-react"
+import type { Product, ProductUnitType } from "@workspace/api-client"
+import {
+  getProductUnits,
+  hasUnitWholesalePromo,
+  productBaseStock,
+  unitSellingAndListPrice,
+  unitStock,
 } from "@workspace/api-client"
-import { unitSellingAndListPrice } from "@workspace/api-client"
+import { ActiveStatusBadge } from "../badge-presets"
 import { Badge } from "../badge"
 import {
   FieldSectionBadge,
-  FieldSectionField,
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
-  FieldSectionValue,
 } from "../field"
 import {
   AdminDetailLayout,
   AdminDetailMain,
   AdminDetailSidebar,
 } from "../admin/pages/admin-detail-layout"
-import {
-  formatGiftScopeLabel,
-  ProductUnitPromoDivider,
-} from "../admin/forms"
+import { ProductDetailPromoGiftsSection } from "./product-detail-promo-gifts-section"
 import { ProductDetailGallery } from "./product-detail-gallery"
 import { ProductDetailInfoHeader } from "./product-detail-info-header"
 import { ProductDetailLayout } from "./product-detail-layout"
@@ -34,41 +31,12 @@ import { ProductDetailMetaGrid } from "./product-detail-meta-grid"
 import { ProductDetailPricePanel } from "./product-detail-price-panel"
 import { ProductDetailUnitPicker } from "./product-detail-unit-picker"
 import { formatProductVnd } from "./product-money"
-import { resolveMediaUrl } from "../../lib/resolve-media-url"
 import { cn } from "../../lib/utils"
-
-function giftScopeFromRule(rule: ProductGiftRule): QuantityScope {
-  return rule.trigger.scope ?? (rule.applyPer === "order" ? "product" : "line")
-}
-
-function resolveProductUnits(product: Product): ProductUnitType[] {
-  if (product.unitTypes && product.unitTypes.length > 0) {
-    return product.unitTypes
-  }
-  return [
-    {
-      type: product.unit,
-      label: product.unit,
-      sku: product.sku,
-      wholesalePrice: product.wholesalePrice > 0 ? product.wholesalePrice : null,
-      retailPrice: product.retailPrice,
-      minWholesaleQty: 1,
-      qtyPerUnit: 1,
-      stock: product.stock,
-      images: product.images ?? undefined,
-      isDefault: true,
-    },
-  ]
-}
 
 function unitImages(unit: ProductUnitType, product: Product) {
   const own = (unit.images ?? []).filter((url) => url.trim().length > 0)
   if (own.length > 0) return own
   return (product.images ?? []).filter((url) => url.trim().length > 0)
-}
-
-function unitStock(unit: ProductUnitType, product: Product) {
-  return unit.stock ?? product.stock
 }
 
 export type ProductAdminDetailProps = {
@@ -82,7 +50,7 @@ export function ProductAdminDetail({
   categoryLabel,
   className,
 }: ProductAdminDetailProps) {
-  const units = useMemo(() => resolveProductUnits(product), [product])
+  const units = useMemo(() => getProductUnits(product), [product])
   const [selectedType, setSelectedType] = useState(units[0]?.type ?? "")
   const selectedUnit =
     units.find((unit) => unit.type === selectedType) ?? units[0]!
@@ -148,14 +116,7 @@ export function ProductAdminDetail({
               </span>
             }
             couponBadges={product.coupons ?? []}
-            extraBadges={
-              <Badge
-                variant={product.isActive ? "success" : "muted"}
-                size="sm"
-              >
-                {product.isActive ? "Đang bán" : "Ẩn"}
-              </Badge>
-            }
+            extraBadges={<ActiveStatusBadge active={product.isActive} />}
           />
 
           {units.length <= 1 ? (
@@ -171,10 +132,7 @@ export function ProductAdminDetail({
             unitPrice={unitPrice}
             listPrice={listPrice}
             unitLabel={selectedUnit.label}
-            hasWholesale={
-              selectedUnit.wholesalePrice !== null &&
-              selectedUnit.wholesalePrice > 0
-            }
+            hasWholesale={hasUnitWholesalePromo(selectedUnit)}
             totalLabel={`Giá tham chiếu (1 ${selectedUnit.type})`}
             totalPrice={unitPrice}
             compact
@@ -194,16 +152,14 @@ export function ProductAdminDetail({
                 {formatProductVnd(tier.unitPrice)}
               </p>
             ) : null}
-            {gifts.length > 0 ? (
-              <div className="space-y-2 border-t border-outline-variant/30 pt-3">
-                <ProductUnitPromoDivider />
-                {gifts.map((rule) => (
-                  <AdminGiftRuleCard
-                    key={rule.id}
-                    rule={rule}
-                    unitLabel={selectedUnit.label}
-                  />
-                ))}
+            {hasUnitWholesalePromo(selectedUnit) || gifts.length > 0 ? (
+              <div className="border-t border-outline-variant/30 pt-3">
+                <ProductDetailPromoGiftsSection
+                  unit={selectedUnit}
+                  giftRules={gifts}
+                  pricingQty={previewQty}
+                  productSellQty={previewQty}
+                />
               </div>
             ) : null}
           </ProductDetailPricePanel>
@@ -240,7 +196,7 @@ export function ProductAdminDetail({
       </AdminDetailMain>
 
       {units.length > 1 ? (
-        <AdminDetailSidebar className="lg:sticky lg:top-6 lg:self-start">
+        <AdminDetailSidebar className="lg:sticky lg:top-18 lg:self-start">
           <ProductAdminUnitsSummary
             units={units}
             product={product}
@@ -264,37 +220,80 @@ function ProductAdminUnitsSummary({
   selectedType: string
   onSelect: (type: string) => void
 }) {
+  const poolBase = productBaseStock(product)
+
   return (
     <FieldSet variant="section">
       <FieldSectionLegend
         icon={Layers}
         title="Tổng hợp loại hàng"
-        description="Bấm từng loại để xem giá, ảnh và quà tặng."
+        description="Chọn loại để xem trước storefront bên trái."
         badge={<FieldSectionBadge>{units.length}</FieldSectionBadge>}
       />
-      <FieldSetContent variant="section" className="space-y-3 pt-0">
-        {units.map((unit) => {
-          const active = unit.type === selectedType
-          const giftCount = unit.giftRules?.length ?? 0
-          return (
-            <button
-              key={unit.type}
-              type="button"
-              onClick={() => onSelect(unit.type)}
-              className="w-full text-left"
-            >
-              <FieldSectionValue
+      <FieldSetContent variant="section" className="space-y-2.5 pt-0">
+        {poolBase > 0 ? (
+          <div className="flex items-center gap-2.5 rounded-lg border border-primary/20 bg-primary/[0.06] px-3 py-2">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <Boxes className="size-4" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                Pool tồn chung
+              </p>
+              <p className="text-base font-bold tabular-nums leading-tight text-primary">
+                {poolBase.toLocaleString("vi-VN")}
+                <span className="ml-1 text-[11px] font-medium text-muted-foreground">
+                  sp gốc
+                </span>
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="space-y-2" role="list">
+          {units.map((unit) => {
+            const active = unit.type === selectedType
+            const giftCount = unit.giftRules?.length ?? 0
+            const maxSell = unitStock(unit, product)
+            const per = Math.max(1, Math.floor(unit.qtyPerUnit || 1))
+            const hasWholesale = hasUnitWholesalePromo(unit)
+            const tier = unit.priceTiers?.[0]
+
+            return (
+              <button
+                key={unit.type}
+                type="button"
+                role="listitem"
+                aria-pressed={active}
+                onClick={() => onSelect(unit.type)}
                 className={cn(
-                  "space-y-3 transition-colors",
+                  "w-full rounded-lg border px-3 py-2.5 text-left transition-all",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   active
-                    ? "border-primary bg-primary/5 ring-2 ring-primary/15"
-                    : "hover:border-primary/30 hover:bg-muted/40"
+                    ? "border-primary bg-primary/5 shadow-sm ring-2 ring-primary/15"
+                    : "border-border/80 bg-muted/10 hover:border-primary/35 hover:bg-muted/25",
                 )}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-bold text-foreground">
-                    {unit.label}
-                  </p>
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {unit.label}
+                      </p>
+                      {unit.isDefault ? (
+                        <Badge variant="category" size="xs" className="shrink-0">
+                          Mặc định
+                        </Badge>
+                      ) : null}
+                    </div>
+                    {!active ? (
+                      <p className="text-xs tabular-nums text-muted-foreground">
+                        {formatProductVnd(unit.retailPrice)}
+                        <span className="mx-1.5 text-border">·</span>
+                        Tối đa {maxSell}
+                      </p>
+                    ) : null}
+                  </div>
                   <Badge
                     variant={active ? "promo" : "muted"}
                     size="xs"
@@ -304,89 +303,78 @@ function ProductAdminUnitsSummary({
                   </Badge>
                 </div>
 
-                <FieldSectionField label="SKU">
-                  <span className="font-mono text-xs">
-                    {unit.sku || unit.type}
-                  </span>
-                </FieldSectionField>
+                <div
+                  className={cn(
+                    "grid grid-cols-2 gap-2 text-xs",
+                    active ? "mt-2.5" : "mt-0 hidden",
+                  )}
+                >
+                  <div className="rounded-md bg-background/70 px-2 py-1.5">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                      Giá lẻ
+                    </p>
+                    <p className="font-semibold tabular-nums text-foreground">
+                      {formatProductVnd(unit.retailPrice)}
+                    </p>
+                  </div>
+                  <div className="rounded-md bg-background/70 px-2 py-1.5 text-right">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                      Tối đa bán
+                    </p>
+                    <p className="font-semibold tabular-nums text-foreground">
+                      {maxSell}
+                    </p>
+                  </div>
+                </div>
 
-                <FieldSectionField label="Giá lẻ">
-                  {formatProductVnd(unit.retailPrice)}
-                </FieldSectionField>
-
-                {unit.wholesalePrice && unit.wholesalePrice > 0 ? (
-                  <FieldSectionField label="Giá sỉ">
-                    {formatProductVnd(unit.wholesalePrice)}
-                    {unit.minWholesaleQty > 0 ? (
-                      <span className="text-xs text-muted-foreground">
-                        {" "}
-                        · từ {unit.minWholesaleQty} sp
-                      </span>
+                {active ? (
+                  <div className="mt-2.5 space-y-2 border-t border-border/50 pt-2.5 text-xs">
+                    <p
+                      className="truncate font-mono text-[11px] text-muted-foreground"
+                      title={unit.sku || unit.type}
+                    >
+                      SKU: {unit.sku || unit.type}
+                    </p>
+                    {per > 1 ? (
+                      <p className="text-muted-foreground">
+                        Quy đổi:{" "}
+                        <span className="font-medium text-foreground">
+                          1 {unit.label} = {per} sp gốc
+                        </span>
+                      </p>
                     ) : null}
-                  </FieldSectionField>
+                    {hasWholesale ? (
+                      <p className="text-muted-foreground">
+                        Giá sỉ{" "}
+                        <span className="font-medium text-primary">
+                          {formatProductVnd(unit.wholesalePrice)}
+                        </span>
+                        {unit.minWholesaleQty > 0
+                          ? ` · từ ${unit.minWholesaleQty} sp`
+                          : null}
+                      </p>
+                    ) : null}
+                    {tier ? (
+                      <p className="inline-flex items-center gap-1 text-muted-foreground">
+                        <Sparkles className="size-3 text-primary" aria-hidden />
+                        {tier.label || `Từ ${tier.minQty} sp`} →{" "}
+                        {formatProductVnd(tier.unitPrice)}
+                      </p>
+                    ) : null}
+                    {giftCount > 0 ? (
+                      <p className="inline-flex items-center gap-1 font-medium text-primary">
+                        <Gift className="size-3" aria-hidden />
+                        {giftCount} quà tặng
+                      </p>
+                    ) : null}
+                  </div>
                 ) : null}
-
-                <FieldSectionField label="Tồn kho">
-                  {unitStock(unit, product)} {unit.type}
-                </FieldSectionField>
-
-                {giftCount > 0 ? (
-                  <FieldSectionField label="Quà tặng">
-                    <span className="inline-flex items-center gap-1 text-primary">
-                      <Tag className="size-3" aria-hidden />
-                      {giftCount} quà
-                    </span>
-                  </FieldSectionField>
-                ) : null}
-              </FieldSectionValue>
-            </button>
-          )
-        })}
+              </button>
+            )
+          })}
+        </div>
       </FieldSetContent>
     </FieldSet>
   )
 }
 
-function AdminGiftRuleCard({
-  rule,
-  unitLabel,
-}: {
-  rule: ProductGiftRule
-  unitLabel: string
-}) {
-  const scope = giftScopeFromRule(rule)
-  const image = rule.gift.image
-
-  return (
-    <div className="flex gap-3 rounded-xl border border-primary/25 bg-primary/5 p-3.5 shadow-sm">
-      <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border bg-muted">
-        {image ? (
-          <img
-            src={resolveMediaUrl(image, 112)}
-            alt={rule.gift.name}
-            className="size-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center text-muted-foreground/50">
-            <Gift className="size-5" aria-hidden />
-          </div>
-        )}
-      </div>
-      <div className="min-w-0 flex-1 space-y-1 text-sm">
-        <p className="font-semibold">{rule.gift.name}</p>
-        {rule.label && rule.label !== rule.gift.name ? (
-          <p className="text-xs text-muted-foreground">{rule.label}</p>
-        ) : null}
-        <p className="text-xs text-muted-foreground">
-          Từ {rule.trigger.minQty ?? "—"} sp · Tặng {rule.gift.qty}
-          {rule.gift.sku ? ` · ${rule.gift.sku}` : ""}
-        </p>
-        <p className="text-xs text-primary">
-          {formatGiftScopeLabel(scope, unitLabel)}
-        </p>
-      </div>
-    </div>
-  )
-}

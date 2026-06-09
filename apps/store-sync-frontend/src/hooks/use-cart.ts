@@ -1,13 +1,19 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import {
   applyPromoCodeWithRules,
   type PromoResult,
 } from "@workspace/promo-codes";
 import { getMergedPromoRules } from "@/lib/promo-rules-registry";
-import { effectiveLineUnitPrice } from "@workspace/api-client";
-import type { Product, ProductUnitType } from "@/lib/api";
+import {
+  cartReservedBase,
+  effectiveLineUnitPrice,
+  getProductUnits,
+  maxPurchasableUnitQty,
+  resolveGiftRulesForUnit,
+} from "@workspace/api-client";
+import type { Product, ProductGiftRule, ProductUnitType } from "@/lib/api";
 
 const STORAGE_KEY = "storesync_cart_v1";
 
@@ -33,9 +39,11 @@ export interface CartLine {
   stock: number;
   /**
    * Ghi chú kho / quà KM (`Product.fulfillmentNote`) — cập nhật khi thêm SP;
-   * parser quà đọc chung với CTSP.
+   * fallback parser quà legacy.
    */
   fulfillmentNote?: string | null;
+  /** Quà tặng theo loại hàng — đồng bộ CTSP / admin `unit.giftRules`. */
+  giftRules?: ProductGiftRule[];
 }
 
 interface CartState {
@@ -228,6 +236,7 @@ function normalizeCartState(raw: unknown): CartState {
         typeof row.fulfillmentNote === "string"
           ? row.fulfillmentNote
           : null,
+      giftRules: Array.isArray(row.giftRules) ? row.giftRules : undefined,
     };
     out.push(repriceLine(clamp(base)));
   }
@@ -303,7 +312,9 @@ const lineFromUnit = (
   product: Product,
   unit: ProductUnitType,
   quantity: number,
+  lines: CartLine[],
 ): CartLine => {
+  const otherReserved = cartReservedBase(lines, product.id);
   const retail = Math.max(0, Math.floor(Number(unit.retailPrice) || 0));
   const rawW = unit.wholesalePrice;
   const promo =
@@ -335,16 +346,18 @@ const lineFromUnit = (
     qtyPerUnit: unit.qtyPerUnit,
     quantity,
     isWholesale: eff.isSaleActive,
-    stock: product.stock,
+    stock: maxPurchasableUnitQty(unit, product, otherReserved),
     fulfillmentNote: product.fulfillmentNote ?? null,
+    giftRules: resolveGiftRulesForUnit(unit, product.fulfillmentNote),
   };
 };
 
+/** `line.stock` đã theo đơn vị bán (thùng/hộp), không chia thêm `qtyPerUnit`. */
 const clamp = (line: CartLine): CartLine => {
-  const maxByStock = Math.max(
-    1,
-    Math.floor(line.stock / Math.max(line.qtyPerUnit, 1)),
-  );
+  const maxByStock = Math.max(0, Math.floor(line.stock));
+  if (maxByStock <= 0) {
+    return { ...line, quantity: 0 };
+  }
   const next = Math.max(1, Math.min(line.quantity, maxByStock));
   return { ...line, quantity: next };
 };
@@ -355,6 +368,38 @@ export const cartStore = {
   replaceState(raw: unknown): void {
     write(normalizeCartState(raw));
   },
+  /** Cập nhật tồn từ catalog mới nhất và cắt SL vượt kho. */
+  syncStocksFromProducts(products: Product[]): void {
+    if (!products.length) return;
+    const byId = new Map(products.map((p) => [p.id, p]));
+    const next = read();
+    let changed = false;
+    for (const line of next.lines) {
+      const product = byId.get(line.productId);
+      if (!product) continue;
+      const unit = getProductUnits(product).find(
+        (u) => String(u.type).trim() === line.unitType,
+      );
+      if (!unit) continue;
+      const otherReserved =
+        cartReservedBase(next.lines, line.productId) -
+        line.quantity * Math.max(1, Math.floor(line.qtyPerUnit || 1));
+      const freshStock = maxPurchasableUnitQty(unit, product, otherReserved);
+      if (line.stock !== freshStock) {
+        line.stock = freshStock;
+        changed = true;
+      }
+      const repriced = repriceLine(clamp(line));
+      if (
+        repriced.quantity !== line.quantity ||
+        repriced.unitPrice !== line.unitPrice
+      ) {
+        Object.assign(line, repriced);
+        changed = true;
+      }
+    }
+    if (changed) write(next);
+  },
   add(product: Product, unit: ProductUnitType, quantity: number): void {
     if (quantity <= 0) return;
     const next = read();
@@ -362,19 +407,29 @@ export const cartStore = {
     const existing = next.lines.find(
       (l) => cartLineKey(l.productId, l.unitType) === key,
     );
+    const reservedBase = cartReservedBase(next.lines, product.id);
+    const room = maxPurchasableUnitQty(unit, product, reservedBase);
+    const toAdd = Math.min(quantity, room);
+    if (toAdd <= 0) return;
     if (existing) {
-      existing.quantity += quantity;
+      existing.quantity += toAdd;
       existing.unitLabel = unit.label;
       existing.qtyPerUnit = unit.qtyPerUnit;
-      existing.stock = product.stock;
+      const otherReserved =
+        cartReservedBase(next.lines, product.id) -
+        existing.quantity * Math.max(1, Math.floor(unit.qtyPerUnit || 1));
+      existing.stock = maxPurchasableUnitQty(unit, product, otherReserved);
       existing.fulfillmentNote = product.fulfillmentNote ?? existing.fulfillmentNote;
-      const fresh = lineFromUnit(product, unit, existing.quantity);
+      existing.giftRules = resolveGiftRulesForUnit(unit, product.fulfillmentNote);
+      const fresh = lineFromUnit(product, unit, existing.quantity, next.lines);
       existing.listUnitPrice = fresh.listUnitPrice;
       existing.promoUnitPrice = fresh.promoUnitPrice;
       existing.minPromoQty = fresh.minPromoQty;
       Object.assign(existing, repriceLine(clamp(existing)));
     } else {
-      next.lines.push(repriceLine(clamp(lineFromUnit(product, unit, quantity))));
+      next.lines.push(
+        repriceLine(clamp(lineFromUnit(product, unit, toAdd, next.lines))),
+      );
     }
     write(next);
   },
@@ -389,10 +444,17 @@ export const cartStore = {
     if (quantity <= 0) {
       next.lines.splice(idx, 1);
     } else {
-      const updated = repriceLine(
-        clamp({ ...next.lines[idx]!, quantity }),
-      );
-      next.lines[idx] = updated;
+      const line = next.lines[idx]!;
+      const maxByStock = Math.max(0, Math.floor(line.stock));
+      const capped =
+        maxByStock > 0
+          ? Math.max(1, Math.min(Math.floor(quantity), maxByStock))
+          : 0;
+      if (capped <= 0) {
+        next.lines.splice(idx, 1);
+      } else {
+        next.lines[idx] = repriceLine(clamp({ ...line, quantity: capped }));
+      }
     }
     write(next);
   },
@@ -542,4 +604,12 @@ export function useCart(): CartSummary {
     applyPromo,
     clearPromo,
   };
+}
+
+/** Đồng bộ tồn kho giỏ với catalog (tránh SL cũ trong localStorage vượt kho). */
+export function useCartStockSync(products: Product[] | undefined): void {
+  useEffect(() => {
+    if (!products?.length) return;
+    cartStore.syncStocksFromProducts(products);
+  }, [products]);
 }

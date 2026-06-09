@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@ui/components/table";
+import { StoreOrderRowStatusBadge } from "@ui/components/product";
 
 export type OrderStatusTableRow = {
   /** Khóa React (vd. id số đơn); hiển thị mã đơn ở cột đầu dùng `orderCode`. */
@@ -48,24 +49,18 @@ export function OrderStatusTable({ rows }: { rows: OrderStatusTableRow[] }) {
                 <TableCell className="pl-6 font-bold">{row.orderCode}</TableCell>
                 <TableCell className="text-muted-foreground">{row.date}</TableCell>
                 <TableCell>
-                  <span
-                    className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-bold ${
+                  <StoreOrderRowStatusBadge
+                    status={row.status}
+                    icon={
                       row.status === "shipping"
-                        ? "bg-primary/10 text-primary"
+                        ? Truck
                         : row.status === "completed"
-                          ? "bg-success/15 text-success"
-                          : "bg-destructive/10 text-destructive"
-                    }`}
+                          ? CircleCheckBig
+                          : OctagonX
+                    }
                   >
-                    {row.status === "shipping" ? (
-                      <Truck className="w-3.5 h-3.5" />
-                    ) : row.status === "completed" ? (
-                      <CircleCheckBig className="w-3.5 h-3.5" />
-                    ) : (
-                      <OctagonX className="w-3.5 h-3.5" />
-                    )}
                     {row.statusText}
-                  </span>
+                  </StoreOrderRowStatusBadge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{row.etaOrTotal}</TableCell>
                 <TableCell className="text-right pr-6">

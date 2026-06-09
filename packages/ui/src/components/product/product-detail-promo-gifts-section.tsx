@@ -9,6 +9,7 @@ import type {
 import {
   effectiveLineUnitPrice,
   effectiveQuantityForCondition,
+  hasUnitWholesalePromo,
   matchesQuantityCondition,
 } from "@workspace/api-client"
 import { Badge } from "../badge"
@@ -24,17 +25,7 @@ function giftScopeFromRule(rule: ProductGiftRule): QuantityScope {
   return rule.trigger.scope ?? (rule.applyPer === "order" ? "product" : "line")
 }
 
-export function hasUnitWholesalePromo(
-  unit: Pick<ProductUnitType, "retailPrice" | "wholesalePrice">,
-): boolean {
-  const retail = Math.max(0, Math.floor(Number(unit.retailPrice) || 0))
-  const raw = unit.wholesalePrice
-  if (raw === null || raw === undefined || !Number.isFinite(Number(raw))) {
-    return false
-  }
-  const wholesale = Math.floor(Number(raw))
-  return wholesale > 0 && wholesale < retail
-}
+export { hasUnitWholesalePromo } from "@workspace/api-client"
 
 function wholesaleDiscountPercent(
   unit: Pick<ProductUnitType, "retailPrice" | "wholesalePrice">,

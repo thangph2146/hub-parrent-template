@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react"
 import { Minus, Plus } from "lucide-react"
 import { Badge } from "../badge"
+import { ProductStockBadge } from "../badge-presets"
 import { Button } from "../button"
 import { ProductDetailSectionLabel } from "./product-detail-section-label"
 import { cn } from "../../lib/utils"
@@ -35,41 +36,16 @@ export type ProductDetailQtyStepperProps = {
   unitInline?: boolean
 }
 
-const stockBadgeVariant: Record<
-  ProductDetailQtyStockStatus,
-  "success" | "warning" | "destructive"
-> = {
-  ok: "success",
-  low: "warning",
-  out: "destructive",
-}
-
-function StockQtyBadge({
-  count,
-  status,
-}: {
-  count: number
-  status: ProductDetailQtyStockStatus
-}) {
-  return (
-    <Badge
-      variant={stockBadgeVariant[status]}
-      size="xs"
-      shape="pill"
-      className="tabular-nums"
-    >
-      Tồn{" "}
-      <span className="font-bold">{count.toLocaleString("vi-VN")}</span>
-    </Badge>
-  )
-}
-
 const stepperBtnClass =
   "size-8 shrink-0 rounded-full border-0 bg-background shadow-sm ring-1 ring-outline-variant/30 transition-all hover:bg-primary hover:text-primary-foreground hover:ring-primary/30 disabled:bg-muted/40 disabled:text-muted-foreground disabled:shadow-none disabled:ring-transparent disabled:hover:bg-muted/40 disabled:hover:text-muted-foreground"
 
 function clampQty(value: number, minQty: number, maxQty?: number) {
-  const upper = maxQty != null ? Math.min(value, maxQty) : value
-  return Math.max(minQty, upper)
+  const min = Math.max(0, Math.floor(minQty))
+  const v = Math.floor(Number(value) || 0)
+  if (maxQty == null) return Math.max(min, v)
+  const max = Math.max(0, Math.floor(maxQty))
+  if (max <= 0) return min > 0 ? min : 0
+  return Math.max(min, Math.min(v, max))
 }
 
 function parseQtyInput(raw: string) {
@@ -127,10 +103,12 @@ function QtyStepperControl({
   }, [qty, focused])
 
   const commitDraft = () => {
-    if (!editable) return
+    if (!editable || !onQtyChange) return
     const parsed = parseQtyInput(draft)
     if (parsed == null) {
-      setDraft(String(qty))
+      const next = clampQty(qty, minQty, maxQty)
+      onQtyChange(next)
+      setDraft(String(next))
       setFocused(false)
       return
     }
@@ -140,13 +118,48 @@ function QtyStepperControl({
     setFocused(false)
   }
 
+  const resolveBaseQty = () => {
+    if (focused && editable) {
+      const parsed = parseQtyInput(draft)
+      if (parsed != null) return clampQty(parsed, minQty, maxQty)
+    }
+    return clampQty(qty, minQty, maxQty)
+  }
+
+  const applyDelta = (delta: number) => {
+    if (editable && onQtyChange) {
+      const base = resolveBaseQty()
+      if (focused) setFocused(false)
+      const next = clampQty(base + delta, minQty, maxQty)
+      onQtyChange(next)
+      setDraft(String(next))
+      return
+    }
+    if (delta < 0) onDecrease()
+    else onIncrease()
+  }
+
   const qtyField = editable ? (
     <input
       type="text"
       inputMode="numeric"
       pattern="[0-9]*"
       value={focused ? draft : String(qty)}
-      onChange={(event) => setDraft(event.target.value.replace(/\D/g, ""))}
+      onChange={(event) => {
+        const digits = event.target.value.replace(/\D/g, "")
+        if (!digits) {
+          setDraft("")
+          return
+        }
+        const parsed = Number.parseInt(digits, 10)
+        if (!Number.isFinite(parsed)) return
+        const capped =
+          maxQty != null ? clampQty(parsed, minQty, maxQty) : parsed
+        setDraft(String(capped))
+        if (onQtyChange && maxQty != null && parsed !== capped) {
+          onQtyChange(capped)
+        }
+      }}
       onFocus={() => {
         setFocused(true)
         setDraft(String(qty))
@@ -196,7 +209,7 @@ function QtyStepperControl({
         variant="ghost"
         size="icon-sm"
         className={btnClass}
-        onClick={onDecrease}
+        onClick={() => applyDelta(-1)}
         disabled={decreaseDisabled}
         aria-label="Giảm số lượng"
       >
@@ -230,7 +243,7 @@ function QtyStepperControl({
         variant="ghost"
         size="icon-sm"
         className={btnClass}
-        onClick={onIncrease}
+        onClick={() => applyDelta(1)}
         disabled={increaseDisabled}
         aria-label="Tăng số lượng"
       >
@@ -268,7 +281,7 @@ function QtyStepperMeta({
       ) : null}
 
       {stockCount != null ? (
-        <StockQtyBadge count={stockCount} status={stockStatus} />
+        <ProductStockBadge count={stockCount} status={stockStatus} />
       ) : null}
 
       {summary}
@@ -322,7 +335,9 @@ export function ProductDetailQtyStepper({
   }
 
   const atMin = qty <= minQty
-  const atMax = maxQty != null && qty >= maxQty
+  const atMax =
+    maxQty != null &&
+    (maxQty <= 0 ? qty >= minQty : qty >= maxQty)
 
   const control = (
     <QtyStepperControl
@@ -354,7 +369,7 @@ export function ProductDetailQtyStepper({
               <span className="sr-only">Số lượng</span>
             )}
             {stockCount != null ? (
-              <StockQtyBadge count={stockCount} status={stockStatus} />
+              <ProductStockBadge count={stockCount} status={stockStatus} />
             ) : null}
           </div>
         ) : null}
@@ -377,7 +392,7 @@ export function ProductDetailQtyStepper({
             </ProductDetailSectionLabel>
           )}
           {stockCount != null ? (
-            <StockQtyBadge count={stockCount} status={stockStatus} />
+            <ProductStockBadge count={stockCount} status={stockStatus} />
           ) : null}
         </div>
 

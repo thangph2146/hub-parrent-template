@@ -1,112 +1,13 @@
-import type { ProductGiftRule, ProductUnitType } from "@/lib/api";
-
 /**
- * Parse điều kiện quà tặng từ `Product.fulfillmentNote` (định dạng do kho/backend quản lý).
- * Giữ parser tập trung một chỗ để CTSP, giỏ, checkout cùng đọc một nguồn.
+ * Re-export gift helpers từ `@workspace/api-client` — một nguồn cho CTSP, giỏ, checkout.
  */
+export {
+  resolveGiftRulesForUnit,
+  parseGiftRulesFromFulfillmentNote,
+  getLegacyGiftRuleForUnit,
+  normalizeGiftRuleUnitType,
+  type LegacyFulfillmentGiftRule as GiftRule,
+} from "@workspace/api-client";
 
-export type GiftRule = {
-  minQty: number;
-  unitType: string;
-  giftQty: number;
-  giftName: string;
-  giftSku: string;
-  giftUnitType: string;
-};
-
-/** Chuẩn hoá để khớp `unitType` trong note với `ProductUnitType.type` trên giỏ. */
-export function normalizeGiftRuleUnitType(raw: string): string {
-  return raw.trim().toLocaleLowerCase("vi");
-}
-
-/**
- * Mỗi dòng note có dạng:
- * `- Từ {n} {unitType}: tặng {qty} {tên quà} (SKU: …) - đơn vị quà: …`.
- */
-export function parseGiftRulesFromFulfillmentNote(
-  note: string | null | undefined,
-): GiftRule[] {
-  if (!note) return [];
-  const out: GiftRule[] = [];
-  for (const rawLine of note.split("\n")) {
-    const line = rawLine.trim();
-    if (!line.startsWith("- Từ ")) continue;
-    const m = line.match(/^- Từ\s+(\d+)\s+(.+?):\s+tặng\s+(\d+)\s+(.+)\.$/);
-    if (!m) continue;
-
-    const minQty = Math.max(1, Number(m[1]) || 1);
-    const unitType = m[2].trim();
-    const giftQty = Math.max(1, Number(m[3]) || 1);
-
-    let giftPayload = m[4].trim();
-    let giftUnitType = "";
-    let giftSku = "";
-
-    const unitMarker = " - đơn vị quà: ";
-    const unitAt = giftPayload.lastIndexOf(unitMarker);
-    if (unitAt >= 0) {
-      giftUnitType = giftPayload.slice(unitAt + unitMarker.length).trim();
-      giftPayload = giftPayload.slice(0, unitAt).trim();
-    }
-
-    const skuMatch = giftPayload.match(/\(SKU:\s*([^)]+)\)\s*$/);
-    if (skuMatch) {
-      giftSku = skuMatch[1].trim();
-      giftPayload = giftPayload.slice(0, skuMatch.index).trim();
-    }
-
-    const giftName = giftPayload.trim();
-    if (!giftName) continue;
-
-    out.push({ minQty, unitType, giftQty, giftName, giftSku, giftUnitType });
-  }
-  return out;
-}
-
-/** Quà áp cho đúng loại đơn vị dòng giỏ / đơn vị đang xem trên CTSP. */
-export function getActiveGiftRuleForUnit(
-  fulfillmentNote: string | null | undefined,
-  cartOrSelectedUnitType: string,
-): GiftRule | null {
-  const rules = parseGiftRulesFromFulfillmentNote(fulfillmentNote);
-  const key = normalizeGiftRuleUnitType(cartOrSelectedUnitType);
-  return (
-    rules.find(
-      (r) => normalizeGiftRuleUnitType(r.unitType) === key,
-    ) ?? null
-  );
-}
-
-function legacyGiftRulesAsProductGiftRules(
-  fulfillmentNote: string | null | undefined,
-  unitType: string,
-): ProductGiftRule[] {
-  const key = normalizeGiftRuleUnitType(unitType);
-  return parseGiftRulesFromFulfillmentNote(fulfillmentNote)
-    .filter((r) => normalizeGiftRuleUnitType(r.unitType) === key)
-    .map((r, index) => ({
-      id: `legacy-gift-${index}`,
-      label: r.giftName,
-      trigger: { scope: "line" as const, minQty: r.minQty },
-      gift: {
-        name: r.giftName,
-        sku: r.giftSku || undefined,
-        qty: r.giftQty,
-      },
-    }));
-}
-
-/**
- * Quà tặng theo loại hàng: ưu tiên `unit.giftRules` (admin/API),
- * fallback parser `fulfillmentNote` cho dữ liệu cũ.
- */
-export function resolveGiftRulesForUnit(
-  unit: ProductUnitType,
-  fulfillmentNote?: string | null,
-): ProductGiftRule[] {
-  const fromUnit = (unit.giftRules ?? []).filter(
-    (rule) => rule?.id && rule.gift?.name?.trim(),
-  );
-  if (fromUnit.length > 0) return fromUnit;
-  return legacyGiftRulesAsProductGiftRules(fulfillmentNote, unit.type);
-}
+/** @deprecated Dùng `resolveGiftRulesForUnit` — giữ tương thích cart cũ. */
+export { getLegacyGiftRuleForUnit as getActiveGiftRuleForUnit } from "@workspace/api-client";

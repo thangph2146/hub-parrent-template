@@ -1,23 +1,12 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@ui/components/badge"
+import { StoreOrderStatusBadge } from "@ui/components/product"
 import type { OrderStatus } from "@workspace/api-client"
-import { ORDER_STATUS_LABELS, type OrderRow } from "./types"
+import { type OrderRow } from "./types"
 
 function formatVnd(value: number): string {
   return new Intl.NumberFormat("vi-VN").format(value) + " ₫"
-}
-
-const statusVariant: Record<
-  OrderStatus,
-  "default" | "secondary" | "outline" | "destructive"
-> = {
-  pending: "secondary",
-  confirmed: "default",
-  shipped: "outline",
-  delivered: "default",
-  cancelled: "destructive",
 }
 
 export function getOrderColumns({
@@ -52,11 +41,7 @@ export function getOrderColumns({
       header: "Trạng thái",
       cell: ({ getValue }) => {
         const status = getValue() as OrderStatus
-        return (
-          <Badge variant={statusVariant[status] ?? "secondary"}>
-            {ORDER_STATUS_LABELS[status] ?? status}
-          </Badge>
-        )
+        return <StoreOrderStatusBadge status={status} />
       },
     },
     {

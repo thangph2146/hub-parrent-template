@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -29,6 +29,13 @@ import {
 import type { Product, ProductUnitType } from "@/lib/api";
 import { unitSellingAndListPrice } from "@/lib/product-price";
 import { getProductUnits } from "@/lib/catalog-filters";
+import {
+  cartReservedBase,
+  clampSellQty,
+  productBaseStock,
+  remainingUnitStock,
+  unitStock,
+} from "@workspace/api-client";
 import { cartLineQuantity, useCart } from "@/hooks/use-cart";
 import { resolveGiftRulesForUnit } from "@/lib/gift-rules-from-fulfillment-note";
 import { ProductSuggestions } from "@/components/shared/product-suggestions";
@@ -77,18 +84,29 @@ export function ProductDetail({
     [selectedUnit, product],
   );
 
-  const minPurchaseQty = 1;
-  const unitStockCount =
-    selectedUnit.stock ??
-    Math.floor(product.stock / Math.max(selectedUnit.qtyPerUnit, 1));
-  const maxQty = Math.max(0, unitStockCount);
-  const [qty, setQty] = useState(1);
-
+  const baseStock = productBaseStock(product);
+  const reservedBase = cartReservedBase(cart.lines, product.id);
+  const unitStockCount = unitStock(selectedUnit, product);
   const qtyInCart = cartLineQuantity(
     cart.lines,
     product.id,
     selectedUnit.type,
   );
+  const availableQty = remainingUnitStock(
+    selectedUnit,
+    product,
+    reservedBase,
+  );
+  const maxQty = availableQty;
+  const minPurchaseQty = availableQty > 0 ? 1 : 0;
+  const [qty, setQty] = useState(availableQty > 0 ? 1 : 0);
+
+  useEffect(() => {
+    setQty((current) => {
+      if (availableQty <= 0) return 0;
+      return Math.max(1, Math.min(current || 1, availableQty));
+    });
+  }, [availableQty, selectedUnit.type]);
   const pricingQty = qtyInCart + qty;
   const productSellQty = useMemo(() => {
     const fromCart = cart.lines
@@ -110,24 +128,33 @@ export function ProductDetail({
 
   const totalUnits = qty * Math.max(selectedUnit.qtyPerUnit, 1);
   const totalPrice = unitPrice * qty;
-  const stockWarning = maxQty > 0 && qty > maxQty * 0.8;
-  const outOfStock = maxQty <= 0 || qty > maxQty;
+  const stockWarning = availableQty > 0 && qty > availableQty * 0.8;
+  const outOfStock = availableQty <= 0;
 
   const clampQty = (value: number) =>
-    Math.max(minPurchaseQty, Math.min(value, maxQty));
+    clampSellQty(value, minPurchaseQty, availableQty);
 
   const handleUnitChange = (type: string) => {
     const next = units.find((unit) => unit.type === type);
     if (!next) return;
     setSelectedUnit(next);
-    setQty(1);
+    const nextReserved = cartReservedBase(cart.lines, product.id);
+    const nextAvailable = remainingUnitStock(next, product, nextReserved);
+    setQty(nextAvailable > 0 ? 1 : 0);
   };
 
   const handleAddToCart = () => {
-    if (outOfStock) return;
-    cart.add(product, selectedUnit, qty);
-    toast.success(`Đã thêm ${qty} ${selectedUnit.label} vào giỏ hàng`, {
-      description: `${product.name} · Tổng: ${formatProductVnd(totalPrice)}`,
+    const safeQty = clampQty(qty);
+    if (outOfStock || safeQty <= 0 || safeQty > availableQty) {
+      if (!outOfStock && safeQty > availableQty) {
+        toast.error(`Chỉ còn ${availableQty} ${selectedUnit.type} trong kho`);
+        setQty(clampQty(safeQty));
+      }
+      return;
+    }
+    cart.add(product, selectedUnit, safeQty);
+    toast.success(`Đã thêm ${safeQty} ${selectedUnit.label} vào giỏ hàng`, {
+      description: `${product.name} · Tổng: ${formatProductVnd(unitPrice * safeQty)}`,
     });
   };
 
@@ -198,22 +225,44 @@ export function ProductDetail({
                     outOfStock ? "out" : stockWarning ? "low" : "ok"
                   }
                   footer={
-                    qtyInCart > 0 ? (
-                      <p className="text-[11px] text-muted-foreground">
-                        Trong giỏ{" "}
-                        <span className="font-semibold text-foreground">
-                          {qtyInCart}
-                        </span>
-                        {" + đặt "}
-                        <span className="font-semibold text-foreground">
-                          {qty}
-                        </span>
-                        {" → áp giá "}
-                        <span className="font-semibold text-primary">
-                          {pricingQty}
-                        </span>
-                      </p>
-                    ) : null
+                    <p className="text-[11px] text-muted-foreground">
+                      {qtyInCart > 0 ? (
+                        <>
+                          Trong giỏ{" "}
+                          <span className="font-semibold text-foreground">
+                            {qtyInCart}
+                          </span>
+                          {" / tồn "}
+                          <span className="font-semibold text-foreground">
+                            {unitStockCount}
+                          </span>
+                          {" · còn thêm "}
+                          <span className="font-semibold text-primary">
+                            {availableQty}
+                          </span>
+                          {" + đặt "}
+                          <span className="font-semibold text-foreground">
+                            {qty}
+                          </span>
+                          {" → áp giá "}
+                          <span className="font-semibold text-primary">
+                            {pricingQty}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Tối đa{" "}
+                          <span className="font-semibold text-foreground">
+                            {availableQty}
+                          </span>{" "}
+                          {selectedUnit.type} (pool{" "}
+                          <span className="font-semibold text-foreground tabular-nums">
+                            {baseStock}
+                          </span>{" "}
+                          {product.unit})
+                        </>
+                      )}
+                    </p>
                   }
                 />
               </ProductDetailPurchaseCardSection>
@@ -236,7 +285,9 @@ export function ProductDetail({
                 icon={AlertTriangle}
                 title={
                   outOfStock
-                    ? "Vượt tồn kho hiện tại"
+                    ? qtyInCart > 0
+                      ? "Đã đạt tồn kho trong giỏ"
+                      : "Hết hàng"
                     : "Sắp hết hàng"
                 }
               />

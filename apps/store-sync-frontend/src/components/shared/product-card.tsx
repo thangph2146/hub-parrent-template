@@ -56,7 +56,7 @@ export function ProductCard({
         </div>
 
         <div className="absolute top-4 right-4">
-          <Badge variant="secondary" className="bg-background/90 backdrop-blur shadow-sm text-xs font-bold text-primary border border-primary/20">
+          <Badge variant="overlay" size="sm" className="shadow-sm">
             {topRightBadge}
           </Badge>
         </div>

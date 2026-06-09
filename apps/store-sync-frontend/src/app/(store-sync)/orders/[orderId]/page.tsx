@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { notFound, useParams, useRouter } from "next/navigation";
 import type { ComponentType } from "react";
-import { Badge } from "@ui/components/badge";
+import { StoreOrderStatusBadge } from "@ui/components/product";
 import { Button } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Container, Page, PageContent } from "@ui/components/layout";
@@ -102,19 +102,7 @@ export default function OrderDetailPage() {
 }
 
 function StatusBadge({ status }: { status: Order["status"] }) {
-  if (status === "delivered") {
-    return (
-      <Badge className="bg-success/10 text-success border-success/20">Đã giao</Badge>
-    );
-  }
-  if (status === "cancelled") {
-    return (
-      <Badge className="bg-destructive/10 text-destructive border-destructive/20">Đã hủy</Badge>
-    );
-  }
-  return (
-    <Badge className="bg-primary/10 text-primary border-primary/20">Đang xử lý</Badge>
-  );
+  return <StoreOrderStatusBadge status={status} />;
 }
 
 function OrderCard({ order }: { order: Order }) {

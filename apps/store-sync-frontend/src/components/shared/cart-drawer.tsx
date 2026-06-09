@@ -18,7 +18,10 @@ import {
   DrawerTitle,
 } from "@ui/components/drawer";
 import { Button } from "@ui/components/button";
-import { Badge } from "@ui/components/badge";
+import {
+  ProductCartPriceBadge,
+  ProductUnitLabelBadge,
+} from "@ui/components/product";
 import {
   Minus,
   Package2,
@@ -31,7 +34,11 @@ import {
 import { useCart } from "@/hooks/use-cart";
 import { formatVND } from "@/lib/format";
 import { cn } from "@ui/lib/utils";
-import { getActiveGiftRuleForUnit } from "@/lib/gift-rules-from-fulfillment-note";
+import {
+  giftRulesForCartLine,
+  isCartGiftRuleUnlocked,
+  summarizeCartGiftRule,
+} from "@/lib/cart-gift-rules";
 
 type CartDrawerContextValue = {
   openCart: () => void;
@@ -60,6 +67,16 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
     clear,
   } = useCart();
   const isEmpty = lines.length === 0;
+  const productSellTotals = useMemo(() => {
+    const map = new Map<number, number>();
+    for (const line of lines) {
+      map.set(
+        line.productId,
+        (map.get(line.productId) ?? 0) + line.quantity,
+      );
+    }
+    return map;
+  }, [lines]);
 
   return (
     <DrawerContent className="flex h-full max-h-svh w-full max-w-md flex-col border-l border-outline-variant p-0 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:max-w-md data-[vaul-drawer-direction=right]:sm:max-w-md">
@@ -110,10 +127,7 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
         )}
 
         {lines.map((line) => {
-          const maxQty = Math.max(
-            1,
-            Math.floor(line.stock / Math.max(line.qtyPerUnit, 1)),
-          );
+          const maxQty = Math.max(0, Math.floor(line.stock));
           const listUnit = line.listUnitPrice ?? line.unitPrice;
           const unitNow = line.unitPrice;
           const showListStrike = listUnit > unitNow;
@@ -142,12 +156,9 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
           const needMoreForKm =
             minQ > 1 && line.quantity < minQ ? minQ - line.quantity : 0;
 
-          const giftRule = getActiveGiftRuleForUnit(
-            line.fulfillmentNote,
-            line.unitType,
-          );
-          const giftUnlocked =
-            giftRule != null && line.quantity >= giftRule.minQty;
+          const giftRules = giftRulesForCartLine(line);
+          const productSellQty =
+            productSellTotals.get(line.productId) ?? line.quantity;
 
           return (
             <div
@@ -169,9 +180,9 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
                 <p className="line-clamp-2 text-sm font-bold leading-snug">
                   {line.name}
                 </p>
-                <Badge className="mt-1 border-outline-variant/40 bg-muted px-1.5 py-0 text-[10px] font-semibold text-muted-foreground">
+                <ProductUnitLabelBadge className="mt-1" variant="muted">
                   {line.unitLabel}
-                </Badge>
+                </ProductUnitLabelBadge>
 
                 <div className="mt-2 flex flex-wrap items-end gap-1.5 sm:gap-2">
                   {showListStrike && (
@@ -185,18 +196,12 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
                   <p className="mb-0.5 text-xs text-muted-foreground sm:text-sm">
                     / {line.unitLabel}
                   </p>
-                  {line.isWholesale && (
-                    <Badge
-                      className={cn(
-                        "mb-0.5 text-[10px] font-bold",
-                        showListStrike
-                          ? "border-primary/20 bg-primary/10 text-primary"
-                          : "border-secondary/20 bg-secondary/10 text-secondary-foreground",
-                      )}
-                    >
-                      {showListStrike ? "Giá KM (đủ SL)" : "Giá ban đầu"}
-                    </Badge>
-                  )}
+                  {line.isWholesale ? (
+                    <ProductCartPriceBadge
+                      saleActive={showListStrike}
+                      className="mb-0.5"
+                    />
+                  ) : null}
                 </div>
 
                 {hasPromoTier && (
@@ -257,49 +262,48 @@ function CartDrawerPanel({ onNavigate }: { onNavigate: () => void }) {
                   </div>
                 )}
 
-                {giftRule && (
-                  <div
-                    className={cn(
-                      "mt-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] leading-snug sm:text-xs",
-                      giftUnlocked
-                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100"
-                        : "border-amber-500/35 bg-amber-500/10 text-amber-950 dark:text-amber-200",
-                    )}
-                  >
-                    <p className="flex items-center gap-1.5 font-semibold text-foreground">
-                      <Gift className="size-3.5 shrink-0" aria-hidden />
-                      {giftUnlocked
-                        ? "Đã đủ điều kiện nhận quà"
-                        : "Ưu đãi quà tặng"}
-                    </p>
-                    <p className="mt-0.5">
-                      Từ{" "}
-                      <span className="font-bold text-primary">
-                        {giftRule.minQty}
-                      </span>{" "}
-                      {giftRule.unitType}: tặng{" "}
-                      <span className="font-bold">
-                        {giftRule.giftQty} {giftRule.giftName}
-                      </span>
-                      {giftRule.giftSku
-                        ? ` (SKU: ${giftRule.giftSku})`
-                        : ""}
-                      {giftRule.giftUnitType
-                        ? ` — đơn vị quà: ${giftRule.giftUnitType}`
-                        : ""}
-                      .
-                    </p>
-                    {!giftUnlocked && (
-                      <p className="mt-0.5 text-[10px] opacity-90 sm:text-xs">
-                        Cần thêm{" "}
-                        <span className="font-bold">
-                          {Math.max(0, giftRule.minQty - line.quantity)}
-                        </span>{" "}
-                        {giftRule.unitType} trong giỏ để đủ điều kiện quà.
-                      </p>
-                    )}
+                {giftRules.length > 0 ? (
+                  <div className="mt-1.5 space-y-1.5">
+                    {giftRules.map((rule) => {
+                      const giftUnlocked = isCartGiftRuleUnlocked(
+                        rule,
+                        line,
+                        productSellQty,
+                      );
+                      const minQty = rule.trigger.minQty ?? 0;
+                      return (
+                        <div
+                          key={rule.id}
+                          className={cn(
+                            "rounded-lg border px-2.5 py-1.5 text-[11px] leading-snug sm:text-xs",
+                            giftUnlocked
+                              ? "border-success/30 bg-success/10 text-success"
+                              : "border-warning/30 bg-warning/10 text-warning",
+                          )}
+                        >
+                          <p className="flex items-center gap-1.5 font-semibold text-foreground">
+                            <Gift className="size-3.5 shrink-0" aria-hidden />
+                            {giftUnlocked
+                              ? "Đã đủ điều kiện nhận quà"
+                              : "Ưu đãi quà tặng"}
+                          </p>
+                          <p className="mt-0.5 text-foreground">
+                            {summarizeCartGiftRule(rule)}.
+                          </p>
+                          {!giftUnlocked && minQty > 0 ? (
+                            <p className="mt-0.5 text-[10px] opacity-90 sm:text-xs">
+                              Cần thêm{" "}
+                              <span className="font-bold">
+                                {Math.max(0, minQty - line.quantity)}
+                              </span>{" "}
+                              {line.unitType} trong giỏ để đủ điều kiện quà.
+                            </p>
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
+                ) : null}
 
                 <div className="mt-2 flex items-center justify-between gap-2">
                   <div className="flex h-8 items-center overflow-hidden rounded-lg border border-outline-variant bg-surface">

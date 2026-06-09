@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Badge } from "../badge"
+import { ProductPriceTierBadge } from "../badge-presets"
 import { formatProductVnd } from "./product-money"
 import { cn } from "../../lib/utils"
 
@@ -57,13 +57,10 @@ export function ProductDetailPricePanel({
         </p>
         <p className="pb-0.5 text-sm text-muted-foreground">/ {unitLabel}</p>
         {hasWholesale ? (
-          <Badge
-            variant={listPrice != null ? "promo" : "retail"}
-            size="xs"
+          <ProductPriceTierBadge
+            isPromoActive={listPrice != null}
             className="mb-0.5"
-          >
-            {listPrice != null ? "Giá KM" : "Giá lẻ"}
-          </Badge>
+          />
         ) : null}
       </div>
 

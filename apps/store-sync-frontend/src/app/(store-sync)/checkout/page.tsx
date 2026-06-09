@@ -26,9 +26,13 @@ import {
   ShoppingCart,
   Truck,
 } from "lucide-react";
-import { mergeLinesForCreateOrder, useCart } from "@/hooks/use-cart";
+import {
+  mergeLinesForCreateOrder,
+  useCart,
+  useCartStockSync,
+} from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
-import { useCreateOrder } from "@/hooks/queries";
+import { useCreateOrder, useProducts } from "@/hooks/queries";
 import { ApiError } from "@/lib/api";
 import { formatVND } from "@/lib/format";
 import { CartLineItem } from "@/components/shared/cart-line-item";
@@ -36,6 +40,8 @@ import { CheckoutPromoField } from "@/components/shared/cart-order-summary";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: products } = useProducts();
+  useCartStockSync(products);
   const cart = useCart();
   const session = useSession();
   const createOrder = useCreateOrder();
@@ -138,7 +144,7 @@ export default function CheckoutPage() {
                       <span className="font-bold">
                         Danh sách sản phẩm ({cart.lines.length})
                       </span>
-                      <Badge className="bg-primary/10 text-primary border-primary/20 font-bold px-3 py-1">
+                      <Badge variant="promo" size="sm">
                         Tổng: {cart.unitCount} đơn vị
                       </Badge>
                     </CardTitle>

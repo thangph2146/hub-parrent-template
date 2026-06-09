@@ -55,4 +55,57 @@ describe('order-checkout', () => {
     expect(items[0]?.image).toBe('/api/uploads/images/products/hop.webp');
     expect(items[0]?.variantSku).toBe('SP-001-HOP');
   });
+
+  it('từ chối đặt vượt tồn theo loại hàng', () => {
+    const product = mockProduct({
+      unitTypes: [
+        {
+          type: 'thung',
+          label: 'Thùng',
+          sku: 'SP-001-THUNG',
+          retailPrice: 100000,
+          qtyPerUnit: 30,
+          stock: 80,
+        },
+      ],
+    });
+    expect(() =>
+      buildOrderItemsFromProducts(
+        [{ productId: 1, quantity: 81, unitType: 'thung' }],
+        new Map([[1, product]]),
+      ),
+    ).toThrow(/chỉ còn 80/);
+  });
+
+  it('chia pool sp gốc — thùng tồn 0 vẫn bán được từ gói lẻ', () => {
+    const product = mockProduct({
+      unitTypes: [
+        {
+          type: 'goi',
+          label: 'Gói lẻ',
+          retailPrice: 5000,
+          qtyPerUnit: 1,
+          stock: 200,
+        },
+        {
+          type: 'thung',
+          label: 'Thùng',
+          retailPrice: 120000,
+          qtyPerUnit: 30,
+          stock: 0,
+        },
+      ],
+    });
+    const items = buildOrderItemsFromProducts(
+      [{ productId: 1, quantity: 6, unitType: 'thung' }],
+      new Map([[1, product]]),
+    );
+    expect(items[0]?.quantity).toBe(6);
+    expect(() =>
+      buildOrderItemsFromProducts(
+        [{ productId: 1, quantity: 7, unitType: 'thung' }],
+        new Map([[1, product]]),
+      ),
+    ).toThrow(/chỉ còn 6/);
+  });
 });

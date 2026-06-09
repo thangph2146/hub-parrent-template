@@ -1,38 +1,42 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { ArrowDown, Package, Scale } from "lucide-react"
+import { ArrowDown, Calculator, Package, Scale } from "lucide-react"
 import { cn } from "../../../lib/utils"
 import { formatUnitVnd } from "./product-unit-promo-section"
 
 export type ProductUnitStockBlockProps = {
-  stockInput: ReactNode
   qtyPerUnitInput: ReactNode
   unitLabel?: string
-  stock?: string
   qtyPerUnit?: string
+  /** Tổng pool sp gốc (nhập một lần trên form). */
+  poolBaseStock?: number
+  /** SL tối đa khách mua loại này — tự tính từ pool ÷ quy đổi. */
+  maxSellableFromPool?: number
   className?: string
 }
 
 export function ProductUnitStockBlock({
-  stockInput,
   qtyPerUnitInput,
   unitLabel,
-  stock,
   qtyPerUnit,
+  poolBaseStock,
+  maxSellableFromPool,
   className,
 }: ProductUnitStockBlockProps) {
-  const stockNum = Number(stock)
   const qtyNum = Number(qtyPerUnit)
+  const label = unitLabel?.trim() || "…"
   const hasConversion =
     unitLabel?.trim() &&
-    Number.isFinite(stockNum) &&
-    stockNum >= 0 &&
     Number.isFinite(qtyNum) &&
     qtyNum > 0
-  const baseTotal =
-    hasConversion && Number.isFinite(stockNum * qtyNum)
-      ? Math.round(stockNum * qtyNum)
+  const poolBase =
+    poolBaseStock !== undefined && Number.isFinite(poolBaseStock)
+      ? Math.max(0, Math.floor(poolBaseStock))
+      : null
+  const maxSell =
+    maxSellableFromPool !== undefined && Number.isFinite(maxSellableFromPool)
+      ? Math.max(0, Math.floor(maxSellableFromPool))
       : null
 
   return (
@@ -48,11 +52,11 @@ export function ProductUnitStockBlock({
         </div>
         <div className="min-w-0 space-y-0.5">
           <p className="text-sm leading-snug font-semibold">
-            Tồn kho & quy đổi
+            Quy đổi & tồn tự động
           </p>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Tồn theo loại hàng này (hộp, thùng…) và hệ số quy đổi sang đơn vị
-            gốc (lon, chai…).
+            Chỉ nhập hệ số quy đổi — tồn có thể bán của loại này được hệ thống
+            tính từ pool sp gốc (sidebar).
           </p>
         </div>
       </div>
@@ -60,43 +64,71 @@ export function ProductUnitStockBlock({
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1.5">
           <p className="text-sm font-medium">Tồn có thể bán</p>
-          {stockInput}
+          <div
+            className="flex h-8 items-center rounded-lg border border-dashed border-border/80 bg-background/60 px-2.5 text-sm tabular-nums"
+            aria-live="polite"
+          >
+            {maxSell !== null && poolBase !== null && poolBase > 0 ? (
+              <span className="font-semibold text-foreground">{maxSell}</span>
+            ) : (
+              <span className="text-muted-foreground">—</span>
+            )}
+          </div>
           <p className="text-xs text-muted-foreground">
-            Số lượng còn bán được của loại «{unitLabel?.trim() || "…"}».
+            Tự tính: pool ÷ quy đổi — không cần nhập tay.
           </p>
         </div>
         <div className="space-y-1.5">
           <p className="text-sm font-medium">Quy đổi ra đơn vị gốc</p>
           {qtyPerUnitInput}
           <p className="text-xs text-muted-foreground">
-            1 loại này tương đương bao nhiêu sp gốc. VD: 1 hộp = 6 lon → nhập{" "}
-            <span className="font-medium text-foreground">6</span>.
+            1 {label} = bao nhiêu sp gốc. VD: 1 thùng = 30 gói → nhập{" "}
+            <span className="font-medium text-foreground">30</span>.
           </p>
         </div>
       </div>
 
-      {hasConversion && baseTotal !== null ? (
-        <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
-          <Scale className="size-3.5 shrink-0 text-primary" aria-hidden />
-          <span>
-            <span className="font-medium text-foreground">1 {unitLabel}</span>
-            {" = "}
-            <span className="font-medium text-foreground tabular-nums">
-              {qtyNum}
+      {hasConversion ? (
+        <div className="mt-3 space-y-2">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+            <Scale className="size-3.5 shrink-0 text-primary" aria-hidden />
+            <span>
+              <span className="font-medium text-foreground">1 {label}</span>
+              {" = "}
+              <span className="font-medium text-foreground tabular-nums">
+                {qtyNum}
+              </span>
+              {" sp gốc"}
+              {poolBase !== null && poolBase > 0 && maxSell !== null ? (
+                <>
+                  {" · "}
+                  <span className="font-medium text-foreground tabular-nums">
+                    {maxSell}
+                  </span>{" "}
+                  {label} có thể bán
+                </>
+              ) : null}
             </span>
-            {" sp gốc"}
-            {" · "}
-            Tồn{" "}
-            <span className="font-medium text-foreground tabular-nums">
-              {stockNum}
-            </span>{" "}
-            {unitLabel}
-            {" ≈ "}
-            <span className="font-medium text-foreground tabular-nums">
-              {baseTotal}
-            </span>
-            {" sp gốc"}
-          </span>
+          </div>
+          {maxSell !== null && poolBase !== null && poolBase > 0 ? (
+            <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border/70 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+              <Calculator className="size-3.5 shrink-0 text-primary" aria-hidden />
+              <span>
+                <span className="font-medium text-foreground">
+                  {poolBase.toLocaleString("vi-VN")}
+                </span>{" "}
+                sp gốc ÷{" "}
+                <span className="font-medium text-foreground tabular-nums">
+                  {qtyNum}
+                </span>{" "}
+                ={" "}
+                <span className="font-medium text-foreground tabular-nums">
+                  {maxSell}
+                </span>{" "}
+                {label}
+              </span>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -229,8 +261,12 @@ export function ProductUnitQuantityGuide({
       </p>
       <ul className="grid gap-1 sm:grid-cols-2">
         <li>
-          <span className="font-medium text-foreground">Tồn kho</span> — số có
-          thể bán của loại hàng (hộp, thùng…).
+          <span className="font-medium text-foreground">Tồn sp gốc</span> —
+          nhập một lần; pool dùng chung mọi loại hàng.
+        </li>
+        <li>
+          <span className="font-medium text-foreground">Tối đa bán</span> —
+          tự tính: floor(pool ÷ quy đổi).
         </li>
         <li>
           <span className="font-medium text-foreground">Quy đổi</span> — 1 loại

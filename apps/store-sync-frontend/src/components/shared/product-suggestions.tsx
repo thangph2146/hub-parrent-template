@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { ArrowRight, Package2, Sparkles, Tag } from "lucide-react";
+import { ProductDiscountBadge } from "@ui/components/product";
 import { Badge } from "@ui/components/badge";
-import { formatProductVnd } from "@ui/components/product";
+import { formatProductVnd, hasUnitWholesalePromo } from "@ui/components/product";
 import type { Product } from "@/lib/api";
 import { getProductUnits } from "@/lib/catalog-filters";
 import { unitSellingAndListPrice } from "@/lib/product-price";
@@ -31,7 +32,7 @@ function SuggestionCard({ product }: { product: Product }) {
   const categoryLabel = formatCategoryLabel(product.category);
   const meta = [product.brand, product.origin].filter(Boolean).join(" · ");
   const firstCoupon = product.coupons?.[0];
-  const hasPromo = unit?.wholesalePrice != null;
+  const hasPromo = unit ? hasUnitWholesalePromo(unit) : false;
   const discountPercent =
     list != null && list > current
       ? Math.round(((list - current) / list) * 100)
@@ -70,14 +71,10 @@ function SuggestionCard({ product }: { product: Product }) {
         ) : null}
 
         {hasPromo && discountPercent > 0 ? (
-          <Badge
-            variant="promo"
-            size="xs"
-            shape="pill"
+          <ProductDiscountBadge
+            percent={discountPercent}
             className="absolute top-2.5 right-2.5 shadow-sm"
-          >
-            -{discountPercent}%
-          </Badge>
+          />
         ) : (
           <Badge
             variant="overlay"

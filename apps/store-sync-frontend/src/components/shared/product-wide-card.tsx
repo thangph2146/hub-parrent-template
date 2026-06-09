@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { Heading, Text, Badge } from "@ui/components/typography";
+import { Heading, Text } from "@ui/components/typography";
+import { Badge } from "@ui/components/badge";
 
 type ProductWideCardProps = {
   productId: string;
@@ -58,7 +59,7 @@ export function ProductWideCard({
             <Heading as="span" size="title" className="text-primary">
               {price}
             </Heading>
-            <Badge className="bg-success/10 text-success border-success/20 text-xs font-bold px-3 py-1">
+            <Badge variant="success" size="sm">
               Bán chạy
             </Badge>
           </div>

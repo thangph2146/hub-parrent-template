@@ -1,14 +1,18 @@
 "use client";
 
 import { Button } from "@ui/components/button";
-import { Badge } from "@ui/components/badge";
+import { ProductUnitLabelBadge } from "@ui/components/product";
 import { Minus, Package2, Plus, Trash2 } from "lucide-react";
 import type { CartLine } from "@/hooks/use-cart";
 import { formatVND } from "@/lib/format";
-import { getActiveGiftRuleForUnit } from "@/lib/gift-rules-from-fulfillment-note";
+import {
+  giftRulesForCartLine,
+  isCartGiftRuleUnlocked,
+  summarizeCartGiftRule,
+} from "@/lib/cart-gift-rules";
 
 export function cartLineMaxQty(line: CartLine): number {
-  return Math.max(1, Math.floor(line.stock / Math.max(line.qtyPerUnit, 1)));
+  return Math.max(0, Math.floor(line.stock));
 }
 
 type CartLineItemProps = {
@@ -26,12 +30,8 @@ export function CartLineItem({
   const maxQty = cartLineMaxQty(line);
   const listUnit = line.listUnitPrice ?? line.unitPrice;
   const showListStrike = listUnit > line.unitPrice;
-  const giftRule = getActiveGiftRuleForUnit(
-    line.fulfillmentNote,
-    line.unitType,
-  );
-  const giftUnlocked =
-    giftRule != null && line.quantity >= giftRule.minQty;
+  const giftRules = giftRulesForCartLine(line);
+  const productSellQty = line.quantity;
 
   return (
     <div className="flex flex-col items-center gap-6 p-6 transition-colors hover:bg-muted/5 sm:flex-row">
@@ -47,10 +47,10 @@ export function CartLineItem({
         )}
       </div>
       <div className="min-w-0 flex-grow text-center sm:text-left">
-        <Badge className="mb-2 border-primary/20 bg-primary/10 px-2 py-0 text-[10px] font-bold uppercase tracking-wide text-primary">
+        <ProductUnitLabelBadge className="mb-2 uppercase tracking-wide">
           {line.unitLabel}
           {line.isWholesale ? " · Khuyến mãi" : " · Ban đầu"}
-        </Badge>
+        </ProductUnitLabelBadge>
         <h3 className="line-clamp-2 text-lg font-bold leading-tight">{line.name}</h3>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-2 sm:justify-start sm:gap-3">
           {showListStrike && (
@@ -65,22 +65,33 @@ export function CartLineItem({
             × {line.quantity} {line.unitType}
           </span>
         </div>
-        {giftRule && (
-          <p
-            className={`mt-2 text-xs font-medium ${
-              giftUnlocked
-                ? "text-emerald-700 dark:text-emerald-400"
-                : "text-amber-800 dark:text-amber-300"
-            }`}
-          >
-            {giftUnlocked ? "Đủ điều kiện quà: " : "Quà tặng: "}
-            từ {giftRule.minQty} {giftRule.unitType} — {giftRule.giftQty}{" "}
-            {giftRule.giftName}
-            {!giftUnlocked &&
-              ` (cần thêm ${Math.max(0, giftRule.minQty - line.quantity)} ${giftRule.unitType})`}
-            .
-          </p>
-        )}
+        {giftRules.length > 0 ? (
+          <ul className="mt-2 space-y-1">
+            {giftRules.map((rule) => {
+              const unlocked = isCartGiftRuleUnlocked(
+                rule,
+                line,
+                productSellQty,
+              );
+              const minQty = rule.trigger.minQty ?? 0;
+              return (
+                <li
+                  key={rule.id}
+                  className={`text-xs font-medium ${
+                    unlocked ? "text-success" : "text-warning"
+                  }`}
+                >
+                  {unlocked ? "Đủ điều kiện quà: " : "Quà tặng: "}
+                  {summarizeCartGiftRule(rule)}
+                  {!unlocked && minQty > 0
+                    ? ` (cần thêm ${Math.max(0, minQty - line.quantity)} ${line.unitType})`
+                    : null}
+                  .
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
       </div>
       <div className="flex items-center gap-4">
         <div className="flex h-12 items-center overflow-hidden rounded-2xl border border-outline-variant bg-surface shadow-sm">
@@ -100,7 +111,13 @@ export function CartLineItem({
             size="icon"
             className="h-12 w-12 rounded-none"
             disabled={line.quantity >= maxQty}
-            onClick={() => onQuantityChange(line.quantity + 1)}
+            onClick={() =>
+              onQuantityChange(
+                maxQty > 0
+                  ? Math.min(line.quantity + 1, maxQty)
+                  : line.quantity,
+              )
+            }
           >
             <Plus className="h-4 w-4" />
           </Button>

@@ -25,12 +25,14 @@ import {
 } from "@ui/lib/layout-shell";
 import { cn } from "@ui/lib/utils";
 import { Heading, Text, Badge, LiveDot } from "@ui/components/typography";
+import { Badge as UiBadge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import { ProductCard } from "@/components/shared/product-card";
 import { ProductWideCard } from "@/components/shared/product-wide-card";
 import { useCategories, useProducts } from "@/hooks/queries";
 import { resolveCategoryIcon } from "@/lib/category-icons";
 import { formatVND } from "@/lib/format";
+import { hasUnitWholesalePromo } from "@workspace/api-client";
 import type { Product } from "@/lib/api";
 import { getProductUnits } from "@/lib/catalog-filters";
 
@@ -47,29 +49,12 @@ function pickPrimaryPrice(p: Product): {
   label: string;
 } {
   const units = getProductUnits(p);
-  const wholesaleUnit = units.find(
-    (u) =>
-      u.wholesalePrice !== null &&
-      u.wholesalePrice !== undefined &&
-      Number(u.wholesalePrice) < Number(u.retailPrice),
-  );
+  const wholesaleUnit = units.find((u) => hasUnitWholesalePromo(u));
   if (wholesaleUnit) {
     return {
       price: wholesaleUnit.wholesalePrice!,
       original: wholesaleUnit.retailPrice,
       label: wholesaleUnit.label,
-    };
-  }
-  const anyWholesale = units.find(
-    (u) => u.wholesalePrice !== null && u.wholesalePrice !== undefined,
-  );
-  if (anyWholesale) {
-    const w = Number(anyWholesale.wholesalePrice);
-    const r = Number(anyWholesale.retailPrice);
-    return {
-      price: w,
-      original: w < r ? r : null,
-      label: anyWholesale.label,
     };
   }
   const firstUnit = units[0];
@@ -141,11 +126,7 @@ export default function Home() {
               : [];
           return (
             coupons.length > 0 ||
-            getProductUnits(p).some(
-              (u) =>
-                u.wholesalePrice !== null &&
-                u.wholesalePrice < u.retailPrice,
-            )
+            getProductUnits(p).some((u) => hasUnitWholesalePromo(u))
           );
         })
         .slice(0, 4),
@@ -165,7 +146,7 @@ export default function Home() {
           <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-10 animate-in fade-in slide-in-from-left duration-700">
-                <Badge variant="primary" className="px-5 py-2 rounded-full text-base font-bold bg-primary/10 text-primary border-primary/20 flex w-fit items-center gap-2">
+                <Badge variant="primary" size="lg" className="flex w-fit items-center gap-2 text-base font-bold">
                   <LiveDot /> Hệ thống nhập hàng B2B lớn nhất VN
                 </Badge>
                 <Heading as="h1" size="display" className="leading-tight tracking-tighter">
@@ -233,9 +214,9 @@ export default function Home() {
           <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>
             <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
               <div className="space-y-6">
-                <Badge className="bg-destructive/10 text-destructive border-destructive/20 font-bold px-4 py-1.5 rounded-xl flex w-fit items-center gap-2 text-base">
+                <UiBadge variant="coupon" size="lg" shape="pill" className="flex w-fit items-center gap-2 text-base font-bold">
                   <Zap className="size-5 fill-destructive" /> Flash Sale Đại lý
-                </Badge>
+                </UiBadge>
                 <div className="flex flex-col md:flex-row md:items-center gap-8">
                   <Heading as="h2" size="display" className="tracking-tighter uppercase leading-none">Giá Sốc Giờ Vàng</Heading>
                   <div className="flex items-center gap-4 bg-background/50 backdrop-blur-sm p-2 rounded-2xl border border-border/50 shadow-sm">
@@ -361,8 +342,8 @@ export default function Home() {
           <Container max={STORE_CONTAINER_MAX_DEFAULT} className={cn(STORE_CONTAINER_INSET_WIDE, "w-full")}>
             <div className="flex flex-col lg:flex-row gap-16 items-start min-w-0 w-full">
               <div className="w-full lg:w-[380px] flex-shrink-0 space-y-10">
-                <Badge className="bg-primary/10 text-primary border-primary/20 font-bold px-5 py-2 rounded-xl text-base">
-                  <Flame className="size-6 fill-primary mr-2" /> Top Mua Nhiều Nhất
+                <Badge variant="primary" size="lg" className="text-base font-bold">
+                  <Flame className="mr-2 size-6 fill-primary" /> Top Mua Nhiều Nhất
                 </Badge>
                 <Heading as="h2" size="section" className="leading-none tracking-tighter">
                   Sản phẩm <br />

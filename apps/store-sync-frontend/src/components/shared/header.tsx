@@ -17,7 +17,7 @@ import {
   User,
   Menu,
 } from "lucide-react";
-import { Badge } from "@ui/components/badge";
+import { CartCountBadge } from "@ui/components/product";
 import { useCart, cartStore } from "@/hooks/use-cart";
 import { ThemeToggle } from "@ui/components/theme-toggle";
 import { TextSizeToggle } from "@ui/components/text-size-toggle";
@@ -96,11 +96,10 @@ export function Header() {
             className="relative inline-flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             <ShoppingCart className="size-5" />
-            {unitCount > 0 && (
-              <Badge className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full border border-background bg-primary px-1 text-[9px] font-bold text-primary-foreground">
-                {unitCount > 99 ? "99+" : unitCount}
-              </Badge>
-            )}
+            <CartCountBadge
+              count={unitCount}
+              className="-right-0.5 -top-0.5 h-4 min-w-4 text-[9px]"
+            />
           </Button>
           <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
             <SheetTrigger
@@ -191,11 +190,10 @@ export function Header() {
               className="relative inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
             >
               <ShoppingCart className="size-5" />
-              {unitCount > 0 && (
-                <Badge className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-background bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
-                  {unitCount}
-                </Badge>
-              )}
+              <CartCountBadge
+                count={unitCount}
+                className="-right-1 -top-1 h-5 min-w-5 text-[10px]"
+              />
             </Button>
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
               <Bell className="size-5" />

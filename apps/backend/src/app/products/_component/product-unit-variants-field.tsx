@@ -8,7 +8,6 @@ import {
   type UseFormReturn,
 } from "react-hook-form"
 import {
-  AdminDefaultVariantBadge,
   ImageUrlListField,
   ProductUnitFormSubsection,
   ProductUnitOptionalSection,
@@ -16,18 +15,28 @@ import {
   ProductUnitPromoRuleCard,
   ProductUnitQtyInline,
   ProductUnitStockBlock,
+  ProductUnitStockPoolBanner,
+  ProductUnitVariantCardHeader,
   buildGiftsSummary,
   buildTierSummary,
   buildTierRuleText,
   buildWholesaleSummary,
   buildWholesaleRuleText,
+  computeFormUnitStockPool,
+  maxSellableFromPool,
 } from "@ui/components/admin"
 import { Button } from "@ui/components/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@ui/components/collapsible"
 import { StorageImagePickerDialog } from "@/lib/storage-image-picker-dialog"
 import { parseImageUrls, formatImageUrls } from "./types"
 import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
-import { Gift, Layers, Plus, Tag, Trash2 } from "lucide-react"
+import { ChevronDown, Gift, Layers, Plus, Tag, Trash2 } from "lucide-react"
+import { cn } from "@ui/lib/utils"
 import type { ProductFormValues } from "./types"
 import { EMPTY_GIFT_ROW, EMPTY_UNIT_ROW } from "./types"
 import { buildProductImageUploadContext } from "./product-image-storage"
@@ -83,7 +92,6 @@ function UnitPromoSections({
   const tierHasData = hasTierData(tierMinQty, tierUnitPrice, tierLabel)
   const giftHasData = hasGiftsData(gifts)
 
-  // Bật thủ công khi user vừa bật switch (chưa nhập xong). Dữ liệu đã lưu → suy ra từ form.
   const [wholesaleDraft, setWholesaleDraft] = useState(false)
   const [tierDraft, setTierDraft] = useState(false)
   const [giftDraft, setGiftDraft] = useState(false)
@@ -241,6 +249,103 @@ function UnitPromoSections({
   )
 }
 
+function UnitVariantCardBody({
+  form,
+  index,
+  unitLabel,
+  poolBase,
+  onPickImages,
+  onPickGiftImage,
+  onPickFromCatalog,
+}: {
+  form: UseFormReturn<ProductFormValues>
+  index: number
+  unitLabel: string
+  poolBase: number
+  onPickImages: () => void
+  onPickGiftImage: (giftIndex: number) => void
+  onPickFromCatalog: (giftIndex: number) => void
+}) {
+  const { control, register, watch } = form
+  const qtyPerUnit = watch(`units.${index}.qtyPerUnit`)
+  const maxSell = maxSellableFromPool({ qtyPerUnit }, poolBase)
+
+  return (
+    <div className="space-y-4">
+      <ProductUnitFormSubsection title="Định danh loại hàng">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormFieldCol label="Mã loại (type)" required>
+            <Input {...register(`units.${index}.type`)} placeholder="hop" />
+          </FormFieldCol>
+          <FormFieldCol label="Nhãn hiển thị" required>
+            <Input {...register(`units.${index}.label`)} placeholder="Hộp" />
+          </FormFieldCol>
+          <FormFieldCol label="SKU biến thể" className="sm:col-span-2">
+            <Input
+              {...register(`units.${index}.sku`)}
+              placeholder="DEMO-001-HOP"
+            />
+          </FormFieldCol>
+        </div>
+      </ProductUnitFormSubsection>
+
+      <ProductUnitStockBlock
+        unitLabel={unitLabel}
+        qtyPerUnit={qtyPerUnit}
+        poolBaseStock={poolBase}
+        maxSellableFromPool={maxSell}
+        qtyPerUnitInput={
+          <Input
+            type="number"
+            min={1}
+            placeholder="6"
+            className="h-8 tabular-nums"
+            {...register(`units.${index}.qtyPerUnit`)}
+          />
+        }
+      />
+
+      <ProductUnitFormSubsection title="Giá bán">
+        <FormFieldCol
+          label="Giá bán lẻ (VND)"
+          required
+          description="Giá mặc định khi chưa áp dụng KM, sỉ hay bậc giá."
+          className="max-w-sm"
+        >
+          <Input
+            type="number"
+            min={0}
+            className="tabular-nums"
+            {...register(`units.${index}.retailPrice`)}
+          />
+        </FormFieldCol>
+      </ProductUnitFormSubsection>
+
+      <FormFieldCol label="Ảnh sản phẩm">
+        <Controller
+          control={control}
+          name={`units.${index}.imageUrls`}
+          render={({ field: imageField }) => (
+            <ImageUrlListField
+              value={imageField.value ?? ""}
+              onChange={imageField.onChange}
+              onPickFromStorage={onPickImages}
+            />
+          )}
+        />
+      </FormFieldCol>
+
+      <UnitPromoSections
+        form={form}
+        index={index}
+        unitLabel={unitLabel}
+        onPickGiftImage={onPickGiftImage}
+        onPickFromCatalog={onPickFromCatalog}
+      />
+    </div>
+  )
+}
+
 export function ProductUnitVariantsField({
   form,
   currentProductId,
@@ -263,6 +368,11 @@ export function ProductUnitVariantsField({
     giftIndex: number
   } | null>(null)
 
+  const allUnits = useWatch({ control, name: "units" }) ?? []
+  const baseStock = useWatch({ control, name: "baseStock" })
+  const poolBase = computeFormUnitStockPool(baseStock)
+  const useCollapsible = fields.length > 1
+
   const resolveProductUpload = useCallback(
     () =>
       buildProductImageUploadContext({
@@ -274,152 +384,116 @@ export function ProductUnitVariantsField({
 
   return (
     <div className="space-y-4">
+      <ProductUnitStockPoolBanner baseStock={baseStock} units={allUnits} />
+
       {fields.map((field, index) => {
         const isDefault = watch(`units.${index}.isDefault`)
-        const unitLabel = watch(`units.${index}.label`)
-        const stock = watch(`units.${index}.stock`)
+        const unitLabel = watch(`units.${index}.label`) ?? ""
+        const retailPrice = watch(`units.${index}.retailPrice`)
         const qtyPerUnit = watch(`units.${index}.qtyPerUnit`)
 
-        return (
-          <div
-            key={field.id}
-            className="rounded-lg border bg-card p-4 shadow-sm"
-          >
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <p className="text-sm font-semibold">
-                Loại hàng #{index + 1}
-                {unitLabel?.trim() ? (
-                  <span className="ml-2 font-normal text-muted-foreground">
-                    — {unitLabel.trim()}
-                  </span>
-                ) : null}
-                {isDefault ? (
-                  <AdminDefaultVariantBadge className="ml-2 align-middle" />
-                ) : null}
-              </p>
-              <div className="flex gap-2">
-                {!isDefault ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      fields.forEach((_, i) => {
-                        setValue(`units.${i}.isDefault`, i === index)
-                      })
-                    }}
-                  >
-                    Đặt mặc định
-                  </Button>
-                ) : null}
-                {fields.length > 1 ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => remove(index)}
-                    aria-label="Xóa loại hàng"
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <ProductUnitFormSubsection title="Định danh loại hàng">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <FormFieldCol label="Mã loại (type)" required>
-                    <Input
-                      {...register(`units.${index}.type`)}
-                      placeholder="hop"
-                    />
-                  </FormFieldCol>
-                  <FormFieldCol label="Nhãn hiển thị" required>
-                    <Input
-                      {...register(`units.${index}.label`)}
-                      placeholder="Hộp"
-                    />
-                  </FormFieldCol>
-                  <FormFieldCol label="SKU biến thể" className="sm:col-span-2">
-                    <Input
-                      {...register(`units.${index}.sku`)}
-                      placeholder="DEMO-001-HOP"
-                    />
-                  </FormFieldCol>
-                </div>
-              </ProductUnitFormSubsection>
-
-              <ProductUnitStockBlock
-                unitLabel={unitLabel}
-                stock={stock}
-                qtyPerUnit={qtyPerUnit}
-                stockInput={
-                  <Input
-                    type="number"
-                    min={0}
-                    placeholder="100"
-                    className="h-8 tabular-nums"
-                    {...register(`units.${index}.stock`)}
-                  />
-                }
-                qtyPerUnitInput={
-                  <Input
-                    type="number"
-                    min={1}
-                    placeholder="6"
-                    className="h-8 tabular-nums"
-                    {...register(`units.${index}.qtyPerUnit`)}
-                  />
-                }
-              />
-
-              <ProductUnitFormSubsection title="Giá bán">
-                <FormFieldCol
-                  label="Giá bán lẻ (VND)"
-                  required
-                  description="Giá mặc định khi chưa áp dụng KM, sỉ hay bậc giá."
-                  className="max-w-sm"
-                >
-                  <Input
-                    type="number"
-                    min={0}
-                    className="tabular-nums"
-                    {...register(`units.${index}.retailPrice`)}
-                  />
-                </FormFieldCol>
-              </ProductUnitFormSubsection>
-
-              <FormFieldCol label="Ảnh sản phẩm">
-                <Controller
-                  control={control}
-                  name={`units.${index}.imageUrls`}
-                  render={({ field: imageField }) => (
-                    <ImageUrlListField
-                      value={imageField.value ?? ""}
-                      onChange={imageField.onChange}
-                      onPickFromStorage={() =>
-                        setPicker({ index, field: "imageUrls" })
-                      }
-                    />
-                  )}
-                />
-              </FormFieldCol>
-            </div>
-
-            <UnitPromoSections
-              key={field.id}
-              form={form}
-              index={index}
-              unitLabel={unitLabel ?? ""}
-              onPickGiftImage={(giftIndex) =>
-                setPicker({ index, field: "giftImage", giftIndex })
-              }
-              onPickFromCatalog={(giftIndex) =>
-                setCatalogPicker({ unitIndex: index, giftIndex })
-              }
-            />
+        const headerActions = (
+          <div className="flex shrink-0 gap-2">
+            {!isDefault ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  fields.forEach((_, i) => {
+                    setValue(`units.${i}.isDefault`, i === index)
+                  })
+                }}
+              >
+                Đặt mặc định
+              </Button>
+            ) : null}
+            {fields.length > 1 ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => remove(index)}
+                aria-label="Xóa loại hàng"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            ) : null}
           </div>
+        )
+
+        const body = (
+          <UnitVariantCardBody
+            form={form}
+            index={index}
+            unitLabel={unitLabel}
+            poolBase={poolBase}
+            onPickImages={() => setPicker({ index, field: "imageUrls" })}
+            onPickGiftImage={(giftIndex) =>
+              setPicker({ index, field: "giftImage", giftIndex })
+            }
+            onPickFromCatalog={(giftIndex) =>
+              setCatalogPicker({ unitIndex: index, giftIndex })
+            }
+          />
+        )
+
+        if (!useCollapsible) {
+          return (
+            <div
+              key={field.id}
+              className="rounded-lg border bg-card p-4 shadow-sm"
+            >
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <ProductUnitVariantCardHeader
+                  index={index}
+                  label={unitLabel}
+                  isDefault={isDefault}
+                  retailPrice={retailPrice}
+                  qtyPerUnit={qtyPerUnit}
+                  poolBase={poolBase}
+                  expanded
+                />
+                {headerActions}
+              </div>
+              {body}
+            </div>
+          )
+        }
+
+        return (
+          <Collapsible
+            key={field.id}
+            defaultOpen={isDefault}
+            className="group overflow-hidden rounded-lg border bg-card shadow-sm"
+          >
+            <div className="flex items-center gap-2 p-4 pb-3">
+              <CollapsibleTrigger
+                className={cn(
+                  "flex min-w-0 flex-1 items-center gap-2 rounded-md text-left transition-colors",
+                  "hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                )}
+              >
+                <ProductUnitVariantCardHeader
+                  index={index}
+                  label={unitLabel}
+                  isDefault={isDefault}
+                  retailPrice={retailPrice}
+                  qtyPerUnit={qtyPerUnit}
+                  poolBase={poolBase}
+                  expanded={false}
+                />
+                <ChevronDown
+                  className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-open:rotate-180"
+                  aria-hidden
+                />
+              </CollapsibleTrigger>
+              {headerActions}
+            </div>
+            <CollapsibleContent className="border-t px-4 pb-4 pt-3">
+              {body}
+            </CollapsibleContent>
+          </Collapsible>
         )
       })}
 

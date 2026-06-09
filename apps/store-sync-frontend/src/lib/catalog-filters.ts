@@ -1,36 +1,7 @@
-import type { Product, ProductUnitType } from "@/lib/api";
+import { getProductUnits, hasUnitWholesalePromo } from "@workspace/api-client";
+import type { Product } from "@/lib/api";
 
-function coerceUnitTypes(raw: Product["unitTypes"]): ProductUnitType[] | null {
-  if (raw == null) return null;
-  if (Array.isArray(raw)) return raw.length > 0 ? raw : null;
-  if (typeof raw === "string") {
-    try {
-      const parsed: unknown = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed as ProductUnitType[];
-      }
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
-
-/** Đồng bộ với thẻ SP khi không có `unitTypes`. */
-export function getProductUnits(p: Product): ProductUnitType[] {
-  const units = coerceUnitTypes(p.unitTypes);
-  if (units) return units;
-  return [
-    {
-      type: p.unit,
-      label: p.unit,
-      wholesalePrice: p.wholesalePrice,
-      retailPrice: p.retailPrice,
-      minWholesaleQty: 0,
-      qtyPerUnit: 1,
-    },
-  ];
-}
+export { getProductUnits };
 
 /** Điểm ưu tiên khi có từ khóa (cao hơn = hiển thị trước). */
 export function scoreProductSearchMatch(p: Product, qRaw: string): number {
@@ -75,8 +46,8 @@ export function productMatchesCatalogFilters(
     opts.categoryTab === "ALL" || p.category === opts.categoryTab;
 
   const units = getProductUnits(p);
-  const hasWholesale = units.some((u) => u.wholesalePrice !== null);
-  const hasRetail = units.some((u) => u.wholesalePrice === null);
+  const hasWholesale = units.some((u) => hasUnitWholesalePromo(u));
+  const hasRetail = units.some((u) => !hasUnitWholesalePromo(u));
   const matchPurchase =
     opts.purchaseType === "ALL" ||
     (opts.purchaseType === "si" && hasWholesale) ||

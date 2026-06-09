@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "../lib/utils"
+import { Badge as UiBadge } from "./badge"
 import { useTextSize } from "./text-size-provider"
 
 type TextSize = "sm" | "base" | "lg"
@@ -157,32 +158,42 @@ export function Text({
   )
 }
 
-// ── Badge ──────────────────────────────────────────────────
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "default" | "primary" | "secondary" | "outline"
+// ── Badge (marketing) — delegate `@ui/components/badge` ─────
+type MarketingBadgeVariant = "default" | "primary" | "secondary" | "outline"
+
+const marketingBadgeVariant = {
+  default: "secondary",
+  primary: "promo",
+  secondary: "secondary",
+  outline: "outline",
+} as const
+
+type BadgeProps = Omit<
+  React.ComponentProps<typeof UiBadge>,
+  "variant"
+> & {
+  variant?: MarketingBadgeVariant
 }
 
+/** Badge marketing/landing — cùng token với `components/badge`. */
 export function Badge({
   variant = "default",
+  size = "default",
+  shape = "pill",
   className,
   children,
   ...props
 }: BadgeProps) {
-  const variantStyles: Record<string, string> = {
-    default:
-      "inline-flex items-center gap-2 px-3 py-1 rounded-full text-caption font-medium bg-secondary text-secondary-foreground",
-    primary:
-      "inline-flex items-center gap-2 px-3 py-1 rounded-full text-caption font-medium border border-primary/20 bg-primary/10 text-primary",
-    secondary:
-      "inline-flex items-center gap-2 px-3 py-1 rounded-full text-caption font-medium bg-secondary text-secondary-foreground",
-    outline:
-      "inline-flex items-center gap-2 px-3 py-1 rounded-full text-caption font-medium border border-border text-muted-foreground",
-  }
-
   return (
-    <span className={cn(variantStyles[variant], className)} {...props}>
+    <UiBadge
+      variant={marketingBadgeVariant[variant]}
+      size={size}
+      shape={shape}
+      className={cn("gap-2", className)}
+      {...props}
+    >
       {children}
-    </span>
+    </UiBadge>
   )
 }
 

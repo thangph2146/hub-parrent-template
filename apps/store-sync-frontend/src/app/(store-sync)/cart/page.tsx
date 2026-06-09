@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useProducts } from "@/hooks/queries";
 import { Badge } from "@ui/components/badge";
 import { Button } from "@ui/components/button";
 import {
@@ -17,12 +18,14 @@ import {
   STORE_PAGE_CONTENT_CLASS,
 } from "@ui/lib/layout-shell";
 import { ArrowLeft, Package2, Trash2 } from "lucide-react";
-import { useCart } from "@/hooks/use-cart";
+import { useCart, useCartStockSync } from "@/hooks/use-cart";
 import { CartLineItem } from "@/components/shared/cart-line-item";
 import { CartOrderSummary } from "@/components/shared/cart-order-summary";
 
 export default function CartPage() {
   const router = useRouter();
+  const { data: products } = useProducts();
+  useCartStockSync(products);
   const { lines, unitCount, setQuantity, remove, clear } = useCart();
   const isEmpty = lines.length === 0;
 
@@ -85,7 +88,7 @@ export default function CartPage() {
                       <span className="font-bold">
                         Sản phẩm trong giỏ ({lines.length})
                       </span>
-                      <Badge className="border-primary/20 bg-primary/10 px-3 py-1 font-bold text-primary">
+                      <Badge variant="promo" size="sm">
                         Tổng: {unitCount} đơn vị
                       </Badge>
                     </CardTitle>
