@@ -7,7 +7,7 @@ import { Badge } from "@ui/components/badge";
 import { formatProductVnd, hasUnitWholesalePromo } from "@ui/components/product";
 import type { Product } from "@/lib/api";
 import { getProductUnits } from "@/lib/catalog-filters";
-import { unitSellingAndListPrice } from "@/lib/product-price";
+import { unitSellingAndListPrice } from "@workspace/api-client";
 import { useSuggestedProducts } from "@/hooks/queries";
 
 type ProductSuggestionsProps = {

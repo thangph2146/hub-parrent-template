@@ -114,14 +114,19 @@ export const nextFrontendServiceBoundary = [
           patterns: [
             nextForbiddenServerStack,
             {
-              group: ["@backend", "@backend/*"],
+              group: [
+                "@backend",
+                "@backend/*",
+                "@store-sync-frontend",
+                "@store-sync-frontend/*",
+              ],
               message:
-                "@frontend không import @backend — hai Next app tách biệt; dùng `@workspace/*` hoặc `@ui`.",
+                "Storefront Next không import app Next khác — dùng `@workspace/*` hoặc `@ui`.",
             },
             {
-              regex: `(?:${reAppsPath("backend")}|${reAppsPath("api")})`,
+              regex: `(?:${reAppsPath("backend")}|${reAppsPath("api")}|${reAppsPath("store-sync-frontend")})`,
               message:
-                "Không import trực tiếp vào apps/backend hay apps/api — dùng `@/*`, `@workspace/*`, `@ui`.",
+                "Không import trực tiếp vào app khác trong monorepo — dùng `@/*`, `@workspace/*`, `@ui`.",
             },
             noFilePathToMonorepoPackages,
           ],
@@ -147,14 +152,19 @@ export const nextBackendServiceBoundary = [
           patterns: [
             nextForbiddenServerStack,
             {
-              group: ["@frontend", "@frontend/*"],
+              group: [
+                "@frontend",
+                "@frontend/*",
+                "@store-sync-frontend",
+                "@store-sync-frontend/*",
+              ],
               message:
-                "@backend không import @frontend — hai Next app tách biệt.",
+                "@backend không import storefront Next — hai nhóm app tách biệt.",
             },
             {
-              regex: `(?:${reAppsPath("frontend")}|${reAppsPath("api")})`,
+              regex: `(?:${reAppsPath("frontend")}|${reAppsPath("store-sync-frontend")}|${reAppsPath("api")})`,
               message:
-                "Không import trực tiếp vào apps/frontend hay apps/api — dùng `@/*`, `@workspace/*`, `@ui`.",
+                "Không import trực tiếp vào app khác — dùng `@/*`, `@workspace/*`, `@ui`.",
             },
             noFilePathToMonorepoPackages,
           ],

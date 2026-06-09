@@ -1,7 +1,11 @@
 "use client"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@/lib/fetch-all-admin-list"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -26,6 +30,7 @@ import type {
 } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function toDatetimeLocal(value: string | null | undefined): string {
   if (!value) return ""
   const d = new Date(value)
@@ -115,6 +120,12 @@ function EditEventPageInner() {
   const [existingSpeakers, setExistingSpeakers] = useState<
     { id: string; speakerId: number }[]
   >([])
+  const hydratedRef = useRef<string | null>(null)
+  const { clearDraft } = useAdminFormDraftPersistence("events", id, form)
+
+  useEffect(() => {
+    hydratedRef.current = null
+  }, [id])
 
   useEffect(() => {
     if (isError) {
@@ -124,7 +135,17 @@ function EditEventPageInner() {
   }, [isError, crudNav])
 
   useEffect(() => {
-    if (!entity) return
+    if (!entity || hydratedRef.current === id) return
+
+    const draft = loadEntityDraft<EventFormValues>(
+      buildEntityDraftKey("events", id),
+    )
+    if (draft) {
+      form.reset(draft)
+      hydratedRef.current = id
+      return
+    }
+
     api.eventSpeakers
       .list<EventFormSpeaker & { id: string }>({
         eventId: id,
@@ -145,6 +166,9 @@ function EditEventPageInner() {
         form.reset(buildFormValues(entity, speakers))
       })
       .catch(() => form.reset(buildFormValues(entity, [])))
+      .finally(() => {
+        hydratedRef.current = id
+      })
   }, [entity, form, id])
 
   const invalidateAll = async () => {
@@ -162,6 +186,7 @@ function EditEventPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.events.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

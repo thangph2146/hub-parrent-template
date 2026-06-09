@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect, useMemo } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -26,6 +31,7 @@ import {
 import type { PostFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditPostPageInner() {
   const crudNav = useAdminCrudNavigation("/posts")
   const params = useParams()
@@ -54,8 +60,12 @@ function EditPostPageInner() {
     }
   }, [error, crudNav])
 
-  useEffect(() => {
-    if (!post) return
+  useHydrateOncePerEntity(postId, post, (post) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("posts", postId))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       id: post.id,
       title: post.title,
@@ -68,7 +78,7 @@ function EditPostPageInner() {
       categoryIds: post.categories.map((item) => item.id),
       tagIds: post.tags.map((item) => item.id),
     })
-  }, [post, form])
+  })
 
   const updateMutation = useAdminMutation({
     toast: {

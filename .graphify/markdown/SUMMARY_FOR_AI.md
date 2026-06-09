@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-09T04:50:01.543Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-09T06:28:52.325Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -10,7 +10,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 |------------|-------------|-----------|
 | Bản đồ monorepo | **File này** (`SUMMARY_FOR_AI.md`) | [`../../packages/.graphify/markdown/SUMMARY_FOR_AI.md`](../../packages/.graphify/markdown/SUMMARY_FOR_AI.md), [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |
-| Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api`) | `SUMMARY_FOR_AI.md` cùng app |
+| Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api` / `store-sync-frontend`) | `SUMMARY_FOR_AI.md` cùng app |
 | Quy mô graph, điểm nóng import | [`../../apps/frontend/.graphify/markdown/GRAPH_STATS.md`](../../apps/frontend/.graphify/markdown/GRAPH_STATS.md) (đổi segment app) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |
 | Domain Nest import lẫn nhau | [`../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
@@ -24,12 +24,13 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | App | Vai trò | Graphify |
 |-----|---------|----------|
 | `@frontend` | Storefront Next (HUB công khai) | `apps/frontend/.graphify/` (`markdown/`, `snapshot/`) |
+| `@store-sync-frontend` | Store Sync storefront (catalog) | `apps/store-sync-frontend/.graphify/` (`markdown/`, `snapshot/`) |
 | `@backend` | Admin Next (vận hành) | `apps/backend/.graphify/` (`markdown/`, `snapshot/`) |
 | `@api` | NestJS + MikroORM, REST/WebSocket | `apps/api/.graphify/` (`markdown/`, `snapshot/`) |
 
 ## Ranh giới (microservice)
 
-- **Không** import chéo source giữa `apps/frontend`, `apps/backend`, `apps/api`.
+- **Không** import chéo source giữa các app trong `apps/*` (ví dụ `@frontend` ↔ `@store-sync-frontend`, `@backend` ↔ `@frontend`).
 - Next ↔ API: **HTTP**; SDK chính `@workspace/api-client` (`createStoreSyncSdk`). Public storefront có thể dùng thêm `fetch` trong `lib/public-posts.ts` (envelope JSON).
 - Kiểm tra: `pnpm verify:bounds` + ESLint `packages/eslint-config/service-boundaries.js`.
 
@@ -59,6 +60,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | App | Files trong context | generatedAt (context) | SUMMARY |
 |-----|--------------------|------------------------|---------|
 | `frontend` | 80 | 2026-06-07T17:33:26.048Z | [`apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `store-sync-frontend` | 85 | 2026-06-09T06:28:51.636Z | [`apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `backend` | 590 | 2026-06-09T04:49:52.615Z | [`apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `api` | 297 | 2026-06-08T08:15:50.126Z | [`apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 
@@ -77,6 +79,7 @@ pnpm graphify:update
 # hoặc từng app:
 node scripts/graphify-update.cjs apps/frontend
 node scripts/graphify-update.cjs apps/backend
+node scripts/graphify-update.cjs apps/store-sync-frontend
 node scripts/graphify-update.cjs apps/api
 # (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep
 # node scripts/graphify-update.cjs .

@@ -9,6 +9,13 @@ export type {
   ParentStudent as ParentStudentAdmin,
   UpdateParentStudentInput,
 } from "./resources/parent-students"
+export { buildCategoriesFromProducts, fetchActivePublicProductsSample, fetchSuggestedPublicProducts } from "./storefront-catalog"
+export {
+  createStorefrontSdk,
+  readStoreSyncSessionUserId,
+  STORE_SYNC_SESSION_STORAGE_KEY,
+  type CreateStorefrontSdkOptions,
+} from "./storefront-sdk"
 export {
   effectiveLineUnitPrice,
   unitSellingAndListPrice,

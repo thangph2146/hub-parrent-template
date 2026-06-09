@@ -353,7 +353,7 @@ export function ProductUnitVariantsField({
   form: UseFormReturn<ProductFormValues>
   currentProductId?: string | null
 }) {
-  const { control, register, watch, setValue } = form
+  const { control, watch, setValue } = form
   const { fields, append, remove } = useFieldArray({
     control,
     name: "units",

@@ -10,7 +10,6 @@ import { formatAdminDateTime } from "@/lib/format-admin-datetime"
 import type { FileStorageRow } from "./types"
 import {
   formatFileSize,
-  formatUploadOwnerCell,
   isImageStorageRow,
   isVideoStorageRow,
   resolveStorageAssetUrl,

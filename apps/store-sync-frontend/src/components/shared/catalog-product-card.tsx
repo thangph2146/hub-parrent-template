@@ -19,7 +19,7 @@ import {
 } from "@workspace/api-client";
 import type { Product, ProductUnitType } from "@/lib/api";
 import { getProductUnits } from "@/lib/catalog-filters";
-import { unitSellingAndListPrice } from "@/lib/product-price";
+import { unitSellingAndListPrice } from "@workspace/api-client";
 import { cartLineQuantity, useCart } from "@/hooks/use-cart";
 
 export type CatalogProductCardProps = {
@@ -122,7 +122,7 @@ export function CatalogProductCard({
           <img
             src={primaryImage}
             alt={p.name}
-            className="aspect-[5/4] max-h-48 w-full object-cover transition-transform duration-500 group-hover/card:scale-[1.02]"
+            className="aspect-[8/5] max-h-48 w-full object-cover transition-transform duration-500 group-hover/card:scale-[1.02]"
           />
         ) : (
           <div className="flex aspect-[5/4] max-h-48 w-full items-center justify-center bg-muted/25">
@@ -167,49 +167,54 @@ export function CatalogProductCard({
           ) : null}
         </div>
 
-        <div className="mt-auto space-y-3">
-          {units.length > 1 ? (
-            <ProductDetailUnitPicker
-              options={unitOptions}
-              selectedType={selectedUnit.type}
-              onSelect={handleUnitChange}
-              showPrice={false}
-              dense
-              showLabel={false}
-            />
-          ) : null}
+        <div className="mt-auto">
+          <div className="overflow-hidden bg-muted/15 space-y-2">
+            {units.length > 1 ? (
+              <div className="border border-outline-variant rounded-lg bg-background/40 p-2">
+                <ProductDetailUnitPicker
+                  options={unitOptions}
+                  selectedType={selectedUnit.type}
+                  onSelect={handleUnitChange}
+                  showPrice={false}
+                  layout="chips"
+                  showLabel={false}
+                />
+              </div>
+            ) : null}
 
-          <ProductDetailOrderRow
-            stacked
-            unitPrice={displayPrice}
-            listPrice={listPrice}
-            unitLabel={selectedUnit.label}
-            hasWholesale={isWholesale}
-            qty={quantity}
-            unitType={selectedUnit.type}
-            onQtyChange={(next) => setQuantity(clampQty(next))}
-            minQty={minPurchaseQty}
-            maxQty={maxQty}
-            stockCount={unitStockCount}
-            stockStatus={stockStatus}
-            footer={
-              <>
-                {promoHint}
-                <Button
-                  type="button"
-                  className="h-10 w-full rounded-xl text-sm font-bold"
-                  onClick={() => {
-                    if (outOfStock || quantity > availableQty) return;
-                    onAddToCart(p, selectedUnit, quantity);
-                  }}
-                  disabled={outOfStock}
-                >
-                  <ShoppingCart className="mr-1.5 size-4" />
-                  {outOfStock ? "Hết hàng" : "Thêm vào giỏ"}
-                </Button>
-              </>
-            }
-          />
+            <ProductDetailOrderRow
+              stacked
+              className="rounded-none border-0 bg-transparent shadow-none"
+              unitPrice={displayPrice}
+              listPrice={listPrice}
+              unitLabel={selectedUnit.label}
+              hasWholesale={isWholesale}
+              qty={quantity}
+              unitType={selectedUnit.type}
+              onQtyChange={(next) => setQuantity(clampQty(next))}
+              minQty={minPurchaseQty}
+              maxQty={maxQty}
+              stockCount={unitStockCount}
+              stockStatus={stockStatus}
+              footer={
+                <>
+                  {promoHint}
+                  <Button
+                    type="button"
+                    className="h-10 w-full rounded-xl text-sm font-bold"
+                    onClick={() => {
+                      if (outOfStock || quantity > availableQty) return;
+                      onAddToCart(p, selectedUnit, quantity);
+                    }}
+                    disabled={outOfStock}
+                  >
+                    <ShoppingCart className="mr-1.5 size-4" />
+                    {outOfStock ? "Hết hàng" : "Thêm vào giỏ"}
+                  </Button>
+                </>
+              }
+            />
+          </div>
         </div>
       </div>
     </article>

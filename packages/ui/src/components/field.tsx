@@ -1,11 +1,24 @@
 "use client"
 
-import { useMemo } from "react"
+import {
+  isValidElement,
+  useCallback,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Check, Copy } from "lucide-react"
 
 import { cn } from "../lib/utils"
+import { Badge } from "./badge"
 import { Label } from "./label"
 import { Separator } from "./separator"
+
+/** Thuộc tính `data-copy-text` trên node con — nguồn chuẩn khi hiển thị Badge / JSX. */
+export const FIELD_COPY_TEXT_ATTR = "data-copy-text"
+
+export const FIELD_COPY_SUCCESS_LABEL = "Đã sao chép"
 
 /** HR / panel: viền solid rõ, legend cắt viền trên. */
 export const FIELDSET_CUSTOM_CLASS =
@@ -295,18 +308,143 @@ function FieldPanelItem({
 export const FIELD_SECTION_VALUE_CLASS =
   "rounded-md border border-solid border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-foreground dark:border-border dark:bg-muted/30"
 
+function isCopyPlaceholder(text: string): boolean {
+  return text === "" || text === "—" || text === "-"
+}
+
+function readCopyTextFromProps(props: Record<string, unknown>): string | null {
+  const attr = props[FIELD_COPY_TEXT_ATTR]
+  if (typeof attr === "string") {
+    const text = attr.trim()
+    return isCopyPlaceholder(text) ? null : text
+  }
+  return null
+}
+
+function resolveFieldCopyText(
+  copyText: string | undefined,
+  children: ReactNode,
+): string | null {
+  if (copyText != null && copyText !== "") {
+    const text = copyText.trim()
+    return isCopyPlaceholder(text) ? null : text
+  }
+  if (typeof children === "string" || typeof children === "number") {
+    const text = String(children).trim()
+    return isCopyPlaceholder(text) ? null : text
+  }
+  if (isValidElement(children)) {
+    const fromAttr = readCopyTextFromProps(
+      children.props as Record<string, unknown>,
+    )
+    if (fromAttr) return fromAttr
+    const nested = resolveFieldCopyText(
+      undefined,
+      (children.props as { children?: ReactNode }).children,
+    )
+    if (nested) return nested
+  }
+  if (Array.isArray(children)) {
+    for (const child of children) {
+      const nested = resolveFieldCopyText(undefined, child)
+      if (nested) return nested
+    }
+  }
+  return null
+}
+
+export type FieldCopyButtonProps = {
+  text: string
+  successMessage?: string
+  className?: string
+}
+
+/** Badge trạng thái copy — idle (muted) / thành công (success). */
+function FieldCopyButton({
+  text,
+  successMessage = FIELD_COPY_SUCCESS_LABEL,
+  className,
+}: FieldCopyButtonProps) {
+  const [copied, setCopied] = useState(false)
+
+  const onCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
+  }, [text])
+
+  return (
+    <Badge
+      render={<button type="button" />}
+      data-slot="field-copy-button"
+      data-copied={copied || undefined}
+      variant={copied ? "success" : "muted"}
+      size="xs"
+      onClick={() => void onCopy()}
+      aria-label={copied ? successMessage : "Sao chép nội dung"}
+      className={cn(
+        "shrink-0 cursor-pointer transition-opacity hover:opacity-90",
+        className,
+      )}
+    >
+      {copied ? (
+        <>
+          <Check className="size-3 shrink-0" aria-hidden />
+          <span aria-live="polite">{successMessage}</span>
+        </>
+      ) : (
+        <>
+          <Copy className="size-3 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">Sao chép</span>
+        </>
+      )}
+    </Badge>
+  )
+}
+
+export type FieldSectionValueProps = React.ComponentProps<"div"> & {
+  /** Bật nút copy; mặc định bật khi có `copyText` hoặc children là chuỗi/số. */
+  copyable?: boolean
+  /** Nội dung ghi clipboard — ưu tiên hơn text từ children. */
+  copyText?: string
+  /** Thông báo inline sau khi copy thành công. */
+  copySuccessMessage?: string
+}
+
 function FieldSectionValue({
   className,
   children,
+  copyable,
+  copyText,
+  copySuccessMessage,
   ...props
-}: React.ComponentProps<"div">) {
+}: FieldSectionValueProps) {
+  const resolvedCopyText = resolveFieldCopyText(copyText, children)
+  const showCopy =
+    (copyable ?? resolvedCopyText != null) && resolvedCopyText != null
+
   return (
     <div
       data-slot="field-section-value"
-      className={cn(FIELD_SECTION_VALUE_CLASS, className)}
+      data-copyable={showCopy || undefined}
+      className={cn(
+        FIELD_SECTION_VALUE_CLASS,
+        showCopy && "flex items-start justify-between gap-2",
+        className,
+      )}
       {...props}
     >
-      {children}
+      <div className="min-w-0 flex-1">{children}</div>
+      {showCopy ? (
+        <FieldCopyButton
+          text={resolvedCopyText}
+          successMessage={copySuccessMessage}
+        />
+      ) : null}
     </div>
   )
 }
@@ -317,6 +455,9 @@ type FieldSectionFieldProps = {
   className?: string
   valueClassName?: string
   children: React.ReactNode
+  copyable?: boolean
+  copyText?: string
+  copySuccessMessage?: string
 }
 
 /** Một field section: label (không viền) + nội dung trong khung viền. */
@@ -326,6 +467,9 @@ function FieldSectionField({
   className,
   valueClassName,
   children,
+  copyable,
+  copyText,
+  copySuccessMessage,
 }: FieldSectionFieldProps) {
   return (
     <div
@@ -333,7 +477,12 @@ function FieldSectionField({
       className={cn("flex flex-col gap-1.5", className)}
     >
       <FieldSectionLabel icon={icon}>{label}</FieldSectionLabel>
-      <FieldSectionValue className={valueClassName}>
+      <FieldSectionValue
+        className={valueClassName}
+        copyable={copyable}
+        copyText={copyText}
+        copySuccessMessage={copySuccessMessage}
+      >
         {children}
       </FieldSectionValue>
     </div>
@@ -566,6 +715,7 @@ function FieldError({
 
 export {
   Field,
+  FieldCopyButton,
   FieldLabel,
   FieldDescription,
   FieldError,

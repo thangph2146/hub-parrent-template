@@ -1,30 +1,16 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, type UseFormReturn } from "react-hook-form"
+import type { ReactNode } from "react"
+import { useForm, useWatch, type UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 import {
   AdminFormLayout,
-  AdminFormMain,
   AdminFormPageHeader,
-  AdminFormSidebar,
+  PromoAdminEditForm,
+  type PromoAdminEditFormProps,
+  type PromoAdminFormFields,
 } from "@ui/components/admin"
-import {
-  FieldSet,
-  FieldSetContent,
-  FieldSectionLegend,
-} from "@ui/components/field"
-import { FormFieldCol } from "@ui/components/typing"
-import { Input } from "@ui/components/input"
-import { Switch } from "@ui/components/switch"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
-import { Ticket } from "lucide-react"
 import type {
   CreatePromoCodeInput,
   PromoDiscountKind,
@@ -133,6 +119,9 @@ export function PromoFormShell({
   editingId,
   onBack,
   onReset,
+  headerTitle,
+  headerSubtitle,
+  usageCount,
 }: {
   form: UseFormReturn<PromoFormValues>
   onSubmit: (values: PromoFormValues) => Promise<void>
@@ -140,16 +129,35 @@ export function PromoFormShell({
   editingId: string | null
   onBack: () => void
   onReset: () => void
+  headerTitle?: ReactNode
+  headerSubtitle?: ReactNode
+  usageCount?: number
 }) {
-  const { register, watch, setValue } = form
-  const kind = watch("discountKind")
-  const isActive = watch("isActive")
+  const { control, setValue } = form
+  // useWatch (không phải watch()) — re-render khi setValue trên field controlled không register
+  const watched = useWatch({ control })
+  const fields = (watched ?? form.getValues()) as PromoAdminFormFields
+
+  const handleFieldChange: PromoAdminEditFormProps["onFieldChange"] = (
+    key,
+    value
+  ) => {
+    setValue(key, value as never, {
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+  }
 
   return (
     <>
       <AdminFormPageHeader
-        title={editingId ? "Sửa mã KM" : "Thêm mã KM"}
-        subtitle="Áp dụng lúc checkout qua couponCode — có minOrderSubtotal."
+        title={
+          headerTitle ?? (editingId ? "Sửa mã KM" : "Thêm mã KM")
+        }
+        subtitle={
+          headerSubtitle ??
+          "Cấu hình mã áp dụng tại checkout storefront."
+        }
         onBack={onBack}
         onReset={onReset}
         formId="promo-form"
@@ -157,81 +165,12 @@ export function PromoFormShell({
         isEdit={!!editingId}
       />
       <AdminFormLayout id="promo-form" onSubmit={form.handleSubmit(onSubmit)}>
-        <AdminFormMain>
-          <FieldSet variant="section">
-            <FieldSectionLegend icon={Ticket} title="Mã & giảm giá" />
-            <FieldSetContent
-              variant="section"
-              className="grid gap-4 pt-0 sm:grid-cols-2"
-            >
-              <FormFieldCol label="Mã" required>
-                <Input
-                  {...register("code")}
-                  disabled={!!editingId}
-                  className="font-mono uppercase"
-                />
-              </FormFieldCol>
-              <FormFieldCol label="Nhãn" required>
-                <Input {...register("label")} />
-              </FormFieldCol>
-              <FormFieldCol label="Kiểu giảm">
-                <Select
-                  value={kind}
-                  onValueChange={(v) =>
-                    setValue("discountKind", v as PromoDiscountKind)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="percent">Phần trăm (%)</SelectItem>
-                    <SelectItem value="fixed">Số tiền cố định</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormFieldCol>
-              <FormFieldCol label="Đơn tối thiểu (VND)">
-                <Input type="number" {...register("minOrderSubtotal")} />
-              </FormFieldCol>
-              {kind === "percent" ? (
-                <>
-                  <FormFieldCol label="Phần trăm">
-                    <Input type="number" {...register("discountPercent")} />
-                  </FormFieldCol>
-                  <FormFieldCol label="Trần giảm (VND)">
-                    <Input type="number" {...register("discountCapVnd")} />
-                  </FormFieldCol>
-                </>
-              ) : (
-                <FormFieldCol label="Giảm (VND)">
-                  <Input type="number" {...register("discountFixed")} />
-                </FormFieldCol>
-              )}
-              <FormFieldCol label="Giới hạn lượt dùng">
-                <Input
-                  type="number"
-                  {...register("usageLimit")}
-                  placeholder="Không giới hạn"
-                />
-              </FormFieldCol>
-            </FieldSetContent>
-          </FieldSet>
-        </AdminFormMain>
-        <AdminFormSidebar>
-          <FieldSet variant="section">
-            <FieldSectionLegend title="Trạng thái" />
-            <FieldSetContent
-              variant="section"
-              className="flex items-center justify-between pt-0"
-            >
-              <span>Đang bật</span>
-              <Switch
-                checked={isActive}
-                onCheckedChange={(v) => setValue("isActive", v)}
-              />
-            </FieldSetContent>
-          </FieldSet>
-        </AdminFormSidebar>
+        <PromoAdminEditForm
+          fields={fields}
+          onFieldChange={handleFieldChange}
+          codeDisabled={!!editingId}
+          usageCount={usageCount}
+        />
       </AdminFormLayout>
     </>
   )

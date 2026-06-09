@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { TrainingLevelFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditTrainingLevelPageInner() {
   const crudNav = useAdminCrudNavigation("/training-levels")
   const params = useParams()
@@ -41,14 +47,20 @@ function EditTrainingLevelPageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!entity) return
+  useHydrateOncePerEntity(id, entity, (entity) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("training-levels", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       name: entity.name ?? "",
       code: entity.code ?? "",
       status: entity.status ?? 1,
     })
-  }, [entity, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("training-levels", id, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["training-levels"] })
@@ -65,6 +77,7 @@ function EditTrainingLevelPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.trainingLevels.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

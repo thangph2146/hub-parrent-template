@@ -11,15 +11,24 @@ import {
   AdminPageLoading,
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
+import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import {
   TagFormShell,
   useTagForm,
   useTagDetailQuery,
   buildTagPayload,
 } from "../../_component"
-import type { TagFormValues } from "../../_component"
+import type { TagDetail, TagFormValues } from "../../_component"
 
-import { useAdminMutation } from "@/hooks/use-admin-mutation"
+function tagToFormValues(tag: TagDetail): TagFormValues {
+  return {
+    name: tag.name ?? "",
+    slug: tag.slug ?? "",
+    icon: tag.icon ?? null,
+  }
+}
+
 function EditTagPageInner() {
   const crudNav = useAdminCrudNavigation("/tags")
   const params = useParams()
@@ -27,12 +36,15 @@ function EditTagPageInner() {
   const queryClient = useQueryClient()
   const { form } = useTagForm()
 
-  const {
+  const { data: tag, isLoading, isError } = useTagDetailQuery(api, tagId)
+
+  const { clearDraft, resetFromServer } = useAdminEditFormHydration({
+    scope: "tags",
+    entityId: tagId,
     data: tag,
-    isLoading,
-    isError,
-    refetch,
-  } = useTagDetailQuery(api, tagId)
+    form,
+    toFormValues: tagToFormValues,
+  })
 
   useEffect(() => {
     if (isError) {
@@ -40,15 +52,6 @@ function EditTagPageInner() {
       crudNav.list()
     }
   }, [isError, crudNav])
-
-  useEffect(() => {
-    if (!tag) return
-    form.reset({
-      name: tag.name ?? "",
-      slug: tag.slug ?? "",
-      icon: tag.icon ?? null,
-    })
-  }, [tag, form])
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["media", "tags"] })
@@ -65,6 +68,7 @@ function EditTagPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.tags.update(tagId, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(tagId))
     },
@@ -91,9 +95,7 @@ function EditTagPageInner() {
         submitting={updateMutation.isPending}
         editingId={tagId}
         onBack={() => crudNav.view(String(tagId))}
-        onReset={async () => {
-          await refetch()
-        }}
+        onReset={resetFromServer}
       />
     </AdminPageSection>
   )

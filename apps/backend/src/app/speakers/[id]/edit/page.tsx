@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { SpeakerFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditSpeakerPageInner() {
   const crudNav = useAdminCrudNavigation("/speakers")
   const params = useParams()
@@ -41,8 +47,12 @@ function EditSpeakerPageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!entity) return
+  useHydrateOncePerEntity(id, entity, (entity) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("speakers", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       name: entity.name ?? "",
       title: entity.title ?? "",
@@ -53,7 +63,9 @@ function EditSpeakerPageInner() {
       phone: entity.phone ?? "",
       status: entity.status ?? 1,
     })
-  }, [entity, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("speakers", id, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["speakers"] })
@@ -70,6 +82,7 @@ function EditSpeakerPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.speakers.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

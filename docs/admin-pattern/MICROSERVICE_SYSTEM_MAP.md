@@ -8,6 +8,7 @@ Tài liệu này là bản đồ nhanh để AI/agent hiểu đúng kiến trúc
 | ----------------------------- | --------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `@api`                        | `apps/api`                        | NestJS REST/WS, MikroORM entity/migration/seed, RBAC, business rules | React, Next, fetch từ client              |
 | `@frontend`                   | `apps/frontend`                   | Storefront Next (HUB công khai), SSR/SEO trang public                | DB, entity, admin CRUD logic              |
+| `@store-sync-frontend`        | `apps/store-sync-frontend`        | Storefront Store Sync (catalog, giỏ, checkout)                       | Cùng ranh giới như `@frontend`            |
 | `@backend`                    | `apps/backend`                    | Admin Next, route/page theo domain, query hooks, wiring auth         | Entity, MikroORM, component admin generic |
 | `@hub-event-checkin-frontend` | `apps/hub-event-checkin-frontend` | Storefront check-in sự kiện (PM2 compo 2)                            | Cùng ranh giới như `@frontend`            |
 
@@ -37,7 +38,7 @@ Nguyên tắc:
 - **Chỉ dẫn theo chủ đề (AI):** mục _Chỉ dẫn theo chủ đề_ trong `.graphify/markdown/SUMMARY_FOR_AI.md` — bảng _mục tiêu → file đọc trước_.
 - **Danh sách package:** `packages/.graphify/markdown/SUMMARY_FOR_AI.md`.
 - **Phụ thuộc `workspace:*`:** `packages/.graphify/markdown/WORKSPACE_DEPS.md`.
-- **Từng dịch vụ:** `apps/<frontend|backend|api>/.graphify/markdown/SUMMARY_FOR_AI.md` (sinh từ `snapshot/context.json`).
+- **Từng dịch vụ:** `apps/<frontend|store-sync-frontend|backend|api>/.graphify/markdown/SUMMARY_FOR_AI.md` (sinh từ `snapshot/context.json`).
 - **Cây thư mục / thống kê graph:** `apps/<app>/.graphify/markdown/FOLDER_TREE.md`, `GRAPH_STATS.md`.
 - **Phụ thuộc domain API:** `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` (bảng, inbound, Mermaid).
 - Làm mới snapshot: `pnpm graphify:refresh` (hoặc `node scripts/graphify-update.cjs apps/<app>` rồi `pnpm graphify:ai-summary`) từ root.
@@ -47,7 +48,7 @@ Nguyên tắc:
 
 1. `.graphify/markdown/SUMMARY_FOR_AI.md` (bản đồ tổng + link)
 2. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
-3. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
+3. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (hoặc `store-sync-frontend` theo task)
 4. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
 5. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
 6. `packages/eslint-config/service-boundaries.js`

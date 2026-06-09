@@ -152,13 +152,16 @@ export function StoreOrderStatusBadge({
   label?: string
   className?: string
 }) {
+  const displayLabel = label ?? ORDER_STATUS_LABELS[status]
+
   return (
     <Badge
       variant={ORDER_STATUS_VARIANT[status]}
       size="sm"
+      data-copy-text={displayLabel}
       className={className}
     >
-      {label ?? ORDER_STATUS_LABELS[status]}
+      {displayLabel}
     </Badge>
   )
 }

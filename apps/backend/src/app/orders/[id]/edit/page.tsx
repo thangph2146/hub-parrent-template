@@ -1,33 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
-import { ShoppingCart } from "lucide-react"
 import { toast } from "@ui/components/sonner"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
-import {
   AdminFormLayout,
-  AdminFormMain,
   AdminFormPageHeader,
-  AdminFormSidebar,
   AdminPageGuard,
   AdminPageLoading,
   AdminPageSection,
+  OrderAdminEditForm,
+  StoreOrderStatusBadge,
 } from "@ui/components/admin"
-import {
-  FieldSectionField,
-  FieldSet,
-  FieldSetContent,
-  FieldSectionLegend,
-} from "@ui/components/field"
-import { StoreOrderStatusBadge } from "@ui/components/product"
+import { useEntityDraftState } from "@workspace/query-client"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useAuth } from "@/providers/auth-provider"
 import {
@@ -37,11 +23,7 @@ import {
 } from "@workspace/api-client"
 import { api } from "@/lib/api"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
-import {
-  ORDER_STATUS_LABELS,
-  ORDER_STATUSES,
-  useOrderDetailQuery,
-} from "../../_component"
+import { useOrderDetailQuery } from "../../_component"
 
 function OrderEditInner() {
   const crudNav = useAdminCrudNavigation("/orders")
@@ -54,11 +36,12 @@ function OrderEditInner() {
       canUserAccess(user, PERMISSION_CODES.ORDERS_MANAGE)
     : false
   const { data: order, isLoading, isError } = useOrderDetailQuery(api, id)
-  const [status, setStatus] = useState<OrderStatus | null>(null)
 
-  useEffect(() => {
-    if (order) setStatus(order.status)
-  }, [order])
+  const {
+    state: statusDraft,
+    setState: setStatusDraft,
+    clearDraft,
+  } = useEntityDraftState("orders", id, order, (o) => ({ status: o.status }))
 
   useEffect(() => {
     if (isError) {
@@ -77,7 +60,9 @@ function OrderEditInner() {
     mutationFn: (next: OrderStatus) =>
       api.orders.updateStatus(Number(id), next),
     onSuccess: async () => {
+      clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["orders"] })
+      toast.success("Đã cập nhật trạng thái đơn hàng")
       crudNav.view(id)
     },
   })
@@ -85,75 +70,44 @@ function OrderEditInner() {
   if (isLoading) return <AdminPageLoading />
   if (!order) return null
 
-  const currentStatus = status ?? order.status
+  const currentStatus = statusDraft?.status ?? order.status
+  const statusChanged = currentStatus !== order.status
 
   return (
     <AdminPageSection>
       <AdminFormPageHeader
-        title="Cập nhật đơn hàng"
-        subtitle={order.orderNumber}
+        title={
+          <span className="flex flex-wrap items-center gap-2.5">
+            <span>Cập nhật đơn hàng</span>
+            <StoreOrderStatusBadge status={order.status} />
+          </span>
+        }
+        subtitle={
+          <span className="font-mono text-sm">{order.orderNumber}</span>
+        }
         onBack={() => crudNav.view(id)}
         formId="order-status-form"
         submitting={updateMutation.isPending}
         isEdit
-        saveLabel="Lưu trạng thái"
+        saveLabel={statusChanged ? "Lưu trạng thái" : "Quay lại chi tiết"}
       />
       <AdminFormLayout
         id="order-status-form"
         onSubmit={(event) => {
           event.preventDefault()
-          if (currentStatus === order.status) {
+          if (!statusChanged) {
             crudNav.view(id)
             return
           }
           updateMutation.mutate(currentStatus)
         }}
       >
-        <AdminFormMain>
-          <FieldSet variant="section">
-            <FieldSectionLegend icon={ShoppingCart} title="Thông tin đơn" />
-            <FieldSetContent
-              variant="section"
-              className="grid gap-4 sm:grid-cols-2"
-            >
-              <FieldSectionField label="Mã đơn">
-                <span className="font-mono">{order.orderNumber}</span>
-              </FieldSectionField>
-              <FieldSectionField label="Khách hàng">
-                {order.customerName}
-              </FieldSectionField>
-              <FieldSectionField label="Email">
-                {order.customerEmail}
-              </FieldSectionField>
-              <FieldSectionField label="Trạng thái hiện tại">
-                <StoreOrderStatusBadge status={order.status} />
-              </FieldSectionField>
-            </FieldSetContent>
-          </FieldSet>
-        </AdminFormMain>
-        <AdminFormSidebar>
-          <FieldSet variant="section">
-            <FieldSectionLegend title="Trạng thái mới" />
-            <FieldSetContent variant="section" className="pt-0">
-              <Select
-                value={currentStatus}
-                onValueChange={(v) => setStatus(v as OrderStatus)}
-                disabled={updateMutation.isPending}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ORDER_STATUSES.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {ORDER_STATUS_LABELS[s]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldSetContent>
-          </FieldSet>
-        </AdminFormSidebar>
+        <OrderAdminEditForm
+          order={order}
+          status={currentStatus}
+          onStatusChange={(next) => setStatusDraft({ status: next })}
+          pending={updateMutation.isPending}
+        />
       </AdminFormLayout>
     </AdminPageSection>
   )

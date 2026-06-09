@@ -13,8 +13,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 /** @type {Record<string, readonly string[]>} */
 const FORBIDDEN_DEPS = {
   "@api": ["@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
-  "@frontend": ["@backend", "@api"],
-  "@store-sync-frontend": ["@backend", "@api"],
+  "@frontend": ["@backend", "@api", "@store-sync-frontend"],
+  "@store-sync-frontend": ["@backend", "@api", "@frontend"],
   "@backend": ["@frontend", "@api", "@store-sync-frontend"],
   "@hub-event-checkin-frontend": ["@backend", "@frontend", "@api"],
   "@workspace/api-client": ["@api", "@frontend", "@backend", "@workspace/ui"],

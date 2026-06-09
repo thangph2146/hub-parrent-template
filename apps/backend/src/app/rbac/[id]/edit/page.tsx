@@ -2,7 +2,8 @@
 
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import { useRoleForm } from "../../_component/_hooks"
 import { RoleFormShell } from "../../_component/_form"
 import {
@@ -38,7 +39,7 @@ function EditRolePageInner() {
   const catalogQuery = useRbacCatalog()
   const updateMutation = useUpdateRoleMutation()
 
-  const { form, populateForm, resetForm, getPayload } = useRoleForm()
+  const { form, resetForm, getPayload } = useRoleForm()
 
   const permissions = useMemo(
     () => catalogQuery.data?.permissions ?? [],
@@ -47,11 +48,19 @@ function EditRolePageInner() {
 
   const role = roleQuery.data
 
-  useEffect(() => {
-    if (role) {
-      populateForm(role)
-    }
-  }, [role, populateForm])
+  const { clearDraft } = useAdminEditFormHydration({
+    scope: "rbac",
+    entityId: roleId,
+    data: role,
+    form,
+    toFormValues: (item) => ({
+      code: item.code,
+      name: item.name,
+      description: item.description ?? "",
+      isActive: item.isActive,
+      permissions: item.permissions,
+    }),
+  })
 
   const handleSubmit = async () => {
     if (!role) return
@@ -70,6 +79,7 @@ function EditRolePageInner() {
           isActive: payload.isActive,
         },
       })
+      clearDraft()
       crudNav.view(String(roleId))
     } catch {
       // Error handled by mutation

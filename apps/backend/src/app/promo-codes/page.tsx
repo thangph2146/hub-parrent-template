@@ -77,8 +77,10 @@ function PromoCodesPageInner() {
     filters: listFilterParams,
   })
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["promo-codes"] })
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ["promo-codes"] }),
+    [queryClient]
+  )
 
   const deleteMutation = useAdminMutation({
     mutationFn: (id: string) => api.promoCodes.remove(Number(id)),

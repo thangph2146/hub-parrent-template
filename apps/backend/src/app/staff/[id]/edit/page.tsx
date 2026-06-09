@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
-import { useEffect } from "react"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import { useStaffForm, useStaffMutations } from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
 import { useRbacCatalog, useStaffProfile } from "@/hooks/queries"
@@ -25,7 +25,7 @@ function EditStaffPageInner() {
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
   const { updateMutation } = useStaffMutations({ api })
-  const { form, resetForm, populateForm, getPayload } = useStaffForm({
+  const { form, resetForm, getPayload } = useStaffForm({
     editingId: params.id as string,
   })
 
@@ -39,12 +39,23 @@ function EditStaffPageInner() {
   const user = userQuery.data
   const roles = rbacQuery.data?.roles ?? []
 
-  // Populate form when user data is loaded
-  useEffect(() => {
-    if (user) {
-      populateForm(user)
-    }
-  }, [user, populateForm])
+  const { clearDraft } = useAdminEditFormHydration({
+    scope: "staff",
+    entityId: userId,
+    data: user,
+    form,
+    toFormValues: (profile) => ({
+      email: profile.email,
+      fullName: profile.fullName,
+      password: "",
+      isActive: profile.isActive,
+      roleCodes: profile.roles.map((r) => r.code),
+      avatar: profile.avatar ?? "",
+      phone: profile.phone ?? "",
+      address: profile.address ?? "",
+      citizenId: profile.citizenId ?? "",
+    }),
+  })
 
   const handleSubmit = async () => {
     if (!user) return
@@ -56,6 +67,7 @@ function EditStaffPageInner() {
     const payload = getPayload()
     try {
       await updateMutation.mutateAsync({ id: user.id, input: payload })
+      clearDraft()
       crudNav.view(String(userId))
     } catch {
       // Error handled by mutation

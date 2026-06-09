@@ -56,8 +56,8 @@ export function ProductDetailOrderRow({
   return (
     <div
       className={cn(
-        "rounded-xl border border-outline-variant/20 bg-muted/15",
-        stacked ? "p-3" : "border-outline-variant/25 bg-background/70 p-4 shadow-sm",
+        "rounded-lg border border-outline-variant/20 bg-muted/15",
+        stacked ? "" : "bg-background/70",
         className
       )}
     >

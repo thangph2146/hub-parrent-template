@@ -18,6 +18,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 ### Graphify — markdown các phần còn lại của monorepo
 
 - **@frontend:** [SUMMARY](../../../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/frontend/.graphify/markdown/GRAPH_STATS.md)
+- **@store-sync-frontend:** [SUMMARY](../../../../apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/store-sync-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/store-sync-frontend/.graphify/markdown/GRAPH_STATS.md)
 - **@backend:** [SUMMARY](../../../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/backend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/backend/.graphify/markdown/GRAPH_STATS.md)
 - **packages:** [SUMMARY](../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md) · [WORKSPACE_DEPS](../../../../packages/.graphify/markdown/WORKSPACE_DEPS.md)
 - **monorepo (chỉ mục + chủ đề):** [SUMMARY gốc](../../../../.graphify/markdown/SUMMARY_FOR_AI.md)

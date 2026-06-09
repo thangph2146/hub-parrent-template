@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -17,9 +18,21 @@ import {
   useDepartmentDetailQuery,
   buildDepartmentPayload,
 } from "../../_component"
-import type { DepartmentFormValues } from "../../_component"
+import type { DepartmentDetail, DepartmentFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+
+function departmentToFormValues(
+  entity: DepartmentDetail,
+): DepartmentFormValues {
+  return {
+    name: entity.name ?? "",
+    code: entity.code ?? "",
+    description: entity.description ?? "",
+    status: entity.status ?? 1,
+  }
+}
+
 function EditDepartmentPageInner() {
   const crudNav = useAdminCrudNavigation("/departments")
   const params = useParams()
@@ -27,12 +40,15 @@ function EditDepartmentPageInner() {
   const queryClient = useQueryClient()
   const { form } = useDepartmentForm()
 
-  const {
+  const { data: entity, isLoading, isError } = useDepartmentDetailQuery(api, id)
+
+  const { clearDraft, resetFromServer } = useAdminEditFormHydration({
+    scope: "departments",
+    entityId: id,
     data: entity,
-    isLoading,
-    isError,
-    refetch,
-  } = useDepartmentDetailQuery(api, id)
+    form,
+    toFormValues: departmentToFormValues,
+  })
 
   useEffect(() => {
     if (isError) {
@@ -40,16 +56,6 @@ function EditDepartmentPageInner() {
       crudNav.list()
     }
   }, [isError, crudNav])
-
-  useEffect(() => {
-    if (!entity) return
-    form.reset({
-      name: entity.name ?? "",
-      code: entity.code ?? "",
-      description: entity.description ?? "",
-      status: entity.status ?? 1,
-    })
-  }, [entity, form])
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["departments"] })
@@ -66,6 +72,7 @@ function EditDepartmentPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.departments.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },
@@ -92,9 +99,7 @@ function EditDepartmentPageInner() {
         submitting={updateMutation.isPending}
         editingId={id}
         onBack={() => crudNav.view(String(id))}
-        onReset={async () => {
-          await refetch()
-        }}
+        onReset={resetFromServer}
       />
     </AdminPageSection>
   )

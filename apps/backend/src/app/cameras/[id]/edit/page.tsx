@@ -1,5 +1,10 @@
 "use client"
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -18,6 +23,7 @@ import {
 } from "../../_component"
 import type { CameraFormValues } from "../../_component"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditCameraPageInner() {
   const crudNav = useAdminCrudNavigation("/cameras"),
     params = useParams(),
@@ -31,8 +37,12 @@ function EditCameraPageInner() {
       crudNav.list()
     }
   }, [isError, crudNav])
-  useEffect(() => {
-    if (!e) return
+  useHydrateOncePerEntity(id, e, (e) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("cameras", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       name: e.name ?? "",
       code: e.code ?? "",
@@ -43,7 +53,7 @@ function EditCameraPageInner() {
       password: "",
       status: e.status ?? 1,
     })
-  }, [e, form])
+  })
   const inv = async () => {
     await qc.invalidateQueries({ queryKey: ["cameras"] })
   }

@@ -1,11 +1,11 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-09T04:50:01.540Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-09T06:28:52.323Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 
 - Package **không** thay cho `@api`; app Next gọi API qua HTTP + `@workspace/api-client` hoặc `fetch` public.
-- **Không import** source `apps/frontend`, `apps/backend`, `apps/api` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`).
+- **Không import** source `apps/*` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`).
 
 ## Package (10)
 
@@ -39,6 +39,7 @@ Artefact Graphify cho **workspace packages** nằm dưới `packages/.graphify/m
 Định vị **runtime** từng dịch vụ (không import chéo source giữa `apps/*`):
 
 - [@frontend — SUMMARY](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@store-sync-frontend — SUMMARY](../../apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@backend — SUMMARY](../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@api — SUMMARY](../../apps/api/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [Chỉ mục monorepo](../../.graphify/markdown/SUMMARY_FOR_AI.md)

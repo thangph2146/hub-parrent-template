@@ -24,27 +24,53 @@ import {
 import { api } from "@/lib/api"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { seoMetaFormSchema, useSeoMetaDetailQuery } from "../../_component"
-import type { SeoMetaFormValues } from "../../_component"
+import {
+  seoMetaFormSchema,
+  useSeoMetaDetailQuery,
+  type SeoMetaDetail,
+  type SeoMetaFormValues,
+} from "../../_component"
 import { cn } from "@ui/lib/utils"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
+function seoMetaToFormValues(detail: SeoMetaDetail): SeoMetaFormValues {
+  return {
+    page: detail.page ?? "",
+    title: detail.title ?? "",
+    description: detail.description ?? "",
+    keywords: detail.keywords ?? "",
+    ogTitle: detail.ogTitle ?? "",
+    ogDescription: detail.ogDescription ?? "",
+    ogImage: detail.ogImage ?? "",
+    status: detail.status,
+  }
+}
+
 function EditSeoMetaPageInner() {
   const crudNav = useAdminCrudNavigation("/seo-metas")
   const params = useParams()
   const id = params.id as string
   const queryClient = useQueryClient()
 
+  const form = useForm<SeoMetaFormValues>({
+    resolver: zodResolver(seoMetaFormSchema),
+  })
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
-  } = useForm<SeoMetaFormValues>({
-    resolver: zodResolver(seoMetaFormSchema),
-  })
+  } = form
 
   const { data: detail, isLoading, isError } = useSeoMetaDetailQuery(api, id)
+
+  const { clearDraft } = useAdminEditFormHydration({
+    scope: "seo-metas",
+    entityId: id,
+    data: detail,
+    form,
+    toFormValues: seoMetaToFormValues,
+  })
 
   useEffect(() => {
     if (isError) {
@@ -52,20 +78,6 @@ function EditSeoMetaPageInner() {
       crudNav.list()
     }
   }, [isError, crudNav])
-
-  useEffect(() => {
-    if (!detail) return
-    reset({
-      page: detail.page ?? "",
-      title: detail.title ?? "",
-      description: detail.description ?? "",
-      keywords: detail.keywords ?? "",
-      ogTitle: detail.ogTitle ?? "",
-      ogDescription: detail.ogDescription ?? "",
-      ogImage: detail.ogImage ?? "",
-      status: detail.status,
-    })
-  }, [detail, reset])
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["seo-metas"] })
@@ -81,6 +93,7 @@ function EditSeoMetaPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.seoMetas.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

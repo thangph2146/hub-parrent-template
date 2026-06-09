@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { AcademicYearFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditAcademicYearPageInner() {
   const crudNav = useAdminCrudNavigation("/academic-years")
   const params = useParams()
@@ -41,8 +47,7 @@ function EditAcademicYearPageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!entity) return
+  useHydrateOncePerEntity(id, entity, (entity) => {
     const toDateInput = (value: string | null | undefined) => {
       if (!value) return ""
       const match = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim())
@@ -60,7 +65,9 @@ function EditAcademicYearPageInner() {
       endDate: toDateInput(entity.endDate),
       status: entity.status ?? 1,
     })
-  }, [entity, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("academic-years", id, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["academic-years"] })
@@ -77,6 +84,7 @@ function EditAcademicYearPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.academicYears.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

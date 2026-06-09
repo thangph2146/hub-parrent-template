@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Flame,
   CheckCircle2,
-  Network,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -30,7 +29,6 @@ import { Button } from "@ui/components/button";
 import { ProductCard } from "@/components/shared/product-card";
 import { ProductWideCard } from "@/components/shared/product-wide-card";
 import { useCategories, useProducts } from "@/hooks/queries";
-import { resolveCategoryIcon } from "@/lib/category-icons";
 import { formatVND } from "@/lib/format";
 import { hasUnitWholesalePromo } from "@workspace/api-client";
 import type { Product } from "@/lib/api";
@@ -289,53 +287,6 @@ export default function Home() {
           </Container>
         </section>
 
-        {/* --- Categories Grid (data-driven) --- */}
-        <section className="py-32 bg-background w-full">
-          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>
-            <div className="text-center space-y-6 mb-20">
-              <Heading as="h2" size="display" align="center" className="tracking-tight">
-                Danh Mục <span className="text-primary">Hàng Tiêu Dùng</span>
-              </Heading>
-              <Text variant="lead" align="center" className="max-w-4xl mx-auto leading-relaxed">
-                Khám phá hệ sinh thái hàng hóa đa dạng, đáp ứng mọi nhu cầu kinh doanh của đại lý và cửa hàng tiện lợi.
-              </Text>
-            </div>
-
-            {categories.length === 0 ? (
-              <Grid cols={4} gap={8}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="aspect-square rounded-[2.5rem] bg-muted/30 animate-pulse" />
-                ))}
-              </Grid>
-            ) : (
-              <Grid cols={Math.min(6, categories.length) as 4 | 6} gap={8}>
-                {categories.map((cat) => {
-                  const Icon = resolveCategoryIcon(cat.icon);
-                  const count = products.filter((p) => p.category === cat.slug).length;
-                  return (
-                    <Link
-                      key={cat.slug}
-                      href={`/catalog?cat=${cat.slug}`}
-                      className="group cursor-pointer"
-                    >
-                      <div className="aspect-square bg-primary/5 text-primary rounded-[2.5rem] flex flex-col items-center justify-center gap-4 transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-primary/5 border border-transparent group-hover:border-primary/20">
-                        <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm transition-transform group-hover:rotate-12">
-                          <Icon className="size-7" />
-                        </div>
-                        <div className="text-center px-4">
-                          <Text variant="label" className="font-black tracking-tight">{cat.name}</Text>
-                          <Text variant="caption" className="font-bold opacity-80 mt-1">
-                            {count} mã hàng
-                          </Text>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </Grid>
-            )}
-          </Container>
-        </section>
 
         {/* --- Most Purchased Section (data-driven) --- */}
         <section className="py-32 mx-0 md:mx-6 w-full md:w-[calc(100%-3rem)]">
@@ -454,21 +405,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <Container max={STORE_CONTAINER_MAX_DEFAULT} className={cn(STORE_CONTAINER_INSET_WIDE, "py-12")}>
-          <div className="flex justify-center">
-            <Link
-              href="/graph"
-              className="group flex items-center gap-3 px-8 py-4 rounded-full bg-surface border border-outline-variant hover:border-primary/50 transition-all shadow-sm"
-            >
-              <Network className="size-6 text-primary group-hover:rotate-90 transition-transform duration-500" />
-              <Text as="span" variant="body" className="font-bold text-muted-foreground group-hover:text-primary">
-                Technical Insight: View Architecture Graphify
-              </Text>
-              <ArrowRight className="size-5 text-outline" />
-            </Link>
-          </div>
-        </Container>
       </PageContent>
     </Page>
   );

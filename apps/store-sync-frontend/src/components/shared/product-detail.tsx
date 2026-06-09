@@ -27,7 +27,7 @@ import {
   formatProductVnd,
 } from "@ui/components/product";
 import type { Product, ProductUnitType } from "@/lib/api";
-import { unitSellingAndListPrice } from "@/lib/product-price";
+import { unitSellingAndListPrice } from "@workspace/api-client";
 import { getProductUnits } from "@/lib/catalog-filters";
 import {
   cartReservedBase,
@@ -38,7 +38,7 @@ import {
 } from "@workspace/api-client";
 import { cartLineQuantity, useCart } from "@/hooks/use-cart";
 import { useGiftProductCatalogMap } from "@/hooks/use-gift-product-catalog";
-import { resolveGiftRulesForUnit } from "@/lib/gift-rules-from-fulfillment-note";
+import { resolveGiftRulesForUnit } from "@workspace/api-client";
 import { ProductSuggestions } from "@/components/shared/product-suggestions";
 
 type ProductDetailProps = {
@@ -218,7 +218,7 @@ export function ProductDetail({
                     selectedType={selectedUnit.type}
                     onSelect={handleUnitChange}
                     showPrice={false}
-                    compact
+                    layout="chips"
                     showLabel={false}
                   />
                 </ProductDetailPurchaseCardSection>

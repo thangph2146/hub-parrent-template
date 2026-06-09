@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { MajorFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditMajorPageInner() {
   const crudNav = useAdminCrudNavigation("/majors")
   const params = useParams()
@@ -41,14 +47,20 @@ function EditMajorPageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!entity) return
+  useHydrateOncePerEntity(id, entity, (entity) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("majors", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       name: entity.name ?? "",
       code: entity.code ?? "",
       status: entity.status ?? 1,
     })
-  }, [entity, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("majors", id, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["majors"] })
@@ -65,6 +77,7 @@ function EditMajorPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.majors.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

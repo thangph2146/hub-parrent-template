@@ -25,6 +25,8 @@ import {
 import type { CategoryFormValues, CategoryDetail } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
+
 function EditCategoryForm({
   category,
   categoryTreeOptions,
@@ -38,6 +40,14 @@ function EditCategoryForm({
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: getCategoryDefaultValues(category),
+  })
+
+  const { clearDraft, resetFromServer } = useAdminEditFormHydration({
+    scope: "categories",
+    entityId: String(category.id),
+    data: category,
+    form,
+    toFormValues: getCategoryDefaultValues,
   })
 
   const updateMutation = useAdminMutation({
@@ -54,6 +64,7 @@ function EditCategoryForm({
         input as Parameters<typeof api.categories.update>[1]
       ),
     onSuccess: async () => {
+      clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["categories"] })
       crudNav.view(String(category.id))
     },
@@ -75,7 +86,7 @@ function EditCategoryForm({
         editingId={category.id}
         categoryTreeOptions={categoryTreeOptions}
         onBack={() => crudNav.view(String(category.id))}
-        onReset={() => form.reset(getCategoryDefaultValues(category))}
+        onReset={resetFromServer}
       />
     </AdminPageSection>
   )

@@ -8,6 +8,10 @@ import {
   type UseQueryResult,
 } from "@tanstack/react-query";
 import {
+  buildCategoriesFromProducts,
+  fetchActivePublicProductsSample,
+} from "@workspace/api-client";
+import {
   api,
   type Category,
   type CategoryUsage,
@@ -32,45 +36,13 @@ export const queryKeys = {
     ["orders", id, { email: email ?? null }] as const,
 };
 
-function buildCategoriesFromProducts(
-  products: Product[],
-): { categories: Category[]; usage: CategoryUsage[] } {
-  const counts = new Map<string, number>();
-  for (const p of products) {
-    const slug = (p.category || "general").trim() || "general";
-    counts.set(slug, (counts.get(slug) ?? 0) + 1);
-  }
-  const categories: Category[] = [...counts.entries()].map(
-    ([slug, count], index) => ({
-      id: slug,
-      name: slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      slug,
-      sortOrder: index,
-      isActive: true,
-      createdAt: new Date(0).toISOString(),
-      updatedAt: new Date(0).toISOString(),
-      postCount: count,
-    }),
-  );
-  const usage: CategoryUsage[] = [...counts.entries()].map(
-    ([slug, productCount]) => ({ slug, productCount }),
-  );
-  return { categories, usage };
-}
-
-async function fetchActiveProductsSample(): Promise<Product[]> {
-  const res = await api.products.listPublic({
-    page: 1,
-    limit: 500,
-    activeOnly: true,
-  });
-  return res.items;
-}
+const listActivePublicProducts = () =>
+  fetchActivePublicProductsSample(api.products.listPublic.bind(api.products));
 
 export const useProducts = (): UseQueryResult<Product[], Error> =>
   useQuery<Product[], Error>({
     queryKey: ["products", "active-all"],
-    queryFn: fetchActiveProductsSample,
+    queryFn: listActivePublicProducts,
   });
 
 export const useCatalogProducts = (
@@ -85,7 +57,7 @@ export const useCategoryUsage = () =>
   useQuery<CategoryUsage[], Error>({
     queryKey: queryKeys.categoryUsage(),
     queryFn: async () => {
-      const products = await fetchActiveProductsSample();
+      const products = await listActivePublicProducts();
       return buildCategoriesFromProducts(products).usage;
     },
   });
@@ -108,7 +80,7 @@ export const useCategories = (activeOnly = false) =>
   useQuery<Category[], Error>({
     queryKey: queryKeys.categories(activeOnly),
     queryFn: async (): Promise<Category[]> => {
-      const products = await fetchActiveProductsSample();
+      const products = await listActivePublicProducts();
       const { categories } = buildCategoriesFromProducts(products);
       return activeOnly ? categories : categories;
     },

@@ -21,7 +21,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const GRAPHIFY_MARKDOWN = "markdown"
 const GRAPHIFY_SNAPSHOT = "snapshot"
 
-/** @param {string} appDir `frontend` | `backend` | `api` */
+const GRAPHIFY_APPS = ["frontend", "store-sync-frontend", "backend", "api"]
+
+/** @param {string} appDir segment under `apps/` */
 function appGraphifyBase(appDir) {
   return join(root, "apps", appDir, ".graphify")
 }
@@ -147,7 +149,7 @@ function linesAppServiceAndHubDocs(appDir) {
     "### Graphify — markdown các phần còn lại của monorepo",
     "",
   ]
-  for (const o of ["frontend", "backend", "api"]) {
+  for (const o of GRAPHIFY_APPS) {
     if (o === appDir) continue
     lines.push(
       `- **@${o}:** [SUMMARY](${r}apps/${o}/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](${r}apps/${o}/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](${r}apps/${o}/.graphify/markdown/GRAPH_STATS.md)`
@@ -169,7 +171,7 @@ function linesAppServiceAndHubDocs(appDir) {
     `- [AGENTS_GUIDE](${r}docs/admin-pattern/AGENTS_GUIDE.md) — thứ tự đọc cho agent.`
   )
   lines.push(`- [AGENTS.md](${r}AGENTS.md) — \`pnpm check\`, \`check:full\`.`)
-  if (appDir === "frontend") {
+  if (appDir === "frontend" || appDir === "store-sync-frontend") {
     lines.push(
       `- [FRONTEND_UX](${r}docs/admin-pattern/FRONTEND_UX.md) — UX / token / a11y storefront.`
     )
@@ -932,7 +934,7 @@ function getMonorepoAiTopicGuideLines() {
     "|------------|-------------|-----------|",
     "| Bản đồ monorepo | **File này** (`SUMMARY_FOR_AI.md`) | [`../../packages/.graphify/markdown/SUMMARY_FOR_AI.md`](../../packages/.graphify/markdown/SUMMARY_FOR_AI.md), [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |",
     "| Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |",
-    "| Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api`) | `SUMMARY_FOR_AI.md` cùng app |",
+    "| Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api` / `store-sync-frontend`) | `SUMMARY_FOR_AI.md` cùng app |",
     "| Quy mô graph, điểm nóng import | [`../../apps/frontend/.graphify/markdown/GRAPH_STATS.md`](../../apps/frontend/.graphify/markdown/GRAPH_STATS.md) (đổi segment app) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |",
     "| Domain Nest import lẫn nhau | [`../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |",
     "| Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |",
@@ -1030,7 +1032,7 @@ function writePackagesGraphifySummary() {
     "- Package **không** thay cho `@api`; app Next gọi API qua HTTP + `@workspace/api-client` hoặc `fetch` public."
   )
   lines.push(
-    "- **Không import** source `apps/frontend`, `apps/backend`, `apps/api` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`)."
+    "- **Không import** source `apps/*` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`)."
   )
   lines.push("")
   lines.push(`## Package (${rows.length})`)
@@ -1072,6 +1074,9 @@ function writePackagesGraphifySummary() {
     "- [@frontend — SUMMARY](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md)"
   )
   lines.push(
+    "- [@store-sync-frontend — SUMMARY](../../apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)"
+  )
+  lines.push(
     "- [@backend — SUMMARY](../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md)"
   )
   lines.push(
@@ -1098,7 +1103,7 @@ function writeMonorepoRootSummary() {
   const outPath = join(mdDir, "SUMMARY_FOR_AI.md")
   const generatedAt = new Date().toISOString()
 
-  const appRows = ["frontend", "backend", "api"].map((app) => {
+  const appRows = GRAPHIFY_APPS.map((app) => {
     const ctxPath = appContextPath(app)
     if (!existsSync(ctxPath)) {
       return { app, ok: false, note: "chưa có snapshot/context.json" }
@@ -1136,6 +1141,9 @@ function writeMonorepoRootSummary() {
     "| `@frontend` | Storefront Next (HUB công khai) | `apps/frontend/.graphify/` (`markdown/`, `snapshot/`) |"
   )
   lines.push(
+    "| `@store-sync-frontend` | Store Sync storefront (catalog) | `apps/store-sync-frontend/.graphify/` (`markdown/`, `snapshot/`) |"
+  )
+  lines.push(
     "| `@backend` | Admin Next (vận hành) | `apps/backend/.graphify/` (`markdown/`, `snapshot/`) |"
   )
   lines.push(
@@ -1145,7 +1153,7 @@ function writeMonorepoRootSummary() {
   lines.push("## Ranh giới (microservice)")
   lines.push("")
   lines.push(
-    "- **Không** import chéo source giữa `apps/frontend`, `apps/backend`, `apps/api`."
+    "- **Không** import chéo source giữa các app trong `apps/*` (ví dụ `@frontend` ↔ `@store-sync-frontend`, `@backend` ↔ `@frontend`)."
   )
   lines.push(
     "- Next ↔ API: **HTTP**; SDK chính `@workspace/api-client` (`createStoreSyncSdk`). Public storefront có thể dùng thêm `fetch` trong `lib/public-posts.ts` (envelope JSON)."
@@ -1234,6 +1242,7 @@ function writeMonorepoRootSummary() {
   lines.push("# hoặc từng app:")
   lines.push("node scripts/graphify-update.cjs apps/frontend")
   lines.push("node scripts/graphify-update.cjs apps/backend")
+  lines.push("node scripts/graphify-update.cjs apps/store-sync-frontend")
   lines.push("node scripts/graphify-update.cjs apps/api")
   lines.push(
     "# (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep"
@@ -1268,6 +1277,7 @@ function writeMonorepoRootSummary() {
 }
 
 summarizeApp("frontend", "Hub storefront — @frontend")
+summarizeApp("store-sync-frontend", "Store Sync storefront — @store-sync-frontend")
 summarizeApp("backend", "Hub admin — @backend")
 summarizeApp("api", "REST API — @api (NestJS)")
 writePackagesWorkspaceDepsMd()
@@ -1275,7 +1285,7 @@ writePackagesGraphifySummary()
 writePackagesGraphifyReadme()
 writeMonorepoRootSummary()
 
-for (const app of ["frontend", "backend", "api"]) {
+for (const app of GRAPHIFY_APPS) {
   removeLegacyAppGraphifyFiles(app)
 }
 removeLegacyPackagesGraphifyMarkdown()

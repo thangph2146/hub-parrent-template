@@ -1,5 +1,10 @@
 "use client"
 import { useCallback, useEffect, useMemo } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -18,6 +23,7 @@ import {
 } from "../../_component"
 import type { ScreenFormValues } from "../../_component"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditScreenPageInner() {
   const crudNav = useAdminCrudNavigation("/screens"),
     params = useParams(),
@@ -57,8 +63,12 @@ function EditScreenPageInner() {
       crudNav.list()
     }
   }, [isError, crudNav])
-  useEffect(() => {
-    if (!e) return
+  useHydrateOncePerEntity(id, e, (e) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("screens", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       name: e.name ?? "",
       code: e.code ?? "",
@@ -68,7 +78,7 @@ function EditScreenPageInner() {
       templateName: e.templateName ?? "",
       status: e.status ?? 1,
     })
-  }, [e, form])
+  })
   const inv = async () => {
     await qc.invalidateQueries({ queryKey: ["screens"] })
   }

@@ -1,6 +1,6 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-09T04:50:01.535Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-09T06:28:52.321Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 
@@ -53,6 +53,7 @@
 | `@store-sync-frontend` | `@workspace/dealer-support` | `workspace:*` | `apps/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/promo-codes` | `workspace:*` | `apps/store-sync-frontend/` |
+| `@store-sync-frontend` | `@workspace/query-client` | `workspace:*` | `apps/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/ui` | `workspace:*` | `apps/store-sync-frontend/` |
 
 ## Làm mới

@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { LocationFormValues } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditLocationPageInner() {
   const crudNav = useAdminCrudNavigation("/locations")
   const params = useParams()
@@ -41,15 +47,21 @@ function EditLocationPageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!entity) return
+  useHydrateOncePerEntity(id, entity, (entity) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("locations", id))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       mapUrl: entity.mapUrl ?? "",
       name: entity.name ?? "",
       address: entity.address ?? "",
       status: entity.status ?? 1,
     })
-  }, [entity, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("locations", id, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["locations"] })
@@ -66,6 +78,7 @@ function EditLocationPageInner() {
     mutationFn: async (input: Record<string, unknown>) =>
       api.locations.update(id, input),
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.view(String(id))
     },

@@ -21,6 +21,7 @@
     "@tanstack/react-query-devtools": "^5.100.9",
     "@workspace/ui": "workspace:*",
     "@workspace/api-client": "workspace:*",
+    "@workspace/query-client": "workspace:*",
     "@workspace/promo-codes": "workspace:*",
     "@workspace/dealer-support": "workspace:*",
     "class-variance-authority": "^0.7.1",

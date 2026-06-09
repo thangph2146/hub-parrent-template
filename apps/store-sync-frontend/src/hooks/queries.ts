@@ -8,6 +8,11 @@ import {
   type UseQueryResult,
 } from "@tanstack/react-query";
 import {
+  buildCategoriesFromProducts,
+  fetchActivePublicProductsSample,
+  fetchSuggestedPublicProducts,
+} from "@workspace/api-client";
+import {
   api,
   type Category,
   type CategoryUsage,
@@ -37,52 +42,20 @@ export const queryKeys = {
     ["orders", id, { email: email ?? null }] as const,
 };
 
-function buildCategoriesFromProducts(
-  products: Product[],
-): { categories: Category[]; usage: CategoryUsage[] } {
-  const counts = new Map<string, number>();
-  for (const p of products) {
-    const slug = (p.category || "general").trim() || "general";
-    counts.set(slug, (counts.get(slug) ?? 0) + 1);
-  }
-  const categories: Category[] = [...counts.entries()].map(
-    ([slug, count], index) => ({
-      id: slug,
-      name: slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      slug,
-      sortOrder: index,
-      isActive: true,
-      createdAt: new Date(0).toISOString(),
-      updatedAt: new Date(0).toISOString(),
-      postCount: count,
-    }),
-  );
-  const usage: CategoryUsage[] = [...counts.entries()].map(
-    ([slug, productCount]) => ({ slug, productCount }),
-  );
-  return { categories, usage };
-}
-
-async function fetchActiveProductsSample(): Promise<Product[]> {
-  const res = await api.products.listPublic({
-    page: 1,
-    limit: 500,
-    activeOnly: true,
-  });
-  return res.items;
-}
-
 type UseProductsOptions = {
   /** Polling tồn kho (ms); dùng trên giỏ/checkout. */
   stockPollMs?: number;
 };
+
+const listActivePublicProducts = () =>
+  fetchActivePublicProductsSample(api.products.listPublic.bind(api.products));
 
 export const useProducts = (
   options?: UseProductsOptions,
 ): UseQueryResult<Product[], Error> =>
   useQuery<Product[], Error>({
     queryKey: ["products", "active-all"],
-    queryFn: fetchActiveProductsSample,
+    queryFn: listActivePublicProducts,
     refetchInterval: options?.stockPollMs,
     refetchIntervalInBackground: !!options?.stockPollMs,
   });
@@ -99,7 +72,7 @@ export const useCategoryUsage = () =>
   useQuery<CategoryUsage[], Error>({
     queryKey: queryKeys.categoryUsage(),
     queryFn: async () => {
-      const products = await fetchActiveProductsSample();
+      const products = await listActivePublicProducts();
       return buildCategoriesFromProducts(products).usage;
     },
   });
@@ -125,7 +98,7 @@ export function useCartStockProducts(productIds: number[]) {
     enabled: sortedKey.length > 0,
     refetchInterval: 10_000,
     refetchIntervalInBackground: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     staleTime: 5_000,
   });
 }
@@ -139,45 +112,6 @@ export const useProductBySku = (sku: string | null | undefined) =>
 
 const SUGGESTED_PRODUCTS_LIMIT = 4;
 
-async function fetchSuggestedProducts(
-  productId: number,
-  category: string,
-  limit: number,
-): Promise<Product[]> {
-  const categorySlug = category.trim() || "general";
-  const sameCategory = await api.products.listPublic({
-    page: 1,
-    limit: limit + 1,
-    category: categorySlug,
-    activeOnly: true,
-  });
-
-  const picked: Product[] = [];
-  const seen = new Set<number>([productId]);
-
-  for (const item of sameCategory.items) {
-    if (seen.has(item.id)) continue;
-    picked.push(item);
-    seen.add(item.id);
-    if (picked.length >= limit) return picked;
-  }
-
-  const fallback = await api.products.listPublic({
-    page: 1,
-    limit: limit + 8,
-    activeOnly: true,
-  });
-
-  for (const item of fallback.items) {
-    if (seen.has(item.id)) continue;
-    picked.push(item);
-    seen.add(item.id);
-    if (picked.length >= limit) break;
-  }
-
-  return picked;
-}
-
 export const useSuggestedProducts = (
   productId: number,
   category: string,
@@ -185,7 +119,13 @@ export const useSuggestedProducts = (
 ) =>
   useQuery<Product[], Error>({
     queryKey: queryKeys.suggestedProducts(productId, category, limit),
-    queryFn: () => fetchSuggestedProducts(productId, category, limit),
+    queryFn: () =>
+      fetchSuggestedPublicProducts(
+        api.products.listPublic.bind(api.products),
+        productId,
+        category,
+        limit,
+      ),
     enabled: productId > 0,
   });
 
@@ -193,7 +133,7 @@ export const useCategories = (activeOnly = false) =>
   useQuery<Category[], Error>({
     queryKey: queryKeys.categories(activeOnly),
     queryFn: async (): Promise<Category[]> => {
-      const products = await fetchActiveProductsSample();
+      const products = await listActivePublicProducts();
       return buildCategoriesFromProducts(products).categories;
     },
   });

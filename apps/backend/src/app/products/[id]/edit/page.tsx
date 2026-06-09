@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect } from "react"
 import { useParams } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "@ui/components/sonner"
@@ -12,6 +12,7 @@ import {
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { api } from "@/lib/api"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import {
   ProductFormShell,
   useProductForm,
@@ -28,17 +29,14 @@ function EditProductPageInner() {
   const queryClient = useQueryClient()
   const { data, isLoading, isError } = useProductDetailQuery(api, id)
   const { form } = useProductForm()
-  const hydratedIdRef = useRef<string | null>(null)
 
-  useEffect(() => {
-    hydratedIdRef.current = null
-  }, [id])
-
-  useEffect(() => {
-    if (!data || hydratedIdRef.current === id) return
-    form.reset(productToFormValues(data))
-    hydratedIdRef.current = id
-  }, [data, form, id])
+  const { clearDraft, resetFromServer } = useAdminEditFormHydration({
+    scope: "products",
+    entityId: id,
+    data,
+    form,
+    toFormValues: productToFormValues,
+  })
 
   useEffect(() => {
     if (isError) {
@@ -58,6 +56,7 @@ function EditProductPageInner() {
     mutationFn: (body: ReturnType<typeof buildProductPayload>) =>
       api.products.update(Number(id), body),
     onSuccess: async () => {
+      clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["products"] })
       crudNav.view(id)
     },
@@ -81,7 +80,7 @@ function EditProductPageInner() {
         submitting={updateMutation.isPending}
         editingId={id}
         onBack={() => crudNav.view(id)}
-        onReset={() => form.reset(productToFormValues(data))}
+        onReset={resetFromServer}
       />
     </AdminPageSection>
   )

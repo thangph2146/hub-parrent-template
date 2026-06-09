@@ -638,6 +638,16 @@
       "client": true
     },
     {
+      "id": "file_src_components_shared_cart_gift_rule_text_tsx",
+      "label": "cart-gift-rule-text.tsx",
+      "path": "src/components/shared/cart-gift-rule-text.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/components/shared",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_components_shared_cart_line_item_tsx",
       "label": "cart-line-item.tsx",
       "path": "src/components/shared/cart-line-item.tsx",
@@ -661,6 +671,16 @@
       "id": "file_src_components_shared_cart_sync_bridge_tsx",
       "label": "cart-sync-bridge.tsx",
       "path": "src/components/shared/cart-sync-bridge.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/components/shared",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_components_shared_catalog_product_card_tsx",
+      "label": "catalog-product-card.tsx",
+      "path": "src/components/shared/catalog-product-card.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/components/shared",
@@ -711,6 +731,16 @@
       "id": "file_src_components_shared_product_detail_tsx",
       "label": "product-detail.tsx",
       "path": "src/components/shared/product-detail.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/components/shared",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_components_shared_product_suggestions_tsx",
+      "label": "product-suggestions.tsx",
+      "path": "src/components/shared/product-suggestions.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/components/shared",
@@ -817,6 +847,16 @@
       "client": true
     },
     {
+      "id": "file_src_hooks_use_gift_product_catalog_ts",
+      "label": "use-gift-product-catalog.ts",
+      "path": "src/hooks/use-gift-product-catalog.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
       "id": "file_src_hooks_use_graphify_ts",
       "label": "use-graphify.ts",
       "path": "src/hooks/use-graphify.ts",
@@ -847,16 +887,6 @@
       "client": true
     },
     {
-      "id": "file_src_hooks_usetodos_ts",
-      "label": "useTodos.ts",
-      "path": "src/hooks/useTodos.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/hooks",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_lib",
       "label": "lib/",
       "path": "src/lib",
@@ -879,6 +909,16 @@
       "id": "file_src_lib_auth_routes_ts",
       "label": "auth-routes.ts",
       "path": "src/lib/auth-routes.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_cart_gift_rules_ts",
+      "label": "cart-gift-rules.ts",
+      "path": "src/lib/cart-gift-rules.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -929,16 +969,6 @@
       "id": "file_src_lib_graphify_context_ts",
       "label": "graphify-context.ts",
       "path": "src/lib/graphify-context.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/lib",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_lib_product_price_ts",
-      "label": "product-price.ts",
-      "path": "src/lib/product-price.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -1022,16 +1052,6 @@
       "size": 22,
       "community": "src",
       "type": "directory"
-    },
-    {
-      "id": "file_src_types_todo_ts",
-      "label": "todo.ts",
-      "path": "src/types/todo.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/types",
-      "type": "ts",
-      "client": false
     },
     {
       "id": "dir_public",
@@ -1371,6 +1391,11 @@
     },
     {
       "source": "dir_src_components_shared",
+      "target": "file_src_components_shared_cart_gift_rule_text_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components_shared",
       "target": "file_src_components_shared_cart_line_item_tsx",
       "relation": "contains"
     },
@@ -1382,6 +1407,11 @@
     {
       "source": "dir_src_components_shared",
       "target": "file_src_components_shared_cart_sync_bridge_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components_shared",
+      "target": "file_src_components_shared_catalog_product_card_tsx",
       "relation": "contains"
     },
     {
@@ -1407,6 +1437,11 @@
     {
       "source": "dir_src_components_shared",
       "target": "file_src_components_shared_product_detail_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_components_shared",
+      "target": "file_src_components_shared_product_suggestions_tsx",
       "relation": "contains"
     },
     {
@@ -1461,6 +1496,11 @@
     },
     {
       "source": "dir_src_hooks",
+      "target": "file_src_hooks_use_gift_product_catalog_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
       "target": "file_src_hooks_use_graphify_ts",
       "relation": "contains"
     },
@@ -1472,11 +1512,6 @@
     {
       "source": "dir_src_hooks",
       "target": "file_src_hooks_use_session_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_hooks",
-      "target": "file_src_hooks_usetodos_ts",
       "relation": "contains"
     },
     {
@@ -1492,6 +1527,11 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_auth_routes_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_cart_gift_rules_ts",
       "relation": "contains"
     },
     {
@@ -1517,11 +1557,6 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_graphify_context_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_lib",
-      "target": "file_src_lib_product_price_ts",
       "relation": "contains"
     },
     {
@@ -1562,11 +1597,6 @@
     {
       "source": "dir_src",
       "target": "dir_src_types",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_types",
-      "target": "file_src_types_todo_ts",
       "relation": "contains"
     },
     {
@@ -1656,7 +1686,17 @@
     },
     {
       "source": "file_src_app__store_sync__cart_page_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__cart_page_tsx",
       "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__cart_page_tsx",
+      "target": "file_src_hooks_use_gift_product_catalog_ts",
       "relation": "imports"
     },
     {
@@ -1672,6 +1712,11 @@
     {
       "source": "file_src_app__store_sync__catalog_loading_tsx",
       "target": "file_src_components_shared_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__catalog_page_tsx",
+      "target": "file_src_components_shared_catalog_product_card_tsx",
       "relation": "imports"
     },
     {
@@ -1696,17 +1741,7 @@
     },
     {
       "source": "file_src_app__store_sync__catalog_page_tsx",
-      "target": "file_src_lib_format_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__catalog_page_tsx",
       "target": "file_src_lib_catalog_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__catalog_page_tsx",
-      "target": "file_src_lib_product_price_ts",
       "relation": "imports"
     },
     {
@@ -1746,7 +1781,17 @@
     },
     {
       "source": "file_src_app__store_sync__checkout_page_tsx",
+      "target": "file_src_lib_cart_sync_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__checkout_page_tsx",
       "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__checkout_page_tsx",
+      "target": "file_src_hooks_use_gift_product_catalog_ts",
       "relation": "imports"
     },
     {
@@ -1856,22 +1901,17 @@
     },
     {
       "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_components_shared_store_location_map_picker_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_hooks_queries_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__profile_page_tsx",
       "target": "file_src_hooks_use_session_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_lib_api_ts",
+      "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__profile_page_tsx",
+      "target": "file_src_lib_cart_sync_ts",
       "relation": "imports"
     },
     {
@@ -1931,6 +1971,11 @@
     },
     {
       "source": "file_src_app_layout_tsx",
+      "target": "file_src_components_shared_cart_drawer_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_layout_tsx",
       "target": "file_src_components_shared_promo_rules_sync_tsx",
       "relation": "imports"
     },
@@ -1951,17 +1996,17 @@
     },
     {
       "source": "file_src_app_page_tsx",
-      "target": "file_src_lib_category_icons_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_page_tsx",
       "target": "file_src_lib_format_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app_page_tsx",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_page_tsx",
+      "target": "file_src_lib_catalog_filters_ts",
       "relation": "imports"
     },
     {
@@ -1976,7 +2021,32 @@
     },
     {
       "source": "file_src_components_shared_cart_drawer_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_drawer_tsx",
       "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_drawer_tsx",
+      "target": "file_src_lib_cart_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_drawer_tsx",
+      "target": "file_src_hooks_use_gift_product_catalog_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_drawer_tsx",
+      "target": "file_src_components_shared_cart_gift_rule_text_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_gift_rule_text_tsx",
+      "target": "file_src_lib_cart_gift_rules_ts",
       "relation": "imports"
     },
     {
@@ -1990,6 +2060,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_components_shared_cart_line_item_tsx",
+      "target": "file_src_lib_cart_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_line_item_tsx",
+      "target": "file_src_components_shared_cart_gift_rule_text_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_components_shared_cart_order_summary_tsx",
       "target": "file_src_hooks_use_cart_ts",
       "relation": "imports"
@@ -1997,6 +2077,16 @@
     {
       "source": "file_src_components_shared_cart_order_summary_tsx",
       "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_sync_bridge_tsx",
+      "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_cart_sync_bridge_tsx",
+      "target": "file_src_hooks_queries_ts",
       "relation": "imports"
     },
     {
@@ -2006,12 +2096,22 @@
     },
     {
       "source": "file_src_components_shared_cart_sync_bridge_tsx",
-      "target": "file_src_hooks_use_cart_ts",
+      "target": "file_src_lib_cart_sync_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_components_shared_cart_sync_bridge_tsx",
-      "target": "file_src_lib_cart_sync_ts",
+      "source": "file_src_components_shared_catalog_product_card_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_catalog_product_card_tsx",
+      "target": "file_src_lib_catalog_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_catalog_product_card_tsx",
+      "target": "file_src_hooks_use_cart_ts",
       "relation": "imports"
     },
     {
@@ -2026,7 +2126,17 @@
     },
     {
       "source": "file_src_components_shared_header_tsx",
+      "target": "file_src_lib_cart_sync_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_header_tsx",
       "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_header_tsx",
+      "target": "file_src_components_shared_cart_drawer_tsx",
       "relation": "imports"
     },
     {
@@ -2041,22 +2151,37 @@
     },
     {
       "source": "file_src_components_shared_product_detail_tsx",
-      "target": "file_src_lib_format_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_shared_product_detail_tsx",
-      "target": "file_src_lib_product_price_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_shared_product_detail_tsx",
-      "target": "file_src_hooks_queries_ts",
+      "target": "file_src_lib_catalog_filters_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_components_shared_product_detail_tsx",
       "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_product_detail_tsx",
+      "target": "file_src_hooks_use_gift_product_catalog_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_product_detail_tsx",
+      "target": "file_src_components_shared_product_suggestions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_product_suggestions_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_product_suggestions_tsx",
+      "target": "file_src_lib_catalog_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_product_suggestions_tsx",
+      "target": "file_src_hooks_queries_ts",
       "relation": "imports"
     },
     {
@@ -2100,23 +2225,33 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_hooks_use_gift_product_catalog_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_gift_product_catalog_ts",
+      "target": "file_src_lib_cart_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_gift_product_catalog_ts",
+      "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_use_gift_product_catalog_ts",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_hooks_use_graphify_ts",
       "target": "file_src_lib_graphify_context_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_hooks_usetodos_ts",
-      "target": "file_src_types_todo_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hooks_usetodos_ts",
-      "target": "file_src_lib_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hooks_usetodos_ts",
-      "target": "file_src_lib_storage_ts",
+      "source": "file_src_lib_cart_gift_rules_ts",
+      "target": "file_src_hooks_use_cart_ts",
       "relation": "imports"
     },
     {
@@ -2131,16 +2266,6 @@
     },
     {
       "source": "file_src_lib_catalog_filters_ts",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_lib_product_price_ts",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_providers_query_provider_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
     }

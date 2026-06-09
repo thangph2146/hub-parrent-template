@@ -37,16 +37,19 @@ export const hubQueryClientDefaultOptions: DefaultOptions = {
   },
 };
 
-/** @backend — không giữ cache query; luôn refetch từ API. */
+/**
+ * @backend — cache ngắn để điều hướng qua lại không mất draft form;
+ * không refetch khi đổi tab (tránh `useEffect` + `form.reset` ghi đè chỉnh sửa).
+ */
 export const hubAdminQueryClientDefaultOptions: DefaultOptions = {
   queries: {
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 60_000,
+    gcTime: 10 * 60 * 1000,
     retry: hubDefaultQueryRetry,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,
-    structuralSharing: false,
+    structuralSharing: true,
   },
   mutations: {
     retry: false,

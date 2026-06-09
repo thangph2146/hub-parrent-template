@@ -1,6 +1,11 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
+import {
+  buildEntityDraftKey,
+  loadEntityDraft,
+  useHydrateOncePerEntity,
+} from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,6 +25,7 @@ import {
 import type { GuideFormData } from "../../_component"
 
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditGuidePageInner() {
   const crudNav = useAdminCrudNavigation("/guides")
   const params = useParams()
@@ -41,14 +47,20 @@ function EditGuidePageInner() {
     }
   }, [isError, crudNav])
 
-  useEffect(() => {
-    if (!guide) return
+  useHydrateOncePerEntity(guideId, guide, (guide) => {
+    const draft = loadEntityDraft(buildEntityDraftKey("guides", guideId))
+    if (draft) {
+      form.reset(draft)
+      return
+    }
     form.reset({
       sectionKey: guide.sectionKey,
       isVisible: guide.isVisible,
       content: parseContent(guide.content),
     })
-  }, [guide, form])
+  })
+
+  const { clearDraft } = useAdminFormDraftPersistence("guides", guideId, form)
 
   const invalidateAll = async () => {
     await queryClient.invalidateQueries({ queryKey: ["admin", "guides"] })
@@ -71,6 +83,7 @@ function EditGuidePageInner() {
       )
     },
     onSuccess: async () => {
+      clearDraft()
       await invalidateAll()
       crudNav.list()
     },

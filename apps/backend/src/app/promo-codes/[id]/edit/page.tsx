@@ -9,9 +9,12 @@ import {
   AdminPageLoading,
   AdminPageSection,
 } from "@ui/components/admin"
+import { Badge } from "@ui/components/badge"
+import { ActiveStatusBadge } from "@ui/components/product"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { api } from "@/lib/api"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
+import { useAdminEditFormHydration } from "@/hooks/use-admin-edit-form-hydration"
 import {
   PromoFormShell,
   usePromoForm,
@@ -30,9 +33,14 @@ function EditPromoPageInner() {
 
   const { data, isLoading, isError } = usePromoDetailQuery(api, id)
 
-  useEffect(() => {
-    if (data) form.reset(promoToFormValues(data))
-  }, [data, form])
+  const { clearDraft, resetFromServer } = useAdminEditFormHydration({
+    scope: "promo-codes",
+    entityId: id,
+    data,
+    form,
+    toFormValues: promoToFormValues,
+    mergeDraft: (draft, server) => ({ ...server, ...draft, code: server.code }),
+  })
 
   useEffect(() => {
     if (isError) {
@@ -45,8 +53,10 @@ function EditPromoPageInner() {
     mutationFn: (body: ReturnType<typeof buildPromoUpdatePayload>) =>
       api.promoCodes.update(Number(id), body),
     onSuccess: async () => {
+      clearDraft()
       await queryClient.invalidateQueries({ queryKey: ["promo-codes"] })
-      crudNav.list()
+      toast.success("Đã cập nhật mã khuyến mãi")
+      crudNav.view(id)
     },
   })
 
@@ -67,8 +77,23 @@ function EditPromoPageInner() {
         onSubmit={handleSubmit}
         submitting={updateMutation.isPending}
         editingId={id}
-        onBack={() => crudNav.list()}
-        onReset={() => form.reset(promoToFormValues(data))}
+        onBack={() => crudNav.view(id)}
+        onReset={resetFromServer}
+        usageCount={data.usageCount}
+        headerTitle={
+          <span className="flex flex-wrap items-center gap-2.5">
+            <span>Sửa mã KM</span>
+            <Badge variant="coupon" className="font-mono text-sm">
+              {data.code}
+            </Badge>
+            <ActiveStatusBadge
+              active={data.isActive}
+              activeLabel="Đang bật"
+              inactiveLabel="Đã tắt"
+            />
+          </span>
+        }
+        headerSubtitle={data.label}
       />
     </AdminPageSection>
   )
