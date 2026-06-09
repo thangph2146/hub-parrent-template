@@ -49,3 +49,7 @@ export {
   AdminMediaGallery,
   type AdminMediaGalleryProps,
 } from "./admin-media-gallery"
+export {
+  AdminTabCountBadge,
+  type AdminTabCountBadgeProps,
+} from "./admin-tab-count-badge"

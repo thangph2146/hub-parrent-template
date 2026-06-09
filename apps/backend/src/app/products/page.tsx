@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react"
 import type { ColumnDef, RowSelectionState } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { Package, Plus, AlertCircle } from "lucide-react"
-import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import {
   AdminListPageHeader,
@@ -12,6 +11,7 @@ import {
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
   AdminReadOnlyHint,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import {
   ADMIN_LIST_TABS_LIST_CLASS,
@@ -162,12 +162,7 @@ function ProductsPageInner() {
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {listQuery.data?.total ?? 0}
-            </Badge>
+            <AdminTabCountBadge count={listQuery.data?.total ?? 0} />
           </TabsTrigger>
           {canWrite && (
             <TabsTrigger
@@ -175,12 +170,7 @@ function ProductsPageInner() {
               className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] tabular-nums"
-              >
-                {trashQuery.data?.total ?? 0}
-              </Badge>
+              <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </TabsTrigger>
           )}
         </TabsList>

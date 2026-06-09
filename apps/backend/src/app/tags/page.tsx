@@ -8,7 +8,6 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { AlertCircle, Hash, Plus } from "lucide-react"
@@ -25,6 +24,7 @@ import {
   AdminListPageHeader,
   AdminReadOnlyHint,
   AdminPageHeaderPrimaryButton,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import { api } from "@/lib/api"
 import { useAdminCrudRowHandlers } from "@/lib/admin-row-action-handlers"
@@ -259,12 +259,7 @@ function TagsPageInner() {
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {listQuery.data?.length ?? 0}
-            </Badge>
+            <AdminTabCountBadge count={listQuery.data?.length ?? 0} />
           </TabsTrigger>
           {canWriteTags ? (
             <TabsTrigger
@@ -272,12 +267,7 @@ function TagsPageInner() {
               className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] tabular-nums"
-              >
-                {trashQuery.data?.total ?? 0}
-              </Badge>
+              <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </TabsTrigger>
           ) : null}
         </TabsList>

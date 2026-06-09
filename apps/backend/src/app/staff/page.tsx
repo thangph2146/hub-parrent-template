@@ -17,7 +17,6 @@ import {
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "@ui/components/sonner"
-import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { TypographyH3 } from "@ui/components/typography"
 import {
@@ -30,6 +29,7 @@ import {
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import {
   prefetchStaffProfile,
@@ -541,22 +541,12 @@ function StaffPageInner() {
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             <Layers className="size-4 shrink-0" aria-hidden />
             Danh sách
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {staffTotal}
-            </Badge>
+            <AdminTabCountBadge count={staffTotal} />
           </TabsTrigger>
           <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             <ArchiveRestore className="size-4 shrink-0" aria-hidden />
             Thùng rác
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {trashStaffTotal}
-            </Badge>
+            <AdminTabCountBadge count={trashStaffTotal} />
           </TabsTrigger>
         </TabsList>
 

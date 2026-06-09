@@ -8,12 +8,12 @@ import type {
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Headset } from "lucide-react"
-import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import {
   AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import {
   prefetchContactRequestDetail,
@@ -272,21 +272,11 @@ function ContactRequestsPageInner() {
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Đang hoạt động
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {activeTotal}
-            </Badge>
+            <AdminTabCountBadge count={activeTotal} />
           </TabsTrigger>
           <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Thùng rác
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {trashTotal}
-            </Badge>
+            <AdminTabCountBadge count={trashTotal} />
           </TabsTrigger>
         </TabsList>
 

@@ -16,7 +16,6 @@ import {
   Trash2,
 } from "lucide-react"
 import { toast } from "@ui/components/sonner"
-import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import {
   Card,
@@ -40,6 +39,7 @@ import {
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
@@ -76,6 +76,8 @@ import {
 import {
   ADMIN_ALERT_DIALOG_CONTENT_CLASS,
   ADMIN_DIALOG_CONTENT_LG_CLASS,
+  ADMIN_LIST_TABS_LIST_CLASS,
+  ADMIN_LIST_TABS_TRIGGER_CLASS,
 } from "@ui/lib/layout-shell"
 
 import {
@@ -563,30 +565,14 @@ export default function RbacPage() {
             value === "list" || value === "trash" ? setTab(value) : null
           }
         >
-          <TabsList className="h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1">
-            <TabsTrigger
-              value="list"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
+          <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+            <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
               Danh sách
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] tabular-nums"
-              >
-                {listQuery.data?.total ?? 0}
-              </Badge>
+              <AdminTabCountBadge count={listQuery.data?.total ?? 0} />
             </TabsTrigger>
-            <TabsTrigger
-              value="trash"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
+            <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
               Thùng rác
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] tabular-nums"
-              >
-                {trashQuery.data?.total ?? 0}
-              </Badge>
+              <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </TabsTrigger>
           </TabsList>
 

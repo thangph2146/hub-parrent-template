@@ -8,7 +8,6 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
-import { Badge } from "@ui/components/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { AlertCircle, FileText, Plus } from "lucide-react"
 import { useAuth } from "@/providers/auth-provider"
@@ -17,6 +16,7 @@ import {
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"
@@ -252,12 +252,7 @@ function PostsPageInner() {
         <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
           <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
             Danh sách
-            <Badge
-              variant="secondary"
-              className="px-1.5 py-0 text-[10px] tabular-nums"
-            >
-              {postsQuery.data?.total ?? 0}
-            </Badge>
+            <AdminTabCountBadge count={postsQuery.data?.total ?? 0} />
           </TabsTrigger>
           {canRestore && (
             <TabsTrigger
@@ -265,12 +260,7 @@ function PostsPageInner() {
               className={ADMIN_LIST_TABS_TRIGGER_CLASS}
             >
               Thùng rác
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] tabular-nums"
-              >
-                {trashQuery.data?.total ?? 0}
-              </Badge>
+              <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </TabsTrigger>
           )}
         </TabsList>
