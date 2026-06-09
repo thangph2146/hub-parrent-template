@@ -25,37 +25,39 @@ export function ProductDetailInfoHeader({
   className,
 }: ProductDetailInfoHeaderProps) {
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge className="border-primary/20 bg-primary/10 px-3 py-1 font-bold text-primary">
+    <header
+      className={cn(
+        "space-y-2.5 border-b border-outline-variant/25 pb-4",
+        className
+      )}
+    >
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Badge variant="category" size="sm">
           {categoryLabel}
         </Badge>
         {couponBadges.map((coupon) => (
-          <Badge
-            key={coupon}
-            className="border-destructive/20 bg-destructive/10 text-xs font-bold text-destructive"
-          >
-            <Tag className="mr-1 size-3" aria-hidden />
+          <Badge key={coupon} variant="coupon" size="sm">
+            <Tag aria-hidden />
             {coupon}
           </Badge>
         ))}
         {extraBadges}
       </div>
 
-      <div className="space-y-2">
-        <h1 className="text-3xl leading-[1.15] font-black tracking-tight text-foreground sm:text-[2rem]">
+      <div className="space-y-1">
+        <h1 className="text-[1.375rem] leading-snug font-black tracking-tight text-foreground sm:text-2xl">
           {title}
         </h1>
         {subtitle ? (
-          <div className="text-sm text-muted-foreground">{subtitle}</div>
+          <div className="text-xs text-muted-foreground">{subtitle}</div>
         ) : null}
       </div>
 
       {description ? (
-        <p className="max-w-prose text-base leading-relaxed text-muted-foreground">
+        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground/90">
           {description}
         </p>
       ) : null}
-    </div>
+    </header>
   )
 }

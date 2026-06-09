@@ -32,16 +32,16 @@ export function ProductDetailCallout({
   return (
     <div
       className={cn(
-        "rounded-xl border px-3.5 py-3 text-sm shadow-sm",
+        "rounded-lg border px-3 py-2 text-xs shadow-sm",
         toneClass[tone],
         className
       )}
     >
-      <p className="flex items-center gap-2 font-semibold">
-        {Icon ? <Icon className="size-4 shrink-0" aria-hidden /> : null}
+      <p className="flex items-center gap-1.5 font-semibold">
+        {Icon ? <Icon className="size-3.5 shrink-0" aria-hidden /> : null}
         {title}
       </p>
-      {children ? <div className="mt-1.5 leading-relaxed">{children}</div> : null}
+      {children ? <div className="mt-1 leading-relaxed">{children}</div> : null}
     </div>
   )
 }

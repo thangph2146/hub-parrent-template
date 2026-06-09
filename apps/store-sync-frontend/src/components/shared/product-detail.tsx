@@ -14,13 +14,15 @@ import {
 import { Button } from "@ui/components/button";
 import { toast } from "sonner";
 import {
+  ProductDetailActions,
   ProductDetailCallout,
   ProductDetailGallery,
   ProductDetailInfoHeader,
   ProductDetailLayout,
   ProductDetailMetaGrid,
-  ProductDetailPricePanel,
-  ProductDetailQtyStepper,
+  ProductDetailOrderRow,
+  ProductDetailPurchaseCard,
+  ProductDetailPurchaseCardSection,
   ProductDetailUnitPicker,
   formatProductVnd,
 } from "@ui/components/product";
@@ -114,11 +116,8 @@ export function ProductDetail({
   const stockWarning = totalUnits > product.stock * 0.8;
   const outOfStock = maxQty <= 0 || qty > maxQty;
 
-  const handleQtyChange = (delta: number) => {
-    setQty((prev) =>
-      Math.max(minPurchaseQty, Math.min(prev + delta, maxQty)),
-    );
-  };
+  const clampQty = (value: number) =>
+    Math.max(minPurchaseQty, Math.min(value, maxQty));
 
   const handleUnitChange = (type: string) => {
     const next = units.find((unit) => unit.type === type);
@@ -169,179 +168,153 @@ export function ProductDetail({
               couponBadges={product.coupons ?? []}
             />
 
-            <ProductDetailUnitPicker
-              options={unitOptions}
-              selectedType={selectedUnit.type}
-              onSelect={handleUnitChange}
-            />
+            <ProductDetailPurchaseCard>
+              {units.length > 1 ? (
+                <ProductDetailPurchaseCardSection>
+                  <ProductDetailUnitPicker
+                    options={unitOptions}
+                    selectedType={selectedUnit.type}
+                    onSelect={handleUnitChange}
+                    showPrice={false}
+                    compact
+                    showLabel={false}
+                  />
+                </ProductDetailPurchaseCardSection>
+              ) : null}
 
-            <ProductDetailPricePanel
-              unitPrice={unitPrice}
-              listPrice={listPrice}
-              unitLabel={selectedUnit.label}
-              hasWholesale={isWholesale}
-              totalLabel={`Tổng cộng (${qty} ${selectedUnit.type}${
-                selectedUnit.qtyPerUnit > 1
-                  ? ` × ${selectedUnit.qtyPerUnit} ${product.unit}`
-                  : ""
-              })`}
-              totalPrice={totalPrice}
-            >
-              {qtyInCart > 0 ? (
-                <p className="text-xs font-medium text-muted-foreground">
-                  Trong giỏ:{" "}
-                  <span className="font-bold text-foreground">
-                    {qtyInCart} {selectedUnit.type}
-                  </span>
-                  {" · "}
-                  Đang thêm:{" "}
-                  <span className="font-bold text-foreground">{qty}</span>
-                  {" → "}
-                  Tổng (áp giá):{" "}
-                  <span className="font-bold text-primary">{pricingQty}</span>
-                </p>
-              ) : null}
-              {isWholesale && minPromoQty > 1 ? (
-                <p className="text-sm font-medium text-muted-foreground">
-                  Từ{" "}
-                  <span className="font-black text-primary">
-                    {minPromoQty} {selectedUnit.type}
-                  </span>{" "}
-                  trở lên mới áp giá khuyến mãi; mua ít hơn vẫn được (giá ban đầu).
-                </p>
-              ) : null}
-              {isWholesale && minPromoQty > 1 ? (
-                <ProductDetailCallout
-                  tone={pricingQty >= minPromoQty ? "success" : "warning"}
-                  icon={Percent}
-                  title={
-                    pricingQty >= minPromoQty
-                      ? "Đã chuyển sang giá khuyến mãi"
-                      : "Chưa đủ điều kiện giá khuyến mãi"
+              <ProductDetailPurchaseCardSection variant="order">
+                <ProductDetailOrderRow
+                  unitPrice={unitPrice}
+                  listPrice={listPrice}
+                  unitLabel={selectedUnit.label}
+                  hasWholesale={isWholesale}
+                  qty={qty}
+                  unitType={selectedUnit.type}
+                  onQtyChange={(next) => setQty(clampQty(next))}
+                  minQty={minPurchaseQty}
+                  maxQty={maxQty}
+                  equivalentTotal={totalUnits}
+                  equivalentUnit={product.unit}
+                  stockCount={product.stock}
+                  stockStatus={
+                    outOfStock ? "out" : stockWarning ? "low" : "ok"
                   }
-                >
-                  Điều kiện áp dụng: từ{" "}
-                  <span className="font-bold">
-                    {minPromoQty} {selectedUnit.type}
-                  </span>
-                  {priceDiscountPercent > 0 ? (
-                    <>
-                      {" "}
-                      - giảm{" "}
-                      <span className="font-bold">{priceDiscountPercent}%</span>.
-                    </>
-                  ) : (
-                    "."
-                  )}
-                </ProductDetailCallout>
+                  footer={
+                    qtyInCart > 0 ? (
+                      <p className="text-[11px] text-muted-foreground">
+                        Trong giỏ{" "}
+                        <span className="font-semibold text-foreground">
+                          {qtyInCart}
+                        </span>
+                        {" + đặt "}
+                        <span className="font-semibold text-foreground">
+                          {qty}
+                        </span>
+                        {" → áp giá "}
+                        <span className="font-semibold text-primary">
+                          {pricingQty}
+                        </span>
+                      </p>
+                    ) : null
+                  }
+                />
+              </ProductDetailPurchaseCardSection>
+
+              {isWholesale && minPromoQty > 1 ? (
+                <ProductDetailPurchaseCardSection variant="muted" className="space-y-2">
+                  <ProductDetailCallout
+                    tone={pricingQty >= minPromoQty ? "success" : "warning"}
+                    icon={Percent}
+                    title={
+                      pricingQty >= minPromoQty
+                        ? "Đã áp giá khuyến mãi"
+                        : `Cần từ ${minPromoQty} ${selectedUnit.type} để giảm giá`
+                    }
+                  >
+                    {priceDiscountPercent > 0 ? (
+                      <>
+                        Giảm{" "}
+                        <span className="font-bold">{priceDiscountPercent}%</span>{" "}
+                        khi đủ số lượng.
+                      </>
+                    ) : null}
+                  </ProductDetailCallout>
+                </ProductDetailPurchaseCardSection>
               ) : null}
+
               {activeGiftRule ? (
-                <ProductDetailCallout
-                  tone={isGiftUnlocked ? "success" : "warning"}
-                  icon={Gift}
-                  title={
-                    isGiftUnlocked
-                      ? "Đã đủ điều kiện nhận quà"
-                      : "Ưu đãi quà tặng"
-                  }
-                >
-                  Từ <span className="font-bold">{activeGiftRule.minQty}</span>{" "}
-                  {selectedUnit.type}: tặng{" "}
-                  <span className="font-bold">
-                    {activeGiftRule.giftQty} {activeGiftRule.giftName}
-                  </span>
-                </ProductDetailCallout>
-              ) : null}
-            </ProductDetailPricePanel>
-
-            <ProductDetailQtyStepper
-              qty={qty}
-              unitType={selectedUnit.type}
-              onDecrease={() => handleQtyChange(-1)}
-              onIncrease={() => handleQtyChange(1)}
-              decreaseDisabled={qty <= minPurchaseQty}
-              increaseDisabled={outOfStock}
-              summary={
-                <>
-                  <p>
-                    ={" "}
-                    <span className="font-bold text-foreground">
-                      {totalUnits.toLocaleString("vi-VN")}
-                    </span>{" "}
-                    {product.unit}
-                  </p>
-                  <p className="text-xs">
-                    Tồn kho:{" "}
-                    <span
-                      className={`font-bold ${
-                        outOfStock
-                          ? "text-destructive"
-                          : stockWarning
-                            ? "text-warning"
-                            : "text-success"
-                      }`}
-                    >
-                      {product.stock} {product.unit}
+                <ProductDetailPurchaseCardSection variant="muted">
+                  <ProductDetailCallout
+                    tone={isGiftUnlocked ? "success" : "warning"}
+                    icon={Gift}
+                    title={
+                      isGiftUnlocked
+                        ? "Đủ điều kiện nhận quà"
+                        : "Quà tặng kèm"
+                    }
+                  >
+                    Từ {activeGiftRule.minQty} {selectedUnit.type}: tặng{" "}
+                    <span className="font-bold">
+                      {activeGiftRule.giftQty} {activeGiftRule.giftName}
                     </span>
-                  </p>
-                </>
-              }
-            />
+                  </ProductDetailCallout>
+                </ProductDetailPurchaseCardSection>
+              ) : null}
+            </ProductDetailPurchaseCard>
 
-            {stockWarning && !outOfStock ? (
+            {(stockWarning || outOfStock) ? (
               <ProductDetailCallout
                 tone="warning"
                 icon={AlertTriangle}
-                title="Sắp hết hàng – chỉ còn ít trong kho"
-              />
-            ) : null}
-            {outOfStock ? (
-              <ProductDetailCallout
-                tone="warning"
-                icon={AlertTriangle}
-                title="Số lượng vượt quá tồn kho hiện tại"
+                title={
+                  outOfStock
+                    ? "Vượt tồn kho hiện tại"
+                    : "Sắp hết hàng"
+                }
               />
             ) : null}
 
             <ProductDetailMetaGrid
+              compact
               items={[
                 { label: "Thương hiệu", value: product.brand ?? "—" },
                 { label: "Xuất xứ", value: product.origin ?? "—" },
-                { label: "Mã SKU", value: product.sku },
-                {
-                  label: "Tồn kho",
-                  value: `${product.stock} ${product.unit}`,
-                },
+                { label: "SKU", value: product.sku },
               ]}
             />
 
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-              <Button
-                className="h-14 flex-1 rounded-xl px-8 text-base font-black"
-                onClick={handleAddToCart}
-                disabled={outOfStock}
-              >
-                <ShoppingCart className="mr-2 size-5" />
-                {outOfStock
-                  ? "Hết hàng"
-                  : `Thêm vào giỏ – ${formatProductVnd(totalPrice)}`}
-              </Button>
-              <Link href={supportHref}>
+            <ProductDetailActions
+              primary={
                 <Button
-                  variant="outline"
-                  className="h-14 w-full rounded-xl px-6 font-bold sm:w-auto"
+                  className="h-11 w-full rounded-xl px-6 text-sm font-black shadow-sm"
+                  onClick={handleAddToCart}
+                  disabled={outOfStock}
                 >
-                  <Truck className="mr-2 size-4" /> Tư vấn
+                  <ShoppingCart className="mr-2 size-4" />
+                  {outOfStock
+                    ? "Hết hàng"
+                    : `Thêm vào giỏ – ${formatProductVnd(totalPrice)}`}
                 </Button>
-              </Link>
-            </div>
-
-            {!outOfStock ? (
-              <div className="flex items-center gap-2 text-sm font-semibold text-success">
-                <CheckCircle2 className="size-4" /> Còn hàng – giao trong hôm
-                nay hoặc ngày mai
-              </div>
-            ) : null}
+              }
+              secondary={
+                <Link href={supportHref} className="block h-full">
+                  <Button
+                    variant="outline"
+                    className="h-11 w-full rounded-xl px-5 text-sm font-semibold sm:min-w-[7.5rem]"
+                  >
+                    <Truck className="mr-1.5 size-3.5" /> Tư vấn
+                  </Button>
+                </Link>
+              }
+              trust={
+                !outOfStock ? (
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-success">
+                    <CheckCircle2 className="size-3.5 shrink-0" />
+                    Còn hàng · Giao hôm nay hoặc ngày mai
+                  </p>
+                ) : null
+              }
+            />
           </>
         }
       />

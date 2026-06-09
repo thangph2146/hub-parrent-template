@@ -14,6 +14,8 @@ export type ProductDetailPricePanelProps = {
   totalPrice?: number | null
   children?: ReactNode
   className?: string
+  compact?: boolean
+  showTotal?: boolean
 }
 
 export function ProductDetailPricePanel({
@@ -25,45 +27,64 @@ export function ProductDetailPricePanel({
   totalPrice,
   children,
   className,
+  compact = false,
+  showTotal = true,
 }: ProductDetailPricePanelProps) {
   return (
     <div
       className={cn(
-        "bg-surface space-y-3.5 rounded-2xl border border-outline-variant/40 bg-gradient-to-br from-background via-background to-muted/20 p-5 shadow-sm",
+        compact ? "min-w-0 space-y-1.5" : "space-y-3 rounded-xl border border-outline-variant/40 bg-muted/15 p-4 shadow-sm",
         className
       )}
     >
-      <div className="flex flex-wrap items-end gap-2 md:gap-3">
+      {compact ? (
+        <p className="text-[11px] font-medium text-muted-foreground">Đơn giá</p>
+      ) : null}
+
+      <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
         {listPrice != null ? (
-          <p className="mb-1 text-lg font-semibold text-muted-foreground line-through tabular-nums">
+          <p className="pb-0.5 text-sm font-medium text-muted-foreground line-through tabular-nums">
             {formatProductVnd(listPrice)}
           </p>
         ) : null}
-        <p className="text-4xl font-black tracking-tight text-primary tabular-nums">
+        <p
+          className={cn(
+            "font-black leading-none tracking-tight text-primary tabular-nums",
+            compact ? "text-[1.75rem]" : "text-3xl"
+          )}
+        >
           {formatProductVnd(unitPrice)}
         </p>
-        <p className="mb-1 text-base text-muted-foreground">/ {unitLabel}</p>
+        <p className="pb-0.5 text-sm text-muted-foreground">/ {unitLabel}</p>
         {hasWholesale ? (
           <Badge
-            className={
-              listPrice != null
-                ? "mb-1 border-primary/20 bg-primary/10 font-bold text-primary"
-                : "mb-1 border-secondary/20 bg-secondary/10 font-bold text-secondary-foreground"
-            }
+            variant={listPrice != null ? "promo" : "retail"}
+            size="xs"
+            className="mb-0.5"
           >
-            {listPrice != null ? "Giá KM (đủ SL)" : "Giá ban đầu"}
+            {listPrice != null ? "Giá KM" : "Giá lẻ"}
           </Badge>
         ) : null}
       </div>
 
       {children}
 
-      {totalPrice != null && totalPrice > 0 && totalLabel ? (
-        <div className="flex items-center justify-between rounded-xl border border-outline-variant/25 bg-background/60 px-3 py-2.5">
-          <p className="text-sm font-medium text-muted-foreground">
+      {showTotal && totalPrice != null && totalPrice > 0 && totalLabel ? (
+        <div
+          className={cn(
+            "flex items-center justify-between rounded-lg border border-outline-variant/25 bg-background/80",
+            compact ? "px-2.5 py-2" : "px-3 py-2.5"
+          )}
+        >
+          <p className="text-xs font-medium text-muted-foreground">
             {totalLabel}
           </p>
-          <p className="text-xl font-black text-primary tabular-nums">
+          <p
+            className={cn(
+              "font-black text-primary tabular-nums",
+              compact ? "text-lg" : "text-xl"
+            )}
+          >
             {formatProductVnd(totalPrice)}
           </p>
         </div>

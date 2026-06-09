@@ -58,7 +58,11 @@ export function ProductDetailGallery({
             </div>
           )}
           {urls.length > 1 ? (
-            <Badge className="absolute top-3 right-3 gap-1 text-[10px] shadow-sm">
+            <Badge
+              variant="overlay"
+              size="xs"
+              className="absolute top-3 right-3"
+            >
               <Images className="size-3" aria-hidden />
               {safeIndex + 1}/{urls.length}
             </Badge>

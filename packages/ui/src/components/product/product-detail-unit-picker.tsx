@@ -1,8 +1,9 @@
 "use client"
 
 import { Tag } from "lucide-react"
-import { Button } from "../button"
+import { Badge } from "../badge"
 import { ProductDetailSectionLabel } from "./product-detail-section-label"
+import { Tabs, TabsList, TabsTrigger } from "../tabs"
 import { cn } from "../../lib/utils"
 
 export type ProductDetailUnitOption = {
@@ -19,6 +20,9 @@ export type ProductDetailUnitPickerProps = {
   onSelect: (type: string) => void
   className?: string
   label?: string
+  showPrice?: boolean
+  compact?: boolean
+  showLabel?: boolean
 }
 
 export function ProductDetailUnitPicker({
@@ -26,54 +30,93 @@ export function ProductDetailUnitPicker({
   selectedType,
   onSelect,
   className,
-  label = "Chọn loại đơn vị:",
+  label = "Loại đơn vị",
+  showPrice = true,
+  compact = false,
+  showLabel = true,
 }: ProductDetailUnitPickerProps) {
   if (options.length <= 1) return null
 
   return (
-    <div className={cn("space-y-2.5", className)}>
-      <ProductDetailSectionLabel>{label}</ProductDetailSectionLabel>
-      <div className="flex flex-wrap gap-2.5">
-        {options.map((option) => {
-          const active = selectedType === option.type
-          const isPromo = option.hasPromo ?? false
-          return (
-            <Button
-              key={option.type}
-              type="button"
-              onClick={() => onSelect(option.type)}
-              className={cn(
-                "h-auto min-w-[8.5rem] flex-col items-start gap-1 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all",
-                active
-                  ? isPromo
-                    ? "border-primary bg-primary text-primary-foreground shadow-md ring-2 ring-primary/15"
-                    : "border-secondary bg-secondary text-secondary-foreground shadow-md ring-2 ring-secondary/15"
-                  : "border-outline-variant/60 bg-background text-muted-foreground hover:border-primary/35 hover:bg-muted/60"
-              )}
-            >
-              <span className="leading-tight">{option.label}</span>
-              <span
+    <div className={cn(compact ? "space-y-2" : "space-y-2.5", className)}>
+      {showLabel ? (
+        <ProductDetailSectionLabel variant={compact ? "soft" : "default"}>
+          {label}
+        </ProductDetailSectionLabel>
+      ) : null}
+
+      <Tabs
+        value={selectedType}
+        onValueChange={onSelect}
+        className="w-full gap-0"
+      >
+        <TabsList
+          className={cn(
+            compact
+              ? "h-auto w-full rounded-xl p-1"
+              : "h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0"
+          )}
+          aria-label={typeof label === "string" ? label : "Loại đơn vị"}
+        >
+          {options.map((option) => {
+            const isPromo = option.hasPromo ?? false
+
+            if (compact) {
+              return (
+                <TabsTrigger
+                  key={option.type}
+                  value={option.type}
+                  className="min-w-0 flex-1 gap-1.5 px-3 py-2 text-xs font-semibold"
+                >
+                  <span className="truncate">{option.label}</span>
+                  {isPromo ? (
+                    <Badge variant="promo" size="xs" shape="pill">
+                      <Tag aria-hidden /> KM
+                    </Badge>
+                  ) : null}
+                </TabsTrigger>
+              )
+            }
+
+            return (
+              <TabsTrigger
+                key={option.type}
+                value={option.type}
                 className={cn(
-                  "flex flex-wrap items-baseline gap-1 text-xs font-semibold",
-                  active ? "opacity-95" : "text-primary"
+                  "h-auto min-w-[7.5rem] flex-col items-start gap-0.5 rounded-lg border px-3 py-2 text-sm font-bold",
+                  selectedType === option.type
+                    ? isPromo
+                      ? "border-primary bg-primary text-primary-foreground shadow-sm ring-1 ring-primary/20"
+                      : "border-secondary bg-secondary text-secondary-foreground shadow-sm ring-1 ring-secondary/20"
+                    : "border-outline-variant/50 bg-muted/30 text-muted-foreground hover:border-primary/30 hover:bg-muted/50"
                 )}
               >
-                {option.listPriceLabel ? (
-                  <span className="line-through opacity-65">
-                    {option.listPriceLabel}
+                <span className="leading-tight">{option.label}</span>
+                {showPrice ? (
+                  <span
+                    className={cn(
+                      "flex flex-wrap items-baseline gap-1 text-xs font-semibold",
+                      selectedType === option.type ? "opacity-95" : "text-primary"
+                    )}
+                  >
+                    {option.listPriceLabel ? (
+                      <span className="line-through opacity-60">
+                        {option.listPriceLabel}
+                      </span>
+                    ) : null}
+                    <span>{option.currentPriceLabel}</span>
+                  {isPromo ? (
+                    <Badge variant="promo" size="xs" shape="pill">
+                      <Tag aria-hidden /> KM
+                    </Badge>
+                  ) : null}
                   </span>
                 ) : null}
-                <span>{option.currentPriceLabel}</span>
-                {isPromo ? (
-                  <span className="ml-0.5 inline-flex items-center gap-0.5 opacity-80">
-                    <Tag className="size-3" aria-hidden /> KM
-                  </span>
-                ) : null}
-              </span>
-            </Button>
-          )
-        })}
-      </div>
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+      </Tabs>
     </div>
   )
 }

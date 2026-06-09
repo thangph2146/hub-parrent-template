@@ -138,17 +138,23 @@ export function ProductAdminDetail({
             }
             couponBadges={product.coupons ?? []}
             extraBadges={
-              <Badge variant={product.isActive ? "default" : "secondary"}>
+              <Badge
+                variant={product.isActive ? "success" : "muted"}
+                size="sm"
+              >
                 {product.isActive ? "Đang bán" : "Ẩn"}
               </Badge>
             }
           />
 
-          <ProductDetailUnitPicker
-            options={unitOptions}
-            selectedType={selectedUnit.type}
-            onSelect={setSelectedType}
-          />
+          {units.length <= 1 ? (
+            <ProductDetailUnitPicker
+              options={unitOptions}
+              selectedType={selectedUnit.type}
+              onSelect={setSelectedType}
+              compact
+            />
+          ) : null}
 
           <ProductDetailPricePanel
             unitPrice={unitPrice}
@@ -160,6 +166,7 @@ export function ProductAdminDetail({
             }
             totalLabel={`Giá tham chiếu (1 ${selectedUnit.type})`}
             totalPrice={unitPrice}
+            compact
           >
             {selectedUnit.minWholesaleQty > 1 ? (
               <p className="text-sm font-medium text-muted-foreground">
@@ -191,15 +198,16 @@ export function ProductAdminDetail({
           </ProductDetailPricePanel>
 
           <ProductDetailMetaGrid
+            compact
             items={[
               { label: "Thương hiệu", value: product.brand ?? "—" },
               { label: "Xuất xứ", value: product.origin ?? "—" },
               {
-                label: "Mã SKU",
+                label: "SKU",
                 value: selectedUnit.sku || product.sku,
               },
               {
-                label: "Tồn kho",
+                label: "Tồn",
                 value: `${stock} ${selectedUnit.type}`,
               },
             ]}
@@ -275,8 +283,9 @@ function ProductAdminUnitsSummary({
                     {unit.label}
                   </p>
                   <Badge
-                    variant={active ? "default" : "outline"}
-                    className="shrink-0 text-[10px]"
+                    variant={active ? "promo" : "muted"}
+                    size="xs"
+                    className="shrink-0"
                   >
                     {active ? "Đang xem" : "Chọn"}
                   </Badge>
