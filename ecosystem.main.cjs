@@ -13,8 +13,8 @@
  *   pm2 start ecosystem.main.cjs --only hub-parent-backend
  *   pm2 start ecosystem.main.cjs --only hub-parent-frontend
  */
-const { createMainStack } = require("./ecosystem.shared.cjs")
+const { createParentStack } = require("./ecosystem.shared.cjs")
 
 module.exports = {
-  apps: createMainStack(),
+  apps: createParentStack(),
 }

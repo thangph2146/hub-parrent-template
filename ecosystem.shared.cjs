@@ -39,7 +39,7 @@ function createNextFrontendApp(name, cwd, port = 3000) {
 }
 
 /** Site chính: @frontend (3000) + @backend (3001) + @api (3002) */
-function createMainStack() {
+function createParentStack() {
   return [
     createApiApp("hub-parent-api"),
     createBackendApp("hub-parent-backend"),
@@ -60,11 +60,29 @@ function createCheckinStack() {
   ]
 }
 
+/** Store sync: @store-sync-frontend (3000) + @backend (3001) + @api (3002) */
+function createStoreStack() {
+  return [
+    createApiApp("hub-store-api"),
+    createBackendApp("hub-store-backend"),
+    createNextFrontendApp(
+      "hub-store-frontend",
+      "./apps/store-sync-frontend",
+      3000
+    ),
+  ]
+}
+
+/** @deprecated dùng createParentStack */
+const createMainStack = createParentStack
+
 module.exports = {
   PROD_ENV,
   createApiApp,
   createBackendApp,
   createNextFrontendApp,
+  createParentStack,
   createMainStack,
   createCheckinStack,
+  createStoreStack,
 }
