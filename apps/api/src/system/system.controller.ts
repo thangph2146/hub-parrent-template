@@ -29,16 +29,24 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 
-/** Khớp admin: `/system/*` và API import/export dùng SYSTEM_MANAGE / SYSTEM_IMPORT. */
+/** Khớp admin `/data`: settings:manage|import|export hoặc system:manage|import. */
 const SYSTEM_MAINTENANCE_PERMISSIONS: ReadonlySet<string> = new Set([
   PERMISSIONS.SYSTEM_MANAGE,
   PERMISSIONS.SYSTEM_IMPORT,
+  PERMISSIONS.SETTINGS_MANAGE,
+  PERMISSIONS.SETTINGS_IMPORT,
+  PERMISSIONS.SETTINGS_EXPORT,
 ]);
 const MAX_SYSTEM_EXCEL_FILE_BYTES = 50 * 1024 * 1024;
 
 /** Import/export nhiều chunk — không áp dụng giới hạn 100 req/phút toàn cục. */
 @SkipThrottle()
-@Permissions(PERMISSIONS.SYSTEM_MANAGE)
+@Permissions(
+  PERMISSIONS.SYSTEM_MANAGE,
+  PERMISSIONS.SETTINGS_MANAGE,
+  PERMISSIONS.SETTINGS_EXPORT,
+  PERMISSIONS.SETTINGS_IMPORT,
+)
 @Controller(ADMIN_ROUTES.SYSTEM)
 export class SystemController {
   private readonly logger = new Logger(SystemController.name);
@@ -185,7 +193,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT, PERMISSIONS.SETTINGS_IMPORT)
   @Post('import')
   @UsePipes(
     new ValidationPipe({
@@ -274,7 +282,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT, PERMISSIONS.SETTINGS_IMPORT)
   @Post('import/excel')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -389,7 +397,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SYSTEM_IMPORT)
+  @Permissions(PERMISSIONS.SYSTEM_IMPORT, PERMISSIONS.SETTINGS_IMPORT)
   @Get('import-config')
   async getImportConfig(
     @Res() res: Response,
@@ -417,7 +425,7 @@ export class SystemController {
     }
   }
 
-  @Permissions(PERMISSIONS.SYSTEM_VIEW)
+  @Permissions(PERMISSIONS.SYSTEM_VIEW, PERMISSIONS.SETTINGS_MANAGE)
   @Get('database-schema')
   async getDatabaseSchema(
     @Res() res: Response,

@@ -38,10 +38,22 @@ export class PermissionsGuard implements CanActivate {
     );
     if (!requiredPermissions?.length) return true;
 
-    const payload = await this.authService.getAuthPayloadByUserId(userId);
+    const { payload, reason } =
+      await this.authService.tryAuthPayloadByUserId(userId);
     if (!payload) {
+      const byReason: Record<
+        NonNullable<typeof reason>,
+        string
+      > = {
+        not_found:
+          'Không tìm thấy tài khoản (sai id hoặc đã xóa). Vui lòng đăng nhập lại.',
+        inactive:
+          'Tài khoản đã bị vô hiệu hóa hoặc xóa mềm. Liên hệ quản trị viên.',
+        no_roles:
+          'Tài khoản chưa được gán vai trò (user_roles). Liên hệ quản trị viên.',
+      };
       throw new UnauthorizedException(
-        'Người dùng không tồn tại hoặc không có quyền truy cập',
+        reason ? byReason[reason] : 'Người dùng không tồn tại hoặc không có quyền truy cập',
       );
     }
 
