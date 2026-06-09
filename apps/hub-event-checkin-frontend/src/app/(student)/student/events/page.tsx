@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { MyRegisteredEventsPage } from "./_component/my-registered-events-page"
+import { MyRegisteredEventsPage } from "./_component"
 
 export const metadata: Metadata = {
   title: "Sự kiện của tôi",
