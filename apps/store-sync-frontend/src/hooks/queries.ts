@@ -12,6 +12,12 @@ import {
   fetchActivePublicProductsSample,
   fetchSuggestedPublicProducts,
 } from "@workspace/api-client";
+import { toast } from "sonner";
+import type {
+  AccountProfile,
+  ChangeAccountPasswordInput,
+  UpdateAccountInput,
+} from "@workspace/api-client";
 import {
   api,
   type Category,
@@ -40,6 +46,7 @@ export const queryKeys = {
   orders: (email?: string) => ["orders", { email: email ?? null }] as const,
   order: (id: number, email?: string) =>
     ["orders", id, { email: email ?? null }] as const,
+  accountProfile: () => ["account", "profile"] as const,
 };
 
 type UseProductsOptions = {
@@ -154,6 +161,49 @@ export const useOrder = (
     queryFn: () => api.orders.getPublic(id as number, email),
     enabled: typeof id === "number" && id > 0,
   });
+
+export const useStoreAccountProfile = (enabled: boolean) =>
+  useQuery<AccountProfile, Error>({
+    queryKey: queryKeys.accountProfile(),
+    queryFn: () => api.accounts.get(),
+    enabled,
+  });
+
+export const useUpdateStoreAccountProfile = (): UseMutationResult<
+  AccountProfile,
+  Error,
+  UpdateAccountInput
+> => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input) => api.accounts.update(input),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: queryKeys.accountProfile() });
+      toast.success("Đã cập nhật hồ sơ");
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Lỗi lưu hồ sơ");
+    },
+  });
+};
+
+export const useChangeStoreAccountPassword = (): UseMutationResult<
+  AccountProfile,
+  Error,
+  ChangeAccountPasswordInput
+> => {
+  return useMutation({
+    mutationFn: (input) => api.accounts.changePassword(input),
+    onSuccess: () => {
+      toast.success("Đã đổi mật khẩu");
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof Error ? err.message : "Không đổi được mật khẩu",
+      );
+    },
+  });
+};
 
 export const useCreateOrder = (): UseMutationResult<
   Order,

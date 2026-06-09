@@ -1,16 +1,16 @@
 # Thống kê graph — store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-09T06:28:52.284Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-09T08:29:02.293Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `directory` | 27 |
-| `ts` | 20 |
-| `tsx` | 19 |
-| `layout` | 17 |
-| `page` | 16 |
+| `directory` | 33 |
+| `ts` | 28 |
+| `tsx` | 26 |
+| `page` | 20 |
+| `layout` | 18 |
 | `loading` | 7 |
 | `api-route` | 1 |
 | `middleware` | 1 |
@@ -20,9 +20,9 @@
 
 | relation | Số |
 |----------|-----|
-| `imports` | 115 |
-| `contains` | 107 |
-| `renders` | 16 |
+| `imports` | 154 |
+| `contains` | 133 |
+| `renders` | 17 |
 | `assets` | 3 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
@@ -31,26 +31,26 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 
 | File | Số cạnh imports |
 |------|-----------------|
-| `src/app/(store-sync)/checkout/page.tsx` | 9 |
+| `src/app/(store-sync)/checkout/page.tsx` | 10 |
 | `src/app/(store-sync)/catalog/page.tsx` | 7 |
-| `src/app/(store-sync)/orders/page.tsx` | 6 |
-| `src/app/layout.tsx` | 6 |
+| `src/providers/store-portal-layout.tsx` | 7 |
+| `src/app/(store-sync)/login/page.tsx` | 6 |
 | `src/app/page.tsx` | 6 |
 | `src/components/shared/cart-drawer.tsx` | 6 |
 | `src/app/(store-sync)/cart/page.tsx` | 5 |
+| `src/app/layout.tsx` | 5 |
+| `src/app/store/orders/page.tsx` | 5 |
+| `src/app/store/orders/_component/columns.tsx` | 5 |
+| `src/app/store/orders/_component/index.ts` | 5 |
+| `src/app/store/orders/_component/store-order-actions.ts` | 5 |
 | `src/components/shared/product-detail.tsx` | 5 |
-| `src/app/(store-sync)/login/page.tsx` | 4 |
-| `src/app/(store-sync)/orders/[orderId]/page.tsx` | 4 |
+| `src/app/store/orders/[orderId]/page.tsx` | 4 |
 | `src/components/shared/cart-line-item.tsx` | 4 |
 | `src/components/shared/cart-sync-bridge.tsx` | 4 |
 | `src/components/shared/header.tsx` | 4 |
 | `src/hooks/use-gift-product-catalog.ts` | 4 |
-| `src/app/(store-sync)/profile/page.tsx` | 3 |
 | `src/app/graph/page.tsx` | 3 |
-| `src/components/shared/catalog-product-card.tsx` | 3 |
-| `src/components/shared/product-suggestions.tsx` | 3 |
-| `src/components/shared/store-auth-gate.tsx` | 3 |
-| `src/app/(store-sync)/catalog/[productId]/page.tsx` | 2 |
+| `src/app/store/orders/_component/store-orders-stat-cards.tsx` | 3 |
 
 ## Top file theo số cạnh `imports` đi vào (in-degree)
 
@@ -58,21 +58,21 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 | File | Số lần bị import |
 |------|------------------|
-| `src/lib/api.ts` | 15 |
-| `src/hooks/use-cart.ts` | 14 |
+| `src/lib/api.ts` | 20 |
+| `src/hooks/use-cart.ts` | 15 |
 | `src/hooks/queries.ts` | 11 |
+| `src/hooks/use-session.ts` | 11 |
 | `src/components/shared/route-loading.tsx` | 7 |
-| `src/hooks/use-session.ts` | 7 |
 | `src/lib/format.ts` | 7 |
-| `src/lib/catalog-filters.ts` | 5 |
+| `src/lib/catalog-filters.ts` | 6 |
 | `src/lib/cart-sync.ts` | 5 |
+| `src/app/store/orders/_component/types.ts` | 5 |
 | `src/hooks/use-gift-product-catalog.ts` | 4 |
 | `src/lib/graphify-context.ts` | 4 |
+| `src/components/shared/cart-drawer.tsx` | 4 |
 | `src/lib/cart-gift-rules.ts` | 4 |
-| `src/components/shared/cart-line-item.tsx` | 2 |
-| `src/components/shared/cart-order-summary.tsx` | 2 |
-| `src/hooks/use-debounced-value.ts` | 2 |
-| `src/lib/auth-routes.ts` | 2 |
+| `src/lib/auth-routes.ts` | 3 |
+| `src/lib/store-auth.ts` | 3 |
 
 ## Làm mới
 

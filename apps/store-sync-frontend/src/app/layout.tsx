@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "@ui/globals.css";
-import { Header } from "@/components/shared/header";
-import { Footer } from "@/components/shared/footer";
+import { StorefrontChrome } from "@/components/shared/storefront-chrome";
 import { ThemeProvider } from "@ui/components/theme-provider";
 import { TextSizeProvider } from "@ui/components/text-size-provider";
 import { Toaster } from "sonner";
@@ -57,10 +56,8 @@ export default function RootLayout({
               <PromoRulesSync />
               <CartSyncBridge />
               <CartDrawerHost>
-                <Header />
+                <StorefrontChrome>{children}</StorefrontChrome>
               </CartDrawerHost>
-              <main className="flex-1">{children}</main>
-              <Footer />
               <Toaster position="top-right" richColors />
             </QueryProvider>
           </TextSizeProvider>

@@ -124,7 +124,7 @@ const menuTree: AdminMenuTreeItem[] = [
   },
   {
     type: "group",
-    label: "Cửa hàng",
+    label: "Kho hàng",
     icon: ShoppingCart,
     children: [
       {

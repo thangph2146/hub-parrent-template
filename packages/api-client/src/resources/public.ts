@@ -194,6 +194,22 @@ export class PublicApi {
     })
   }
 
+  /** Storefront B2B — không giới hạn role student. */
+  loginStoreWithEmail(body: { email: string; password: string }) {
+    return postData<PublicAuthPayload>(this.http, "/public/auth/store-login", {
+      email: body.email.trim(),
+      password: body.password,
+    })
+  }
+
+  loginStoreWithDevelopmentUser(body: { userId: string }) {
+    return postData<PublicAuthPayload>(
+      this.http,
+      "/public/auth/store-dev-login",
+      { userId: body.userId.trim() },
+    )
+  }
+
   loginWithGoogle(credential: string) {
     return postData<PublicAuthPayload>(this.http, "/public/auth/google", {
       credential,

@@ -20,7 +20,7 @@ const quickHelp = [
   {
     title: "Theo dõi trạng thái giao hàng",
     desc: "Mỗi đơn đều có mã theo dõi. Bạn có thể xem tiến độ giao nhận trong khu vực Đơn hàng của tôi.",
-    href: "/orders",
+    href: "/store/orders",
     icon: PackageSearch,
     cta: "Xem đơn hàng",
   },

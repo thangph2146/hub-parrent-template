@@ -451,6 +451,98 @@ export class PublicController {
     }
   }
 
+  /** Storefront B2B — email/password, mọi user active có role (không giới hạn student). */
+  @Post('auth/store-login')
+  async storeLogin(
+    @Body() body: { email?: string; password?: string },
+    @Res() res: Response,
+  ) {
+    this.logger.log(`storeLogin email=${body?.email ?? '-'}`);
+    try {
+      const email = body?.email?.trim();
+      const password = body?.password;
+      if (!email || !password) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Vui lòng nhập email và mật khẩu.',
+          { status: 400 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const user = await this.authService.login({ email, password });
+      if (!user) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Email hoặc mật khẩu không đúng.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/store-login', error, {
+        email: body?.email ?? null,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập. Vui lòng thử lại.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  /** Storefront B2B — dev only, chọn user theo id (không cần mật khẩu). */
+  @Post('auth/store-dev-login')
+  async storeDevLogin(
+    @Body() body: { userId?: string },
+    @Res() res: Response,
+  ) {
+    if (process.env.NODE_ENV !== 'development') {
+      const { statusCode, body: errBody } = createErrorResponse('Not Found', {
+        status: 404,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+
+    const userId = body?.userId?.trim();
+    this.logger.log(`storeDevLogin userId=${userId ?? '-'}`);
+    if (!userId) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu userId.',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const user = await this.authService.loginAsDevelopmentUser(userId);
+      if (!user) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Không tìm thấy tài khoản development.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập development thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/store-dev-login', error, {
+        userId,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập development.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
   @Post('register')
   async register(@Body() body: CreatePublicRegisterDto, @Res() res: Response) {
     this.logger.log(`register email=${body?.email ?? '-'}`);

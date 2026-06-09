@@ -317,7 +317,7 @@
       "size": 14,
       "community": "src/app/(store-sync)/orders",
       "type": "page",
-      "client": true
+      "client": false
     },
     {
       "id": "dir_src_app__store_sync__orders__orderid_",
@@ -356,7 +356,7 @@
       "size": 14,
       "community": "src/app/(store-sync)/orders/[orderId]",
       "type": "page",
-      "client": true
+      "client": false
     },
     {
       "id": "dir_src_app__store_sync__privacy",
@@ -414,7 +414,7 @@
       "size": 14,
       "community": "src/app/(store-sync)/profile",
       "type": "page",
-      "client": true
+      "client": false
     },
     {
       "id": "dir_src_app__store_sync__register",
@@ -587,6 +587,181 @@
       "color": "#00ff41",
       "size": 14,
       "community": "src/app",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_store",
+      "label": "store/",
+      "path": "src/app/store",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_layout_tsx",
+      "label": "layout.tsx",
+      "path": "src/app/store/layout.tsx",
+      "color": "#ff6b35",
+      "size": 20,
+      "community": "src/app/store",
+      "type": "layout",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_store_orders",
+      "label": "orders/",
+      "path": "src/app/store/orders",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/store",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_orders_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/store/orders/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/store/orders",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_store_orders__orderid_",
+      "label": "[orderId]/",
+      "path": "src/app/store/orders/[orderId]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/store/orders",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_orders__orderid__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/store/orders/[orderId]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/store/orders/[orderId]",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_store_orders__component",
+      "label": "_component/",
+      "path": "src/app/store/orders/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/store/orders",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_orders__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/app/store/orders/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_index_ts",
+      "label": "index.ts",
+      "path": "src/app/store/orders/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_actions_ts",
+      "label": "store-order-actions.ts",
+      "path": "src/app/store/orders/_component/store-order-actions.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
+      "label": "store-order-progress-cell.tsx",
+      "path": "src/app/store/orders/_component/store-order-progress-cell.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_row_actions_tsx",
+      "label": "store-order-row-actions.tsx",
+      "path": "src/app/store/orders/_component/store-order-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_status_groups_ts",
+      "label": "store-order-status-groups.ts",
+      "path": "src/app/store/orders/_component/store-order-status-groups.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "label": "store-orders-stat-cards.tsx",
+      "path": "src/app/store/orders/_component/store-orders-stat-cards.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_types_ts",
+      "label": "types.ts",
+      "path": "src/app/store/orders/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_store_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/store/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/store",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_store_profile",
+      "label": "profile/",
+      "path": "src/app/store/profile",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/store",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_profile_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/store/profile/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/store/profile",
       "type": "page",
       "client": true
     },
@@ -798,6 +973,45 @@
       "client": true
     },
     {
+      "id": "file_src_components_shared_storefront_chrome_tsx",
+      "label": "storefront-chrome.tsx",
+      "path": "src/components/shared/storefront-chrome.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/components/shared",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_config",
+      "label": "config/",
+      "path": "src/config",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_config_store_portal_layout_static_ts",
+      "label": "store-portal-layout-static.ts",
+      "path": "src/config/store-portal-layout-static.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_config_store_portal_menu_tree_tsx",
+      "label": "store-portal-menu-tree.tsx",
+      "path": "src/config/store-portal-menu-tree.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config",
+      "type": "tsx",
+      "client": false
+    },
+    {
       "id": "dir_src_hooks",
       "label": "hooks/",
       "path": "src/hooks",
@@ -820,6 +1034,16 @@
       "id": "file_src_hooks_use_cart_ts",
       "label": "use-cart.ts",
       "path": "src/hooks/use-cart.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_hooks_use_checkout_draft_ts",
+      "label": "use-checkout-draft.ts",
+      "path": "src/hooks/use-checkout-draft.ts",
       "color": "#00ddff",
       "size": 10,
       "community": "src/hooks",
@@ -976,6 +1200,16 @@
       "client": false
     },
     {
+      "id": "file_src_lib_mock_session_to_admin_user_ts",
+      "label": "mock-session-to-admin-user.ts",
+      "path": "src/lib/mock-session-to-admin-user.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_lib_promo_rules_registry_ts",
       "label": "promo-rules-registry.ts",
       "path": "src/lib/promo-rules-registry.ts",
@@ -989,6 +1223,16 @@
       "id": "file_src_lib_storage_ts",
       "label": "storage.ts",
       "path": "src/lib/storage.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_store_auth_ts",
+      "label": "store-auth.ts",
+      "path": "src/lib/store-auth.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/lib",
@@ -1038,6 +1282,16 @@
       "id": "file_src_providers_query_provider_tsx",
       "label": "query-provider.tsx",
       "path": "src/providers/query-provider.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_store_portal_layout_tsx",
+      "label": "store-portal-layout.tsx",
+      "path": "src/providers/store-portal-layout.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/providers",
@@ -1365,6 +1619,96 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_app",
+      "target": "dir_src_app_store",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store",
+      "target": "file_src_app_store_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store",
+      "target": "dir_src_app_store_orders",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders",
+      "target": "file_src_app_store_orders_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders",
+      "target": "dir_src_app_store_orders__orderid_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__orderid_",
+      "target": "file_src_app_store_orders__orderid__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders",
+      "target": "dir_src_app_store_orders__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_actions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_status_groups_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store",
+      "target": "file_src_app_store_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store",
+      "target": "dir_src_app_store_profile",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_profile",
+      "target": "file_src_app_store_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src",
       "target": "dir_src_components",
       "relation": "contains"
@@ -1470,6 +1814,26 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_components_shared",
+      "target": "file_src_components_shared_storefront_chrome_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
+      "target": "file_src_config_store_portal_layout_static_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
+      "target": "file_src_config_store_portal_menu_tree_tsx",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src",
       "target": "dir_src_hooks",
       "relation": "contains"
@@ -1482,6 +1846,11 @@
     {
       "source": "dir_src_hooks",
       "target": "file_src_hooks_use_cart_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
+      "target": "file_src_hooks_use_checkout_draft_ts",
       "relation": "contains"
     },
     {
@@ -1561,12 +1930,22 @@
     },
     {
       "source": "dir_src_lib",
+      "target": "file_src_lib_mock_session_to_admin_user_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
       "target": "file_src_lib_promo_rules_registry_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_storage_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_store_auth_ts",
       "relation": "contains"
     },
     {
@@ -1592,6 +1971,11 @@
     {
       "source": "dir_src_providers",
       "target": "file_src_providers_query_provider_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers",
+      "target": "file_src_providers_store_portal_layout_tsx",
       "relation": "contains"
     },
     {
@@ -1677,6 +2061,11 @@
     {
       "source": "file_src_app_layout_tsx",
       "target": "file_src_app_page_tsx",
+      "relation": "renders"
+    },
+    {
+      "source": "file_src_app_store_layout_tsx",
+      "target": "file_src_app_store_page_tsx",
       "relation": "renders"
     },
     {
@@ -1771,6 +2160,11 @@
     },
     {
       "source": "file_src_app__store_sync__checkout_page_tsx",
+      "target": "file_src_hooks_use_checkout_draft_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__checkout_page_tsx",
       "target": "file_src_hooks_use_cart_ts",
       "relation": "imports"
     },
@@ -1821,6 +2215,11 @@
     },
     {
       "source": "file_src_app__store_sync__login_page_tsx",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app__store_sync__login_page_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
     },
@@ -1840,78 +2239,23 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app__store_sync__login_page_tsx",
+      "target": "file_src_lib_store_auth_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app__store_sync__orders_loading_tsx",
       "target": "file_src_components_shared_route_loading_tsx",
       "relation": "imports"
     },
     {
       "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_hooks_use_debounced_value_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_hooks_queries_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_hooks_use_session_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_lib_format_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders_page_tsx",
-      "target": "file_src_components_shared_order_status_table_tsx",
+      "target": "file_src_config_store_portal_layout_static_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app__store_sync__orders__orderid__loading_tsx",
       "target": "file_src_components_shared_route_loading_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders__orderid__page_tsx",
-      "target": "file_src_lib_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders__orderid__page_tsx",
-      "target": "file_src_hooks_queries_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders__orderid__page_tsx",
-      "target": "file_src_lib_format_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__orders__orderid__page_tsx",
-      "target": "file_src_hooks_use_session_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_hooks_use_session_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_hooks_use_cart_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app__store_sync__profile_page_tsx",
-      "target": "file_src_lib_cart_sync_ts",
       "relation": "imports"
     },
     {
@@ -1951,12 +2295,7 @@
     },
     {
       "source": "file_src_app_layout_tsx",
-      "target": "file_src_components_shared_header_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_layout_tsx",
-      "target": "file_src_components_shared_footer_tsx",
+      "target": "file_src_components_shared_storefront_chrome_tsx",
       "relation": "imports"
     },
     {
@@ -2007,6 +2346,176 @@
     {
       "source": "file_src_app_page_tsx",
       "target": "file_src_lib_catalog_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_layout_tsx",
+      "target": "file_src_providers_store_portal_layout_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders_page_tsx",
+      "target": "file_src_components_shared_cart_drawer_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders_page_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders_page_tsx",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders_page_tsx",
+      "target": "dir_src_app_store_orders__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders_page_tsx",
+      "target": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__orderid__page_tsx",
+      "target": "file_src_components_shared_cart_drawer_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__orderid__page_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__orderid__page_tsx",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__orderid__page_tsx",
+      "target": "dir_src_app_store_orders__component",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_columns_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_columns_tsx",
+      "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_columns_tsx",
+      "target": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_columns_tsx",
+      "target": "file_src_app_store_orders__component_store_order_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_columns_tsx",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_status_groups_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_lib_catalog_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_row_actions_tsx",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_status_groups_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "target": "file_src_app_store_orders__component_store_order_status_groups_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_orders_stat_cards_tsx",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_types_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_page_tsx",
+      "target": "file_src_config_store_portal_layout_static_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile_page_tsx",
+      "target": "file_src_hooks_use_session_ts",
       "relation": "imports"
     },
     {
@@ -2210,6 +2719,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_components_shared_storefront_chrome_tsx",
+      "target": "file_src_components_shared_header_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_components_shared_storefront_chrome_tsx",
+      "target": "file_src_components_shared_footer_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_store_portal_layout_static_ts",
+      "target": "file_src_lib_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_store_portal_layout_static_ts",
+      "target": "file_src_lib_store_auth_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_store_portal_layout_static_ts",
+      "target": "file_src_config_store_portal_menu_tree_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_hooks_queries_ts",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -2267,6 +2801,56 @@
     {
       "source": "file_src_lib_catalog_filters_ts",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_mock_session_to_admin_user_ts",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_store_auth_ts",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_store_auth_ts",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_hooks_use_cart_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_hooks_use_client_ready_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_lib_cart_sync_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_lib_mock_session_to_admin_user_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_lib_store_auth_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_store_portal_layout_tsx",
+      "target": "file_src_config_store_portal_layout_static_ts",
       "relation": "imports"
     }
   ]

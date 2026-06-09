@@ -121,7 +121,7 @@ function CheckoutForm({
       toast.success(`Đặt hàng thành công – ${order.orderNumber}`, {
         description: "Đơn được giao tận nơi và thu tiền khi nhận hàng (COD).",
       });
-      router.push(`/orders/${order.id}`);
+      router.push(`/store/orders/${order.id}`);
     } catch (err) {
       const message =
         err instanceof ApiError ? err.message : "Không thể đặt hàng";
@@ -327,7 +327,7 @@ function CheckoutForm({
                   &amp; thu tiền.
                 </p>
               </div>
-
+                  
               <div className="flex items-start gap-2 p-3 text-xs text-muted-foreground bg-muted/10 rounded-xl">
                 <HelpCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <p>

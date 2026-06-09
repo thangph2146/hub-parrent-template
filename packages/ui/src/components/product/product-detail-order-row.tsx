@@ -65,7 +65,7 @@ export function ProductDetailOrderRow({
         className={cn(
           stacked
             ? "grid gap-2.5"
-            : "grid gap-5 sm:grid-cols-[minmax(0,1fr)_11.5rem] sm:items-center sm:gap-6"
+            : "grid gap-5 sm:grid-cols-[minmax(0,1fr)_11.5rem] sm:items-center sm:gap-6 p-3"
         )}
       >
         <div className="min-w-0 space-y-1.5">
@@ -148,7 +148,7 @@ export function ProductDetailOrderRow({
         <div
           className={cn(
             "border-t border-outline-variant/15",
-            stacked ? "mt-2.5 space-y-2 pt-2.5" : "mt-3 pt-3"
+            stacked ? "mt-2.5 space-y-2 pt-2.5" : "mt-3 p-3"
           )}
         >
           {footer}

@@ -57,17 +57,14 @@ export function Header() {
     const items: { href: string; label: string; icon: typeof ShoppingCart }[] = [
       { href: "/catalog", label: "Danh mục sỉ", icon: ShoppingCart },
     ];
-    if (session) {
-      items.push({ href: "/orders", label: "Đơn hàng", icon: Package });
-    }
     items.push({ href: "/support", label: "Hỗ trợ", icon: Headphones });
     if (isDevelopment) {
       items.push({ href: "/graph", label: "Sơ đồ hệ thống", icon: Box });
     }
     return items;
-  }, [session, isDevelopment]);
+  }, [isDevelopment]);
 
-  const profileHref = "/profile";
+  const profileHref = "/store/profile";
 
   const handleLogout = () => {
     resetCartHydration();
@@ -78,7 +75,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-outline-variant bg-surface/85 backdrop-blur-md shadow-level-1 supports-[backdrop-filter]:bg-surface/70">
+    <header className="sticky top-0 z-50 w-full border-b border-outline-variant bg-background text-foreground shadow-level-1 dark:bg-card dark:text-card-foreground">
       <div className="mx-auto flex h-16 max-w-full items-center gap-2 px-4 sm:px-6">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2 group min-w-0 shrink">
@@ -140,6 +137,38 @@ export function Header() {
                     </Link>
                   );
                 })}
+                {session ? (
+                  <>
+                    <div className="my-3 border-t border-border" />
+                    <Link
+                      href="/store/orders"
+                      onClick={() => setMobileNavOpen(false)}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold transition-colors ${pathname.startsWith("/store/orders") ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"}`}
+                    >
+                      <Package className="size-4 shrink-0 opacity-80" />
+                      Đơn hàng
+                    </Link>
+                    <Link
+                      href={profileHref}
+                      onClick={() => setMobileNavOpen(false)}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold transition-colors ${pathname.startsWith("/store/profile") ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"}`}
+                    >
+                      <User className="size-4 shrink-0 opacity-80" />
+                      Trang cá nhân
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileNavOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-destructive transition-colors hover:bg-destructive/10"
+                    >
+                      <LogOut className="size-4 shrink-0 opacity-80" />
+                      Đăng xuất
+                    </button>
+                  </>
+                ) : null}
                 <div className="my-3 border-t border-border" />
                 <div className="flex items-center justify-between gap-2 px-1 py-2">
                   <Text as="span" variant="label" className="text-muted-foreground text-xs">Giao diện</Text>
@@ -218,6 +247,10 @@ export function Header() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => router.push("/store/orders")}>
+                      <Package className="size-4" />
+                      Đơn hàng
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => router.push(profileHref)}>
                       <User className="size-4" />
                       Trang cá nhân

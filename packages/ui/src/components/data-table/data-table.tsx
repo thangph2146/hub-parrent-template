@@ -57,6 +57,7 @@ import {
 } from "@tanstack/react-table"
 import { ChevronDown, ChevronRight, GripVertical } from "lucide-react"
 import {
+  Fragment,
   useCallback,
   useEffect,
   useId,
@@ -266,6 +267,16 @@ export type AdminDataTableProps<TData> = {
   data: TData[]
   columns: ColumnDef<TData, unknown>[]
   getSubRows?: (row: TData) => TData[] | undefined
+  /**
+   * Nội dung full-width bên dưới dòng khi expand — dùng cho bảng lồng (nested table).
+   * Khác `getSubRows`: không chèn dòng con vào cùng bảng dữ liệu.
+   */
+  renderExpandedRow?: (row: Row<TData>) => ReactNode
+  /**
+   * Dòng nào có nút expand khi dùng `renderExpandedRow` (không có `getSubRows`).
+   * Mặc định: mọi dòng depth 0.
+   */
+  getRowCanExpand?: (row: Row<TData>) => boolean
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string
   isLoading?: boolean
   emptyLabel?: string
@@ -405,6 +416,11 @@ export type AdminDataTableProps<TData> = {
   rowReorderDisabled?: boolean
   /** Aria label cho nút kéo sắp xếp. */
   rowReorderHandleAriaLabel?: string
+  /**
+   * Bảng lồng trong `renderExpandedRow` — giao diện gọn, header nhạt hơn, không khung nổi.
+   * @default false
+   */
+  embedded?: boolean
 }
 
 export {
@@ -453,12 +469,12 @@ function stickyPinnedHeadCellClassName(options: {
   isActionsCol: boolean
   isReorderCol: boolean
   stickyTableHeader: boolean
+  embedded?: boolean
 }): string {
   const { isSelectionCol, isActionsCol, isReorderCol, stickyTableHeader } =
     options
   if (!isSelectionCol && !isActionsCol && !isReorderCol) return ""
-  return cn(
-    "bg-primary text-center align-middle text-primary-foreground",
+  return cn( "bg-primary text-center align-middle text-primary-foreground",
     (isSelectionCol || isReorderCol) && "sticky left-0 px-0",
     isActionsCol && "sticky right-0",
     stickyTableHeader
@@ -533,6 +549,7 @@ function stickyTableHeadClassName(options: {
   isSelectionCol: boolean
   isActionsCol: boolean
   isReorderCol: boolean
+  embedded?: boolean
 }): string {
   if (!options.enabled) return ""
   const corner =
@@ -540,7 +557,6 @@ function stickyTableHeadClassName(options: {
   return cn(
     "sticky top-0 shadow-[0_2px_6px_-2px_rgba(0,0,0,0.1)]",
     corner ? "z-[25]" : "z-[15]",
-    "bg-primary"
   )
 }
 
@@ -735,6 +751,8 @@ export function AdminDataTable<TData>({
   data,
   columns,
   getSubRows,
+  renderExpandedRow,
+  getRowCanExpand,
   isLoading,
   emptyLabel = "Không có dữ liệu",
   defaultExpandedAll = true,
@@ -782,7 +800,9 @@ export function AdminDataTable<TData>({
   mapReorderedRows,
   rowReorderDisabled = false,
   rowReorderHandleAriaLabel = "Kéo để sắp xếp",
+  embedded = false,
 }: AdminDataTableProps<TData>) {
+  const expandColumnEnabled = Boolean(getSubRows || renderExpandedRow)
   const tableScopeId = useId()
   const globalFilterControlId = useId()
   const resolvedFilterColumnVisibilityKey =
@@ -1074,7 +1094,7 @@ export function AdminDataTable<TData>({
       minSize: 44,
       maxSize: 56,
       cell: ({ row, table }) => {
-        const label = getSubRows
+        const label = getSubRows && !renderExpandedRow
           ? formatHierarchicalRowIndex(row, indexRowOffset)
           : (() => {
               const flatIndex = table
@@ -1090,7 +1110,13 @@ export function AdminDataTable<TData>({
         )
       },
     }),
-    [getSubRows, indexColumnExcludeFromExport, indexColumnLabel, indexRowOffset]
+    [
+      getSubRows,
+      indexColumnExcludeFromExport,
+      indexColumnLabel,
+      indexRowOffset,
+      renderExpandedRow,
+    ]
   )
 
   const selectionColumn = useMemo<ColumnDef<TData, unknown>>(
@@ -1188,13 +1214,13 @@ export function AdminDataTable<TData>({
     if (rowSelectionActive) built.push(selectionColumn)
     if (rowReorderColumnEnabled) built.push(reorderColumn)
     if (indexColumnEnabled) built.push(indexColumn)
-    if (getSubRows) built.push(expanderColumn)
+    if (expandColumnEnabled) built.push(expanderColumn)
     built.push(...applyDefaultFilterFns(normalizeDataTableColumns(columns)))
     return built
   }, [
     columns,
+    expandColumnEnabled,
     expanderColumn,
-    getSubRows,
     indexColumn,
     indexColumnEnabled,
     rowSelectionActive,
@@ -1234,6 +1260,10 @@ export function AdminDataTable<TData>({
         }
       : {}),
     getSubRows,
+    getRowCanExpand: renderExpandedRow
+      ? (row) =>
+          getRowCanExpand ? getRowCanExpand(row) : row.depth === 0
+      : undefined,
     getRowId,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -1836,8 +1866,12 @@ export function AdminDataTable<TData>({
     )
   }
 
+  const tableHeaderClass = "bg-primary text-primary-foreground"
+
+  const tableHeadToneClass = "bg-primary font-semibold text-primary-foreground"
+
   return (
-    <div className="flex flex-col gap-3">
+    <div className={cn("flex flex-col", embedded ? "gap-0" : "gap-3")}>
       {showTableToolbar ? (
         <DataTableToolbar
           globalFilterControlId={globalFilterControlId}
@@ -1878,7 +1912,10 @@ export function AdminDataTable<TData>({
       ) : null}
       <FieldSet
         variant="custom"
-        className={cn("min-w-0", DATA_TABLE_PANEL_FIELDSET_CLASS)}
+        className={cn(
+          "min-w-0",
+          DATA_TABLE_PANEL_FIELDSET_CLASS,
+        )}
       >
         <FieldSetContent className="space-y-0 p-0">
           <DataTableRowActionsRegistryProvider>
@@ -1896,7 +1933,7 @@ export function AdminDataTable<TData>({
                   }
                   scrollContainerStyle={tableScrollContainerStyle}
                 >
-                  <TableHeader className="bg-primary text-primary-foreground">
+                  <TableHeader className={tableHeaderClass}>
                     {headerGroups.map((hg) => (
                       <TableRow key={hg.id} className="hover:bg-transparent">
                         {hg.headers.map((header) => {
@@ -1920,7 +1957,8 @@ export function AdminDataTable<TData>({
                             <TableHead
                               key={header.id}
                               className={cn(
-                                "bg-primary align-top font-semibold whitespace-normal text-primary-foreground",
+                                "align-top whitespace-normal",
+                                tableHeadToneClass,
                                 header.column.getCanSort() &&
                                   "cursor-pointer select-none",
                                 dataTableCellWidthClassName(
@@ -1933,12 +1971,14 @@ export function AdminDataTable<TData>({
                                   isActionsCol,
                                   isReorderCol,
                                   stickyTableHeader,
+                                  embedded,
                                 }),
                                 stickyTableHeadClassName({
                                   enabled: stickyTableHeader,
                                   isSelectionCol,
                                   isActionsCol,
                                   isReorderCol,
+                                  embedded,
                                 })
                               )}
                               style={{
@@ -1996,10 +2036,8 @@ export function AdminDataTable<TData>({
                       </TableRow>
                     ) : (
                       rows.map((row) => (
-                        <DataTableRowActionsRowProvider
-                          key={row.id}
-                          rowId={row.id}
-                        >
+                        <Fragment key={row.id}>
+                          <DataTableRowActionsRowProvider rowId={row.id}>
                           <DataTableRowContextMenu
                             rowId={row.id}
                             enabled={rowContextMenuEnabled}
@@ -2028,9 +2066,11 @@ export function AdminDataTable<TData>({
                                 (rowSelectionActive ? 1 : 0) +
                                 (rowReorderColumnEnabled ? 1 : 0) +
                                 (indexColumnEnabled ? 1 : 0) +
-                                (getSubRows ? 1 : 0)
+                                (expandColumnEnabled ? 1 : 0)
                               const indent =
-                                getSubRows && colIndex === firstDataColumnIndex
+                                getSubRows &&
+                                !renderExpandedRow &&
+                                colIndex === firstDataColumnIndex
                                   ? row.depth * 24
                                   : 0
                               const isSelectionCol =
@@ -2165,6 +2205,21 @@ export function AdminDataTable<TData>({
                             })}
                           </DataTableRowContextMenu>
                         </DataTableRowActionsRowProvider>
+                          {renderExpandedRow &&
+                          row.depth === 0 &&
+                          row.getIsExpanded() ? (
+                            <TableRow className="border-b hover:bg-transparent">
+                              <TableCell
+                                colSpan={tableColumns.length}
+                                className="p-0 align-top"
+                              >
+                                <div className="border-t border-primary/10 bg-muted/10 px-2 py-2 sm:px-4 sm:py-3">
+                                  {renderExpandedRow(row)}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ) : null}
+                        </Fragment>
                       ))
                     )}
                   </TableBody>
