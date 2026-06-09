@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Boxes, Gift, Layers, Package, Sparkles, Tag } from "lucide-react"
+import { Boxes, Gift, Layers, Package, Sparkles } from "lucide-react"
 import type { Product, ProductUnitType } from "@workspace/api-client"
 import {
   getProductUnits,
@@ -29,7 +29,6 @@ import { ProductDetailInfoHeader } from "./product-detail-info-header"
 import { ProductDetailLayout } from "./product-detail-layout"
 import { ProductDetailMetaGrid } from "./product-detail-meta-grid"
 import { ProductDetailPricePanel } from "./product-detail-price-panel"
-import { ProductDetailUnitPicker } from "./product-detail-unit-picker"
 import { formatProductVnd } from "./product-money"
 import { cn } from "../../lib/utils"
 
@@ -74,17 +73,6 @@ export function ProductAdminDetail({
     categoryLabel ??
     product.category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 
-  const unitOptions = units.map((unit) => {
-    const { current, list } = unitSellingAndListPrice(unit, previewQty)
-    return {
-      type: unit.type,
-      label: unit.label,
-      currentPriceLabel: formatProductVnd(current),
-      listPriceLabel: list != null ? formatProductVnd(list) : null,
-      hasPromo: unit.wholesalePrice !== null && unit.wholesalePrice > 0,
-    }
-  })
-
   return (
     <AdminDetailLayout className={className}>
       <AdminDetailMain>
@@ -94,7 +82,7 @@ export function ProductAdminDetail({
             title="Xem trước cửa hàng"
             description="Ảnh, giá và thông tin như khách thấy trên storefront."
             badge={
-              units.length > 1 ? (
+              units.length > 0 ? (
                 <FieldSectionBadge>{units.length}</FieldSectionBadge>
               ) : undefined
             }
@@ -118,15 +106,6 @@ export function ProductAdminDetail({
             couponBadges={product.coupons ?? []}
             extraBadges={<ActiveStatusBadge active={product.isActive} />}
           />
-
-          {units.length <= 1 ? (
-            <ProductDetailUnitPicker
-              options={unitOptions}
-              selectedType={selectedUnit.type}
-              onSelect={setSelectedType}
-              compact
-            />
-          ) : null}
 
           <ProductDetailPricePanel
             unitPrice={unitPrice}
@@ -195,7 +174,7 @@ export function ProductAdminDetail({
         </FieldSet>
       </AdminDetailMain>
 
-      {units.length > 1 ? (
+      {units.length > 0 ? (
         <AdminDetailSidebar className="lg:sticky lg:top-18 lg:self-start">
           <ProductAdminUnitsSummary
             units={units}

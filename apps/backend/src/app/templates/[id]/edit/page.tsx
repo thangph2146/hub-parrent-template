@@ -23,7 +23,6 @@ import {
 } from "../../_component"
 import type { TemplateFormValues } from "../../_component"
 import { useAdminMutation } from "@/hooks/use-admin-mutation"
-import { useAdminFormDraftPersistence } from "@/hooks/use-admin-edit-form-hydration"
 function EditTemplatePageInner() {
   const crudNav = useAdminCrudNavigation("/templates"),
     params = useParams(),

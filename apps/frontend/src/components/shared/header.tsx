@@ -17,7 +17,7 @@ import { Badge } from "@ui/components/badge";
 import { useCart } from "@/hooks/use-cart";
 import { useOpenCartDrawer } from "@/components/shared/cart-drawer";
 import { useSession } from "@/hooks/use-session";
-import { Button } from "@ui/components/button";
+import { Button, buttonVariants } from "@ui/components/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -192,17 +192,19 @@ export function Header() {
 
         <div className="flex shrink-0 items-center gap-2">
           {session ? (
-            <Button
-              asChild
-              variant={isOrdersActive ? "default" : "outline"}
-              size="sm"
-              className="hidden sm:inline-flex"
+            <Link
+              href="/orders"
+              className={cn(
+                buttonVariants({
+                  variant: isOrdersActive ? "default" : "outline",
+                  size: "sm",
+                }),
+                "hidden sm:inline-flex"
+              )}
             >
-              <Link href="/orders">
-                <Package className="mr-1.5 size-4" />
-                Đơn hàng
-              </Link>
-            </Button>
+              <Package className="mr-1.5 size-4" />
+              Đơn hàng
+            </Link>
           ) : null}
           <Button
             type="button"

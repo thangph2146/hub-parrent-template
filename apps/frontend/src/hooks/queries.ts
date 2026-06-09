@@ -86,6 +86,23 @@ export const useCategories = (activeOnly = false) =>
     },
   });
 
+export const useCategoryBySlug = (slug: string | null | undefined) =>
+  useQuery<Category | null, Error>({
+    queryKey: ["products", "category-by-slug", slug ?? ""],
+    queryFn: async () => {
+      const products = await listActivePublicProducts();
+      const { categories } = buildCategoriesFromProducts(products);
+      const key = String(slug ?? "").trim();
+      if (!key) return null;
+      return (
+        categories.find(
+          (c) => c.slug === key || c.name === key || c.id === key,
+        ) ?? null
+      );
+    },
+    enabled: !!slug?.trim(),
+  });
+
 export const useOrders = (email?: string) =>
   useQuery<Order[], Error>({
     queryKey: queryKeys.orders(email),

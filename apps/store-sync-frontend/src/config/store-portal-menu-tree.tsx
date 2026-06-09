@@ -1,4 +1,4 @@
-import { Package, ShoppingCart, Store } from "lucide-react";
+import { Package, ShoppingCart } from "lucide-react";
 import type { AdminMenuTreeItem } from "@ui/components/admin";
 
 /** Menu sidebar cổng quản lý cửa hàng `/store`. */

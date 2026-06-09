@@ -97,7 +97,7 @@ export function AdminStoragePickerPanel({
   const [activeFolderPath, setActiveFolderPath] = useState(
     folderScope?.folderPath ?? ""
   )
-  const [includeDescendants, setIncludeDescendants] = useState(false)
+  const includeDescendants = false
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [pickedMap, setPickedMap] = useState<Map<string, string>>(
@@ -141,12 +141,7 @@ export function AdminStoragePickerPanel({
     return () => {
       cancelled = true
     }
-  }, [
-    folderScope?.folderPath,
-    folderScope?.folderLabel,
-    folderScope?.onBootstrap,
-    folderScope?.realm,
-  ])
+  }, [folderScope])
 
   const realmTabs = useMemo(() => {
     const byId = new Map(realms.map((r) => [r.id, r]))

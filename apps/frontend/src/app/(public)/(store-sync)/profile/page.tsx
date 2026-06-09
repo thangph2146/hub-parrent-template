@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@ui/components/button";
+import { Button, buttonVariants } from "@ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Badge } from "@ui/components/badge";
 import { Container, Page, PageContent } from "@ui/components/layout";
@@ -69,9 +69,9 @@ export default function ProfilePage() {
                 <Badge variant="secondary">{session.role}</Badge>
               </div>
               <div className="flex flex-wrap gap-3 pt-2">
-                <Button asChild variant="outline">
-                  <Link href="/orders">Đơn hàng của tôi</Link>
-                </Button>
+                <Link href="/orders" className={buttonVariants({ variant: "outline" })}>
+                  Đơn hàng của tôi
+                </Link>
                 <Button type="button" variant="destructive" onClick={handleLogout}>
                   <LogOut className="mr-2 size-4" />
                   Đăng xuất

@@ -142,11 +142,12 @@ export function ImageUrlListField({
     mergeRowsFromUrls(parseImageUrlList(value), [])
   )
   const rowsRef = useRef(rows)
-  rowsRef.current = rows
+  useEffect(() => {
+    rowsRef.current = rows
+  }, [rows])
 
   const commitRows = useCallback(
     (next: ImageUrlRow[]) => {
-      rowsRef.current = next
       setRows(next)
       onChange(formatImageUrlList(next.map((row) => row.url)))
     },
@@ -166,15 +167,18 @@ export function ImageUrlListField({
 
   const removeRow = useCallback(
     (row: ImageUrlRow) => {
-      const next = rowsRef.current.filter((item) => item.id !== row.id)
-      commitRows(next)
+      setRows((prev) => {
+        const next = prev.filter((item) => item.id !== row.id)
+        onChange(formatImageUrlList(next.map((item) => item.url)))
+        return next
+      })
       setSelectedRowIds((prev) => {
         const selection = { ...prev }
         delete selection[row.id]
         return selection
       })
     },
-    [commitRows]
+    [onChange]
   )
 
   const columns = useMemo(
@@ -197,11 +201,11 @@ export function ImageUrlListField({
   const handleBulkRemove = useCallback(
     (selected: ImageUrlRow[]) => {
       const removeIds = new Set(selected.map((row) => row.id))
-      const next = rowsRef.current.filter((row) => !removeIds.has(row.id))
+      const next = rows.filter((row) => !removeIds.has(row.id))
       commitRows(next)
       setSelectedRowIds({})
     },
-    [commitRows]
+    [commitRows, rows]
   )
 
   const handleReorder = useCallback(

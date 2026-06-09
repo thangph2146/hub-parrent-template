@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { ShoppingCart, AlertCircle } from "lucide-react"
@@ -36,10 +37,13 @@ import {
   buildOrderBulkStatusActionMap,
   getOrderColumns,
   OrderBulkStatusMenu,
+  OrderItemsTable,
   ORDER_STATUS_LABELS,
   prefetchOrderDetail,
   useOrderStatusCountsQuery,
   useOrdersListQuery,
+  type OrderItemRow,
+  type OrderItemRowActionHandlers,
   type OrderRow,
 } from "./_component"
 
@@ -53,6 +57,7 @@ const STATUS_TABS: Array<{ value: OrderStatus | "all"; label: string }> = [
 ]
 
 function OrdersPageInner() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const canUpdate = user
@@ -73,6 +78,7 @@ function OrdersPageInner() {
   const [globalFilter, setGlobalFilter] = useState("")
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [statusBusyId, setStatusBusyId] = useState<string | null>(null)
+  const [busyItemId, setBusyItemId] = useState<string | null>(null)
   const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({})
   const debouncedSearch = useDebouncedValue(globalFilter, 300)
   const debouncedColumnFilters = useDebouncedValue(columnFilters, 300)
@@ -200,6 +206,43 @@ function OrdersPageInner() {
     setSelectedRowIds({})
   }, [status, debouncedSearch, debouncedColumnFilters, pageSize])
 
+  const itemActionHandlers = useMemo<OrderItemRowActionHandlers>(
+    () => ({
+      onViewProduct: (item: OrderItemRow) => {
+        router.push(`/products/${item.productId}`)
+      },
+      onCopySku: async (item: OrderItemRow) => {
+        setBusyItemId(item.id)
+        try {
+          await navigator.clipboard.writeText(item.sku)
+          toast.success(`Đã sao chép ${item.sku}`)
+        } catch {
+          toast.error("Không sao chép được SKU.")
+        } finally {
+          setBusyItemId(null)
+        }
+      },
+      busyItemId,
+    }),
+    [busyItemId, router]
+  )
+
+  const renderExpandedRow = useCallback(
+    (row: { original: OrderRow }) => (
+      <OrderItemsTable
+        orderId={row.original.id}
+        items={row.original.items}
+        actionHandlers={itemActionHandlers}
+      />
+    ),
+    [itemActionHandlers]
+  )
+
+  const getRowCanExpand = useCallback(
+    (row: { original: OrderRow }) => (row.original.items?.length ?? 0) > 0,
+    []
+  )
+
   const countFor = (key: OrderStatus | "all") => {
     const c = countsQuery.data
     if (!c) return undefined
@@ -211,7 +254,7 @@ function OrdersPageInner() {
     <AdminPageSection>
       <AdminListPageHeader
         title="Đơn hàng"
-        subtitle="Ảnh từng dòng được snapshot lúc checkout — không phụ thuộc catalog sau này."
+        subtitle="Bấm mũi tên để mở bảng sản phẩm trong đơn — ảnh snapshot lúc checkout, không phụ thuộc catalog sau này."
         icon={ShoppingCart}
       />
 
@@ -248,6 +291,9 @@ function OrdersPageInner() {
               tableScope="orders"
               data={listQuery.data?.items ?? []}
               getRowId={(row) => row.id}
+              defaultExpandedAll={false}
+              renderExpandedRow={renderExpandedRow}
+              getRowCanExpand={getRowCanExpand}
               columns={columns}
               isLoading={listQuery.isLoading}
               emptyLabel="Chưa có đơn hàng."

@@ -496,10 +496,7 @@ export class PublicController {
 
   /** Storefront B2B — dev only, chọn user theo id (không cần mật khẩu). */
   @Post('auth/store-dev-login')
-  async storeDevLogin(
-    @Body() body: { userId?: string },
-    @Res() res: Response,
-  ) {
+  async storeDevLogin(@Body() body: { userId?: string }, @Res() res: Response) {
     if (process.env.NODE_ENV !== 'development') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,

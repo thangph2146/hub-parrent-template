@@ -1,11 +1,7 @@
 "use client"
 
 import { useCallback, useEffect } from "react"
-import {
-  buildEntityDraftKey,
-  loadEntityDraft,
-  useHydrateOncePerEntity,
-} from "@workspace/query-client"
+import { useHydrateOncePerEntity } from "@workspace/query-client"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { useQueryClient } from "@tanstack/react-query"

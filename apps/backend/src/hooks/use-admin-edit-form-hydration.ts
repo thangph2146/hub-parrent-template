@@ -41,9 +41,13 @@ export function useAdminEditFormHydration<
 }: UseAdminEditFormHydrationOptions<TData, TFormValues>) {
   const draftKey = buildEntityDraftKey(scope, entityId)
   const toFormValuesRef = useRef(toFormValues)
-  toFormValuesRef.current = toFormValues
   const mergeDraftRef = useRef(mergeDraft)
-  mergeDraftRef.current = mergeDraft
+  useEffect(() => {
+    toFormValuesRef.current = toFormValues
+  }, [toFormValues])
+  useEffect(() => {
+    mergeDraftRef.current = mergeDraft
+  }, [mergeDraft])
 
   const hydrateFromServer = useCallback(
     (source: TData) => {
