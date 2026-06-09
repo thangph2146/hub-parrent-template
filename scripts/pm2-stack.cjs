@@ -55,21 +55,20 @@ const STACK_PROCESS_NAMES = {
 /** Tên process cũ / lỗi — chỉ dùng khi delete để dọn sạch server. */
 const EXTRA_DELETE_NAMES = {
   parent: [
-    "hub-main-api",
-    "hub-main-backend",
-    "hub-main-frontend",
-    "ecosystem.main",
-    "ecosystem.config",
+    "hub-parent-api",
+    "hub-parent-backend",
+    "hub-parent-frontend",
   ],
-  main: [
-    "hub-main-api",
-    "hub-main-backend",
-    "hub-main-frontend",
-    "ecosystem.main",
-    "ecosystem.config",
+  checkin: [
+    "hub-checkin-api",
+    "hub-checkin-backend",
+    "hub-checkin-frontend",
   ],
-  checkin: ["ecosystem.checkin"],
-  store: ["ecosystem.store"],
+  store: [
+    "hub-store-api",
+    "hub-store-backend",
+    "hub-store-frontend",
+  ],
 }
 
 const action = process.argv[2]
@@ -131,6 +130,11 @@ function runPm2(args, { allowMissing = false } = {}) {
   }
 }
 
+function filterRunning(targetNames) {
+  const running = getPm2ProcessNames()
+  return targetNames.filter((name) => running.has(name))
+}
+
 function runOnEachName(pm2Action, targetNames, { allowMissing = false } = {}) {
   const envFlag =
     pm2Action === "reload" || pm2Action === "restart" ? " --update-env" : ""
@@ -140,12 +144,21 @@ function runOnEachName(pm2Action, targetNames, { allowMissing = false } = {}) {
   }
 }
 
+function runOnRunning(pm2Action, targetNames) {
+  const toRun = filterRunning(targetNames)
+  if (toRun.length === 0) {
+    console.log(`[pm2-stack] không có process stack "${stack}" trong PM2`)
+    return
+  }
+  runOnEachName(pm2Action, toRun)
+}
+
 function getDeleteNames() {
   return [...new Set([...names, ...(EXTRA_DELETE_NAMES[stack] ?? [])])]
 }
 
-function deleteStack({ allowMissing = true } = {}) {
-  runOnEachName("delete", getDeleteNames(), { allowMissing })
+function deleteStack() {
+  runOnRunning("delete", getDeleteNames())
 }
 
 function startStack() {
@@ -166,7 +179,7 @@ function startStack() {
 
 function restartStack() {
   console.log(`[pm2-stack] restart stack "${stack}" (delete + start)`)
-  deleteStack({ allowMissing: true })
+  deleteStack()
   fs.writeFileSync(jsonPath, `${JSON.stringify({ apps }, null, 2)}\n`)
   runPm2(`start "${jsonPath}"`)
 }
@@ -179,11 +192,11 @@ switch (action) {
     restartStack()
     break
   case "delete":
-    deleteStack({ allowMissing: true })
+    deleteStack()
     break
   case "reload":
   case "stop":
-    runOnEachName(action, names, { allowMissing: true })
+    runOnRunning(action, names)
     break
   default:
     usage()
