@@ -1,6 +1,104 @@
-// Role data
-const DEV_LOGIN_PASSWORD_HASH =
-  '$2a$10$HKxTCz7JvLH2qCCnliTkleWtPEu.tdp/f/AjPrSaHDigfWlnxDRIe';
+// Role data — mật khẩu plain `demo` (chỉ local / seed dev).
+export const DEV_LOGIN_PASSWORD_PLAIN = 'demo';
+
+export const DEV_LOGIN_PASSWORD_HASH =
+  '$2b$10$6gktuaAnT51RIaAhhkRozOYZpg664aG.B03tp/VQ0x7BlOVgXbE1y';
+
+/** Quyền tối thiểu cho cổng admin check-in sự kiện (`hub-event-checkin-frontend`). */
+const EVENT_CHECKIN_STAFF_PERMISSIONS = [
+  'dashboard:view',
+  'events:view',
+  'events:create',
+  'events:update',
+  'events:delete',
+  'events:manage',
+  'events:export',
+  'events:restore',
+  'event_registrations:view',
+  'event_registrations:create',
+  'event_registrations:update',
+  'event_registrations:delete',
+  'event_registrations:manage',
+  'event_registrations:export',
+  'event_registrations:restore',
+  'event_checkins:view',
+  'event_checkins:create',
+  'event_checkins:update',
+  'event_checkins:delete',
+  'event_checkins:manage',
+  'event_checkins:export',
+  'event_checkouts:view',
+  'event_checkouts:create',
+  'event_checkouts:update',
+  'event_checkouts:delete',
+  'event_checkouts:manage',
+  'event_checkouts:export',
+  'event_speakers:view',
+  'event_speakers:create',
+  'event_speakers:update',
+  'event_speakers:delete',
+  'event_speakers:manage',
+  'event_speakers:export',
+  'speakers:view',
+  'speakers:create',
+  'speakers:update',
+  'speakers:delete',
+  'speakers:manage',
+  'speakers:export',
+  'speakers:restore',
+  'locations:view',
+  'locations:create',
+  'locations:update',
+  'locations:delete',
+  'locations:manage',
+  'locations:export',
+  'locations:restore',
+  'cameras:view',
+  'cameras:create',
+  'cameras:update',
+  'cameras:delete',
+  'cameras:manage',
+  'cameras:export',
+  'cameras:restore',
+  'templates:view',
+  'templates:create',
+  'templates:update',
+  'templates:delete',
+  'templates:manage',
+  'templates:export',
+  'templates:restore',
+  'screens:view',
+  'screens:create',
+  'screens:update',
+  'screens:delete',
+  'screens:manage',
+  'screens:export',
+  'screens:restore',
+  'categories:view',
+  'categories:create',
+  'categories:update',
+  'categories:manage',
+  'tags:view',
+  'tags:create',
+  'tags:update',
+  'tags:delete',
+  'tags:manage',
+  'page_contents:view',
+  'posts:view',
+  'settings:view',
+  'settings:manage',
+  'seo_metas:view',
+  'seo_metas:create',
+  'seo_metas:update',
+  'seo_metas:delete',
+  'seo_metas:manage',
+  'uploads:view',
+  'uploads:create',
+  'uploads:update',
+  'uploads:delete',
+  'uploads:manage',
+  'uploads:export',
+] as const;
 
 export const SUPERADMIN_ROLES_DATA = [
   {
@@ -360,6 +458,14 @@ export const SUPERADMIN_ROLES_DATA = [
     ],
     isActive: true,
   },
+  {
+    name: 'event_staff',
+    displayName: 'Ban tổ chức sự kiện',
+    description:
+      'Vận hành check-in — sự kiện, camera, màn hình, địa điểm (cổng HUB Events)',
+    permissions: [...EVENT_CHECKIN_STAFF_PERMISSIONS],
+    isActive: true,
+  },
 ];
 
 // User data
@@ -465,6 +571,17 @@ export const SUPERADMIN_USERS_DATA = [
     address: null,
     isActive: true,
   },
+  {
+    email: 'btc.checkin@hub.edu.vn',
+    name: 'BTC Check-in (demo)',
+    password: DEV_LOGIN_PASSWORD_HASH,
+    bio: 'Tài khoản test cổng quản trị sự kiện / check-in',
+    avatar: null,
+    emailVerified: null,
+    phone: null,
+    address: null,
+    isActive: true,
+  },
 ];
 
 // UserRole data
@@ -478,4 +595,5 @@ export const SUPERADMIN_USER_ROLES_DATA = [
   { userEmail: 'demo.sv@st.buh.edu.vn', roleName: 'student' },
   { userEmail: 'demo.phuhuynh@hub.edu.vn', roleName: 'parent' },
   { userEmail: 'demo.khach@hub.edu.vn', roleName: 'user' },
+  { userEmail: 'btc.checkin@hub.edu.vn', roleName: 'event_staff' },
 ];

@@ -415,6 +415,15 @@ export function SignInForm() {
                       Đăng ký
                     </Link>
                   </FieldDescription>
+
+                  <FieldDescription className="text-center text-sm md:text-base">
+                    <Link
+                      href="/"
+                      className="font-semibold text-primary underline-offset-4 hover:underline"
+                    >
+                      Về trang chủ
+                    </Link>
+                  </FieldDescription>
                 </FieldGroup>
               </form>
 

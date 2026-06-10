@@ -1,18 +1,10 @@
 "use client"
 
 import { useEffect, useMemo } from "react"
-import dynamic from "next/dynamic"
 import { useParams } from "next/navigation"
 import { useAdminCrudNavigation } from "@/lib/admin-navigation"
 import { toast } from "@ui/components/sonner"
 
-const LexicalEditor = dynamic(
-  () =>
-    import("@thangph2146/lexical-editor").then((mod) => ({
-      default: mod.LexicalEditor,
-    })),
-  { ssr: false }
-)
 import {
   Calendar,
   Clock,
@@ -47,7 +39,11 @@ import {
 import { useAuth } from "@/providers/auth-provider"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { api } from "@/lib/api"
-import { useEventDetailQuery, useEventSpeakersQuery } from "../_component"
+import {
+  EventDetailContentPanel,
+  useEventDetailQuery,
+  useEventSpeakersQuery,
+} from "../_component"
 import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
 import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
 import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
@@ -116,21 +112,10 @@ function EventDetailInner() {
         <TabsContent value="info" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              {entity.content ? (
-                <FieldSet variant="section">
-                  <FieldSectionLegend
-                    icon={FileText}
-                    title="Nội dung chi tiết"
-                  />
-                  <FieldSetContent variant="section" className="pt-0">
-                    <LexicalEditor
-                      value={entity.content}
-                      readOnly
-                      className="mx-auto max-w-4xl"
-                    />
-                  </FieldSetContent>
-                </FieldSet>
-              ) : null}
+              <EventDetailContentPanel
+                content={entity.content}
+                description={entity.description}
+              />
             </div>
 
             <div className="lg:col-span-1">

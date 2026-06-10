@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { CalendarDays, RefreshCw } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@ui/components/alert"
 import {
@@ -14,8 +15,10 @@ import { useMyRegisteredEvents } from "./_query"
 import { getMyRegisteredEventColumns } from "./columns"
 import { buildMyRegisteredEventsBulkActions } from "./my-registered-events-bulk-actions"
 import { MyRegisteredEventsStatCards } from "./my-registered-events-stat-cards"
+import { eventHref } from "./utils"
 
 function MyRegisteredEventsPageInner() {
+  const router = useRouter()
   const {
     session,
     rows,
@@ -39,13 +42,16 @@ function MyRegisteredEventsPageInner() {
 
   const actionHandlers = useMemo(
     () => ({
+      onView: (row: (typeof rows)[number]) => {
+        router.push(eventHref(row))
+      },
       onCancel: async (row: (typeof rows)[number]) => {
         if (!canCancelMyRegistration(row)) return
         await cancelRegistration(row)
       },
       cancellingId,
     }),
-    [cancelRegistration, cancellingId]
+    [cancelRegistration, cancellingId, router]
   )
 
   const columns = useMemo(

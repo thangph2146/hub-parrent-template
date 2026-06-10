@@ -1,11 +1,13 @@
 import {
   BookOpen,
+  Building2,
   CalendarPlus,
   Camera,
   Cog,
   FileText,
   FolderOpen,
   FolderTree,
+  Home,
   Image,
   LayoutDashboard,
   LayoutTemplate,
@@ -153,6 +155,19 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
           PERMISSION_CODES.SPEAKERS_VIEW,
           PERMISSION_CODES.SPEAKERS_MANAGE,
         ],
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "Ký túc xá & Check-in",
+    icon: Building2,
+    children: [
+      {
+        href: `${BASE}/check-in-ky-tuc-xa`,
+        label: "Check-in ký túc xá",
+        icon: Home,
+        permission: null,
       },
     ],
   },

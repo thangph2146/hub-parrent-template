@@ -1,4 +1,5 @@
 import { api } from "./api"
+import { getRegistrationPeriodState } from "./event-registration"
 import { readEventSession } from "./event-session"
 import { computeEventStatus } from "./public-events"
 
@@ -29,6 +30,7 @@ export type MyRegisteredEvent = {
     poster: unknown
     startDate: string | null
     endDate: string | null
+    registrationStart: string | null
     registrationEnd: string | null
     location: string | null
     address: string | null
@@ -106,22 +108,18 @@ export function getCancelRegistrationState(
     return { allowed: false, reason: "Không thể hủy sau khi đã check-in." }
   }
 
-  const now = Date.now()
-  const { registrationEnd, startDate } = row.event
-
-  if (registrationEnd) {
-    const endMs = Date.parse(registrationEnd)
-    if (!Number.isNaN(endMs) && now > endMs) {
-      return {
-        allowed: false,
-        reason: "Đã hết thời hạn đăng ký, không thể hủy.",
-      }
+  const period = getRegistrationPeriodState(row.event)
+  if (!period.open) {
+    return {
+      allowed: false,
+      reason: `${period.reason} Chỉ được hủy khi còn trong thời gian đăng ký.`,
     }
   }
 
+  const { startDate } = row.event
   if (startDate) {
     const startMs = Date.parse(startDate)
-    if (!Number.isNaN(startMs) && now >= startMs) {
+    if (!Number.isNaN(startMs) && Date.now() >= startMs) {
       return {
         allowed: false,
         reason: "Sự kiện đã bắt đầu, không thể hủy đăng ký.",

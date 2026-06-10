@@ -30,14 +30,14 @@ export function buildMyRegisteredEventsBulkActions({
       confirm: {
         title: "Hủy các đăng ký đã chọn?",
         description:
-          "Chỉ các đăng ký còn thời hạn, chưa check-in và sự kiện chưa bắt đầu mới được chọn để hủy.",
+          "Chỉ hủy được khi còn trong thời gian đăng ký, chưa check-in và sự kiện chưa bắt đầu.",
         confirmLabel: "Hủy đăng ký",
         destructive: true,
       },
       onAction: async (selectedRows) => {
         if (selectedRows.some((row) => !canCancelRegistrationRow(row))) {
           toast.error(
-            "Có đăng ký đã chọn không thể hủy (hết hạn đăng ký, đã check-in hoặc sự kiện đã bắt đầu)."
+            "Có đăng ký đã chọn không thể hủy (ngoài thời gian đăng ký, đã check-in hoặc sự kiện đã bắt đầu)."
           )
           return
         }

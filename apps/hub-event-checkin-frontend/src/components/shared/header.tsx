@@ -15,8 +15,7 @@ import {
 } from "@ui/components/sheet"
 import { cn } from "@ui/lib/utils"
 import { Logo } from "@/components/icons/logo"
-import { HeaderAuth } from "@/components/shared/header-auth"
-import { HeaderAdminLink } from "@/components/shared/header-admin-link"
+import { HeaderAccessCluster } from "@/components/shared/header-access-cluster"
 import {
   getMyEventsPath,
   isEventPortalSession,
@@ -102,14 +101,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="flex items-center gap-1.5 sm:gap-1 sm:rounded-2xl sm:border sm:border-border/70 sm:bg-muted/20 sm:p-1 sm:shadow-sm">
-              <HeaderAdminLink />
-              <span
-                className="hidden h-5 w-px shrink-0 bg-border/70 sm:block"
-                aria-hidden
-              />
-              <HeaderAuth />
-            </div>
+            <HeaderAccessCluster />
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger
                 className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-muted md:hidden"
@@ -157,10 +149,10 @@ export function Header() {
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Tài khoản
                   </p>
-                  <div className="grid gap-2">
-                    <HeaderAuth />
-                    <HeaderAdminLink inMenu />
-                  </div>
+                  <HeaderAccessCluster
+                    layout="sheet"
+                    onSheetNavigate={() => setMenuOpen(false)}
+                  />
                   <Link
                     href="/su-kien"
                     onClick={() => setMenuOpen(false)}

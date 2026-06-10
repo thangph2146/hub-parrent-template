@@ -15,6 +15,7 @@ import {
   DateTimeTableCell,
   EventScheduleTableCell,
 } from "./event-schedule-cells"
+import { defineDataTableActionsColumn } from "@ui/components/data-table"
 import {
   MyRegisteredEventRowActions,
   type MyRegisteredEventRowActionHandlers,
@@ -34,8 +35,10 @@ export function getMyRegisteredEventColumns({
 }): ColumnDef<MyRegisteredEventRow, unknown>[] {
   return [
     {
-      accessorKey: "event.title",
+      id: "eventTitle",
+      accessorFn: (row) => row.event.title,
       header: "Sự kiện",
+      enableColumnFilter: true,
       cell: ({ row }) => {
         const event = row.original.event
         const posterUrl = getPosterUrl(event.poster)
@@ -89,6 +92,7 @@ export function getMyRegisteredEventColumns({
     {
       accessorKey: "id",
       header: "Mã đăng ký",
+      enableColumnFilter: true,
       cell: ({ getValue }) => (
         <span className="font-mono text-xs text-muted-foreground">
           {String(getValue() ?? "").slice(0, 8)}
@@ -147,6 +151,7 @@ export function getMyRegisteredEventColumns({
     {
       accessorKey: "registeredAt",
       header: "Ngày đăng ký",
+      enableColumnFilter: true,
       cell: ({ getValue }) => (
         <DateTimeTableCell value={getValue() as string | null} />
       ),
@@ -161,8 +166,10 @@ export function getMyRegisteredEventColumns({
       },
     },
     {
-      accessorKey: "event.startDate",
+      id: "eventStartDate",
+      accessorFn: (row) => row.event.startDate,
       header: "Thời gian sự kiện",
+      enableColumnFilter: true,
       cell: ({ row }) => (
         <EventScheduleTableCell
           start={row.original.event.startDate}
@@ -209,6 +216,7 @@ export function getMyRegisteredEventColumns({
       id: "location",
       header: "Địa điểm",
       accessorFn: (row) => getEventLocationLabel(row.event) ?? "",
+      enableColumnFilter: true,
       cell: ({ row }) => (
         <span className="line-clamp-2 text-sm text-muted-foreground">
           {getEventLocationLabel(row.original.event) || "—"}
@@ -227,6 +235,11 @@ export function getMyRegisteredEventColumns({
     {
       accessorKey: "status",
       header: "Trạng thái",
+      enableColumnFilter: true,
+      filterFn: (row, _columnId, filterValue) => {
+        if (filterValue == null || filterValue === "") return true
+        return String(row.original.status) === String(filterValue)
+      },
       cell: ({ row }) => (
         <div className="space-y-1">
           <RegistrationStatusBadge row={row.original} />
@@ -254,18 +267,13 @@ export function getMyRegisteredEventColumns({
         exportWrap: true,
       },
     },
-    {
-      id: "actions",
-      header: "Thao tác",
-      enableSorting: false,
-      enableColumnFilter: false,
-      meta: { disableColumnFilter: true, excludeFromExport: true },
+    defineDataTableActionsColumn<MyRegisteredEventRow>({
       cell: ({ row }) => (
         <MyRegisteredEventRowActions
           row={row.original}
           handlers={actionHandlers}
         />
       ),
-    },
+    }),
   ]
 }

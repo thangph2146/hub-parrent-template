@@ -58,6 +58,7 @@
     "db:fresh": "pnpm --filter @api run db:fresh",
     "db:migration:fresh": "pnpm --filter @api run db:migration:fresh",
     "db:seed": "pnpm --filter @api run db:seed",
+    "db:demo": "pnpm --filter \"@api\" run seed:demo",
     "seed:superadmin": "pnpm --filter \"@api\" run seed:superadmin"
   },
   "devDependencies": {

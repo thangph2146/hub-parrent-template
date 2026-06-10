@@ -39,6 +39,7 @@ export interface MyRegisteredEventItem {
     poster: unknown;
     startDate: string | null;
     endDate: string | null;
+    registrationStart: string | null;
     registrationEnd: string | null;
     location: string | null;
     address: string | null;
@@ -112,6 +113,7 @@ export class PublicEventRegistrationService {
         poster: normalizePosterField(event.poster),
         startDate: toIso(event.startDate),
         endDate: toIso(event.endDate),
+        registrationStart: toIso(event.registrationStart),
         registrationEnd: toIso(event.registrationEnd),
         location: event.location ?? null,
         address: event.address ?? null,
@@ -151,9 +153,20 @@ export class PublicEventRegistrationService {
     }
 
     const now = new Date();
+    const hasRegistrationStart = event.registrationStart != null;
+    const hasRegistrationEnd = event.registrationEnd != null;
 
-    if (event.registrationEnd && now > event.registrationEnd) {
+    if (hasRegistrationStart && now < event.registrationStart!) {
+      throw new Error('Chưa đến thời gian đăng ký, không thể hủy.');
+    }
+    if (hasRegistrationEnd && now > event.registrationEnd!) {
       throw new Error('Đã hết thời hạn đăng ký, không thể hủy.');
+    }
+    if (!hasRegistrationStart && !hasRegistrationEnd) {
+      if (event.startDate && now >= event.startDate) {
+        throw new Error('Sự kiện đã bắt đầu, không thể hủy đăng ký.');
+      }
+      return;
     }
     if (event.startDate && now >= event.startDate) {
       throw new Error('Sự kiện đã bắt đầu, không thể hủy đăng ký.');

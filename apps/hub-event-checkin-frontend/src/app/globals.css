@@ -39,3 +39,23 @@ body {
     animation: none;
   }
 }
+
+@keyframes hero-mockup-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.hero-mockup-float {
+  animation: hero-mockup-float 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mockup-float {
+    animation: none;
+  }
+}

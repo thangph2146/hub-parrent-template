@@ -32,3 +32,4 @@ export {
 export { EventFormShell } from "./_form"
 export { EventsConfirmDialog } from "./_alert-dialog"
 export { EventsTable, EventsTrashTable } from "./_table"
+export { EventDetailContentPanel } from "./event-detail-content-panel"
