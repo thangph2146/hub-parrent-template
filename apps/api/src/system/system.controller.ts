@@ -244,6 +244,7 @@ export class SystemController {
             model,
             skipClear === 'true',
             onProgress,
+            headers[APP_HEADERS.USER_ID],
           );
           onProgress({ type: 'complete', ...result });
         } catch (error) {
@@ -264,6 +265,8 @@ export class SystemController {
         data,
         model,
         skipClear === 'true',
+        undefined,
+        headers[APP_HEADERS.USER_ID],
       );
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);
@@ -331,6 +334,7 @@ export class SystemController {
             model,
             skipClear === 'true',
             onProgress,
+            headers[APP_HEADERS.USER_ID],
           );
           onProgress({ type: 'complete', ...result });
         } catch (error) {
@@ -351,6 +355,8 @@ export class SystemController {
         file.buffer,
         model,
         skipClear === 'true',
+        undefined,
+        headers[APP_HEADERS.USER_ID],
       );
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

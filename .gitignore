@@ -31,7 +31,7 @@ dist
 # Debug
 npm-debug.log*
 
-# PM2 generated ecosystem JSON (scripts/pm2-stack.cjs)
+# PM2 generated ecosystem JSON (script-system/pm2-stack.cjs)
 .pm2-ecosystem-*.json
 
 # Misc

@@ -6,7 +6,7 @@ import { Input } from "../input"
 import { cn } from "../../lib/utils"
 
 export type DataTableUserSearchOption = {
-  id: string
+  id: string | number
   label: string
   sublabel?: string
 }
@@ -38,7 +38,7 @@ function formatUserOption(option: DataTableUserSearchOption): string {
   const label = option.label?.trim()
   const sub = option.sublabel?.trim()
   if (label && sub && label !== sub) return `${label} · ${sub}`
-  return label || sub || option.id
+  return label || sub || String(option.id)
 }
 
 type DataTableUserSearchFilterProps = {
@@ -145,7 +145,7 @@ export function DataTableUserSearchFilter({
 
   const applyUser = useCallback(
     (user: DataTableUserSearchOption) => {
-      onChange(user.id)
+      onChange(String(user.id))
       setInputText(formatUserOption(user))
       setOpen(false)
       setSuggestions([])
@@ -198,12 +198,16 @@ export function DataTableUserSearchFilter({
             </li>
           ) : null}
           {suggestions.map((user) => (
-            <li key={user.id} role="option" aria-selected={value === user.id}>
+            <li
+              key={String(user.id)}
+              role="option"
+              aria-selected={value === String(user.id)}
+            >
               <button
                 type="button"
                 className={cn(
                   "flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left text-xs hover:bg-accent",
-                  value === user.id && "bg-accent/60"
+                  value === String(user.id) && "bg-accent/60"
                 )}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => applyUser(user)}
@@ -214,7 +218,9 @@ export function DataTableUserSearchFilter({
                 {user.sublabel ? (
                   <span className="font-mono text-[10px] text-muted-foreground">
                     {user.sublabel}
-                    {user.id ? ` · ${user.id.slice(0, 8)}…` : null}
+                    {user.id != null
+                      ? ` · ${String(user.id).slice(0, 8)}…`
+                      : null}
                   </span>
                 ) : null}
               </button>

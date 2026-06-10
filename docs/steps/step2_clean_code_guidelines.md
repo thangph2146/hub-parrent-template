@@ -1,55 +1,55 @@
-﻿# Step 2: Clean Code Guide Line
+# Step 2: Clean Code Guide Line
 
-Mục tiêu: các nguyên tắc để giữ code sạch, đúng ranh giới, và dễ review trong monorepo.
+M?c ti�u: c�c nguy�n t?c d? gi? code s?ch, d�ng ranh gi?i, v� d? review trong monorepo.
 
-## Nguyên tắc chung
+## Nguy�n t?c chung
 
-- Viết code rõ ràng, có tên biến/method mô tả mục đích.
-- Tránh thay đổi ngoài phạm vi task; không sửa file unrelated.
-- Viết test nhỏ cho logic quan trọng khi có thể.
+- Vi?t code r� r�ng, c� t�n bi?n/method m� t? m?c d�ch.
+- Tr�nh thay d?i ngo�i ph?m vi task; kh�ng s?a file unrelated.
+- Vi?t test nh? cho logic quan tr?ng khi c� th?.
 
-## Ranh giới service
+## Ranh gi?i service
 
-- Không import trực tiếp giữa `apps/*`.
-- Nếu cần chia sẻ logic, đưa vào `packages/*` và cập nhật `WORKSPACE_DEPS.md` bằng `pnpm graphify:ai-summary`.
+- Kh�ng import tr?c ti?p gi?a `apps/*`.
+- N?u c?n chia s? logic, dua v�o `packages/*` v� c?p nh?t `WORKSPACE_DEPS.md` b?ng `pnpm graphify:ai-summary`.
 
 ## Lint / Type / Tests
 
-- Trước khi PR: chạy từ root:
+- Tru?c khi PR: ch?y t? root:
 
 ```bash
 pnpm check
 ```
 
 - `pnpm check` = `verify:bounds` + `lint` + `typecheck`.
-- Nếu thay đổi nhiều về cấu trúc: chạy `pnpm check:full` sau cập nhật `.graphify` snapshot.
+- N?u thay d?i nhi?u v? c?u tr�c: ch?y `pnpm check:full` sau c?p nh?t `.graphify` snapshot.
 
 ## Commit / PR
 
-- Giữ commit nhỏ, rõ ràng, theo chức năng.
-- Mọi PR nên: mô tả ngắn, liệt kê file đã thay đổi, và lệnh reproduce `pnpm check`.
+- Gi? commit nh?, r� r�ng, theo ch?c nang.
+- M?i PR n�n: m� t? ng?n, li?t k� file d� thay d?i, v� l?nh reproduce `pnpm check`.
 
-## Khi refactor/di chuyển module
+## Khi refactor/di chuy?n module
 
-- Cập nhật Graphify snapshot nếu thay đổi file/route/module đáng kể:
+- C?p nh?t Graphify snapshot n?u thay d?i file/route/module d�ng k?:
 
 ```bash
-node scripts/graphify-update.cjs apps/<app>
+node script-system/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
 
-## Kiểm tra boundary và phụ thuộc
+## Ki?m tra boundary v� ph? thu?c
 
-- Kiểm tra `packages/eslint-config/service-boundaries.js` trước khi thêm import mới.
-- Dùng `pnpm verify:bounds` để phát hiện import cấm.
+- Ki?m tra `packages/eslint-config/service-boundaries.js` tru?c khi th�m import m?i.
+- D�ng `pnpm verify:bounds` d? ph�t hi?n import c?m.
 
-## Ghi chú cho agents / reviewers
+## Ghi ch� cho agents / reviewers
 
-- Trước khi sửa: xác định scope, đọc `docs/admin-pattern/PRE_CODE_PROTOCOL.md`.
-- Triệt để chạy `pnpm check` và sửa theo lỗi lint/type.
-- Nếu không tìm thấy docs feature: báo và tiếp tục bằng Graphify → source.
+- Tru?c khi s?a: x�c d?nh scope, d?c `docs/admin-pattern/PRE_CODE_PROTOCOL.md`.
+- Tri?t d? ch?y `pnpm check` v� s?a theo l?i lint/type.
+- N?u kh�ng t�m th?y docs feature: b�o v� ti?p t?c b?ng Graphify ? source.
 
 ---
 
-File này là checklist nhanh; chỉnh sửa khi cần phù hợp quy trình team.
+File n�y l� checklist nhanh; ch?nh s?a khi c?n ph� h?p quy tr�nh team.

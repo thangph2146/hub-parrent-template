@@ -18,7 +18,7 @@ export class GuidesApi {
     return { items: normalized.items, total: normalized.total };
   }
 
-  async get<T = unknown>(id: string): Promise<T> {
+  async get<T = unknown>(id: string | number): Promise<T> {
     return getData<T>(this.http, `/admin/page-contents/${id}`);
   }
 
@@ -27,25 +27,25 @@ export class GuidesApi {
   }
 
   async update<T = unknown>(
-    id: string,
+    id: string | number,
     body: Record<string, unknown>,
   ): Promise<T> {
     return putData<T>(this.http, `/admin/page-contents/${id}`, body);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/page-contents/${id}`);
   }
 
-  async restore<T = unknown>(id: string): Promise<T> {
+  async restore<T = unknown>(id: string | number): Promise<T> {
     return postData<T>(this.http, `/admin/page-contents/${id}/restore`);
   }
 
-  async purge(id: string): Promise<void> {
+  async purge(id: string | number): Promise<void> {
     await deleteData<unknown>(this.http, `/admin/page-contents/${id}/hard-delete`);
   }
 
-  async bulk(body: { action: string; ids: string[] }): Promise<void> {
+  async bulk(body: { action: string; ids: Array<string | number> }): Promise<void> {
     await postData<unknown>(this.http, "/admin/page-contents/bulk", body);
   }
 }

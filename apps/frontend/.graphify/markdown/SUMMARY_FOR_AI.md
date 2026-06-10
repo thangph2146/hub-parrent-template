@@ -155,5 +155,5 @@ Toàn bộ `.md` sinh tự động nằm trong **`apps/frontend/.graphify/markdo
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node scripts/graphify-update.cjs apps/frontend`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node script-system/graphify-update.cjs apps/frontend`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md` khi có graph).

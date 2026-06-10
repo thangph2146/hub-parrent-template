@@ -41,7 +41,7 @@ Nguyên tắc:
 - **Từng dịch vụ:** `apps/<frontend|store-sync-frontend|backend|api>/.graphify/markdown/SUMMARY_FOR_AI.md` (sinh từ `snapshot/context.json`).
 - **Cây thư mục / thống kê graph:** `apps/<app>/.graphify/markdown/FOLDER_TREE.md`, `GRAPH_STATS.md`.
 - **Phụ thuộc domain API:** `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` (bảng, inbound, Mermaid).
-- Làm mới snapshot: `pnpm graphify:refresh` (hoặc `node scripts/graphify-update.cjs apps/<app>` rồi `pnpm graphify:ai-summary`) từ root.
+- Làm mới snapshot: `pnpm graphify:refresh` (hoặc `node script-system/graphify-update.cjs apps/<app>` rồi `pnpm graphify:ai-summary`) từ root.
 - **Checklist sau chuẩn hóa:** `.graphify/README.md` (mục _Checklist sau chuẩn hóa / refactor kiến trúc_).
 
 ## 4) Thứ Tự Đọc Khuyến Nghị Cho AI
@@ -52,7 +52,7 @@ Nguyên tắc:
 4. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
 5. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
 6. `packages/eslint-config/service-boundaries.js`
-7. `scripts/verify-service-boundaries.mjs`
+7. `script-system/verify-service-boundaries.mjs`
 8. File source cụ thể liên quan task
 
 Lưu ý:

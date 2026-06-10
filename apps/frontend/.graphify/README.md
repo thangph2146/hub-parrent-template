@@ -6,7 +6,7 @@ Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI**
 
 | File / Thư mục | Mục đích |
 |----------------|----------|
-| `snapshot/graph.json` | Đồ thị node/link (sinh bởi `node scripts/graphify-update.cjs apps/frontend`) |
+| `snapshot/graph.json` | Đồ thị node/link (sinh bởi `node script-system/graphify-update.cjs apps/frontend`) |
 | `snapshot/context.json` | Snapshot nội dung file (<30KB) để AI hiểu hệ thống |
 | `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module map, routes, stats (sinh bởi `pnpm graphify:ai-summary`) |
 | `markdown/FOLDER_TREE.md` | Cây thư mục `src/` dạng ASCII |
@@ -16,7 +16,7 @@ Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI**
 ## Làm mới
 
 ```bash
-node scripts/graphify-update.cjs apps/frontend
+node script-system/graphify-update.cjs apps/frontend
 pnpm graphify:ai-summary
 ```
 

@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Groups Admin API Controller.
  * POST /groups — tạo nhóm. GET /groups — danh sách. GET /groups/:id — chi tiết.
@@ -51,7 +52,7 @@ export class GroupsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -344,7 +345,7 @@ export class GroupsController {
       });
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:hard-deleted', { id: id.trim() });
+    this.socketGateway.emitGroupEvent('group:hard-deleted', { id: toEntityId(id.trim()) });
     if (userId) {
       this.logActivity(
         userId,
@@ -388,7 +389,7 @@ export class GroupsController {
       );
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:deleted', { id: id.trim() });
+    this.socketGateway.emitGroupEvent('group:deleted', { id: toEntityId(id.trim()) });
     if (userId) {
       this.logActivity(
         userId,
@@ -431,7 +432,7 @@ export class GroupsController {
       });
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:restored', { id: id.trim() });
+    this.socketGateway.emitGroupEvent('group:restored', { id: toEntityId(id.trim()) });
     if (userId) {
       this.logActivity(
         userId,

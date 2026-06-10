@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Comments Admin API Controller.
  * GET list, options, :id; DELETE :id; POST :id/restore; DELETE :id/hard-delete; POST bulk; POST :id/approve; POST :id/unapprove.
@@ -67,7 +68,7 @@ export class CommentsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,

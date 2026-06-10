@@ -22,7 +22,7 @@ export async function updateStudentProfile(
 }
 
 export async function uploadStudentAvatar(file: File): Promise<string> {
-  const result = await api.uploads.uploadFile(file, "avatars")
+  const result = await api.accounts.uploadAvatar(file)
   if (!result.url?.trim()) {
     throw new Error("Upload thất bại")
   }

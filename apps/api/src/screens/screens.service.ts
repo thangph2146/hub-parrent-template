@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Screen } from '../entities/screen.entity';
@@ -12,12 +13,12 @@ import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { SCREEN_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface ScreenRowDto {
-  id: string;
+  id: number;
   name: string;
   code: string | null;
-  cameraId: string | null;
+  cameraId: number | null;
   cameraName: string | null;
-  templateId: string | null;
+  templateId: number | null;
   templateName: string | null;
   status: number;
   createdAt: string;
@@ -90,9 +91,7 @@ export class ScreensService {
   }
 
   async getById(id: string): Promise<ScreenRowDto | null> {
-    const r = await this.em.findOne(
-      Screen,
-      { id },
+    const r = await this.em.findOne(Screen, { id: toEntityId(id) },
       { populate: ['camera', 'template'] },
     );
     return r ? mapRow(r) : null;
@@ -122,7 +121,7 @@ export class ScreensService {
     id: string,
     data: Record<string, unknown>,
   ): Promise<ScreenRowDto | null> {
-    const existing = await this.em.findOne(Screen, { id });
+    const existing = await this.em.findOne(Screen, { id: toEntityId(id) });
     if (!existing) return null;
     const fields = ['name', 'code', 'status'] as const;
     for (const f of fields) {
@@ -141,21 +140,21 @@ export class ScreensService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id });
+    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
     return true;
   }
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id });
+    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
     return true;
   }
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id });
+    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

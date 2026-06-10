@@ -1,4 +1,6 @@
 import { ApiClient, type ApiClientOptions } from "../client"
+import type { DevLoginOptionsQuery } from "../types/dev-login"
+import { fetchDevLoginOptions as fetchDevLoginOptionsShared } from "./dev-login"
 import { getData, postData } from "./_shared"
 
 export type PublicPaginationMeta = {
@@ -14,11 +16,11 @@ export type PublicPagedPayload<T> = {
 }
 
 export type PublicAuthPayload = {
-  id: string
+  id: number
   email: string
   name: string | null
   image: string | null
-  roles?: Array<{ id: string; name: string; displayName: string }>
+  roles?: Array<{ id: number; name: string; displayName: string }>
 }
 
 export type PublicContactRequestInput = {
@@ -194,6 +196,21 @@ export class PublicApi {
     })
   }
 
+  loginGuestWithEmail(body: { email: string; password: string }) {
+    return postData<PublicAuthPayload>(this.http, "/public/auth/guest-login", {
+      email: body.email.trim(),
+      password: body.password,
+    })
+  }
+
+  loginGuestWithDevelopmentUser(body: { userId: string }) {
+    return postData<PublicAuthPayload>(
+      this.http,
+      "/public/auth/guest-dev-login",
+      { userId: body.userId.trim() },
+    )
+  }
+
   /** Storefront B2B — không giới hạn role student. */
   loginStoreWithEmail(body: { email: string; password: string }) {
     return postData<PublicAuthPayload>(this.http, "/public/auth/store-login", {
@@ -222,17 +239,8 @@ export class PublicApi {
     })
   }
 
-  fetchDevLoginOptions() {
-    return getData<
-      Array<{
-        id: string
-        email: string
-        name: string | null
-        roleNames: string[]
-        roleLabels: string[]
-        description: string
-      }>
-    >(this.http, "/public/dev-login-options", { cache: "no-store" })
+  fetchDevLoginOptions(params?: DevLoginOptionsQuery) {
+    return fetchDevLoginOptionsShared(this.http, params)
   }
 
   submitContactRequest(

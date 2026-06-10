@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 import {
   Controller,
   Get,
@@ -68,8 +69,8 @@ export class ConversationsController {
         {
           deletedAt: null,
           type: MessageType.PERSONAL,
-          receiver: userId,
-          sender: other,
+          receiver: toEntityId(userId),
+          sender: toEntityId(other),
           isRead: false,
         },
         { isRead: true },
@@ -126,14 +127,14 @@ export class ConversationsController {
               {
                 deletedAt: null,
                 type: 'PERSONAL' as any,
-                sender: userId,
-                receiver: other,
+                sender: toEntityId(userId),
+                receiver: toEntityId(other),
               },
               {
                 deletedAt: null,
                 type: 'PERSONAL' as any,
-                sender: other,
-                receiver: userId,
+                sender: toEntityId(other),
+                receiver: toEntityId(userId),
               },
             ],
           },
@@ -162,7 +163,7 @@ export class ConversationsController {
       const sentWhere: Record<string, unknown> = {
         deletedAt: null,
         type: MessageType.PERSONAL,
-        sender: userId,
+        sender: toEntityId(userId),
       };
       if (searchTrim) {
         const q = `%${searchTrim}%`;
@@ -175,7 +176,7 @@ export class ConversationsController {
       const receivedWhere: Record<string, unknown> = {
         deletedAt: null,
         type: MessageType.PERSONAL,
-        receiver: userId,
+        receiver: toEntityId(userId),
       };
       if (searchTrim) {
         const q = `%${searchTrim}%`;
@@ -194,11 +195,10 @@ export class ConversationsController {
         }),
       ]);
 
-      const byOtherId = new Map<
-        string,
+      const byOtherId = new Map<number,
         {
           otherUser: {
-            id: string;
+            id: number;
             name: string | null;
             email: string;
             avatar: string | null;

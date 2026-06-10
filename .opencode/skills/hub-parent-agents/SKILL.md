@@ -1,4 +1,4 @@
-ï»¿---
+---
 name: hub-parent-agents
 description: Use ONLY when the user requests any coding task, feature implementation, bug fix, or source code change in the hub-parent-template project. Enforces mandatory pre-code protocol, required reading list, step docs order, pnpm check commands, and microservice boundary rules from AGENTS.md before any source modification.
 ---
@@ -86,7 +86,7 @@ pnpm check
 
 ### After architecture/module/route changes:
 
-1. Run `node scripts/graphify-update.cjs apps/<app>` for each affected app
+1. Run `node script-system/graphify-update.cjs apps/<app>` for each affected app
 2. Then run:
 
 ```bash
@@ -95,16 +95,16 @@ pnpm check:full
 
 (`check:full` = `pnpm check` + `pnpm graphify:ai-summary`)
 
-> Do NOT auto-run `update.cjs` â€” follow the checklist in `.graphify/README.md` first.
+> Do NOT auto-run `update.cjs` — follow the checklist in `.graphify/README.md` first.
 
 ## Microservice Rules (enforce strictly)
 
 - **NO cross-imports** between `apps/*` source files. Each app is isolated.
-- Frontend/Backend communicate with API **only via HTTP + `@workspace/api-client`** â€” never write raw fetch to `apps/api`.
+- Frontend/Backend communicate with API **only via HTTP + `@workspace/api-client`** — never write raw fetch to `apps/api`.
 - Shared logic goes in `packages/*` **only when genuinely reused**.
-- **All UI components (admin + site) MUST come from `@workspace/ui`** â€” never create local copies in `apps/backend/src/components/` or `apps/backend/src/app/**/_components/`. If missing, add to `packages/ui/src/`.
-- **API Client calls MUST go through `@workspace/api-client`** â€” never write raw `fetch` to `apps/api`.
-- **Editor component** uses `@thangph2146/lexical-editor` from `packages/editor/` â€” must be built first with `pnpm --filter @thangph2146/lexical-editor build`.
+- **All UI components (admin + site) MUST come from `@workspace/ui`** — never create local copies in `apps/backend/src/components/` or `apps/backend/src/app/**/_components/`. If missing, add to `packages/ui/src/`.
+- **API Client calls MUST go through `@workspace/api-client`** — never write raw `fetch` to `apps/api`.
+- **Editor component** uses `@thangph2146/lexical-editor` from `packages/editor/` — must be built first with `pnpm --filter @thangph2146/lexical-editor build`.
 - **Logger** (`@workspace/logger`) used internally by `@workspace/api-client` for dev logging.
 - **Query client** (`@workspace/query-client`) provides TanStack Query setup for frontend apps.
 - **Config packages** (`@workspace/eslint-config`, `@workspace/typescript-config`) are dev-only, no runtime import.
@@ -112,7 +112,7 @@ pnpm check:full
 - When editing `packages/api-client` or calling API from any app: read `docs/api-client-pattern/README.md`.
 - Boundaries enforced by:
   - `packages/eslint-config/service-boundaries.js`
-  - `scripts/verify-service-boundaries.mjs`
+  - `script-system/verify-service-boundaries.mjs`
 
 ## Workflow Summary
 
@@ -132,4 +132,4 @@ pnpm check:full
 - `docs/steps/*.md` is the **primary roadmap** for the agent
 - `docs/admin-pattern/` and `docs/pages/` are **supplementary**
 - Only open `apps/*/.graphify/snapshot/context.json` when a specific excerpt is needed (files are large, embed full source)
-- After architecture refactor: run graphify update â†’ `pnpm graphify:ai-summary` â†’ cross-check `.graphify/README.md` checklist
+- After architecture refactor: run graphify update ? `pnpm graphify:ai-summary` ? cross-check `.graphify/README.md` checklist

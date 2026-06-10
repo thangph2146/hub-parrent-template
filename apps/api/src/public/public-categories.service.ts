@@ -3,7 +3,7 @@ import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Category } from '../entities/category.entity';
 
 export interface PublicCategoryItem {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   description: string | null;
@@ -38,8 +38,8 @@ export class PublicCategoriesService {
     const childrenRows = (await conn.execute(
       `SELECT parentId AS id, COUNT(*) AS cnt FROM categories WHERE parentId IN (${parentPlaceholders}) AND deletedAt IS NULL GROUP BY parentId`,
       ids,
-    )) as Array<{ id: string; cnt: number }>;
-    const childrenCounts = new Map<string, number>(
+    )) as Array<{ id: number; cnt: number }>;
+    const childrenCounts = new Map<number, number>(
       childrenRows.map((r) => [r.id, Number(r.cnt)]),
     );
 
@@ -48,8 +48,8 @@ export class PublicCategoriesService {
     const postRows = (await conn.execute(
       `SELECT categoryId AS id, COUNT(*) AS cnt FROM post_categories WHERE categoryId IN (${postPlaceholders}) GROUP BY categoryId`,
       ids,
-    )) as Array<{ id: string; cnt: number }>;
-    const postsCounts = new Map<string, number>(
+    )) as Array<{ id: number; cnt: number }>;
+    const postsCounts = new Map<number, number>(
       postRows.map((r) => [r.id, Number(r.cnt)]),
     );
 

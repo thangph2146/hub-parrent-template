@@ -1,12 +1,12 @@
 import {
   createAuthAdminApi,
-  DEFAULT_API_URL,
   type AuthLoginPayload,
   type AuthUser,
   type DevLoginOption,
   type RegisterLeadPayload,
   type RegisterRequestPayload,
 } from "@workspace/api-client"
+import { getApiBaseUrl } from "@/lib/api-base-url"
 
 export type {
   AuthLoginPayload,
@@ -16,12 +16,8 @@ export type {
 }
 
 function getAuthAdminApi() {
-  const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
-    /\/$/,
-    ""
-  )
   return createAuthAdminApi({
-    baseUrl,
+    baseUrl: getApiBaseUrl(),
     devLogTag: "HUB_ADMIN",
   })
 }
@@ -108,7 +104,8 @@ export async function fetchDevLoginOptions() {
 
   try {
     return await getAuthAdminApi().fetchDevLoginOptions()
-  } catch {
+  } catch (error) {
+    console.warn("[HUB_ADMIN] fetchDevLoginOptions failed:", error)
     return []
   }
 }

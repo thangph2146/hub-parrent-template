@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
-    "predev": "node ../../scripts/kill-ports.mjs 3000",
-    "kill": "node ../../scripts/kill-ports.mjs 3000",
+    "predev": "node ../../script-system/kill-ports.mjs 3000",
+    "kill": "node ../../script-system/kill-ports.mjs 3000",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

@@ -1,3 +1,4 @@
+import { toEntityIdList } from './entity-id';
 import {
   type EntityManager,
   type EntityName,
@@ -42,7 +43,7 @@ export async function applyBulkAction<T extends object>(
   if (!ids.length) {
     return { affected: 0, message: 'Không có bản ghi nào' };
   }
-  const trimmed = ids.map((x) => String(x).trim()).filter(Boolean);
+  const trimmed = toEntityIdList(ids);
   if (!trimmed.length) {
     return { affected: 0, message: 'Không có bản ghi nào' };
   }

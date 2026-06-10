@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Tag } from '../entities/tag.entity';
@@ -9,7 +10,7 @@ import {
 } from '../common/get-options';
 
 export interface RelatedPostDto {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   published: boolean;
@@ -23,7 +24,7 @@ export interface TagDetailDto extends TagRowDto {
 }
 
 export interface TagRowDto {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   icon: string | null;
@@ -202,7 +203,7 @@ export class TagsService {
   }
 
   async getById(id: string): Promise<TagDetailDto | null> {
-    const r = await this.em.findOne(Tag, { id });
+    const r = await this.em.findOne(Tag, { id: toEntityId(id) });
     if (!r) return null;
 
     const postPivotRows = await this.em.find(
@@ -252,7 +253,7 @@ export class TagsService {
     id: string,
     data: { name?: string; slug?: string; icon?: string | null },
   ): Promise<TagRowDto | null> {
-    const existing = await this.em.findOne(Tag, { id });
+    const existing = await this.em.findOne(Tag, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.name != null) existing.name = data.name;
@@ -265,7 +266,7 @@ export class TagsService {
 
   async softDelete(id: string): Promise<boolean> {
     const trimmed = id.trim();
-    const r = await this.em.findOne(Tag, { id: trimmed });
+    const r = await this.em.findOne(Tag, { id: toEntityId(trimmed) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -274,7 +275,7 @@ export class TagsService {
 
   async restore(id: string): Promise<boolean> {
     const trimmed = id.trim();
-    const r = await this.em.findOne(Tag, { id: trimmed });
+    const r = await this.em.findOne(Tag, { id: toEntityId(trimmed) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -283,7 +284,7 @@ export class TagsService {
 
   async hardDelete(id: string): Promise<boolean> {
     const trimmed = id.trim();
-    const r = await this.em.findOne(Tag, { id: trimmed });
+    const r = await this.em.findOne(Tag, { id: toEntityId(trimmed) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
@@ -302,7 +303,7 @@ export class TagsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Tag,
-        { id: { $in: trimmedIds }, deletedAt: null },
+        { id: { $in: toEntityIdList(trimmedIds) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -314,7 +315,7 @@ export class TagsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Tag,
-        { id: { $in: trimmedIds }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(trimmedIds) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -324,7 +325,7 @@ export class TagsService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Tag, { id: { $in: trimmedIds } });
+      const entities = await this.em.find(Tag, { id: { $in: toEntityIdList(trimmedIds) } });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

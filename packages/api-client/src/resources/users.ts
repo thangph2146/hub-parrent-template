@@ -57,9 +57,14 @@ function mapRole(role: ApiUserRole): UserRoleRef {
 }
 
 function mapUserRow(row: ApiUserRow): User {
-  const id = row.id != null && row.id !== "" ? String(row.id) : "";
+  const id =
+    typeof row.id === "number"
+      ? row.id
+      : row.id != null && row.id !== ""
+        ? Number.parseInt(String(row.id), 10)
+        : 0;
   return {
-    id,
+    id: Number.isFinite(id) && id > 0 ? id : 0,
     email: row.email ?? "",
     fullName: row.name?.trim() || row.email || "",
     phone: row.phone ?? null,

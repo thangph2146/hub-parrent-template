@@ -19,7 +19,7 @@ interface CreateGuideVariables {
 
 interface UpdateGuideVariables {
   api: StoreSyncSdk
-  id: string
+  id: string | number
   data: UpdateGuideData
 }
 
@@ -44,7 +44,10 @@ async function updateGuide({
   await api.guides.update(id, data as unknown as Record<string, unknown>)
 }
 
-async function deleteGuide(api: StoreSyncSdk, id: string): Promise<void> {
+async function deleteGuide(
+  api: StoreSyncSdk,
+  id: string | number,
+): Promise<void> {
   await api.guides.remove(id)
 }
 
@@ -132,7 +135,7 @@ export function useDeleteGuideMutation() {
       success: "Đã xóa nhóm",
       error: (error) => error.message || "Không thể xóa",
     },
-    mutationFn: ({ api, id }: { api: StoreSyncSdk; id: string }) =>
+    mutationFn: ({ api, id }: { api: StoreSyncSdk; id: string | number }) =>
       deleteGuide(api, id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["admin", "guides"] })

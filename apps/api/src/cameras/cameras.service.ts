@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Camera } from '../entities/camera.entity';
@@ -13,10 +14,10 @@ import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { CAMERA_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface CameraRowDto {
-  id: string;
+  id: number;
   name: string;
   code: string | null;
-  linkedEventId: string | null;
+  linkedEventId: number | null;
   linkedEventTitle: string | null;
   linkedEventSlug: string | null;
   ipAddress: string | null;
@@ -95,9 +96,7 @@ export class CamerasService {
   }
 
   async getById(id: string): Promise<CameraRowDto | null> {
-    const r = await this.em.findOne(
-      Camera,
-      { id },
+    const r = await this.em.findOne(Camera, { id: toEntityId(id) },
       { populate: ['linkedEvent'] },
     );
     return r ? mapRow(r) : null;
@@ -110,7 +109,7 @@ export class CamerasService {
       return;
     }
     const id = String(linkedEventId).trim();
-    target.linkedEvent = id ? this.em.getReference(Event, id) : null;
+    target.linkedEvent = id ? this.em.getReference(Event, toEntityId(id)) : null;
   }
 
   async create(data: Record<string, unknown>): Promise<CameraRowDto> {
@@ -137,7 +136,7 @@ export class CamerasService {
     id: string,
     data: Record<string, unknown>,
   ): Promise<CameraRowDto | null> {
-    const existing = await this.em.findOne(Camera, { id });
+    const existing = await this.em.findOne(Camera, { id: toEntityId(id) });
     if (!existing) return null;
     const fields = [
       'name',
@@ -158,7 +157,7 @@ export class CamerasService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Camera, { id });
+    const r = await this.em.findOne(Camera, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -166,7 +165,7 @@ export class CamerasService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Camera, { id });
+    const r = await this.em.findOne(Camera, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -174,7 +173,7 @@ export class CamerasService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Camera, { id });
+    const r = await this.em.findOne(Camera, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

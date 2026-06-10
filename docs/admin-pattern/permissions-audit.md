@@ -352,7 +352,7 @@ Sau audit phát hiện và đã fix 2 trang còn 🟡/❌ trong ma trận UI gat
 
 ## 9. Parity check (API ↔ client)
 
-Để tránh drift giữa 2 nguồn truth, có script `scripts/verify-permission-parity.mjs` chạy qua `pnpm verify:permissions` (đã wire vào `pnpm check` + `pnpm check:full`).
+Để tránh drift giữa 2 nguồn truth, có script `script-system/verify-permission-parity.mjs` chạy qua `pnpm verify:permissions` (đã wire vào `pnpm check` + `pnpm check:full`).
 
 Script sẽ:
 

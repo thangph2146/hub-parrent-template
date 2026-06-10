@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { PageContent } from '../entities/page-content.entity';
@@ -42,7 +43,7 @@ export class PageContentsService {
   }
 
   async getById(id: string) {
-    return this.em.findOne(PageContent, { id });
+    return this.em.findOne(PageContent, { id: toEntityId(id) });
   }
 
   async list(
@@ -96,7 +97,7 @@ export class PageContentsService {
   }
 
   async update(id: string, data: PageContentUpdateInput) {
-    const existing = await this.em.findOne(PageContent, { id });
+    const existing = await this.em.findOne(PageContent, { id: toEntityId(id) });
     if (!existing) {
       return null;
     }
@@ -107,7 +108,7 @@ export class PageContentsService {
   }
 
   async delete(id: string) {
-    const existing = await this.em.findOne(PageContent, { id });
+    const existing = await this.em.findOne(PageContent, { id: toEntityId(id) });
     if (!existing) {
       return null;
     }

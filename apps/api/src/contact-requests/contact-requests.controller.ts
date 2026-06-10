@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Contact Requests Admin API Controller.
  * GET list, options, :id; PUT :id; POST bulk; POST :id/restore; DELETE :id/hard-delete; DELETE :id; POST :id/assign.
@@ -90,7 +91,7 @@ export class ContactRequestsController {
 
   private broadcastContactStatusChange(
     row: {
-      id: string;
+      id: number;
       status: ContactStatus;
       subject: string;
     },
@@ -118,7 +119,7 @@ export class ContactRequestsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -371,7 +372,7 @@ export class ContactRequestsController {
         );
         this.adminRealtime.statusChanged({
           resource: 'contact-requests',
-          id: ids[0] ?? 'bulk',
+          id: ids[0] ? toEntityId(ids[0]) : 0,
           status: parsedStatus,
           title: `Cập nhật ${result.affectedCount} yêu cầu liên hệ`,
           description: `Trạng thái mới: ${parsedStatus}`,

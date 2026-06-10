@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, QueryOrder, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
@@ -25,7 +26,7 @@ export interface PublicEventsQuery {
 }
 
 export interface PublicEventItem {
-  id: string;
+  id: number;
   title: string;
   slug: string | null;
   poster: unknown;
@@ -50,7 +51,7 @@ export interface PublicEventItem {
 }
 
 export type PublicViewerRegistration = {
-  id: string;
+  id: number;
   email: string;
   fullName: string;
   status: number;
@@ -58,7 +59,7 @@ export type PublicViewerRegistration = {
 };
 
 export type PublicEventSpeaker = {
-  id: string;
+  id: number;
   name: string;
   title: string | null;
   organization: string | null;
@@ -269,11 +270,11 @@ export class PublicEventsService {
   }
 
   private async resolveViewerRegistration(
-    eventId: string,
+    eventId: string | number,
     viewerUserId: string,
   ): Promise<PublicViewerRegistration | null> {
     const user = await this.em.findOne(User, {
-      id: viewerUserId.trim(),
+      id: toEntityId(viewerUserId.trim()),
       deletedAt: null,
       isActive: true,
     });

@@ -35,7 +35,7 @@ export function buildCategoriesFromProducts(
   }
   const categories: Category[] = [...counts.entries()].map(
     ([slug, count], index) => ({
-      id: slug,
+      id: index + 1,
       name: slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
       slug,
       sortOrder: index,

@@ -12,12 +12,12 @@ export type SocketNotificationKind =
   | 'info';
 
 export interface SocketNotificationPayload {
-  id: string;
+  id: number;
   kind: SocketNotificationKind;
   title: string;
   description?: string | null;
   fromUserId?: string;
-  toUserId?: string;
+  toUserId?: string | number;
   replyToId?: string;
   timestamp: number;
   read?: boolean;
@@ -28,15 +28,15 @@ export interface SocketNotificationPayload {
 }
 
 export interface SocketData {
-  userId: string;
+  userId: number;
   role?: string;
   /** Id phiên đăng nhập (admin); có thì server join client vào room session:${sessionId} để nhận session:revoked */
   sessionId?: string;
 }
 
 export interface SessionRowDto {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   userName: string | null;
   userEmail: string;
   accessToken: string;
@@ -53,12 +53,17 @@ export interface SessionRowDto {
 export const MAX_HTTP_BUFFER_SIZE = 5 * 1024 * 1024; // 5MB
 export const SOCKET_PATH = '/api/socket';
 
-export function userRoom(userId: string): string {
+export function userRoom(userId: string | number): string {
   return `user:${userId}`;
 }
 
-export function conversationRoom(a: string, b: string): string {
-  const [minId, maxId] = a < b ? [a, b] : [b, a];
+export function conversationRoom(
+  a: string | number,
+  b: string | number,
+): string {
+  const sa = String(a);
+  const sb = String(b);
+  const [minId, maxId] = sa < sb ? [sa, sb] : [sb, sa];
   return `conversation:${minId}:${maxId}`;
 }
 
@@ -70,20 +75,20 @@ export function roleRoom(role: string): string {
   return `role:${role}`;
 }
 
-export function eventRoom(eventId: string): string {
+export function eventRoom(eventId: string | number): string {
   return `event:${eventId}`;
 }
 
 export type EventAttendanceSocketPayload = {
   kind: 'checkin' | 'checkout';
-  eventId: string;
+  eventId: number;
   at: string;
   email: string;
   fullName: string;
   source: 'hanet' | 'manual';
   deviceId?: string | null;
   deviceName?: string | null;
-  registrationId?: string | null;
+  registrationId?: string | number | null;
   checkinId?: string | null;
   duplicate?: boolean;
   /** Trạng thái sau cập nhật — client patch cache chính xác kể cả reset thủ công. */
@@ -102,13 +107,13 @@ export type AdminCacheInvalidatePayload = {
     | 'purge'
     | 'bulk'
     | 'mutate';
-  id?: string;
+  id?: string | number;
 };
 
 /** Duyệt / đổi trạng thái — đồng bộ giữa nhiều tài khoản admin (hợp đồng @workspace/api-client/realtime). */
 export type AdminStatusChangePayload = {
   resource: string;
-  id: string;
+  id: number;
   status: string;
   previousStatus?: string;
   title?: string;
@@ -119,8 +124,8 @@ export type AdminStatusChangePayload = {
 
 /** Admin duyệt/từ chối liên kết phụ huynh – học sinh. */
 export type ParentStudentReviewSocketPayload = {
-  id: string;
-  parentId: string;
+  id: number;
+  parentId: number;
   studentCode: string;
   studentName: string | null;
   status: 'approved' | 'rejected';

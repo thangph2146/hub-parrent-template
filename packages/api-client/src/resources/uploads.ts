@@ -288,14 +288,14 @@ export class UploadsApi {
 			| {
 					folderPath?: string;
 					isExistingFolder?: boolean;
-					ownerUserId?: string;
+					ownerUserId?: string | number;
 			  },
 	): Promise<{ url: string }> {
 		const fd = new FormData();
 		fd.append("file", file);
 		let folderPath: string | undefined;
 		let isExistingFolder: boolean | undefined;
-		let ownerUserId: string | undefined;
+		let ownerUserId: string | number | undefined;
 		if (typeof folderPathOrOptions === "string") {
 			folderPath = folderPathOrOptions;
 		} else if (folderPathOrOptions) {
@@ -305,8 +305,12 @@ export class UploadsApi {
 		}
 		if (folderPath?.trim()) fd.append("folderPath", folderPath.trim());
 		if (isExistingFolder) fd.append("isExistingFolder", "true");
-		if (ownerUserId?.trim()) {
-			fd.append("ownerUserId", ownerUserId.trim());
+		const ownerId =
+			ownerUserId == null || ownerUserId === ""
+				? ""
+				: String(ownerUserId).trim();
+		if (ownerId) {
+			fd.append("ownerUserId", ownerId);
 		}
 		return postData<{ url: string }>(this.http, "/admin/uploads", fd);
 	}

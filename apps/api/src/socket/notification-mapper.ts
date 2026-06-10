@@ -4,7 +4,7 @@ import type {
 } from './socket.types';
 
 export type NotificationLike = {
-  id: string;
+  id: number;
   userId?: string;
   kind: string;
   title: string;

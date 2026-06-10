@@ -526,5 +526,5 @@ Toàn bộ `.md` sinh tự động nằm trong **`apps/api/.graphify/markdown/`*
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node scripts/graphify-update.cjs apps/api`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node script-system/graphify-update.cjs apps/api`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md`, `API_DOMAIN_IMPORTS.md` khi có graph).

@@ -207,5 +207,5 @@ Toàn bộ `.md` sinh tự động nằm trong **`apps/store-sync-frontend/.grap
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node scripts/graphify-update.cjs apps/store-sync-frontend`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node script-system/graphify-update.cjs apps/store-sync-frontend`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md` khi có graph).

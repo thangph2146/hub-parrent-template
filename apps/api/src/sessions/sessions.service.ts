@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import { randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
@@ -14,8 +15,8 @@ import { AUTH_ROLE_NAMES } from '../config/constants';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface SessionRowDto {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   userName: string | null;
   userEmail: string;
   accessToken: string;
@@ -48,7 +49,7 @@ export interface ListSessionsResult {
 }
 
 export interface AccountWithSessionStatusDto {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   isActive: boolean;
@@ -78,22 +79,8 @@ type SessionWithUser = Session & {
   user?: Pick<User, 'id' | 'name' | 'email'> | string | null;
 };
 
-function relationId(value: unknown): string | null {
-  if (typeof value === 'string' && value.trim()) return value.trim();
-  if (
-    value &&
-    typeof value === 'object' &&
-    'id' in value &&
-    typeof (value as { id?: unknown }).id === 'string'
-  ) {
-    const id = (value as { id: string }).id.trim();
-    return id || null;
-  }
-  return null;
-}
-
 function mapRow(s: SessionWithUser): SessionRowDto {
-  const userId = relationId(s.user);
+  const userId = relationEntityId(s.user);
   const userName =
     s.user && typeof s.user === 'object' && 'name' in s.user
       ? ((s.user as { name?: string | null }).name ?? null)
@@ -104,7 +91,7 @@ function mapRow(s: SessionWithUser): SessionRowDto {
       : '';
   return {
     id: s.id,
-    userId: userId ?? '',
+    userId: userId ?? 0,
     userName,
     userEmail,
     accessToken: s.accessToken,
@@ -169,7 +156,7 @@ export class SessionsService {
   private async getOrCreateRole(
     name: string,
     displayName: string,
-  ): Promise<{ id: string }> {
+  ): Promise<{ id: number }> {
     let role = await this.em.findOne(Role, { name });
     if (!role) {
       role = new Role();
@@ -241,7 +228,7 @@ export class SessionsService {
   }
 
   async create(data: {
-    userId: string;
+    userId: number;
     email?: string | null;
     name?: string | null;
     avatar?: string | null;
@@ -286,7 +273,7 @@ export class SessionsService {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     const sessionObj = new Session();
-    sessionObj.user = this.em.getReference(User, data.userId);
+    sessionObj.user = this.em.getReference(User, toEntityId(data.userId));
     sessionObj.accessToken = accessToken;
     sessionObj.refreshToken = refreshToken;
     sessionObj.userAgent = data.userAgent?.trim() ?? null;
@@ -307,7 +294,7 @@ export class SessionsService {
   }
 
   async getById(id: string): Promise<SessionRowDto | null> {
-    const s = await this.em.findOne(Session, { id }, { populate: ['user'] });
+    const s = await this.em.findOne(Session, { id: toEntityId(id) }, { populate: ['user'] });
     return s ? mapRow(s as SessionWithUser) : null;
   }
 
@@ -319,7 +306,7 @@ export class SessionsService {
       ipAddress?: string | null;
     },
   ): Promise<SessionRowDto | null> {
-    const existing = await this.em.findOne(Session, { id });
+    const existing = await this.em.findOne(Session, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.isActive !== undefined) existing.isActive = data.isActive;
@@ -334,7 +321,7 @@ export class SessionsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const s = await this.em.findOne(Session, { id });
+    const s = await this.em.findOne(Session, { id: toEntityId(id) });
     if (!s || !s.isActive) return false;
     s.isActive = false;
     this.em.persist(s);
@@ -343,7 +330,7 @@ export class SessionsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const s = await this.em.findOne(Session, { id });
+    const s = await this.em.findOne(Session, { id: toEntityId(id) });
     if (!s || s.isActive) return false;
     s.isActive = true;
     this.em.persist(s);
@@ -352,7 +339,7 @@ export class SessionsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const s = await this.em.findOne(Session, { id });
+    const s = await this.em.findOne(Session, { id: toEntityId(id) });
     if (!s) return false;
     this.em.remove(s);
     await this.em.flush();
@@ -374,7 +361,7 @@ export class SessionsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Session,
-        { id: { $in: ids }, isActive: true },
+        { id: { $in: toEntityIdList(ids) }, isActive: true },
         { isActive: false },
       );
       return {
@@ -387,7 +374,7 @@ export class SessionsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Session,
-        { id: { $in: ids }, isActive: false },
+        { id: { $in: toEntityIdList(ids) }, isActive: false },
         { isActive: true },
       );
       return {
@@ -398,7 +385,7 @@ export class SessionsService {
     }
 
     if (action === 'hard-delete') {
-      const result = await this.em.nativeDelete(Session, { id: { $in: ids } });
+      const result = await this.em.nativeDelete(Session, { id: { $in: toEntityIdList(ids) } });
       return {
         success: true,
         message: `Đã xóa vĩnh viễn ${result ?? 0} session`,
@@ -409,7 +396,7 @@ export class SessionsService {
     return { success: false, message: 'Action không hợp lệ' };
   }
 
-  async getActiveSessionUserIds(): Promise<string[]> {
+  async getActiveSessionUserIds(): Promise<number[]> {
     const rows = await this.em.find(
       Session,
       { isActive: true },
@@ -418,13 +405,13 @@ export class SessionsService {
     return [
       ...new Set(
         rows
-          .map((r) => relationId(r.user))
-          .filter((id): id is string => typeof id === 'string'),
+          .map((r) => relationEntityId(r.user))
+          .filter((id): id is number => id != null),
       ),
     ];
   }
 
-  async getSuperAdminUserIds(): Promise<string[]> {
+  async getSuperAdminUserIds(): Promise<number[]> {
     const rows = await this.em.find(
       UserRole,
       { role: { name: 'super_admin' } },
@@ -433,8 +420,8 @@ export class SessionsService {
     return [
       ...new Set(
         rows
-          .map((r) => relationId(r.user))
-          .filter((id): id is string => typeof id === 'string'),
+          .map((r) => relationEntityId(r.user))
+          .filter((id): id is number => id != null),
       ),
     ];
   }
@@ -487,17 +474,17 @@ export class SessionsService {
 
   async revokeAllSessionsByUserId(
     userId: string,
-  ): Promise<{ count: number; sessionIds: string[] }> {
+  ): Promise<{ count: number; sessionIds: number[] }> {
     const sessions = await this.em.find(
       Session,
-      { user: userId, isActive: true },
+      { user: toEntityId(userId), isActive: true },
       { fields: ['id'] },
     );
     if (!sessions.length) return { count: 0, sessionIds: [] };
     const ids = sessions.map((s) => s.id);
     await this.em.nativeUpdate(
       Session,
-      { id: { $in: ids } },
+      { id: { $in: toEntityIdList(ids) } },
       { isActive: false },
     );
     return { count: ids.length, sessionIds: ids };
@@ -505,7 +492,7 @@ export class SessionsService {
 
   async userHasSuperAdminRole(userId: string): Promise<boolean> {
     const count = await this.em.count(UserRole, {
-      user: userId,
+      user: toEntityId(userId),
       role: { name: 'super_admin' },
     });
     return count > 0;

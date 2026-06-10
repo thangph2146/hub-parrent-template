@@ -11,7 +11,7 @@ type ApiCategoryRow = {
   id: string | number;
   name: string;
   slug: string;
-  parentId?: string | null;
+  parentId?: number | string | null;
   parentName?: string | null;
   description?: string | null;
   icon?: string | null;
@@ -27,14 +27,19 @@ type ApiCategoryRow = {
 
 function mapCategory(row: ApiCategoryRow): Category {
   return {
-    id: String(row.id),
+    id: typeof row.id === "number" ? row.id : Number.parseInt(String(row.id), 10),
     name: row.name,
     slug: row.slug,
     description: row.description ?? null,
     icon: row.icon ?? null,
     sortOrder: row.sortOrder ?? 0,
     isActive: row.deletedAt == null,
-    parentId: row.parentId ?? null,
+    parentId:
+      row.parentId == null || row.parentId === ""
+        ? null
+        : typeof row.parentId === "number"
+          ? row.parentId
+          : Number.parseInt(String(row.parentId), 10),
     parentName: row.parentName ?? null,
     _count: { children: row._count?.children ?? 0 },
     postCount: row.postCount ?? 0,

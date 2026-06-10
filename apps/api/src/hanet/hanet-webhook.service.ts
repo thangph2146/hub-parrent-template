@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import {
   Injectable,
   Logger,
@@ -62,7 +63,7 @@ export class HanetWebhookService {
 
     if (fromParam) {
       const event = await this.em.findOne(Event, {
-        id: fromParam,
+        id: toEntityId(fromParam),
 
         deletedAt: null,
       });
@@ -159,17 +160,14 @@ export class HanetWebhookService {
     );
   }
 
-  private async inferCameraRole(
-    eventId: string,
+  private async inferCameraRole(eventId: number,
 
     deviceId: string,
   ): Promise<HanetCameraRole | null> {
     const event = await this.em.findOne(
       Event,
 
-      { id: eventId, deletedAt: null },
-
-      { populate: [...EVENT_CAMERA_POPULATE] },
+      { id: eventId, deletedAt: null },{ populate: [...EVENT_CAMERA_POPULATE] },
     );
 
     if (!event) return null;
@@ -212,7 +210,7 @@ export class HanetWebhookService {
       emailFromBody ||
       (aliasId.includes('@') ? aliasId : `${aliasId || 'hanet'}@hanet.local`);
 
-    const registration = await this.findRegistration(eventId, email, fullName);
+    const registration = await this.findRegistration(String(eventId), email, fullName);
 
     if (!registration) {
       throw new BadRequestException(
@@ -292,7 +290,7 @@ export class HanetWebhookService {
     fullName: string,
   ): Promise<EventRegistration | null> {
     const byEmail = await this.em.findOne(EventRegistration, {
-      event: eventId,
+      event: toEntityId(eventId),
 
       email,
 
@@ -303,7 +301,7 @@ export class HanetWebhookService {
 
     if (fullName) {
       return this.em.findOne(EventRegistration, {
-        event: eventId,
+        event: toEntityId(eventId),
 
         fullName,
 

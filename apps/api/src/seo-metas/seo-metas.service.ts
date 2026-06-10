@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { SeoMeta } from '../entities/seo-meta.entity';
@@ -12,7 +13,7 @@ import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { SEO_META_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface SeoMetaRowDto {
-  id: string;
+  id: number;
   page: string;
   title: string | null;
   description: string | null;
@@ -104,7 +105,7 @@ export class SeoMetasService {
   }
 
   async getById(id: string): Promise<SeoMetaRowDto | null> {
-    const row = await this.em.findOne(SeoMeta, { id });
+    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
     return row ? mapRow(row) : null;
   }
 
@@ -182,7 +183,7 @@ export class SeoMetasService {
   }
 
   async update(
-    id: string,
+    id: string | number,
     data: {
       page?: string;
       title?: string | null;
@@ -194,7 +195,7 @@ export class SeoMetasService {
       status?: number;
     },
   ): Promise<SeoMetaRowDto | null> {
-    const existing = await this.em.findOne(SeoMeta, { id });
+    const existing = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.page != null) existing.page = data.page;
     if (data.title !== undefined) existing.title = data.title ?? undefined;
@@ -214,7 +215,7 @@ export class SeoMetasService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id });
+    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
     await this.em.persistAndFlush(row);
@@ -222,7 +223,7 @@ export class SeoMetasService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id });
+    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
     row.deletedAt = null;
     await this.em.persistAndFlush(row);
@@ -230,7 +231,7 @@ export class SeoMetasService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id });
+    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;

@@ -1,7 +1,12 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isStoreRoute, STORE_ENABLED } from "@/lib/store-feature";
 
 export function proxy(request: NextRequest) {
+  if (!STORE_ENABLED && isStoreRoute(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (process.env.NODE_ENV === "development") {
     const { pathname, search } = request.nextUrl;
     console.log(

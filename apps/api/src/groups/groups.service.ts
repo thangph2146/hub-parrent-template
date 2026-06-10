@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Group } from '../entities/group.entity';
 import { GroupMember, GroupRole } from '../entities/group-member.entity';
@@ -20,34 +21,20 @@ export interface ListGroupsInput {
   includeDeleted?: boolean;
 }
 
-function relationId(value: unknown): string | null {
-  if (typeof value === 'string' && value.trim()) return value.trim();
-  if (
-    value &&
-    typeof value === 'object' &&
-    'id' in value &&
-    typeof (value as { id?: unknown }).id === 'string'
-  ) {
-    const id = (value as { id: string }).id.trim();
-    return id || null;
-  }
-  return null;
-}
-
 function mapGroupWithMembers(group: Group) {
   return {
     id: group.id,
     name: group.name,
     description: group.description ?? null,
     avatar: group.avatar ?? null,
-    createdById: relationId(group.creator),
+    createdById: relationEntityId(group.creator),
     createdAt: group.createdAt.toISOString(),
     updatedAt: group.updatedAt.toISOString(),
     deletedAt: group.deletedAt?.toISOString() ?? null,
     members: (group.members || []).map((m: any) => ({
       id: m.id,
-      groupId: relationId(m.group),
-      userId: relationId(m.user),
+      groupId: relationEntityId(m.group),
+      userId: relationEntityId(m.user),
       role: m.role,
       joinedAt: m.joinedAt.toISOString(),
       leftAt: m.leftAt?.toISOString() ?? null,
@@ -72,7 +59,7 @@ export class GroupsService {
     const existing = await this.em.findOne(Group, {
       name: nameTrim,
       deletedAt: null,
-      members: { user: createdById, leftAt: null },
+      members: { user: toEntityId(createdById), leftAt: null },
     });
     if (existing) {
       throw new Error('Đã tồn tại nhóm với tên này. Vui lòng chọn tên khác.');
@@ -85,14 +72,14 @@ export class GroupsService {
     group.name = nameTrim;
     group.description = description?.trim() || null;
     group.avatar = avatar?.trim() || null;
-    group.creator = this.em.getReference(User, createdById);
+    group.creator = this.em.getReference(User, toEntityId(createdById));
     this.em.persist(group);
     await this.em.flush();
 
     for (const userId of uniqueIds) {
       const member = new GroupMember();
       member.group = this.em.getReference(Group, group.id);
-      member.user = this.em.getReference(User, userId);
+      member.user = this.em.getReference(User, toEntityId(userId));
       member.role = userId === createdById ? GroupRole.OWNER : GroupRole.MEMBER;
       member.joinedAt = new Date();
       this.em.persist(member);
@@ -115,7 +102,7 @@ export class GroupsService {
   async list(userId: string, input: ListGroupsInput) {
     const { page, limit, search, includeDeleted } = input;
     const where: Record<string, unknown> = {
-      members: { user: userId, leftAt: null },
+      members: { user: toEntityId(userId), leftAt: null },
     };
     if (!includeDeleted) {
       where.deletedAt = null;
@@ -151,9 +138,9 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id,
+        id: toEntityId(id),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members', 'members.user', 'creator'] },
     );
@@ -169,9 +156,9 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id,
+        id: toEntityId(id),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
@@ -184,7 +171,7 @@ export class GroupsService {
     await this.em.flush();
     const updated = await this.em.findOne(
       Group,
-      { id },
+      { id: toEntityId(id) },
       { populate: ['members', 'members.user', 'creator'] },
     );
     return updated ? mapGroupWithMembers(updated) : null;
@@ -194,9 +181,9 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id,
+        id: toEntityId(id),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
@@ -209,7 +196,7 @@ export class GroupsService {
 
   async restore(id: string, userId: string): Promise<boolean> {
     void userId; // Reserved for future permission check
-    const group = await this.em.findOne(Group, { id });
+    const group = await this.em.findOne(Group, { id: toEntityId(id) });
     if (!group || !group.deletedAt) return false;
     group.deletedAt = null;
     this.em.persist(group);
@@ -219,7 +206,7 @@ export class GroupsService {
 
   async hardDelete(id: string, userId: string): Promise<boolean> {
     void userId; // Reserved for future permission check
-    const group = await this.em.findOne(Group, { id });
+    const group = await this.em.findOne(Group, { id: toEntityId(id) });
     if (!group) return false;
     this.em.remove(group);
     await this.em.flush();
@@ -234,31 +221,32 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id: groupId,
+        id: toEntityId(groupId),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
     if (!group) return false;
+    const gid = toEntityId(groupId);
     const existing = await this.em.find(
       GroupMember,
-      { group: groupId, leftAt: null },
+      { group: gid, leftAt: null },
       { fields: ['user'] },
     );
     const existingIds = new Set(
       existing
-        .map((m) => relationId(m.user))
-        .filter((id): id is string => typeof id === 'string'),
+        .map((m) => relationEntityId(m.user))
+        .filter((id): id is number => id != null),
     );
-    const toAdd = memberIds.filter(
-      (id) => id?.trim() && !existingIds.has(id.trim()),
-    );
+    const toAdd = memberIds
+      .map((id) => toEntityId(id))
+      .filter((id) => !existingIds.has(id));
     if (toAdd.length === 0) return true;
     for (const uid of toAdd) {
       const member = new GroupMember();
-      member.group = this.em.getReference(Group, groupId);
-      member.user = this.em.getReference(User, uid.trim());
+      member.group = this.em.getReference(Group, gid);
+      member.user = this.em.getReference(User, uid);
       member.role = GroupRole.MEMBER;
       member.joinedAt = new Date();
       this.em.persist(member);
@@ -275,16 +263,16 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id: groupId,
+        id: toEntityId(groupId),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
     if (!group) return false;
     const member = await this.em.findOne(GroupMember, {
-      group: groupId,
-      user: memberUserId.trim(),
+      group: toEntityId(groupId),
+      user: toEntityId(memberUserId),
       leftAt: null,
     });
     if (!member) return false;
@@ -303,17 +291,19 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id: groupId,
+        id: toEntityId(groupId),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
     if (!group) return false;
     const members = group.members || [];
-    const currentMember = members.find((m) => relationId(m.user) === userId);
+    const uid = toEntityId(userId);
+    const targetUid = toEntityId(memberUserId);
+    const currentMember = members.find((m) => relationEntityId(m.user) === uid);
     const targetMember = members.find(
-      (m) => relationId(m.user) === memberUserId.trim(),
+      (m) => relationEntityId(m.user) === targetUid,
     );
     if (!currentMember || !targetMember) return false;
     if (currentMember.role !== GroupRole.OWNER) return false;
@@ -333,35 +323,36 @@ export class GroupsService {
     const group = await this.em.findOne(
       Group,
       {
-        id: groupId,
+        id: toEntityId(groupId),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
     if (!group) return false;
+    const gid = toEntityId(groupId);
     const messages = await this.em.find(
       Message,
-      { group: groupId, deletedAt: null },
+      { group: gid, deletedAt: null },
       { fields: ['id'] },
     );
     const messageIds = messages.map((m) => m.id);
     const existing = await this.em.find(
       MessageRead,
-      { user: userId, message: { $in: messageIds } },
+      { user: toEntityId(userId), message: { $in: messageIds } },
       { fields: ['message'] },
     );
     const existingIds = new Set(
       existing
-        .map((r) => relationId(r.message))
-        .filter((id): id is string => typeof id === 'string'),
+        .map((r) => relationEntityId(r.message))
+        .filter((id): id is number => id != null),
     );
     const toCreate = messages.filter((m) => !existingIds.has(m.id));
     if (toCreate.length > 0) {
       for (const m of toCreate) {
         const read = new MessageRead();
         read.message = this.em.getReference(Message, m.id);
-        read.user = this.em.getReference(User, userId);
+        read.user = this.em.getReference(User, toEntityId(userId));
         this.em.persist(read);
       }
       await this.em.flush();
@@ -375,28 +366,29 @@ export class GroupsService {
     limit: number = 100,
   ): Promise<
     Array<{
-      id: string;
+      id: number;
       content: string;
-      senderId: string | null;
-      receiverId: string | null;
+      senderId: number | null;
+      receiverId: number | null;
       timestamp: string;
       isRead: boolean;
-      replyToId: string | null;
+      replyToId: number | null;
     }>
   > {
     const group = await this.em.findOne(
       Group,
       {
-        id: groupId,
+        id: toEntityId(groupId),
         deletedAt: null,
-        members: { user: userId, leftAt: null },
+        members: { user: toEntityId(userId), leftAt: null },
       },
       { populate: ['members'] },
     );
     if (!group) return [];
+    const gid = toEntityId(groupId);
     const messages = await this.em.find(
       Message,
-      { group: groupId, deletedAt: null },
+      { group: gid, deletedAt: null },
       {
         orderBy: { createdAt: 'ASC' },
         limit,
@@ -406,22 +398,22 @@ export class GroupsService {
     const messageIds = messages.map((m) => m.id);
     const reads = await this.em.find(
       MessageRead,
-      { user: userId, message: { $in: messageIds } },
+      { user: toEntityId(userId), message: { $in: messageIds } },
       { fields: ['message'] },
     );
     const readSet = new Set(
       reads
-        .map((r) => relationId(r.message))
-        .filter((id): id is string => typeof id === 'string'),
+        .map((r) => relationEntityId(r.message))
+        .filter((id): id is number => id != null),
     );
     return messages.map((m) => ({
       id: m.id,
       content: m.content,
-      senderId: relationId(m.sender),
-      receiverId: relationId(m.receiver),
+      senderId: relationEntityId(m.sender),
+      receiverId: relationEntityId(m.receiver),
       timestamp: m.createdAt.toISOString(),
       isRead: readSet.has(m.id),
-      replyToId: relationId(m.parent),
+      replyToId: relationEntityId(m.parent),
     }));
   }
 }

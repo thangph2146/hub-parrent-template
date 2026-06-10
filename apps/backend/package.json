@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
-    "predev": "node ../../scripts/kill-ports.mjs 3001",
-    "kill": "node ../../scripts/kill-ports.mjs 3001",
+    "dev": "node ../../script-system/conditional-api-wait.cjs && next dev --port 3001",
+    "predev": "node ../../script-system/kill-ports.mjs 3001",
+    "kill": "node ../../script-system/kill-ports.mjs 3001",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

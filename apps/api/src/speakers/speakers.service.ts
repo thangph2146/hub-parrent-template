@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Speaker } from '../entities/speaker.entity';
@@ -143,7 +144,7 @@ export class SpeakersService {
   }
 
   async getById(id: number): Promise<SpeakerRowDto | null> {
-    const r = await this.em.findOne(Speaker, { id });
+    const r = await this.em.findOne(Speaker, { id: toEntityId(id) });
     if (!r) return null;
     return mapRow(r);
   }
@@ -185,7 +186,7 @@ export class SpeakersService {
       status?: number;
     },
   ): Promise<SpeakerRowDto | null> {
-    const existing = await this.em.findOne(Speaker, { id });
+    const existing = await this.em.findOne(Speaker, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name !== undefined) existing.name = data.name;
     if (data.title !== undefined) existing.title = data.title;
@@ -201,7 +202,7 @@ export class SpeakersService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(Speaker, { id });
+    const r = await this.em.findOne(Speaker, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -209,7 +210,7 @@ export class SpeakersService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const r = await this.em.findOne(Speaker, { id });
+    const r = await this.em.findOne(Speaker, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -217,7 +218,7 @@ export class SpeakersService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(Speaker, { id });
+    const r = await this.em.findOne(Speaker, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

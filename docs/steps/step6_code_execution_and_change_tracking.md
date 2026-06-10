@@ -1,63 +1,63 @@
-﻿# Step 6: Code Execution and Change Tracking
+# Step 6: Code Execution and Change Tracking
 
-Đây là bước thực thi thay đổi code và ghi nhớ các thay đổi của hệ thống hiện tại.
+��y l� bu?c th?c thi thay d?i code v� ghi nh? c�c thay d?i c?a h? th?ng hi?n t?i.
 
-## Mục tiêu
+## M?c ti�u
 
-- Kiểm tra thay đổi code bằng các công cụ chuẩn.
-- Ghi lại các file đã thay đổi và scope ảnh hưởng.
-- Cập nhật Graphify nếu cần.
+- Ki?m tra thay d?i code b?ng c�c c�ng c? chu?n.
+- Ghi l?i c�c file d� thay d?i v� scope ?nh hu?ng.
+- C?p nh?t Graphify n?u c?n.
 
-## Trước khi thực thi
+## Tru?c khi th?c thi
 
-1. Xác nhận scope thay đổi: `apps/frontend`, `apps/backend`, `apps/api`, hoặc `packages/*`.
-2. Thống kê file thay đổi chính bằng `git status --short`.
-3. Ghi lại các điểm thay đổi quan trọng:
-   - module mới / route mới
-   - import mới giữa service
-   - package workspace mới
+1. X�c nh?n scope thay d?i: `apps/frontend`, `apps/backend`, `apps/api`, ho?c `packages/*`.
+2. Th?ng k� file thay d?i ch�nh b?ng `git status --short`.
+3. Ghi l?i c�c di?m thay d?i quan tr?ng:
+   - module m?i / route m?i
+   - import m?i gi?a service
+   - package workspace m?i
 
-## Các lệnh kiểm tra
+## C�c l?nh ki?m tra
 
-1. Chạy từ root repo:
+1. Ch?y t? root repo:
 
 ```bash
 pnpm check
 ```
 
-2. Nếu thay đổi cấu trúc module/route đáng kể, chạy:
+2. N?u thay d?i c?u tr�c module/route d�ng k?, ch?y:
 
 ```bash
-node scripts/graphify-update.cjs apps/<app>
+node script-system/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
 
-3. Nếu chỉ thay đổi package workspace hoặc docs, `pnpm check` vẫn là tối thiểu.
+3. N?u ch? thay d?i package workspace ho?c docs, `pnpm check` v?n l� t?i thi?u.
 
-## Ghi nhớ thay đổi
+## Ghi nh? thay d?i
 
-- Nếu thay đổi liên quan `apps/api`, kiểm tra import mới có vi phạm boundary không.
-- Nếu thay đổi liên quan `apps/frontend` hoặc `apps/backend`, xác nhận rằng API vẫn gọi qua HTTP / `@workspace/api-client`.
-- Nếu thêm package hoặc share logic, ghi chú `packages/*` và chạy `pnpm graphify:ai-summary` nếu cần.
+- N?u thay d?i li�n quan `apps/api`, ki?m tra import m?i c� vi ph?m boundary kh�ng.
+- N?u thay d?i li�n quan `apps/frontend` ho?c `apps/backend`, x�c nh?n r?ng API v?n g?i qua HTTP / `@workspace/api-client`.
+- N?u th�m package ho?c share logic, ghi ch� `packages/*` v� ch?y `pnpm graphify:ai-summary` n?u c?n.
 
-## Nếu kiểm tra không pass
+## N?u ki?m tra kh�ng pass
 
-1. Đọc lỗi `pnpm check` trả về.
-2. Chia lỗi theo nhóm:
-   - `verify:bounds` → boundary/import sai (`package.json` workspace)
-   - `verify:sdk-http` → app Next gọi `api.http` thay vì resource SDK
-   - `lint` → style/import/cấu trúc
-   - `typecheck` → kiểu dữ liệu
-3. Sửa theo nhóm lỗi, rồi chạy lại `pnpm check`.
+1. �?c l?i `pnpm check` tr? v?.
+2. Chia l?i theo nh�m:
+   - `verify:bounds` ? boundary/import sai (`package.json` workspace)
+   - `verify:sdk-http` ? app Next g?i `api.http` thay v� resource SDK
+   - `lint` ? style/import/c?u tr�c
+   - `typecheck` ? ki?u d? li?u
+3. S?a theo nh�m l?i, r?i ch?y l?i `pnpm check`.
 
-## Nếu cần cập nhật docs
+## N?u c?n c?p nh?t docs
 
-- Nếu thay đổi cấu trúc hoặc feature mới: cập nhật `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (pattern chuẩn) hoặc `docs/pages/README.md` (kiến trúc file) hoặc `docs/steps/*.md` tương ứng.
-- Nếu thay đổi ranh giới service: cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` hoặc `packages/eslint-config/service-boundaries.js` nếu có.
+- N?u thay d?i c?u tr�c ho?c feature m?i: c?p nh?t `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (pattern chu?n) ho?c `docs/pages/README.md` (ki?n tr�c file) ho?c `docs/steps/*.md` tuong ?ng.
+- N?u thay d?i ranh gi?i service: c?p nh?t `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` ho?c `packages/eslint-config/service-boundaries.js` n?u c�.
 
-## Kết luận bước này
+## K?t lu?n bu?c n�y
 
 - `pnpm check` pass.
-- Nếu cần, `pnpm check:full` pass.
-- Giữ note thay đổi rõ ràng và theo scope.
+- N?u c?n, `pnpm check:full` pass.
+- Gi? note thay d?i r� r�ng v� theo scope.

@@ -34,7 +34,7 @@ interface StaffTableProps {
   onPurge: (user: StaffRow) => void
   onToggleActive: (user: StaffRow) => void
   busy: boolean
-  currentUserId?: string
+  currentUserId?: string | number
   actorEmail?: string
   isProtected: (user: StaffRow) => boolean
   canUpdate: boolean

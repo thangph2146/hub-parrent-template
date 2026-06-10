@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -16,12 +16,14 @@ import {
 import { cn } from "@ui/lib/utils"
 import { Logo } from "@/components/icons/logo"
 import { HeaderAuth } from "@/components/shared/header-auth"
+import { HeaderAdminLink } from "@/components/shared/header-admin-link"
 import {
-  isStudentSession,
+  getMyEventsPath,
+  isEventPortalSession,
   readEventSession,
   subscribeEventSession,
 } from "@/lib/event-auth"
-import { MAIN_NAV, SITE_BRAND, isNavActive } from "@/lib/site-nav"
+import { MAIN_NAV, MY_EVENTS_NAV, SITE_BRAND, isNavActive } from "@/lib/site-nav"
 
 function useEventSession() {
   return useSyncExternalStore(
@@ -35,9 +37,16 @@ export function Header() {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
   const session = useEventSession()
-  const navItems = isStudentSession(session)
-    ? MAIN_NAV
-    : MAIN_NAV.filter((link) => link.href !== "/student/events")
+  const navItems = useMemo(() => {
+    const items = [...MAIN_NAV]
+    if (session && isEventPortalSession(session)) {
+      items.push({
+        ...MY_EVENTS_NAV,
+        href: getMyEventsPath(session),
+      })
+    }
+    return items
+  }, [session])
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -92,8 +101,15 @@ export function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <HeaderAuth />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-1 sm:rounded-2xl sm:border sm:border-border/70 sm:bg-muted/20 sm:p-1 sm:shadow-sm">
+              <HeaderAdminLink />
+              <span
+                className="hidden h-5 w-px shrink-0 bg-border/70 sm:block"
+                aria-hidden
+              />
+              <HeaderAuth />
+            </div>
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger
                 className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-muted md:hidden"
@@ -137,13 +153,20 @@ export function Header() {
                     )
                   })}
                 </nav>
-                <div className="mt-4 border-t border-border px-4 pt-4">
+                <div className="mt-4 space-y-3 border-t border-border px-4 pt-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Tài khoản
+                  </p>
+                  <div className="grid gap-2">
+                    <HeaderAuth />
+                    <HeaderAdminLink inMenu />
+                  </div>
                   <Link
                     href="/su-kien"
                     onClick={() => setMenuOpen(false)}
-                    className="block"
+                    className="block pt-1"
                   >
-                    <Button className="w-full rounded-lg">
+                    <Button className="w-full rounded-xl">
                       Xem tất cả sự kiện
                     </Button>
                   </Link>

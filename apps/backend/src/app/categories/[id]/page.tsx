@@ -299,7 +299,7 @@ function CategoryDetailInner() {
               <AdminDataTable<ChildCategory>
                 data={children}
                 columns={childColumns}
-                getRowId={(row) => row.id}
+                getRowId={(row) => String(row.id)}
                 emptyLabel="Chưa có danh mục con nào"
                 xlsxExport={buildAdminTableXlsxExport("category-children", {
                   pageCount: children.length,
@@ -346,7 +346,7 @@ function CategoryDetailInner() {
               <AdminDataTable<RelatedPost>
                 data={posts}
                 columns={relatedPostColumns}
-                getRowId={(row) => row.id}
+                getRowId={(row) => String(row.id)}
                 emptyLabel="Chưa có bài viết nào trong danh mục này"
                 xlsxExport={buildAdminTableXlsxExport(
                   "category-related-posts",

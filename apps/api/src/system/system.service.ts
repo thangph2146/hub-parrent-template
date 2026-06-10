@@ -1,3 +1,10 @@
+import {
+  coerceImportPrimaryKey,
+  parseEntityId,
+  relationEntityId,
+  toEntityId,
+  toEntityIdList,
+} from '../common/entity-id';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   EntityManager,
@@ -21,18 +28,22 @@ import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
 import { Post } from '../entities/post.entity';
 import { Role } from '../entities/role.entity';
+import { Setting } from '../entities/setting.entity';
 import { Student } from '../entities/student.entity';
+import { Tag } from '../entities/tag.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { User } from '../entities/user.entity';
 import { ormEntities } from '../mikro-orm/orm-entities';
 import {
   runSuperadminBootstrap,
+  ensureActingUserRoleAfterImport,
   ensureSeedUserRoleLinks,
 } from '../seeds/superadmin-bootstrap.runner';
 import type { SuperadminBootstrapResult } from '../seeds/superadmin-bootstrap.runner';
 import {
   isSkippableImportRowError,
   orderCategoryRowsForImport,
+  type ImportRow,
   pivotFk,
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
@@ -42,6 +53,11 @@ import {
   normalizeLegacyImportRow,
   resolveLegacyTableModelName,
 } from './export-schema';
+import {
+  exportLegacyKey,
+  IMPORT_ID_MAP_GROUP,
+  LegacyImportIdMap,
+} from './legacy-import-id-map';
 
 const EXCEL_META_SHEET = '__meta';
 const EXCEL_NULL_MARKER = '__HUB_NULL__';
@@ -149,6 +165,15 @@ const entityByModelName: Record<
   EntityName<any>
 > = buildEntityByModelName();
 
+const modelNameByEntityClass: Record<string, string> = {};
+for (const [model, entity] of Object.entries(entityByModelName)) {
+  const className =
+    typeof entity === 'function'
+      ? (entity as { name: string }).name
+      : String(entity);
+  modelNameByEntityClass[className] = model;
+}
+
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
@@ -209,11 +234,13 @@ function isManyToOneImportProperty(prop: EntityProperty): boolean {
 
 function coerceManyToOneScalar(raw: unknown): unknown {
   if (raw === null || raw === undefined) return raw;
-  if (typeof raw === 'string' || typeof raw === 'number') return raw;
+  const id = relationEntityId(raw);
+  if (id != null) return id;
   if (typeof raw === 'object' && raw !== null && 'id' in raw) {
-    return (raw as { id: unknown }).id;
+    const nested = relationEntityId((raw as { id: unknown }).id);
+    if (nested != null) return nested;
   }
-  return raw;
+  return null;
 }
 
 function normalizeImportScalar(prop: EntityProperty, raw: unknown): unknown {
@@ -706,6 +733,7 @@ export class SystemService {
     targetModel?: string,
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
+    actingUserIdHeader?: string,
   ) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(fileBuffer as unknown as ExcelWorkbookLoadInput);
@@ -778,24 +806,47 @@ export class SystemService {
       data[modelName] = rows;
     }
 
-    return this.importData(data, resolvedTargetModel, skipClear, onProgress);
+    return this.importData(
+      data,
+      resolvedTargetModel,
+      skipClear,
+      onProgress,
+      actingUserIdHeader,
+    );
   }
 
   /** Bỏ pivot trỏ tới post/category không tồn tại (tránh lỗi FK / file export lệch). */
   private async filterSanitizedPostCategories(
     em: EntityManager,
     sanitized: Record<string, unknown>[],
+    idMap?: LegacyImportIdMap,
   ): Promise<Record<string, unknown>[]> {
+    if (idMap) {
+      for (const row of sanitized) {
+        for (const [field, model, rel] of [
+          ['postId', 'post', 'post'],
+          ['categoryId', 'category', 'category'],
+        ] as const) {
+          const raw = pivotFk(row, field, rel);
+          if (!raw) continue;
+          const resolved = await idMap.resolve(em, model, raw);
+          if (resolved != null) row[field] = resolved;
+        }
+      }
+    }
+
     const postIds = [
       ...new Set(
-        sanitized.map((r) => pivotFk(r, 'postId', 'post')).filter(Boolean),
+        sanitized
+          .map((r) => relationEntityId(pivotFk(r, 'postId', 'post')))
+          .filter((id): id is number => id != null),
       ),
     ];
     const categoryIds = [
       ...new Set(
         sanitized
-          .map((r) => pivotFk(r, 'categoryId', 'category'))
-          .filter(Boolean),
+          .map((r) => relationEntityId(pivotFk(r, 'categoryId', 'category')))
+          .filter((id): id is number => id != null),
       ),
     ];
     const [existingPosts, existingCats] = await Promise.all([
@@ -809,16 +860,90 @@ export class SystemService {
     const pSet = new Set(existingPosts.map((p) => p.id));
     const cSet = new Set(existingCats.map((c) => c.id));
     const out = sanitized.filter((r) => {
-      const pid = pivotFk(r, 'postId', 'post');
-      const cid = pivotFk(r, 'categoryId', 'category');
-      return pid && cid && pSet.has(pid) && cSet.has(cid);
+      const pid = relationEntityId(pivotFk(r, 'postId', 'post'));
+      const cid = relationEntityId(pivotFk(r, 'categoryId', 'category'));
+      return (
+        pid != null && cid != null && pSet.has(pid) && cSet.has(cid)
+      );
     });
     if (out.length < sanitized.length) {
       this.logger.warn(
-        `postCategory: bỏ qua ${sanitized.length - out.length} dòng (post hoặc category không có trong DB).`,
+        `postCategory: bỏ qua ${sanitized.length - out.length} dòng (post/category FK chưa resolve hoặc không có trong DB — import post và category trước).`,
       );
     }
     return out;
+  }
+
+  /** Category: insert theo thứ tự cha→con, map legacy parentId sau từng dòng. */
+  private async insertCategoriesWithLegacyParents(
+    em: EntityManager,
+    rawRecords: Record<string, unknown>[],
+    sanitized: Record<string, unknown>[],
+    idMap: LegacyImportIdMap,
+    onRowError?: (index: number, message: string) => void,
+  ): Promise<{ imported: number; skipped: number }> {
+    const sanitizedBySlug = new Map<string, Record<string, unknown>>();
+    for (const row of sanitized) {
+      const slug = typeof row.slug === 'string' ? row.slug.trim() : '';
+      if (slug) sanitizedBySlug.set(slug, row);
+    }
+
+    const orderedRaw = orderCategoryRowsForImport(
+      rawRecords.map((raw) => ({
+        ...raw,
+        parent: raw.parent ?? raw.parentId,
+      })) as ImportRow[],
+    );
+    let imported = 0;
+    let skipped = 0;
+
+    for (let index = 0; index < orderedRaw.length; index++) {
+      const raw = orderedRaw[index]!;
+      const slug = typeof raw.slug === 'string' ? raw.slug.trim() : '';
+      if (!slug || !sanitizedBySlug.has(slug)) {
+        skipped++;
+        continue;
+      }
+      const row = { ...sanitizedBySlug.get(slug)! };
+      if (row.type == null || row.type === '') row.type = 'post';
+      if (row.sortOrder == null) row.sortOrder = 0;
+
+      const parentLegacy = exportLegacyKey(raw.parent ?? raw.parentId);
+      if (parentLegacy) {
+        const parentId = await idMap.resolve(em, 'category', parentLegacy);
+        if (parentId != null) {
+          row.parentId = parentId;
+        }
+      }
+
+      try {
+        await em.insert(Category, row as object);
+        imported++;
+        if (raw) {
+          const legacy = exportLegacyKey(raw.id);
+          if (legacy && slug) {
+            const inserted = await em.findOne(
+              Category,
+              { slug },
+              { fields: ['id'] },
+            );
+            if (inserted?.id) {
+              await idMap.persist(em, 'category', legacy, inserted.id);
+            }
+          }
+        }
+      } catch (err: unknown) {
+        skipped++;
+        const errMsg = getErrorMessage(err);
+        if (!isSkippableImportRowError(errMsg)) {
+          onRowError?.(index, errMsg);
+          throw err;
+        }
+      }
+    }
+
+    await em.flush();
+    return { imported, skipped };
   }
 
   private applyUserImportRowsDefaults(
@@ -855,12 +980,16 @@ export class SystemService {
   ): Promise<Record<string, unknown>[]> {
     const userIds = [
       ...new Set(
-        sanitized.map((r) => pivotFk(r, 'userId', 'user')).filter(Boolean),
+        sanitized
+          .map((r) => relationEntityId(pivotFk(r, 'userId', 'user')))
+          .filter((id): id is number => id != null),
       ),
     ];
     const roleIds = [
       ...new Set(
-        sanitized.map((r) => pivotFk(r, 'roleId', 'role')).filter(Boolean),
+        sanitized
+          .map((r) => relationEntityId(pivotFk(r, 'roleId', 'role')))
+          .filter((id): id is number => id != null),
       ),
     ];
     const [users, roles] = await Promise.all([
@@ -873,16 +1002,51 @@ export class SystemService {
     ]);
     const uSet = new Set(users.map((u) => u.id));
     const rSet = new Set(roles.map((ro) => ro.id));
-    const out = sanitized.filter((row) => {
-      const uid = pivotFk(row, 'userId', 'user');
-      const rid = pivotFk(row, 'roleId', 'role');
-      return uid && rid && uSet.has(uid) && rSet.has(rid);
+    let out = sanitized.filter((row) => {
+      const uid = relationEntityId(pivotFk(row, 'userId', 'user'));
+      const rid = relationEntityId(pivotFk(row, 'roleId', 'role'));
+      return (
+        uid != null &&
+        rid != null &&
+        uSet.has(uid) &&
+        rSet.has(rid)
+      );
     });
     if (out.length < sanitized.length) {
       this.logger.warn(
         `userRole: bỏ qua ${sanitized.length - out.length} dòng (userId hoặc roleId không tồn tại — import user và role trước).`,
       );
     }
+
+    if (out.length > 0) {
+      const existingLinks = await em.find(
+        UserRole,
+        {
+          user: { $in: userIds },
+          role: { $in: roleIds },
+        },
+        { populate: ['user', 'role'] },
+      );
+      const existingPairs = new Set(
+        existingLinks.map(
+          (link) =>
+            `${relationEntityId(link.user)}:${relationEntityId(link.role)}`,
+        ),
+      );
+      const beforeExisting = out.length;
+      out = out.filter((row) => {
+        const uid = relationEntityId(pivotFk(row, 'userId', 'user'));
+        const rid = relationEntityId(pivotFk(row, 'roleId', 'role'));
+        if (uid == null || rid == null) return false;
+        return !existingPairs.has(`${uid}:${rid}`);
+      });
+      if (out.length < beforeExisting) {
+        this.logger.log(
+          `userRole: bỏ qua ${beforeExisting - out.length} dòng đã tồn tại (userId, roleId).`,
+        );
+      }
+    }
+
     return out;
   }
 
@@ -978,8 +1142,10 @@ export class SystemService {
       const ids = [
         ...new Set(
           filtered
-            .map((row) => pivotFk(row, fieldName, prop.name))
-            .filter(Boolean),
+            .map((row) =>
+              relationEntityId(pivotFk(row, fieldName, prop.name)),
+            )
+            .filter((id): id is number => id != null),
         ),
       ];
 
@@ -991,13 +1157,13 @@ export class SystemService {
           )
         : [];
       const existingIds = new Set(
-        existingRows.map((row) => String((row as { id: unknown }).id)),
+        existingRows.map((row) => (row as { id: number }).id),
       );
 
       const before = filtered.length;
       filtered = filtered.filter((row) => {
-        const id = pivotFk(row, fieldName, prop.name);
-        if (!id) return nullable;
+        const id = relationEntityId(pivotFk(row, fieldName, prop.name));
+        if (id == null) return nullable;
         return existingIds.has(id);
       });
 
@@ -1071,27 +1237,60 @@ export class SystemService {
   private async insertPageContentsWithPersist(
     em: EntityManager,
     rows: Record<string, unknown>[],
-  ): Promise<void> {
+  ): Promise<{ imported: number; skipped: number }> {
     const now = new Date();
+    const seenKeys = new Set<string>();
+    let imported = 0;
+    let skipped = 0;
+
     for (const r of rows) {
-      const id = r.id != null ? String(r.id as string | number) : '';
-      if (!id) {
-        throw new Error('pageContent import: thiếu id');
+      const pageKey =
+        r.pageKey != null ? String(r.pageKey as string | number).trim() : '';
+      const sectionKey =
+        r.sectionKey != null
+          ? String(r.sectionKey as string | number).trim()
+          : '';
+      if (!pageKey || !sectionKey) {
+        skipped++;
+        continue;
       }
+      const dedupeKey = `${pageKey}\0${sectionKey}`;
+      if (seenKeys.has(dedupeKey)) {
+        skipped++;
+        continue;
+      }
+      seenKeys.add(dedupeKey);
+
       const contentRaw = normalizeContentJsonForImport(r.content);
       const content = plainJsonRecord(contentRaw);
       const e = new PageContent();
-      e.id = id;
-      e.pageKey = r.pageKey != null ? String(r.pageKey as string | number) : '';
-      e.sectionKey =
-        r.sectionKey != null ? String(r.sectionKey as string | number) : '';
+      const pk = coerceImportPrimaryKey(r.id);
+      if (pk != null) e.id = pk;
+      e.pageKey = pageKey;
+      e.sectionKey = sectionKey;
       e.content = content;
       e.isVisible = Boolean(r.isVisible ?? true);
       e.createdAt = coerceImportDate(r.createdAt, now);
       e.updatedAt = coerceImportDate(r.updatedAt, now);
       em.persist(e);
+      imported++;
     }
+
+    if (imported === 0 && rows.length > 0) {
+      throw new Error('pageContent import: không có dòng hợp lệ (thiếu pageKey/sectionKey)');
+    }
+
     await em.flush();
+    return { imported, skipped };
+  }
+
+  private reportImportRowError(
+    onRowError: ((index: number, message: string) => void) | undefined,
+    rowIndex: number,
+    errMsg: string,
+  ): void {
+    if (isSkippableImportRowError(errMsg)) return;
+    onRowError?.(rowIndex, errMsg);
   }
 
   private async insertSanitizedModel(
@@ -1099,6 +1298,10 @@ export class SystemService {
     mName: string,
     sanitized: Record<string, unknown>[],
     onRowError?: (index: number, message: string) => void,
+    importContext?: {
+      rawRecords?: Record<string, unknown>[];
+      idMap?: LegacyImportIdMap;
+    },
   ): Promise<{
     imported: number;
     skipped: number;
@@ -1120,12 +1323,35 @@ export class SystemService {
     if (!entity || sanitized.length === 0)
       return done({ imported: 0, skipped: 0, total });
 
+    if (
+      mName === 'category' &&
+      importContext?.rawRecords?.length &&
+      importContext.idMap
+    ) {
+      const categoryResult = await this.insertCategoriesWithLegacyParents(
+        em,
+        importContext.rawRecords,
+        sanitized,
+        importContext.idMap,
+        onRowError,
+      );
+      return done({
+        imported: categoryResult.imported,
+        skipped: categoryResult.skipped,
+        total,
+      });
+    }
+
     let rows = sanitized;
     rows = await this.filterRowsByExistingManyToOneRefs(em, mName, rows);
     if (rows.length === 0) return done({ imported: 0, skipped: total, total });
 
     if (mName === 'postCategory') {
-      rows = await this.filterSanitizedPostCategories(em, rows);
+      rows = await this.filterSanitizedPostCategories(
+        em,
+        rows,
+        importContext?.idMap,
+      );
       if (rows.length === 0)
         return done({ imported: 0, skipped: total, total });
     }
@@ -1190,12 +1416,12 @@ export class SystemService {
         ),
       ];
       const events = eventIds.length
-        ? await em.find(Event, { id: { $in: eventIds } }, { fields: ['id'] })
+        ? await em.find(Event, { id: { $in: toEntityIdList(eventIds) } }, { fields: ['id'] })
         : [];
       const eventSet = new Set(events.map((e) => e.id));
       const filtered = rows.filter((row) => {
         const eid = pivotFk(row, 'eventId', 'event');
-        return Boolean(eid && eventSet.has(eid));
+        return Boolean(eid && eventSet.has(toEntityId(String(eid))));
       });
       if (filtered.length < rows.length) {
         this.logger.warn(
@@ -1209,12 +1435,15 @@ export class SystemService {
 
     if (mName === 'role') {
       const beforeDedupe = rows.length;
-      const seenIds = new Set<string>();
+      const seenKeys = new Set<string>();
       rows = rows
         .filter((r) => {
-          const id = String(r.id ?? '');
-          if (!id || seenIds.has(id)) return false;
-          seenIds.add(id);
+          const pk = coerceImportPrimaryKey(r.id);
+          const name = String(r.name ?? '').trim();
+          const key =
+            pk != null ? `id:${pk}` : name ? `name:${name}` : undefined;
+          if (!key || seenKeys.has(key)) return false;
+          seenKeys.add(key);
           return true;
         })
         .map((r) => ({
@@ -1223,16 +1452,16 @@ export class SystemService {
         }));
       if (rows.length < beforeDedupe) {
         this.logger.warn(
-          `${mName}: bỏ qua ${beforeDedupe - rows.length} dòng trùng id trong file import.`,
+          `${mName}: bỏ qua ${beforeDedupe - rows.length} dòng trùng id/name trong file import.`,
         );
       }
     }
 
     if (mName === 'pageContent') {
-      await this.insertPageContentsWithPersist(em, rows);
+      const pageStats = await this.insertPageContentsWithPersist(em, rows);
       return done({
-        imported: rows.length,
-        skipped: total - rows.length,
+        imported: pageStats.imported,
+        skipped: total - pageStats.imported,
         total,
       });
     }
@@ -1277,8 +1506,8 @@ export class SystemService {
             } catch (rowErr: unknown) {
               skipped++;
               const errMsg = getErrorMessage(rowErr);
-              onRowError?.(rowIndex, errMsg);
               if (!isSkippableImportRowError(errMsg)) {
+                this.reportImportRowError(onRowError, rowIndex, errMsg);
                 throw rowErr;
               }
             }
@@ -1308,6 +1537,85 @@ export class SystemService {
       `Imported ${imported}/${total} records into ${mName} in ${Date.now() - startTime}ms${skipped > 0 ? ` (${skipped} skipped)` : ''}`,
     );
     return done({ imported, skipped, total });
+  }
+
+  private parseImportActingUserId(
+    actingUserIdHeader?: string,
+  ): number | undefined {
+    const raw = actingUserIdHeader?.trim();
+    if (!raw) return undefined;
+    try {
+      return parseEntityId(raw);
+    } catch {
+      return undefined;
+    }
+  }
+
+  /** Giữ user đang import để các lô HTTP tiếp theo không bị 401 (PermissionsGuard). */
+  private resolvePreserveUserIdForImport(
+    skipClear: boolean,
+    clearsUserTable: boolean,
+    actingUserIdHeader?: string,
+  ): number | undefined {
+    if (skipClear || !clearsUserTable) return undefined;
+    return this.parseImportActingUserId(actingUserIdHeader);
+  }
+
+  private async filterUserRowsForActingUserPreserve(
+    em: EntityManager,
+    rows: Record<string, unknown>[],
+    preserveUserId?: number,
+  ): Promise<Record<string, unknown>[]> {
+    if (preserveUserId == null) return rows;
+
+    const preserved = await em.findOne(
+      User,
+      { id: preserveUserId },
+      { fields: ['id', 'email'] },
+    );
+    const preservedEmail = preserved?.email?.trim().toLowerCase() ?? '';
+
+    const filtered = rows.filter((row) => {
+      if (row.id != null && row.id !== '') {
+        try {
+          if (toEntityId(row.id as string | number) === preserveUserId) {
+            return false;
+          }
+        } catch {
+          /* id legacy (UUID) — kiểm tra email bên dưới */
+        }
+      }
+      if (preservedEmail) {
+        const email =
+          typeof row.email === 'string' ? row.email.trim().toLowerCase() : '';
+        if (email && email === preservedEmail) return false;
+      }
+      return true;
+    });
+    if (filtered.length < rows.length) {
+      this.logger.log(
+        `Import user: bỏ qua ${rows.length - filtered.length} bản ghi trùng user #${preserveUserId} (id/email) — giữ phiên admin hiện tại.`,
+      );
+    }
+    return filtered;
+  }
+
+  private async clearUsersTableForImport(
+    em: EntityManager,
+    preserveUserId?: number,
+  ): Promise<void> {
+    await this.detachNullableUserForeignKeys(em);
+    if (preserveUserId != null) {
+      const deleted = await em.nativeDelete(User, {
+        id: { $ne: preserveUserId },
+      });
+      this.logger.log(
+        `Import user: giữ user #${preserveUserId} cho phiên import; đã xóa ${deleted} user khác.`,
+      );
+    } else {
+      await em.nativeDelete(User, {});
+    }
+    em.clear();
   }
 
   /**
@@ -1356,11 +1664,10 @@ export class SystemService {
     mName: string,
     isMysqlFamily: boolean,
     isSqlite: boolean,
+    preserveUserId?: number,
   ): Promise<void> {
     if (mName === 'user') {
-      await this.detachNullableUserForeignKeys(em);
-      await em.nativeDelete(User, {});
-      em.clear();
+      await this.clearUsersTableForImport(em, preserveUserId);
       return;
     }
     if (mName === 'category') {
@@ -1380,6 +1687,16 @@ export class SystemService {
         await em.nativeDelete(UserRole, {});
         await em.nativeDelete(Role, {});
       }
+      em.clear();
+      return;
+    }
+    if (mName === 'setting') {
+      const deleted = await em.nativeDelete(Setting, {
+        group: { $ne: IMPORT_ID_MAP_GROUP },
+      });
+      this.logger.log(
+        `Import setting: giữ ${IMPORT_ID_MAP_GROUP}; đã xóa ${deleted} setting khác.`,
+      );
       em.clear();
       return;
     }
@@ -1417,6 +1734,7 @@ export class SystemService {
     data: Record<string, any[]>,
     modelNames: string[],
     skipClear: boolean,
+    actingUserIdHeader?: string,
   ): Promise<{
     rowErrors: Array<{ model: string; index: number; message: string }>;
     modelTimings: Array<{
@@ -1447,9 +1765,17 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
+      const idMap = new LegacyImportIdMap();
+
       try {
         const clearOrder = this.modelOrder.filter((m) =>
           modelNames.includes(m),
+        );
+
+        const preserveUserId = this.resolvePreserveUserIdForImport(
+          skipClear,
+          clearOrder.includes('user'),
+          actingUserIdHeader,
         );
 
         if (!skipClear) {
@@ -1460,6 +1786,7 @@ export class SystemService {
               mName,
               isMysqlFamily,
               isSqlite,
+              mName === 'user' ? preserveUserId : undefined,
             );
             clearMsByModel.set(mName, Date.now() - clearStart);
           }
@@ -1472,23 +1799,35 @@ export class SystemService {
           const entity = entityByModelName[mName];
           if (!entity) continue;
 
-          let sanitized = records.map((r) =>
-            this.pickImportPayload(em, entity, r as Record<string, unknown>),
+          const rawRecords = records as Record<string, unknown>[];
+          const sanitized = await this.buildSanitizedImportRows(
+            em,
+            mName,
+            rawRecords,
+            idMap,
+            preserveUserId,
           );
-          if (mName === 'category') {
-            sanitized = orderCategoryRowsForImport(sanitized);
-          }
           const stats = await this.insertSanitizedModel(
             em,
             mName,
             sanitized,
             (rowIndex, errMsg) => {
-              rowErrors.push({
-                model: mName,
-                index: rowIndex,
-                message: errMsg,
-              });
+              if (!isSkippableImportRowError(errMsg)) {
+                rowErrors.push({
+                  model: mName,
+                  index: rowIndex,
+                  message: errMsg,
+                });
+              }
             },
+            { rawRecords, idMap },
+          );
+          await this.registerLegacyIdsAfterModelImport(
+            em,
+            mName,
+            rawRecords,
+            idMap,
+            preserveUserId,
           );
           modelTimings.push({
             model: mName,
@@ -1500,6 +1839,10 @@ export class SystemService {
 
         if (!skipClear && modelNames.includes('role')) {
           await ensureSeedUserRoleLinks(em);
+          await ensureActingUserRoleAfterImport(
+            em,
+            this.parseImportActingUserId(actingUserIdHeader),
+          );
         }
       } finally {
         if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
@@ -1519,6 +1862,7 @@ export class SystemService {
     userRoleRows: any[],
     skipClear: boolean,
     onRowError?: (model: string, index: number, message: string) => void,
+    actingUserIdHeader?: string,
   ): Promise<void> {
     await this.em.transactional(async (em) => {
       const conn = em.getConnection();
@@ -1529,34 +1873,69 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
+      const idMap = new LegacyImportIdMap();
+
       try {
+        const preserveUserId = this.resolvePreserveUserIdForImport(
+          skipClear,
+          true,
+          actingUserIdHeader,
+        );
+
         if (!skipClear) {
           const startTime = Date.now();
-          await this.detachNullableUserForeignKeys(em);
-          await em.nativeDelete(User, {});
-          em.clear();
+          await this.clearUsersTableForImport(em, preserveUserId);
           this.logger.debug(
-            `Cleared data from user (and cascaded user_roles) in ${Date.now() - startTime}ms`,
+            `Cleared data from user in ${Date.now() - startTime}ms`,
           );
         }
         if (userRows.length > 0) {
-          const sanitized = userRows.map((r) =>
-            this.pickImportPayload(em, User, r as Record<string, unknown>),
+          const rawUserRows = userRows as Record<string, unknown>[];
+          const sanitized = await this.buildSanitizedImportRows(
+            em,
+            'user',
+            rawUserRows,
+            idMap,
+            preserveUserId,
           );
-          await this.insertSanitizedModel(em, 'user', sanitized, (idx, msg) =>
-            onRowError?.('user', idx, msg),
+          await this.insertSanitizedModel(
+            em,
+            'user',
+            sanitized,
+            (idx, msg) => {
+              if (!isSkippableImportRowError(msg)) {
+                onRowError?.('user', idx, msg);
+              }
+            },
+            { rawRecords: rawUserRows, idMap },
+          );
+          await this.registerLegacyIdsAfterModelImport(
+            em,
+            'user',
+            rawUserRows,
+            idMap,
+            preserveUserId,
           );
           await em.flush();
         }
         if (userRoleRows.length > 0) {
-          const sanitized = userRoleRows.map((r) =>
-            this.pickImportPayload(em, UserRole, r as Record<string, unknown>),
+          const rawUserRoleRows = userRoleRows as Record<string, unknown>[];
+          const sanitized = await this.buildSanitizedImportRows(
+            em,
+            'userRole',
+            rawUserRoleRows,
+            idMap,
           );
           await this.insertSanitizedModel(
             em,
             'userRole',
             sanitized,
-            (idx, msg) => onRowError?.('userRole', idx, msg),
+            (idx, msg) => {
+              if (!isSkippableImportRowError(msg)) {
+                onRowError?.('userRole', idx, msg);
+              }
+            },
+            { rawRecords: rawUserRoleRows, idMap },
           );
         }
         // Chỉ bổ sung seed khi file không có userRole — tránh chèn link seed (id cũ) sau khi đã xóa users.
@@ -1568,6 +1947,134 @@ export class SystemService {
         if (isSqlite) await conn.execute('PRAGMA foreign_keys = ON');
       }
     });
+  }
+
+  /** Gắn FK legacy (UUID) → id int mới qua map đã lưu khi import user/role/... */
+  private async resolveLegacyForeignKeysInRows(
+    em: EntityManager,
+    mName: string,
+    rows: Record<string, unknown>[],
+    idMap: LegacyImportIdMap,
+  ): Promise<void> {
+    const entity = entityByModelName[mName];
+    if (!entity || rows.length === 0) return;
+    const meta = em.getMetadata().find(this.getEntityName(entity));
+    if (!meta) return;
+
+    for (const prop of Object.values(meta.properties)) {
+      if (!isManyToOneImportProperty(prop)) continue;
+      const targetClass = (prop as { targetMeta?: { className?: string } })
+        .targetMeta?.className;
+      const targetModel = targetClass
+        ? modelNameByEntityClass[targetClass]
+        : undefined;
+      if (!targetModel) continue;
+      const fieldName = prop.fieldNames?.[0] ?? `${prop.name}Id`;
+
+      for (const row of rows) {
+        let raw: unknown;
+        if (Object.prototype.hasOwnProperty.call(row, fieldName)) {
+          raw = row[fieldName];
+        } else if (Object.prototype.hasOwnProperty.call(row, prop.name)) {
+          raw = row[prop.name];
+        }
+        if (raw == null || raw === '') continue;
+        const resolved = await idMap.resolve(em, targetModel, raw);
+        if (resolved != null) {
+          row[fieldName] = resolved;
+          if (fieldName !== prop.name) delete row[prop.name];
+        }
+      }
+    }
+  }
+
+  /** Sau insert, lưu map id export cũ → id DB (settings) để các lô import sau resolve FK. */
+  private async registerLegacyIdsAfterModelImport(
+    em: EntityManager,
+    mName: string,
+    rawRecords: Record<string, unknown>[],
+    idMap: LegacyImportIdMap,
+    preserveUserId?: number,
+  ): Promise<void> {
+    let wrote = false;
+    let preservedUserEmail: string | undefined;
+    if (mName === 'user' && preserveUserId != null) {
+      const preserved = await em.findOne(
+        User,
+        { id: preserveUserId },
+        { fields: ['email'] },
+      );
+      preservedUserEmail = preserved?.email?.trim().toLowerCase();
+    }
+
+    for (const raw of rawRecords) {
+      const legacy = exportLegacyKey(raw.id);
+      if (!legacy) continue;
+
+      let newId: number | undefined;
+      if (mName === 'user') {
+        const email =
+          typeof raw.email === 'string' ? raw.email.trim().toLowerCase() : '';
+        if (!email) continue;
+        if (preservedUserEmail && email === preservedUserEmail) {
+          newId = preserveUserId;
+        } else {
+          newId = (await em.findOne(User, { email }))?.id;
+        }
+      } else if (mName === 'role') {
+        const name = typeof raw.name === 'string' ? raw.name.trim() : '';
+        if (!name) continue;
+        newId = (await em.findOne(Role, { name }))?.id;
+      } else if (mName === 'category') {
+        const slug = typeof raw.slug === 'string' ? raw.slug.trim() : '';
+        if (!slug) continue;
+        newId = (await em.findOne(Category, { slug }))?.id;
+      } else if (mName === 'tag') {
+        const slug = typeof raw.slug === 'string' ? raw.slug.trim() : '';
+        if (!slug) continue;
+        newId = (await em.findOne(Tag, { slug }))?.id;
+      } else if (mName === 'post') {
+        const slug = typeof raw.slug === 'string' ? raw.slug.trim() : '';
+        if (!slug) continue;
+        newId = (await em.findOne(Post, { slug }))?.id;
+      } else {
+        continue;
+      }
+
+      if (newId != null) {
+        await idMap.persist(em, mName, legacy, newId);
+        wrote = true;
+      }
+    }
+    if (wrote) await em.flush();
+  }
+
+  private async buildSanitizedImportRows(
+    em: EntityManager,
+    mName: string,
+    records: Record<string, unknown>[],
+    idMap: LegacyImportIdMap,
+    preserveUserId?: number,
+  ): Promise<Record<string, unknown>[]> {
+    const entity = entityByModelName[mName];
+    if (!entity) return [];
+
+    const rawRows = records.map((r) => ({
+      ...(r as Record<string, unknown>),
+    }));
+    await this.resolveLegacyForeignKeysInRows(em, mName, rawRows, idMap);
+
+    let sanitized = rawRows.map((r) =>
+      this.pickImportPayload(em, entity, r),
+    );
+    if (mName === 'user') {
+      sanitized = await this.filterUserRowsForActingUserPreserve(
+        em,
+        sanitized,
+        preserveUserId,
+      );
+    }
+    return sanitized;
   }
 
   /** Chỉ giữ field map được tới cột DB, tránh lỗi insert khi JSON export có key thừa. */
@@ -1610,9 +2117,18 @@ export class SystemService {
         raw = normalizedRow[`${prop.name}Id`];
       }
       if (raw === undefined) continue;
+
+      if (prop.primary && (prop as { autoincrement?: boolean }).autoincrement) {
+        const pk = coerceImportPrimaryKey(raw);
+        if (pk === undefined) continue;
+        out[prop.name] = pk;
+        continue;
+      }
+
       let val = normalizeImportScalar(prop, raw);
       if (isManyToOneImportProperty(prop)) {
         val = coerceManyToOneScalar(val);
+        if (val === null && raw !== null && raw !== undefined) continue;
       }
       if (
         prop.name === 'content' &&
@@ -2071,6 +2587,7 @@ export class SystemService {
     targetModel?: string,
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
+    actingUserIdHeader?: string,
   ) {
     const resolvedTargetModel =
       this.resolveModelName(targetModel) ?? targetModel;
@@ -2091,7 +2608,12 @@ export class SystemService {
 
     // Nếu import tất cả models, chia nhỏ và import từng model riêng
     if (!resolvedTargetModel && Object.keys(data).length > 1) {
-      return this.importDataByModels(data, skipClear, onProgress);
+      return this.importDataByModels(
+        data,
+        skipClear,
+        onProgress,
+        actingUserIdHeader,
+      );
     }
 
     const payloadKeys = Object.keys(data).filter(
@@ -2118,6 +2640,7 @@ export class SystemService {
           skipClear,
           (model, idx, msg) =>
             userRowErrors.push({ model, index: idx, message: msg }),
+          actingUserIdHeader,
         );
         return {
           success: userRowErrors.length === 0,
@@ -2137,6 +2660,7 @@ export class SystemService {
         data,
         ordered,
         skipClear,
+        actingUserIdHeader,
       );
       return {
         success: bundleResult.rowErrors.length === 0,
@@ -2176,10 +2700,18 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
+      const idMap = new LegacyImportIdMap();
+
       try {
         const clearOrder = resolvedTargetModel
           ? [resolvedTargetModel]
           : this.modelOrder;
+
+        const preserveUserId = this.resolvePreserveUserIdForImport(
+          skipClear,
+          !skipClear && clearOrder.includes('user'),
+          actingUserIdHeader,
+        );
 
         // Chỉ clear nếu skipClear=false
         if (!skipClear) {
@@ -2191,6 +2723,7 @@ export class SystemService {
                 mName,
                 isMysqlFamily,
                 isSqlite,
+                mName === 'user' ? preserveUserId : undefined,
               );
               const clearMs = Date.now() - startTime;
               clearMsByModel.set(mName, clearMs);
@@ -2214,27 +2747,35 @@ export class SystemService {
             try {
               const entity = entityByModelName[mName];
               if (entity) {
-                let sanitized = records.map((r) =>
-                  this.pickImportPayload(
-                    em,
-                    entity,
-                    r as Record<string, unknown>,
-                  ),
+                const rawRecords = records as Record<string, unknown>[];
+                const sanitized = await this.buildSanitizedImportRows(
+                  em,
+                  mName,
+                  rawRecords,
+                  idMap,
+                  preserveUserId,
                 );
-                if (mName === 'category') {
-                  sanitized = orderCategoryRowsForImport(sanitized);
-                }
                 const stats = await this.insertSanitizedModel(
                   em,
                   mName,
                   sanitized,
                   (rowIndex, errMsg) => {
-                    rowErrors.push({
-                      model: mName,
-                      index: rowIndex,
-                      message: errMsg,
-                    });
+                    if (!isSkippableImportRowError(errMsg)) {
+                      rowErrors.push({
+                        model: mName,
+                        index: rowIndex,
+                        message: errMsg,
+                      });
+                    }
                   },
+                  { rawRecords, idMap },
+                );
+                await this.registerLegacyIdsAfterModelImport(
+                  em,
+                  mName,
+                  rawRecords,
+                  idMap,
+                  preserveUserId,
                 );
                 if (stats.skipped > 0) {
                   this.logger.warn(
@@ -2261,6 +2802,10 @@ export class SystemService {
             'Sau import role: bổ sung lại user_roles seed (nếu user + role tồn tại).',
           );
           await ensureSeedUserRoleLinks(em);
+          await ensureActingUserRoleAfterImport(
+            em,
+            this.parseImportActingUserId(actingUserIdHeader),
+          );
         }
       } finally {
         if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
@@ -2308,6 +2853,7 @@ export class SystemService {
     data: Record<string, any[]>,
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
+    actingUserIdHeader?: string,
   ) {
     this.logger.log(
       'Importing data theo từng model (một request HTTP / model từ client)…',
@@ -2375,7 +2921,13 @@ export class SystemService {
               totalRecords,
             });
           }
-          const result = await this.importData(payload, modelName, skipClear);
+          const result = await this.importData(
+            payload,
+            modelName,
+            skipClear,
+            undefined,
+            actingUserIdHeader,
+          );
           const rowErrors = (result as any)?.rowErrors as
             | Array<{ model: string; index: number; message: string }>
             | undefined;

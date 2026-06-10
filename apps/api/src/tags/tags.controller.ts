@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Tags Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id (soft); POST :id/restore.
@@ -71,7 +72,7 @@ export class TagsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,

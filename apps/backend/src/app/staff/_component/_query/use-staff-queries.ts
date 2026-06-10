@@ -77,7 +77,7 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       id,
       input,
     }: {
-      id: string
+      id: string | number
       input: UpdateStaffInput
     }) => {
       return apiClient.users.update(id, {
@@ -109,7 +109,7 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       error: (error) =>
         error instanceof ApiError ? error.message : "Không xoá được",
     },
-    mutationFn: async (id: string) => apiClient.users.remove(id),
+    mutationFn: async (id: string | number) => apiClient.users.remove(id),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
@@ -125,7 +125,7 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       error: (error) =>
         error instanceof ApiError ? error.message : "Không khôi phục được",
     },
-    mutationFn: async (id: string) => apiClient.users.restore(id),
+    mutationFn: async (id: string | number) => apiClient.users.restore(id),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
@@ -141,7 +141,8 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       error: (error) =>
         error instanceof ApiError ? error.message : "Không xóa vĩnh viễn được",
     },
-    mutationFn: async (id: string) => apiClient.users.purgeTrashed(id),
+    mutationFn: async (id: string | number) =>
+      apiClient.users.purgeTrashed(id),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),

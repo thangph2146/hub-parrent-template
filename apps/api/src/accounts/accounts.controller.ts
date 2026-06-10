@@ -6,12 +6,17 @@ import {
   Controller,
   Get,
   Put,
+  Post,
   Body,
   Headers,
   Res,
+  Req,
   Logger,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import type { Request, Response } from 'express';
 import { AccountsService } from './accounts.service';
 import type { UpdateAccountDto } from './accounts.service';
 import {
@@ -21,13 +26,20 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { appConfig } from '../config/app.config';
+import { UploadsService } from '../uploads/uploads.service';
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 @Permissions(PERMISSIONS.ACCOUNTS_VIEW)
 @Controller(ADMIN_ROUTES.ACCOUNTS)
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
 
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(
+    private readonly accountsService: AccountsService,
+    private readonly uploadsService: UploadsService,
+  ) {}
 
   private getUserId(
     headers: Record<string, string | undefined>,
@@ -141,5 +153,79 @@ export class AccountsController {
 
     const { statusCode, body: okBody } = createSuccessResponse(result.profile);
     return res.status(statusCode).json(okBody);
+  }
+
+  /**
+   * POST /api/admin/accounts/avatar — upload ảnh đại diện (chỉ thư mục avatars).
+   * Quyền `accounts:update`; không yêu cầu `uploads:create` (cổng sinh viên / self-service).
+   */
+  @Post('avatar')
+  @Permissions(PERMISSIONS.ACCOUNTS_UPDATE)
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_AVATAR_BYTES } }),
+  )
+  async uploadAvatar(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Headers() headers: Record<string, string | undefined>,
+    @UploadedFile()
+    file?: { buffer: Buffer; originalname: string; mimetype: string },
+  ) {
+    const userId = this.getUserId(headers);
+
+    if (!userId) {
+      const { statusCode, body } = createErrorResponse(
+        `Thiếu header ${APP_HEADERS.USER_ID}`,
+        { status: 401 },
+      );
+      return res.status(statusCode).json(body);
+    }
+
+    if (!file?.buffer?.length) {
+      const { statusCode, body } = createErrorResponse('Thiếu file ảnh', {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+
+    const serveBaseUrl = this.getServeBaseUrl(req);
+
+    try {
+      const data = await this.uploadsService.saveFile(
+        {
+          buffer: file.buffer,
+          originalname: file.originalname || 'avatar',
+          mimetype: file.mimetype || 'application/octet-stream',
+        },
+        'avatars',
+        undefined,
+        serveBaseUrl,
+        userId,
+        userId,
+      );
+      const { statusCode, body } = createSuccessResponse({ url: data.url });
+      return res.status(statusCode).json(body);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Đã xảy ra lỗi khi upload ảnh';
+      this.logger.warn(
+        `POST ${ADMIN_ROUTES.ACCOUNTS}/avatar failed: ${message}`,
+      );
+      const { statusCode, body } = createErrorResponse(message, {
+        status: 400,
+      });
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  private getServeBaseUrl(req?: Request): string {
+    if (appConfig.publicUrl) {
+      return `${appConfig.publicUrl.replace(/\/$/, '')}/api/uploads`;
+    }
+    if (appConfig.nodeEnv === 'production') {
+      return '';
+    }
+    const fallback = req && `${req.protocol || 'http'}://${req.get('host')}`;
+    return fallback ? `${fallback.replace(/\/$/, '')}/api/uploads` : '';
   }
 }

@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { AcademicYear } from '../entities/academic-year.entity';
@@ -149,7 +150,7 @@ export class AcademicYearsService {
   }
 
   async getById(id: number): Promise<AcademicYearRowDto | null> {
-    const row = await this.em.findOne(AcademicYear, { id });
+    const row = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
     if (!row) return null;
     if (backfillLegacyAuditTimestampsIfMissing(row)) {
       await this.em.persistAndFlush(row);
@@ -182,7 +183,7 @@ export class AcademicYearsService {
       status?: number;
     },
   ): Promise<AcademicYearRowDto | null> {
-    const existing = await this.em.findOne(AcademicYear, { id });
+    const existing = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.startDate !== undefined) {
@@ -198,7 +199,7 @@ export class AcademicYearsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(AcademicYear, { id });
+    const row = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
     touchLegacyAuditTimestamps(row);
@@ -207,7 +208,7 @@ export class AcademicYearsService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const row = await this.em.findOne(AcademicYear, { id });
+    const row = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
     row.deletedAt = null;
     await this.em.persistAndFlush(row);
@@ -215,7 +216,7 @@ export class AcademicYearsService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(AcademicYear, { id });
+    const row = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;

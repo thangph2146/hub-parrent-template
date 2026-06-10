@@ -4,7 +4,6 @@ const DEV_LOGIN_PASSWORD_HASH =
 
 export const SUPERADMIN_ROLES_DATA = [
   {
-    id: 'cmmxj94yt0000a6j8qbuclr5v',
     name: 'super_admin',
     displayName: 'Super Admin',
     description: '',
@@ -181,7 +180,6 @@ export const SUPERADMIN_ROLES_DATA = [
     isActive: true,
   },
   {
-    id: 'cmmxj94yu0001a6j80p78qxqr',
     name: 'admin',
     displayName: 'Admin',
     description: null,
@@ -267,7 +265,6 @@ export const SUPERADMIN_ROLES_DATA = [
     isActive: true,
   },
   {
-    id: 'cmmylgrxq004wldj8uofhzeen',
     name: 'editor',
     displayName: 'Editor',
     description: '',
@@ -325,7 +322,6 @@ export const SUPERADMIN_ROLES_DATA = [
     isActive: true,
   },
   {
-    id: 'cmnfr1pnu000iy3j8psit0mgm',
     name: 'user',
     displayName: 'User',
     description: null,
@@ -333,7 +329,22 @@ export const SUPERADMIN_ROLES_DATA = [
     isActive: true,
   },
   {
-    id: 'cmy000000000student0000001',
+    name: 'parent',
+    displayName: 'Phụ huynh',
+    description: 'Tài khoản phụ huynh — liên kết và theo dõi học sinh',
+    permissions: [
+      'dashboard:view',
+      'parent_students:view',
+      'parent_students:create',
+      'notifications:view_own',
+      'messages:view_own',
+      'posts:view',
+      'accounts:view',
+      'accounts:update',
+    ],
+    isActive: true,
+  },
+  {
     name: 'student',
     displayName: 'Sinh viên',
     description:
@@ -354,7 +365,6 @@ export const SUPERADMIN_ROLES_DATA = [
 // User data
 export const SUPERADMIN_USERS_DATA = [
   {
-    id: 'cmmxj951o0002a6j80hysxdq0',
     email: 'superadmin@hub.edu.vn',
     name: 'Super Administrator',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -366,7 +376,6 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    id: 'cmmxj951v0004a6j8h24tmaz4',
     email: 'admin@hub.edu.vn',
     name: 'Administrator',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -378,7 +387,6 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    id: 'cmmynf6dm0003rbj85j7dxyb6',
     email: 'lamvtt@hub.edu.vn',
     name: 'Thanh Lâm',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -390,7 +398,6 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    id: 'cmnfr1pql000jy3j8s7ghzrv7',
     email: 'thang.ph2146@gmail.com',
     name: 'Thắng Phạm',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -403,7 +410,6 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    id: 'cmnzoz4oi009hyrj8fto16kbz',
     email: 'thangph@hub.edu.vn',
     name: 'Thang Pham Hoang',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -416,7 +422,6 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    id: 'cmy000000000studentuser0001',
     email: 'student@hub.edu.vn',
     name: 'Nguyễn Văn A',
     password: DEV_LOGIN_PASSWORD_HASH,
@@ -427,38 +432,50 @@ export const SUPERADMIN_USERS_DATA = [
     address: 'Khu phố 6, Thủ Đức, TP.HCM',
     isActive: true,
   },
+  {
+    email: 'demo.sv@st.buh.edu.vn',
+    name: 'Sinh viên demo (check-in)',
+    password: DEV_LOGIN_PASSWORD_HASH,
+    bio: null,
+    avatar: null,
+    emailVerified: null,
+    phone: null,
+    address: null,
+    isActive: true,
+  },
+  {
+    email: 'demo.phuhuynh@hub.edu.vn',
+    name: 'Phụ huynh demo (check-in)',
+    password: DEV_LOGIN_PASSWORD_HASH,
+    bio: null,
+    avatar: null,
+    emailVerified: null,
+    phone: null,
+    address: null,
+    isActive: true,
+  },
+  {
+    email: 'demo.khach@hub.edu.vn',
+    name: 'Khách demo (check-in)',
+    password: DEV_LOGIN_PASSWORD_HASH,
+    bio: null,
+    avatar: null,
+    emailVerified: null,
+    phone: null,
+    address: null,
+    isActive: true,
+  },
 ];
 
 // UserRole data
 export const SUPERADMIN_USER_ROLES_DATA = [
-  {
-    id: 'cmmxj951s0003a6j8mc3f5wav',
-    userId: 'cmmxj951o0002a6j80hysxdq0',
-    roleId: 'cmmxj94yt0000a6j8qbuclr5v',
-  },
-  {
-    id: 'cmmxj951z0005a6j8xx6y1zju',
-    userId: 'cmmxj951v0004a6j8h24tmaz4',
-    roleId: 'cmmxj94yu0001a6j80p78qxqr',
-  },
-  {
-    id: 'cmnzoylht009fyrj8242ykupt',
-    userId: 'cmmynf6dm0003rbj85j7dxyb6',
-    roleId: 'cmmylgrxq004wldj8uofhzeen',
-  },
-  {
-    id: 'cmnzoxpm1009ayrj8mmsl2n9i',
-    userId: 'cmnfr1pql000jy3j8s7ghzrv7',
-    roleId: 'cmmylgrxq004wldj8uofhzeen',
-  },
-  {
-    id: 'cmnzozi2t009nyrj8gj2phwnf',
-    userId: 'cmnzoz4oi009hyrj8fto16kbz',
-    roleId: 'cmmylgrxq004wldj8uofhzeen',
-  },
-  {
-    id: 'cmy000000000studentrolelink1',
-    userId: 'cmy000000000studentuser0001',
-    roleId: 'cmy000000000student0000001',
-  },
+  { userEmail: 'superadmin@hub.edu.vn', roleName: 'super_admin' },
+  { userEmail: 'admin@hub.edu.vn', roleName: 'admin' },
+  { userEmail: 'lamvtt@hub.edu.vn', roleName: 'editor' },
+  { userEmail: 'thang.ph2146@gmail.com', roleName: 'editor' },
+  { userEmail: 'thangph@hub.edu.vn', roleName: 'editor' },
+  { userEmail: 'student@hub.edu.vn', roleName: 'student' },
+  { userEmail: 'demo.sv@st.buh.edu.vn', roleName: 'student' },
+  { userEmail: 'demo.phuhuynh@hub.edu.vn', roleName: 'parent' },
+  { userEmail: 'demo.khach@hub.edu.vn', roleName: 'user' },
 ];

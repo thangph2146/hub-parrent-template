@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import {
@@ -17,8 +18,8 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventRegistrationRowDto {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   email: string;
   fullName: string;
   /** Avatar từ `users` (email) hoặc `formData`. */
@@ -39,7 +40,7 @@ export interface EventRegistrationRowDto {
 }
 
 export interface ListEventRegistrationsParams {
-  eventId: string;
+  eventId: string | number;
   page: number;
   limit: number;
   search?: string;
@@ -127,15 +128,16 @@ function resolveRegistrationAvatar(
   return avatarFromFormData(row.formData);
 }
 
+
+function normalizeEventIdParam(eventId: string | number): number {
+  return typeof eventId === 'number' ? eventId : toEntityId(eventId);
+}
+
 function mapRow(
   r: EventRegistration,
   avatarByEmail?: Map<string, string | null>,
 ): EventRegistrationRowDto {
-  const eventRef = r.event as Event | { id?: string };
-  const eventId =
-    eventRef && typeof eventRef === 'object' && 'id' in eventRef
-      ? String(eventRef.id)
-      : '';
+  const eventId = relationEntityId(r.event) ?? 0;
   return {
     id: r.id,
     eventId,
@@ -163,36 +165,33 @@ export class EventRegistrationsService {
   constructor(private readonly em: EntityManager) {}
 
   /** Đếm đăng ký còn hiệu lực (không soft-delete, không hủy). */
-  async countActiveForEvent(eventId: string): Promise<number> {
-    const id = eventId?.trim();
-    if (!id) return 0;
+  async countActiveForEvent(eventId: string | number): Promise<number> {
+    const eid = normalizeEventIdParam(eventId);
     return this.em.count(EventRegistration, {
-      eventId: id,
+      event: eid,
       deletedAt: null,
       status: { $ne: RegistrationStatus.CANCELLED },
     } as FilterQuery<EventRegistration>);
   }
 
   /** Đồng bộ `events.totalRegistrations` với số bản ghi thực tế. */
-  async syncEventRegistrationCount(eventId: string): Promise<number> {
-    const id = eventId?.trim();
-    if (!id) return 0;
-    const count = await this.countActiveForEvent(id);
-    await this.em.nativeUpdate(Event, { id }, { totalRegistrations: count });
+  async syncEventRegistrationCount(eventId: string | number): Promise<number> {
+    const eid = normalizeEventIdParam(eventId);
+    const count = await this.countActiveForEvent(eid);
+    await this.em.nativeUpdate(Event, { id: eid }, { totalRegistrations: count });
     return count;
   }
 
   async listPublicForEvent(
-    eventId: string,
+    eventId: string | number,
     limit = 100,
   ): Promise<PublicEventRegistrantDto[]> {
-    const id = eventId?.trim();
-    if (!id) return [];
+    const eid = normalizeEventIdParam(eventId);
     const cap = Math.min(200, Math.max(1, limit));
     const rows = await this.em.find(
       EventRegistration,
       {
-        eventId: id,
+        event: eid,
         deletedAt: null,
         status: { $ne: RegistrationStatus.CANCELLED },
       } as FilterQuery<EventRegistration>,
@@ -209,14 +208,14 @@ export class EventRegistrationsService {
   }
 
   async findActiveByEventAndEmail(
-    eventId: string,
+    eventId: string | number,
     email: string,
   ): Promise<EventRegistrationRowDto | null> {
-    const eid = eventId?.trim();
+    const evId = normalizeEventIdParam(eventId);
     const normalizedEmail = email?.trim().toLowerCase();
-    if (!eid || !normalizedEmail) return null;
+    if (!normalizedEmail) return null;
     const row = await this.em.findOne(EventRegistration, {
-      eventId: eid,
+      event: evId,
       email: normalizedEmail,
       deletedAt: null,
       status: { $ne: RegistrationStatus.CANCELLED },
@@ -269,15 +268,15 @@ export class EventRegistrationsService {
     };
   }
 
-  async getById(id: string): Promise<EventRegistrationRowDto | null> {
-    const r = await this.em.findOne(EventRegistration, { id });
+  async getById(id: string | number): Promise<EventRegistrationRowDto | null> {
+    const r = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
     if (!r) return null;
     const avatarByEmail = await loadAvatarByEmails(this.em, [r.email]);
     return mapRow(r, avatarByEmail);
   }
 
   async create(data: {
-    eventId: string;
+    eventId: string | number;
     email: string;
     fullName: string;
     phone?: string | null;
@@ -285,7 +284,7 @@ export class EventRegistrationsService {
     status?: RegistrationStatus;
   }): Promise<EventRegistrationRowDto> {
     const created = new EventRegistration();
-    created.event = this.em.getReference(Event, data.eventId);
+    created.event = this.em.getReference(Event, toEntityId(data.eventId));
     created.email = data.email;
     created.fullName = data.fullName;
     if (data.phone !== undefined) created.phone = data.phone;
@@ -308,7 +307,7 @@ export class EventRegistrationsService {
       checkinMethod?: CheckinMethod;
     },
   ): Promise<EventRegistrationRowDto | null> {
-    const existing = await this.em.findOne(EventRegistration, { id });
+    const existing = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.email !== undefined) existing.email = data.email;
     if (data.fullName !== undefined) existing.fullName = data.fullName;
@@ -326,7 +325,7 @@ export class EventRegistrationsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventRegistration, { id });
+    const r = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -334,7 +333,7 @@ export class EventRegistrationsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventRegistration, { id });
+    const r = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -342,7 +341,7 @@ export class EventRegistrationsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventRegistration, { id });
+    const r = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

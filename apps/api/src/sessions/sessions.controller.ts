@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Sessions API cho admin: list, options, get, update, delete, restore, hard-delete, bulk.
  * Header: X-User-Id (bắt buộc).
@@ -49,7 +50,7 @@ export class SessionsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -222,7 +223,7 @@ export class SessionsController {
       return res.status(statusCode).json(errBody);
     }
     const session = await this.sessionsService.create({
-      userId,
+        userId: toEntityId(userId),
       email: body?.email?.trim() || null,
       name: body?.name?.trim() || null,
       avatar: body?.image?.trim() || null,
@@ -265,7 +266,7 @@ export class SessionsController {
             kind: 'info',
             title: notif.title,
             description: notif.description,
-            toUserId: superAdminId,
+            toUserId: String(superAdminId),
             timestamp: notif.createdAt.getTime(),
             read: false,
             actionUrl: notif.actionUrl,
@@ -283,7 +284,7 @@ export class SessionsController {
         },
       );
     }
-    if (actorId === session.userId) {
+    if (toEntityId(actorId) === session.userId) {
       try {
         const alreadyWelcome =
           await this.notificationsService.hasRecentWelcomeBackNotification(
@@ -305,7 +306,7 @@ export class SessionsController {
               kind: 'success',
               title: welcomeNotif.title,
               description: welcomeNotif.description,
-              toUserId: session.userId,
+              toUserId: String(session.userId),
               timestamp: welcomeNotif.createdAt.getTime(),
               read: false,
               actionUrl: welcomeNotif.actionUrl ?? undefined,
@@ -325,7 +326,7 @@ export class SessionsController {
         );
       }
     }
-    if (actorId && actorId !== session.userId) {
+    if (actorId && toEntityId(actorId) !== session.userId) {
       this.logActivity(
         actorId,
         'Đã tạo phiên đăng nhập',
@@ -409,10 +410,10 @@ export class SessionsController {
       return res.status(statusCode).json(body);
     }
     const { count, sessionIds } =
-      await this.sessionsService.revokeAllSessionsByUserId(userId);
+      await this.sessionsService.revokeAllSessionsByUserId(String(userId));
     for (const sessionId of sessionIds) {
-      this.socketGateway.emitSessionRevoked(sessionId);
-      this.socketGateway.emitSessionRemove(sessionId, 'active');
+      this.socketGateway.emitSessionRevoked(String(sessionId));
+      this.socketGateway.emitSessionRemove(String(sessionId), 'active');
     }
     this.logActivity(
       actorId,

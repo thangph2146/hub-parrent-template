@@ -78,7 +78,7 @@ function GuidesPageInner() {
   const bulkPurgeMutation = useAdminMutation({
     mutationKey: ["guides", "bulk"],
     toast: defaultBulkOperationToast,
-    mutationFn: async (input: { action: "hard-delete"; ids: string[] }) =>
+    mutationFn: async (input: { action: string; ids: string[] }) =>
       api.guides.bulk(input),
     onSuccess: async () => {
       await refetch()
@@ -117,7 +117,7 @@ function GuidesPageInner() {
   )
 
   const handleBulkPurge = async (rows: GuideGroup[]) => {
-    const ids = rows.map((r) => r.id)
+    const ids = rows.map((r) => String(r.id))
     if (!ids.length) return
     await bulkPurgeMutation.mutateAsync({ action: "hard-delete", ids })
   }

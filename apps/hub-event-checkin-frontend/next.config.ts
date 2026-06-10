@@ -41,6 +41,7 @@ const nextConfig: NextConfig = {
     "@ui",
     "@workspace/api-client",
     "@workspace/query-client",
+    "@workspace/logger",
     "@thangph2146/lexical-editor",
   ],
 }

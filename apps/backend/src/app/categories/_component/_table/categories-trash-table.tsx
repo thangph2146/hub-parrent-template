@@ -25,11 +25,7 @@ export interface CategoriesTrashTableProps {
   onGlobalFilterChange: OnChangeFn<string>
   selectedRowIds: RowSelectionState
   onSelectedRowIdsChange: OnChangeFn<RowSelectionState>
-  page: number
-  pageSize: number
   total: number
-  onPageChange: (page: number) => void
-  onPageSizeChange: (size: number) => void
   onClearFilters: () => void
   onBulkRestore: (rows: CategoryRow[]) => Promise<void>
   onBulkPurge: (rows: CategoryRow[]) => Promise<void>
@@ -46,11 +42,7 @@ export function CategoriesTrashTable({
   onGlobalFilterChange,
   selectedRowIds,
   onSelectedRowIdsChange,
-  page,
-  pageSize,
   total,
-  onPageChange,
-  onPageSizeChange,
   onClearFilters,
   onBulkRestore,
   onBulkPurge,
@@ -121,16 +113,13 @@ export function CategoriesTrashTable({
           onAction: onBulkPurge,
         },
       ]}
-      pagination={{
-        page,
-        pageSize,
-        total,
-        isLoading,
-        onPageChange,
-        onPageSizeChange,
-        emptySummary: "Không có danh mục trong thùng rác",
-        itemLabel: "danh mục",
-      }}
+      footer={
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {isLoading ? "Đang tải..." : `Tổng ${total} danh mục trong thùng rác`}
+          </p>
+        </div>
+      }
     />
   )
 }

@@ -1,35 +1,13 @@
-import { createStoreSyncSdk, DEFAULT_API_URL } from "@workspace/api-client"
+import { createStoreSyncSdk } from "@workspace/api-client"
+import { getApiBaseUrl } from "@/lib/api-base-url"
 import { getAdminDevAuthLogContext, getAdminUserId } from "./auth-session"
-
-function getBrowserAwareApiUrl(): string {
-  const configured = process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
-  if (typeof window === "undefined") return configured
-
-  try {
-    const url = new URL(configured)
-    const pageHost = window.location.hostname
-    const apiHostIsLoopback =
-      url.hostname === "localhost" || url.hostname === "127.0.0.1"
-    const pageHostIsLoopback =
-      pageHost === "localhost" || pageHost === "127.0.0.1"
-
-    if (apiHostIsLoopback && !pageHostIsLoopback) {
-      url.hostname = pageHost
-      return url.toString().replace(/\/$/, "")
-    }
-  } catch {
-    return configured
-  }
-
-  return configured
-}
 
 /**
  * Single SDK instance shared across the admin panel.
  * `X-User-Id` lấy từ phiên đăng nhập (sessionStorage) để RBAC trên API khớp.
  */
 export const api = createStoreSyncSdk({
-  baseUrl: getBrowserAwareApiUrl(),
+  baseUrl: getApiBaseUrl(),
   getUserId: () => {
     if (typeof window === "undefined") return null
     return getAdminUserId()

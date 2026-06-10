@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
@@ -14,7 +15,7 @@ import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { EVENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface EventRowDto {
-  id: string;
+  id: number;
   title: string;
   slug: string | null;
   poster: unknown;
@@ -43,14 +44,14 @@ export interface EventRowDto {
   format: number;
   onlineLink: string | null;
   schedule: unknown;
-  createdBy: string | null;
+  createdBy: number | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
   isFeatured: boolean;
   featuredOrder: number;
-  checkinCameraId: string | null;
-  checkoutCameraId: string | null;
+  checkinCameraId: number | null;
+  checkoutCameraId: number | null;
   checkinCameraName: string | null;
   checkoutCameraName: string | null;
   checkinCameraCode: string | null;
@@ -180,9 +181,7 @@ export class EventsService {
   }
 
   async getById(id: string): Promise<EventRowDto | null> {
-    const r = await this.em.findOne(
-      Event,
-      { id },
+    const r = await this.em.findOne(Event, { id: toEntityId(id) },
       { populate: [...EVENT_CAMERA_POPULATE] },
     );
     if (!r) return null;
@@ -193,12 +192,12 @@ export class EventsService {
     if (data.checkinCameraId !== undefined) {
       const raw = data.checkinCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
-      event.checkinCamera = id ? this.em.getReference(Camera, id) : null;
+      event.checkinCamera = id ? this.em.getReference(Camera, toEntityId(id)) : null;
     }
     if (data.checkoutCameraId !== undefined) {
       const raw = data.checkoutCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
-      event.checkoutCamera = id ? this.em.getReference(Camera, id) : null;
+      event.checkoutCamera = id ? this.em.getReference(Camera, toEntityId(id)) : null;
     }
   }
 
@@ -206,7 +205,7 @@ export class EventsService {
     const eventId = event.id;
     const selected = new Set(
       [event.checkinCamera?.id, event.checkoutCamera?.id].filter(
-        (id): id is string => Boolean(id),
+        (id): id is number => typeof id === 'number' && id > 0,
       ),
     );
 
@@ -216,7 +215,7 @@ export class EventsService {
         deletedAt: null,
       });
       if (camera) {
-        camera.linkedEvent = this.em.getReference(Event, eventId);
+        camera.linkedEvent = this.em.getReference(Event, toEntityId(eventId));
       }
     }
 
@@ -285,7 +284,7 @@ export class EventsService {
     id: string,
     data: Record<string, unknown>,
   ): Promise<EventRowDto | null> {
-    const existing = await this.em.findOne(Event, { id });
+    const existing = await this.em.findOne(Event, { id: toEntityId(id) });
     if (!existing) return null;
     const fields = [
       'title',
@@ -346,7 +345,7 @@ export class EventsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Event, { id });
+    const r = await this.em.findOne(Event, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -354,7 +353,7 @@ export class EventsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Event, { id });
+    const r = await this.em.findOne(Event, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -362,7 +361,7 @@ export class EventsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Event, { id });
+    const r = await this.em.findOne(Event, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
@@ -10,8 +11,8 @@ import { EventRegistrationsService } from '../event-registrations/event-registra
 import { normalizePosterField } from '../common/poster-normalize';
 
 export interface RegisterForEventResult {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   email: string;
   fullName: string;
   status: number;
@@ -19,8 +20,8 @@ export interface RegisterForEventResult {
 }
 
 export interface MyRegisteredEventItem {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   email: string;
   fullName: string;
   phone: string | null;
@@ -32,7 +33,7 @@ export interface MyRegisteredEventItem {
   attendanceMinutes: number;
   checkinMethod: number;
   event: {
-    id: string;
+    id: number;
     title: string;
     slug: string | null;
     poster: unknown;
@@ -79,8 +80,7 @@ export class PublicEventRegistrationService {
       throw new Error('Vui lòng đăng nhập trước khi tiếp tục.');
     }
 
-    const user = await this.em.findOne(User, {
-      id: uid,
+    const user = await this.em.findOne(User, { id: toEntityId(uid),
       deletedAt: null,
       isActive: true,
     });
@@ -168,11 +168,7 @@ export class PublicEventRegistrationService {
     const id = registrationId?.trim();
     if (!id) throw new Error('Thiếu mã đăng ký.');
 
-    const row = await this.em.findOne(
-      EventRegistration,
-      {
-        id,
-        email,
+    const row = await this.em.findOne(EventRegistration, { id: toEntityId(id), email,
         deletedAt: null,
       },
       { populate: ['event'] },
@@ -258,7 +254,7 @@ export class PublicEventRegistrationService {
           existing.hasCheckin = false;
           existing.hasCheckout = false;
           await this.em.flush();
-          return this.eventRegistrationsService.getById(existing.id);
+          return this.eventRegistrationsService.getById(String(existing.id));
         })()
       : await this.eventRegistrationsService.create({
           eventId: event.id,

@@ -1,0 +1,1 @@
+export { AdminCrudConfirmDialog as PostsConfirmDialog } from "@ui/components/admin"

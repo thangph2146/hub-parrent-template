@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { parseSettingValue } from '../common/parse-setting-value';
 import { Setting } from '../entities/setting.entity';
@@ -73,7 +74,7 @@ export class SettingsService {
   }
 
   async delete(id: string) {
-    const existing = await this.em.findOne(Setting, { id });
+    const existing = await this.em.findOne(Setting, { id: toEntityId(id) });
     if (!existing) return null;
     await this.em.removeAndFlush(existing);
     return existing;

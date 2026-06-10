@@ -15,13 +15,13 @@ const boolean = (path: string | string[]) => ({
   type: 'boolean' as const,
   path,
 });
-const uuid = (path: string | string[]) => ({ type: 'uuid' as const, path });
+const entityId = (path: string | string[]) => ({ type: 'number' as const, path });
 
 export const CAMERA_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   name: text('name'),
   code: text('code'),
   linkedEventTitle: text(['linkedEvent', 'title']),
-  linkedEventId: uuid('linkedEvent'),
+  linkedEventId: entityId('linkedEvent'),
   linkedEventSlug: text(['linkedEvent', 'slug']),
   ipAddress: text('ipAddress'),
   port: number('port'),
@@ -41,7 +41,7 @@ export const DEPARTMENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const LOCATION_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -62,7 +62,7 @@ export const SCREEN_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const TEMPLATE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -72,7 +72,7 @@ export const TEMPLATE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const SPEAKER_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -99,7 +99,7 @@ export const SEO_META_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const ACADEMIC_YEAR_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -110,7 +110,7 @@ export const ACADEMIC_YEAR_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const COURSE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -120,7 +120,7 @@ export const COURSE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const MAJOR_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -130,7 +130,7 @@ export const MAJOR_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const TRAINING_LEVEL_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -140,7 +140,7 @@ export const TRAINING_LEVEL_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const TRAINING_SYSTEM_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -150,7 +150,7 @@ export const TRAINING_SYSTEM_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const EVENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -170,24 +170,24 @@ export const EVENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   totalCheckouts: number('totalCheckouts'),
   checkinCameraName: text(['checkinCamera', 'name']),
   checkoutCameraName: text(['checkoutCamera', 'name']),
-  checkinCameraId: uuid('checkinCamera'),
-  checkoutCameraId: uuid('checkoutCamera'),
+  checkinCameraId: entityId('checkinCamera'),
+  checkoutCameraId: entityId('checkoutCamera'),
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const CATEGORY_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   name: text('name'),
   slug: text('slug'),
   description: text('description'),
-  parentId: uuid('parent'),
+  parentId: entityId('parent'),
   type: exact('type'),
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
   deletedAt: dateRange('deletedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const GUIDE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -197,7 +197,7 @@ export const GUIDE_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   isVisible: boolean('isVisible'),
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };
 
 export const ORDER_COLUMN_FILTERS: AdminColumnFiltersConfig = {
@@ -226,5 +226,5 @@ export const PARENT_STUDENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   status: exact('status'),
   createdAt: dateRange('createdAt'),
   updatedAt: dateRange('updatedAt'),
-  id: uuid('id'),
+  id: entityId('id'),
 };

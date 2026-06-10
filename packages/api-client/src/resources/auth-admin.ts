@@ -1,13 +1,15 @@
 import { ApiClient, type ApiClientOptions } from "../client"
+import type { DevLoginOptionsQuery } from "../types/dev-login"
+import { fetchDevLoginOptions as fetchDevLoginOptionsShared } from "./dev-login"
 import { getData, postData } from "./_shared"
 
 export type AuthLoginPayload = {
-  id: string
+  id: number
   email: string
   name: string | null
   image: string | null
   permissions: string[]
-  roles: Array<{ id: string; name: string; displayName: string }>
+  roles: Array<{ id: number; name: string; displayName: string }>
 }
 
 export type RegisterRequestPayload = {
@@ -30,14 +32,11 @@ export type RegisterLeadPayload = {
   content?: string
 }
 
-export type DevLoginOption = {
-  id: string
-  email: string
-  name: string | null
-  roleNames: string[]
-  roleLabels: string[]
-  description: string
-}
+export type {
+  DevLoginOption,
+  DevLoginOptionsQuery,
+  DevLoginRole,
+} from "../types/dev-login"
 
 export class AuthAdminApi {
   constructor(private readonly http: ApiClient) {}
@@ -78,8 +77,8 @@ export class AuthAdminApi {
     )
   }
 
-  fetchDevLoginOptions() {
-    return getData<DevLoginOption[]>(this.http, "/public/dev-login-options")
+  fetchDevLoginOptions(params?: DevLoginOptionsQuery) {
+    return fetchDevLoginOptionsShared(this.http, params)
   }
 }
 

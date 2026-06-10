@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 /**
  * Dashboard stats for admin: overview counts, monthlyData, categoryData, topPosts.
  */
@@ -64,7 +65,7 @@ export interface DashboardCategoryItemDto {
 }
 
 export interface DashboardTopPostDto {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   comments: number;
@@ -242,19 +243,19 @@ export class DashboardService {
     const activePostIds = activePosts.map((p) => p.id);
     const postCategoryRows = await this.em.find(
       PostCategory,
-      { post: { id: { $in: activePostIds } } },
+      { post: { id: { $in: toEntityIdList(activePostIds) } } },
       { fields: ['post', 'category'] },
     );
 
-    const byParent = new Map<string | null, typeof allCategories>();
+    const byParent = new Map<number | null, typeof allCategories>();
     for (const category of allCategories) {
       const key = category.parent?.id ?? null;
       if (!byParent.has(key)) byParent.set(key, []);
       byParent.get(key)?.push(category);
     }
 
-    const depth = new Map<string, number>();
-    const setDepth = (id: string, currentDepth: number) => {
+    const depth = new Map<number, number>();
+    const setDepth = (id: number, currentDepth: number) => {
       depth.set(id, currentDepth);
       for (const child of byParent.get(id) ?? []) {
         setDepth(child.id, currentDepth + 1);
@@ -265,7 +266,7 @@ export class DashboardService {
       setDepth(root.id, 0);
     }
 
-    const postToCategoryIds = new Map<string, string[]>();
+    const postToCategoryIds = new Map<number, number[]>();
     for (const row of postCategoryRows) {
       const pid = row.post.id;
       const cid = row.category.id;
@@ -275,7 +276,7 @@ export class DashboardService {
       postToCategoryIds.get(pid)?.push(cid);
     }
 
-    const assignedCount = new Map<string, number>();
+    const assignedCount = new Map<number, number>();
     for (const [, categoryIds] of postToCategoryIds) {
       if (!categoryIds.length) continue;
 
@@ -287,9 +288,8 @@ export class DashboardService {
     }
 
     const buildNode = (category: {
-      id: string;
+      id: number;
       name: string;
-      parentId?: string | null;
     }): DashboardCategoryItemDto => {
       const childrenRaw = byParent.get(category.id) ?? [];
       const children = childrenRaw.length
@@ -333,7 +333,7 @@ export class DashboardService {
     )) as Array<Record<string, unknown>>;
 
     return rows.map((row) => ({
-      id: typeof row.id === 'string' ? row.id : '',
+      id: typeof row.id === 'number' ? row.id : Number(row.id ?? 0) || 0,
       title: typeof row.title === 'string' ? row.title : '',
       slug: typeof row.slug === 'string' ? row.slug : '',
       comments:

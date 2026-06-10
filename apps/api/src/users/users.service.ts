@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
@@ -11,6 +12,12 @@ import {
   type GetOptionsConfig,
 } from '../common/get-options';
 import { safeIsoString, safeIsoStringNow } from '../common/date-utils';
+import {
+  filterDevLoginOptions,
+  mapUserToDevLoginOption,
+  type DevLoginOptionDto,
+  type DevLoginOptionsQuery,
+} from '../common/dev-login-options';
 import { Role } from '../entities/role.entity';
 import { Setting } from '../entities/setting.entity';
 import { UserRole } from '../entities/user-role.entity';
@@ -21,7 +28,7 @@ import {
 } from '../config/protected-admin';
 
 export interface UserRowDto {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   bio: string | null;
@@ -34,17 +41,14 @@ export interface UserRowDto {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  roles: Array<{ id: string; name: string; displayName: string }>;
+  roles: Array<{ id: number; name: string; displayName: string }>;
 }
 
-export interface DevLoginOptionDto {
-  id: string;
-  email: string;
-  name: string | null;
-  roleNames: string[];
-  roleLabels: string[];
-  description: string;
-}
+export type {
+  DevLoginOptionDto,
+  DevLoginOptionsQuery,
+  DevLoginRoleDto,
+} from '../common/dev-login-options';
 
 export interface ListUsersParams {
   page: number;
@@ -150,14 +154,12 @@ export class UsersService {
   constructor(private readonly em: EntityManager) {}
 
   async resolveActorEmail(userId: string): Promise<string | null> {
-    const user = await this.em.findOne(User, { id: userId });
+    const user = await this.em.findOne(User, { id: toEntityId(userId) });
     return user?.email?.trim().toLowerCase() ?? null;
   }
 
-  private async getUserWithRoles(id: string): Promise<User | null> {
-    return this.em.findOne(
-      User,
-      { id },
+  private async getUserWithRoles(id: string | number): Promise<User | null> {
+    return this.em.findOne(User, { id: toEntityId(id) },
       {
         populate: ['userRoles', 'userRoles.role'],
         orderBy: { userRoles: { role: { name: 'ASC' } } },
@@ -205,7 +207,9 @@ export class UsersService {
     );
   }
 
-  async listDevelopmentLoginOptions(): Promise<DevLoginOptionDto[]> {
+  async listDevelopmentLoginOptions(
+    query: DevLoginOptionsQuery = {},
+  ): Promise<DevLoginOptionDto[]> {
     const rows = await this.em.find(
       User,
       { deletedAt: null },
@@ -215,37 +219,11 @@ export class UsersService {
       },
     );
 
-    return rows
-      .map((user) => {
-        const roles = (user.userRoles ?? [])
-          .map((userRole) => userRole.role)
-          .filter((role): role is Role =>
-            Boolean(role && role.deletedAt == null),
-          );
-        const roleNames = [...new Set(roles.map((role) => role.name.trim()))];
-        const roleLabels = [
-          ...new Set(
-            roles
-              .map((role) => role.displayName?.trim() || role.name.trim())
-              .filter(Boolean),
-          ),
-        ];
-        const statusLabel = user.isActive
-          ? 'Đang hoạt động'
-          : 'Ngừng hoạt động';
-        const roleDescription =
-          roleLabels.length > 0 ? roleLabels.join(', ') : 'Chưa gán vai trò';
+    const options = rows
+      .map((user) => mapUserToDevLoginOption(user))
+      .filter((user): user is NonNullable<typeof user> => user != null);
 
-        return {
-          id: user.id,
-          email: user.email ?? '',
-          name: user.name ?? null,
-          roleNames,
-          roleLabels,
-          description: `${statusLabel} | ${roleDescription}`,
-        } satisfies DevLoginOptionDto;
-      })
-      .filter((user) => user.email.trim() !== '');
+    return filterDevLoginOptions(options, query);
   }
 
   async getById(id: string): Promise<UserRowDto | null> {
@@ -285,7 +263,7 @@ export class UsersService {
       for (const roleId of data.roleIds) {
         const userRole = new UserRole();
         userRole.user = created as any;
-        userRole.role = roleId as any;
+        userRole.role = this.em.getReference(Role, toEntityId(roleId)) as any;
         this.em.persist(userRole);
       }
       await this.em.flush();
@@ -334,7 +312,7 @@ export class UsersService {
     },
     actorEmail?: string | null,
   ): Promise<UserRowDto | null> {
-    const existing = await this.em.findOne(User, { id });
+    const existing = await this.em.findOne(User, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (!canEditProtectedAdminUser(actorEmail, existing.email)) {
@@ -378,13 +356,13 @@ export class UsersService {
         ? data.roleIds.filter((roleId) => String(roleId ?? '').trim() !== '')
         : [];
 
-      await this.em.nativeDelete(UserRole, { user: id });
+      await this.em.nativeDelete(UserRole, { user: toEntityId(id) });
 
       if (roleIds.length > 0) {
         for (const roleId of roleIds) {
           const userRole = new UserRole();
           userRole.user = existing as any;
-          userRole.role = roleId as any;
+          userRole.role = this.em.getReference(Role, toEntityId(roleId)) as any;
           this.em.persist(userRole);
         }
         await this.em.flush();
@@ -396,7 +374,7 @@ export class UsersService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const user = await this.em.findOne(User, { id });
+    const user = await this.em.findOne(User, { id: toEntityId(id) });
     if (!user || user.deletedAt) return false;
     if (isProtectedAdminEmail(user.email)) {
       throw new ForbiddenException(
@@ -410,7 +388,7 @@ export class UsersService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const user = await this.em.findOne(User, { id });
+    const user = await this.em.findOne(User, { id: toEntityId(id) });
     if (!user || !user.deletedAt) return false;
     user.deletedAt = null;
     this.em.persist(user);
@@ -419,7 +397,7 @@ export class UsersService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const user = await this.em.findOne(User, { id });
+    const user = await this.em.findOne(User, { id: toEntityId(id) });
     if (!user) return false;
     if (isProtectedAdminEmail(user.email)) {
       throw new ForbiddenException(
@@ -445,7 +423,7 @@ export class UsersService {
 
     if (action === 'delete') {
       const users = await this.em.find(User, {
-        id: { $in: ids },
+        id: { $in: toEntityIdList(ids) },
         deletedAt: null,
       });
       const filtered = users.filter((u) => !isProtectedAdminEmail(u.email));
@@ -467,7 +445,7 @@ export class UsersService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         User,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -477,7 +455,7 @@ export class UsersService {
     }
 
     if (action === 'hard-delete') {
-      const users = await this.em.find(User, { id: { $in: ids } });
+      const users = await this.em.find(User, { id: { $in: toEntityIdList(ids) } });
       const filtered = users.filter((u) => !isProtectedAdminEmail(u.email));
       const skipCount = users.length - filtered.length;
       if (filtered.length > 0) {
@@ -496,7 +474,7 @@ export class UsersService {
     if (action === 'active') {
       const result = await this.em.nativeUpdate(
         User,
-        { id: { $in: ids } },
+        { id: { $in: toEntityIdList(ids) } },
         { isActive: true },
       );
       return {
@@ -515,7 +493,7 @@ export class UsersService {
       const superAdminIds = new Set(
         superAdminRows.map((userRole) => userRole.user.id),
       );
-      const idsToUnactive = ids.filter((id) => !superAdminIds.has(id));
+      const idsToUnactive = ids.filter((id) => !superAdminIds.has(toEntityId(id)));
 
       if (!idsToUnactive.length) {
         return {
@@ -527,7 +505,7 @@ export class UsersService {
 
       const result = await this.em.nativeUpdate(
         User,
-        { id: { $in: idsToUnactive } },
+        { id: { $in: toEntityIdList(idsToUnactive) } },
         { isActive: false },
       );
 

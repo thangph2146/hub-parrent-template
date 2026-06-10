@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { EventRegistration } from '../entities/event-registration.entity';
@@ -5,8 +6,8 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventCheckoutRowDto {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   email: string;
   fullName: string;
   phone: string | null;
@@ -116,7 +117,7 @@ export class EventCheckoutsService {
     }
     const result = await this.em.nativeUpdate(
       EventRegistration,
-      { id: { $in: ids }, hasCheckout: true, deletedAt: null },
+      { id: { $in: toEntityIdList(ids) }, hasCheckout: true, deletedAt: null },
       { hasCheckout: false, updatedAt: new Date() },
     );
     const affected = result ?? 0;

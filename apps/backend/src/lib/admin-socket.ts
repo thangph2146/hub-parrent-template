@@ -5,12 +5,13 @@ import {
   getSocketOriginFromApiBase,
   type SocketAuthData,
 } from "@workspace/api-client/realtime"
+import { getApiSocketBaseUrl } from "@/lib/api-base-url"
 import { readAdminSession } from "@/lib/auth-session"
 
 export { ADMIN_SOCKET_PATH }
 
 export function getAdminSocketOrigin(): string {
-  return getSocketOriginFromApiBase(process.env.NEXT_PUBLIC_API_URL)
+  return getSocketOriginFromApiBase(getApiSocketBaseUrl())
 }
 
 export function resolveAdminSocketAuth(): SocketAuthData | null {

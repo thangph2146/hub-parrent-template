@@ -9,7 +9,7 @@ describe('StudentsService', () => {
   let em: Partial<EntityManager>;
 
   const mockStudent = {
-    id: 'student-1',
+    id: 1,
     user: null,
     name: 'Test Student',
     email: 'student@test.com',

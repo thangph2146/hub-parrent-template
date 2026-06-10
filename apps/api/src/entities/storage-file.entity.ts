@@ -1,5 +1,6 @@
-import { Entity, Index, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
+import { User } from './user.entity';
 
 /** Metadata file trên disk — người upload thực tế (khác prefix chủ file trong tên). */
 @Entity({ tableName: 'storage_files' })
@@ -7,9 +8,8 @@ export class StorageFile extends BaseEntity {
   @Property({ unique: true })
   relativePath!: string;
 
-  @Index()
-  @Property({ nullable: true })
-  uploadedByUserId?: string | null;
+  @ManyToOne(() => User, { nullable: true, fieldName: 'uploadedByUserId' })
+  uploadedBy?: User | null;
 
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;

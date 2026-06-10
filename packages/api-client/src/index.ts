@@ -119,8 +119,13 @@ export {
   type AuthLoginPayload,
   type RegisterRequestPayload,
   type RegisterLeadPayload,
-  type DevLoginOption,
 } from "./resources/auth-admin"
+export {
+  type DevLoginOption,
+  type DevLoginOptionsQuery,
+  type DevLoginRole,
+} from "./types/dev-login"
+export { fetchDevLoginOptions } from "./resources/dev-login"
 export { SeoMetasApi } from "./resources/seo-metas"
 export {
   DashboardApi,
@@ -170,6 +175,7 @@ export {
   resolveStorageFolderSlugPath,
   formatDateTime,
   buildCategoryOptionTree,
+  buildCategoryTree,
   type CategoryTreeNode,
   type PagedResult,
 } from "./utils"

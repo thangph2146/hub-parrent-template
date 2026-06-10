@@ -67,6 +67,7 @@
     "./components/data-table": "./src/components/data-table/index.ts",
     "./components/dialogs": "./src/components/dialogs/index.ts",
     "./components/*": "./src/components/*.tsx",
+    "./components/auth": "./src/components/auth/index.ts",
     "./components/admin": "./src/components/admin/index.ts",
     "./components/admin/dashboard": "./src/components/admin/dashboard/index.ts",
     "./components/admin/maps": "./src/components/admin/maps/index.ts",

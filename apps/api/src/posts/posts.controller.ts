@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Posts Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id; POST :id/restore.
@@ -104,7 +105,7 @@ export class PostsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,

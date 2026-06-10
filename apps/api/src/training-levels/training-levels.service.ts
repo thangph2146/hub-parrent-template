@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { TrainingLevel } from '../entities/training-level.entity';
@@ -108,7 +109,7 @@ export class TrainingLevelsService {
   }
 
   async getById(id: number): Promise<TrainingLevelRowDto | null> {
-    const r = await this.em.findOne(TrainingLevel, { id });
+    const r = await this.em.findOne(TrainingLevel, { id: toEntityId(id) });
     if (!r) return null;
     if (backfillLegacyAuditTimestampsIfMissing(r)) {
       await this.em.persistAndFlush(r);
@@ -134,7 +135,7 @@ export class TrainingLevelsService {
     id: number,
     data: { name?: string; code?: string | null; status?: number },
   ): Promise<TrainingLevelRowDto | null> {
-    const existing = await this.em.findOne(TrainingLevel, { id });
+    const existing = await this.em.findOne(TrainingLevel, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name !== undefined) existing.name = data.name;
     if (data.code !== undefined) existing.code = data.code;
@@ -145,7 +146,7 @@ export class TrainingLevelsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(TrainingLevel, { id });
+    const r = await this.em.findOne(TrainingLevel, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     touchLegacyAuditTimestamps(r);
@@ -154,7 +155,7 @@ export class TrainingLevelsService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const r = await this.em.findOne(TrainingLevel, { id });
+    const r = await this.em.findOne(TrainingLevel, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -162,7 +163,7 @@ export class TrainingLevelsService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(TrainingLevel, { id });
+    const r = await this.em.findOne(TrainingLevel, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

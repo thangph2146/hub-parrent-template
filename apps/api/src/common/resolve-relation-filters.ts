@@ -12,9 +12,7 @@ import { Setting } from '../entities/setting.entity';
 import { Student } from '../entities/student.entity';
 import { Tag } from '../entities/tag.entity';
 import { User } from '../entities/user.entity';
-
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+import { isEntityId } from './entity-id';
 
 const entityByModelName = {
   admissionResult: AdmissionResult,
@@ -31,10 +29,6 @@ const entityByModelName = {
   tag: Tag,
   user: User,
 } as const;
-
-function isUuid(value: string): boolean {
-  return UUID_REGEX.test(value.trim());
-}
 
 export interface RelationFilterConfig {
   model: string;
@@ -59,19 +53,20 @@ async function batchFindByEntity(
     cols.push('deletedAt IS NULL');
   }
 
-  const uuidValues = values.filter((v) => isUuid(v));
-  if (uuidValues.length > 0) {
+  const idValues = values.filter((v) => isEntityId(v));
+  if (idValues.length > 0) {
     const idCols = cols.length ? cols.join(' AND ') : '1=1';
+    const numericIds = idValues.map((v) => Number.parseInt(v.trim(), 10));
     const idRows = (await em
       .getConnection()
       .execute(
         `SELECT id FROM ${em.getMetadata(entity).tableName} WHERE id IN (?) AND ${idCols}`,
-        [uuidValues],
-      )) as Array<{ id: string }>;
-    const idSet = new Set(idRows.map((r) => r.id));
-    for (const val of uuidValues) {
-      if (idSet.has(val)) {
-        result.set(val, val);
+        [numericIds],
+      )) as Array<{ id: number }>;
+    const idSet = new Set(idRows.map((r) => String(r.id)));
+    for (const val of idValues) {
+      if (idSet.has(val.trim())) {
+        result.set(val, val.trim());
       }
     }
   }
@@ -84,7 +79,7 @@ async function batchFindByEntity(
       .execute(
         `SELECT id, \`${rel.nameField}\` FROM ${em.getMetadata(entity).tableName} WHERE \`${rel.nameField}\` IN (?) AND ${nameCols}`,
         [nameValues],
-      )) as Array<{ id: string; [key: string]: unknown }>;
+      )) as Array<{ id: number; [key: string]: unknown }>;
 
     for (const row of nameRows) {
       const inputVal = String(row[rel.nameField] ?? '');

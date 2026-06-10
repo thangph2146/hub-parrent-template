@@ -1,62 +1,62 @@
-﻿# Step 1: System Overview
+# Step 1: System Overview
 
-Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trước khi phát triển.
+T?ng quan nhanh d? hi?u c?u tr�c monorepo v� c�c ranh gi?i tru?c khi ph�t tri?n.
 
-## Dịch vụ chính
+## D?ch v? ch�nh
 
-- `apps/api` — NestJS + MikroORM: entities, migrations, seeders, controllers, services.
-- `apps/frontend` — Storefront Next.js (public-facing).
-- `apps/backend` — Admin Next.js (internal admin).
+- `apps/api` � NestJS + MikroORM: entities, migrations, seeders, controllers, services.
+- `apps/frontend` � Storefront Next.js (public-facing).
+- `apps/backend` � Admin Next.js (internal admin).
 
-## Packages chia sẻ
+## Packages chia s?
 
-- `packages/api-client` — SDK gọi `apps/api` (HTTP).
-- `packages/query-client` — cấu hình TanStack Query dùng chung.
-- `packages/ui`, `packages/editor` — UI / editor components.
-- `packages/eslint-config`, `packages/typescript-config` — quy tắc lint/tsconfig chung.
+- `packages/api-client` � SDK g?i `apps/api` (HTTP).
+- `packages/query-client` � c?u h�nh TanStack Query d�ng chung.
+- `packages/ui`, `packages/editor` � UI / editor components.
+- `packages/eslint-config`, `packages/typescript-config` � quy t?c lint/tsconfig chung.
 
-## Nguyên tắc ranh giới
+## Nguy�n t?c ranh gi?i
 
-- KHÔNG import chéo source giữa `apps/*`.
-- Next apps gọi `apps/api` qua HTTP hoặc `@workspace/api-client`.
-- Logic DB (entities, migrations, seeders) chỉ ở `apps/api`.
-- Logic dùng chung đặt ở `packages/*` nếu thực sự cần chia sẻ.
+- KH�NG import ch�o source gi?a `apps/*`.
+- Next apps g?i `apps/api` qua HTTP ho?c `@workspace/api-client`.
+- Logic DB (entities, migrations, seeders) ch? ? `apps/api`.
+- Logic d�ng chung d?t ? `packages/*` n?u th?c s? c?n chia s?.
 
-## Tài liệu quan trọng (đọc trước khi sửa code)
+## T�i li?u quan tr?ng (d?c tru?c khi s?a code)
 
-- `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc trước khi sửa code.
-- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice và checklist.
-- `docs/admin-pattern/AGENTS_GUIDE.md` — hướng dẫn đọc thứ tự và chạy `pnpm check`.
-- `.graphify/markdown/SUMMARY_FOR_AI.md` và `apps/*/.graphify/markdown/SUMMARY_FOR_AI.md` — bản tóm tắt graph cho từng app.
-- Nếu task liên quan page/feature: `docs/pages/<feature>-implementation.md`.
+- `docs/admin-pattern/PRE_CODE_PROTOCOL.md` � quy tr�nh b?t bu?c tru?c khi s?a code.
+- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` � so d? microservice v� checklist.
+- `docs/admin-pattern/AGENTS_GUIDE.md` � hu?ng d?n d?c th? t? v� ch?y `pnpm check`.
+- `.graphify/markdown/SUMMARY_FOR_AI.md` v� `apps/*/.graphify/markdown/SUMMARY_FOR_AI.md` � b?n t�m t?t graph cho t?ng app.
+- N?u task li�n quan page/feature: `docs/pages/<feature>-implementation.md`.
 
-## Quy trình thay đổi (tối thiểu)
+## Quy tr�nh thay d?i (t?i thi?u)
 
-1. Xác định phạm vi (app/package/feature).
-2. Đọc các tài liệu trong mục "Tài liệu quan trọng" theo thứ tự.
-3. Mở `apps/<app>/.graphify/markdown/FOLDER_TREE.md` để định vị file mục tiêu.
-4. Chỉnh code chỉ sau khi hiểu luồng dữ liệu.
-5. Chạy từ root:
+1. X�c d?nh ph?m vi (app/package/feature).
+2. �?c c�c t�i li?u trong m?c "T�i li?u quan tr?ng" theo th? t?.
+3. M? `apps/<app>/.graphify/markdown/FOLDER_TREE.md` d? d?nh v? file m?c ti�u.
+4. Ch?nh code ch? sau khi hi?u lu?ng d? li?u.
+5. Ch?y t? root:
 
 ```bash
 pnpm check
 ```
 
-6. Nếu thay đổi kiến trúc/module/routes lớn:
+6. N?u thay d?i ki?n tr�c/module/routes l?n:
 
 ```bash
-# cập nhật snapshot cho app
-node scripts/graphify-update.cjs apps/<app>
+# c?p nh?t snapshot cho app
+node script-system/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
 
-## Kiểm tra hoàn thành
+## Ki?m tra ho�n th�nh
 
-- `pnpm check` phải pass.
-- Không vi phạm `service-boundaries` (xem `packages/eslint-config/service-boundaries.js`).
-- Không thêm phụ thuộc sai vào `package.json` của app/package.
+- `pnpm check` ph?i pass.
+- Kh�ng vi ph?m `service-boundaries` (xem `packages/eslint-config/service-boundaries.js`).
+- Kh�ng th�m ph? thu?c sai v�o `package.json` c?a app/package.
 
 ---
 
-File này là tóm tắt; tham khảo chi tiết trong `docs/admin-pattern/` và `.graphify/markdown/`.
+File n�y l� t�m t?t; tham kh?o chi ti?t trong `docs/admin-pattern/` v� `.graphify/markdown/`.

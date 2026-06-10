@@ -5,7 +5,7 @@ export type AdminColumnFilterType =
   | 'numberRange'
   | 'dateRange'
   | 'boolean'
-  | 'uuid';
+  | 'entityId';
 
 export type AdminColumnFilterField = {
   type: AdminColumnFilterType;
@@ -113,9 +113,11 @@ function applyFieldFilter(
     case 'boolean':
       setNestedWhere(where, path, value === 'true' || value === '1');
       return;
-    case 'uuid':
-      setNestedWhere(where, path, value);
+    case 'entityId': {
+      const n = Number(value);
+      if (Number.isFinite(n) && n > 0) setNestedWhere(where, path, n);
       return;
+    }
     case 'dateRange':
       applyDateRange(where, path, value);
       return;

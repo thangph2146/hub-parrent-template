@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { AdmissionResult } from '../entities/admission-result.entity';
@@ -6,7 +7,7 @@ import { safeIsoString, safeIsoStringNow } from '../common/date-utils';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface AdmissionResultRowDto {
-  id: string;
+  id: number;
   cccd: string | null;
   soBaoDanh: string | null;
   hoTen: string;
@@ -148,7 +149,7 @@ export class AdmissionResultsService {
   }
 
   async getById(id: string): Promise<AdmissionResultRowDto | null> {
-    const r = await this.em.findOne(AdmissionResult, { id });
+    const r = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
     return r ? mapRow(r) : null;
   }
 
@@ -156,12 +157,40 @@ export class AdmissionResultsService {
     cccd: string,
     soBaoDanh: string,
   ): Promise<AdmissionResultRowDto | null> {
-    const r = await this.em.findOne(AdmissionResult, {
-      cccd: cccd.trim(),
-      soBaoDanh: soBaoDanh.trim(),
+    const c = cccd.trim();
+    const s = soBaoDanh.trim();
+    if (!c || !s) return null;
+
+    const exact = await this.em.findOne(AdmissionResult, {
+      cccd: c,
+      soBaoDanh: s,
       deletedAt: null,
     });
-    return r ? mapRow(r) : null;
+    if (exact) return mapRow(exact);
+
+    const bySoBaoDanh = await this.em.findOne(AdmissionResult, {
+      soBaoDanh: s,
+      deletedAt: null,
+    });
+    if (
+      bySoBaoDanh &&
+      (!bySoBaoDanh.cccd || bySoBaoDanh.cccd === c)
+    ) {
+      return mapRow(bySoBaoDanh);
+    }
+
+    const byCccd = await this.em.findOne(AdmissionResult, {
+      cccd: c,
+      deletedAt: null,
+    });
+    if (
+      byCccd &&
+      (!byCccd.soBaoDanh || byCccd.soBaoDanh === s)
+    ) {
+      return mapRow(byCccd);
+    }
+
+    return null;
   }
 
   async create(data: {
@@ -210,7 +239,7 @@ export class AdmissionResultsService {
       ghiChu?: string | null;
     },
   ): Promise<AdmissionResultRowDto | null> {
-    const existing = await this.em.findOne(AdmissionResult, { id });
+    const existing = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.cccd !== undefined) existing.cccd = data.cccd?.trim() ?? null;
     if (data.soBaoDanh !== undefined)
@@ -238,7 +267,7 @@ export class AdmissionResultsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(AdmissionResult, { id });
+    const r = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     this.em.persist(r);
@@ -247,7 +276,7 @@ export class AdmissionResultsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(AdmissionResult, { id });
+    const r = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     this.em.persist(r);
@@ -256,7 +285,7 @@ export class AdmissionResultsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(AdmissionResult, { id });
+    const r = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
     if (!r) return false;
     this.em.remove(r);
     await this.em.flush();
@@ -271,7 +300,7 @@ export class AdmissionResultsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         AdmissionResult,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -282,7 +311,7 @@ export class AdmissionResultsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         AdmissionResult,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -292,7 +321,7 @@ export class AdmissionResultsService {
     }
     if (action === 'hard-delete') {
       const result = await this.em.nativeDelete(AdmissionResult, {
-        id: { $in: ids },
+        id: { $in: toEntityIdList(ids) },
       });
       return {
         affected: result ?? 0,

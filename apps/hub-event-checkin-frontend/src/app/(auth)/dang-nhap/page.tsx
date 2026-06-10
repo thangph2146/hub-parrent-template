@@ -1,5 +1,5 @@
-import { EventSignInForm } from "@/features/auth/event-sign-in-form";
+import { EventSignInForm } from "@/features/auth/event-sign-in-form"
 
 export default function DangNhapPage() {
-  return <EventSignInForm />;
+  return <EventSignInForm />
 }

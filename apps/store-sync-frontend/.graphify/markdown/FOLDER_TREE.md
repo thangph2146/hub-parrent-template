@@ -40,4 +40,4 @@ src/
 
 ## Làm mới
 
-Chạy `node scripts/graphify-update.cjs apps/store-sync-frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify-update.cjs apps/store-sync-frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

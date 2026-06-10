@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react"
 import {
   CalendarDays,
+  ClipboardList,
   Home,
   QrCode,
   Sparkles,
@@ -21,6 +22,14 @@ export type NavItem = {
   description?: string
 }
 
+/** Placeholder — `Header` ghi đè bằng `getMyEventsPath(session)`. */
+export const MY_EVENTS_NAV: NavItem = {
+  href: "/student/events",
+  label: "Sự kiện của tôi",
+  icon: ClipboardList,
+  description: "Đăng ký & check-in của bạn",
+}
+
 export const MAIN_NAV: NavItem[] = [
   {
     href: "/",
@@ -37,6 +46,8 @@ export const MAIN_NAV: NavItem[] = [
 ]
 
 export const FOOTER_EVENT_LINKS = [
+  { href: "/student/events", label: "Sự kiện của tôi (sinh viên)" },
+  { href: "/guest/events", label: "Sự kiện của tôi (khách)" },
   { href: "/su-kien", label: "Tất cả sự kiện" },
   { href: "/su-kien?filter=upcoming", label: "Sắp diễn ra" },
   { href: "/su-kien?filter=ongoing", label: "Đang diễn ra" },
@@ -45,6 +56,7 @@ export const FOOTER_EVENT_LINKS = [
 
 export const FOOTER_RESOURCE_LINKS = [
   { href: "https://hub.edu.vn", label: "Website HUB", external: true },
+  { href: "/admin-checkin-su-kien/dang-nhap", label: "Quản trị sự kiện" },
 ] as const
 
 export const LANDING_QUICK_ACTIONS = [

@@ -1,20 +1,19 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import type { DevLoginOption } from "@workspace/api-client";
 import { Button } from "@ui/components/button";
 import { Input } from "@ui/components/input";
 import { Label } from "@ui/components/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select";
+  DevLoginAccountField,
+  DEV_LOGIN_MANUAL_VALUE,
+  isDevLoginEnabled,
+  resolveDevLoginOption,
+  useDevLoginOptions,
+} from "@ui/components/auth";
 import {
   Card,
   CardContent,
@@ -43,8 +42,7 @@ import {
   writeStoreSession,
 } from "@/lib/store-auth";
 
-const DEV_PRESET_NONE = "__none__";
-const IS_DEV = process.env.NODE_ENV === "development";
+const IS_DEV = isDevLoginEnabled();
 
 function LoginFormInner() {
   const router = useRouter();
@@ -52,33 +50,20 @@ function LoginFormInner() {
   const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [devPreset, setDevPreset] = useState(DEV_PRESET_NONE);
-  const [devOptions, setDevOptions] = useState<DevLoginOption[]>([]);
-  const [devOptionsLoading, setDevOptionsLoading] = useState(IS_DEV);
+  const [devPreset, setDevPreset] = useState(DEV_LOGIN_MANUAL_VALUE);
   const [submitting, setSubmitting] = useState(false);
+  const { options: devOptions, loading: devOptionsLoading } = useDevLoginOptions(
+    () => fetchStoreDevLoginOptions(),
+    [],
+  );
 
   const nextPath = useMemo(
     () => safeRelativeNext(searchParams.get("next")),
     [searchParams],
   );
 
-  useEffect(() => {
-    if (!IS_DEV) return;
-    let cancelled = false;
-    void fetchStoreDevLoginOptions()
-      .then((options) => {
-        if (!cancelled) setDevOptions(options);
-      })
-      .finally(() => {
-        if (!cancelled) setDevOptionsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const selectedDevUser = useMemo(
-    () => devOptions.find((o) => o.id === devPreset) ?? null,
+    () => resolveDevLoginOption(devOptions, devPreset),
     [devOptions, devPreset],
   );
 
@@ -96,7 +81,9 @@ function LoginFormInner() {
     setSubmitting(true);
     try {
       if (IS_DEV && selectedDevUser) {
-        const session = await loginStoreUserDevelopment(selectedDevUser.id);
+        const session = await loginStoreUserDevelopment(
+          String(selectedDevUser.id),
+        );
         await completeLogin(session);
         return;
       }
@@ -138,76 +125,22 @@ function LoginFormInner() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {IS_DEV ? (
-              <div className="rounded-xl border border-amber-500/35 bg-amber-500/10 dark:bg-amber-950/30 px-3 py-3 space-y-2">
-                <p className="text-xs font-bold text-amber-950 dark:text-amber-100/90">
-                  Development: đăng nhập nhanh
-                </p>
-                <p className="text-[11px] text-amber-900/80 dark:text-amber-100/70 leading-snug">
-                  Chọn tài khoản từ database seed — bấm đăng nhập không cần
-                  mật khẩu. Danh sách lấy từ{" "}
-                  <code className="font-mono">GET /public/dev-login-options</code>
-                  .
-                </p>
-                <div className="space-y-1.5">
-                  <Label
-                    htmlFor="dev-account-preset"
-                    className="text-xs font-medium"
-                  >
-                    Tài khoản seed
-                  </Label>
-                  <Select
-                    value={devPreset}
-                    onValueChange={(v) => {
-                      const next = v ?? DEV_PRESET_NONE;
-                      setDevPreset(next);
-                      const option = devOptions.find((o) => o.id === next);
-                      if (option) {
-                        setEmail(option.email);
-                        setPassword("");
-                      }
-                    }}
-                    disabled={devOptionsLoading}
-                  >
-                    <SelectTrigger
-                      id="dev-account-preset"
-                      className="h-10 w-full rounded-lg bg-background text-sm"
-                    >
-                      <SelectValue
-                        placeholder={
-                          devOptionsLoading
-                            ? "Đang tải tài khoản…"
-                            : "— Chọn tài khoản seed —"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={DEV_PRESET_NONE}>
-                        — Nhập email/mật khẩu thủ công —
-                      </SelectItem>
-                      {devOptions.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                          <span className="block">
-                            {option.name?.trim() || option.email}
-                          </span>
-                          <span className="block text-[11px] text-muted-foreground font-mono">
-                            {option.email}
-                            {option.roleLabels.length > 0
-                              ? ` · ${option.roleLabels.join(", ")}`
-                              : ""}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {selectedDevUser ? (
-                    <p className="text-[11px] text-muted-foreground leading-snug">
-                      {selectedDevUser.description}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
+            <DevLoginAccountField
+              variant="highlight"
+              allowManual
+              showSelectedDescription
+              value={devPreset}
+              onValueChange={(value, option) => {
+                setDevPreset(value);
+                if (option) {
+                  setEmail(option.email);
+                  setPassword("");
+                }
+              }}
+              options={devOptions}
+              loading={devOptionsLoading}
+              disabled={submitting}
+            />
 
             <div className="space-y-3">
               <Label htmlFor="email" className="text-sm font-medium">
@@ -223,7 +156,9 @@ function LoginFormInner() {
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    if (devPreset !== DEV_PRESET_NONE) setDevPreset(DEV_PRESET_NONE);
+                    if (devPreset !== DEV_LOGIN_MANUAL_VALUE) {
+                      setDevPreset(DEV_LOGIN_MANUAL_VALUE);
+                    }
                   }}
                   autoComplete="email"
                   disabled={Boolean(selectedDevUser)}

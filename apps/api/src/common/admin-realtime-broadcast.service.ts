@@ -16,7 +16,7 @@ export class AdminRealtimeBroadcastService {
 
   pendingApproval(payload: {
     resource: string;
-    id: string;
+    id: number;
     status: string;
     title: string;
     description?: string | null;

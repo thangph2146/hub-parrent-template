@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { ImportedUser } from '../entities/imported-user.entity';
@@ -132,7 +133,7 @@ export class ImportedUsersService {
   }
 
   async getById(id: number): Promise<ImportedUserRowDto | null> {
-    const r = await this.em.findOne(ImportedUser, { id });
+    const r = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
     return r ? mapRow(r) : null;
   }
 
@@ -222,7 +223,7 @@ export class ImportedUsersService {
       refreshTokenExp?: Date | null;
     },
   ): Promise<ImportedUserRowDto | null> {
-    const existing = await this.em.findOne(ImportedUser, { id });
+    const existing = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.accountId !== undefined) existing.accountId = data.accountId;
@@ -270,7 +271,7 @@ export class ImportedUsersService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(ImportedUser, { id });
+    const r = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -278,7 +279,7 @@ export class ImportedUsersService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const r = await this.em.findOne(ImportedUser, { id });
+    const r = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -286,7 +287,7 @@ export class ImportedUsersService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const r = await this.em.findOne(ImportedUser, { id });
+    const r = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

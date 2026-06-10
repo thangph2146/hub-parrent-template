@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Department } from '../entities/department.entity';
@@ -12,7 +13,7 @@ import { buildStandardAdminWhere } from '../common/apply-column-filters';
 import { DEPARTMENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface DepartmentRowDto {
-  id: string;
+  id: number;
   name: string;
   code: string;
   description: string | null;
@@ -83,7 +84,7 @@ export class DepartmentsService {
   }
 
   async getById(id: string): Promise<DepartmentRowDto | null> {
-    const r = await this.em.findOne(Department, { id });
+    const r = await this.em.findOne(Department, { id: toEntityId(id) });
     return r ? mapRow(r) : null;
   }
 
@@ -101,7 +102,7 @@ export class DepartmentsService {
     id: string,
     data: Record<string, unknown>,
   ): Promise<DepartmentRowDto | null> {
-    const existing = await this.em.findOne(Department, { id });
+    const existing = await this.em.findOne(Department, { id: toEntityId(id) });
     if (!existing) return null;
     const fields = ['name', 'code', 'description', 'status'] as const;
     for (const f of fields) {
@@ -112,21 +113,21 @@ export class DepartmentsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id });
+    const r = await this.em.findOne(Department, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
     return true;
   }
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id });
+    const r = await this.em.findOne(Department, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
     return true;
   }
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id });
+    const r = await this.em.findOne(Department, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

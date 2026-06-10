@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Roles Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; DELETE :id/hard-delete; DELETE :id (soft); POST :id/restore; POST bulk.
@@ -73,7 +74,7 @@ export class RolesController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -394,7 +395,7 @@ export class RolesController {
         {
           resource: RESOURCES.ROLES,
           action: ACTIONS.HARD_DELETE,
-          resourceId: id,
+          resourceId: toEntityId(id),
         },
       );
     }
@@ -431,7 +432,7 @@ export class RolesController {
       );
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitRoleUpsert({ id }, 'active', 'deleted');
+    this.socketGateway.emitRoleUpsert({ id: toEntityId(id) }, 'active', 'deleted');
     if (userId) {
       this.logActivity(
         userId,
@@ -441,7 +442,7 @@ export class RolesController {
         {
           resource: RESOURCES.ROLES,
           action: ACTIONS.DELETE,
-          resourceId: id,
+          resourceId: toEntityId(id),
         },
       );
     }
@@ -553,7 +554,7 @@ export class RolesController {
         {
           resource: RESOURCES.ROLES,
           action: ACTIONS.RESTORE,
-          resourceId: id,
+          resourceId: toEntityId(id),
         },
       );
     }

@@ -1,4 +1,5 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { SocketGateway } from '../socket/socket.gateway';
 import {
@@ -15,7 +16,7 @@ import { Message, MessageType } from '../entities/message.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 
 export interface NotificationsListQuery {
-  userId: string;
+  userId: number;
   limit?: number;
   offset?: number;
   unreadOnly?: boolean;
@@ -23,8 +24,8 @@ export interface NotificationsListQuery {
 }
 
 export interface NotificationItemDto {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   kind: string;
   title: string;
   description: string | null;
@@ -57,7 +58,7 @@ export interface AdminTableRowDto extends NotificationItemDto {
 }
 
 export interface AdminTableQuery {
-  userId: string;
+  userId: number;
   viewAll?: boolean;
   page: number;
   limit: number;
@@ -79,24 +80,10 @@ type NotificationWithUser = Notification & {
   user?: Pick<User, 'id' | 'name' | 'email'> | null;
 };
 
-function relationId(value: unknown): string | null {
-  if (typeof value === 'string' && value.trim()) return value.trim();
-  if (
-    value &&
-    typeof value === 'object' &&
-    'id' in value &&
-    typeof (value as { id?: unknown }).id === 'string'
-  ) {
-    const id = (value as { id: string }).id.trim();
-    return id || null;
-  }
-  return null;
-}
-
 function mapRow(n: NotificationWithUser): NotificationItemDto {
   return {
     id: n.id,
-    userId: relationId(n.user) ?? '',
+    userId: relationEntityId(n.user) ?? 0,
     kind: n.kind,
     title: n.title,
     description: n.description ?? null,
@@ -121,7 +108,7 @@ export class NotificationsService {
   /**
    * Danh sách userId có role super_admin (dùng để gửi thông báo đăng nhập).
    */
-  async getSuperAdminUserIds(): Promise<string[]> {
+  async getSuperAdminUserIds(): Promise<number[]> {
     const rows = await this.em.find(
       UserRole,
       { role: { name: 'super_admin' } },
@@ -130,8 +117,8 @@ export class NotificationsService {
     return [
       ...new Set(
         rows
-          .map((r) => relationId(r.user))
-          .filter((id): id is string => typeof id === 'string'),
+          .map((r) => relationEntityId(r.user))
+          .filter((id): id is number => id != null),
       ),
     ];
   }
@@ -140,13 +127,13 @@ export class NotificationsService {
    * Kiểm tra đã có thông báo "Tài khoản đăng nhập" gửi cho recipientUserId với cùng description trong khoảng thời gian gần đây (tránh trùng khi API tạo session bị gọi 2 lần).
    */
   async hasRecentLoginNotification(
-    recipientUserId: string,
+    recipientUserId: string | number,
     description: string,
     withinLastMs: number = 60_000,
   ): Promise<boolean> {
     const since = new Date(Date.now() - withinLastMs);
     const existing = await this.em.findOne(Notification, {
-      user: recipientUserId,
+      user: toEntityId(recipientUserId),
       title: 'Tài khoản đăng nhập',
       description,
       createdAt: { $gte: since },
@@ -159,12 +146,12 @@ export class NotificationsService {
    * (tránh trùng khi API tạo session bị gọi 2 lần).
    */
   async hasRecentWelcomeBackNotification(
-    userId: string,
+    userId: string | number,
     withinLastMs: number = 60_000,
   ): Promise<boolean> {
     const since = new Date(Date.now() - withinLastMs);
     const existing = await this.em.findOne(Notification, {
-      user: userId,
+      user: toEntityId(userId),
       kind: NotificationKind.SYSTEM,
       title: 'Chào mừng bạn trở lại',
       createdAt: { $gte: since },
@@ -177,7 +164,7 @@ export class NotificationsService {
    * Dùng để super admin và người dùng theo dõi lịch sử hoạt động tại /admin/notifications.
    */
   async create(data: {
-    userId: string;
+    userId: number;
     kind: NotificationKind;
     title: string;
     description?: string | null;
@@ -185,7 +172,7 @@ export class NotificationsService {
     metadata?: Record<string, unknown> | null;
   }): Promise<NotificationItemDto> {
     const entity = new Notification();
-    entity.user = this.em.getReference(User, data.userId);
+    entity.user = this.em.getReference(User, toEntityId(data.userId));
     entity.kind = data.kind;
     entity.title = data.title;
     entity.description = data.description ?? null;
@@ -210,7 +197,7 @@ export class NotificationsService {
   async list(query: NotificationsListQuery): Promise<NotificationsListResult> {
     const { userId, limit = 20, offset = 0, unreadOnly = false } = query;
 
-    const where: Record<string, unknown> = { user: userId };
+    const where: Record<string, unknown> = { user: toEntityId(userId) };
     if (unreadOnly) where.isRead = false;
     const whereQuery = where as FilterQuery<Notification>;
 
@@ -221,12 +208,12 @@ export class NotificationsService {
         offset,
       }),
       this.em.count(Notification, whereQuery),
-      this.em.count(Notification, { user: userId, isRead: false }),
+      this.em.count(Notification, { user: toEntityId(userId), isRead: false }),
     ]);
 
     const items: NotificationItemDto[] = notifications.map((n) => ({
       id: n.id,
-      userId: relationId(n.user) ?? '',
+      userId: relationEntityId(n.user) ?? 0,
       kind: n.kind,
       title: n.title,
       description: n.description ?? null,
@@ -247,14 +234,15 @@ export class NotificationsService {
     };
   }
 
-  async getUnreadCounts(userId: string): Promise<UnreadCountsResult> {
+  async getUnreadCounts(userId: string | number): Promise<UnreadCountsResult> {
+    const uid = toEntityId(userId);
     const [unreadNotifications, personalUnread, groupUnread, contactRequests] =
       await Promise.all([
-        this.em.count(Notification, { user: userId, isRead: false }),
+        this.em.count(Notification, { user: toEntityId(uid), isRead: false }),
         // Tin nhắn cá nhân chưa đọc (receiver = userId, isRead = false)
         this.em.count(Message, {
           type: MessageType.PERSONAL,
-          receiver: userId,
+          receiver: uid,
           isRead: false,
           deletedAt: null,
         }),
@@ -262,7 +250,7 @@ export class NotificationsService {
         this.em.count(Message, {
           group: { $ne: null },
           deletedAt: null,
-          sender: { $ne: userId },
+          sender: { $ne: uid },
         }),
         this.em.count(ContactRequest, { isRead: false, deletedAt: null }),
       ]);
@@ -281,28 +269,30 @@ export class NotificationsService {
     userId: string,
     isRead: boolean,
   ): Promise<NotificationItemDto | null> {
+    const nid = toEntityId(notificationId);
+    const uid = toEntityId(userId);
     const n = await this.em.findOne(Notification, {
-      id: notificationId,
-      user: userId,
+      id: nid,
+      user: toEntityId(uid),
     });
     if (!n) return null;
 
     await this.em.nativeUpdate(
       Notification,
-      { id: notificationId },
+      { id: nid },
       { isRead, readAt: isRead ? new Date() : null },
     );
 
-    const updated = await this.em.findOne(Notification, { id: notificationId });
+    const updated = await this.em.findOne(Notification, { id: toEntityId(notificationId) });
     if (!updated) return null;
 
     return mapRow(updated as NotificationWithUser);
   }
 
-  async markAllAsRead(userId: string): Promise<{ count: number }> {
+  async markAllAsRead(userId: string | number): Promise<{ count: number }> {
     const result = await this.em.nativeUpdate(
       Notification,
-      { user: userId, isRead: false },
+      { user: toEntityId(userId), isRead: false },
       { isRead: true, readAt: new Date() },
     );
     return { count: result ?? 0 };
@@ -312,7 +302,7 @@ export class NotificationsService {
    * Bulk mark as read/unread. Chỉ cập nhật notifications thuộc userId.
    */
   async bulkMarkReadUnread(
-    userId: string,
+    userId: string | number,
     action: 'mark-read' | 'mark-unread',
     ids: string[],
   ): Promise<{ count: number; alreadyAffected?: number }> {
@@ -322,7 +312,11 @@ export class NotificationsService {
     const isRead = action === 'mark-read';
     const updated = await this.em.nativeUpdate(
       Notification,
-      { id: { $in: ids }, user: userId, isRead: !isRead },
+      {
+        id: { $in: toEntityIdList(ids) },
+        user: toEntityId(userId),
+        isRead: !isRead,
+      },
       { isRead, readAt: isRead ? new Date() : null },
     );
     return {
@@ -334,13 +328,16 @@ export class NotificationsService {
   /**
    * Bulk delete. Chỉ xóa notifications thuộc userId.
    */
-  async bulkDelete(userId: string, ids: string[]): Promise<{ count: number }> {
+  async bulkDelete(
+    userId: string | number,
+    ids: string[],
+  ): Promise<{ count: number }> {
     if (ids.length === 0) {
       return { count: 0 };
     }
     const result = await this.em.nativeDelete(Notification, {
-      id: { $in: ids },
-      user: userId,
+      id: { $in: toEntityIdList(ids) },
+      user: toEntityId(userId),
     });
     return { count: result ?? 0 };
   }
@@ -350,11 +347,11 @@ export class NotificationsService {
    */
   async deleteOne(notificationId: string, userId: string): Promise<boolean> {
     const n = await this.em.findOne(Notification, {
-      id: notificationId,
-      user: userId,
+      id: toEntityId(notificationId),
+      user: toEntityId(userId),
     });
     if (!n) return false;
-    await this.em.nativeDelete(Notification, { id: notificationId });
+    await this.em.nativeDelete(Notification, { id: toEntityId(notificationId) });
     return true;
   }
 
@@ -409,7 +406,7 @@ export class NotificationsService {
 
     const data: AdminTableRowDto[] = rows.map((n) => ({
       id: n.id,
-      userId: relationId(n.user) ?? '',
+      userId: relationEntityId(n.user) ?? 0,
       kind: n.kind,
       title: n.title,
       description: n.description ?? null,

@@ -12,8 +12,8 @@ describe('NotificationsService', () => {
   let em: Partial<EntityManager>;
 
   const mockNotification = {
-    id: 'notif-1',
-    user: { id: 'user-1', name: 'Test User', email: 'test@example.com' },
+    id: 1,
+    user: { id: 1, name: 'Test User', email: 'test@example.com' },
     kind: NotificationKind.SYSTEM,
     title: 'Test Notification',
     description: 'Test description',
@@ -58,7 +58,7 @@ describe('NotificationsService', () => {
   describe('create', () => {
     it('should create notification', async () => {
       const result = await service.create({
-        userId: 'user-1',
+        userId: 1,
         kind: NotificationKind.SYSTEM,
         title: 'New Notification',
         description: 'Test description',
@@ -70,7 +70,7 @@ describe('NotificationsService', () => {
 
     it('should create notification with optional fields', async () => {
       const result = await service.create({
-        userId: 'user-1',
+        userId: 1,
         kind: NotificationKind.SYSTEM,
         title: 'Notification with URL',
         actionUrl: '/some/path',
@@ -87,7 +87,7 @@ describe('NotificationsService', () => {
       (em.find as jest.Mock).mockResolvedValue([mockNotification]);
       (em.count as jest.Mock).mockResolvedValueOnce(1).mockResolvedValueOnce(1);
 
-      const result = await service.list({ userId: 'user-1' });
+      const result = await service.list({ userId: 1 });
 
       expect(result.notifications).toHaveLength(1);
       expect(result.total).toBe(1);
@@ -99,7 +99,7 @@ describe('NotificationsService', () => {
       (em.count as jest.Mock).mockResolvedValueOnce(0).mockResolvedValueOnce(0);
 
       const result = await service.list({
-        userId: 'user-1',
+        userId: 1,
         unreadOnly: true,
       });
 
@@ -110,7 +110,7 @@ describe('NotificationsService', () => {
       (em.find as jest.Mock).mockResolvedValue([]);
       (em.count as jest.Mock).mockResolvedValueOnce(0).mockResolvedValueOnce(0);
 
-      await service.list({ userId: 'user-1', limit: 5 });
+      await service.list({ userId: 1, limit: 5 });
 
       expect(em.find).toHaveBeenCalled();
     });
@@ -247,7 +247,7 @@ describe('NotificationsService', () => {
       (em.count as jest.Mock).mockResolvedValue(1);
 
       const result = await service.listForAdminTable({
-        userId: 'user-1',
+        userId: 1,
         page: 1,
         limit: 10,
       });
@@ -261,7 +261,7 @@ describe('NotificationsService', () => {
       (em.count as jest.Mock).mockResolvedValue(0);
 
       await service.listForAdminTable({
-        userId: 'user-1',
+        userId: 1,
         page: 1,
         limit: 10,
         search: 'test',
@@ -275,7 +275,7 @@ describe('NotificationsService', () => {
       (em.count as jest.Mock).mockResolvedValue(1);
 
       const result = await service.listForAdminTable({
-        userId: 'user-1',
+        userId: 1,
         viewAll: true,
         page: 1,
         limit: 10,

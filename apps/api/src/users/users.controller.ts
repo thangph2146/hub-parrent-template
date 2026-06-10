@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Users Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id; POST :id/restore.
@@ -103,7 +104,7 @@ export class UsersController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -151,7 +152,7 @@ export class UsersController {
     const { sessionIds } =
       await this.sessionsService.revokeAllSessionsByUserId(targetUserId);
     for (const sessionId of sessionIds) {
-      this.socketGateway.emitSessionRevoked(sessionId, 'account_locked');
+      this.socketGateway.emitSessionRevoked(String(sessionId), 'account_locked');
     }
   }
 
@@ -379,7 +380,7 @@ export class UsersController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const actorEmail = await this.usersService.resolveActorEmail(userId);
+    const actorEmail = await this.usersService.resolveActorEmail(String(userId));
     const updated = await this.usersService.update(
       id,
       {
@@ -404,7 +405,7 @@ export class UsersController {
       return res.status(statusCode).json(errBody);
     }
     if (body?.isActive === false) {
-      await this.revokeSessionsAndEmitAccountLocked(updated.id);
+      await this.revokeSessionsAndEmitAccountLocked(String(updated.id));
     }
     if (userId) {
       this.logActivity(

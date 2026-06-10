@@ -1,9 +1,9 @@
 export type EventSessionUser = {
-  id: string
+  id: number
   email: string
   name: string | null
   image: string | null
-  roles: Array<{ id: string; name: string; displayName: string }>
+  roles: Array<{ id: number; name: string; displayName: string }>
   roleNames: string[]
 }
 
@@ -19,11 +19,11 @@ function invalidateSessionCache(): void {
 }
 
 type AuthPayload = {
-  id: string
+  id: number
   email: string
   name: string | null
   image: string | null
-  roles?: Array<{ id: string; name: string; displayName: string }>
+  roles?: Array<{ id: number; name: string; displayName: string }>
 }
 
 export function toEventSession(data: AuthPayload): EventSessionUser {
@@ -40,6 +40,27 @@ export function toEventSession(data: AuthPayload): EventSessionUser {
 
 export function isStudentSession(user: EventSessionUser | null): boolean {
   return Boolean(user?.roleNames?.includes("student"))
+}
+
+const GUEST_ROLE_NAMES = new Set(["parent", "user"])
+
+export function isGuestSession(user: EventSessionUser | null): boolean {
+  if (!user || isStudentSession(user)) return false
+  const names = user.roleNames ?? []
+  if (names.some((name) => name === "admin" || name === "super_admin")) {
+    return false
+  }
+  return names.some((name) => GUEST_ROLE_NAMES.has(name))
+}
+
+export function isEventPortalSession(user: EventSessionUser | null): boolean {
+  return isStudentSession(user) || isGuestSession(user)
+}
+
+export function getEventAccountLabel(user: EventSessionUser | null): string {
+  if (isStudentSession(user)) return "Sinh viên"
+  if (isGuestSession(user)) return "Khách"
+  return "Tài khoản"
 }
 
 export function readEventSession(): EventSessionUser | null {

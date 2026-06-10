@@ -121,7 +121,7 @@ function notifyAdminSessionChanged(): void {
  * từ API và đồng bộ hồ sơ (tên, SĐT, ảnh…) lên header/sidebar ngay.
  */
 export async function syncAdminSessionIfCurrentUser(
-  updatedUserId: string,
+  updatedUserId: string | number,
   profileFromUpdate?: Pick<
     User,
     "fullName" | "phone" | "address" | "avatar" | "updatedAt"

@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { EventCheckin, CheckinType } from '../entities/event-checkin.entity';
@@ -12,11 +13,11 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventCheckinRowDto {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   email: string;
   fullName: string;
-  registrationId: string | null;
+  registrationId: number | null;
   checkinTime: string;
   checkinType: number;
   faceImage: string | null;
@@ -98,7 +99,7 @@ export class EventCheckinsService {
       params.limit,
       ADMIN_TABLE_EXPORT_MAX_LIMIT,
     );
-    const where: Record<string, unknown> = { eventId: params.eventId };
+    const where: Record<string, unknown> = { event: toEntityId(params.eventId) };
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };
     else if (status === 'active') where.deletedAt = null;
@@ -125,7 +126,7 @@ export class EventCheckinsService {
   }
 
   async getById(id: string): Promise<EventCheckinRowDto | null> {
-    const r = await this.em.findOne(EventCheckin, { id });
+    const r = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
     if (!r) return null;
     return mapRow(r);
   }
@@ -139,12 +140,12 @@ export class EventCheckinsService {
     checkinType?: CheckinType;
   }): Promise<EventCheckinRowDto> {
     const created = new EventCheckin();
-    created.event = this.em.getReference(Event, data.eventId);
+    created.event = this.em.getReference(Event, toEntityId(data.eventId));
     created.email = data.email;
     created.fullName = data.fullName;
     if (data.registrationId !== undefined) {
       created.registration = data.registrationId
-        ? this.em.getReference(EventRegistration, data.registrationId)
+        ? this.em.getReference(EventRegistration, toEntityId(data.registrationId))
         : null;
     }
     created.checkinTime = data.checkinTime ?? new Date();
@@ -163,7 +164,7 @@ export class EventCheckinsService {
       status?: number;
     },
   ): Promise<EventCheckinRowDto | null> {
-    const existing = await this.em.findOne(EventCheckin, { id });
+    const existing = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.email !== undefined) existing.email = data.email;
     if (data.fullName !== undefined) existing.fullName = data.fullName;
@@ -176,7 +177,7 @@ export class EventCheckinsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventCheckin, { id });
+    const r = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -184,7 +185,7 @@ export class EventCheckinsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventCheckin, { id });
+    const r = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -192,7 +193,7 @@ export class EventCheckinsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventCheckin, { id });
+    const r = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

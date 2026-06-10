@@ -19,7 +19,8 @@ export function isSkippableImportRowError(errMsg: string): boolean {
   return (
     lower.includes('duplicate') ||
     lower.includes('unique') ||
-    lower.includes('constraint')
+    lower.includes('constraint') ||
+    lower.includes('out of range')
   );
 }
 
@@ -223,21 +224,43 @@ export function sanitizePivotRowsInExportJson(data: Record<string, unknown>): {
   };
 }
 
+/** Khóa ổn định khi PK legacy (UUID) đã bị strip trước insert — tránh Map chỉ còn 1 dòng `""`. */
+function categoryImportPoolKey(row: ImportRow): string {
+  if (row.id != null && String(row.id).trim() !== '') {
+    return String(row.id).trim();
+  }
+  if (row.slug != null && String(row.slug).trim() !== '') {
+    return `slug:${String(row.slug).trim()}`;
+  }
+  const name = row.name != null ? String(row.name).trim() : '';
+  return name ? `name:${name}` : `row:${JSON.stringify(row)}`;
+}
+
+function categoryParentLegacyRef(row: ImportRow): string | null {
+  const parent = row.parent ?? row.parentId;
+  if (parent == null || parent === '') return null;
+  return String(parent).trim();
+}
+
 export function orderCategoryRowsForImport(rows: ImportRow[]): ImportRow[] {
-  const pool = new Map<string, ImportRow>(
-    rows.map((r) => [String(r.id), { ...r }]),
-  );
+  const pool = new Map<string, ImportRow>();
+  for (const row of rows) {
+    pool.set(categoryImportPoolKey(row), { ...row });
+  }
   const result: ImportRow[] = [];
   const inserted = new Set<string>();
   let guard = 0;
   while (pool.size && guard++ < rows.length + 10) {
     let added = 0;
-    for (const [id, row] of [...pool.entries()]) {
-      const p = (row.parent ?? row.parentId) as string | null | undefined;
-      if (!p || inserted.has(String(p))) {
+    for (const [key, row] of [...pool.entries()]) {
+      const parentRef = categoryParentLegacyRef(row);
+      if (!parentRef || inserted.has(parentRef)) {
         result.push(row);
-        inserted.add(id);
-        pool.delete(id);
+        if (row.id != null && String(row.id).trim() !== '') {
+          inserted.add(String(row.id).trim());
+        }
+        inserted.add(key);
+        pool.delete(key);
         added++;
       }
     }

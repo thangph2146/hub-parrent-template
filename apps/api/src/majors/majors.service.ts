@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Major } from '../entities/major.entity';
@@ -134,7 +135,7 @@ export class MajorsService {
   }
 
   async getById(id: number): Promise<MajorRowDto | null> {
-    const row = await this.em.findOne(Major, { id });
+    const row = await this.em.findOne(Major, { id: toEntityId(id) });
     if (!row) return null;
     if (backfillLegacyAuditTimestampsIfMissing(row)) {
       await this.em.persistAndFlush(row);
@@ -155,7 +156,7 @@ export class MajorsService {
     id: number,
     data: { name?: string; code?: string; status?: number },
   ): Promise<MajorRowDto | null> {
-    const existing = await this.em.findOne(Major, { id });
+    const existing = await this.em.findOne(Major, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.code != null) existing.code = data.code;
@@ -166,7 +167,7 @@ export class MajorsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Major, { id });
+    const row = await this.em.findOne(Major, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
     touchLegacyAuditTimestamps(row);
@@ -175,7 +176,7 @@ export class MajorsService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Major, { id });
+    const row = await this.em.findOne(Major, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
     row.deletedAt = null;
     await this.em.persistAndFlush(row);
@@ -183,7 +184,7 @@ export class MajorsService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Major, { id });
+    const row = await this.em.findOne(Major, { id: toEntityId(id) });
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;

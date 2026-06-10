@@ -1,12 +1,21 @@
 "use client"
 
-import { Suspense, useEffect, useRef, useState } from "react"
+import { Suspense, useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { CalendarDays, Eye, EyeOff, QrCode, Sparkles } from "lucide-react"
+import {
+  CalendarDays,
+  Eye,
+  EyeOff,
+  GraduationCap,
+  QrCode,
+  Sparkles,
+  Users,
+} from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@ui/components/button"
 import { Card, CardContent } from "@ui/components/card"
+import { Tabs, TabsList, TabsTrigger } from "@ui/components/tabs"
 import {
   Field,
   FieldDescription,
@@ -16,25 +25,32 @@ import {
 } from "@ui/components/field"
 import { Input } from "@ui/components/input"
 import { PointerHighlight } from "@ui/components/pointer-highlight"
-import { TypographyH2 } from "@ui/components/typography"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+  DevLoginAccountField,
+  isDevLoginEnabled,
+  useDevLoginOptions,
+} from "@ui/components/auth"
 import { Logo } from "@/components/icons/logo"
 import {
   fetchDevLoginOptions,
   fetchGoogleClientId,
+  loginEventGuest,
+  loginEventGuestDevelopment,
   loginEventUserGoogle,
   loginEventUser,
   loginEventUserDevelopment,
   readEventSession,
-  type DevLoginOption,
+  type EventLoginKind,
+  type EventSessionUser,
 } from "@/lib/event-auth"
-import { safeRelativeNext } from "@/lib/auth-routes"
+import {
+  resolveLoginRoleFromReturnPath,
+  resolvePostLoginDestination,
+} from "@/lib/event-portal-routes"
+import {
+  assertStudentSchoolEmail,
+  STUDENT_EMAIL_SUFFIX,
+} from "@/lib/student-email"
 
 const HUB_CAMPUS_IMAGE =
   "https://hub.edu.vn/DATA/IMAGES/2024/12/31/20241231235033-1vehub.jpg"
@@ -46,6 +62,7 @@ declare global {
         id?: {
           initialize: (options: {
             client_id: string
+            hosted_domain?: string
             callback: (response: { credential?: string }) => void
           }) => void
           renderButton: (
@@ -100,8 +117,8 @@ function LoginVisualPanel() {
         <div className="space-y-5">
           <div className="max-w-sm rounded-2xl border border-white/15 bg-white/10 p-5 shadow-xl backdrop-blur-md">
             <p className="text-sm leading-relaxed font-medium text-white/90">
-              Đăng nhập để đọc đầy đủ lưu ý sự kiện, đăng ký tham gia và nhận mã
-              check-in tại chỗ.
+              Sinh viên và khách đều có thể đăng nhập để xem sự kiện, đăng ký
+              tham gia và quản lý mã check-in tại một nơi.
             </p>
           </div>
 
@@ -131,20 +148,41 @@ function LoginVisualPanel() {
   )
 }
 
+function initialLoginKind(nextFromUrl: string | null): EventLoginKind {
+  if (!nextFromUrl) return "student"
+  return resolveLoginRoleFromReturnPath(nextFromUrl) === "guest"
+    ? "guest"
+    : "student"
+}
+
 function EventSignInFormInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const next = safeRelativeNext(searchParams.get("next"), "/")
-  const isDevelopment = process.env.NODE_ENV === "development"
+  const isDevelopment = isDevLoginEnabled()
 
+  const nextFromUrl = searchParams.get("next")
+  const [accountKind, setAccountKind] = useState<EventLoginKind>(() =>
+    initialLoginKind(nextFromUrl),
+  )
+
+  const resolveDestination = useCallback(
+    (user: EventSessionUser) =>
+      resolvePostLoginDestination(user, nextFromUrl),
+    [nextFromUrl],
+  )
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [devLoginOptions, setDevLoginOptions] = useState<DevLoginOption[]>([])
   const [selectedDevLoginId, setSelectedDevLoginId] = useState("")
-  const [devLoginOptionsLoading, setDevLoginOptionsLoading] = useState(false)
+  const {
+    options: devLoginOptions,
+    loading: devLoginOptionsLoading,
+  } = useDevLoginOptions(
+    () => fetchDevLoginOptions(accountKind),
+    [accountKind],
+  )
   const [googleClientId, setGoogleClientId] = useState("")
   const [googleBusy, setGoogleBusy] = useState(false)
   const [currentOrigin, setCurrentOrigin] = useState("")
@@ -154,29 +192,10 @@ function EventSignInFormInner() {
   useEffect(() => {
     const existing = readEventSession()
     if (existing) {
-      router.replace(next)
+      router.replace(resolveDestination(existing))
     }
     setCurrentOrigin(window.location.origin)
-  }, [router, next])
-
-  useEffect(() => {
-    if (!isDevelopment) return
-
-    let cancelled = false
-    setDevLoginOptionsLoading(true)
-
-    void fetchDevLoginOptions()
-      .then((options) => {
-        if (!cancelled) setDevLoginOptions(options)
-      })
-      .finally(() => {
-        if (!cancelled) setDevLoginOptionsLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [isDevelopment])
+  }, [router, resolveDestination])
 
   useEffect(() => {
     let cancelled = false
@@ -189,6 +208,12 @@ function EventSignInFormInner() {
   }, [])
 
   useEffect(() => {
+    setSelectedDevLoginId("")
+    setError(null)
+  }, [accountKind])
+
+  useEffect(() => {
+    if (accountKind !== "student") return
     if (!googleClientId || googleInitializedRef.current) return
     if (!googleBtnRef.current) return
 
@@ -201,6 +226,7 @@ function EventSignInFormInner() {
       googleBtnRef.current.innerHTML = ""
       google.initialize({
         client_id: googleClientId,
+        hosted_domain: "st.buh.edu.vn",
         callback: (response) => {
           if (!response.credential) {
             toast.error("Không nhận được credential Google.")
@@ -209,9 +235,9 @@ function EventSignInFormInner() {
 
           setGoogleBusy(true)
           void loginEventUserGoogle(response.credential)
-            .then(() => {
+            .then((user) => {
               toast.success("Đăng nhập Google thành công.")
-              router.push(next)
+              router.push(resolveDestination(user))
               router.refresh()
             })
             .catch((err) => {
@@ -250,18 +276,7 @@ function EventSignInFormInner() {
     return () => {
       script.onload = null
     }
-  }, [googleClientId, next, router])
-
-  const onSelectDevLogin = (value: string | null) => {
-    const nextValue = value ?? ""
-    setSelectedDevLoginId(nextValue)
-    if (!nextValue) return
-    const picked = devLoginOptions.find((option) => option.id === nextValue)
-    if (!picked) return
-    setEmail(picked.email)
-    setPassword("")
-    setError(null)
-  }
+  }, [accountKind, googleClientId, resolveDestination, router])
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -269,14 +284,22 @@ function EventSignInFormInner() {
     setBusy(true)
 
     try {
+      let user: EventSessionUser
       if (isDevelopment && selectedDevLoginId) {
-        await loginEventUserDevelopment(selectedDevLoginId)
+        user =
+          accountKind === "guest"
+            ? await loginEventGuestDevelopment(selectedDevLoginId)
+            : await loginEventUserDevelopment(selectedDevLoginId)
         toast.success("Đăng nhập development thành công.")
+      } else if (accountKind === "guest") {
+        user = await loginEventGuest(email, password)
+        toast.success("Đăng nhập khách thành công.")
       } else {
-        await loginEventUser(email, password)
-        toast.success("Đăng nhập thành công.")
+        assertStudentSchoolEmail(email)
+        user = await loginEventUser(email, password)
+        toast.success("Đăng nhập sinh viên thành công.")
       }
-      router.push(next)
+      router.push(resolveDestination(user))
       router.refresh()
     } catch (err) {
       const message = err instanceof Error ? err.message : "Đăng nhập thất bại."
@@ -287,94 +310,71 @@ function EventSignInFormInner() {
     }
   }
 
+  const isStudent = accountKind === "student"
+
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-muted p-4 sm:p-6 md:p-10">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(167,27,41,0.12),transparent)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] [background-size:48px_48px] opacity-[0.35]"
-        aria-hidden
-      />
-
-      <div className="relative z-10 w-full max-w-[1040px]">
-        <div className="mb-5 flex items-center justify-center gap-3 md:hidden">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-white shadow-md ring-1 ring-border/60">
-            <Logo className="size-8" />
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-bold text-secondary">HUB Events</p>
-            <p className="text-xs text-muted-foreground">Đăng nhập sinh viên</p>
-          </div>
-        </div>
-
-        <Card className="overflow-hidden rounded-2xl border-0 p-0 shadow-2xl ring-1 shadow-secondary/10 ring-border/60">
-          <CardContent className="grid min-h-0 p-0 md:grid-cols-[1fr_minmax(340px,440px)] md:items-stretch">
-            <form
-              onSubmit={(e) => void onSubmit(e)}
-              className="flex flex-col justify-center bg-card p-6 sm:p-8 md:p-10 lg:p-12"
+    <div className="relative mx-auto w-full max-w-[1040px] px-6 py-8 md:py-12">
+      <Card className="overflow-hidden rounded-2xl border-0 p-0 shadow-xl ring-1 shadow-secondary/10 ring-border/60">
+        <CardContent className="grid min-h-0 p-0 md:grid-cols-[1fr_minmax(340px,440px)] md:items-stretch">
+          <form
+            onSubmit={(e) => void onSubmit(e)}
+            className="flex flex-col justify-center bg-card p-6 sm:p-8 md:p-10 lg:p-12"
+          >
+            <Tabs
+              value={accountKind}
+              onValueChange={(value) => {
+                const kind = (value as EventLoginKind) ?? "student"
+                if (kind === accountKind) return
+                setAccountKind(kind)
+              }}
+              className="mb-6 gap-4"
             >
-              <div className="mb-6 hidden items-center gap-3 md:flex">
-                <div className="flex size-11 items-center justify-center rounded-xl bg-secondary/5 ring-1 ring-border/80">
-                  <Logo className="size-8" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                    Hệ thống Sự kiện
+              <TabsList className="grid h-11 w-full grid-cols-2 rounded-xl bg-muted/60 p-1">
+                <TabsTrigger value="student" className="gap-2 rounded-lg">
+                  <GraduationCap className="size-4" />
+                  Sinh viên
+                </TabsTrigger>
+                <TabsTrigger value="guest" className="gap-2 rounded-lg">
+                  <Users className="size-4" />
+                  Khách
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <FieldGroup className="gap-5">
+              <div className="space-y-2 text-center md:text-left">
+                <h2 className="text-xl font-bold tracking-tight text-secondary">
+                  {isStudent ? "Tài khoản sinh viên" : "Tài khoản khách"}
+                </h2>
+                <PointerHighlight>
+                  <p className="relative z-10 text-base font-semibold text-primary">
+                    {isStudent
+                      ? `Email ${STUDENT_EMAIL_SUFFIX} · Google`
+                      : "Phụ huynh & cá nhân HUB"}
                   </p>
-                  <p className="font-bold text-secondary">HUB Events</p>
-                </div>
+                </PointerHighlight>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {isStudent
+                    ? `Chỉ chấp nhận email sinh viên đuôi ${STUDENT_EMAIL_SUFFIX} (đăng nhập hoặc Google).`
+                    : "Dùng tài khoản phụ huynh/cá nhân — không giới hạn đuôi email."}
+                </p>
               </div>
 
-              <FieldGroup className="gap-5">
-                <div className="space-y-2 text-center md:text-left">
-                  <TypographyH2 className="text-2xl font-bold tracking-tight text-secondary md:text-3xl">
-                    Đăng nhập sinh viên
-                  </TypographyH2>
-                  <PointerHighlight>
-                    <p className="relative z-10 text-base font-semibold text-primary">
-                      Mọi sự kiện tại HUB
-                    </p>
-                  </PointerHighlight>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Dùng email trường để tiếp tục đăng ký sự kiện bạn đang xem.
-                  </p>
-                </div>
-
-                {isDevelopment ? (
-                  <Field>
-                    <FieldLabel className="font-medium text-primary">
-                      Tài khoản development
-                    </FieldLabel>
-                    <Select
-                      value={selectedDevLoginId}
-                      onValueChange={onSelectDevLogin}
-                      disabled={busy || googleBusy || devLoginOptionsLoading}
-                    >
-                      <SelectTrigger className="h-11 w-full rounded-lg bg-background">
-                        <SelectValue
-                          placeholder={
-                            devLoginOptionsLoading
-                              ? "Đang tải user từ database..."
-                              : "Chọn tài khoản có sẵn trong database"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {devLoginOptions.map((option) => (
-                          <SelectItem key={option.id} value={option.id}>
-                            {option.name?.trim() || option.email} —{" "}
-                            {option.email}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FieldDescription>
-                      Chỉ hiện khi NODE_ENV=development.
-                    </FieldDescription>
-                  </Field>
-                ) : null}
+              {isDevelopment ? (
+                <DevLoginAccountField
+                  value={selectedDevLoginId}
+                  onValueChange={(value, option) => {
+                    setSelectedDevLoginId(value)
+                    if (!option) return
+                    setEmail(option.email)
+                    setPassword("")
+                    setError(null)
+                  }}
+                  options={devLoginOptions}
+                  loading={devLoginOptionsLoading}
+                  disabled={busy || googleBusy}
+                />
+              ) : null}
 
                 <Field>
                   <FieldLabel
@@ -394,9 +394,18 @@ function EventSignInFormInner() {
                     }}
                     required
                     disabled={busy || googleBusy}
-                    placeholder="sinhvien@hub.edu.vn"
+                    placeholder={
+                      isStudent
+                        ? `masv${STUDENT_EMAIL_SUFFIX}`
+                        : "email@example.com"
+                    }
                     className="h-11 rounded-lg bg-background"
                   />
+                  {isStudent ? (
+                    <FieldDescription>
+                      Ví dụ: masv{STUDENT_EMAIL_SUFFIX}
+                    </FieldDescription>
+                  ) : null}
                 </Field>
 
                 <Field>
@@ -462,36 +471,40 @@ function EventSignInFormInner() {
                       : "Đăng nhập"}
                   </Button>
                 </Field>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Hoặc dùng tài khoản Google
-                    </span>
-                  </div>
-                </div>
-                <Field>
-                  <div
-                    ref={googleBtnRef}
-                    className="flex min-h-11 w-full items-center justify-center"
-                  >
-                    {!googleClientId ? (
-                      <span className="text-sm text-muted-foreground">
-                        Chưa cấu hình Google Client ID.
-                      </span>
-                    ) : null}
-                  </div>
-                  {currentOrigin ? (
-                    <FieldDescription className="text-center text-xs">
-                      Origin hiện tại:{" "}
-                      <code className="rounded bg-muted px-1">
-                        {currentOrigin}
-                      </code>
-                    </FieldDescription>
-                  ) : null}
-                </Field>
+                {isStudent ? (
+                  <>
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-border" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-card px-2 text-muted-foreground">
+                          Hoặc Google ({STUDENT_EMAIL_SUFFIX})
+                        </span>
+                      </div>
+                    </div>
+                    <Field>
+                      <div
+                        ref={googleBtnRef}
+                        className="flex min-h-11 w-full items-center justify-center"
+                      >
+                        {!googleClientId ? (
+                          <span className="text-sm text-muted-foreground">
+                            Chưa cấu hình Google Client ID.
+                          </span>
+                        ) : null}
+                      </div>
+                      {currentOrigin ? (
+                        <FieldDescription className="text-center text-xs">
+                          Origin hiện tại:{" "}
+                          <code className="rounded bg-muted px-1">
+                            {currentOrigin}
+                          </code>
+                        </FieldDescription>
+                      ) : null}
+                    </Field>
+                  </>
+                ) : null}
                 {error ? <FieldError>{error}</FieldError> : null}
 
                 <FieldDescription className="text-center text-sm md:text-left">
@@ -504,12 +517,11 @@ function EventSignInFormInner() {
                   </Link>
                 </FieldDescription>
               </FieldGroup>
-            </form>
+          </form>
 
-            <LoginVisualPanel />
-          </CardContent>
-        </Card>
-      </div>
+          <LoginVisualPanel />
+        </CardContent>
+      </Card>
     </div>
   )
 }
@@ -518,7 +530,7 @@ export function EventSignInForm() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-muted text-muted-foreground">
+        <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
           Đang tải…
         </div>
       }

@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
-import { randomBytes, randomUUID } from 'crypto';
+import { randomBytes } from 'crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { Collection, EntityManager } from '@mikro-orm/core';
 import { AUTH_ROLE_NAMES } from '../config/constants';
+import { parseEntityId, toEntityId } from '../common/entity-id';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
@@ -21,12 +22,12 @@ export interface GoogleProfileDto {
 }
 
 export interface AuthUserPayload {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   image: string | null;
   permissions: string[];
-  roles: Array<{ id: string; name: string; displayName: string }>;
+  roles: Array<{ id: number; name: string; displayName: string }>;
 }
 
 /** MikroORM populate trả Collection — chuẩn hóa về mảng trước khi dùng .some/.filter. */
@@ -80,7 +81,7 @@ export class AuthService {
   private async getOrCreateRole(
     name: string,
     displayName: string,
-  ): Promise<{ id: string }> {
+  ): Promise<{ id: number }> {
     let role = await this.em.findOne(Role, { name });
     if (!role) {
       role = new Role();
@@ -108,15 +109,20 @@ export class AuthService {
   }
 
   private async assignRoleIfMissing(
-    userId: string,
-    roleId: string,
+    userId: number,
+    roleId: number,
   ): Promise<void> {
-    await this.em
-      .getConnection()
-      .execute(
-        'insert ignore into `user_roles` (`id`, `userId`, `roleId`) values (?, ?, ?)',
-        [randomUUID(), userId, roleId],
-      );
+    const exists = await this.em.findOne(UserRole, {
+      user: toEntityId(userId),
+      role: roleId,
+    });
+    if (exists) return;
+
+    const link = new UserRole();
+    link.user = this.em.getReference(User, userId);
+    link.role = this.em.getReference(Role, roleId);
+    this.em.persist(link);
+    await this.em.flush();
     this.em.clear();
   }
 
@@ -406,9 +412,16 @@ export class AuthService {
       return { payload: null, reason: 'not_found' };
     }
 
+    let parsedId: number;
+    try {
+      parsedId = parseEntityId(userId);
+    } catch {
+      return { payload: null, reason: 'not_found' };
+    }
+
     const user = await this.em.findOne(
       User,
-      { id: userId.trim() },
+      { id: parsedId },
       { populate: ['userRoles', 'userRoles.role'] },
     );
 

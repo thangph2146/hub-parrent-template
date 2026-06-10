@@ -97,10 +97,14 @@ export async function getFeaturedPublicEvents(limit = 12) {
 
 export async function getPublicEventBySlug(
   slug: string,
-  options?: { userId?: string | null },
+  options?: { userId?: string | number | null },
 ) {
   try {
-    const userId = options?.userId?.trim() ?? readEventSession()?.id ?? null;
+    const rawUserId = options?.userId ?? readEventSession()?.id ?? null;
+    const userId =
+      rawUserId == null || rawUserId === ""
+        ? null
+        : String(rawUserId).trim();
     return await api.public.getEventBySlug<PublicEventDetail>(slug, {
       headers: userId ? { "X-User-Id": userId } : undefined,
     });

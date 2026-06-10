@@ -22,14 +22,13 @@ export interface UserRoleRef {
 
 /** Role trả từ `/admin/auth/*` và các payload user của API HUB. */
 export interface AuthRoleRef {
-  id: string;
+  id: number;
   name: string;
   displayName: string;
 }
 
-/** Admin user — `id` chuỗi (trùng `BaseEntity` API), không dùng số tự tăng. */
-export interface User extends Omit<AuditFields, "id"> {
-  id: string;
+/** Admin user — `id` số tự tăng (`BaseEntity` API). */
+export interface User extends AuditFields {
   email: string;
   fullName: string;
   phone?: string | null;
@@ -44,11 +43,10 @@ export interface User extends Omit<AuditFields, "id"> {
 
 /**
  * Payload xác thực của API HUB.
- * Khác với `User` admin-list cũ: dùng `name`, `image`, role `{ id, name, displayName }`
- * và `id` dạng chuỗi theo `BaseEntity`.
+ * Khác với `User` admin-list: dùng `name`, `image`, role `{ id, name, displayName }`.
  */
 export interface AuthUser {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   image: string | null;
@@ -195,7 +193,7 @@ export type CreateProductInput = Omit<Product, keyof AuditFields>;
 export type UpdateProductInput = Partial<CreateProductInput>;
 
 export interface ChildCategory {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   _count: { children: number };
@@ -203,7 +201,7 @@ export interface ChildCategory {
 }
 
 export interface RelatedPost {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   published: boolean;
@@ -211,15 +209,14 @@ export interface RelatedPost {
   createdAt: string;
 }
 
-export interface Category extends Omit<AuditFields, 'id'> {
-  id: string;
+export interface Category extends AuditFields {
   name: string;
   slug: string;
   description?: string | null;
   icon?: string | null;
   sortOrder: number;
   isActive: boolean;
-  parentId?: string | null;
+  parentId?: number | null;
   parentName?: string | null;
   _count?: { children: number };
   postCount?: number;
@@ -235,7 +232,7 @@ export type CreateCategoryInput = {
   icon?: string | null;
   sortOrder?: number;
   isActive?: boolean;
-  parentId?: string | null;
+  parentId?: number | null;
 };
 export type UpdateCategoryInput = Partial<CreateCategoryInput>;
 
@@ -451,8 +448,7 @@ export interface PageContentStep {
   imageUrl?: string | null;
 }
 
-export interface PageContent extends Omit<AuditFields, 'id'> {
-  id: string;
+export interface PageContent extends AuditFields {
   pageKey: string;
   sectionKey: string;
   isVisible: boolean;

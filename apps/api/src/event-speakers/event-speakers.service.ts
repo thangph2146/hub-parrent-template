@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { EventSpeaker } from '../entities/event-speaker.entity';
@@ -12,8 +13,8 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface EventSpeakerRowDto {
-  id: string;
-  eventId: string;
+  id: number;
+  eventId: number;
   speakerId: number;
   speakerName: string;
   speakerTitle: string | null;
@@ -29,7 +30,7 @@ export interface EventSpeakerRowDto {
 }
 
 export interface ListEventSpeakersParams {
-  eventId: string;
+  eventId: string | number;
   page: number;
   limit: number;
 }
@@ -93,7 +94,7 @@ export class EventSpeakersService {
     const [rows, total] = await Promise.all([
       this.em.find(
         EventSpeaker,
-        { event: params.eventId },
+        { event: toEntityId(params.eventId) },
         {
           populate: ['speaker', 'event'],
           orderBy: { sortOrder: 'ASC' },
@@ -101,7 +102,7 @@ export class EventSpeakersService {
           limit,
         },
       ),
-      this.em.count(EventSpeaker, { event: params.eventId }),
+      this.em.count(EventSpeaker, { event: toEntityId(params.eventId) }),
     ]);
     return {
       data: rows.map(mapRow),
@@ -112,7 +113,7 @@ export class EventSpeakersService {
   async getById(id: string): Promise<EventSpeakerRowDto | null> {
     const r = await this.em.findOne(
       EventSpeaker,
-      { id },
+      { id: toEntityId(id) },
       { populate: ['speaker', 'event'] },
     );
     if (!r) return null;
@@ -130,8 +131,8 @@ export class EventSpeakersService {
     duration?: number | null;
   }): Promise<EventSpeakerRowDto> {
     const created = new EventSpeaker();
-    created.event = this.em.getReference(Event, data.eventId);
-    created.speaker = this.em.getReference(Speaker, data.speakerId);
+    created.event = this.em.getReference(Event, toEntityId(data.eventId));
+    created.speaker = this.em.getReference(Speaker, toEntityId(data.speakerId));
     if (data.sortOrder !== undefined) created.sortOrder = data.sortOrder;
     if (data.role !== undefined) created.role = data.role;
     if (data.presentationTitle !== undefined)
@@ -166,12 +167,12 @@ export class EventSpeakersService {
   ): Promise<EventSpeakerRowDto | null> {
     const existing = await this.em.findOne(
       EventSpeaker,
-      { id },
+      { id: toEntityId(id) },
       { populate: ['speaker', 'event'] },
     );
     if (!existing) return null;
     if (data.speakerId !== undefined)
-      existing.speaker = this.em.getReference(Speaker, data.speakerId);
+      existing.speaker = this.em.getReference(Speaker, toEntityId(data.speakerId));
     if (data.sortOrder !== undefined) existing.sortOrder = data.sortOrder;
     if (data.role !== undefined) existing.role = data.role;
     if (data.presentationTitle !== undefined)
@@ -192,7 +193,7 @@ export class EventSpeakersService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(EventSpeaker, { id });
+    const r = await this.em.findOne(EventSpeaker, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

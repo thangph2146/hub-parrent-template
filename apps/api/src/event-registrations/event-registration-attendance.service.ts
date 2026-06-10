@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
 import {
   BadRequestException,
   Injectable,
@@ -28,10 +29,10 @@ export type ManualAttendanceAction =
 
 export type ApplyAttendanceResult = {
   kind: 'checkin' | 'checkout';
-  eventId: string;
+  eventId: number;
   email: string;
   fullName: string;
-  registrationId: string;
+  registrationId: number;
   at: string;
   duplicate?: boolean;
   registration: EventRegistrationRowDto;
@@ -51,20 +52,15 @@ export class EventRegistrationAttendanceService {
     registrationId: string,
     action: ManualAttendanceAction,
   ): Promise<EventRegistrationRowDto> {
-    const reg = await this.em.findOne(EventRegistration, {
-      id: registrationId,
+    const reg = await this.em.findOne(EventRegistration, { id: toEntityId(registrationId),
       deletedAt: null,
     });
     if (!reg) {
       throw new NotFoundException('Không tìm thấy đăng ký sự kiện');
     }
 
-    const eventRef = reg.event as Event | { id?: string };
-    const eventId =
-      eventRef && typeof eventRef === 'object' && 'id' in eventRef
-        ? String(eventRef.id)
-        : '';
-    if (!eventId) {
+    const eventId = relationEntityId(reg.event);
+    if (eventId == null) {
       throw new BadRequestException('Đăng ký không gắn sự kiện hợp lệ');
     }
 
@@ -137,7 +133,7 @@ export class EventRegistrationAttendanceService {
   }
 
   async recordCheckin(input: {
-    eventId: string;
+    eventId: number;
     registration: EventRegistration;
     at: Date;
     source: AttendanceSource;
@@ -191,7 +187,7 @@ export class EventRegistrationAttendanceService {
   }
 
   async recordCheckout(input: {
-    eventId: string;
+    eventId: number;
     registration: EventRegistration;
     at: Date;
     source: AttendanceSource;
@@ -234,9 +230,8 @@ export class EventRegistrationAttendanceService {
     return result;
   }
 
-  private async loadEvent(eventId: string): Promise<Event> {
-    const event = await this.em.findOne(Event, {
-      id: eventId,
+  private async loadEvent(eventId: number): Promise<Event> {
+    const event = await this.em.findOne(Event, { id: eventId,
       deletedAt: null,
     });
     if (!event) {
@@ -284,7 +279,7 @@ export class EventRegistrationAttendanceService {
     }
   }
 
-  private async syncEventCounts(eventId: string): Promise<void> {
+  private async syncEventCounts(eventId: number): Promise<void> {
     const checkinCount = await this.em.count(EventRegistration, {
       event: eventId,
       hasCheckin: true,
@@ -297,18 +292,16 @@ export class EventRegistrationAttendanceService {
     } as FilterQuery<EventRegistration>);
     await this.em.nativeUpdate(
       Event,
-      { id: eventId },
-      { totalCheckins: checkinCount, totalCheckouts: checkoutCount },
+      { id: eventId },{ totalCheckins: checkinCount, totalCheckouts: checkoutCount },
     );
   }
 
-  private async toResult(
-    eventId: string,
+  private async toResult(eventId: number,
     reg: EventRegistration,
     kind: 'checkin' | 'checkout',
     duplicate: boolean,
   ): Promise<ApplyAttendanceResult> {
-    const mapped = await this.eventRegistrationsService.getById(reg.id);
+    const mapped = await this.eventRegistrationsService.getById(String(reg.id));
     if (!mapped) {
       throw new NotFoundException('Không tìm thấy đăng ký sự kiện');
     }
@@ -326,7 +319,7 @@ export class EventRegistrationAttendanceService {
 
   private emitState(
     reg: EventRegistration,
-    eventId: string,
+    eventId: number,
     kind: 'checkin' | 'checkout',
     source: AttendanceSource,
     extra: {

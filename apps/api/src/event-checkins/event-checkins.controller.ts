@@ -27,7 +27,7 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction, type BulkAction } from '../common/bulk-actions';
 import { parseAdminListLimit } from '../common/parse-list-query';
 
 @ApiTags('Event Checkins')
@@ -291,8 +291,7 @@ export class EventCheckinsController {
     }
     const action = body?.action;
     const ids = Array.isArray(body?.ids) ? body.ids : [];
-    const validActions = BULK_ACTIONS as ReadonlySet<string>;
-    if (!action || !validActions.has(action)) {
+    if (!action || !isBulkAction(action)) {
       const { statusCode, body: errBody } = createErrorResponse(
         'Action khong hop le',
         { status: 400 },

@@ -33,6 +33,7 @@ import {
   CategoriesTrashTable,
   getCategoryColumns,
   buildCategoryOptionTree,
+  buildCategoryTree,
   buildCategoriesFilterQuery,
   useColumnFiltersChange,
   useClearListFilters,
@@ -48,27 +49,6 @@ import {
   useAdminMutation,
   defaultBulkOperationToast,
 } from "@/hooks/use-admin-mutation"
-function buildCategoryTree(rows: CategoryRow[]): CategoryRow[] {
-  const byId = new Map<string, CategoryRow>()
-  for (const row of rows) {
-    byId.set(row.id, { ...row, subRows: [] })
-  }
-  const roots: CategoryRow[] = []
-  for (const row of byId.values()) {
-    const parentId = row.parentId ?? null
-    if (parentId && byId.has(parentId)) {
-      byId.get(parentId)!.subRows!.push(row)
-    } else {
-      roots.push(row)
-    }
-  }
-  const sortTree = (items: CategoryRow[]): CategoryRow[] =>
-    [...items]
-      .sort((a, b) => a.name.localeCompare(b.name, "vi"))
-      .map((item) => ({ ...item, subRows: sortTree(item.subRows ?? []) }))
-  return sortTree(roots)
-}
-
 function CategoriesPageInner() {
   const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/categories", {
@@ -99,8 +79,6 @@ function CategoriesPageInner() {
 
   const [mainTab, setMainTab] = useState<"list" | "trash">("list")
   const [globalFilter, setGlobalFilter] = useState("")
-  const [trashPage, setTrashPage] = useState(1)
-  const [trashPageSize, setTrashPageSize] = useState(10)
   const [trashGlobalFilter, setTrashGlobalFilter] = useState("")
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [trashColumnFilters, setTrashColumnFilters] =
@@ -131,8 +109,6 @@ function CategoriesPageInner() {
 
   const trashQuery = useTrashQuery({
     api,
-    trashPage,
-    trashPageSize,
     debouncedTrashQ,
     trashColumnFilterQuery,
     enabled: mainTab === "trash",
@@ -179,10 +155,6 @@ function CategoriesPageInner() {
       await invalidateAll()
     },
   })
-
-  useEffect(() => {
-    setTrashPage(1)
-  }, [trashColumnFilters, debouncedTrashQ, trashPageSize])
 
   useEffect(() => {
     setListCategorySelection({})
@@ -376,11 +348,7 @@ function CategoriesPageInner() {
                 onGlobalFilterChange={setTrashGlobalFilter}
                 selectedRowIds={trashCategorySelection}
                 onSelectedRowIdsChange={setTrashCategorySelection}
-                page={trashPage}
-                pageSize={trashPageSize}
                 total={trashQuery.data?.total ?? 0}
-                onPageChange={setTrashPage}
-                onPageSizeChange={setTrashPageSize}
                 onClearFilters={clearTrashFilters}
                 onBulkRestore={async (rows) => {
                   const ids = rows.map((r) => String(r.id))

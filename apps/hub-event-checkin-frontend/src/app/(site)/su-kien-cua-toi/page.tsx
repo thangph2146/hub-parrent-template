@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation"
+import { portalEventsPath } from "@/lib/event-portal-routes"
 
-export default function MyEventsRedirectPage() {
-  redirect("/student/events")
+/** Legacy URL — chuyển sang `/guest/events`. */
+export default function SuKienCuaToiRedirectPage() {
+  redirect(portalEventsPath("guest"))
 }

@@ -10,6 +10,7 @@ import {
   Phone,
 } from "lucide-react";
 import { Separator } from "@ui/components/separator";
+import { getAdminLoginUrl } from "@/features/auth/admin-bridge";
 import { Logo } from "../icons/logo";
 
 const campuses = [
@@ -63,7 +64,7 @@ type ResourceLink = {
 const resourceLinks: ResourceLink[] = [
   { href: "/huong-dan-su-dung", label: "Hướng dẫn sử dụng" },
   { href: "/lien-he", label: "Liên hệ hỗ trợ" },
-  { href: "", label: "Đăng nhập hệ thống" },
+  { href: getAdminLoginUrl(), label: "Đăng nhập hệ thống", external: true },
   { href: "https://hub.edu.vn", label: "Website HUB", external: true },
 ];
 

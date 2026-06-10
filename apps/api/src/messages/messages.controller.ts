@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import {
   Controller,
   Post,
@@ -41,7 +42,7 @@ export class MessagesController {
     return id || null;
   }
 
-  private relationId(value: unknown): string | null {
+  private relationEntityId(value: unknown): string | null {
     if (typeof value === 'string' && value.trim()) return value.trim();
     if (
       value &&
@@ -75,7 +76,7 @@ export class MessagesController {
     const isRead = body?.isRead === true;
     try {
       const msg = await this.em.findOne(Message, {
-        id: messageId,
+        id: toEntityId(messageId),
         deletedAt: null,
       });
       if (!msg) {
@@ -85,28 +86,28 @@ export class MessagesController {
         );
         return res.status(statusCode).json(errBody);
       }
-      const groupId = this.relationId(msg.group);
+      const groupId = this.relationEntityId(msg.group);
       if (groupId) {
         if (isRead) {
           const existing = await this.em.findOne(MessageRead, {
-            message: messageId,
-            user: userId,
+            message: toEntityId(messageId),
+            user: toEntityId(userId),
           });
           if (!existing) {
             const mr = new MessageRead();
-            mr.message = this.em.getReference(Message, messageId);
-            mr.user = this.em.getReference(User, userId);
+            mr.message = this.em.getReference(Message, toEntityId(messageId));
+            mr.user = this.em.getReference(User, toEntityId(userId));
             this.em.persist(mr);
             await this.em.flush();
           }
         } else {
           await this.em.nativeDelete(MessageRead, {
-            message: messageId,
-            user: userId,
+            message: toEntityId(messageId),
+            user: toEntityId(userId),
           });
         }
       } else {
-        const receiverId = this.relationId(msg.receiver);
+        const receiverId = this.relationEntityId(msg.receiver);
         if (receiverId !== userId) {
           const { statusCode, body: errBody } = createErrorResponse(
             'Không có quyền cập nhật tin nhắn này',
@@ -210,12 +211,12 @@ export class MessagesController {
       msgObj.subject = '';
       msgObj.content = content;
       msgObj.type = type;
-      msgObj.sender = this.em.getReference(User, senderId);
+      msgObj.sender = this.em.getReference(User, toEntityId(senderId));
       msgObj.receiver = receiverId
-        ? this.em.getReference(User, receiverId)
+        ? this.em.getReference(User, toEntityId(receiverId))
         : null;
-      msgObj.group = groupId ? this.em.getReference(Group, groupId) : null;
-      msgObj.parent = parentId ? this.em.getReference(Message, parentId) : null;
+      msgObj.group = groupId ? this.em.getReference(Group, toEntityId(groupId)) : null;
+      msgObj.parent = parentId ? this.em.getReference(Message, toEntityId(parentId)) : null;
       this.em.persist(msgObj);
       await this.em.flush();
 
@@ -226,11 +227,11 @@ export class MessagesController {
         targetUserIds.push(receiverId);
       } else if (groupId) {
         const members = await this.em.find(GroupMember, {
-          group: groupId,
+          group: toEntityId(groupId),
           leftAt: null,
         });
         for (const m of members) {
-          const memberUserId = this.relationId(m.user);
+          const memberUserId = this.relationEntityId(m.user);
           if (typeof memberUserId === 'string' && memberUserId !== senderId) {
             targetUserIds.push(memberUserId);
           }

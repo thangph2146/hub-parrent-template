@@ -181,19 +181,9 @@ const menuTree: AdminMenuTreeItem[] = [
   },
   {
     type: "group",
-    label: "Sự kiện & Check-in",
-    icon: CalendarPlus,
+    label: "Camera & Màn hình",
+    icon: Camera,
     children: [
-      {
-        href: "/events",
-        label: "Sự kiện",
-        icon: CalendarPlus,
-        permission: null,
-        anyPermission: [
-          PERMISSION_CODES.EVENTS_VIEW,
-          PERMISSION_CODES.EVENTS_MANAGE,
-        ],
-      },
       {
         href: "/cameras",
         label: "Camera",
@@ -223,15 +213,39 @@ const menuTree: AdminMenuTreeItem[] = [
           PERMISSION_CODES.SCREENS_VIEW,
           PERMISSION_CODES.SCREENS_MANAGE,
         ],
-      },
+      }
+    ],
+  },
+  {
+    type: "group",
+    label: "Địa điểm & vị trí",
+    icon: MapPin,
+    children: [
       {
-        href: "/departments",
-        label: "Phòng khoa",
-        icon: Building2,
+        href: "/locations",
+        label: "Địa điểm",
+        icon: MapPin,
         permission: null,
         anyPermission: [
-          PERMISSION_CODES.DEPARTMENTS_VIEW,
-          PERMISSION_CODES.DEPARTMENTS_MANAGE,
+          PERMISSION_CODES.LOCATIONS_VIEW,
+          PERMISSION_CODES.LOCATIONS_MANAGE,
+        ],
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "Sự kiện & Check-in",
+    icon: CalendarPlus,
+    children: [
+      {
+        href: "/events",
+        label: "Sự kiện",
+        icon: CalendarPlus,
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
         ],
       },
       {
@@ -243,17 +257,23 @@ const menuTree: AdminMenuTreeItem[] = [
           PERMISSION_CODES.SPEAKERS_VIEW,
           PERMISSION_CODES.SPEAKERS_MANAGE,
         ],
-      },
+      }
+    ],
+  },
+  {
+    type: "group",
+    label: "Ký túc xá & Check-in",
+    icon: CalendarPlus,
+    children: [
       {
-        href: "/locations",
-        label: "Địa điểm",
-        icon: MapPin,
+        href: "/tu-tuc-xa",
+        label: "Ký túc xá",
+        icon: CalendarPlus,
         permission: null,
         anyPermission: [
-          PERMISSION_CODES.LOCATIONS_VIEW,
-          PERMISSION_CODES.LOCATIONS_MANAGE,
+        
         ],
-      },
+      }
     ],
   },
   {

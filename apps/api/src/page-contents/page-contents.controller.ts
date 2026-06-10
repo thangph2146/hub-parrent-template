@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 import {
   Controller,
   Get,
@@ -28,7 +29,7 @@ import {
 } from '../config/constants';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 import { Permissions } from '../common/permissions.decorator';
-import { BULK_ACTIONS, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction, type BulkAction } from '../common/bulk-actions';
 import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
 import type {
   PageContentCreateInput,
@@ -70,7 +71,7 @@ export class PageContentsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,
@@ -421,8 +422,7 @@ export class PageContentsController {
     }
     const action = body?.action;
     const ids = Array.isArray(body?.ids) ? body.ids : [];
-    const validActions = BULK_ACTIONS as ReadonlySet<string>;
-    if (!action || !validActions.has(action)) {
+    if (!action || !isBulkAction(action)) {
       const { statusCode, body: errBody } = createErrorResponse(
         'Action khong hop le',
         { status: 400 },

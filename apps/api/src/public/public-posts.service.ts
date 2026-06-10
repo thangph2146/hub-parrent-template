@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Post } from '../entities/post.entity';
@@ -18,7 +19,7 @@ export interface PublicPostsQuery {
 export class PublicPostsService {
   constructor(private readonly em: EntityManager) {}
 
-  private buildViewCountKey(postId: string): string {
+  private buildViewCountKey(postId: string | number): string {
     return `post_view_count:${postId}`;
   }
 
@@ -32,9 +33,11 @@ export class PublicPostsService {
   }
 
   private async getViewCountsMap(
-    postIds: string[],
+    postIds: Array<string | number>,
   ): Promise<Record<string, number>> {
-    const ids = [...new Set(postIds.filter(Boolean))];
+    const ids = [...new Set(postIds.filter((id) => id != null && id !== ''))].map(
+      String,
+    );
     if (ids.length === 0) return {};
     const keys = ids.map((id) => this.buildViewCountKey(id));
     const rows = await this.em.find(Setting, { key: { $in: keys } });
@@ -46,7 +49,7 @@ export class PublicPostsService {
     return out;
   }
 
-  private async increaseViewCount(postId: string): Promise<number> {
+  private async increaseViewCount(postId: string | number): Promise<number> {
     const key = this.buildViewCountKey(postId);
     const existing = await this.em.findOne(Setting, { key });
     const next = this.parseViewCount(existing?.value) + 1;
@@ -72,8 +75,8 @@ export class PublicPostsService {
       params.limit,
       50,
     );
-    let categoryId: string | undefined;
-    let tagId: string | undefined;
+    let categoryId: number | undefined;
+    let tagId: number | undefined;
 
     // Resolve categorySlug to categoryId
     if (params.categorySlug?.trim()) {
@@ -92,7 +95,7 @@ export class PublicPostsService {
       if (tag) tagId = tag.id;
     }
 
-    let categoryIds: string[] = [];
+    let categoryIds: number[] = [];
     if (categoryId) {
       const childCategories = await this.em.find(Category, {
         parent: categoryId,
@@ -114,7 +117,7 @@ export class PublicPostsService {
       where.categories = { category: { id: { $in: categoryIds } } };
     }
     if (tagId) {
-      where.tags = { tag: { id: tagId } };
+      where.tags = { tag: { id: toEntityId(tagId) } };
     }
     const whereQuery = where as FilterQuery<Post>;
 
@@ -171,7 +174,7 @@ export class PublicPostsService {
             slug: pt.tag.slug,
           },
         })),
-        viewCount: viewCounts[p.id] ?? 0,
+        viewCount: viewCounts[String(p.id)] ?? 0,
       })),
       meta: paginationMeta(page, limit, total),
     };
@@ -200,7 +203,7 @@ export class PublicPostsService {
     const trackView = options?.trackView !== false;
     const nextViewCount = trackView
       ? await this.increaseViewCount(post.id)
-      : ((await this.getViewCountsMap([post.id]))[post.id] ?? 0);
+      : ((await this.getViewCountsMap([post.id]))[String(post.id)] ?? 0);
     return {
       id: post.id,
       slug: post.slug,
@@ -262,7 +265,7 @@ export class PublicPostsService {
       params?.admissionCategorySlug?.trim() ?? 'tin-tuyen-sinh';
 
     // Resolve categorySlug to categoryId
-    let categoryId: string | undefined;
+    let categoryId: number | undefined;
     const category = await this.em.findOne(Category, {
       slug: admissionCategorySlug,
       deletedAt: null,
@@ -312,14 +315,14 @@ export class PublicPostsService {
         title: p.title,
         slug: p.slug,
         publishedAt: p.publishedAt,
-        viewCount: viewCounts[p.id] ?? 0,
+        viewCount: viewCounts[String(p.id)] ?? 0,
       })),
       admissionNews: admissionNews.map((p) => ({
         id: p.id,
         title: p.title,
         slug: p.slug,
         publishedAt: p.publishedAt,
-        viewCount: viewCounts[p.id] ?? 0,
+        viewCount: viewCounts[String(p.id)] ?? 0,
       })),
     };
   }

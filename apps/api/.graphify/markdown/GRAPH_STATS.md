@@ -68,4 +68,4 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 ## Làm mới
 
-Chạy `node scripts/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

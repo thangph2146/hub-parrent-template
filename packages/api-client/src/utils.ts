@@ -94,39 +94,59 @@ export function formatDateTime(value: string): string {
   return "";
 }
 
-export function buildCategoryOptionTree(
-  rows: CategoryTreeNode[]
-): CategoryTreeNode[] {
-  const byId = new Map<string, CategoryTreeNode>();
+function sortCategoryTreeNodes<T extends CategoryTreeNode>(items: T[]): T[] {
+  return [...items]
+    .sort((a, b) => {
+      const sortDelta = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+      if (sortDelta !== 0) return sortDelta;
+      return a.name.localeCompare(b.name, "vi");
+    })
+    .map((item) => ({
+      ...item,
+      subRows: sortCategoryTreeNodes((item.subRows ?? []) as T[]),
+    }));
+}
+
+/** Dựng cây danh mục từ danh sách phẳng — luôn so khớp id/parentId dạng string. */
+export function buildCategoryTree<T extends CategoryTreeNode>(rows: T[]): T[] {
+  const byId = new Map<string, T>();
 
   for (const row of rows) {
-    byId.set(row.id, {
+    byId.set(String(row.id), {
       ...row,
-      subRows: [],
+      id: String(row.id),
+      parentId:
+        row.parentId != null && row.parentId !== ""
+          ? String(row.parentId)
+          : null,
+      subRows: [] as T[],
     });
   }
 
-  const roots: CategoryTreeNode[] = [];
+  const roots: T[] = [];
   for (const row of byId.values()) {
     const parentId = row.parentId ?? null;
     if (parentId && byId.has(parentId)) {
-      byId.get(parentId)?.subRows?.push(row);
+      byId.get(parentId)!.subRows!.push(row);
       continue;
     }
     roots.push(row);
   }
 
-  const sortTree = (items: CategoryTreeNode[]): CategoryTreeNode[] =>
-    [...items]
-      .sort((a, b) => {
-        const sortDelta = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-        if (sortDelta !== 0) return sortDelta;
-        return a.name.localeCompare(b.name, "vi");
-      })
-      .map((item) => ({
-        ...item,
-        subRows: sortTree(item.subRows ?? []),
-      }));
+  return sortCategoryTreeNodes(roots);
+}
 
-  return sortTree(roots);
+export function buildCategoryOptionTree(
+  rows: CategoryTreeNode[]
+): CategoryTreeNode[] {
+  return buildCategoryTree(
+    rows.map((row) => ({
+      ...row,
+      id: String(row.id),
+      parentId:
+        row.parentId != null && row.parentId !== ""
+          ? String(row.parentId)
+          : null,
+    }))
+  );
 }

@@ -352,7 +352,7 @@ Toàn bộ ~277 permissions (từ `apps/api/src/config/permissions.ts`). Xem chi
   - `users.cart_own`, `rbac.read`, `data.maintenance`, `support.read`, `support.write`
   - `categories.read`, `categories.write`, `products.read`, `products.write`
   - `orders.read`, `orders.write`, `orders.checkout`
-- Parity được kiểm soát bởi script `scripts/verify-permission-parity.mjs` (wired vào `pnpm check` + `pnpm check:full`).
+- Parity được kiểm soát bởi script `script-system/verify-permission-parity.mjs` (wired vào `pnpm check` + `pnpm check:full`).
 
 **Các resource có RESTORE + HARD_DELETE riêng:**
 categories, event_checkins, event_registrations, face_data, groups, users, posts, tags, comments, roles, sessions, contact_requests, students, admission_results, seo_metas, courses, academic_years, training_levels, training_systems, majors, departments, speakers, locations, screens, cameras, templates, events

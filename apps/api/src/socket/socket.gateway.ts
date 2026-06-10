@@ -8,6 +8,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { EntityManager } from '@mikro-orm/core';
+import { toEntityId } from '../common/entity-id';
 import { SessionsService } from '../sessions/sessions.service';
 import { Notification } from '../entities/notification.entity';
 import { User } from '../entities/user.entity';
@@ -96,14 +97,13 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     previousStatus: 'active' | 'deleted',
   ): void {
     if (!this.server) return;
-    this.server.to(roleRoom('ADMIN')).emit('session:remove', {
-      id: sessionId,
+    this.server.to(roleRoom('ADMIN')).emit('session:remove', { id: toEntityId(sessionId),
       previousStatus,
     });
   }
 
   emitNotificationToUser(
-    userId: string,
+    userId: string | number,
     payload: SocketNotificationPayload,
   ): void {
     if (!this.server) return;
@@ -120,7 +120,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(roleRoom('ADMIN')).emit('admin:status-changed', payload);
     if (payload.title?.trim()) {
       this.emitNotificationToAdmins({
-        id: `status_${payload.resource}_${payload.id}_${Date.now()}`,
+        id: Number(Date.now()),
         kind: 'success',
         title: payload.title,
         description: payload.description ?? null,
@@ -140,7 +140,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   emitGroupEvent(
     event: 'group:deleted' | 'group:hard-deleted' | 'group:restored',
-    payload: { id: string },
+    payload: { id: number },
   ): void {
     if (!this.server) return;
     this.server.to(roleRoom('ADMIN')).emit(event, payload);
@@ -175,7 +175,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   emitMessageNew(
     payload: {
-      id: string;
+      id: number;
       content: string;
       fromUserId: string;
       toUserId?: string | null;
@@ -208,7 +208,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   emitRoleUpsert(
-    role: { id: string },
+    role: { id: number },
     previousStatus: 'active' | 'deleted' | null = 'active',
     newStatus: 'active' | 'deleted' = 'active',
   ): void {
@@ -263,7 +263,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       try {
         const list = await em.find(
           Notification,
-          { user: userId },
+          { user: toEntityId(userId) },
           {
             populate: ['user'],
             orderBy: { createdAt: 'DESC' },
@@ -383,12 +383,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ? { fromUserId: payload.fromUserId, replyToId: payload.replyToId }
       : { fromUserId: payload.fromUserId };
 
-    let createdId: string | null = null;
+    let createdId: number | null = null;
     let notificationPayload: SocketNotificationPayload;
 
     try {
       const notif = new Notification();
-      notif.user = em.getReference(User, payload.toUserId);
+      notif.user = em.getReference(User, toEntityId(payload.toUserId));
       notif.kind = NotificationKind.MESSAGE;
       notif.title = 'Bạn có tin nhắn mới';
       notif.description = description;
@@ -408,7 +408,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } catch (err) {
       this.logger.error('Failed to persist notification', err);
       notificationPayload = {
-        id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        id: Number(Date.now()),
         kind: 'message',
         title: 'Bạn có tin nhắn mới',
         description,
@@ -439,7 +439,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (typeof ack === 'function') {
       ack({
         success: true,
-        notificationId: createdId ?? notificationPayload.id,
+        notificationId: String(createdId ?? notificationPayload.id),
       });
     }
   }
@@ -447,7 +447,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('notification:read')
   async handleNotificationRead(
     client: Socket,
-    payload: { notificationId: string },
+    payload: { notificationId: string | number },
   ): Promise<void> {
     const em = this.em.fork();
     const auth = client.handshake.auth as SocketData;
@@ -458,8 +458,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const affected = await em.nativeUpdate(
         Notification,
         {
-          id: payload.notificationId,
-          user: userId,
+          id: toEntityId(payload.notificationId),
+          user: toEntityId(userId),
         },
         { isRead: true, readAt: new Date() },
       );
@@ -467,7 +467,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const n = await em.findOne(
         Notification,
-        { id: payload.notificationId },
+        { id: toEntityId(payload.notificationId) },
         { populate: ['user'] },
       );
       if (n) {
@@ -493,12 +493,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       await em.nativeUpdate(
         Notification,
-        { user: userId, isRead: false },
+        { user: toEntityId(userId), isRead: false },
         { isRead: true, readAt: new Date() },
       );
       const list = await em.find(
         Notification,
-        { user: userId },
+        { user: toEntityId(userId) },
         {
           populate: ['user'],
           orderBy: { createdAt: 'DESC' },
@@ -543,7 +543,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (payload.targetUserId) {
       try {
         const notif = new Notification();
-        notif.user = em.getReference(User, payload.targetUserId);
+        notif.user = em.getReference(User, toEntityId(payload.targetUserId));
         notif.title = data.title;
         notif.description = data.description;
         notif.actionUrl = data.actionUrl;
@@ -607,7 +607,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
         const notificationPayload: SocketNotificationPayload = {
           ...payload.notification,
-          id: `sys_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+          id: Number(Date.now()),
           timestamp: Date.now(),
           read: false,
         };

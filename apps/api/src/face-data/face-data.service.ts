@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { FaceData } from '../entities/face-data.entity';
@@ -11,8 +12,8 @@ import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface FaceDataRowDto {
-  id: string;
-  userId: string | null;
+  id: number;
+  userId: number | null;
   imagePath: string;
   status: number;
   createdAt: string | null;
@@ -94,7 +95,7 @@ export class FaceDataService {
   }
 
   async getById(id: string): Promise<FaceDataRowDto | null> {
-    const r = await this.em.findOne(FaceData, { id });
+    const r = await this.em.findOne(FaceData, { id: toEntityId(id) });
     if (!r) return null;
     return mapRow(r);
   }
@@ -107,7 +108,7 @@ export class FaceDataService {
     const created = new FaceData();
     created.imagePath = data.imagePath;
     if (data.userId !== undefined && data.userId !== null) {
-      created.user = this.em.getReference(User, data.userId);
+      created.user = this.em.getReference(User, toEntityId(data.userId));
     }
     if (data.status !== undefined) created.status = data.status;
     await this.em.persistAndFlush(created);
@@ -121,7 +122,7 @@ export class FaceDataService {
       status?: number;
     },
   ): Promise<FaceDataRowDto | null> {
-    const existing = await this.em.findOne(FaceData, { id });
+    const existing = await this.em.findOne(FaceData, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.imagePath !== undefined) existing.imagePath = data.imagePath;
     if (data.status !== undefined) existing.status = data.status;
@@ -130,7 +131,7 @@ export class FaceDataService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(FaceData, { id });
+    const r = await this.em.findOne(FaceData, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -138,7 +139,7 @@ export class FaceDataService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(FaceData, { id });
+    const r = await this.em.findOne(FaceData, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -146,7 +147,7 @@ export class FaceDataService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(FaceData, { id });
+    const r = await this.em.findOne(FaceData, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;

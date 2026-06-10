@@ -23,6 +23,7 @@ import {
   SITE_TITLE,
   SITE_URL,
 } from "@/lib/seo"
+import { STORE_ENABLED } from "@/lib/store-feature"
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -108,15 +109,25 @@ export default function RootLayout({
         <ThemeProvider>
           <TextSizeProvider>
             <QueryProvider>
-              <PromoRulesSync />
-              <CartDrawerHost>
+              {STORE_ENABLED ? <PromoRulesSync /> : null}
+              {STORE_ENABLED ? (
+                <CartDrawerHost>
+                  <Header />
+                </CartDrawerHost>
+              ) : (
                 <Header />
-              </CartDrawerHost>
-              <StoreAuthGate>
+              )}
+              {STORE_ENABLED ? (
+                <StoreAuthGate>
+                  <main id="main-content" className="flex-1">
+                    {children}
+                  </main>
+                </StoreAuthGate>
+              ) : (
                 <main id="main-content" className="flex-1">
                   {children}
                 </main>
-              </StoreAuthGate>
+              )}
               <Suspense fallback={null}>
                 <ScrollToTop />
               </Suspense>

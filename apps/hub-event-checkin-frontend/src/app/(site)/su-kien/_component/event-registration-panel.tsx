@@ -144,8 +144,8 @@ export function EventRegistrationPanel({
             <div className="space-y-1">
               <p className="font-semibold text-foreground">Đăng nhập để đăng ký</p>
               <p className="text-sm text-muted-foreground">
-                Sinh viên cần đăng nhập tài khoản HUB trước khi ghi danh tham gia
-                sự kiện này.
+                Sinh viên hoặc khách (phụ huynh/cá nhân) cần đăng nhập tài khoản
+                HUB trước khi ghi danh tham gia sự kiện này.
               </p>
             </div>
           </div>
@@ -253,7 +253,7 @@ function RegistrationMeta({
         </p>
       ) : (
         <p className="rounded-lg bg-green-50 px-3 py-2 text-xs font-medium text-green-800 dark:bg-green-950/50 dark:text-green-300">
-          Đang mở đăng ký — đăng nhập để tham gia.
+          Đang mở đăng ký — đăng nhập sinh viên hoặc khách để tham gia.
         </p>
       )}
     </dl>

@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 /**
  * Uploads Service - Quản lý file/thư mục upload (lưu trên disk tại API).
  * Cấu trúc thư mục: STORAGE_DIR/uploads/images và STORAGE_DIR/[custom].
@@ -462,7 +463,7 @@ export class UploadsService {
     const now = new Date();
     const record = this.em.create(StorageFile, {
       relativePath: normalized,
-      uploadedByUserId: uploader,
+      uploadedBy: this.em.getReference(User, toEntityId(uploader)),
       createdAt: now,
       updatedAt: now,
     });
@@ -504,10 +505,13 @@ export class UploadsService {
       const rows = await this.em.find(
         StorageFile,
         { relativePath: { $in: chunk } },
-        { fields: ['relativePath', 'uploadedByUserId'] },
+        { fields: ['relativePath', 'uploadedBy'], populate: ['uploadedBy'] },
       );
       for (const row of rows) {
-        const uploader = row.uploadedByUserId?.trim();
+        const uploader =
+          row.uploadedBy && typeof row.uploadedBy === 'object'
+            ? String(row.uploadedBy.id)
+            : null;
         if (uploader) map.set(row.relativePath, uploader);
       }
     }
@@ -522,12 +526,12 @@ export class UploadsService {
 
     const matchedUserIds = await this.findUserIdsMatchingOwnerQuery(trimmed);
     const like = `%${trimmed}%`;
-    const or: Array<Record<string, unknown>> = [
-      { uploadedByUserId: trimmed },
-      { uploadedByUserId: { $like: like } },
-    ];
+    const or: Array<Record<string, unknown>> = [];
+    if (/^\d+$/.test(trimmed)) {
+      or.push({ uploadedBy: toEntityId(trimmed) });
+    }
     if (matchedUserIds.size > 0) {
-      or.push({ uploadedByUserId: { $in: [...matchedUserIds] } });
+      or.push({ uploadedBy: { $in: [...matchedUserIds] } });
     }
 
     const rows = await this.em.find(
@@ -560,19 +564,19 @@ export class UploadsService {
 
     const users = await this.em.find(
       User,
-      { id: { $in: unique } },
+      { id: { $in: toEntityIdList(unique) } },
       { fields: ['id', 'name', 'email'] },
     );
     for (const user of users) {
-      const label = user.name?.trim() || user.email?.trim() || user.id;
-      map.set(user.id, label);
+      const label = user.name?.trim() || user.email?.trim() || String(user.id);
+      map.set(String(user.id), label);
     }
     return map;
   }
 
   private async findUserIdsMatchingOwnerQuery(
     query: string,
-  ): Promise<Set<string>> {
+  ): Promise<Set<number>> {
     const trimmed = query.trim();
     if (!trimmed) return new Set();
 
@@ -582,8 +586,7 @@ export class UploadsService {
       {
         deletedAt: null,
         $or: [
-          { id: trimmed },
-          { id: { $like: like } },
+          ...(/^\d+$/.test(trimmed) ? [{ id: toEntityId(trimmed) }] : []),
           { email: { $like: like } },
           { name: { $like: like } },
         ],
@@ -818,7 +821,7 @@ export class UploadsService {
         ...item,
         uploadOwnerId,
         uploadOwnerName: uploadOwnerId
-          ? (labelMap.get(uploadOwnerId) ?? null)
+          ? (labelMap.get(String(uploadOwnerId)) ?? null)
           : null,
       };
     });

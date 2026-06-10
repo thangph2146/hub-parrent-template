@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
@@ -12,7 +13,7 @@ import { User } from '../entities/user.entity';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface RoleRowDto {
-  id: string;
+  id: number;
   name: string;
   displayName: string;
   description: string | null;
@@ -88,7 +89,7 @@ export class RolesService {
   constructor(private readonly em: EntityManager) {}
 
   async resolveActorEmail(userId: string): Promise<string | null> {
-    const user = await this.em.findOne(User, { id: userId });
+    const user = await this.em.findOne(User, { id: toEntityId(userId) });
     return user?.email?.trim().toLowerCase() ?? null;
   }
 
@@ -176,7 +177,7 @@ export class RolesService {
   }
 
   async getById(id: string): Promise<RoleRowDto | null> {
-    const r = await this.em.findOne(Role, { id });
+    const r = await this.em.findOne(Role, { id: toEntityId(id) });
     return r ? mapRow(r) : null;
   }
 
@@ -208,7 +209,7 @@ export class RolesService {
     },
     actorEmail?: string | null,
   ): Promise<RoleRowDto | null> {
-    const existing = await this.em.findOne(Role, { id });
+    const existing = await this.em.findOne(Role, { id: toEntityId(id) });
     if (!existing) return null;
 
     this.assertSuperAdminRoleEditable(existing, actorEmail);
@@ -231,7 +232,7 @@ export class RolesService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Role, { id });
+    const r = await this.em.findOne(Role, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     this.assertSuperAdminRoleNotDeletable(r);
     r.deletedAt = new Date();
@@ -240,7 +241,7 @@ export class RolesService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Role, { id });
+    const r = await this.em.findOne(Role, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -248,7 +249,7 @@ export class RolesService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Role, { id });
+    const r = await this.em.findOne(Role, { id: toEntityId(id) });
     if (!r) return false;
     this.assertSuperAdminRoleNotDeletable(r);
     await this.em.removeAndFlush(r);
@@ -262,7 +263,7 @@ export class RolesService {
     if (!ids.length) return { affected: 0, message: 'Không có bản ghi nào' };
 
     if (action === 'delete' || action === 'hard-delete') {
-      const targets = await this.em.find(Role, { id: { $in: ids } });
+      const targets = await this.em.find(Role, { id: { $in: toEntityIdList(ids) } });
       for (const role of targets) {
         this.assertSuperAdminRoleNotDeletable(role);
       }
@@ -271,7 +272,7 @@ export class RolesService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Role,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -283,7 +284,7 @@ export class RolesService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Role,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -293,7 +294,7 @@ export class RolesService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Role, { id: { $in: ids } });
+      const entities = await this.em.find(Role, { id: { $in: toEntityIdList(ids) } });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

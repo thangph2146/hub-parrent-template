@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 /**
  * Contact Requests Admin API Service.
  * List, options, getById, update, softDelete, restore, hardDelete, bulk (delete, restore, hard-delete, mark-read, mark-unread, update-status), assign.
@@ -19,7 +20,7 @@ export type ContactStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
 export type ContactPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
 export interface ContactRequestRowDto {
-  id: string;
+  id: number;
   name: string;
   email: string;
   phone: string | null;
@@ -29,11 +30,11 @@ export interface ContactRequestRowDto {
   priority: ContactPriority;
   isRead: boolean;
   assignedToName: string | null;
-  assignedToId: string | null;
-  assignedTo: { id: string; name: string | null; email: string } | null;
-  submittedById: string | null;
+  assignedToId: number | null;
+  assignedTo: { id: number; name: string | null; email: string } | null;
+  submittedById: number | null;
   submittedByName: string | null;
-  submittedBy: { id: string; name: string | null; email: string } | null;
+  submittedBy: { id: number; name: string | null; email: string } | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -59,7 +60,7 @@ export interface ListContactRequestsResult {
 
 function mapLinkedUserFields(
   user: Pick<User, 'id' | 'name' | 'email'> | null | undefined,
-): { id: string; name: string | null; email: string } | null {
+): { id: number; name: string | null; email: string } | null {
   try {
     if (
       user &&
@@ -252,9 +253,7 @@ export class ContactRequestsService {
   }
 
   async getById(id: string): Promise<ContactRequestRowDto | null> {
-    const row = await this.em.findOne(
-      ContactRequest,
-      { id },
+    const row = await this.em.findOne(ContactRequest, { id: toEntityId(id) },
       { populate: ['assignedTo', 'submittedBy'] },
     );
     return row ? mapRow(row as ContactRequestWithRelations) : null;
@@ -274,7 +273,7 @@ export class ContactRequestsService {
       content?: string;
     },
   ): Promise<ContactRequestRowDto | null> {
-    const existing = await this.em.findOne(ContactRequest, { id });
+    const existing = await this.em.findOne(ContactRequest, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.status !== undefined) existing.status = data.status as any;
@@ -297,16 +296,14 @@ export class ContactRequestsService {
     this.em.persist(existing);
     await this.em.flush();
 
-    const updated = await this.em.findOne(
-      ContactRequest,
-      { id },
+    const updated = await this.em.findOne(ContactRequest, { id: toEntityId(id) },
       { populate: ['assignedTo', 'submittedBy'] },
     );
     return updated ? mapRow(updated as ContactRequestWithRelations) : null;
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(ContactRequest, { id });
+    const r = await this.em.findOne(ContactRequest, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     this.em.persist(r);
@@ -315,7 +312,7 @@ export class ContactRequestsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(ContactRequest, { id });
+    const r = await this.em.findOne(ContactRequest, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     this.em.persist(r);
@@ -324,7 +321,7 @@ export class ContactRequestsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(ContactRequest, { id });
+    const r = await this.em.findOne(ContactRequest, { id: toEntityId(id) });
     if (!r) return false;
     this.em.remove(r);
     await this.em.flush();
@@ -348,7 +345,7 @@ export class ContactRequestsService {
     if (action === 'update-status' && status) {
       const result = await this.em.nativeUpdate(
         ContactRequest,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { status: status as any },
       );
       return {
@@ -360,7 +357,7 @@ export class ContactRequestsService {
     if (action === 'mark-read') {
       const result = await this.em.nativeUpdate(
         ContactRequest,
-        { id: { $in: ids }, deletedAt: null, isRead: false },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null, isRead: false },
         { isRead: true },
       );
       return {
@@ -372,7 +369,7 @@ export class ContactRequestsService {
     if (action === 'mark-unread') {
       const result = await this.em.nativeUpdate(
         ContactRequest,
-        { id: { $in: ids }, deletedAt: null, isRead: true },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null, isRead: true },
         { isRead: false },
       );
       return {
@@ -384,7 +381,7 @@ export class ContactRequestsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         ContactRequest,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -396,7 +393,7 @@ export class ContactRequestsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         ContactRequest,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -407,7 +404,7 @@ export class ContactRequestsService {
 
     if (action === 'hard-delete') {
       const result = await this.em.nativeDelete(ContactRequest, {
-        id: { $in: ids },
+        id: { $in: toEntityIdList(ids) },
       });
       return {
         affectedCount: result ?? 0,

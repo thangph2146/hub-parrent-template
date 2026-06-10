@@ -52,7 +52,7 @@ GET   /api/uploads/files/*path    (public serve)
 - **`apps/backend`** — Admin Next.js (SDK singleton via `@/lib/api`)
 - **`apps/frontend`** — Storefront Next.js (SDK singleton + raw fetch for public routes)
 - **`packages/api-client`** — HTTP SDK with typed resource classes (11 resources)
-- Service boundaries enforced by `eslint-config/service-boundaries.js` + `scripts/verify-service-boundaries.mjs`
+- Service boundaries enforced by `eslint-config/service-boundaries.js` + `script-system/verify-service-boundaries.mjs`
 
 ## Session 3 — Graphify Refresh + Route Consistent
 

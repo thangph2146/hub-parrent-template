@@ -1,9 +1,10 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 /**
  * Categories Admin API Service.
  * List, options, getById, create, update, softDelete, restore, hardDelete, bulk.
  */
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { EntityManager, Reference, type FilterQuery } from '@mikro-orm/core';
 import { normalizePageLimit, paginationMeta } from '../common/pagination';
 import { Category } from '../entities/category.entity';
 import { PostCategory } from '../entities/post-category.entity';
@@ -14,10 +15,10 @@ type CategoryWithParent = Category & {
 };
 
 export interface CategoryRowDto {
-  id: string;
+  id: number;
   name: string;
   slug: string;
-  parentId: string | null;
+  parentId: number | null;
   parentName?: string | null;
   parentIcon?: string | null;
   description: string | null;
@@ -34,7 +35,7 @@ export interface CategoryRowDto {
 }
 
 export interface ChildCategoryDto {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   icon: string | null;
@@ -44,7 +45,7 @@ export interface ChildCategoryDto {
 }
 
 export interface RelatedPostDto {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   published: boolean;
@@ -81,12 +82,22 @@ function toIsoString(value: unknown): string | null {
   return null;
 }
 
+function resolveCategoryParentId(r: Category): number | null {
+  const parent = r.parent;
+  if (parent == null || parent === undefined) return null;
+  if (Reference.isReference(parent)) {
+    const pk = parent.id;
+    return typeof pk === 'number' && pk > 0 ? pk : null;
+  }
+  return parent.id ?? null;
+}
+
 function mapRow(r: CategoryWithParent): CategoryRowDto {
   return {
     id: r.id,
     name: r.name,
     slug: r.slug,
-    parentId: r.parent?.id ?? null,
+    parentId: resolveCategoryParentId(r),
     parentName: r.parent?.name ?? null,
     parentIcon: r.parent?.icon ?? null,
     description: r.description ?? null,
@@ -161,7 +172,7 @@ function buildWhere(params: ListCategoriesParams): Record<string, unknown> {
               .map((x) => x.trim())
               .filter(Boolean)
           : [trimmed];
-        where.parent = ids.length > 1 ? { id: { $in: ids } } : ids[0];
+        where.parent = ids.length > 1 ? { id: { $in: toEntityIdList(ids) } } : ids[0];
       }
     }
   }
@@ -174,12 +185,10 @@ export class CategoriesService {
   constructor(private readonly em: EntityManager) {}
 
   private async collectCategoryDescendantIds(
-    rootId: string,
-  ): Promise<string[]> {
-    const start = String(rootId ?? '').trim();
-    if (!start) return [];
-
-    const visited = new Set<string>([start]);
+    rootId: string | number,
+  ): Promise<number[]> {
+    const start = toEntityId(rootId);
+    const visited = new Set<number>([start]);
     let frontier = [start];
     let safety = 0;
 
@@ -195,7 +204,7 @@ export class CategoriesService {
         { fields: ['id'] },
       );
 
-      const next: string[] = [];
+      const next: number[] = [];
       for (const child of children) {
         if (!visited.has(child.id)) {
           visited.add(child.id);
@@ -208,9 +217,12 @@ export class CategoriesService {
     return Array.from(visited);
   }
 
-  private async countPostsByCategoryTree(categoryId: string): Promise<number> {
-    const ids = await this.collectCategoryDescendantIds(categoryId);
-    const categoryIds = ids.length > 0 ? ids : [categoryId];
+  private async countPostsByCategoryTree(
+    categoryId: string | number,
+  ): Promise<number> {
+    const root = toEntityId(categoryId);
+    const ids = await this.collectCategoryDescendantIds(root);
+    const categoryIds = ids.length > 0 ? ids : [root];
 
     return this.em.count(PostCategory, {
       category: { id: { $in: categoryIds } },
@@ -219,26 +231,23 @@ export class CategoriesService {
   }
 
   private async batchCountPostsByCategoryTree(
-    categoryIds: string[],
-  ): Promise<Map<string, number>> {
+    categoryIds: Array<string | number>,
+  ): Promise<Map<number, number>> {
     if (categoryIds.length === 0) return new Map();
 
-    // Single BFS traversal collecting all descendant IDs keyed by root
     const allRootIds = [
-      ...new Set(
-        categoryIds.map((id) => String(id ?? '').trim()).filter(Boolean),
-      ),
+      ...new Set(categoryIds.map((id) => toEntityId(id))),
     ];
     if (allRootIds.length === 0) return new Map();
 
     const rootSet = new Set(allRootIds);
-    const rootToDescendants = new Map<string, Set<string>>();
+    const rootToDescendants = new Map<number, Set<number>>();
     for (const rootId of allRootIds) {
       rootToDescendants.set(rootId, new Set([rootId]));
     }
 
     let frontier = allRootIds;
-    const visited = new Set<string>(allRootIds);
+    const visited = new Set<number>(allRootIds);
     let safety = 0;
 
     while (frontier.length > 0 && safety < 50 && visited.size < 10000) {
@@ -253,7 +262,7 @@ export class CategoriesService {
         { fields: ['id', 'parent'] },
       );
 
-      const next: string[] = [];
+      const next: number[] = [];
       for (const child of children) {
         if (visited.has(child.id)) continue;
         visited.add(child.id);
@@ -262,7 +271,6 @@ export class CategoriesService {
         const p = child.parent as Category | null;
         const parentId = p?.id;
         if (!parentId) continue;
-        // Add child to all root sets that contain this parent
         if (rootSet.has(parentId)) {
           rootToDescendants.get(parentId)!.add(child.id);
         } else {
@@ -276,7 +284,6 @@ export class CategoriesService {
       frontier = next;
     }
 
-    // Single grouped count query
     const allDescendantIds = [...visited];
     if (allDescendantIds.length === 0) return new Map();
     const conn = this.em.getConnection();
@@ -288,12 +295,12 @@ export class CategoriesService {
        WHERE pc.categoryId IN (${placeholders})
        GROUP BY pc.categoryId`,
       allDescendantIds,
-    )) as Array<{ id: string; cnt: number }>;
-    const postCounts = new Map<string, number>(
+    )) as Array<{ id: number; cnt: number }>;
+    const postCounts = new Map<number, number>(
       countRows.map((r) => [r.id, Number(r.cnt)]),
     );
 
-    const result = new Map<string, number>();
+    const result = new Map<number, number>();
     for (const rootId of allRootIds) {
       let total = 0;
       const descSet = rootToDescendants.get(rootId);
@@ -322,7 +329,7 @@ export class CategoriesService {
         populate: shouldResolveTreePostCount
           ? ['parent', 'children']
           : ['parent'],
-        orderBy: { updatedAt: 'DESC' },
+        orderBy: { sortOrder: 'ASC', name: 'ASC' },
         offset: skip,
         limit,
       }),
@@ -331,7 +338,7 @@ export class CategoriesService {
 
     const counts = shouldResolveTreePostCount
       ? await this.batchCountPostsByCategoryTree(rows.map((row) => row.id))
-      : new Map<string, number>();
+      : new Map<number, number>();
 
     const data = rows.map((row) => {
       const dto = mapRow(row as CategoryWithParent);
@@ -355,7 +362,7 @@ export class CategoriesService {
       const q = search.trim();
       if (column === 'name') where.name = { $like: `%${q}%` };
       else if (column === 'slug') where.slug = { $like: `%${q}%` };
-      else if (column === 'parentId') where.parent = q;
+      else if (column === 'parentId') where.parent = toEntityId(q);
       else where.name = { $like: `%${q}%` };
     }
     const rows = await this.em.find(Category, where as FilterQuery<Category>, {
@@ -380,7 +387,7 @@ export class CategoriesService {
   async getById(id: string): Promise<CategoryRowDto | null> {
     const row = await this.em.findOne(
       Category,
-      { id },
+      { id: toEntityId(id) },
       { populate: ['parent'] },
     );
 
@@ -457,12 +464,12 @@ export class CategoriesService {
     entity.sortOrder = Number.isFinite(data.sortOrder) ? data.sortOrder! : 0;
     entity.type = data.type ?? 'post';
     entity.parent = data.parentId
-      ? this.em.getReference(Category, data.parentId)
+      ? this.em.getReference(Category, toEntityId(data.parentId))
       : null;
     this.em.persist(entity);
     await this.em.flush();
 
-    const refetched = await this.getById(entity.id);
+    const refetched = await this.getById(String(entity.id));
     if (!refetched) {
       throw new Error(`Failed to refetch category ${entity.id}`);
     }
@@ -482,7 +489,7 @@ export class CategoriesService {
       type?: 'post' | 'event';
     },
   ): Promise<CategoryRowDto | null> {
-    const existing = await this.em.findOne(Category, { id });
+    const existing = await this.em.findOne(Category, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.name != null) existing.name = data.name;
@@ -495,7 +502,7 @@ export class CategoriesService {
     if (data.type !== undefined) existing.type = data.type;
     if (data.parentId !== undefined) {
       existing.parent = data.parentId
-        ? this.em.getReference(Category, data.parentId)
+        ? this.em.getReference(Category, toEntityId(data.parentId))
         : null;
     }
 
@@ -506,7 +513,7 @@ export class CategoriesService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Category, { id });
+    const row = await this.em.findOne(Category, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
 
     row.deletedAt = new Date();
@@ -516,7 +523,7 @@ export class CategoriesService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Category, { id });
+    const row = await this.em.findOne(Category, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
 
     row.deletedAt = null;
@@ -526,7 +533,7 @@ export class CategoriesService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Category, { id });
+    const row = await this.em.findOne(Category, { id: toEntityId(id) });
     if (!row) return false;
 
     this.em.remove(row);
@@ -544,7 +551,7 @@ export class CategoriesService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Category,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -556,7 +563,7 @@ export class CategoriesService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Category,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -566,7 +573,7 @@ export class CategoriesService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Category, { id: { $in: ids } });
+      const entities = await this.em.find(Category, { id: { $in: toEntityIdList(ids) } });
       for (const e of entities) {
         this.em.remove(e);
       }
@@ -577,9 +584,7 @@ export class CategoriesService {
       };
     }
 
-    const uniqueIds = [
-      ...new Set(ids.map((id) => String(id ?? '').trim())),
-    ].filter(Boolean);
+    const uniqueIds = [...new Set(toEntityIdList(ids))];
 
     if (!uniqueIds.length) {
       return {
@@ -591,7 +596,7 @@ export class CategoriesService {
     const normalizedParentId =
       parentId == null || String(parentId).trim() === ''
         ? null
-        : String(parentId).trim();
+        : toEntityId(parentId);
 
     if (normalizedParentId && uniqueIds.includes(normalizedParentId)) {
       return {
@@ -603,7 +608,7 @@ export class CategoriesService {
     if (normalizedParentId) {
       const parent = await this.em.findOne(
         Category,
-        { id: normalizedParentId, deletedAt: null },
+        { id: toEntityId(normalizedParentId), deletedAt: null },
         { fields: ['id'] },
       );
 
@@ -629,7 +634,11 @@ export class CategoriesService {
     const result = await this.em.nativeUpdate(
       Category,
       { id: { $in: uniqueIds }, deletedAt: null },
-      { parent: normalizedParentId },
+      {
+        parent: normalizedParentId
+          ? this.em.getReference(Category, toEntityId(normalizedParentId))
+          : null,
+      },
     );
 
     return {

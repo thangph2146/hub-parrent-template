@@ -247,4 +247,4 @@ src/
 
 ## Làm mới
 
-Chạy `node scripts/graphify-update.cjs apps/backend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify-update.cjs apps/backend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

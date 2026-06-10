@@ -20,18 +20,15 @@ import { Input } from "@ui/components/input"
 import { PointerHighlight } from "@ui/components/pointer-highlight"
 import { TypographyH2 } from "@ui/components/typography"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+  DevLoginAccountField,
+  isDevLoginEnabled,
+  useDevLoginOptions,
+} from "@ui/components/auth"
 import { useAdminLayout } from "@ui/components/admin"
 import { useAuth, useClientReady } from "@/providers/auth-provider"
 import {
   fetchDevLoginOptions,
   fetchGoogleOAuthConfig,
-  type DevLoginOption,
 } from "@/features/auth/auth-api"
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/auth-routes"
 import { ADMIN_SESSION_EVENT, writeAdminSession } from "@/lib/auth-session"
@@ -68,15 +65,20 @@ export function SignInForm() {
   const { login, loginDevelopment, loginGoogle } = useAuth()
   const { siteName, siteDescription } = useAdminLayout()
   const clientReady = useClientReady()
-  const isDevelopment = process.env.NODE_ENV === "development"
+  const isDevelopment = isDevLoginEnabled()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [devLoginOptions, setDevLoginOptions] = useState<DevLoginOption[]>([])
   const [selectedDevLoginId, setSelectedDevLoginId] = useState("")
-  const [devLoginOptionsLoading, setDevLoginOptionsLoading] = useState(false)
+  const {
+    options: devLoginOptions,
+    loading: devLoginOptionsLoading,
+  } = useDevLoginOptions(
+    () => (clientReady ? fetchDevLoginOptions() : Promise.resolve([])),
+    [clientReady],
+  )
   const [googleClientId, setGoogleClientId] = useState<string | null>(null)
   const staffOnlyToastRef = useRef(false)
   const bridgeHandledRef = useRef(false)
@@ -122,27 +124,6 @@ export function SignInForm() {
     )
     router.replace(AUTH_LOGIN_PATH)
   }, [clientReady, router])
-
-  useEffect(() => {
-    if (!clientReady || !isDevelopment) return
-
-    let cancelled = false
-    setDevLoginOptionsLoading(true)
-
-    void fetchDevLoginOptions()
-      .then((options) => {
-        if (cancelled) return
-        setDevLoginOptions(options)
-      })
-      .finally(() => {
-        if (cancelled) return
-        setDevLoginOptionsLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [clientReady, isDevelopment])
 
   useEffect(() => {
     if (!clientReady) return
@@ -211,17 +192,6 @@ export function SignInForm() {
 
     return () => {}
   }, [clientReady, googleClientId, loginGoogle, router])
-
-  const onSelectDevLogin = (value: string | null) => {
-    const nextValue = value ?? ""
-    setSelectedDevLoginId(nextValue)
-    if (!nextValue) return
-    const picked = devLoginOptions.find((option) => option.id === nextValue)
-    if (!picked) return
-    setEmail(picked.email)
-    setPassword("")
-    setError(null)
-  }
 
   const runLogin = async (nextEmail: string, nextPassword: string) => {
     setError(null)
@@ -305,45 +275,21 @@ export function SignInForm() {
                     </div>
                   </div>
 
-                  <Field>
-                    {isDevelopment ? (
-                      <>
-                        <FieldLabel className="font-medium text-primary">
-                          Tài khoản development
-                        </FieldLabel>
-                        <Select
-                          value={selectedDevLoginId}
-                          onValueChange={onSelectDevLogin}
-                          disabled={busy || devLoginOptionsLoading}
-                        >
-                          <SelectTrigger className="h-11 w-full rounded-lg">
-                            <SelectValue
-                              placeholder={
-                                devLoginOptionsLoading
-                                  ? "Đang tải user từ database..."
-                                  : "Chọn tài khoản có sẵn trong database"
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {devLoginOptions.map((option) => (
-                              <SelectItem key={option.id} value={option.id}>
-                                {option.name?.trim() || option.email}
-                                <span className="text-xs text-muted-foreground">
-                                  {option.email} | {option.description}
-                                </span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FieldDescription>
-                          Danh sách chỉ hiện ở môi trường development. Khi chọn
-                          sẽ đăng nhập trực tiếp theo user trong database, không
-                          cần điều chỉnh hay biết mật khẩu.
-                        </FieldDescription>
-                      </>
-                    ) : null}
-                  </Field>
+                  {isDevelopment ? (
+                    <DevLoginAccountField
+                      value={selectedDevLoginId}
+                      onValueChange={(value, option) => {
+                        setSelectedDevLoginId(value)
+                        if (!option) return
+                        setEmail(option.email)
+                        setPassword("")
+                        setError(null)
+                      }}
+                      options={devLoginOptions}
+                      loading={devLoginOptionsLoading}
+                      disabled={busy}
+                    />
+                  ) : null}
 
                   <Field>
                     <FieldLabel

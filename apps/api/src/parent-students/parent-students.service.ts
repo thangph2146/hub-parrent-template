@@ -1,3 +1,5 @@
+import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import { User } from '../entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { ParentStudent } from '../entities/parent-student.entity';
@@ -11,8 +13,8 @@ import { applyColumnFilters } from '../common/apply-column-filters';
 import { PARENT_STUDENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
 export interface ParentStudentRowDto {
-  id: string;
-  parentId: string;
+  id: number;
+  parentId: number;
   parentEmail: string | null;
   parentName: string | null;
   parentPhone: string | null;
@@ -49,7 +51,7 @@ function mapRow(r: ParentStudent): ParentStudentRowDto {
       : null;
   return {
     id: r.id,
-    parentId: parentObj?.id != null ? String(parentObj.id) : String(r.parent),
+    parentId: relationEntityId(r.parent) ?? relationEntityId(parentObj) ?? 0,
     parentEmail: typeof parentObj?.email === 'string' ? parentObj.email : null,
     parentName:
       parentObj?.name == null
@@ -79,7 +81,7 @@ export class ParentStudentsService {
   async listByParent(parentId: string): Promise<ParentStudentRowDto[]> {
     const rows = await this.em.find(
       ParentStudent,
-      { parent: parentId },
+      { parent: toEntityId(parentId) },
       {
         populate: ['parent'],
         orderBy: { createdAt: 'DESC' },
@@ -195,13 +197,13 @@ export class ParentStudentsService {
   }
 
   async addStudentRequest(data: {
-    parentId: string;
+    parentId: number;
     studentCode: string;
     studentName?: string;
     note?: string;
   }): Promise<ParentStudentRowDto> {
     const existing = await this.em.findOne(ParentStudent, {
-      parent: data.parentId,
+      parent: toEntityId(String(data.parentId)),
       studentCode: data.studentCode.trim(),
     });
     if (existing) {
@@ -209,7 +211,7 @@ export class ParentStudentsService {
     }
 
     const ps = new ParentStudent();
-    ps.parent = data.parentId as any;
+    ps.parent = this.em.getReference(User, data.parentId) as any;
     ps.studentCode = data.studentCode.trim();
     ps.studentName = data.studentName?.trim() ?? null;
     ps.note = data.note?.trim() ?? null;
@@ -223,7 +225,7 @@ export class ParentStudentsService {
       title: 'Yêu cầu liên kết phụ huynh mới',
       description: `${row.studentCode}${row.studentName ? ` — ${row.studentName}` : ''}`,
       actionUrl: '/admin/parent-students',
-      actorUserId: data.parentId,
+      actorUserId: String(data.parentId),
     });
     return row;
   }
@@ -233,7 +235,7 @@ export class ParentStudentsService {
     action: 'approved' | 'rejected',
     reviewedBy: string,
   ): Promise<ParentStudentRowDto | null> {
-    const ps = await this.em.findOne(ParentStudent, { id });
+    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id) });
     if (!ps) return null;
     ps.status = action;
     ps.reviewedBy = reviewedBy;
@@ -253,7 +255,7 @@ export class ParentStudentsService {
   }
 
   async remove(id: string, parentId: string): Promise<boolean> {
-    const ps = await this.em.findOne(ParentStudent, { id, parent: parentId });
+    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id), parent: toEntityId(parentId) });
     if (!ps) return false;
     await this.em.removeAndFlush(ps);
     return true;
@@ -261,16 +263,14 @@ export class ParentStudentsService {
 
   /** Xóa vĩnh viễn yêu cầu liên kết (admin, không ràng buộc phụ huynh sở hữu). */
   async removeByAdmin(id: string): Promise<boolean> {
-    const ps = await this.em.findOne(ParentStudent, { id });
+    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id) });
     if (!ps) return false;
     await this.em.removeAndFlush(ps);
     return true;
   }
 
   async getById(id: string): Promise<ParentStudentRowDto | null> {
-    const ps = await this.em.findOne(
-      ParentStudent,
-      { id },
+    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id) },
       { populate: ['parent'] },
     );
     return ps ? mapRow(ps) : null;

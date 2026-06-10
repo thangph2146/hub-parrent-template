@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Role } from '../entities/role.entity';
@@ -78,10 +79,10 @@ export class PublicAuthService {
       phone: dto.phone?.trim() || null,
       address: dto.address?.trim() || null,
       isActive: true,
-      roleIds: [defaultRole.id],
+      roleIds: [String(defaultRole.id)],
     });
 
-    const payload = await this.authService.getAuthPayloadByUserId(created.id);
+    const payload = await this.authService.getAuthPayloadByUserId(String(created.id));
     if (!payload) {
       throw new Error(
         'Đăng ký thành công nhưng chưa thể khởi tạo phiên đăng nhập.',

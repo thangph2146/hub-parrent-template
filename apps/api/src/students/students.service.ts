@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
@@ -10,8 +11,8 @@ import { Student } from '../entities/student.entity';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface StudentRowDto {
-  id: string;
-  userId: string | null;
+  id: number;
+  userId: number | null;
   name: string | null;
   email: string | null;
   studentCode: string;
@@ -135,7 +136,7 @@ export class StudentsService {
   }
 
   async getById(id: string): Promise<StudentRowDto | null> {
-    const r = await this.em.findOne(Student, { id });
+    const r = await this.em.findOne(Student, { id: toEntityId(id) });
     return r ? mapRow(r) : null;
   }
 
@@ -166,12 +167,12 @@ export class StudentsService {
       isActive?: boolean;
     },
   ): Promise<StudentRowDto | null> {
-    const existing = await this.em.findOne(Student, { id });
+    const existing = await this.em.findOne(Student, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.userId !== undefined)
       existing.user = data.userId
-        ? ((await this.em.findOne(User, { id: data.userId })) ?? null)
+        ? ((await this.em.findOne(User, { id: toEntityId(data.userId) })) ?? null)
         : null;
     if (data.name !== undefined) existing.name = data.name;
     if (data.email !== undefined) existing.email = data.email;
@@ -184,7 +185,7 @@ export class StudentsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Student, { id });
+    const r = await this.em.findOne(Student, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     await this.em.persistAndFlush(r);
@@ -192,7 +193,7 @@ export class StudentsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Student, { id });
+    const r = await this.em.findOne(Student, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     await this.em.persistAndFlush(r);
@@ -200,7 +201,7 @@ export class StudentsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Student, { id });
+    const r = await this.em.findOne(Student, { id: toEntityId(id) });
     if (!r) return false;
     await this.em.removeAndFlush(r);
     return true;
@@ -215,7 +216,7 @@ export class StudentsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Student,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -227,7 +228,7 @@ export class StudentsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Student,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -237,7 +238,7 @@ export class StudentsService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Student, { id: { $in: ids } });
+      const entities = await this.em.find(Student, { id: { $in: toEntityIdList(ids) } });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

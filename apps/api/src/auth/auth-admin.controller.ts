@@ -29,7 +29,7 @@ export class LoginDto {
 }
 
 export class DevLoginDto {
-  userId: string;
+  userId: number;
 }
 
 export class GoogleLoginDto {
@@ -37,7 +37,7 @@ export class GoogleLoginDto {
 }
 
 export class LogoutDto {
-  userId: string;
+  userId: number;
 }
 
 /**

@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Notifications API cho admin (chuông thông báo + unread count).
  * Service được inject bởi Nest, type đầy đủ từ notifications.service.
@@ -128,8 +129,7 @@ export class NotificationsController {
 
     try {
       const result: AdminTableResult =
-        await this.notificationsService.listForAdminTable({
-          userId,
+        await this.notificationsService.listForAdminTable({ userId: toEntityId(userId),
           viewAll,
           page,
           limit,
@@ -330,8 +330,7 @@ export class NotificationsController {
 
     try {
       const result: NotificationsListResult =
-        await this.notificationsService.list({
-          userId,
+        await this.notificationsService.list({ userId: toEntityId(userId),
           limit,
           offset,
           unreadOnly: unreadOnlyParam === 'true',

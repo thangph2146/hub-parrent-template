@@ -1,15 +1,15 @@
 import type { ApiClient } from "../client";
-import { getData, putData } from "./_shared";
+import { getData, postData, putData } from "./_shared";
 
 export type AccountRoleRef = {
-  id: string;
+  id: number;
   name: string;
   displayName: string;
 };
 
 /** GET/PUT `/admin/accounts` — hồ sơ user đang đăng nhập (header X-User-Id). */
 export type AccountProfile = {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   avatar: string | null;
@@ -68,5 +68,12 @@ export class AccountsApi {
       currentPassword: input.currentPassword,
       password: input.password,
     });
+  }
+
+  /** POST `/admin/accounts/avatar` — self-service avatar (không cần `uploads:create`). */
+  async uploadAvatar(file: File): Promise<{ url: string }> {
+    const fd = new FormData();
+    fd.append("file", file);
+    return postData<{ url: string }>(this.http, "/admin/accounts/avatar", fd);
   }
 }

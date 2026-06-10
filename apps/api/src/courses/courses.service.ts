@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Course } from '../entities/course.entity';
@@ -135,7 +136,7 @@ export class CoursesService {
   }
 
   async getById(id: number): Promise<CourseRowDto | null> {
-    const row = await this.em.findOne(Course, { id });
+    const row = await this.em.findOne(Course, { id: toEntityId(id) });
     if (!row) return null;
     if (backfillLegacyAuditTimestampsIfMissing(row)) {
       await this.em.persistAndFlush(row);
@@ -170,7 +171,7 @@ export class CoursesService {
       status?: number;
     },
   ): Promise<CourseRowDto | null> {
-    const existing = await this.em.findOne(Course, { id });
+    const existing = await this.em.findOne(Course, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.startYear !== undefined) existing.startYear = data.startYear;
@@ -184,7 +185,7 @@ export class CoursesService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Course, { id });
+    const row = await this.em.findOne(Course, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
     touchLegacyAuditTimestamps(row);
@@ -193,7 +194,7 @@ export class CoursesService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Course, { id });
+    const row = await this.em.findOne(Course, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
     row.deletedAt = null;
     await this.em.persistAndFlush(row);
@@ -201,7 +202,7 @@ export class CoursesService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Course, { id });
+    const row = await this.em.findOne(Course, { id: toEntityId(id) });
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;

@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, LockMode, type FilterQuery } from '@mikro-orm/core';
 import { Product } from '../entities/product.entity';
@@ -113,7 +114,7 @@ export class ProductsService {
   }
 
   async getById(id: number): Promise<ProductRowDto | null> {
-    const row = await this.em.findOne(Product, { id, deletedAt: null });
+    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
     return row ? mapProduct(row) : null;
   }
 
@@ -141,7 +142,7 @@ export class ProductsService {
     const unique = [...new Set(ids.filter((id) => Number.isFinite(id)))];
     if (!unique.length) return [];
     return this.em.find(Product, {
-      id: { $in: unique },
+      id: { $in: toEntityIdList(unique) },
       deletedAt: null,
       isActive: true,
     });
@@ -199,7 +200,7 @@ export class ProductsService {
     id: number,
     data: Partial<Product>,
   ): Promise<ProductRowDto | null> {
-    const row = await this.em.findOne(Product, { id, deletedAt: null });
+    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
     if (!row) return null;
     if (data.sku !== undefined) row.sku = String(data.sku).trim();
     if (data.name !== undefined) row.name = String(data.name).trim();
@@ -235,7 +236,7 @@ export class ProductsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Product, { id, deletedAt: null });
+    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
     if (!row) return false;
     row.deletedAt = new Date();
     row.isActive = false;
@@ -244,7 +245,7 @@ export class ProductsService {
   }
 
   async restore(id: number): Promise<ProductRowDto | null> {
-    const row = await this.em.findOne(Product, { id });
+    const row = await this.em.findOne(Product, { id: toEntityId(id) });
     if (!row?.deletedAt) return null;
     row.deletedAt = null;
     row.isActive = true;

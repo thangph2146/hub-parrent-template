@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import {
@@ -19,7 +20,7 @@ import { User } from '../entities/user.entity';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface PostRowDto {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   excerpt: string | null;
@@ -31,9 +32,9 @@ export interface PostRowDto {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  author: { id: string; name: string | null; email: string };
-  categories: Array<{ id: string; name: string }>;
-  tags: Array<{ id: string; name: string }>;
+  author: { id: number; name: string | null; email: string };
+  categories: Array<{ id: number; name: string }>;
+  tags: Array<{ id: number; name: string }>;
 }
 
 export interface PostDetailDto extends PostRowDto {
@@ -97,21 +98,21 @@ function mapRow(p: PostWithRelations): PostRowDto {
           name: p.author.name ?? null,
           email: p.author.email ?? '',
         }
-      : { id: '', name: null, email: '' },
+      : { id: 0, name: null, email: '' },
     categories:
       p.categories
         ?.map((pc) => {
           const cat = pc?.category;
           return cat ? { id: cat.id, name: cat.name } : null;
         })
-        .filter((c): c is { id: string; name: string } => c !== null) ?? [],
+        .filter((c): c is { id: number; name: string } => c !== null) ?? [],
     tags:
       p.tags
         ?.map((pt) => {
           const tag = pt?.tag;
           return tag ? { id: tag.id, name: tag.name } : null;
         })
-        .filter((t): t is { id: string; name: string } => t !== null) ?? [],
+        .filter((t): t is { id: number; name: string } => t !== null) ?? [],
   };
 }
 
@@ -274,18 +275,17 @@ export class PostsService {
   constructor(private readonly em: EntityManager) {}
 
   private async collectCategoryDescendantIds(
-    rootId: string,
-  ): Promise<string[]> {
-    const start = String(rootId ?? '').trim();
-    if (!start) return [];
-    const visited = new Set<string>([start]);
+    rootId: string | number,
+  ): Promise<number[]> {
+    const start = toEntityId(rootId);
+    const visited = new Set<number>([start]);
     let frontier = [start];
     let safety = 0;
     while (frontier.length > 0 && safety < 50 && visited.size < 10000) {
       safety += 1;
       const children = await this.em.find(
         Category,
-        { parent: { $in: frontier }, deletedAt: null },
+        { parent: { id: { $in: frontier } }, deletedAt: null },
         { fields: ['id'] },
       );
       const next = children.map((c) => c.id).filter((id) => !visited.has(id));
@@ -298,13 +298,14 @@ export class PostsService {
 
   private async validateCategoryIds(ids: string[]): Promise<void> {
     if (!ids.length) return;
+    const numericIds = toEntityIdList(ids);
     const found = await this.em.find(
       Category,
-      { id: { $in: ids }, deletedAt: null },
+      { id: { $in: numericIds }, deletedAt: null },
       { fields: ['id'] },
     );
     const foundIds = new Set(found.map((f) => f.id));
-    const missing = ids.filter((id) => !foundIds.has(id));
+    const missing = numericIds.filter((id) => !foundIds.has(id));
     if (missing.length > 0) {
       throw new BadRequestException(
         `Category ID không tồn tại: ${missing.join(', ')}`,
@@ -314,13 +315,14 @@ export class PostsService {
 
   private async validateTagIds(ids: string[]): Promise<void> {
     if (!ids.length) return;
+    const numericIds = toEntityIdList(ids);
     const found = await this.em.find(
       Tag,
-      { id: { $in: ids }, deletedAt: null },
+      { id: { $in: numericIds }, deletedAt: null },
       { fields: ['id'] },
     );
     const foundIds = new Set(found.map((f) => f.id));
-    const missing = ids.filter((id) => !foundIds.has(id));
+    const missing = numericIds.filter((id) => !foundIds.has(id));
     if (missing.length > 0) {
       throw new BadRequestException(
         `Tag ID không tồn tại: ${missing.join(', ')}`,
@@ -361,13 +363,13 @@ export class PostsService {
             .map((x) => x.trim())
             .filter(Boolean)
         : [rawValue];
-      const allIds: string[] = [];
+      const allIds: number[] = [];
       for (const rootId of rootIds) {
         const ids = await this.collectCategoryDescendantIds(rootId);
         allIds.push(...ids);
       }
       if (allIds.length > 0) {
-        filters[key] = allIds.join(',');
+        filters[key] = allIds.map(String).join(',');
       }
     }
     const where = params.categoriesNone
@@ -395,7 +397,7 @@ export class PostsService {
         : [];
 
     // Preserve the sort order from the paginated ID query
-    const idOrder = new Map<string, number>();
+    const idOrder = new Map<number, number>();
     for (let i = 0; i < ids.length; i++) idOrder.set(ids[i], i);
     rows.sort((a, b) => (idOrder.get(a.id) ?? 0) - (idOrder.get(b.id) ?? 0));
 
@@ -430,7 +432,7 @@ export class PostsService {
   async getById(id: string): Promise<PostDetailDto | null> {
     const p = await this.em.findOne(
       Post,
-      { id },
+      { id: toEntityId(id) },
       {
         populate: POST_POPULATE,
       },
@@ -493,7 +495,7 @@ export class PostsService {
       ? new Date(data.eventStartAt)
       : null;
     postObj.eventEndAt = data.eventEndAt ? new Date(data.eventEndAt) : null;
-    postObj.author = this.em.getReference(User, authorId);
+    postObj.author = this.em.getReference(User, toEntityId(authorId));
     this.em.persist(postObj);
     await this.em.flush();
 
@@ -501,7 +503,7 @@ export class PostsService {
       for (const categoryId of categoryIds) {
         const postCategory = new PostCategory();
         postCategory.post = this.em.getReference(Post, postObj.id);
-        postCategory.category = this.em.getReference(Category, categoryId);
+        postCategory.category = this.em.getReference(Category, toEntityId(categoryId));
         this.em.persist(postCategory);
       }
     }
@@ -509,7 +511,7 @@ export class PostsService {
       for (const tagId of tagIds) {
         const postTag = new PostTag();
         postTag.post = this.em.getReference(Post, postObj.id);
-        postTag.tag = this.em.getReference(Tag, tagId);
+        postTag.tag = this.em.getReference(Tag, toEntityId(tagId));
         this.em.persist(postTag);
       }
     }
@@ -545,14 +547,14 @@ export class PostsService {
       authorId?: string;
     },
   ): Promise<PostRowDto | null> {
-    const existing = await this.em.findOne(Post, { id });
+    const existing = await this.em.findOne(Post, { id: toEntityId(id) });
     if (!existing) return null;
 
     if (data.title != null) existing.title = data.title;
     if (data.slug != null) {
       const duplicate = await this.em.findOne(Post, {
         slug: data.slug,
-        id: { $ne: id },
+        id: { $ne: toEntityId(id) },
       });
       if (duplicate) {
         throw new BadRequestException(
@@ -571,7 +573,7 @@ export class PostsService {
       if (!authorId) {
         throw new BadRequestException('authorId không hợp lệ');
       }
-      const author = await this.em.findOne(User, { id: authorId });
+      const author = await this.em.findOne(User, { id: toEntityId(authorId) });
       if (!author) {
         throw new BadRequestException('Tác giả không tồn tại');
       }
@@ -600,12 +602,12 @@ export class PostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateCategoryIds(categoryIds);
-      await this.em.nativeDelete(PostCategory, { post: id });
+      await this.em.nativeDelete(PostCategory, { post: existing.id });
       if (categoryIds.length > 0) {
         for (const categoryId of categoryIds) {
           const postCategory = new PostCategory();
           postCategory.post = this.em.getReference(Post, existing.id);
-          postCategory.category = this.em.getReference(Category, categoryId);
+          postCategory.category = this.em.getReference(Category, toEntityId(categoryId));
           this.em.persist(postCategory);
         }
         try {
@@ -621,12 +623,12 @@ export class PostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateTagIds(tagIds);
-      await this.em.nativeDelete(PostTag, { post: id });
+      await this.em.nativeDelete(PostTag, { post: existing.id });
       if (tagIds.length > 0) {
         for (const tagId of tagIds) {
           const postTag = new PostTag();
           postTag.post = this.em.getReference(Post, existing.id);
-          postTag.tag = this.em.getReference(Tag, tagId);
+          postTag.tag = this.em.getReference(Tag, toEntityId(tagId));
           this.em.persist(postTag);
         }
         try {
@@ -640,7 +642,7 @@ export class PostsService {
 
     const updated = await this.em.findOne(
       Post,
-      { id },
+      { id: existing.id },
       {
         populate: POST_POPULATE,
       },
@@ -650,7 +652,7 @@ export class PostsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Post, { id });
+    const r = await this.em.findOne(Post, { id: toEntityId(id) });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     this.em.persist(r);
@@ -659,7 +661,7 @@ export class PostsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Post, { id });
+    const r = await this.em.findOne(Post, { id: toEntityId(id) });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     this.em.persist(r);
@@ -668,7 +670,7 @@ export class PostsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Post, { id });
+    const r = await this.em.findOne(Post, { id: toEntityId(id) });
     if (!r) return false;
     this.em.remove(r);
     await this.em.flush();
@@ -686,28 +688,26 @@ export class PostsService {
     if (!uniquePostIds.length) {
       return { affected: 0, message: 'Không có bài viết nào' };
     }
-    const cats = [
-      ...new Set(categoryIds.map((id) => String(id).trim()).filter(Boolean)),
-    ];
-    await this.validateCategoryIds(cats);
+    const cats = [...new Set(toEntityIdList(categoryIds))];
+    await this.validateCategoryIds(cats.map(String));
 
     let affected = 0;
     await this.em.transactional(async (tx) => {
       for (const postId of uniquePostIds) {
         const post = await tx.findOne(
           Post,
-          { id: postId, deletedAt: null },
+          { id: toEntityId(postId), deletedAt: null },
           { fields: ['id'] },
         );
         if (!post) continue;
         affected += 1;
 
         if (mode === 'replace') {
-          await tx.nativeDelete(PostCategory, { post: postId });
+          await tx.nativeDelete(PostCategory, { post: post.id });
           if (cats.length > 0) {
             for (const categoryId of cats) {
               const postCategory = new PostCategory();
-              postCategory.post = tx.getReference(Post, postId);
+              postCategory.post = tx.getReference(Post, post.id);
               postCategory.category = tx.getReference(Category, categoryId);
               tx.persist(postCategory);
             }
@@ -716,23 +716,25 @@ export class PostsService {
         } else {
           const existing = await tx.find(
             PostCategory,
-            { post: postId },
+            { post: post.id },
             { fields: ['category'] },
           );
           const have = new Set(
             existing
               .map((e) =>
-                typeof e.category === 'string'
-                  ? e.category
-                  : (e.category?.id ?? null),
+                typeof e.category === 'object' && e.category
+                  ? e.category.id
+                  : typeof e.category === 'number'
+                    ? e.category
+                    : null,
               )
-              .filter((id): id is string => typeof id === 'string'),
+              .filter((id): id is number => id != null),
           );
           const toAdd = cats.filter((c) => !have.has(c));
           if (toAdd.length > 0) {
             for (const categoryId of toAdd) {
               const postCategory = new PostCategory();
-              postCategory.post = tx.getReference(Post, postId);
+              postCategory.post = tx.getReference(Post, post.id);
               postCategory.category = tx.getReference(Category, categoryId);
               tx.persist(postCategory);
             }
@@ -760,7 +762,7 @@ export class PostsService {
     }
     const result = await this.em.nativeUpdate(
       Post,
-      { id: { $in: uniquePostIds }, deletedAt: null, image: { $ne: null } },
+      { id: { $in: toEntityIdList(uniquePostIds) }, deletedAt: null, image: { $ne: null } },
       { image: null },
     );
     return {
@@ -777,7 +779,7 @@ export class PostsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Post,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -788,7 +790,7 @@ export class PostsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Post,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -797,7 +799,7 @@ export class PostsService {
       };
     }
     if (action === 'hard-delete') {
-      const result = await this.em.nativeDelete(Post, { id: { $in: ids } });
+      const result = await this.em.nativeDelete(Post, { id: { $in: toEntityIdList(ids) } });
       return {
         affected: result ?? 0,
         message: `Đã xóa vĩnh viễn ${result ?? 0} bài viết`,

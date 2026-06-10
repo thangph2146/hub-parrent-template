@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { TrainingSystem } from '../entities/training-system.entity';
@@ -136,7 +137,7 @@ export class TrainingSystemsService {
   }
 
   async getById(id: number): Promise<TrainingSystemRowDto | null> {
-    const row = await this.em.findOne(TrainingSystem, { id });
+    const row = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
     if (!row) return null;
     if (backfillLegacyAuditTimestampsIfMissing(row)) {
       await this.em.persistAndFlush(row);
@@ -160,7 +161,7 @@ export class TrainingSystemsService {
     id: number,
     data: { name?: string; code?: string | null; status?: number },
   ): Promise<TrainingSystemRowDto | null> {
-    const existing = await this.em.findOne(TrainingSystem, { id });
+    const existing = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.code !== undefined) existing.code = data.code;
@@ -171,7 +172,7 @@ export class TrainingSystemsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(TrainingSystem, { id });
+    const row = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
     row.deletedAt = new Date();
     touchLegacyAuditTimestamps(row);
@@ -180,7 +181,7 @@ export class TrainingSystemsService {
   }
 
   async restore(id: number): Promise<boolean> {
-    const row = await this.em.findOne(TrainingSystem, { id });
+    const row = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
     row.deletedAt = null;
     await this.em.persistAndFlush(row);
@@ -188,7 +189,7 @@ export class TrainingSystemsService {
   }
 
   async hardDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(TrainingSystem, { id });
+    const row = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
     if (!row) return false;
     await this.em.removeAndFlush(row);
     return true;

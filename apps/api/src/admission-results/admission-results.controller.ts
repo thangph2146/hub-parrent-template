@@ -1,3 +1,4 @@
+import { toEntityId } from '../common/entity-id';
 /**
  * Admission Results Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; DELETE :id; POST :id/restore; DELETE :id/hard-delete; POST bulk.
@@ -61,7 +62,7 @@ export class AdmissionResultsController {
   ): void {
     void this.notificationsService
       .create({
-        userId,
+        userId: toEntityId(userId),
         kind: NotificationKind.SYSTEM,
         title,
         description,

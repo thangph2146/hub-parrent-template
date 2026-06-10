@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 /**
  * Comments Admin API Service.
  * List, options, getById, softDelete, restore, hardDelete, bulk (approve, unapprove, delete, restore, hard-delete).
@@ -9,14 +10,14 @@ import { Comment } from '../entities/comment.entity';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
 
 export interface CommentRowDto {
-  id: string;
+  id: number;
   content: string;
   approved: boolean;
-  authorId: string;
+  authorId: number;
   authorName: string | null;
   authorEmail: string;
   postTitle: string;
-  postId: string;
+  postId: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -45,11 +46,11 @@ function mapRow(r: Comment): CommentRowDto {
     id: r.id,
     content: r.content,
     approved: r.approved,
-    authorId: r.author?.id ?? '',
+    authorId: r.author?.id ?? 0,
     authorName: r.author?.name ?? null,
     authorEmail: r.author?.email ?? '',
     postTitle: r.post?.title ?? '',
-    postId: r.post?.id ?? '',
+    postId: r.post?.id ?? 0,
     createdAt: r.createdAt.toISOString(),
     updatedAt: r.updatedAt.toISOString(),
     deletedAt: r.deletedAt?.toISOString() ?? null,
@@ -186,16 +187,14 @@ export class CommentsService {
   }
 
   async getById(id: string): Promise<CommentRowDto | null> {
-    const row = await this.em.findOne(
-      Comment,
-      { id },
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) },
       { populate: ['author', 'post'] },
     );
     return row ? mapRow(row) : null;
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Comment, { id });
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
 
     row.deletedAt = new Date();
@@ -205,7 +204,7 @@ export class CommentsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Comment, { id });
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) });
     if (!row || !row.deletedAt) return false;
 
     row.deletedAt = null;
@@ -215,7 +214,7 @@ export class CommentsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Comment, { id });
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) });
     if (!row) return false;
 
     this.em.remove(row);
@@ -224,7 +223,7 @@ export class CommentsService {
   }
 
   async approve(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Comment, { id });
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
 
     row.approved = true;
@@ -234,7 +233,7 @@ export class CommentsService {
   }
 
   async unapprove(id: string): Promise<boolean> {
-    const row = await this.em.findOne(Comment, { id });
+    const row = await this.em.findOne(Comment, { id: toEntityId(id) });
     if (!row || row.deletedAt) return false;
 
     row.approved = false;
@@ -252,7 +251,7 @@ export class CommentsService {
     if (action === 'approve') {
       const result = await this.em.nativeUpdate(
         Comment,
-        { id: { $in: ids }, deletedAt: null, approved: false },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null, approved: false },
         { approved: true },
       );
       return {
@@ -264,7 +263,7 @@ export class CommentsService {
     if (action === 'unapprove') {
       const result = await this.em.nativeUpdate(
         Comment,
-        { id: { $in: ids }, deletedAt: null, approved: true },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null, approved: true },
         { approved: false },
       );
       return {
@@ -276,7 +275,7 @@ export class CommentsService {
     if (action === 'delete') {
       const result = await this.em.nativeUpdate(
         Comment,
-        { id: { $in: ids }, deletedAt: null },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
       return {
@@ -288,7 +287,7 @@ export class CommentsService {
     if (action === 'restore') {
       const result = await this.em.nativeUpdate(
         Comment,
-        { id: { $in: ids }, deletedAt: { $ne: null } },
+        { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
       return {
@@ -299,7 +298,7 @@ export class CommentsService {
 
     if (action === 'hard-delete') {
       const result = await this.em.nativeDelete(Comment, {
-        id: { $in: ids },
+        id: { $in: toEntityIdList(ids) },
       });
       return {
         affected: result ?? 0,

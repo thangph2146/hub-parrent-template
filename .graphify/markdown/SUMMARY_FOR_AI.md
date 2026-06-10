@@ -16,7 +16,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
 | UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |
-| Kiểm tra ranh giới tự động | [`../../scripts/verify-service-boundaries.mjs`](../../scripts/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |
+| Kiểm tra ranh giới tự động | [`../../script-system/verify-service-boundaries.mjs`](../../script-system/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |
 | Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |
 
 ## Dịch vụ (`apps/*`)
@@ -36,9 +36,9 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 ## Ma trận artefact (clean scope)
 
-| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node scripts/graphify-update.cjs`) |
+| Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node script-system/graphify-update.cjs`) |
 |----------|---------------------------------------------|----------------------------------------|
-| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node scripts/graphify-update.cjs .`) |
+| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify-update.cjs .`) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
 | **Mỗi app** `apps/<x>/` | `apps/<x>/.graphify/markdown/*.md` | `apps/<x>/.graphify/snapshot/context.json` + `graph.json` |
 
@@ -77,12 +77,12 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 # Từng app (cập nhật snapshot/context.json + snapshot/graph.json)
 pnpm graphify:update
 # hoặc từng app:
-node scripts/graphify-update.cjs apps/frontend
-node scripts/graphify-update.cjs apps/backend
-node scripts/graphify-update.cjs apps/store-sync-frontend
-node scripts/graphify-update.cjs apps/api
+node script-system/graphify-update.cjs apps/frontend
+node script-system/graphify-update.cjs apps/backend
+node script-system/graphify-update.cjs apps/store-sync-frontend
+node script-system/graphify-update.cjs apps/api
 # (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep
-# node scripts/graphify-update.cjs .
+# node script-system/graphify-update.cjs .
 pnpm graphify:ai-summary
 # gộp update + summary: pnpm graphify:refresh
 ```

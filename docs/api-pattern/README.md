@@ -172,7 +172,8 @@ const RELATION_FILTERS: RelationFiltersConfig = {
 
 ## Entity pattern
 
-- **BaseEntity**: `@PrimaryKey({ type: 'string', length: 36 }) id: string = randomUUID()`
+- **BaseEntity**: `@PrimaryKey({ autoincrement: true }) id!: number` — `int unsigned` auto_increment trên MySQL
+- **Entity id trên HTTP**: route/header vẫn là chuỗi; parse bằng `parseEntityId` / `toEntityId` trong `common/entity-id.ts`
 - **Table name**: `@Entity({ tableName: 'snake_case' })`
 - **Timestamps**: `@Property({ onCreate: () => new Date() })`, `@Property({ onCreate, onUpdate })`
 - **Soft delete**: `@Property({ nullable: true }) deletedAt?: Date | null`

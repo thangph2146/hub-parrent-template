@@ -53,7 +53,7 @@ Khi task liên quan tới một package cụ thể, đọc thêm:
 - `docs/steps/step9_follow_up_rollback_legacy_tracking.md`
 - `docs/steps/step10_agent_task_automation.md`
 
-Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node scripts/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
+Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node script-system/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
 
 ## Lệnh chuẩn bắt buộc
 
@@ -61,7 +61,7 @@ Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đ
 pnpm check
 ```
 
-Nếu có thay đổi kiến trúc/module/routes: chạy `node scripts/graphify-update.cjs apps/<app>` cho từng app bị ảnh hưởng, rồi:
+Nếu có thay đổi kiến trúc/module/routes: chạy `node script-system/graphify-update.cjs apps/<app>` cho từng app bị ảnh hưởng, rồi:
 
 ```bash
 pnpm check:full
@@ -148,7 +148,7 @@ pm2 save                   # giữ process list sau reboot
 pm2 startup                # tạo systemd (chạy một lần trên server)
 ```
 
-Script `scripts/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2 — tránh lỗi một số bản PM2 chạy file `.cjs` như script (`ecosystem.checkin` fork 1 instance).
+Script `script-system/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2 — tránh lỗi một số bản PM2 chạy file `.cjs` như script (`ecosystem.checkin` fork 1 instance).
 
 ### Xóa đúng process (quan trọng)
 
@@ -184,8 +184,8 @@ Chi tiết deploy server: `README.md` (mục PM2).
 - Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.
 - Ranh giới được kiểm soát bởi:
   - `packages/eslint-config/service-boundaries.js` (import boundaries + ESLint cấm `sdk.http`)
-  - `scripts/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
-  - `scripts/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
+  - `script-system/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
+  - `script-system/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
 
 ## Pattern coding — agent phải tuân thủ
 

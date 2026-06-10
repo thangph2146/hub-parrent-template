@@ -36,6 +36,10 @@ import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
 import { Public } from '../common/public.decorator';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
+import {
+  EVENT_STUDENT_EMAIL_ERROR,
+  isEventStudentSchoolEmail,
+} from './event-student-email';
 import { SeoMetasService } from '../seo-metas/seo-metas.service';
 import { SettingsService } from '../settings/settings.service';
 
@@ -113,9 +117,74 @@ export class PublicController {
     );
   }
 
+  /** Khách / phụ huynh / user cá nhân — không phải sinh viên hay quản trị. */
+  private isEventGuestPayload(
+    user: AuthUserPayload | null,
+  ): user is AuthUserPayload {
+    if (!user?.roles?.length) return false;
+    const names = user.roles.map((role) => role.name);
+    if (
+      names.some(
+        (name) =>
+          name === AUTH_ROLE_NAMES.ADMIN ||
+          name === AUTH_ROLE_NAMES.SUPER_ADMIN,
+      )
+    ) {
+      return false;
+    }
+    if (names.includes(AUTH_ROLE_NAMES.STUDENT)) return false;
+    return names.some(
+      (name) =>
+        name === AUTH_ROLE_NAMES.PARENT || name === AUTH_ROLE_NAMES.USER,
+    );
+  }
+
   @Get('dev-login-options')
-  async getDevelopmentLoginOptions(@Res() res: Response) {
-    this.logger.log('getDevelopmentLoginOptions');
+  async getDevelopmentLoginOptions(
+    @Query('role') role: string | undefined,
+    @Query('roles') roles: string | undefined,
+    @Query('excludeRoles') excludeRoles: string | undefined,
+    @Query('emailSuffix') emailSuffix: string | undefined,
+    @Query('activeOnly') activeOnly: string | undefined,
+    @Res() res: Response,
+  ) {
+    return this.respondDevelopmentLoginOptions(
+      res,
+      { role, roles, excludeRoles, emailSuffix, activeOnly },
+      'GET /api/public/dev-login-options',
+    );
+  }
+
+  @Get('auth/dev-login-options')
+  async getAuthDevelopmentLoginOptions(
+    @Query('role') role: string | undefined,
+    @Query('roles') roles: string | undefined,
+    @Query('excludeRoles') excludeRoles: string | undefined,
+    @Query('emailSuffix') emailSuffix: string | undefined,
+    @Query('activeOnly') activeOnly: string | undefined,
+    @Res() res: Response,
+  ) {
+    return this.respondDevelopmentLoginOptions(
+      res,
+      { role, roles, excludeRoles, emailSuffix, activeOnly },
+      'GET /api/public/auth/dev-login-options',
+    );
+  }
+
+  private async respondDevelopmentLoginOptions(
+    res: Response,
+    query: {
+      role?: string;
+      roles?: string;
+      excludeRoles?: string;
+      emailSuffix?: string;
+      activeOnly?: string;
+    },
+    logLabel: string,
+  ) {
+    this.logger.log(
+      `${logLabel} role=${query.role ?? '-'} roles=${query.roles ?? '-'} emailSuffix=${query.emailSuffix ?? '-'}`,
+    );
     if (process.env.NODE_ENV !== 'development') {
       const { statusCode, body } = createErrorResponse('Not Found', {
         status: 404,
@@ -124,11 +193,17 @@ export class PublicController {
     }
 
     try {
-      const options = await this.usersService.listDevelopmentLoginOptions();
+      const options = await this.usersService.listDevelopmentLoginOptions({
+        role: query.role,
+        roles: query.roles,
+        excludeRoles: query.excludeRoles,
+        emailSuffix: query.emailSuffix,
+        activeOnly: query.activeOnly !== 'false',
+      });
       const { statusCode, body } = createSuccessResponse(options);
       return res.status(statusCode).json(body);
     } catch (error) {
-      this.logApiError('GET /api/public/dev-login-options', error);
+      this.logApiError(logLabel, error);
       const { statusCode, body } = createErrorResponse(
         'Không thể tải danh sách tài khoản development.',
         { status: 500 },
@@ -327,6 +402,14 @@ export class PublicController {
         return res.status(statusCode).json(errBody);
       }
 
+      if (!isEventStudentSchoolEmail(profile.email)) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          EVENT_STUDENT_EMAIL_ERROR,
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
       const user = await this.authService.loginWithGoogleAsStudent({
         email: profile.email,
         name: profile.name ?? null,
@@ -372,6 +455,14 @@ export class PublicController {
         const { statusCode, body: errBody } = createErrorResponse(
           'Vui lòng nhập email và mật khẩu.',
           { status: 400 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      if (!isEventStudentSchoolEmail(email)) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          EVENT_STUDENT_EMAIL_ERROR,
+          { status: 401 },
         );
         return res.status(statusCode).json(errBody);
       }
@@ -437,12 +528,114 @@ export class PublicController {
         return res.status(statusCode).json(errBody);
       }
 
+      if (!isEventStudentSchoolEmail(user.email)) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          EVENT_STUDENT_EMAIL_ERROR,
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
       const { statusCode, body: okBody } = createSuccessResponse(user, {
         message: 'Đăng nhập development thành công',
       });
       return res.status(statusCode).json(okBody);
     } catch (error) {
       this.logApiError('POST /api/public/auth/dev-login', error, { userId });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập development.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  @Post('auth/guest-login')
+  async publicGuestLogin(
+    @Body() body: { email?: string; password?: string },
+    @Res() res: Response,
+  ) {
+    this.logger.log(`publicGuestLogin email=${body?.email ?? '-'}`);
+    try {
+      const email = body?.email?.trim();
+      const password = body?.password;
+      if (!email || !password) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          'Vui lòng nhập email và mật khẩu.',
+          { status: 400 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const user = await this.authService.login({ email, password });
+      if (!user || !this.isEventGuestPayload(user)) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          user
+            ? 'Chỉ tài khoản khách (phụ huynh/cá nhân) mới được đăng nhập kênh này.'
+            : 'Email hoặc mật khẩu không đúng.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/guest-login', error, {
+        email: body?.email ?? null,
+      });
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Không thể đăng nhập. Vui lòng thử lại.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+  }
+
+  @Post('auth/guest-dev-login')
+  async publicGuestDevLogin(
+    @Body() body: { userId?: string },
+    @Res() res: Response,
+  ) {
+    if (process.env.NODE_ENV !== 'development') {
+      const { statusCode, body: errBody } = createErrorResponse('Not Found', {
+        status: 404,
+      });
+      return res.status(statusCode).json(errBody);
+    }
+
+    const userId = body?.userId?.trim();
+    this.logger.log(`publicGuestDevLogin userId=${userId ?? '-'}`);
+    if (!userId) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Thiếu userId.',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+
+    try {
+      const user = await this.authService.loginAsDevelopmentUser(userId);
+      if (!user || !this.isEventGuestPayload(user)) {
+        const { statusCode, body: errBody } = createErrorResponse(
+          user
+            ? 'Tài khoản development được chọn không phải khách (parent/user).'
+            : 'Không tìm thấy tài khoản development.',
+          { status: 401 },
+        );
+        return res.status(statusCode).json(errBody);
+      }
+
+      const { statusCode, body: okBody } = createSuccessResponse(user, {
+        message: 'Đăng nhập development thành công',
+      });
+      return res.status(statusCode).json(okBody);
+    } catch (error) {
+      this.logApiError('POST /api/public/auth/guest-dev-login', error, {
+        userId,
+      });
       const { statusCode, body: errBody } = createErrorResponse(
         'Không thể đăng nhập development.',
         { status: 500 },

@@ -1,3 +1,4 @@
+import { toEntityId, toEntityIdList } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { compare, hash } from 'bcryptjs';
@@ -5,7 +6,7 @@ import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 
 export interface AccountProfileDto {
-  id: string;
+  id: number;
   email: string;
   name: string | null;
   avatar: string | null;
@@ -17,7 +18,7 @@ export interface AccountProfileDto {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  roles: Array<{ id: string; name: string; displayName: string }>;
+  roles: Array<{ id: number; name: string; displayName: string }>;
 }
 
 export interface UpdateAccountDto {
@@ -63,7 +64,7 @@ export class AccountsService {
   constructor(private readonly em: EntityManager) {}
 
   async getProfile(userId: string): Promise<AccountProfileDto | null> {
-    const user = await this.em.findOne(User, { id: userId });
+    const user = await this.em.findOne(User, { id: toEntityId(userId) });
 
     if (!user || user.deletedAt || !user.isActive) {
       return null;
@@ -71,7 +72,7 @@ export class AccountsService {
 
     const userRoles = await this.em.find(
       UserRole,
-      { user: userId },
+      { user: toEntityId(userId) },
       { populate: ['role'] },
     );
 
@@ -82,7 +83,7 @@ export class AccountsService {
     userId: string,
     dto: UpdateAccountDto,
   ): Promise<UpdateAccountResult> {
-    const existing = await this.em.findOne(User, { id: userId });
+    const existing = await this.em.findOne(User, { id: toEntityId(userId) });
 
     if (!existing || existing.deletedAt || !existing.isActive) {
       return { ok: false, reason: 'not_found' };

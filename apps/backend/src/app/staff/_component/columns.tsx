@@ -43,7 +43,7 @@ export interface StaffColumnsProps {
 
   busy: boolean
 
-  currentUserId?: string
+  currentUserId?: string | number
 
   actorEmail?: string
 

@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import {
   ChevronDown,
   ClipboardList,
@@ -8,7 +7,9 @@ import {
   LogOut,
   UserCircle2,
 } from "lucide-react"
+import { HeaderActionTile } from "@/components/shared/header-action-tile"
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/avatar"
+import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import {
   DropdownMenu,
@@ -24,6 +25,11 @@ import { usePathname, useRouter } from "next/navigation"
 import {
   buildLoginHref,
   clearEventSession,
+  getEventAccountLabel,
+  getMyEventsPath,
+  getProfilePath,
+  isEventAuthLoginPath,
+  isEventPortalPath,
   isStudentSession,
   readEventSession,
   subscribeEventSession,
@@ -81,6 +87,19 @@ function UserAvatar({
   )
 }
 
+function LoginTriggerLink({ href }: { href: string }) {
+  return (
+    <HeaderActionTile
+      href={href}
+      icon={LogIn}
+      title="Đăng nhập"
+      subtitle="Sinh viên · Khách"
+      variant="portal"
+      ariaLabel="Đăng nhập để quản lý sự kiện"
+    />
+  )
+}
+
 export function HeaderAuth() {
   const session = useEventSession()
   const pathname = usePathname()
@@ -90,10 +109,12 @@ export function HeaderAuth() {
     const name = displayNameOf(session)
     const avatarUrl = session.image?.trim() || null
     const student = isStudentSession(session)
+    const accountLabel = getEventAccountLabel(session)
+    const myEventsPath = getMyEventsPath(session)
 
     const handleLogout = () => {
       clearEventSession()
-      if (pathname.startsWith("/student")) {
+      if (isEventPortalPath(pathname) || isEventAuthLoginPath(pathname)) {
         router.replace("/")
         router.refresh()
         return
@@ -109,45 +130,56 @@ export function HeaderAuth() {
               type="button"
               variant="outline"
               size="sm"
-              className="h-12 max-w-[min(100vw-8rem,260px)] gap-2 rounded-lg px-2.5 sm:px-3"
+              className="h-12 min-w-0 max-w-[min(100vw-8rem,280px)] gap-2 overflow-hidden rounded-xl px-2.5 sm:px-3 py-2"
               aria-label="Mở menu tài khoản"
             />
           }
         >
           <UserAvatar name={name} imageUrl={avatarUrl} />
-          <div className="flex flex-col items-start gap-0.5">
-          <span className="truncate text-sm font-medium">{name}</span>
+          <div className="hidden min-w-0 flex-1 flex-col items-start gap-0.5 overflow-hidden sm:flex">
+            <span className="flex w-full min-w-0 items-center gap-1.5">
+              <span className="min-w-0 truncate text-sm font-medium">{name}</span>
+              <Badge
+                variant="secondary"
+                className="h-5 shrink-0 px-1.5 text-[10px]"
+              >
+                {accountLabel}
+              </Badge>
+            </span>
             <span className="truncate text-xs text-muted-foreground">
               {session.email}
             </span>
           </div>
           <ChevronDown className="size-4 shrink-0 opacity-60" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64">
-          {student ? (
-            <>
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  className="cursor-pointer gap-2"
-                  onClick={() => router.push("/student/profile")}
-                >
-                  <UserCircle2 className="size-4 text-muted-foreground" />
-                  Hồ sơ sinh viên
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer gap-2"
-                  onClick={() => router.push("/student/events")}
-                >
-                  <ClipboardList className="size-4 text-muted-foreground" />
-                  Sự kiện của tôi
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-            </>
-          ) : null}
+        <DropdownMenuContent align="end" className="w-72 rounded-xl p-2">
+          <div className="mb-1 px-2 py-1.5">
+            <p className="text-sm font-semibold">{name}</p>
+            <p className="text-xs text-muted-foreground">{session.email}</p>
+          </div>
+          <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
-              className="cursor-pointer gap-2 text-destructive focus:text-destructive"
+              className="cursor-pointer gap-2 rounded-lg"
+              onClick={() => router.push(myEventsPath)}
+            >
+              <ClipboardList className="size-4 text-muted-foreground" />
+              Sự kiện của tôi
+            </DropdownMenuItem>
+            {student ? (
+              <DropdownMenuItem
+                className="cursor-pointer gap-2 rounded-lg"
+                onClick={() => router.push(getProfilePath(session))}
+              >
+                <UserCircle2 className="size-4 text-muted-foreground" />
+                Hồ sơ sinh viên
+              </DropdownMenuItem>
+            ) : null}
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              className="cursor-pointer gap-2 rounded-lg text-destructive focus:text-destructive"
               onClick={handleLogout}
             >
               <LogOut className="size-4" />
@@ -159,12 +191,6 @@ export function HeaderAuth() {
     )
   }
 
-  return (
-    <Link href={buildLoginHref(pathname || "/")} className="hidden sm:block">
-      <Button variant="outline" size="sm" className="h-9 gap-1.5 rounded-lg">
-        <LogIn className="size-4" />
-        Đăng nhập
-      </Button>
-    </Link>
-  )
+  const loginHref = buildLoginHref(pathname || "/")
+  return <LoginTriggerLink href={loginHref} />
 }
