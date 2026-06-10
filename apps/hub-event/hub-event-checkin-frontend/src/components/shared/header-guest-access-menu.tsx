@@ -26,7 +26,7 @@ import {
   CHECKIN_ADMIN_LOGIN_PATH,
 } from "@/config/admin/checkin-admin-access"
 import { useAdminSession } from "@/components/shared/use-admin-session"
-import { buildLoginHref } from "@/lib/event-auth"
+import { buildLoginHref, readEventSession } from "@/lib/event-auth"
 
 type GuestAccessOptionsProps = {
   showAdmin: boolean
@@ -43,6 +43,7 @@ export function HeaderGuestAccessOptions({
   const adminUser = useAdminSession()
 
   const portalHref = buildLoginHref(pathname || "/")
+  const portalSignedIn = Boolean(readEventSession())
   const adminSignedIn = Boolean(adminUser)
   const adminHref = adminSignedIn
     ? CHECKIN_ADMIN_HOME_PATH
@@ -50,6 +51,7 @@ export function HeaderGuestAccessOptions({
 
   return (
     <div className={cn("grid gap-2", className)}>
+      {!portalSignedIn ? (
       <HeaderAccessOptionCard
         href={portalHref}
         icon={LogIn}
@@ -59,12 +61,13 @@ export function HeaderGuestAccessOptions({
         ariaLabel="Đăng nhập để quản lý sự kiện"
         onClick={onNavigate}
       />
-      {showAdmin ? (
+      ) : null}
+      {showAdmin && !adminSignedIn ? (
         <HeaderAccessOptionCard
           href={adminHref}
           icon={adminSignedIn ? LayoutDashboard : Shield}
-          title={adminSignedIn ? "Bảng quản trị" : "Đăng nhập quản trị"}
-          subtitle={adminSignedIn ? "Đang hoạt động" : "Nhân viên · BTC"}
+          title={adminSignedIn ? "Tổng quan" : "Đăng nhập quản trị"}
+          subtitle="Ban quản trị"
           variant="staff"
           ariaLabel={
             adminSignedIn
@@ -90,6 +93,7 @@ export function HeaderGuestAccessDropdown({
   const adminUser = useAdminSession()
   const adminSignedIn = Boolean(adminUser)
   const portalHref = buildLoginHref(pathname || "/")
+  const portalSignedIn = Boolean(readEventSession())
   const adminHref = adminSignedIn
     ? CHECKIN_ADMIN_HOME_PATH
     : CHECKIN_ADMIN_LOGIN_PATH
@@ -123,27 +127,29 @@ export function HeaderGuestAccessDropdown({
           <DropdownMenuLabel className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Cổng sự kiện
           </DropdownMenuLabel>
-          <DropdownMenuItem
-            className="cursor-pointer gap-2.5 rounded-lg py-2"
-            render={<Link href={portalHref} />}
-          >
-            <LogIn className="size-4 text-primary" aria-hidden />
-            <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
-              <span className="font-medium">Đăng nhập</span>
-              <span className="text-xs text-muted-foreground">
-                Sinh viên · Khách
+          {!portalSignedIn ? (
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 rounded-lg py-2"
+              render={<Link href={portalHref} />}
+            >
+              <LogIn className="size-4 text-primary" aria-hidden />
+              <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                <span className="font-medium">Đăng nhập</span>
+                <span className="text-xs text-muted-foreground">
+                  Sinh viên · Khách
+                </span>
               </span>
-            </span>
-            <ChevronRight className="ml-auto size-4 text-muted-foreground/50" />
-          </DropdownMenuItem>
+              <ChevronRight className="ml-auto size-4 text-muted-foreground/50" />
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuGroup>
 
-        {showAdmin ? (
+        {showAdmin && !adminSignedIn ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuLabel className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Ban tổ chức
+                Ban quản trị
               </DropdownMenuLabel>
               <DropdownMenuItem
                 className="cursor-pointer gap-2.5 rounded-lg py-2"
@@ -159,10 +165,10 @@ export function HeaderGuestAccessDropdown({
                 )}
                 <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
                   <span className="font-medium">
-                    {adminSignedIn ? "Bảng quản trị" : "Đăng nhập quản trị"}
+                    {adminSignedIn ? "Tổng quan" : "Đăng nhập quản trị"}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {adminSignedIn ? "Đang hoạt động" : "Nhân viên · BTC"}
+                    Ban quản trị
                   </span>
                 </span>
                 <ChevronRight className="ml-auto size-4 text-muted-foreground/50" />

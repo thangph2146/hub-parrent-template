@@ -33,7 +33,14 @@ import {
 } from "@/features/admin-auth/auth-api"
 import { CHECKIN_ADMIN_HOME_PATH } from "@/config/admin/checkin-admin-access"
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from "@/lib/admin/auth-routes"
-import { ADMIN_SESSION_EVENT, writeAdminSession } from "@/lib/admin/auth-session"
+import {
+  ADMIN_SESSION_EVENT,
+  writeAdminSession,
+} from "@/lib/admin/auth-session"
+import {
+  assertCanLoginAs,
+  clearOtherCheckinSessions,
+} from "@/lib/checkin-session-exclusive"
 
 function decodeBridgeSession(raw: string): AuthUser | null {
   try {
@@ -86,6 +93,9 @@ export function SignInForm() {
   const bridgeHandledRef = useRef(false)
   const googleBtnRef = useRef<HTMLDivElement>(null)
   const googleInitializedRef = useRef(false)
+  const adminSessionLock = clientReady
+    ? assertCanLoginAs("admin")
+    : ({ ok: true as const })
 
   useEffect(() => {
     if (!clientReady || bridgeHandledRef.current) return
@@ -103,12 +113,19 @@ export function SignInForm() {
     bridgeHandledRef.current = true
     const user = decodeBridgeSession(encodedSession)
 
+    const gate = assertCanLoginAs("admin")
     if (!user || !canAccessCheckinAdmin(user)) {
       toast.error("Không thể đồng bộ phiên đăng nhập quản trị.")
       router.replace(AUTH_LOGIN_PATH)
       return
     }
+    if (!gate.ok) {
+      toast.error(gate.message)
+      router.replace(AUTH_LOGIN_PATH)
+      return
+    }
 
+    clearOtherCheckinSessions("admin")
     writeAdminSession(user)
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
     toast.success("Đã chuyển sang cổng quản trị.")
@@ -173,6 +190,9 @@ export function SignInForm() {
               toast.error(
                 "Tài khoản không có quyền quản lý sự kiện (events:view / events:manage)."
               )
+            } else if (result === "session_conflict") {
+              const gate = assertCanLoginAs("admin")
+              toast.error(gate.ok ? "Đang có phiên đăng nhập khác." : gate.message)
             } else {
               toast.error("Đăng nhập Google thất bại.")
             }
@@ -213,6 +233,15 @@ export function SignInForm() {
         toast.error(message)
         return
       }
+      if (result === "session_conflict") {
+        const gate = assertCanLoginAs("admin")
+        const message = gate.ok
+          ? "Đang có phiên đăng nhập khác. Hãy đăng xuất trước."
+          : gate.message
+        setError(message)
+        toast.error(message)
+        return
+      }
       toast.success("Đăng nhập thành công.")
       router.replace(CHECKIN_ADMIN_HOME_PATH)
     } finally {
@@ -241,6 +270,15 @@ export function SignInForm() {
           toast.error(message)
           return
         }
+        if (result === "session_conflict") {
+          const gate = assertCanLoginAs("admin")
+          const message = gate.ok
+            ? "Đang có phiên đăng nhập khác. Hãy đăng xuất trước."
+            : gate.message
+          setError(message)
+          toast.error(message)
+          return
+        }
         toast.success("Đăng nhập development thành công.")
         router.replace(CHECKIN_ADMIN_HOME_PATH)
       } finally {
@@ -259,6 +297,11 @@ export function SignInForm() {
             <CardContent className="grid grid-cols-1 p-0 md:grid-cols-2">
               <form onSubmit={onSubmit} className="p-6 md:p-8 lg:p-10">
                 <FieldGroup className="gap-4">
+                  {!adminSessionLock.ok ? (
+                    <div className="rounded-xl border border-amber-500/35 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-950 dark:text-amber-50">
+                      {adminSessionLock.message}
+                    </div>
+                  ) : null}
                   <div className="flex flex-col items-center justify-center gap-4 text-center">
                     <TypographyH2 className="text-2xl font-bold text-secondary sm:text-xl md:text-3xl lg:text-3xl">
                       Đăng nhập hệ thống
@@ -289,7 +332,7 @@ export function SignInForm() {
                       }}
                       options={devLoginOptions}
                       loading={devLoginOptionsLoading}
-                      disabled={busy}
+                      disabled={busy || !adminSessionLock.ok}
                     />
                   ) : null}
 
@@ -312,7 +355,7 @@ export function SignInForm() {
                         setEmail(event.target.value)
                       }}
                       required
-                      disabled={busy}
+                      disabled={busy || !adminSessionLock.ok}
                       placeholder="example@email.com"
                     />
                   </Field>
@@ -360,7 +403,7 @@ export function SignInForm() {
                         variant="ghost"
                         className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                         onClick={() => setShowPassword((value) => !value)}
-                        disabled={busy}
+                        disabled={busy || !adminSessionLock.ok}
                       >
                         {showPassword ? (
                           <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -375,7 +418,7 @@ export function SignInForm() {
                     <Button
                       type="submit"
                       className="min-h-[44px] w-full bg-destructive px-8 text-destructive-foreground hover:bg-destructive/90"
-                      disabled={busy}
+                      disabled={busy || !adminSessionLock.ok}
                     >
                       <span className="text-base font-bold">
                         {busy

@@ -32,8 +32,10 @@ import {
 } from "@ui/components/auth"
 import { Logo } from "@/components/icons/logo"
 import {
+  assertCanLoginPortalAs,
   fetchDevLoginOptions,
   fetchGoogleClientId,
+  getActiveCheckinSessionKind,
   loginEventGuest,
   loginEventGuestDevelopment,
   loginEventUserGoogle,
@@ -190,12 +192,18 @@ function EventSignInFormInner() {
   const googleInitializedRef = useRef(false)
 
   useEffect(() => {
+    if (getActiveCheckinSessionKind() === "admin") {
+      setCurrentOrigin(window.location.origin)
+      return
+    }
     const existing = readEventSession()
     if (existing) {
       router.replace(resolveDestination(existing))
     }
     setCurrentOrigin(window.location.origin)
   }, [router, resolveDestination])
+
+  const portalSessionLock = assertCanLoginPortalAs(accountKind)
 
   useEffect(() => {
     let cancelled = false
@@ -341,6 +349,12 @@ function EventSignInFormInner() {
               </TabsList>
             </Tabs>
 
+            {!portalSessionLock.ok ? (
+              <div className="mb-4 rounded-xl border border-amber-500/35 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-950 dark:text-amber-50">
+                {portalSessionLock.message}
+              </div>
+            ) : null}
+
             <FieldGroup className="gap-5">
               <div className="space-y-2 text-center md:text-left">
                 <h2 className="text-xl font-bold tracking-tight text-secondary">
@@ -372,7 +386,7 @@ function EventSignInFormInner() {
                   }}
                   options={devLoginOptions}
                   loading={devLoginOptionsLoading}
-                  disabled={busy || googleBusy}
+                  disabled={busy || googleBusy || !portalSessionLock.ok}
                 />
               ) : null}
 
@@ -393,7 +407,7 @@ function EventSignInFormInner() {
                       setEmail(e.target.value)
                     }}
                     required
-                    disabled={busy || googleBusy}
+                    disabled={busy || googleBusy || !portalSessionLock.ok}
                     placeholder={
                       isStudent
                         ? `masv${STUDENT_EMAIL_SUFFIX}`
@@ -444,7 +458,7 @@ function EventSignInFormInner() {
                       size="icon"
                       className="absolute top-1/2 right-1 size-9 -translate-y-1/2 hover:bg-transparent"
                       onClick={() => setShowPassword((v) => !v)}
-                      disabled={busy || googleBusy}
+                      disabled={busy || googleBusy || !portalSessionLock.ok}
                       aria-label={
                         showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
                       }
@@ -462,7 +476,7 @@ function EventSignInFormInner() {
                   <Button
                     type="submit"
                     className="min-h-[48px] w-full rounded-lg bg-destructive text-base font-bold text-destructive-foreground shadow-md shadow-destructive/20 hover:bg-destructive/90"
-                    disabled={busy || googleBusy}
+                    disabled={busy || googleBusy || !portalSessionLock.ok}
                   >
                     {busy
                       ? isDevelopment && selectedDevLoginId

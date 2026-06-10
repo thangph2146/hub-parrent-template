@@ -158,6 +158,7 @@ export async function syncAdminSessionIfCurrentUser(
 export function clearAdminSession(): void {
   sessionStorage.removeItem(ADMIN_SESSION_KEY)
   sessionReadCache = null
+  notifyAdminSessionChanged()
 }
 
 export function getAdminUserId(): string | number | null {

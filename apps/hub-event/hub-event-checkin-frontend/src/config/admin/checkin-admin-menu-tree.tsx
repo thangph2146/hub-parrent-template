@@ -1,5 +1,7 @@
-/** AUTO-GENERATED — pnpm pull:checkin (script-system/sync-checkin-menu-tree.cjs). Không sửa tay. */
+/** AUTO-GENERATED — pnpm pull:checkin (script-system/sync/sync-checkin-menu-tree.cjs). Không sửa tay. */
+
 import {
+
   BookOpen,
   Building2,
   CalendarPlus,
@@ -18,12 +20,16 @@ import {
   Monitor,
   ShieldCheck,
   Tags,
-  UserCircle,
   Users,
+
 } from "lucide-react"
+
 import type { AdminMenuTreeItem } from "@ui/components/admin"
 
+
+
 export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
+
   {
     type: "leaf",
     href: "/admin/tong-quan",
@@ -157,6 +163,19 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
   },
   {
     type: "group",
+    label: "Ký túc xá & Check-in",
+    icon: Building2,
+    children: [
+      {
+        href: "/admin/check-in-ky-tuc-xa",
+        label: "Check-in ký túc xá",
+        icon: Home,
+        permission: null,
+      },
+    ],
+  },
+  {
+    type: "group",
     label: "Hệ thống",
     icon: Database,
     children: [
@@ -180,25 +199,8 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
         permission: null,
         anyPermission: ["uploads:view","uploads:manage"],
       },
-      {
-        href: "/admin/profile",
-        label: "Hồ sơ tài khoản",
-        icon: UserCircle,
-        permission: null,
-      },
     ],
   },
-  {
-    type: "group",
-    label: "Ký túc xá & Check-in",
-    icon: Building2,
-    children: [
-      {
-        href: "/admin/check-in-ky-tuc-xa",
-        label: "Check-in ký túc xá",
-        icon: Home,
-        permission: null,
-      },
-    ],
-  },
+
 ]
+

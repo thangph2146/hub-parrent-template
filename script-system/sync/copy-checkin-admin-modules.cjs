@@ -257,6 +257,16 @@ console.log("[copy-checkin-admin] copied: types/admin/dashboard.ts")
 copyConfigFromMain()
 copyLibFromMain()
 
+/** Native check-in — không chạy transform import (tránh @/lib/ → @/lib/admin/). */
+const NATIVE_SCAN_ROOTS = [
+  path.join(CHECKIN_FRONT, "src/providers/admin"),
+  path.join(CHECKIN_FRONT, "src/features/admin-auth"),
+]
+
+function isNativeCheckinFile(file) {
+  return NATIVE_SCAN_ROOTS.some((root) => file.startsWith(root))
+}
+
 const scanRoots = [
   path.join(CHECKIN_FRONT, "src/app/admin"),
   path.join(CHECKIN_FRONT, "src/lib/admin"),
@@ -271,6 +281,7 @@ let updated = 0
 for (const root of scanRoots) {
   for (const file of walk(root)) {
     if (file.endsWith("product-image-storage-stub.ts")) continue
+    if (isNativeCheckinFile(file)) continue
     const original = fs.readFileSync(file, "utf8")
     const adminRel = file.startsWith(TARGET_BASE)
       ? path.relative(TARGET_BASE, file)

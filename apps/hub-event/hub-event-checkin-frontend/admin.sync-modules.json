@@ -93,6 +93,7 @@
         "type": "group",
         "label": "Ký túc xá & Check-in",
         "icon": "Building2",
+        "replaceLabel": "Ký túc xá & Check-in",
         "children": [
           {
             "href": "/admin/check-in-ky-tuc-xa",
@@ -102,16 +103,6 @@
           }
         ]
       }
-    ],
-    "appendToGroup": {
-      "Hệ thống": [
-        {
-          "href": "/admin/profile",
-          "label": "Hồ sơ tài khoản",
-          "icon": "UserCircle",
-          "permission": null
-        }
-      ]
-    }
+    ]
   }
 }

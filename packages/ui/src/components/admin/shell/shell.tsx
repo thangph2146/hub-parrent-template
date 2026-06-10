@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import {
   ChevronDown,
+  Home,
   Menu,
   Monitor,
   Moon,
@@ -107,6 +108,8 @@ export function AdminShell({
     fullWidthPaths = ["/graph"],
     homePath = "/",
     profilePath = "/profile",
+    publicSitePath,
+    publicSiteLabel = "Trang chủ",
     accessDeniedReason = "staff_only",
   } = useAdminLayout()
   const { theme, setTheme } = useTheme()
@@ -312,10 +315,10 @@ export function AdminShell({
                   </div>
                   <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-aria-expanded:rotate-180 sm:block" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72 p-2">
-                  <div className="px-2 py-2">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-sm font-bold text-primary">
+                <DropdownMenuContent align="end" className="w-64 p-2">
+                  <div className="px-2 py-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-xs font-bold text-primary">
                         {avatarUrl ? (
                           <img
                             src={avatarUrl}
@@ -341,80 +344,92 @@ export function AdminShell({
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
+                    {publicSitePath ? (
+                      <DropdownMenuItem
+                        className="cursor-pointer rounded-md px-2 py-1.5"
+                        onClick={() => {
+                          startIfNavigating(publicSitePath)
+                          router.push(publicSitePath)
+                        }}
+                      >
+                        <Home className="size-4 text-muted-foreground" />
+                        {publicSiteLabel}
+                      </DropdownMenuItem>
+                    ) : null}
                     <DropdownMenuItem
-                      className="cursor-pointer rounded-md px-2 py-2"
+                      className="cursor-pointer rounded-md px-2 py-1.5"
                       onClick={() => {
                         startIfNavigating(profilePath)
                         router.push(profilePath)
                       }}
                     >
                       <UserCircle2 className="size-4 text-muted-foreground" />
-                      Hồ sơ và tài khoản
+                      Hồ sơ
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                    Giao diện
+                  <div className="space-y-2 px-2 py-1">
+                    <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+                      Tuỳ chỉnh
+                    </p>
+                    <DropdownMenuRadioGroup
+                      value={theme}
+                      onValueChange={(value) =>
+                        setTheme(value as "light" | "dark" | "system")
+                      }
+                    >
+                      <div className="grid grid-cols-3 gap-1">
+                        <DropdownMenuRadioItem
+                          value="light"
+                          title="Sáng"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
+                        >
+                          <Sun className="size-4 text-muted-foreground" />
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="dark"
+                          title="Tối"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
+                        >
+                          <Moon className="size-4 text-muted-foreground" />
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="system"
+                          title="Theo hệ thống"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
+                        >
+                          <Monitor className="size-4 text-muted-foreground" />
+                        </DropdownMenuRadioItem>
+                      </div>
+                    </DropdownMenuRadioGroup>
+                    <DropdownMenuRadioGroup
+                      value={size}
+                      onValueChange={(value) =>
+                        setSize(value as "sm" | "base" | "lg")
+                      }
+                    >
+                      <div className="grid grid-cols-3 gap-1">
+                        <DropdownMenuRadioItem
+                          value="sm"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
+                        >
+                          S
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="base"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
+                        >
+                          M
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem
+                          value="lg"
+                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
+                        >
+                          L
+                        </DropdownMenuRadioItem>
+                      </div>
+                    </DropdownMenuRadioGroup>
                   </div>
-                  <DropdownMenuRadioGroup
-                    value={theme}
-                    onValueChange={(value) =>
-                      setTheme(value as "light" | "dark" | "system")
-                    }
-                  >
-                    <DropdownMenuRadioItem
-                      value="light"
-                      className="cursor-pointer rounded-md px-2 py-2"
-                    >
-                      <Sun className="size-4 text-muted-foreground" />
-                      Sáng
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="dark"
-                      className="cursor-pointer rounded-md px-2 py-2"
-                    >
-                      <Moon className="size-4 text-muted-foreground" />
-                      Tối
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="system"
-                      className="cursor-pointer rounded-md px-2 py-2"
-                    >
-                      <Monitor className="size-4 text-muted-foreground" />
-                      Theo hệ thống
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                  <DropdownMenuSeparator />
-                  <div className="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                    Cỡ chữ
-                  </div>
-                  <DropdownMenuRadioGroup
-                    value={size}
-                    onValueChange={(value) =>
-                      setSize(value as "sm" | "base" | "lg")
-                    }
-                  >
-                    <div className="grid grid-cols-3 gap-2 px-2 pt-1 pb-1">
-                      <DropdownMenuRadioItem
-                        value="sm"
-                        className="cursor-pointer justify-center rounded-md border border-border px-2 py-2 font-bold"
-                      >
-                        S
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem
-                        value="base"
-                        className="cursor-pointer justify-center rounded-md border border-border px-2 py-2 font-bold"
-                      >
-                        M
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem
-                        value="lg"
-                        className="cursor-pointer justify-center rounded-md border border-border px-2 py-2 font-bold"
-                      >
-                        L
-                      </DropdownMenuRadioItem>
-                    </div>
-                  </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

@@ -19,4 +19,6 @@ export const CHECKIN_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   mobileHeaderTitle: "HUB Check-in",
   homePath: CHECKIN_ADMIN_HOME_PATH,
   profilePath: CHECKIN_ADMIN_PROFILE_PATH,
+  publicSitePath: "/",
+  publicSiteLabel: "Trang chủ sự kiện",
 }

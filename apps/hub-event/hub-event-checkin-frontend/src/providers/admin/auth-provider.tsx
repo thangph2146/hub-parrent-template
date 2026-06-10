@@ -25,6 +25,10 @@ import {
   writeAdminSession,
 } from "@/lib/admin/auth-session"
 import { AUTH_LOGIN_PATH } from "@/lib/admin/auth-routes"
+import {
+  assertCanLoginAs,
+  clearOtherCheckinSessions,
+} from "@/lib/checkin-session-exclusive"
 
 function subscribe(callback: () => void) {
   if (typeof window === "undefined") return () => {}
@@ -48,7 +52,11 @@ function getServerSnapshot(): null {
   return null
 }
 
-export type StaffLoginResult = "success" | "invalid_credentials" | "staff_only"
+export type StaffLoginResult =
+  | "success"
+  | "invalid_credentials"
+  | "staff_only"
+  | "session_conflict"
 
 type AuthContextValue = {
   user: AuthUser | null
@@ -69,6 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const login = useCallback(async (email: string, password: string) => {
+    const gate = assertCanLoginAs("admin")
+    if (!gate.ok) return "session_conflict"
     let u: AuthUser
     try {
       const payload = await loginWithEmail({
@@ -80,12 +90,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return "invalid_credentials"
     }
     if (!canAccessCheckinAdmin(u)) return "staff_only"
+    clearOtherCheckinSessions("admin")
     writeAdminSession(u)
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
     return "success"
   }, [])
 
   const loginDevelopment = useCallback(async (userId: string) => {
+    const gate = assertCanLoginAs("admin")
+    if (!gate.ok) return "session_conflict"
     let u: AuthUser
     try {
       const payload = await loginWithDevelopmentUser({
@@ -96,12 +109,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return "invalid_credentials"
     }
     if (!canAccessCheckinAdmin(u)) return "staff_only"
+    clearOtherCheckinSessions("admin")
     writeAdminSession(u)
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
     return "success"
   }, [])
 
   const loginGoogle = useCallback(async (credential: string) => {
+    const gate = assertCanLoginAs("admin")
+    if (!gate.ok) return "session_conflict"
     let u: AuthUser
     try {
       const payload = await loginWithGoogle(credential)
@@ -110,6 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return "invalid_credentials"
     }
     if (!canAccessCheckinAdmin(u)) return "staff_only"
+    clearOtherCheckinSessions("admin")
     writeAdminSession(u)
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
     return "success"

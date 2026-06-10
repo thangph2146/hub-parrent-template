@@ -5,10 +5,14 @@
  */
 import fs from "node:fs"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
+import { execSync } from "node:child_process"
 import { createRequire } from "node:module"
 
 const require = createRequire(import.meta.url)
+const {
+  buildCheckinMenu,
+  verifyMenuOrderAgainstMain,
+} = require("../sync/lib/build-checkin-menu.cjs")
 const { ROOT } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
@@ -20,6 +24,26 @@ const MENU_TREE_PATH = path.join(
   CHECKIN_FRONT,
   "src/config/admin/checkin-admin-menu-tree.tsx",
 )
+
+const MODULE_HREF_OVERRIDES = { "file-storage": "/file-storage" }
+
+function moduleToHref(mod) {
+  return MODULE_HREF_OVERRIDES[mod] ?? `/${mod}`
+}
+
+function loadMainMenuItems() {
+  const exportScript = path.join(
+    MAIN_BACKEND,
+    "scripts/export-menu-items.mts",
+  )
+  const apiDir = path.join(ROOT, PRODUCT_LINES.main.api.path)
+  const raw = execSync(`npx tsx "${exportScript}"`, {
+    cwd: apiDir,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"],
+  })
+  return JSON.parse(raw)
+}
 
 const FORBIDDEN_IMPORTS = [
   { pattern: /@\/app\/events\//, hint: "dùng @/app/admin/_component" },
@@ -36,6 +60,10 @@ const FORBIDDEN_IMPORTS = [
   {
     pattern: /@\/config\/admin-layout-static/,
     hint: "dùng @/config/admin/checkin-admin-layout-static",
+  },
+  {
+    pattern: /@\/lib\/admin\/checkin-session-exclusive/,
+    hint: "dùng @/lib/checkin-session-exclusive (lib native check-in)",
   },
 ]
 
@@ -117,12 +145,34 @@ function verify() {
       errors.push(
         "checkin-admin-menu-tree.tsx chưa auto-generated — chạy pnpm pull:checkin",
       )
+    } else {
+      try {
+        const mainMenu = loadMainMenuItems()
+        const builtMenu = buildCheckinMenu(mainMenu, config, moduleToHref)
+        errors.push(
+          ...verifyMenuOrderAgainstMain(mainMenu, builtMenu, config).map(
+            (e) => `menu order: ${e}`,
+          ),
+        )
+        for (const item of builtMenu) {
+          const needle = `label: ${JSON.stringify(item.label)}`
+          if (!menuContent.includes(needle)) {
+            errors.push(
+              `menu tree thiếu hoặc lệch nhãn so với sync: ${item.label}`,
+            )
+          }
+        }
+      } catch (e) {
+        errors.push(`menu order verify lỗi: ${e.message}`)
+      }
     }
   }
 
   const scanRoots = [
     path.join(CHECKIN_FRONT, "src/app/admin"),
     path.join(CHECKIN_FRONT, "src/lib/admin"),
+    path.join(CHECKIN_FRONT, "src/providers/admin"),
+    path.join(CHECKIN_FRONT, "src/features/admin-auth"),
   ]
 
   const roleSkip = new Set(config.pageGuardRoleModulesSkip ?? ["settings"])

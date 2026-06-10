@@ -60,6 +60,10 @@ export type AdminLayoutContextValue = {
   homePath?: string
   /** Liên kết hồ sơ trong shell — mặc định `/profile`. */
   profilePath?: string
+  /** Liên kết site công khai trong menu tài khoản (vd. trang chủ sự kiện). */
+  publicSitePath?: string
+  /** Nhãn `publicSitePath` — mặc định "Trang chủ". */
+  publicSiteLabel?: string
   /** Query `reason` khi từ chối quyền — mặc định `staff_only`. */
   accessDeniedReason?: string
 }

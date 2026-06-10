@@ -1,14 +1,17 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useSyncExternalStore } from "react"
+import { useEffect, useSyncExternalStore } from "react"
 import { HeaderAccountMenu } from "@/components/shared/header-account-menu"
 import { HeaderAuth } from "@/components/shared/header-auth"
+import { HeaderStaffAccountMenu } from "@/components/shared/header-staff-account-menu"
+import { useAdminSession } from "@/components/shared/use-admin-session"
 import {
   HeaderGuestAccessDropdown,
   HeaderGuestAccessOptions,
 } from "@/components/shared/header-guest-access-menu"
 import {
+  getActiveCheckinSessionKind,
   readEventSession,
   subscribeEventSession,
 } from "@/lib/event-auth"
@@ -32,34 +35,44 @@ export function HeaderAccessCluster({
 }: HeaderAccessClusterProps) {
   const pathname = usePathname()
   const session = useEventSession()
-  const showAdmin = !pathname.startsWith("/admin")
+  const adminUser = useAdminSession()
+  const showAdminEntry = !pathname.startsWith("/admin")
+
+  useEffect(() => {
+    getActiveCheckinSessionKind()
+  }, [])
+
+  if (adminUser && !session) {
+    return (
+      <HeaderStaffAccountMenu
+        layout={layout}
+        onNavigate={onSheetNavigate}
+      />
+    )
+  }
 
   if (layout === "sheet") {
     if (session) {
       return (
-        <HeaderAccountMenu
-          layout="sheet"
-          showAdmin={showAdmin}
-          onNavigate={onSheetNavigate}
-        />
+        <HeaderAccountMenu layout="sheet" onNavigate={onSheetNavigate} />
       )
     }
 
     return (
       <HeaderGuestAccessOptions
-        showAdmin={showAdmin}
+        showAdmin={showAdminEntry}
         onNavigate={onSheetNavigate}
       />
     )
   }
 
   if (session) {
-    return <HeaderAccountMenu showAdmin={showAdmin} />
+    return <HeaderAccountMenu />
   }
 
-  if (!showAdmin) {
+  if (!showAdminEntry) {
     return <HeaderAuth />
   }
 
-  return <HeaderGuestAccessDropdown showAdmin={showAdmin} />
+  return <HeaderGuestAccessDropdown showAdmin={showAdminEntry} />
 }

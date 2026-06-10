@@ -27,6 +27,11 @@ import {
   isStudentSchoolEmail,
   STUDENT_EMAIL_ERROR,
 } from "./student-email"
+import {
+  assertCanLoginPortalAs,
+  clearOtherCheckinSessions,
+  type CheckinLoginBlocked,
+} from "./checkin-session-exclusive"
 
 export type { EventSessionUser, DevLoginOption }
 export { STUDENT_EMAIL_ERROR, isStudentSchoolEmail }
@@ -62,6 +67,14 @@ export {
 
 export type EventLoginKind = "student" | "guest"
 
+export type { CheckinLoginBlocked }
+export {
+  assertCanLoginAs,
+  assertCanLoginPortalAs,
+  getActiveCheckinSessionKind,
+  getCheckinSessionLabel,
+} from "./checkin-session-exclusive"
+
 function checkinPublicApi() {
   return createPublicApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL,
@@ -73,6 +86,11 @@ function persistLoginPayload(
   data: PublicAuthPayload,
   kind: EventLoginKind,
 ): EventSessionUser {
+  const gate = assertCanLoginPortalAs(kind)
+  if (!gate.ok) {
+    throw new Error(gate.message)
+  }
+
   const user = toEventSession(data)
   if (kind === "student") {
     if (!isStudentSchoolEmail(user.email)) {
@@ -87,6 +105,7 @@ function persistLoginPayload(
       "Chỉ tài khoản khách (phụ huynh/cá nhân) mới được đăng nhập kênh này.",
     )
   }
+  clearOtherCheckinSessions(kind)
   writeEventSession(user)
   return user
 }
