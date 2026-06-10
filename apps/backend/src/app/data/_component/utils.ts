@@ -18,12 +18,20 @@ export function buildEntitySchemaRows(
     refsIn.get(rel.toTable)!.add(rel.fromTable)
   }
 
+  const verificationByModel = new Map(
+    (schema.verification?.models ?? []).map((entry) => [
+      entry.exportModelName,
+      entry,
+    ])
+  )
+
   return schema.tables
     .map((table) => {
       const pkColumns = table.columns
         .filter((c) => c.kind === "pk")
         .map((c) => c.name)
       const fkCount = table.columns.filter((c) => c.kind === "fk").length
+      const verification = verificationByModel.get(table.exportModelName)
 
       return {
         id: table.name,
@@ -38,6 +46,9 @@ export function buildEntitySchemaRows(
         rowCount: table.rowCount ?? 0,
         activeRowCount: table.activeRowCount ?? table.rowCount ?? 0,
         trashedRowCount: table.trashedRowCount ?? 0,
+        auxiliaryRowCount: table.auxiliaryRowCount,
+        expectedRowCount: verification?.expected,
+        verificationStatus: verification?.status,
         referencesOut: [...(refsOut.get(table.name) ?? [])].sort(),
         referencedBy: [...(refsIn.get(table.name) ?? [])].sort(),
       }

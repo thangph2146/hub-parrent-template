@@ -66,7 +66,14 @@ export function getEntitySchemaColumns(): ColumnDef<EntitySchemaRow>[] {
       size: 100,
       meta: { className: "w-[100px] min-w-[100px] max-w-[120px]" },
       cell: ({ row }) => {
-        const { activeRowCount, rowCount, trashedRowCount } = row.original
+        const {
+          activeRowCount,
+          rowCount,
+          trashedRowCount,
+          auxiliaryRowCount,
+          expectedRowCount,
+          verificationStatus,
+        } = row.original
         if (activeRowCount < 0) {
           return <span className="text-xs text-muted-foreground">—</span>
         }
@@ -75,6 +82,25 @@ export function getEntitySchemaColumns(): ColumnDef<EntitySchemaRow>[] {
             <span className="text-sm font-medium">
               {formatEntityRowCount(activeRowCount)}
             </span>
+            {expectedRowCount != null ? (
+              <p
+                className={cn(
+                  "text-[10px]",
+                  verificationStatus === "ok"
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : verificationStatus === "under"
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-rose-600 dark:text-rose-400"
+                )}
+              >
+                kỳ vọng {formatEntityRowCount(expectedRowCount)}
+              </p>
+            ) : null}
+            {auxiliaryRowCount && auxiliaryRowCount > 0 ? (
+              <p className="text-[10px] text-muted-foreground">
+                +{formatEntityRowCount(auxiliaryRowCount)} import_id_map
+              </p>
+            ) : null}
             {trashedRowCount > 0 ? (
               <p className="text-[10px] text-muted-foreground">
                 +{formatEntityRowCount(trashedRowCount)} thùng rác

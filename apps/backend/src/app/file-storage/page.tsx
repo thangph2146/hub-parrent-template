@@ -12,6 +12,7 @@ import {
   AdminPageGuard,
   AdminPageLoading,
   AdminPageSection,
+  AdminTabCountBadge,
 } from "@ui/components/admin"
 import { ImageLightbox } from "@ui/components/image-lightbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
@@ -505,9 +506,7 @@ function FileStoragePageInner() {
                   >
                     <Icon className="size-4" />
                     {realm.label}
-                    <span className="text-muted-foreground">
-                      ({realm.count})
-                    </span>
+                    <AdminTabCountBadge count={realm.count} />
                   </TabsTrigger>
                 )
               })}

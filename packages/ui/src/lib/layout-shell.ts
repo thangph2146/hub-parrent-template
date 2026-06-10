@@ -197,7 +197,7 @@ export const ADMIN_LIST_TABS_LIST_CLASS =
   "h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1"
 
 export const ADMIN_LIST_TABS_TRIGGER_CLASS =
-  "group/tab flex items-center gap-2 rounded-lg px-4 py-2 data-active:bg-primary data-active:text-primary-foreground"
+  "group/tab flex items-center gap-2 rounded-lg px-4 py-2 data-active:bg-primary data-active:text-primary-foreground data-active:hover:text-primary-foreground dark:data-active:hover:text-primary-foreground"
 
 /** Badge đếm trong tab — đổi tông khi tab active (nền primary). */
 export const ADMIN_LIST_TABS_COUNT_BADGE_CLASS =

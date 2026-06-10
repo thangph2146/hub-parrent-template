@@ -19,6 +19,9 @@ export type EntitySchemaRow = {
   rowCount: number
   activeRowCount: number
   trashedRowCount: number
+  auxiliaryRowCount?: number
+  expectedRowCount?: number
+  verificationStatus?: "ok" | "over" | "under"
   referencesOut: string[]
   referencedBy: string[]
 }

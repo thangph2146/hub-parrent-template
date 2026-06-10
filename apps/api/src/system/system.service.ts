@@ -58,6 +58,12 @@ import {
   IMPORT_ID_MAP_GROUP,
   LegacyImportIdMap,
 } from './legacy-import-id-map';
+import {
+  buildImportVerification,
+  getImportReferenceFilePath,
+  loadImportReferenceManifest,
+  type ImportVerificationResult,
+} from './import-reference';
 
 const EXCEL_META_SHEET = '__meta';
 const EXCEL_NULL_MARKER = '__HUB_NULL__';
@@ -2180,10 +2186,23 @@ export class SystemService {
       parseInt(process.env.SYSTEM_IMPORT_CLIENT_CHUNK_CONTACT || '800', 10) ||
         800,
     );
+    const notificationChunk = Math.max(
+      1,
+      parseInt(
+        process.env.SYSTEM_IMPORT_CLIENT_CHUNK_NOTIFICATION || '400',
+        10,
+      ) || 400,
+    );
+    const sessionChunk = Math.max(
+      1,
+      parseInt(process.env.SYSTEM_IMPORT_CLIENT_CHUNK_SESSION || '500', 10) ||
+        500,
+    );
     const parallelChunkConcurrency = Math.max(
       1,
       parseInt(process.env.SYSTEM_IMPORT_PARALLEL_CHUNKS || '3', 10) || 3,
     );
+    const reference = loadImportReferenceManifest();
     return {
       modelOrder: [...this.modelOrder],
       bundles: { ...IMPORT_MODEL_BUNDLES },
@@ -2191,13 +2210,27 @@ export class SystemService {
       modelChunkSizes: {
         ...(postChunkRaw ? { post: postChunk } : {}),
         contactRequest: contactChunk,
+        notification: notificationChunk,
+        session: sessionChunk,
       },
       parallelChunkConcurrency,
       /** post insert song song gây lock InnoDB — mặc định tuần tự. */
       modelParallelConcurrency: {
         post: 1,
         contactRequest: parallelChunkConcurrency,
+        notification: 1,
+        session: 1,
       },
+      reference: reference
+        ? {
+            source: reference.source,
+            exportedAt: reference.exportedAt,
+            description: reference.description,
+            expectedCounts: { ...reference.expectedCounts },
+            file: getImportReferenceFilePath(),
+          }
+        : null,
+      recommendedExportFile: reference?.source ?? 'full-export-2026-06-10.json',
     };
   }
 
@@ -2211,6 +2244,7 @@ export class SystemService {
       rowCount: number;
       activeRowCount: number;
       trashedRowCount: number;
+      auxiliaryRowCount?: number;
       columns: Array<{
         name: string;
         type: string;
@@ -2370,6 +2404,19 @@ export class SystemService {
     const countResults = await Promise.all(
       pendingCounts.map(async (entry) => {
         try {
+          if (entry.exportModelName === 'setting') {
+            const rowCount = await this.em.count(entry.entity, {});
+            const importIdMapRowCount = await this.em.count(Setting, {
+              group: IMPORT_ID_MAP_GROUP,
+            });
+            const businessRowCount = Math.max(0, rowCount - importIdMapRowCount);
+            return {
+              rowCount,
+              activeRowCount: businessRowCount,
+              trashedRowCount: 0,
+              auxiliaryRowCount: importIdMapRowCount,
+            };
+          }
           const rowCount = await this.em.count(entry.entity, {});
           if (!entry.hasSoftDelete) {
             return {
@@ -2411,6 +2458,8 @@ export class SystemService {
         rowCount: counts.rowCount,
         activeRowCount: counts.activeRowCount,
         trashedRowCount: counts.trashedRowCount,
+        auxiliaryRowCount:
+          'auxiliaryRowCount' in counts ? counts.auxiliaryRowCount : undefined,
         columns: entry.columns,
       });
     }
@@ -2487,7 +2536,43 @@ export class SystemService {
       0,
     );
 
-    return { tables, relations, totalRows, totalActiveRows };
+    let verification: ImportVerificationResult | undefined;
+    const reference = loadImportReferenceManifest();
+    if (reference) {
+      const actualByModel = new Map<
+        string,
+        { rowCount: number; note?: string }
+      >();
+      for (const table of tables) {
+        if (!(table.exportModelName in reference.expectedCounts)) continue;
+        let compareCount = table.activeRowCount;
+        if (table.exportModelName === 'setting') {
+          compareCount = table.activeRowCount;
+        } else if (table.exportModelName === 'post') {
+          compareCount = table.rowCount;
+        }
+        actualByModel.set(table.exportModelName, {
+          rowCount: Math.max(0, compareCount),
+          note:
+            table.exportModelName === 'setting' && table.auxiliaryRowCount
+              ? `${table.auxiliaryRowCount} dòng import_id_map (không tính vào kỳ vọng)`
+              : undefined,
+        });
+      }
+      verification = buildImportVerification(
+        reference,
+        getImportReferenceFilePath(),
+        actualByModel,
+      );
+    }
+
+    return {
+      tables,
+      relations,
+      totalRows,
+      totalActiveRows,
+      verification,
+    };
   }
 
   /** Giống `pnpm run seed:superadmin` — idempotent, dùng từ API bảo trì. */

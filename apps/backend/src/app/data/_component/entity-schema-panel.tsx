@@ -50,18 +50,32 @@ export function EntitySchemaPanel() {
         description="Danh sách bảng từ apps/api/src/entities, số bản ghi và quan hệ FK"
         badge={
           schema ? (
-            <Badge variant="outline" className="text-xs font-normal">
-              {schema.tables.length} bảng · {schema.relations.length} quan hệ ·{" "}
-              {formatEntityRowCount(
-                schema.totalActiveRows ??
-                  schema.tables.reduce(
-                    (sum, t) =>
-                      sum + Math.max(0, t.activeRowCount ?? t.rowCount ?? 0),
-                    0
-                  )
-              )}{" "}
-              bản ghi
-            </Badge>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="text-xs font-normal">
+                {schema.tables.length} bảng · {schema.relations.length} quan hệ ·{" "}
+                {formatEntityRowCount(
+                  schema.totalActiveRows ??
+                    schema.tables.reduce(
+                      (sum, t) =>
+                        sum + Math.max(0, t.activeRowCount ?? t.rowCount ?? 0),
+                      0
+                    )
+                )}{" "}
+                bản ghi
+              </Badge>
+              {schema.verification ? (
+                <Badge
+                  variant={
+                    schema.verification.isComplete ? "default" : "secondary"
+                  }
+                  className="text-xs font-normal"
+                >
+                  {schema.verification.isComplete
+                    ? `Khớp export ${schema.verification.referenceExportedAt}`
+                    : `Lệch ${schema.verification.mismatchedModels} bảng / ${schema.verification.referenceSource}`}
+                </Badge>
+              ) : null}
+            </div>
           ) : undefined
         }
       />
@@ -80,6 +94,37 @@ export function EntitySchemaPanel() {
           <Alert variant="destructive">
             <AlertTitle className="text-sm">Không tải được schema</AlertTitle>
             <AlertDescription className="text-xs">{error}</AlertDescription>
+          </Alert>
+        ) : null}
+
+        {!loading && !error && schema?.verification ? (
+          <Alert
+            variant={schema.verification.isComplete ? "default" : "destructive"}
+          >
+            <AlertTitle className="text-sm">
+              {schema.verification.isComplete
+                ? "Dữ liệu khớp manifest import"
+                : "Dữ liệu chưa khớp manifest import"}
+            </AlertTitle>
+            <AlertDescription className="text-xs">
+              So với{" "}
+              <code className="rounded bg-muted px-1">
+                {schema.verification.referenceSource}
+              </code>{" "}
+              ({schema.verification.referenceExportedAt}):{" "}
+              {schema.verification.matchedModels}/
+              {schema.verification.matchedModels +
+                schema.verification.mismatchedModels}{" "}
+              bảng khớp ·{" "}
+              {formatEntityRowCount(
+                schema.verification.actualBusinessTotalRows
+              )}{" "}
+              /{" "}
+              {formatEntityRowCount(
+                schema.verification.expectedBusinessTotalRows
+              )}{" "}
+              bản ghi nghiệp vụ.
+            </AlertDescription>
           </Alert>
         ) : null}
 
