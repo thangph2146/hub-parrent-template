@@ -11,7 +11,7 @@ Trước khi sửa bất kỳ file code nào, agent phải đọc và làm theo:
 
 Nếu task liên quan admin page trong `apps/main/backend`, phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md` trước khi sửa source.
 
-Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md`.
+Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md` · quy tắc `apps/`: `apps/README.md` (chỉ sửa `apps/main/` khi dev; line deploy qua sync).
 
 > Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/admin-pattern/` và `docs/pages/` làm tài liệu bổ trợ.
 
@@ -55,7 +55,7 @@ Khi task liên quan tới một package cụ thể, đọc thêm:
 - `docs/steps/step9_follow_up_rollback_legacy_tracking.md`
 - `docs/steps/step10_agent_task_automation.md`
 
-Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node script-system/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
+Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node script-system/graphify/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
 
 ## Lệnh chuẩn bắt buộc
 
@@ -63,7 +63,7 @@ Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đ
 pnpm check
 ```
 
-Nếu có thay đổi kiến trúc/module/routes: chạy `node script-system/graphify-update.cjs apps/<app>` cho từng app bị ảnh hưởng, rồi:
+Nếu có thay đổi kiến trúc/module/routes: chạy `node script-system/graphify/graphify-update.cjs apps/<app>` cho từng app bị ảnh hưởng, rồi:
 
 ```bash
 pnpm check:full
@@ -174,6 +174,12 @@ pm2 save
 
 Chi tiết deploy server: `README.md` (mục PM2).
 
+### Sync check-in từ main (deploy line)
+
+Dev hàng ngày: `pnpm dev:main:checkin` (sửa `apps/main`, không cần sync).
+
+Sau `git pull`, cập nhật `hub-event` từ main: **`pnpm pull:checkin`** (alias `pnpm sync:checkin`) — API subset + admin pages. Chi tiết: `docs/MONOREPO_STRUCTURE.md`.
+
 ## Nguyên tắc microservice
 
 - Không import chéo source giữa các app trong `apps/*`.
@@ -185,8 +191,8 @@ Chi tiết deploy server: `README.md` (mục PM2).
 - Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.
 - Ranh giới được kiểm soát bởi:
   - `packages/eslint-config/service-boundaries.js` (import boundaries + ESLint cấm `sdk.http`)
-  - `script-system/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
-  - `script-system/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
+  - `script-system/verify/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
+  - `script-system/verify/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
 
 ## Pattern coding — agent phải tuân thủ
 

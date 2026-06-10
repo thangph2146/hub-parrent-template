@@ -1,25 +1,11 @@
 import type { Metadata } from "next"
-import { Roboto, Roboto_Mono } from "next/font/google"
 import "@ui/globals.css"
 import "@thangph2146/lexical-editor/styles"
 import { createAdminMetadata, AdminRootProviders } from "@ui/components/admin"
+import { SITE_ROOT_HTML_CLASSNAME } from "@ui/lib/site-fonts"
 import { QueryProvider } from "@/providers/query-provider"
 import { AuthProvider } from "@/providers/auth-provider"
 import { BackendAdminLayoutProvider } from "@/providers/backend-admin-layout"
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-})
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-})
 
 /** Fallback SSR — title/description thực tế được ghi từ settings qua `useAdminDocumentTitle`. */
 export const metadata: Metadata = createAdminMetadata({
@@ -36,7 +22,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+      className={SITE_ROOT_HTML_CLASSNAME}
       suppressHydrationWarning
     >
       <body

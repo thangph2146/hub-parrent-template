@@ -1,8 +1,9 @@
 /**
  * Mẫu role `event_staff` (ban tổ chức / BTC) — cổng admin check-in sự kiện.
  *
- * Source of truth: `apps/main/api/src/config/role-templates/event-staff.template.ts`
- * (đồng bộ khi đổi quyền BTC — `pnpm sync:api` hoặc copy thủ công).
+ * Source of truth phía server. Client mirror:
+ * `packages/api-client/src/role-templates/event-staff.ts`
+ * (kiểm tra parity: `pnpm verify:permissions`).
  */
 
 export const EVENT_STAFF_ROLE_NAME = 'event_staff' as const;

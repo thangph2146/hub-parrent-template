@@ -1,4 +1,3 @@
-import { PERMISSION_CODES } from "@workspace/api-client"
 "use client"
 
 import { useAdminCrudNavigation } from "@/lib/admin/admin-navigation"

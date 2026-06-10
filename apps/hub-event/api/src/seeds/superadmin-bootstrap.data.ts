@@ -479,7 +479,7 @@ export const SUPERADMIN_USERS_DATA = [
     email: 'btc.checkin@hub.edu.vn',
     name: 'BTC Check-in (demo)',
     password: DEV_LOGIN_PASSWORD_HASH,
-    bio: 'Tài khoản test cổng quản trị sự kiện / check-in',
+    bio: 'Ban tổ chức (BTC) — cổng /admin, role event_staff',
     avatar: null,
     emailVerified: null,
     phone: null,

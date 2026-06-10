@@ -20,7 +20,7 @@ import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Hash, Camera, Link2 } from "lucide-react"
 import { api } from "@/lib/admin/api"
-import { useEventsListQuery } from "../../../_component/_query"
+import { useEventsListQuery } from "@/app/admin/_component/_query"
 import type { CameraFormValues } from "../types"
 
 export interface CameraFormShellProps {

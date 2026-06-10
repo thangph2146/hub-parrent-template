@@ -121,24 +121,61 @@ function SidebarLeafLink({
   )
 }
 
-function isLeafActive(pathname: string, href: string): boolean {
-  if (pathname === href) return true
-  // Check if pathname starts with href followed by a slash (for detail/edit pages)
-  if (pathname.startsWith(`${href}/`)) return true
-  return false
+function normalizeMenuPath(path: string): string {
+  return path.replace(/\/+$/, "") || "/"
 }
 
-function isGroupActive(pathname: string, items: AdminMenuLeaf[]): boolean {
-  return items.some((item) => isLeafActive(pathname, item.href))
+function collectMenuHrefs(items: AdminMenuTreeItem[]): string[] {
+  const hrefs: string[] = []
+  for (const item of items) {
+    if (item.type === "leaf") {
+      hrefs.push(item.href)
+      continue
+    }
+    for (const child of item.children) {
+      hrefs.push(child.href)
+    }
+  }
+  return hrefs
+}
+
+function isLeafActive(
+  pathname: string,
+  href: string,
+  allHrefs: string[]
+): boolean {
+  const path = normalizeMenuPath(pathname)
+  const target = normalizeMenuPath(href)
+  if (path === target) return true
+  if (!path.startsWith(`${target}/`)) return false
+
+  // Prefix match for detail/edit routes — but defer to a longer menu href
+  // (e.g. /admin must not stay active on /admin/rbac when /admin/rbac exists).
+  return !allHrefs.some((other) => {
+    if (other === href) return false
+    const candidate = normalizeMenuPath(other)
+    if (candidate === target || !candidate.startsWith(`${target}/`)) return false
+    return path === candidate || path.startsWith(`${candidate}/`)
+  })
+}
+
+function isGroupActive(
+  pathname: string,
+  items: AdminMenuLeaf[],
+  allHrefs: string[]
+): boolean {
+  return items.some((item) => isLeafActive(pathname, item.href, allHrefs))
 }
 
 function LegacyCollapsedNav({
   visible,
   pathname,
+  allHrefs,
   onLinkClick,
 }: {
   visible: AdminMenuLeaf[]
   pathname: string
+  allHrefs: string[]
   onLinkClick?: () => void
 }) {
   return (
@@ -147,7 +184,7 @@ function LegacyCollapsedNav({
         <SidebarLeafLink
           key={item.href}
           item={item}
-          isActive={isLeafActive(pathname, item.href)}
+          isActive={isLeafActive(pathname, item.href, allHrefs)}
           collapsed
           onClick={onLinkClick}
         />
@@ -159,10 +196,12 @@ function LegacyCollapsedNav({
 function TreeNav({
   visible,
   pathname,
+  allHrefs,
   onLinkClick,
 }: {
   visible: AdminMenuTreeItem[]
   pathname: string
+  allHrefs: string[]
   onLinkClick?: () => void
 }) {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
@@ -173,7 +212,7 @@ function TreeNav({
 
       for (const item of visible) {
         if (item.type !== "group") continue
-        const isActive = isGroupActive(pathname, item.children)
+        const isActive = isGroupActive(pathname, item.children, allHrefs)
         next[item.label] = prev[item.label] ?? isActive
         if (isActive) {
           next[item.label] = true
@@ -182,7 +221,7 @@ function TreeNav({
 
       return next
     })
-  }, [pathname, visible])
+  }, [pathname, visible, allHrefs])
 
   return (
     <>
@@ -192,14 +231,14 @@ function TreeNav({
             <SidebarLeafLink
               key={item.href}
               item={item}
-              isActive={isLeafActive(pathname, item.href)}
+              isActive={isLeafActive(pathname, item.href, allHrefs)}
               collapsed={false}
               onClick={onLinkClick}
             />
           )
         }
 
-        const groupActive = isGroupActive(pathname, item.children)
+        const groupActive = isGroupActive(pathname, item.children, allHrefs)
         return (
           <Collapsible
             key={item.label}
@@ -240,7 +279,7 @@ function TreeNav({
                   <SidebarLeafLink
                     key={child.href}
                     item={child}
-                    isActive={isLeafActive(pathname, child.href)}
+                    isActive={isLeafActive(pathname, child.href, allHrefs)}
                     collapsed={false}
                     nested
                     onClick={onLinkClick}
@@ -268,6 +307,7 @@ export function SidebarNavLinks({
   const { user, menuTree } = useAdminLayout()
   const visible = getVisibleMenuItems(user, menuTree)
   const collapsedVisible = getLegacyVisibleMenuLeaves(user, menuTree)
+  const allMenuHrefs = collectMenuHrefs(visible)
 
   return (
     <nav
@@ -287,12 +327,14 @@ export function SidebarNavLinks({
           <LegacyCollapsedNav
             visible={collapsedVisible}
             pathname={pathname}
+            allHrefs={allMenuHrefs}
             onLinkClick={onLinkClick}
           />
         ) : (
           <TreeNav
             visible={visible}
             pathname={pathname}
+            allHrefs={allMenuHrefs}
             onLinkClick={onLinkClick}
           />
         )}

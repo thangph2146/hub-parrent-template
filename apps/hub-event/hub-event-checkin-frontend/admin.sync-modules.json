@@ -1,0 +1,117 @@
+{
+  "description": "Whitelist admin copy từ main/backend — script: script-system/sync/copy-checkin-admin-modules.cjs (pnpm pull:checkin)",
+  "modules": [
+    "staff",
+    "rbac",
+    "categories",
+    "tags",
+    "guides",
+    "posts",
+    "cameras",
+    "templates",
+    "screens",
+    "locations",
+    "speakers",
+    "settings",
+    "file-storage",
+    "data"
+  ],
+  "native": {
+    "description": "Shell + sự kiện check-in — sync chỉ verify, không ghi đè root admin",
+    "files": [
+      "layout.tsx",
+      "page.tsx",
+      "dang-nhap/page.tsx",
+      "profile/page.tsx",
+      "check-in-ky-tuc-xa/page.tsx",
+      "new/page.tsx",
+      "new/loading.tsx",
+      "[id]/page.tsx",
+      "[id]/loading.tsx",
+      "[id]/edit/page.tsx",
+      "[id]/edit/loading.tsx",
+      "_component/index.ts"
+    ],
+    "preserveInModules": [
+      "settings/_component/checkin-settings-presets.ts"
+    ]
+  },
+  "libFromMain": [
+    {
+      "from": "lib/build-product-storage-picker-config.ts",
+      "to": "src/lib/admin/build-product-storage-picker-config.ts"
+    }
+  ],
+  "configFromMain": ["config/protected-admin.ts"],
+  "pageGuardPermissionPrefix": {
+    "staff": "USERS",
+    "rbac": "ROLES",
+    "data": "SETTINGS",
+    "categories": "CATEGORIES",
+    "tags": "TAGS",
+    "posts": "POSTS",
+    "cameras": "CAMERAS",
+    "templates": "TEMPLATES",
+    "screens": "SCREENS",
+    "locations": "LOCATIONS",
+    "speakers": "SPEAKERS",
+    "guides": "PAGE_CONTENTS",
+    "file-storage": "UPLOADS",
+    "tong-quan": "DASHBOARD"
+  },
+  "pageGuardRoleModulesSkip": ["settings"],
+  "copyDashboardTo": "tong-quan/page.tsx",
+  "dashboardSubtitleReplace": {
+    "from": "bảng điều khiển quản trị HUB Parent",
+    "to": "bảng điều khiển quản trị HUB Check-in"
+  },
+  "menu": {
+    "alwaysIncludeHrefs": ["/", "/events"],
+    "excludeHrefs": [
+      "/my-students",
+      "/parent-students",
+      "/contact-requests",
+      "/products",
+      "/orders",
+      "/promo-codes",
+      "/carts",
+      "/tu-tuc-xa",
+      "/training-levels",
+      "/training-systems",
+      "/majors",
+      "/courses",
+      "/academic-years",
+      "/database-schema",
+      "/graph"
+    ],
+    "hrefOverrides": {
+      "/": "/admin/tong-quan",
+      "/events": "/admin"
+    },
+    "nativeGroups": [
+      {
+        "type": "group",
+        "label": "Ký túc xá & Check-in",
+        "icon": "Building2",
+        "children": [
+          {
+            "href": "/admin/check-in-ky-tuc-xa",
+            "label": "Check-in ký túc xá",
+            "icon": "Home",
+            "permission": null
+          }
+        ]
+      }
+    ],
+    "appendToGroup": {
+      "Hệ thống": [
+        {
+          "href": "/admin/profile",
+          "label": "Hồ sơ tài khoản",
+          "icon": "UserCircle",
+          "permission": null
+        }
+      ]
+    }
+  }
+}

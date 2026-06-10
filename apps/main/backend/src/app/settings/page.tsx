@@ -22,6 +22,7 @@ import {
   ADMIN_BRANDING_FALLBACK,
   ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,
   ADMIN_SITE_SEO_PAGE_KEY,
+  AdminAccessDeniedPanel,
   AdminDocumentHeadOverrideProvider,
   AdminReadOnlyHint,
 } from "@ui/components/admin"
@@ -412,13 +413,13 @@ export default function SettingsPage() {
     return (
       <AdminPageSection>
         <AdminListPageHeader title="Cài đặt hệ thống" icon={Settings2} />
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
-          <p className="font-medium">Không có quyền truy cập</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Cần quyền {PERMISSION_CODES.SETTINGS_MANAGE} hoặc{" "}
-            {PERMISSION_CODES.SEO_METAS_VIEW}.
-          </p>
-        </div>
+        <AdminAccessDeniedPanel
+          user={session}
+          requiredPermissions={[
+            PERMISSION_CODES.SETTINGS_MANAGE,
+            PERMISSION_CODES.SEO_METAS_VIEW,
+          ]}
+        />
       </AdminPageSection>
     )
   }

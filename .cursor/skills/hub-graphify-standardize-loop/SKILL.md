@@ -33,16 +33,16 @@ pnpm graphify:refresh
 Tương đương:
 
 ```bash
-node script-system/graphify-update.cjs apps/frontend
-node script-system/graphify-update.cjs apps/backend
-node script-system/graphify-update.cjs apps/api
+node script-system/graphify/graphify-update.cjs apps/frontend
+node script-system/graphify/graphify-update.cjs apps/backend
+node script-system/graphify/graphify-update.cjs apps/api
 pnpm graphify:ai-summary
 ```
 
 Chỉ một app bị ảnh hưởng:
 
 ```bash
-node script-system/graphify-update.cjs apps/backend
+node script-system/graphify/graphify-update.cjs apps/backend
 pnpm graphify:ai-summary
 ```
 

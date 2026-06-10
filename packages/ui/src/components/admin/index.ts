@@ -12,6 +12,11 @@ export {
   type AdminPageTransitionProps,
 } from "./shell/admin-page-transition"
 export * from "./shell/page-guard"
+export {
+  AdminAccessDeniedPanel,
+  buildAdminAccessDeniedCopyText,
+  type AdminAccessDeniedPanelProps,
+} from "./shell/access-denied-panel"
 export { ScrollToTop } from "../scroll-to-top"
 export {
   AdminLayoutBridge,

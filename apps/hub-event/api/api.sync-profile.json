@@ -1,0 +1,36 @@
+{
+  "description": "Hub-event check-in API — subset từ main: có users/roles/events; loại trừ store (products/orders/carts/promo), đào tạo, phụ huynh/SV.",
+  "mode": "exclude",
+  "excludeDirs": [
+    "src/products",
+    "src/orders",
+    "src/carts",
+    "src/promo-codes",
+    "src/parent-students",
+    "src/imported-users",
+    "src/students",
+    "src/training-systems",
+    "src/training-levels",
+    "src/courses",
+    "src/majors",
+    "src/academic-years",
+    "src/departments",
+    "src/groups",
+    "src/messages",
+    "src/contact-requests",
+    "src/hero-slides"
+  ],
+  "excludeFiles": [
+    "src/seeds/orders-sample.runner.ts",
+    "src/seeds/products-sample.runner.ts",
+    "src/seeds/promo-codes-sample.runner.ts",
+    "src/seeds/storesync-sample.data.ts"
+  ],
+  "keepFiles": [
+    "package.json",
+    "src/app.module.ts",
+    "src/seeders/DatabaseSeeder.ts",
+    "api.sync-profile.json"
+  ],
+  "prune": true
+}

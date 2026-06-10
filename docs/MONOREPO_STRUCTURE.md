@@ -32,11 +32,65 @@ apps/
 
 ## Kế thừa từ main
 
-1. **API** (`hub-event`, `hub-parent`, `store-sync`): copy/sync từ `apps/main/api`.
-   - Lệnh: `pnpm sync:api` (tất cả) hoặc `pnpm sync:api:hub-event`
-   - File `api.sync-keep.json` trong API đích liệt kê file **không** ghi đè (mặc định giữ `src/app.module.ts` để cắt module).
-2. **Admin check-in**: script `copy-admin-modules.mjs` trong `hub-event-checkin-frontend` copy page admin từ `apps/main/backend`.
-3. **Packages** (`@workspace/ui`, `@workspace/api-client`, …): dùng chung — không import chéo `apps/*`.
+### Dev hàng ngày (khuyến nghị)
+
+- Sửa code tại **`apps/main/`** (`@api` + `@backend`).
+- Chạy **`pnpm dev:main:checkin`** — check-in UI gọi **main API**, không cần sync.
+- Commit + push như bình thường.
+
+### Cập nhật deploy check-in (`hub-event`)
+
+Sau `git pull`, khi cần đưa thay đổi main sang line deploy check-in:
+
+```bash
+pnpm pull:checkin
+# hoặc
+pnpm sync:checkin
+```
+
+Lệnh này (không thay `git pull`):
+
+1. Sync **subset API** `main/api` → `hub-event/api` theo `api.sync-profile.json` (loại store/HRM/đào tạo, `prune` dead code).
+2. `verify:api-profile` — `app.module.ts` khớp profile.
+3. Copy admin pages từ `main/backend` theo `admin.sync-modules.json`.
+
+Test stack deploy thật: **`pnpm dev:checkin`** (`@hub-event/api` + check-in frontend).
+
+### API sync chi tiết
+
+| File | Vai trò |
+|------|---------|
+| `apps/hub-event/api/api.sync-profile.json` | `excludeDirs` / `includeDirs`, `keepFiles`, `prune` |
+| `apps/hub-event/api/src/app.module.ts` | Composition check-in — **giữ local**, không ghi đè khi sync |
+| `api.sync-keep.json` (legacy) | Vẫn merge vào `keepFiles` nếu còn |
+
+Lệnh chỉ API: `pnpm sync:api:hub-event` · Verify: `pnpm verify:api-profile` · Test: `pnpm test:api:hub-event`
+
+### Test sau sync (`test:*`)
+
+Đối xứng với lệnh sync — chạy **không cần** dev server:
+
+| Lệnh | Kiểm tra |
+|------|----------|
+| `pnpm test:checkin` | API profile + admin modules/native/imports/menu |
+| `pnpm test:checkin:full` | Như trên + `typecheck` `@hub-event/*` |
+| `pnpm test:api:all` | `api.sync-profile.json` mọi line kế thừa |
+| `pnpm test:apps` | Cấu trúc `apps/` + verify/typecheck từng product line |
+| `pnpm test:apps:quick` | Chỉ verify, bỏ typecheck |
+
+Orchestrator: `script-system/verify/test-app-operations.mjs` — cấu trúc script: `script-system/README.md`
+
+Các line khác (`hub-parent`, `store-sync`): `pnpm sync:api` — copy full trừ khi thêm profile riêng.
+
+### Admin check-in
+
+- `admin.sync-modules.json` — whitelist module copy từ `main/backend`.
+- Script: `script-system/sync/copy-checkin-admin-modules.cjs` (manifest: `admin.sync-modules.json`).
+- Menu sidebar: `sync-checkin-menu-tree.cjs` — subset từ `admin-menu-tree.items.ts` + mục native check-in (`menu.nativeGroups` / `appendToGroup`).
+
+### Packages
+
+`@workspace/ui`, `@workspace/api-client`, … — dùng chung; không import chéo `apps/*`.
 
 ## Dev stacks
 
@@ -61,7 +115,7 @@ Mặc định bật trên `dev:main:checkin`. Vượt ngưỡng liên tục → 
 
 Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCENT=94 pnpm dev:main:checkin`
 | `pnpm dev:parent` | `@api` + `@backend` + `@frontend` |
-| `pnpm dev:checkin` | `@hub-event/api` + `@hub-event-checkin-frontend` |
+| `pnpm dev:checkin` | `@hub-event/api` + `@hub-event-checkin-frontend` — không `tsup --watch` lexical; Next `--webpack` (giảm process/GPU) |
 | `pnpm dev:store` | `@store-sync/api` + `@store-sync-frontend` |
 
 ## PM2 production
@@ -75,6 +129,15 @@ Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCEN
 ## Workspace pnpm
 
 `pnpm-workspace.yaml` dùng pattern `apps/*/*` — mỗi app là package con một cấp trong product line.
+
+## Giữ cấu trúc `apps/` sạch
+
+- Chỉ **4 product line** dưới `apps/`: `main`, `hub-parent`, `hub-event`, `store-sync` — không tạo `apps/api` phẳng (legacy).
+- Dev feature → **`apps/main/`**; line deploy cập nhật qua sync (`pull:checkin`, `sync:api`), không copy thủ công.
+- Artifact build (`dist/`, `.next/`) không commit.
+- Kiểm tra: `pnpm verify:apps` (registry + tên package); hub-event API: `pnpm verify:api-profile`.
+
+Quy tắc ngắn cho dev/agent: [`apps/README.md`](../apps/README.md) · hub-event native vs sync: [`apps/hub-event/README.md`](../apps/hub-event/README.md).
 
 ## Ranh giới (không đổi)
 

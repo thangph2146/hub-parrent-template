@@ -10,7 +10,7 @@ import {
 } from "@ui/components/admin"
 import { useAuth } from "@/providers/admin/auth-provider"
 import { api } from "@/lib/admin/api"
-import type { DashboardStatsDto } from "@/types/admin/dashboard"
+import type { DashboardStatsDto } from "@/types/admin/admin/dashboard"
 
 const MonthlyLineChart = dynamic(
   () =>

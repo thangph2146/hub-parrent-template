@@ -26,12 +26,13 @@ coverage
 out/
 build
 dist
+*.tsbuildinfo
 
 
 # Debug
 npm-debug.log*
 
-# PM2 generated ecosystem JSON (script-system/pm2-stack.cjs)
+# PM2 generated ecosystem JSON (script-system/deploy/pm2-stack.cjs)
 .pm2-ecosystem-*.json
 
 # Misc
@@ -42,7 +43,7 @@ npm-debug.log*
 **/.graphify/worktree.json
 **/.graphify/branch.json
 **/.graphify/manifest.json
-apps/api/eslint-report.json
+apps/*/api/eslint-report.json
 
 
 another-template

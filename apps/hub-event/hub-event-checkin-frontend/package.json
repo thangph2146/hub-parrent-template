@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node ../../../script-system/conditional-api-wait.cjs && node ../../../script-system/next-dev.cjs 3000",
-    "predev": "node ../../../script-system/kill-ports.mjs 3000",
-    "kill": "node ../../../script-system/kill-ports.mjs 3000",
+    "dev": "node ../../../script-system/dev/dev-next.cjs 3000",
+    "predev": "node ../../../script-system/dev/dev-prep-next.cjs 3000 apps/hub-event/hub-event-checkin-frontend",
+    "kill": "node ../../../script-system/dev/kill-ports.cjs 3000",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Roboto, Roboto_Mono } from "next/font/google";
 import "@ui/globals.css";
+import { SITE_ROOT_HTML_CLASSNAME } from "@ui/lib/site-fonts";
 import { StorefrontChrome } from "@/components/shared/storefront-chrome";
 import { ThemeProvider } from "@ui/components/theme-provider";
 import { TextSizeProvider } from "@ui/components/text-size-provider";
@@ -10,20 +10,6 @@ import { QueryProvider } from "@/providers/query-provider";
 import { CartSyncBridge } from "@/components/shared/cart-sync-bridge";
 import { CartDrawerHost } from "@/components/shared/cart-drawer";
 import { PromoRulesSync } from "@/components/shared/promo-rules-sync";
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -42,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+      className={SITE_ROOT_HTML_CLASSNAME}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground" suppressHydrationWarning>
         <NextTopLoader 

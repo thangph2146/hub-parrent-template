@@ -26,7 +26,7 @@ import {
   AdminTabCountBadge,
 } from "@ui/components/admin"
 import { api } from "@/lib/admin/api"
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib/admin"
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib/admin/admin"
 import { useAdminCrudRowHandlers } from "@/lib/admin/admin-row-action-handlers"
 import {
   EventsTable,

@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Self-hosted — tránh next/font/google timeout (3000ms) khi mạng chậm/block Google Fonts */
+@import "@fontsource/roboto/latin-400.css";
+@import "@fontsource/roboto/latin-500.css";
+@import "@fontsource/roboto/latin-700.css";
+@import "@fontsource/roboto/vietnamese-400.css";
+@import "@fontsource/roboto/vietnamese-500.css";
+@import "@fontsource/roboto/vietnamese-700.css";
+@import "@fontsource/roboto-mono/latin-400.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -90,6 +98,9 @@
 
 /* ── Light mode (:root) ─────────────────────────────────────────────────── */
 :root {
+  --font-roboto: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto-mono: "Roboto Mono", ui-monospace, SFMono-Regular, monospace;
+
   /*
    * Token khoảng trắng layout — đặt ở :root, không trong @theme, vì Tailwind v4
    * map --spacing-{xs|sm|…|2xl} trong @theme chung scale với max-w-{xs|sm|…|2xl}.

@@ -22,6 +22,7 @@ import {
   ADMIN_BRANDING_FALLBACK,
   ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,
   ADMIN_SITE_SEO_PAGE_KEY,
+  AdminAccessDeniedPanel,
   AdminDocumentHeadOverrideProvider,
   AdminReadOnlyHint,
 } from "@ui/components/admin"
@@ -38,8 +39,6 @@ import {
   PERMISSION_CODES,
 } from "@workspace/api-client"
 import { api } from "@/lib/admin/api"
-import { SITE_BRAND } from "@/lib/site-nav"
-import { CHECKIN_ADMIN_BASE_PATH } from "@/config/admin/checkin-admin-access"
 import { useAuth } from "@/providers/admin/auth-provider"
 import { useAdminMutation } from "@/hooks/admin/use-admin-mutation"
 import {
@@ -100,9 +99,7 @@ export default function SettingsPage() {
     (tab: SettingsTabId) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set("tab", tab)
-      router.replace(
-        `${CHECKIN_ADMIN_BASE_PATH}/settings?${params.toString()}`,
-      )
+      router.replace(`/settings?${params.toString()}`)
     },
     [router, searchParams]
   )
@@ -151,7 +148,7 @@ export default function SettingsPage() {
     queryFn: async () =>
       extractSettingValue(
         await api.settings.get("default_new_user_role"),
-        "student"
+        "parent"
       ),
     enabled: Boolean(session) && canManageSettings,
   })
@@ -416,24 +413,24 @@ export default function SettingsPage() {
     return (
       <AdminPageSection>
         <AdminListPageHeader title="Cài đặt hệ thống" icon={Settings2} />
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
-          <p className="font-medium">Không có quyền truy cập</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Cần quyền {PERMISSION_CODES.SETTINGS_MANAGE} hoặc{" "}
-            {PERMISSION_CODES.SEO_METAS_VIEW}.
-          </p>
-        </div>
+        <AdminAccessDeniedPanel
+          user={session}
+          requiredPermissions={[
+            PERMISSION_CODES.SETTINGS_MANAGE,
+            PERMISSION_CODES.SEO_METAS_VIEW,
+          ]}
+        />
       </AdminPageSection>
     )
   }
 
   return (
     <AdminDocumentHeadOverrideProvider value={documentHeadOverride}>
-      <AdminPageGuard permission={PERMISSION_CODES.SETTINGS_MANAGE}>
+      <AdminPageGuard roles={["super_admin", "admin"]}>
         <AdminPageSection className="space-y-4">
           <AdminListPageHeader
             title="Cài đặt hệ thống"
-            subtitle="Mẫu nhanh và cấu hình thương hiệu cho cổng check-in sự kiện."
+            subtitle="Thương hiệu admin và SEO mặc định toàn site."
             icon={Settings2}
             actions={
               canManageSettings || canViewSeo ? (
@@ -505,7 +502,6 @@ export default function SettingsPage() {
                 {!displayTabLoading ? (
                   <>
                     <SettingsQuickPresets
-                      label="Mẫu nhanh check-in"
                       presets={SETTINGS_DISPLAY_PRESETS}
                       onApply={applyDisplayPreset}
                       disabled={saveDisplayMutation.isPending}
@@ -514,7 +510,7 @@ export default function SettingsPage() {
                       <FieldSectionLegend
                         icon={Monitor}
                         title="Hiển thị & hệ thống"
-                        description="Thương hiệu cổng check-in và role mặc định (sinh viên / khách)."
+                        description="Thương hiệu admin và role mặc định cho tài khoản mới."
                       />
                       <FieldSetContent
                         variant="section"
@@ -527,7 +523,7 @@ export default function SettingsPage() {
                               id="site-name"
                               value={siteName}
                               onChange={(e) => setSiteName(e.target.value)}
-                              placeholder={SITE_BRAND.name}
+                              placeholder="HUB Parent"
                             />
                             <TypographyPSmallMuted>
                               Sidebar và tiêu đề trang quản trị.
@@ -539,7 +535,7 @@ export default function SettingsPage() {
                               id="site-desc"
                               value={siteDesc}
                               onChange={(e) => setSiteDesc(e.target.value)}
-                              placeholder={SITE_BRAND.tagline}
+                              placeholder="Quản trị hệ thống"
                             />
                           </div>
                         </div>
@@ -596,7 +592,6 @@ export default function SettingsPage() {
                   <>
                     {canWriteSeo ? (
                       <SettingsQuickPresets
-                        label="Mẫu nhanh check-in"
                         presets={SETTINGS_SEO_GLOBAL_PRESETS}
                         onApply={applySeoGlobalPreset}
                         disabled={saveSiteSeoMutation.isPending}
@@ -606,7 +601,7 @@ export default function SettingsPage() {
                       <FieldSectionLegend
                         icon={Globe}
                         title="SEO mặc định toàn site"
-                        description="SEO mặc định cho storefront đăng ký & check-in sự kiện."
+                        description="Title, mô tả và từ khóa mặc định cho toàn hệ thống."
                       />
                       <FieldSetContent
                         variant="section"
@@ -625,7 +620,7 @@ export default function SettingsPage() {
                               value={seoTitle}
                               onChange={(e) => setSeoTitle(e.target.value)}
                               disabled={!canWriteSeo}
-                              placeholder="Hệ thống Sự kiện HUB - Đăng ký và check-in"
+                              placeholder="HUB Parent - Kết nối phụ huynh và nhà trường"
                             />
                           </div>
                           <div className="space-y-2 md:col-span-2">

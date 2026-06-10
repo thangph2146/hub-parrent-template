@@ -1,18 +1,66 @@
 # script-system
 
-Script vận hành monorepo (dev, PM2, graphify, verify) — **không** nhầm với `apps/*/scripts/` (script riêng từng app).
+Script vận hành monorepo — **một chỗ duy nhất** ở root, phân nhóm theo chức năng.
 
-| File | Mục đích |
-|------|----------|
-| `kill-ports.mjs` | Giải phóng cổng dev (3000–3002) |
-| `dev-stack.cjs` | Dev stack qua Turbo: `@api` trong tasks; app web đợi port API (`HUB_DEV_WAIT_API`) — `pnpm dev:checkin` |
-| `wait-api-port.cjs` | Chờ TCP port API (CLI / dùng nội bộ) |
-| `conditional-api-wait.cjs` | Hook `predev` app web — chỉ chờ khi chạy qua `dev-stack.cjs` |
-| `pm2-stack.cjs` | Start/reload/stop stack PM2 (parent / checkin / store) |
-| `graphify-update.cjs` | Cập nhật snapshot graph từng app |
-| `graphify-ai-summary.mjs` | Sinh markdown AI summary (`pnpm graphify:ai-summary`) |
+```
+script-system/
+├── lib/          # Registry + paths dùng chung
+├── dev/          # Dev stack, port, Next/Nest prep
+├── sync/         # Đồng bộ main → product line deploy
+├── verify/       # Kiểm tra cấu trúc, sync state, bounds
+├── graphify/     # Cập nhật snapshot + AI summary
+└── deploy/       # PM2 production stacks
+```
+
+## Dev (`dev/`)
+
+| File | Lệnh / mục đích |
+|------|-----------------|
+| `dev-stack.cjs` | `pnpm dev:main`, `dev:checkin`, … |
+| `dev-next.cjs`, `dev-prep-next.cjs` | `predev` / `dev` Next apps |
+| `dev-prep-api.cjs` | `predev` Nest API |
+| `kill-ports.cjs`, `kill-dev-workers.cjs` | `pnpm kill:*` |
+| `clean-next-cache.cjs` | `pnpm clean:next` |
+| `ensure-lexical-built.cjs` | Pre check-in dev |
+| `dev-resource-guard.cjs` | CPU/GPU guard (`dev:main:checkin`) |
+
+## Sync (`sync/`)
+
+| File | Lệnh |
+|------|------|
+| `sync-api-from-main.cjs` | `pnpm sync:api:*` |
+| `sync-checkin.cjs` | `pnpm pull:checkin` |
+| `copy-checkin-admin-modules.cjs` | Admin whitelist check-in |
+| `sync-checkin-menu-tree.cjs` | Sinh menu sidebar check-in |
+
+## Verify & test (`verify/`)
+
+| File | Lệnh |
+|------|------|
+| `verify-apps-structure.mjs` | `pnpm verify:apps` |
 | `verify-service-boundaries.mjs` | `pnpm verify:bounds` |
 | `verify-no-sdk-http.mjs` | `pnpm verify:sdk-http` |
 | `verify-permission-parity.mjs` | `pnpm verify:permissions` |
+| `verify-api-profile.mjs` | `pnpm verify:api-profile` |
+| `verify-checkin-admin-sync.mjs` | `pnpm verify:checkin-admin` |
+| `test-app-operations.mjs` | `pnpm test:apps`, `pnpm test:checkin` |
 
-Gọi qua shortcut root `package.json` (vd. `pnpm kill:parent`, `pnpm pm2:start`, `pnpm graphify:refresh`).
+## Graphify (`graphify/`)
+
+| File | Lệnh |
+|------|------|
+| `graphify-update.cjs` | `node script-system/graphify/graphify-update.cjs apps/...` |
+| `graphify-ai-summary.mjs` | `pnpm graphify:ai-summary` |
+
+## Deploy (`deploy/`)
+
+| File | Lệnh |
+|------|------|
+| `pm2-stack.cjs` | `pnpm pm2:start`, `pm2:start:checkin`, … |
+
+## Lib (`lib/`)
+
+| File | Mục đích |
+|------|----------|
+| `monorepo-apps.cjs` | Registry product line |
+| `paths.cjs` | `ROOT`, `SCRIPT_SYSTEM` |

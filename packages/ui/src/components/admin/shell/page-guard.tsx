@@ -1,19 +1,21 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { AlertCircle } from "lucide-react"
-import { Card, CardDescription, CardHeader, CardTitle } from "../../card"
 import { canUserAccess, type PermissionCode } from "@workspace/api-client"
 import { useAdminLayout } from "./layout-context"
+import { AdminAccessDeniedPanel } from "./access-denied-panel"
 
 const BYPASS_ROLES = ["super_admin", "admin"] as const
 
 export function AdminPageGuard({
   permission,
+  permissions,
   roles,
   children,
 }: {
   permission?: PermissionCode
+  /** Một trong các quyền (OR). */
+  permissions?: PermissionCode[]
   roles?: string[]
   children: ReactNode
 }) {
@@ -23,36 +25,42 @@ export function AdminPageGuard({
 
   const isBypassRole =
     user.roles?.some((r) =>
-      BYPASS_ROLES.includes(r.name as (typeof BYPASS_ROLES)[number])
+      BYPASS_ROLES.includes(r.name as (typeof BYPASS_ROLES)[number]),
     ) ?? false
   if (isBypassRole) return <>{children}</>
 
   if (roles?.length) {
     const hasRole = user.roles?.some((r) => roles.includes(r.name)) ?? false
-    if (!hasRole) return <AccessDenied />
+    if (!hasRole) {
+      return (
+        <AdminAccessDeniedPanel user={user} requiredRoles={roles} />
+      )
+    }
   }
 
-  if (permission) {
-    if (!canUserAccess(user, permission)) return <AccessDenied />
+  const requiredCodes = [
+    ...(permission ? [permission] : []),
+    ...(permissions ?? []),
+  ].filter((code, index, arr) => arr.indexOf(code) === index)
+
+  if (requiredCodes.length === 1) {
+    const code = requiredCodes[0]!
+    if (!canUserAccess(user, code)) {
+      return (
+        <AdminAccessDeniedPanel user={user} requiredPermission={code} />
+      )
+    }
+  } else if (requiredCodes.length > 1) {
+    const hasAny = requiredCodes.some((code) => canUserAccess(user, code))
+    if (!hasAny) {
+      return (
+        <AdminAccessDeniedPanel
+          user={user}
+          requiredPermissions={requiredCodes}
+        />
+      )
+    }
   }
 
   return <>{children}</>
-}
-
-function AccessDenied() {
-  return (
-    <div className="p-6">
-      <Card className="border-destructive/30 bg-destructive/5">
-        <CardHeader className="flex flex-row items-start gap-3 space-y-0">
-          <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
-          <div>
-            <CardTitle className="text-base">Không có quyền truy cập</CardTitle>
-            <CardDescription className="mt-1">
-              Tài khoản của bạn không có quyền xem trang này.
-            </CardDescription>
-          </div>
-        </CardHeader>
-      </Card>
-    </div>
-  )
 }

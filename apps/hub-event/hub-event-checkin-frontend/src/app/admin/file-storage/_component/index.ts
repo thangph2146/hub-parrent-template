@@ -19,6 +19,7 @@ export { FileStorageFolderTree } from "./file-storage-folder-tree"
 export { FileStorageTable } from "./_table"
 export { FileStoragePickerPanel } from "./file-storage-picker-panel"
 export type { FileStoragePickerPanelProps } from "./file-storage-picker-panel"
+export type { ProductImageUploadContext } from "../../products/_component/product-image-storage"
 export { useFileStorageActions, useFileStorageList } from "./_hooks"
 export type {
   FileStorageRow,

@@ -1,9 +1,11 @@
+/** AUTO-GENERATED — pnpm pull:checkin (script-system/sync-checkin-menu-tree.cjs). Không sửa tay. */
 import {
   BookOpen,
   Building2,
   CalendarPlus,
   Camera,
   Cog,
+  Database,
   FileText,
   FolderOpen,
   FolderTree,
@@ -14,22 +16,40 @@ import {
   MapPin,
   Mic,
   Monitor,
+  ShieldCheck,
   Tags,
   UserCircle,
+  Users,
 } from "lucide-react"
 import type { AdminMenuTreeItem } from "@ui/components/admin"
-import { PERMISSION_CODES } from "@workspace/api-client"
 
-const BASE = "/admin"
-
-/** Menu admin check-in — nhóm phục vụ sự kiện, check-in, camera & địa điểm. */
 export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
   {
     type: "leaf",
-    href: `${BASE}/tong-quan`,
+    href: "/admin/tong-quan",
     label: "Tổng quan",
     icon: LayoutDashboard,
     permission: null,
+  },
+  {
+    type: "group",
+    label: "HRM",
+    icon: Users,
+    children: [
+      {
+        href: "/admin/staff",
+        label: "Nhân sự",
+        icon: Users,
+        permission: null,
+        anyPermission: ["users:manage"],
+      },
+      {
+        href: "/admin/rbac",
+        label: "Phân quyền",
+        icon: ShieldCheck,
+        permission: "roles:view",
+      },
+    ],
   },
   {
     type: "group",
@@ -37,44 +57,38 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: FolderTree,
     children: [
       {
-        href: `${BASE}/categories`,
+        href: "/admin/categories",
         label: "Danh mục",
         icon: FolderOpen,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.CATEGORIES_VIEW,
-          PERMISSION_CODES.CATEGORIES_CREATE,
-        ],
+        anyPermission: ["categories:view","categories:create"],
       },
       {
-        href: `${BASE}/tags`,
+        href: "/admin/tags",
         label: "Tags",
         icon: Tags,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.TAGS_VIEW,
-          PERMISSION_CODES.TAGS_MANAGE,
-        ],
+        anyPermission: ["tags:view","tags:manage"],
       },
     ],
   },
   {
     type: "group",
     label: "Truyền thông",
-    icon: FileText,
+    icon: FolderTree,
     children: [
       {
-        href: `${BASE}/guides`,
+        href: "/admin/guides",
         label: "Hướng dẫn sử dụng",
         icon: BookOpen,
-        permission: PERMISSION_CODES.PAGE_CONTENTS_VIEW,
+        permission: "page_contents:view",
       },
       {
-        href: `${BASE}/posts`,
+        href: "/admin/posts",
         label: "Bài viết",
         icon: FileText,
         permission: null,
-        anyPermission: [PERMISSION_CODES.POSTS_VIEW],
+        anyPermission: ["posts:view"],
       },
     ],
   },
@@ -84,51 +98,39 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: Camera,
     children: [
       {
-        href: `${BASE}/cameras`,
+        href: "/admin/cameras",
         label: "Camera",
         icon: Camera,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.CAMERAS_VIEW,
-          PERMISSION_CODES.CAMERAS_MANAGE,
-        ],
+        anyPermission: ["cameras:view","cameras:manage"],
       },
       {
-        href: `${BASE}/templates`,
+        href: "/admin/templates",
         label: "Mẫu hiển thị",
         icon: LayoutTemplate,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.TEMPLATES_VIEW,
-          PERMISSION_CODES.TEMPLATES_MANAGE,
-        ],
+        anyPermission: ["templates:view","templates:manage"],
       },
       {
-        href: `${BASE}/screens`,
+        href: "/admin/screens",
         label: "Màn hình",
         icon: Monitor,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.SCREENS_VIEW,
-          PERMISSION_CODES.SCREENS_MANAGE,
-        ],
+        anyPermission: ["screens:view","screens:manage"],
       },
     ],
   },
   {
     type: "group",
-    label: "Địa điểm & vị trí",
+    label: "Địa điểm & vị trí",
     icon: MapPin,
     children: [
       {
-        href: `${BASE}/locations`,
+        href: "/admin/locations",
         label: "Địa điểm",
         icon: MapPin,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.LOCATIONS_VIEW,
-          PERMISSION_CODES.LOCATIONS_MANAGE,
-        ],
+        anyPermission: ["locations:view","locations:manage"],
       },
     ],
   },
@@ -138,24 +140,51 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: CalendarPlus,
     children: [
       {
-        href: BASE,
+        href: "/admin",
         label: "Sự kiện",
         icon: CalendarPlus,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.EVENTS_VIEW,
-          PERMISSION_CODES.EVENTS_MANAGE,
-        ],
+        anyPermission: ["events:view","events:manage"],
       },
       {
-        href: `${BASE}/speakers`,
+        href: "/admin/speakers",
         label: "Diễn giả",
         icon: Mic,
         permission: null,
-        anyPermission: [
-          PERMISSION_CODES.SPEAKERS_VIEW,
-          PERMISSION_CODES.SPEAKERS_MANAGE,
-        ],
+        anyPermission: ["speakers:view","speakers:manage"],
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "Hệ thống",
+    icon: Database,
+    children: [
+      {
+        href: "/admin/settings",
+        label: "Cài đặt & SEO",
+        icon: Cog,
+        permission: null,
+        anyPermission: ["settings:manage","seo_metas:view","seo_metas:manage"],
+      },
+      {
+        href: "/admin/data",
+        label: "Sao lưu dữ liệu",
+        icon: Database,
+        permission: "settings:manage",
+      },
+      {
+        href: "/admin/file-storage",
+        label: "Kho lưu trữ file",
+        icon: Image,
+        permission: null,
+        anyPermission: ["uploads:view","uploads:manage"],
+      },
+      {
+        href: "/admin/profile",
+        label: "Hồ sơ tài khoản",
+        icon: UserCircle,
+        permission: null,
       },
     ],
   },
@@ -165,43 +194,9 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: Building2,
     children: [
       {
-        href: `${BASE}/check-in-ky-tuc-xa`,
+        href: "/admin/check-in-ky-tuc-xa",
         label: "Check-in ký túc xá",
         icon: Home,
-        permission: null,
-      },
-    ],
-  },
-  {
-    type: "group",
-    label: "Hệ thống",
-    icon: Cog,
-    children: [
-      {
-        href: `${BASE}/settings`,
-        label: "Cài đặt & SEO",
-        icon: Cog,
-        permission: null,
-        anyPermission: [
-          PERMISSION_CODES.SETTINGS_MANAGE,
-          PERMISSION_CODES.SEO_METAS_VIEW,
-          PERMISSION_CODES.SEO_METAS_MANAGE,
-        ],
-      },
-      {
-        href: `${BASE}/file-storage`,
-        label: "Kho lưu trữ file",
-        icon: Image,
-        permission: null,
-        anyPermission: [
-          PERMISSION_CODES.UPLOADS_VIEW,
-          PERMISSION_CODES.UPLOADS_MANAGE,
-        ],
-      },
-      {
-        href: `${BASE}/profile`,
-        label: "Hồ sơ tài khoản",
-        icon: UserCircle,
         permission: null,
       },
     ],
