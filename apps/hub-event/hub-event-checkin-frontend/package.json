@@ -1,0 +1,47 @@
+{
+  "name": "@hub-event-checkin-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node ../../../script-system/conditional-api-wait.cjs && node ../../../script-system/next-dev.cjs 3000",
+    "predev": "node ../../../script-system/kill-ports.mjs 3000",
+    "kill": "node ../../../script-system/kill-ports.mjs 3000",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings=0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-table": "8.21.3",
+    "@thangph2146/lexical-editor": "workspace:*",
+    "@workspace/api-client": "workspace:*",
+    "@workspace/query-client": "workspace:*",
+    "@workspace/site-config": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "jszip": "^3.10.1",
+    "lexical": "^0.38.2",
+    "lucide-react": "^1.14.0",
+    "next": "16.2.6",
+    "nextjs-toploader": "^3.9.17",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.75.0",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.7",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@workspace/eslint-config": "workspace:*",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

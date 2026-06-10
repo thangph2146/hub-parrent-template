@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./types": "./src/types.ts",
     "./client": "./src/client.ts",
-    "./realtime": "./src/realtime/index.ts"
+    "./realtime": "./src/realtime/index.ts",
+    "./role-templates/event-staff": "./src/role-templates/event-staff.ts"
   },
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" --max-warnings=0",

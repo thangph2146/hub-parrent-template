@@ -1,12 +1,14 @@
 /** Cấu hình PM2 dùng chung cho các stack production trong monorepo. */
 
+const { PRODUCT_LINES } = require("./script-system/monorepo-apps.cjs")
+
 const PROD_ENV = { NODE_ENV: "production" }
 
 /** @returns {import('pm2').StartOptions} */
-function createApiApp(name) {
+function createApiApp(name, cwd) {
   return {
     name,
-    cwd: "./apps/api",
+    cwd: `./${cwd}`,
     script: "pnpm",
     args: "run start:prod",
     env: {
@@ -17,10 +19,10 @@ function createApiApp(name) {
 }
 
 /** @returns {import('pm2').StartOptions} */
-function createBackendApp(name) {
+function createBackendApp(name, cwd) {
   return {
     name,
-    cwd: "./apps/backend",
+    cwd: `./${cwd}`,
     script: "pnpm",
     args: "next start -p 3001",
     env: PROD_ENV,
@@ -31,44 +33,46 @@ function createBackendApp(name) {
 function createNextFrontendApp(name, cwd, port = 3000) {
   return {
     name,
-    cwd,
+    cwd: `./${cwd}`,
     script: "pnpm",
     args: `next start -p ${port}`,
     env: PROD_ENV,
   }
 }
 
-/** Site chính: @frontend (3000) + @backend (3001) + @api (3002) */
+/** Site chính: hub-parent API + main admin + hub-parent storefront */
 function createParentStack() {
   return [
-    createApiApp("hub-parent-api"),
-    createBackendApp("hub-parent-backend"),
-    createNextFrontendApp("hub-parent-frontend", "./apps/frontend", 3000),
-  ]
-}
-
-/** Check-in event: @hub-event-checkin-frontend (3000) + @backend (3001) + @api (3002) */
-function createCheckinStack() {
-  return [
-    createApiApp("hub-checkin-api"),
-    createBackendApp("hub-checkin-backend"),
+    createApiApp("hub-parent-api", PRODUCT_LINES["hub-parent"].api.path),
+    createBackendApp("hub-parent-backend", PRODUCT_LINES.main.backend.path),
     createNextFrontendApp(
-      "hub-checkin-frontend",
-      "./apps/hub-event-checkin-frontend",
-      3000
+      "hub-parent-frontend",
+      PRODUCT_LINES["hub-parent"].frontend.path,
+      3000,
     ),
   ]
 }
 
-/** Store sync: @store-sync-frontend (3000) + @backend (3001) + @api (3002) */
+/** Check-in: API + frontend (admin gộp trong check-in frontend) */
+function createCheckinStack() {
+  return [
+    createApiApp("hub-checkin-api", PRODUCT_LINES["hub-event"].api.path),
+    createNextFrontendApp(
+      "hub-checkin-frontend",
+      PRODUCT_LINES["hub-event"].frontend.path,
+      3000,
+    ),
+  ]
+}
+
+/** Store sync: API + storefront */
 function createStoreStack() {
   return [
-    createApiApp("hub-store-api"),
-    createBackendApp("hub-store-backend"),
+    createApiApp("hub-store-api", PRODUCT_LINES["store-sync"].api.path),
     createNextFrontendApp(
       "hub-store-frontend",
-      "./apps/store-sync-frontend",
-      3000
+      PRODUCT_LINES["store-sync"].frontend.path,
+      3000,
     ),
   ]
 }

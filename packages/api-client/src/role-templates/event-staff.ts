@@ -1,0 +1,148 @@
+/**
+ * Mẫu role `event_staff` (ban tổ chức / BTC) — mirror server template.
+ *
+ * Source of truth: `apps/main/api/src/config/role-templates/event-staff.template.ts`
+ * Kiểm tra parity: `pnpm verify:permissions`
+ */
+import type { PermissionCode } from "../permissions"
+
+export const EVENT_STAFF_ROLE_CODE = "event_staff" as const
+
+export const EVENT_STAFF_ROLE_DISPLAY_NAME = "Ban tổ chức sự kiện"
+
+export const EVENT_STAFF_ROLE_DESCRIPTION =
+  "Vận hành check-in — sự kiện, camera, màn hình, địa điểm (cổng HUB Events)"
+
+/** Toàn bộ permission của role BTC — khớp `EVENT_CHECKIN_STAFF_PERMISSIONS` (API). */
+export const EVENT_CHECKIN_STAFF_PERMISSION_CODES = [
+  "dashboard:view",
+  "accounts:view",
+  "accounts:update",
+  "users:view",
+  "users:update",
+  "events:view",
+  "events:create",
+  "events:update",
+  "events:delete",
+  "events:manage",
+  "events:export",
+  "events:restore",
+  "event_registrations:view",
+  "event_registrations:create",
+  "event_registrations:update",
+  "event_registrations:delete",
+  "event_registrations:manage",
+  "event_registrations:export",
+  "event_registrations:restore",
+  "event_checkins:view",
+  "event_checkins:create",
+  "event_checkins:update",
+  "event_checkins:delete",
+  "event_checkins:manage",
+  "event_checkins:export",
+  "event_checkouts:view",
+  "event_checkouts:create",
+  "event_checkouts:update",
+  "event_checkouts:delete",
+  "event_checkouts:manage",
+  "event_checkouts:export",
+  "event_speakers:view",
+  "event_speakers:create",
+  "event_speakers:update",
+  "event_speakers:delete",
+  "event_speakers:manage",
+  "event_speakers:export",
+  "speakers:view",
+  "speakers:create",
+  "speakers:update",
+  "speakers:delete",
+  "speakers:manage",
+  "speakers:export",
+  "speakers:restore",
+  "locations:view",
+  "locations:create",
+  "locations:update",
+  "locations:delete",
+  "locations:manage",
+  "locations:export",
+  "locations:restore",
+  "cameras:view",
+  "cameras:create",
+  "cameras:update",
+  "cameras:delete",
+  "cameras:manage",
+  "cameras:export",
+  "cameras:restore",
+  "templates:view",
+  "templates:create",
+  "templates:update",
+  "templates:delete",
+  "templates:manage",
+  "templates:export",
+  "templates:restore",
+  "screens:view",
+  "screens:create",
+  "screens:update",
+  "screens:delete",
+  "screens:manage",
+  "screens:export",
+  "screens:restore",
+  "categories:view",
+  "categories:create",
+  "categories:update",
+  "categories:delete",
+  "categories:manage",
+  "categories:export",
+  "categories:restore",
+  "categories:hard-delete",
+  "tags:view",
+  "tags:create",
+  "tags:update",
+  "tags:delete",
+  "tags:manage",
+  "tags:export",
+  "tags:restore",
+  "page_contents:view",
+  "page_contents:create",
+  "page_contents:update",
+  "page_contents:delete",
+  "page_contents:manage",
+  "page_contents:export",
+  "posts:view",
+  "posts:create",
+  "posts:update",
+  "posts:delete",
+  "posts:manage",
+  "posts:export",
+  "posts:restore",
+  "settings:view",
+  "settings:manage",
+  "seo_metas:view",
+  "seo_metas:create",
+  "seo_metas:update",
+  "seo_metas:delete",
+  "seo_metas:manage",
+  "seo_metas:export",
+  "seo_metas:restore",
+  "seo_metas:hard-delete",
+  "uploads:view",
+  "uploads:create",
+  "uploads:update",
+  "uploads:delete",
+  "uploads:manage",
+  "uploads:export",
+] as const satisfies readonly PermissionCode[]
+
+/** Metadata hiển thị (admin RBAC / docs). */
+export const EVENT_STAFF_ROLE_TEMPLATE = {
+  code: EVENT_STAFF_ROLE_CODE,
+  displayName: EVENT_STAFF_ROLE_DISPLAY_NAME,
+  description: EVENT_STAFF_ROLE_DESCRIPTION,
+  permissions: EVENT_CHECKIN_STAFF_PERMISSION_CODES,
+} as const
+
+/**
+ * Quyền tối thiểu để vào shell admin check-in — OR bất kỳ mã nào trong mẫu BTC.
+ */
+export const CHECKIN_ADMIN_ENTRY_PERMISSION_CODES =
+  EVENT_CHECKIN_STAFF_PERMISSION_CODES

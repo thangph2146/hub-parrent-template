@@ -10,15 +10,56 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+const API_PACKAGES = [
+  "@api",
+  "@hub-event/api",
+  "@hub-parent/api",
+  "@store-sync/api",
+];
+
+const API_FORBIDDEN = [
+  "@frontend",
+  "@backend",
+  "@workspace/ui",
+  "@workspace/api-client",
+];
+
 /** @type {Record<string, readonly string[]>} */
 const FORBIDDEN_DEPS = {
-  "@api": ["@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
-  "@frontend": ["@backend", "@api", "@store-sync-frontend"],
-  "@store-sync-frontend": ["@backend", "@api", "@frontend"],
-  "@backend": ["@frontend", "@api", "@store-sync-frontend"],
-  "@hub-event-checkin-frontend": ["@backend", "@frontend", "@api"],
-  "@workspace/api-client": ["@api", "@frontend", "@backend", "@workspace/ui"],
-  "@workspace/site-config": ["@api", "@frontend", "@backend", "@workspace/ui", "@workspace/api-client"],
+  "@api": API_FORBIDDEN,
+  "@hub-event/api": API_FORBIDDEN,
+  "@hub-parent/api": API_FORBIDDEN,
+  "@store-sync/api": API_FORBIDDEN,
+  "@frontend": [
+    "@backend",
+    "@api",
+    ...API_PACKAGES.filter((p) => p !== "@api"),
+    "@store-sync-frontend",
+  ],
+  "@store-sync-frontend": [
+    "@backend",
+    ...API_PACKAGES,
+    "@frontend",
+  ],
+  "@backend": ["@frontend", ...API_PACKAGES, "@store-sync-frontend"],
+  "@hub-event-checkin-frontend": [
+    "@backend",
+    "@frontend",
+    ...API_PACKAGES,
+  ],
+  "@workspace/api-client": [
+    ...API_PACKAGES,
+    "@frontend",
+    "@backend",
+    "@workspace/ui",
+  ],
+  "@workspace/site-config": [
+    ...API_PACKAGES,
+    "@frontend",
+    "@backend",
+    "@workspace/ui",
+    "@workspace/api-client",
+  ],
 };
 
 const DEP_FIELDS = [
@@ -31,15 +72,29 @@ const DEP_FIELDS = [
 /** @returns {string[]} */
 function readWorkspacePackageJsonPaths() {
   const out = [];
-  for (const seg of ["apps", "packages"]) {
-    const base = join(root, seg);
-    if (!existsSync(base)) continue;
-    for (const ent of readdirSync(base, { withFileTypes: true })) {
+
+  const packagesDir = join(root, "packages");
+  if (existsSync(packagesDir)) {
+    for (const ent of readdirSync(packagesDir, { withFileTypes: true })) {
       if (!ent.isDirectory()) continue;
-      const p = join(base, ent.name, "package.json");
+      const p = join(packagesDir, ent.name, "package.json");
       if (existsSync(p)) out.push(p);
     }
   }
+
+  const appsDir = join(root, "apps");
+  if (existsSync(appsDir)) {
+    for (const product of readdirSync(appsDir, { withFileTypes: true })) {
+      if (!product.isDirectory()) continue;
+      const productPath = join(appsDir, product.name);
+      for (const app of readdirSync(productPath, { withFileTypes: true })) {
+        if (!app.isDirectory()) continue;
+        const p = join(productPath, app.name, "package.json");
+        if (existsSync(p)) out.push(p);
+      }
+    }
+  }
+
   return out;
 }
 

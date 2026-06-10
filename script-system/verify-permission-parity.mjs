@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-const API_PERMS_PATH = join(root, "apps/api/src/config/permissions.ts");
+const API_PERMS_PATH = join(root, "apps/main/api/src/config/permissions.ts");
 const CLIENT_PERMS_PATH = join(
   root,
   "packages/api-client/src/permissions.ts",
@@ -170,3 +170,61 @@ if (!isClean) {
 console.log(
   `[verify-permission-parity] OK — parity giữa API và client PERMISSION_CODES khớp hoàn toàn.`,
 );
+
+const API_EVENT_STAFF_TEMPLATE = join(
+  root,
+  "apps/main/api/src/config/role-templates/event-staff.template.ts",
+);
+const CLIENT_EVENT_STAFF_TEMPLATE = join(
+  root,
+  "packages/api-client/src/role-templates/event-staff.ts",
+);
+
+function extractTemplatePermissionCodes(source) {
+  const codes = [];
+  const re =
+    /^\s*[`'"]([a-z][a-z0-9_]*):([a-z][a-z0-9_-]*)[`'"],?\s*$/gm;
+  let inBlock = false;
+  for (const line of source.split("\n")) {
+    if (
+      line.includes("EVENT_CHECKIN_STAFF_PERMISSIONS") ||
+      line.includes("EVENT_CHECKIN_STAFF_PERMISSION_CODES")
+    ) {
+      inBlock = line.includes("[");
+    }
+    if (inBlock) {
+      const m = line.match(re);
+      if (m) codes.push(`${m[1]}:${m[2]}`);
+      if (line.includes("] as const")) inBlock = false;
+    }
+  }
+  return codes;
+}
+
+if (
+  existsSync(API_EVENT_STAFF_TEMPLATE) &&
+  existsSync(CLIENT_EVENT_STAFF_TEMPLATE)
+) {
+  const apiTemplate = readFileSync(API_EVENT_STAFF_TEMPLATE, "utf8");
+  const clientTemplate = readFileSync(CLIENT_EVENT_STAFF_TEMPLATE, "utf8");
+  const apiStaff = extractTemplatePermissionCodes(apiTemplate);
+  const clientStaff = extractTemplatePermissionCodes(clientTemplate);
+  const apiSet = new Set(apiStaff);
+  const clientSet = new Set(clientStaff);
+  const staffOnlyApi = apiStaff.filter((c) => !clientSet.has(c));
+  const staffOnlyClient = clientStaff.filter((c) => !apiSet.has(c));
+
+  if (staffOnlyApi.length > 0 || staffOnlyClient.length > 0) {
+    console.error(
+      `\n[verify-permission-parity] FAIL — event_staff role template lệch (API ${apiStaff.length} · client ${clientStaff.length}):`,
+    );
+    for (const c of staffOnlyApi) console.error(`  API only: ${c}`);
+    for (const c of staffOnlyClient)
+      console.error(`  client only: ${c}`);
+    process.exit(1);
+  }
+
+  console.log(
+    `[verify-permission-parity] OK — event_staff template: ${apiStaff.length} permissions khớp API ↔ client.`,
+  );
+}

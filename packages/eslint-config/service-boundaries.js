@@ -9,9 +9,9 @@
 /** Trong RegExp: khớp `/` hoặc `\` (đường dẫn import). */
 const pathSep = "[/\\\\]";
 
-/** Khớp chuỗi import chứa segment monorepo `apps/<tên>`. */
+/** Khớp chuỗi import chứa segment app (`apps/<tên>` hoặc `apps/<line>/<tên>`). */
 const reAppsPath = (/** @type {string} */ segment) =>
-  `${pathSep}apps${pathSep}${segment}(?:${pathSep}|$)`;
+  `${pathSep}apps(?:${pathSep}[^/\\\\]+)?${pathSep}${segment}(?:${pathSep}|$)`;
 
 /** Khớp import kiểu đường dẫn tệp vào thư mục gốc `packages/` (bypass alias workspace). */
 const reMonorepoPackagesPath = `${pathSep}packages${pathSep}`;

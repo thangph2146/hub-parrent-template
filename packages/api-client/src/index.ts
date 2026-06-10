@@ -58,6 +58,14 @@ export {
   isSuperAdminRoleCode,
   type PermissionCode,
 } from "./permissions"
+export {
+  EVENT_STAFF_ROLE_CODE,
+  EVENT_STAFF_ROLE_DISPLAY_NAME,
+  EVENT_STAFF_ROLE_DESCRIPTION,
+  EVENT_STAFF_ROLE_TEMPLATE,
+  EVENT_CHECKIN_STAFF_PERMISSION_CODES,
+  CHECKIN_ADMIN_ENTRY_PERMISSION_CODES,
+} from "./role-templates/event-staff"
 export { ApiClient, ApiError } from "./client"
 export {
   summarizeAuthUser,

@@ -9,7 +9,9 @@ Trước khi sửa bất kỳ file code nào, agent phải đọc và làm theo:
 1. `docs/admin-pattern/PRE_CODE_PROTOCOL.md`
 2. Các tài liệu liên quan được liệt kê trong protocol đó
 
-Nếu task liên quan admin page trong `apps/backend`, phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md` trước khi sửa source.
+Nếu task liên quan admin page trong `apps/main/backend`, phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md` trước khi sửa source.
+
+Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md`.
 
 > Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/admin-pattern/` và `docs/pages/` làm tài liệu bổ trợ.
 
@@ -22,9 +24,9 @@ Nếu task liên quan admin page trong `apps/backend`, phải đọc `docs/admin
 5. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (khi triển khai page admin trong `apps/backend`)
 6. `.graphify/markdown/SUMMARY_FOR_AI.md` (chỉ mục monorepo + link tới từng app)
 7. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (danh sách workspace packages)
-8. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
-9. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-10. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+8. `apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
+9. `apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
+10. `apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`
 
 Sau `.graphify/markdown/SUMMARY_FOR_AI.md`, dùng mục **Chỉ dẫn theo chủ đề** trong cùng file để chọn đúng `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md` (cùng thư mục `markdown/` của từng scope) theo việc cần làm.
 
@@ -75,8 +77,8 @@ Factory chung: `ecosystem.shared.cjs`. Hai file stack:
 
 | #     | Composition (3 app)                                             | File PM2                | Alias                  |
 | ----- | --------------------------------------------------------------- | ----------------------- | ---------------------- |
-| **1** | `apps/api` + `apps/backend` + `apps/frontend`                   | `ecosystem.main.cjs`    | `ecosystem.config.cjs` |
-| **2** | `apps/api` + `apps/backend` + `apps/hub-event-checkin-frontend` | `ecosystem.checkin.cjs` | —                      |
+| **1** | `hub-parent/api` + `main/backend` + `hub-parent-frontend` | `ecosystem.main.cjs`    | `ecosystem.config.cjs` |
+| **2** | `hub-event/api` + `hub-event-checkin-frontend` (2 app)    | `ecosystem.checkin.cjs` | —                      |
 
 **Không chạy đồng thời** compo 1 và compo 2 trên cùng máy — trùng port 3000 / 3001 / 3002.
 
@@ -84,9 +86,9 @@ Factory chung: `ecosystem.shared.cjs`. Hai file stack:
 
 | Thư mục         | Package     | Tên PM2               | Port |
 | --------------- | ----------- | --------------------- | ---- |
-| `apps/api`      | `@api`      | `hub-parent-api`      | 3002 |
-| `apps/backend`  | `@backend`  | `hub-parent-backend`  | 3001 |
-| `apps/frontend` | `@frontend` | `hub-parent-frontend` | 3000 |
+| `apps/hub-parent/api` | `@hub-parent/api` | `hub-parent-api`      | 3002 |
+| `apps/main/backend`   | `@backend`        | `hub-parent-backend`  | 3001 |
+| `apps/hub-parent/hub-parent-frontend` | `@frontend` | `hub-parent-frontend` | 3000 |
 
 ```bash
 pnpm pm2:start
@@ -101,9 +103,8 @@ pnpm pm2:stop
 
 | Thư mục                           | Package                       | Tên PM2                | Port |
 | --------------------------------- | ----------------------------- | ---------------------- | ---- |
-| `apps/api`                        | `@api`                        | `hub-checkin-api`      | 3002 |
-| `apps/backend`                    | `@backend`                    | `hub-checkin-backend`  | 3001 |
-| `apps/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | `hub-checkin-frontend` | 3000 |
+| `apps/hub-event/api` | `@hub-event/api` | `hub-checkin-api`      | 3002 |
+| `apps/hub-event/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | `hub-checkin-frontend` | 3000 |
 
 ```bash
 pnpm pm2:start:checkin

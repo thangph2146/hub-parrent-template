@@ -3,18 +3,14 @@
  *
  * Chạy: pnpm verify:sdk-http
  */
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-
-const NEXT_APPS = [
-  "apps/frontend",
-  "apps/store-sync-frontend",
-  "apps/backend",
-  "apps/hub-event-checkin-frontend",
-];
+const require = createRequire(import.meta.url);
+const { NEXT_APP_PATHS } = require("./monorepo-apps.cjs");
 
 const RAW_SDK_HTTP = /\b(api|apiClient|sdk)\.http\b/;
 
@@ -35,33 +31,24 @@ function walkTs(dir, out) {
 function main() {
   const errors = [];
 
-  for (const appRel of NEXT_APPS) {
+  for (const appRel of NEXT_APP_PATHS) {
     const src = join(root, appRel, "src");
     const files = [];
     walkTs(src, files);
 
     for (const file of files) {
-      const lines = readFileSync(file, "utf8").split(/\r?\n/);
-      lines.forEach((line, index) => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith("//") || trimmed.startsWith("*")) return;
-        if (RAW_SDK_HTTP.test(line)) {
-          errors.push(
-            `${relative(root, file)}:${index + 1} — ${trimmed.slice(0, 120)}`,
-          );
-        }
-      });
+      const content = readFileSync(file, "utf8");
+      if (!RAW_SDK_HTTP.test(content)) continue;
+      const rel = relative(root, file).replace(/\\/g, "/");
+      errors.push(`${rel}: gọi sdk.http trực tiếp — dùng resource API (@workspace/api-client).`);
     }
   }
 
   if (errors.length) {
-    console.error(
-      "[verify-no-sdk-http] Phát hiện sdk.http trong Next app (dùng api.<resource> thay thế):\n",
-    );
+    console.error("[verify-no-sdk-http] Vi phạm:\n");
     for (const e of errors) console.error(`  • ${e}`);
     process.exit(1);
   }
-
   console.log("[verify-no-sdk-http] OK — không có sdk.http trong Next apps.");
 }
 

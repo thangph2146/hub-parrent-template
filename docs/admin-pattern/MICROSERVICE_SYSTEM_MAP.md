@@ -4,13 +4,18 @@ Tài liệu này là bản đồ nhanh để AI/agent hiểu đúng kiến trúc
 
 ## 1) Service Boundaries
 
-| Service                       | Thư mục                           | Chức năng riêng                                                      | Không được chứa                           |
-| ----------------------------- | --------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `@api`                        | `apps/api`                        | NestJS REST/WS, MikroORM entity/migration/seed, RBAC, business rules | React, Next, fetch từ client              |
-| `@frontend`                   | `apps/frontend`                   | Storefront Next (HUB công khai), SSR/SEO trang public                | DB, entity, admin CRUD logic              |
-| `@store-sync-frontend`        | `apps/store-sync-frontend`        | Storefront Store Sync (catalog, giỏ, checkout)                       | Cùng ranh giới như `@frontend`            |
-| `@backend`                    | `apps/backend`                    | Admin Next, route/page theo domain, query hooks, wiring auth         | Entity, MikroORM, component admin generic |
-| `@hub-event-checkin-frontend` | `apps/hub-event-checkin-frontend` | Storefront check-in sự kiện (PM2 compo 2)                            | Cùng ranh giới như `@frontend`            |
+Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md`.
+
+| Service                       | Thư mục                                              | Chức năng riêng                                                      | Không được chứa                           |
+| ----------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `@api`                        | `apps/main/api`                                      | NestJS REST/WS, MikroORM entity/migration/seed, RBAC (source chính)  | React, Next, fetch từ client              |
+| `@backend`                    | `apps/main/backend`                                  | Admin Next, route/page theo domain, query hooks, wiring auth         | Entity, MikroORM, component admin generic |
+| `@hub-parent/api`             | `apps/hub-parent/api`                                | API deploy site chính (sync từ main)                                 | Giống `@api`                              |
+| `@frontend`                   | `apps/hub-parent/hub-parent-frontend`                | Storefront Next (HUB công khai), SSR/SEO trang public                | DB, entity, admin CRUD logic              |
+| `@hub-event/api`              | `apps/hub-event/api`                                 | API check-in (sync từ main, cắt module)                              | Giống `@api`                              |
+| `@hub-event-checkin-frontend` | `apps/hub-event/hub-event-checkin-frontend`          | Storefront + admin check-in sự kiện                                  | Cùng ranh giới như `@frontend`            |
+| `@store-sync/api`             | `apps/store-sync/api`                                | API Store Sync (sync từ main)                                        | Giống `@api`                              |
+| `@store-sync-frontend`        | `apps/store-sync/store-sync-frontend`                | Storefront Store Sync (catalog, giỏ, checkout)                       | Cùng ranh giới như `@frontend`            |
 
 Nguyên tắc:
 
@@ -48,9 +53,9 @@ Nguyên tắc:
 
 1. `.graphify/markdown/SUMMARY_FOR_AI.md` (bản đồ tổng + link)
 2. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
-3. `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (hoặc `store-sync-frontend` theo task)
-4. `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-5. `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+3. `apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (hoặc store-sync / hub-event theo task)
+4. `apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
+5. `apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`
 6. `packages/eslint-config/service-boundaries.js`
 7. `script-system/verify-service-boundaries.mjs`
 8. File source cụ thể liên quan task

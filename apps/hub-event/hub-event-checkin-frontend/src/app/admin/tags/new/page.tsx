@@ -1,0 +1,68 @@
+import { PERMISSION_CODES } from "@workspace/api-client"
+"use client"
+
+import { useAdminCrudNavigation } from "@/lib/admin/admin-navigation"
+
+import { useCallback } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
+import { api } from "@/lib/admin/api"
+import { TagFormShell, useTagForm, buildTagPayload } from "../_component"
+import type { TagFormValues } from "../_component"
+
+import { useAdminMutation } from "@/hooks/admin/use-admin-mutation"
+function NewTagPageInner() {
+  const crudNav = useAdminCrudNavigation("/admin/tags")
+  const queryClient = useQueryClient()
+  const { form } = useTagForm()
+
+  const invalidateAll = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["media", "tags"] })
+  }
+
+  const createMutation = useAdminMutation({
+    toast: {
+      loading: "Đang thực hiện…",
+      success: (_data, variables) =>
+        `Đã tạo thẻ "${(variables.name as string)?.trim()}"`,
+      error: (err) =>
+        err instanceof Error ? err.message : "Không thể tạo thẻ",
+    },
+    mutationFn: async (input: Record<string, unknown>) =>
+      api.tags.create(input),
+    onSuccess: async () => {
+      await invalidateAll()
+      crudNav.list()
+    },
+  })
+
+  const handleSubmit = useCallback(
+    async (values: TagFormValues) => {
+      await createMutation.mutateAsync(buildTagPayload(values))
+    },
+    [createMutation]
+  )
+
+  return (
+    <AdminPageSection>
+      <TagFormShell
+        form={form}
+        onSubmit={handleSubmit}
+        submitting={createMutation.isPending}
+        editingId={null}
+        onBack={() => crudNav.list()}
+        onReset={() => {
+          form.reset()
+        }}
+      />
+    </AdminPageSection>
+  )
+}
+
+export default function NewTagPage() {
+  return (
+    <AdminPageGuard permission={PERMISSION_CODES.TAGS_CREATE}>
+      <NewTagPageInner />
+    </AdminPageGuard>
+  )
+}

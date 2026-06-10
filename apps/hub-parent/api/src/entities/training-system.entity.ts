@@ -1,0 +1,29 @@
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+
+@Entity({ tableName: 'training_systems' })
+export class TrainingSystem {
+  @PrimaryKey()
+  id!: number;
+
+  @Property()
+  name!: string;
+
+  @Property({ nullable: true })
+  code?: string | null;
+
+  @Property({ default: 1 })
+  status: number = 1;
+
+  @Property({ nullable: true, onCreate: () => new Date() })
+  createdAt?: Date;
+
+  @Property({
+    nullable: true,
+    onCreate: () => new Date(),
+    onUpdate: () => new Date(),
+  })
+  updatedAt?: Date;
+
+  @Property({ nullable: true })
+  deletedAt?: Date | null;
+}

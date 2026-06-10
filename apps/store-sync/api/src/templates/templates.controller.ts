@@ -1,0 +1,256 @@
+import {
+  ApiTags,
+  ApiOperation,
+  ApiHeader,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  Headers,
+  Res,
+  Logger,
+} from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
+import type { Response } from 'express';
+import { TemplatesService } from './templates.service';
+import {
+  createSuccessResponse,
+  createErrorResponse,
+} from '../common/api-response';
+import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+
+@ApiTags('Templates')
+@Controller(ADMIN_ROUTES.TEMPLATES)
+@Permissions(PERMISSIONS.TEMPLATES_VIEW)
+export class TemplatesController {
+  private readonly logger = new Logger(TemplatesController.name);
+  constructor(private readonly templatesService: TemplatesService) {}
+  private getUserId(h: Record<string, string | undefined>): string | null {
+    return h[APP_HEADERS.USER_ID]?.trim() || null;
+  }
+  private unauthorized(r: Response): Response {
+    const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
+      status: 401,
+    });
+    return r.status(statusCode).json(body);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'List templates' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async list(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('statusFilter') statusFilter?: string,
+    @Query('updatedAtFrom') updatedAtFrom?: string,
+    @Query('updatedAtTo') updatedAtTo?: string,
+    @Query('deletedAtFrom') deletedAtFrom?: string,
+    @Query('deletedAtTo') deletedAtTo?: string,
+    @Query() query?: Record<string, string>,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const result = await this.templatesService.list({
+      page: Math.max(1, parseInt(String(page), 10) || 1),
+      limit: parseAdminListLimit(limit, 10),
+      search: search?.trim(),
+      status: (status as any) ?? 'active',
+      statusFilter: statusFilter != null ? Number(statusFilter) : undefined,
+      updatedAtFrom: updatedAtFrom?.trim(),
+      updatedAtTo: updatedAtTo?.trim(),
+      deletedAtFrom: deletedAtFrom?.trim(),
+      deletedAtTo: deletedAtTo?.trim(),
+      filters: parseColumnFiltersFromQuery(query),
+    });
+    const { statusCode, body } = createSuccessResponse({
+      data: result.data,
+      pagination: result.pagination,
+    });
+    return res.status(statusCode).json(body);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get template by ID' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async getById(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const row = await this.templatesService.getById(id);
+    if (!row) {
+      const { statusCode, body } = createErrorResponse('Không tìm thấy mẫu', {
+        status: 404,
+      });
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(row);
+    return res.status(statusCode).json(body);
+  }
+
+  @Permissions(PERMISSIONS.TEMPLATES_CREATE)
+  @Post()
+  @ApiOperation({ summary: 'Create template' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async create(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: Record<string, unknown>,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
+        'name là bắt buộc',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(err);
+    }
+    const created = await this.templatesService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
+      status: 201,
+    });
+    return res.status(statusCode).json(ok);
+  }
+
+  @Permissions(PERMISSIONS.TEMPLATES_UPDATE)
+  @Put(':id')
+  @ApiOperation({ summary: 'Update template' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async update(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.templatesService.update(id, body);
+    if (!updated) {
+      const { statusCode, body: err } = createErrorResponse(
+        'Không tìm thấy mẫu',
+        { status: 404 },
+      );
+      return res.status(statusCode).json(err);
+    }
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
+  }
+
+  @Permissions(PERMISSIONS.TEMPLATES_MANAGE)
+  @Delete(':id/hard-delete')
+  @ApiOperation({ summary: 'Hard delete template' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async hardDelete(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.templatesService.hardDelete(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse('Không tìm thấy mẫu', {
+        status: 404,
+      });
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã xóa vĩnh viễn mẫu',
+    });
+    return res.status(statusCode).json(body);
+  }
+
+  @Permissions(PERMISSIONS.TEMPLATES_DELETE)
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete template' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async softDelete(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.templatesService.softDelete(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse(
+        'Mẫu không tồn tại hoặc đã bị xóa',
+        { status: 404 },
+      );
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã xóa mẫu',
+    });
+    return res.status(statusCode).json(body);
+  }
+
+  @Permissions(PERMISSIONS.TEMPLATES_RESTORE)
+  @Post(':id/restore')
+  @ApiOperation({ summary: 'Restore template' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async restore(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.templatesService.restore(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse(
+        'Mẫu không tồn tại hoặc chưa bị xóa',
+        { status: 404 },
+      );
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã khôi phục mẫu',
+    });
+    return res.status(statusCode).json(body);
+  }
+  @Post('bulk')
+  @Permissions(PERMISSIONS.TEMPLATES_MANAGE)
+  @ApiOperation({ summary: 'Bulk action on maus' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({ description: 'Bulk action with ids' })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 400, description: 'Invalid action' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { action?: string; ids?: string[] },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+    const action = body?.action;
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    if (!action || !isBulkAction(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Action khong hop le',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const result = await this.templatesService.bulk(action, ids);
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.affected, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
+  }
+}

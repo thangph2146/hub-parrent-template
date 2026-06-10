@@ -32,24 +32,10 @@ const STACKS = {
 const STACK_PROCESS_NAMES = {
   parent: [
     "hub-parent-api",
-    "hub-parent-backend",
     "hub-parent-frontend",
   ],
-  checkin: [
-    "hub-checkin-api",
-    "hub-checkin-backend",
-    "hub-checkin-frontend",
-  ],
-  store: [
-    "hub-store-api",
-    "hub-store-backend",
-    "hub-store-frontend",
-  ],
-  main: [
-    "hub-parent-api",
-    "hub-parent-backend",
-    "hub-parent-frontend",
-  ],
+  checkin: ["hub-checkin-api", "hub-checkin-frontend"],
+  store: ["hub-store-api", "hub-store-frontend"],
 }
 
 /** Tên process cũ / lỗi — chỉ dùng khi delete để dọn sạch server. */
