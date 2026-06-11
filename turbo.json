@@ -6,6 +6,7 @@
     "API_URL",
     "API_PREFIX",
     "PORT",
+    "ALLOWED_ORIGINS",
     "CORS_ORIGINS",
     "SERVICE_NAME",
     "NEXT_PUBLIC_API_URL",

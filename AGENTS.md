@@ -11,7 +11,7 @@ Trước khi sửa bất kỳ file code nào, agent phải đọc và làm theo:
 
 Nếu task liên quan admin page trong `apps/main/backend`, phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md` trước khi sửa source.
 
-Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md` · quy tắc `apps/`: `apps/README.md` (chỉ sửa `apps/main/` khi dev; line deploy qua sync).
+Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md` · quy tắc `apps/`: `apps/README.md` (chỉ sửa `apps/main/` khi dev; line deploy qua sync) · env: `docs/env/README.md` (`pnpm env:init`, `pnpm verify:env`).
 
 > Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/admin-pattern/` và `docs/pages/` làm tài liệu bổ trợ.
 

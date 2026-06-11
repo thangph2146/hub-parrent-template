@@ -50,9 +50,22 @@ Không tạo lại layout phẳng cũ:
 
 Registry chuẩn: `script-system/lib/monorepo-apps.cjs` — cấu trúc thư mục: `script-system/README.md`.
 
+## Biến môi trường
+
+Mỗi app deployable: **`.env.example`** (mẫu, commit) + **`.env`** (local).
+
+| Lệnh | Mô tả |
+|------|--------|
+| `pnpm env:init parent` | Tạo `.env` cho stack site chính |
+| `pnpm env:init checkin` | Tạo `.env` cho stack check-in |
+| `pnpm env:init all` | Tất cả app trong manifest |
+
+Chi tiết stack, biến, marker: [`docs/env/README.md`](../docs/env/README.md) · registry: `script-system/env/manifest.cjs`.
+
 ## Kiểm tra tự động
 
 ```bash
+pnpm verify:env           # đủ .env.example + marker ENV_TEMPLATE
 pnpm verify:apps          # cấu trúc product line + package registry
 pnpm verify:api-profile   # hub-event API khớp sync profile
 pnpm verify:checkin-admin # admin check-in sau sync (modules, native, imports)

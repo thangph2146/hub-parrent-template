@@ -37,7 +37,7 @@ services:
       DB_TYPE: mysql
       DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD:-storesync}@mysql:3306/${MYSQL_DATABASE:-hub_parent}
       DB_DEBUG: "false"
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:3001}
       EXTERNAL_API_URL: ${EXTERNAL_API_URL:-}
       BACKUP_IMPORT_SECRET: ${BACKUP_IMPORT_SECRET:-}
     ports:

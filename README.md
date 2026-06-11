@@ -24,15 +24,26 @@ pnpm install
 
 ## Biến môi trường
 
-1. Sao chép `apps/api/.env.example` → `apps/api/.env` (và/hoặc `.env` ở **gốc repo**).
-2. Nest `ConfigModule` và CLI MikroORM đều đọc **cả hai**; `apps/api/.env` ghi đè biến trùng tên.
-3. Ứng dụng Next cần `NEXT_PUBLIC_API_URL` (ví dụ `http://localhost:3002/api`) — xem `apps/backend/.env.example`, `apps/frontend/.env.example`.
+Monorepo tổ chức theo **product line** — mỗi app có `.env.example` riêng. Xem [`docs/env/README.md`](docs/env/README.md).
 
-Biến quan trọng cho DB:
+```bash
+pnpm env:init parent    # site chính (hub-parent API + admin + storefront)
+pnpm env:init checkin   # check-in sự kiện
+pnpm env:init main      # source of truth API + admin
+```
 
-- `DATABASE_URL` — chuỗi kết nối (PostgreSQL, MySQL, SQLite, …).
-- `DB_CLIENT` — tuỳ chọn nếu URL không suy ra được driver.
-- `NODE_ENV` — `development` bật log SQL mặc định (có thể tắt bằng `DB_DEBUG=false`).
+Ví dụ đường dẫn:
+
+- API: `apps/main/api/.env` (dev) · `apps/hub-parent/api/.env` (deploy parent)
+- Admin: `apps/main/backend/.env`
+- Storefront: `apps/hub-parent/hub-parent-frontend/.env`
+- Check-in: `apps/hub-event/api/.env` + `apps/hub-event/hub-event-checkin-frontend/.env`
+
+Biến quan trọng:
+
+- `DATABASE_URL`, `JWT_SECRET` — trên app **API** tương ứng
+- `NEXT_PUBLIC_API_URL` — trên app Next (phải có suffix `/api`)
+- `ALLOWED_ORIGINS` — CORS trên API (không dùng `CORS_ORIGINS`)
 
 ## Chạy phát triển
 
@@ -204,15 +215,13 @@ pnpm install --frozen-lockfile
 
 ### 3) Cấu hình biến môi trường production
 
-- API: tạo `apps/api/.env`
-- Admin: tạo `apps/backend/.env`
-- Storefront: tạo `apps/frontend/.env`
+Theo stack deploy — copy từ `.env.example` trong từng app (hoặc `pnpm env:init parent` trên server). Chi tiết: [`docs/env/README.md`](docs/env/README.md).
 
-Tối thiểu:
+Site chính (ví dụ):
 
-- `apps/api/.env`: `NODE_ENV=production`, `DATABASE_URL`, secret JWT/session...
-- `apps/backend/.env`: `NODE_ENV=production`, `PORT=3001`, `NEXT_PUBLIC_API_URL=https://<domain>/api`
-- `apps/frontend/.env`: `NODE_ENV=production`, `PORT=3000`, `NEXT_PUBLIC_API_URL=https://<domain>/api`
+- `apps/hub-parent/api/.env` — `DATABASE_URL`, `JWT_SECRET`, `ALLOWED_ORIGINS`
+- `apps/main/backend/.env` — `NEXT_PUBLIC_API_URL=https://<domain>/api`
+- `apps/hub-parent/hub-parent-frontend/.env` — `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`
 
 ### 4) Build và migrate DB
 
@@ -336,6 +345,6 @@ pm2 reload ecosystem.config.cjs --update-env
 
 ## Tài liệu thêm
 
-- Chi tiết env API: `apps/api/.env.example`
+- Chi tiết env: `docs/env/README.md`
 - Entity & registry: `apps/api/src/entities/`
 - RBAC: `apps/api/src/auth/`, permissions: `apps/api/src/auth/permissions.constants.ts`
