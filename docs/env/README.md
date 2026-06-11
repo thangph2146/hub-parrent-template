@@ -7,6 +7,7 @@ Mỗi **app deployable** có một file mẫu **`.env.example`** (commit git) v�
 | Quy tắc | Chi tiết |
 |---------|----------|
 | Một app = một `.env` | Không dùng `.env.local` trừ khi Next.js tự tạo khi dev |
+| `.env.example` | **Commit git** — mẫu không secret; app Next dùng `.env*` + `!.env.example` |
 | `NEXT_PUBLIC_*` | Nhúng lúc **build** — đổi production phải build lại |
 | Secret | `JWT_*`, `GOOGLE_*`, password DB — không commit |
 | API CORS | Biến đúng trong code Nest: **`ALLOWED_ORIGINS`** (không phải `CORS_ORIGINS`) |
