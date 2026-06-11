@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
-import { EventsPageContent } from "./_component/events-page-content"
-
-export const dynamic = "force-dynamic"
+import { Suspense } from "react"
+import { Loader2 } from "lucide-react"
+import { Page, PageContent } from "@ui/components/layout"
+import { EventsPageClient } from "./_component/events-page-client"
+import { EventsQueryProvider } from "./_component/events-query-provider"
 
 export const metadata: Metadata = {
   title: "Sự kiện | HUB Events",
@@ -9,12 +11,22 @@ export const metadata: Metadata = {
     "Danh sách hội nghị và sự kiện tại Trường Đại học Ngân hàng TP. HCM — tìm kiếm, lọc theo trạng thái và đăng ký tham gia.",
 }
 
-type SearchParams = Record<string, string | string[] | undefined>
+function EventsPageFallback() {
+  return (
+    <Page>
+      <PageContent className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="size-10 animate-spin text-primary" aria-label="Đang tải sự kiện" />
+      </PageContent>
+    </Page>
+  )
+}
 
-export default function EventsListPage({
-  searchParams,
-}: {
-  searchParams?: Promise<SearchParams>
-}) {
-  return <EventsPageContent searchParams={searchParams} />
+export default function EventsListPage() {
+  return (
+    <EventsQueryProvider>
+      <Suspense fallback={<EventsPageFallback />}>
+        <EventsPageClient />
+      </Suspense>
+    </EventsQueryProvider>
+  )
 }

@@ -24,12 +24,8 @@ export function EventsFeaturedStrip({ events }: EventsFeaturedStripProps) {
   }
 
   return (
-    <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-primary/8 via-muted/30 to-background py-10 sm:py-12">
-      <div
-        className="pointer-events-none absolute -right-24 top-0 size-72 rounded-full bg-primary/10 blur-3xl"
-        aria-hidden
-      />
-      <div className="relative mx-auto w-full max-w-[1440px] px-6 md:px-12">
+    <section className="relative overflow-hidden py-8">
+      <div className="relative">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-2">
             <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary">
@@ -76,7 +72,7 @@ export function EventsFeaturedStrip({ events }: EventsFeaturedStripProps) {
 
         <div
           ref={scrollRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory overflow-x-auto pb-2 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {events.map((event) => (
             <div key={event.id} className="snap-start">

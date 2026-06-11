@@ -13,11 +13,15 @@ import {
 type EventsSearchFormProps = {
   initialSearch: string
   query: EventsListQuery
+  tone?: "default" | "banner"
+  onApplyQuery?: (next: Partial<EventsListQuery>) => void
 }
 
 export function EventsSearchForm({
   initialSearch,
   query,
+  tone = "default",
+  onApplyQuery,
 }: EventsSearchFormProps) {
   const router = useRouter()
   const [value, setValue] = useState(initialSearch)
@@ -28,8 +32,13 @@ export function EventsSearchForm({
 
   const navigate = (term: string) => {
     const trimmed = term.trim()
-    router.push(
+    if (onApplyQuery) {
+      onApplyQuery({ search: trimmed || undefined, page: 1 })
+      return
+    }
+    router.replace(
       buildEventsHref(query, { search: trimmed || undefined, page: 1 }),
+      { scroll: false },
     )
   }
 
@@ -41,14 +50,22 @@ export function EventsSearchForm({
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
       <Search
-        className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"
+        className={
+          tone === "banner"
+            ? "pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-muted-foreground"
+            : "pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"
+        }
         aria-hidden
       />
       <Input
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder="Tìm theo tên sự kiện, địa điểm, ban tổ chức..."
-        className="h-11 rounded-xl border-border/80 bg-card pl-10 pr-24 text-sm shadow-sm"
+        className={
+          tone === "banner"
+            ? "h-11 w-full rounded-xl border-white/20 bg-white pl-11 pr-24 text-base text-foreground shadow-sm"
+            : "h-11 rounded-xl border-border/80 bg-card pl-10 pr-24 text-sm shadow-sm"
+        }
         aria-label="Tìm kiếm sự kiện"
       />
       <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 items-center gap-1">

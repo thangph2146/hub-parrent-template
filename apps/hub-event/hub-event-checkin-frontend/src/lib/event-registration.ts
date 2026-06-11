@@ -94,3 +94,12 @@ export function getRegistrationWindowState(event: {
   }
   return { open: true };
 }
+
+/** Sự kiện đang mở đăng ký (khớp logic API đăng ký công khai). */
+export function isEventRegisterable(event: {
+  registrationStart?: string | null;
+  registrationEnd?: string | null;
+  endDate?: string | null;
+}): boolean {
+  return getRegistrationWindowState(event).open;
+}

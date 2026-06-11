@@ -24,9 +24,9 @@ export function EventFeaturedCard({ event }: EventFeaturedCardProps) {
     <Link
       href={`/su-kien/${event.slug ?? event.id}`}
       prefetch={false}
-      className="group block h-full w-[min(100vw-3rem,300px)] shrink-0 sm:w-[300px]"
+      className="group block h-full w-[min(100vw-3rem,300px)] shrink-0 sm:w-[300px] pb-8 px-4"
     >
-      <Card className="flex h-full flex-col overflow-hidden rounded-2xl border-border/70 pt-0 shadow-md transition-all duration-300 group-hover:-translate-y-1 group-hover:border-primary/25 group-hover:shadow-xl group-hover:shadow-primary/10">
+      <Card className="flex h-full flex-col overflow-hidden rounded-2xl border-border/70 pt-0 shadow-md transition-all duration-300 group-hover:-translate-y-1 group-hover:border-primary/25 group-hover:shadow-xl">
         <div className="relative">
           <EventPoster
             poster={event.poster}

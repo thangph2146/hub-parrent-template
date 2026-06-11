@@ -2,6 +2,17 @@ import { ApiError } from "@workspace/api-client";
 import { api } from "./api";
 import { readEventSession } from "./event-session";
 
+/** Chỉ gửi X-User-Id khi id số nguyên dương hợp lệ — tránh 500 từ API khi session legacy. */
+function resolvePublicViewerUserId(
+  raw: string | number | null | undefined,
+): string | null {
+  if (raw == null || raw === "") return null;
+  const trimmed = String(raw).trim();
+  const n = Number.parseInt(trimmed, 10);
+  if (!Number.isFinite(n) || n <= 0 || String(n) !== trimmed) return null;
+  return trimmed;
+}
+
 export type PublicEventItem = {
   id: string;
   title: string;
@@ -87,8 +98,17 @@ export async function getPublicEvents(params?: {
   filter?: EventTimeFilter;
   categorySlug?: string;
   search?: string;
+  registerable?: boolean;
 }) {
-  return api.public.listEvents<PublicEventItem>(params);
+  const query: Record<string, string | number | undefined> = {
+    page: params?.page,
+    limit: params?.limit,
+    filter: params?.filter,
+    categorySlug: params?.categorySlug,
+    search: params?.search,
+  };
+  if (params?.registerable) query.registerable = "1";
+  return api.public.listEvents<PublicEventItem>(query);
 }
 
 export async function getFeaturedPublicEvents(limit = 12) {
@@ -100,11 +120,9 @@ export async function getPublicEventBySlug(
   options?: { userId?: string | number | null },
 ) {
   try {
-    const rawUserId = options?.userId ?? readEventSession()?.id ?? null;
-    const userId =
-      rawUserId == null || rawUserId === ""
-        ? null
-        : String(rawUserId).trim();
+    const userId = resolvePublicViewerUserId(
+      options?.userId ?? readEventSession()?.id ?? null,
+    );
     return await api.public.getEventBySlug<PublicEventDetail>(slug, {
       headers: userId ? { "X-User-Id": userId } : undefined,
     });

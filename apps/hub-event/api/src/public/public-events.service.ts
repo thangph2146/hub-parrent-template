@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { relationEntityId } from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, QueryOrder, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
@@ -23,6 +23,7 @@ export interface PublicEventsQuery {
   filter?: EventTimeFilter;
   categorySlug?: string;
   search?: string;
+  registerable?: boolean;
 }
 
 export interface PublicEventItem {
@@ -144,6 +145,16 @@ function mapItem(r: Event): PublicEventItem {
   };
 }
 
+function isRegistrationOpen(
+  row: Pick<Event, 'registrationStart' | 'registrationEnd' | 'endDate'>,
+  now: Date,
+): boolean {
+  if (row.endDate && now > row.endDate) return false;
+  if (row.registrationStart && now < row.registrationStart) return false;
+  if (row.registrationEnd && now > row.registrationEnd) return false;
+  return true;
+}
+
 function mapDetail(r: Event): PublicEventDetail {
   return {
     ...mapItem(r),
@@ -235,16 +246,24 @@ export class PublicEventsService {
       'featuredOrder',
     ] as const;
 
-    if (timeFilter) {
+    const needsPostFilter = Boolean(timeFilter || params.registerable);
+
+    if (needsPostFilter) {
       const allRows = await this.em.find(Event, whereQuery, {
         orderBy,
         fields: [...fields] as any,
       });
-      const matched = allRows.filter(
-        (row) =>
-          resolveEventTimeStatus(row.startDate, row.endDate, now) ===
-          timeFilter,
-      );
+      let matched = allRows;
+      if (timeFilter) {
+        matched = matched.filter(
+          (row) =>
+            resolveEventTimeStatus(row.startDate, row.endDate, now) ===
+            timeFilter,
+        );
+      }
+      if (params.registerable) {
+        matched = matched.filter((row) => isRegistrationOpen(row, now));
+      }
       const total = matched.length;
       const rows = matched.slice(skip, skip + limit);
       return {
@@ -273,8 +292,11 @@ export class PublicEventsService {
     eventId: string | number,
     viewerUserId: string,
   ): Promise<PublicViewerRegistration | null> {
+    const viewerId = relationEntityId(viewerUserId.trim());
+    if (viewerId == null) return null;
+
     const user = await this.em.findOne(User, {
-      id: toEntityId(viewerUserId.trim()),
+      id: viewerId,
       deletedAt: null,
       isActive: true,
     });

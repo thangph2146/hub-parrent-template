@@ -867,6 +867,11 @@ export class PublicController {
       const filter = (query.filter as EventTimeFilter) ?? 'all';
       const categorySlug = query.categorySlug?.trim() || undefined;
       const search = query.search?.trim() || undefined;
+      const registerableRaw = (query.registerable ?? '').trim().toLowerCase();
+      const registerable =
+        registerableRaw === '1' ||
+        registerableRaw === 'true' ||
+        registerableRaw === 'yes';
       const result = await this.publicEventsService.list({
         page,
         limit,
@@ -875,6 +880,7 @@ export class PublicController {
           : 'all',
         categorySlug,
         search,
+        registerable: registerable || undefined,
       });
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);
