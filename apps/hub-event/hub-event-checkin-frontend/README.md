@@ -19,10 +19,10 @@ Port mặc định: **3000**.
 | Vùng | Ghi chú |
 |------|---------|
 | `src/app/(site)/`, `(portal)/` | **Native** — chỉ sửa tại đây |
-| `src/app/admin/*` trong `admin.sync-modules.json` | **Sync** từ `apps/main/backend` — sửa trên main, chạy `pnpm pull:checkin` |
-| `src/app/admin/` còn lại | **Native** — events, check-in |
+| `src/app/admin/{module}/` (AUTO-GENERATED) | Re-export từ `@workspace/admin-app` — sửa package, chạy `pnpm admin:generate:checkin` |
+| `src/app/admin/` còn lại | **Native** — events shell, check-in, layout |
 
-Manifest sync: [`admin.sync-modules.json`](./admin.sync-modules.json). Chi tiết line: [`../README.md`](../README.md).
+Config: [`admin.app.config.json`](./admin.app.config.json). Chi tiết: [`docs/admin-pattern/ADMIN_APP_PACKAGE.md`](../../../docs/admin-pattern/ADMIN_APP_PACKAGE.md).
 
 ## Packages
 

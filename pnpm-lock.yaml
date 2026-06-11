@@ -219,9 +219,15 @@ importers:
       '@thangph2146/lexical-editor':
         specifier: workspace:*
         version: link:../../../packages/editor
+      '@workspace/admin-app':
+        specifier: workspace:*
+        version: link:../../../packages/admin-app
       '@workspace/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client
+      '@workspace/logger':
+        specifier: workspace:*
+        version: link:../../../packages/logger
       '@workspace/query-client':
         specifier: workspace:*
         version: link:../../../packages/query-client
@@ -261,6 +267,9 @@ importers:
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -844,6 +853,9 @@ importers:
       '@types/three':
         specifier: ^0.184.0
         version: 0.184.1
+      '@workspace/admin-app':
+        specifier: workspace:*
+        version: link:../../../packages/admin-app
       '@workspace/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client
@@ -1266,6 +1278,91 @@ importers:
         version: 4.1.18
       typescript:
         specifier: ^5
+        version: 5.9.3
+
+  packages/admin-app:
+    dependencies:
+      '@hookform/resolvers':
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.75.0(react@19.2.4))
+      '@tanstack/react-query':
+        specifier: ^5.100.9
+        version: 5.100.9(react@19.2.4)
+      '@tanstack/react-table':
+        specifier: 8.21.3
+        version: 8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@thangph2146/lexical-editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@workspace/api-client':
+        specifier: workspace:*
+        version: link:../api-client
+      '@workspace/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@workspace/query-client':
+        specifier: workspace:*
+        version: link:../query-client
+      '@workspace/site-config':
+        specifier: workspace:*
+        version: link:../site-config
+      '@workspace/ui':
+        specifier: workspace:*
+        version: link:../ui
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
+      lexical:
+        specifier: ^0.38.2
+        version: 0.38.2
+      lucide-react:
+        specifier: ^1.14.0
+        version: 1.14.0(react@19.2.4)
+      next:
+        specifier: 16.2.6
+        version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.99.0)
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
+      react-hook-form:
+        specifier: ^7.75.0
+        version: 7.75.0(react@19.2.4)
+      socket.io-client:
+        specifier: ^4.8.1
+        version: 4.8.3
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.12.2
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2(jiti@2.6.1)
+      typescript:
+        specifier: ^5.7.3
         version: 5.9.3
 
   packages/api-client:
@@ -13441,7 +13538,7 @@ snapshots:
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.4
+      semver: 7.8.3
     optional: true
 
   '@npmcli/move-file@1.1.2':
@@ -15675,7 +15772,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   bundle-name@4.1.0:
     dependencies:
@@ -17412,7 +17509,7 @@ snapshots:
     dependencies:
       globalthis: 1.0.4
       matcher: 4.0.0
-      semver: 7.7.4
+      semver: 7.8.3
       serialize-error: 8.1.0
     optional: true
 
@@ -17818,7 +17915,7 @@ snapshots:
 
   is-bun-module@2.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   is-callable@1.2.7: {}
 
@@ -17986,7 +18083,7 @@ snapshots:
       '@babel/parser': 7.29.0
       '@istanbuljs/schema': 0.1.6
       istanbul-lib-coverage: 3.2.2
-      semver: 7.7.4
+      semver: 7.8.3
     transitivePeerDependencies:
       - supports-color
 
@@ -18324,7 +18421,7 @@ snapshots:
       jest-message-util: 30.4.1
       jest-util: 30.4.1
       pretty-format: 30.4.1
-      semver: 7.7.4
+      semver: 7.8.3
       synckit: 0.11.13
     transitivePeerDependencies:
       - supports-color
@@ -18451,7 +18548,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.4
+      semver: 7.8.3
 
   jsx-ast-utils@3.3.5:
     dependencies:
@@ -18783,7 +18880,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   make-error@1.3.6: {}
 
@@ -19289,7 +19386,7 @@ snapshots:
 
   node-abi@3.92.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   node-abort-controller@3.1.1: {}
 
@@ -19339,7 +19436,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.3
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:

@@ -5,6 +5,7 @@ import { createAdminMetadata, AdminRootProviders } from "@ui/components/admin"
 import { SITE_ROOT_HTML_CLASSNAME } from "@ui/lib/site-fonts"
 import { QueryProvider } from "@/providers/query-provider"
 import { AuthProvider } from "@/providers/auth-provider"
+import { AdminRuntimeBridge } from "@/providers/admin-runtime-bridge"
 import { BackendAdminLayoutProvider } from "@/providers/backend-admin-layout"
 
 /** Fallback SSR — title/description thực tế được ghi từ settings qua `useAdminDocumentTitle`. */
@@ -32,9 +33,11 @@ export default function RootLayout({
         <AdminRootProviders>
           <QueryProvider>
             <AuthProvider>
-              <BackendAdminLayoutProvider>
-                {children}
-              </BackendAdminLayoutProvider>
+              <AdminRuntimeBridge>
+                <BackendAdminLayoutProvider>
+                  {children}
+                </BackendAdminLayoutProvider>
+              </AdminRuntimeBridge>
             </AuthProvider>
           </QueryProvider>
         </AdminRootProviders>

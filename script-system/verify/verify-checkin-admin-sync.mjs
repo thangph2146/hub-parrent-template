@@ -19,7 +19,14 @@ const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)
 const MAIN_BACKEND = path.join(ROOT, PRODUCT_LINES.main.backend.path)
 const ADMIN_ROOT = path.join(CHECKIN_FRONT, "src/app/admin")
-const CONFIG_PATH = path.join(CHECKIN_FRONT, "admin.sync-modules.json")
+const CONFIG_JSON = path.join(CHECKIN_FRONT, "admin.app.config.json")
+const CONFIG_LEGACY = path.join(CHECKIN_FRONT, "admin.sync-modules.json")
+const PACKAGE_MODULES = path.join(ROOT, "packages/admin-app/src/modules")
+
+function loadAdminConfig() {
+  const pathToRead = fs.existsSync(CONFIG_JSON) ? CONFIG_JSON : CONFIG_LEGACY
+  return JSON.parse(fs.readFileSync(pathToRead, "utf8"))
+}
 const MENU_TREE_PATH = path.join(
   CHECKIN_FRONT,
   "src/config/admin/checkin-admin-menu-tree.tsx",
@@ -45,9 +52,31 @@ function loadMainMenuItems() {
   return JSON.parse(raw)
 }
 
+const {
+  CHECKIN_NATIVE_LIB_MODULES,
+  NEXT_APP_FORBIDDEN_SOURCE_PATTERNS,
+} = require("../lib/import-alias-rules.cjs")
+const {
+  verifyAdminHostLibDir,
+  verifyAdminHostHooksDir,
+  CHECKIN_LIB_ADMIN_SUBSTANTIVE,
+} = require("../admin/lib/admin-host-lib-rules.cjs")
+
 const FORBIDDEN_IMPORTS = [
-  { pattern: /@\/app\/events\//, hint: "dùng @/app/admin/_component" },
-  { pattern: /@\/app\/products\//, hint: "dùng @/lib/admin/product-image-storage-stub" },
+  ...NEXT_APP_FORBIDDEN_SOURCE_PATTERNS,
+  {
+    pattern: /@\/hooks\/(?:admin\/)?use-admin-mutation/,
+    hint: "dùng @ui/hooks/use-admin-mutation hoặc @ui/lib/admin-operation-toast",
+    skipFiles: ["src/hooks/admin/use-admin-mutation.ts"],
+  },
+  {
+    pattern: /@\/app\/(?!admin\/)/,
+    hint: "dùng @/app/admin/... (path sau sync admin check-in)",
+  },
+  {
+    pattern: /\.\.\/\.\.\/products\/_component\//,
+    hint: "dùng @/lib/admin/product-image-storage-stub",
+  },
   {
     pattern: /@\/providers\/auth-provider(?!\.)/,
     hint: "dùng @/providers/admin/auth-provider",
@@ -65,6 +94,10 @@ const FORBIDDEN_IMPORTS = [
     pattern: /@\/lib\/admin\/checkin-session-exclusive/,
     hint: "dùng @/lib/checkin-session-exclusive (lib native check-in)",
   },
+  {
+    pattern: /@\/types\/admin\/admin\//,
+    hint: "dùng @/types/admin/... (tránh double admin sau sync)",
+  },
 ]
 
 function walk(dir, acc = []) {
@@ -77,9 +110,107 @@ function walk(dir, acc = []) {
   return acc
 }
 
+function resolveTsModule(baseDir, subpath) {
+  const candidates = [
+    `${subpath}.ts`,
+    `${subpath}.tsx`,
+    path.join(subpath, "index.ts"),
+    path.join(subpath, "index.tsx"),
+  ]
+  for (const candidate of candidates) {
+    const full = path.join(baseDir, candidate)
+    if (fs.existsSync(full)) return full
+  }
+  return null
+}
+
+function verifyCheckinLibAdminImports(errors) {
+  const libAdmin = path.join(CHECKIN_FRONT, "src/lib/admin")
+  const libRoot = path.join(CHECKIN_FRONT, "src/lib")
+  const nativeSet = new Set(CHECKIN_NATIVE_LIB_MODULES)
+  const importRe = /from\s+["']@\/lib\/admin\/([^"']+)["']/g
+  const scanRoots = [
+    path.join(CHECKIN_FRONT, "src/app/admin"),
+    path.join(CHECKIN_FRONT, "src/lib/admin"),
+    path.join(CHECKIN_FRONT, "src/providers/admin"),
+    path.join(CHECKIN_FRONT, "src/features/admin-auth"),
+  ]
+
+  for (const root of scanRoots) {
+    for (const file of walk(root)) {
+      const content = fs.readFileSync(file, "utf8")
+      const rel = path.relative(CHECKIN_FRONT, file).replace(/\\/g, "/")
+      let match
+      while ((match = importRe.exec(content))) {
+        const sub = match[1]
+        const top = sub.split("/")[0]
+        if (sub === "admin") {
+          errors.push(
+            `${rel}: @/lib/admin/admin sai — dùng @/lib/admin (barrel index)`,
+          )
+          continue
+        }
+        const nativeOnly =
+          (nativeSet.has(sub) && resolveTsModule(libRoot, sub)) ||
+          (nativeSet.has(top) &&
+            resolveTsModule(libRoot, top) &&
+            !resolveTsModule(libAdmin, sub))
+        if (nativeOnly) {
+          errors.push(
+            `${rel}: @/lib/admin/${sub} sai — dùng @/lib/${nativeSet.has(sub) ? sub : top} (lib native check-in)`,
+          )
+          continue
+        }
+        if (!resolveTsModule(libAdmin, sub)) {
+          errors.push(
+            `${rel}: không tồn tại module @/lib/admin/${sub}`,
+          )
+        }
+      }
+    }
+  }
+}
+
+function verifyGeneratedModules(errors, config) {
+  const modules = config.modules ?? []
+  for (const mod of modules) {
+    const pkgMod = path.join(PACKAGE_MODULES, mod)
+    if (!fs.existsSync(pkgMod)) {
+      errors.push(`package thiếu module: packages/admin-app/src/modules/${mod}`)
+    }
+    const listPage = path.join(ADMIN_ROOT, mod, "page.tsx")
+    if (!fs.existsSync(listPage)) {
+      errors.push(`check-in thiếu generated route: src/app/admin/${mod}/page.tsx`)
+      continue
+    }
+    const content = fs.readFileSync(listPage, "utf8")
+    if (!content.includes("AUTO-GENERATED")) {
+      errors.push(
+        `src/app/admin/${mod}/page.tsx chưa re-export package — chạy pnpm admin:generate:checkin`,
+      )
+    }
+    const dupComponent = path.join(ADMIN_ROOT, mod, "_component")
+    if (fs.existsSync(dupComponent)) {
+      const preserveUnder = (
+        config.nativePreserveInModules ??
+        config.native?.preserveInModules ??
+        []
+      ).filter((rel) => rel.startsWith(`${mod}/_component/`))
+      const extras = fs
+        .readdirSync(dupComponent)
+        .filter((name) => !preserveUnder.some((p) => p === `${mod}/_component/${name}`))
+      if (extras.length > 0) {
+        errors.push(
+          `còn duplicate src/app/admin/${mod}/_component — chạy pnpm admin:generate:checkin --prune`,
+        )
+      }
+    }
+  }
+}
+
 function verify() {
   const errors = []
-  const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"))
+  const config = loadAdminConfig()
   const nativeFiles = config.native?.files ?? []
   const syncedModules = config.modules ?? []
 
@@ -90,50 +221,21 @@ function verify() {
     }
   }
 
-  const libRequired = config.libFromMain ?? []
-  for (const item of libRequired) {
-    const destRel =
-      item.to ?? `src/lib/admin/${path.basename(item.from)}`
-    const p = path.join(CHECKIN_FRONT, destRel)
-    if (!fs.existsSync(p)) {
-      errors.push(`thiếu lib sync: ${destRel}`)
-    }
-  }
+  verifyGeneratedModules(errors, config)
 
-  const stubPath = path.join(
-    CHECKIN_FRONT,
-    "src/lib/admin/product-image-storage-stub.ts",
-  )
-  if (!fs.existsSync(stubPath)) {
-    errors.push("thiếu stub: src/lib/admin/product-image-storage-stub.ts")
-  }
-
-  for (const mod of syncedModules) {
-    const mainMod = path.join(MAIN_BACKEND, "src/app", mod)
-    if (!fs.existsSync(mainMod)) {
-      errors.push(`main/backend thiếu module nguồn: src/app/${mod}`)
-    }
-    const checkinMod = path.join(ADMIN_ROOT, mod)
-    if (!fs.existsSync(checkinMod)) {
-      errors.push(`check-in thiếu module đã sync: src/app/admin/${mod}`)
-    }
-  }
-
-  if (config.copyDashboardTo) {
-    const dash = path.join(ADMIN_ROOT, config.copyDashboardTo)
+  const dashRel =
+    config.dashboard?.relativePath ?? config.copyDashboardTo ?? null
+  if (dashRel) {
+    const dash = path.join(ADMIN_ROOT, dashRel.replace(/\/page\.tsx$/, ""), "page.tsx")
     if (!fs.existsSync(dash)) {
-      errors.push(`thiếu dashboard sync: src/app/admin/${config.copyDashboardTo}`)
+      errors.push(`thiếu dashboard generated: src/app/admin/${dashRel}`)
     }
   }
 
-  for (const rel of config.configFromMain ?? []) {
-    const dest = path.join(
-      CHECKIN_FRONT,
-      "src/config/admin",
-      path.basename(rel),
-    )
-    if (!fs.existsSync(dest)) {
-      errors.push(`thiếu config sync: src/config/admin/${path.basename(rel)}`)
+  for (const rel of config.nativePreserveInModules ?? config.native?.preserveInModules ?? []) {
+    const p = path.join(ADMIN_ROOT, rel)
+    if (!fs.existsSync(p)) {
+      errors.push(`thiếu file native preserve: src/app/admin/${rel}`)
     }
   }
 
@@ -182,7 +284,10 @@ function verify() {
       if (file.includes("product-image-storage-stub.ts")) continue
       const content = fs.readFileSync(file, "utf8")
       const rel = path.relative(CHECKIN_FRONT, file).replace(/\\/g, "/")
-      for (const { pattern, hint } of FORBIDDEN_IMPORTS) {
+      for (const { pattern, hint, skipFiles } of FORBIDDEN_IMPORTS) {
+        if (skipFiles?.some((skip) => rel.endsWith(skip.replace(/\\/g, "/")))) {
+          continue
+        }
         if (pattern.test(content)) {
           errors.push(`${rel}: import chưa transform (${hint})`)
           break
@@ -197,6 +302,19 @@ function verify() {
       }
     }
   }
+
+  verifyCheckinLibAdminImports(errors)
+
+  verifyAdminHostLibDir(errors, {
+    libDir: path.join(CHECKIN_FRONT, "src/lib/admin"),
+    pathPrefix: "src/lib/admin/",
+    substantiveBasenames: CHECKIN_LIB_ADMIN_SUBSTANTIVE,
+  })
+  verifyAdminHostHooksDir(errors, {
+    hooksDir: path.join(CHECKIN_FRONT, "src/hooks/admin"),
+    pathPrefix: "src/hooks/admin/",
+    substantiveBasenames: new Set(),
+  })
 
   if (errors.length) {
     console.error(

@@ -22,7 +22,7 @@ import {
 import { useEventAttendanceContext } from "./_live/event-attendance-provider"
 import { AttendanceStatusBadge } from "./attendance-status"
 
-import { useAdminMutation } from "@/hooks/admin/use-admin-mutation"
+import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 type RegistrationRow = Record<string, unknown>
 
 type AttendanceAction =

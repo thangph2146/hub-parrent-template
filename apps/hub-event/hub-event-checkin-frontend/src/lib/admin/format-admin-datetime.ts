@@ -1,4 +1,1 @@
-export {
-  formatAdminDateTime,
-  isParsableDateTime,
-} from "@ui/lib/format-admin-datetime"
+export * from "@workspace/admin-app/lib/format-admin-datetime"

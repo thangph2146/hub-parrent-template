@@ -81,6 +81,21 @@ function verify() {
   }
 
   for (const [lineKey, apps] of Object.entries(PRODUCT_LINES)) {
+    const lineDir = path.join(APPS, lineKey);
+    if (fs.existsSync(lineDir)) {
+      const allowedAppDirs = new Set(
+        Object.values(apps).map(({ path: relPath }) => path.basename(relPath)),
+      );
+      for (const entry of fs.readdirSync(lineDir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue;
+        if (!allowedAppDirs.has(entry.name)) {
+          errors.push(
+            `apps/${lineKey}/${entry.name}: thư mục lạ — line chỉ gồm ${[...allowedAppDirs].join(", ")} (xóa hoặc đổi tên package tránh trùng workspace)`,
+          );
+        }
+      }
+    }
+
     for (const [role, { path: relPath, package: pkgName }] of Object.entries(apps)) {
       const abs = path.join(ROOT, relPath);
       if (!fs.existsSync(abs)) {

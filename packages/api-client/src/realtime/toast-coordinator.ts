@@ -1,5 +1,6 @@
 import type { SocketNotificationPayload } from "./types"
 import { shouldShowAdminRealtimeToast } from "./notifications"
+import { normalizeSocketId } from "./normalize-id"
 
 const DEFAULT_LOCAL_TTL_MS = 8_000
 const DEDUPE_TTL_MS = 4_000
@@ -96,12 +97,12 @@ export function registerLocalMutationFromMeta(
 export function buildRealtimeToastDedupeKey(
   payload: SocketNotificationPayload,
 ): string {
-  if (payload.id?.trim()) return `id:${payload.id.trim()}`
+  const payloadId = normalizeSocketId(payload.id)
+  if (payloadId) return `id:${payloadId}`
   const meta = payload.metadata
   const resource =
     typeof meta?.resource === "string" ? meta.resource : undefined
-  const resourceId =
-    typeof meta?.resourceId === "string" ? meta.resourceId : undefined
+  const resourceId = normalizeSocketId(meta?.resourceId)
   const status = typeof meta?.status === "string" ? meta.status : ""
   if (resource && resourceId) {
     return `res:${resource}:${resourceId}:${status}:${payload.title}`
@@ -111,10 +112,7 @@ export function buildRealtimeToastDedupeKey(
 
 function extractEntityId(result: unknown): string | undefined {
   if (result == null || typeof result !== "object") return undefined
-  const id = (result as { id?: unknown }).id
-  if (typeof id === "string" && id.trim()) return id.trim()
-  if (typeof id === "number" && Number.isFinite(id)) return String(id)
-  return undefined
+  return normalizeSocketId((result as { id?: unknown }).id)
 }
 
 /**
@@ -181,11 +179,12 @@ export function shouldShowRealtimeSyncToast(
   if (!shouldShowAdminRealtimeToast(payload, currentUserId)) return false
 
   // Activity log SYSTEM gửi cho chính user — toast đã hiện từ mutation onSuccess.
+  const toUserId = normalizeSocketId(payload.toUserId)
   if (
     String(payload.kind ?? "").toLowerCase() === "system" &&
-    payload.toUserId &&
+    toUserId &&
     currentUserId &&
-    payload.toUserId === currentUserId
+    toUserId === currentUserId
   ) {
     return false
   }
@@ -199,8 +198,7 @@ export function shouldShowRealtimeSyncToast(
   const meta = payload.metadata
   if (meta && typeof meta.resource === "string") {
     const resource = meta.resource.toLowerCase()
-    const resourceId =
-      typeof meta.resourceId === "string" ? meta.resourceId : undefined
+    const resourceId = normalizeSocketId(meta.resourceId)
     const status =
       typeof meta.status === "string" ? meta.status : undefined
 

@@ -1,5 +1,2 @@
-import { AdminRouteLoading } from "@ui/components/admin"
-
-export default function Loading() {
-  return <AdminRouteLoading variant="form" />
-}
+/** AUTO-GENERATED — chạy pnpm admin:generate */
+export { default } from "@workspace/admin-app/modules/seo-metas/[id]/edit/loading"

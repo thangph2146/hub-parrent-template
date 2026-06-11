@@ -10,13 +10,13 @@ export type SocketNotificationKind =
   | "info"
 
 export type SocketNotificationPayload = {
-  id: string
+  id: string | number
   kind: SocketNotificationKind
   title: string
   description?: string | null
-  fromUserId?: string
-  toUserId?: string
-  replyToId?: string
+  fromUserId?: string | number
+  toUserId?: string | number
+  replyToId?: string | number
   timestamp: number
   read?: boolean
   actionUrl?: string | null

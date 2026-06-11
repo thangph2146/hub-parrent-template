@@ -79,6 +79,13 @@ function testProductLine(lineKey) {
     testInheritedApi(lineKey);
   }
 
+  if (lineKey === "main") {
+    run(
+      "node script-system/verify/verify-main-admin-sync.mjs",
+      "main backend — admin-app generate + lib/hooks host",
+    );
+  }
+
   for (const [role, { package: pkg }] of Object.entries(apps)) {
     typecheck(pkg, `${lineKey}.${role} — typecheck ${pkg}`);
   }

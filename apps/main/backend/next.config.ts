@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   trailingSlash,
   transpilePackages: [
+    "@workspace/admin-app",
     "@workspace/ui",
     "@workspace/api-client",
     "@workspace/query-client",

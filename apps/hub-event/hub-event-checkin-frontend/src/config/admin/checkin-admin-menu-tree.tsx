@@ -1,7 +1,5 @@
 /** AUTO-GENERATED — pnpm pull:checkin (script-system/sync/sync-checkin-menu-tree.cjs). Không sửa tay. */
-
 import {
-
   BookOpen,
   Building2,
   CalendarPlus,
@@ -21,15 +19,10 @@ import {
   ShieldCheck,
   Tags,
   Users,
-
 } from "lucide-react"
-
 import type { AdminMenuTreeItem } from "@ui/components/admin"
 
-
-
 export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
-
   {
     type: "leaf",
     href: "/admin/tong-quan",
@@ -201,6 +194,4 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
       },
     ],
   },
-
 ]
-

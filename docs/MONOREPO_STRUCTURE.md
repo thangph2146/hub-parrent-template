@@ -52,7 +52,7 @@ Lệnh này (không thay `git pull`):
 
 1. Sync **subset API** `main/api` → `hub-event/api` theo `api.sync-profile.json` (loại store/HRM/đào tạo, `prune` dead code).
 2. `verify:api-profile` — `app.module.ts` khớp profile.
-3. Copy admin pages từ `main/backend` theo `admin.sync-modules.json`.
+3. Migrate admin → `@workspace/admin-app` + `pnpm admin:generate:checkin` (re-export, không copy source).
 
 Test stack deploy thật: **`pnpm dev:checkin`** (`@hub-event/api` + check-in frontend).
 
@@ -82,11 +82,15 @@ Orchestrator: `script-system/verify/test-app-operations.mjs` — cấu trúc scr
 
 Các line khác (`hub-parent`, `store-sync`): `pnpm sync:api` — copy full trừ khi thêm profile riêng.
 
-### Admin check-in
+### Admin check-in (mới: `@workspace/admin-app`)
 
-- `admin.sync-modules.json` — whitelist module copy từ `main/backend`.
-- Script: `script-system/sync/copy-checkin-admin-modules.cjs` (manifest: `admin.sync-modules.json`).
-- Menu sidebar: `sync-checkin-menu-tree.cjs` — subset từ `admin-menu-tree.items.ts` + mục native check-in (`menu.nativeGroups` / `appendToGroup`).
+- **`packages/admin-app`** — module CRUD + lib/hooks dùng chung; app khai báo `admin.app.config.json`.
+- **`pnpm admin:migrate`** — đưa module từ `main/backend` vào package.
+- **`pnpm admin:generate:checkin`** — sinh page re-export dưới `src/app/admin/{module}` (không copy source).
+- Menu: vẫn `sync-checkin-menu-tree.cjs` (sẽ gộp vào generate).
+- Legacy copy `copy-checkin-admin-modules.cjs` — **deprecated** (dùng `pnpm pull:checkin`).
+
+Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
 
 ### Packages
 

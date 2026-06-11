@@ -1,4 +1,5 @@
 import type { SocketNotificationKind, SocketNotificationPayload } from "./types"
+import { normalizeSocketId } from "./normalize-id"
 
 export type RealtimeToastMethod = "info" | "success" | "warning" | "error"
 
@@ -18,9 +19,8 @@ export function shouldShowAdminRealtimeToast(
 ): boolean {
   if (!payload?.title?.trim()) return false
   const actorId =
-    typeof payload.metadata?.actorUserId === "string"
-      ? payload.metadata.actorUserId
-      : payload.fromUserId
+    normalizeSocketId(payload.metadata?.actorUserId) ??
+    normalizeSocketId(payload.fromUserId)
   if (actorId && currentUserId && actorId === currentUserId) return false
   return true
 }

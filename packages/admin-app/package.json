@@ -1,0 +1,63 @@
+{
+  "name": "@workspace/admin-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config/index.ts",
+    "./registry": "./src/registry/index.ts",
+    "./menu": "./src/menu/index.ts",
+    "./runtime": "./src/runtime/index.ts",
+    "./config/*": "./src/config/*",
+    "./types/*": "./src/types/*",
+    "./features/*": "./src/features/*",
+    "./lib": "./src/lib/index.ts",
+    "./lib/*": "./src/lib/*",
+    "./hooks/*": "./src/hooks/*",
+    "./modules/*": "./src/modules/*",
+    "./modules/*/*": "./src/modules/*/*",
+    "./modules/*/*/*": "./src/modules/*/*/*",
+    "./modules/*/*/*/*": "./src/modules/*/*/*/*"
+  },
+  "scripts": {
+    "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings=0",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-table": "8.21.3",
+    "@thangph2146/lexical-editor": "workspace:*",
+    "@workspace/api-client": "workspace:*",
+    "@workspace/logger": "workspace:*",
+    "@workspace/query-client": "workspace:*",
+    "@workspace/site-config": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "jszip": "^3.10.1",
+    "lexical": "^0.38.2",
+    "lucide-react": "^1.14.0",
+    "next": "16.2.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.75.0",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.7",
+    "xlsx": "^0.18.5",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "next": ">=16",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9.39.2",
+    "typescript": "^5.7.3"
+  }
+}

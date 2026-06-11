@@ -22,6 +22,13 @@ const noFilePathToMonorepoPackages = {
     "Không import qua đường dẫn `.../packages/...` — thêm `workspace:*` và dùng `@workspace/*`, `@ui`, hoặc alias `@/*`.",
 };
 
+/** App Next: UI package qua alias tsconfig `@ui/`, không tên npm `@workspace/ui`. */
+export const forbidWorkspaceUiImports = {
+  group: ["@workspace/ui", "@workspace/ui/*"],
+  message:
+    "App Next dùng alias @ui/... (tsconfig paths), không import npm @workspace/ui.",
+};
+
 /** @type {import("eslint").Linter.Config[]} */
 export const apiServiceBoundary = [
   {
@@ -113,6 +120,7 @@ export const nextFrontendServiceBoundary = [
         {
           patterns: [
             nextForbiddenServerStack,
+            forbidWorkspaceUiImports,
             {
               group: [
                 "@backend",
@@ -151,6 +159,7 @@ export const nextBackendServiceBoundary = [
         {
           patterns: [
             nextForbiddenServerStack,
+            forbidWorkspaceUiImports,
             {
               group: [
                 "@frontend",

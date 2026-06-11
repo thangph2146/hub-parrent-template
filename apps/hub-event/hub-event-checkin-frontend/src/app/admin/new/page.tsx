@@ -10,7 +10,7 @@ import { api } from "@/lib/admin/api"
 import { EventFormShell, useEventForm, buildEventPayload } from "../_component"
 import type { EventFormValues } from "../_component"
 
-import { useAdminMutation } from "@/hooks/admin/use-admin-mutation"
+import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 function NewEventPageInner() {
   const crudNav = useAdminCrudNavigation("/admin")
   const queryClient = useQueryClient()

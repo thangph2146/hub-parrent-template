@@ -26,7 +26,7 @@ import {
   AdminTabCountBadge,
 } from "@ui/components/admin"
 import { api } from "@/lib/admin/api"
-import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib/admin/admin"
+import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@/lib/admin"
 import { useAdminCrudRowHandlers } from "@/lib/admin/admin-row-action-handlers"
 import {
   EventsTable,
@@ -41,10 +41,8 @@ import {
 } from "./_component"
 import type { EventRow } from "./_component"
 
-import {
-  useAdminMutation,
-  defaultBulkOperationToast,
-} from "@/hooks/admin/use-admin-mutation"
+import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
+import { defaultBulkOperationToast } from "@ui/lib/admin-operation-toast"
 function EventsPageInner() {
   const queryClient = useQueryClient()
   const crudNav = useAdminCrudNavigation("/admin", {

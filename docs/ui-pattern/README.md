@@ -1,11 +1,12 @@
 # @workspace/ui (packages/ui)
 
-Thư viện UI dùng chung cho `apps/backend` và `apps/frontend`. Import alias: `@ui/*` hoặc `@workspace/ui`.
+Thư viện UI dùng chung cho mọi app Next. **Trong app** chỉ import qua alias `@ui/*` (map trong `tsconfig.json`). Tên npm `workspace:*` là `@workspace/ui` — dùng trong `package.json`, **không** viết trong `import` của app.
 
 ## Vị trí
 
 - `packages/ui/src/`
-- Package namespace: `@workspace/ui`
+- Package npm: `@workspace/ui` · alias app: `@ui/*`
+- Kiểm tra: `pnpm verify:imports`
 
 ## Cấu trúc thư mục
 

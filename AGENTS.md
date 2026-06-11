@@ -174,18 +174,75 @@ pm2 save
 
 Chi tiết deploy server: `README.md` (mục PM2).
 
+### Admin dùng chung (`@workspace/admin-app`)
+
+Module CRUD admin nằm trong **`packages/admin-app`** — app chỉ khai báo `admin.app.config.json` + generate route. Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
+
+```bash
+pnpm admin:migrate              # rewrite import package; không ghi đè module AUTO-GENERATED từ app
+pnpm admin:generate:checkin     # sinh page re-export + menu
+pnpm admin:generate:main
+pnpm verify:main-admin          # kiểm tra generate + lib/hooks host
+pnpm verify:checkin-admin
+```
+
 ### Sync check-in từ main (deploy line)
 
-Dev hàng ngày: `pnpm dev:main:checkin` (sửa `apps/main`, không cần sync).
+Dev hàng ngày: `pnpm dev:main:checkin` (sửa `apps/main` + `packages/admin-app`, không cần sync copy admin).
 
-Sau `git pull`, cập nhật `hub-event` từ main: **`pnpm pull:checkin`** (alias `pnpm sync:checkin`) — API subset + admin pages. Chi tiết: `docs/MONOREPO_STRUCTURE.md`.
+Sau `git pull`, cập nhật `hub-event`: **`pnpm pull:checkin`** (API subset + migrate `@workspace/admin-app` + generate routes). Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`, `docs/MONOREPO_STRUCTURE.md`.
+
+## Import alias chuẩn (toàn monorepo)
+
+Nguồn sự thật: `script-system/lib/import-alias-rules.cjs` · kiểm tra: `pnpm verify:imports` · ESLint: `forbidWorkspaceUiImports` trong `packages/eslint-config/service-boundaries.js`.
+
+### App Next.js (`apps/*/…-frontend`, `apps/main/backend`)
+
+Mỗi app Next **bắt buộc** có `tsconfig.json` → `paths`: `@ui/globals.css`, `@ui/components/*`, `@ui/*` trỏ `packages/ui/src`.
+
+| Nhu cầu | Import đúng | Không dùng |
+| -------- | ------------- | ---------- |
+| UI (`packages/ui`) | `@ui/components/...`, `@ui/hooks/...`, `@ui/lib/...` | `@workspace/ui`, `packages/ui/src/...`, relative `../../../packages/ui` |
+| API HTTP / types | `@workspace/api-client` | `fetch` thẳng API, `sdk.http` từ app |
+| React Query hub | `@workspace/query-client` | Setup query client riêng (trừ doc cho phép) |
+| Site config / promo / editor | `@workspace/site-config`, `@workspace/promo-codes`, `@thangph2146/lexical-editor` | Import chéo `apps/*` |
+| Code riêng app | `@/lib/...`, `@/hooks/...`, `@/components/...` | Copy logic đã có trong `packages/*` |
+| Lib native check-in (`hub-event`) | `@/lib/event-detail-content`, `@/lib/public-events`, … | `@/lib/admin/...` (chỉ file sync từ main) |
+
+```ts
+import { Button } from "@ui/components/button"
+import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
+import { api } from "@/lib/api"
+import { PERMISSION_CODES } from "@workspace/api-client"
+```
+
+### Package `packages/*` (không phải app)
+
+- Dùng tên npm `@workspace/<package>` trong `package.json` dependencies.
+- **Không** dùng alias `@ui` (chỉ app Next map `@ui` → `packages/ui`).
+- **Không** import `apps/*`.
+
+### API Nest (`apps/*/api`)
+
+- `@workspace/*` cho package dùng chung; **không** `@ui`, React, Next.
+
+Chi tiết: `docs/ui-pattern/README.md` · admin: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`.
+
+### Admin dùng chung (`@workspace/admin-app`)
+
+- CRUD admin: **`packages/admin-app`** — sửa một nơi, app chỉ **generate** page re-export.
+- Main: `apps/main/backend/admin.app.config.json` + `pnpm admin:generate:main` + `pnpm verify:main-admin`.
+- Check-in: `admin.app.config.json` + `pnpm admin:generate:checkin` + `pnpm verify:checkin-admin`.
+- Deploy line: **`pnpm pull:checkin`** (migrate package + generate + verify). **Không** copy module `main` → check-in nữa.
+
+File native giữ local (check-in: events shell, `dang-nhap`, `dang-ky`, profile, …; main: layout, login, register, profile, graph, database-schema).
 
 ## Nguyên tắc microservice
 
 - Không import chéo source giữa các app trong `apps/*`.
 - Frontend/Backend giao tiếp với API qua HTTP + `@workspace/api-client`.
 - Logic dùng chung đặt ở `packages/*` khi thật sự còn được sử dụng.
-- **Admin components PHẢI từ `@ui`** — không tạo local trong `apps/backend/src/components/` hay `apps/backend/src/app/**/_components/`. Nếu thiếu, thêm vào `packages/ui/src/components/admin/`.
+- **Admin components PHẢI từ `@ui/components/...`** — không tạo local trong `apps/backend/src/components/` hay `apps/backend/src/app/**/_components/`. Nếu thiếu, thêm vào `packages/ui/src/components/admin/`.
 - **API Client** PHẢI qua `@workspace/api-client` — không `fetch` trực tiếp tới `apps/api`, không gọi `api.http` / `sdk.http` từ app Next (dùng `api.users`, `api.public`, …).
 - Khi sửa API (`apps/api`): đọc `docs/api-pattern/README.md`.
 - Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.

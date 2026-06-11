@@ -18,11 +18,24 @@ const run = (cmd, label) => {
 
 console.log("[sync-checkin] main → hub-event (API profile + admin modules)\n");
 
-run("node script-system/sync/sync-api-from-main.cjs hub-event", "1/3 API từ main (api.sync-profile.json)");
-run("node script-system/verify/verify-api-profile.mjs hub-event", "2/3 verify API profile");
+run("node script-system/sync/sync-api-from-main.cjs hub-event", "1/7 API từ main (api.sync-profile.json)");
+run("node script-system/verify/verify-api-profile.mjs hub-event", "2/7 verify API profile");
 run(
-  "node script-system/sync/copy-checkin-admin-modules.cjs",
-  "3/3 admin pages + menu tree + verify (gọi trong script copy)",
+  "node script-system/admin/migrate-admin-modules.cjs",
+  "3/7 admin package (rewrite import, không ghi đè module generated)",
+);
+run("pnpm admin:fix-package", "4/7 chuẩn hóa import package");
+run(
+  "node script-system/admin/fix-package-post-migrate.cjs",
+  "5/7 normalize mutation + lib imports",
+);
+run(
+  "node script-system/admin/generate-admin-routes.cjs apps/hub-event/hub-event-checkin-frontend --prune",
+  "6/7 generate route + menu check-in",
+);
+run(
+  "node script-system/verify/verify-checkin-admin-sync.mjs",
+  "7/7 verify admin check-in",
 );
 
 console.log("\n[sync-checkin] Hoàn tất. Test deploy: pnpm dev:checkin");

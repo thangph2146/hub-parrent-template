@@ -6,7 +6,7 @@ import {
   createHubQueryClient,
   hubAdminQueryClientDefaultOptions,
 } from "@workspace/query-client"
-import { createAdminMutationCache } from "@/hooks/admin/use-admin-mutation"
+import { createAdminMutationCache } from "@ui/lib/admin-operation-toast"
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   const [client] = useState(() =>

@@ -30,7 +30,7 @@ import type {
   EventFormSpeaker,
 } from "../../_component"
 
-import { useAdminMutation } from "@/hooks/admin/use-admin-mutation"
+import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { useAdminFormDraftPersistence } from "@/hooks/admin/use-admin-edit-form-hydration"
 function toDatetimeLocal(value: string | null | undefined): string {
   if (!value) return ""

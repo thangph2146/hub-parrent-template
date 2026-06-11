@@ -30,7 +30,7 @@ script-system/
 |------|------|
 | `sync-api-from-main.cjs` | `pnpm sync:api:*` |
 | `sync-checkin.cjs` | `pnpm pull:checkin` |
-| `copy-checkin-admin-modules.cjs` | Admin whitelist check-in |
+| `copy-checkin-admin-modules.cjs` | **Deprecated** — dùng `pnpm pull:checkin` |
 | `sync-checkin-menu-tree.cjs` | Sinh menu sidebar check-in |
 
 ## Verify & test (`verify/`)
@@ -38,11 +38,13 @@ script-system/
 | File | Lệnh |
 |------|------|
 | `verify-apps-structure.mjs` | `pnpm verify:apps` |
+| `verify-import-aliases.mjs` | `pnpm verify:imports` — `@ui/*` trên app Next |
 | `verify-service-boundaries.mjs` | `pnpm verify:bounds` |
 | `verify-no-sdk-http.mjs` | `pnpm verify:sdk-http` |
 | `verify-permission-parity.mjs` | `pnpm verify:permissions` |
 | `verify-api-profile.mjs` | `pnpm verify:api-profile` |
 | `verify-checkin-admin-sync.mjs` | `pnpm verify:checkin-admin` |
+| `verify-main-admin-sync.mjs` | `pnpm verify:main-admin` |
 | `test-app-operations.mjs` | `pnpm test:apps`, `pnpm test:checkin` |
 
 ## Graphify (`graphify/`)

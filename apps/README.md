@@ -68,6 +68,7 @@ Chi tiết stack, biến, marker: [`docs/env/README.md`](../docs/env/README.md) 
 ```bash
 pnpm verify:env           # đủ .env.example + marker ENV_TEMPLATE
 pnpm verify:apps          # cấu trúc product line + package registry
+pnpm verify:imports       # alias @ui/* + cấm @workspace/ui trong app Next
 pnpm verify:api-profile   # hub-event API khớp sync profile
 pnpm verify:checkin-admin # admin check-in sau sync (modules, native, imports)
 pnpm verify:bounds        # không import chéo apps/*

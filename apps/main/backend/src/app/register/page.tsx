@@ -1,5 +1,1 @@
-import { RegisterForm } from "@/features/auth/register-form"
-
-export default function RegisterPage() {
-  return <RegisterForm />
-}
+export { default } from "@workspace/admin-app/features/auth/register-page"

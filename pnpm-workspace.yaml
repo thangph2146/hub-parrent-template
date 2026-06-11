@@ -1,5 +1,6 @@
 packages:
   - "apps/*/*"
+  - "!apps/hub-event/backend"
   - "packages/*"
 
 allowBuilds:

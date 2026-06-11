@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: [
+    "@workspace/admin-app",
     "@workspace/ui",
     "@workspace/api-client",
     "@workspace/query-client",

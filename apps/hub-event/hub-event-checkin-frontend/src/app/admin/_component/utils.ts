@@ -1,55 +1,22 @@
 ﻿import { uploadAdminImage } from "@/lib/admin/admin-upload"
-import { normalizeContentForEditor } from "../posts/_component"
+import { normalizeContentForEditor } from "@workspace/admin-app/modules/posts/_component"
+import {
+  isLexicalContentEmpty,
+  resolveEventDetailContent as resolveEventDetailContentBase,
+  type EventDetailContentDisplay,
+} from "@/lib/event-detail-content"
 
-type LexicalRoot = {
-  root?: {
-    children?: Array<{
-      type?: string
-      children?: Array<{ type?: string; text?: string }>
-    }>
-  }
-}
-
-export function isLexicalContentEmpty(value: unknown): boolean {
-  if (value == null) return true
-  if (typeof value === "string") {
-    const trimmed = value.trim()
-    if (!trimmed) return true
-    try {
-      return isLexicalContentEmpty(JSON.parse(trimmed))
-    } catch {
-      return false
-    }
-  }
-  if (typeof value !== "object") return true
-
-  const children = (value as LexicalRoot).root?.children
-  if (!children?.length) return true
-
-  return children.every((node) => {
-    if (node?.type !== "paragraph") return false
-    return !node.children?.some(
-      (child) =>
-        child.type === "text" && (child.text?.trim() ?? "").length > 0
-    )
-  })
-}
-
-export type EventDetailContentDisplay =
-  | { kind: "lexical"; value: ReturnType<typeof normalizeContentForEditor> }
-  | { kind: "description"; text: string }
-  | { kind: "empty" }
+export { isLexicalContentEmpty, type EventDetailContentDisplay }
 
 export function resolveEventDetailContent(
   content: unknown,
-  description: string | null | undefined
+  description: string | null | undefined,
 ): EventDetailContentDisplay {
-  if (content != null && content !== "" && !isLexicalContentEmpty(content)) {
+  const base = resolveEventDetailContentBase(content, description)
+  if (base.kind === "lexical") {
     return { kind: "lexical", value: normalizeContentForEditor(content) }
   }
-  const text = description?.trim()
-  if (text) return { kind: "description", text }
-  return { kind: "empty" }
+  return base
 }
 
 /** Trích URL string từ poster API (object `{ url }`, JSON string, hoặc URL thuần). */
