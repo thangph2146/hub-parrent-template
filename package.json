@@ -47,6 +47,7 @@
     "format": "turbo format && pnpm format:docs",
     "format:docs": "prettier --write \"**/*.md\"",
     "env:init": "node script-system/env/init-env.cjs",
+    "env:reorganize": "node script-system/env/reorganize-env.cjs all",
     "verify:env": "node script-system/verify/verify-env-examples.mjs",
     "verify:apps": "node script-system/verify/verify-apps-structure.mjs",
     "verify:bounds": "node script-system/verify/verify-service-boundaries.mjs",

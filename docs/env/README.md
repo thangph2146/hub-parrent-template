@@ -81,6 +81,11 @@ pnpm env:init all
 # Ghi đè .env (cẩn thận)
 node script-system/env/init-env.cjs --force checkin
 
+# Chuẩn hóa .env hiện có theo .env.example (giữ giá trị, backup .env.bak)
+pnpm env:reorganize
+node script-system/env/reorganize-env.cjs checkin
+node script-system/env/reorganize-env.cjs --dry-run all
+
 # Kiểm tra đủ .env.example + marker chuẩn
 pnpm verify:env
 ```

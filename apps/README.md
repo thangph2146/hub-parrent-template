@@ -59,6 +59,7 @@ Mỗi app deployable: **`.env.example`** (mẫu, commit) + **`.env`** (local).
 | `pnpm env:init parent` | Tạo `.env` cho stack site chính |
 | `pnpm env:init checkin` | Tạo `.env` cho stack check-in |
 | `pnpm env:init all` | Tất cả app trong manifest |
+| `pnpm env:reorganize` | Chuẩn hóa `.env` hiện có theo `.env.example` (backup `.env.bak`) |
 
 Chi tiết stack, biến, marker: [`docs/env/README.md`](../docs/env/README.md) · registry: `script-system/env/manifest.cjs`.
 
