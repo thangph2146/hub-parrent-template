@@ -96,7 +96,7 @@ export const useCategoryBySlug = (slug: string | null | undefined) =>
       if (!key) return null;
       return (
         categories.find(
-          (c) => c.slug === key || c.name === key || c.id === key,
+          (c) => c.slug === key || c.name === key || String(c.id) === key,
         ) ?? null
       );
     },

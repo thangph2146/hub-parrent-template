@@ -6,7 +6,16 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "rootDir": "src"
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/admin-app": ["./src/index.ts"],
+      "@workspace/admin-app/*": ["./src/*"],
+      "@ui/globals.css": ["../ui/src/globals.css"],
+      "@ui/components/*": ["../ui/src/components/*"],
+      "@ui/hooks/*": ["../ui/src/hooks/*"],
+      "@ui/lib/*": ["../ui/src/lib/*"],
+      "@ui/*": ["../ui/src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]

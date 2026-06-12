@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 export {
   buildAdminFilterQuery,
   identityFilterMapping,

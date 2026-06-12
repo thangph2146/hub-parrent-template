@@ -42,11 +42,13 @@ function toDatetimeLocal(value: string | null | undefined): string {
 function normalizeContent(value: unknown): EventFormValues["content"] {
   if (value && typeof value === "object" && "root" in value) return value
   if (typeof value === "string") {
+    let parsed: unknown = null
     try {
-      const parsed = JSON.parse(value)
-      if (parsed && typeof parsed === "object" && "root" in parsed)
-        return parsed
-    } catch {}
+      parsed = JSON.parse(value)
+    } catch {
+      parsed = null
+    }
+    if (parsed && typeof parsed === "object" && "root" in parsed) return parsed
   }
   return {
     root: {

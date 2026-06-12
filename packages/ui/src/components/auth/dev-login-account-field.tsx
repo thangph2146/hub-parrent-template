@@ -61,8 +61,7 @@ export function DevLoginAccountField({
   triggerClassName,
   showSelectedDescription = false,
 }: DevLoginAccountFieldProps) {
-  if (!isDevLoginEnabled()) return null
-
+  const enabled = isDevLoginEnabled()
   const selectedOption = resolveDevLoginOption(options, value)
   const selectValue = value || (allowManual ? manualValue : "")
 
@@ -79,6 +78,8 @@ export function DevLoginAccountField({
     }
     return items
   }, [allowManual, manualLabel, manualValue, options])
+
+  if (!enabled) return null
 
   const handleValueChange = (nextValue: string | null) => {
     const resolved = nextValue ?? (allowManual ? manualValue : "")

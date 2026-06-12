@@ -68,7 +68,7 @@ export function EventsListPanel({
   onApplyQuery,
   onResetFilters,
 }: EventsListPanelProps) {
-  const { limit, page } = query
+  const { limit } = query
 
   return (
     <div className="space-y-5">

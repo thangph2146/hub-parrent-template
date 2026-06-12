@@ -28,10 +28,13 @@ function normalizePermissions(value: unknown): string[] {
   }
   if (typeof value === "string") {
     if (value === "" || value === "null" || value === "undefined") return []
+    let parsed: unknown = null
     try {
-      const parsed = JSON.parse(value)
-      return normalizePermissions(parsed)
-    } catch {}
+      parsed = JSON.parse(value)
+    } catch {
+      parsed = null
+    }
+    return normalizePermissions(parsed)
   }
   return []
 }
