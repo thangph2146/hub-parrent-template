@@ -172,7 +172,8 @@ function buildWhere(params: ListCategoriesParams): Record<string, unknown> {
               .map((x) => x.trim())
               .filter(Boolean)
           : [trimmed];
-        where.parent = ids.length > 1 ? { id: { $in: toEntityIdList(ids) } } : ids[0];
+        where.parent =
+          ids.length > 1 ? { id: { $in: toEntityIdList(ids) } } : ids[0];
       }
     }
   }
@@ -235,9 +236,7 @@ export class CategoriesService {
   ): Promise<Map<number, number>> {
     if (categoryIds.length === 0) return new Map();
 
-    const allRootIds = [
-      ...new Set(categoryIds.map((id) => toEntityId(id))),
-    ];
+    const allRootIds = [...new Set(categoryIds.map((id) => toEntityId(id)))];
     if (allRootIds.length === 0) return new Map();
 
     const rootSet = new Set(allRootIds);
@@ -573,7 +572,9 @@ export class CategoriesService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Category, { id: { $in: toEntityIdList(ids) } });
+      const entities = await this.em.find(Category, {
+        id: { $in: toEntityIdList(ids) },
+      });
       for (const e of entities) {
         this.em.remove(e);
       }

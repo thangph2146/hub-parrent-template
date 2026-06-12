@@ -395,7 +395,6 @@ export class AuthService {
     return created ? this.mapUserToPayload(created) : null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   logout(_userId?: string): Promise<{ ok: boolean }> {
     return Promise.resolve({ ok: true });
   }

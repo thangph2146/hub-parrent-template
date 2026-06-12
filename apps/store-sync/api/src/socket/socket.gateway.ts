@@ -97,9 +97,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     previousStatus: 'active' | 'deleted',
   ): void {
     if (!this.server) return;
-    this.server.to(roleRoom('ADMIN')).emit('session:remove', { id: toEntityId(sessionId),
-      previousStatus,
-    });
+    this.server
+      .to(roleRoom('ADMIN'))
+      .emit('session:remove', { id: toEntityId(sessionId), previousStatus });
   }
 
   emitNotificationToUser(

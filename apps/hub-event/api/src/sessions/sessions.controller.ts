@@ -223,7 +223,7 @@ export class SessionsController {
       return res.status(statusCode).json(errBody);
     }
     const session = await this.sessionsService.create({
-        userId: toEntityId(userId),
+      userId: toEntityId(userId),
       email: body?.email?.trim() || null,
       name: body?.name?.trim() || null,
       avatar: body?.image?.trim() || null,

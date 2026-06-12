@@ -15,7 +15,10 @@ const boolean = (path: string | string[]) => ({
   type: 'boolean' as const,
   path,
 });
-const entityId = (path: string | string[]) => ({ type: 'number' as const, path });
+const entityId = (path: string | string[]) => ({
+  type: 'number' as const,
+  path,
+});
 
 export const CAMERA_COLUMN_FILTERS: AdminColumnFiltersConfig = {
   name: text('name'),

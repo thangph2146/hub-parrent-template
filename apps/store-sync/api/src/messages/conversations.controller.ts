@@ -195,7 +195,8 @@ export class ConversationsController {
         }),
       ]);
 
-      const byOtherId = new Map<number,
+      const byOtherId = new Map<
+        number,
         {
           otherUser: {
             id: number;

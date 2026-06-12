@@ -1,4 +1,8 @@
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import {
   BadRequestException,
   Injectable,
@@ -52,7 +56,8 @@ export class EventRegistrationAttendanceService {
     registrationId: string,
     action: ManualAttendanceAction,
   ): Promise<EventRegistrationRowDto> {
-    const reg = await this.em.findOne(EventRegistration, { id: toEntityId(registrationId),
+    const reg = await this.em.findOne(EventRegistration, {
+      id: toEntityId(registrationId),
       deletedAt: null,
     });
     if (!reg) {
@@ -231,7 +236,8 @@ export class EventRegistrationAttendanceService {
   }
 
   private async loadEvent(eventId: number): Promise<Event> {
-    const event = await this.em.findOne(Event, { id: eventId,
+    const event = await this.em.findOne(Event, {
+      id: eventId,
       deletedAt: null,
     });
     if (!event) {
@@ -292,11 +298,13 @@ export class EventRegistrationAttendanceService {
     } as FilterQuery<EventRegistration>);
     await this.em.nativeUpdate(
       Event,
-      { id: eventId },{ totalCheckins: checkinCount, totalCheckouts: checkoutCount },
+      { id: eventId },
+      { totalCheckins: checkinCount, totalCheckouts: checkoutCount },
     );
   }
 
-  private async toResult(eventId: number,
+  private async toResult(
+    eventId: number,
     reg: EventRegistration,
     kind: 'checkin' | 'checkout',
     duplicate: boolean,

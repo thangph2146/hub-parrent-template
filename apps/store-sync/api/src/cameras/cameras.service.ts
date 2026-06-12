@@ -96,7 +96,9 @@ export class CamerasService {
   }
 
   async getById(id: string): Promise<CameraRowDto | null> {
-    const r = await this.em.findOne(Camera, { id: toEntityId(id) },
+    const r = await this.em.findOne(
+      Camera,
+      { id: toEntityId(id) },
       { populate: ['linkedEvent'] },
     );
     return r ? mapRow(r) : null;
@@ -109,7 +111,9 @@ export class CamerasService {
       return;
     }
     const id = String(linkedEventId).trim();
-    target.linkedEvent = id ? this.em.getReference(Event, toEntityId(id)) : null;
+    target.linkedEvent = id
+      ? this.em.getReference(Event, toEntityId(id))
+      : null;
   }
 
   async create(data: Record<string, unknown>): Promise<CameraRowDto> {

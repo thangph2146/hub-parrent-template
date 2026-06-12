@@ -91,7 +91,9 @@ export class ScreensService {
   }
 
   async getById(id: string): Promise<ScreenRowDto | null> {
-    const r = await this.em.findOne(Screen, { id: toEntityId(id) },
+    const r = await this.em.findOne(
+      Screen,
+      { id: toEntityId(id) },
       { populate: ['camera', 'template'] },
     );
     return r ? mapRow(r) : null;

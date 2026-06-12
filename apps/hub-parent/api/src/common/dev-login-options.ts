@@ -44,9 +44,7 @@ function parseCsv(value: string | undefined): string[] {
   ];
 }
 
-function listUserRoles(
-  userRoles: UserRole[] | undefined,
-): DevLoginRoleDto[] {
+function listUserRoles(userRoles: UserRole[] | undefined): DevLoginRoleDto[] {
   const roles = (userRoles ?? [])
     .map((userRole) => userRole.role)
     .filter((role): role is Role => Boolean(role && role.deletedAt == null));

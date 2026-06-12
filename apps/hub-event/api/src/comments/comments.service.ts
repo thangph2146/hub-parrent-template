@@ -187,7 +187,9 @@ export class CommentsService {
   }
 
   async getById(id: string): Promise<CommentRowDto | null> {
-    const row = await this.em.findOne(Comment, { id: toEntityId(id) },
+    const row = await this.em.findOne(
+      Comment,
+      { id: toEntityId(id) },
       { populate: ['author', 'post'] },
     );
     return row ? mapRow(row) : null;

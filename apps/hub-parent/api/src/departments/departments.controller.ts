@@ -248,10 +248,7 @@ export class DepartmentsController {
       );
       return res.status(statusCode).json(errBody);
     }
-    const result = await this.departmentsService.bulk(
-      action as BulkAction,
-      ids,
-    );
+    const result = await this.departmentsService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
       { affected: result.affected, message: result.message },
       { message: result.message },

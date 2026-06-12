@@ -152,7 +152,10 @@ export class UsersController {
     const { sessionIds } =
       await this.sessionsService.revokeAllSessionsByUserId(targetUserId);
     for (const sessionId of sessionIds) {
-      this.socketGateway.emitSessionRevoked(String(sessionId), 'account_locked');
+      this.socketGateway.emitSessionRevoked(
+        String(sessionId),
+        'account_locked',
+      );
     }
   }
 
@@ -380,7 +383,9 @@ export class UsersController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const actorEmail = await this.usersService.resolveActorEmail(String(userId));
+    const actorEmail = await this.usersService.resolveActorEmail(
+      String(userId),
+    );
     const updated = await this.usersService.update(
       id,
       {

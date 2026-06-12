@@ -1,4 +1,8 @@
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import { User } from '../entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
@@ -255,7 +259,10 @@ export class ParentStudentsService {
   }
 
   async remove(id: string, parentId: string): Promise<boolean> {
-    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id), parent: toEntityId(parentId) });
+    const ps = await this.em.findOne(ParentStudent, {
+      id: toEntityId(id),
+      parent: toEntityId(parentId),
+    });
     if (!ps) return false;
     await this.em.removeAndFlush(ps);
     return true;
@@ -270,7 +277,9 @@ export class ParentStudentsService {
   }
 
   async getById(id: string): Promise<ParentStudentRowDto | null> {
-    const ps = await this.em.findOne(ParentStudent, { id: toEntityId(id) },
+    const ps = await this.em.findOne(
+      ParentStudent,
+      { id: toEntityId(id) },
       { populate: ['parent'] },
     );
     return ps ? mapRow(ps) : null;

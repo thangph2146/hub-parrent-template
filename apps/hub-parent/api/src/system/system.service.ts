@@ -868,9 +868,7 @@ export class SystemService {
     const out = sanitized.filter((r) => {
       const pid = relationEntityId(pivotFk(r, 'postId', 'post'));
       const cid = relationEntityId(pivotFk(r, 'categoryId', 'category'));
-      return (
-        pid != null && cid != null && pSet.has(pid) && cSet.has(cid)
-      );
+      return pid != null && cid != null && pSet.has(pid) && cSet.has(cid);
     });
     if (out.length < sanitized.length) {
       this.logger.warn(
@@ -904,7 +902,7 @@ export class SystemService {
     let skipped = 0;
 
     for (let index = 0; index < orderedRaw.length; index++) {
-      const raw = orderedRaw[index]!;
+      const raw = orderedRaw[index];
       const slug = typeof raw.slug === 'string' ? raw.slug.trim() : '';
       if (!slug || !sanitizedBySlug.has(slug)) {
         skipped++;
@@ -1011,12 +1009,7 @@ export class SystemService {
     let out = sanitized.filter((row) => {
       const uid = relationEntityId(pivotFk(row, 'userId', 'user'));
       const rid = relationEntityId(pivotFk(row, 'roleId', 'role'));
-      return (
-        uid != null &&
-        rid != null &&
-        uSet.has(uid) &&
-        rSet.has(rid)
-      );
+      return uid != null && rid != null && uSet.has(uid) && rSet.has(rid);
     });
     if (out.length < sanitized.length) {
       this.logger.warn(
@@ -1148,9 +1141,7 @@ export class SystemService {
       const ids = [
         ...new Set(
           filtered
-            .map((row) =>
-              relationEntityId(pivotFk(row, fieldName, prop.name)),
-            )
+            .map((row) => relationEntityId(pivotFk(row, fieldName, prop.name)))
             .filter((id): id is number => id != null),
         ),
       ];
@@ -1283,7 +1274,9 @@ export class SystemService {
     }
 
     if (imported === 0 && rows.length > 0) {
-      throw new Error('pageContent import: không có dòng hợp lệ (thiếu pageKey/sectionKey)');
+      throw new Error(
+        'pageContent import: không có dòng hợp lệ (thiếu pageKey/sectionKey)',
+      );
     }
 
     await em.flush();
@@ -1422,7 +1415,11 @@ export class SystemService {
         ),
       ];
       const events = eventIds.length
-        ? await em.find(Event, { id: { $in: toEntityIdList(eventIds) } }, { fields: ['id'] })
+        ? await em.find(
+            Event,
+            { id: { $in: toEntityIdList(eventIds) } },
+            { fields: ['id'] },
+          )
         : [];
       const eventSet = new Set(events.map((e) => e.id));
       const filtered = rows.filter((row) => {
@@ -2066,13 +2063,11 @@ export class SystemService {
     if (!entity) return [];
 
     const rawRows = records.map((r) => ({
-      ...(r as Record<string, unknown>),
+      ...r,
     }));
     await this.resolveLegacyForeignKeysInRows(em, mName, rawRows, idMap);
 
-    let sanitized = rawRows.map((r) =>
-      this.pickImportPayload(em, entity, r),
-    );
+    let sanitized = rawRows.map((r) => this.pickImportPayload(em, entity, r));
     if (mName === 'user') {
       sanitized = await this.filterUserRowsForActingUserPreserve(
         em,
@@ -2409,7 +2404,10 @@ export class SystemService {
             const importIdMapRowCount = await this.em.count(Setting, {
               group: IMPORT_ID_MAP_GROUP,
             });
-            const businessRowCount = Math.max(0, rowCount - importIdMapRowCount);
+            const businessRowCount = Math.max(
+              0,
+              rowCount - importIdMapRowCount,
+            );
             return {
               rowCount,
               activeRowCount: businessRowCount,

@@ -20,7 +20,7 @@ function resolveReferencePath(relOrAbs: string): string {
   for (const candidate of candidates) {
     if (fs.existsSync(candidate)) return candidate;
   }
-  return candidates[0]!;
+  return candidates[0];
 }
 
 export function getImportReferenceFilePath(): string {

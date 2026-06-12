@@ -82,7 +82,9 @@ export class PublicAuthService {
       roleIds: [String(defaultRole.id)],
     });
 
-    const payload = await this.authService.getAuthPayloadByUserId(String(created.id));
+    const payload = await this.authService.getAuthPayloadByUserId(
+      String(created.id),
+    );
     if (!payload) {
       throw new Error(
         'Đăng ký thành công nhưng chưa thể khởi tạo phiên đăng nhập.',

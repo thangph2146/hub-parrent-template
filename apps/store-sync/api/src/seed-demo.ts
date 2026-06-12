@@ -42,7 +42,9 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log('Env tùy chọn:');
   console.log('  CHECKIN_DEMO_POSTS_EXPORT  — đường dẫn full-export JSON');
   console.log('  CHECKIN_DEMO_EVENT_COUNT   — số sự kiện (mặc định 15)');
-  console.log('  CHECKIN_DEMO_SEED          — seed random (mặc định hub-checkin-demo)');
+  console.log(
+    '  CHECKIN_DEMO_SEED          — seed random (mặc định hub-checkin-demo)',
+  );
   process.exit(0);
 }
 

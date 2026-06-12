@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Group } from '../entities/group.entity';
 import { GroupMember, GroupRole } from '../entities/group-member.entity';

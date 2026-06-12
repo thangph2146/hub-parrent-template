@@ -172,10 +172,7 @@ export class AdmissionResultsService {
       soBaoDanh: s,
       deletedAt: null,
     });
-    if (
-      bySoBaoDanh &&
-      (!bySoBaoDanh.cccd || bySoBaoDanh.cccd === c)
-    ) {
+    if (bySoBaoDanh && (!bySoBaoDanh.cccd || bySoBaoDanh.cccd === c)) {
       return mapRow(bySoBaoDanh);
     }
 
@@ -183,10 +180,7 @@ export class AdmissionResultsService {
       cccd: c,
       deletedAt: null,
     });
-    if (
-      byCccd &&
-      (!byCccd.soBaoDanh || byCccd.soBaoDanh === s)
-    ) {
+    if (byCccd && (!byCccd.soBaoDanh || byCccd.soBaoDanh === s)) {
       return mapRow(byCccd);
     }
 
@@ -239,7 +233,9 @@ export class AdmissionResultsService {
       ghiChu?: string | null;
     },
   ): Promise<AdmissionResultRowDto | null> {
-    const existing = await this.em.findOne(AdmissionResult, { id: toEntityId(id) });
+    const existing = await this.em.findOne(AdmissionResult, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
     if (data.cccd !== undefined) existing.cccd = data.cccd?.trim() ?? null;
     if (data.soBaoDanh !== undefined)

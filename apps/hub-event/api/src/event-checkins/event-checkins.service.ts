@@ -99,7 +99,9 @@ export class EventCheckinsService {
       params.limit,
       ADMIN_TABLE_EXPORT_MAX_LIMIT,
     );
-    const where: Record<string, unknown> = { event: toEntityId(params.eventId) };
+    const where: Record<string, unknown> = {
+      event: toEntityId(params.eventId),
+    };
     const status = params.status ?? 'active';
     if (status === 'deleted') where.deletedAt = { $ne: null };
     else if (status === 'active') where.deletedAt = null;
@@ -145,7 +147,10 @@ export class EventCheckinsService {
     created.fullName = data.fullName;
     if (data.registrationId !== undefined) {
       created.registration = data.registrationId
-        ? this.em.getReference(EventRegistration, toEntityId(data.registrationId))
+        ? this.em.getReference(
+            EventRegistration,
+            toEntityId(data.registrationId),
+          )
         : null;
     }
     created.checkinTime = data.checkinTime ?? new Date();
@@ -164,7 +169,9 @@ export class EventCheckinsService {
       status?: number;
     },
   ): Promise<EventCheckinRowDto | null> {
-    const existing = await this.em.findOne(EventCheckin, { id: toEntityId(id) });
+    const existing = await this.em.findOne(EventCheckin, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
     if (data.email !== undefined) existing.email = data.email;
     if (data.fullName !== undefined) existing.fullName = data.fullName;

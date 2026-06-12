@@ -325,7 +325,9 @@ export class TagsService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Tag, { id: { $in: toEntityIdList(trimmedIds) } });
+      const entities = await this.em.find(Tag, {
+        id: { $in: toEntityIdList(trimmedIds) },
+      });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

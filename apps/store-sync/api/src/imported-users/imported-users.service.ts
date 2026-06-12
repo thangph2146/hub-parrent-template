@@ -223,7 +223,9 @@ export class ImportedUsersService {
       refreshTokenExp?: Date | null;
     },
   ): Promise<ImportedUserRowDto | null> {
-    const existing = await this.em.findOne(ImportedUser, { id: toEntityId(id) });
+    const existing = await this.em.findOne(ImportedUser, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
 
     if (data.accountId !== undefined) existing.accountId = data.accountId;

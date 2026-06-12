@@ -503,7 +503,10 @@ export class PostsService {
       for (const categoryId of categoryIds) {
         const postCategory = new PostCategory();
         postCategory.post = this.em.getReference(Post, postObj.id);
-        postCategory.category = this.em.getReference(Category, toEntityId(categoryId));
+        postCategory.category = this.em.getReference(
+          Category,
+          toEntityId(categoryId),
+        );
         this.em.persist(postCategory);
       }
     }
@@ -607,7 +610,10 @@ export class PostsService {
         for (const categoryId of categoryIds) {
           const postCategory = new PostCategory();
           postCategory.post = this.em.getReference(Post, existing.id);
-          postCategory.category = this.em.getReference(Category, toEntityId(categoryId));
+          postCategory.category = this.em.getReference(
+            Category,
+            toEntityId(categoryId),
+          );
           this.em.persist(postCategory);
         }
         try {
@@ -762,7 +768,11 @@ export class PostsService {
     }
     const result = await this.em.nativeUpdate(
       Post,
-      { id: { $in: toEntityIdList(uniquePostIds) }, deletedAt: null, image: { $ne: null } },
+      {
+        id: { $in: toEntityIdList(uniquePostIds) },
+        deletedAt: null,
+        image: { $ne: null },
+      },
       { image: null },
     );
     return {
@@ -799,7 +809,9 @@ export class PostsService {
       };
     }
     if (action === 'hard-delete') {
-      const result = await this.em.nativeDelete(Post, { id: { $in: toEntityIdList(ids) } });
+      const result = await this.em.nativeDelete(Post, {
+        id: { $in: toEntityIdList(ids) },
+      });
       return {
         affected: result ?? 0,
         message: `Đã xóa vĩnh viễn ${result ?? 0} bài viết`,

@@ -253,7 +253,9 @@ export class ContactRequestsService {
   }
 
   async getById(id: string): Promise<ContactRequestRowDto | null> {
-    const row = await this.em.findOne(ContactRequest, { id: toEntityId(id) },
+    const row = await this.em.findOne(
+      ContactRequest,
+      { id: toEntityId(id) },
       { populate: ['assignedTo', 'submittedBy'] },
     );
     return row ? mapRow(row as ContactRequestWithRelations) : null;
@@ -273,7 +275,9 @@ export class ContactRequestsService {
       content?: string;
     },
   ): Promise<ContactRequestRowDto | null> {
-    const existing = await this.em.findOne(ContactRequest, { id: toEntityId(id) });
+    const existing = await this.em.findOne(ContactRequest, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
 
     if (data.status !== undefined) existing.status = data.status as any;
@@ -296,7 +300,9 @@ export class ContactRequestsService {
     this.em.persist(existing);
     await this.em.flush();
 
-    const updated = await this.em.findOne(ContactRequest, { id: toEntityId(id) },
+    const updated = await this.em.findOne(
+      ContactRequest,
+      { id: toEntityId(id) },
       { populate: ['assignedTo', 'submittedBy'] },
     );
     return updated ? mapRow(updated as ContactRequestWithRelations) : null;

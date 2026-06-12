@@ -172,7 +172,10 @@ export class EventSpeakersService {
     );
     if (!existing) return null;
     if (data.speakerId !== undefined)
-      existing.speaker = this.em.getReference(Speaker, toEntityId(data.speakerId));
+      existing.speaker = this.em.getReference(
+        Speaker,
+        toEntityId(data.speakerId),
+      );
     if (data.sortOrder !== undefined) existing.sortOrder = data.sortOrder;
     if (data.role !== undefined) existing.role = data.role;
     if (data.presentationTitle !== undefined)

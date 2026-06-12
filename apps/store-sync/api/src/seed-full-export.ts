@@ -120,7 +120,9 @@ function requireMapped(
 ): number {
   const id = maps.get(exportId);
   if (id == null) {
-    throw new Error(`[seed-full-export] Thiếu map ${label} cho export id=${exportId}`);
+    throw new Error(
+      `[seed-full-export] Thiếu map ${label} cho export id=${exportId}`,
+    );
   }
   return id;
 }
@@ -328,7 +330,9 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
             coerceRowDates(raw);
             const oldId = exportKey(raw.id);
             if (!oldId || idMaps.role.has(oldId)) continue;
-            const existing = await tx.findOne(Role, { name: raw.name as string });
+            const existing = await tx.findOne(Role, {
+              name: raw.name as string,
+            });
             if (existing) {
               idMaps.role.set(oldId, existing.id);
               continue;
@@ -354,9 +358,7 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
             const oldId = exportKey(raw.id);
             if (!oldId || idMaps.user.has(oldId)) continue;
             const email = (raw.email as string | null) ?? null;
-            const existing = email
-              ? await tx.findOne(User, { email })
-              : null;
+            const existing = email ? await tx.findOne(User, { email }) : null;
             if (existing) {
               idMaps.user.set(oldId, existing.id);
               continue;
@@ -400,7 +402,8 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
               idMaps.category,
               raw.parentId as string | null | undefined,
             );
-            e.parent = pid != null ? tx.getReference(Category, toEntityId(pid)) : null;
+            e.parent =
+              pid != null ? tx.getReference(Category, toEntityId(pid)) : null;
             e.createdAt = raw.createdAt as Date;
             e.updatedAt = raw.updatedAt as Date;
             e.deletedAt = (raw.deletedAt as Date | null) ?? null;
@@ -415,7 +418,9 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
             coerceRowDates(raw);
             const oldId = exportKey(raw.id);
             if (!oldId || idMaps.tag.has(oldId)) continue;
-            const existing = await tx.findOne(Tag, { slug: raw.slug as string });
+            const existing = await tx.findOne(Tag, {
+              slug: raw.slug as string,
+            });
             if (existing) {
               idMaps.tag.set(oldId, existing.id);
               continue;
@@ -489,7 +494,9 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
             coerceRowDates(raw);
             const oldId = exportKey(raw.id);
             if (!oldId || idMaps.post.has(oldId)) continue;
-            const existing = await tx.findOne(Post, { slug: raw.slug as string });
+            const existing = await tx.findOne(Post, {
+              slug: raw.slug as string,
+            });
             if (existing) {
               idMaps.post.set(oldId, existing.id);
               continue;
@@ -602,12 +609,14 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
               idMaps.user,
               raw.userId as string | null | undefined,
             );
-            e.submittedBy = uid != null ? tx.getReference(User, toEntityId(uid)) : null;
+            e.submittedBy =
+              uid != null ? tx.getReference(User, toEntityId(uid)) : null;
             const aid = optionalMapped(
               idMaps.user,
               raw.assignedToId as string | null | undefined,
             );
-            e.assignedTo = aid != null ? tx.getReference(User, toEntityId(aid)) : null;
+            e.assignedTo =
+              aid != null ? tx.getReference(User, toEntityId(aid)) : null;
             e.createdAt = raw.createdAt as Date;
             e.updatedAt = raw.updatedAt as Date;
             e.deletedAt = (raw.deletedAt as Date | null) ?? null;
@@ -683,22 +692,26 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
               idMaps.message,
               raw.parentId as string | null | undefined,
             );
-            e.parent = pid != null ? tx.getReference(Message, toEntityId(pid)) : null;
+            e.parent =
+              pid != null ? tx.getReference(Message, toEntityId(pid)) : null;
             const rid = optionalMapped(
               idMaps.user,
               raw.receiverId as string | null | undefined,
             );
-            e.receiver = rid != null ? tx.getReference(User, toEntityId(rid)) : null;
+            e.receiver =
+              rid != null ? tx.getReference(User, toEntityId(rid)) : null;
             const sid = optionalMapped(
               idMaps.user,
               raw.senderId as string | null | undefined,
             );
-            e.sender = sid != null ? tx.getReference(User, toEntityId(sid)) : null;
+            e.sender =
+              sid != null ? tx.getReference(User, toEntityId(sid)) : null;
             const gid = optionalMapped(
               idMaps.group,
               raw.groupId as string | null | undefined,
             );
-            e.group = gid != null ? tx.getReference(Group, toEntityId(gid)) : null;
+            e.group =
+              gid != null ? tx.getReference(Group, toEntityId(gid)) : null;
             tx.persist(e);
             await tx.flush();
             idMaps.message.set(oldId, e.id);
@@ -714,7 +727,11 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
             e.readAt = raw.readAt as Date;
             e.message = tx.getReference(
               Message,
-              requireMapped(idMaps.message, exportKey(raw.messageId), 'message'),
+              requireMapped(
+                idMaps.message,
+                exportKey(raw.messageId),
+                'message',
+              ),
             );
             e.user = tx.getReference(
               User,
@@ -797,7 +814,10 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
               exportKey(raw.roleId),
               'role',
             );
-            const existing = await tx.findOne(UserRole, { user: userId, role: roleId });
+            const existing = await tx.findOne(UserRole, {
+              user: userId,
+              role: roleId,
+            });
             if (existing) {
               idMaps.userRole.set(oldId, existing.id);
               continue;
@@ -886,7 +906,8 @@ async function seedFromExport(orm: MikroORM, data: ExportBundle) {
               idMaps.user,
               raw.userId as string | null | undefined,
             );
-            e.user = uid != null ? tx.getReference(User, toEntityId(uid)) : null;
+            e.user =
+              uid != null ? tx.getReference(User, toEntityId(uid)) : null;
             tx.persist(e);
             await tx.flush();
             idMaps.student.set(oldId, e.id);

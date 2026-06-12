@@ -4,10 +4,7 @@ import { Setting } from '../entities/setting.entity';
 
 export const IMPORT_ID_MAP_GROUP = 'import_id_map';
 
-export function importIdMapSettingKey(
-  model: string,
-  legacyId: string,
-): string {
+export function importIdMapSettingKey(model: string, legacyId: string): string {
   return `import_id_map:${model}:${legacyId}`;
 }
 

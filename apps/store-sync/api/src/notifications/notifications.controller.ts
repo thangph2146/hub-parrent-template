@@ -129,7 +129,8 @@ export class NotificationsController {
 
     try {
       const result: AdminTableResult =
-        await this.notificationsService.listForAdminTable({ userId: toEntityId(userId),
+        await this.notificationsService.listForAdminTable({
+          userId: toEntityId(userId),
           viewAll,
           page,
           limit,
@@ -330,7 +331,8 @@ export class NotificationsController {
 
     try {
       const result: NotificationsListResult =
-        await this.notificationsService.list({ userId: toEntityId(userId),
+        await this.notificationsService.list({
+          userId: toEntityId(userId),
           limit,
           offset,
           unreadOnly: unreadOnlyParam === 'true',

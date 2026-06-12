@@ -429,10 +429,7 @@ export class PageContentsController {
       );
       return res.status(statusCode).json(errBody);
     }
-    const result = await this.pageContentsService.bulk(
-      action as BulkAction,
-      ids,
-    );
+    const result = await this.pageContentsService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
       { affected: result.affected, message: result.message },
       { message: result.message },

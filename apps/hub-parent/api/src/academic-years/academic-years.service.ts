@@ -183,7 +183,9 @@ export class AcademicYearsService {
       status?: number;
     },
   ): Promise<AcademicYearRowDto | null> {
-    const existing = await this.em.findOne(AcademicYear, { id: toEntityId(id) });
+    const existing = await this.em.findOne(AcademicYear, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.startDate !== undefined) {

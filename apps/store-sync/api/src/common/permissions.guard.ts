@@ -41,10 +41,7 @@ export class PermissionsGuard implements CanActivate {
     const { payload, reason } =
       await this.authService.tryAuthPayloadByUserId(userId);
     if (!payload) {
-      const byReason: Record<
-        NonNullable<typeof reason>,
-        string
-      > = {
+      const byReason: Record<NonNullable<typeof reason>, string> = {
         not_found:
           'Không tìm thấy tài khoản (sai id hoặc đã xóa). Vui lòng đăng nhập lại.',
         inactive:
@@ -53,7 +50,9 @@ export class PermissionsGuard implements CanActivate {
           'Tài khoản chưa được gán vai trò (user_roles). Liên hệ quản trị viên.',
       };
       throw new UnauthorizedException(
-        reason ? byReason[reason] : 'Người dùng không tồn tại hoặc không có quyền truy cập',
+        reason
+          ? byReason[reason]
+          : 'Người dùng không tồn tại hoặc không có quyền truy cập',
       );
     }
 

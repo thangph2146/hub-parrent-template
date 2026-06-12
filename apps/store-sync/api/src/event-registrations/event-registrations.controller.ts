@@ -348,10 +348,7 @@ export class EventRegistrationsController {
       );
       return res.status(statusCode).json(errBody);
     }
-    const result = await this.eventRegistrationsService.bulk(
-      action as BulkAction,
-      ids,
-    );
+    const result = await this.eventRegistrationsService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
       { affected: result.affected, message: result.message },
       { message: result.message },

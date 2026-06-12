@@ -345,7 +345,9 @@ export class GroupsController {
       });
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:hard-deleted', { id: toEntityId(id.trim()) });
+    this.socketGateway.emitGroupEvent('group:hard-deleted', {
+      id: toEntityId(id.trim()),
+    });
     if (userId) {
       this.logActivity(
         userId,
@@ -389,7 +391,9 @@ export class GroupsController {
       );
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:deleted', { id: toEntityId(id.trim()) });
+    this.socketGateway.emitGroupEvent('group:deleted', {
+      id: toEntityId(id.trim()),
+    });
     if (userId) {
       this.logActivity(
         userId,
@@ -432,7 +436,9 @@ export class GroupsController {
       });
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitGroupEvent('group:restored', { id: toEntityId(id.trim()) });
+    this.socketGateway.emitGroupEvent('group:restored', {
+      id: toEntityId(id.trim()),
+    });
     if (userId) {
       this.logActivity(
         userId,

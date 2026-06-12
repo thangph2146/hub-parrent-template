@@ -89,7 +89,8 @@ export class ParentStudentsPublicController {
       return res.status(statusCode).json(b);
     }
     try {
-      const data = await this.svc.addStudentRequest({ parentId: toEntityId(parentId),
+      const data = await this.svc.addStudentRequest({
+        parentId: toEntityId(parentId),
         studentCode: body.studentCode,
         studentName: body.studentName,
         note: body.note,

@@ -7,7 +7,10 @@ import {
 } from '../entities/event-registration.entity';
 import { User } from '../entities/user.entity';
 import { runSuperadminBootstrap } from './superadmin-bootstrap.runner';
-import { loadExportPosts, type ExportPostSeedSource } from './load-export-posts';
+import {
+  loadExportPosts,
+  type ExportPostSeedSource,
+} from './load-export-posts';
 import {
   isLexicalContentEmpty,
   isLexicalEditorState,
@@ -104,7 +107,10 @@ function buildDescription(post: ExportPostSeedSource): string {
 }
 
 function resolveEventContent(post: ExportPostSeedSource): unknown {
-  if (isLexicalEditorState(post.content) && !isLexicalContentEmpty(post.content)) {
+  if (
+    isLexicalEditorState(post.content) &&
+    !isLexicalContentEmpty(post.content)
+  ) {
     return post.content;
   }
   if (typeof post.content === 'string' && post.content.trim().startsWith('{')) {
@@ -183,7 +189,8 @@ async function createDemoEvent(
         : EventFormat.OFFLINE;
 
   const event = new Event();
-  event.title = post.title.length > 180 ? `${post.title.slice(0, 177)}…` : post.title;
+  event.title =
+    post.title.length > 180 ? `${post.title.slice(0, 177)}…` : post.title;
   event.slug = slug;
   event.description = buildDescription(post);
   event.content = resolveEventContent(post);
@@ -206,7 +213,9 @@ async function createDemoEvent(
   event.maxParticipants = pickInt(rand, 80, 400);
   event.format = format;
   event.onlineLink =
-    format === EventFormat.OFFLINE ? null : 'https://teams.microsoft.com/l/meetup-join/demo';
+    format === EventFormat.OFFLINE
+      ? null
+      : 'https://teams.microsoft.com/l/meetup-join/demo';
   event.isFeatured = featuredOrder != null;
   event.featuredOrder = featuredOrder ?? 0;
   event.createdBy = createdBy;
@@ -282,11 +291,15 @@ export async function runCheckinDemoSeed(
   const log = options.log ?? (() => undefined);
   const exportPath = options.postsExportPath ?? resolveDefaultExportPath();
   const rawCount =
-    options.eventCount ??
-    Number(process.env.CHECKIN_DEMO_EVENT_COUNT ?? '15');
-  const eventCount = Math.max(1, Math.min(40, Number.isFinite(rawCount) ? rawCount : 15));
+    options.eventCount ?? Number(process.env.CHECKIN_DEMO_EVENT_COUNT ?? '15');
+  const eventCount = Math.max(
+    1,
+    Math.min(40, Number.isFinite(rawCount) ? rawCount : 15),
+  );
   const rand = mulberry32(
-    hashSeed(options.randomSeed ?? process.env.CHECKIN_DEMO_SEED ?? 'hub-checkin-demo'),
+    hashSeed(
+      options.randomSeed ?? process.env.CHECKIN_DEMO_SEED ?? 'hub-checkin-demo',
+    ),
   );
 
   log('=== Check-in demo seed ===');

@@ -181,7 +181,9 @@ export class EventsService {
   }
 
   async getById(id: string): Promise<EventRowDto | null> {
-    const r = await this.em.findOne(Event, { id: toEntityId(id) },
+    const r = await this.em.findOne(
+      Event,
+      { id: toEntityId(id) },
       { populate: [...EVENT_CAMERA_POPULATE] },
     );
     if (!r) return null;
@@ -192,12 +194,16 @@ export class EventsService {
     if (data.checkinCameraId !== undefined) {
       const raw = data.checkinCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
-      event.checkinCamera = id ? this.em.getReference(Camera, toEntityId(id)) : null;
+      event.checkinCamera = id
+        ? this.em.getReference(Camera, toEntityId(id))
+        : null;
     }
     if (data.checkoutCameraId !== undefined) {
       const raw = data.checkoutCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
-      event.checkoutCamera = id ? this.em.getReference(Camera, toEntityId(id)) : null;
+      event.checkoutCamera = id
+        ? this.em.getReference(Camera, toEntityId(id))
+        : null;
     }
   }
 

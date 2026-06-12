@@ -215,8 +215,12 @@ export class MessagesController {
       msgObj.receiver = receiverId
         ? this.em.getReference(User, toEntityId(receiverId))
         : null;
-      msgObj.group = groupId ? this.em.getReference(Group, toEntityId(groupId)) : null;
-      msgObj.parent = parentId ? this.em.getReference(Message, toEntityId(parentId)) : null;
+      msgObj.group = groupId
+        ? this.em.getReference(Group, toEntityId(groupId))
+        : null;
+      msgObj.parent = parentId
+        ? this.em.getReference(Message, toEntityId(parentId))
+        : null;
       this.em.persist(msgObj);
       await this.em.flush();
 

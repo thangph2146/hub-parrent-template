@@ -1,4 +1,8 @@
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import { randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
@@ -294,7 +298,11 @@ export class SessionsService {
   }
 
   async getById(id: string): Promise<SessionRowDto | null> {
-    const s = await this.em.findOne(Session, { id: toEntityId(id) }, { populate: ['user'] });
+    const s = await this.em.findOne(
+      Session,
+      { id: toEntityId(id) },
+      { populate: ['user'] },
+    );
     return s ? mapRow(s as SessionWithUser) : null;
   }
 
@@ -385,7 +393,9 @@ export class SessionsService {
     }
 
     if (action === 'hard-delete') {
-      const result = await this.em.nativeDelete(Session, { id: { $in: toEntityIdList(ids) } });
+      const result = await this.em.nativeDelete(Session, {
+        id: { $in: toEntityIdList(ids) },
+      });
       return {
         success: true,
         message: `Đã xóa vĩnh viễn ${result ?? 0} session`,

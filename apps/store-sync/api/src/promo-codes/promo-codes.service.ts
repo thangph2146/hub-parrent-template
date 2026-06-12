@@ -90,7 +90,10 @@ export class PromoCodesService {
   }
 
   async getById(id: number): Promise<PromoCodeRowDto | null> {
-    const row = await this.em.findOne(PromoCode, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(PromoCode, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     return row ? mapPromo(row) : null;
   }
 
@@ -146,7 +149,10 @@ export class PromoCodesService {
     id: number,
     data: Partial<PromoCode>,
   ): Promise<PromoCodeRowDto | null> {
-    const row = await this.em.findOne(PromoCode, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(PromoCode, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return null;
     if (data.label !== undefined) row.label = String(data.label).trim();
     if (data.discountKind !== undefined) {
@@ -187,7 +193,10 @@ export class PromoCodesService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(PromoCode, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(PromoCode, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return false;
     row.deletedAt = new Date();
     row.isActive = false;
@@ -196,7 +205,10 @@ export class PromoCodesService {
   }
 
   async incrementUsage(em: EntityManager, id: number): Promise<void> {
-    const row = await em.findOne(PromoCode, { id: toEntityId(id), deletedAt: null });
+    const row = await em.findOne(PromoCode, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return;
     row.usageCount += 1;
   }
