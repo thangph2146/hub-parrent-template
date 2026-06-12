@@ -1,6 +1,7 @@
-﻿# AGENTS — Entry point (hub-parent-template)
+﻿# AGENTS — Entry point (mono-repo-template)
 
 Tài liệu này là **chỉ mục điều hướng** cho agent: hiểu hệ thống → chọn đúng folder → mở đúng doc → làm việc.  
+**Mô hình template:** [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) — upstream (repo này) = `packages` + `apps/main`; downstream = repo sản phẩm + `pnpm pull:template`.  
 **Không** nhân bản chi tiết dài ở đây; mỗi chủ đề có file riêng trong `docs/` hoặc `packages/*/README.md`.
 
 **Ngôn ngữ & encoding:** tài liệu agent dùng **tiếng Việt**, file Markdown lưu **UTF-8** (không mojibake kiểu `M?c tiêu`, `Ðây`). Khi sửa doc, giữ UTF-8; không tạo file `.md` mới ngoài cây `docs/` / README package trừ khi có chủ đề lặp lại (mục 4).
@@ -141,12 +142,13 @@ docs/
 | Dev site chính | `pnpm dev` (main API + backend + hub-parent frontend) |
 | Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
 | Dev stack check-in deploy | `pnpm dev:checkin` |
-| Sau `git pull` — cập nhật line check-in | `pnpm pull:checkin` |
-| **Push code + branch deploy** | `pnpm push -- "feat: ..."` (main + hub-event + hub-parent) |
-| Chỉ sync/push (đã commit) | `pnpm push:deploy` |
+| **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
+| Downstream kéo packages | `pnpm pull:template` — [`TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) |
+| Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
+| Sau `git pull` — sync check-in (legacy) | `pnpm pull:checkin` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
-**Dev hàng ngày:** chỉ sửa `apps/main/` + `packages/*`; line deploy cập nhật qua sync/pull, không copy thủ công.
+**Dev hàng ngày:** chỉ sửa `apps/main/` + `packages/*`. Deploy sản phẩm: repo downstream + `pnpm pull:template` (không copy thủ công).
 
 ---
 
@@ -172,15 +174,15 @@ pnpm verify:imports           # alias @ui
 | Check-in API khớp main | `pnpm verify:checkin-api` + `verify:api-profile` sau sửa `apps/main/api` domain check-in |
 | Build sạch | `pnpm check` pass |
 | Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
-| Deploy branch cập nhật | `pnpm push -- "..."` hoặc CI `deploy-branches.yml` sau push `main` |
+| Deploy branch cập nhật | Downstream: `pnpm pull:template` · Legacy: `pnpm push:legacy` |
 
-### Push và theo dõi deploy
+### Push (template upstream)
 
 ```bash
-pnpm push -- "feat: mô tả thay đổi"
+pnpm push -- "feat: mô tả"
 ```
 
-Trên branch **`main`**: commit (nếu có diff) → `pull:checkin` + `pull:parent` → push `main` + `hub-event` + `hub-parent`. Chi tiết: [`docs/steps/step6_code_execution_and_change_tracking.md`](docs/steps/step6_code_execution_and_change_tracking.md) · branch deploy: [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md).
+Chỉ push **`main`**. Downstream kéo packages: `pnpm pull:template` — xem [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
 
 Sau đổi route/module đáng kể:
 

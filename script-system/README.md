@@ -34,13 +34,24 @@ script-system/
 | `copy-checkin-admin-modules.cjs` | **Deprecated** — dùng `pnpm pull:checkin` |
 | `sync-checkin-menu-tree.cjs` | Sinh menu sidebar check-in |
 | `sync-parent.cjs` | `pnpm pull:parent` |
+| `pull-template.cjs` | `pnpm pull:template` — downstream kéo packages/script-system |
+| `init-downstream.cjs` | `pnpm init:downstream hub-event ../path` |
 
-## Git / push deploy (`git/`)
+## Template (`template/` + root manifest)
+
+| File | Mục đích |
+|------|----------|
+| `template.manifest.json` (root) | Upstream — paths kế thừa, productLines |
+| `template/template.manifest.downstream.json` | Mẫu manifest repo sản phẩm |
+| `template/pnpm-workspace.*.yaml` | Workspace downstream theo line |
+| `docs/TEMPLATE_MONOREPO.md` | Hướng dẫn đầy đủ |
+
+## Git / push (`git/`)
 
 | File | Lệnh |
 |------|------|
-| `commit-and-push.cjs` | `pnpm push -- "feat: ..."` — commit + sync + push `main`, `hub-event`, `hub-parent` |
-| `push-deploy-branches.cjs` | `pnpm push:deploy` — đã commit, chỉ sync + push branch |
+| `commit-and-push.cjs` | `pnpm push` — template: chỉ main; `--legacy-deploy` = branch deploy |
+| `push-deploy-branches.cjs` | `pnpm push:deploy` · `--only hub-event` |
 
 Quy trình agent: sau `pnpm check` → `pnpm push -- "..."` (xem `docs/steps/step6_code_execution_and_change_tracking.md`, `AGENTS.md` mục 6).
 

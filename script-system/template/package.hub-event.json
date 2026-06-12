@@ -1,0 +1,18 @@
+{
+  "name": "hub-event-monorepo",
+  "private": true,
+  "scripts": {
+    "pull:template": "node script-system/sync/pull-template.cjs",
+    "init:downstream": "node script-system/sync/init-downstream.cjs",
+    "check": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm lint && pnpm typecheck",
+    "dev:checkin": "node script-system/dev/dev-stack.cjs checkin",
+    "pm2:start:checkin": "node script-system/deploy/pm2-stack.cjs start checkin",
+    "pm2:reload:checkin": "node script-system/deploy/pm2-stack.cjs reload checkin",
+    "push": "node script-system/git/commit-and-push.cjs",
+    "env:init": "node script-system/env/env-init.cjs checkin"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.9"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

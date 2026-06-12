@@ -1,0 +1,54 @@
+{
+  "id": "mono-repo-template",
+  "role": "upstream",
+  "description": "Template upstream — packages + script-system kế thừa; apps/main dev sandbox; apps/* khác là reference product lines.",
+  "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
+  "defaultRef": "main",
+  "remoteName": "template",
+  "inheritPaths": [
+    "packages",
+    "script-system",
+    "docs/admin-pattern",
+    "docs/api-pattern",
+    "docs/api-client-pattern",
+    "docs/ui-pattern",
+    "docs/env",
+    "docs/steps",
+    ".graphify",
+    "packages/.graphify"
+  ],
+  "inheritRootFiles": [
+    "turbo.json",
+    "ecosystem.shared.cjs",
+    "AGENTS.md"
+  ],
+  "keepPaths": [
+    "apps",
+    "pnpm-workspace.yaml",
+    "package.json",
+    "template.manifest.json",
+    ".template-lock.json",
+    ".env",
+    ".env.local"
+  ],
+  "productLines": {
+    "hub-event": {
+      "appsPath": "apps/hub-event",
+      "ecosystem": "ecosystem.checkin.cjs",
+      "pm2Start": "pnpm pm2:start:checkin",
+      "syncFromMain": "pull:checkin"
+    },
+    "hub-parent": {
+      "appsPath": "apps/hub-parent",
+      "ecosystem": "ecosystem.main.cjs",
+      "pm2Start": "pnpm pm2:start",
+      "syncFromMain": "pull:parent"
+    },
+    "store-sync": {
+      "appsPath": "apps/store-sync",
+      "ecosystem": "ecosystem.store.cjs",
+      "pm2Start": "pnpm pm2:start:store",
+      "syncFromMain": "sync:api:store-sync"
+    }
+  }
+}

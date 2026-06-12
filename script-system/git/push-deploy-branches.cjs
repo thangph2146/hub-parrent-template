@@ -1,29 +1,51 @@
 /**
- * Sync deploy lines → commit (nếu có) → push main + cập nhật branch hub-event, hub-parent.
+ * Sync deploy lines → commit (nếu có) → push main + branch deploy (legacy).
  *
- * Workflow:
- *   pnpm push -- "feat: ..."     ← commit + push (khuyến nghị)
- *   pnpm push:deploy             ← đã commit sẵn
+ * Template upstream: dùng --legacy-deploy hoặc pnpm push:legacy / push:checkin / push:parent.
  *
  * Usage:
- *   node script-system/git/push-deploy-branches.cjs
- *   node script-system/git/push-deploy-branches.cjs --skip-sync
- *   node script-system/git/push-deploy-branches.cjs --dry-run
- *
- * Branch deploy trỏ cùng commit với main sau sync — server clone -b hub-event / hub-parent.
+ *   node push-deploy-branches.cjs --only hub-event
+ *   node push-deploy-branches.cjs --only hub-event,hub-parent
+ *   node push-deploy-branches.cjs --skip-sync --only hub-parent
  */
+const fs = require("node:fs")
+const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
 const { ROOT } = require("../lib/paths.cjs")
 
-const DEPLOY_BRANCHES = ["hub-event", "hub-parent"]
-const SYNC_COMMIT_PREFIX = "chore(sync): cập nhật deploy lines hub-event + hub-parent"
+const LINE_CONFIG = {
+  "hub-event": {
+    branch: "hub-event",
+    sync: "node script-system/sync/sync-checkin.cjs",
+    label: "hub-event (pull:checkin)",
+  },
+  "hub-parent": {
+    branch: "hub-parent",
+    sync: "node script-system/sync/sync-parent.cjs",
+    label: "hub-parent (pull:parent)",
+  },
+}
 
-const args = new Set(process.argv.slice(2))
-const dryRun = args.has("--dry-run")
-const skipSync = args.has("--skip-sync")
+function parseArgs(argv) {
+  const flags = new Set()
+  let only = ["hub-event", "hub-parent"]
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]
+    if (arg === "--only" && argv[i + 1]) {
+      only = argv[++i].split(",").map((s) => s.trim())
+      continue
+    }
+    if (arg.startsWith("--")) flags.add(arg)
+  }
+  return {
+    dryRun: flags.has("--dry-run"),
+    skipSync: flags.has("--skip-sync"),
+    only,
+  }
+}
 
-function run(cmd, { label, dryRunOk = false } = {}) {
+function run(cmd, { label, dryRunOk = false, dryRun = false } = {}) {
   if (label) console.log(`\n[push:deploy] ${label}\n`)
   if (dryRun && !dryRunOk) {
     console.log(`[push:deploy] dry-run: ${cmd}`)
@@ -32,95 +54,93 @@ function run(cmd, { label, dryRunOk = false } = {}) {
   return execSync(cmd, { cwd: ROOT, encoding: "utf8" }).trim()
 }
 
-function gitStatusPorcelain() {
-  return run("git status --porcelain", { dryRunOk: true })
+function gitStatusPorcelain(dryRun) {
+  return run("git status --porcelain", { dryRunOk: true, dryRun })
 }
 
-function currentBranch() {
-  return run("git rev-parse --abbrev-ref HEAD", { dryRunOk: true })
+function currentBranch(dryRun) {
+  return run("git rev-parse --abbrev-ref HEAD", { dryRunOk: true, dryRun })
 }
 
-function ensureMainBranch() {
-  const branch = currentBranch()
+function ensureMainBranch(dryRun) {
+  const branch = currentBranch(dryRun)
   if (branch !== "main") {
     console.error(
-      `[push:deploy] Cần đứng trên branch main (hiện tại: ${branch}).\n` +
-        `  git checkout main`,
+      `[push:deploy] Cần đứng trên branch main (hiện tại: ${branch}).`,
     )
     process.exit(1)
   }
 }
 
-function ensureCleanBeforeSync() {
-  const status = gitStatusPorcelain()
-  if (status) {
+function ensureCleanBeforeSync(dryRun) {
+  if (gitStatusPorcelain(dryRun)) {
     console.error(
-      "[push:deploy] Còn thay đổi chưa commit. Dùng:\n" +
-        '  pnpm push -- "feat: mô tả"\n' +
-        "  hoặc commit thủ công rồi pnpm push:deploy\n",
+      '[push:deploy] Còn thay đổi chưa commit. Dùng: pnpm push -- "feat: ..."',
     )
     process.exit(1)
   }
 }
 
-function runSync() {
-  run("node script-system/sync/sync-checkin.cjs", {
-    label: "Sync hub-event (pull:checkin)",
-  })
-  run("node script-system/sync/sync-parent.cjs", {
-    label: "Sync hub-parent (pull:parent)",
-  })
+function runSyncForLines(lines, dryRun) {
+  for (const key of lines) {
+    const cfg = LINE_CONFIG[key]
+    if (!cfg) {
+      console.error(`[push:deploy] line không hợp lệ: ${key}`)
+      process.exit(1)
+    }
+    run(cfg.sync, { label: `Sync ${cfg.label}`, dryRun })
+  }
 }
 
-function commitSyncIfNeeded() {
-  const status = gitStatusPorcelain()
-  if (!status) {
-    console.log("[push:deploy] Không có thay đổi sau sync — bỏ qua commit sync.")
+function commitSyncIfNeeded(lines, dryRun) {
+  if (!gitStatusPorcelain(dryRun)) {
+    console.log("[push:deploy] Không có thay đổi sau sync.")
     return false
   }
-  run("git add -A", { label: "Stage thay đổi sync" })
+  const msg = `chore(sync): cập nhật deploy ${lines.join(", ")}`
+  run("git add -A", { label: "Stage sync", dryRun })
   if (dryRun) {
-    console.log(`[push:deploy] dry-run: git commit -m "${SYNC_COMMIT_PREFIX}"`)
+    console.log(`[push:deploy] dry-run: git commit -m "${msg}"`)
   } else {
-    execFileSync("git", ["commit", "-m", SYNC_COMMIT_PREFIX], {
-      cwd: ROOT,
-      stdio: "inherit",
-    })
+    execFileSync("git", ["commit", "-m", msg], { cwd: ROOT, stdio: "inherit" })
   }
   return true
 }
 
-function pushMain() {
-  run("git push origin main", { label: "Push origin main" })
+function pushMain(dryRun) {
+  run("git push origin main", { label: "Push origin main", dryRun })
 }
 
-function updateDeployBranches() {
-  const head = run("git rev-parse HEAD", { dryRunOk: true })
-  for (const name of DEPLOY_BRANCHES) {
+function updateDeployBranches(branches, dryRun) {
+  const head = run("git rev-parse HEAD", { dryRunOk: true, dryRun })
+  for (const name of branches) {
     run(`git branch -f ${name} ${head}`, {
-      label: `Cập nhật branch ${name} → ${head.slice(0, 7)}`,
+      label: `Branch ${name} → ${head.slice(0, 7)}`,
+      dryRun,
     })
   }
-  run(`git push origin ${DEPLOY_BRANCHES.join(" ")} --force-with-lease`, {
-    label: `Push deploy branches: ${DEPLOY_BRANCHES.join(", ")}`,
+  run(`git push origin ${branches.join(" ")} --force-with-lease`, {
+    label: `Push ${branches.join(", ")}`,
+    dryRun,
   })
 }
 
-console.log("[push:deploy] main + hub-event + hub-parent\n")
+const { dryRun, skipSync, only } = parseArgs(process.argv.slice(2))
+const branches = only.map((k) => LINE_CONFIG[k]?.branch).filter(Boolean)
 
-ensureMainBranch()
-ensureCleanBeforeSync()
+console.log(`[push:deploy] lines: ${only.join(", ")}\n`)
 
-if (!skipSync) {
-  runSync()
-  commitSyncIfNeeded()
-} else {
-  console.log("[push:deploy] --skip-sync: bỏ qua pull:checkin / pull:parent")
-}
+ensureMainBranch(dryRun)
+ensureCleanBeforeSync(dryRun)
 
-pushMain()
-updateDeployBranches()
+if (!skipSync) runSyncForLines(only, dryRun)
+else console.log("[push:deploy] --skip-sync")
 
-console.log("\n[push:deploy] Hoàn tất.")
-console.log("  Server check-in:  git pull origin hub-event")
-console.log("  Server site chính: git pull origin hub-parent")
+if (!skipSync) commitSyncIfNeeded(only, dryRun)
+
+pushMain(dryRun)
+if (branches.length) updateDeployBranches(branches, dryRun)
+
+console.log("\n[push:deploy] Hoàn tất (legacy deploy branch).")
+
+module.exports = { LINE_CONFIG, parseArgs }
