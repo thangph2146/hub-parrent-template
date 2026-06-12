@@ -1,5 +1,1 @@
-import { AdminRouteLoading } from "@ui/components/admin"
-
-export default function Loading() {
-  return <AdminRouteLoading variant="form" />
-}
+export { default } from "@workspace/admin-app/routing/admin-form-route-loading"

@@ -9,6 +9,7 @@
     "./registry": "./src/registry/index.ts",
     "./menu": "./src/menu/index.ts",
     "./runtime": "./src/runtime/index.ts",
+    "./routing/*": "./src/routing/*",
     "./config/*": "./src/config/*",
     "./types/*": "./src/types/*",
     "./features/*": "./src/features/*",
