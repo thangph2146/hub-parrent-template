@@ -54,6 +54,8 @@
     "verify:bounds": "node script-system/verify/verify-service-boundaries.mjs",
     "verify:sdk-http": "node script-system/verify/verify-no-sdk-http.mjs",
     "verify:permissions": "node script-system/verify/verify-permission-parity.mjs",
+    "verify:api-contract": "node script-system/verify/verify-api-client-contract.mjs",
+    "test:api-server": "pnpm --filter @workspace/api-server test",
     "check": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm verify:sdk-http && pnpm verify:permissions && pnpm verify:main-admin && pnpm lint && pnpm typecheck",
     "check:full": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm verify:sdk-http && pnpm verify:permissions && pnpm verify:main-admin && pnpm lint && pnpm typecheck && pnpm graphify:ai-summary",
     "test": "pnpm --filter @api test:all",

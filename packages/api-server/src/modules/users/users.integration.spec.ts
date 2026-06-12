@@ -138,17 +138,23 @@ describe('BaseUsersService - integration test (real fixture data)', () => {
   describe('bulk', () => {
     it('should return 0 affected for empty ids', async () => {
       const result = await service.bulk('delete', []);
-      expect(result.affected).toBe(0);
-      expect(result.message).toContain('Không có bản ghi');
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(0);
+      expect(r.message).toContain('Không có bản ghi');
     });
 
     it('should bulk delete active users', async () => {
+      const protectedEmails = new Set([
+        'superadmin@hub.edu.vn',
+        'admin@hub.edu.vn',
+      ]);
       const activeIds = fixture.users
-        .filter((u) => u.deletedAt == null)
+        .filter((u) => u.deletedAt == null && !protectedEmails.has(u.email as string))
         .map((u) => u.id as string)
         .slice(0, 2);
       const result = await service.bulk('delete', activeIds);
-      expect(result.affected).toBe(2);
+      const r = result as unknown as { affected: number };
+      expect(r.affected).toBe(2);
     });
 
     it('should bulk activate users', async () => {
@@ -156,7 +162,8 @@ describe('BaseUsersService - integration test (real fixture data)', () => {
         .slice(0, 3)
         .map((u) => u.id as string);
       const result = await service.bulk('active', ids);
-      expect(result.affected).toBe(3);
+      const r = result as unknown as { affected: number };
+      expect(r.affected).toBe(3);
     });
 
     it('should not deactivate super_admin in bulk unactive', async () => {
@@ -169,18 +176,20 @@ describe('BaseUsersService - integration test (real fixture data)', () => {
         ...superAdminIds,
       ]);
       // super_admin should be filtered out
-      expect(result.affected).toBe(1);
+      const r = result as unknown as { affected: number };
+      expect(r.affected).toBe(1);
     });
   });
 
   describe('softDelete + restore', () => {
     it('should soft delete and restore a non-protected user', async () => {
-      // Pick a non-protected user
+      // Pick a non-protected user (NOT admin@hub.edu.vn or superadmin@hub.edu.vn)
       const nonProtected = fixture.users.find(
-        (u) => u.email !== 'superadmin@hub.edu.vn',
+        (u) =>
+          u.email !== 'superadmin@hub.edu.vn' &&
+          u.email !== 'admin@hub.edu.vn',
       );
       if (!nonProtected) {
-        // Skip if fixture doesn't have superadmin
         return;
       }
       const id = nonProtected.id as string;

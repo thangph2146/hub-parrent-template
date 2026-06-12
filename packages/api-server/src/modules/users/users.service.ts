@@ -7,6 +7,7 @@
 import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../../common';
 
 /**
  * Type exports from parent
@@ -30,9 +31,27 @@ export type { UserOption, DevLoginOptionsQuery } from '../../types';
 export type DevLoginOptionDto = DevLoginOption;
 
 /**
- * Default admin table export limit
+ * User module-specific bulk result.
+ *
+ * Extends generic `BulkOperationResult` với `affected` (số bản ghi đã xử lý)
+ * và `message` (thông báo tiếng Việt cho admin). Dùng cho user management
+ * vì có thêm logic skip protected admin.
  */
-export const ADMIN_TABLE_EXPORT_MAX_LIMIT = 1000;
+export interface UserBulkResult extends BulkOperationResult {
+  affected: number;
+  message: string;
+  /**
+   * IDs of users actually affected (vd: loại bỏ super_admin khi unactive).
+   * Dùng cho admin UI hiển thị chi tiết.
+   */
+  affectedUserIds?: string[];
+}
+
+/**
+ * Default admin table export limit — re-export từ common/pagination.ts
+ * để giữ backward compat với code cũ `import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '.../users.service'`.
+ */
+export { ADMIN_TABLE_EXPORT_MAX_LIMIT };
 
 /**
  * Default pagination settings
@@ -266,12 +285,16 @@ export class BaseUsersService {
   }
 
   /**
-   * Resolve user ID to email
+   * Resolve user ID to email.
+   *
+   * Dùng `toEntityIdValue` để giữ nguyên CUID string (User.id là CUID,
+   * không phải số). `toEntityId` chỉ dành cho entity có PK số (Post,
+   * Comment, ...).
    */
   async resolveActorEmail(userId: string): Promise<string | null> {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
-    const entityId = this.toEntityId(userId);
+    const entityId = this.toEntityIdValue(userId);
     const found = await em.findOne(User, { id: entityId });
     const user = found as Record<string, unknown> | null;
     if (!user) return null;
@@ -289,9 +312,10 @@ export class BaseUsersService {
   ): Promise<Record<string, unknown> | null> {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
+    const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(
       User,
-      { id },
+      { id: entityId },
       {
         populate: ['userRoles', 'userRoles.role'],
         orderBy: { userRoles: { role: { name: 'ASC' } } },
@@ -517,7 +541,7 @@ export class BaseUsersService {
     const Role = this.getRoleEntity() as new () => Record<string, unknown>;
     const UserRole = this.getUserRoleEntity() as new () => Record<string, unknown>;
 
-    const entityId = this.toEntityId(id);
+    const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(User, { id: entityId });
     const existing = found as Record<string, unknown> | null;
     if (!existing) return null;
@@ -593,7 +617,13 @@ export class BaseUsersService {
    * Check if email is protected admin
    */
   protected isProtectedAdminEmail(email: string): boolean {
-    const protectedEmails = ['admin@localhost', 'superadmin@localhost'];
+    const protectedEmails = [
+      'admin@localhost',
+      'superadmin@localhost',
+      // Fixture emails (production-like data)
+      'admin@hub.edu.vn',
+      'superadmin@hub.edu.vn',
+    ];
     return protectedEmails.includes(email.trim().toLowerCase());
   }
 
@@ -604,7 +634,7 @@ export class BaseUsersService {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
 
-    const entityId = this.toEntityId(id);
+    const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(User, { id: entityId });
     const user = found as Record<string, unknown> | null;
 
@@ -630,7 +660,7 @@ export class BaseUsersService {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
 
-    const entityId = this.toEntityId(id);
+    const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(User, { id: entityId });
     const user = found as Record<string, unknown> | null;
 
@@ -649,7 +679,7 @@ export class BaseUsersService {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
 
-    const entityId = this.toEntityId(id);
+    const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(User, { id: entityId });
     const user = found as Record<string, unknown> | null;
 
@@ -673,9 +703,9 @@ export class BaseUsersService {
   async bulk(
     action: 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive',
     ids: string[],
-  ): Promise<BulkOperationResult> {
+  ): Promise<UserBulkResult> {
     if (!ids.length) {
-      return { affected: 0, message: 'Không có bản ghi nào' };
+      return { success: 0, failed: 0, total: 0, affected: 0, message: 'Không có bản ghi nào' };
     }
 
     const em = this.getEm();
@@ -705,7 +735,7 @@ export class BaseUsersService {
         skipCount > 0
           ? `Đã xóa ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
           : `Đã xóa ${filtered.length} người dùng`;
-      return { affected: filtered.length, message: msg };
+      return { success: filtered.length, failed: skipCount, total: users.length, affected: filtered.length, message: msg };
     }
 
     if (action === 'restore') {
@@ -714,9 +744,13 @@ export class BaseUsersService {
         { id: { $in: this.toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );
+      const affected = result ?? 0;
       return {
-        affected: result ?? 0,
-        message: `Đã khôi phục ${result ?? 0} người dùng`,
+        success: affected,
+        failed: 0,
+        total: ids.length,
+        affected,
+        message: `Đã khôi phục ${affected} người dùng`,
       };
     }
 
@@ -738,7 +772,7 @@ export class BaseUsersService {
         skipCount > 0
           ? `Đã xóa vĩnh viễn ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
           : `Đã xóa vĩnh viễn ${filtered.length} người dùng`;
-      return { affected: filtered.length, message: msg };
+      return { success: filtered.length, failed: skipCount, total: users.length, affected: filtered.length, message: msg };
     }
 
     if (action === 'active') {
@@ -747,9 +781,13 @@ export class BaseUsersService {
         { id: { $in: this.toEntityIdList(ids) } },
         { isActive: true },
       );
+      const affected = result ?? 0;
       return {
-        affected: result ?? 0,
-        message: `Đã kích hoạt ${result ?? 0} người dùng`,
+        success: affected,
+        failed: 0,
+        total: ids.length,
+        affected,
+        message: `Đã kích hoạt ${affected} người dùng`,
       };
     }
 
@@ -773,9 +811,12 @@ export class BaseUsersService {
 
       if (!idsToUnactive.length) {
         return {
+          success: 0,
+          failed: ids.length,
+          total: ids.length,
           affected: 0,
           message: 'Không thể hủy kích hoạt tài khoản Super Admin',
-          affectedUserIds: [],
+          affectedUserIds: [] as string[],
         };
       }
 
@@ -785,13 +826,17 @@ export class BaseUsersService {
         { isActive: false },
       );
 
+      const affected = result ?? 0;
       return {
-        affected: result ?? 0,
-        message: `Đã hủy kích hoạt ${result ?? 0} người dùng`,
+        success: affected,
+        failed: ids.length - idsToUnactive.length,
+        total: ids.length,
+        affected,
+        message: `Đã hủy kích hoạt ${affected} người dùng`,
         affectedUserIds: idsToUnactive,
       };
     }
 
-    return { affected: 0, message: 'Action không hợp lệ' };
+    return { success: 0, failed: 0, total: 0, affected: 0, message: 'Action không hợp lệ' };
   }
 }

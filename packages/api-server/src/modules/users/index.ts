@@ -23,7 +23,6 @@ export {
 } from './users.service';
 export type {
   UserOption,
-  DevLoginOptionDto,
   DevLoginOptionsQuery,
 } from './users.service';
 

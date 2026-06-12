@@ -7,7 +7,7 @@ import {
   calculateOffset,
   isValidPagination,
   getPaginationRange,
-} from "./pagination"
+} from '../common/pagination'
 
 describe("pagination utilities", () => {
   describe("normalizePageLimit", () => {

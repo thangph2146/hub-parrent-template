@@ -48,6 +48,7 @@ import type {
   DevLoginOptionDto,
   DevLoginOptionsQuery,
 } from './users.service';
+import { parseAdminListLimit } from '../../common/parse-list-query';
 
 /**
  * DTOs for request/response
@@ -208,7 +209,7 @@ export class BaseUsersController {
   ): { page: number; limit: number } {
     return {
       page: Math.max(1, parseInt(String(page ?? 1), 10) || 1),
-      limit: Math.max(1, parseInt(String(limit ?? defaultLimit), 10) || defaultLimit),
+      limit: parseAdminListLimit(limit, defaultLimit),
     };
   }
 
@@ -275,9 +276,10 @@ export class BaseUsersController {
 
     const filters = this.parseFilters(query ?? {});
 
+    const pagination = this.parsePagination(page, limit, 10);
     const result = await this.service.list({
-      page: Math.max(1, parseInt(String(page ?? 1), 10) || 1),
-      limit: Math.max(1, parseInt(String(limit ?? 10), 10) || 10),
+      page: pagination.page,
+      limit: pagination.limit,
       search: search?.trim(),
       status: this.parseListStatus(status),
       filters: Object.keys(filters).length ? filters : undefined,
@@ -317,10 +319,11 @@ export class BaseUsersController {
       return res.status(statusCode).json(body);
     }
 
+    const pagination = this.parsePagination(undefined, limit, 50);
     const options = await this.service.getOptions(
       column ?? 'email',
       search?.trim(),
-      parseInt(String(limit ?? 50), 10) || 50,
+      pagination.limit,
     );
 
     const { statusCode, body } = this.createSuccessResponse(options);
@@ -420,9 +423,16 @@ export class BaseUsersController {
       return res.status(statusCode).json(errorBody);
     }
 
-    if (!body?.email || !body?.password) {
+    if (!body?.email?.trim()) {
       const { statusCode, body: errorBody } = this.createErrorResponse(
-        'Email và password là bắt buộc',
+        'email là bắt buộc',
+        { statusCode: 400 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+    if (!body?.password || typeof body.password !== 'string') {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'password là bắt buộc',
         { statusCode: 400 },
       );
       return res.status(statusCode).json(errorBody);
@@ -432,15 +442,15 @@ export class BaseUsersController {
       // Validate actor for admin restrictions
       await this.service.resolveActorEmail(userIdHeader);
       const result = await this.service.create({
-        email: body.email,
-        name: body.name,
+        email: body.email.trim(),
+        name: body.name?.trim() ?? null,
         password: body.password,
-        bio: body.bio,
-        avatar: body.avatar,
-        phone: body.phone,
-        address: body.address,
-        citizenId: body.citizenId,
-        isActive: body.isActive,
+        bio: body.bio ?? null,
+        avatar: body.avatar ?? null,
+        phone: body.phone ?? null,
+        address: body.address ?? null,
+        citizenId: body.citizenId ?? null,
+        isActive: body.isActive ?? true,
         roleIds: body.roleIds,
       });
 
@@ -502,14 +512,14 @@ export class BaseUsersController {
     try {
       const actorEmail = await this.service.resolveActorEmail(userIdHeader);
       const result = await this.service.update(id, {
-        email: body?.email,
-        name: body?.name,
+        email: body?.email?.trim(),
+        name: body?.name?.trim(),
         password: body?.password,
         bio: body?.bio,
         avatar: body?.avatar,
-        phone: body?.phone,
-        address: body?.address,
-        citizenId: body?.citizenId,
+        phone: body?.phone?.trim(),
+        address: body?.address?.trim(),
+        citizenId: body?.citizenId?.trim(),
         isActive: body?.isActive,
         roleIds: body?.roleIds,
       }, actorEmail);
@@ -581,7 +591,10 @@ export class BaseUsersController {
 
     try {
       const result = await this.service.bulk(body.action, body.ids);
-      const { statusCode, body: successBody } = this.createSuccessResponse(result);
+      const { statusCode, body: successBody } = this.createSuccessResponse({
+        affected: result.success,
+        message: result.message,
+      });
       return res.status(statusCode).json(successBody);
     } catch (error) {
       this.logger.error(`bulk failed: ${error}`);

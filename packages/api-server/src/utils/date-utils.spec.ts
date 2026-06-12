@@ -8,7 +8,7 @@ import {
   isValidDate,
   formatDate,
   formatDateTime,
-} from "./date-utils"
+} from '../common/date-utils'
 
 describe("date-utils", () => {
   describe("safeIsoString", () => {
@@ -17,9 +17,10 @@ describe("date-utils", () => {
       expect(safeIsoString(date)).toBe("2024-01-15T10:30:00.000Z")
     })
 
-    it("should return string as-is", () => {
+    it("should normalize string to ISO", () => {
       const dateStr = "2024-01-15T10:30:00Z"
-      expect(safeIsoString(dateStr)).toBe(dateStr)
+      // new behavior: parse string to Date → ISO (normalized to ms precision)
+      expect(safeIsoString(dateStr)).toBe("2024-01-15T10:30:00.000Z")
     })
 
     it("should return null for null", () => {

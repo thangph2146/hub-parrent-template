@@ -131,4 +131,8 @@ export interface DevLoginOption {
 export interface DevLoginOptionsQuery {
   role?: string;
   search?: string;
+  roles?: string;
+  excludeRoles?: string;
+  emailSuffix?: string;
+  activeOnly?: boolean;
 }

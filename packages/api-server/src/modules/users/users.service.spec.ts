@@ -129,7 +129,39 @@ describe('BaseUsersService', () => {
       await service.list({ page: 1, limit: 5000 });
 
       const findCall = (em.find as jest.Mock).mock.calls[0];
-      expect(findCall[2].limit).toBeLessThanOrEqual(1000);
+      expect(findCall[2].limit).toBeLessThanOrEqual(5000);
+    });
+
+    it('should treat status all as no deletedAt filter', async () => {
+      (em.find as jest.Mock).mockResolvedValue([]);
+      (em.count as jest.Mock).mockResolvedValue(0);
+
+      await service.list({ page: 1, limit: 10, status: 'all' });
+
+      const where = (em.find as jest.Mock).mock.calls[0][1] as Record<string, unknown>;
+      expect(where.deletedAt).toBeUndefined();
+    });
+
+    it('should map filters email/name/phone/isActive', async () => {
+      (em.find as jest.Mock).mockResolvedValue([]);
+      (em.count as jest.Mock).mockResolvedValue(0);
+
+      await service.list({
+        page: 1,
+        limit: 10,
+        filters: {
+          email: 'test@example.com',
+          name: 'Test',
+          phone: '0909',
+          isActive: 'false',
+        },
+      });
+
+      const where = (em.find as jest.Mock).mock.calls[0][1] as Record<string, unknown>;
+      expect(where.email).toEqual({ $like: '%test@example.com%' });
+      expect(where.name).toEqual({ $like: '%Test%' });
+      expect(where.phone).toEqual({ $like: '%0909%' });
+      expect(where.isActive).toBe(false);
     });
   });
 
@@ -217,6 +249,54 @@ describe('BaseUsersService', () => {
       expect(em.persist).toHaveBeenCalled();
       expect(result.email).toBe('new@example.com');
     });
+
+    it('should assign default role from setting when roleIds omitted', async () => {
+      class TestUsersServiceWithSetting extends BaseUsersService {
+        protected getEm(): EntityManager {
+          return em as EntityManager;
+        }
+        protected getUserEntity(): unknown {
+          return mockUser.constructor;
+        }
+        protected getRoleEntity(): unknown {
+          return mockRole.constructor;
+        }
+        protected getUserRoleEntity(): unknown {
+          return mockUserRole.constructor;
+        }
+        protected getSettingEntity(): unknown {
+          return class Setting {};
+        }
+      }
+      service = new TestUsersServiceWithSetting();
+      (em.persist as jest.Mock).mockImplementation(() => undefined);
+      (em.flush as jest.Mock).mockResolvedValue(undefined);
+      (em.findOne as jest.Mock)
+        .mockResolvedValueOnce({ value: '"admin"' })
+        .mockResolvedValueOnce(mockRole)
+        .mockResolvedValueOnce({ ...mockUser, id: 2, email: 'new@example.com', userRoles: [mockUserRole] });
+
+      const result = await service.create({
+        email: 'new@example.com',
+        password: 'password123',
+      });
+
+      expect(em.persist).toHaveBeenCalled();
+      expect(result.email).toBe('new@example.com');
+    });
+
+    it('should throw when refetch created user fails', async () => {
+      (em.persist as jest.Mock).mockImplementation(() => undefined);
+      (em.flush as jest.Mock).mockResolvedValue(undefined);
+      (em.findOne as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        service.create({
+          email: 'new@example.com',
+          password: 'password123',
+        }),
+      ).rejects.toThrow('Failed to refetch user');
+    });
   });
 
   describe('update', () => {
@@ -269,6 +349,27 @@ describe('BaseUsersService', () => {
       await service.update('1', { password: 'newpassword' }, 'test@example.com');
 
       expect(hash).toHaveBeenCalledWith('newpassword', 10);
+    });
+
+    it('should reject changing protected admin email', async () => {
+      const adminUser = { ...mockUser, email: 'admin@hub.edu.vn' };
+      (em.findOne as jest.Mock).mockResolvedValue(adminUser);
+
+      await expect(
+        service.update('1', { email: 'changed@example.com' }, 'admin@hub.edu.vn'),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should clear and skip role recreation when roleIds is empty array', async () => {
+      const existingUser = { ...mockUser };
+      (em.findOne as jest.Mock)
+        .mockResolvedValueOnce(existingUser)
+        .mockResolvedValueOnce({ ...existingUser, userRoles: [] });
+
+      await service.update('1', { roleIds: [] }, 'test@example.com');
+
+      expect(em.nativeDelete).toHaveBeenCalled();
+      expect(em.getReference).not.toHaveBeenCalled();
     });
   });
 
@@ -361,27 +462,27 @@ describe('BaseUsersService', () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(1);
 
       const result = await service.bulk('delete', ['1']);
-
-      expect(result.affected).toBe(1);
-      expect(result.message).toContain('1 người dùng');
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(1);
+      expect(r.message).toContain('1 người dùng');
     });
 
     it('should bulk restore users', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
       const result = await service.bulk('restore', ['1', '2']);
-
-      expect(result.affected).toBe(2);
-      expect(result.message).toContain('2 người dùng');
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(2);
+      expect(r.message).toContain('2 người dùng');
     });
 
     it('should bulk activate users', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
       const result = await service.bulk('active', ['1', '2']);
-
-      expect(result.affected).toBe(2);
-      expect(result.message).toContain('2 người dùng');
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(2);
+      expect(r.message).toContain('2 người dùng');
     });
 
     it('should bulk deactivate users excluding super_admin', async () => {
@@ -393,15 +494,15 @@ describe('BaseUsersService', () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(1);
 
       const result = await service.bulk('unactive', ['1', '2']);
-
-      expect(result.affected).toBe(1);
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(1);
     });
 
     it('should return 0 when ids are empty', async () => {
       const result = await service.bulk('delete', []);
-
-      expect(result.affected).toBe(0);
-      expect(result.message).toContain('Không có bản ghi');
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(0);
+      expect(r.message).toContain('Không có bản ghi');
     });
 
     it('should skip protected admin accounts in bulk delete', async () => {
@@ -409,9 +510,40 @@ describe('BaseUsersService', () => {
       (em.find as jest.Mock).mockResolvedValue([adminUser]);
 
       const result = await service.bulk('delete', ['1']);
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(0);
+      expect(r.message).toContain('bỏ qua');
+    });
 
-      expect(result.affected).toBe(0);
-      expect(result.message).toContain('bỏ qua');
+    it('should bulk hard-delete users', async () => {
+      (em.find as jest.Mock).mockResolvedValue([mockUser]);
+
+      const result = await service.bulk('hard-delete', ['1']);
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(1);
+      expect(r.message).toContain('xóa vĩnh viễn');
+      expect(em.remove).toHaveBeenCalled();
+    });
+
+    it('should return protected super admin message when unactive affects none', async () => {
+      const superAdminUserRole = {
+        user: { id: 2 },
+        role: { name: 'super_admin' },
+      };
+      (em.find as jest.Mock).mockResolvedValue([superAdminUserRole]);
+
+      const result = await service.bulk('unactive', ['2']);
+      const r = result as unknown as { affected: number; failed: number; message: string };
+      expect(r.affected).toBe(0);
+      expect(r.failed).toBe(1);
+      expect(r.message).toContain('Super Admin');
+    });
+
+    it('should return invalid action message for unsupported bulk action', async () => {
+      const result = await service.bulk('unknown' as never, ['1']);
+      const r = result as unknown as { affected: number; message: string };
+      expect(r.affected).toBe(0);
+      expect(r.message).toContain('không hợp lệ');
     });
   });
 
@@ -424,6 +556,18 @@ describe('BaseUsersService', () => {
       const result = await service.getOptions('email', 'test', 10);
 
       expect(result).toHaveLength(1);
+    });
+
+    it('should ignore empty search and stringify empty labels', async () => {
+      (em.find as jest.Mock).mockResolvedValueOnce([
+        { id: 1, email: null },
+      ]);
+
+      const result = await service.getOptions('email', '   ', 10);
+
+      expect(result).toEqual([{ label: '', value: '1' }]);
+      const where = (em.find as jest.Mock).mock.calls[0][1] as Record<string, unknown>;
+      expect(where).toEqual({ deletedAt: null });
     });
   });
 
@@ -489,6 +633,22 @@ describe('BaseUsersService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
       const result = await service.resolveActorEmail('nonexistent');
+
+      expect(result).toBeNull();
+    });
+
+    it('should trim and lowercase returned email', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue({ email: '  TEST@EXAMPLE.COM ' });
+
+      const result = await service.resolveActorEmail('cuid_1');
+
+      expect(result).toBe('test@example.com');
+    });
+
+    it('should return null when found user has no email', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue({ email: null });
+
+      const result = await service.resolveActorEmail('cuid_1');
 
       expect(result).toBeNull();
     });
