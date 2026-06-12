@@ -7,10 +7,7 @@ import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Setting } from '../entities/setting.entity';
 
-export type {
-  AuthLoginPayload,
-  GoogleProfileDto,
-} from '@workspace/api-server/modules/auth';
+export type { AuthLoginPayload, GoogleProfileDto } from '@workspace/api-server/modules/auth';
 export type { AuthLoginPayload as AuthUserPayload } from '@workspace/api-server/modules/auth';
 
 export type LoginDto = {

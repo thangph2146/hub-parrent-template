@@ -34,10 +34,7 @@ export class PublicEventsService extends BasePublicEventsService {
   protected getEventRegistrationsService() {
     const svc = this.eventRegistrationsService;
     return {
-      findActiveByEventAndEmail: async (
-        eventId: string | number,
-        email: string,
-      ) => {
+      findActiveByEventAndEmail: async (eventId: string | number, email: string) => {
         const row = await svc.findActiveByEventAndEmail(eventId, email);
         if (!row) return null;
         return {

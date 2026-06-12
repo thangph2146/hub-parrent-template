@@ -1,3 +1,4 @@
+import { api } from "@workspace/admin-app/lib/api"
 import { DEFAULT_API_URL } from "@workspace/api-client"
 
 function normalizeBasePath(raw: string | undefined): string {

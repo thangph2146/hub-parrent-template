@@ -7,12 +7,7 @@ import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
 import { Camera } from '../entities/camera.entity';
 
-export type {
-  HanetWebhookBody,
-  HanetCameraRole,
-  HanetResolveContext,
-  HanetWebhookResult,
-} from '@workspace/api-server/modules/hanet';
+export type { HanetWebhookBody, HanetCameraRole, HanetResolveContext, HanetWebhookResult } from '@workspace/api-server/modules/hanet';
 
 @Injectable()
 export class HanetWebhookService extends BaseHanetWebhookService {

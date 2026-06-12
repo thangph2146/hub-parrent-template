@@ -5,14 +5,8 @@ import {
   BaseCategoriesService,
   type CategoryRowDto,
 } from '@workspace/api-server/modules/categories';
-import {
-  toIso,
-  type AdminColumnFiltersConfig,
-} from '@workspace/api-server/common';
-import {
-  getOptionsFromModel,
-  type GetOptionsConfig,
-} from '../common/get-options';
+import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import { getOptionsFromModel, type GetOptionsConfig } from '../common/get-options';
 import { Category } from '../entities/category.entity';
 import { CATEGORY_COLUMN_FILTERS } from '../common/admin-filter-configs';
 const CATEGORY_OPTIONS_CONFIG: GetOptionsConfig = {
@@ -36,12 +30,13 @@ export class CategoriesService extends BaseCategoriesService {
     return Category as unknown as new () => Record<string, unknown>;
   }
 
+
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return CATEGORY_COLUMN_FILTERS;
   }
 
   protected getListPopulate(): string[] {
-    return ['parent'];
+    return ["parent"];
   }
 
   async getOptions(

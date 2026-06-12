@@ -48,22 +48,16 @@ import {
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
-} from './import-helpers';
-import {
   normalizeLegacyImportRow,
   resolveLegacyTableModelName,
-} from './export-schema';
-import {
   exportLegacyKey,
   IMPORT_ID_MAP_GROUP,
   LegacyImportIdMap,
-} from './legacy-import-id-map';
-import {
   buildImportVerification,
   getImportReferenceFilePath,
   loadImportReferenceManifest,
   type ImportVerificationResult,
-} from './import-reference';
+} from '@workspace/api-server/modules/system';
 
 const EXCEL_META_SHEET = '__meta';
 const EXCEL_NULL_MARKER = '__HUB_NULL__';
@@ -1768,7 +1762,9 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
-      const idMap = new LegacyImportIdMap();
+      const idMap = new LegacyImportIdMap(
+        Setting as unknown as new () => Record<string, unknown>,
+      );
 
       try {
         const clearOrder = this.modelOrder.filter((m) =>
@@ -1876,7 +1872,9 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
-      const idMap = new LegacyImportIdMap();
+      const idMap = new LegacyImportIdMap(
+        Setting as unknown as new () => Record<string, unknown>,
+      );
 
       try {
         const preserveUserId = this.resolvePreserveUserIdForImport(
@@ -2783,7 +2781,9 @@ export class SystemService {
       if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 0');
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
-      const idMap = new LegacyImportIdMap();
+      const idMap = new LegacyImportIdMap(
+        Setting as unknown as new () => Record<string, unknown>,
+      );
 
       try {
         const clearOrder = resolvedTargetModel

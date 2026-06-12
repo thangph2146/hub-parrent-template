@@ -22,10 +22,8 @@ export class EventRegistrationAttendanceService extends BaseEventRegistrationAtt
   ) {
     super(em, {
       eventEntity: Event as unknown as new () => Record<string, unknown>,
-      eventRegistrationEntity: EventRegistration as unknown as new () => Record<
-        string,
-        unknown
-      >,
+      eventRegistrationEntity:
+        EventRegistration as unknown as new () => Record<string, unknown>,
       getRegistrationById: (id) => eventRegistrationsService.getById(id),
       emitAttendance: (payload) => socketGateway.emitEventAttendance(payload),
     });

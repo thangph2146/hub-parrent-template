@@ -5,10 +5,7 @@ import {
   BaseScreensService,
   type ScreensRowDto,
 } from '@workspace/api-server/modules/screens';
-import {
-  toIso,
-  type AdminColumnFiltersConfig,
-} from '@workspace/api-server/common';
+import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
 import { Screen } from '../entities/screen.entity';
 import { SCREEN_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -28,12 +25,13 @@ export class ScreensService extends BaseScreensService {
     return Screen as unknown as new () => Record<string, unknown>;
   }
 
+
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return SCREEN_COLUMN_FILTERS;
   }
 
   protected getListPopulate(): string[] {
-    return ['camera', 'template'];
+    return ["camera","template"];
   }
 
   protected mapRow(entity: Record<string, unknown>): ScreensRowDto {

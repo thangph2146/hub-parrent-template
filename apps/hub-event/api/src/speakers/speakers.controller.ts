@@ -103,12 +103,9 @@ export class SpeakersController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.speakersService.getById(Number(id));
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy diễn giả',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy diễn giả', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -174,12 +171,9 @@ export class SpeakersController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.speakersService.hardDelete(Number(id));
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy diễn giả',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy diễn giả', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {

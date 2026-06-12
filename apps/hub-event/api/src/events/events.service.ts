@@ -5,11 +5,7 @@ import { BaseEventsAdminService } from '@workspace/api-server/modules/events';
 import { Event } from '../entities/event.entity';
 import { Camera } from '../entities/camera.entity';
 
-export type {
-  EventRowDto,
-  ListEventsParams,
-  ListEventsResult,
-} from '@workspace/api-server/modules/events';
+export type { EventRowDto, ListEventsParams, ListEventsResult } from '@workspace/api-server/modules/events';
 
 @Injectable()
 export class EventsService extends BaseEventsAdminService {

@@ -6,12 +6,7 @@ import { EventRegistration } from '../entities/event-registration.entity';
 import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
 
-export type {
-  EventRegistrationRowDto,
-  ListEventRegistrationsParams,
-  ListEventRegistrationsResult,
-  PublicEventRegistrantDto,
-} from '@workspace/api-server/modules/event-registrations';
+export type { EventRegistrationRowDto, ListEventRegistrationsParams, ListEventRegistrationsResult, PublicEventRegistrantDto } from '@workspace/api-server/modules/event-registrations';
 
 @Injectable()
 export class EventRegistrationsService extends BaseEventRegistrationsAdminService {

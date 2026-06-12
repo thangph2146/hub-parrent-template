@@ -137,36 +137,24 @@ function resolveDefaultExportPath(log?: (message: string) => void): string {
     );
   }
 
-  const preferredNames = [
-    'full-export-2026-06-10.json',
-    'full-export-2026-05-14.json',
+  const candidates = [
+    path.resolve(
+      process.cwd(),
+      '..',
+      '..',
+      'data',
+      'full-export-2026-06-10.json',
+    ),
+    path.join(__dirname, '..', 'full-export-2026-06-10.json'),
+    path.join(__dirname, '..', 'full-export-2026-05-14.json'),
   ];
 
-  const searchDirs = [
-    path.resolve(process.cwd(), '..', '..', 'data'),
-    path.resolve(process.cwd(), '..', '..', 'main', 'api', 'src'),
-    path.resolve(process.cwd(), '..', '..', 'hub-parent', 'api', 'src'),
-    path.join(__dirname, '..'),
-    path.join(__dirname, '..', '..', '..', 'main', 'api', 'src'),
-    path.join(__dirname, '..', '..', '..', 'hub-parent', 'api', 'src'),
-  ];
-
-  for (const dir of searchDirs) {
-    for (const name of preferredNames) {
-      const candidate = path.join(dir, name);
-      if (fs.existsSync(candidate)) return candidate;
-    }
-    if (!fs.existsSync(dir)) continue;
-    const fallback = fs
-      .readdirSync(dir)
-      .filter((file) => /^full-export-.*\.json$/i.test(file))
-      .sort()
-      .reverse()[0];
-    if (fallback) return path.join(dir, fallback);
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
   }
 
   throw new Error(
-    'Không tìm thấy file export bài viết. Đặt CHECKIN_DEMO_POSTS_EXPORT hoặc thêm full-export vào apps/data/, apps/main/api/src/ hoặc apps/hub-parent/api/src/.',
+    'Không tìm thấy file export bài viết. Đặt CHECKIN_DEMO_POSTS_EXPORT hoặc thêm full-export vào apps/data/ hoặc apps/main/api/src/.',
   );
 }
 

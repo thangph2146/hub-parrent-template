@@ -8,6 +8,7 @@ import { PublicEventsService } from './public-events.service';
 import { PublicEventCategoriesService } from './public-event-categories.service';
 import { PublicAuthService } from './public-auth.service';
 
+import { AdmissionResultsModule } from '../admission-results/admission-results.module';
 import { PageContentsModule } from '../page-contents/page-contents.module';
 import { UsersModule } from '../users/users.module';
 import { AuthModule } from '../auth/auth.module';
@@ -20,6 +21,7 @@ import { SettingsModule } from '../settings/settings.module';
 @Module({
   imports: [
     forwardRef(() => SocketModule),
+    AdmissionResultsModule,
     PageContentsModule,
     UsersModule,
     AuthModule,

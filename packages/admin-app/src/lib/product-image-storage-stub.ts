@@ -14,6 +14,9 @@ export function resolveProductImageFolderNav(
   _productSlug?: string,
   _productSku?: string,
 ): { navPath: string } | null {
+  void _productName
+  void _productSlug
+  void _productSku
   return null
 }
 
@@ -23,6 +26,7 @@ export async function ensureProductImageFolder(
     "productName" | "productSlug" | "productSku"
   >,
 ): Promise<{ navPath: string; uploadFolderPath: string; created: boolean }> {
+  void _input
   throw new Error(
     "Module products không có trên HUB Check-in — không dùng upload ảnh sản phẩm.",
   )

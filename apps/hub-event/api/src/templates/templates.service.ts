@@ -5,10 +5,7 @@ import {
   BaseTemplatesService,
   type TemplatesRowDto,
 } from '@workspace/api-server/modules/templates';
-import {
-  toIso,
-  type AdminColumnFiltersConfig,
-} from '@workspace/api-server/common';
+import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
 import { Template } from '../entities/template.entity';
 import { TEMPLATE_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -27,6 +24,7 @@ export class TemplatesService extends BaseTemplatesService {
   protected getEntity(): new () => Record<string, unknown> {
     return Template as unknown as new () => Record<string, unknown>;
   }
+
 
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return TEMPLATE_COLUMN_FILTERS;

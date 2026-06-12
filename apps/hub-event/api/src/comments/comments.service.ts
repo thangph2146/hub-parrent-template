@@ -4,11 +4,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { BaseCommentsAdminService } from '@workspace/api-server/modules/comments';
 import { Comment } from '../entities/comment.entity';
 
-export type {
-  CommentRowDto,
-  ListCommentsParams,
-  ListCommentsResult,
-} from '@workspace/api-server/modules/comments';
+export type { CommentRowDto, ListCommentsParams, ListCommentsResult } from '@workspace/api-server/modules/comments';
 
 @Injectable()
 export class CommentsService extends BaseCommentsAdminService {

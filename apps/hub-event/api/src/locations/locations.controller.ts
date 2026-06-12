@@ -103,12 +103,9 @@ export class LocationsController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.locationsService.getById(Number(id));
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy địa điểm',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy địa điểm', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -174,12 +171,9 @@ export class LocationsController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.locationsService.hardDelete(Number(id));
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy địa điểm',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy địa điểm', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {

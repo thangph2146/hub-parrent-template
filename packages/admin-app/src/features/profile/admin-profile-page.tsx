@@ -21,7 +21,7 @@ import {
   AdminPageGuard,
   AdminPageSection,
 } from "@ui/components/admin"
-import { useAuth } from "@workspace/admin-app/runtime"
+import { useAdminAuth as useAuth } from "@workspace/admin-app/runtime"
 import {
   useChangeStaffPassword,
   useStaffProfile,

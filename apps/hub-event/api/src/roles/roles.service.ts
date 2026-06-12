@@ -6,10 +6,7 @@ import {
   type RolesRowDto,
 } from '@workspace/api-server/modules/roles';
 import { toIso } from '@workspace/api-server/common';
-import {
-  getOptionsFromModel,
-  type GetOptionsConfig,
-} from '../common/get-options';
+import { getOptionsFromModel, type GetOptionsConfig } from '../common/get-options';
 import { Role } from '../entities/role.entity';
 const ROLE_OPTIONS_CONFIG: GetOptionsConfig = {
   name: { valueField: 'name', searchField: 'name' },
@@ -32,6 +29,7 @@ export class RolesService extends BaseRolesService {
   protected getEntity(): new () => Record<string, unknown> {
     return Role as unknown as new () => Record<string, unknown>;
   }
+
 
   protected getSearchFields(): string[] {
     return ['name', 'displayName', 'description'];

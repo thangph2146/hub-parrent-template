@@ -5,11 +5,7 @@ import { BaseAccountsAdminService } from '@workspace/api-server/modules/accounts
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 
-export type {
-  AccountProfileDto,
-  UpdateAccountDto,
-  UpdateAccountResult,
-} from '@workspace/api-server/modules/accounts';
+export type { AccountProfileDto, UpdateAccountDto, UpdateAccountResult } from '@workspace/api-server/modules/accounts';
 
 @Injectable()
 export class AccountsService extends BaseAccountsAdminService {

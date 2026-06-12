@@ -25,8 +25,9 @@ export class FaceDataService extends BaseFaceDatasService {
     return FaceData as unknown as new () => Record<string, unknown>;
   }
 
+
   protected getListPopulate(): string[] {
-    return ['user'];
+    return ["user"];
   }
 
   protected buildWhere(params: ListCrudParams) {
@@ -35,10 +36,7 @@ export class FaceDataService extends BaseFaceDatasService {
     if (userId) {
       delete filters.userId;
     }
-    const where = super.buildWhere({ ...params, filters }) as Record<
-      string,
-      unknown
-    >;
+    const where = super.buildWhere({ ...params, filters }) as Record<string, unknown>;
     if (userId) {
       where.user = userId;
     }

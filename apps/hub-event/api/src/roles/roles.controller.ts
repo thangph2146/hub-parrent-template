@@ -123,12 +123,9 @@ export class RolesController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.rolesService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy vai trò',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy vai trò', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -194,12 +191,9 @@ export class RolesController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.rolesService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy vai trò',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy vai trò', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {

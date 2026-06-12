@@ -6,11 +6,7 @@ import { EventCheckin } from '../entities/event-checkin.entity';
 import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
 
-export type {
-  EventCheckinRowDto,
-  ListEventCheckinsParams,
-  ListEventCheckinsResult,
-} from '@workspace/api-server/modules/event-checkins';
+export type { EventCheckinRowDto, ListEventCheckinsParams, ListEventCheckinsResult } from '@workspace/api-server/modules/event-checkins';
 
 @Injectable()
 export class EventCheckinsService extends BaseEventCheckinsAdminService {

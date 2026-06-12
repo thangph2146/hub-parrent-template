@@ -58,12 +58,9 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/settings', error, { group, search });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -76,12 +73,9 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/settings/:key', error, { key });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -100,12 +94,9 @@ export class SettingsController {
       this.logApiError('PUT /api/admin/settings', error, {
         keyCount: Object.keys(settings ?? {}).length,
       });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -123,12 +114,9 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('PUT /api/admin/settings/:key', error, { key });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -142,12 +130,9 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('DELETE /api/admin/settings/:id', error, { id });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }

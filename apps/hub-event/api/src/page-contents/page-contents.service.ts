@@ -4,10 +4,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { BasePageContentsAdminService } from '@workspace/api-server/modules/page-contents';
 import { PageContent } from '../entities/page-content.entity';
 
-export type {
-  PageContentCreateInput,
-  PageContentUpdateInput,
-} from '@workspace/api-server/modules/page-contents';
+export type { PageContentCreateInput, PageContentUpdateInput } from '@workspace/api-server/modules/page-contents';
 
 @Injectable()
 export class PageContentsService extends BasePageContentsAdminService {
