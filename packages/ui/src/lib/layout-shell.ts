@@ -92,7 +92,7 @@ export const ADMIN_AUTH_PANEL_CLASS =
 export const ADMIN_AUTH_INFO_CARD_CLASS =
   "w-full min-w-0 max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl rounded-lg border border-border shadow-sm"
 
-// ── Vỏ app admin (apps/backend) ─────────────────────────────
+// ── Vỏ app admin (apps/main/backend, …) ─────────────────────
 
 /** `<main>` trong AdminShell — cuộn + nền + padding nội dung. */
 export const ADMIN_MAIN_SCROLL_CLASS =

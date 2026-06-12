@@ -58,8 +58,15 @@ export function buildAdminFilterQuery(
   return query
 }
 
+/** Giữ literal keys — tránh `Record<string, FilterMapping>` → value `| undefined`. */
+function defineFilterMappings<const T extends Record<string, FilterMapping>>(
+  mappings: T
+): T {
+  return mappings
+}
+
 // Preset mappings for common patterns
-export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
+export const COMMON_FILTER_MAPPINGS = defineFilterMappings({
   // Posts
   posts: {
     title: "title",
@@ -331,4 +338,4 @@ export const COMMON_FILTER_MAPPINGS: Record<string, FilterMapping> = {
     updatedAt: "updatedAt",
     deletedAt: "deletedAt",
   } as FilterMapping,
-}
+})

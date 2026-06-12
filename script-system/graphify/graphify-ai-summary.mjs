@@ -897,17 +897,24 @@ function writePackagesWorkspaceDepsMd() {
   )
 
   const appRows = []
-  const appsDir = join(root, "apps")
-  if (existsSync(appsDir)) {
-    for (const ent of readdirSync(appsDir, { withFileTypes: true })) {
-      if (!ent.isDirectory()) continue
-      const pj = join(appsDir, ent.name, "package.json")
-      for (const e of readWorkspaceEdgesFromPackageJson(pj)) {
-        appRows.push({
-          ...e,
-          location: `apps/${ent.name}/`,
-        })
-      }
+  /** Đường dẫn package.json deployable — từ PRODUCT_LINES (apps/main/api, …). */
+  const appPackageJsonPaths = []
+  for (const apps of Object.values(PRODUCT_LINES)) {
+    for (const entry of Object.values(apps)) {
+      if (!entry?.path) continue
+      appPackageJsonPaths.push({
+        rel: `${entry.path}/`,
+        abs: join(root, entry.path, "package.json"),
+      })
+    }
+  }
+  for (const { rel, abs } of appPackageJsonPaths) {
+    if (!existsSync(abs)) continue
+    for (const e of readWorkspaceEdgesFromPackageJson(abs)) {
+      appRows.push({
+        ...e,
+        location: rel,
+      })
     }
   }
   appRows.sort((a, b) =>

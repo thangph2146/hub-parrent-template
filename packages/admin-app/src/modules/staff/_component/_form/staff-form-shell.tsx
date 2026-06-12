@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import {
   Camera,
   CheckCircle2,
@@ -66,13 +67,6 @@ export function StaffFormShell(props: StaffFormShellProps) {
     }
   }
 
-  function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "?"
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-  }
-
   return (
     <>
       <AdminFormPageHeader
@@ -110,7 +104,7 @@ export function StaffFormShell(props: StaffFormShellProps) {
                     />
                   ) : (
                     <div className="flex size-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-                      {initials(form.watch("fullName") || "?")}
+                      {formatPersonInitials(form.watch("fullName") || "?")}
                     </div>
                   )}
                   <button

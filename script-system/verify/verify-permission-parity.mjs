@@ -1,5 +1,5 @@
 /**
- * Kiểm tra parity giữa `apps/api/src/config/permissions.ts` (server) và
+ * Kiểm tra parity giữa `apps/main/api/src/config/permissions.ts` (server) và
  * `packages/api-client/src/permissions.ts` (client UI). Mục tiêu: source of
  * truth = server (enforce), client mirror — phát hiện drift sớm.
  *
@@ -34,7 +34,7 @@ const apiSrc = readFileSync(API_PERMS_PATH, "utf8");
 const clientSrc = readFileSync(CLIENT_PERMS_PATH, "utf8");
 
 /**
- * Trích tất cả string permission code xuất hiện trong `apps/api/.../permissions.ts`.
+ * Trích tất cả string permission code xuất hiện trong `apps/main/api/.../permissions.ts`.
  * Hai dạng:
  *   1. Resource + actions: `\`${RESOURCES.X}:${ACTIONS.Y}\`` hoặc trong
  *      `generateResourcePermissions()` helper (loop qua tất cả actions).

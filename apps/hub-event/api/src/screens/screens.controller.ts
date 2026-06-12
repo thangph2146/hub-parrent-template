@@ -103,9 +103,12 @@ export class ScreensController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.screensService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse('Không tìm thấy màn hình', {
-        status: 404,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Không tìm thấy màn hình',
+        {
+          status: 404,
+        },
+      );
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -171,9 +174,12 @@ export class ScreensController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.screensService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse('Không tìm thấy màn hình', {
-        status: 404,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Không tìm thấy màn hình',
+        {
+          status: 404,
+        },
+      );
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {

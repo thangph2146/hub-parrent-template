@@ -13,7 +13,15 @@ import { UserRole } from '../entities/user-role.entity';
 import { Message } from '../entities/message.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 
-export type { NotificationsListQuery, NotificationItemDto, NotificationsListResult, UnreadCountsResult, AdminTableRowDto, AdminTableQuery, AdminTableResult } from '@workspace/api-server/modules/notifications';
+export type {
+  NotificationsListQuery,
+  NotificationItemDto,
+  NotificationsListResult,
+  UnreadCountsResult,
+  AdminTableRowDto,
+  AdminTableQuery,
+  AdminTableResult,
+} from '@workspace/api-server/modules/notifications';
 
 @Injectable()
 export class NotificationsService extends BaseNotificationsAdminService {

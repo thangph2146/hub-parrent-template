@@ -33,6 +33,7 @@ import {
 } from "@ui/components/admin"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import { useSpeakerDetailQuery } from "../_component"
 
 function formatDateTime(value: string | null | undefined): string {
@@ -41,13 +42,6 @@ function formatDateTime(value: string | null | undefined): string {
   return Number.isNaN(date.getTime())
     ? "Chưa ghi nhận"
     : date.toLocaleString("vi-VN")
-}
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return "?"
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
 }
 
 function SpeakerDetailInner() {
@@ -103,7 +97,7 @@ function SpeakerDetailInner() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-3xl font-bold text-muted-foreground shadow-sm">
-                      {initials(entity.name)}
+                      {formatPersonInitials(entity.name)}
                     </div>
                   )}
                 </div>

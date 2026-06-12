@@ -1,5 +1,6 @@
 "use client"
 import { api } from "@workspace/admin-app/lib/api"
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import { useParams } from "next/navigation"
 import { useStaffProfile } from "@workspace/admin-app/hooks/queries"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
@@ -111,13 +112,6 @@ function AvatarDisplay({
 }: {
   user: { avatar?: string | null; fullName: string }
 }) {
-  function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "?"
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-  }
-
   return (
     <div className="flex flex-col items-center gap-3 py-2">
       <div className="relative aspect-[3/4] w-40 shrink-0">
@@ -129,7 +123,7 @@ function AvatarDisplay({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-            {initials(user.fullName)}
+            {formatPersonInitials(user.fullName)}
           </div>
         )}
       </div>

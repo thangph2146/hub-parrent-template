@@ -10,7 +10,7 @@ import { STORE_PORTAL_MENU_TREE } from "./store-portal-menu-tree";
 export const STORE_PORTAL_HOME = "/store/orders";
 
 export function canAccessStorePortal(user: AuthUser): boolean {
-  return Boolean(user?.id?.trim());
+  return typeof user?.id === "number" && Number.isFinite(user.id) && user.id > 0;
 }
 
 export function clearStorePortalSession(): void {

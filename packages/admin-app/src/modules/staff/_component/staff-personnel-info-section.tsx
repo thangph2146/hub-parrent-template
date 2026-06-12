@@ -8,13 +8,7 @@ import {
 } from "@ui/components/field"
 import { Fingerprint, Mail, MapPin, Phone, User } from "lucide-react"
 import type { User as StaffUser } from "@workspace/admin-app/lib/api"
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return "?"
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-}
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 
 function DetailEmpty({ label }: { label: string }) {
   return (
@@ -55,7 +49,7 @@ export function StaffPersonnelInfoSection({
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center rounded-lg border border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-                  {initials(user.fullName)}
+                  {formatPersonInitials(user.fullName)}
                 </div>
               )}
             </div>

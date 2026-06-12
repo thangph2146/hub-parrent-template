@@ -21,6 +21,7 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Camera, Hash, Loader2, User } from "lucide-react"
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import type { SpeakerFormValues } from "../types"
 import Image from "next/image"
 
@@ -47,13 +48,6 @@ export function SpeakerFormShell({
 
   const avatarValue = watch("avatar")
   const nameValue = watch("name")
-
-  function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "?"
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-  }
 
   const handleUploadAvatar = async (file: File) => {
     setUploadingAvatar(true)
@@ -104,7 +98,7 @@ export function SpeakerFormShell({
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-                        {nameValue ? initials(nameValue) : "?"}
+                        {nameValue ? formatPersonInitials(nameValue) : "?"}
                       </div>
                     )}
                     <button

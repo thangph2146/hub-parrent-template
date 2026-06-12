@@ -258,7 +258,7 @@ export type AdminDataTableXlsxExportConfig =
       runExport?: () => void | Promise<void>
       /**
        * Tải toàn bộ dữ liệu (phân trang server) trước khi xuất — khớp bộ lọc hiện tại.
-       * Dùng `fetchAllAdminList` từ `apps/backend`.
+       * Dùng `fetchAllAdminList` từ app admin Next (vd. `apps/main/backend`).
        */
       fetchAllForExport?: () => Promise<unknown[]>
     }

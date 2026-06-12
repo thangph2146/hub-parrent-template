@@ -1,5 +1,8 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import type { CategoryCreateData, CategoryUpdateData } from '@workspace/api-server/modules/categories';
+import type {
+  CategoryCreateData,
+  CategoryUpdateData,
+} from '@workspace/api-server/modules/categories';
 import {
   ApiTags,
   ApiOperation,
@@ -124,9 +127,12 @@ export class CategoriesController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.categoriesService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse('Không tìm thấy danh mục', {
-        status: 404,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Không tìm thấy danh mục',
+        {
+          status: 404,
+        },
+      );
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -192,9 +198,12 @@ export class CategoriesController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.categoriesService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse('Không tìm thấy danh mục', {
-        status: 404,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Không tìm thấy danh mục',
+        {
+          status: 404,
+        },
+      );
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {

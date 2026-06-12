@@ -29,6 +29,7 @@ import {
 } from "@workspace/admin-app/hooks/queries"
 import { patchAdminSessionProfile } from "@workspace/admin-app/lib/auth-session"
 import { uploadAdminImage } from "@workspace/admin-app/lib/admin-upload"
+import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import { MAIN_ADMIN_PROFILE_CONFIG } from "./profile-page.main-config"
 import type { AdminProfilePageConfig } from "./profile-page.types"
 
@@ -127,13 +128,6 @@ export function AdminProfilePageInner({
     setAddress(profile.address ?? "")
     setAvatar(profile.avatar ?? "")
   }, [profile])
-
-  function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "?"
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
-  }
 
   const handleUploadAvatar = async (file: File) => {
     if (!userId) return
@@ -248,7 +242,7 @@ export function AdminProfilePageInner({
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-                        {fullName ? initials(fullName) : "?"}
+                        {fullName ? formatPersonInitials(fullName) : "?"}
                       </div>
                     )}
                     <button

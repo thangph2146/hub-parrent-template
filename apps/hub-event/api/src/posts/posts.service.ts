@@ -1,7 +1,10 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BasePostsAdminService, POSTS_FILTER_CATEGORIES_NONE } from '@workspace/api-server/modules/posts';
+import {
+  BasePostsAdminService,
+  POSTS_FILTER_CATEGORIES_NONE,
+} from '@workspace/api-server/modules/posts';
 import { Post } from '../entities/post.entity';
 import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
@@ -9,7 +12,12 @@ import { Category } from '../entities/category.entity';
 import { Tag } from '../entities/tag.entity';
 import { User } from '../entities/user.entity';
 
-export type { PostRowDto, PostDetailDto, ListPostsParams, ListPostsResult } from '@workspace/api-server/modules/posts';
+export type {
+  PostRowDto,
+  PostDetailDto,
+  ListPostsParams,
+  ListPostsResult,
+} from '@workspace/api-server/modules/posts';
 export { POSTS_FILTER_CATEGORIES_NONE };
 
 @Injectable()

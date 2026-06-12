@@ -97,6 +97,9 @@ export interface ICrudControllerService<
   ): Promise<BulkOperationResult>;
 }
 
+/** Payload mặc định cho POST `/:id/restore` (đa số entity). */
+export type DefaultRestorePayload = { success: boolean; message: string };
+
 /**
  * Base CRUD controller.
  *
@@ -118,6 +121,7 @@ export class BaseCrudController<
   TRow extends CrudRowDto = CrudRowDto,
   TCreate extends Record<string, unknown> = Record<string, unknown>,
   TUpdate extends Record<string, unknown> = Record<string, unknown>,
+  TRestorePayload extends Record<string, unknown> = DefaultRestorePayload,
 > {
   protected readonly logger: Logger;
   protected readonly listStatuses: Set<string>;
@@ -246,7 +250,7 @@ export class BaseCrudController<
   @ApiParam({ name: 'id', type: String })
   async restore(
     @Param('id') id: string,
-  ): Promise<ApiResponsePayload<{ success: boolean; message: string }>> {
+  ): Promise<ApiResponsePayload<TRestorePayload>> {
     const numericId = parseEntityId(id);
     const ok = await this.service.restore(numericId);
     if (!ok) {
@@ -254,9 +258,11 @@ export class BaseCrudController<
         createErrorResponse('Không tìm thấy bản ghi', { status: 404 }).body,
       );
     }
-    return createSuccessResponse(
-      { success: true, message: 'Đã khôi phục bản ghi' },
-    ).body;
+    const payload = {
+      success: true,
+      message: 'Đã khôi phục bản ghi',
+    } as unknown as TRestorePayload;
+    return createSuccessResponse(payload).body;
   }
 
   /**

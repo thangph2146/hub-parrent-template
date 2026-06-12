@@ -1,6 +1,6 @@
 import type { ProductUnitType, QuantityCondition } from './types';
 
-/** SL dùng để kiểm tra điều kiện KM / quà — khớp logic `apps/api`. */
+/** SL dùng để kiểm tra điều kiện KM / quà — khớp logic `apps/main/api`. */
 export function effectiveQuantityForCondition(
   sellQty: number,
   unit: Pick<ProductUnitType, 'qtyPerUnit'>,

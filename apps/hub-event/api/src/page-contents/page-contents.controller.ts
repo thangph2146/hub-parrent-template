@@ -251,7 +251,7 @@ export class PageContentsController {
         this.logActivity(
           userId,
           'Đã tạo nội dung trang',
-          `Tạo nội dung trang: ${result.pageKey} - ${result.sectionKey}`,
+          `Tạo nội dung trang: ${String(result.pageKey)} - ${String(result.sectionKey)}`,
           ADMIN_ROUTES.PAGE_CONTENTS,
           {
             resource: RESOURCES.PAGE_CONTENTS,

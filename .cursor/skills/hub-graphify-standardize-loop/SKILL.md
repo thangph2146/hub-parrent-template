@@ -33,16 +33,14 @@ pnpm graphify:refresh
 Tương đương:
 
 ```bash
-node script-system/graphify/graphify-update.cjs apps/frontend
-node script-system/graphify/graphify-update.cjs apps/backend
-node script-system/graphify/graphify-update.cjs apps/api
+pnpm graphify:update
 pnpm graphify:ai-summary
 ```
 
-Chỉ một app bị ảnh hưởng:
+Chỉ một app bị ảnh hưởng (đường dẫn thật — xem `script-system/lib/monorepo-apps.cjs`):
 
 ```bash
-node script-system/graphify/graphify-update.cjs apps/backend
+node script-system/graphify/graphify-update.cjs apps/main/backend
 pnpm graphify:ai-summary
 ```
 
@@ -53,7 +51,7 @@ pnpm graphify:ai-summary
 | `.graphify/markdown/SUMMARY_FOR_AI.md`              | Bảng app, chỉ dẫn theo chủ đề, `generatedAt` |
 | `apps/<app>/.graphify/markdown/FOLDER_TREE.md`      | Cây `src/` khớp refactor                     |
 | `apps/<app>/.graphify/markdown/GRAPH_STATS.md`      | Điểm nóng import                             |
-| `apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` | Domain mới                                   |
+| `apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` | Domain mới                              |
 | `packages/.graphify/markdown/WORKSPACE_DEPS.md`     | Cạnh `workspace:*`                           |
 
 ### 4. Cập nhật docs agent (nếu pattern mới)
@@ -75,7 +73,7 @@ pnpm check:full
 ## Ranh giới microservice (nhắc nhanh)
 
 - Không import chéo `apps/*`.
-- Admin UI: `@workspace/ui` — không component admin local trong `apps/backend`.
+- Admin UI: `@workspace/ui` — không component admin local trong `apps/main/backend`.
 - HTTP client: `@workspace/api-client` — không fetch thẳng tới API.
 - Toast admin: `useAdminMutation` — không `toast` thủ công trong mutation callback.
 

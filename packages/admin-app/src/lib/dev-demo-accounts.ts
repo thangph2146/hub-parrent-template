@@ -1,5 +1,5 @@
 /**
- * Khớp user mặc định trong `apps/api` DatabaseSeeder — chỉ dùng gợi ý đăng nhập khi dev.
+ * Khớp user mặc định trong `apps/main/api` DatabaseSeeder — chỉ dùng gợi ý đăng nhập khi dev.
  */
 export type DevDemoAccount = {
   label: string

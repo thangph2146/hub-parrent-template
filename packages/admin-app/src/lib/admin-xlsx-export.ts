@@ -1,5 +1,5 @@
 /**
- * Điểm vào xuất Excel chuẩn cho `apps/backend`.
+ * Điểm vào xuất Excel chuẩn cho admin Next (`apps/main/backend`, …).
  * Mọi bảng admin nên dùng `buildAdminTableXlsxExport` + `AdminDataTable` `xlsxExport`,
  * hoặc `downloadAdminTableXlsx` khi cần field phẳng / sheet quan hệ.
  */

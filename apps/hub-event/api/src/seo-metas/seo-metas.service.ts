@@ -5,7 +5,10 @@ import {
   BaseSeoMetasService,
   type SeoMetasRowDto,
 } from '@workspace/api-server/modules/seo-metas';
-import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import {
+  toIso,
+  type AdminColumnFiltersConfig,
+} from '@workspace/api-server/common';
 import { SeoMeta } from '../entities/seo-meta.entity';
 import { SEO_META_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -24,7 +27,6 @@ export class SeoMetasService extends BaseSeoMetasService {
   protected getEntity(): new () => Record<string, unknown> {
     return SeoMeta as unknown as new () => Record<string, unknown>;
   }
-
 
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return SEO_META_COLUMN_FILTERS;

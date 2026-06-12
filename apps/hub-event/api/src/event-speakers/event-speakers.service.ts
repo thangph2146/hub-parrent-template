@@ -6,7 +6,11 @@ import { EventSpeaker } from '../entities/event-speaker.entity';
 import { Event } from '../entities/event.entity';
 import { Speaker } from '../entities/speaker.entity';
 
-export type { EventSpeakerRowDto, ListEventSpeakersParams, ListEventSpeakersResult } from '@workspace/api-server/modules/event-speakers';
+export type {
+  EventSpeakerRowDto,
+  ListEventSpeakersParams,
+  ListEventSpeakersResult,
+} from '@workspace/api-server/modules/event-speakers';
 
 @Injectable()
 export class EventSpeakersService extends BaseEventSpeakersAdminService {

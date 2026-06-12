@@ -5,7 +5,10 @@ import {
   BaseCamerasService,
   type CamerasRowDto,
 } from '@workspace/api-server/modules/cameras';
-import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import {
+  toIso,
+  type AdminColumnFiltersConfig,
+} from '@workspace/api-server/common';
 import { Camera } from '../entities/camera.entity';
 import { CAMERA_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -25,13 +28,12 @@ export class CamerasService extends BaseCamerasService {
     return Camera as unknown as new () => Record<string, unknown>;
   }
 
-
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return CAMERA_COLUMN_FILTERS;
   }
 
   protected getListPopulate(): string[] {
-    return ["linkedEvent"];
+    return ['linkedEvent'];
   }
 
   protected mapRow(entity: Record<string, unknown>): CamerasRowDto {

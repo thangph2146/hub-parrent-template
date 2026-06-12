@@ -7,6 +7,7 @@ export {
   type FilterMapping,
 } from "./build-admin-filter-query"
 export { formatVND, formatDate } from "./format"
+export { formatPersonInitials } from "./format-person-initials"
 export {
   formatAdminDateTime,
   isParsableDateTime,

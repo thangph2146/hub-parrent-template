@@ -50,7 +50,8 @@ export interface IProductsControllerService
 export class BaseProductsController extends BaseCrudController<
   ProductsRowDto,
   ProductsCreateData,
-  ProductsUpdateData
+  ProductsUpdateData,
+  ProductsRowDto
 > {
   private readonly productsService: IProductsControllerService;
 

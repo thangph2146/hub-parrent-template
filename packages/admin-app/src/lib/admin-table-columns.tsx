@@ -15,7 +15,7 @@ export const adminDateRangeFilterFn: FilterFn<unknown> = (
   const rowVal = row.getValue(columnId) as string
   if (!rowVal) return false
   const [fromStr, toStr] = String(filterValue).split(",")
-  const rowDate = rowVal.split("T")[0]
+  const rowDate = rowVal.split("T")[0] ?? ""
   if (fromStr && rowDate < fromStr) return false
   if (toStr && rowDate > toStr) return false
   return true
@@ -228,6 +228,7 @@ export function dedupeAdminTableColumns<TData>(
   const result: ColumnDef<TData>[] = []
   for (let i = columns.length - 1; i >= 0; i--) {
     const col = columns[i]
+    if (!col) continue
     const accessorKey =
       "accessorKey" in col && typeof col.accessorKey === "string"
         ? col.accessorKey

@@ -63,7 +63,7 @@ function resolveExportData<T>(
 
 /**
  * Xuất Excel chuẩn admin: template (title, metadata, merge section) + dữ liệu bảng.
- * Dùng chung cho mọi danh sách `apps/backend` gắn `AdminDataTable`.
+ * Dùng chung cho mọi danh sách admin Next (`apps/main/backend`, …) gắn `AdminDataTable`.
  */
 export async function downloadAdminTableXlsx<T>(
   params: DownloadAdminTableXlsxParams<T>

@@ -17,8 +17,7 @@
     "src/departments",
     "src/groups",
     "src/messages",
-    "src/contact-requests",
-    "src/hero-slides"
+    "src/contact-requests"
   ],
   "excludeFiles": [
     "src/seeds/orders-sample.runner.ts",

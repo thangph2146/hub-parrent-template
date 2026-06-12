@@ -71,7 +71,7 @@ export const apiServiceBoundary = [
             {
               regex: `(?:${reAppsPath("frontend")}|${reAppsPath("backend")})`,
               message:
-                "Không import qua đường dẫn tệp vào apps/frontend hay apps/backend — ranh giới service.",
+                "Không import qua đường dẫn tệp vào app Next/frontend hay backend — ranh giới service.",
             },
             noFilePathToMonorepoPackages,
           ],
