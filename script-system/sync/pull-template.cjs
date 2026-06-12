@@ -12,8 +12,17 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT: SCRIPT_ROOT } = require("../lib/paths.cjs")
 
+function resolveRepoRoot() {
+  const cwd = process.cwd()
+  if (fs.existsSync(path.join(cwd, "template.manifest.json"))) {
+    return cwd
+  }
+  return SCRIPT_ROOT
+}
+
+const ROOT = resolveRepoRoot()
 const MANIFEST_PATH = path.join(ROOT, "template.manifest.json")
 const LOCK_PATH = path.join(ROOT, ".template-lock.json")
 
