@@ -34,7 +34,36 @@ Catalog package: [`packages/README.md`](../packages/README.md).
 
 ---
 
-## Upstream (repo template) — dev
+## Repo code chính: **hub-event-monorepo**
+
+Sản phẩm check-in là **primary** (`primaryProductLine: hub-event`):
+
+| Repo | Vai trò |
+|------|---------|
+| **hub-event-monorepo** | Dev + deploy hàng ngày — `apps/hub-event` + full `packages/` |
+| **mono-repo-template** | Cập nhật thư viện — sửa `packages/admin-app`, `packages/api-server` → tag → `pull:template` |
+
+### Compose
+
+- **`@workspace/admin-app`** → frontend admin (kéo ui, api-client, query-client, editor, …)
+- **`@workspace/api-server`** → API Nest scaffold (generate vào `apps/hub-event/api`)
+
+Apps chỉ: entities, `app.module.ts`, route native, config JSON.
+
+### Bootstrap (một lần)
+
+```bash
+pnpm init:downstream hub-event ../hub-event-monorepo
+cd ../hub-event-monorepo
+pnpm install
+pnpm build:packages
+pnpm env:init checkin
+pnpm dev:checkin
+```
+
+---
+
+## Upstream (repo template) — cập nhật thư viện
 
 ```bash
 git checkout main

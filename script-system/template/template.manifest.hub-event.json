@@ -1,0 +1,49 @@
+{
+  "role": "downstream",
+  "id": "hub-event-monorepo",
+  "productLine": "hub-event",
+  "primary": true,
+  "description": "Repo code chính check-in — full packages/; compose admin-app + api-server.",
+  "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
+  "defaultRef": "main",
+  "remoteName": "template",
+  "library": {
+    "root": "packages",
+    "pullMode": "full",
+    "composition": {
+      "admin": "@workspace/admin-app",
+      "api": "@workspace/api-server",
+      "note": "Hai package này kéo ui, api-client, query-client, editor, logger, site-config."
+    }
+  },
+  "inheritPaths": [
+    "packages",
+    "script-system",
+    "docs/admin-pattern",
+    "docs/api-pattern",
+    "docs/api-client-pattern",
+    "docs/ui-pattern",
+    "docs/env",
+    "docs/steps",
+    "docs/TEMPLATE_MONOREPO.md",
+    ".graphify",
+    "packages/.graphify"
+  ],
+  "inheritRootFiles": [
+    "turbo.json",
+    "ecosystem.shared.cjs",
+    "AGENTS.md",
+    "packages/README.md"
+  ],
+  "keepPaths": [
+    "apps",
+    "pnpm-workspace.yaml",
+    "package.json",
+    "template.manifest.json",
+    ".template-lock.json",
+    "README.md",
+    "ecosystem.checkin.cjs",
+    ".env",
+    ".env.local"
+  ]
+}

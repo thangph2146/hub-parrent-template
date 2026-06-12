@@ -75,7 +75,11 @@ fs.mkdirSync(destRoot, { recursive: true })
 
 const workspaceTpl = path.join(TEMPLATE_DIR, `pnpm-workspace.${lineKey}.yaml`)
 const packageTpl = path.join(TEMPLATE_DIR, `package.${lineKey}.json`)
-const manifestTpl = path.join(TEMPLATE_DIR, "template.manifest.downstream.json")
+const manifestTpl =
+  lineKey === "hub-event"
+    ? path.join(TEMPLATE_DIR, "template.manifest.hub-event.json")
+    : path.join(TEMPLATE_DIR, "template.manifest.downstream.json")
+const readmeTpl = path.join(TEMPLATE_DIR, `README.${lineKey}.md`)
 
 if (fs.existsSync(workspaceTpl)) {
   fs.copyFileSync(workspaceTpl, path.join(destRoot, "pnpm-workspace.yaml"))
@@ -85,13 +89,25 @@ if (fs.existsSync(packageTpl)) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestTpl, "utf8"))
-  manifest.id = `${lineKey}-monorepo`
-  manifest.productLine = lineKey
-  manifest.defaultRemote = upstream.defaultRemote
+manifest.id = `${lineKey}-monorepo`
+manifest.productLine = lineKey
+manifest.defaultRemote = upstream.defaultRemote
+if (lineKey === upstream.primaryProductLine) {
+  manifest.primary = true
+}
 fs.writeFileSync(
   path.join(destRoot, "template.manifest.json"),
   `${JSON.stringify(manifest, null, 2)}\n`,
 )
+
+if (fs.existsSync(readmeTpl)) {
+  fs.copyFileSync(readmeTpl, path.join(destRoot, "README.md"))
+}
+
+const turboSrc = path.join(ROOT, "turbo.json")
+if (fs.existsSync(turboSrc)) {
+  fs.copyFileSync(turboSrc, path.join(destRoot, "turbo.json"))
+}
 
 fs.mkdirSync(path.join(destRoot, "apps"), { recursive: true })
 copyDir(appsSrc, path.join(destRoot, line.appsPath))

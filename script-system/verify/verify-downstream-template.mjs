@@ -21,6 +21,8 @@ const REQUIRED_PACKAGES = [
   "packages/typescript-config",
 ]
 
+const COMPOSITION_PACKAGES = ["packages/admin-app", "packages/api-server"]
+
 function loadManifest() {
   if (!fs.existsSync(MANIFEST)) {
     console.error("[verify:template-downstream] Thiếu template.manifest.json")
@@ -47,6 +49,20 @@ function verify() {
   for (const pkg of REQUIRED_PACKAGES) {
     if (!fs.existsSync(path.join(ROOT, pkg, "package.json"))) {
       errors.push(`thiếu ${pkg}/package.json — chạy pnpm pull:template`)
+    }
+  }
+
+  for (const pkg of COMPOSITION_PACKAGES) {
+    if (!fs.existsSync(path.join(ROOT, pkg, "package.json"))) {
+      errors.push(`thiếu lớp compose ${pkg} — bắt buộc cho hub-event template`)
+    }
+  }
+
+  if (manifest.productLine === "hub-event" || manifest.primary) {
+    const adminPkg = path.join(ROOT, "packages/admin-app/package.json")
+    const apiPkg = path.join(ROOT, "packages/api-server/package.json")
+    if (fs.existsSync(adminPkg) && fs.existsSync(apiPkg)) {
+      /* composition OK */
     }
   }
 

@@ -1,52 +1,70 @@
-# hub-event — deploy check-in
+# hub-event — repo code chính (check-in)
 
-Line deploy gồm `@hub-event/api` + `@hub-event-checkin-frontend`. **Không** phát triển feature đầy đủ tại đây — dev trên `apps/main/`, đồng bộ khi cần deploy.
+Line **`hub-event`** là **repo sản phẩm chính** trong mô hình template: full `packages/` + `apps/hub-event/` mỏng.
+
+## Compose từ packages
+
+```text
+packages/admin-app  ──► admin CRUD, generate route
+       │ uses: ui, api-client, query-client, editor, logger, site-config
+       ▼
+apps/hub-event/hub-event-checkin-frontend  (native routes + admin.app.config)
+
+packages/api-server ──► base Nest CRUD, generate service
+       ▼
+apps/hub-event/api  (entities, app.module.ts, api.app.config.json)
+```
+
+**Không** sync copy từ `apps/main/` (`pull:checkin` legacy). Cập nhật thư viện: `pnpm pull:template` trên **hub-event-monorepo**.
 
 ## Dev
 
 | Mục đích | Lệnh |
 |----------|------|
-| Hàng ngày (UI check-in + API main) | `pnpm dev:main:checkin` |
-| Test stack deploy thật | `pnpm dev:checkin` |
-| Sau pull — cập nhật từ main | `pnpm pull:checkin` |
-| Deploy server | `git pull origin hub-event` (branch deploy, sau `pnpm push:deploy` / CI) |
-| Verify sync (không chạy server) | `pnpm test:checkin` |
-| Verify + typecheck hub-event | `pnpm test:checkin:full` |
+| **Repo chính (khuyến nghị)** | Clone `hub-event-monorepo` → `pnpm dev:checkin` |
+| Sandbox template upstream | `pnpm dev:main:checkin` (main API + UI — legacy dev) |
+| Test stack hub-event | `pnpm dev:checkin` |
+| Cập nhật packages | `pnpm pull:template` |
+| Verify | `pnpm test:checkin:full` |
 
 ## API (`apps/hub-event/api`)
 
-Subset sync từ `apps/main/api` theo [`api/api.sync-profile.json`](./api/api.sync-profile.json).
+**Giữ local (không ghi đè khi pull:template):**
 
-**Sửa trực tiếp tại đây** (local, không ghi đè):
+- `api.sync-profile.json` — subset module (nếu còn dùng)
+- `api.app.config.json` — scaffold `@workspace/api-server`
+- `src/app.module.ts` — composition
+- `src/entities/`, migrations, seeders
 
-- `api.sync-profile.json` — rule exclude/include
-- `src/app.module.ts` — composition module check-in
-- `src/seeders/DatabaseSeeder.ts` — seed tối thiểu
-- `package.json` — tên package `@hub-event/api`
+**Generate service từ package:**
 
-Mọi module/controller/entity khác: sửa trên **main** rồi `pnpm pull:checkin`.
+```bash
+pnpm api:generate:checkin
+pnpm verify:checkin-api
+```
 
 ## Frontend (`hub-event-checkin-frontend`)
 
-### Admin — sync từ main (`admin.sync-modules.json`)
+**Admin:** module trong `@workspace/admin-app` + `admin.app.config.json`:
 
-Các thư mục dưới `src/app/admin/` **copy từ** `apps/main/backend` khi `pnpm pull:checkin` — **không sửa lâu dài tại đây**:
+```bash
+pnpm admin:generate:checkin
+pnpm verify:checkin-admin
+```
 
-`staff`, `rbac`, `categories`, `tags`, `guides`, `posts`, `cameras`, `templates`, `screens`, `locations`, `speakers`, `settings`, `file-storage`, `data`, `tong-quan`
+**Native check-in (sửa tại app):**
 
-**Không sync:** kho/đơn hàng (`products`, `orders`, `promo-codes`, `carts`), đào tạo, phụ huynh/SV, graph/CSDL.
+- `src/app/(site)/`, `(portal)/`
+- `src/app/admin/` — events, check-in shell (ngoài generate)
 
-**Menu sidebar** (`src/config/admin/checkin-admin-menu-tree.tsx`): **auto-generated** từ `admin-menu-tree.items.ts` — lọc theo `admin.sync-modules.json` → `menu`. Sửa menu main rồi `pnpm pull:checkin`.
+## Bootstrap repo mới
 
-### Native check-in (giữ tại line này)
+Từ template upstream:
 
-- `src/app/(site)/` — storefront / landing
-- `src/app/(portal)/` — portal guest
-- `src/app/admin/` — route **events / check-in** và layout riêng (không nằm whitelist sync)
-- Auth, profile, check-in ký túc xá, v.v.
-
-Khi thêm admin module mới cho check-in only: thêm vào native, **không** thêm vào `admin.sync-modules.json` trừ khi module đó cũng tồn tại trên main và cần mirror.
+```bash
+pnpm init:downstream hub-event ../hub-event-monorepo
+```
 
 ## PM2
 
-Stack check-in: `pnpm pm2:start:checkin` — xem `AGENTS.md` / `docs/MONOREPO_STRUCTURE.md`.
+`pnpm pm2:start:checkin` — xem `ecosystem.checkin.cjs`.

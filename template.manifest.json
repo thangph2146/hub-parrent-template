@@ -8,8 +8,13 @@
   "library": {
     "root": "packages",
     "pullMode": "full",
+    "composition": {
+      "admin": "@workspace/admin-app",
+      "api": "@workspace/api-server"
+    },
     "note": "Downstream luôn kéo toàn bộ packages/ — không subset."
   },
+  "primaryProductLine": "hub-event",
   "inheritPaths": [
     "packages",
     "script-system",

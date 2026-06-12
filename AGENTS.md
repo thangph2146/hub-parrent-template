@@ -148,7 +148,8 @@ docs/
 | Sau `git pull` — sync check-in (legacy) | `pnpm pull:checkin` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
-**Dev hàng ngày (upstream):** ưu tiên `packages/*`, sau đó `apps/main/`. Downstream deploy: repo sản phẩm + `pnpm pull:template` (full `packages/`).
+**Dev hàng ngày (upstream):** sửa `packages/admin-app` / `packages/api-server` / `packages/*`, tag template.  
+**Repo chính deploy:** **hub-event-monorepo** — `pnpm dev:checkin`, `pnpm pull:template`.
 
 ---
 
