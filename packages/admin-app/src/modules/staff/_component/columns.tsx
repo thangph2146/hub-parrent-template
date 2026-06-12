@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { Mail, Phone, ShieldHalf, UserCircle } from "lucide-react"
+import { Mail, Phone, ShieldHalf } from "lucide-react"
 
 import { Badge } from "@ui/components/badge"
 
@@ -16,6 +16,7 @@ import { isSuperAdminRoleCode } from "@workspace/api-client"
 import { canEditProtectedAdminUser } from "@workspace/admin-app/config/protected-admin"
 
 import type { StaffRow } from "./types"
+import { StaffAvatarCell } from "./staff-avatar-cell"
 
 import { defineRelationExportColumns } from "@ui/components/data-table"
 
@@ -92,6 +93,21 @@ export function getStaffColumns(
 
   const dataColumns: ColumnDef<StaffRow>[] = [
     {
+      id: "avatar",
+      accessorFn: (u) => u.avatar ?? "",
+      header: "Ảnh",
+      enableSorting: false,
+      enableColumnFilter: false,
+      size: 72,
+      minSize: 72,
+      meta: {
+        disableColumnFilter: true,
+        exportHeader: "Ảnh",
+        exportValue: (row: StaffRow) => row.avatar ?? "",
+      },
+      cell: ({ row }) => <StaffAvatarCell user={row.original} />,
+    },
+    {
       accessorKey: "fullName",
 
       header: "Họ tên",
@@ -99,11 +115,7 @@ export function getStaffColumns(
       meta: { filterPlaceholder: "Lọc họ tên…" },
 
       cell: ({ row }) => (
-        <span className="flex min-w-0 items-center gap-2">
-          <UserCircle className="size-4 shrink-0 text-primary/80" aria-hidden />
-
-          <span className="truncate font-medium">{row.original.fullName}</span>
-        </span>
+        <span className="truncate font-medium">{row.original.fullName}</span>
       ),
     },
 

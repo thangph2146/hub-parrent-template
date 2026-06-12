@@ -101,15 +101,15 @@ export function StaffFormShell(props: StaffFormShellProps) {
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
               <div className="flex items-start gap-4 pb-4">
-                <div className="relative w-55 shrink-0">
+                <div className="relative aspect-[3/4] w-40 shrink-0 sm:w-52">
                   {avatarValue ? (
                     <img
                       src={avatarValue}
                       alt=""
-                      className="aspect-[3/4] size-full rounded-lg border-2 border-border/60 object-cover shadow-sm"
+                      className="size-full rounded-lg border-2 border-border/60 object-cover shadow-sm"
                     />
                   ) : (
-                    <div className="flex aspect-[3/4] size-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
+                    <div className="flex size-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
                       {initials(form.watch("fullName") || "?")}
                     </div>
                   )}
