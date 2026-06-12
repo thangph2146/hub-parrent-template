@@ -13,7 +13,17 @@ const { ROOT } = require("../lib/paths.cjs")
 
 const TEMPLATE_DIR = path.join(ROOT, "script-system/template")
 
-function copyDir(src, dest, { skipDirs = new Set() } = {}) {
+const SKIP_DIRS = new Set([
+  "node_modules",
+  "dist",
+  ".next",
+  ".turbo",
+  ".cache",
+  "coverage",
+  ".graphify",
+])
+
+function copyDir(src, dest, { skipDirs = SKIP_DIRS } = {}) {
   fs.mkdirSync(dest, { recursive: true })
   for (const ent of fs.readdirSync(src, { withFileTypes: true })) {
     if (skipDirs.has(ent.name)) continue
@@ -102,6 +112,11 @@ fs.copyFileSync(
   path.join(ROOT, ".gitignore"),
   path.join(destRoot, ".gitignore"),
 )
+
+const appsReadme = path.join(ROOT, "apps/README.md")
+if (fs.existsSync(appsReadme)) {
+  fs.copyFileSync(appsReadme, path.join(destRoot, "apps/README.md"))
+}
 
 execFileSync("git", ["init"], { cwd: destRoot, stdio: "inherit" })
 execFileSync(
