@@ -33,6 +33,7 @@
 - [ ] Đã sửa code theo boundary rules.
 - [ ] Đã chạy `pnpm check`.
 - [ ] Nếu cần, đã chạy `pnpm graphify:ai-summary` và `pnpm check:full`.
+- [ ] Nếu user yêu cầu đẩy remote: `pnpm push -- "feat: ..."` (commit + sync + push `main`, `hub-event`, `hub-parent`).
 - [ ] Đã ghi chú thay đổi và PR context.
 - [ ] Đã cập nhật docs nếu hệ thống thay đổi.
 

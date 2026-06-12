@@ -1,5 +1,6 @@
 /**
  * Generate thin Next.js pages từ admin.app.config.json + @workspace/admin-app modules.
+ * Tự gộp loading.tsx CRUD → routing shared trước khi generate.
  * Tùy chọn --prune: xóa source duplicate trước khi generate (check-in).
  *
  * Usage:
@@ -10,6 +11,9 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execSync } = require("node:child_process")
 const { ROOT } = require("../lib/paths.cjs")
+const {
+  consolidateAdminModuleLoading,
+} = require("./consolidate-admin-loading.cjs")
 
 const PACKAGE_MODULES = path.join(ROOT, "packages/admin-app/src/modules")
 const GENERATED_BANNER = `/** AUTO-GENERATED — chạy pnpm admin:generate */\n`
@@ -276,5 +280,6 @@ if (shouldPrune) {
   sleepSync(150)
 }
 
+consolidateAdminModuleLoading({ silent: true })
 generateRoutes(appRel, config)
 generateMenuIfCheckin(appRel)

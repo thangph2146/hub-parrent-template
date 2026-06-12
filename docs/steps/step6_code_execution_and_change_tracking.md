@@ -62,3 +62,30 @@ pnpm check:full
 - `pnpm check` pass.
 - Nếu cần, `pnpm check:full` pass.
 - Giữ note thay đổi rõ ràng và theo scope.
+
+## Push code và cập nhật branch deploy
+
+Sau khi kiểm tra pass, đẩy code lên remote và đồng bộ branch deploy (`hub-event`, `hub-parent`):
+
+```bash
+pnpm push -- "feat: mô tả thay đổi ngắn"
+```
+
+Lệnh này (trên branch **`main`**):
+
+1. `git add -A` + `git commit` nếu còn thay đổi local (bắt buộc có message).
+2. `pnpm pull:checkin` — sync API subset + admin check-in.
+3. `pnpm pull:parent` — sync API full → hub-parent.
+4. Commit sync nếu có diff (`chore(sync): ...`).
+5. Push **`main`** + cập nhật branch **`hub-event`**, **`hub-parent`**.
+
+| Lệnh | Khi nào |
+|------|---------|
+| `pnpm push -- "..."` | Chuẩn — commit (nếu cần) + sync + push 3 branch |
+| `pnpm push:deploy` | Đã commit sẵn — chỉ sync + push branch |
+| `pnpm push -- --skip-sync "..."` | Push không chạy sync |
+| `pnpm push -- --dry-run "..."` | Xem trước |
+
+**CI:** push `main` thường cũng kích hoạt `.github/workflows/deploy-branches.yml` (sync + branch deploy).
+
+**Server deploy:** `git pull origin hub-event` hoặc `git pull origin hub-parent` — chi tiết `docs/MONOREPO_STRUCTURE.md`.

@@ -142,6 +142,8 @@ docs/
 | Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
 | Dev stack check-in deploy | `pnpm dev:checkin` |
 | Sau `git pull` — cập nhật line check-in | `pnpm pull:checkin` |
+| **Push code + branch deploy** | `pnpm push -- "feat: ..."` (main + hub-event + hub-parent) |
+| Chỉ sync/push (đã commit) | `pnpm push:deploy` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
 **Dev hàng ngày:** chỉ sửa `apps/main/` + `packages/*`; line deploy cập nhật qua sync/pull, không copy thủ công.
@@ -170,6 +172,15 @@ pnpm verify:imports           # alias @ui
 | Check-in API khớp main | `pnpm verify:checkin-api` + `verify:api-profile` sau sửa `apps/main/api` domain check-in |
 | Build sạch | `pnpm check` pass |
 | Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
+| Deploy branch cập nhật | `pnpm push -- "..."` hoặc CI `deploy-branches.yml` sau push `main` |
+
+### Push và theo dõi deploy
+
+```bash
+pnpm push -- "feat: mô tả thay đổi"
+```
+
+Trên branch **`main`**: commit (nếu có diff) → `pull:checkin` + `pull:parent` → push `main` + `hub-event` + `hub-parent`. Chi tiết: [`docs/steps/step6_code_execution_and_change_tracking.md`](docs/steps/step6_code_execution_and_change_tracking.md) · branch deploy: [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md).
 
 Sau đổi route/module đáng kể:
 

@@ -76,6 +76,18 @@ pnpm graphify:ai-summary
 
 **Không** tạo doc mới trừ khi user yêu cầu — bổ sung mục ngắn vào file có sẵn.
 
+### 5. Push và cập nhật branch deploy (khi user yêu cầu đẩy code)
+
+Sau `pnpm check` (và `check:full` nếu cần):
+
+```bash
+pnpm push -- "feat: mô tả thay đổi"
+```
+
+- Commit local nếu còn diff → sync `hub-event` + `hub-parent` → push `main` + branch deploy.
+- Đã commit sẵn: `pnpm push:deploy`.
+- Chi tiết: `docs/steps/step6_code_execution_and_change_tracking.md`.
+
 ## Lệnh gộp
 
 ```bash

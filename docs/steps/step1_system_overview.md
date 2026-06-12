@@ -35,7 +35,7 @@ Chi tiết product line: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md
 - Next apps gọi API qua `@workspace/api-client` (không `fetch` thẳng).
 - DB (entities, migrations, seeders): app API tương ứng; dev tại `apps/main/api`.
 - Logic dùng chung: `packages/*` (`admin-app`, `api-server`, `api-client`, `ui`, …).
-- Dev hàng ngày: chỉ `apps/main/` + `packages/*`; line deploy cập nhật qua `pnpm pull:checkin` / sync script.
+- Dev hàng ngày: chỉ `apps/main/` + `packages/*`; line deploy cập nhật qua `pnpm push` / `pnpm pull:checkin` / sync script.
 
 ## Tài liệu quan trọng (đọc trước khi sửa code)
 
@@ -65,11 +65,20 @@ pnpm graphify:ai-summary
 pnpm check:full
 ```
 
+7. Đẩy remote và cập nhật branch deploy (`main`, `hub-event`, `hub-parent`):
+
+```bash
+pnpm push -- "feat: mô tả thay đổi"
+```
+
+Chi tiết: `docs/steps/step6_code_execution_and_change_tracking.md`.
+
 ## Kiểm tra hoàn thành
 
 - `pnpm check` phải pass.
 - Không vi phạm `service-boundaries` (`packages/eslint-config/service-boundaries.js`).
 - Không thêm phụ thuộc sai vào `package.json` của app/package.
+- Nếu đã push: branch `hub-event` / `hub-parent` đồng bộ với `main` (qua `pnpm push` hoặc CI).
 
 ---
 

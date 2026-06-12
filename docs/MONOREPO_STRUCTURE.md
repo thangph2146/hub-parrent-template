@@ -36,7 +36,42 @@ apps/
 
 - Sửa code tại **`apps/main/`** (`@api` + `@backend`).
 - Chạy **`pnpm dev:main:checkin`** — check-in UI gọi **main API**, không cần sync.
-- Commit + push như bình thường.
+- Commit trên **`main`**, push:
+
+```bash
+git push origin main          # CI tự sync + cập nhật branch hub-event, hub-parent
+# hoặc một lệnh (commit + sync + push):
+pnpm push -- "feat: mô tả thay đổi"
+pnpm push:deploy              # đã commit sẵn — chỉ sync + push branch
+```
+
+### Branch deploy (cùng repo)
+
+| Branch | Dùng cho | Server |
+|--------|----------|--------|
+| **`main`** | Dev — source of truth đầy đủ | Team phát triển |
+| **`hub-event`** | Deploy check-in (sau sync) | `git pull origin hub-event` → PM2 compo 2 |
+| **`hub-parent`** | Deploy site chính (sau sync API) | `git pull origin hub-parent` → PM2 compo 1 |
+
+Ba branch trỏ **cùng commit** sau sync (full monorepo; server chỉ build app của line mình).
+
+**Local:** `pnpm push -- "feat: ..."` — commit (nếu có diff) + `pull:checkin` + `pull:parent` + push `main` + `hub-event` + `hub-parent`. Chỉ sync/push: `pnpm push:deploy`.
+
+**CI:** workflow `.github/workflows/deploy-branches.yml` chạy sau mỗi push `main` (bỏ qua commit `chore(sync):` / `[skip ci]`).
+
+### Cập nhật deploy site chính (`hub-parent`)
+
+Sau `git pull`, khi cần đưa thay đổi main sang line deploy hub-parent:
+
+```bash
+pnpm pull:parent
+# hoặc
+pnpm sync:parent
+```
+
+Sync **full API** `main/api` → `hub-parent/api` (giữ `app.module.ts` local). Thường gộp trong `pnpm push:deploy`.
+
+Test stack deploy: **`pnpm dev:parent`**.
 
 ### Cập nhật deploy check-in (`hub-event`)
 

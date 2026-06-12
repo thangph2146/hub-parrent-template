@@ -7,6 +7,7 @@ script-system/
 ├── lib/          # Registry + paths dùng chung
 ├── dev/          # Dev stack, port, Next/Nest prep
 ├── sync/         # Đồng bộ main → product line deploy
+├── git/          # Commit + push branch deploy
 ├── verify/       # Kiểm tra cấu trúc, sync state, bounds
 ├── graphify/     # Cập nhật snapshot + AI summary
 └── deploy/       # PM2 production stacks
@@ -32,6 +33,16 @@ script-system/
 | `sync-checkin.cjs` | `pnpm pull:checkin` |
 | `copy-checkin-admin-modules.cjs` | **Deprecated** — dùng `pnpm pull:checkin` |
 | `sync-checkin-menu-tree.cjs` | Sinh menu sidebar check-in |
+| `sync-parent.cjs` | `pnpm pull:parent` |
+
+## Git / push deploy (`git/`)
+
+| File | Lệnh |
+|------|------|
+| `commit-and-push.cjs` | `pnpm push -- "feat: ..."` — commit + sync + push `main`, `hub-event`, `hub-parent` |
+| `push-deploy-branches.cjs` | `pnpm push:deploy` — đã commit, chỉ sync + push branch |
+
+Quy trình agent: sau `pnpm check` → `pnpm push -- "..."` (xem `docs/steps/step6_code_execution_and_change_tracking.md`, `AGENTS.md` mục 6).
 
 ## Verify & test (`verify/`)
 

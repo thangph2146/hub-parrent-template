@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import type { DevLoginOption } from "@workspace/api-client"
 
 import { cn } from "../../lib/utils"
-import { Field, FieldDescription, FieldLabel } from "../field"
+import { Field, FieldLabel } from "../field"
 import { Label } from "../label"
 import {
   Select,

@@ -89,6 +89,7 @@ Trước khi code, agent phải tự đối chiếu:
 7. Chỉ sửa code sau khi đã hiểu luồng dữ liệu đúng.
 8. Sau khi sửa, chạy `pnpm check`.
 9. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
+10. Khi hoàn tất và cần đẩy remote: `pnpm push -- "feat: mô tả"` — commit (nếu cần) + sync deploy lines + push `main`, `hub-event`, `hub-parent` (xem `docs/steps/step6_code_execution_and_change_tracking.md`).
 
 ## 7. Khi làm việc với `parent-students`
 

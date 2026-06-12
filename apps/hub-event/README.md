@@ -9,6 +9,7 @@ Line deploy gồm `@hub-event/api` + `@hub-event-checkin-frontend`. **Không** p
 | Hàng ngày (UI check-in + API main) | `pnpm dev:main:checkin` |
 | Test stack deploy thật | `pnpm dev:checkin` |
 | Sau pull — cập nhật từ main | `pnpm pull:checkin` |
+| Deploy server | `git pull origin hub-event` (branch deploy, sau `pnpm push:deploy` / CI) |
 | Verify sync (không chạy server) | `pnpm test:checkin` |
 | Verify + typecheck hub-event | `pnpm test:checkin:full` |
 
