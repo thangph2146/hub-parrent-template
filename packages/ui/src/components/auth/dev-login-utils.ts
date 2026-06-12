@@ -15,7 +15,7 @@ export function formatDevLoginOptionPrimary(option: DevLoginOption): string {
 }
 
 export function formatDevLoginOptionSecondary(option: DevLoginOption): string {
-  const roles =
-    option.roleLabels.length > 0 ? ` · ${option.roleLabels.join(", ")}` : ""
+  const labels = option.roleLabels ?? []
+  const roles = labels.length > 0 ? ` · ${labels.join(", ")}` : ""
   return `${option.email}${roles}`
 }
