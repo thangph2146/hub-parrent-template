@@ -61,7 +61,7 @@
     "test": "pnpm --filter @api test:all",
     "test:watch": "pnpm --filter @api test:watch",
     "test:cov": "pnpm --filter @api test:cov",
-    "graphify:update": "node script-system/graphify/graphify-update.cjs apps/main/api && node script-system/graphify/graphify-update.cjs apps/main/backend && node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend && node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend && node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend",
+    "graphify:update": "node script-system/graphify/graphify-update.cjs apps/main/api && node script-system/graphify/graphify-update.cjs apps/main/backend && node script-system/graphify/graphify-update.cjs apps/hub-parent/api && node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend && node script-system/graphify/graphify-update.cjs apps/hub-event/api && node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend && node script-system/graphify/graphify-update.cjs apps/store-sync/api && node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend",
     "sync:api": "node script-system/sync/sync-api-from-main.cjs all",
     "sync:api:hub-event": "node script-system/sync/sync-api-from-main.cjs hub-event",
     "sync:api:hub-parent": "node script-system/sync/sync-api-from-main.cjs hub-parent",

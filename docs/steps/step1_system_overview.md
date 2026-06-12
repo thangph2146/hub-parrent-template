@@ -1,62 +1,76 @@
 # Step 1: System Overview
 
-T?ng quan nhanh d? hi?u c?u tr�c monorepo v� c�c ranh gi?i tru?c khi ph�t tri?n.
+Tổng quan nhanh để hiểu cấu trúc monorepo và các ranh giới trước khi phát triển.
 
-## D?ch v? ch�nh
+Chi tiết product line: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md) · entry point: [`AGENTS.md`](../../AGENTS.md).
 
-- `apps/api` � NestJS + MikroORM: entities, migrations, seeders, controllers, services.
-- `apps/frontend` � Storefront Next.js (public-facing).
-- `apps/backend` � Admin Next.js (internal admin).
+## Product lines (`apps/`)
 
-## Packages chia s?
+| Line | Thư mục | Vai trò |
+|------|---------|---------|
+| **main** (dev) | `apps/main/api`, `apps/main/backend` | Source of truth — sửa hàng ngày |
+| **hub-parent** | `apps/hub-parent/api`, `apps/hub-parent/hub-parent-frontend` | Deploy site chính |
+| **hub-event** | `apps/hub-event/api`, `apps/hub-event/hub-event-checkin-frontend` | Deploy check-in sự kiện |
+| **store-sync** | `apps/store-sync/api`, `apps/store-sync/store-sync-frontend` | Line đồng bộ cửa hàng |
 
-- `packages/api-client` � SDK g?i `apps/api` (HTTP).
-- `packages/query-client` � c?u h�nh TanStack Query d�ng chung.
-- `packages/ui`, `packages/editor` � UI / editor components.
-- `packages/eslint-config`, `packages/typescript-config` � quy t?c lint/tsconfig chung.
+## Dịch vụ chính (theo package npm)
 
-## Nguy�n t?c ranh gi?i
+- `@api` — `apps/main/api`: NestJS + MikroORM (entities, migrations, controllers, services).
+- `@backend` — `apps/main/backend`: Admin Next.js.
+- `@frontend` — `apps/hub-parent/hub-parent-frontend`: Storefront Next.js (public).
+- `@hub-event/api`, `@hub-event-checkin-frontend` — line check-in (subset sync từ main + generate).
 
-- KH�NG import ch�o source gi?a `apps/*`.
-- Next apps g?i `apps/api` qua HTTP ho?c `@workspace/api-client`.
-- Logic DB (entities, migrations, seeders) ch? ? `apps/api`.
-- Logic d�ng chung d?t ? `packages/*` n?u th?c s? c?n chia s?.
+## Packages chia sẻ (`packages/`)
 
-## T�i li?u quan tr?ng (d?c tru?c khi s?a code)
+- `packages/api-client` — SDK gọi API (HTTP).
+- `packages/api-server` — logic Nest dùng chung + generate API check-in.
+- `packages/admin-app` — CRUD admin dùng chung + generate page.
+- `packages/query-client` — TanStack Query config.
+- `packages/ui`, `packages/editor` — UI / editor.
+- `packages/eslint-config`, `packages/typescript-config` — lint/tsconfig chung.
 
-- `docs/admin-pattern/PRE_CODE_PROTOCOL.md` � quy tr�nh b?t bu?c tru?c khi s?a code.
-- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` � so d? microservice v� checklist.
-- `docs/admin-pattern/AGENTS_GUIDE.md` � hu?ng d?n d?c th? t? v� ch?y `pnpm check`.
-- `.graphify/markdown/SUMMARY_FOR_AI.md` v� `apps/*/.graphify/markdown/SUMMARY_FOR_AI.md` � b?n t�m t?t graph cho t?ng app.
-- N?u task li�n quan page/feature: `docs/pages/<feature>-implementation.md`.
+## Nguyên tắc ranh giới
 
-## Quy tr�nh thay d?i (t?i thi?u)
+- **KHÔNG** import chéo source giữa `apps/*`.
+- Next apps gọi API qua `@workspace/api-client` (không `fetch` thẳng).
+- DB (entities, migrations, seeders): app API tương ứng; dev tại `apps/main/api`.
+- Logic dùng chung: `packages/*` (`admin-app`, `api-server`, `api-client`, `ui`, …).
+- Dev hàng ngày: chỉ `apps/main/` + `packages/*`; line deploy cập nhật qua `pnpm pull:checkin` / sync script.
 
-1. X�c d?nh ph?m vi (app/package/feature).
-2. �?c c�c t�i li?u trong m?c "T�i li?u quan tr?ng" theo th? t?.
-3. M? `apps/<app>/.graphify/markdown/FOLDER_TREE.md` d? d?nh v? file m?c ti�u.
-4. Ch?nh code ch? sau khi hi?u lu?ng d? li?u.
-5. Ch?y t? root:
+## Tài liệu quan trọng (đọc trước khi sửa code)
+
+- `docs/admin-pattern/PRE_CODE_PROTOCOL.md` — quy trình bắt buộc.
+- `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` — sơ đồ microservice.
+- `docs/admin-pattern/AGENTS_GUIDE.md` — thứ tự đọc graphify + `pnpm check`.
+- `.graphify/markdown/SUMMARY_FOR_AI.md` và graphify từng app (xem bảng trong `AGENTS.md` mục 3).
+- Task theo feature: `docs/pages/<feature>.md` hoặc `docs/pages/README.md`.
+
+## Quy trình thay đổi (tối thiểu)
+
+1. Xác định phạm vi (app/package/feature) — dùng bảng task trong `AGENTS.md`.
+2. Đọc tài liệu trong mục "Tài liệu quan trọng" theo thứ tự.
+3. Mở `apps/<app>/.graphify/markdown/FOLDER_TREE.md` để định vị file mục tiêu.
+4. Chỉnh code sau khi hiểu luồng dữ liệu.
+5. Chạy từ root:
 
 ```bash
 pnpm check
 ```
 
-6. N?u thay d?i ki?n tr�c/module/routes l?n:
+6. Nếu thay đổi kiến trúc/module/routes lớn:
 
 ```bash
-# c?p nh?t snapshot cho app
-node script-system/graphify-update.cjs apps/<app>
+node script-system/graphify/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
 
-## Ki?m tra ho�n th�nh
+## Kiểm tra hoàn thành
 
-- `pnpm check` ph?i pass.
-- Kh�ng vi ph?m `service-boundaries` (xem `packages/eslint-config/service-boundaries.js`).
-- Kh�ng th�m ph? thu?c sai v�o `package.json` c?a app/package.
+- `pnpm check` phải pass.
+- Không vi phạm `service-boundaries` (`packages/eslint-config/service-boundaries.js`).
+- Không thêm phụ thuộc sai vào `package.json` của app/package.
 
 ---
 
-File n�y l� t�m t?t; tham kh?o chi ti?t trong `docs/admin-pattern/` v� `.graphify/markdown/`.
+File này là tóm tắt; chi tiết trong `docs/admin-pattern/`, `docs/MONOREPO_STRUCTURE.md`, và `.graphify/markdown/`.

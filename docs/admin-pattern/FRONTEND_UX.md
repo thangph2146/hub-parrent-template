@@ -1,10 +1,12 @@
-# UX / UI — `apps/frontend` (hub-parent-template)
+# UX / UI — Storefront HUB (`@frontend`)
 
 Tài liệu ngắn để agent và dev chỉnh storefront **không phá vận hành monorepo**: vẫn dùng `@ui/*`, `@workspace/api-client`, v.v. theo `MICROSERVICE_SYSTEM_MAP.md`.
 
+**App:** `apps/hub-parent/hub-parent-frontend` (package `@frontend`).
+
 ## Nguồn palette (hub-parent)
 
-Giá trị màu semantic (`--primary`, `--secondary`, sidebar, chart, `--brand-*`, …) **đồng bộ** với [`apps/frontend/src/app/globals.css`](../../apps/frontend/src/app/globals.css). Package `@ui` phân phối theme qua [`packages/ui/src/styles/globals.css`](../../packages/ui/src/styles/globals.css) (có thêm token `surface-*`, `shadcn/tailwind`, `@source` apps) — khi đổi brand, cập nhật **một nơi** ở frontend rồi copy/sửa cho khớp file package.
+Giá trị màu semantic (`--primary`, `--secondary`, sidebar, chart, `--brand-*`, …) **đồng bộ** với [`apps/hub-parent/hub-parent-frontend/src/app/globals.css`](../../apps/hub-parent/hub-parent-frontend/src/app/globals.css). Package `@ui` phân phối theme qua [`packages/ui/src/styles/globals.css`](../../packages/ui/src/styles/globals.css) (có thêm token `surface-*`, `shadcn/tailwind`, `@source` apps) — khi đổi brand, cập nhật **một nơi** ở frontend rồi copy/sửa cho khớp file package.
 
 ## Nguyên tắc
 
@@ -15,6 +17,7 @@ Giá trị màu semantic (`--primary`, `--secondary`, sidebar, chart, `--brand-*
 
 ## Tham chiếu nhanh
 
-- Shell layout: `apps/frontend/src/app/layout.tsx`
-- Landing: `apps/frontend/src/app/page.tsx`
-- Header / footer: `apps/frontend/src/components/shared/header.tsx`, `footer.tsx`
+- Shell layout: `apps/hub-parent/hub-parent-frontend/src/app/layout.tsx`
+- Landing: `apps/hub-parent/hub-parent-frontend/src/app/page.tsx`
+- Header / footer: `apps/hub-parent/hub-parent-frontend/src/components/shared/header.tsx`, `footer.tsx`
+- Graphify: `apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`

@@ -1,21 +1,21 @@
-# Thống kê graph — api (Graphify)
+# Thống kê graph — apps/hub-event/api (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.323Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-12T13:00:06.626Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `ts` | 297 |
-| `directory` | 56 |
-| `json` | 2 |
+| `ts` | 208 |
+| `directory` | 41 |
+| `json` | 1 |
 
 ## Links theo `relation`
 
 | relation | Số |
 |----------|-----|
-| `imports` | 1140 |
-| `contains` | 354 |
+| `imports` | 675 |
+| `contains` | 249 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
 
@@ -23,26 +23,26 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 
 | File | Số cạnh imports |
 |------|-----------------|
-| `src/app.module.ts` | 49 |
-| `src/mikro-orm/orm-entities.ts` | 45 |
-| `src/seed-full-export.ts` | 24 |
-| `src/system/system.service.ts` | 20 |
-| `src/public/public.module.ts` | 17 |
-| `src/uploads/uploads.service.ts` | 17 |
+| `src/mikro-orm/orm-entities.ts` | 46 |
+| `src/app.module.ts` | 33 |
 | `src/public/public.controller.ts` | 16 |
-| `src/common/resolve-relation-filters.ts` | 13 |
+| `src/public/public.module.ts` | 16 |
+| `src/common/resolve-relation-filters.ts` | 14 |
 | `src/entities/user.entity.ts` | 13 |
-| `src/dashboard/dashboard.service.ts` | 12 |
-| `src/messages/messages.controller.ts` | 10 |
-| `src/orders/orders.service.ts` | 10 |
-| `src/page-contents/page-contents.controller.ts` | 10 |
-| `src/posts/posts.service.ts` | 10 |
-| `src/users/users.controller.ts` | 10 |
-| `src/contact-requests/contact-requests.controller.ts` | 9 |
-| `src/groups/groups.controller.ts` | 9 |
-| `src/roles/roles.controller.ts` | 9 |
-| `src/sessions/sessions.controller.ts` | 9 |
-| `src/academic-years/academic-years.controller.ts` | 8 |
+| `src/page-contents/page-contents.controller.ts` | 11 |
+| `src/users/users.controller.ts` | 11 |
+| `src/sessions/sessions.controller.ts` | 10 |
+| `src/comments/comments.controller.ts` | 9 |
+| `src/posts/posts.controller.ts` | 9 |
+| `src/event-registrations/event-registrations.controller.ts` | 8 |
+| `src/events/events.controller.ts` | 8 |
+| `src/face-data/face-data.controller.ts` | 8 |
+| `src/accounts/accounts.controller.ts` | 7 |
+| `src/cameras/cameras.controller.ts` | 7 |
+| `src/categories/categories.controller.ts` | 7 |
+| `src/event-checkins/event-checkins.controller.ts` | 7 |
+| `src/event-speakers/event-speakers.controller.ts` | 7 |
+| `src/locations/locations.controller.ts` | 7 |
 
 ## Top file theo số cạnh `imports` đi vào (in-degree)
 
@@ -50,22 +50,22 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 | File | Số lần bị import |
 |------|------------------|
-| `src/config/constants.ts` | 58 |
-| `src/common/api-response.ts` | 48 |
-| `src/entities/user.entity.ts` | 47 |
-| `src/common/permissions.decorator.ts` | 44 |
-| `src/config/permissions.ts` | 43 |
-| `src/common/bulk-actions.ts` | 38 |
-| `src/common/pagination.ts` | 37 |
-| `src/common/parse-list-query.ts` | 36 |
+| `src/config/constants.ts` | 37 |
+| `src/entities/user.entity.ts` | 36 |
 | `src/entities/base.entity.ts` | 31 |
-| `src/entities/notification.entity.ts` | 21 |
-| `src/entities/role.entity.ts` | 17 |
-| `src/common/apply-column-filters.ts` | 16 |
-| `src/common/parse-column-filters.ts` | 15 |
-| `src/common/admin-filter-configs.ts` | 15 |
-| `src/entities/user-role.entity.ts` | 15 |
+| `src/common/api-response.ts` | 29 |
+| `src/common/permissions.decorator.ts` | 27 |
+| `src/config/permissions.ts` | 26 |
+| `src/common/bulk-actions.ts` | 15 |
+| `src/entities/event.entity.ts` | 14 |
+| `src/entities/user-role.entity.ts` | 12 |
+| `src/entities/role.entity.ts` | 12 |
+| `src/entities/notification.entity.ts` | 11 |
+| `src/common/admin-list-params.ts` | 10 |
+| `src/common/entity-id.ts` | 10 |
+| `src/common/parse-list-query.ts` | 10 |
+| `src/notifications/notifications.module.ts` | 9 |
 
 ## Làm mới
 
-Chạy `node script-system/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/hub-event/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

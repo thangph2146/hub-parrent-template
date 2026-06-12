@@ -1,6 +1,6 @@
-# Cây thư mục — store-sync-frontend (Graphify)
+# Cây thư mục — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.293Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-12T13:00:06.654Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -28,16 +28,16 @@ src/
 │       │   ├── _component/
 │       │   └── [orderId]/
 │       └── profile/
+│           └── _component/
 ├── components/
 │   ├── graphify/
 │   └── shared/
 ├── config/
 ├── hooks/
 ├── lib/
-├── providers/
-└── types/
+└── providers/
 ```
 
 ## Làm mới
 
-Chạy `node script-system/graphify-update.cjs apps/store-sync-frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

@@ -1,6 +1,6 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.329Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-12T13:00:06.656Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 
@@ -8,6 +8,14 @@
 |------------------|---------------------|------|---------|
 | `@thangph2146/lexical-editor` | `@workspace/eslint-config` | `workspace:*` | `packages/editor/` |
 | `@thangph2146/lexical-editor` | `@workspace/typescript-config` | `workspace:*` | `packages/editor/` |
+| `@workspace/admin-app` | `@thangph2146/lexical-editor` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/api-client` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/eslint-config` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/logger` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/query-client` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/site-config` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/typescript-config` | `workspace:*` | `packages/admin-app/` |
+| `@workspace/admin-app` | `@workspace/ui` | `workspace:*` | `packages/admin-app/` |
 | `@workspace/api-client` | `@workspace/eslint-config` | `workspace:*` | `packages/api-client/` |
 | `@workspace/api-client` | `@workspace/logger` | `workspace:*` | `packages/api-client/` |
 | `@workspace/api-client` | `@workspace/typescript-config` | `workspace:*` | `packages/api-client/` |
@@ -29,32 +37,7 @@
 
 | App (from) | Phụ thuộc workspace | spec | Thư mục |
 |------------|---------------------|------|---------|
-| `@api` | `@workspace/eslint-config` | `workspace:*` | `apps/api/` |
-| `@backend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/api-client` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/eslint-config` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/logger` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/query-client` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/site-config` | `workspace:*` | `apps/backend/` |
-| `@backend` | `@workspace/ui` | `workspace:*` | `apps/backend/` |
-| `@frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/api-client` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/dealer-support` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/promo-codes` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/query-client` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/site-config` | `workspace:*` | `apps/frontend/` |
-| `@frontend` | `@workspace/ui` | `workspace:*` | `apps/frontend/` |
-| `@hub-event-checkin-frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-event-checkin-frontend/` |
-| `@store-sync-frontend` | `@workspace/api-client` | `workspace:*` | `apps/store-sync-frontend/` |
-| `@store-sync-frontend` | `@workspace/dealer-support` | `workspace:*` | `apps/store-sync-frontend/` |
-| `@store-sync-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/store-sync-frontend/` |
-| `@store-sync-frontend` | `@workspace/promo-codes` | `workspace:*` | `apps/store-sync-frontend/` |
-| `@store-sync-frontend` | `@workspace/query-client` | `workspace:*` | `apps/store-sync-frontend/` |
-| `@store-sync-frontend` | `@workspace/ui` | `workspace:*` | `apps/store-sync-frontend/` |
+| — | — | — | — |
 
 ## Làm mới
 

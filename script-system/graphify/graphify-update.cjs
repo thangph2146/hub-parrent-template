@@ -1,11 +1,11 @@
 /**
  * Graphify — unified update script for all apps.
  *
- * Usage:
- *   node script-system/graphify-update.cjs apps/frontend
- *   node script-system/graphify-update.cjs apps/backend
- *   node script-system/graphify-update.cjs apps/api
- *   node script-system/graphify-update.cjs .          (root monorepo)
+ * Usage (đường dẫn thật — xem script-system/lib/monorepo-apps.cjs):
+ *   node script-system/graphify/graphify-update.cjs apps/main/api
+ *   node script-system/graphify/graphify-update.cjs apps/main/backend
+ *   node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend
+ *   node script-system/graphify/graphify-update.cjs .
  */
 const fs = require('fs');
 const path = require('path');

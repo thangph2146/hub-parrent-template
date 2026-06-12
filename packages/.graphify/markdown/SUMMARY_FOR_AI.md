@@ -1,18 +1,20 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.331Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-12T13:00:06.658Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 
 - Package **không** thay cho `@api`; app Next gọi API qua HTTP + `@workspace/api-client` hoặc `fetch` public.
 - **Không import** source `apps/*` từ package (kiểm soát bởi ESLint `sharedTsPackageBoundary`).
 
-## Package (10)
+## Package (12)
 
 | Package | Thư mục | Ghi chú |
 |---------|----------|---------|
 | `@thangph2146/lexical-editor` | `packages/editor/` | Editor Lexical workspace; tiêu thụ bởi Next apps + có thể tái xuất UI. |
+| `@workspace/admin-app` | `packages/admin-app/` | — |
 | `@workspace/api-client` | `packages/api-client/` | SDK HTTP tới `@api`; không import app Nest/Next. |
+| `@workspace/api-server` | `packages/api-server/` | — |
 | `@workspace/dealer-support` | `packages/dealer-support/` | — |
 | `@workspace/eslint-config` | `packages/eslint-config/` | ESLint flat + `service-boundaries` (ranh giới import). |
 | `@workspace/logger` | `packages/logger/` | — |
@@ -38,10 +40,14 @@ Artefact Graphify cho **workspace packages** nằm dưới `packages/.graphify/m
 
 Định vị **runtime** từng dịch vụ (không import chéo source giữa `apps/*`):
 
-- [@frontend — SUMMARY](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
-- [@store-sync-frontend — SUMMARY](../../apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
-- [@backend — SUMMARY](../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md)
-- [@api — SUMMARY](../../apps/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@api — SUMMARY](../../apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@backend — SUMMARY](../../apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@hub-parent/api — SUMMARY](../../apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@frontend — SUMMARY](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@hub-event/api — SUMMARY](../../apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@hub-event-checkin-frontend — SUMMARY](../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@store-sync/api — SUMMARY](../../apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@store-sync-frontend — SUMMARY](../../apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [Chỉ mục monorepo](../../.graphify/markdown/SUMMARY_FOR_AI.md)
 
 ## Làm mới

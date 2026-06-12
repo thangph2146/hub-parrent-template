@@ -687,6 +687,36 @@
       "client": false
     },
     {
+      "id": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "label": "store-order-item-row-actions.tsx",
+      "path": "src/app/store/orders/_component/store-order-item-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "label": "store-order-items-columns.tsx",
+      "path": "src/app/store/orders/_component/store-order-items-columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "label": "store-order-items-table.tsx",
+      "path": "src/app/store/orders/_component/store-order-items-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/orders/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
       "label": "store-order-progress-cell.tsx",
       "path": "src/app/store/orders/_component/store-order-progress-cell.tsx",
@@ -763,6 +793,35 @@
       "size": 14,
       "community": "src/app/store/profile",
       "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_store_profile__component",
+      "label": "_component/",
+      "path": "src/app/store/profile/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/store/profile",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_store_profile__component_profile_utils_ts",
+      "label": "profile-utils.ts",
+      "path": "src/app/store/profile/_component/profile-utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/app/store/profile/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_app_store_profile__component_store_profile_sidebar_tsx",
+      "label": "store-profile-sidebar.tsx",
+      "path": "src/app/store/profile/_component/store-profile-sidebar.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/store/profile/_component",
+      "type": "tsx",
       "client": true
     },
     {
@@ -1299,15 +1358,6 @@
       "client": true
     },
     {
-      "id": "dir_src_types",
-      "label": "types/",
-      "path": "src/types",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
       "id": "dir_public",
       "label": "public/",
       "path": "public",
@@ -1670,6 +1720,21 @@
     },
     {
       "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
+      "target": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_orders__component",
       "target": "file_src_app_store_orders__component_store_order_progress_cell_tsx",
       "relation": "contains"
     },
@@ -1706,6 +1771,21 @@
     {
       "source": "dir_src_app_store_profile",
       "target": "file_src_app_store_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_profile",
+      "target": "dir_src_app_store_profile__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_profile__component",
+      "target": "file_src_app_store_profile__component_profile_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_store_profile__component",
+      "target": "file_src_app_store_profile__component_store_profile_sidebar_tsx",
       "relation": "contains"
     },
     {
@@ -1976,11 +2056,6 @@
     {
       "source": "dir_src_providers",
       "target": "file_src_providers_store_portal_layout_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_types",
       "relation": "contains"
     },
     {
@@ -2449,6 +2524,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_index_ts",
+      "target": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_store_orders__component_store_order_actions_ts",
       "target": "file_src_lib_catalog_filters_ts",
       "relation": "imports"
@@ -2470,6 +2560,46 @@
     },
     {
       "source": "file_src_app_store_orders__component_store_order_actions_ts",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "target": "file_src_lib_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "target": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "target": "file_src_app_store_orders__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "target": "file_src_app_store_orders__component_store_order_items_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_table_tsx",
+      "target": "file_src_app_store_orders__component_store_order_item_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_orders__component_store_order_items_table_tsx",
       "target": "file_src_app_store_orders__component_types_ts",
       "relation": "imports"
     },
@@ -2515,7 +2645,32 @@
     },
     {
       "source": "file_src_app_store_profile_page_tsx",
+      "target": "file_src_hooks_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile_page_tsx",
       "target": "file_src_hooks_use_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile_page_tsx",
+      "target": "file_src_lib_store_auth_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile_page_tsx",
+      "target": "file_src_app_store_profile__component_store_profile_sidebar_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile_page_tsx",
+      "target": "file_src_app_store_profile__component_profile_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_store_profile__component_store_profile_sidebar_tsx",
+      "target": "file_src_app_store_profile__component_profile_utils_ts",
       "relation": "imports"
     },
     {

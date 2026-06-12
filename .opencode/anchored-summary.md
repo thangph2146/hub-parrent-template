@@ -46,13 +46,14 @@ GET   /api/uploads/files/*path    (public serve)
 - Old `/api/admin/uploads/serve/*path` kept for backward compat (deprecated)
 - `STORAGE_DIR` configured as `D:/HUB/data` in `.env`
 
-## Repo Structure
+## Repo Structure (current — see `AGENTS.md`)
 
-- **`apps/api`** — NestJS + MikroORM (26 modules, 25 controllers, 24 entities, 6 migrations)
-- **`apps/backend`** — Admin Next.js (SDK singleton via `@/lib/api`)
-- **`apps/frontend`** — Storefront Next.js (SDK singleton + raw fetch for public routes)
-- **`packages/api-client`** — HTTP SDK with typed resource classes (11 resources)
-- Service boundaries enforced by `eslint-config/service-boundaries.js` + `script-system/verify-service-boundaries.mjs`
+- **`apps/main/api`** (`@api`) — NestJS dev source of truth
+- **`apps/main/backend`** (`@backend`) — Admin Next.js dev
+- **`apps/hub-parent/hub-parent-frontend`** (`@frontend`) — Storefront deploy
+- Deploy lines: `hub-parent/api`, `hub-event/api`, `store-sync/*` — xem `docs/MONOREPO_STRUCTURE.md`
+- **`packages/api-client`** — HTTP SDK
+- Boundaries: `pnpm verify:bounds`, `packages/eslint-config/service-boundaries.js`
 
 ## Session 3 — Graphify Refresh + Route Consistent
 

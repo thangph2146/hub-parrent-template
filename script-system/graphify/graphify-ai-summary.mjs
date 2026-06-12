@@ -18,32 +18,74 @@ import { fileURLToPath } from "node:url"
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
+const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
 /** Thư mục con chuẩn trong mỗi `.graphify/`: JSON snapshot vs Markdown cho AI. */
 const GRAPHIFY_MARKDOWN = "markdown"
 const GRAPHIFY_SNAPSHOT = "snapshot"
 
-const GRAPHIFY_APPS = ["frontend", "store-sync-frontend", "backend", "api"]
+/**
+ * @typedef {{ path: string; pkg: string; label: string; kind: "api" | "next" }} GraphifyApp
+ */
 
-/** @param {string} appDir segment under `apps/` */
-function appGraphifyBase(appDir) {
-  return join(root, "apps", appDir, ".graphify")
+/** @type {GraphifyApp[]} */
+const GRAPHIFY_APPS = []
+for (const [line, apps] of Object.entries(PRODUCT_LINES)) {
+  for (const [role, entry] of Object.entries(apps)) {
+    const kind = role === "api" ? "api" : "next"
+    const roleLabel =
+      role === "api"
+        ? "API Nest"
+        : role === "backend"
+          ? "Admin Next"
+          : "Next frontend"
+    GRAPHIFY_APPS.push({
+      path: entry.path.replace(/\\/g, "/"),
+      pkg: entry.package,
+      label: `${roleLabel} (${line}) — ${entry.package}`,
+      kind,
+    })
+  }
 }
 
-function appMarkdownDir(appDir) {
-  return join(appGraphifyBase(appDir), GRAPHIFY_MARKDOWN)
+/** Đường dẫn tương đối từ `apps/.../.graphify/markdown/` lên root repo. */
+function repoRelFromAppMarkdown(appRelPath) {
+  const depth = appRelPath.split("/").length + 2
+  return `${"../".repeat(depth)}`
 }
 
-function appSnapshotDir(appDir) {
-  return join(appGraphifyBase(appDir), GRAPHIFY_SNAPSHOT)
+/** @param {string} appRelPath ví dụ `apps/main/api` */
+function appGraphifyBase(appRelPath) {
+  return join(root, appRelPath, ".graphify")
 }
 
-function appContextPath(appDir) {
-  return join(appSnapshotDir(appDir), "context.json")
+function appMarkdownDir(appRelPath) {
+  return join(appGraphifyBase(appRelPath), GRAPHIFY_MARKDOWN)
 }
 
-function appGraphJsonPath(appDir) {
-  return join(appSnapshotDir(appDir), "graph.json")
+function appSnapshotDir(appRelPath) {
+  return join(appGraphifyBase(appRelPath), GRAPHIFY_SNAPSHOT)
+}
+
+function appContextPath(appRelPath) {
+  return join(appSnapshotDir(appRelPath), "context.json")
+}
+
+function appGraphJsonPath(appRelPath) {
+  return join(appSnapshotDir(appRelPath), "graph.json")
+}
+
+/** @param {GraphifyApp | string} app */
+function isNestApiApp(app) {
+  if (typeof app === "string") {
+    return app.replace(/\\/g, "/").endsWith("/api")
+  }
+  return app.kind === "api"
+}
+
+/** @param {GraphifyApp} app */
+function isStorefrontNext(app) {
+  return app.kind === "next" && /frontend/.test(app.path)
 }
 
 function packagesGraphifyBase() {
@@ -110,20 +152,17 @@ function removeLegacyRootGraphifySummary() {
   }
 }
 
-/** Từ `apps/<app>/.graphify/markdown/*.md` lên root repo (4 cấp). */
-const APP_MD_REL_REPO = "../../../../"
-
 /**
  * Mục lục artefact trong cùng app (markdown vs snapshot).
- * @param {string} appDir
+ * @param {string} appRelPath
  */
-function linesAppMarkdownToc(appDir) {
+function linesAppMarkdownToc(appRelPath) {
   const parts = [
     "## Mục lục artefact Graphify",
     "",
     "- **Markdown (ưu tiên đọc):** file này — [`FOLDER_TREE.md`](FOLDER_TREE.md), [`GRAPH_STATS.md`](GRAPH_STATS.md)",
   ]
-  if (appDir === "api") {
+  if (isNestApiApp(appRelPath)) {
     parts[parts.length - 1] +=
       " — [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md)"
   }
@@ -139,10 +178,10 @@ function linesAppMarkdownToc(appDir) {
 
 /**
  * Liên kết sang app khác + tài liệu hub (ranh giới microservice).
- * @param {string} appDir
+ * @param {GraphifyApp} app
  */
-function linesAppServiceAndHubDocs(appDir) {
-  const r = APP_MD_REL_REPO
+function linesAppServiceAndHubDocs(app) {
+  const r = repoRelFromAppMarkdown(app.path)
   const lines = [
     "## Liên kết dịch vụ & tài liệu hub",
     "",
@@ -152,9 +191,9 @@ function linesAppServiceAndHubDocs(appDir) {
     "",
   ]
   for (const o of GRAPHIFY_APPS) {
-    if (o === appDir) continue
+    if (o.path === app.path) continue
     lines.push(
-      `- **@${o}:** [SUMMARY](${r}apps/${o}/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](${r}apps/${o}/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](${r}apps/${o}/.graphify/markdown/GRAPH_STATS.md)`
+      `- **${o.pkg}:** [SUMMARY](${r}${o.path}/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](${r}${o.path}/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](${r}${o.path}/.graphify/markdown/GRAPH_STATS.md)`
     )
   }
   lines.push(
@@ -173,7 +212,7 @@ function linesAppServiceAndHubDocs(appDir) {
     `- [AGENTS_GUIDE](${r}docs/admin-pattern/AGENTS_GUIDE.md) — thứ tự đọc cho agent.`
   )
   lines.push(`- [AGENTS.md](${r}AGENTS.md) — \`pnpm check\`, \`check:full\`.`)
-  if (appDir === "frontend" || appDir === "store-sync-frontend") {
+  if (isStorefrontNext(app)) {
     lines.push(
       `- [FRONTEND_UX](${r}docs/admin-pattern/FRONTEND_UX.md) — UX / token / a11y storefront.`
     )
@@ -184,12 +223,12 @@ function linesAppServiceAndHubDocs(appDir) {
 
 /**
  * Gợi ý “ngóc ngách” từ danh sách file trong snapshot (không đọc nội dung).
- * @param {string} appDir
+ * @param {GraphifyApp} app
  * @param {string[]} paths
  */
-function linesAppSystemNooks(appDir, paths) {
+function linesAppSystemNooks(app, paths) {
   const lines = []
-  if (appDir === "api") {
+  if (isNestApiApp(app)) {
     const take = (pred, n = 14) => paths.filter(pred).slice(0, n)
     const seeds = take((p) => /\/seeds\//.test(p) || p.startsWith("src/seeds/"))
     const config = take((p) => p.startsWith("src/config/"))
@@ -225,7 +264,7 @@ function linesAppSystemNooks(appDir, paths) {
   if (!mw && !inst && !rootLayout && apiRouteCount === 0) {
     return lines
   }
-  lines.push(`## Góc hệ thống (@${appDir}) — đường dẫn gợi ý`)
+  lines.push(`## Góc hệ thống (${app.pkg}) — đường dẫn gợi ý`)
   lines.push("")
   if (mw) lines.push(`- **Middleware:** \`${mw}\``)
   if (inst) lines.push(`- **Instrumentation:** \`${inst}\``)
@@ -329,7 +368,7 @@ function mermaidEscapeLabel(s) {
  */
 function writeGraphStatsMd(
   graphifyDir,
-  appDir,
+  appRelPath,
   nodes,
   links,
   idToPath,
@@ -367,7 +406,7 @@ function writeGraphStatsMd(
   const topIn = [...inCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 15)
 
   const lines = [
-    `# Thống kê graph — ${appDir} (Graphify)`,
+    `# Thống kê graph — ${appRelPath} (Graphify)`,
     "",
     `> **Sinh tự động:** \`${generatedAt}\` từ \`../snapshot/graph.json\` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.`,
     "",
@@ -425,7 +464,7 @@ function writeGraphStatsMd(
   lines.push("## Làm mới")
   lines.push("")
   lines.push(
-    `Chạy \`node script-system/graphify/graphify-update.cjs apps/${appDir}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`
+    `Chạy \`node script-system/graphify/graphify-update.cjs ${appRelPath}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`
   )
   lines.push("")
 
@@ -433,12 +472,12 @@ function writeGraphStatsMd(
 }
 
 /**
- * @param {string} appDir
+ * @param {string} appRelPath ví dụ `apps/main/api`
  * @returns {{ folderTreeRel?: string; domainImportsRel?: string; graphStatsRel?: string }}
  */
-function writeGraphArtifactsForApp(appDir) {
-  const graphPath = appGraphJsonPath(appDir)
-  const markdownDir = appMarkdownDir(appDir)
+function writeGraphArtifactsForApp(appRelPath) {
+  const graphPath = appGraphJsonPath(appRelPath)
+  const markdownDir = appMarkdownDir(appRelPath)
   mkdirSync(markdownDir, { recursive: true })
   if (!existsSync(graphPath)) {
     return {}
@@ -467,7 +506,7 @@ function writeGraphArtifactsForApp(appDir) {
   const treeBody = renderNestedDirTree(nested)
   const generatedAt = new Date().toISOString()
   const folderTreeMd = [
-    `# Cây thư mục — ${appDir} (Graphify)`,
+    `# Cây thư mục — ${appRelPath} (Graphify)`,
     "",
     `> **Sinh tự động:** \`${generatedAt}\` từ \`snapshot/graph.json\` (node \`directory\` / \`route-group\` dưới \`src/\`).`,
     "",
@@ -477,7 +516,7 @@ function writeGraphArtifactsForApp(appDir) {
     "",
     "## Làm mới",
     "",
-    `Chạy \`node script-system/graphify/graphify-update.cjs apps/${appDir}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`,
+    `Chạy \`node script-system/graphify/graphify-update.cjs ${appRelPath}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`,
     "",
   ].join("\n")
 
@@ -485,13 +524,13 @@ function writeGraphArtifactsForApp(appDir) {
   writeFileSync(folderTreePath, folderTreeMd, "utf8")
 
   const out = {
-    folderTreeRel: `apps/${appDir}/.graphify/markdown/FOLDER_TREE.md`,
+    folderTreeRel: `${appRelPath}/.graphify/markdown/FOLDER_TREE.md`,
   }
 
-  writeGraphStatsMd(markdownDir, appDir, nodes, links, idToPath, generatedAt)
-  out.graphStatsRel = `apps/${appDir}/.graphify/markdown/GRAPH_STATS.md`
+  writeGraphStatsMd(markdownDir, appRelPath, nodes, links, idToPath, generatedAt)
+  out.graphStatsRel = `${appRelPath}/.graphify/markdown/GRAPH_STATS.md`
 
-  if (appDir !== "api") {
+  if (!isNestApiApp(appRelPath)) {
     console.log(
       `[graphify-ai-summary] Đã ghi ${folderTreePath} (${dirPaths.length} thư mục) + GRAPH_STATS.md.`
     )
@@ -638,13 +677,13 @@ function writeGraphArtifactsForApp(appDir) {
   domainImportsLines.push("## Làm mới")
   domainImportsLines.push("")
   domainImportsLines.push(
-    "Chạy `node script-system/graphify/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`)."
+    `Chạy \`node script-system/graphify/graphify-update.cjs ${appRelPath}\` rồi \`pnpm graphify:ai-summary\` (hoặc \`pnpm graphify:refresh\`).`
   )
   domainImportsLines.push("")
 
   const domainImportsPath = join(markdownDir, "API_DOMAIN_IMPORTS.md")
   writeFileSync(domainImportsPath, domainImportsLines.join("\n"), "utf8")
-  out.domainImportsRel = `apps/${appDir}/.graphify/markdown/API_DOMAIN_IMPORTS.md`
+  out.domainImportsRel = `${appRelPath}/.graphify/markdown/API_DOMAIN_IMPORTS.md`
 
   console.log(
     `[graphify-ai-summary] Đã ghi ${folderTreePath} (${dirPaths.length} thư mục) + GRAPH_STATS.md + ${domainImportsPath} (${pairs.length} cặp domain).`
@@ -652,14 +691,14 @@ function writeGraphArtifactsForApp(appDir) {
   return out
 }
 
-/** @param {string} appDir */
-function summarizeApp(appDir, label) {
-  const ctxPath = appContextPath(appDir)
-  const markdownDir = appMarkdownDir(appDir)
+/** @param {GraphifyApp} app */
+function summarizeApp(app) {
+  const ctxPath = appContextPath(app.path)
+  const markdownDir = appMarkdownDir(app.path)
   mkdirSync(markdownDir, { recursive: true })
   const outPath = join(markdownDir, "SUMMARY_FOR_AI.md")
   if (!existsSync(ctxPath)) {
-    console.warn(`[graphify-ai-summary] Bỏ qua ${label}: không có ${ctxPath}`)
+    console.warn(`[graphify-ai-summary] Bỏ qua ${app.label}: không có ${ctxPath}`)
     return
   }
 
@@ -668,10 +707,11 @@ function summarizeApp(appDir, label) {
   const summary = ctx.summary ?? {}
   const files = ctx.files ?? {}
 
-  const graphMeta = writeGraphArtifactsForApp(appDir)
+  const graphMeta = writeGraphArtifactsForApp(app.path)
+  const repoRel = repoRelFromAppMarkdown(app.path)
 
   const lines = []
-  lines.push(`# ${label} — tóm tắt cho AI (Graphify)`)
+  lines.push(`# ${app.label} — tóm tắt cho AI (Graphify)`)
   lines.push("")
   lines.push(
     `> Tự động sinh từ \`../snapshot/context.json\` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).`
@@ -680,8 +720,8 @@ function summarizeApp(appDir, label) {
   lines.push(`- **projectRoot:** \`${ctx.projectRoot ?? "—"}\``)
   lines.push(`- **context.generatedAt:** ${ctx.generatedAt ?? "—"}`)
   lines.push("")
-  lines.push(...linesAppMarkdownToc(appDir))
-  lines.push(...linesAppServiceAndHubDocs(appDir))
+  lines.push(...linesAppMarkdownToc(app.path))
+  lines.push(...linesAppServiceAndHubDocs(app))
 
   if (graphMeta.folderTreeRel) {
     lines.push("## Bản đồ từ snapshot/graph.json")
@@ -722,9 +762,9 @@ function summarizeApp(appDir, label) {
 
   const paths = Object.keys(files).sort()
 
-  lines.push(...linesAppSystemNooks(appDir, paths))
+  lines.push(...linesAppSystemNooks(app, paths))
 
-  if (appDir === "api") {
+  if (isNestApiApp(app)) {
     const modules = paths.filter((p) => p.endsWith(".module.ts"))
     const controllers = paths.filter(
       (p) => p.endsWith(".controller.ts") && !p.includes(".controller.spec.ts")
@@ -776,22 +816,19 @@ function summarizeApp(appDir, label) {
   lines.push("## File Markdown trong scope app")
   lines.push("")
   lines.push(
-    "Toàn bộ `.md` sinh tự động nằm trong **`apps/" +
-      appDir +
-      "/.graphify/markdown/`**; JSON trong **`../snapshot/`** — xem mục **Mục lục artefact Graphify** ở đầu file."
+    `Toàn bộ \`.md\` sinh tự động nằm trong **\`${app.path}/.graphify/markdown/\`**; JSON trong **\`../snapshot/\`** — xem mục **Mục lục artefact Graphify** ở đầu file.`
   )
   lines.push("")
   lines.push(
-    "- **Chỉ mục monorepo + chủ đề:** [`../../../../.graphify/markdown/SUMMARY_FOR_AI.md`](../../../../.graphify/markdown/SUMMARY_FOR_AI.md)."
+    `- **Chỉ mục monorepo + chủ đề:** [\`${repoRel}.graphify/markdown/SUMMARY_FOR_AI.md\`](${repoRel}.graphify/markdown/SUMMARY_FOR_AI.md).`
   )
   lines.push("")
   lines.push("## Làm mới")
   lines.push("")
   lines.push(
-    `- Cập nhật \`snapshot/context.json\` **và** \`snapshot/graph.json\`: \`node script-system/graphify/graphify-update.cjs apps/${appDir}\`.`
+    `- Cập nhật \`snapshot/context.json\` **và** \`snapshot/graph.json\`: \`node script-system/graphify/graphify-update.cjs ${app.path}\`.`
   )
-  const graphExtras =
-    appDir === "api"
+  const graphExtras = isNestApiApp(app)
       ? ", `GRAPH_STATS.md`, `API_DOMAIN_IMPORTS.md`"
       : ", `GRAPH_STATS.md`"
   lines.push(
@@ -929,18 +966,25 @@ function writePackagesWorkspaceDepsMd() {
  * (đường dẫn tương đối từ file đó).
  */
 function getMonorepoAiTopicGuideLines() {
+  const mainApi = GRAPHIFY_APPS.find((a) => a.pkg === "@api")?.path ?? "apps/main/api"
+  const mainBackend =
+    GRAPHIFY_APPS.find((a) => a.pkg === "@backend")?.path ?? "apps/main/backend"
+  const hubFrontend =
+    GRAPHIFY_APPS.find((a) => a.pkg === "@frontend")?.path ??
+    "apps/hub-parent/hub-parent-frontend"
   return [
     "Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `snapshot/context.json` (file nặng).",
     "",
     "| Mục tiêu | Mở đầu tiên | Tiếp theo |",
     "|------------|-------------|-----------|",
-    "| Bản đồ monorepo | **File này** (`SUMMARY_FOR_AI.md`) | [`../../packages/.graphify/markdown/SUMMARY_FOR_AI.md`](../../packages/.graphify/markdown/SUMMARY_FOR_AI.md), [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |",
+    `| Bản đồ monorepo | **File này** (\`SUMMARY_FOR_AI.md\`) | [\`../../packages/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../packages/.graphify/markdown/SUMMARY_FOR_AI.md), [\`../../${mainApi}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${mainApi}/.graphify/markdown/SUMMARY_FOR_AI.md) |`,
     "| Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |",
-    "| Cây `src/` một app | [`../../apps/frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) (đổi `frontend` → `backend` / `api` / `store-sync-frontend`) | `SUMMARY_FOR_AI.md` cùng app |",
-    "| Quy mô graph, điểm nóng import | [`../../apps/frontend/.graphify/markdown/GRAPH_STATS.md`](../../apps/frontend/.graphify/markdown/GRAPH_STATS.md) (đổi segment app) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |",
-    "| Domain Nest import lẫn nhau | [`../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |",
+    `| Cây \`src/\` một app | [\`../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md\`](../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | \`SUMMARY_FOR_AI.md\` cùng app |`,
+    `| Quy mô graph, điểm nóng import | [\`../../${mainApi}/.graphify/markdown/GRAPH_STATS.md\`](../../${mainApi}/.graphify/markdown/GRAPH_STATS.md) | \`FOLDER_TREE.md\`, \`snapshot/context.json\` (khi cần) |`,
+    `| Domain Nest import lẫn nhau | [\`../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md\`](../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md) | \`GRAPH_STATS.md\`, bảng controller trong \`SUMMARY\` |`,
     "| Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |",
-    "| UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |",
+    `| UX storefront (Next công khai) | [\`../../docs/admin-pattern/FRONTEND_UX.md\`](../../docs/admin-pattern/FRONTEND_UX.md) | [\`../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md) |`,
+    `| Admin Next (dev) | [\`../../${mainBackend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${mainBackend}/.graphify/markdown/SUMMARY_FOR_AI.md) | [\`../../docs/admin-pattern/ADMIN_PAGE_PATTERN.md\`](../../docs/admin-pattern/ADMIN_PAGE_PATTERN.md) |`,
     "| Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |",
     "| Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.mjs`](../../script-system/verify/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |",
     "| Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |",
@@ -1072,18 +1116,11 @@ function writePackagesGraphifySummary() {
     "Định vị **runtime** từng dịch vụ (không import chéo source giữa `apps/*`):"
   )
   lines.push("")
-  lines.push(
-    "- [@frontend — SUMMARY](../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md)"
-  )
-  lines.push(
-    "- [@store-sync-frontend — SUMMARY](../../apps/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)"
-  )
-  lines.push(
-    "- [@backend — SUMMARY](../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md)"
-  )
-  lines.push(
-    "- [@api — SUMMARY](../../apps/api/.graphify/markdown/SUMMARY_FOR_AI.md)"
-  )
+  for (const app of GRAPHIFY_APPS) {
+    lines.push(
+      `- [${app.pkg} — SUMMARY](../../${app.path}/.graphify/markdown/SUMMARY_FOR_AI.md)`
+    )
+  }
   lines.push("- [Chỉ mục monorepo](../../.graphify/markdown/SUMMARY_FOR_AI.md)")
   lines.push("")
   lines.push("## Làm mới")
@@ -1106,7 +1143,7 @@ function writeMonorepoRootSummary() {
   const generatedAt = new Date().toISOString()
 
   const appRows = GRAPHIFY_APPS.map((app) => {
-    const ctxPath = appContextPath(app)
+    const ctxPath = appContextPath(app.path)
     if (!existsSync(ctxPath)) {
       return { app, ok: false, note: "chưa có snapshot/context.json" }
     }
@@ -1118,7 +1155,7 @@ function writeMonorepoRootSummary() {
         ok: true,
         generatedAt: ctx.generatedAt ?? "—",
         files: n,
-        summaryPath: `apps/${app}/.graphify/markdown/SUMMARY_FOR_AI.md`,
+        summaryPath: `${app.path}/.graphify/markdown/SUMMARY_FOR_AI.md`,
       }
     } catch {
       return { app, ok: false, note: "context.json lỗi đọc" }
@@ -1137,20 +1174,13 @@ function writeMonorepoRootSummary() {
   lines.push(...getMonorepoAiTopicGuideLines())
   lines.push("## Dịch vụ (`apps/*`)")
   lines.push("")
-  lines.push("| App | Vai trò | Graphify |")
-  lines.push("|-----|---------|----------|")
-  lines.push(
-    "| `@frontend` | Storefront Next (HUB công khai) | `apps/frontend/.graphify/` (`markdown/`, `snapshot/`) |"
-  )
-  lines.push(
-    "| `@store-sync-frontend` | Store Sync storefront (catalog) | `apps/store-sync-frontend/.graphify/` (`markdown/`, `snapshot/`) |"
-  )
-  lines.push(
-    "| `@backend` | Admin Next (vận hành) | `apps/backend/.graphify/` (`markdown/`, `snapshot/`) |"
-  )
-  lines.push(
-    "| `@api` | NestJS + MikroORM, REST/WebSocket | `apps/api/.graphify/` (`markdown/`, `snapshot/`) |"
-  )
+  lines.push("| Package | Vai trò | Graphify |")
+  lines.push("|---------|---------|----------|")
+  for (const app of GRAPHIFY_APPS) {
+    lines.push(
+      `| \`${app.pkg}\` | ${app.label.split(" — ")[0]} | \`${app.path}/.graphify/\` (\`markdown/\`, \`snapshot/\`) |`
+    )
+  }
   lines.push("")
   lines.push("## Ranh giới (microservice)")
   lines.push("")
@@ -1188,7 +1218,7 @@ function writeMonorepoRootSummary() {
     "| Đổi route / page / layout Next | `apps/<app>/.graphify/markdown/SUMMARY` + `FOLDER_TREE` |"
   )
   lines.push(
-    "| Đổi module Nest / import domain | `apps/api/.../SUMMARY` + `API_DOMAIN_IMPORTS` + `GRAPH_STATS` |"
+    "| Đổi module Nest / import domain | `apps/main/api/.../SUMMARY` (hoặc app API deploy) + `API_DOMAIN_IMPORTS` + `GRAPH_STATS` |"
   )
   lines.push(
     "| Thêm/sửa package workspace | `packages/.../SUMMARY` + `WORKSPACE_DEPS` + `verify:bounds` |"
@@ -1209,11 +1239,11 @@ function writeMonorepoRootSummary() {
   lines.push("|-----|--------------------|------------------------|---------|")
   for (const r of appRows) {
     if (!r.ok) {
-      lines.push(`| \`${r.app}\` | — | — | ${r.note} |`)
+      lines.push(`| \`${r.app.pkg}\` | — | — | ${r.note} |`)
       continue
     }
     lines.push(
-      `| \`${r.app}\` | ${r.files} | ${r.generatedAt} | [\`${r.summaryPath}\`](${r.summaryPath}) |`
+      `| \`${r.app.pkg}\` | ${r.files} | ${r.generatedAt} | [\`${r.summaryPath}\`](${r.summaryPath}) |`
     )
   }
   lines.push("")
@@ -1225,7 +1255,7 @@ function writeMonorepoRootSummary() {
     "- Mỗi app: **`apps/<app>/.graphify/markdown/FOLDER_TREE.md`**, **`GRAPH_STATS.md`** — cây `src/` + thống kê graph / điểm nóng import."
   )
   lines.push(
-    "- **`apps/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`** — domain `src/<tên>/`, inbound, sơ đồ Mermaid (cạnh `imports`)."
+    "- **`apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`** (và app API deploy tương ứng) — domain `src/<tên>/`, inbound, sơ đồ Mermaid."
   )
   lines.push(
     "- **`packages/.graphify/README.md`** — mô tả layout Graphify packages (`markdown/`)."
@@ -1241,11 +1271,10 @@ function writeMonorepoRootSummary() {
     "# Từng app (cập nhật snapshot/context.json + snapshot/graph.json)"
   )
   lines.push("pnpm graphify:update")
-  lines.push("# hoặc từng app:")
-  lines.push("node script-system/graphify/graphify-update.cjs apps/frontend")
-  lines.push("node script-system/graphify/graphify-update.cjs apps/backend")
-  lines.push("node script-system/graphify/graphify-update.cjs apps/store-sync-frontend")
-  lines.push("node script-system/graphify/graphify-update.cjs apps/api")
+  lines.push("# hoặc từng app (đường dẫn thật):")
+  for (const app of GRAPHIFY_APPS) {
+    lines.push(`node script-system/graphify/graphify-update.cjs ${app.path}`)
+  }
   lines.push(
     "# (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep"
   )
@@ -1278,17 +1307,66 @@ function writeMonorepoRootSummary() {
   }
 }
 
-summarizeApp("frontend", "Hub storefront — @frontend")
-summarizeApp("store-sync-frontend", "Store Sync storefront — @store-sync-frontend")
-summarizeApp("backend", "Hub admin — @backend")
-summarizeApp("api", "REST API — @api (NestJS)")
+/** @param {GraphifyApp} app */
+function writeAppGraphifyReadme(app) {
+  const base = appGraphifyBase(app.path)
+  mkdirSync(base, { recursive: true })
+  const outPath = join(base, "README.md")
+  const monorepoRel = `${"../".repeat(app.path.split("/").length + 1)}`
+  const isApi = isNestApiApp(app)
+  const lines = [
+    `# Graphify — \`${app.path}\``,
+    "",
+    `Package **${app.pkg}**. Thư mục \`.graphify/\` giữ **snapshot** (\`snapshot/\`) và **Markdown cho AI** (\`markdown/\`).`,
+    "",
+    "## File trong thư mục này",
+    "",
+    "| File / Thư mục | Mục đích |",
+    "|----------------|----------|",
+    `| \`snapshot/graph.json\` | Đồ thị node/link (\`node script-system/graphify/graphify-update.cjs ${app.path}\`) |`,
+    "| `snapshot/context.json` | Snapshot nội dung file để AI hiểu hệ thống |",
+    "| `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module (sinh bởi `pnpm graphify:ai-summary`) |",
+    "| `markdown/FOLDER_TREE.md` | Cây thư mục `src/` |",
+    "| `markdown/GRAPH_STATS.md` | Thống kê graph |",
+  ]
+  if (isApi) {
+    lines.push(
+      "| `markdown/API_DOMAIN_IMPORTS.md` | Phụ thuộc chéo domain NestJS |"
+    )
+  }
+  lines.push("| `README.md` | File này (mô tả layout) |")
+  lines.push("")
+  lines.push("## Làm mới")
+  lines.push("")
+  lines.push("```bash")
+  lines.push(`node script-system/graphify/graphify-update.cjs ${app.path}`)
+  lines.push("pnpm graphify:ai-summary")
+  lines.push("```")
+  lines.push("")
+  lines.push("## Liên kết")
+  lines.push("")
+  lines.push(
+    `- [SUMMARY monorepo](${monorepoRel}.graphify/markdown/SUMMARY_FOR_AI.md)`
+  )
+  lines.push(
+    `- [packages SUMMARY](${monorepoRel}packages/.graphify/markdown/SUMMARY_FOR_AI.md)`
+  )
+  lines.push(`- [AGENTS.md](${monorepoRel}AGENTS.md)`)
+  lines.push("")
+  writeFileSync(outPath, lines.join("\n"), "utf8")
+}
+
+for (const app of GRAPHIFY_APPS) {
+  summarizeApp(app)
+  writeAppGraphifyReadme(app)
+}
 writePackagesWorkspaceDepsMd()
 writePackagesGraphifySummary()
 writePackagesGraphifyReadme()
 writeMonorepoRootSummary()
 
 for (const app of GRAPHIFY_APPS) {
-  removeLegacyAppGraphifyFiles(app)
+  removeLegacyAppGraphifyFiles(app.path)
 }
 removeLegacyPackagesGraphifyMarkdown()
 removeLegacyRootGraphifySummary()

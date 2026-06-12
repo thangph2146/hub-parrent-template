@@ -1,6 +1,8 @@
 ﻿# API Client Pattern (packages/api-client)
 
-Tài liệu này mô tả cách `apps/frontend` và `apps/backend` gọi `apps/api` qua `@workspace/api-client`.
+Tài liệu này mô tả cách app Next (`@frontend`, `@backend`, check-in frontend, …) gọi API Nest qua `@workspace/api-client`.
+
+**Đường dẫn thật:** dev API tại `apps/main/api`; storefront `apps/hub-parent/hub-parent-frontend`; admin `apps/main/backend`. Không gọi HTTP thẳng tới app API.
 
 ## Kiến trúc tổng quan
 
@@ -38,7 +40,7 @@ const posts = await api.posts.list({ page: 1, limit: 50 })
 const user = await api.users.get("abc-123")
 ```
 
-**Nguyên tắc**: Frontend/Backend KHÔNG gọi trực tiếp `apps/api`. Mọi request đều qua `@workspace/api-client`.
+**Nguyên tắc**: App Next KHÔNG gọi trực tiếp API Nest (không `fetch` tới `localhost:3002/api`). Mọi request đều qua `@workspace/api-client`.
 
 App Next **không** gọi `api.http.get/post` trực tiếp — dùng resource trên SDK (`api.users.bulk`, `api.settings.getPublicBranding`, `api.public.submitContactRequest`, …). `StoreSyncSdk.http` chỉ dành cho wiring nội bộ package hoặc resource class mới trong `packages/api-client`.
 
@@ -215,7 +217,7 @@ canUserAccess(user, PERMISSION_CODES.POSTS.VIEW) // true/false
 - `PERMISSION_CODES` — object resource:action
 - `canUserAccess(user, code)` — super_admin bypass hoặc hasPermission
 - `hasPermission(granted, code)` — check `*` wildcard
-- Chỉ dùng ở frontend/backend app, KHÔNG dùng ở `apps/api` (API trust X-User-Id)
+- Chỉ dùng ở app Next, KHÔNG dùng ở app API Nest (API trust X-User-Id)
 
 ## PagedResult
 

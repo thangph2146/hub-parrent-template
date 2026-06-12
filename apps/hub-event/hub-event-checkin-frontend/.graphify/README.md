@@ -1,12 +1,12 @@
-# Graphify — `apps/main/backend`
+# Graphify — `apps/hub-event/hub-event-checkin-frontend`
 
-Package **@backend**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
+Package **@hub-event-checkin-frontend**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
 
 ## File trong thư mục này
 
 | File / Thư mục | Mục đích |
 |----------------|----------|
-| `snapshot/graph.json` | Đồ thị node/link (`node script-system/graphify/graphify-update.cjs apps/main/backend`) |
+| `snapshot/graph.json` | Đồ thị node/link (`node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend`) |
 | `snapshot/context.json` | Snapshot nội dung file để AI hiểu hệ thống |
 | `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module (sinh bởi `pnpm graphify:ai-summary`) |
 | `markdown/FOLDER_TREE.md` | Cây thư mục `src/` |
@@ -16,7 +16,7 @@ Package **@backend**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) v
 ## Làm mới
 
 ```bash
-node script-system/graphify/graphify-update.cjs apps/main/backend
+node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend
 pnpm graphify:ai-summary
 ```
 

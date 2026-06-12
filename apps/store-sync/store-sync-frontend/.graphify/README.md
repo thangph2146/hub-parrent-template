@@ -1,26 +1,27 @@
-# Graphify — `@frontend` (store-sync)
+# Graphify — `apps/store-sync/store-sync-frontend`
 
-Thư mục này phục vụ **đồ thị / ngữ cảnh codebase** cho người và cho AI. Trong monorepo, **mỗi app giữ `.graphify` riêng** — không gộp với `@backend` hay `@api`.
+Package **@store-sync-frontend**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
 
-## Thứ tự đọc cho AI (ưu tiên)
+## File trong thư mục này
 
-1. **`SUMMARY_FOR_AI.md`** — bản gọn: routes, bảng import/export, không nhúng full source.
-2. **`context.json`** — đầy đủ (có `content` từng file): chỉ dùng khi cần trích đoạn cụ thể; rất tốn ngữ cảnh.
-3. **`graph.json`** — nút/cạnh cho visualization hoặc công cụ graphifyy.
-4. **`GRAPH_REPORT.md`** — báo cáo community từ graphifyy; **cần chạy lại graphify** nếu số liệu không khớp repo hiện tại.
-5. **`cache/`** — cache nội bộ; **không** dùng làm nguồn hiểu kiến trúc.
+| File / Thư mục | Mục đích |
+|----------------|----------|
+| `snapshot/graph.json` | Đồ thị node/link (`node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend`) |
+| `snapshot/context.json` | Snapshot nội dung file để AI hiểu hệ thống |
+| `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module (sinh bởi `pnpm graphify:ai-summary`) |
+| `markdown/FOLDER_TREE.md` | Cây thư mục `src/` |
+| `markdown/GRAPH_STATS.md` | Thống kê graph |
+| `README.md` | File này (mô tả layout) |
 
-## Làm mới dữ liệu
+## Làm mới
 
-- Script local: `update.cjs` (đồ thị tùy biến trong repo).
-- Hoặc CLI [graphifyy](https://www.npmjs.com/package/graphifyy) theo skill `/graphify`.
-- Sau khi có `context.json` mới, từ **root monorepo**:
+```bash
+node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend
+pnpm graphify:ai-summary
+```
 
-  ```bash
-  pnpm graphify:ai-summary
-  ```
+## Liên kết
 
-## Lưu ý
-
-- **`manifest.json`** chỉ lưu mtime theo đường dẫn tuyệt đối; nếu lệch project, xoá hoặc để `{}` rồi chạy lại công cụ sinh graph.
-- **API Nest** (`apps/api`) có `.graphify` riêng + `SUMMARY_FOR_AI.md` — không trộn với repo này.
+- [SUMMARY monorepo](../../../../.graphify/markdown/SUMMARY_FOR_AI.md)
+- [packages SUMMARY](../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [AGENTS.md](../../../../AGENTS.md)

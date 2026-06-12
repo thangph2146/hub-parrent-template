@@ -4,23 +4,25 @@
 
 ## Các file chính
 
-### Admin pages (apps/backend)
+### Admin pages (`apps/main/backend`)
 
 1. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` — pattern chuẩn cho mọi page admin (guard, header, layout, table actions, confirm dialog, upload)
 2. `docs/pages/README.md` — kiến trúc file chuẩn (`_component/`, `_hooks/`, `_query/`, ...) và import rule
-3. Graphify summaries + `FOLDER_TREE.md` của `apps/backend` — định vị file/module cụ thể
+3. Graphify summaries + `FOLDER_TREE.md` của `apps/main/backend` — định vị file/module cụ thể
+4. Check-in CRUD generate: `docs/admin-pattern/ADMIN_APP_PACKAGE.md` + `packages/admin-app`
 
-### API (apps/api)
+### API (`apps/main/api` + `packages/api-server`)
 
-4. `docs/api-pattern/README.md` — kiến trúc NestJS: controller, service, entity, common utilities
+5. `docs/api-pattern/README.md` — kiến trúc NestJS: controller, service, entity, common utilities
+6. `packages/api-server/README.md` — generate/scaffold line check-in (`pnpm api:generate:checkin`)
 
 ### API Client (packages/api-client)
 
-5. `docs/api-client-pattern/README.md` — pattern gọi API qua `@workspace/api-client`: `StoreSyncSdk`, `ApiClient`, resource classes
+7. `docs/api-client-pattern/README.md` — pattern gọi API qua `@workspace/api-client`: `StoreSyncSdk`, `ApiClient`, resource classes
 
 ### Workspace Packages
 
-6. `packages/` — bản đồ packages:
+8. `packages/` — bản đồ packages:
    - `@workspace/ui` → UI components (admin + site)
    - `@workspace/api-client` → API client SDK
    - `@thangph2146/lexical-editor` → Lexical editor (cần build trước)
@@ -37,7 +39,7 @@
   - **Editor**: `@thangph2146/lexical-editor` — không tự build editor UI
   - **Logger/Query**: `@workspace/logger`, `@workspace/query-client` — dùng khi cần
 - Async Admin components từ `@ui`, confirm dialog dùng `AdminCrudConfirmDialog`, upload dùng `uploadAdminImage`, action buttons dùng preset
-- API endpoint ở `apps/api` theo pattern controller → service → entity
+- API endpoint ở `apps/main/api` (dev) theo pattern controller → service → entity; logic share trong `packages/api-server` khi áp dụng generate
 - Gọi API từ app qua `@workspace/api-client` — không tự viết fetch
 
 ## Cách dùng

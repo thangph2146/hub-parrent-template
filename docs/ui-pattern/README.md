@@ -94,8 +94,8 @@ Khai báo trong `packages/ui/package.json` → `exports`.
 
 ## Quy tắc cho agent
 
-- **Admin components PHẢI từ `@ui/components/admin/...`** (hoặc subpath `dashboard` / `maps`) — không tạo local trong `apps/backend/src/components/` hay `apps/backend/src/app/**/_components/`
-- **Wiring app-specific** (vd. socket invalidate cache) giữ trong `apps/backend/src/providers/`, không đưa lên `@ui`
-- **Site components** cũng PHẢI từ `@ui` — không tạo local component UI trong `apps/frontend/src/components/`
+- **Admin components PHẢI từ `@ui/components/admin/...`** — không tạo local trong `apps/main/backend/src/components/` hay `apps/main/backend/src/app/**/_components/`
+- **Wiring app-specific** (vd. socket invalidate cache) giữ trong `apps/main/backend/src/providers/`, không đưa lên `@ui`
+- **Site components** cũng PHẢI từ `@ui` — không tạo local UI trong `apps/hub-parent/hub-parent-frontend/src/components/`
 - Nếu thiếu component, thêm vào `packages/ui/` (không tạo local)
 - Import alias: `@ui/...` (VD: `@ui/components/admin/AdminCrudConfirmDialog`)

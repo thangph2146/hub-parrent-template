@@ -1,6 +1,6 @@
-# Cây thư mục — api (Graphify)
+# Cây thư mục — apps/main/api (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.323Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-12T13:00:06.583Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -9,10 +9,12 @@ src/
 ├── admission-results/
 ├── auth/
 ├── cameras/
+├── carts/
 ├── categories/
 ├── comments/
 ├── common/
 ├── config/
+│   └── role-templates/
 ├── contact-requests/
 ├── courses/
 ├── dashboard/
@@ -55,6 +57,7 @@ src/
 ├── system/
 ├── tags/
 ├── templates/
+├── testing/
 ├── training-levels/
 ├── training-systems/
 ├── uploads/
@@ -63,4 +66,4 @@ src/
 
 ## Làm mới
 
-Chạy `node script-system/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/main/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

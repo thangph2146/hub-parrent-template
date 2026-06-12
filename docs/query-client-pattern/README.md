@@ -1,6 +1,6 @@
 # @workspace/query-client (packages/query-client)
 
-Cấu hình TanStack Query dùng chung cho `apps/frontend` và `apps/backend`.
+Cấu hình TanStack Query dùng chung cho app Next (storefront `@frontend`, admin `@backend`, check-in frontend, …).
 
 ## Vị trí
 

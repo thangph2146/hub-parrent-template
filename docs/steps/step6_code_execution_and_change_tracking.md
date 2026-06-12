@@ -1,63 +1,64 @@
 # Step 6: Code Execution and Change Tracking
 
-��y l� bu?c th?c thi thay d?i code v� ghi nh? c�c thay d?i c?a h? th?ng hi?n t?i.
+Đây là bước thực thi thay đổi code và ghi nhớ các thay đổi của hệ thống hiện tại.
 
-## M?c ti�u
+## Mục tiêu
 
-- Ki?m tra thay d?i code b?ng c�c c�ng c? chu?n.
-- Ghi l?i c�c file d� thay d?i v� scope ?nh hu?ng.
-- C?p nh?t Graphify n?u c?n.
+- Kiểm tra thay đổi code bằng các công cụ chuẩn.
+- Ghi lại các file đã thay đổi và scope ảnh hưởng.
+- Cập nhật Graphify nếu cần.
 
-## Tru?c khi th?c thi
+## Trước khi thực thi
 
-1. X�c nh?n scope thay d?i: `apps/frontend`, `apps/backend`, `apps/api`, ho?c `packages/*`.
-2. Th?ng k� file thay d?i ch�nh b?ng `git status --short`.
-3. Ghi l?i c�c di?m thay d?i quan tr?ng:
-   - module m?i / route m?i
-   - import m?i gi?a service
-   - package workspace m?i
+1. Xác nhận scope thay đổi: app trong `apps/*` (dev: `apps/main/*`) hoặc `packages/*`.
+2. Thống kê file thay đổi chính bằng `git status --short`.
+3. Ghi lại các điểm thay đổi quan trọng:
+   - module mới / route mới
+   - import mới giữa service
+   - package workspace mới
 
-## C�c l?nh ki?m tra
+## Các lệnh kiểm tra
 
-1. Ch?y t? root repo:
+1. Chạy từ root repo:
 
 ```bash
 pnpm check
 ```
 
-2. N?u thay d?i c?u tr�c module/route d�ng k?, ch?y:
+2. Nếu thay đổi cấu trúc module/route đáng kể, chạy:
 
 ```bash
-node script-system/graphify-update.cjs apps/<app>
+node script-system/graphify/graphify-update.cjs apps/<duong-dan-app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
 
-3. N?u ch? thay d?i package workspace ho?c docs, `pnpm check` v?n l� t?i thi?u.
+3. Nếu chỉ thay đổi package workspace hoặc docs, `pnpm check` vẫn là tối thiểu.
 
-## Ghi nh? thay d?i
+## Ghi nhớ thay đổi
 
-- N?u thay d?i li�n quan `apps/api`, ki?m tra import m?i c� vi ph?m boundary kh�ng.
-- N?u thay d?i li�n quan `apps/frontend` ho?c `apps/backend`, x�c nh?n r?ng API v?n g?i qua HTTP / `@workspace/api-client`.
-- N?u th�m package ho?c share logic, ghi ch� `packages/*` v� ch?y `pnpm graphify:ai-summary` n?u c?n.
+- Nếu thay đổi liên quan API Nest (`apps/main/api` hoặc `packages/api-server`), kiểm tra import mới có vi phạm boundary không.
+- Nếu thay đổi Next app (admin/storefront), xác nhận API vẫn gọi qua `@workspace/api-client`.
+- Nếu thêm package hoặc share logic, ghi chú `packages/*` và chạy `pnpm graphify:ai-summary` nếu cần.
 
-## N?u ki?m tra kh�ng pass
+## Nếu kiểm tra không pass
 
-1. �?c l?i `pnpm check` tr? v?.
-2. Chia l?i theo nh�m:
-   - `verify:bounds` ? boundary/import sai (`package.json` workspace)
-   - `verify:sdk-http` ? app Next g?i `api.http` thay v� resource SDK
-   - `lint` ? style/import/c?u tr�c
-   - `typecheck` ? ki?u d? li?u
-3. S?a theo nh�m l?i, r?i ch?y l?i `pnpm check`.
+1. Đọc lại output `pnpm check`.
+2. Chia lỗi theo nhóm:
+   - `verify:bounds` → boundary/import sai (`package.json` workspace)
+   - `verify:sdk-http` → app Next gọi `api.http` thay vì resource SDK
+   - `lint` → style/import/cấu trúc
+   - `typecheck` → kiểu dữ liệu
+3. Sửa theo nhóm lỗi, rồi chạy lại `pnpm check`.
 
-## N?u c?n c?p nh?t docs
+## Nếu cần cập nhật docs
 
-- N?u thay d?i c?u tr�c ho?c feature m?i: c?p nh?t `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (pattern chu?n) ho?c `docs/pages/README.md` (ki?n tr�c file) ho?c `docs/steps/*.md` tuong ?ng.
-- N?u thay d?i ranh gi?i service: c?p nh?t `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` ho?c `packages/eslint-config/service-boundaries.js` n?u c�.
+- Nếu thay đổi cấu trúc hoặc feature mới: cập nhật `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` hoặc `docs/pages/README.md` hoặc `docs/steps/*.md` tương ứng.
+- Nếu thay đổi ranh giới service: cập nhật `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` hoặc `packages/eslint-config/service-boundaries.js`.
+- Giữ tiếng Việt UTF-8; không tạo file markdown rời ngoài `docs/` trừ khi có lý do trong `AGENTS.md` mục 4.
 
-## K?t lu?n bu?c n�y
+## Kết luận bước này
 
 - `pnpm check` pass.
-- N?u c?n, `pnpm check:full` pass.
-- Gi? note thay d?i r� r�ng v� theo scope.
+- Nếu cần, `pnpm check:full` pass.
+- Giữ note thay đổi rõ ràng và theo scope.

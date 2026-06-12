@@ -25,7 +25,7 @@
 - Mô tả rõ:
   - thay đổi gây ra issue
   - nguyên nhân và phạm vi
-  - tác động đến `apps/frontend`, `apps/backend`, `apps/api`, hoặc `packages/*`
+  - tác động đến app trong `apps/*` (dev: `apps/main/*`; deploy: hub-parent, hub-event, store-sync) hoặc `packages/*`
 - Đính kèm file logs / output `pnpm check` nếu liên quan.
 - Đề xuất bước sửa tiếp theo.
 

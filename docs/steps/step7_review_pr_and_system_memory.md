@@ -1,49 +1,49 @@
 # Step 7: Review, PR, and System Memory
 
-��y l� bu?c cu?i c�ng: review thay d?i, chu?n b? PR, v� ghi nh? tr?ng th�i h? th?ng.
+Đây là bước cuối: review thay đổi, chuẩn bị PR, và ghi nhớ trạng thái hệ thống.
 
-## M?c ti�u
+## Mục tiêu
 
-- �?m b?o code m?i tu�n th? quy tr�nh t? step 1�6.
-- Vi?t PR r� r�ng v� ghi nh? c�c thay d?i h? th?ng.
-- �?m b?o reviewer c� d? context d? d�nh gi�.
+- Đảm bảo code mới tuân thủ quy trình từ step 1–6.
+- Viết PR rõ ràng và ghi nhớ các thay đổi hệ thống.
+- Đảm bảo reviewer có đủ context để đánh giá.
 
 ## Checklist review
 
-1. �?c l?i c�c bu?c d� th?c hi?n ? `docs/steps/step1...step6`.
-2. X�c nh?n c�c file thay d?i ph� h?p scope.
-3. Ki?m tra:
-   - kh�ng import ch�o gi?a `apps/*`
-   - API g?i qua HTTP / `@workspace/api-client`
-   - shared logic n?m trong `packages/*` n?u c?n
-4. Ch?y l?i `pnpm check`.
-5. N?u c� thay d?i c?u tr�c l?n, x�c nh?n `pnpm check:full` pass.
+1. Đọc lại các bước đã thực hiện ở `docs/steps/step1`…`step6`.
+2. Xác nhận các file thay đổi phù hợp scope.
+3. Kiểm tra:
+   - không import chéo giữa `apps/*`
+   - API gọi qua `@workspace/api-client`
+   - shared logic nằm trong `packages/*` nếu cần
+4. Chạy lại `pnpm check`.
+5. Nếu có thay đổi cấu trúc lớn, xác nhận `pnpm check:full` pass.
 
-## Ghi nh? h? th?ng hi?n t?i
+## Ghi nhớ hệ thống hiện tại
 
-- Ghi note c�c module m?i, route m?i, ho?c API m?i.
-- Ghi note n?u thay d?i d� ?nh hu?ng d?n `apps/frontend`, `apps/backend`, `apps/api`, ho?c `packages/*`.
-- Ghi note n?u c?n c?p nh?t docs feature trong `docs/pages/`.
+- Ghi note các module mới, route mới, hoặc API mới.
+- Ghi note nếu thay đổi đã ảnh hưởng đến app trong `apps/*` hoặc `packages/*` (nêu rõ đường dẫn thật, ví dụ `apps/main/backend`).
+- Ghi note nếu cần cập nhật docs feature trong `docs/pages/`.
 
-## Vi?t PR
+## Viết PR
 
-1. Ti�u d? ng?n g?n v� r� r�ng.
-2. M� t?:
-   - M?c ti�u c?a thay d?i.
-   - Scope: app/package/module ?nh hu?ng.
-   - C�c bu?c test d� ch?y.
-3. Danh s�ch file ch�nh d� thay d?i.
-4. N?u c?n, d? xu?t reviewer chuy�n m�n cho `apps/api`, `apps/backend`, `apps/frontend`, ho?c `packages/*`.
+1. Tiêu đề ngắn gọn và rõ ràng.
+2. Mô tả:
+   - Mục tiêu của thay đổi.
+   - Scope: app/package/module ảnh hưởng.
+   - Các bước test đã chạy.
+3. Danh sách file chính đã thay đổi.
+4. Nếu cần, đề xuất reviewer chuyên môn theo layer: API, admin, storefront, hoặc `packages/*`.
 
-## Ghi nh? h? th?ng cho reviewer
+## Ghi nhớ hệ thống cho reviewer
 
-- N?u task l� feature m?i: tr? t?i `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` v� `docs/pages/README.md`.
-- N?u task l� thay d?i ki?n tr�c: tr? t?i `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`.
-- N?u task l� thay d?i boundary: tr? t?i `packages/eslint-config/service-boundaries.js` v� `script-system/verify-service-boundaries.mjs`.
+- Feature mới: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md`.
+- Thay đổi kiến trúc: `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`.
+- Thay đổi boundary: `packages/eslint-config/service-boundaries.js` + `script-system/verify/verify-service-boundaries.mjs`.
 
-## Ho�n th�nh bu?c n�y
+## Hoàn thành bước này
 
-- PR d� s?n s�ng v?i context r� r�ng.
-- Kh�ng c�n l?i `pnpm check`.
-- N?u c?n, d� ch?y `pnpm check:full`.
-- T�i li?u n?i b?/guide du?c c?p nh?t n?u thay d?i h? th?ng c� t�nh ch?t t�i s? d?ng.
+- PR sẵn sàng với context rõ ràng.
+- Không còn lỗi `pnpm check`.
+- Nếu cần, đã chạy `pnpm check:full`.
+- Tài liệu nội bộ được cập nhật nếu thay đổi có tính tái sử dụng.

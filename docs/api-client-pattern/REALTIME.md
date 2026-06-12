@@ -1,18 +1,18 @@
 # Realtime Admin (Socket.IO) — chuẩn microservice
 
-Tài liệu mô tả đồng bộ realtime giữa `apps/api` (server) và `apps/backend` (admin client) qua hợp đồng `@workspace/api-client/realtime`.
+Tài liệu mô tả đồng bộ realtime giữa API Nest (server) và admin Next (client) qua hợp đồng `@workspace/api-client/realtime`.
 
 ## Ranh giới service
 
 ```
-apps/api          — Socket.IO server, emit event, lưu notification DB
-packages/api-client/realtime — Hợp đồng event + type + query-key map (client)
-apps/backend      — Một socket admin, invalidate React Query + toast
+apps/main/api (dev) / app API deploy  — Socket.IO server, emit event, lưu notification DB
+packages/api-client/realtime        — Hợp đồng event + type + query-key map (client)
+apps/main/backend (admin)           — Một socket admin, invalidate React Query + toast
 ```
 
-- **Không** import `apps/api` từ backend/frontend.
-- **Không** import `@workspace/api-client` từ `apps/api` (ESLint boundary).
-- Types server (`apps/api/src/socket/socket.types.ts`) và client (`packages/api-client/src/realtime/types.ts`) phải **khớp tên event + shape payload** khi thêm event mới.
+- **Không** import chéo source giữa `apps/*`.
+- **Không** import `@workspace/api-client` từ app API Nest (ESLint boundary).
+- Types server (vd. `apps/main/api/src/socket/socket.types.ts`) và client (`packages/api-client/src/realtime/types.ts`) phải **khớp tên event + shape payload** khi thêm event mới.
 
 ## Import chuẩn (backend / frontend)
 
@@ -134,7 +134,7 @@ const bulkMutation = useAdminMutation({
 
 ### Realtime hook (admin app)
 
-Backend mount `AdminRealtimeSync` → `useAdminRealtimeSync` trong layout. App admin mới copy pattern từ `apps/backend/src/hooks/use-admin-realtime-sync.ts` (socket + `shouldShowRealtimeSyncToast`).
+Backend mount `AdminRealtimeSync` → `useAdminRealtimeSync` trong layout. App admin mới copy pattern từ `apps/main/backend/src/hooks/use-admin-realtime-sync.ts` (socket + `shouldShowRealtimeSyncToast`).
 
 ## Kiểm tra thủ công
 

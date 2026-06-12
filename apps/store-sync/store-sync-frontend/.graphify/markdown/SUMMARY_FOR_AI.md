@@ -1,9 +1,9 @@
-# Store Sync storefront — @store-sync-frontend — tóm tắt cho AI (Graphify)
+# Next frontend (store-sync) — @store-sync-frontend — tóm tắt cho AI (Graphify)
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/store-sync-frontend`
-- **context.generatedAt:** 2026-06-09T08:29:01.609Z
+- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/store-sync/store-sync-frontend`
+- **context.generatedAt:** 2026-06-12T12:59:24.736Z
 
 ## Mục lục artefact Graphify
 
@@ -17,18 +17,22 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 
 ### Graphify — markdown các phần còn lại của monorepo
 
-- **@frontend:** [SUMMARY](../../../../apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/frontend/.graphify/markdown/GRAPH_STATS.md)
-- **@backend:** [SUMMARY](../../../../apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/backend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/backend/.graphify/markdown/GRAPH_STATS.md)
-- **@api:** [SUMMARY](../../../../apps/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../apps/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../apps/api/.graphify/markdown/GRAPH_STATS.md)
-- **packages:** [SUMMARY](../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md) · [WORKSPACE_DEPS](../../../../packages/.graphify/markdown/WORKSPACE_DEPS.md)
-- **monorepo (chỉ mục + chủ đề):** [SUMMARY gốc](../../../../.graphify/markdown/SUMMARY_FOR_AI.md)
+- **@api:** [SUMMARY](../../../../../apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/main/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/main/api/.graphify/markdown/GRAPH_STATS.md)
+- **@backend:** [SUMMARY](../../../../../apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/main/backend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/main/backend/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-parent/api:** [SUMMARY](../../../../../apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-parent/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-parent/api/.graphify/markdown/GRAPH_STATS.md)
+- **@frontend:** [SUMMARY](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-event/api:** [SUMMARY](../../../../../apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/api/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-event-checkin-frontend:** [SUMMARY](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/GRAPH_STATS.md)
+- **@store-sync/api:** [SUMMARY](../../../../../apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/store-sync/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/store-sync/api/.graphify/markdown/GRAPH_STATS.md)
+- **packages:** [SUMMARY](../../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md) · [WORKSPACE_DEPS](../../../../../packages/.graphify/markdown/WORKSPACE_DEPS.md)
+- **monorepo (chỉ mục + chủ đề):** [SUMMARY gốc](../../../../../.graphify/markdown/SUMMARY_FOR_AI.md)
 
 ### Tài liệu hub (không sinh bởi Graphify)
 
-- [MICROSERVICE_SYSTEM_MAP](../../../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) — boundaries, ORM, checklist.
-- [AGENTS_GUIDE](../../../../docs/admin-pattern/AGENTS_GUIDE.md) — thứ tự đọc cho agent.
-- [AGENTS.md](../../../../AGENTS.md) — `pnpm check`, `check:full`.
-- [FRONTEND_UX](../../../../docs/admin-pattern/FRONTEND_UX.md) — UX / token / a11y storefront.
+- [MICROSERVICE_SYSTEM_MAP](../../../../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) — boundaries, ORM, checklist.
+- [AGENTS_GUIDE](../../../../../docs/admin-pattern/AGENTS_GUIDE.md) — thứ tự đọc cho agent.
+- [AGENTS.md](../../../../../AGENTS.md) — `pnpm check`, `check:full`.
+- [FRONTEND_UX](../../../../../docs/admin-pattern/FRONTEND_UX.md) — UX / token / a11y storefront.
 
 ## Bản đồ từ snapshot/graph.json
 
@@ -36,8 +40,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Thống kê graph:** [`GRAPH_STATS.md`](GRAPH_STATS.md) — quy mô node/link, top file in/out-degree (điểm nóng import).
 
 ## Thống kê
-- **totalFiles:** 105
-- **clientComponents:** 41
+- **totalFiles:** 110
+- **clientComponents:** 45
 
 ## Trang (pages) (20)
 - `src/app/(store-sync)/cart/page.tsx`
@@ -141,16 +145,21 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/store/layout.tsx` | layout | no | metadata, StorePortalLayout | src/app/store/page.tsx, src/providers/store-portal-layout.tsx |
 | `src/app/store/orders/[orderId]/page.tsx` | page | yes | StoreOrderDetailPage | src/components/shared/cart-drawer.tsx, src/hooks/queries.ts, src/hooks/use-session.ts, src/app/store/orders/_component |
 | `src/app/store/orders/_component/columns.tsx` | tsx | yes | getStoreOrderGlobalFilterText, getStoreOrderColumns | src/lib/api.ts, src/lib/format.ts, src/app/store/orders/_component/store-order-progress-cell.tsx, src/app/store/orders/_component/store-order-row-actions.tsx, src/app/store/orders/_component/types.ts |
-| `src/app/store/orders/_component/index.ts` | ts | no |  | src/app/store/orders/_component/types.ts, src/app/store/orders/_component/columns.tsx, src/app/store/orders/_component/store-order-actions.ts, src/app/store/orders/_component/store-order-row-actions.t |
-| `src/app/store/orders/_component/store-order-actions.ts` | ts | no | ReorderToCartResult, buildOrderSummaryText, buildOrdersSupportMessage, buildSupportPageHref, reorderOrdersToCart | src/lib/catalog-filters.ts, src/hooks/use-cart.ts, src/lib/api.ts, src/lib/format.ts, src/app/store/orders/_component/types.ts |
+| `src/app/store/orders/_component/index.ts` | ts | no | mapStoreOrderItemRows, mapStoreOrderRow, STORE_ORDER_STATUSES | src/app/store/orders/_component/types.ts, src/app/store/orders/_component/columns.tsx, src/app/store/orders/_component/store-order-actions.ts, src/app/store/orders/_component/store-order-row-actions.t |
+| `src/app/store/orders/_component/store-order-actions.ts` | ts | no | ReorderToCartResult, buildOrderSummaryText, buildOrdersSupportMessage, buildSupportPageHref, ReorderLineToCartResult, reorderOrderLineToCart, reorderOrdersToCart | src/lib/catalog-filters.ts, src/hooks/use-cart.ts, src/lib/api.ts, src/lib/format.ts, src/app/store/orders/_component/types.ts |
+| `src/app/store/orders/_component/store-order-item-row-actions.tsx` | tsx | yes | StoreOrderItemRowActionHandlers, StoreOrderItemRowActions, storeOrderItemActionsColumnMeta | src/app/store/orders/_component/types.ts |
+| `src/app/store/orders/_component/store-order-items-columns.tsx` | tsx | yes | getStoreOrderItemColumns | src/lib/format.ts, src/app/store/orders/_component/store-order-item-row-actions.tsx, src/app/store/orders/_component/types.ts |
+| `src/app/store/orders/_component/store-order-items-table.tsx` | tsx | yes | StoreOrderItemsTable | src/lib/api.ts, src/app/store/orders/_component/store-order-items-columns.tsx, src/app/store/orders/_component/store-order-item-row-actions.tsx, src/app/store/orders/_component/types.ts |
 | `src/app/store/orders/_component/store-order-progress-cell.tsx` | tsx | yes | StoreOrderProgressCell | src/lib/api.ts |
 | `src/app/store/orders/_component/store-order-row-actions.tsx` | tsx | yes | StoreOrderRowActionHandlers, StoreOrderRowActions, storeOrderActionsColumnMeta | src/app/store/orders/_component/types.ts |
 | `src/app/store/orders/_component/store-order-status-groups.ts` | ts | no | StoreOrderStatusGroup, StoreOrderStatusGroupOption, STORE_ORDER_STATUS_GROUPS, toStoreOrderStatusGroup, matchesStoreOrderStatusGroup | src/lib/api.ts |
 | `src/app/store/orders/_component/store-orders-stat-cards.tsx` | tsx | yes | StoreOrdersStatCards, countOrdersByStatus | src/lib/api.ts, src/app/store/orders/_component/store-order-status-groups.ts, src/app/store/orders/_component/types.ts |
-| `src/app/store/orders/_component/types.ts` | ts | no | StoreOrderRow, mapStoreOrderRow, STORE_ORDER_STATUSES | src/lib/api.ts |
+| `src/app/store/orders/_component/types.ts` | ts | no | StoreOrderItemRow, StoreOrderRow, mapStoreOrderItemRows, mapStoreOrderRow, STORE_ORDER_STATUSES | src/lib/api.ts |
 | `src/app/store/orders/page.tsx` | page | yes | StoreOrdersPage | src/components/shared/cart-drawer.tsx, src/hooks/queries.ts, src/hooks/use-session.ts, src/app/store/orders/_component, src/app/store/orders/_component/store-orders-stat-cards.tsx |
 | `src/app/store/page.tsx` | page | no | StorePortalIndexPage | src/config/store-portal-layout-static.ts |
-| `src/app/store/profile/page.tsx` | page | yes | StoreProfilePage | src/hooks/use-session.ts |
+| `src/app/store/profile/_component/profile-utils.ts` | ts | no | formatProfileDateTime, profileInitials, PROFILE_FIELD_CLASS, PROFILE_TEXTAREA_CLASS, PROFILE_ACTION_BAR_CLASS |  |
+| `src/app/store/profile/_component/store-profile-sidebar.tsx` | tsx | yes | StoreProfileSidebar | src/app/store/profile/_component/profile-utils.ts |
+| `src/app/store/profile/page.tsx` | page | yes | StoreProfilePage | src/hooks/queries.ts, src/hooks/use-session.ts, src/lib/store-auth.ts, src/app/store/profile/_component/store-profile-sidebar.tsx, src/app/store/profile/_component/profile-utils.ts |
 | `src/components/graphify/force-graph-3d.tsx` | tsx | yes | GraphifyForceGraph3D | src/lib/graphify-context.ts |
 | `src/components/shared/cart-drawer.tsx` | tsx | yes | useOpenCartDrawer, CartDrawerHost | src/hooks/use-cart.ts, src/hooks/queries.ts, src/lib/format.ts, src/lib/cart-gift-rules.ts, src/hooks/use-gift-product-catalog.ts, src/components/shared/cart-gift-rule-text.tsx |
 | `src/components/shared/cart-gift-rule-text.tsx` | tsx | yes | CartGiftRuleText | src/lib/cart-gift-rules.ts |
@@ -172,7 +181,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/storefront-chrome.tsx` | tsx | yes | StorefrontChrome | src/components/shared/header.tsx, src/components/shared/footer.tsx |
 | `src/config/store-portal-layout-static.ts` | ts | no | STORE_PORTAL_HOME, canAccessStorePortal, clearStorePortalSession, STORE_PORTAL_LAYOUT_STATIC | src/lib/auth-routes.ts, src/lib/store-auth.ts, src/config/store-portal-menu-tree.tsx |
 | `src/config/store-portal-menu-tree.tsx` | tsx | no | STORE_PORTAL_MENU_TREE |  |
-| `src/hooks/queries.ts` | ts | yes | queryKeys, useProducts, useCatalogProducts, useCategoryUsage, useProduct, useCartStockProducts, useProductBySku, useSuggestedProducts, useCategories, useOrders, useOrder, useCreateOrder | src/lib/api.ts |
+| `src/hooks/queries.ts` | ts | yes | queryKeys, useProducts, useCatalogProducts, useCategoryUsage, useProduct, useCartStockProducts, useProductBySku, useSuggestedProducts, useCategories, useOrders, useOrder, useStoreAccountProfile, useUp | src/lib/api.ts |
 | `src/hooks/use-cart.ts` | ts | yes | CartLine, cartLineKey, cartLineQuantity, mergeLinesForCreateOrder, CartAddResult, cartStore, cartNeedsStockSync, CartSummary, useCart, useCartStockSync | src/lib/promo-rules-registry.ts, src/lib/api.ts |
 | `src/hooks/use-checkout-draft.ts` | ts | yes | CheckoutDraftFields, useCheckoutDraft |  |
 | `src/hooks/use-client-ready.ts` | ts | yes | useClientReady |  |
@@ -192,7 +201,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/mock-session-to-admin-user.ts` | ts | no | mockSessionToAdminUser | src/hooks/use-session.ts |
 | `src/lib/promo-rules-registry.ts` | ts | no | setStorefrontPromoRulesFromApi, getMergedPromoRules |  |
 | `src/lib/storage.ts` | ts | no | StorageLib |  |
-| `src/lib/store-auth.ts` | ts | no | STORE_SESSION_STORAGE_KEY, STORE_SESSION_EVENT, toStoreSession, writeStoreSession | src/hooks/use-session.ts, src/lib/api.ts |
+| `src/lib/store-auth.ts` | ts | no | STORE_SESSION_STORAGE_KEY, STORE_SESSION_EVENT, toStoreSession, writeStoreSession, patchStoreSession | src/hooks/use-session.ts, src/lib/api.ts |
 | `src/lib/store-ui.ts` | ts | no | STORE_AUTH_FORM_CARD_CLASS |  |
 | `src/lib/utils.ts` | ts | no | cn |  |
 | `src/middleware.ts` | middleware | no | middleware, config |  |
@@ -201,11 +210,11 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `tsconfig.json` | config | — | — | — |
 ## File Markdown trong scope app
 
-Toàn bộ `.md` sinh tự động nằm trong **`apps/store-sync-frontend/.graphify/markdown/`**; JSON trong **`../snapshot/`** — xem mục **Mục lục artefact Graphify** ở đầu file.
+Toàn bộ `.md` sinh tự động nằm trong **`apps/store-sync/store-sync-frontend/.graphify/markdown/`**; JSON trong **`../snapshot/`** — xem mục **Mục lục artefact Graphify** ở đầu file.
 
-- **Chỉ mục monorepo + chủ đề:** [`../../../../.graphify/markdown/SUMMARY_FOR_AI.md`](../../../../.graphify/markdown/SUMMARY_FOR_AI.md).
+- **Chỉ mục monorepo + chủ đề:** [`../../../../../.graphify/markdown/SUMMARY_FOR_AI.md`](../../../../../.graphify/markdown/SUMMARY_FOR_AI.md).
 
 ## Làm mới
 
-- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node script-system/graphify-update.cjs apps/store-sync-frontend`.
+- Cập nhật `snapshot/context.json` **và** `snapshot/graph.json`: `node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend`.
 - Sau đó chạy: `pnpm graphify:ai-summary` (sinh thêm `FOLDER_TREE.md`, `GRAPH_STATS.md` khi có graph).

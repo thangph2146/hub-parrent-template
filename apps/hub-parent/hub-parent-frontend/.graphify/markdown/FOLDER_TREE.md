@@ -1,23 +1,35 @@
-# Cây thư mục — frontend (Graphify)
+# Cây thư mục — apps/hub-parent/hub-parent-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.284Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-12T13:00:06.619Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
 ├── app/
 │   ├── (public)/
+│   │   ├── (store-sync)/
+│   │   │   ├── cart/
+│   │   │   ├── catalog/
+│   │   │   │   └── [productId]/
+│   │   │   ├── checkout/
+│   │   │   ├── dashboard/
+│   │   │   ├── help/
+│   │   │   ├── login/
+│   │   │   ├── orders/
+│   │   │   │   └── [orderId]/
+│   │   │   ├── privacy/
+│   │   │   ├── profile/
+│   │   │   ├── register/
+│   │   │   ├── support/
+│   │   │   └── terms/
 │   │   ├── bai-viet/
 │   │   │   └── [slug]/
 │   │   ├── huong-dan-su-dung/
 │   │   ├── lien-he/
-│   │   ├── login/
-│   │   ├── register/
 │   │   └── ve-chung-toi/
 │   ├── api/
 │   │   └── graphify/
 │   └── graph/
 ├── components/
-│   ├── graphify/
 │   ├── icons/
 │   └── shared/
 ├── features/
@@ -35,4 +47,4 @@ src/
 
 ## Làm mới
 
-Chạy `node script-system/graphify-update.cjs apps/frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

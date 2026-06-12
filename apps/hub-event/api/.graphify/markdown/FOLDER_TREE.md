@@ -1,22 +1,18 @@
-# Cây thư mục — api (Graphify)
+# Cây thư mục — apps/hub-event/api (Graphify)
 
-> **Sinh tự động:** `2026-06-09T08:29:02.323Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-12T13:00:06.626Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
-├── academic-years/
 ├── accounts/
-├── admission-results/
 ├── auth/
 ├── cameras/
 ├── categories/
 ├── comments/
 ├── common/
 ├── config/
-├── contact-requests/
-├── courses/
+│   └── role-templates/
 ├── dashboard/
-├── departments/
 ├── entities/
 ├── event-checkins/
 ├── event-checkouts/
@@ -24,21 +20,13 @@ src/
 ├── event-speakers/
 ├── events/
 ├── face-data/
-├── groups/
 ├── hanet/
-├── imported-users/
 ├── locations/
-├── majors/
-├── messages/
 ├── migrations/
 ├── mikro-orm/
 ├── notifications/
-├── orders/
 ├── page-contents/
-├── parent-students/
 ├── posts/
-├── products/
-├── promo-codes/
 ├── proxy-image/
 ├── public/
 ├── roles/
@@ -51,16 +39,13 @@ src/
 ├── settings/
 ├── socket/
 ├── speakers/
-├── students/
 ├── system/
 ├── tags/
 ├── templates/
-├── training-levels/
-├── training-systems/
 ├── uploads/
 └── users/
 ```
 
 ## Làm mới
 
-Chạy `node script-system/graphify-update.cjs apps/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/hub-event/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

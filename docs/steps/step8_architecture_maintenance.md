@@ -1,50 +1,37 @@
 # Step 8: Architecture Maintenance and System Updates
 
-��y l� bu?c d�nh cho b?o tr� ki?n tr�c, c?p nh?t docs, v� gi? h? th?ng s?ch l�u d�i.
+Đây là bước dành cho bảo trì kiến trúc, cập nhật docs, và giữ hệ thống sạch lâu dài.
 
-## M?c ti�u
+## Mục tiêu
 
-- Duy tr� ki?n tr�c h? th?ng sau khi ho�n th�nh task.
-- C?p nh?t t�i li?u n?i b? khi h? th?ng thay d?i.
-- Ki?m tra v� gi? clean c�c ranh gi?i service.
+- Duy trì kiến trúc hệ thống sau khi hoàn thành task.
+- Cập nhật tài liệu nội bộ khi hệ thống thay đổi.
+- Kiểm tra và giữ clean các ranh giới service.
 
-## Nh?ng vi?c c?n l�m
+## Những việc cần làm
 
-1. Ki?m tra l?i c�c thay d?i ki?n tr�c sau khi merge:
-   - route m?i
-   - module m?i
-   - package workspace m?i
-   - thay d?i import boundaries
-2. C?p nh?t `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` ho?c `docs/pages/README.md` n?u feature m?i c?n hu?ng d?n implementation th�m.
-3. C?p nh?t `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md` n?u ki?n tr�c service d� thay d?i.
-4. C?p nh?t `packages/eslint-config/service-boundaries.js` khi boundary rules c?n m? r?ng ho?c si?t ch?t.
-5. N?u c� thay d?i dependency workspace, ch?y `pnpm graphify:ai-summary`.
+1. Kiểm tra lại các thay đổi kiến trúc sau khi merge: route/module/package/boundary mới.
+2. Cập nhật `ADMIN_PAGE_PATTERN.md` hoặc `docs/pages/README.md` nếu feature mới cần hướng dẫn.
+3. Cập nhật `MICROSERVICE_SYSTEM_MAP.md` nếu kiến trúc service đã thay đổi.
+4. Cập nhật `service-boundaries.js` khi boundary rules cần mở rộng hoặc siết chặt.
+5. Nếu có thay đổi dependency workspace, chạy `pnpm graphify:ai-summary`.
+6. Docs agent: giữ **tiếng Việt UTF-8**; cập nhật `AGENTS.md` / `docs/README.md` khi thêm product line hoặc lệnh mới.
 
-## Khi c?n b?o tr� Graphify
-
-- Sau khi th�m ho?c di chuy?n module/route: ch?y
+## Khi cần bảo trì Graphify
 
 ```bash
-node script-system/graphify-update.cjs apps/<app>
+node script-system/graphify/graphify-update.cjs apps/<duong-dan-app>
 pnpm graphify:ai-summary
 ```
 
-- N?u th�m package workspace: ch?y l?i `pnpm graphify:ai-summary`.
-- N?u ch? s?a code n?i b? nh? kh�ng thay d?i module/route: `pnpm check` v?n d?.
+Nếu chỉ sửa code nội bộ nhỏ: `pnpm check` vẫn đủ.
 
-## Ghi nh? thay d?i h? th?ng
+## Ghi nhớ thay đổi hệ thống
 
-- Ghi l?i trong PR ho?c commit message n?u:
-  - d?i ranh gi?i `apps/*`
-  - th�m package workspace m?i
-  - thay d?i API contract
-  - th�m route/public page m?i
-- Khi task xong, c?p nh?t checklist h? th?ng nhu sau:
-  - `pnpm check` pass
-  - `pnpm check:full` pass n?u d� ch?y Graphify
-  - docs li�n quan d� du?c c?p nh?t
-  - reviewer d� x�c nh?n kh�ng sai boundary
+Ghi trong PR/commit nếu đổi ranh giới `apps/*`, thêm package, đổi API contract, hoặc route public mới.
 
-## K?t lu?n
+Checklist hoàn thành: `pnpm check` pass; `pnpm check:full` nếu đã chạy Graphify; docs liên quan đã cập nhật.
 
-Step 8 l� bu?c d�nh cho vi?c gi? nh?p h? th?ng sau khi thay d?i d� du?c th?c hi?n, d? duy tr� t�nh s?ch, nh?t qu�n v� d? d?c cho agent AI.
+## Kết luận
+
+Step 8 giúp giữ hệ thống nhất quán sau thay đổi, dễ đọc cho agent và dev tiếp theo.

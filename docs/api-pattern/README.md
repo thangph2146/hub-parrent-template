@@ -1,6 +1,10 @@
-﻿# API Pattern (apps/api)
+﻿# API Pattern (NestJS)
 
-Tài liệu này mô tả kiến trúc và pattern chuẩn cho `apps/api` — NestJS backend sử dụng MikroORM.
+Tài liệu này mô tả kiến trúc và pattern chuẩn cho API Nest — MikroORM.
+
+**Đường dẫn thực tế:** dev tại `apps/main/api` (`@api`); deploy line `apps/hub-parent/api`, `apps/hub-event/api`, `apps/store-sync/api`. Logic dùng chung + generate check-in: [`packages/api-server/README.md`](../../packages/api-server/README.md). Bản đồ: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md).
+
+Các ví dụ dưới đây dùng cấu trúc `apps/main/api/src/` (tương đương `src/` trong từng app API).
 
 ## Kiến trúc tổng quan
 

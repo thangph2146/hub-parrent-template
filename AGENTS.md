@@ -1,330 +1,239 @@
-﻿# AGENTS Quick Guide (hub-parent-template)
+﻿# AGENTS — Entry point (hub-parent-template)
 
-Tài liệu này là **entry point ngắn gọn** cho agent. Chi tiết đầy đủ nằm trong `docs/admin-pattern/` và các step docs ở root.
+Tài liệu này là **chỉ mục điều hướng** cho agent: hiểu hệ thống → chọn đúng folder → mở đúng doc → làm việc.  
+**Không** nhân bản chi tiết dài ở đây; mỗi chủ đề có file riêng trong `docs/` hoặc `packages/*/README.md`.
 
-## Quy trình bắt buộc trước khi code
+**Ngôn ngữ & encoding:** tài liệu agent dùng **tiếng Việt**, file Markdown lưu **UTF-8** (không mojibake kiểu `M?c tiêu`, `Ðây`). Khi sửa doc, giữ UTF-8; không tạo file `.md` mới ngoài cây `docs/` / README package trừ khi có chủ đề lặp lại (mục 4).
 
-Trước khi sửa bất kỳ file code nào, agent phải đọc và làm theo:
+---
 
-1. `docs/admin-pattern/PRE_CODE_PROTOCOL.md`
-2. Các tài liệu liên quan được liệt kê trong protocol đó
+## 1. Bản đồ monorepo (đường dẫn thật)
 
-Nếu task liên quan admin page trong `apps/main/backend`, phải đọc `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md` trước khi sửa source.
+```
+apps/
+├── main/                          # Source of truth — dev hàng ngày
+│   ├── api/          @api
+│   └── backend/      @backend
+├── hub-parent/                    # Deploy site chính
+│   ├── api/          @hub-parent/api
+│   └── hub-parent-frontend/       @frontend
+├── hub-event/                     # Deploy check-in
+│   ├── api/          @hub-event/api
+│   └── hub-event-checkin-frontend/ @hub-event-checkin-frontend
+└── store-sync/
+    ├── api/          @store-sync/api
+    └── store-sync-frontend/       @store-sync-frontend
 
-Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md` · quy tắc `apps/`: `apps/README.md` (chỉ sửa `apps/main/` khi dev; line deploy qua sync) · env: `docs/env/README.md` (`pnpm env:init`, `pnpm verify:env`).
-
-> Lưu ý: `docs/steps/*.md` là lộ trình chính cho agent. Dùng `docs/admin-pattern/` và `docs/pages/` làm tài liệu bổ trợ.
-
-## Đọc trước khi sửa
-
-1. `docs/admin-pattern/README.md`
-2. `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
-3. `docs/admin-pattern/AGENTS_GUIDE.md`
-4. `docs/admin-pattern/FRONTEND_UX.md` (khi chỉnh `apps/frontend`)
-5. `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` (khi triển khai page admin trong `apps/backend`)
-6. `.graphify/markdown/SUMMARY_FOR_AI.md` (chỉ mục monorepo + link tới từng app)
-7. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` (danh sách workspace packages)
-8. `apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
-9. `apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-10. `apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`
-
-Sau `.graphify/markdown/SUMMARY_FOR_AI.md`, dùng mục **Chỉ dẫn theo chủ đề** trong cùng file để chọn đúng `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md` (cùng thư mục `markdown/` của từng scope) theo việc cần làm.
-
-### Tài liệu bổ trợ theo package
-
-Khi task liên quan tới một package cụ thể, đọc thêm:
-
-- **`@workspace/ui`** (`packages/ui/`): `docs/ui-pattern/README.md` + `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`
-- **`@workspace/api-client`** (`packages/api-client/`): `docs/api-client-pattern/README.md`
-- **`@workspace/api-server`** (`packages/api-server/`): `packages/api-server/README.md` + `docs/api-pattern/README.md`
-- **`@thangph2146/lexical-editor`** (`packages/editor/`): `packages/editor/README.md`
-- **`@workspace/logger`** (`packages/logger/`): `docs/logger-pattern/README.md`
-- **`@workspace/query-client`** (`packages/query-client/`): `docs/query-client-pattern/README.md`
-- **`@workspace/eslint-config`** (`packages/eslint-config/`): config files, không cần doc riêng
-- **`@workspace/typescript-config`** (`packages/typescript-config/`): config files, không cần doc riêng
-
-### Step-by-step docs cho agent
-
-- `docs/steps/step1_system_overview.md`
-- `docs/steps/step2_clean_code_guidelines.md`
-- `docs/steps/step3_admin_pattern_docs.md`
-- `docs/steps/step4_graphify_reading.md`
-- `docs/steps/step5_feature_implementation_guides.md`
-- `docs/steps/step6_code_execution_and_change_tracking.md`
-- `docs/steps/step7_review_pr_and_system_memory.md`
-- `docs/steps/step8_architecture_maintenance.md`
-- `docs/steps/step9_follow_up_rollback_legacy_tracking.md`
-- `docs/steps/step10_agent_task_automation.md`
-
-Lưu ý: chỉ mở `apps/*/.graphify/snapshot/context.json` khi cần trích đoạn cụ thể (file lớn, nhúng full source). Sau refactor kiến trúc: `pnpm graphify:refresh` (hoặc `node script-system/graphify/graphify-update.cjs apps/<app>` → `pnpm graphify:ai-summary`), rồi đối chiếu checklist trong `.graphify/README.md`. Skill Cursor: `.cursor/skills/hub-graphify-standardize-loop/SKILL.md` — vòng chuẩn hóa → kiểm tra → làm mới graph → đọc lại markdown.
-
-## Lệnh chuẩn bắt buộc
-
-```bash
-pnpm check
+packages/                          # Logic dùng chung (@workspace/*)
+script-system/                     # sync, verify, graphify, generate — xem script-system/README.md
 ```
 
-Nếu có thay đổi kiến trúc/module/routes: chạy `node script-system/graphify/graphify-update.cjs apps/<app>` cho từng app bị ảnh hưởng, rồi:
+| Shorthand cũ (trong doc legacy) | Đường dẫn hiện tại | Package npm |
+|--------------------------------|---------------------|-------------|
+| `apps/api` | `apps/main/api` | `@api` |
+| `apps/backend` | `apps/main/backend` | `@backend` |
+| `apps/frontend` | `apps/hub-parent/hub-parent-frontend` | `@frontend` |
 
-```bash
-pnpm check:full
+Chi tiết workflow product line: [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md) · quy tắc `apps/`: [`apps/README.md`](apps/README.md).
+
+---
+
+## 2. Quy trình bắt buộc trước khi sửa code
+
+1. [`docs/admin-pattern/PRE_CODE_PROTOCOL.md`](docs/admin-pattern/PRE_CODE_PROTOCOL.md)
+2. Các doc được protocol chỉ địn theo **loại task** (bảng mục 3)
+3. Sau khi sửa: `pnpm check` (mục 6)
+
+Lộ trình step-by-step đầy đủ: [`docs/steps/`](docs/steps/) (`step1` → `step10`).  
+Index tài liệu: [`docs/README.md`](docs/README.md).
+
+---
+
+## 3. Chọn tài liệu theo task
+
+| Loại task | Đọc trước (theo thứ tự) | Sửa code tại |
+|-----------|-------------------------|--------------|
+| **Admin page (main)** | `PRE_CODE_PROTOCOL` → `ADMIN_PAGE_PATTERN.md` → `docs/pages/README.md` → graphify `apps/main/backend` | `apps/main/backend/` |
+| **API Nest (main, dev)** | `PRE_CODE_PROTOCOL` → `docs/api-pattern/README.md` → graphify `apps/main/api` | `apps/main/api/` |
+| **Storefront HUB** | `FRONTEND_UX.md` → graphify `apps/hub-parent/hub-parent-frontend` | `apps/hub-parent/hub-parent-frontend/` |
+| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → mục **api-server** bên dưới | `apps/hub-event/api/`, `apps/hub-event/hub-event-checkin-frontend/` |
+| **Store Sync** | `MONOREPO_STRUCTURE.md` → graphify `apps/store-sync/*` | `apps/store-sync/` |
+| **Package UI** | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` | `packages/ui/` |
+| **API client** | `docs/api-client-pattern/README.md` (+ `REALTIME.md` nếu socket) | `packages/api-client/` |
+| **API server (logic chung)** | `packages/api-server/README.md` + `docs/api-pattern/README.md` | `packages/api-server/` |
+| **Admin CRUD dùng chung** | `docs/admin-pattern/ADMIN_APP_PACKAGE.md` | `packages/admin-app/` + generate ở app |
+| **Env / deploy** | `docs/env/README.md` · PM2: `README.md` (mục PM2) | `.env.example` từng app |
+
+### Graphify — mở đúng app
+
+| App | `SUMMARY_FOR_AI.md` |
+|-----|---------------------|
+| Monorepo (chỉ mục) | [`.graphify/markdown/SUMMARY_FOR_AI.md`](.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Packages | [`packages/.graphify/markdown/SUMMARY_FOR_AI.md`](packages/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Main API | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Main admin | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Hub storefront | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Check-in API | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Check-in frontend | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
+
+Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
+Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm mới: `pnpm graphify:refresh` · skill: [`.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](.cursor/skills/hub-graphify-standardize-loop/SKILL.md).
+
+### Package — doc bổ trợ
+
+| Package | Doc |
+|---------|-----|
+| `@workspace/ui` | `docs/ui-pattern/README.md` |
+| `@workspace/api-client` | `docs/api-client-pattern/README.md` |
+| `@workspace/api-server` | `packages/api-server/README.md` |
+| `@workspace/admin-app` | `docs/admin-pattern/ADMIN_APP_PACKAGE.md` |
+| `@workspace/query-client` | `docs/query-client-pattern/README.md` |
+| `@workspace/logger` | `docs/logger-pattern/README.md` |
+| `@thangph2146/lexical-editor` | `packages/editor/README.md` |
+
+---
+
+## 4. Cây tài liệu `docs/` (không tạo file md lung tung)
+
+```
+docs/
+├── README.md                 # Index docs/
+├── MONOREPO_STRUCTURE.md     # Product lines, sync, dev stacks
+├── steps/step1..step10.md    # Lộ trình agent (đọc tuần tự khi mới vào repo)
+├── admin-pattern/            # Kiến trúc, protocol, admin UX, microservice map
+├── pages/                    # Guide implementation theo feature admin
+├── api-pattern/              # Nest API (pattern — áp dụng main + api-server)
+├── api-client-pattern/       # SDK + realtime
+├── ui-pattern/               # packages/ui
+├── env/                      # Biến môi trường, pnpm env:init
+└── logger-pattern/, query-client-pattern/
 ```
 
-(`check:full` = `pnpm check` + `pnpm graphify:ai-summary`; không tự chạy `graphify-update` — xem checklist `.graphify/README.md`. Gộp snapshot + summary: `pnpm graphify:refresh`.)
+**Quy tắc:** thêm doc mới chỉ khi có **chủ đề lặp lại** hoặc **ranh giới kiến trúc**; feature một lần → `docs/pages/<feature>.md` hoặc README package, không duplicate vào `AGENTS.md`.
 
-## PM2 production — 2 composition
+---
 
-Factory chung: `ecosystem.shared.cjs`. Hai file stack:
+## 5. Dev & sync (tóm tắt)
 
-| #     | Composition (3 app)                                             | File PM2                | Alias                  |
-| ----- | --------------------------------------------------------------- | ----------------------- | ---------------------- |
-| **1** | `hub-parent/api` + `main/backend` + `hub-parent-frontend` | `ecosystem.main.cjs`    | `ecosystem.config.cjs` |
-| **2** | `hub-event/api` + `hub-event-checkin-frontend` (2 app)    | `ecosystem.checkin.cjs` | —                      |
+| Mục đích | Lệnh |
+|----------|------|
+| Dev site chính | `pnpm dev` (main API + backend + hub-parent frontend) |
+| Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
+| Dev stack check-in deploy | `pnpm dev:checkin` |
+| Sau `git pull` — cập nhật line check-in | `pnpm pull:checkin` |
+| Env | `pnpm env:init` · `pnpm verify:env` |
 
-**Không chạy đồng thời** compo 1 và compo 2 trên cùng máy — trùng port 3000 / 3001 / 3002.
+**Dev hàng ngày:** chỉ sửa `apps/main/` + `packages/*`; line deploy cập nhật qua sync/pull, không copy thủ công.
 
-### Compo 1 — site chính (`ecosystem.main.cjs`)
+---
 
-| Thư mục         | Package     | Tên PM2               | Port |
-| --------------- | ----------- | --------------------- | ---- |
-| `apps/hub-parent/api` | `@hub-parent/api` | `hub-parent-api`      | 3002 |
-| `apps/main/backend`   | `@backend`        | `hub-parent-backend`  | 3001 |
-| `apps/hub-parent/hub-parent-frontend` | `@frontend` | `hub-parent-frontend` | 3000 |
+## 6. Lệnh kiểm tra bắt buộc
 
 ```bash
-pnpm pm2:start
-# pm2 start ecosystem.main.cjs
-# pm2 start ecosystem.config.cjs
-pnpm pm2:reload      # zero-downtime (sau pull code)
-pnpm pm2:restart     # stop + start lại toàn stack
-pnpm pm2:stop
+pnpm check                    # verify + lint + typecheck
+pnpm check:full               # check + graphify:ai-summary (sau đổi kiến trúc lớn)
+pnpm verify:bounds            # không import chéo apps/*
+pnpm verify:imports           # alias @ui
 ```
 
-### Compo 2 — check-in sự kiện (`ecosystem.checkin.cjs`)
-
-| Thư mục                           | Package                       | Tên PM2                | Port |
-| --------------------------------- | ----------------------------- | ---------------------- | ---- |
-| `apps/hub-event/api` | `@hub-event/api` | `hub-checkin-api`      | 3002 |
-| `apps/hub-event/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | `hub-checkin-frontend` | 3000 |
+Sau đổi route/module đáng kể:
 
 ```bash
-pnpm pm2:start:checkin
-# pm2 start ecosystem.checkin.cjs
-pnpm pm2:reload:checkin
-pnpm pm2:restart:checkin
-pnpm pm2:stop:checkin
+node script-system/graphify/graphify-update.cjs apps/<app>
+pnpm graphify:ai-summary
+# hoặc: pnpm graphify:refresh
 ```
 
-### Chuẩn bị trước khi start (production)
+---
+
+## 7. `@workspace/admin-app` (admin frontend)
+
+Logic CRUD admin → **`packages/admin-app`**. App chỉ `admin.app.config.json` + generate.
 
 ```bash
-pnpm install
-pnpm --filter @api run build
-pnpm --filter @backend run build
-pnpm --filter @frontend run build
-# stack check-in: pnpm --filter @hub-event-checkin-frontend run build
-pnpm db -- migration:up   # khi có migration mới
-```
-
-### Chạy riêng một app trong compo
-
-```bash
-pm2 start ecosystem.main.cjs --only hub-parent-api
-pm2 start ecosystem.main.cjs --only hub-parent-backend
-pm2 start ecosystem.main.cjs --only hub-parent-frontend
-
-pm2 start ecosystem.checkin.cjs --only hub-checkin-api
-pm2 start ecosystem.checkin.cjs --only hub-checkin-backend
-pm2 start ecosystem.checkin.cjs --only hub-checkin-frontend
-```
-
-### Vận hành thường dùng
-
-```bash
-pm2 status
-pm2 logs hub-parent-api
-pm2 logs hub-checkin-api --lines 100
-pnpm pm2:delete:checkin    # gỡ toàn bộ process compo 2
-pnpm pm2:delete            # gỡ toàn bộ process compo 1
-pm2 save                   # giữ process list sau reboot
-pm2 startup                # tạo systemd (chạy một lần trên server)
-```
-
-Script `script-system/pm2-stack.cjs` ghi `.pm2-ecosystem-<stack>.json` rồi gọi PM2 — tránh lỗi một số bản PM2 chạy file `.cjs` như script (`ecosystem.checkin` fork 1 instance).
-
-### Xóa đúng process (quan trọng)
-
-`pm2 delete ecosystem.checkin` **chỉ** xóa process tên `ecosystem.checkin` (lỗi PM2 parse `.cjs`). **Không** xóa `hub-parent-*` hay `hub-checkin-*`.
-
-| Muốn dừng stack                                                            | Lệnh                                                                                                                                                 |
-| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Compo 1 — `hub-parent-api`, `hub-parent-backend`, `hub-parent-frontend`    | `pnpm pm2:delete` (tự bỏ qua nếu không tìm thấy; dọn cả tên cũ `hub-main-*`) hoặc `pm2 delete hub-parent-api hub-parent-backend hub-parent-frontend` |
-| Compo 2 — `hub-checkin-api`, `hub-checkin-backend`, `hub-checkin-frontend` | `pnpm pm2:delete:checkin` hoặc `pm2 delete hub-checkin-api hub-checkin-backend hub-checkin-frontend`                                                 |
-| Process lỗi `ecosystem.checkin`                                            | `pm2 delete ecosystem.checkin`                                                                                                                       |
-
-### Chuyển compo (ví dụ: site chính → check-in)
-
-```bash
-pnpm pm2:delete              # dừng hub-parent-* (3 process đang chạy)
-pm2 delete ecosystem.checkin   # nếu còn process lỗi
-git pull
-pnpm pm2:start:checkin
-pm2 status                     # phải thấy hub-checkin-* (3 process)
-pm2 save
-```
-
-Chi tiết deploy server: `README.md` (mục PM2).
-
-### Admin dùng chung (`@workspace/admin-app`)
-
-Module CRUD admin nằm trong **`packages/admin-app`** — app chỉ khai báo `admin.app.config.json` + generate route. Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
-
-```bash
-pnpm admin:migrate              # rewrite import package; không ghi đè module AUTO-GENERATED từ app
-pnpm admin:generate:checkin     # sinh page re-export + menu
+pnpm admin:migrate
 pnpm admin:generate:main
-pnpm verify:main-admin          # kiểm tra generate + lib/hooks host
+pnpm admin:generate:checkin
+pnpm verify:main-admin
 pnpm verify:checkin-admin
 ```
 
-### Sync check-in từ main (deploy line)
+Main: `apps/main/backend/admin.app.config.json`  
+Check-in: `apps/hub-event/hub-event-checkin-frontend/admin.app.config.json`  
+Chi tiết: [`docs/admin-pattern/ADMIN_APP_PACKAGE.md`](docs/admin-pattern/ADMIN_APP_PACKAGE.md).
 
-Dev hàng ngày: `pnpm dev:main:checkin` (sửa `apps/main` + `packages/admin-app`, không cần sync copy admin).
+---
 
-Sau `git pull`, cập nhật `hub-event`: **`pnpm pull:checkin`** (API subset + migrate `@workspace/admin-app` + generate routes). Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`, `docs/MONOREPO_STRUCTURE.md`.
+## 8. `@workspace/api-server` (API Nest dùng chung)
 
-## Import alias chuẩn (toàn monorepo)
+Pattern song song admin-app:
 
-Nguồn sự thật: `script-system/lib/import-alias-rules.cjs` · kiểm tra: `pnpm verify:imports` · ESLint: `forbidWorkspaceUiImports` trong `packages/eslint-config/service-boundaries.js`.
-
-### App Next.js (`apps/*/…-frontend`, `apps/main/backend`)
-
-Mỗi app Next **bắt buộc** có `tsconfig.json` → `paths`: `@ui/globals.css`, `@ui/components/*`, `@ui/*` trỏ `packages/ui/src`.
-
-| Nhu cầu | Import đúng | Không dùng |
-| -------- | ------------- | ---------- |
-| UI (`packages/ui`) | `@ui/components/...`, `@ui/hooks/...`, `@ui/lib/...` | `@workspace/ui`, `packages/ui/src/...`, relative `../../../packages/ui` |
-| API HTTP / types | `@workspace/api-client` | `fetch` thẳng API, `sdk.http` từ app |
-| React Query hub | `@workspace/query-client` | Setup query client riêng (trừ doc cho phép) |
-| Site config / promo / editor | `@workspace/site-config`, `@workspace/promo-codes`, `@thangph2146/lexical-editor` | Import chéo `apps/*` |
-| Code riêng app | `@/lib/...`, `@/hooks/...`, `@/components/...` | Copy logic đã có trong `packages/*` |
-| Lib native check-in (`hub-event`) | `@/lib/event-detail-content`, `@/lib/public-events`, … | `@/lib/admin/...` (chỉ file sync từ main) |
-
-```ts
-import { Button } from "@ui/components/button"
-import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
-import { api } from "@/lib/api"
-import { PERMISSION_CODES } from "@workspace/api-client"
-```
-
-### Package `packages/*` (không phải app)
-
-- Dùng tên npm `@workspace/<package>` trong `package.json` dependencies.
-- **Không** dùng alias `@ui` (chỉ app Next map `@ui` → `packages/ui`).
-- **Không** import `apps/*`.
-
-### API Nest (`apps/*/api`)
-
-- `@workspace/*` cho package dùng chung; **không** `@ui`, React, Next.
-- **Logic CRUD dùng chung** → implement/extend trong `@workspace/api-server` trước, rồi app chỉ subclass service (`getEm()`, `getEntity()`, override `mapRow` / column filters nếu cần).
-- **Controller + auth envelope** (`@Res()`, `X-User-Id`, `createSuccessResponse`) giữ local trong app — không dùng `BaseModule.forRoot()` nếu sẽ inject controller trùng route.
-- Deploy line `apps/hub-event/api`: scaffold qua `api.app.config.json` + `pnpm api:generate:checkin` (service/controller/module AUTO-GENERATED extend `@workspace/api-server`). Import subpath: `@workspace/api-server/modules/<module>`, `@workspace/api-server/common`.
-
-Chi tiết: `docs/ui-pattern/README.md` · admin: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` · API: `packages/api-server/README.md`.
-
-### Admin dùng chung (`@workspace/admin-app`)
-
-- CRUD admin: **`packages/admin-app`** — sửa một nơi, app chỉ **generate** page re-export.
-- Main: `apps/main/backend/admin.app.config.json` + `pnpm admin:generate:main` + `pnpm verify:main-admin`.
-- Check-in: `admin.app.config.json` + `pnpm admin:generate:checkin` + `pnpm verify:checkin-admin`.
-- Deploy line: **`pnpm pull:checkin`** (migrate package + generate + verify). **Không** copy module `main` → check-in nữa.
-
-File native giữ local (check-in: events shell, `dang-nhap`, `dang-ky`, profile, …; main: layout, login, register, profile, graph, database-schema).
-
-## Nguyên tắc microservice
-
-- Không import chéo source giữa các app trong `apps/*`.
-- Frontend/Backend giao tiếp với API qua HTTP + `@workspace/api-client`.
-- Logic dùng chung đặt ở `packages/*` khi thật sự còn được sử dụng.
-- **Admin components PHẢI từ `@ui/components/...`** — không tạo local trong `apps/backend/src/components/` hay `apps/backend/src/app/**/_components/`. Nếu thiếu, thêm vào `packages/ui/src/components/admin/`.
-- **API Client** PHẢI qua `@workspace/api-client` — không `fetch` trực tiếp tới `apps/api`, không gọi `api.http` / `sdk.http` từ app Next (dùng `api.users`, `api.public`, …).
-- Khi sửa API (`apps/api`): đọc `docs/api-pattern/README.md`.
-- Khi sửa API client (`packages/api-client`) hoặc gọi API từ app: đọc `docs/api-client-pattern/README.md`.
-- Ranh giới được kiểm soát bởi:
-  - `packages/eslint-config/service-boundaries.js` (import boundaries + ESLint cấm `sdk.http`)
-  - `script-system/verify/verify-service-boundaries.mjs` (`pnpm verify:bounds`)
-  - `script-system/verify/verify-no-sdk-http.mjs` (`pnpm verify:sdk-http`)
-
-## Pattern coding — agent phải tuân thủ
-
-### Toast admin (mutation + realtime)
-
-- Mutation CRUD: **`useAdminMutation`** (`packages/ui`) — loading → success/error sau response 2xx; **không** gọi `toast.success`/`toast.error` thủ công trong `onSuccess`/`onError`.
-- Socket trùng toast: `packages/api-client/src/realtime/toast-coordinator.ts` + `useAdminRealtimeSync` (`apps/backend`).
-- Chi tiết: `docs/api-client-pattern/REALTIME.md`, `packages/ui/src/hooks/use-admin-mutation.ts`.
-
-### Import dữ liệu (`/admin/data`)
-
-- Client chunk + timing: `apps/backend/src/app/data/_component/import-chunked.ts`, `import-timing.ts`.
-- API config + insert: `apps/main/api/src/system/system.service.ts` (native full); hub-checkin dùng `BaseSystemAdminService` binding. Helpers import/export: `@workspace/api-server/modules/system`.
-- `post` mặc định **1 lô**, pivot (`postCategory`/`postTag`) **request riêng**; `post` **không** song song (`modelParallelConcurrency.post = 1`).
-- Env API (tùy chọn): `SYSTEM_IMPORT_CLIENT_CHUNK_POST`, `SYSTEM_IMPORT_PARALLEL_CHUNKS`, `SYSTEM_IMPORT_JSON_BATCH_SIZE`.
-
-## `@workspace/api-server` — Test & Coverage
-
-**Status: FULLY COVERED** (4453 tests / 308 suites).
-
-- Mọi module trong `packages/api-server/src/modules/` đã có: `*.service.spec.ts`, `*.controller.spec.ts`, `index.barrel.spec.ts`, `*.module-meta.spec.ts`, `*.service.integration.spec.ts`
-- `bases/`: `base-crud.controller.spec.ts`, `base-crud.service.spec.ts`, `base-service.class.spec.ts`, `base-controller.class.spec.ts`, `crud-factory.spec.ts`, `index.barrel.spec.ts`
-- `common/`: utilities (api-response, pagination, bulk-actions, parse-list-query, apply-column-filters, entity-id)
-- `data-test/`: fixture loader + in-memory FakeEntityManager (47MB production fixture)
-- `utils/`: date-utils, entity-id, pagination
-
-Khi thêm module mới vào api-server, PHẢI tạo đủ 5 spec files theo pattern của `academic-years/`.
-
-Chạy test & verify contract:
-```bash
-pnpm test:api-server          # alias: pnpm --filter @workspace/api-server test
-pnpm verify:api-contract      # đối chiếu route api-client ↔ ADMIN_ROUTES/PUBLIC_ROUTES
-pnpm --filter @workspace/api-server test:cov
-```
-
-Quy trình khi sửa endpoint API:
-1. Sửa `packages/api-server` (base service/controller) + bổ sung spec theo pattern `academic-years/`.
-2. Chạy `pnpm test:api-server` và `pnpm verify:api-contract`.
-3. Subclass trong `apps/main/api` hoặc `apps/hub-event/api` (deploy line) — xóa duplicate logic, giữ entity + controller local.
-4. `pnpm check` (và `graphify:refresh` nếu đổi module/routes).
-
-## `@workspace/api-server` — khai báo như admin-app
-
-Pattern song song `admin.app.config.json` + `@workspace/admin-app`:
-
-| Admin (frontend) | API (Nest) |
-| ---------------- | ---------- |
-| `admin.app.config.json` → `modules` | `api.app.config.json` → `alignAdminApp` + `extraModules` + `native.*` |
-| `pnpm admin:generate:checkin` (`--prune`) | `pnpm api:generate:checkin` (`--prune`) |
-| Page AUTO-GENERATED re-export `@workspace/admin-app` | Service/controller/module AUTO-GENERATED extend `@workspace/api-server` |
-| Controller/layout native (shell app) | Controller CRUD chuẩn AUTO-GENERATED (`@Res()`, `PERMISSIONS`, `ADMIN_ROUTES`) |
-
-**Hub-event check-in:** `apps/hub-event/api/api.app.config.json` — `alignAdminApp` + `extraModules`; `native.controllers` giữ controller phức tạp (`users`, `posts`, `events`, `auth`, `public`, `system`, …). `native.modules` thường rỗng (toàn bộ module đã có entry trong `script-system/api/api-module-registry.cjs`).
+| Admin (Next) | API (Nest) |
+|--------------|------------|
+| `admin.app.config.json` | `api.app.config.json` (`apps/hub-event/api/`) |
+| `pnpm admin:generate:checkin` | `pnpm api:generate:checkin` |
+| Page re-export `@workspace/admin-app` | Service AUTO-GENERATED extend `Base*Service` |
 
 ```bash
 pnpm --filter @workspace/api-server run build
-pnpm api:generate:checkin          # --prune khi cần dọn file cũ
+pnpm api:generate:checkin
 pnpm verify:checkin-api
 pnpm --filter @hub-event/api typecheck
 ```
 
-Registry kinds: `crud`, `em-only`, `*-binding` (service mỏng + `Base*Service`), `public-multi-binding` (7 service public), `system-binding` (`BaseSystemAdminService` + bootstrap deps). `extraProviders` + `kind` trên từng provider (vd. `event-registration-attendance-binding`). `moduleNative` / `controllerNative` / `preserveNativeFiles` trong registry + `api.app.config.json` → `native.controllers`.
+- **Registry:** `script-system/api/api-module-registry.cjs`
+- **Hub-event:** 29 module, **36 service** generated; controller phức tạp giữ **native** (`native.controllers` trong config)
+- **Kinds:** `crud`, `em-only`, `*-binding`, `public-multi-binding`, `system-binding`, `extraProviders` (vd. attendance)
+- **Main API:** chưa generate — sửa trực tiếp `apps/main/api`; `system` helpers từ `@workspace/api-server/modules/system`
 
-**Scaffold hub-event (đã xong):** 29 module — **36 service** AUTO-GENERATED (gồm 7 public + `EventRegistrationAttendanceService`) + `system`/`public` **module + controller native**; logic nằm trong `@workspace/api-server`.
+Chi tiết: [`packages/api-server/README.md`](packages/api-server/README.md).
 
-**Controller native:** binding module có `controllerNative: true` — ví dụ `users`, `posts`, `events`, `auth`, `event-registrations`, `seo-metas`, `event-checkouts`, `face-data`, `public`, `system`.
+```bash
+pnpm test:api-server
+pnpm verify:api-contract
+```
 
-**Thêm module mới:** entry trong `script-system/api/api-module-registry.cjs` → `extraModules` (nếu không có trong admin map) → build api-server → `pnpm api:generate:checkin` → `pnpm verify:checkin-api`.
+---
 
-**Common dùng chung:** `buildStandardAdminListWhere`, `normalizePosterField`, `resolveEventTimeStatus`, `buildAdminListCrudParams` trong `@workspace/api-server/common`.
+## 9. Ranh giới & import (tóm tắt)
 
-**Main API (`apps/main/api`):** chưa có `api.app.config.json` / generate — dùng source trực tiếp; `system` import helpers từ `@workspace/api-server/modules/system` (đồng bộ với hub-event).
+- Không import chéo `apps/*` · Next ↔ API qua `@workspace/api-client`
+- Admin UI: `@ui/components/...` — không tạo component admin local trong app
+- API Nest: `@workspace/*` — không `@ui` / React
+- Nguồn alias: `script-system/lib/import-alias-rules.cjs` · ESLint: `packages/eslint-config/service-boundaries.js`
 
-Sau `git pull` trên server check-in: `pnpm pull:checkin` (sync API subset + admin generate + api generate + verify).
+Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md).
+
+### Pattern bắt buộc
+
+- Mutation admin: `useAdminMutation` (`packages/ui`) — không toast thủ công trong `onSuccess`/`onError`
+- Realtime: `docs/api-client-pattern/REALTIME.md`
+- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemAdminService` (check-in) / `system.service.ts` (main)
+
+---
+
+## 10. PM2 production (2 stack — không chạy cùng lúc)
+
+| Stack | PM2 file | Apps |
+|-------|---------|------|
+| Site chính | `ecosystem.main.cjs` | hub-parent-api :3002, hub-parent-backend :3001, hub-parent-frontend :3000 |
+| Check-in | `ecosystem.checkin.cjs` | hub-checkin-api :3002, hub-checkin-frontend :3000 |
+
+```bash
+pnpm pm2:start          # site chính
+pnpm pm2:start:checkin  # check-in
+pnpm pm2:reload         # sau pull code
+pnpm pm2:delete         # dừng stack tương ứng
+```
+
+Chi tiết deploy, xóa process, chuyển stack: [`README.md`](README.md) (mục PM2).
+
+---
+
+## 11. Đọc thêm (theo thứ tự khi onboarding)
+
+1. [`docs/admin-pattern/README.md`](docs/admin-pattern/README.md)
+2. [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md)
+3. [`docs/admin-pattern/AGENTS_GUIDE.md`](docs/admin-pattern/AGENTS_GUIDE.md)
+4. [`docs/steps/step1_system_overview.md`](docs/steps/step1_system_overview.md)

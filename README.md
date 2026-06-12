@@ -1,6 +1,6 @@
 # Store Sync
 
-Monorepo ứng dụng B2B/store: API NestJS (MikroORM), admin Next.js (`apps/backend`), storefront Next.js (`apps/frontend`), gói dùng chung (`packages/*`).
+Monorepo ứng dụng B2B/store theo **product line** (`apps/main`, `hub-parent`, `hub-event`, `store-sync`) + gói dùng chung (`packages/*`). Dev hàng ngày: `apps/main/api` + `apps/main/backend`. Chi tiết: [`AGENTS.md`](AGENTS.md), [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md).
 
 ## Yêu cầu môi trường
 
@@ -13,14 +13,19 @@ pnpm install
 
 ## Cấu trúc thư mục
 
-| Đường dẫn             | Mô tả                                                                   |
-| --------------------- | ----------------------------------------------------------------------- |
-| `apps/api`            | REST API NestJS, RBAC, MikroORM — cổng mặc định **3002**, prefix `/api` |
-| `apps/backend`        | Trang quản trị (admin) Next.js — thường **3001**                        |
-| `apps/frontend`       | Cửa hàng (storefront) Next.js — thường **3000**                         |
-| `packages/api-client` | SDK HTTP + kiểu dùng cho frontend/backend                               |
-| `packages/ui`         | Component UI dùng chung (shadcn)                                        |
-| `docker-compose.yml`  | Postgres + build API/backend/frontend (tuỳ chọn)                        |
+| Đường dẫn | Package | Mô tả |
+| --------- | ------- | ----- |
+| `apps/main/api` | `@api` | API NestJS dev (source of truth) — cổng **3002**, prefix `/api` |
+| `apps/main/backend` | `@backend` | Admin Next.js dev — thường **3001** |
+| `apps/hub-parent/hub-parent-frontend` | `@frontend` | Storefront deploy — thường **3000** |
+| `apps/hub-parent/api` | `@hub-parent/api` | API deploy site chính |
+| `apps/hub-event/api` | `@hub-event/api` | API deploy check-in |
+| `apps/hub-event/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | Frontend check-in |
+| `packages/api-client` | — | SDK HTTP cho app Next |
+| `packages/ui` | — | Component UI dùng chung |
+| `docker-compose.yml` | — | Postgres + build (tuỳ chọn) |
+
+> Shorthand cũ `apps/api` / `apps/backend` / `apps/frontend` = legacy; không tạo lại — xem [`apps/README.md`](apps/README.md).
 
 ## Biến môi trường
 
@@ -101,7 +106,7 @@ pnpm --filter @api exec mikro-orm migration:up
 
 ### Hai hướng làm schema (cần phân biệt)
 
-| Cách                 | Lệnh (trong `apps/api` hoặc qua `pnpm db --`)                      | Khi nào dùng                                                                                                               |
+| Cách                 | Lệnh (trong `apps/main/api` hoặc qua `pnpm db --`)                  | Khi nào dùng                                                                                                               |
 | -------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | **Schema từ entity** | `schema:fresh --run --seed` (script: `pnpm db:fresh` trong `@api`) | Local: xóa DB, tạo lại bảng theo **entity**, chạy **seeder**. **Không** chạy file migration `.ts` trong `src/migrations/`. |
 | **Chuỗi migration**  | `migration:up` / `migration:list` / `migration:down`               | Môi trường có lịch sử thay đổi qua file migration; CI/production.                                                          |
@@ -133,7 +138,7 @@ pnpm db -- migration:create
 pnpm db -- migration:create --initial
 ```
 
-Sau khi thêm migration mới: commit file trong `apps/api/src/migrations/`, trên môi trường khác chạy `migration:up` (hoặc pipeline deploy tương đương).
+Sau khi thêm migration mới: commit file trong `apps/main/api/src/migrations/`, trên môi trường khác chạy `migration:up` (hoặc pipeline deploy tương đương).
 
 ### Seeder
 
@@ -148,7 +153,7 @@ pnpm --filter @api run db:seed
 
 Seeder mặc định: `DatabaseSeeder` (cấu hình trong `mikro-orm.config.ts`). Có thể bật log chi tiết bằng `DB_SEED_VERBOSE=1`.
 
-Tài khoản demo (sau seed): ví dụ `super@storesync.local` / `demo` (siêu quản trị), `admin@storesync.local`, … — xem `apps/api/src/seeders/database.seeder.ts`.
+Tài khoản demo (sau seed): ví dụ `super@storesync.local` / `demo` (siêu quản trị), `admin@storesync.local`, … — xem `apps/main/api/src/seeders/database.seeder.ts`.
 
 ### Schema không qua migration (chỉ dev)
 
@@ -346,5 +351,5 @@ pm2 reload ecosystem.config.cjs --update-env
 ## Tài liệu thêm
 
 - Chi tiết env: `docs/env/README.md`
-- Entity & registry: `apps/api/src/entities/`
-- RBAC: `apps/api/src/auth/`, permissions: `apps/api/src/auth/permissions.constants.ts`
+- Entity & registry: `apps/main/api/src/entities/`
+- RBAC: `apps/main/api/src/auth/`, permissions: `apps/main/api/src/config/permissions.ts`

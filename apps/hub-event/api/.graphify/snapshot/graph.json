@@ -10,45 +10,6 @@
       "type": "directory"
     },
     {
-      "id": "dir_src_academic_years",
-      "label": "academic-years/",
-      "path": "src/academic-years",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_academic_years_academic_years_controller_ts",
-      "label": "academic-years.controller.ts",
-      "path": "src/academic-years/academic-years.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/academic-years",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_academic_years_academic_years_module_ts",
-      "label": "academic-years.module.ts",
-      "path": "src/academic-years/academic-years.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/academic-years",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_academic_years_academic_years_service_ts",
-      "label": "academic-years.service.ts",
-      "path": "src/academic-years/academic-years.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/academic-years",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_accounts",
       "label": "accounts/",
       "path": "src/accounts",
@@ -78,71 +39,12 @@
       "client": false
     },
     {
-      "id": "file_src_accounts_accounts_service_spec_ts",
-      "label": "accounts.service.spec.ts",
-      "path": "src/accounts/accounts.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_accounts_accounts_service_ts",
       "label": "accounts.service.ts",
       "path": "src/accounts/accounts.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_admission_results",
-      "label": "admission-results/",
-      "path": "src/admission-results",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_admission_results_admission_results_controller_ts",
-      "label": "admission-results.controller.ts",
-      "path": "src/admission-results/admission-results.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/admission-results",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_admission_results_admission_results_module_ts",
-      "label": "admission-results.module.ts",
-      "path": "src/admission-results/admission-results.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/admission-results",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_admission_results_admission_results_service_spec_ts",
-      "label": "admission-results.service.spec.ts",
-      "path": "src/admission-results/admission-results.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/admission-results",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_admission_results_admission_results_service_ts",
-      "label": "admission-results.service.ts",
-      "path": "src/admission-results/admission-results.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/admission-results",
       "type": "ts",
       "client": false
     },
@@ -274,16 +176,6 @@
       "client": false
     },
     {
-      "id": "file_src_categories_categories_service_spec_ts",
-      "label": "categories.service.spec.ts",
-      "path": "src/categories/categories.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/categories",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_categories_categories_service_ts",
       "label": "categories.service.ts",
       "path": "src/categories/categories.service.ts",
@@ -323,16 +215,6 @@
       "client": false
     },
     {
-      "id": "file_src_comments_comments_service_spec_ts",
-      "label": "comments.service.spec.ts",
-      "path": "src/comments/comments.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/comments",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_comments_comments_service_ts",
       "label": "comments.service.ts",
       "path": "src/comments/comments.service.ts",
@@ -355,6 +237,16 @@
       "id": "file_src_common_admin_filter_configs_ts",
       "label": "admin-filter-configs.ts",
       "path": "src/common/admin-filter-configs.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_admin_list_params_ts",
+      "label": "admin-list-params.ts",
+      "path": "src/common/admin-list-params.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/common",
@@ -432,6 +324,16 @@
       "client": false
     },
     {
+      "id": "file_src_common_cart_types_ts",
+      "label": "cart-types.ts",
+      "path": "src/common/cart-types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_database_http_exception_filter_ts",
       "label": "database-http-exception.filter.ts",
       "path": "src/common/database-http-exception.filter.ts",
@@ -452,6 +354,26 @@
       "client": false
     },
     {
+      "id": "file_src_common_dev_login_options_ts",
+      "label": "dev-login-options.ts",
+      "path": "src/common/dev-login-options.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_entity_id_ts",
+      "label": "entity-id.ts",
+      "path": "src/common/entity-id.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_event_time_status_ts",
       "label": "event-time-status.ts",
       "path": "src/common/event-time-status.ts",
@@ -462,29 +384,19 @@
       "client": false
     },
     {
+      "id": "file_src_common_fs_unlink_retry_ts",
+      "label": "fs-unlink-retry.ts",
+      "path": "src/common/fs-unlink-retry.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_get_options_ts",
       "label": "get-options.ts",
       "path": "src/common/get-options.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_gift_rules_spec_ts",
-      "label": "gift-rules.spec.ts",
-      "path": "src/common/gift-rules.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_gift_rules_ts",
-      "label": "gift-rules.ts",
-      "path": "src/common/gift-rules.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/common",
@@ -602,36 +514,6 @@
       "client": false
     },
     {
-      "id": "file_src_common_product_units_ts",
-      "label": "product-units.ts",
-      "path": "src/common/product-units.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_promo_checkout_spec_ts",
-      "label": "promo-checkout.spec.ts",
-      "path": "src/common/promo-checkout.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_promo_checkout_ts",
-      "label": "promo-checkout.ts",
-      "path": "src/common/promo-checkout.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_common_public_decorator_ts",
       "label": "public.decorator.ts",
       "path": "src/common/public.decorator.ts",
@@ -655,26 +537,6 @@
       "id": "file_src_common_resolve_relation_filters_ts",
       "label": "resolve-relation-filters.ts",
       "path": "src/common/resolve-relation-filters.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_unit_pricing_spec_ts",
-      "label": "unit-pricing.spec.ts",
-      "path": "src/common/unit-pricing.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/common",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_common_unit_pricing_ts",
-      "label": "unit-pricing.ts",
-      "path": "src/common/unit-pricing.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/common",
@@ -731,100 +593,31 @@
       "client": false
     },
     {
+      "id": "dir_src_config_role_templates",
+      "label": "role-templates/",
+      "path": "src/config/role-templates",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/config",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_config_role_templates_event_staff_template_ts",
+      "label": "event-staff.template.ts",
+      "path": "src/config/role-templates/event-staff.template.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/role-templates",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_config_system_role_ts",
       "label": "system-role.ts",
       "path": "src/config/system-role.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/config",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_contact_requests",
-      "label": "contact-requests/",
-      "path": "src/contact-requests",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_contact_requests_contact_requests_controller_ts",
-      "label": "contact-requests.controller.ts",
-      "path": "src/contact-requests/contact-requests.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/contact-requests",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_contact_requests_contact_requests_module_ts",
-      "label": "contact-requests.module.ts",
-      "path": "src/contact-requests/contact-requests.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/contact-requests",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_contact_requests_contact_requests_service_spec_ts",
-      "label": "contact-requests.service.spec.ts",
-      "path": "src/contact-requests/contact-requests.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/contact-requests",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_contact_requests_contact_requests_service_ts",
-      "label": "contact-requests.service.ts",
-      "path": "src/contact-requests/contact-requests.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/contact-requests",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_courses",
-      "label": "courses/",
-      "path": "src/courses",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_courses_courses_controller_ts",
-      "label": "courses.controller.ts",
-      "path": "src/courses/courses.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/courses",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_courses_courses_module_ts",
-      "label": "courses.module.ts",
-      "path": "src/courses/courses.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/courses",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_courses_courses_service_ts",
-      "label": "courses.service.ts",
-      "path": "src/courses/courses.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/courses",
       "type": "ts",
       "client": false
     },
@@ -874,45 +667,6 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/dashboard",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_departments",
-      "label": "departments/",
-      "path": "src/departments",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_departments_departments_controller_ts",
-      "label": "departments.controller.ts",
-      "path": "src/departments/departments.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/departments",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_departments_departments_module_ts",
-      "label": "departments.module.ts",
-      "path": "src/departments/departments.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/departments",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_departments_departments_service_ts",
-      "label": "departments.service.ts",
-      "path": "src/departments/departments.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/departments",
       "type": "ts",
       "client": false
     },
@@ -1009,6 +763,16 @@
       "id": "file_src_entities_course_entity_ts",
       "label": "course.entity.ts",
       "path": "src/entities/course.entity.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/entities",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_entities_customer_cart_entity_ts",
+      "label": "customer-cart.entity.ts",
+      "path": "src/entities/customer-cart.entity.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/entities",
@@ -1630,65 +1394,6 @@
       "client": false
     },
     {
-      "id": "file_src_full_export_2026_05_14_json",
-      "label": "full-export-2026-05-14.json",
-      "path": "src/full-export-2026-05-14.json",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src",
-      "type": "json",
-      "client": false
-    },
-    {
-      "id": "dir_src_groups",
-      "label": "groups/",
-      "path": "src/groups",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_groups_groups_controller_ts",
-      "label": "groups.controller.ts",
-      "path": "src/groups/groups.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/groups",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_groups_groups_module_ts",
-      "label": "groups.module.ts",
-      "path": "src/groups/groups.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/groups",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_groups_groups_service_spec_ts",
-      "label": "groups.service.spec.ts",
-      "path": "src/groups/groups.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/groups",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_groups_groups_service_ts",
-      "label": "groups.service.ts",
-      "path": "src/groups/groups.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/groups",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_hanet",
       "label": "hanet/",
       "path": "src/hanet",
@@ -1696,26 +1401,6 @@
       "size": 22,
       "community": "src",
       "type": "directory"
-    },
-    {
-      "id": "file_src_hanet_hanet_payload_spec_ts",
-      "label": "hanet-payload.spec.ts",
-      "path": "src/hanet/hanet-payload.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/hanet",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_hanet_hanet_payload_ts",
-      "label": "hanet-payload.ts",
-      "path": "src/hanet/hanet-payload.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/hanet",
-      "type": "ts",
-      "client": false
     },
     {
       "id": "file_src_hanet_hanet_webhook_controller_ts",
@@ -1744,55 +1429,6 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/hanet",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_hanet_hanet_types_ts",
-      "label": "hanet.types.ts",
-      "path": "src/hanet/hanet.types.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/hanet",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_imported_users",
-      "label": "imported-users/",
-      "path": "src/imported-users",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_imported_users_imported_users_controller_ts",
-      "label": "imported-users.controller.ts",
-      "path": "src/imported-users/imported-users.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/imported-users",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_imported_users_imported_users_module_ts",
-      "label": "imported-users.module.ts",
-      "path": "src/imported-users/imported-users.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/imported-users",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_imported_users_imported_users_service_ts",
-      "label": "imported-users.service.ts",
-      "path": "src/imported-users/imported-users.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/imported-users",
       "type": "ts",
       "client": false
     },
@@ -1846,84 +1482,6 @@
       "client": false
     },
     {
-      "id": "dir_src_majors",
-      "label": "majors/",
-      "path": "src/majors",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_majors_majors_controller_ts",
-      "label": "majors.controller.ts",
-      "path": "src/majors/majors.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/majors",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_majors_majors_module_ts",
-      "label": "majors.module.ts",
-      "path": "src/majors/majors.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/majors",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_majors_majors_service_ts",
-      "label": "majors.service.ts",
-      "path": "src/majors/majors.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/majors",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_messages",
-      "label": "messages/",
-      "path": "src/messages",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_messages_conversations_controller_ts",
-      "label": "conversations.controller.ts",
-      "path": "src/messages/conversations.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/messages",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_messages_messages_controller_ts",
-      "label": "messages.controller.ts",
-      "path": "src/messages/messages.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/messages",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_messages_messages_module_ts",
-      "label": "messages.module.ts",
-      "path": "src/messages/messages.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/messages",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_migrations",
       "label": "migrations/",
       "path": "src/migrations",
@@ -1973,9 +1531,29 @@
       "client": false
     },
     {
+      "id": "file_src_migrations_migration20260610034339_convert_base_entity_ids_to_int_ts",
+      "label": "Migration20260610034339_convert_base_entity_ids_to_int.ts",
+      "path": "src/migrations/Migration20260610034339_convert_base_entity_ids_to_int.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_migrations_migration20260610120000_add_order_gifts_ts",
       "label": "Migration20260610120000_add_order_gifts.ts",
       "path": "src/migrations/Migration20260610120000_add_order_gifts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/migrations",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_migrations_migration20260610140000_add_customer_carts_ts",
+      "label": "Migration20260610140000_add_customer_carts.ts",
+      "path": "src/migrations/Migration20260610140000_add_customer_carts.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/migrations",
@@ -2071,75 +1649,6 @@
       "client": false
     },
     {
-      "id": "dir_src_orders",
-      "label": "orders/",
-      "path": "src/orders",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_orders_order_checkout_spec_ts",
-      "label": "order-checkout.spec.ts",
-      "path": "src/orders/order-checkout.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_orders_order_checkout_ts",
-      "label": "order-checkout.ts",
-      "path": "src/orders/order-checkout.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_orders_orders_controller_ts",
-      "label": "orders.controller.ts",
-      "path": "src/orders/orders.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_orders_orders_module_ts",
-      "label": "orders.module.ts",
-      "path": "src/orders/orders.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_orders_orders_service_ts",
-      "label": "orders.service.ts",
-      "path": "src/orders/orders.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_orders_public_orders_controller_ts",
-      "label": "public-orders.controller.ts",
-      "path": "src/orders/public-orders.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/orders",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_page_contents",
       "label": "page-contents/",
       "path": "src/page-contents",
@@ -2179,45 +1688,6 @@
       "client": false
     },
     {
-      "id": "dir_src_parent_students",
-      "label": "parent-students/",
-      "path": "src/parent-students",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_parent_students_parent_students_controller_ts",
-      "label": "parent-students.controller.ts",
-      "path": "src/parent-students/parent-students.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/parent-students",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_parent_students_parent_students_module_ts",
-      "label": "parent-students.module.ts",
-      "path": "src/parent-students/parent-students.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/parent-students",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_parent_students_parent_students_service_ts",
-      "label": "parent-students.service.ts",
-      "path": "src/parent-students/parent-students.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/parent-students",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_posts",
       "label": "posts/",
       "path": "src/posts",
@@ -2247,110 +1717,12 @@
       "client": false
     },
     {
-      "id": "file_src_posts_posts_service_spec_ts",
-      "label": "posts.service.spec.ts",
-      "path": "src/posts/posts.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/posts",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_posts_posts_service_ts",
       "label": "posts.service.ts",
       "path": "src/posts/posts.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/posts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_products",
-      "label": "products/",
-      "path": "src/products",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_products_products_controller_ts",
-      "label": "products.controller.ts",
-      "path": "src/products/products.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/products",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_products_products_module_ts",
-      "label": "products.module.ts",
-      "path": "src/products/products.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/products",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_products_products_service_ts",
-      "label": "products.service.ts",
-      "path": "src/products/products.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/products",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_products_public_products_controller_ts",
-      "label": "public-products.controller.ts",
-      "path": "src/products/public-products.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/products",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_promo_codes",
-      "label": "promo-codes/",
-      "path": "src/promo-codes",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_promo_codes_promo_codes_controller_ts",
-      "label": "promo-codes.controller.ts",
-      "path": "src/promo-codes/promo-codes.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/promo-codes",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_promo_codes_promo_codes_module_ts",
-      "label": "promo-codes.module.ts",
-      "path": "src/promo-codes/promo-codes.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/promo-codes",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_promo_codes_promo_codes_service_ts",
-      "label": "promo-codes.service.ts",
-      "path": "src/promo-codes/promo-codes.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/promo-codes",
       "type": "ts",
       "client": false
     },
@@ -2391,6 +1763,16 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "file_src_public_event_student_email_ts",
+      "label": "event-student-email.ts",
+      "path": "src/public/event-student-email.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/public",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_public_public_auth_service_ts",
@@ -2512,16 +1894,6 @@
       "client": false
     },
     {
-      "id": "file_src_roles_roles_service_spec_ts",
-      "label": "roles.service.spec.ts",
-      "path": "src/roles/roles.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/roles",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_roles_roles_service_ts",
       "label": "roles.service.ts",
       "path": "src/roles/roles.service.ts",
@@ -2580,29 +1952,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_scripts_mark_migrations_executed_ts",
-      "label": "mark-migrations-executed.ts",
-      "path": "src/scripts/mark-migrations-executed.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/scripts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_seed_full_export_ts",
-      "label": "seed-full-export.ts",
-      "path": "src/seed-full-export.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_seed_guides_ts",
-      "label": "seed-guides.ts",
-      "path": "src/seed-guides.ts",
+      "id": "file_src_seed_demo_ts",
+      "label": "seed-demo.ts",
+      "path": "src/seed-demo.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src",
@@ -2648,9 +2000,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_seeds_products_sample_runner_ts",
-      "label": "products-sample.runner.ts",
-      "path": "src/seeds/products-sample.runner.ts",
+      "id": "file_src_seeds_checkin_demo_runner_ts",
+      "label": "checkin-demo.runner.ts",
+      "path": "src/seeds/checkin-demo.runner.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/seeds",
@@ -2658,9 +2010,19 @@
       "client": false
     },
     {
-      "id": "file_src_seeds_promo_codes_sample_runner_ts",
-      "label": "promo-codes-sample.runner.ts",
-      "path": "src/seeds/promo-codes-sample.runner.ts",
+      "id": "file_src_seeds_lexical_plain_text_ts",
+      "label": "lexical-plain-text.ts",
+      "path": "src/seeds/lexical-plain-text.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/seeds",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_seeds_load_export_posts_ts",
+      "label": "load-export-posts.ts",
+      "path": "src/seeds/load-export-posts.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/seeds",
@@ -2795,16 +2157,6 @@
       "client": false
     },
     {
-      "id": "file_src_settings_settings_service_spec_ts",
-      "label": "settings.service.spec.ts",
-      "path": "src/settings/settings.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/settings",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_settings_settings_service_ts",
       "label": "settings.service.ts",
       "path": "src/settings/settings.service.ts",
@@ -2903,55 +2255,6 @@
       "client": false
     },
     {
-      "id": "dir_src_students",
-      "label": "students/",
-      "path": "src/students",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_students_students_controller_ts",
-      "label": "students.controller.ts",
-      "path": "src/students/students.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/students",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_students_students_module_ts",
-      "label": "students.module.ts",
-      "path": "src/students/students.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/students",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_students_students_service_spec_ts",
-      "label": "students.service.spec.ts",
-      "path": "src/students/students.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/students",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_students_students_service_ts",
-      "label": "students.service.ts",
-      "path": "src/students/students.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/students",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_system",
       "label": "system/",
       "path": "src/system",
@@ -2959,26 +2262,6 @@
       "size": 22,
       "community": "src",
       "type": "directory"
-    },
-    {
-      "id": "file_src_system_export_schema_ts",
-      "label": "export-schema.ts",
-      "path": "src/system/export-schema.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/system",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_system_import_helpers_ts",
-      "label": "import-helpers.ts",
-      "path": "src/system/import-helpers.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/system",
-      "type": "ts",
-      "client": false
     },
     {
       "id": "file_src_system_system_controller_ts",
@@ -3040,16 +2323,6 @@
       "client": false
     },
     {
-      "id": "file_src_tags_tags_service_spec_ts",
-      "label": "tags.service.spec.ts",
-      "path": "src/tags/tags.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/tags",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_tags_tags_service_ts",
       "label": "tags.service.ts",
       "path": "src/tags/tags.service.ts",
@@ -3099,84 +2372,6 @@
       "client": false
     },
     {
-      "id": "dir_src_training_levels",
-      "label": "training-levels/",
-      "path": "src/training-levels",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_training_levels_training_levels_controller_ts",
-      "label": "training-levels.controller.ts",
-      "path": "src/training-levels/training-levels.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-levels",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_training_levels_training_levels_module_ts",
-      "label": "training-levels.module.ts",
-      "path": "src/training-levels/training-levels.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-levels",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_training_levels_training_levels_service_ts",
-      "label": "training-levels.service.ts",
-      "path": "src/training-levels/training-levels.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-levels",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_training_systems",
-      "label": "training-systems/",
-      "path": "src/training-systems",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_training_systems_training_systems_controller_ts",
-      "label": "training-systems.controller.ts",
-      "path": "src/training-systems/training-systems.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-systems",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_training_systems_training_systems_module_ts",
-      "label": "training-systems.module.ts",
-      "path": "src/training-systems/training-systems.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-systems",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_training_systems_training_systems_service_ts",
-      "label": "training-systems.service.ts",
-      "path": "src/training-systems/training-systems.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/training-systems",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_uploads",
       "label": "uploads/",
       "path": "src/uploads",
@@ -3186,209 +2381,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_uploads_folder_navigation_spec_ts",
-      "label": "folder-navigation.spec.ts",
-      "path": "src/uploads/folder-navigation.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_folder_navigation_ts",
-      "label": "folder-navigation.ts",
-      "path": "src/uploads/folder-navigation.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_folder_reorganize_spec_ts",
-      "label": "folder-reorganize.spec.ts",
-      "path": "src/uploads/folder-reorganize.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_folder_reorganize_ts",
-      "label": "folder-reorganize.ts",
-      "path": "src/uploads/folder-reorganize.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_order_image_snapshot_spec_ts",
-      "label": "order-image-snapshot.spec.ts",
-      "path": "src/uploads/order-image-snapshot.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_order_image_snapshot_ts",
-      "label": "order-image-snapshot.ts",
-      "path": "src/uploads/order-image-snapshot.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_uploads_public_uploads_controller_ts",
       "label": "public-uploads.controller.ts",
       "path": "src/uploads/public-uploads.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_folder_labels_spec_ts",
-      "label": "storage-folder-labels.spec.ts",
-      "path": "src/uploads/storage-folder-labels.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_folder_labels_ts",
-      "label": "storage-folder-labels.ts",
-      "path": "src/uploads/storage-folder-labels.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_folder_name_spec_ts",
-      "label": "storage-folder-name.spec.ts",
-      "path": "src/uploads/storage-folder-name.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_folder_name_ts",
-      "label": "storage-folder-name.ts",
-      "path": "src/uploads/storage-folder-name.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_media_spec_ts",
-      "label": "storage-media.spec.ts",
-      "path": "src/uploads/storage-media.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_media_ts",
-      "label": "storage-media.ts",
-      "path": "src/uploads/storage-media.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_path_resolver_spec_ts",
-      "label": "storage-path-resolver.spec.ts",
-      "path": "src/uploads/storage-path-resolver.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_path_resolver_ts",
-      "label": "storage-path-resolver.ts",
-      "path": "src/uploads/storage-path-resolver.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_protected_paths_spec_ts",
-      "label": "storage-protected-paths.spec.ts",
-      "path": "src/uploads/storage-protected-paths.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_protected_paths_ts",
-      "label": "storage-protected-paths.ts",
-      "path": "src/uploads/storage-protected-paths.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_upload_policy_spec_ts",
-      "label": "storage-upload-policy.spec.ts",
-      "path": "src/uploads/storage-upload-policy.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_storage_upload_policy_ts",
-      "label": "storage-upload-policy.ts",
-      "path": "src/uploads/storage-upload-policy.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_upload_filename_spec_ts",
-      "label": "upload-filename.spec.ts",
-      "path": "src/uploads/upload-filename.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_upload_filename_ts",
-      "label": "upload-filename.ts",
-      "path": "src/uploads/upload-filename.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/uploads",
@@ -3426,26 +2421,6 @@
       "client": false
     },
     {
-      "id": "file_src_uploads_zip_path_mapper_spec_ts",
-      "label": "zip-path-mapper.spec.ts",
-      "path": "src/uploads/zip-path-mapper.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_uploads_zip_path_mapper_ts",
-      "label": "zip-path-mapper.ts",
-      "path": "src/uploads/zip-path-mapper.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/uploads",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "dir_src_users",
       "label": "users/",
       "path": "src/users",
@@ -3475,16 +2450,6 @@
       "client": false
     },
     {
-      "id": "file_src_users_users_service_spec_ts",
-      "label": "users.service.spec.ts",
-      "path": "src/users/users.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/users",
-      "type": "ts",
-      "client": false
-    },
-    {
       "id": "file_src_users_users_service_ts",
       "label": "users.service.ts",
       "path": "src/users/users.service.ts",
@@ -3496,26 +2461,6 @@
     }
   ],
   "links": [
-    {
-      "source": "dir_src",
-      "target": "dir_src_academic_years",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_academic_years",
-      "target": "file_src_academic_years_academic_years_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_academic_years",
-      "target": "file_src_academic_years_academic_years_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_academic_years",
-      "target": "file_src_academic_years_academic_years_service_ts",
-      "relation": "contains"
-    },
     {
       "source": "dir_src",
       "target": "dir_src_accounts",
@@ -3533,37 +2478,7 @@
     },
     {
       "source": "dir_src_accounts",
-      "target": "file_src_accounts_accounts_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_accounts",
       "target": "file_src_accounts_accounts_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_admission_results",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_admission_results",
-      "target": "file_src_admission_results_admission_results_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_admission_results",
-      "target": "file_src_admission_results_admission_results_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_admission_results",
-      "target": "file_src_admission_results_admission_results_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_admission_results",
-      "target": "file_src_admission_results_admission_results_service_ts",
       "relation": "contains"
     },
     {
@@ -3633,11 +2548,6 @@
     },
     {
       "source": "dir_src_categories",
-      "target": "file_src_categories_categories_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_categories",
       "target": "file_src_categories_categories_service_ts",
       "relation": "contains"
     },
@@ -3658,11 +2568,6 @@
     },
     {
       "source": "dir_src_comments",
-      "target": "file_src_comments_comments_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_comments",
       "target": "file_src_comments_comments_service_ts",
       "relation": "contains"
     },
@@ -3674,6 +2579,11 @@
     {
       "source": "dir_src_common",
       "target": "file_src_common_admin_filter_configs_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "contains"
     },
     {
@@ -3713,6 +2623,11 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_cart_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_database_http_exception_filter_ts",
       "relation": "contains"
     },
@@ -3723,22 +2638,27 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_dev_login_options_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_event_time_status_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_fs_unlink_retry_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_get_options_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_gift_rules_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_gift_rules_ts",
       "relation": "contains"
     },
     {
@@ -3798,21 +2718,6 @@
     },
     {
       "source": "dir_src_common",
-      "target": "file_src_common_product_units_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_promo_checkout_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_promo_checkout_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
       "target": "file_src_common_public_decorator_ts",
       "relation": "contains"
     },
@@ -3824,16 +2729,6 @@
     {
       "source": "dir_src_common",
       "target": "file_src_common_resolve_relation_filters_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_unit_pricing_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_common",
-      "target": "file_src_common_unit_pricing_ts",
       "relation": "contains"
     },
     {
@@ -3863,52 +2758,17 @@
     },
     {
       "source": "dir_src_config",
+      "target": "dir_src_config_role_templates",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_role_templates",
+      "target": "file_src_config_role_templates_event_staff_template_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
       "target": "file_src_config_system_role_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_contact_requests",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_contact_requests",
-      "target": "file_src_contact_requests_contact_requests_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_contact_requests",
-      "target": "file_src_contact_requests_contact_requests_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_contact_requests",
-      "target": "file_src_contact_requests_contact_requests_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_contact_requests",
-      "target": "file_src_contact_requests_contact_requests_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_courses",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_courses",
-      "target": "file_src_courses_courses_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_courses",
-      "target": "file_src_courses_courses_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_courses",
-      "target": "file_src_courses_courses_service_ts",
       "relation": "contains"
     },
     {
@@ -3934,26 +2794,6 @@
     {
       "source": "dir_src_dashboard",
       "target": "file_src_dashboard_dashboard_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_departments",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_departments",
-      "target": "file_src_departments_departments_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_departments",
-      "target": "file_src_departments_departments_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_departments",
-      "target": "file_src_departments_departments_service_ts",
       "relation": "contains"
     },
     {
@@ -4004,6 +2844,11 @@
     {
       "source": "dir_src_entities",
       "target": "file_src_entities_course_entity_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_entities",
+      "target": "file_src_entities_customer_cart_entity_ts",
       "relation": "contains"
     },
     {
@@ -4318,47 +3163,7 @@
     },
     {
       "source": "dir_src",
-      "target": "file_src_full_export_2026_05_14_json",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_groups",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_groups",
-      "target": "file_src_groups_groups_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_groups",
-      "target": "file_src_groups_groups_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_groups",
-      "target": "file_src_groups_groups_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_groups",
-      "target": "file_src_groups_groups_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_hanet",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_hanet",
-      "target": "file_src_hanet_hanet_payload_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_hanet",
-      "target": "file_src_hanet_hanet_payload_ts",
       "relation": "contains"
     },
     {
@@ -4374,31 +3179,6 @@
     {
       "source": "dir_src_hanet",
       "target": "file_src_hanet_hanet_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_hanet",
-      "target": "file_src_hanet_hanet_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_imported_users",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_imported_users",
-      "target": "file_src_imported_users_imported_users_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_imported_users",
-      "target": "file_src_imported_users_imported_users_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_imported_users",
-      "target": "file_src_imported_users_imported_users_service_ts",
       "relation": "contains"
     },
     {
@@ -4428,46 +3208,6 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_majors",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_majors",
-      "target": "file_src_majors_majors_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_majors",
-      "target": "file_src_majors_majors_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_majors",
-      "target": "file_src_majors_majors_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_messages",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_messages",
-      "target": "file_src_messages_conversations_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_messages",
-      "target": "file_src_messages_messages_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_messages",
-      "target": "file_src_messages_messages_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_migrations",
       "relation": "contains"
     },
@@ -4493,7 +3233,17 @@
     },
     {
       "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260610034339_convert_base_entity_ids_to_int_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_migrations",
       "target": "file_src_migrations_migration20260610120000_add_order_gifts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_migrations",
+      "target": "file_src_migrations_migration20260610140000_add_customer_carts_ts",
       "relation": "contains"
     },
     {
@@ -4543,41 +3293,6 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_orders",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_order_checkout_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_order_checkout_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_orders_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_orders_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_orders_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_orders",
-      "target": "file_src_orders_public_orders_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_page_contents",
       "relation": "contains"
     },
@@ -4598,26 +3313,6 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_parent_students",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_parent_students",
-      "target": "file_src_parent_students_parent_students_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_parent_students",
-      "target": "file_src_parent_students_parent_students_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_parent_students",
-      "target": "file_src_parent_students_parent_students_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_posts",
       "relation": "contains"
     },
@@ -4633,57 +3328,7 @@
     },
     {
       "source": "dir_src_posts",
-      "target": "file_src_posts_posts_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_posts",
       "target": "file_src_posts_posts_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_products",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_products",
-      "target": "file_src_products_products_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_products",
-      "target": "file_src_products_products_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_products",
-      "target": "file_src_products_products_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_products",
-      "target": "file_src_products_public_products_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_promo_codes",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_promo_codes",
-      "target": "file_src_promo_codes_promo_codes_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_promo_codes",
-      "target": "file_src_promo_codes_promo_codes_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_promo_codes",
-      "target": "file_src_promo_codes_promo_codes_service_ts",
       "relation": "contains"
     },
     {
@@ -4704,6 +3349,11 @@
     {
       "source": "dir_src",
       "target": "dir_src_public",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_public",
+      "target": "file_src_public_event_student_email_ts",
       "relation": "contains"
     },
     {
@@ -4768,11 +3418,6 @@
     },
     {
       "source": "dir_src_roles",
-      "target": "file_src_roles_roles_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_roles",
       "target": "file_src_roles_roles_service_ts",
       "relation": "contains"
     },
@@ -4802,18 +3447,8 @@
       "relation": "contains"
     },
     {
-      "source": "dir_src_scripts",
-      "target": "file_src_scripts_mark_migrations_executed_ts",
-      "relation": "contains"
-    },
-    {
       "source": "dir_src",
-      "target": "file_src_seed_full_export_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "file_src_seed_guides_ts",
+      "target": "file_src_seed_demo_ts",
       "relation": "contains"
     },
     {
@@ -4838,12 +3473,17 @@
     },
     {
       "source": "dir_src_seeds",
-      "target": "file_src_seeds_products_sample_runner_ts",
+      "target": "file_src_seeds_checkin_demo_runner_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_seeds",
-      "target": "file_src_seeds_promo_codes_sample_runner_ts",
+      "target": "file_src_seeds_lexical_plain_text_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_seeds",
+      "target": "file_src_seeds_load_export_posts_ts",
       "relation": "contains"
     },
     {
@@ -4913,11 +3553,6 @@
     },
     {
       "source": "dir_src_settings",
-      "target": "file_src_settings_settings_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_settings",
       "target": "file_src_settings_settings_service_ts",
       "relation": "contains"
     },
@@ -4968,42 +3603,7 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_students",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_students",
-      "target": "file_src_students_students_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_students",
-      "target": "file_src_students_students_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_students",
-      "target": "file_src_students_students_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_students",
-      "target": "file_src_students_students_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_system",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_system",
-      "target": "file_src_system_export_schema_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_system",
-      "target": "file_src_system_import_helpers_ts",
       "relation": "contains"
     },
     {
@@ -5038,11 +3638,6 @@
     },
     {
       "source": "dir_src_tags",
-      "target": "file_src_tags_tags_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_tags",
       "target": "file_src_tags_tags_service_ts",
       "relation": "contains"
     },
@@ -5068,152 +3663,12 @@
     },
     {
       "source": "dir_src",
-      "target": "dir_src_training_levels",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_levels",
-      "target": "file_src_training_levels_training_levels_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_levels",
-      "target": "file_src_training_levels_training_levels_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_levels",
-      "target": "file_src_training_levels_training_levels_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_training_systems",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_systems",
-      "target": "file_src_training_systems_training_systems_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_systems",
-      "target": "file_src_training_systems_training_systems_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_training_systems",
-      "target": "file_src_training_systems_training_systems_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
       "target": "dir_src_uploads",
       "relation": "contains"
     },
     {
       "source": "dir_src_uploads",
-      "target": "file_src_uploads_folder_navigation_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_folder_navigation_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_folder_reorganize_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_folder_reorganize_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_order_image_snapshot_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_order_image_snapshot_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
       "target": "file_src_uploads_public_uploads_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_folder_labels_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_folder_labels_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_folder_name_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_folder_name_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_media_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_path_resolver_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_path_resolver_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_protected_paths_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_protected_paths_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_upload_policy_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_storage_upload_policy_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_upload_filename_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_upload_filename_ts",
       "relation": "contains"
     },
     {
@@ -5229,16 +3684,6 @@
     {
       "source": "dir_src_uploads",
       "target": "file_src_uploads_uploads_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_zip_path_mapper_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_uploads",
-      "target": "file_src_uploads_zip_path_mapper_ts",
       "relation": "contains"
     },
     {
@@ -5258,93 +3703,8 @@
     },
     {
       "source": "dir_src_users",
-      "target": "file_src_users_users_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_users",
       "target": "file_src_users_users_service_ts",
       "relation": "contains"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_academic_years_academic_years_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_module_ts",
-      "target": "file_src_academic_years_academic_years_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_module_ts",
-      "target": "file_src_academic_years_academic_years_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_entities_academic_year_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_academic_years_academic_years_service_ts",
-      "target": "file_src_common_legacy_audit_timestamps_ts",
-      "relation": "imports"
     },
     {
       "source": "file_src_accounts_accounts_controller_ts",
@@ -5369,6 +3729,21 @@
     {
       "source": "file_src_accounts_accounts_controller_ts",
       "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_accounts_accounts_controller_ts",
+      "target": "file_src_config_app_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_accounts_accounts_controller_ts",
+      "target": "file_src_uploads_uploads_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_accounts_accounts_module_ts",
+      "target": "file_src_accounts_accounts_service_ts",
       "relation": "imports"
     },
     {
@@ -5378,27 +3753,7 @@
     },
     {
       "source": "file_src_accounts_accounts_module_ts",
-      "target": "file_src_accounts_accounts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_service_spec_ts",
-      "target": "file_src_accounts_accounts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_service_spec_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_service_spec_ts",
-      "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_service_spec_ts",
-      "target": "file_src_entities_role_entity_ts",
+      "target": "file_src_uploads_uploads_module_ts",
       "relation": "imports"
     },
     {
@@ -5409,86 +3764,6 @@
     {
       "source": "file_src_accounts_accounts_service_ts",
       "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_admission_results_admission_results_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_module_ts",
-      "target": "file_src_admission_results_admission_results_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_module_ts",
-      "target": "file_src_admission_results_admission_results_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_service_spec_ts",
-      "target": "file_src_admission_results_admission_results_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_service_spec_ts",
-      "target": "file_src_entities_admission_result_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_service_ts",
-      "target": "file_src_entities_admission_result_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_admission_results_admission_results_service_ts",
-      "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
@@ -5538,11 +3813,6 @@
     },
     {
       "source": "file_src_app_module_ts",
-      "target": "file_src_contact_requests_contact_requests_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
       "target": "file_src_comments_comments_module_ts",
       "relation": "imports"
     },
@@ -5568,16 +3838,6 @@
     },
     {
       "source": "file_src_app_module_ts",
-      "target": "file_src_students_students_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_admission_results_admission_results_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
       "target": "file_src_users_users_module_ts",
       "relation": "imports"
     },
@@ -5589,16 +3849,6 @@
     {
       "source": "file_src_app_module_ts",
       "target": "file_src_dashboard_dashboard_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_messages_messages_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_groups_groups_module_ts",
       "relation": "imports"
     },
     {
@@ -5618,47 +3868,12 @@
     },
     {
       "source": "file_src_app_module_ts",
-      "target": "file_src_parent_students_parent_students_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_academic_years_academic_years_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_courses_courses_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_imported_users_imported_users_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
       "target": "file_src_locations_locations_module_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_app_module_ts",
-      "target": "file_src_majors_majors_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
       "target": "file_src_speakers_speakers_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_training_levels_training_levels_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_training_systems_training_systems_module_ts",
       "relation": "imports"
     },
     {
@@ -5679,11 +3894,6 @@
     {
       "source": "file_src_app_module_ts",
       "target": "file_src_screens_screens_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_departments_departments_module_ts",
       "relation": "imports"
     },
     {
@@ -5722,21 +3932,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_products_products_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_orders_orders_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_module_ts",
-      "target": "file_src_promo_codes_promo_codes_module_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_auth_auth_admin_controller_ts",
       "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
@@ -5758,12 +3953,12 @@
     },
     {
       "source": "file_src_auth_auth_module_ts",
-      "target": "file_src_auth_auth_admin_controller_ts",
+      "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_auth_auth_module_ts",
-      "target": "file_src_auth_auth_service_ts",
+      "target": "file_src_auth_auth_admin_controller_ts",
       "relation": "imports"
     },
     {
@@ -5784,11 +3979,6 @@
     {
       "source": "file_src_auth_auth_service_spec_ts",
       "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_service_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -5813,22 +4003,22 @@
     },
     {
       "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
       "target": "file_src_cameras_cameras_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_cameras_cameras_controller_ts",
       "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_cameras_cameras_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_cameras_cameras_controller_ts",
+      "target": "file_src_config_permissions_ts",
       "relation": "imports"
     },
     {
@@ -5843,17 +4033,7 @@
     },
     {
       "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_module_ts",
-      "target": "file_src_cameras_cameras_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
@@ -5862,28 +4042,13 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_cameras_cameras_module_ts",
+      "target": "file_src_cameras_cameras_controller_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_cameras_cameras_service_ts",
       "target": "file_src_entities_camera_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_service_ts",
-      "target": "file_src_entities_event_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
       "relation": "imports"
     },
     {
@@ -5898,22 +4063,7 @@
     },
     {
       "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
       "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -5928,12 +4078,17 @@
     },
     {
       "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_categories_categories_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
+      "source": "file_src_categories_categories_controller_ts",
+      "target": "file_src_common_bulk_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_categories_categories_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
@@ -5947,18 +4102,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_categories_categories_service_spec_ts",
-      "target": "file_src_categories_categories_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_service_spec_ts",
-      "target": "file_src_entities_category_entity_ts",
+      "source": "file_src_categories_categories_module_ts",
+      "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_categories_categories_service_ts",
-      "target": "file_src_common_pagination_ts",
+      "target": "file_src_common_get_options_ts",
       "relation": "imports"
     },
     {
@@ -5968,7 +4118,12 @@
     },
     {
       "source": "file_src_categories_categories_service_ts",
-      "target": "file_src_entities_post_category_entity_ts",
+      "target": "file_src_common_admin_filter_configs_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_comments_comments_controller_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -6013,11 +4168,6 @@
     },
     {
       "source": "file_src_comments_comments_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_module_ts",
       "target": "file_src_comments_comments_service_ts",
       "relation": "imports"
     },
@@ -6027,18 +4177,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_comments_comments_service_spec_ts",
-      "target": "file_src_comments_comments_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_service_spec_ts",
-      "target": "file_src_entities_comment_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_service_ts",
-      "target": "file_src_common_pagination_ts",
+      "source": "file_src_comments_comments_module_ts",
+      "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
     {
@@ -6082,33 +4222,33 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_common_bulk_actions_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_cart_types_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_common_database_http_exception_filter_ts",
       "target": "file_src_common_api_response_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_common_gift_rules_spec_ts",
-      "target": "file_src_common_gift_rules_ts",
+      "source": "file_src_common_dev_login_options_ts",
+      "target": "file_src_entities_role_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_common_gift_rules_spec_ts",
-      "target": "file_src_entities_product_entity_ts",
+      "source": "file_src_common_dev_login_options_ts",
+      "target": "file_src_entities_user_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_common_gift_rules_ts",
-      "target": "file_src_common_product_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_gift_rules_ts",
-      "target": "file_src_entities_product_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_gift_rules_ts",
-      "target": "file_src_common_product_units_ts",
+      "source": "file_src_common_dev_login_options_ts",
+      "target": "file_src_entities_user_role_entity_ts",
       "relation": "imports"
     },
     {
@@ -6149,31 +4289,6 @@
     {
       "source": "file_src_common_permissions_guard_ts",
       "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_product_units_ts",
-      "target": "file_src_common_product_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_product_units_ts",
-      "target": "file_src_entities_product_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_promo_checkout_spec_ts",
-      "target": "file_src_common_promo_checkout_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_promo_checkout_spec_ts",
-      "target": "file_src_entities_promo_code_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_promo_checkout_ts",
-      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "imports"
     },
     {
@@ -6242,13 +4357,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_common_unit_pricing_spec_ts",
-      "target": "file_src_common_unit_pricing_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_common_unit_pricing_ts",
-      "target": "file_src_common_product_types_ts",
+      "source": "file_src_common_resolve_relation_filters_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -6257,181 +4367,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_contact_requests_contact_requests_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_common_admin_realtime_broadcast_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_module_ts",
-      "target": "file_src_contact_requests_contact_requests_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_module_ts",
-      "target": "file_src_contact_requests_contact_requests_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_spec_ts",
-      "target": "file_src_contact_requests_contact_requests_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_spec_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_contact_requests_contact_requests_service_ts",
-      "target": "file_src_common_date_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_courses_courses_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_module_ts",
-      "target": "file_src_courses_courses_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_module_ts",
-      "target": "file_src_courses_courses_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_entities_course_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_courses_courses_service_ts",
-      "target": "file_src_common_legacy_audit_timestamps_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_dashboard_dashboard_controller_ts",
       "target": "file_src_dashboard_dashboard_service_ts",
       "relation": "imports"
@@ -6454,16 +4389,16 @@
     {
       "source": "file_src_dashboard_dashboard_controller_ts",
       "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_dashboard_dashboard_module_ts",
+      "target": "file_src_dashboard_dashboard_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_dashboard_dashboard_module_ts",
       "target": "file_src_dashboard_dashboard_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_module_ts",
-      "target": "file_src_dashboard_dashboard_service_ts",
       "relation": "imports"
     },
     {
@@ -6478,132 +4413,12 @@
     },
     {
       "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_comment_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_post_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
       "target": "file_src_entities_post_entity_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_session_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_departments_departments_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_module_ts",
-      "target": "file_src_departments_departments_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_module_ts",
-      "target": "file_src_departments_departments_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_service_ts",
-      "target": "file_src_entities_department_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_departments_departments_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
+      "target": "file_src_entities_post_category_entity_ts",
       "relation": "imports"
     },
     {
@@ -6664,6 +4479,11 @@
     {
       "source": "file_src_entities_contact_request_entity_ts",
       "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_entities_customer_cart_entity_ts",
+      "target": "file_src_common_cart_types_ts",
       "relation": "imports"
     },
     {
@@ -6977,6 +4797,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_entities_storage_file_entity_ts",
+      "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_entities_student_entity_ts",
       "target": "file_src_entities_base_entity_ts",
       "relation": "imports"
@@ -7118,12 +4943,12 @@
     },
     {
       "source": "file_src_event_checkins_event_checkins_module_ts",
-      "target": "file_src_event_checkins_event_checkins_controller_ts",
+      "target": "file_src_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_event_checkins_event_checkins_module_ts",
-      "target": "file_src_event_checkins_event_checkins_service_ts",
+      "target": "file_src_event_checkins_event_checkins_controller_ts",
       "relation": "imports"
     },
     {
@@ -7142,16 +4967,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_checkins_event_checkins_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_event_checkouts_event_checkouts_controller_ts",
       "target": "file_src_event_checkouts_event_checkouts_service_ts",
       "relation": "imports"
@@ -7183,22 +4998,12 @@
     },
     {
       "source": "file_src_event_checkouts_event_checkouts_module_ts",
-      "target": "file_src_event_checkouts_event_checkouts_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkouts_event_checkouts_module_ts",
       "target": "file_src_event_checkouts_event_checkouts_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_event_checkouts_event_checkouts_service_ts",
-      "target": "file_src_entities_event_registration_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkouts_event_checkouts_service_ts",
-      "target": "file_src_common_pagination_ts",
+      "source": "file_src_event_checkouts_event_checkouts_module_ts",
+      "target": "file_src_event_checkouts_event_checkouts_controller_ts",
       "relation": "imports"
     },
     {
@@ -7218,11 +5023,6 @@
     },
     {
       "source": "file_src_event_registrations_event_registration_attendance_service_ts",
-      "target": "file_src_socket_socket_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registration_attendance_service_ts",
       "target": "file_src_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
@@ -7268,12 +5068,7 @@
     },
     {
       "source": "file_src_event_registrations_event_registrations_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_module_ts",
-      "target": "file_src_event_registrations_event_registration_attendance_service_ts",
+      "target": "file_src_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
@@ -7283,7 +5078,12 @@
     },
     {
       "source": "file_src_event_registrations_event_registrations_module_ts",
-      "target": "file_src_event_registrations_event_registrations_service_ts",
+      "target": "file_src_event_registrations_event_registration_attendance_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_event_registrations_event_registrations_module_ts",
+      "target": "file_src_socket_socket_module_ts",
       "relation": "imports"
     },
     {
@@ -7302,16 +5102,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_registrations_event_registrations_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_event_speakers_event_speakers_controller_ts",
       "target": "file_src_event_speakers_event_speakers_service_ts",
       "relation": "imports"
@@ -7348,12 +5138,12 @@
     },
     {
       "source": "file_src_event_speakers_event_speakers_module_ts",
-      "target": "file_src_event_speakers_event_speakers_controller_ts",
+      "target": "file_src_event_speakers_event_speakers_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_event_speakers_event_speakers_module_ts",
-      "target": "file_src_event_speakers_event_speakers_service_ts",
+      "target": "file_src_event_speakers_event_speakers_controller_ts",
       "relation": "imports"
     },
     {
@@ -7372,16 +5162,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_speakers_event_speakers_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_events_events_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
@@ -7423,12 +5203,12 @@
     },
     {
       "source": "file_src_events_events_module_ts",
-      "target": "file_src_events_events_controller_ts",
+      "target": "file_src_events_events_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_events_events_module_ts",
-      "target": "file_src_events_events_service_ts",
+      "target": "file_src_events_events_controller_ts",
       "relation": "imports"
     },
     {
@@ -7442,31 +5222,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_events_events_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_service_ts",
-      "target": "file_src_common_poster_normalize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_face_data_face_data_controller_ts",
       "target": "file_src_face_data_face_data_service_ts",
       "relation": "imports"
@@ -7498,7 +5253,17 @@
     },
     {
       "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_face_data_face_data_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_face_data_face_data_module_ts",
+      "target": "file_src_face_data_face_data_service_ts",
       "relation": "imports"
     },
     {
@@ -7507,143 +5272,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_face_data_face_data_module_ts",
-      "target": "file_src_face_data_face_data_service_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_face_data_face_data_service_ts",
       "target": "file_src_entities_face_data_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_groups_groups_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_socket_socket_gateway_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_module_ts",
-      "target": "file_src_groups_groups_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_module_ts",
-      "target": "file_src_groups_groups_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_spec_ts",
-      "target": "file_src_groups_groups_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_spec_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_spec_ts",
-      "target": "file_src_entities_group_member_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_ts",
-      "target": "file_src_entities_group_member_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_ts",
-      "target": "file_src_entities_message_read_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_groups_groups_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_payload_spec_ts",
-      "target": "file_src_hanet_hanet_payload_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_payload_ts",
-      "target": "file_src_hanet_hanet_types_ts",
       "relation": "imports"
     },
     {
@@ -7658,17 +5288,12 @@
     },
     {
       "source": "file_src_hanet_hanet_webhook_controller_ts",
-      "target": "file_src_hanet_hanet_payload_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_webhook_controller_ts",
       "target": "file_src_hanet_hanet_webhook_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_hanet_hanet_webhook_controller_ts",
-      "target": "file_src_hanet_hanet_types_ts",
+      "source": "file_src_hanet_hanet_webhook_service_ts",
+      "target": "file_src_event_registrations_event_registration_attendance_service_ts",
       "relation": "imports"
     },
     {
@@ -7687,23 +5312,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_hanet_hanet_webhook_service_ts",
-      "target": "file_src_event_registrations_event_registration_attendance_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_webhook_service_ts",
-      "target": "file_src_hanet_hanet_payload_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_webhook_service_ts",
-      "target": "file_src_hanet_hanet_types_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_hanet_hanet_module_ts",
-      "target": "file_src_event_registrations_event_registrations_module_ts",
+      "target": "file_src_hanet_hanet_webhook_service_ts",
       "relation": "imports"
     },
     {
@@ -7713,77 +5323,7 @@
     },
     {
       "source": "file_src_hanet_hanet_module_ts",
-      "target": "file_src_hanet_hanet_webhook_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_imported_users_imported_users_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_module_ts",
-      "target": "file_src_imported_users_imported_users_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_module_ts",
-      "target": "file_src_imported_users_imported_users_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_service_ts",
-      "target": "file_src_entities_imported_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_imported_users_imported_users_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_config_permissions_ts",
+      "target": "file_src_event_registrations_event_registrations_module_ts",
       "relation": "imports"
     },
     {
@@ -7798,6 +5338,16 @@
     },
     {
       "source": "file_src_locations_locations_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_locations_locations_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_locations_locations_controller_ts",
       "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
@@ -7808,12 +5358,12 @@
     },
     {
       "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
+      "source": "file_src_locations_locations_module_ts",
+      "target": "file_src_locations_locations_service_ts",
       "relation": "imports"
     },
     {
@@ -7822,28 +5372,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_locations_locations_module_ts",
-      "target": "file_src_locations_locations_service_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_locations_locations_service_ts",
       "target": "file_src_entities_location_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
       "relation": "imports"
     },
     {
@@ -7879,181 +5409,6 @@
     {
       "source": "file_src_main_ts",
       "target": "file_src_common_api_access_middleware_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_majors_majors_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_module_ts",
-      "target": "file_src_majors_majors_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_module_ts",
-      "target": "file_src_majors_majors_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_entities_major_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_majors_majors_service_ts",
-      "target": "file_src_common_legacy_audit_timestamps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_socket_socket_gateway_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_conversations_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_socket_socket_gateway_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_entities_message_read_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_entities_group_member_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_module_ts",
-      "target": "file_src_messages_messages_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_messages_messages_module_ts",
-      "target": "file_src_messages_conversations_controller_ts",
       "relation": "imports"
     },
     {
@@ -8099,6 +5454,11 @@
     {
       "source": "file_src_mikro_orm_orm_entities_ts",
       "target": "file_src_entities_course_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_mikro_orm_orm_entities_ts",
+      "target": "file_src_entities_customer_cart_entity_ts",
       "relation": "imports"
     },
     {
@@ -8288,6 +5648,11 @@
     },
     {
       "source": "file_src_notifications_notifications_controller_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_notifications_notifications_controller_ts",
       "target": "file_src_notifications_notifications_service_ts",
       "relation": "imports"
     },
@@ -8313,17 +5678,17 @@
     },
     {
       "source": "file_src_notifications_notifications_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_module_ts",
       "target": "file_src_notifications_notifications_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_notifications_notifications_module_ts",
       "target": "file_src_notifications_notifications_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_notifications_notifications_module_ts",
+      "target": "file_src_socket_socket_module_ts",
       "relation": "imports"
     },
     {
@@ -8377,168 +5742,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_orders_order_checkout_spec_ts",
-      "target": "file_src_orders_order_checkout_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_order_checkout_spec_ts",
-      "target": "file_src_entities_product_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_order_checkout_ts",
-      "target": "file_src_common_product_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_order_checkout_ts",
-      "target": "file_src_common_unit_pricing_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_order_checkout_ts",
-      "target": "file_src_common_product_units_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_order_checkout_ts",
-      "target": "file_src_entities_product_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_orders_orders_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_controller_ts",
-      "target": "file_src_entities_order_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_products_products_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_promo_codes_promo_codes_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_uploads_uploads_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_orders_orders_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_orders_orders_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_module_ts",
-      "target": "file_src_orders_public_orders_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_entities_order_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_common_product_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_common_gift_rules_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_common_promo_checkout_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_promo_codes_promo_codes_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_products_products_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_uploads_uploads_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_orders_service_ts",
-      "target": "file_src_orders_order_checkout_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_public_orders_controller_ts",
-      "target": "file_src_orders_orders_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_public_orders_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_public_orders_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_orders_public_orders_controller_ts",
-      "target": "file_src_common_public_decorator_ts",
+      "source": "file_src_page_contents_page_contents_controller_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -8617,93 +5822,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_page_contents_page_contents_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_parent_students_parent_students_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_module_ts",
-      "target": "file_src_parent_students_parent_students_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_module_ts",
-      "target": "file_src_parent_students_parent_students_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_module_ts",
-      "target": "file_src_socket_socket_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_service_ts",
-      "target": "file_src_entities_parent_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_service_ts",
-      "target": "file_src_common_admin_realtime_broadcast_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_parent_students_parent_students_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
+      "source": "file_src_posts_posts_controller_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -8748,11 +5868,6 @@
     },
     {
       "source": "file_src_posts_posts_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_module_ts",
       "target": "file_src_posts_posts_service_ts",
       "relation": "imports"
     },
@@ -8762,48 +5877,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_posts_posts_service_spec_ts",
-      "target": "file_src_posts_posts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_spec_ts",
-      "target": "file_src_entities_post_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_spec_ts",
-      "target": "file_src_entities_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_spec_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_spec_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_ts",
-      "target": "file_src_common_resolve_relation_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_ts",
-      "target": "file_src_common_get_options_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_service_ts",
-      "target": "file_src_common_date_utils_ts",
+      "source": "file_src_posts_posts_module_ts",
+      "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
     {
@@ -8834,146 +5909,6 @@
     {
       "source": "file_src_posts_posts_service_ts",
       "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_products_products_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_module_ts",
-      "target": "file_src_products_products_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_module_ts",
-      "target": "file_src_products_products_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_module_ts",
-      "target": "file_src_products_public_products_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_service_ts",
-      "target": "file_src_entities_product_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_service_ts",
-      "target": "file_src_common_product_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_service_ts",
-      "target": "file_src_common_product_units_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_products_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_public_products_controller_ts",
-      "target": "file_src_products_products_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_public_products_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_public_products_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_products_public_products_controller_ts",
-      "target": "file_src_common_public_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_promo_codes_promo_codes_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_module_ts",
-      "target": "file_src_promo_codes_promo_codes_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_module_ts",
-      "target": "file_src_promo_codes_promo_codes_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_service_ts",
-      "target": "file_src_entities_promo_code_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_service_ts",
-      "target": "file_src_common_promo_checkout_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_promo_codes_promo_codes_service_ts",
-      "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
@@ -9014,11 +5949,6 @@
     {
       "source": "file_src_public_public_auth_service_ts",
       "target": "file_src_users_users_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_auth_service_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -9067,11 +5997,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_public_public_event_registration_service_ts",
-      "target": "file_src_common_poster_normalize_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_public_public_events_service_ts",
       "target": "file_src_entities_event_entity_ts",
       "relation": "imports"
@@ -9079,21 +6004,6 @@
     {
       "source": "file_src_public_public_events_service_ts",
       "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_events_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_events_service_ts",
-      "target": "file_src_common_poster_normalize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_events_service_ts",
-      "target": "file_src_common_event_time_status_ts",
       "relation": "imports"
     },
     {
@@ -9127,11 +6037,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_public_public_posts_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_public_public_controller_ts",
       "target": "file_src_public_public_posts_service_ts",
       "relation": "imports"
@@ -9159,11 +6064,6 @@
     {
       "source": "file_src_public_public_controller_ts",
       "target": "file_src_public_public_auth_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_controller_ts",
-      "target": "file_src_admission_results_admission_results_service_ts",
       "relation": "imports"
     },
     {
@@ -9199,6 +6099,11 @@
     {
       "source": "file_src_public_public_controller_ts",
       "target": "file_src_public_public_event_registration_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_public_public_controller_ts",
+      "target": "file_src_public_event_student_email_ts",
       "relation": "imports"
     },
     {
@@ -9253,11 +6158,6 @@
     },
     {
       "source": "file_src_public_public_module_ts",
-      "target": "file_src_admission_results_admission_results_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_public_public_module_ts",
       "target": "file_src_page_contents_page_contents_module_ts",
       "relation": "imports"
     },
@@ -9303,27 +6203,7 @@
     },
     {
       "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_socket_socket_gateway_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
       "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -9338,7 +6218,27 @@
     },
     {
       "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_roles_roles_controller_ts",
+      "target": "file_src_common_bulk_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_roles_roles_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_roles_roles_module_ts",
+      "target": "file_src_roles_roles_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_roles_roles_module_ts",
+      "target": "file_src_roles_roles_controller_ts",
       "relation": "imports"
     },
     {
@@ -9352,63 +6252,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_roles_roles_module_ts",
-      "target": "file_src_roles_roles_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_module_ts",
-      "target": "file_src_roles_roles_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_spec_ts",
-      "target": "file_src_roles_roles_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_spec_ts",
-      "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_roles_roles_service_ts",
       "target": "file_src_common_get_options_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_roles_roles_service_ts",
-      "target": "file_src_config_protected_admin_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_ts",
-      "target": "file_src_config_system_role_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_ts",
       "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_config_permissions_ts",
       "relation": "imports"
     },
     {
@@ -9423,6 +6273,16 @@
     },
     {
       "source": "file_src_screens_screens_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_screens_screens_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_screens_screens_controller_ts",
       "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
@@ -9433,22 +6293,17 @@
     },
     {
       "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_module_ts",
-      "target": "file_src_screens_screens_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_screens_screens_module_ts",
       "target": "file_src_screens_screens_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_screens_screens_module_ts",
+      "target": "file_src_screens_screens_controller_ts",
       "relation": "imports"
     },
     {
@@ -9458,152 +6313,17 @@
     },
     {
       "source": "file_src_screens_screens_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_service_ts",
       "target": "file_src_common_admin_filter_configs_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_scripts_mark_migrations_executed_ts",
-      "target": "file_src_mikro_orm_mikro_orm_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
+      "source": "file_src_seed_demo_ts",
       "target": "file_src_mikro_orm_orm_entities_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_account_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_admission_result_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_comment_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_group_member_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_message_read_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_page_content_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_post_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_post_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_post_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_session_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_setting_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_entities_verification_token_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_full_export_ts",
-      "target": "file_src_system_import_helpers_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seed_guides_ts",
-      "target": "file_src_entities_page_content_entity_ts",
+      "source": "file_src_seed_demo_ts",
+      "target": "file_src_seeds_checkin_demo_runner_ts",
       "relation": "imports"
     },
     {
@@ -9637,23 +6357,38 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_seeders_databaseseeder_ts",
-      "target": "file_src_seeds_products_sample_runner_ts",
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_entities_event_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_seeders_databaseseeder_ts",
-      "target": "file_src_seeds_promo_codes_sample_runner_ts",
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_entities_event_registration_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_seeds_products_sample_runner_ts",
-      "target": "file_src_entities_product_entity_ts",
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_entities_user_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_seeds_promo_codes_sample_runner_ts",
-      "target": "file_src_entities_promo_code_entity_ts",
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_seeds_superadmin_bootstrap_runner_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_seeds_load_export_posts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeds_checkin_demo_runner_ts",
+      "target": "file_src_seeds_lexical_plain_text_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seeds_superadmin_bootstrap_data_ts",
+      "target": "file_src_config_role_templates_event_staff_template_ts",
       "relation": "imports"
     },
     {
@@ -9713,22 +6448,17 @@
     },
     {
       "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_module_ts",
-      "target": "file_src_seo_metas_seo_metas_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_seo_metas_seo_metas_module_ts",
       "target": "file_src_seo_metas_seo_metas_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seo_metas_seo_metas_module_ts",
+      "target": "file_src_seo_metas_seo_metas_controller_ts",
       "relation": "imports"
     },
     {
@@ -9738,22 +6468,12 @@
     },
     {
       "source": "file_src_seo_metas_seo_metas_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_service_ts",
       "target": "file_src_common_admin_filter_configs_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sessions_sessions_controller_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -9803,6 +6523,16 @@
     },
     {
       "source": "file_src_sessions_sessions_module_ts",
+      "target": "file_src_sessions_sessions_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sessions_sessions_module_ts",
+      "target": "file_src_sessions_sessions_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sessions_sessions_module_ts",
       "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
@@ -9812,13 +6542,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_sessions_sessions_module_ts",
-      "target": "file_src_sessions_sessions_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_module_ts",
-      "target": "file_src_sessions_sessions_controller_ts",
+      "source": "file_src_sessions_sessions_service_ts",
+      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -9839,21 +6564,6 @@
     {
       "source": "file_src_sessions_sessions_service_ts",
       "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_service_ts",
-      "target": "file_src_common_resolve_relation_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_service_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -9883,27 +6593,12 @@
     },
     {
       "source": "file_src_settings_settings_module_ts",
-      "target": "file_src_settings_settings_controller_ts",
+      "target": "file_src_settings_settings_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_settings_settings_module_ts",
-      "target": "file_src_settings_settings_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_settings_settings_service_spec_ts",
-      "target": "file_src_settings_settings_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_settings_settings_service_spec_ts",
-      "target": "file_src_entities_setting_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_settings_settings_service_ts",
-      "target": "file_src_common_parse_setting_value_ts",
+      "target": "file_src_settings_settings_controller_ts",
       "relation": "imports"
     },
     {
@@ -9914,6 +6609,11 @@
     {
       "source": "file_src_socket_notification_mapper_ts",
       "target": "file_src_socket_socket_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_socket_socket_gateway_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -9968,22 +6668,22 @@
     },
     {
       "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
       "target": "file_src_speakers_speakers_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_speakers_speakers_controller_ts",
       "target": "file_src_common_api_response_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_speakers_speakers_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_speakers_speakers_controller_ts",
+      "target": "file_src_config_permissions_ts",
       "relation": "imports"
     },
     {
@@ -9998,22 +6698,17 @@
     },
     {
       "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_module_ts",
-      "target": "file_src_speakers_speakers_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_speakers_speakers_module_ts",
       "target": "file_src_speakers_speakers_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_speakers_speakers_module_ts",
+      "target": "file_src_speakers_speakers_controller_ts",
       "relation": "imports"
     },
     {
@@ -10023,112 +6718,7 @@
     },
     {
       "source": "file_src_speakers_speakers_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_service_ts",
       "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_students_students_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_module_ts",
-      "target": "file_src_students_students_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_module_ts",
-      "target": "file_src_students_students_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_spec_ts",
-      "target": "file_src_students_students_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_spec_ts",
-      "target": "file_src_entities_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_spec_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_ts",
-      "target": "file_src_common_get_options_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_students_students_service_ts",
-      "target": "file_src_entities_student_entity_ts",
       "relation": "imports"
     },
     {
@@ -10178,86 +6768,6 @@
     },
     {
       "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_comment_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_event_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_speaker_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_page_content_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
       "target": "file_src_mikro_orm_orm_entities_ts",
       "relation": "imports"
     },
@@ -10267,38 +6777,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_system_import_helpers_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_system_export_schema_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_tags_tags_controller_ts",
       "target": "file_src_tags_tags_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
       "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -10313,12 +6798,22 @@
     },
     {
       "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_tags_tags_controller_ts",
+      "target": "file_src_common_bulk_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_tags_tags_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_tags_tags_module_ts",
-      "target": "file_src_notifications_notifications_module_ts",
+      "target": "file_src_tags_tags_service_ts",
       "relation": "imports"
     },
     {
@@ -10328,32 +6823,7 @@
     },
     {
       "source": "file_src_tags_tags_module_ts",
-      "target": "file_src_tags_tags_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_service_spec_ts",
-      "target": "file_src_tags_tags_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_service_spec_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_service_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_service_ts",
-      "target": "file_src_entities_post_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_service_ts",
-      "target": "file_src_common_pagination_ts",
+      "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
     {
@@ -10362,13 +6832,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_config_permissions_ts",
+      "source": "file_src_tags_tags_service_ts",
+      "target": "file_src_entities_tag_entity_ts",
       "relation": "imports"
     },
     {
@@ -10383,6 +6848,16 @@
     },
     {
       "source": "file_src_templates_templates_controller_ts",
+      "target": "file_src_common_permissions_decorator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_templates_templates_controller_ts",
+      "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_templates_templates_controller_ts",
       "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
@@ -10393,22 +6868,17 @@
     },
     {
       "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_module_ts",
-      "target": "file_src_templates_templates_controller_ts",
+      "target": "file_src_common_admin_list_params_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_templates_templates_module_ts",
       "target": "file_src_templates_templates_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_templates_templates_module_ts",
+      "target": "file_src_templates_templates_controller_ts",
       "relation": "imports"
     },
     {
@@ -10418,207 +6888,7 @@
     },
     {
       "source": "file_src_templates_templates_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_service_ts",
       "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_training_levels_training_levels_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_module_ts",
-      "target": "file_src_training_levels_training_levels_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_module_ts",
-      "target": "file_src_training_levels_training_levels_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_entities_training_level_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_levels_training_levels_service_ts",
-      "target": "file_src_common_legacy_audit_timestamps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_training_systems_training_systems_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_module_ts",
-      "target": "file_src_training_systems_training_systems_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_module_ts",
-      "target": "file_src_training_systems_training_systems_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_entities_training_system_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_training_systems_training_systems_service_ts",
-      "target": "file_src_common_legacy_audit_timestamps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_folder_navigation_spec_ts",
-      "target": "file_src_uploads_folder_navigation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_folder_navigation_ts",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_folder_navigation_ts",
-      "target": "file_src_uploads_storage_folder_labels_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_folder_reorganize_spec_ts",
-      "target": "file_src_uploads_folder_reorganize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_order_image_snapshot_spec_ts",
-      "target": "file_src_uploads_order_image_snapshot_ts",
       "relation": "imports"
     },
     {
@@ -10634,61 +6904,6 @@
     {
       "source": "file_src_uploads_public_uploads_controller_ts",
       "target": "file_src_common_public_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_folder_labels_spec_ts",
-      "target": "file_src_uploads_storage_folder_labels_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_folder_labels_ts",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_folder_name_spec_ts",
-      "target": "file_src_uploads_storage_folder_name_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_media_spec_ts",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_media_ts",
-      "target": "file_src_common_image_processor_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_media_ts",
-      "target": "file_src_uploads_storage_folder_labels_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_path_resolver_spec_ts",
-      "target": "file_src_uploads_storage_path_resolver_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_protected_paths_spec_ts",
-      "target": "file_src_uploads_storage_protected_paths_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_upload_policy_spec_ts",
-      "target": "file_src_uploads_storage_upload_policy_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_storage_upload_policy_ts",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_upload_filename_spec_ts",
-      "target": "file_src_uploads_upload_filename_ts",
       "relation": "imports"
     },
     {
@@ -10743,6 +6958,11 @@
     },
     {
       "source": "file_src_uploads_uploads_service_ts",
+      "target": "file_src_config_app_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_uploads_uploads_service_ts",
       "target": "file_src_entities_storage_file_entity_ts",
       "relation": "imports"
     },
@@ -10752,83 +6972,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_config_app_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_common_image_processor_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_zip_path_mapper_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_folder_reorganize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_folder_navigation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_folder_labels_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_upload_policy_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_path_resolver_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_folder_name_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_order_image_snapshot_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_storage_protected_paths_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_service_ts",
-      "target": "file_src_uploads_upload_filename_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_zip_path_mapper_spec_ts",
-      "target": "file_src_uploads_zip_path_mapper_ts",
+      "source": "file_src_users_users_controller_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -10883,6 +7028,16 @@
     },
     {
       "source": "file_src_users_users_module_ts",
+      "target": "file_src_users_users_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_users_users_module_ts",
+      "target": "file_src_users_users_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_users_users_module_ts",
       "target": "file_src_notifications_notifications_module_ts",
       "relation": "imports"
     },
@@ -10897,53 +7052,23 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_users_users_module_ts",
-      "target": "file_src_users_users_service_ts",
+      "source": "file_src_users_users_service_ts",
+      "target": "file_src_config_protected_admin_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_users_users_module_ts",
-      "target": "file_src_users_users_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_spec_ts",
-      "target": "file_src_users_users_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_spec_ts",
+      "source": "file_src_users_users_service_ts",
       "target": "file_src_entities_user_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_users_users_service_spec_ts",
+      "source": "file_src_users_users_service_ts",
       "target": "file_src_entities_role_entity_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_users_users_service_spec_ts",
+      "source": "file_src_users_users_service_ts",
       "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_common_get_options_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_common_date_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_entities_role_entity_ts",
       "relation": "imports"
     },
     {
@@ -10953,17 +7078,7 @@
     },
     {
       "source": "file_src_users_users_service_ts",
-      "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_entities_user_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_service_ts",
-      "target": "file_src_config_protected_admin_ts",
+      "target": "file_src_common_dev_login_options_ts",
       "relation": "imports"
     }
   ]

@@ -13,8 +13,9 @@ Thư mục này gom tài liệu Markdown tham chiếu chuyên sâu cho agent/AI 
 - `PRE_CODE_PROTOCOL.md`: quy trình bắt buộc trước khi agent sửa code, gồm thứ tự đọc docs, mapping `docs/pages/`, boundary checklist.
 - `MICROSERVICE_SYSTEM_MAP.md`: bản đồ kiến trúc + boundaries + checklist (API dùng **MikroORM**).
 - `AGENTS_GUIDE.md`: hướng dẫn agent vận hành (đọc, kiểm tra, tự điều chỉnh).
-- `FRONTEND_UX.md`: UX/UI storefront, nguồn palette (`apps/frontend/src/app/globals.css` ↔ `packages/ui`), a11y — **giữ nguyên** cách dùng `packages/*`.
-- `ADMIN_PAGE_PATTERN.md`: pattern chuẩn cho mọi page admin trong `apps/backend` — guard, page header, layout grid, table actions, form pattern, common pitfalls.
+- `FRONTEND_UX.md`: UX/UI storefront (`apps/hub-parent/hub-parent-frontend`), palette ↔ `packages/ui`, a11y.
+- `ADMIN_PAGE_PATTERN.md`: pattern admin (`apps/main/backend` + `@ui`) — guard, header, grid, table, form.
+- `ADMIN_APP_PACKAGE.md`: CRUD admin dùng chung (`packages/admin-app`) + generate.
 
 ## Bản đồ packages (`packages/`)
 
@@ -22,6 +23,8 @@ Thư mục này gom tài liệu Markdown tham chiếu chuyên sâu cho agent/AI 
 | -------------------- | ------------------------------ | ----------------------------------------------- | ----------- | ----------------------------------------------------- |
 | `ui/`                | `@workspace/ui`                | UI components (admin + site) + hooks + lib      | ✅          | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` |
 | `api-client/`        | `@workspace/api-client`        | HTTP API client (fetch wrapper, SDK, resources) | ✅          | `docs/api-client-pattern/README.md`                   |
+| `api-server/`        | `@workspace/api-server`        | Nest logic + generate API check-in              | ✅          | `packages/api-server/README.md`                       |
+| `admin-app/`         | `@workspace/admin-app`         | Admin CRUD + generate pages                     | ✅          | `ADMIN_APP_PACKAGE.md`                                |
 | `editor/`            | `@thangph2146/lexical-editor`  | Lexical rich text editor                        | ✅          | `packages/editor/README.md`                           |
 | `logger/`            | `@workspace/logger`            | Dev logging (console output)                    | ✅          | `docs/logger-pattern/README.md`                       |
 | `query-client/`      | `@workspace/query-client`      | TanStack Query setup                            | ✅          | `docs/query-client-pattern/README.md`                 |
@@ -30,7 +33,7 @@ Thư mục này gom tài liệu Markdown tham chiếu chuyên sâu cho agent/AI 
 
 ## Tài liệu bổ trợ theo chủ đề
 
-- `docs/api-pattern/README.md` — kiến trúc API NestJS (khi sửa `apps/api`).
+- `docs/api-pattern/README.md` — kiến trúc API NestJS (`apps/main/api`, `packages/api-server`).
 - `docs/api-client-pattern/README.md` — pattern gọi API qua `@workspace/api-client` (khi sửa `packages/api-client` hoặc gọi API từ app).
 - `docs/steps/*.md` — lộ trình chính cho agent.
 - `docs/pages/README.md` — kiến trúc file chuẩn cho admin modules.
@@ -46,8 +49,10 @@ Thư mục này gom tài liệu Markdown tham chiếu chuyên sâu cho agent/AI 
 
 ## Graphify theo service
 
-- `apps/frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
-- `apps/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
-- `apps/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+Bảng đầy đủ: [`AGENTS.md`](../../AGENTS.md) mục 3 (Graphify). Ví dụ dev:
+
+- `apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`
+- `apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`
+- `apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`
 
 Ưu tiên đọc `markdown/SUMMARY_FOR_AI.md` trước, chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể.
