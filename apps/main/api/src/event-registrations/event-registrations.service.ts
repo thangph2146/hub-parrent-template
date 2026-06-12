@@ -1,4 +1,8 @@
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import {
@@ -128,7 +132,6 @@ function resolveRegistrationAvatar(
   return avatarFromFormData(row.formData);
 }
 
-
 function normalizeEventIdParam(eventId: string | number): number {
   return typeof eventId === 'number' ? eventId : toEntityId(eventId);
 }
@@ -178,7 +181,11 @@ export class EventRegistrationsService {
   async syncEventRegistrationCount(eventId: string | number): Promise<number> {
     const eid = normalizeEventIdParam(eventId);
     const count = await this.countActiveForEvent(eid);
-    await this.em.nativeUpdate(Event, { id: eid }, { totalRegistrations: count });
+    await this.em.nativeUpdate(
+      Event,
+      { id: eid },
+      { totalRegistrations: count },
+    );
     return count;
   }
 
@@ -307,7 +314,9 @@ export class EventRegistrationsService {
       checkinMethod?: CheckinMethod;
     },
   ): Promise<EventRegistrationRowDto | null> {
-    const existing = await this.em.findOne(EventRegistration, { id: toEntityId(id) });
+    const existing = await this.em.findOne(EventRegistration, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
     if (data.email !== undefined) existing.email = data.email;
     if (data.fullName !== undefined) existing.fullName = data.fullName;

@@ -159,7 +159,9 @@ export class UsersService {
   }
 
   private async getUserWithRoles(id: string | number): Promise<User | null> {
-    return this.em.findOne(User, { id: toEntityId(id) },
+    return this.em.findOne(
+      User,
+      { id: toEntityId(id) },
       {
         populate: ['userRoles', 'userRoles.role'],
         orderBy: { userRoles: { role: { name: 'ASC' } } },
@@ -455,7 +457,9 @@ export class UsersService {
     }
 
     if (action === 'hard-delete') {
-      const users = await this.em.find(User, { id: { $in: toEntityIdList(ids) } });
+      const users = await this.em.find(User, {
+        id: { $in: toEntityIdList(ids) },
+      });
       const filtered = users.filter((u) => !isProtectedAdminEmail(u.email));
       const skipCount = users.length - filtered.length;
       if (filtered.length > 0) {
@@ -493,7 +497,9 @@ export class UsersService {
       const superAdminIds = new Set(
         superAdminRows.map((userRole) => userRole.user.id),
       );
-      const idsToUnactive = ids.filter((id) => !superAdminIds.has(toEntityId(id)));
+      const idsToUnactive = ids.filter(
+        (id) => !superAdminIds.has(toEntityId(id)),
+      );
 
       if (!idsToUnactive.length) {
         return {

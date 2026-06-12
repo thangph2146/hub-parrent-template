@@ -200,7 +200,10 @@ export class OrdersService {
   }
 
   async getById(id: number): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(Order, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Order, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     return row ? mapOrder(row) : null;
   }
 
@@ -219,7 +222,10 @@ export class OrdersService {
   }
 
   async getPublicById(id: number, email?: string): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(Order, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Order, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return null;
     if (email?.trim()) {
       const normalized = email.trim().toLowerCase();
@@ -293,7 +299,9 @@ export class OrdersService {
 
     let customer: User | null = null;
     if (input.customerId?.trim()) {
-      customer = await this.em.findOne(User, { id: toEntityId(input.customerId.trim()) });
+      customer = await this.em.findOne(User, {
+        id: toEntityId(input.customerId.trim()),
+      });
     }
 
     const now = new Date();
@@ -397,7 +405,10 @@ export class OrdersService {
     status: OrderStatus,
     actorUserId?: string,
   ): Promise<OrderRowDto | null> {
-    const row = await this.em.findOne(Order, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Order, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return null;
     row.status = status;
     const now = new Date();
@@ -417,7 +428,10 @@ export class OrdersService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Order, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Order, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return false;
     row.deletedAt = new Date();
     await this.em.flush();

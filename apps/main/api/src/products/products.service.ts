@@ -114,7 +114,10 @@ export class ProductsService {
   }
 
   async getById(id: number): Promise<ProductRowDto | null> {
-    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Product, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     return row ? mapProduct(row) : null;
   }
 
@@ -200,7 +203,10 @@ export class ProductsService {
     id: number,
     data: Partial<Product>,
   ): Promise<ProductRowDto | null> {
-    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Product, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return null;
     if (data.sku !== undefined) row.sku = String(data.sku).trim();
     if (data.name !== undefined) row.name = String(data.name).trim();
@@ -236,7 +242,10 @@ export class ProductsService {
   }
 
   async softDelete(id: number): Promise<boolean> {
-    const row = await this.em.findOne(Product, { id: toEntityId(id), deletedAt: null });
+    const row = await this.em.findOne(Product, {
+      id: toEntityId(id),
+      deletedAt: null,
+    });
     if (!row) return false;
     row.deletedAt = new Date();
     row.isActive = false;

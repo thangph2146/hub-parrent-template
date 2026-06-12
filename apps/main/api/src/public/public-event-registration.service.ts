@@ -81,7 +81,8 @@ export class PublicEventRegistrationService {
       throw new Error('Vui lòng đăng nhập trước khi tiếp tục.');
     }
 
-    const user = await this.em.findOne(User, { id: toEntityId(uid),
+    const user = await this.em.findOne(User, {
+      id: toEntityId(uid),
       deletedAt: null,
       isActive: true,
     });
@@ -181,9 +182,9 @@ export class PublicEventRegistrationService {
     const id = registrationId?.trim();
     if (!id) throw new Error('Thiếu mã đăng ký.');
 
-    const row = await this.em.findOne(EventRegistration, { id: toEntityId(id), email,
-        deletedAt: null,
-      },
+    const row = await this.em.findOne(
+      EventRegistration,
+      { id: toEntityId(id), email, deletedAt: null },
       { populate: ['event'] },
     );
     if (!row) throw new Error('Không tìm thấy đăng ký sự kiện.');

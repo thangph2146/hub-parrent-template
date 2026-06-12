@@ -1,5 +1,9 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { toEntityId, toEntityIdList, relationEntityId } from '../common/entity-id';
+import {
+  toEntityId,
+  toEntityIdList,
+  relationEntityId,
+} from '../common/entity-id';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { SocketGateway } from '../socket/socket.gateway';
 import {
@@ -283,7 +287,9 @@ export class NotificationsService {
       { isRead, readAt: isRead ? new Date() : null },
     );
 
-    const updated = await this.em.findOne(Notification, { id: toEntityId(notificationId) });
+    const updated = await this.em.findOne(Notification, {
+      id: toEntityId(notificationId),
+    });
     if (!updated) return null;
 
     return mapRow(updated as NotificationWithUser);
@@ -351,7 +357,9 @@ export class NotificationsService {
       user: toEntityId(userId),
     });
     if (!n) return false;
-    await this.em.nativeDelete(Notification, { id: toEntityId(notificationId) });
+    await this.em.nativeDelete(Notification, {
+      id: toEntityId(notificationId),
+    });
     return true;
   }
 

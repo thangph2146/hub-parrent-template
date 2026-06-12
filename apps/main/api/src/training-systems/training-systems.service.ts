@@ -161,7 +161,9 @@ export class TrainingSystemsService {
     id: number,
     data: { name?: string; code?: string | null; status?: number },
   ): Promise<TrainingSystemRowDto | null> {
-    const existing = await this.em.findOne(TrainingSystem, { id: toEntityId(id) });
+    const existing = await this.em.findOne(TrainingSystem, {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
     if (data.name != null) existing.name = data.name;
     if (data.code !== undefined) existing.code = data.code;

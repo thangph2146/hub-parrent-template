@@ -263,7 +263,9 @@ export class RolesService {
     if (!ids.length) return { affected: 0, message: 'Không có bản ghi nào' };
 
     if (action === 'delete' || action === 'hard-delete') {
-      const targets = await this.em.find(Role, { id: { $in: toEntityIdList(ids) } });
+      const targets = await this.em.find(Role, {
+        id: { $in: toEntityIdList(ids) },
+      });
       for (const role of targets) {
         this.assertSuperAdminRoleNotDeletable(role);
       }
@@ -294,7 +296,9 @@ export class RolesService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Role, { id: { $in: toEntityIdList(ids) } });
+      const entities = await this.em.find(Role, {
+        id: { $in: toEntityIdList(ids) },
+      });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

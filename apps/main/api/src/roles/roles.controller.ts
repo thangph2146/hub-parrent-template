@@ -432,7 +432,11 @@ export class RolesController {
       );
       return res.status(statusCode).json(body);
     }
-    this.socketGateway.emitRoleUpsert({ id: toEntityId(id) }, 'active', 'deleted');
+    this.socketGateway.emitRoleUpsert(
+      { id: toEntityId(id) },
+      'active',
+      'deleted',
+    );
     if (userId) {
       this.logActivity(
         userId,

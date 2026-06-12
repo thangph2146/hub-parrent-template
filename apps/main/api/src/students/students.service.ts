@@ -172,7 +172,8 @@ export class StudentsService {
 
     if (data.userId !== undefined)
       existing.user = data.userId
-        ? ((await this.em.findOne(User, { id: toEntityId(data.userId) })) ?? null)
+        ? ((await this.em.findOne(User, { id: toEntityId(data.userId) })) ??
+          null)
         : null;
     if (data.name !== undefined) existing.name = data.name;
     if (data.email !== undefined) existing.email = data.email;
@@ -238,7 +239,9 @@ export class StudentsService {
     }
 
     if (action === 'hard-delete') {
-      const entities = await this.em.find(Student, { id: { $in: toEntityIdList(ids) } });
+      const entities = await this.em.find(Student, {
+        id: { $in: toEntityIdList(ids) },
+      });
       await this.em.removeAndFlush(entities);
       const result = entities;
       return {

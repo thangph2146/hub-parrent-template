@@ -270,10 +270,7 @@ export class TrainingLevelsController {
       );
       return res.status(statusCode).json(errBody);
     }
-    const result = await this.trainingLevelsService.bulk(
-      action as BulkAction,
-      ids,
-    );
+    const result = await this.trainingLevelsService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
       { affected: result.affected, message: result.message },
       { message: result.message },

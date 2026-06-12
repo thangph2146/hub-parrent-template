@@ -65,7 +65,9 @@ export function lexicalFromPlainText(raw: string): LexicalEditorState {
   return {
     root: {
       children:
-        lines.length > 0 ? lines.map((line) => paragraph(line)) : [paragraph('')],
+        lines.length > 0
+          ? lines.map((line) => paragraph(line))
+          : [paragraph('')],
       direction: null,
       format: '',
       indent: 0,
@@ -97,7 +99,9 @@ export function isLexicalContentEmpty(value: unknown): boolean {
   });
 }
 
-export function isLexicalEditorState(value: unknown): value is LexicalEditorState {
+export function isLexicalEditorState(
+  value: unknown,
+): value is LexicalEditorState {
   if (!value || typeof value !== 'object') return false;
   const root = (value as LexicalEditorState).root;
   return Boolean(root && root.type === 'root' && Array.isArray(root.children));

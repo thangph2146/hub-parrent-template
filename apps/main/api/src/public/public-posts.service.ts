@@ -35,9 +35,9 @@ export class PublicPostsService {
   private async getViewCountsMap(
     postIds: Array<string | number>,
   ): Promise<Record<string, number>> {
-    const ids = [...new Set(postIds.filter((id) => id != null && id !== ''))].map(
-      String,
-    );
+    const ids = [
+      ...new Set(postIds.filter((id) => id != null && id !== '')),
+    ].map(String);
     if (ids.length === 0) return {};
     const keys = ids.map((id) => this.buildViewCountKey(id));
     const rows = await this.em.find(Setting, { key: { $in: keys } });
