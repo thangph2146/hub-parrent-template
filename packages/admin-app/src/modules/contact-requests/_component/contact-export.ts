@@ -13,8 +13,9 @@ export function parseContactStructuredContent(
   for (const line of content.split("\n").filter((l) => l.trim())) {
     const match = line.match(/^([^:]+):\s*(.+)$/)
     if (match) {
-      const [, key, value] = match
-      parsed[key.trim()] = value.trim()
+      const key = match[1]
+      const value = match[2]
+      if (key && value) parsed[key.trim()] = value.trim()
     }
   }
   return parsed

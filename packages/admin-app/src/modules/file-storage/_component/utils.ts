@@ -385,7 +385,9 @@ export function expandStorageFolderAncestors(
   const parts = folderPath.replace(/\\/g, "/").split("/").filter(Boolean)
   let current = ""
   for (let i = 0; i < parts.length - 1; i += 1) {
-    current = current ? `${current}/${parts[i]}` : parts[i]
+    const part = parts[i]
+    if (!part) continue
+    current = current ? `${current}/${part}` : part
     expanded.add(current)
   }
 }
@@ -477,7 +479,7 @@ export function resolveDefaultFolderPath(
   const underTab = folders
     .filter((f) => f.path === prefix || f.path.startsWith(`${prefix}/`))
     .sort((a, b) => a.path.length - b.path.length)
-  if (underTab.length > 0) return underTab[0].path
+  if (underTab.length > 0) return underTab[0]!.path
 
   return activeRealm === "images"
     ? activeFolderTab

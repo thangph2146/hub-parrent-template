@@ -114,8 +114,11 @@ export function getTagColumns({
         if (!dates.length) return true
         const rowDate = new Date(row.getValue<string>(columnId))
         if (Number.isNaN(rowDate.getTime())) return true
-        if (dates.length === 1) return rowDate >= new Date(dates[0])
-        return rowDate >= new Date(dates[0]) && rowDate <= new Date(dates[1])
+        const from = dates[0]
+        const to = dates[1]
+        if (dates.length === 1 && from) return rowDate >= new Date(from)
+        if (from && to) return rowDate >= new Date(from) && rowDate <= new Date(to)
+        return true
       },
       cell: ({ row, getValue }) =>
         row.original.isGroup ? (

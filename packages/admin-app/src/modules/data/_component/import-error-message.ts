@@ -64,7 +64,8 @@ export function classifyImportErrorDetail(raw: string): string {
     /duplicate entry '([^']*)' for key '([^']+)'/i
   )
   if (duplicateMatch) {
-    const [, value, key] = duplicateMatch
+    const value = duplicateMatch[1]
+    const key = duplicateMatch[2] ?? ""
     const keyLabel =
       key.toLowerCase() === "primary"
         ? "khóa chính (id)"

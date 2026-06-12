@@ -126,14 +126,18 @@ function SchemaCanvas({
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!dragging) return
-    setPositions((prev) => ({
-      ...prev,
-      [dragging.table]: {
-        ...prev[dragging.table],
-        x: e.clientX - dragging.offsetX,
-        y: e.clientY - dragging.offsetY,
-      },
-    }))
+    setPositions((prev) => {
+      const current = prev[dragging.table]
+      if (!current) return prev
+      return {
+        ...prev,
+        [dragging.table]: {
+          ...current,
+          x: e.clientX - dragging.offsetX,
+          y: e.clientY - dragging.offsetY,
+        },
+      }
+    })
   }
 
   const handleMouseUp = () => {

@@ -274,7 +274,7 @@ function FileStoragePageInner() {
 
   const handleFolderDeleted = useCallback(async () => {
     const parentPath =
-      breadcrumb.length >= 2 ? breadcrumb[breadcrumb.length - 2].id : ""
+      breadcrumb.length >= 2 ? (breadcrumb.at(-2)?.id ?? "") : ""
     setActiveFolderPath(parentPath)
     setPage(1)
     setSelectedRowIds({})

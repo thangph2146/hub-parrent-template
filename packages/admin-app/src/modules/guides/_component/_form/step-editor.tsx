@@ -39,7 +39,11 @@ export function StepEditor({ steps, onChange }: StepEditorProps) {
     const j = i + dir
     if (j < 0 || j >= steps.length) return
     const next = [...steps]
-    ;[next[i], next[j]] = [next[j], next[i]]
+    const a = next[i]
+    const b = next[j]
+    if (!a || !b) return
+    next[i] = b
+    next[j] = a
     onChange(next.map((s, idx) => ({ ...s, order: idx + 1 })))
   }
 

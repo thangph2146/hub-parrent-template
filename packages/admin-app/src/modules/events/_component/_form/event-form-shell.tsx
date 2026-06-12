@@ -182,8 +182,10 @@ function SpeakerSelector({ form }: { form: EventFormShellProps["form"] }) {
                   placeholder="Vai trò (VD: Diễn giả chính)"
                   value={s.role ?? ""}
                   onChange={(e) => {
+                    const current = uiSpeakers[i]
+                    if (!current) return
                     const updated = [...uiSpeakers]
-                    updated[i] = { ...updated[i], role: e.target.value }
+                    updated[i] = { ...current, role: e.target.value }
                     updateSpeakers(updated)
                   }}
                 />
@@ -191,9 +193,11 @@ function SpeakerSelector({ form }: { form: EventFormShellProps["form"] }) {
                   placeholder="Chủ đề trình bày"
                   value={s.presentationTitle ?? ""}
                   onChange={(e) => {
+                    const current = uiSpeakers[i]
+                    if (!current) return
                     const updated = [...uiSpeakers]
                     updated[i] = {
-                      ...updated[i],
+                      ...current,
                       presentationTitle: e.target.value,
                     }
                     updateSpeakers(updated)
@@ -205,10 +209,12 @@ function SpeakerSelector({ form }: { form: EventFormShellProps["form"] }) {
                   placeholder="Thời lượng (phút)"
                   value={s.duration ?? ""}
                   onChange={(e) => {
+                    const current = uiSpeakers[i]
+                    if (!current) return
                     const v = e.target.value
                     const updated = [...uiSpeakers]
                     updated[i] = {
-                      ...updated[i],
+                      ...current,
                       duration: v ? Number(v) : undefined,
                     }
                     updateSpeakers(updated)

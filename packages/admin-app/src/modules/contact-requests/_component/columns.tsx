@@ -171,7 +171,7 @@ export function getContactRequestColumns(
 
         for (const line of lines) {
           const match = line.match(/^Nội dung:\s*(.+)$/)
-          if (match) {
+          if (match?.[1]) {
             message = match[1].trim()
             break
           }
@@ -215,7 +215,7 @@ export function getContactRequestColumns(
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
         const match = content.match(/Địa chỉ:\s*(.+?)(?:\n|$)/)
-        const address = match ? match[1].trim() : ""
+        const address = match?.[1]?.trim() ?? ""
 
         if (!address)
           return <span className="text-xs text-muted-foreground">—</span>
@@ -232,7 +232,7 @@ export function getContactRequestColumns(
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
         const match = content.match(/Chương trình:\s*(.+?)(?:\n|$)/)
-        const program = match ? match[1].trim() : ""
+        const program = match?.[1]?.trim() ?? ""
 
         if (!program)
           return <span className="text-xs text-muted-foreground">—</span>
@@ -249,7 +249,7 @@ export function getContactRequestColumns(
       cell: ({ row }) => {
         const content = row.original.content || row.original.message || ""
         const match = content.match(/Ngành:\s*(.+?)(?:\n|$)/)
-        const major = match ? match[1].trim() : ""
+        const major = match?.[1]?.trim() ?? ""
 
         if (!major)
           return <span className="text-xs text-muted-foreground">—</span>

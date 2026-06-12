@@ -85,6 +85,19 @@ function remapNativeGroup(
   }
 }
 
+function flattenMenuLeaves(items: AdminMenuTreeItemData[]): AdminMenuLeafData[] {
+  const out: AdminMenuLeafData[] = []
+  for (const entry of items) {
+    if (entry.type === "leaf") {
+      const { type: _type, ...leaf } = entry
+      out.push(leaf)
+      continue
+    }
+    out.push(...entry.children)
+  }
+  return out
+}
+
 function applyAppendToGroup(
   menu: AdminMenuTreeItemData[],
   config: AdminAppConfig,
@@ -94,7 +107,10 @@ function applyAppendToGroup(
     if (item.type !== "group") return item
     const extra = appendToGroup[item.label]
     if (!extra?.length) return item
-    return { ...item, children: [...item.children, ...extra] }
+    return {
+      ...item,
+      children: [...item.children, ...flattenMenuLeaves(extra)],
+    }
   })
 }
 

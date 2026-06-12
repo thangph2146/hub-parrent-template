@@ -94,7 +94,9 @@ function ContactRequestDetailPageInner() {
     for (const line of lines) {
       const match = line.match(/^([^:]+):\s*(.+)$/)
       if (match) {
-        const [, key, value] = match
+        const key = match[1]
+        const value = match[2]
+        if (!key || !value) continue
         const iconMap: Record<string, LucideIcon> = {
           "Địa chỉ": MapPin,
           "Chương trình": BookOpen,
