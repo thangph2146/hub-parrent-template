@@ -1,17 +1,10 @@
-import { toEntityId } from '../common/entity-id';
-/**
- * Tags Admin API Controller.
- * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id (soft); POST :id/restore.
- * Header: X-User-Id (bắt buộc).
- */
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiQuery,
-  ApiParam,
   ApiHeader,
+  ApiBody,
+  ApiResponse,
 } from '@nestjs/swagger';
 import {
   Controller,
@@ -28,59 +21,23 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { TagsService } from './tags.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationKind } from '../entities/notification.entity';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
-import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
-import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-
-type TagListStatus = 'active' | 'deleted' | 'all';
-type TagBulkAction = 'delete' | 'restore' | 'hard-delete';
+import { PERMISSIONS } from '../config/permissions';
+import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { isBulkAction } from '../common/bulk-actions';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Tags')
-@Permissions(PERMISSIONS.TAGS_VIEW)
 @Controller(ADMIN_ROUTES.TAGS)
+@Permissions(PERMISSIONS.TAGS_VIEW)
 export class TagsController {
   private readonly logger = new Logger(TagsController.name);
-  private readonly listStatuses = new Set<TagListStatus>([
-    'active',
-    'deleted',
-    'all',
-  ]);
-  private readonly bulkActions = new Set<TagBulkAction>([
-    'delete',
-    'restore',
-    'hard-delete',
-  ]);
 
-  constructor(
-    private readonly tagsService: TagsService,
-    private readonly notificationsService: NotificationsService,
-  ) {}
-
-  private logActivity(
-    userId: string,
-    title: string,
-    description: string,
-    actionUrl?: string,
-    metadata?: Record<string, unknown>,
-  ): void {
-    void this.notificationsService
-      .create({
-        userId: toEntityId(userId),
-        kind: NotificationKind.SYSTEM,
-        title,
-        description,
-        actionUrl: actionUrl ?? null,
-        metadata: metadata ?? undefined,
-      })
-      .catch(() => {});
-  }
+  constructor(private readonly tagsService: TagsService) {}
 
   private getUserId(
     headers: Record<string, string | undefined>,
@@ -96,30 +53,9 @@ export class TagsController {
     return res.status(statusCode).json(body);
   }
 
-  private parseListStatus(status?: string): TagListStatus {
-    if (status && this.listStatuses.has(status as TagListStatus)) {
-      return status as TagListStatus;
-    }
-    return 'active';
-  }
-
-  private isBulkAction(action: string): action is TagBulkAction {
-    return this.bulkActions.has(action as TagBulkAction);
-  }
-
   @Get()
-  @ApiOperation({ summary: 'List tags with pagination' })
+  @ApiOperation({ summary: 'List thẻ' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: ['active', 'deleted', 'all'],
-  })
-  @ApiResponse({ status: 200, description: 'Tags retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
   async list(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -134,30 +70,21 @@ export class TagsController {
     @Query('deletedAtTo') deletedAtTo?: string,
     @Query() query?: Record<string, string>,
   ) {
-    this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const filters: Record<string, string> = {};
-    if (query) {
-      for (const [key, value] of Object.entries(query)) {
-        const m = key.match(/^filter\[(.+)\]$/);
-        if (m && value) filters[m[1]] = value;
-      }
-    }
-    const result = await this.tagsService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: this.parseListStatus(status),
-      filters: Object.keys(filters).length ? filters : undefined,
-      statusFilter: statusFilter != null ? Number(statusFilter) : undefined,
-      updatedAtFrom: updatedAtFrom?.trim(),
-      updatedAtTo: updatedAtTo?.trim(),
-      deletedAtFrom: deletedAtFrom?.trim(),
-      deletedAtTo: deletedAtTo?.trim(),
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const result = await this.tagsService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -166,12 +93,8 @@ export class TagsController {
   }
 
   @Get('options')
-  @ApiOperation({ summary: 'Get tag options for dropdowns' })
+  @ApiOperation({ summary: 'Get thẻ options for dropdowns' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'column', required: false, type: String })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({ status: 200, description: 'Options retrieved successfully' })
   async options(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -179,34 +102,25 @@ export class TagsController {
     @Query('search') search?: string,
     @Query('limit') limit?: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const options = await this.tagsService.getOptions(
-      column ?? 'name',
-      search?.trim(),
-      parseAdminListLimit(limit, 50),
+      column?.trim() || 'name',
+      search,
+      Math.min(1000, Math.max(1, parseInt(String(limit), 10) || 50)),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get tag by ID' })
+  @ApiOperation({ summary: 'Get thẻ by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Tag found' })
-  @ApiResponse({ status: 404, description: 'Tag not found' })
   async getById(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.tagsService.getById(id);
     if (!row) {
       const { statusCode, body } = createErrorResponse('Không tìm thấy thẻ', {
@@ -218,103 +132,127 @@ export class TagsController {
     return res.status(statusCode).json(body);
   }
 
-  @Post()
   @Permissions(PERMISSIONS.TAGS_CREATE)
-  @ApiOperation({ summary: 'Create new tag' })
+  @Post()
+  @ApiOperation({ summary: 'Create thẻ' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiBody({ description: 'Tag data', required: true })
-  @ApiResponse({ status: 201, description: 'Tag created successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input' })
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body() body: { name?: string; slug?: string; icon?: string | null },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    if (!body?.name?.trim() || !body?.slug?.trim()) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'name và slug là bắt buộc',
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
+        'name là bắt buộc',
         { status: 400 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const created = await this.tagsService.create({
-      name: body.name.trim(),
-      slug: body.slug.trim(),
-      icon: body.icon ?? null,
-    });
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã tạo thẻ',
-        `Tạo thẻ: ${created.name} (${created.slug})`,
-        `${ADMIN_ROUTES.TAGS}/${created.id}`,
-        {
-          resource: RESOURCES.TAGS,
-          action: ACTIONS.CREATE,
-          resourceId: created.id,
-        },
-      );
-    }
-    const { statusCode, body: okBody } = createSuccessResponse(created, {
+    const created = await this.tagsService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
       status: 201,
     });
-    return res.status(statusCode).json(okBody);
+    return res.status(statusCode).json(ok);
   }
 
-  @Put(':id')
   @Permissions(PERMISSIONS.TAGS_UPDATE)
-  @ApiOperation({ summary: 'Update tag by ID' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Update thẻ' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiBody({ description: 'Updated tag data' })
-  @ApiResponse({ status: 200, description: 'Tag updated successfully' })
-  @ApiResponse({ status: 404, description: 'Tag not found' })
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body() body: { name?: string; slug?: string; icon?: string | null },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const updated = await this.tagsService.update(id, {
-      name: body?.name?.trim(),
-      slug: body?.slug?.trim(),
-      icon: body.icon !== undefined ? body.icon : undefined,
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.tagsService.update(id, body);
     if (!updated) {
-      const { statusCode, body: errBody } = createErrorResponse(
+      const { statusCode, body: err } = createErrorResponse(
         'Không tìm thấy thẻ',
         { status: 404 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã cập nhật thẻ',
-        `Cập nhật thẻ: ${updated.name} (${updated.slug})`,
-        `${ADMIN_ROUTES.TAGS}/${updated.id}`,
-        {
-          resource: RESOURCES.TAGS,
-          action: ACTIONS.UPDATE,
-          resourceId: updated.id,
-        },
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
+  }
+
+  @Permissions(PERMISSIONS.TAGS_MANAGE)
+  @Delete(':id/hard-delete')
+  @ApiOperation({ summary: 'Hard delete thẻ' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async hardDelete(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.tagsService.hardDelete(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse('Không tìm thấy thẻ', {
+        status: 404,
+      });
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã xóa vĩnh viễn thẻ',
+    });
+    return res.status(statusCode).json(body);
+  }
+
+  @Permissions(PERMISSIONS.TAGS_DELETE)
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete thẻ' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async softDelete(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.tagsService.softDelete(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse(
+        'thẻ không tồn tại hoặc đã bị xóa',
+        { status: 404 },
       );
+      return res.status(statusCode).json(body);
     }
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
-    return res.status(statusCode).json(okBody);
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã xóa thẻ',
+    });
+    return res.status(statusCode).json(body);
+  }
+
+  @Permissions(PERMISSIONS.TAGS_RESTORE)
+  @Post(':id/restore')
+  @ApiOperation({ summary: 'Restore thẻ' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async restore(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.tagsService.restore(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse(
+        'thẻ không tồn tại hoặc chưa bị xóa',
+        { status: 404 },
+      );
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã khôi phục thẻ',
+    });
+    return res.status(statusCode).json(body);
   }
 
   @Post('bulk')
   @Permissions(PERMISSIONS.TAGS_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on tags' })
+  @ApiOperation({ summary: 'Bulk action on the' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })
@@ -330,178 +268,18 @@ export class TagsController {
     }
     const action = body?.action;
     const ids = Array.isArray(body?.ids) ? body.ids : [];
-    if (!action || !this.isBulkAction(action)) {
+    if (!action || !isBulkAction(action)) {
       const { statusCode, body: errBody } = createErrorResponse(
-        'Action không hợp lệ',
+        'Action khong hop le',
         { status: 400 },
       );
       return res.status(statusCode).json(errBody);
     }
     const result = await this.tagsService.bulk(action, ids);
-    if (userId && result.affected > 0) {
-      let actionLabel = '';
-      let actionType = '';
-
-      switch (action) {
-        case 'delete':
-          actionLabel = 'Xóa';
-          actionType = ACTIONS.DELETE;
-          break;
-        case 'restore':
-          actionLabel = 'Khôi phục';
-          actionType = ACTIONS.RESTORE;
-          break;
-        case 'hard-delete':
-          actionLabel = 'Xóa vĩnh viễn';
-          actionType = ACTIONS.HARD_DELETE;
-          break;
-      }
-
-      this.logActivity(
-        userId,
-        `Đã ${actionLabel} ${result.affected} thẻ`,
-        `Bulk: ${actionLabel} ${result.affected} thẻ`,
-        ADMIN_ROUTES.TAGS,
-        {
-          resource: RESOURCES.TAGS,
-          action: actionType,
-          count: result.affected,
-          ids,
-        },
-      );
-    }
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);
-  }
-
-  @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.TAGS_MANAGE)
-  @ApiOperation({ summary: 'Hard delete tag permanently' })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Tag deleted permanently' })
-  @ApiResponse({ status: 404, description: 'Tag not found' })
-  async hardDelete(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-    @Param('id') id: string,
-  ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const ok = await this.tagsService.hardDelete(id);
-    if (!ok) {
-      const { statusCode, body } = createErrorResponse('Không tìm thấy thẻ', {
-        status: 404,
-      });
-      return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa vĩnh viễn thẻ',
-        `Xóa vĩnh viễn thẻ id: ${id}`,
-        ADMIN_ROUTES.TAGS,
-        {
-          resource: RESOURCES.TAGS,
-          action: ACTIONS.HARD_DELETE,
-          resourceId: id,
-        },
-      );
-    }
-    const { statusCode, body } = createSuccessResponse(undefined, {
-      message: 'Đã xóa vĩnh viễn thẻ',
-    });
-    return res.status(statusCode).json(body);
-  }
-
-  @Delete(':id')
-  @Permissions(PERMISSIONS.TAGS_DELETE)
-  @ApiOperation({ summary: 'Soft delete tag' })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Tag deleted' })
-  @ApiResponse({ status: 404, description: 'Tag not found or already deleted' })
-  async softDelete(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-    @Param('id') id: string,
-  ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const ok = await this.tagsService.softDelete(id);
-    if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Thẻ không tồn tại hoặc đã bị xóa',
-        { status: 404 },
-      );
-      return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa thẻ',
-        `Xóa thẻ (soft) id: ${id}`,
-        ADMIN_ROUTES.TAGS,
-        {
-          resource: RESOURCES.TAGS,
-          action: ACTIONS.DELETE,
-          resourceId: id,
-        },
-      );
-    }
-    const { statusCode, body } = createSuccessResponse(undefined, {
-      message: 'Đã xóa thẻ',
-    });
-    return res.status(statusCode).json(body);
-  }
-
-  @Post(':id/restore')
-  @Permissions(PERMISSIONS.TAGS_RESTORE)
-  @ApiOperation({ summary: 'Restore soft-deleted tag' })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Tag restored' })
-  @ApiResponse({ status: 404, description: 'Tag not found or not deleted' })
-  async restore(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-    @Param('id') id: string,
-  ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const ok = await this.tagsService.restore(id);
-    if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Thẻ không tồn tại hoặc chưa bị xóa',
-        { status: 404 },
-      );
-      return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã khôi phục thẻ',
-        `Khôi phục thẻ id: ${id}`,
-        `${ADMIN_ROUTES.TAGS}/${id}`,
-        {
-          resource: RESOURCES.TAGS,
-          action: ACTIONS.RESTORE,
-          resourceId: id,
-        },
-      );
-    }
-    const { statusCode, body } = createSuccessResponse(undefined, {
-      message: 'Đã khôi phục thẻ',
-    });
-    return res.status(statusCode).json(body);
   }
 }

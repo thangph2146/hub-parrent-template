@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -27,7 +28,7 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { toEntityId } from '../common/entity-id';
 import {
   buildAdminListCrudParams,
@@ -240,6 +241,7 @@ export class FaceDataController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.FACE_DATA_MANAGE)
   @ApiOperation({ summary: 'Bulk action on khuon mats' })

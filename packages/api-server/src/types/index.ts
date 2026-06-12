@@ -15,6 +15,7 @@ export type {
   PaginationMeta,
   UserOption,
   DevLoginOption,
+  DevLoginRole,
   DevLoginOptionsQuery,
 } from './user.types';
 

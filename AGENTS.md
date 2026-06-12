@@ -228,7 +228,7 @@ import { PERMISSION_CODES } from "@workspace/api-client"
 - `@workspace/*` cho package dùng chung; **không** `@ui`, React, Next.
 - **Logic CRUD dùng chung** → implement/extend trong `@workspace/api-server` trước, rồi app chỉ subclass service (`getEm()`, `getEntity()`, override `mapRow` / column filters nếu cần).
 - **Controller + auth envelope** (`@Res()`, `X-User-Id`, `createSuccessResponse`) giữ local trong app — không dùng `BaseModule.forRoot()` nếu sẽ inject controller trùng route.
-- Deploy line pilot: `apps/hub-event/api` — module đã migrate: `templates`, `event-checkouts`. Import subpath: `@workspace/api-server/modules/templates`, `@workspace/api-server/modules/event-checkouts`, `@workspace/api-server/common`. `tsconfig` hub-event dùng `moduleResolution: bundler` để resolve package workspace. Sau `pnpm pull:checkin`, tiếp tục CRUD scaffold (`cameras`, `screens`, `locations`, …).
+- Deploy line `apps/hub-event/api`: scaffold qua `api.app.config.json` + `pnpm api:generate:checkin` (service/controller/module AUTO-GENERATED extend `@workspace/api-server`). Import subpath: `@workspace/api-server/modules/<module>`, `@workspace/api-server/common`.
 
 Chi tiết: `docs/ui-pattern/README.md` · admin: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` · API: `packages/api-server/README.md`.
 
@@ -266,7 +266,7 @@ File native giữ local (check-in: events shell, `dang-nhap`, `dang-ky`, profile
 ### Import dữ liệu (`/admin/data`)
 
 - Client chunk + timing: `apps/backend/src/app/data/_component/import-chunked.ts`, `import-timing.ts`.
-- API config + insert: `apps/api/src/system/system.service.ts` (`getImportConfig`, `insertSanitizedModel`).
+- API config + insert: `apps/main/api/src/system/system.service.ts` (native); helpers import/export dùng chung: `@workspace/api-server/modules/system` (`import-helpers`, `export-schema`, `legacy-import-id-map`, `import-reference`).
 - `post` mặc định **1 lô**, pivot (`postCategory`/`postTag`) **request riêng**; `post` **không** song song (`modelParallelConcurrency.post = 1`).
 - Env API (tùy chọn): `SYSTEM_IMPORT_CLIENT_CHUNK_POST`, `SYSTEM_IMPORT_PARALLEL_CHUNKS`, `SYSTEM_IMPORT_JSON_BATCH_SIZE`.
 
@@ -301,17 +301,30 @@ Pattern song song `admin.app.config.json` + `@workspace/admin-app`:
 
 | Admin (frontend) | API (Nest) |
 | ---------------- | ---------- |
-| `admin.app.config.json` → `scaffoldModules` | `api.app.config.json` → `scaffoldModules` |
-| `pnpm admin:generate:checkin` | `pnpm api:generate:checkin` |
-| Page AUTO-GENERATED re-export package | Service AUTO-GENERATED extend `Base*Service` |
-| Controller/layout native (`X-User-Id`, envelope) | Controller native (`@Res()`, permissions) |
+| `admin.app.config.json` → `modules` | `api.app.config.json` → `alignAdminApp` + `extraModules` + `native.*` |
+| `pnpm admin:generate:checkin` (`--prune`) | `pnpm api:generate:checkin` (`--prune`) |
+| Page AUTO-GENERATED re-export `@workspace/admin-app` | Service/controller/module AUTO-GENERATED extend `@workspace/api-server` |
+| Controller/layout native (shell app) | Controller CRUD chuẩn AUTO-GENERATED (`@Res()`, `PERMISSIONS`, `ADMIN_ROUTES`) |
 
-**Hub-event check-in:** `apps/hub-event/api/api.app.config.json` — khai báo module scaffold; chạy `pnpm api:generate:checkin` sinh `*.service.ts` từ `script-system/api/api-module-registry.cjs`. Verify: `pnpm verify:checkin-api`.
+**Hub-event check-in:** `apps/hub-event/api/api.app.config.json` — `alignAdminApp` + `extraModules`; `native.controllers` giữ controller phức tạp (`users`, `posts`, `events`, `auth`, `public`, `system`, …). `native.modules` thường rỗng (toàn bộ module đã có entry trong `script-system/api/api-module-registry.cjs`).
 
-**Scaffold hiện tại (8):** `templates`, `event-checkouts`, `locations`, `speakers`, `seo-metas`, `screens`, `cameras`, `face-data`.
+```bash
+pnpm --filter @workspace/api-server run build
+pnpm api:generate:checkin          # --prune khi cần dọn file cũ
+pnpm verify:checkin-api
+pnpm --filter @hub-event/api typecheck
+```
 
-**Thêm module mới:** bổ sung registry + thêm id vào `scaffoldModules` trong `api.app.config.json` → `pnpm api:generate:checkin`.
+Registry kinds: `crud`, `em-only`, `*-binding` (service mỏng + `Base*Service`), `public-multi-binding` (7 service public), `system-native-binding` (`serviceNative` — giữ `system.service.ts` ~3k dòng). `moduleNative` / `controllerNative` / `serviceNative` / `preserveNativeFiles` trong registry + `api.app.config.json` → `native.controllers`.
 
-**Rich / native** (giữ service local): `events`, `users`, `posts`, `categories`, `comments`, `tags`, `dashboard`, `system`, `hanet`, `public/*`, …
+**Scaffold hub-event (đã xong):** ~28 module admin (CRUD + binding: `users`, `posts`, `events`, `auth`, `hanet`, `dashboard`, …) + `public` (7 service AUTO-GENERATED) + `system` (helpers package, service/controller/module native).
 
-Sau `git pull` trên server check-in: `pnpm pull:checkin` (sync API subset + admin generate + api generate).
+**Controller native:** binding module có `controllerNative: true` — ví dụ `users`, `posts`, `events`, `auth`, `event-registrations`, `seo-metas`, `event-checkouts`, `face-data`, `public`, `system`.
+
+**Thêm module mới:** entry trong `script-system/api/api-module-registry.cjs` → `extraModules` (nếu không có trong admin map) → build api-server → `pnpm api:generate:checkin` → `pnpm verify:checkin-api`.
+
+**Common dùng chung:** `buildStandardAdminListWhere`, `normalizePosterField`, `resolveEventTimeStatus`, `buildAdminListCrudParams` trong `@workspace/api-server/common`.
+
+**Main API (`apps/main/api`):** chưa có `api.app.config.json` / generate — dùng source trực tiếp; `system` import helpers từ `@workspace/api-server/modules/system` (đồng bộ với hub-event).
+
+Sau `git pull` trên server check-in: `pnpm pull:checkin` (sync API subset + admin generate + api generate + verify).

@@ -1,14 +1,9 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
-import { AuthAdminController } from './auth-admin.controller';
 import { AuthService } from './auth.service';
+import { AuthAdminController } from './auth-admin.controller';
 
-/**
- * Auth module - tuyen-sinh-api.
- * - auth/admin: đăng nhập cho Admin (CMS, tuyen-sinh-admin).
- * - Sau này có thể thêm auth/public cho đăng nhập public (site tuyen-sinh).
- */
 @Module({
-  imports: [],
   controllers: [AuthAdminController],
   providers: [AuthService],
   exports: [AuthService],

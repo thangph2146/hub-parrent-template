@@ -12,3 +12,9 @@ export type {
   PageContentsCreateData,
   PageContentsUpdateData,
 } from './page-content.service';
+
+export { BasePageContentsAdminService } from './page-contents-admin.service';
+export type {
+  PageContentCreateInput,
+  PageContentUpdateInput,
+} from './page-contents-admin.service';

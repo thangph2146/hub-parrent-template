@@ -8,6 +8,10 @@ import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../../common';
+import {
+  filterDevLoginOptions,
+  mapUserToDevLoginOption,
+} from './users.mapper';
 
 /**
  * Type exports from parent
@@ -412,54 +416,14 @@ export class BaseUsersService {
     );
 
     const options = rows
-      .map((user) => this.mapUserToDevLoginOption(user as Record<string, unknown>))
+      .map((user) =>
+        mapUserToDevLoginOption(
+          user as Parameters<typeof mapUserToDevLoginOption>[0],
+        ),
+      )
       .filter((user): user is DevLoginOptionDto => user != null);
 
-    return this.filterDevLoginOptions(options, query);
-  }
-
-  /**
-   * Map user to dev login option
-   */
-  protected mapUserToDevLoginOption(
-    user: Record<string, unknown>,
-  ): DevLoginOptionDto | null {
-    const email = user.email;
-    if (!email || !String(email).trim()) return null;
-
-    const userRoles = user.userRoles as Array<{ role: { name: string } }> | undefined;
-
-    return {
-      id: user.id as number,
-      email: String(email).trim().toLowerCase(),
-      name: user.name as string | null,
-      roleNames: userRoles ? userRoles.map((ur) => ur.role.name) : [],
-    };
-  }
-
-  /**
-   * Filter dev login options
-   */
-  protected filterDevLoginOptions(
-    options: DevLoginOptionDto[],
-    query: DevLoginOptionsQuery,
-  ): DevLoginOptionDto[] {
-    let filtered = options;
-
-    if (query.role) {
-      filtered = filtered.filter((opt) => opt.roleNames.includes(query.role!));
-    }
-
-    if (query.search) {
-      const search = query.search.toLowerCase();
-      filtered = filtered.filter(
-        (opt) =>
-          opt.email.toLowerCase().includes(search) ||
-          (opt.name && opt.name.toLowerCase().includes(search)),
-      );
-    }
-
-    return filtered;
+    return filterDevLoginOptions(options, query);
   }
 
   /**

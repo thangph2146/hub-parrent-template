@@ -118,7 +118,10 @@ describe('users.mapper', () => {
         id: 1,
         email: 'test@example.com',
         name: 'Test User',
-        userRoles: [{ role: { name: 'admin' } }],
+        isActive: true,
+        userRoles: [
+          { role: { id: 2, name: 'admin', displayName: 'Administrator' } },
+        ],
       };
 
       const result = mapUserToDevLoginOption(user);
@@ -127,7 +130,11 @@ describe('users.mapper', () => {
         id: 1,
         email: 'test@example.com',
         name: 'Test User',
+        isActive: true,
         roleNames: ['admin'],
+        roleLabels: ['Administrator'],
+        roles: [{ id: 2, name: 'admin', displayName: 'Administrator' }],
+        description: 'Đang hoạt động | Administrator',
       });
     });
 

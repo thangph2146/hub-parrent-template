@@ -16,12 +16,26 @@ describe('BaseDashboardService', () => {
     protected getEm(): EntityManager {
       return mockEm as EntityManager;
     }
+
+    protected getCategoryEntity(): new () => Record<string, unknown> {
+      return class {} as new () => Record<string, unknown>;
+    }
+
+    protected getPostEntity(): new () => Record<string, unknown> {
+      return class {} as new () => Record<string, unknown>;
+    }
+
+    protected getPostCategoryEntity(): new () => Record<string, unknown> {
+      return class {} as new () => Record<string, unknown>;
+    }
   }
 
   beforeEach(() => {
     mockExecute = jest.fn();
     mockConnection = { execute: mockExecute };
     mockEm = {
+      count: jest.fn().mockResolvedValue(0),
+      find: jest.fn().mockResolvedValue([]),
       getConnection: jest.fn().mockReturnValue(mockConnection),
     };
     service = new TestDashboardService();

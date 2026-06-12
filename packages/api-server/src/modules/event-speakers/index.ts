@@ -12,3 +12,10 @@ export type {
   EventSpeakersCreateData,
   EventSpeakersUpdateData,
 } from './event-speaker.service';
+
+export { BaseEventSpeakersAdminService } from './event-speakers-admin.service';
+export type {
+  EventSpeakerRowDto,
+  ListEventSpeakersParams,
+  ListEventSpeakersResult,
+} from './event-speakers-admin.service';

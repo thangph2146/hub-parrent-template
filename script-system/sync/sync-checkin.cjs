@@ -38,8 +38,8 @@ run(
   "7/8 verify admin check-in",
 );
 run(
-  "node script-system/api/generate-api-modules.cjs apps/hub-event/api",
-  "8/8 generate API scaffold services (@workspace/api-server)",
+  "node script-system/api/generate-api-modules.cjs apps/hub-event/api --prune",
+  "8/8 generate API scaffold (@workspace/api-server)",
 );
 run(
   "node script-system/verify/verify-checkin-api-modules.mjs",

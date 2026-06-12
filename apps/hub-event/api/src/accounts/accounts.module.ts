@@ -1,7 +1,8 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
-import { UploadsModule } from '../uploads/uploads.module';
-import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
+import { AccountsController } from './accounts.controller';
+import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
   imports: [UploadsModule],

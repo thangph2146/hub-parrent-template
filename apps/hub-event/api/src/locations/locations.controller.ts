@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -18,16 +19,16 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { LocationsService } from './locations.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Locations')
@@ -53,7 +54,7 @@ export class LocationsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List locations with pagination' })
+  @ApiOperation({ summary: 'List địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async list(
     @Res() res: Response,
@@ -69,9 +70,7 @@ export class LocationsController {
     @Query('deletedAtTo') deletedAtTo?: string,
     @Query() query?: Record<string, string>,
   ) {
-    this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const result = await this.locationsService.list(
       buildAdminListCrudParams({
         page,
@@ -94,21 +93,19 @@ export class LocationsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get location by ID' })
+  @ApiOperation({ summary: 'Get địa điểm by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async getById(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.locationsService.getById(Number(id));
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy địa điểm',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy địa điểm', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -117,85 +114,66 @@ export class LocationsController {
 
   @Permissions(PERMISSIONS.LOCATIONS_CREATE)
   @Post()
-  @ApiOperation({ summary: 'Create new location' })
+  @ApiOperation({ summary: 'Create địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body()
-    body: { name?: string; address?: string; mapUrl: string; status?: number },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
-    if (!body?.mapUrl?.trim()) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'mapUrl là bắt buộc',
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
+        'name là bắt buộc',
         { status: 400 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const created = await this.locationsService.create({
-      mapUrl: body.mapUrl.trim(),
-      name: body.name?.trim() ?? null,
-      address: body.address?.trim() ?? null,
-      status: body.status ?? null,
-    });
-    const { statusCode, body: okBody } = createSuccessResponse(created, {
+    const created = await this.locationsService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
       status: 201,
     });
-    return res.status(statusCode).json(okBody);
+    return res.status(statusCode).json(ok);
   }
 
   @Permissions(PERMISSIONS.LOCATIONS_UPDATE)
   @Put(':id')
-  @ApiOperation({ summary: 'Update location by ID' })
+  @ApiOperation({ summary: 'Update địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body()
-    body: { name?: string; address?: string; mapUrl?: string; status?: number },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
-    const updated = await this.locationsService.update(Number(id), {
-      name: body?.name !== undefined ? (body.name?.trim() ?? null) : undefined,
-      address:
-        body?.address !== undefined
-          ? (body.address?.trim() ?? null)
-          : undefined,
-      mapUrl: body?.mapUrl?.trim(),
-      status: body?.status !== undefined ? (body.status ?? null) : undefined,
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.locationsService.update(Number(id), body);
     if (!updated) {
-      const { statusCode, body: errBody } = createErrorResponse(
+      const { statusCode, body: err } = createErrorResponse(
         'Không tìm thấy địa điểm',
         { status: 404 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
-    return res.status(statusCode).json(okBody);
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
   }
 
   @Permissions(PERMISSIONS.LOCATIONS_MANAGE)
   @Delete(':id/hard-delete')
-  @ApiOperation({ summary: 'Hard delete location permanently' })
+  @ApiOperation({ summary: 'Hard delete địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.locationsService.hardDelete(Number(id));
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy địa điểm',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy địa điểm', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
@@ -206,19 +184,18 @@ export class LocationsController {
 
   @Permissions(PERMISSIONS.LOCATIONS_DELETE)
   @Delete(':id')
-  @ApiOperation({ summary: 'Soft delete location' })
+  @ApiOperation({ summary: 'Soft delete địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.locationsService.softDelete(Number(id));
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Địa điểm không tồn tại hoặc đã bị xóa',
+        'địa điểm không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -231,19 +208,18 @@ export class LocationsController {
 
   @Permissions(PERMISSIONS.LOCATIONS_RESTORE)
   @Post(':id/restore')
-  @ApiOperation({ summary: 'Restore soft-deleted location' })
+  @ApiOperation({ summary: 'Restore địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.locationsService.restore(Number(id));
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Địa điểm không tồn tại hoặc chưa bị xóa',
+        'địa điểm không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -253,9 +229,10 @@ export class LocationsController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.LOCATIONS_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on dia diems' })
+  @ApiOperation({ summary: 'Bulk action on địa điểm' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })

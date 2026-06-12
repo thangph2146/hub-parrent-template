@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -18,16 +19,16 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { TemplatesService } from './templates.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Templates')
@@ -35,19 +36,25 @@ import { buildAdminListCrudParams } from '../common/admin-list-params';
 @Permissions(PERMISSIONS.TEMPLATES_VIEW)
 export class TemplatesController {
   private readonly logger = new Logger(TemplatesController.name);
+
   constructor(private readonly templatesService: TemplatesService) {}
-  private getUserId(h: Record<string, string | undefined>): string | null {
-    return h[APP_HEADERS.USER_ID]?.trim() || null;
+
+  private getUserId(
+    headers: Record<string, string | undefined>,
+  ): string | null {
+    const id = headers[APP_HEADERS.USER_ID]?.trim();
+    return id || null;
   }
-  private unauthorized(r: Response): Response {
+
+  private unauthorized(res: Response): Response {
     const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
       status: 401,
     });
-    return r.status(statusCode).json(body);
+    return res.status(statusCode).json(body);
   }
 
   @Get()
-  @ApiOperation({ summary: 'List templates' })
+  @ApiOperation({ summary: 'List mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async list(
     @Res() res: Response,
@@ -86,7 +93,7 @@ export class TemplatesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get template by ID' })
+  @ApiOperation({ summary: 'Get mẫu by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async getById(
     @Res() res: Response,
@@ -107,7 +114,7 @@ export class TemplatesController {
 
   @Permissions(PERMISSIONS.TEMPLATES_CREATE)
   @Post()
-  @ApiOperation({ summary: 'Create template' })
+  @ApiOperation({ summary: 'Create mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
     @Res() res: Response,
@@ -131,7 +138,7 @@ export class TemplatesController {
 
   @Permissions(PERMISSIONS.TEMPLATES_UPDATE)
   @Put(':id')
-  @ApiOperation({ summary: 'Update template' })
+  @ApiOperation({ summary: 'Update mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
     @Res() res: Response,
@@ -154,7 +161,7 @@ export class TemplatesController {
 
   @Permissions(PERMISSIONS.TEMPLATES_MANAGE)
   @Delete(':id/hard-delete')
-  @ApiOperation({ summary: 'Hard delete template' })
+  @ApiOperation({ summary: 'Hard delete mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
     @Res() res: Response,
@@ -177,7 +184,7 @@ export class TemplatesController {
 
   @Permissions(PERMISSIONS.TEMPLATES_DELETE)
   @Delete(':id')
-  @ApiOperation({ summary: 'Soft delete template' })
+  @ApiOperation({ summary: 'Soft delete mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
     @Res() res: Response,
@@ -188,7 +195,7 @@ export class TemplatesController {
     const ok = await this.templatesService.softDelete(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Mẫu không tồn tại hoặc đã bị xóa',
+        'mẫu không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -201,7 +208,7 @@ export class TemplatesController {
 
   @Permissions(PERMISSIONS.TEMPLATES_RESTORE)
   @Post(':id/restore')
-  @ApiOperation({ summary: 'Restore template' })
+  @ApiOperation({ summary: 'Restore mẫu' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(
     @Res() res: Response,
@@ -212,7 +219,7 @@ export class TemplatesController {
     const ok = await this.templatesService.restore(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Mẫu không tồn tại hoặc chưa bị xóa',
+        'mẫu không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -222,6 +229,7 @@ export class TemplatesController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.TEMPLATES_MANAGE)
   @ApiOperation({ summary: 'Bulk action on maus' })

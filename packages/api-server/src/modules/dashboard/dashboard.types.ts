@@ -46,7 +46,7 @@ export interface DashboardCategoryItemDto {
 }
 
 export interface DashboardTopPostDto {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   comments: number;

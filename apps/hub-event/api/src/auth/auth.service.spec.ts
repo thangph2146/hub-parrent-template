@@ -11,7 +11,7 @@ describe('AuthService', () => {
   let em: Partial<EntityManager>;
 
   const mockUser = {
-    id: 'user-1',
+    id: 1,
     email: 'test@example.com',
     name: 'Test User',
     avatar: null,
@@ -22,7 +22,7 @@ describe('AuthService', () => {
   } as unknown as User;
 
   const mockRole = {
-    id: 'role-1',
+    id: 1,
     name: 'admin',
     displayName: 'Admin',
     permissions: ['read', 'write'],
@@ -31,7 +31,7 @@ describe('AuthService', () => {
   } as unknown as Role;
 
   const mockUserRole = {
-    id: 'ur-1',
+    id: 1,
     user: mockUser,
     role: mockRole,
   } as unknown as UserRole;
@@ -41,7 +41,7 @@ describe('AuthService', () => {
       findOne: jest.fn(),
       persist: jest.fn(),
       flush: jest.fn(),
-      getReference: jest.fn().mockReturnValue({ id: 'role-1' }),
+      getReference: jest.fn().mockReturnValue({ id: 1 }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -156,7 +156,7 @@ describe('AuthService', () => {
       });
 
       expect(result).not.toBeNull();
-      expect(result?.id).toBe('user-1');
+      expect(result?.id).toBe(1);
       expect(result?.email).toBe('test@example.com');
       expect(result?.roles).toHaveLength(1);
       expect(result?.permissions).toContain('read');
@@ -166,7 +166,7 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should return ok true', async () => {
-      const result = await service.logout('user-1');
+      const result = await service.logout('1');
       expect(result).toEqual({ ok: true });
     });
   });

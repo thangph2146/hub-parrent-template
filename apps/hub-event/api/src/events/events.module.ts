@@ -1,6 +1,7 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
-import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
+import { EventsController } from './events.controller';
 
 @Module({
   controllers: [EventsController],

@@ -76,7 +76,7 @@
     "sync:checkin": "pnpm pull:checkin",
     "verify:api-profile": "node script-system/verify/verify-api-profile.mjs hub-event",
     "verify:checkin-admin": "node script-system/verify/verify-checkin-admin-sync.mjs",
-    "api:generate:checkin": "node script-system/api/generate-api-modules.cjs apps/hub-event/api",
+    "api:generate:checkin": "node script-system/api/generate-api-modules.cjs apps/hub-event/api --prune",
     "verify:checkin-api": "node script-system/verify/verify-checkin-api-modules.mjs",
     "verify:main-admin": "node script-system/verify/verify-main-admin-sync.mjs",
     "test:apps": "node script-system/verify/test-app-operations.mjs all",
@@ -98,6 +98,7 @@
     "db:migration:fresh": "pnpm --filter @api run db:migration:fresh",
     "db:seed": "pnpm --filter @api run db:seed",
     "db:demo": "pnpm --filter \"@api\" run seed:demo",
+    "db:demo:checkin": "pnpm --filter \"@hub-event/api\" run seed:demo",
     "seed:superadmin": "pnpm --filter \"@api\" run seed:superadmin"
   },
   "devDependencies": {

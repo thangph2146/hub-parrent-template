@@ -118,11 +118,21 @@ export interface UserOption {
 /**
  * Development login option
  */
+export interface DevLoginRole {
+  id: number;
+  name: string;
+  displayName: string;
+}
+
 export interface DevLoginOption {
   id: number;
   email: string;
   name: string | null;
+  isActive: boolean;
   roleNames: string[];
+  roleLabels: string[];
+  roles: DevLoginRole[];
+  description: string;
 }
 
 /**

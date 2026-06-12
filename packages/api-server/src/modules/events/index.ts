@@ -14,3 +14,10 @@ export type {
   EventsCreateData,
   EventsUpdateData,
 } from './event.service';
+
+export { BaseEventsAdminService } from './events-admin.service';
+export type {
+  EventRowDto,
+  ListEventsParams,
+  ListEventsResult,
+} from './events-admin.service';

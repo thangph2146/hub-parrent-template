@@ -1,6 +1,7 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
-import { ScreensController } from './screens.controller';
 import { ScreensService } from './screens.service';
+import { ScreensController } from './screens.controller';
 
 @Module({
   controllers: [ScreensController],

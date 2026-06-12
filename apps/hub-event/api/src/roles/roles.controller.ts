@@ -1,17 +1,10 @@
-import { toEntityId } from '../common/entity-id';
-/**
- * Roles Admin API Controller.
- * GET list, options, :id; POST (create); PUT :id; DELETE :id/hard-delete; DELETE :id (soft); POST :id/restore; POST bulk.
- * Header: X-User-Id (bắt buộc).
- */
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiQuery,
-  ApiParam,
   ApiHeader,
+  ApiBody,
+  ApiResponse,
 } from '@nestjs/swagger';
 import {
   Controller,
@@ -28,61 +21,23 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { RolesService } from './roles.service';
-import { SocketGateway } from '../socket/socket.gateway';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationKind } from '../entities/notification.entity';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
-import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
-import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-
-type RoleListStatus = 'active' | 'deleted' | 'all';
-type RoleBulkAction = 'delete' | 'restore' | 'hard-delete';
+import { PERMISSIONS } from '../config/permissions';
+import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { isBulkAction } from '../common/bulk-actions';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Roles')
-@Permissions(PERMISSIONS.ROLES_VIEW)
 @Controller(ADMIN_ROUTES.ROLES)
+@Permissions(PERMISSIONS.ROLES_VIEW)
 export class RolesController {
   private readonly logger = new Logger(RolesController.name);
-  private readonly listStatuses = new Set<RoleListStatus>([
-    'active',
-    'deleted',
-    'all',
-  ]);
-  private readonly bulkActions = new Set<RoleBulkAction>([
-    'delete',
-    'restore',
-    'hard-delete',
-  ]);
 
-  constructor(
-    private readonly rolesService: RolesService,
-    private readonly notificationsService: NotificationsService,
-    private readonly socketGateway: SocketGateway,
-  ) {}
-
-  private logActivity(
-    userId: string,
-    title: string,
-    description: string,
-    actionUrl?: string,
-    metadata?: Record<string, unknown>,
-  ): void {
-    void this.notificationsService
-      .create({
-        userId: toEntityId(userId),
-        kind: NotificationKind.SYSTEM,
-        title,
-        description,
-        actionUrl: actionUrl ?? null,
-        metadata: metadata ?? undefined,
-      })
-      .catch(() => {});
-  }
+  constructor(private readonly rolesService: RolesService) {}
 
   private getUserId(
     headers: Record<string, string | undefined>,
@@ -92,37 +47,15 @@ export class RolesController {
   }
 
   private unauthorized(res: Response): Response {
-    const { statusCode, body } = createErrorResponse(
-      `Thiếu header ${APP_HEADERS.USER_ID}`,
-      { status: 401 },
-    );
+    const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
+      status: 401,
+    });
     return res.status(statusCode).json(body);
   }
 
-  private parseListStatus(status?: string): RoleListStatus {
-    if (status && this.listStatuses.has(status as RoleListStatus)) {
-      return status as RoleListStatus;
-    }
-    return 'active';
-  }
-
-  private isBulkAction(action: string): action is RoleBulkAction {
-    return this.bulkActions.has(action as RoleBulkAction);
-  }
-
   @Get()
-  @ApiOperation({ summary: 'List roles with pagination' })
+  @ApiOperation({ summary: 'List vai trò' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: ['active', 'deleted', 'all'],
-  })
-  @ApiResponse({ status: 200, description: 'Roles retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
   async list(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -130,27 +63,28 @@ export class RolesController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
+    @Query('statusFilter') statusFilter?: string,
+    @Query('updatedAtFrom') updatedAtFrom?: string,
+    @Query('updatedAtTo') updatedAtTo?: string,
+    @Query('deletedAtFrom') deletedAtFrom?: string,
+    @Query('deletedAtTo') deletedAtTo?: string,
     @Query() query?: Record<string, string>,
   ) {
-    this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const filters: Record<string, string> = {};
-    if (query) {
-      for (const [key, value] of Object.entries(query)) {
-        const m = key.match(/^filter\[(.+)\]$/);
-        if (m && value) filters[m[1]] = value;
-      }
-    }
-    const result = await this.rolesService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: this.parseListStatus(status),
-      filters: Object.keys(filters).length ? filters : undefined,
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const result = await this.rolesService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -159,12 +93,8 @@ export class RolesController {
   }
 
   @Get('options')
-  @ApiOperation({ summary: 'Get role options for dropdowns' })
+  @ApiOperation({ summary: 'Get vai trò options for dropdowns' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'column', required: false, type: String })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({ status: 200, description: 'Options retrieved successfully' })
   async options(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -172,232 +102,99 @@ export class RolesController {
     @Query('search') search?: string,
     @Query('limit') limit?: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const options = await this.rolesService.getOptions(
-      column ?? 'name',
-      search?.trim(),
-      parseAdminListLimit(limit, 50),
+      column?.trim() || 'name',
+      search,
+      Math.min(1000, Math.max(1, parseInt(String(limit), 10) || 50)),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);
   }
 
-  @Get('permissions')
-  @ApiOperation({
-    summary: 'List full permission catalog (cho UI ma trận quyền)',
-  })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiResponse({ status: 200, description: 'Catalog retrieved successfully' })
-  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
-  listPermissionCatalog(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-  ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const items = Object.values(PERMISSIONS)
-      .map((code, index) => ({
-        id: index + 1,
-        code,
-        name: code,
-        description: null,
-      }))
-      .sort((a, b) => a.code.localeCompare(b.code));
-    const { statusCode, body } = createSuccessResponse(items);
-    return res.status(statusCode).json(body);
-  }
-
   @Get(':id')
-  @ApiOperation({ summary: 'Get role by ID' })
+  @ApiOperation({ summary: 'Get vai trò by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Role found' })
-  @ApiResponse({ status: 404, description: 'Role not found' })
   async getById(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.rolesService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy vai trò',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy vai trò', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
     return res.status(statusCode).json(body);
   }
 
-  @Post()
   @Permissions(PERMISSIONS.ROLES_CREATE)
-  @ApiOperation({ summary: 'Create new role' })
+  @Post()
+  @ApiOperation({ summary: 'Create vai trò' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiBody({ description: 'Role data', required: true })
-  @ApiResponse({ status: 201, description: 'Role created successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input' })
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body()
-    body: {
-      name?: string;
-      displayName?: string;
-      description?: string | null;
-      permissions?: unknown;
-      isActive?: boolean;
-    },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    if (!body?.name?.trim() || !body?.displayName?.trim()) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'name và displayName là bắt buộc',
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
+        'name là bắt buộc',
         { status: 400 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const created = await this.rolesService.create({
-      name: body.name.trim(),
-      displayName: body.displayName.trim(),
-      description: body.description ?? null,
-      permissions: body.permissions,
-      isActive: body.isActive ?? true,
-    });
-    this.socketGateway.emitRoleUpsert(created, null, 'active');
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã tạo vai trò',
-        `Tạo vai trò: ${created.displayName ?? created.name} (${created.name})`,
-        `${ADMIN_ROUTES.ROLES}/${created.id}`,
-        {
-          resource: RESOURCES.ROLES,
-          action: ACTIONS.CREATE,
-          resourceId: created.id,
-        },
-      );
-    }
-    const { statusCode, body: okBody } = createSuccessResponse(created, {
+    const created = await this.rolesService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
       status: 201,
     });
-    return res.status(statusCode).json(okBody);
+    return res.status(statusCode).json(ok);
   }
 
-  @Put(':id')
   @Permissions(PERMISSIONS.ROLES_UPDATE)
-  @ApiOperation({ summary: 'Update role by ID' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Update vai trò' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiBody({ description: 'Updated role data' })
-  @ApiResponse({ status: 200, description: 'Role updated successfully' })
-  @ApiResponse({ status: 404, description: 'Role not found' })
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body()
-    body: {
-      name?: string;
-      displayName?: string;
-      description?: string | null;
-      permissions?: unknown;
-      isActive?: boolean;
-    },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const actorEmail = await this.rolesService.resolveActorEmail(userId);
-    const updated = await this.rolesService.update(
-      id,
-      {
-        name: body?.name?.trim(),
-        displayName: body?.displayName?.trim(),
-        description: body?.description ?? undefined,
-        permissions: body?.permissions,
-        isActive: body?.isActive,
-      },
-      actorEmail,
-    );
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.rolesService.update(id, body);
     if (!updated) {
-      const { statusCode, body: errBody } = createErrorResponse(
+      const { statusCode, body: err } = createErrorResponse(
         'Không tìm thấy vai trò',
         { status: 404 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã cập nhật vai trò',
-        `Cập nhật vai trò: ${updated.displayName ?? updated.name} (${updated.name})`,
-        `${ADMIN_ROUTES.ROLES}/${updated.id}`,
-        {
-          resource: RESOURCES.ROLES,
-          action: ACTIONS.UPDATE,
-          resourceId: updated.id,
-        },
-      );
-    }
-    this.socketGateway.emitRoleUpsert(
-      updated,
-      updated.deletedAt ? 'deleted' : 'active',
-      updated.deletedAt ? 'deleted' : 'active',
-    );
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
-    return res.status(statusCode).json(okBody);
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
   }
 
-  @Delete(':id/hard-delete')
   @Permissions(PERMISSIONS.ROLES_MANAGE)
-  @ApiOperation({ summary: 'Hard delete role permanently' })
+  @Delete(':id/hard-delete')
+  @ApiOperation({ summary: 'Hard delete vai trò' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Role deleted permanently' })
-  @ApiResponse({ status: 404, description: 'Role not found' })
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.rolesService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy vai trò',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy vai trò', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa vĩnh viễn vai trò',
-        `Xóa vĩnh viễn vai trò id: ${id}`,
-        ADMIN_ROUTES.ROLES,
-        {
-          resource: RESOURCES.ROLES,
-          action: ACTIONS.HARD_DELETE,
-          resourceId: toEntityId(id),
-        },
-      );
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
       message: 'Đã xóa vĩnh viễn vai trò',
@@ -405,50 +202,23 @@ export class RolesController {
     return res.status(statusCode).json(body);
   }
 
-  @Delete(':id')
   @Permissions(PERMISSIONS.ROLES_DELETE)
-  @ApiOperation({ summary: 'Soft delete role' })
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete vai trò' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Role deleted' })
-  @ApiResponse({
-    status: 404,
-    description: 'Role not found or already deleted',
-  })
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.rolesService.softDelete(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Vai trò không tồn tại hoặc đã bị xóa',
+        'vai trò không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
-    }
-    this.socketGateway.emitRoleUpsert(
-      { id: toEntityId(id) },
-      'active',
-      'deleted',
-    );
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa vai trò',
-        `Xóa vai trò (soft) id: ${id}`,
-        ADMIN_ROUTES.ROLES,
-        {
-          resource: RESOURCES.ROLES,
-          action: ACTIONS.DELETE,
-          resourceId: toEntityId(id),
-        },
-      );
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
       message: 'Đã xóa vai trò',
@@ -456,9 +226,33 @@ export class RolesController {
     return res.status(statusCode).json(body);
   }
 
+  @Permissions(PERMISSIONS.ROLES_RESTORE)
+  @Post(':id/restore')
+  @ApiOperation({ summary: 'Restore vai trò' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  async restore(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Param('id') id: string,
+  ) {
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const ok = await this.rolesService.restore(id);
+    if (!ok) {
+      const { statusCode, body } = createErrorResponse(
+        'vai trò không tồn tại hoặc chưa bị xóa',
+        { status: 404 },
+      );
+      return res.status(statusCode).json(body);
+    }
+    const { statusCode, body } = createSuccessResponse(undefined, {
+      message: 'Đã khôi phục vai trò',
+    });
+    return res.status(statusCode).json(body);
+  }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.ROLES_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on roles' })
+  @ApiOperation({ summary: 'Bulk action on vai tro' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })
@@ -474,97 +268,18 @@ export class RolesController {
     }
     const action = body?.action;
     const ids = Array.isArray(body?.ids) ? body.ids : [];
-    if (!action || !this.isBulkAction(action)) {
+    if (!action || !isBulkAction(action)) {
       const { statusCode, body: errBody } = createErrorResponse(
-        'Action không hợp lệ',
+        'Action khong hop le',
         { status: 400 },
       );
       return res.status(statusCode).json(errBody);
     }
     const result = await this.rolesService.bulk(action, ids);
-    if (userId && result.affected > 0) {
-      let actionLabel = '';
-      let actionType = '';
-
-      switch (action) {
-        case 'delete':
-          actionLabel = 'Xóa';
-          actionType = ACTIONS.DELETE;
-          break;
-        case 'restore':
-          actionLabel = 'Khôi phục';
-          actionType = ACTIONS.RESTORE;
-          break;
-        case 'hard-delete':
-          actionLabel = 'Xóa vĩnh viễn';
-          actionType = ACTIONS.HARD_DELETE;
-          break;
-      }
-
-      this.logActivity(
-        userId,
-        `Đã ${actionLabel} ${result.affected} vai trò`,
-        `Bulk: ${actionLabel} ${result.affected} vai trò`,
-        ADMIN_ROUTES.ROLES,
-        {
-          resource: RESOURCES.ROLES,
-          action: actionType,
-          count: result.affected,
-          ids,
-        },
-      );
-    }
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);
-  }
-
-  @Post(':id/restore')
-  @Permissions(PERMISSIONS.ROLES_RESTORE)
-  @ApiOperation({ summary: 'Restore soft-deleted role' })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Role restored' })
-  @ApiResponse({ status: 404, description: 'Role not found or not deleted' })
-  async restore(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-    @Param('id') id: string,
-  ) {
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const ok = await this.rolesService.restore(id);
-    if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Vai trò không tồn tại hoặc chưa bị xóa',
-        { status: 404 },
-      );
-      return res.status(statusCode).json(body);
-    }
-    const restored = await this.rolesService.getById(id);
-    if (restored) {
-      this.socketGateway.emitRoleUpsert(restored, 'deleted', 'active');
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã khôi phục vai trò',
-        `Khôi phục vai trò id: ${id}`,
-        `${ADMIN_ROUTES.ROLES}/${id}`,
-        {
-          resource: RESOURCES.ROLES,
-          action: ACTIONS.RESTORE,
-          resourceId: toEntityId(id),
-        },
-      );
-    }
-    const { statusCode, body } = createSuccessResponse(undefined, {
-      message: 'Đã khôi phục vai trò',
-    });
-    return res.status(statusCode).json(body);
   }
 }

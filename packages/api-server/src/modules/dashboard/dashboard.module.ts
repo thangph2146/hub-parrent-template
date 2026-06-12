@@ -22,4 +22,5 @@ export class BaseDashboardModule {
 }
 
 export { BaseDashboardController } from './dashboard.controller';
-export { BaseDashboardService, type DashboardStatsDto } from './dashboard.service';
+export { BaseDashboardService } from './dashboard.service';
+export type { DashboardStatsDto } from './dashboard.types';

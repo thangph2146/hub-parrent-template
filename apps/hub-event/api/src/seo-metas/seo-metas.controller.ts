@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   Controller,
   Get,
@@ -20,7 +21,7 @@ import {
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @Permissions(PERMISSIONS.SEO_METAS_VIEW)
@@ -304,6 +305,7 @@ export class SeoMetasController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.SEO_METAS_MANAGE)
   @ApiOperation({ summary: 'Bulk action on SEO metas' })

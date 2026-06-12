@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -18,16 +19,16 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { CamerasService } from './cameras.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Cameras')
@@ -35,19 +36,25 @@ import { buildAdminListCrudParams } from '../common/admin-list-params';
 @Permissions(PERMISSIONS.CAMERAS_VIEW)
 export class CamerasController {
   private readonly logger = new Logger(CamerasController.name);
+
   constructor(private readonly camerasService: CamerasService) {}
-  private getUserId(h: Record<string, string | undefined>): string | null {
-    return h[APP_HEADERS.USER_ID]?.trim() || null;
+
+  private getUserId(
+    headers: Record<string, string | undefined>,
+  ): string | null {
+    const id = headers[APP_HEADERS.USER_ID]?.trim();
+    return id || null;
   }
-  private unauthorized(r: Response): Response {
+
+  private unauthorized(res: Response): Response {
     const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
       status: 401,
     });
-    return r.status(statusCode).json(body);
+    return res.status(statusCode).json(body);
   }
 
   @Get()
-  @ApiOperation({ summary: 'List cameras' })
+  @ApiOperation({ summary: 'List camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async list(
     @Res() res: Response,
@@ -96,10 +103,9 @@ export class CamerasController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.camerasService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy camera',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy camera', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -165,10 +171,9 @@ export class CamerasController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.camerasService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy camera',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy camera', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
@@ -190,7 +195,7 @@ export class CamerasController {
     const ok = await this.camerasService.softDelete(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Camera không tồn tại hoặc đã bị xóa',
+        'camera không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -214,7 +219,7 @@ export class CamerasController {
     const ok = await this.camerasService.restore(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Camera không tồn tại hoặc chưa bị xóa',
+        'camera không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -224,9 +229,10 @@ export class CamerasController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.CAMERAS_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on cameras' })
+  @ApiOperation({ summary: 'Bulk action on camera' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })

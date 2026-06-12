@@ -13,8 +13,6 @@
     "**/*.spec.ts",
     "src/index.ts",
     "src/modules/index.ts",
-    "src/modules/dashboard/**",
-    "src/modules/products/**",
-    "src/modules/system/**"
+    "src/modules/products/**"
   ]
 }

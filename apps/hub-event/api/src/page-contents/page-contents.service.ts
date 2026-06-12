@@ -1,124 +1,22 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
+import { BasePageContentsAdminService } from '@workspace/api-server/modules/page-contents';
 import { PageContent } from '../entities/page-content.entity';
-import {
-  applyBulkAction,
-  type BulkAction,
-  type BulkResult,
-} from '../common/bulk-actions';
-import { applyColumnFilters } from '../common/apply-column-filters';
-import { GUIDE_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
-export interface PageContentCreateInput {
-  pageKey: string;
-  sectionKey: string;
-  content: Record<string, unknown>;
-  isVisible?: boolean;
-}
-
-export interface PageContentUpdateInput {
-  pageKey?: string;
-  sectionKey?: string;
-  content?: Record<string, unknown>;
-  isVisible?: boolean;
-}
+export type { PageContentCreateInput, PageContentUpdateInput } from '@workspace/api-server/modules/page-contents';
 
 @Injectable()
-export class PageContentsService {
-  constructor(private readonly em: EntityManager) {}
-
-  async getByKey(pageKey: string) {
-    return this.em.find(
-      PageContent,
-      { pageKey },
-      {
-        orderBy: { createdAt: 'ASC' },
-      },
-    );
+export class PageContentsService extends BasePageContentsAdminService {
+  constructor(private readonly em: EntityManager) {
+    super();
   }
 
-  async getByPageAndSection(pageKey: string, sectionKey: string) {
-    return this.em.findOne(PageContent, { pageKey, sectionKey });
+  protected getEm(): EntityManager {
+    return this.em;
   }
 
-  async getById(id: string) {
-    return this.em.findOne(PageContent, { id: toEntityId(id) });
-  }
-
-  async list(
-    params: {
-      page?: number;
-      limit?: number;
-      search?: string;
-      filters?: Record<string, string>;
-    } = {},
-  ) {
-    const { page = 1, limit = 10, search, filters } = params;
-    const offset = (page - 1) * limit;
-
-    const where: Record<string, unknown> = {};
-    if (search?.trim()) {
-      const s = `%${search.trim()}%`;
-      where.$or = [
-        { pageKey: { $like: s } },
-        { sectionKey: { $like: s } },
-        { content: { $like: s } },
-      ];
-    }
-    applyColumnFilters(where, filters, GUIDE_COLUMN_FILTERS);
-    const whereQuery = where as unknown as FilterQuery<PageContent>;
-
-    const [data, total] = await Promise.all([
-      this.em.find(PageContent, whereQuery, {
-        offset,
-        limit,
-        orderBy: { updatedAt: 'DESC' },
-      }),
-      this.em.count(PageContent, whereQuery),
-    ]);
-
-    return {
-      data,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  }
-
-  async create(data: PageContentCreateInput) {
-    const entity = new PageContent();
-    Object.assign(entity, data);
-    await this.em.persistAndFlush(entity);
-    return entity;
-  }
-
-  async update(id: string, data: PageContentUpdateInput) {
-    const existing = await this.em.findOne(PageContent, { id: toEntityId(id) });
-    if (!existing) {
-      return null;
-    }
-
-    Object.assign(existing, data);
-    await this.em.persistAndFlush(existing);
-    return existing;
-  }
-
-  async delete(id: string) {
-    const existing = await this.em.findOne(PageContent, { id: toEntityId(id) });
-    if (!existing) {
-      return null;
-    }
-
-    await this.em.removeAndFlush(existing);
-    return existing;
-  }
-  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
-    return applyBulkAction(this.em, PageContent, action, ids, {
-      label: 'trang',
-    });
+  protected getPageContentEntity(): new () => Record<string, unknown> {
+    return PageContent as unknown as new () => Record<string, unknown>;
   }
 }

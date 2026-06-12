@@ -1,7 +1,8 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
-import { NotificationsModule } from '../notifications/notifications.module';
-import { TagsController } from './tags.controller';
 import { TagsService } from './tags.service';
+import { TagsController } from './tags.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [NotificationsModule],

@@ -6,6 +6,8 @@ import type {
   UserRowDto,
   UserRoleDto,
   DevLoginOption,
+  DevLoginOptionsQuery,
+  DevLoginRole,
 } from '../../types';
 
 /**
@@ -71,6 +73,49 @@ export function mapUserRoles(
   }));
 }
 
+function parseRoleNamesCsv(value: string | undefined): string[] {
+  if (!value?.trim()) return [];
+  return [
+    ...new Set(
+      value
+        .split(',')
+        .map((part) => part.trim().toLowerCase())
+        .filter(Boolean),
+    ),
+  ];
+}
+
+function listDevLoginRoles(
+  userRoles?: Array<{
+    role?: {
+      id: number;
+      name: string;
+      displayName?: string | null;
+      deletedAt?: Date | string | null;
+    } | null;
+  }>,
+): DevLoginRole[] {
+  const roles = (userRoles ?? [])
+    .map((userRole) => userRole.role)
+    .filter(
+      (role): role is NonNullable<typeof role> =>
+        Boolean(role && role.deletedAt == null),
+    );
+
+  const seen = new Set<number>();
+  return roles
+    .map((role) => ({
+      id: role.id,
+      name: role.name.trim(),
+      displayName: (role.displayName?.trim() || role.name).trim(),
+    }))
+    .filter((role) => {
+      if (!role.name || seen.has(role.id)) return false;
+      seen.add(role.id);
+      return true;
+    });
+}
+
 /**
  * Map user to dev login option
  */
@@ -79,19 +124,79 @@ export function mapUserToDevLoginOption(
     id: number | string;
     email?: string | null;
     name?: string | null;
+    isActive?: boolean;
     userRoles?: Array<{
-      role: { name: string };
+      role?: {
+        id: number;
+        name: string;
+        displayName?: string | null;
+        deletedAt?: Date | string | null;
+      } | null;
     }>;
   },
 ): DevLoginOption | null {
-  if (!user.email?.trim()) return null;
+  const email = user.email?.trim() ?? '';
+  if (!email) return null;
+
+  const roles = listDevLoginRoles(user.userRoles);
+  const roleNames = roles.map((role) => role.name);
+  const roleLabels = roles.map((role) => role.displayName);
+  const isActive = user.isActive !== false;
+  const statusLabel = isActive ? 'Đang hoạt động' : 'Ngừng hoạt động';
+  const roleDescription =
+    roleLabels.length > 0 ? roleLabels.join(', ') : 'Chưa gán vai trò';
 
   return {
     id: typeof user.id === 'string' ? parseInt(user.id, 10) : user.id,
-    email: user.email.trim().toLowerCase(),
+    email: email.toLowerCase(),
     name: user.name ?? null,
-    roleNames: user.userRoles?.map((ur) => ur.role.name) ?? [],
+    isActive,
+    roleNames,
+    roleLabels,
+    roles,
+    description: `${statusLabel} | ${roleDescription}`,
   };
+}
+
+export function filterDevLoginOptions(
+  options: DevLoginOption[],
+  query: DevLoginOptionsQuery = {},
+): DevLoginOption[] {
+  const role = query.role?.trim().toLowerCase();
+  const roles = parseRoleNamesCsv(query.roles);
+  const excludeRoles = parseRoleNamesCsv(query.excludeRoles);
+  const emailSuffix = query.emailSuffix?.trim().toLowerCase();
+  const activeOnly = query.activeOnly !== false;
+  const search = query.search?.trim().toLowerCase();
+
+  return options.filter((option) => {
+    const names = option.roleNames.map((name) => name.toLowerCase());
+
+    if (activeOnly && option.isActive === false) return false;
+    if (role && !names.includes(role)) return false;
+    if (roles.length > 0 && !roles.some((name) => names.includes(name))) {
+      return false;
+    }
+    if (
+      excludeRoles.length > 0 &&
+      excludeRoles.some((name) => names.includes(name))
+    ) {
+      return false;
+    }
+    if (
+      emailSuffix &&
+      !option.email.trim().toLowerCase().endsWith(emailSuffix)
+    ) {
+      return false;
+    }
+    if (search) {
+      const matchesSearch =
+        option.email.toLowerCase().includes(search) ||
+        (option.name?.toLowerCase().includes(search) ?? false);
+      if (!matchesSearch) return false;
+    }
+    return true;
+  });
 }
 
 /**

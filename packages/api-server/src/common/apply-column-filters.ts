@@ -149,6 +149,99 @@ function applyFieldFilter(
   }
 }
 
+/** Áp `filter[columnId]` lên MikroORM `where` theo config từng cột. */
+export function applyColumnFilters(
+  where: Record<string, unknown>,
+  filters: Record<string, string> | undefined,
+  config: AdminColumnFiltersConfig,
+): void {
+  if (!filters) return;
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (!value?.trim()) continue;
+    const field = config[key];
+    if (!field) continue;
+    applyFieldFilter(where, field, value);
+  }
+}
+
+export type StandardAdminListParams = {
+  search?: string;
+  status?: 'active' | 'deleted' | 'all';
+  statusFilter?: number;
+  updatedAtFrom?: string;
+  updatedAtTo?: string;
+  deletedAtFrom?: string;
+  deletedAtTo?: string;
+  filters?: Record<string, string>;
+  searchFields?: string[];
+  filterConfig?: AdminColumnFiltersConfig;
+};
+
+function applySoftDeleteStatus(
+  where: Record<string, unknown>,
+  status: StandardAdminListParams['status'],
+): void {
+  const s = status ?? 'active';
+  if (s === 'deleted') where.deletedAt = { $ne: null };
+  else if (s === 'active') where.deletedAt = null;
+}
+
+function applyLegacyRangeFilters(
+  where: Record<string, unknown>,
+  params: StandardAdminListParams,
+): void {
+  if (params.statusFilter != null) where.status = params.statusFilter;
+
+  if (params.updatedAtFrom) {
+    where.updatedAt = {
+      ...(where.updatedAt as object),
+      $gte: new Date(params.updatedAtFrom),
+    };
+  }
+  if (params.updatedAtTo) {
+    where.updatedAt = {
+      ...(where.updatedAt as object),
+      $lte: new Date(params.updatedAtTo),
+    };
+  }
+  if (params.deletedAtFrom) {
+    where.deletedAt = {
+      ...(where.deletedAt as object),
+      $gte: new Date(params.deletedAtFrom),
+    };
+  }
+  if (params.deletedAtTo) {
+    where.deletedAt = {
+      ...(where.deletedAt as object),
+      $lte: new Date(params.deletedAtTo),
+    };
+  }
+}
+
+/** Ghép soft-delete, search, legacy date/status và `filter[column]`. */
+export function buildStandardAdminListWhere(
+  params: StandardAdminListParams,
+): Record<string, unknown> {
+  const where: Record<string, unknown> = {};
+
+  applySoftDeleteStatus(where, params.status);
+  applyLegacyRangeFilters(where, params);
+
+  if (params.search?.trim() && params.searchFields?.length) {
+    const q = params.search.trim();
+    where.$or = params.searchFields.map((field) => ({
+      [field]: { $like: `%${q}%` },
+    }));
+  }
+
+  if (params.filterConfig) {
+    applyColumnFilters(where, params.filters, params.filterConfig);
+  }
+
+  return where;
+}
+
 /**
  * Build a FilterQuery từ admin column filters + soft-delete status.
  */

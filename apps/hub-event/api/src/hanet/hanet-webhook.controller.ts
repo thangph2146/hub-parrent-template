@@ -10,9 +10,11 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PUBLIC_ROUTES } from '../config/constants';
 import { Public } from '../common/public.decorator';
-import { normalizeHanetBody } from './hanet-payload';
+import {
+  normalizeHanetBody,
+  type HanetWebhookBody,
+} from '@workspace/api-server/modules/hanet';
 import { HanetWebhookService } from './hanet-webhook.service';
-import type { HanetWebhookBody } from './hanet.types';
 
 @ApiTags('HANET Webhook')
 @Public()

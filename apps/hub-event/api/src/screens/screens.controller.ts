@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -18,16 +19,16 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { ScreensService } from './screens.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Screens')
@@ -35,19 +36,25 @@ import { buildAdminListCrudParams } from '../common/admin-list-params';
 @Permissions(PERMISSIONS.SCREENS_VIEW)
 export class ScreensController {
   private readonly logger = new Logger(ScreensController.name);
+
   constructor(private readonly screensService: ScreensService) {}
-  private getUserId(h: Record<string, string | undefined>): string | null {
-    return h[APP_HEADERS.USER_ID]?.trim() || null;
+
+  private getUserId(
+    headers: Record<string, string | undefined>,
+  ): string | null {
+    const id = headers[APP_HEADERS.USER_ID]?.trim();
+    return id || null;
   }
-  private unauthorized(r: Response): Response {
+
+  private unauthorized(res: Response): Response {
     const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
       status: 401,
     });
-    return r.status(statusCode).json(body);
+    return res.status(statusCode).json(body);
   }
 
   @Get()
-  @ApiOperation({ summary: 'List screens' })
+  @ApiOperation({ summary: 'List màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async list(
     @Res() res: Response,
@@ -86,7 +93,7 @@ export class ScreensController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get screen by ID' })
+  @ApiOperation({ summary: 'Get màn hình by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async getById(
     @Res() res: Response,
@@ -96,10 +103,9 @@ export class ScreensController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.screensService.getById(id);
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy màn hình',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy màn hình', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -108,7 +114,7 @@ export class ScreensController {
 
   @Permissions(PERMISSIONS.SCREENS_CREATE)
   @Post()
-  @ApiOperation({ summary: 'Create screen' })
+  @ApiOperation({ summary: 'Create màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
     @Res() res: Response,
@@ -132,7 +138,7 @@ export class ScreensController {
 
   @Permissions(PERMISSIONS.SCREENS_UPDATE)
   @Put(':id')
-  @ApiOperation({ summary: 'Update screen' })
+  @ApiOperation({ summary: 'Update màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
     @Res() res: Response,
@@ -155,7 +161,7 @@ export class ScreensController {
 
   @Permissions(PERMISSIONS.SCREENS_MANAGE)
   @Delete(':id/hard-delete')
-  @ApiOperation({ summary: 'Hard delete screen' })
+  @ApiOperation({ summary: 'Hard delete màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
     @Res() res: Response,
@@ -165,10 +171,9 @@ export class ScreensController {
     if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.screensService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy màn hình',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy màn hình', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
@@ -179,7 +184,7 @@ export class ScreensController {
 
   @Permissions(PERMISSIONS.SCREENS_DELETE)
   @Delete(':id')
-  @ApiOperation({ summary: 'Soft delete screen' })
+  @ApiOperation({ summary: 'Soft delete màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
     @Res() res: Response,
@@ -190,7 +195,7 @@ export class ScreensController {
     const ok = await this.screensService.softDelete(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Màn hình không tồn tại hoặc đã bị xóa',
+        'màn hình không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -203,7 +208,7 @@ export class ScreensController {
 
   @Permissions(PERMISSIONS.SCREENS_RESTORE)
   @Post(':id/restore')
-  @ApiOperation({ summary: 'Restore screen' })
+  @ApiOperation({ summary: 'Restore màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(
     @Res() res: Response,
@@ -214,7 +219,7 @@ export class ScreensController {
     const ok = await this.screensService.restore(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Màn hình không tồn tại hoặc chưa bị xóa',
+        'màn hình không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -224,9 +229,10 @@ export class ScreensController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.SCREENS_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on man hinhs' })
+  @ApiOperation({ summary: 'Bulk action on màn hình' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })

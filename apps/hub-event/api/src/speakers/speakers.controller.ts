@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import {
   ApiTags,
   ApiOperation,
@@ -18,16 +19,16 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
 import type { Response } from 'express';
 import { SpeakersService } from './speakers.service';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
+import { Permissions } from '../common/permissions.decorator';
+import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { isBulkAction, type BulkAction } from '../common/bulk-actions';
+import { isBulkAction } from '../common/bulk-actions';
 import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Speakers')
@@ -53,7 +54,7 @@ export class SpeakersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List speakers with pagination' })
+  @ApiOperation({ summary: 'List diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async list(
     @Res() res: Response,
@@ -62,23 +63,21 @@ export class SpeakersController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
-    @Query('speakerStatus') speakerStatus?: string,
+    @Query('statusFilter') statusFilter?: string,
     @Query('updatedAtFrom') updatedAtFrom?: string,
     @Query('updatedAtTo') updatedAtTo?: string,
     @Query('deletedAtFrom') deletedAtFrom?: string,
     @Query('deletedAtTo') deletedAtTo?: string,
     @Query() query?: Record<string, string>,
   ) {
-    this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const result = await this.speakersService.list(
       buildAdminListCrudParams({
         page,
         limit,
         search,
         status,
-        statusFilter: speakerStatus,
+        statusFilter,
         updatedAtFrom,
         updatedAtTo,
         deletedAtFrom,
@@ -94,21 +93,19 @@ export class SpeakersController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get speaker by ID' })
+  @ApiOperation({ summary: 'Get diễn giả by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async getById(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.speakersService.getById(Number(id));
     if (!row) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy diễn giả',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy diễn giả', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
@@ -117,115 +114,66 @@ export class SpeakersController {
 
   @Permissions(PERMISSIONS.SPEAKERS_CREATE)
   @Post()
-  @ApiOperation({ summary: 'Create new speaker' })
+  @ApiOperation({ summary: 'Create diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body()
-    body: {
-      name: string;
-      title?: string;
-      organization?: string;
-      bio?: string;
-      avatar?: string;
-      email?: string;
-      phone?: string;
-      status?: number;
-    },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
-    if (!body?.name?.trim()) {
-      const { statusCode, body: errBody } = createErrorResponse(
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
         'name là bắt buộc',
         { status: 400 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const created = await this.speakersService.create({
-      name: body.name.trim(),
-      title: body.title?.trim() ?? null,
-      organization: body.organization?.trim() ?? null,
-      bio: body.bio?.trim() ?? null,
-      avatar: body.avatar?.trim() ?? null,
-      email: body.email?.trim() ?? null,
-      phone: body.phone?.trim() ?? null,
-      status: body.status,
-    });
-    const { statusCode, body: okBody } = createSuccessResponse(created, {
+    const created = await this.speakersService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
       status: 201,
     });
-    return res.status(statusCode).json(okBody);
+    return res.status(statusCode).json(ok);
   }
 
   @Permissions(PERMISSIONS.SPEAKERS_UPDATE)
   @Put(':id')
-  @ApiOperation({ summary: 'Update speaker by ID' })
+  @ApiOperation({ summary: 'Update diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body()
-    body: {
-      name?: string;
-      title?: string;
-      organization?: string;
-      bio?: string;
-      avatar?: string;
-      email?: string;
-      phone?: string;
-      status?: number;
-    },
+    @Body() body: Record<string, unknown>,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
-    const updated = await this.speakersService.update(Number(id), {
-      name: body?.name?.trim(),
-      title:
-        body?.title !== undefined ? (body.title?.trim() ?? null) : undefined,
-      organization:
-        body?.organization !== undefined
-          ? (body.organization?.trim() ?? null)
-          : undefined,
-      bio: body?.bio !== undefined ? (body.bio?.trim() ?? null) : undefined,
-      avatar:
-        body?.avatar !== undefined ? (body.avatar?.trim() ?? null) : undefined,
-      email:
-        body?.email !== undefined ? (body.email?.trim() ?? null) : undefined,
-      phone:
-        body?.phone !== undefined ? (body.phone?.trim() ?? null) : undefined,
-      status: body?.status,
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.speakersService.update(Number(id), body);
     if (!updated) {
-      const { statusCode, body: errBody } = createErrorResponse(
+      const { statusCode, body: err } = createErrorResponse(
         'Không tìm thấy diễn giả',
         { status: 404 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
-    return res.status(statusCode).json(okBody);
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
   }
 
   @Permissions(PERMISSIONS.SPEAKERS_MANAGE)
   @Delete(':id/hard-delete')
-  @ApiOperation({ summary: 'Hard delete speaker permanently' })
+  @ApiOperation({ summary: 'Hard delete diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.speakersService.hardDelete(Number(id));
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy diễn giả',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy diễn giả', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
@@ -236,19 +184,18 @@ export class SpeakersController {
 
   @Permissions(PERMISSIONS.SPEAKERS_DELETE)
   @Delete(':id')
-  @ApiOperation({ summary: 'Soft delete speaker' })
+  @ApiOperation({ summary: 'Soft delete diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.speakersService.softDelete(Number(id));
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Diễn giả không tồn tại hoặc đã bị xóa',
+        'diễn giả không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -261,19 +208,18 @@ export class SpeakersController {
 
   @Permissions(PERMISSIONS.SPEAKERS_RESTORE)
   @Post(':id/restore')
-  @ApiOperation({ summary: 'Restore soft-deleted speaker' })
+  @ApiOperation({ summary: 'Restore diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    const userId = this.getUserId(headers);
-    if (!userId) return this.unauthorized(res);
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.speakersService.restore(Number(id));
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Diễn giả không tồn tại hoặc chưa bị xóa',
+        'diễn giả không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
@@ -283,9 +229,10 @@ export class SpeakersController {
     });
     return res.status(statusCode).json(body);
   }
+
   @Post('bulk')
   @Permissions(PERMISSIONS.SPEAKERS_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on dien gias' })
+  @ApiOperation({ summary: 'Bulk action on diễn giả' })
   @ApiHeader({ name: 'X-User-Id', required: true })
   @ApiBody({ description: 'Bulk action with ids' })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })

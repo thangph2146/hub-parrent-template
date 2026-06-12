@@ -42,6 +42,7 @@ export {
   mapUserToRowDto,
   mapUserRoles,
   mapUserToDevLoginOption,
+  filterDevLoginOptions,
   buildSearchPattern,
   buildSearchConditions,
 } from './users.mapper';

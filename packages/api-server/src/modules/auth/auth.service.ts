@@ -103,7 +103,18 @@ export abstract class BaseAuthService {
   }
 
   protected listUserRoles(user: Record<string, unknown>): UserRoleRecord[] {
-    return Array.isArray(user.userRoles) ? (user.userRoles as UserRoleRecord[]) : [];
+    const userRoles = user.userRoles;
+    if (!userRoles) return [];
+    if (Array.isArray(userRoles)) return userRoles as UserRoleRecord[];
+    if (
+      typeof userRoles === 'object' &&
+      userRoles !== null &&
+      'getItems' in userRoles &&
+      typeof (userRoles as { getItems: () => unknown }).getItems === 'function'
+    ) {
+      return (userRoles as { getItems: () => UserRoleRecord[] }).getItems();
+    }
+    return [];
   }
 
   protected mapUserToPayload(user: Record<string, unknown>): AuthLoginPayload {
@@ -212,6 +223,10 @@ export abstract class BaseAuthService {
   async getAuthPayloadByUserId(userId: string): Promise<AuthLoginPayload | null> {
     const { payload } = await this.tryAuthPayloadByUserId(userId);
     return payload;
+  }
+
+  logout(_userId?: string): Promise<{ ok: boolean }> {
+    return Promise.resolve({ ok: true });
   }
 
   async loginAsDevelopmentUser(userId: string): Promise<AuthLoginPayload | null> {
@@ -369,7 +384,6 @@ export abstract class BaseAuthService {
     const newUser = new User() as Record<string, unknown>;
     newUser.email = email;
     newUser.name = profile.name ?? null;
-    newUser.avatar = profile.image ?? null;
     newUser.password = password;
     newUser.isActive = true;
     emAny.persist(newUser);

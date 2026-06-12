@@ -14,3 +14,10 @@ export type {
   AccountsCreateData,
   AccountsUpdateData,
 } from './account.service';
+
+export { BaseAccountsAdminService } from './accounts-admin.service';
+export type {
+  AccountProfileDto,
+  UpdateAccountDto,
+  UpdateAccountResult,
+} from './accounts-admin.service';

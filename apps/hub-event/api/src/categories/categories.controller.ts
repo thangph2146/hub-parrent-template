@@ -1,17 +1,11 @@
-import { toEntityId } from '../common/entity-id';
-/**
- * Categories Admin API Controller.
- * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id; POST :id/restore.
- * Header: X-User-Id (bắt buộc).
- */
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+import type { CategoryCreateData, CategoryUpdateData } from '@workspace/api-server/modules/categories';
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiQuery,
-  ApiParam,
   ApiHeader,
+  ApiBody,
+  ApiResponse,
 } from '@nestjs/swagger';
 import {
   Controller,
@@ -28,60 +22,23 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { CategoriesService } from './categories.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationKind } from '../entities/notification.entity';
 import {
   createSuccessResponse,
   createErrorResponse,
 } from '../common/api-response';
-import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common/permissions.decorator';
-import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-
-type CategoryListStatus = 'active' | 'deleted' | 'all';
-type CategoryBulkAction = 'delete' | 'restore' | 'hard-delete' | 'set-parent';
+import { PERMISSIONS } from '../config/permissions';
+import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
+import { isBulkAction } from '../common/bulk-actions';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Categories')
-@Permissions(PERMISSIONS.CATEGORIES_VIEW)
 @Controller(ADMIN_ROUTES.CATEGORIES)
+@Permissions(PERMISSIONS.CATEGORIES_VIEW)
 export class CategoriesController {
   private readonly logger = new Logger(CategoriesController.name);
-  private readonly listStatuses = new Set<CategoryListStatus>([
-    'active',
-    'deleted',
-    'all',
-  ]);
-  private readonly bulkActions = new Set<CategoryBulkAction>([
-    'delete',
-    'restore',
-    'hard-delete',
-    'set-parent',
-  ]);
 
-  constructor(
-    private readonly categoriesService: CategoriesService,
-    private readonly notificationsService: NotificationsService,
-  ) {}
-
-  private logActivity(
-    userId: string,
-    title: string,
-    description: string,
-    actionUrl?: string,
-    metadata?: Record<string, unknown>,
-  ): void {
-    void this.notificationsService
-      .create({
-        userId: toEntityId(userId),
-        kind: NotificationKind.SYSTEM,
-        title,
-        description,
-        actionUrl: actionUrl ?? null,
-        metadata: metadata ?? undefined,
-      })
-      .catch(() => {});
-  }
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   private getUserId(
     headers: Record<string, string | undefined>,
@@ -91,45 +48,15 @@ export class CategoriesController {
   }
 
   private unauthorized(res: Response): Response {
-    const { statusCode, body } = createErrorResponse(
-      `Thiếu header ${APP_HEADERS.USER_ID}`,
-      { status: 401 },
-    );
+    const { statusCode, body } = createErrorResponse('Thiếu header X-User-Id', {
+      status: 401,
+    });
     return res.status(statusCode).json(body);
   }
 
-  private parseListStatus(status?: string): CategoryListStatus {
-    if (status && this.listStatuses.has(status as CategoryListStatus)) {
-      return status as CategoryListStatus;
-    }
-    return 'active';
-  }
-
-  private isBulkAction(action: string): action is CategoryBulkAction {
-    return this.bulkActions.has(action as CategoryBulkAction);
-  }
-
   @Get()
-  @ApiOperation({ summary: 'List categories with pagination' })
+  @ApiOperation({ summary: 'List danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: ['active', 'deleted', 'all'],
-  })
-  @ApiQuery({
-    name: 'type',
-    required: false,
-    enum: ['post', 'event'],
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Categories retrieved successfully',
-  })
-  @ApiResponse({ status: 401, description: 'Missing X-User-Id header' })
   async list(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -137,33 +64,28 @@ export class CategoriesController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
-    @Query('type') type?: string,
+    @Query('statusFilter') statusFilter?: string,
+    @Query('updatedAtFrom') updatedAtFrom?: string,
+    @Query('updatedAtTo') updatedAtTo?: string,
+    @Query('deletedAtFrom') deletedAtFrom?: string,
+    @Query('deletedAtTo') deletedAtTo?: string,
     @Query() query?: Record<string, string>,
   ) {
-    this.logger.log(
-      `list page=${page ?? 1} limit=${limit ?? 10} status=${status ?? 'active'} type=${type ?? 'all'}`,
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const result = await this.categoriesService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
     );
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      this.logger.warn(`list: Missing ${APP_HEADERS.USER_ID}`);
-      return this.unauthorized(res);
-    }
-    const filters: Record<string, string> = {};
-    if (query) {
-      for (const [key, value] of Object.entries(query)) {
-        const m = key.match(/^filter\[(.+)\]$/);
-        if (m && value) filters[m[1]] = value;
-      }
-    }
-    const parsedType = type === 'post' || type === 'event' ? type : undefined;
-    const result = await this.categoriesService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: Math.min(1000, Math.max(1, parseInt(String(limit), 10) || 10)),
-      search: search?.trim(),
-      status: this.parseListStatus(status),
-      type: parsedType,
-      filters: Object.keys(filters).length ? filters : undefined,
-    });
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -172,12 +94,8 @@ export class CategoriesController {
   }
 
   @Get('options')
-  @ApiOperation({ summary: 'Get category options for dropdowns' })
+  @ApiOperation({ summary: 'Get danh mục options for dropdowns' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiQuery({ name: 'column', required: false, type: String })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({ status: 200, description: 'Options retrieved successfully' })
   async options(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
@@ -185,289 +103,99 @@ export class CategoriesController {
     @Query('search') search?: string,
     @Query('limit') limit?: string,
   ) {
-    this.logger.log(`options column=${column ?? 'name'}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      this.logger.warn(`options: Missing ${APP_HEADERS.USER_ID}`);
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const options = await this.categoriesService.getOptions(
-      column ?? 'name',
-      search?.trim(),
-      parseAdminListLimit(limit, 50),
+      column?.trim() || 'name',
+      search,
+      Math.min(1000, Math.max(1, parseInt(String(limit), 10) || 50)),
     );
     const { statusCode, body } = createSuccessResponse(options);
     return res.status(statusCode).json(body);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get category by ID' })
+  @ApiOperation({ summary: 'Get danh mục by ID' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Category found' })
-  @ApiResponse({ status: 404, description: 'Category not found' })
   async getById(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    this.logger.log(`getById id=${id}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      this.logger.warn(`getById: Missing ${APP_HEADERS.USER_ID}`);
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const row = await this.categoriesService.getById(id);
     if (!row) {
-      this.logger.log(`getById id=${id} not found`);
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy danh mục',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy danh mục', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
     }
     const { statusCode, body } = createSuccessResponse(row);
     return res.status(statusCode).json(body);
   }
 
-  @Post()
   @Permissions(PERMISSIONS.CATEGORIES_CREATE)
-  @ApiOperation({ summary: 'Create new category' })
+  @Post()
+  @ApiOperation({ summary: 'Create danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiBody({ description: 'Category data', required: true })
-  @ApiResponse({ status: 201, description: 'Category created successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input' })
   async create(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
-    @Body()
-    body: {
-      name?: string;
-      slug?: string;
-      description?: string | null;
-      icon?: string | null;
-      sortOrder?: number;
-      parentId?: string | null;
-      type?: 'post' | 'event';
-    },
+    @Body() body: CategoryCreateData,
   ) {
-    this.logger.log('create');
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    if (!body?.name?.trim() || !body?.slug?.trim()) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'name và slug là bắt buộc',
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    if (!body?.name?.toString().trim()) {
+      const { statusCode, body: err } = createErrorResponse(
+        'name là bắt buộc',
         { status: 400 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    const created = await this.categoriesService.create({
-      name: body.name.trim(),
-      slug: body.slug.trim(),
-      description: body.description ?? null,
-      icon: body.icon ?? null,
-      sortOrder: body.sortOrder,
-      parentId:
-        body.parentId === '' || body.parentId == null ? null : body.parentId,
-      type:
-        body.type === 'post' || body.type === 'event' ? body.type : undefined,
-    });
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã tạo danh mục',
-        `Tạo danh mục: ${created.name} (${created.slug})`,
-        `${ADMIN_ROUTES.CATEGORIES}/${created.id}`,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: ACTIONS.CREATE,
-          resourceId: created.id,
-        },
-      );
-    }
-    const { statusCode, body: okBody } = createSuccessResponse(created, {
+    const created = await this.categoriesService.create(body);
+    const { statusCode, body: ok } = createSuccessResponse(created, {
       status: 201,
     });
-    return res.status(statusCode).json(okBody);
+    return res.status(statusCode).json(ok);
   }
 
-  @Put(':id')
   @Permissions(PERMISSIONS.CATEGORIES_UPDATE)
-  @ApiOperation({ summary: 'Update category by ID' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Update danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiBody({ description: 'Updated category data' })
-  @ApiResponse({ status: 200, description: 'Category updated successfully' })
-  @ApiResponse({ status: 404, description: 'Category not found' })
   async update(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
-    @Body()
-    body: {
-      name?: string;
-      slug?: string;
-      description?: string | null;
-      icon?: string | null;
-      sortOrder?: number;
-      parentId?: string | null;
-      type?: 'post' | 'event';
-    },
+    @Body() body: CategoryUpdateData,
   ) {
-    this.logger.log(`update id=${id}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const updated = await this.categoriesService.update(id, {
-      name: body?.name?.trim(),
-      slug: body?.slug?.trim(),
-      description: body?.description ?? undefined,
-      icon: body?.icon ?? undefined,
-      sortOrder: body?.sortOrder,
-      parentId: body?.parentId === '' ? null : (body?.parentId ?? undefined),
-      type:
-        body.type === 'post' || body.type === 'event' ? body.type : undefined,
-    });
+    if (!this.getUserId(headers)) return this.unauthorized(res);
+    const updated = await this.categoriesService.update(id, body);
     if (!updated) {
-      const { statusCode, body: errBody } = createErrorResponse(
+      const { statusCode, body: err } = createErrorResponse(
         'Không tìm thấy danh mục',
         { status: 404 },
       );
-      return res.status(statusCode).json(errBody);
+      return res.status(statusCode).json(err);
     }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã cập nhật danh mục',
-        `Cập nhật danh mục: ${updated.name} (${updated.slug})`,
-        `${ADMIN_ROUTES.CATEGORIES}/${updated.id}`,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: ACTIONS.UPDATE,
-          resourceId: updated.id,
-        },
-      );
-    }
-    const { statusCode, body: okBody } = createSuccessResponse(updated);
-    return res.status(statusCode).json(okBody);
+    const { statusCode, body: ok } = createSuccessResponse(updated);
+    return res.status(statusCode).json(ok);
   }
 
-  @Post('bulk')
   @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
-  @ApiOperation({ summary: 'Bulk action on categories' })
-  @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiBody({ description: 'Bulk action with ids' })
-  @ApiResponse({ status: 200, description: 'Bulk action completed' })
-  @ApiResponse({ status: 400, description: 'Invalid action' })
-  async bulk(
-    @Res() res: Response,
-    @Headers() headers: Record<string, string | undefined>,
-    @Body() body: { action?: string; ids?: string[]; parentId?: string | null },
-  ) {
-    this.logger.log(
-      `bulk action=${body?.action} ids=${(body?.ids ?? []).length}`,
-    );
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
-    const action = body?.action;
-    const ids = Array.isArray(body?.ids) ? body.ids : [];
-    if (!action || !this.isBulkAction(action)) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'Action không hợp lệ',
-        { status: 400 },
-      );
-      return res.status(statusCode).json(errBody);
-    }
-    const result = await this.categoriesService.bulk(
-      action,
-      ids,
-      body?.parentId,
-    );
-    if (userId && result.affected > 0) {
-      let actionLabel = '';
-      let actionType = '';
-
-      switch (action) {
-        case 'delete':
-          actionLabel = 'Xóa';
-          actionType = ACTIONS.DELETE;
-          break;
-        case 'restore':
-          actionLabel = 'Khôi phục';
-          actionType = ACTIONS.RESTORE;
-          break;
-        case 'hard-delete':
-          actionLabel = 'Xóa vĩnh viễn';
-          actionType = ACTIONS.HARD_DELETE;
-          break;
-        case 'set-parent':
-          actionLabel = 'Đổi danh mục cha';
-          actionType = ACTIONS.UPDATE;
-          break;
-      }
-
-      this.logActivity(
-        userId,
-        `Đã ${actionLabel} ${result.affected} danh mục`,
-        `Bulk: ${actionLabel} ${result.affected} danh mục`,
-        ADMIN_ROUTES.CATEGORIES,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: actionType,
-          count: result.affected,
-          ids,
-        },
-      );
-    }
-    const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
-      { message: result.message },
-    );
-    return res.status(statusCode).json(okBody);
-  }
-
   @Delete(':id/hard-delete')
-  @Permissions(PERMISSIONS.CATEGORIES_HARD_DELETE)
-  @ApiOperation({ summary: 'Hard delete category permanently' })
+  @ApiOperation({ summary: 'Hard delete danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Category deleted permanently' })
-  @ApiResponse({ status: 404, description: 'Category not found' })
   async hardDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    this.logger.log(`hardDelete id=${id}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.categoriesService.hardDelete(id);
     if (!ok) {
-      const { statusCode, body } = createErrorResponse(
-        'Không tìm thấy danh mục',
-        { status: 404 },
-      );
+      const { statusCode, body } = createErrorResponse('Không tìm thấy danh mục', {
+        status: 404,
+      });
       return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa vĩnh viễn danh mục',
-        `Xóa vĩnh viễn danh mục id: ${id}`,
-        ADMIN_ROUTES.CATEGORIES,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: ACTIONS.HARD_DELETE,
-          resourceId: id,
-        },
-      );
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
       message: 'Đã xóa vĩnh viễn danh mục',
@@ -475,46 +203,23 @@ export class CategoriesController {
     return res.status(statusCode).json(body);
   }
 
-  @Delete(':id')
   @Permissions(PERMISSIONS.CATEGORIES_DELETE)
-  @ApiOperation({ summary: 'Soft delete category' })
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Category deleted' })
-  @ApiResponse({
-    status: 404,
-    description: 'Category not found or already deleted',
-  })
   async softDelete(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    this.logger.log(`softDelete id=${id}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.categoriesService.softDelete(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Danh mục không tồn tại hoặc đã bị xóa',
+        'danh mục không tồn tại hoặc đã bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã xóa danh mục',
-        `Xóa danh mục (soft) id: ${id}`,
-        ADMIN_ROUTES.CATEGORIES,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: ACTIONS.DELETE,
-          resourceId: id,
-        },
-      );
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
       message: 'Đã xóa danh mục',
@@ -522,50 +227,60 @@ export class CategoriesController {
     return res.status(statusCode).json(body);
   }
 
-  @Post(':id/restore')
   @Permissions(PERMISSIONS.CATEGORIES_RESTORE)
-  @ApiOperation({ summary: 'Restore soft-deleted category' })
+  @Post(':id/restore')
+  @ApiOperation({ summary: 'Restore danh mục' })
   @ApiHeader({ name: 'X-User-Id', required: true })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Category restored' })
-  @ApiResponse({
-    status: 404,
-    description: 'Category not found or not deleted',
-  })
   async restore(
     @Res() res: Response,
     @Headers() headers: Record<string, string | undefined>,
     @Param('id') id: string,
   ) {
-    this.logger.log(`restore id=${id}`);
-    const userId = this.getUserId(headers);
-    if (!userId) {
-      return this.unauthorized(res);
-    }
+    if (!this.getUserId(headers)) return this.unauthorized(res);
     const ok = await this.categoriesService.restore(id);
     if (!ok) {
       const { statusCode, body } = createErrorResponse(
-        'Danh mục không tồn tại hoặc chưa bị xóa',
+        'danh mục không tồn tại hoặc chưa bị xóa',
         { status: 404 },
       );
       return res.status(statusCode).json(body);
-    }
-    if (userId) {
-      this.logActivity(
-        userId,
-        'Đã khôi phục danh mục',
-        `Khôi phục danh mục id: ${id}`,
-        `${ADMIN_ROUTES.CATEGORIES}/${id}`,
-        {
-          resource: RESOURCES.CATEGORIES,
-          action: ACTIONS.RESTORE,
-          resourceId: id,
-        },
-      );
     }
     const { statusCode, body } = createSuccessResponse(undefined, {
       message: 'Đã khôi phục danh mục',
     });
     return res.status(statusCode).json(body);
+  }
+
+  @Post('bulk')
+  @Permissions(PERMISSIONS.CATEGORIES_MANAGE)
+  @ApiOperation({ summary: 'Bulk action on danh muc' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @ApiBody({ description: 'Bulk action with ids' })
+  @ApiResponse({ status: 200, description: 'Bulk action completed' })
+  @ApiResponse({ status: 400, description: 'Invalid action' })
+  async bulk(
+    @Res() res: Response,
+    @Headers() headers: Record<string, string | undefined>,
+    @Body() body: { action?: string; ids?: string[] },
+  ) {
+    const userId = this.getUserId(headers);
+    if (!userId) {
+      return this.unauthorized(res);
+    }
+    const action = body?.action;
+    const ids = Array.isArray(body?.ids) ? body.ids : [];
+    if (!action || !isBulkAction(action)) {
+      const { statusCode, body: errBody } = createErrorResponse(
+        'Action khong hop le',
+        { status: 400 },
+      );
+      return res.status(statusCode).json(errBody);
+    }
+    const result = await this.categoriesService.bulk(action, ids);
+    const { statusCode, body: okBody } = createSuccessResponse(
+      { affected: result.success, message: result.message },
+      { message: result.message },
+    );
+    return res.status(statusCode).json(okBody);
   }
 }

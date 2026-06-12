@@ -9,14 +9,23 @@ export type {
   StorageMediaKind,
   StorageRealm,
   StorageTabDto,
-  ImageItemDto,
   FolderItemDto,
   ListImagesResult,
   CreateStorageFolderResult,
+  UploadFileInput,
+} from './uploads.service';
+
+export {
+  BaseUploadsAdminService,
+  UPLOADS_BULK_DELETE_MAX_PATHS,
+} from './uploads-admin.service';
+export type {
+  ImageItemDto,
+  FolderNodeDto,
+  ListFoldersResult,
   UploadsBulkDeleteResult,
   BulkMoveFilesResult,
   ReorganizeDateFoldersResult,
   ImportArchiveResult,
   ExportArchiveResult,
-  UploadFileInput,
-} from './uploads.service';
+} from './uploads-admin.service';

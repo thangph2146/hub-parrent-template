@@ -1,4 +1,5 @@
 import { EntityManager } from '@mikro-orm/core';
+import { toEntityIdList } from '../../common/entity-id';
 import type {
   DashboardStatsDto,
   DashboardOverviewDto,
@@ -9,6 +10,9 @@ import type {
 
 export abstract class BaseDashboardService {
   protected abstract getEm(): EntityManager;
+  protected abstract getCategoryEntity(): new () => Record<string, unknown>;
+  protected abstract getPostEntity(): new () => Record<string, unknown>;
+  protected abstract getPostCategoryEntity(): new () => Record<string, unknown>;
 
   async getStats(): Promise<DashboardStatsDto> {
     const em = this.getEm();
@@ -67,7 +71,7 @@ export abstract class BaseDashboardService {
 
     const [monthlyData, categoryData, topPosts] = await Promise.all([
       this.getMonthlyData(connection),
-      this.getCategoryData(connection),
+      this.getCategoryData(),
       this.getTopPosts(connection),
     ]);
 
@@ -172,10 +176,97 @@ export abstract class BaseDashboardService {
     }));
   }
 
-  protected async getCategoryData(
-    _connection: ReturnType<EntityManager['getConnection']>,
-  ): Promise<DashboardCategoryItemDto[]> {
-    return [];
+  protected async getCategoryData(): Promise<DashboardCategoryItemDto[]> {
+    const em = this.getEm();
+    const Category = this.getCategoryEntity();
+    const Post = this.getPostEntity();
+    const PostCategory = this.getPostCategoryEntity();
+
+    const [totalPosts, allCategories, activePosts] = await Promise.all([
+      em.count(Post, { deletedAt: null }),
+      em.find(
+        Category,
+        { deletedAt: null },
+        {
+          fields: ['id', 'name', 'parent'],
+          orderBy: { name: 'ASC' },
+        },
+      ),
+      em.find(Post, { deletedAt: null }, { fields: ['id'] }),
+    ]);
+
+    type CategoryRow = { id: number; name: string; parent?: { id: number } | null };
+    const categories = allCategories as CategoryRow[];
+    const activePostIds = (activePosts as Array<{ id: number }>).map((p) => p.id);
+    const postCategoryRows = await em.find(
+      PostCategory,
+      { post: { id: { $in: toEntityIdList(activePostIds) } } },
+      { fields: ['post', 'category'] },
+    );
+
+    const byParent = new Map<number | null, CategoryRow[]>();
+    for (const category of categories) {
+      const key = category.parent?.id ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key)?.push(category);
+    }
+
+    const depth = new Map<number, number>();
+    const setDepth = (id: number, currentDepth: number) => {
+      depth.set(id, currentDepth);
+      for (const child of byParent.get(id) ?? []) {
+        setDepth(child.id, currentDepth + 1);
+      }
+    };
+
+    for (const root of byParent.get(null) ?? []) {
+      setDepth(root.id, 0);
+    }
+
+    const postToCategoryIds = new Map<number, number[]>();
+    for (const row of postCategoryRows as Array<{
+      post: { id: number };
+      category: { id: number };
+    }>) {
+      const pid = row.post.id;
+      const cid = row.category.id;
+      if (!postToCategoryIds.has(pid)) {
+        postToCategoryIds.set(pid, []);
+      }
+      postToCategoryIds.get(pid)?.push(cid);
+    }
+
+    const assignedCount = new Map<number, number>();
+    for (const [, categoryIds] of postToCategoryIds) {
+      if (!categoryIds.length) continue;
+
+      const deepestId = categoryIds.reduce((current, next) =>
+        (depth.get(next) ?? 0) > (depth.get(current) ?? 0) ? next : current,
+      );
+
+      assignedCount.set(deepestId, (assignedCount.get(deepestId) ?? 0) + 1);
+    }
+
+    const buildNode = (category: CategoryRow): DashboardCategoryItemDto => {
+      const childrenRaw = byParent.get(category.id) ?? [];
+      const children = childrenRaw.length
+        ? childrenRaw.map((child) => buildNode(child))
+        : undefined;
+      const directCount = assignedCount.get(category.id) ?? 0;
+      const childSum =
+        children?.reduce((sum, child) => sum + child.count, 0) ?? 0;
+      const count = directCount + childSum;
+      const value = totalPosts > 0 ? (count / totalPosts) * 100 : 0;
+
+      return {
+        name: category.name,
+        value: Math.round(value * 10) / 10,
+        count,
+        children: children?.length ? children : undefined,
+      };
+    };
+
+    return (byParent.get(null) ?? []).map((root) => buildNode(root));
   }
 
   protected async getTopPosts(
@@ -200,7 +291,7 @@ export abstract class BaseDashboardService {
     )) as Array<Record<string, unknown>>;
 
     return rows.map((row) => ({
-      id: String(row.id ?? ''),
+      id: typeof row.id === 'number' ? row.id : Number(row.id ?? 0) || 0,
       title: String(row.title ?? ''),
       slug: String(row.slug ?? ''),
       comments: Number(row.comments ?? 0),

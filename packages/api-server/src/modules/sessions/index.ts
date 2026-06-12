@@ -14,3 +14,14 @@ export type {
   SessionsCreateData,
   SessionsUpdateData,
 } from './session.service';
+
+export { BaseSessionsAdminService } from './sessions-admin.service';
+export type {
+  SessionRowDto,
+  ListSessionsParams,
+  ListSessionsResult,
+  AccountWithSessionStatusDto,
+  ListAccountsWithSessionStatusParams,
+  ListAccountsWithSessionStatusResult,
+  AuthRoleNamesBinding,
+} from './sessions-admin.service';
