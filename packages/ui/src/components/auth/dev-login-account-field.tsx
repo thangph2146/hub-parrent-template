@@ -174,13 +174,6 @@ export function DevLoginAccountField({
         {DEV_LOGIN_FIELD_LABEL}
       </FieldLabel>
       {selectControl}
-      <FieldDescription>
-        {!loading && options.length === 0
-          ? DEV_LOGIN_EMPTY_PLACEHOLDER
-          : showSelectedDescription && selectedOption
-            ? selectedOption.description
-            : DEV_LOGIN_FIELD_DESCRIPTION}
-      </FieldDescription>
     </Field>
   )
 }
