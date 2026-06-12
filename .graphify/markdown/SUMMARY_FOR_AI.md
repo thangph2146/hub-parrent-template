@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:01:01.101Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-12T14:20:21.508Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -20,6 +20,12 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.mjs`](../../script-system/verify/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |
 | Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |
 | Task → file cụ thể | [`TASK_INDEX.md`](TASK_INDEX.md) | `pnpm graphify:brief --task "..."`, [`../../AGENTS.md`](../../AGENTS.md) mục 3.1 |
+| Sửa file shared / helper | [`../../apps/main/api/.graphify/markdown/IMPACT_RADIUS.md`](../../apps/main/api/.graphify/markdown/IMPACT_RADIUS.md) | `GRAPH_STATS.md`, grep importer |
+| Bootstrap / route / generated | [`../../apps/main/backend/.graphify/markdown/ENTRY_POINTS.md`](../../apps/main/backend/.graphify/markdown/ENTRY_POINTS.md) (đổi app) | `FOLDER_TREE.md` |
+| Main ↔ check-in API sync | [`SYNC_DELTA.md`](SYNC_DELTA.md) | [`TASK_INDEX.md`](TASK_INDEX.md), `pnpm pull:checkin` |
+| Admin URL ↔ API ↔ client | [`ROUTE_SURFACE.md`](ROUTE_SURFACE.md) | `TASK_INDEX.md`, controller + api-client resource |
+| Boilerplate lặp (loading, re-export) | [`../../apps/main/backend/.graphify/markdown/PATTERN_CLUSTERS.md`](../../apps/main/backend/.graphify/markdown/PATTERN_CLUSTERS.md) | `packages/admin-app`, `@ui` |
+| Package workspace (graph) | [`../../packages/.graphify/markdown/PACKAGE_INDEX.md`](../../packages/.graphify/markdown/PACKAGE_INDEX.md) | `packages/*/.graphify/markdown/` |
 
 ## Dịch vụ (`apps/*`)
 
@@ -44,7 +50,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 | Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node script-system/graphify/graphify-update.cjs`) |
 |----------|---------------------------------------------|----------------------------------------|
-| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md`, `TASK_INDEX.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify/graphify-update.cjs .`) |
+| **Root** `.graphify/` | `SUMMARY_FOR_AI.md`, `TASK_INDEX.md`, `SYNC_DELTA.md`, `ROUTE_SURFACE.md` | `.graphify/snapshot/` (tùy chọn) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
 | **Mỗi app** `apps/<x>/` | `apps/<x>/.graphify/markdown/*.md` | `apps/<x>/.graphify/snapshot/context.json` + `graph.json` |
 
@@ -57,6 +63,8 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Thêm/sửa package workspace | `packages/.../SUMMARY` + `WORKSPACE_DEPS` + `verify:bounds` |
 | Chuẩn hóa sau refactor | `.graphify/README.md` (checklist) + skill `hub-graphify-standardize-loop` |
 | Module admin/API cụ thể | `.graphify/markdown/TASK_INDEX.md` hoặc `pnpm graphify:brief --task "..."` |
+| Main vs check-in API | `.graphify/markdown/SYNC_DELTA.md` | `pnpm pull:checkin` sau sửa main API |
+| Sửa helper/shared | `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md` | `ENTRY_POINTS.md` nếu đụng bootstrap/generated |
 
 ## `packages/*` (chia sẻ workspace)
 
@@ -77,7 +85,8 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 ## Artefact từ `snapshot/graph.json` / package scan (`pnpm graphify:ai-summary`)
 
-- Mỗi app: **`apps/<app>/.graphify/markdown/FOLDER_TREE.md`**, **`GRAPH_STATS.md`** — cây `src/` + thống kê graph / điểm nóng import.
+- Mỗi app: **`FOLDER_TREE`**, **`GRAPH_STATS`**, **`IMPACT_RADIUS`**, **`ENTRY_POINTS`**, **`PATTERN_CLUSTERS`**.
+- Root: **`SYNC_DELTA.md`**, **`ROUTE_SURFACE.md`** — sync check-in + bản đồ route admin/API/client.
 - **`apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`** (và app API deploy tương ứng) — domain `src/<tên>/`, inbound, sơ đồ Mermaid.
 - **`packages/.graphify/README.md`** — mô tả layout Graphify packages (`markdown/`).
 - **`packages/.graphify/markdown/WORKSPACE_DEPS.md`** — cạnh `workspace:*` giữa package và app.

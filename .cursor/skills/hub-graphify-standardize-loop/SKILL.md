@@ -59,8 +59,14 @@ pnpm graphify:ai-summary
 | `.graphify/markdown/SUMMARY_FOR_AI.md`              | Bảng app, chỉ dẫn theo chủ đề, `generatedAt` |
 | `apps/<app>/.graphify/markdown/FOLDER_TREE.md`      | Cây `src/` khớp refactor                     |
 | `apps/<app>/.graphify/markdown/GRAPH_STATS.md`      | Điểm nóng import                             |
+| `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md`    | File shared — ai import                      |
+| `apps/<app>/.graphify/markdown/ENTRY_POINTS.md`     | Bootstrap, route, AUTO-GENERATED               |
 | `apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` | Domain mới                              |
+| `.graphify/markdown/SYNC_DELTA.md`                  | Main API ↔ hub-event sync                    |
+| `.graphify/markdown/ROUTE_SURFACE.md`               | Admin URL ↔ API ↔ api-client                 |
+| `apps/<app>/.graphify/markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp (loading, re-export)         |
 | `packages/.graphify/markdown/WORKSPACE_DEPS.md`     | Cạnh `workspace:*`                           |
+| `packages/.graphify/markdown/PACKAGE_INDEX.md`      | Graph per-package (ui, admin-app, …)         |
 
 ### 4. Cập nhật docs agent (nếu pattern mới)
 

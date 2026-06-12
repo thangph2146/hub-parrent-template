@@ -314,7 +314,44 @@ export function matchTaskToBrief(catalog, taskText) {
   const sync =
     topModule?.lines?.checkinApi && topModule?.paths?.mainApi
       ? "Sửa apps/main/api → chạy pnpm pull:checkin sau khi xong."
-      : null
+      : topModule?.paths?.mainApi
+        ? "Xem .graphify/markdown/SYNC_DELTA.md — domain main vs hub-event."
+        : null
+
+  const graphify = []
+  if (topModule?.paths?.mainApi) {
+    graphify.push(
+      `${MAIN_API}/.graphify/markdown/API_DOMAIN_IMPORTS.md`,
+      `${MAIN_API}/.graphify/markdown/IMPACT_RADIUS.md`,
+      `${MAIN_API}/.graphify/markdown/ENTRY_POINTS.md`,
+      `${MAIN_BACKEND}/.graphify/markdown/FOLDER_TREE.md`,
+      `${MAIN_BACKEND}/.graphify/markdown/PATTERN_CLUSTERS.md`,
+      ".graphify/markdown/ROUTE_SURFACE.md"
+    )
+    if (topModule.lines?.checkinApi) {
+      graphify.push(".graphify/markdown/SYNC_DELTA.md")
+    }
+  } else if (topPackage?.paths?.package?.includes("admin-app")) {
+    graphify.push(
+      `packages/admin-app/.graphify/markdown/SUMMARY_FOR_AI.md`,
+      `packages/admin-app/.graphify/markdown/PATTERN_CLUSTERS.md`,
+      `${MAIN_BACKEND}/.graphify/markdown/ENTRY_POINTS.md`
+    )
+  } else if (topPackage?.id === "ui") {
+    graphify.push(
+      `packages/ui/.graphify/markdown/SUMMARY_FOR_AI.md`,
+      `packages/ui/.graphify/markdown/IMPACT_RADIUS.md`
+    )
+  } else if (topPackage?.id === "api-client") {
+    graphify.push(
+      `packages/api-client/.graphify/markdown/SUMMARY_FOR_AI.md`,
+      ".graphify/markdown/ROUTE_SURFACE.md"
+    )
+  } else if (topPackage?.id === "api-server") {
+    graphify.push(`packages/api-server/.graphify/markdown/SUMMARY_FOR_AI.md`)
+  } else {
+    graphify.push(`${MAIN_BACKEND}/.graphify/markdown/SUMMARY_FOR_AI.md`)
+  }
 
   return {
     task: taskText,
@@ -327,12 +364,7 @@ export function matchTaskToBrief(catalog, taskText) {
     files: [...new Set(files)],
     verify,
     sync,
-    graphify: topModule?.paths?.mainApi
-      ? [
-          `${MAIN_API}/.graphify/markdown/API_DOMAIN_IMPORTS.md`,
-          `${MAIN_BACKEND}/.graphify/markdown/FOLDER_TREE.md`,
-        ]
-      : [`${MAIN_BACKEND}/.graphify/markdown/SUMMARY_FOR_AI.md`],
+    graphify: [...new Set(graphify)],
   }
 }
 
@@ -408,7 +440,7 @@ export function writeTaskIndexArtifacts(catalog = buildTaskCatalog()) {
   lines.push("## Hub-event — domain loại trừ khi sync từ main")
   lines.push("")
   lines.push(
-    "Các domain sau **không** có trên `apps/hub-event/api` sau sync (chỉ sửa `apps/main/api`):"
+    "Chi tiết so sánh main ↔ check-in: [`SYNC_DELTA.md`](SYNC_DELTA.md). Các domain **exclude** (chỉ sửa `apps/main/api`):"
   )
   lines.push("")
   for (const d of catalog.syncExclude) lines.push(`- \`${d}\``)

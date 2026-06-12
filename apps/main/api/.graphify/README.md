@@ -11,6 +11,9 @@ Package **@api**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và *
 | `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module (sinh bởi `pnpm graphify:ai-summary`) |
 | `markdown/FOLDER_TREE.md` | Cây thư mục `src/` |
 | `markdown/GRAPH_STATS.md` | Thống kê graph |
+| `markdown/IMPACT_RADIUS.md` | File in-degree cao + mẫu importer |
+| `markdown/ENTRY_POINTS.md` | Bootstrap, route, AUTO-GENERATED |
+| `markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp (loading, re-export) |
 | `markdown/API_DOMAIN_IMPORTS.md` | Phụ thuộc chéo domain NestJS |
 | `README.md` | File này (mô tả layout) |
 

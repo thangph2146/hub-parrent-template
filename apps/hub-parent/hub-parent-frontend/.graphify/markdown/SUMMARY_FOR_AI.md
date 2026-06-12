@@ -7,7 +7,7 @@
 
 ## Mục lục artefact Graphify
 
-- **Markdown (ưu tiên đọc):** file này — [`FOLDER_TREE.md`](FOLDER_TREE.md), [`GRAPH_STATS.md`](GRAPH_STATS.md)
+- **Markdown (ưu tiên đọc):** file này — [`FOLDER_TREE.md`](FOLDER_TREE.md), [`GRAPH_STATS.md`](GRAPH_STATS.md), [`IMPACT_RADIUS.md`](IMPACT_RADIUS.md), [`ENTRY_POINTS.md`](ENTRY_POINTS.md), [`PATTERN_CLUSTERS.md`](PATTERN_CLUSTERS.md)
 - **Snapshot (JSON nặng):** [`../snapshot/context.json`](../snapshot/context.json), [`../snapshot/graph.json`](../snapshot/graph.json) — chỉ mở khi cần trích source hoặc đồ thị đầy đủ.
 - **Quy ước thư mục `.graphify` (tay):** [`../README.md`](../README.md).
 
@@ -38,6 +38,9 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 
 - **Cây thư mục `src/`:** [`FOLDER_TREE.md`](FOLDER_TREE.md) (ASCII từ `../snapshot/graph.json`).
 - **Thống kê graph:** [`GRAPH_STATS.md`](GRAPH_STATS.md) — quy mô node/link, top file in/out-degree (điểm nóng import).
+- **Bán kính ảnh hưởng:** [`IMPACT_RADIUS.md`](IMPACT_RADIUS.md) — file in-degree cao + mẫu importer (sửa shared code).
+- **Điểm vào:** [`ENTRY_POINTS.md`](ENTRY_POINTS.md) — bootstrap, module, route Next, AUTO-GENERATED.
+- **Pattern lặp:** [`PATTERN_CLUSTERS.md`](PATTERN_CLUSTERS.md) — boilerplate (loading, re-export generate).
 
 ## Thống kê
 - **totalFiles:** 128

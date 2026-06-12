@@ -1,6 +1,6 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:01:01.097Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-12T14:20:21.486Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 
@@ -12,9 +12,9 @@
 | Package | Thư mục | Ghi chú |
 |---------|----------|---------|
 | `@thangph2146/lexical-editor` | `packages/editor/` | Editor Lexical workspace; tiêu thụ bởi Next apps + có thể tái xuất UI. |
-| `@workspace/admin-app` | `packages/admin-app/` | — |
-| `@workspace/api-client` | `packages/api-client/` | SDK HTTP tới `@api`; không import app Nest/Next. |
-| `@workspace/api-server` | `packages/api-server/` | — |
+| `@workspace/admin-app` | `packages/admin-app/` · [graphify](../../admin-app/.graphify/markdown/SUMMARY_FOR_AI.md) | — |
+| `@workspace/api-client` | `packages/api-client/` · [graphify](../../api-client/.graphify/markdown/SUMMARY_FOR_AI.md) | SDK HTTP tới `@api`; không import app Nest/Next. |
+| `@workspace/api-server` | `packages/api-server/` · [graphify](../../api-server/.graphify/markdown/SUMMARY_FOR_AI.md) | — |
 | `@workspace/dealer-support` | `packages/dealer-support/` | — |
 | `@workspace/eslint-config` | `packages/eslint-config/` | ESLint flat + `service-boundaries` (ranh giới import). |
 | `@workspace/logger` | `packages/logger/` | — |
@@ -22,13 +22,14 @@
 | `@workspace/query-client` | `packages/query-client/` | `QueryClient` + retry/stale mặc định TanStack Query (dùng chung Next apps). |
 | `@workspace/site-config` | `packages/site-config/` | — |
 | `@workspace/typescript-config` | `packages/typescript-config/` | tsconfig cơ sở cho package/app. |
-| `@workspace/ui` | `packages/ui/` | — |
+| `@workspace/ui` | `packages/ui/` · [graphify](../../ui/.graphify/markdown/SUMMARY_FOR_AI.md) | — |
 
 ## File Markdown trong `packages/.graphify/markdown/`
 
 Artefact Graphify cho **workspace packages** nằm dưới `packages/.graphify/markdown/` (tách biệt `apps/*`).
 
 - **`SUMMARY_FOR_AI.md`** — file này.
+- **[`PACKAGE_INDEX.md`](PACKAGE_INDEX.md)** — graphify per-package (`ui`, `admin-app`, `api-client`, `api-server`).
 - **[`WORKSPACE_DEPS.md`](WORKSPACE_DEPS.md)** — cạnh `workspace:*` (xem mục dưới).
 - **[`../README.md`](../README.md)** — giải thích scope thư mục Graphify packages.
 

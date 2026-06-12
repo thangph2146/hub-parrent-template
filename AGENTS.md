@@ -78,7 +78,7 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 | Check-in frontend | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
 
-Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
+Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `IMPACT_RADIUS.md` / `ENTRY_POINTS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
 Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm mới: `pnpm graphify:refresh` · skill: [`.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](.cursor/skills/hub-graphify-standardize-loop/SKILL.md).
 
 ### 3.1 Graph + task — file cụ thể
@@ -88,6 +88,12 @@ Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm m�
 | [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md) | Biết module X → folder/file (`admin-app`, `main/api`, `api-client`) |
 | `pnpm graphify:brief --task "..."` | Đầu task — brief đọc/verify/sync (sinh từ `task-index.json`) |
 | `TASK_INDEX` cột Check-in API | Domain có trên hub-event sau `pull:checkin` hay chỉ main |
+| [`.graphify/markdown/SYNC_DELTA.md`](.graphify/markdown/SYNC_DELTA.md) | So sánh domain `main/api` ↔ `hub-event/api` (exclude + native) |
+| `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md` | Sửa helper/shared — xem ai import file đó |
+| `apps/<app>/.graphify/markdown/ENTRY_POINTS.md` | Bootstrap, route Next, file AUTO-GENERATED |
+| [`.graphify/markdown/ROUTE_SURFACE.md`](.graphify/markdown/ROUTE_SURFACE.md) | Admin URL ↔ Nest API ↔ api-client HTTP |
+| `apps/<app>/.graphify/markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp (loading, re-export generate) |
+| [`packages/.graphify/markdown/PACKAGE_INDEX.md`](packages/.graphify/markdown/PACKAGE_INDEX.md) | Graphify `ui`, `admin-app`, `api-client`, `api-server` |
 
 ```bash
 pnpm graphify:brief --task "sửa filter admin screens"

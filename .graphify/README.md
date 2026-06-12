@@ -11,6 +11,10 @@ Bản đồ đường dẫn app: [`AGENTS.md`](../AGENTS.md) mục 1 và 3.
 | **`README.md`** | Hướng dẫn người + agent (file này; không sinh bởi script). |
 | **`markdown/SUMMARY_FOR_AI.md`** | Chỉ mục monorepo + **mục "Chỉ dẫn theo chủ đề"** (bảng mục tiêu → đường dẫn); sinh bởi `pnpm graphify:ai-summary`. |
 | **`markdown/TASK_INDEX.md`** | Module/feature → file path (`admin-app`, API, api-client); sinh cùng `graphify:ai-summary`. |
+| **`markdown/SYNC_DELTA.md`** | So sánh domain `apps/main/api` ↔ `apps/hub-event/api` (sync profile). |
+| **`markdown/ROUTE_SURFACE.md`** | Admin URL ↔ Nest API ↔ api-client. |
+| **`packages/.graphify/markdown/PACKAGE_INDEX.md`** | Graphify per-package (`ui`, `admin-app`, `api-client`, `api-server`). |
+| **`markdown/ROUTE_SURFACE.md`** | Admin URL ↔ Nest controller ↔ api-client HTTP paths. |
 | **`markdown/task-index.json`** | Dữ liệu máy cho `pnpm graphify:brief`. |
 
 JSON snapshot repo-level (nếu dùng): **`.graphify/snapshot/`** — từ `node script-system/graphify/graphify-update.cjs .` ở root (tùy chọn; snapshot **đầy đủ theo service** nằm ở `apps/*/.graphify/snapshot/`).
@@ -19,15 +23,16 @@ JSON snapshot repo-level (nếu dùng): **`.graphify/snapshot/`** — từ `node
 
 | Phạm vi | Markdown (AI) | Snapshot JSON |
 |----------|----------------|-----------------|
-| **Root** `.graphify/` | `markdown/SUMMARY_FOR_AI.md`, `TASK_INDEX.md` | `snapshot/` (nếu chạy update ở root) |
+| **Root** `.graphify/` | `SUMMARY_FOR_AI.md`, `TASK_INDEX.md`, `SYNC_DELTA.md`, `ROUTE_SURFACE.md` | `snapshot/` (nếu chạy update ở root) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
-| **Mỗi app** | `apps/<line>/<app>/.graphify/markdown/*.md` | `apps/<line>/<app>/.graphify/snapshot/` |
+| **Mỗi app** | `FOLDER_TREE`, `GRAPH_STATS`, `IMPACT_RADIUS`, `ENTRY_POINTS`, `PATTERN_CLUSTERS` (+ `API_DOMAIN_IMPORTS` cho API) | `apps/<line>/<app>/.graphify/snapshot/` |
 
 ## Đọc theo thứ tự
 
 1. **`markdown/SUMMARY_FOR_AI.md`** — bản đồ dịch vụ, ranh giới, link app/package, **bảng chỉ dẫn theo chủ đề**.
 2. **`packages/.graphify/README.md`** + **`packages/.graphify/markdown/SUMMARY_FOR_AI.md`** + **`WORKSPACE_DEPS.md`** — workspace packages.
-3. **`apps/<đường-dẫn-app>/.graphify/markdown/SUMMARY_FOR_AI.md`** (+ `FOLDER_TREE.md`, `GRAPH_STATS.md`; API thêm `API_DOMAIN_IMPORTS.md`) — từng service.
+3. **`apps/<đường-dẫn-app>/.graphify/markdown/SUMMARY_FOR_AI.md`** (+ `FOLDER_TREE`, `GRAPH_STATS`, `IMPACT_RADIUS`, `ENTRY_POINTS`; API thêm `API_DOMAIN_IMPORTS`) — từng service.
+4. **`markdown/SYNC_DELTA.md`** — khi sửa API main và cần biết ảnh hưởng line check-in.
 
 ## Làm mới snapshot (đường dẫn thật)
 

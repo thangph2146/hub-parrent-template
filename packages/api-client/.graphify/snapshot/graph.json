@@ -1,0 +1,2131 @@
+{
+  "nodes": [
+    {
+      "id": "dir_src",
+      "label": "src/",
+      "path": "src",
+      "color": "#ff9d00",
+      "size": 28,
+      "community": "root",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_client_ts",
+      "label": "client.ts",
+      "path": "src/client.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_dev_log_format_ts",
+      "label": "dev-log-format.ts",
+      "path": "src/dev-log-format.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_gift_rules_ts",
+      "label": "gift-rules.ts",
+      "path": "src/gift-rules.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_index_ts",
+      "label": "index.ts",
+      "path": "src/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_normalize_order_ts",
+      "label": "normalize-order.ts",
+      "path": "src/normalize-order.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_normalize_product_ts",
+      "label": "normalize-product.ts",
+      "path": "src/normalize-product.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_permissions_ts",
+      "label": "permissions.ts",
+      "path": "src/permissions.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_product_units_ts",
+      "label": "product-units.ts",
+      "path": "src/product-units.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_quantity_conditions_ts",
+      "label": "quantity-conditions.ts",
+      "path": "src/quantity-conditions.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_realtime",
+      "label": "realtime/",
+      "path": "src/realtime",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_realtime_events_ts",
+      "label": "events.ts",
+      "path": "src/realtime/events.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_index_ts",
+      "label": "index.ts",
+      "path": "src/realtime/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_normalize_id_ts",
+      "label": "normalize-id.ts",
+      "path": "src/realtime/normalize-id.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_notifications_ts",
+      "label": "notifications.ts",
+      "path": "src/realtime/notifications.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_paths_ts",
+      "label": "paths.ts",
+      "path": "src/realtime/paths.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_query_keys_ts",
+      "label": "query-keys.ts",
+      "path": "src/realtime/query-keys.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_toast_coordinator_ts",
+      "label": "toast-coordinator.ts",
+      "path": "src/realtime/toast-coordinator.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_realtime_types_ts",
+      "label": "types.ts",
+      "path": "src/realtime/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/realtime",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_resources",
+      "label": "resources/",
+      "path": "src/resources",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_resources_academic_years_ts",
+      "label": "academic-years.ts",
+      "path": "src/resources/academic-years.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_accounts_ts",
+      "label": "accounts.ts",
+      "path": "src/resources/accounts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_auth_admin_ts",
+      "label": "auth-admin.ts",
+      "path": "src/resources/auth-admin.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_cameras_ts",
+      "label": "cameras.ts",
+      "path": "src/resources/cameras.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_carts_ts",
+      "label": "carts.ts",
+      "path": "src/resources/carts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_categories_ts",
+      "label": "categories.ts",
+      "path": "src/resources/categories.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_contact_requests_ts",
+      "label": "contact-requests.ts",
+      "path": "src/resources/contact-requests.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_courses_ts",
+      "label": "courses.ts",
+      "path": "src/resources/courses.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_dashboard_ts",
+      "label": "dashboard.ts",
+      "path": "src/resources/dashboard.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_departments_ts",
+      "label": "departments.ts",
+      "path": "src/resources/departments.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_dev_login_ts",
+      "label": "dev-login.ts",
+      "path": "src/resources/dev-login.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_event_checkins_ts",
+      "label": "event-checkins.ts",
+      "path": "src/resources/event-checkins.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_event_checkouts_ts",
+      "label": "event-checkouts.ts",
+      "path": "src/resources/event-checkouts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_event_registrations_ts",
+      "label": "event-registrations.ts",
+      "path": "src/resources/event-registrations.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_event_speakers_ts",
+      "label": "event-speakers.ts",
+      "path": "src/resources/event-speakers.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_events_ts",
+      "label": "events.ts",
+      "path": "src/resources/events.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_face_data_ts",
+      "label": "face-data.ts",
+      "path": "src/resources/face-data.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_guides_ts",
+      "label": "guides.ts",
+      "path": "src/resources/guides.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_locations_ts",
+      "label": "locations.ts",
+      "path": "src/resources/locations.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_majors_ts",
+      "label": "majors.ts",
+      "path": "src/resources/majors.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_my_students_ts",
+      "label": "my-students.ts",
+      "path": "src/resources/my-students.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_orders_ts",
+      "label": "orders.ts",
+      "path": "src/resources/orders.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_parent_students_ts",
+      "label": "parent-students.ts",
+      "path": "src/resources/parent-students.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_posts_ts",
+      "label": "posts.ts",
+      "path": "src/resources/posts.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_products_ts",
+      "label": "products.ts",
+      "path": "src/resources/products.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_promo_codes_ts",
+      "label": "promo-codes.ts",
+      "path": "src/resources/promo-codes.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_public_ts",
+      "label": "public.ts",
+      "path": "src/resources/public.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_rbac_ts",
+      "label": "rbac.ts",
+      "path": "src/resources/rbac.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_roles_ts",
+      "label": "roles.ts",
+      "path": "src/resources/roles.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_screens_ts",
+      "label": "screens.ts",
+      "path": "src/resources/screens.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_seo_metas_ts",
+      "label": "seo-metas.ts",
+      "path": "src/resources/seo-metas.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_settings_ts",
+      "label": "settings.ts",
+      "path": "src/resources/settings.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_speakers_ts",
+      "label": "speakers.ts",
+      "path": "src/resources/speakers.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_system_ts",
+      "label": "system.ts",
+      "path": "src/resources/system.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_tags_ts",
+      "label": "tags.ts",
+      "path": "src/resources/tags.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_templates_ts",
+      "label": "templates.ts",
+      "path": "src/resources/templates.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_training_levels_ts",
+      "label": "training-levels.ts",
+      "path": "src/resources/training-levels.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_training_systems_ts",
+      "label": "training-systems.ts",
+      "path": "src/resources/training-systems.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_uploads_ts",
+      "label": "uploads.ts",
+      "path": "src/resources/uploads.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources_users_ts",
+      "label": "users.ts",
+      "path": "src/resources/users.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_resources__shared_ts",
+      "label": "_shared.ts",
+      "path": "src/resources/_shared.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/resources",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_role_templates",
+      "label": "role-templates/",
+      "path": "src/role-templates",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_role_templates_event_staff_ts",
+      "label": "event-staff.ts",
+      "path": "src/role-templates/event-staff.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/role-templates",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_sdk_ts",
+      "label": "sdk.ts",
+      "path": "src/sdk.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_storefront_catalog_ts",
+      "label": "storefront-catalog.ts",
+      "path": "src/storefront-catalog.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_storefront_sdk_ts",
+      "label": "storefront-sdk.ts",
+      "path": "src/storefront-sdk.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_types",
+      "label": "types/",
+      "path": "src/types",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_types_dev_login_ts",
+      "label": "dev-login.ts",
+      "path": "src/types/dev-login.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/types",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_types_ts",
+      "label": "types.ts",
+      "path": "src/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_unit_pricing_ts",
+      "label": "unit-pricing.ts",
+      "path": "src/unit-pricing.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_utils_ts",
+      "label": "utils.ts",
+      "path": "src/utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    }
+  ],
+  "links": [
+    {
+      "source": "dir_src",
+      "target": "file_src_client_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_dev_log_format_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_gift_rules_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_normalize_order_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_normalize_product_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_permissions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_product_units_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_quantity_conditions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_realtime",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_events_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_normalize_id_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_notifications_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_paths_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_query_keys_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_toast_coordinator_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_realtime",
+      "target": "file_src_realtime_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_resources",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_academic_years_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_accounts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_auth_admin_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_cameras_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_carts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_categories_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_contact_requests_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_courses_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_dashboard_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_departments_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_dev_login_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_event_checkins_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_event_checkouts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_event_registrations_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_event_speakers_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_events_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_face_data_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_guides_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_locations_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_majors_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_my_students_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_orders_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_parent_students_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_posts_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_products_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_promo_codes_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_public_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_rbac_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_roles_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_screens_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_seo_metas_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_settings_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_speakers_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_system_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_tags_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_templates_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_training_levels_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_training_systems_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_uploads_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources_users_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_resources",
+      "target": "file_src_resources__shared_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_role_templates",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_role_templates",
+      "target": "file_src_role_templates_event_staff_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_sdk_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_storefront_catalog_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_storefront_sdk_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_types",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_types",
+      "target": "file_src_types_dev_login_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_unit_pricing_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "file_src_gift_rules_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_contact_requests_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_my_students_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_parent_students_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_storefront_catalog_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_storefront_sdk_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_unit_pricing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_quantity_conditions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_product_units_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_role_templates_event_staff_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_users_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_accounts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_posts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_products_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_orders_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_promo_codes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_carts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_categories_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_tags_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_guides_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_rbac_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_system_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_speakers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_locations_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_training_levels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_training_systems_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_majors_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_courses_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_academic_years_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_event_registrations_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_event_checkins_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_event_checkouts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_event_speakers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_face_data_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_cameras_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_templates_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_screens_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_departments_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_roles_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_settings_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_auth_admin_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_types_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_seo_metas_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_dashboard_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources_public_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_sdk_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "file_src_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_index_ts",
+      "target": "dir_src_realtime",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_normalize_order_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_normalize_product_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_permissions_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_product_units_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_quantity_conditions_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_paths_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_query_keys_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_notifications_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_index_ts",
+      "target": "file_src_realtime_toast_coordinator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_notifications_ts",
+      "target": "file_src_realtime_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_notifications_ts",
+      "target": "file_src_realtime_normalize_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_paths_ts",
+      "target": "file_src_sdk_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_toast_coordinator_ts",
+      "target": "file_src_realtime_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_toast_coordinator_ts",
+      "target": "file_src_realtime_notifications_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_realtime_toast_coordinator_ts",
+      "target": "file_src_realtime_normalize_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_academic_years_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_academic_years_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_accounts_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_accounts_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_auth_admin_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_auth_admin_ts",
+      "target": "file_src_types_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_auth_admin_ts",
+      "target": "file_src_resources_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_auth_admin_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_cameras_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_cameras_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_carts_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_carts_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_carts_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_categories_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_categories_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_categories_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_contact_requests_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_contact_requests_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_courses_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_courses_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_dashboard_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_dashboard_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_departments_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_departments_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_dev_login_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_dev_login_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_dev_login_ts",
+      "target": "file_src_types_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_checkins_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_checkins_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_checkouts_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_checkouts_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_registrations_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_registrations_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_speakers_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_event_speakers_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_events_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_events_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_face_data_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_face_data_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_guides_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_guides_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_locations_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_locations_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_majors_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_majors_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_my_students_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_my_students_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_orders_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_orders_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_orders_ts",
+      "target": "file_src_normalize_order_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_orders_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_parent_students_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_parent_students_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_posts_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_posts_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_products_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_products_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_products_ts",
+      "target": "file_src_normalize_product_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_products_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_promo_codes_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_promo_codes_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_promo_codes_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_public_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_public_ts",
+      "target": "file_src_types_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_public_ts",
+      "target": "file_src_resources_dev_login_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_public_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_rbac_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_rbac_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_rbac_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_roles_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_roles_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_screens_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_screens_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_seo_metas_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_seo_metas_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_settings_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_settings_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_speakers_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_speakers_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_system_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_system_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_tags_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_tags_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_templates_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_templates_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_training_levels_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_training_levels_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_training_systems_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_training_systems_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_uploads_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_uploads_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_users_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_users_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources_users_ts",
+      "target": "file_src_resources__shared_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources__shared_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_resources__shared_ts",
+      "target": "file_src_realtime_toast_coordinator_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_role_templates_event_staff_ts",
+      "target": "file_src_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_categories_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_guides_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_posts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_rbac_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_tags_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_users_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_accounts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_contact_requests_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_my_students_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_parent_students_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_system_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_speakers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_locations_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_training_levels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_training_systems_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_majors_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_courses_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_academic_years_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_event_registrations_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_event_checkins_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_event_checkouts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_event_speakers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_face_data_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_cameras_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_templates_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_screens_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_departments_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_roles_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_settings_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_seo_metas_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_dashboard_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_uploads_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_public_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_products_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_orders_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_promo_codes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "file_src_resources_carts_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_sdk_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_storefront_catalog_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_storefront_sdk_ts",
+      "target": "file_src_client_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_storefront_sdk_ts",
+      "target": "file_src_sdk_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_unit_pricing_ts",
+      "target": "dir_src_types",
+      "relation": "imports"
+    }
+  ]
+}

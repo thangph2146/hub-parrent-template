@@ -7,6 +7,7 @@ Thư mục `packages/.graphify/markdown/` chứa **artefact Markdown sinh tự �
 | File | Mục đích |
 |------|----------|
 | `markdown/SUMMARY_FOR_AI.md` | Bảng package + vai trò (sinh bởi `pnpm graphify:ai-summary`) |
+| `markdown/PACKAGE_INDEX.md` | Graphify chi tiết 4 package ưu tiên agent |
 | `markdown/WORKSPACE_DEPS.md` | Cạnh `workspace:*` từ `package.json` của `packages/*` và `apps/*` |
 
 ## Làm mới

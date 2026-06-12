@@ -22,7 +22,11 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 3. `docs/admin-pattern/AGENTS_GUIDE.md`
 4. `.graphify/markdown/SUMMARY_FOR_AI.md`
 5. `pnpm graphify:brief --task "..."` (khuyến nghị) hoặc `.graphify/markdown/TASK_INDEX.md`
-6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
+   - Sửa helper/shared: `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md`
+   - Main ↔ check-in API: `.graphify/markdown/SYNC_DELTA.md`
+   - Route admin/API/client: `.graphify/markdown/ROUTE_SURFACE.md`
+   - Boilerplate lặp: `apps/<app>/.graphify/markdown/PATTERN_CLUSTERS.md`
+6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md` + [`PACKAGE_INDEX.md`](../../packages/.graphify/markdown/PACKAGE_INDEX.md) khi sửa `@workspace/ui` / `admin-app` / `api-client` / `api-server`
 7. App Graphify summary tương ứng với phạm vi task:
 
 | Phạm vi sửa | Graphify summary |

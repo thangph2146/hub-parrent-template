@@ -1,6 +1,6 @@
 # TASK_INDEX — module/feature → file (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:01:01.099Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
+> **Sinh tự động:** `2026-06-12T14:20:21.488Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
 
 ## Brief nhanh (agent)
 
@@ -79,7 +79,7 @@ pnpm graphify:brief --task "mô tả task ngắn"
 
 ## Hub-event — domain loại trừ khi sync từ main
 
-Các domain sau **không** có trên `apps/hub-event/api` sau sync (chỉ sửa `apps/main/api`):
+Chi tiết so sánh main ↔ check-in: [`SYNC_DELTA.md`](SYNC_DELTA.md). Các domain **exclude** (chỉ sửa `apps/main/api`):
 
 - `products`
 - `orders`

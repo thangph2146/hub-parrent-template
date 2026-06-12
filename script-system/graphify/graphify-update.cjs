@@ -5,6 +5,7 @@
  *   node script-system/graphify/graphify-update.cjs apps/main/api
  *   node script-system/graphify/graphify-update.cjs apps/main/backend
  *   node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend
+ *   node script-system/graphify/graphify-update.cjs packages/admin-app
  *   node script-system/graphify/graphify-update.cjs .
  */
 const fs = require('fs');
