@@ -1,5 +1,5 @@
 /**
- * Comments Admin Service — logic đầy đủ từ apps/hub-event/api.
+ * Comments admin service — logic dùng chung; app binding entity.
  * App binding: extend BaseCommentsAdminService + wire Comment entity.
  */
 import { Injectable } from '@nestjs/common';

@@ -1,3 +1,4 @@
+/** Event registration attendance — check-in/out; app binding entity, socket emit, getById. */
 import {
   BadRequestException,
   Logger,

@@ -1,5 +1,5 @@
 /**
- * Event Speakers Admin Service — từ apps/hub-event/api.
+ * Event speakers admin service — logic dùng chung; app binding entity.
  */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';

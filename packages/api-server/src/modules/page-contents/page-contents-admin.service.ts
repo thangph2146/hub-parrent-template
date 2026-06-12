@@ -1,5 +1,5 @@
 /**
- * Page Contents Admin Service — guides/page-contents (từ apps/hub-event/api).
+ * Page contents admin service — guides/page-contents; app binding entity.
  */
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';

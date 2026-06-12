@@ -1,4 +1,4 @@
-/** Ported from apps/hub-event/api — logic import/export dùng chung. Binding app: ormEntities + bootstrap. */
+/** System import/export admin — logic dùng chung; app binding: ormEntities + bootstrap deps. */
 import {
   coerceImportPrimaryKey,
   parseEntityId,

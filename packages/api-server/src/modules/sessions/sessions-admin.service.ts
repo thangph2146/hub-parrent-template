@@ -1,5 +1,5 @@
 /**
- * Sessions Admin Service — logic đầy đủ từ apps/hub-event/api (port bằng port-sessions-admin.cjs).
+ * Sessions admin service — logic dùng chung; app binding entity.
  */
 import { randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';

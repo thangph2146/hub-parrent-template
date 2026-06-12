@@ -1,5 +1,5 @@
 /**
- * HANET Webhook Service — từ apps/hub-event/api.
+ * HANET webhook service — logic dùng chung; app binding entity và attendance deps.
  */
 import {
   BadRequestException,

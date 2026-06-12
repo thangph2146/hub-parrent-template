@@ -1,5 +1,5 @@
 /**
- * Posts Admin Service — logic đầy đủ từ apps/hub-event/api (port bằng script-system/api/port-posts-admin.cjs).
+ * Posts admin service — logic dùng chung; app binding entity và filter config.
  * App binding: extend BasePostsAdminService + wire entity classes.
  */
 import { BadRequestException, Injectable } from '@nestjs/common';

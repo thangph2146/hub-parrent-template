@@ -1,5 +1,5 @@
 /**
- * Event Checkins Admin Service — từ apps/hub-event/api.
+ * Event checkins admin service — logic dùng chung; app binding entity.
  */
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';

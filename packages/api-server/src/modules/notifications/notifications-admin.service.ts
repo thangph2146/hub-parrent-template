@@ -1,5 +1,5 @@
 /**
- * Notifications Admin Service — từ apps/hub-event/api.
+ * Notifications admin service — logic dùng chung; app binding entity và realtime deps.
  */
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { relationEntityId, toEntityId, toEntityIdList } from '../../common/entity-id';

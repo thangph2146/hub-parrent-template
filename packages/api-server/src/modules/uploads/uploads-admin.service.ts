@@ -1,5 +1,5 @@
 /**
- * Uploads Admin Service — logic đầy đủ từ apps/hub-event/api (port bằng port-uploads-admin.cjs).
+ * Uploads admin service — logic dùng chung; app binding storage paths và entity.
  */
 import { toEntityId, toEntityIdList } from '../../common/entity-id';
 import { Injectable } from '@nestjs/common';

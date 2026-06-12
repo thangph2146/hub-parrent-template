@@ -1,5 +1,5 @@
 /**
- * Accounts Admin Service — profile user hiện tại (từ apps/hub-event/api).
+ * Accounts admin service — profile user hiện tại; app binding entity.
  */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';

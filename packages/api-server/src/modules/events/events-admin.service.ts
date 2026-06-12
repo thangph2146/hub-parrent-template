@@ -1,5 +1,5 @@
 /**
- * Events Admin Service — từ apps/hub-event/api.
+ * Events admin service — logic dùng chung; app binding entity.
  */
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import {

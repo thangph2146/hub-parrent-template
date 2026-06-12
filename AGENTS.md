@@ -266,7 +266,7 @@ File native giữ local (check-in: events shell, `dang-nhap`, `dang-ky`, profile
 ### Import dữ liệu (`/admin/data`)
 
 - Client chunk + timing: `apps/backend/src/app/data/_component/import-chunked.ts`, `import-timing.ts`.
-- API config + insert: `apps/main/api/src/system/system.service.ts` (native); helpers import/export dùng chung: `@workspace/api-server/modules/system` (`import-helpers`, `export-schema`, `legacy-import-id-map`, `import-reference`).
+- API config + insert: `apps/main/api/src/system/system.service.ts` (native full); hub-checkin dùng `BaseSystemAdminService` binding. Helpers import/export: `@workspace/api-server/modules/system`.
 - `post` mặc định **1 lô**, pivot (`postCategory`/`postTag`) **request riêng**; `post` **không** song song (`modelParallelConcurrency.post = 1`).
 - Env API (tùy chọn): `SYSTEM_IMPORT_CLIENT_CHUNK_POST`, `SYSTEM_IMPORT_PARALLEL_CHUNKS`, `SYSTEM_IMPORT_JSON_BATCH_SIZE`.
 
@@ -315,9 +315,9 @@ pnpm verify:checkin-api
 pnpm --filter @hub-event/api typecheck
 ```
 
-Registry kinds: `crud`, `em-only`, `*-binding` (service mỏng + `Base*Service`), `public-multi-binding` (7 service public), `system-native-binding` (`serviceNative` — giữ `system.service.ts` ~3k dòng). `moduleNative` / `controllerNative` / `serviceNative` / `preserveNativeFiles` trong registry + `api.app.config.json` → `native.controllers`.
+Registry kinds: `crud`, `em-only`, `*-binding` (service mỏng + `Base*Service`), `public-multi-binding` (7 service public), `system-binding` (`BaseSystemAdminService` + bootstrap deps). `extraProviders` + `kind` trên từng provider (vd. `event-registration-attendance-binding`). `moduleNative` / `controllerNative` / `preserveNativeFiles` trong registry + `api.app.config.json` → `native.controllers`.
 
-**Scaffold hub-event (đã xong):** ~28 module admin (CRUD + binding: `users`, `posts`, `events`, `auth`, `hanet`, `dashboard`, …) + `public` (7 service AUTO-GENERATED) + `system` (helpers package, service/controller/module native).
+**Scaffold hub-event (đã xong):** 29 module — **36 service** AUTO-GENERATED (gồm 7 public + `EventRegistrationAttendanceService`) + `system`/`public` **module + controller native**; logic nằm trong `@workspace/api-server`.
 
 **Controller native:** binding module có `controllerNative: true` — ví dụ `users`, `posts`, `events`, `auth`, `event-registrations`, `seo-metas`, `event-checkouts`, `face-data`, `public`, `system`.
 
