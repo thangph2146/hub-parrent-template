@@ -1,5 +1,5 @@
 /**
- * FaceDatas Service.
+ * FaceData Service.
  *
  * Bám sát pattern của `apps/main/api/src/face-data/face-data.service.ts`.
  * Extend `BaseCrudService` từ `@workspace/api-server/bases`.
@@ -9,19 +9,21 @@ import { BaseCrudService } from '../../bases';
 import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
 
 export interface FaceDatasRowDto extends CrudRowDto {
-  id: number | string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  userId?: number | null;
+  imagePath?: string;
+  status?: number;
 }
 
 export interface FaceDatasCreateData extends CrudCreateData {
-  isActive?: boolean;
+  userId?: number | null;
+  imagePath?: string;
+  status?: number;
 }
 
 export interface FaceDatasUpdateData extends CrudUpdateData {
-  isActive?: boolean;
+  userId?: number | null;
+  imagePath?: string;
+  status?: number;
 }
 
 @Injectable()
@@ -32,16 +34,24 @@ export abstract class BaseFaceDatasService extends BaseCrudService<
 > {
   protected readonly logger = new Logger(BaseFaceDatasService.name);
   protected abstract getEntity(): new () => Record<string, unknown>;
+
   protected getEntityName(): string {
-    return 'FaceDatas';
+    return 'FaceData';
   }
+
   protected getSearchFields(): string[] {
-    return [];
+    return ['imagePath'];
   }
+
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
   }
+
   protected getSoftDeleteField(): string | null {
     return 'deletedAt';
+  }
+
+  protected getBulkLabel(): string {
+    return 'khuôn mặt';
   }
 }

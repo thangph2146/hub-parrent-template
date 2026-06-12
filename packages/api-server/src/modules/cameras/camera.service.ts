@@ -15,8 +15,11 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
  * Các field khớp với entity `Camera`.
  */
 export interface CamerasRowDto extends CrudRowDto {
-  id: number | string;
+  name?: string;
   code?: unknown;
+  linkedEventId?: number | null;
+  linkedEventTitle?: string | null;
+  linkedEventSlug?: string | null;
   ipAddress?: unknown;
   port?: unknown;
   username?: unknown;
@@ -29,6 +32,7 @@ export interface CamerasRowDto extends CrudRowDto {
  * Camera create DTO - tất cả optional ngoại trừ các field required.
  */
 export interface CamerasCreateData extends CrudCreateData {
+  name?: string;
   code?: unknown;
   ipAddress?: unknown;
   port?: unknown;
@@ -41,6 +45,7 @@ export interface CamerasCreateData extends CrudCreateData {
  * Camera update DTO - tất cả optional (Partial pattern).
  */
 export interface CamerasUpdateData extends CrudUpdateData {
+  name?: string;
   code?: unknown;
   ipAddress?: unknown;
   port?: unknown;
@@ -84,11 +89,14 @@ export abstract class BaseCamerasService extends BaseCrudService<
 
   /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
-    return [];
+    return ['name', 'code', 'ipAddress'];
   }
 
-  /** Fields cho phép exact-match filter. */
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
+  }
+
+  protected getBulkLabel(): string {
+    return 'camera';
   }
 }

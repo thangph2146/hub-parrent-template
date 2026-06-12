@@ -1,167 +1,54 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.services */
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
-import { Screen } from '../entities/screen.entity';
+import { EntityManager } from '@mikro-orm/core';
 import {
-  applyBulkAction,
-  type BulkAction,
-  type BulkResult,
-} from '../common/bulk-actions';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
-import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
-import { buildStandardAdminWhere } from '../common/apply-column-filters';
+  BaseScreensService,
+  type ScreensRowDto,
+} from '@workspace/api-server/modules/screens';
+import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import { Screen } from '../entities/screen.entity';
 import { SCREEN_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
-export interface ScreenRowDto {
-  id: number;
-  name: string;
-  code: string | null;
-  cameraId: number | null;
-  cameraName: string | null;
-  templateId: number | null;
-  templateName: string | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
-
-function toIso(v: Date | string | number | undefined | null): string | null {
-  if (v == null) return null;
-  if (v instanceof Date)
-    return Number.isNaN(v.getTime()) ? null : v.toISOString();
-  return null;
-}
-
-function mapRow(r: Screen): ScreenRowDto {
-  return {
-    id: r.id,
-    name: r.name,
-    code: r.code ?? null,
-    cameraId: r.camera?.id ?? null,
-    cameraName: r.camera?.name ?? null,
-    templateId: r.template?.id ?? null,
-    templateName: r.template?.name ?? null,
-    status: r.status,
-    createdAt: toIso(r.createdAt) ?? '',
-    updatedAt: toIso(r.updatedAt) ?? '',
-    deletedAt: toIso(r.deletedAt),
-  };
-}
+export type ScreenRowDto = ScreensRowDto;
 
 @Injectable()
-export class ScreensService {
-  constructor(private readonly em: EntityManager) {}
+export class ScreensService extends BaseScreensService {
+  constructor(private readonly em: EntityManager) {
+    super();
+  }
 
-  async list(params: {
-    page: number;
-    limit: number;
-    search?: string;
-    status?: 'active' | 'deleted' | 'all';
-    statusFilter?: number;
-    updatedAtFrom?: string;
-    updatedAtTo?: string;
-    deletedAtFrom?: string;
-    deletedAtTo?: string;
-    filters?: Record<string, string>;
-  }) {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      ADMIN_TABLE_EXPORT_MAX_LIMIT,
-    );
-    const where = buildStandardAdminWhere({
-      ...params,
-      searchFields: ['name', 'code'],
-      filterConfig: SCREEN_COLUMN_FILTERS,
-    });
-    const [rows, total] = await Promise.all([
-      this.em.find(Screen, where as FilterQuery<Screen>, {
-        populate: ['camera', 'template'],
-        orderBy: { updatedAt: 'DESC' },
-        offset: skip,
-        limit,
-      }),
-      this.em.count(Screen, where as FilterQuery<Screen>),
-    ]);
+  protected getEm(): EntityManager {
+    return this.em;
+  }
+
+  protected getEntity(): new () => Record<string, unknown> {
+    return Screen as unknown as new () => Record<string, unknown>;
+  }
+
+
+  protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
+    return SCREEN_COLUMN_FILTERS;
+  }
+
+  protected getListPopulate(): string[] {
+    return ["camera","template"];
+  }
+
+  protected mapRow(entity: Record<string, unknown>): ScreensRowDto {
+    const row = entity as unknown as Screen;
     return {
-      data: rows.map(mapRow),
-      pagination: paginationMeta(page, limit, total),
+      id: row.id,
+      name: row.name,
+      code: row.code ?? null,
+      cameraId: row.camera?.id ?? null,
+      cameraName: row.camera?.name ?? null,
+      templateId: row.template?.id ?? null,
+      templateName: row.template?.name ?? null,
+      status: row.status,
+      isActive: row.status !== 0,
+      createdAt: toIso(row.createdAt) ?? '',
+      updatedAt: toIso(row.updatedAt) ?? '',
+      deletedAt: toIso(row.deletedAt),
     };
-  }
-
-  async getById(id: string): Promise<ScreenRowDto | null> {
-    const r = await this.em.findOne(
-      Screen,
-      { id: toEntityId(id) },
-      { populate: ['camera', 'template'] },
-    );
-    return r ? mapRow(r) : null;
-  }
-
-  async create(data: Record<string, unknown>): Promise<ScreenRowDto> {
-    const created = new Screen();
-    const fields = ['name', 'code', 'status'] as const;
-    for (const f of fields) {
-      if (data[f] !== undefined) (created as any)[f] = data[f];
-    }
-    if (data.cameraId)
-      created.camera = this.em.getReference(
-        'Camera',
-        data.cameraId as string,
-      ) as any;
-    if (data.templateId)
-      created.template = this.em.getReference(
-        'Template',
-        data.templateId as string,
-      ) as any;
-    await this.em.persistAndFlush(created);
-    return mapRow(created);
-  }
-
-  async update(
-    id: string,
-    data: Record<string, unknown>,
-  ): Promise<ScreenRowDto | null> {
-    const existing = await this.em.findOne(Screen, { id: toEntityId(id) });
-    if (!existing) return null;
-    const fields = ['name', 'code', 'status'] as const;
-    for (const f of fields) {
-      if (data[f] !== undefined) (existing as any)[f] = data[f];
-    }
-    if (data.cameraId !== undefined)
-      existing.camera = data.cameraId
-        ? (this.em.getReference('Camera', data.cameraId as string) as any)
-        : null;
-    if (data.templateId !== undefined)
-      existing.template = data.templateId
-        ? (this.em.getReference('Template', data.templateId as string) as any)
-        : null;
-    await this.em.persistAndFlush(existing);
-    return mapRow(existing);
-  }
-
-  async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
-    if (!r || r.deletedAt) return false;
-    r.deletedAt = new Date();
-    await this.em.persistAndFlush(r);
-    return true;
-  }
-  async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
-    if (!r || !r.deletedAt) return false;
-    r.deletedAt = null;
-    await this.em.persistAndFlush(r);
-    return true;
-  }
-  async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Screen, { id: toEntityId(id) });
-    if (!r) return false;
-    await this.em.removeAndFlush(r);
-    return true;
-  }
-  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
-    return applyBulkAction(this.em, Screen, action, ids, { label: 'man hinh' });
   }
 }

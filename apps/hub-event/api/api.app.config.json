@@ -1,0 +1,40 @@
+{
+  "id": "hub-checkin-api",
+  "description": "Hub-event check-in API — service scaffold từ @workspace/api-server (tương tự admin.app.config.json + admin-app).",
+  "scaffoldModules": [
+    "templates",
+    "event-checkouts",
+    "locations",
+    "speakers",
+    "seo-metas",
+    "screens",
+    "cameras",
+    "face-data"
+  ],
+  "native": {
+    "services": [
+      "auth",
+      "public",
+      "events",
+      "users",
+      "posts",
+      "categories",
+      "comments",
+      "tags",
+      "dashboard",
+      "system",
+      "hanet",
+      "event-registrations",
+      "event-checkins",
+      "event-speakers",
+      "uploads",
+      "notifications",
+      "accounts",
+      "sessions",
+      "roles",
+      "settings",
+      "page-contents"
+    ],
+    "controllers": "*"
+  }
+}

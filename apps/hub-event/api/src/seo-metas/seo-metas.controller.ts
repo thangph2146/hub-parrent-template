@@ -21,8 +21,7 @@ import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { isBulkAction, type BulkAction } from '../common/bulk-actions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @Permissions(PERMISSIONS.SEO_METAS_VIEW)
 @Controller(ADMIN_ROUTES.SEO_METAS)
@@ -55,13 +54,9 @@ export class SeoMetasController {
   ) {
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
-    const result = await this.service.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: (status as 'active' | 'deleted' | 'all') ?? 'active',
-      filters: parseColumnFiltersFromQuery(query),
-    });
+    const result = await this.service.list(
+      buildAdminListCrudParams({ page, limit, search, status, query }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -336,7 +331,7 @@ export class SeoMetasController {
     }
     const result = await this.service.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);

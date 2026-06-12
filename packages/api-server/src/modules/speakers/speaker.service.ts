@@ -15,7 +15,7 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
  * Các field khớp với entity `Speaker`.
  */
 export interface SpeakersRowDto extends CrudRowDto {
-  id: number | string;
+  name?: string;
   title?: unknown;
   organization?: unknown;
   bio?: unknown;
@@ -30,6 +30,7 @@ export interface SpeakersRowDto extends CrudRowDto {
  * Speaker create DTO - tất cả optional ngoại trừ các field required.
  */
 export interface SpeakersCreateData extends CrudCreateData {
+  name?: string;
   title?: unknown;
   organization?: unknown;
   bio?: unknown;
@@ -43,6 +44,7 @@ export interface SpeakersCreateData extends CrudCreateData {
  * Speaker update DTO - tất cả optional (Partial pattern).
  */
 export interface SpeakersUpdateData extends CrudUpdateData {
+  name?: string;
   title?: unknown;
   organization?: unknown;
   bio?: unknown;
@@ -82,16 +84,18 @@ export abstract class BaseSpeakersService extends BaseCrudService<
 
   /** Soft delete field - null nếu entity không hỗ trợ. */
   protected getSoftDeleteField(): string | null {
-    return null;
+    return 'deletedAt';
   }
 
-  /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
-    return [];
+    return ['name', 'title', 'organization', 'email', 'phone'];
   }
 
-  /** Fields cho phép exact-match filter. */
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
+  }
+
+  protected getBulkLabel(): string {
+    return 'diễn giả';
   }
 }

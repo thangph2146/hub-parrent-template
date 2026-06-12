@@ -80,11 +80,11 @@ describe('BaseScreensService', () => {
     });
 
     it('should expose search fields', () => {
-      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual([]);
+      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual(['name', 'code']);
     });
 
     it('should expose filterable fields', () => {
-      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['isActive']);
+      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['status']);
     });
   });
 

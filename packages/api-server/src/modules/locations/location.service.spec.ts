@@ -76,15 +76,15 @@ describe('BaseLocationsService', () => {
     });
 
     it('should expose soft-delete field correctly', () => {
-      expect((service as unknown as { getSoftDeleteField(): string | null }).getSoftDeleteField()).toBeNull();
+      expect((service as unknown as { getSoftDeleteField(): string | null }).getSoftDeleteField()).toBe('deletedAt');
     });
 
     it('should expose search fields', () => {
-      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual([]);
+      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual(['name', 'address', 'mapUrl']);
     });
 
     it('should expose filterable fields', () => {
-      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['isActive']);
+      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['status']);
     });
   });
 

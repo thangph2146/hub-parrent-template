@@ -20,7 +20,7 @@ describe('BaseTemplatesService', () => {
   // Mock entity dựa trên row thật từ fixture
   const mockEntity: Record<string, unknown> = fixtureRows.length > 0
     ? { ...fixtureRows[0], deletedAt: null }
-    : { id: 1, deletedAt: null, isActive: true, createdAt: new Date(), updatedAt: new Date() };
+    : { id: 1, deletedAt: null, status: 1, createdAt: new Date(), updatedAt: new Date() };
 
   class TestTemplatesServiceService extends BaseTemplatesService {
     protected emRef: Partial<EntityManager>;
@@ -80,11 +80,11 @@ describe('BaseTemplatesService', () => {
     });
 
     it('should expose search fields', () => {
-      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual([]);
+      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual(['name', 'code']);
     });
 
     it('should expose filterable fields', () => {
-      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['isActive']);
+      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['status']);
     });
   });
 
@@ -154,7 +154,7 @@ describe('BaseTemplatesService', () => {
     it('should persist new entity and return DTO', async () => {
       const newData: Record<string, unknown> = {
         id: 'TEST-NEW-1',
-        isActive: true,
+        status: 1,
       };
       (em.persist as jest.Mock).mockImplementation((entity: Record<string, unknown>) => {
         if (entity && !entity.id) {
@@ -176,7 +176,7 @@ describe('BaseTemplatesService', () => {
     it('should update existing record', async () => {
       (em.findOne as jest.Mock).mockResolvedValueOnce({ ...mockEntity });
 
-      const result = await service.update('1', { isActive: false } as never);
+      const result = await service.update('1', { status: 0 } as never);
 
       expect(result).not.toBeNull();
       expect(em.flush).toHaveBeenCalled();
@@ -185,7 +185,7 @@ describe('BaseTemplatesService', () => {
     it('should return null when record not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValueOnce(null);
 
-      const result = await service.update('999', { isActive: false } as never);
+      const result = await service.update('999', { status: 0 } as never);
 
       expect(result).toBeNull();
     });

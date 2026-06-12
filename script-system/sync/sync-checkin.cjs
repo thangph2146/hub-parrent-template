@@ -35,7 +35,15 @@ run(
 );
 run(
   "node script-system/verify/verify-checkin-admin-sync.mjs",
-  "7/7 verify admin check-in",
+  "7/8 verify admin check-in",
+);
+run(
+  "node script-system/api/generate-api-modules.cjs apps/hub-event/api",
+  "8/8 generate API scaffold services (@workspace/api-server)",
+);
+run(
+  "node script-system/verify/verify-checkin-api-modules.mjs",
+  "verify API scaffold",
 );
 
 console.log("\n[sync-checkin] Hoàn tất. Test deploy: pnpm dev:checkin");

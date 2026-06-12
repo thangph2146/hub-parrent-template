@@ -36,6 +36,7 @@ Khi task liên quan tới một package cụ thể, đọc thêm:
 
 - **`@workspace/ui`** (`packages/ui/`): `docs/ui-pattern/README.md` + `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`
 - **`@workspace/api-client`** (`packages/api-client/`): `docs/api-client-pattern/README.md`
+- **`@workspace/api-server`** (`packages/api-server/`): `packages/api-server/README.md` + `docs/api-pattern/README.md`
 - **`@thangph2146/lexical-editor`** (`packages/editor/`): `packages/editor/README.md`
 - **`@workspace/logger`** (`packages/logger/`): `docs/logger-pattern/README.md`
 - **`@workspace/query-client`** (`packages/query-client/`): `docs/query-client-pattern/README.md`
@@ -225,8 +226,11 @@ import { PERMISSION_CODES } from "@workspace/api-client"
 ### API Nest (`apps/*/api`)
 
 - `@workspace/*` cho package dùng chung; **không** `@ui`, React, Next.
+- **Logic CRUD dùng chung** → implement/extend trong `@workspace/api-server` trước, rồi app chỉ subclass service (`getEm()`, `getEntity()`, override `mapRow` / column filters nếu cần).
+- **Controller + auth envelope** (`@Res()`, `X-User-Id`, `createSuccessResponse`) giữ local trong app — không dùng `BaseModule.forRoot()` nếu sẽ inject controller trùng route.
+- Deploy line pilot: `apps/hub-event/api` — module đã migrate: `templates`, `event-checkouts`. Import subpath: `@workspace/api-server/modules/templates`, `@workspace/api-server/modules/event-checkouts`, `@workspace/api-server/common`. `tsconfig` hub-event dùng `moduleResolution: bundler` để resolve package workspace. Sau `pnpm pull:checkin`, tiếp tục CRUD scaffold (`cameras`, `screens`, `locations`, …).
 
-Chi tiết: `docs/ui-pattern/README.md` · admin: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md`.
+Chi tiết: `docs/ui-pattern/README.md` · admin: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` · API: `packages/api-server/README.md`.
 
 ### Admin dùng chung (`@workspace/admin-app`)
 
@@ -265,3 +269,49 @@ File native giữ local (check-in: events shell, `dang-nhap`, `dang-ky`, profile
 - API config + insert: `apps/api/src/system/system.service.ts` (`getImportConfig`, `insertSanitizedModel`).
 - `post` mặc định **1 lô**, pivot (`postCategory`/`postTag`) **request riêng**; `post` **không** song song (`modelParallelConcurrency.post = 1`).
 - Env API (tùy chọn): `SYSTEM_IMPORT_CLIENT_CHUNK_POST`, `SYSTEM_IMPORT_PARALLEL_CHUNKS`, `SYSTEM_IMPORT_JSON_BATCH_SIZE`.
+
+## `@workspace/api-server` — Test & Coverage
+
+**Status: FULLY COVERED** (4453 tests / 308 suites).
+
+- Mọi module trong `packages/api-server/src/modules/` đã có: `*.service.spec.ts`, `*.controller.spec.ts`, `index.barrel.spec.ts`, `*.module-meta.spec.ts`, `*.service.integration.spec.ts`
+- `bases/`: `base-crud.controller.spec.ts`, `base-crud.service.spec.ts`, `base-service.class.spec.ts`, `base-controller.class.spec.ts`, `crud-factory.spec.ts`, `index.barrel.spec.ts`
+- `common/`: utilities (api-response, pagination, bulk-actions, parse-list-query, apply-column-filters, entity-id)
+- `data-test/`: fixture loader + in-memory FakeEntityManager (47MB production fixture)
+- `utils/`: date-utils, entity-id, pagination
+
+Khi thêm module mới vào api-server, PHẢI tạo đủ 5 spec files theo pattern của `academic-years/`.
+
+Chạy test & verify contract:
+```bash
+pnpm test:api-server          # alias: pnpm --filter @workspace/api-server test
+pnpm verify:api-contract      # đối chiếu route api-client ↔ ADMIN_ROUTES/PUBLIC_ROUTES
+pnpm --filter @workspace/api-server test:cov
+```
+
+Quy trình khi sửa endpoint API:
+1. Sửa `packages/api-server` (base service/controller) + bổ sung spec theo pattern `academic-years/`.
+2. Chạy `pnpm test:api-server` và `pnpm verify:api-contract`.
+3. Subclass trong `apps/main/api` hoặc `apps/hub-event/api` (deploy line) — xóa duplicate logic, giữ entity + controller local.
+4. `pnpm check` (và `graphify:refresh` nếu đổi module/routes).
+
+## `@workspace/api-server` — khai báo như admin-app
+
+Pattern song song `admin.app.config.json` + `@workspace/admin-app`:
+
+| Admin (frontend) | API (Nest) |
+| ---------------- | ---------- |
+| `admin.app.config.json` → `scaffoldModules` | `api.app.config.json` → `scaffoldModules` |
+| `pnpm admin:generate:checkin` | `pnpm api:generate:checkin` |
+| Page AUTO-GENERATED re-export package | Service AUTO-GENERATED extend `Base*Service` |
+| Controller/layout native (`X-User-Id`, envelope) | Controller native (`@Res()`, permissions) |
+
+**Hub-event check-in:** `apps/hub-event/api/api.app.config.json` — khai báo module scaffold; chạy `pnpm api:generate:checkin` sinh `*.service.ts` từ `script-system/api/api-module-registry.cjs`. Verify: `pnpm verify:checkin-api`.
+
+**Scaffold hiện tại (8):** `templates`, `event-checkouts`, `locations`, `speakers`, `seo-metas`, `screens`, `cameras`, `face-data`.
+
+**Thêm module mới:** bổ sung registry + thêm id vào `scaffoldModules` trong `api.app.config.json` → `pnpm api:generate:checkin`.
+
+**Rich / native** (giữ service local): `events`, `users`, `posts`, `categories`, `comments`, `tags`, `dashboard`, `system`, `hanet`, `public/*`, …
+
+Sau `git pull` trên server check-in: `pnpm pull:checkin` (sync API subset + admin generate + api generate).

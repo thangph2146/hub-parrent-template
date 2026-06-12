@@ -31,6 +31,7 @@ export * from './customer-carts';
 export * from './departments';
 export * from './events';
 export * from './event-checkins';
+export * from './event-checkouts';
 export * from './event-registrations';
 export * from './event-speakers';
 export * from './face-data';

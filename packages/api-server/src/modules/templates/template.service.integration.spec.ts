@@ -109,7 +109,7 @@ describe('BaseTemplatesService - integration test (real fixture data)', () => {
       const beforeCount = (em as unknown as { __all: (entity: unknown) => Array<Record<string, unknown>> }).__all('Template').length;
       const newData: Record<string, unknown> = {
         id: 'TEST-NEW-1',
-        isActive: true,
+        status: 1,
       };
       const created = await service.create(newData as never);
       expect(created).toBeDefined();

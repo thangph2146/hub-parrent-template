@@ -15,17 +15,17 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
  * Các field khớp với entity `Template`.
  */
 export interface TemplatesRowDto extends CrudRowDto {
-  id: number | string;
+  name?: string;
   code?: unknown;
   content?: unknown;
   status: number;
-  deletedAt?: Date | string | null;
 }
 
 /**
  * Template create DTO - tất cả optional ngoại trừ các field required.
  */
 export interface TemplatesCreateData extends CrudCreateData {
+  name?: string;
   code?: unknown;
   content?: unknown;
   status?: number;
@@ -35,6 +35,7 @@ export interface TemplatesCreateData extends CrudCreateData {
  * Template update DTO - tất cả optional (Partial pattern).
  */
 export interface TemplatesUpdateData extends CrudUpdateData {
+  name?: string;
   code?: unknown;
   content?: unknown;
   status?: number;
@@ -75,11 +76,15 @@ export abstract class BaseTemplatesService extends BaseCrudService<
 
   /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
-    return [];
+    return ['name', 'code'];
   }
 
   /** Fields cho phép exact-match filter. */
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
+  }
+
+  protected getBulkLabel(): string {
+    return 'mau';
   }
 }

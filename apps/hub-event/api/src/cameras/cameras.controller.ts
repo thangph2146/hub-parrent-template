@@ -28,8 +28,7 @@ import {
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { isBulkAction, type BulkAction } from '../common/bulk-actions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Cameras')
 @Controller(ADMIN_ROUTES.CAMERAS)
@@ -65,18 +64,20 @@ export class CamerasController {
     @Query() query?: Record<string, string>,
   ) {
     if (!this.getUserId(headers)) return this.unauthorized(res);
-    const result = await this.camerasService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: (status as any) ?? 'active',
-      statusFilter: statusFilter != null ? Number(statusFilter) : undefined,
-      updatedAtFrom: updatedAtFrom?.trim(),
-      updatedAtTo: updatedAtTo?.trim(),
-      deletedAtFrom: deletedAtFrom?.trim(),
-      deletedAtTo: deletedAtTo?.trim(),
-      filters: parseColumnFiltersFromQuery(query),
-    });
+    const result = await this.camerasService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -250,7 +251,7 @@ export class CamerasController {
     }
     const result = await this.camerasService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);

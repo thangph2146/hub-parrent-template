@@ -49,6 +49,7 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+jest.config.tmp.cjs
 
 # Runtime data
 pids

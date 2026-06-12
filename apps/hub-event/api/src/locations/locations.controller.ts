@@ -28,8 +28,7 @@ import {
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { isBulkAction, type BulkAction } from '../common/bulk-actions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Locations')
 @Controller(ADMIN_ROUTES.LOCATIONS)
@@ -73,18 +72,20 @@ export class LocationsController {
     this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
-    const result = await this.locationsService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: (status as 'active' | 'deleted' | 'all') ?? 'active',
-      statusFilter: statusFilter != null ? Number(statusFilter) : undefined,
-      updatedAtFrom: updatedAtFrom?.trim(),
-      updatedAtTo: updatedAtTo?.trim(),
-      deletedAtFrom: deletedAtFrom?.trim(),
-      deletedAtTo: deletedAtTo?.trim(),
-      filters: parseColumnFiltersFromQuery(query),
-    });
+    const result = await this.locationsService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -279,7 +280,7 @@ export class LocationsController {
     }
     const result = await this.locationsService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);

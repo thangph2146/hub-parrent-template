@@ -76,6 +76,8 @@
     "sync:checkin": "pnpm pull:checkin",
     "verify:api-profile": "node script-system/verify/verify-api-profile.mjs hub-event",
     "verify:checkin-admin": "node script-system/verify/verify-checkin-admin-sync.mjs",
+    "api:generate:checkin": "node script-system/api/generate-api-modules.cjs apps/hub-event/api",
+    "verify:checkin-api": "node script-system/verify/verify-checkin-api-modules.mjs",
     "verify:main-admin": "node script-system/verify/verify-main-admin-sync.mjs",
     "test:apps": "node script-system/verify/test-app-operations.mjs all",
     "test:apps:quick": "node script-system/verify/test-app-operations.mjs all --quick",

@@ -1,244 +1,51 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.services */
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
-import { SeoMeta } from '../entities/seo-meta.entity';
+import { EntityManager } from '@mikro-orm/core';
 import {
-  applyBulkAction,
-  type BulkAction,
-  type BulkResult,
-} from '../common/bulk-actions';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
-import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
-import { buildStandardAdminWhere } from '../common/apply-column-filters';
+  BaseSeoMetasService,
+  type SeoMetasRowDto,
+} from '@workspace/api-server/modules/seo-metas';
+import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import { SeoMeta } from '../entities/seo-meta.entity';
 import { SEO_META_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
-export interface SeoMetaRowDto {
-  id: number;
-  page: string;
-  title: string | null;
-  description: string | null;
-  keywords: string | null;
-  ogTitle: string | null;
-  ogDescription: string | null;
-  ogImage: string | null;
-  status: number;
-  createdAt: string | null;
-  updatedAt: string | null;
-  deletedAt: string | null;
-}
-
-export interface ListSeoMetasParams {
-  page: number;
-  limit: number;
-  search?: string;
-  status?: 'active' | 'deleted' | 'all';
-  filters?: Record<string, string>;
-}
-
-export interface ListSeoMetasResult {
-  data: SeoMetaRowDto[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
-function toIso(v: unknown): string | null {
-  if (v == null) return null;
-  if (v instanceof Date) return v.toISOString();
-  if (typeof v === 'string' || typeof v === 'number') {
-    const d = new Date(v);
-    return isNaN(d.getTime()) ? null : d.toISOString();
-  }
-  return null;
-}
-
-function mapRow(r: SeoMeta): SeoMetaRowDto {
-  return {
-    id: r.id,
-    page: r.page,
-    title: r.title ?? null,
-    description: r.description ?? null,
-    keywords: r.keywords ?? null,
-    ogTitle: r.ogTitle ?? null,
-    ogDescription: r.ogDescription ?? null,
-    ogImage: r.ogImage ?? null,
-    status: r.status,
-    createdAt: toIso(r.createdAt),
-    updatedAt: toIso(r.updatedAt),
-    deletedAt: toIso(r.deletedAt),
-  };
-}
+export type SeoMetaRowDto = SeoMetasRowDto;
 
 @Injectable()
-export class SeoMetasService {
-  constructor(private readonly em: EntityManager) {}
+export class SeoMetasService extends BaseSeoMetasService {
+  constructor(private readonly em: EntityManager) {
+    super();
+  }
 
-  async list(params: ListSeoMetasParams): Promise<ListSeoMetasResult> {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      ADMIN_TABLE_EXPORT_MAX_LIMIT,
-    );
-    const where = buildStandardAdminWhere({
-      ...params,
-      searchFields: ['page', 'title', 'description'],
-      filterConfig: SEO_META_COLUMN_FILTERS,
-    });
+  protected getEm(): EntityManager {
+    return this.em;
+  }
 
-    const qb = where as FilterQuery<SeoMeta>;
-    const [rows, total] = await Promise.all([
-      this.em.find(SeoMeta, qb, {
-        orderBy: { updatedAt: 'DESC' },
-        offset: skip,
-        limit,
-      }),
-      this.em.count(SeoMeta, qb),
-    ]);
+  protected getEntity(): new () => Record<string, unknown> {
+    return SeoMeta as unknown as new () => Record<string, unknown>;
+  }
 
+
+  protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
+    return SEO_META_COLUMN_FILTERS;
+  }
+
+  protected mapRow(entity: Record<string, unknown>): SeoMetasRowDto {
+    const row = entity as unknown as SeoMeta;
     return {
-      data: rows.map(mapRow),
-      pagination: paginationMeta(page, limit, total),
+      id: row.id,
+      page: row.page,
+      title: row.title ?? null,
+      description: row.description ?? null,
+      keywords: row.keywords ?? null,
+      ogTitle: row.ogTitle ?? null,
+      ogDescription: row.ogDescription ?? null,
+      ogImage: row.ogImage ?? null,
+      status: row.status,
+      isActive: row.status !== 0,
+      createdAt: toIso(row.createdAt) ?? '',
+      updatedAt: toIso(row.updatedAt) ?? '',
+      deletedAt: toIso(row.deletedAt),
     };
-  }
-
-  async getById(id: string): Promise<SeoMetaRowDto | null> {
-    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
-    return row ? mapRow(row) : null;
-  }
-
-  async getByPage(page: string): Promise<SeoMetaRowDto | null> {
-    const normalized = page.trim();
-    if (!normalized) return null;
-    const row = await this.em.findOne(SeoMeta, {
-      page: normalized,
-      deletedAt: null,
-    });
-    return row ? mapRow(row) : null;
-  }
-
-  async upsertByPage(
-    page: string,
-    data: {
-      title?: string | null;
-      description?: string | null;
-      keywords?: string | null;
-      ogTitle?: string | null;
-      ogDescription?: string | null;
-      ogImage?: string | null;
-      status?: number;
-    },
-  ): Promise<SeoMetaRowDto> {
-    const normalized = page.trim();
-    if (!normalized) {
-      throw new Error('page là bắt buộc');
-    }
-    const existing = await this.em.findOne(SeoMeta, {
-      page: normalized,
-      deletedAt: null,
-    });
-    if (existing) {
-      const updated = await this.update(existing.id, {
-        ...data,
-        page: normalized,
-      });
-      if (!updated) throw new Error('Không cập nhật được SEO meta');
-      return updated;
-    }
-    return this.create({
-      page: normalized,
-      title: data.title,
-      description: data.description,
-      keywords: data.keywords,
-      ogTitle: data.ogTitle,
-      ogDescription: data.ogDescription,
-      ogImage: data.ogImage,
-    });
-  }
-
-  async create(data: {
-    page: string;
-    title?: string | null;
-    description?: string | null;
-    keywords?: string | null;
-    ogTitle?: string | null;
-    ogDescription?: string | null;
-    ogImage?: string | null;
-  }): Promise<SeoMetaRowDto> {
-    const entity = new SeoMeta();
-    entity.page = data.page;
-    if (data.title !== undefined) entity.title = data.title ?? undefined;
-    if (data.description !== undefined)
-      entity.description = data.description ?? undefined;
-    if (data.keywords !== undefined)
-      entity.keywords = data.keywords ?? undefined;
-    if (data.ogTitle !== undefined) entity.ogTitle = data.ogTitle ?? undefined;
-    if (data.ogDescription !== undefined)
-      entity.ogDescription = data.ogDescription ?? undefined;
-    if (data.ogImage !== undefined) entity.ogImage = data.ogImage ?? undefined;
-    await this.em.persistAndFlush(entity);
-    return mapRow(entity);
-  }
-
-  async update(
-    id: string | number,
-    data: {
-      page?: string;
-      title?: string | null;
-      description?: string | null;
-      keywords?: string | null;
-      ogTitle?: string | null;
-      ogDescription?: string | null;
-      ogImage?: string | null;
-      status?: number;
-    },
-  ): Promise<SeoMetaRowDto | null> {
-    const existing = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
-    if (!existing) return null;
-    if (data.page != null) existing.page = data.page;
-    if (data.title !== undefined) existing.title = data.title ?? undefined;
-    if (data.description !== undefined)
-      existing.description = data.description ?? undefined;
-    if (data.keywords !== undefined)
-      existing.keywords = data.keywords ?? undefined;
-    if (data.ogTitle !== undefined)
-      existing.ogTitle = data.ogTitle ?? undefined;
-    if (data.ogDescription !== undefined)
-      existing.ogDescription = data.ogDescription ?? undefined;
-    if (data.ogImage !== undefined)
-      existing.ogImage = data.ogImage ?? undefined;
-    if (data.status != null) existing.status = data.status;
-    await this.em.persistAndFlush(existing);
-    return mapRow(existing);
-  }
-
-  async softDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
-    if (!row || row.deletedAt) return false;
-    row.deletedAt = new Date();
-    await this.em.persistAndFlush(row);
-    return true;
-  }
-
-  async restore(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
-    if (!row || !row.deletedAt) return false;
-    row.deletedAt = null;
-    await this.em.persistAndFlush(row);
-    return true;
-  }
-
-  async hardDelete(id: string): Promise<boolean> {
-    const row = await this.em.findOne(SeoMeta, { id: toEntityId(id) });
-    if (!row) return false;
-    await this.em.removeAndFlush(row);
-    return true;
-  }
-  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
-    return applyBulkAction(this.em, SeoMeta, action, ids, {
-      label: 'SEO meta',
-    });
   }
 }

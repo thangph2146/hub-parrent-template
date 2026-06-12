@@ -15,11 +15,10 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
  * Các field khớp với entity `Location`.
  */
 export interface LocationsRowDto extends CrudRowDto {
-  id: number | string;
-  name?: unknown;
-  address?: unknown;
-  status?: unknown;
-  deletedAt?: Date | string | null;
+  name?: string | null;
+  address?: string | null;
+  mapUrl?: string;
+  status?: number | null;
 }
 
 /**
@@ -70,16 +69,18 @@ export abstract class BaseLocationsService extends BaseCrudService<
 
   /** Soft delete field - null nếu entity không hỗ trợ. */
   protected getSoftDeleteField(): string | null {
-    return null;
+    return 'deletedAt';
   }
 
-  /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
-    return [];
+    return ['name', 'address', 'mapUrl'];
   }
 
-  /** Fields cho phép exact-match filter. */
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
+  }
+
+  protected getBulkLabel(): string {
+    return 'địa điểm';
   }
 }

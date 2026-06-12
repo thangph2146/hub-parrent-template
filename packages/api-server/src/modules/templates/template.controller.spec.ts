@@ -264,7 +264,7 @@ describe('BaseTemplatesController — client contract', () => {
 
     it('maps filter[column] sang filters object', async () => {
       await controller.list({
-        'filter[isActive]': 'true',
+        'filter[status]': '1',
         'filter[authorId]': '5',
       });
       expect(service.list).toHaveBeenCalledWith({
@@ -273,7 +273,7 @@ describe('BaseTemplatesController — client contract', () => {
         search: '',
         status: 'active',
         filters: {
-          isActive: 'true',
+          status: '1',
           authorId: '5',
         },
       });
@@ -281,7 +281,7 @@ describe('BaseTemplatesController — client contract', () => {
 
     it('bỏ filter[empty]', async () => {
       await controller.list({
-        'filter[isActive]': '',
+        'filter[status]': '',
         'filter[authorId]': '5',
       });
       expect(service.list).toHaveBeenCalledWith({

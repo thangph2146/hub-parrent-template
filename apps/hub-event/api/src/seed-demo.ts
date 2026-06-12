@@ -35,7 +35,7 @@ async function main() {
 }
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
-  console.log('Usage: pnpm db:demo');
+  console.log('Usage: pnpm seed:demo');
   console.log('');
   console.log('Seed tài khoản dev + sự kiện demo từ bài viết export.');
   console.log('');

@@ -67,8 +67,8 @@ describe('BaseFaceDatasService', () => {
       expect(service).toBeDefined();
     });
 
-    it('should expose entity name "FaceDatas"', () => {
-      expect((service as unknown as { getEntityName(): string }).getEntityName()).toBe('FaceDatas');
+    it('should expose entity name "FaceData"', () => {
+      expect((service as unknown as { getEntityName(): string }).getEntityName()).toBe('FaceData');
     });
 
     it('should expose primary key "id"', () => {
@@ -80,11 +80,11 @@ describe('BaseFaceDatasService', () => {
     });
 
     it('should expose search fields', () => {
-      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual([]);
+      expect((service as unknown as { getSearchFields(): string[] }).getSearchFields()).toEqual(['imagePath']);
     });
 
     it('should expose filterable fields', () => {
-      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['isActive']);
+      expect((service as unknown as { getFilterableFields(): string[] }).getFilterableFields()).toEqual(['status']);
     });
   });
 

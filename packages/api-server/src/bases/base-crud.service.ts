@@ -146,6 +146,11 @@ export abstract class BaseCrudService<
     return this.getEntityName().toLowerCase();
   }
 
+  /** MikroORM populate khi list/getById (vd. quan hệ camera, template). */
+  protected getListPopulate(): string[] | undefined {
+    return undefined;
+  }
+
   /**
    * Map một entity row sang DTO trả về cho client.
    * Mặc định: trải phẳng entity (cast sang DTO).
@@ -201,12 +206,18 @@ export abstract class BaseCrudService<
     const { page, limit, skip } = this.normalizePageLimit(params.page, params.limit);
     const where = this.buildWhere(params) as FilterQuery<Record<string, unknown>>;
 
+    const populate = this.getListPopulate();
+    const findOptions: Record<string, unknown> = {
+      orderBy: { updatedAt: 'DESC' },
+      offset: skip,
+      limit,
+    };
+    if (populate?.length) {
+      findOptions.populate = populate;
+    }
+
     const [rows, total] = await Promise.all([
-      em.find(Entity, where, {
-        orderBy: { updatedAt: 'DESC' },
-        offset: skip,
-        limit,
-      }),
+      em.find(Entity, where, findOptions),
       em.count(Entity, where),
     ]);
 
@@ -224,7 +235,15 @@ export abstract class BaseCrudService<
     const Entity = this.getEntity();
     const pk = this.getPrimaryKeyField();
     const entityId = this.toEntityId(id);
-    const found = await em.findOne(Entity, { [pk]: entityId } as WhereClause);
+    const populate = this.getListPopulate();
+    const findOneOptions = populate?.length
+      ? ({ populate } as Record<string, unknown>)
+      : undefined;
+    const found = await em.findOne(
+      Entity,
+      { [pk]: entityId } as WhereClause,
+      findOneOptions as never,
+    );
     if (!found) return null;
     return this.mapRow(found as Record<string, unknown>);
   }

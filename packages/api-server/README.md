@@ -147,7 +147,18 @@ Pattern bám sát 100% `apps/main/api/src/<entity>/`:
 **4 rich modules** có logic riêng: `users`, `posts`, `comments`, `categories` (logic từ `apps/main/api/src/<entity>/` được tích hợp sẵn).
 **42 scaffold modules** tự động generate DTOs từ entity fields. Subclass chỉ cần override `getEntity()` để integrate với concrete entity.
 
-## Quick start - Tích hợp vào app
+## Khai báo scaffold (hub-event check-in)
+
+Song song `admin.app.config.json` + `@workspace/admin-app`:
+
+1. Khai báo module trong `apps/hub-event/api/api.app.config.json` → `scaffoldModules`
+2. Map metadata trong `script-system/api/api-module-registry.cjs` (nếu module mới)
+3. Chạy `pnpm api:generate:checkin` — sinh `*.service.ts` AUTO-GENERATED
+4. Verify: `pnpm verify:checkin-api`
+
+Controller Nest giữ local (`@Res()`, `X-User-Id`); chỉ **service** extend `Base*Service` từ package.
+
+## Quick start - Tích hợp thủ công vào app
 
 Trong app, tạo concrete class inject `EntityManager` từ Nest:
 

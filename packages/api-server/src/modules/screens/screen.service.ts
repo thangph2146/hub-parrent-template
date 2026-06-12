@@ -15,16 +15,20 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
  * Các field khớp với entity `Screen`.
  */
 export interface ScreensRowDto extends CrudRowDto {
-  id: number | string;
+  name?: string;
   code?: unknown;
+  cameraId?: number | null;
+  cameraName?: string | null;
+  templateId?: number | null;
+  templateName?: string | null;
   status: number;
-  deletedAt?: Date | string | null;
 }
 
 /**
  * Screen create DTO - tất cả optional ngoại trừ các field required.
  */
 export interface ScreensCreateData extends CrudCreateData {
+  name?: string;
   code?: unknown;
   status?: number;
 }
@@ -33,6 +37,7 @@ export interface ScreensCreateData extends CrudCreateData {
  * Screen update DTO - tất cả optional (Partial pattern).
  */
 export interface ScreensUpdateData extends CrudUpdateData {
+  name?: string;
   code?: unknown;
   status?: number;
 }
@@ -72,11 +77,14 @@ export abstract class BaseScreensService extends BaseCrudService<
 
   /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
-    return [];
+    return ['name', 'code'];
   }
 
-  /** Fields cho phép exact-match filter. */
   protected getFilterableFields(): string[] {
-    return ['isActive'];
+    return ['status'];
+  }
+
+  protected getBulkLabel(): string {
+    return 'màn hình';
   }
 }

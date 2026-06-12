@@ -28,8 +28,7 @@ import {
 } from '../common/api-response';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { isBulkAction, type BulkAction } from '../common/bulk-actions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+import { buildAdminListCrudParams } from '../common/admin-list-params';
 
 @ApiTags('Speakers')
 @Controller(ADMIN_ROUTES.SPEAKERS)
@@ -73,19 +72,20 @@ export class SpeakersController {
     this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
     const userId = this.getUserId(headers);
     if (!userId) return this.unauthorized(res);
-    const result = await this.speakersService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      search: search?.trim(),
-      status: (status as 'active' | 'deleted' | 'all') ?? 'active',
-      speakerStatus:
-        speakerStatus !== undefined ? parseInt(speakerStatus, 10) : undefined,
-      updatedAtFrom: updatedAtFrom?.trim() || undefined,
-      updatedAtTo: updatedAtTo?.trim() || undefined,
-      deletedAtFrom: deletedAtFrom?.trim() || undefined,
-      deletedAtTo: deletedAtTo?.trim() || undefined,
-      filters: parseColumnFiltersFromQuery(query),
-    });
+    const result = await this.speakersService.list(
+      buildAdminListCrudParams({
+        page,
+        limit,
+        search,
+        status,
+        statusFilter: speakerStatus,
+        updatedAtFrom,
+        updatedAtTo,
+        deletedAtFrom,
+        deletedAtTo,
+        query,
+      }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -310,7 +310,7 @@ export class SpeakersController {
     }
     const result = await this.speakersService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: result.success, message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);

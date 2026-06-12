@@ -28,7 +28,11 @@ import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { isBulkAction, type BulkAction } from '../common/bulk-actions';
-import { parseAdminListLimit } from '../common/parse-list-query';
+import { toEntityId } from '../common/entity-id';
+import {
+  buildAdminListCrudParams,
+  bulkAffectedCount,
+} from '../common/admin-list-params';
 
 @ApiTags('FaceData')
 @Permissions(PERMISSIONS.FACE_DATA_VIEW)
@@ -65,11 +69,9 @@ export class FaceDataController {
     this.logger.log(`list page=${page ?? 1} limit=${limit ?? 10}`);
     const authUserId = this.getUserId(headers);
     if (!authUserId) return this.unauthorized(res);
-    const result = await this.faceDataService.list({
-      page: Math.max(1, parseInt(String(page), 10) || 1),
-      limit: parseAdminListLimit(limit, 10),
-      userId: userId?.trim(),
-    });
+    const result = await this.faceDataService.list(
+      buildAdminListCrudParams({ page, limit, userId }),
+    );
     const { statusCode, body } = createSuccessResponse({
       data: result.data,
       pagination: result.pagination,
@@ -124,7 +126,7 @@ export class FaceDataController {
     }
     const created = await this.faceDataService.create({
       imagePath: body.imagePath.trim(),
-      userId: body.userId?.trim() ?? null,
+      userId: body.userId?.trim() ? toEntityId(body.userId) : null,
       status: body.status,
     });
     const { statusCode, body: okBody } = createSuccessResponse(created, {
@@ -265,7 +267,7 @@ export class FaceDataController {
     }
     const result = await this.faceDataService.bulk(action, ids);
     const { statusCode, body: okBody } = createSuccessResponse(
-      { affected: result.affected, message: result.message },
+      { affected: bulkAffectedCount(result), message: result.message },
       { message: result.message },
     );
     return res.status(statusCode).json(okBody);
