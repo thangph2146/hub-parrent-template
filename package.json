@@ -91,6 +91,8 @@
     "test:parent": "node script-system/verify/test-app-operations.mjs hub-parent --quick",
     "test:store": "node script-system/verify/test-app-operations.mjs store-sync --quick",
     "graphify:ai-summary": "node script-system/graphify/graphify-ai-summary.mjs",
+    "graphify:task-index": "node script-system/graphify/graphify-task-index.mjs",
+    "graphify:brief": "node script-system/graphify/graphify-brief.mjs",
     "graphify:refresh": "pnpm graphify:update && pnpm graphify:ai-summary",
     "api": "pnpm --filter @api",
     "db": "pnpm --filter @api exec mikro-orm",

@@ -41,8 +41,9 @@ Chi tiết workflow product line: [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_S
 ## 2. Quy trình bắt buộc trước khi sửa code
 
 1. [`docs/admin-pattern/PRE_CODE_PROTOCOL.md`](docs/admin-pattern/PRE_CODE_PROTOCOL.md)
-2. Các doc được protocol chỉ địn theo **loại task** (bảng mục 3)
-3. Sau khi sửa: `pnpm check` (mục 6)
+2. **Brief task (khuyến nghị):** `pnpm graphify:brief --task "mô tả ngắn"` — reading list + file ưu tiên
+3. Các doc theo **loại task** (mục 3 + [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md))
+4. Sau khi sửa: `pnpm check` + DoD (mục 6)
 
 Lộ trình step-by-step đầy đủ: [`docs/steps/`](docs/steps/) (`step1` → `step10`).  
 Index tài liệu: [`docs/README.md`](docs/README.md).
@@ -79,6 +80,19 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 
 Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
 Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm mới: `pnpm graphify:refresh` · skill: [`.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](.cursor/skills/hub-graphify-standardize-loop/SKILL.md).
+
+### 3.1 Graph + task — file cụ thể
+
+| Artefact / lệnh | Khi nào dùng |
+|-----------------|--------------|
+| [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md) | Biết module X → folder/file (`admin-app`, `main/api`, `api-client`) |
+| `pnpm graphify:brief --task "..."` | Đầu task — brief đọc/verify/sync (sinh từ `task-index.json`) |
+| `TASK_INDEX` cột Check-in API | Domain có trên hub-event sau `pull:checkin` hay chỉ main |
+
+```bash
+pnpm graphify:brief --task "sửa filter admin screens"
+pnpm graphify:brief --task "API events check-in"
+```
 
 ### Package — doc bổ trợ
 
@@ -133,9 +147,23 @@ docs/
 ```bash
 pnpm check                    # verify + lint + typecheck
 pnpm check:full               # check + graphify:ai-summary (sau đổi kiến trúc lớn)
+pnpm graphify:brief --task "..."  # định vị task (trước khi sửa)
 pnpm verify:bounds            # không import chéo apps/*
 pnpm verify:imports           # alias @ui
 ```
+
+### Definition of Done (agent)
+
+| Tiêu chí | Cách kiểm |
+|----------|-----------|
+| Đúng product line | `graphify:brief` hoặc mục 3 — dev: `apps/main/*`; check-in: + `pnpm pull:checkin` |
+| Đúng chỗ sửa | `TASK_INDEX` / brief — không sửa generated trừ khi chạy lại generate |
+| Ranh giới service | `pnpm verify:bounds` (trong `pnpm check`) |
+| API ↔ client khớp | `pnpm verify:api-contract` khi đổi API hoặc `@workspace/api-client` |
+| Admin generate khớp | `pnpm verify:main-admin` / `verify:checkin-admin` |
+| Check-in API khớp main | `pnpm verify:checkin-api` + `verify:api-profile` sau sửa `apps/main/api` domain check-in |
+| Build sạch | `pnpm check` pass |
+| Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
 
 Sau đổi route/module đáng kể:
 

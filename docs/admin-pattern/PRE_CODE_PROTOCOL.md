@@ -21,8 +21,9 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 2. `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`
 3. `docs/admin-pattern/AGENTS_GUIDE.md`
 4. `.graphify/markdown/SUMMARY_FOR_AI.md`
-5. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
-6. App Graphify summary tương ứng với phạm vi task:
+5. `pnpm graphify:brief --task "..."` (khuyến nghị) hoặc `.graphify/markdown/TASK_INDEX.md`
+6. `packages/.graphify/markdown/SUMMARY_FOR_AI.md`
+7. App Graphify summary tương ứng với phạm vi task:
 
 | Phạm vi sửa | Graphify summary |
 |-------------|------------------|
@@ -34,13 +35,13 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 | Check-in frontend | `apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (nếu có graphify) |
 | Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
 
-7. File Graphify chi tiết theo chủ đề nếu cần:
+8. File Graphify chi tiết theo chủ đề nếu cần:
    - `FOLDER_TREE.md` khi cần định vị route/module/file
    - `GRAPH_STATS.md` khi cần hiểu import hotspots
    - `apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md` khi sửa domain API hoặc import NestJS
    - `packages/.graphify/markdown/WORKSPACE_DEPS.md` khi sửa package workspace
-8. Docs feature/page tương ứng trong `docs/pages/`, nếu có.
-9. Source code cụ thể.
+9. Docs feature/page tương ứng trong `docs/pages/`, nếu có.
+10. Source code cụ thể.
 
 Không mở `apps/*/.graphify/snapshot/context.json` trừ khi cần trích đoạn source cụ thể từ snapshot.
 

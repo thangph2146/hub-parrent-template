@@ -10,6 +10,8 @@ Bản đồ đường dẫn app: [`AGENTS.md`](../AGENTS.md) mục 1 và 3.
 |------|---------|
 | **`README.md`** | Hướng dẫn người + agent (file này; không sinh bởi script). |
 | **`markdown/SUMMARY_FOR_AI.md`** | Chỉ mục monorepo + **mục "Chỉ dẫn theo chủ đề"** (bảng mục tiêu → đường dẫn); sinh bởi `pnpm graphify:ai-summary`. |
+| **`markdown/TASK_INDEX.md`** | Module/feature → file path (`admin-app`, API, api-client); sinh cùng `graphify:ai-summary`. |
+| **`markdown/task-index.json`** | Dữ liệu máy cho `pnpm graphify:brief`. |
 
 JSON snapshot repo-level (nếu dùng): **`.graphify/snapshot/`** — từ `node script-system/graphify/graphify-update.cjs .` ở root (tùy chọn; snapshot **đầy đủ theo service** nằm ở `apps/*/.graphify/snapshot/`).
 
@@ -17,7 +19,7 @@ JSON snapshot repo-level (nếu dùng): **`.graphify/snapshot/`** — từ `node
 
 | Phạm vi | Markdown (AI) | Snapshot JSON |
 |----------|----------------|-----------------|
-| **Root** `.graphify/` | `markdown/SUMMARY_FOR_AI.md` | `snapshot/` (nếu chạy update ở root) |
+| **Root** `.graphify/` | `markdown/SUMMARY_FOR_AI.md`, `TASK_INDEX.md` | `snapshot/` (nếu chạy update ở root) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
 | **Mỗi app** | `apps/<line>/<app>/.graphify/markdown/*.md` | `apps/<line>/<app>/.graphify/snapshot/` |
 

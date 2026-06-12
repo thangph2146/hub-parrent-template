@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-12T13:26:57.189Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-12T14:01:01.101Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -19,6 +19,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |
 | Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.mjs`](../../script-system/verify/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |
 | Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |
+| Task → file cụ thể | [`TASK_INDEX.md`](TASK_INDEX.md) | `pnpm graphify:brief --task "..."`, [`../../AGENTS.md`](../../AGENTS.md) mục 3.1 |
 
 ## Dịch vụ (`apps/*`)
 
@@ -43,7 +44,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 | Phạm vi | Markdown (AI, `pnpm graphify:ai-summary`) | Snapshot JSON (`node script-system/graphify/graphify-update.cjs`) |
 |----------|---------------------------------------------|----------------------------------------|
-| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify/graphify-update.cjs .`) |
+| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md`, `TASK_INDEX.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify/graphify-update.cjs .`) |
 | **`packages/`** | `packages/.graphify/markdown/*.md` | — |
 | **Mỗi app** `apps/<x>/` | `apps/<x>/.graphify/markdown/*.md` | `apps/<x>/.graphify/snapshot/context.json` + `graph.json` |
 
@@ -55,6 +56,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Đổi module Nest / import domain | `apps/main/api/.../SUMMARY` (hoặc app API deploy) + `API_DOMAIN_IMPORTS` + `GRAPH_STATS` |
 | Thêm/sửa package workspace | `packages/.../SUMMARY` + `WORKSPACE_DEPS` + `verify:bounds` |
 | Chuẩn hóa sau refactor | `.graphify/README.md` (checklist) + skill `hub-graphify-standardize-loop` |
+| Module admin/API cụ thể | `.graphify/markdown/TASK_INDEX.md` hoặc `pnpm graphify:brief --task "..."` |
 
 ## `packages/*` (chia sẻ workspace)
 

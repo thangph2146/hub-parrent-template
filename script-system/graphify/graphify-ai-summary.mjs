@@ -20,6 +20,8 @@ const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
+import { writeTaskIndexArtifacts } from "./graphify-task-index.mjs"
+
 /** Thư mục con chuẩn trong mỗi `.graphify/`: JSON snapshot vs Markdown cho AI. */
 const GRAPHIFY_MARKDOWN = "markdown"
 const GRAPHIFY_SNAPSHOT = "snapshot"
@@ -995,6 +997,7 @@ function getMonorepoAiTopicGuideLines() {
     "| Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |",
     "| Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.mjs`](../../script-system/verify/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |",
     "| Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |",
+    "| Task → file cụ thể | [`TASK_INDEX.md`](TASK_INDEX.md) | `pnpm graphify:brief --task \"...\"`, [`../../AGENTS.md`](../../AGENTS.md) mục 3.1 |",
     "",
   ]
 }
@@ -1210,7 +1213,7 @@ function writeMonorepoRootSummary() {
     "|----------|---------------------------------------------|----------------------------------------|"
   )
   lines.push(
-    "| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify/graphify-update.cjs .`) |"
+    "| **Root** `.graphify/` | `.graphify/markdown/SUMMARY_FOR_AI.md`, `TASK_INDEX.md` | `.graphify/snapshot/` (tùy chọn, `node script-system/graphify/graphify-update.cjs .`) |"
   )
   lines.push("| **`packages/`** | `packages/.graphify/markdown/*.md` | — |")
   lines.push(
@@ -1232,6 +1235,9 @@ function writeMonorepoRootSummary() {
   )
   lines.push(
     "| Chuẩn hóa sau refactor | `.graphify/README.md` (checklist) + skill `hub-graphify-standardize-loop` |"
+  )
+  lines.push(
+    "| Module admin/API cụ thể | `.graphify/markdown/TASK_INDEX.md` hoặc `pnpm graphify:brief --task \"...\"` |"
   )
   lines.push("")
   lines.push("## `packages/*` (chia sẻ workspace)")
@@ -1370,6 +1376,7 @@ for (const app of GRAPHIFY_APPS) {
 writePackagesWorkspaceDepsMd()
 writePackagesGraphifySummary()
 writePackagesGraphifyReadme()
+writeTaskIndexArtifacts()
 writeMonorepoRootSummary()
 
 for (const app of GRAPHIFY_APPS) {

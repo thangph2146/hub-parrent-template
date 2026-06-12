@@ -16,6 +16,14 @@ description: >-
 
 ## Vòng lặp (thực hiện tuần tự)
 
+### 0. Brief task (trước khi sửa)
+
+```bash
+pnpm graphify:brief --task "mô tả task ngắn"
+```
+
+Đọc `.graphify/markdown/TASK_INDEX.md` nếu brief không khớp module.
+
 ### 1. Kiểm tra code
 
 ```bash
