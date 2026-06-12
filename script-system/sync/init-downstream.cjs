@@ -85,9 +85,9 @@ if (fs.existsSync(packageTpl)) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestTpl, "utf8"))
-manifest.id = `${lineKey}-monorepo`
-manifest.productLine = lineKey
-manifest.defaultRemote = upstream.defaultRemote
+  manifest.id = `${lineKey}-monorepo`
+  manifest.productLine = lineKey
+  manifest.defaultRemote = upstream.defaultRemote
 fs.writeFileSync(
   path.join(destRoot, "template.manifest.json"),
   `${JSON.stringify(manifest, null, 2)}\n`,

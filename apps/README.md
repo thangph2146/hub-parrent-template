@@ -1,6 +1,8 @@
 # Cấu trúc `apps/`
 
-Monorepo tổ chức theo **product line** — mỗi line là một thư mục con, bên trong có **đúng 2 app deployable** (API + web). Không thêm package trực tiếp dưới `apps/`.
+> **Packages-first:** logic nằm trong [`packages/`](../packages/README.md). `apps/` chỉ entity, composition, route native — **không** copy CRUD từ line khác.
+
+Monorepo template tổ chức theo **product line** — mỗi line là một thư mục con, bên trong có **đúng 2 app deployable** (API + web).
 
 ```
 apps/
@@ -18,7 +20,7 @@ Chi tiết workflow: [`docs/MONOREPO_STRUCTURE.md`](../docs/MONOREPO_STRUCTURE.m
 |------|---------|-----------|
 | Feature API / admin mới | `apps/main/api`, `apps/main/backend` | Copy thủ công sang line deploy |
 | Dev check-in UI + main API | `pnpm dev:main:checkin` | Sửa `hub-event/api` khi chưa cần deploy |
-| Cập nhật line deploy check-in | `pnpm pull:checkin` | Commit thay đổi lẻ trong folder đã sync (trừ file local) |
+| Cập nhật deploy check-in | Repo downstream + `pnpm pull:template` (legacy: `pnpm pull:checkin` trên template) |
 | Logic dùng chung | `packages/*` | Import chéo `apps/*` |
 | Component admin | `@workspace/ui` | Tạo component admin local trong từng app |
 

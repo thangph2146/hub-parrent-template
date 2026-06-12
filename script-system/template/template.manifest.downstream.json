@@ -1,9 +1,13 @@
 {
   "role": "downstream",
-  "description": "Monorepo sản phẩm — kế thừa packages/script-system từ mono-repo-template.",
+  "description": "Monorepo sản phẩm — kế thừa FULL packages/ + script-system từ mono-repo-template.",
   "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
   "defaultRef": "main",
   "remoteName": "template",
+  "library": {
+    "root": "packages",
+    "pullMode": "full"
+  },
   "inheritPaths": [
     "packages",
     "script-system",
@@ -13,10 +17,16 @@
     "docs/ui-pattern",
     "docs/env",
     "docs/steps",
+    "docs/TEMPLATE_MONOREPO.md",
     ".graphify",
     "packages/.graphify"
   ],
-  "inheritRootFiles": ["turbo.json", "ecosystem.shared.cjs", "AGENTS.md"],
+  "inheritRootFiles": [
+    "turbo.json",
+    "ecosystem.shared.cjs",
+    "AGENTS.md",
+    "packages/README.md"
+  ],
   "keepPaths": [
     "apps",
     "pnpm-workspace.yaml",

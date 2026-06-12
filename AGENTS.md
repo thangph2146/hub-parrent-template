@@ -1,7 +1,7 @@
 ﻿# AGENTS — Entry point (mono-repo-template)
 
 Tài liệu này là **chỉ mục điều hướng** cho agent: hiểu hệ thống → chọn đúng folder → mở đúng doc → làm việc.  
-**Mô hình template:** [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) — upstream (repo này) = `packages` + `apps/main`; downstream = repo sản phẩm + `pnpm pull:template`.  
+**Mô hình template:** [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) — **`packages/` = thư viện đầy đủ**; downstream kéo qua `pnpm pull:template`; apps chỉ compose.  
 **Không** nhân bản chi tiết dài ở đây; mỗi chủ đề có file riêng trong `docs/` hoặc `packages/*/README.md`.
 
 **Ngôn ngữ & encoding:** tài liệu agent dùng **tiếng Việt**, file Markdown lưu **UTF-8** (không mojibake kiểu `M?c tiêu`, `Ðây`). Khi sửa doc, giữ UTF-8; không tạo file `.md` mới ngoài cây `docs/` / README package trừ khi có chủ đề lặp lại (mục 4).
@@ -143,12 +143,12 @@ docs/
 | Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
 | Dev stack check-in deploy | `pnpm dev:checkin` |
 | **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
-| Downstream kéo packages | `pnpm pull:template` — [`TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) |
+| Downstream kéo **full packages/** | `pnpm pull:template` · catalog [`packages/README.md`](packages/README.md) |
 | Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
 | Sau `git pull` — sync check-in (legacy) | `pnpm pull:checkin` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
-**Dev hàng ngày:** chỉ sửa `apps/main/` + `packages/*`. Deploy sản phẩm: repo downstream + `pnpm pull:template` (không copy thủ công).
+**Dev hàng ngày (upstream):** ưu tiên `packages/*`, sau đó `apps/main/`. Downstream deploy: repo sản phẩm + `pnpm pull:template` (full `packages/`).
 
 ---
 

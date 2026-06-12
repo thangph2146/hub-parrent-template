@@ -109,6 +109,10 @@ function pullTemplate({ ref, dryRun }) {
     ...(manifest.inheritRootFiles ?? []),
   ]
 
+  if (manifest.library?.pullMode === "full") {
+    console.log("[pull:template] Chế độ full library — packages/ được checkout nguyên cây")
+  }
+
   console.log(`\n[pull:template] Checkout ${paths.length} path từ ${rev}\n`)
 
   for (const p of paths) {

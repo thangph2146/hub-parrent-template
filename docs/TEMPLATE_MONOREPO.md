@@ -1,134 +1,138 @@
-# Monorepo template — kế thừa packages, apps = sản phẩm
+# Monorepo template — full thư viện `packages/`
 
-Repo **`mono-repo-template`** (upstream) là **nền kế thừa**. Các monorepo sản phẩm (hub-event, hub-parent, …) là **downstream**: giữ `apps/<line>/`, kéo `packages/` + `script-system/` từ template.
+Repo **`mono-repo-template`** cung cấp **toàn bộ thư viện** trong `packages/`.  
+Monorepo sản phẩm (hub-event, hub-parent, …) **chỉ giữ `apps/<line>/`** + kéo `packages/` qua `pnpm pull:template`.
 
-## Sơ đồ
+## Nguyên tắc
 
 ```mermaid
-flowchart TB
-  subgraph upstream ["mono-repo-template (upstream)"]
-    PKG["packages/*"]
-    SCR["script-system/"]
-    MAIN["apps/main — dev sandbox"]
-    REF["apps/hub-event, hub-parent — reference"]
+flowchart LR
+  subgraph lib ["packages/ — thư viện đầy đủ"]
+    UI["@workspace/ui"]
+    ADM["@workspace/admin-app"]
+    CLI["@workspace/api-client"]
+    SRV["@workspace/api-server"]
   end
 
-  subgraph down1 ["hub-event-monorepo (downstream)"]
-    PKG1["packages/* ← pull:template"]
-    APP1["apps/hub-event/ — local"]
+  subgraph app ["apps/hub-event — lớp mỏng"]
+    API["api: entities, app.module, seed"]
+    WEB["frontend: native routes, admin.app.config"]
   end
 
-  subgraph down2 ["hub-parent-monorepo (downstream)"]
-    PKG2["packages/* ← pull:template"]
-    APP2["apps/hub-parent/ — local"]
-  end
-
-  PKG --> PKG1
-  PKG --> PKG2
-  SCR --> PKG1
-  SCR --> PKG2
+  lib --> app
 ```
 
-## Vai trò
+| Tầng | Chứa gì | Không chứa |
+|------|---------|------------|
+| **`packages/`** | UI, admin CRUD, API client, base Nest CRUD, editor, config | Entity DB, env deploy, route native |
+| **`apps/<line>/api`** | Entity, migration, `app.module.ts`, controller đặc thù | Copy logic CRUD từ main |
+| **`apps/<line>/*-frontend`** | Native pages, `admin.app.config.json`, re-export generate | Component admin local |
 
-| Repo | `template.manifest.json` | Dev | Deploy |
-|------|--------------------------|-----|--------|
-| **Template (repo này)** | `"role": "upstream"` | `apps/main` + `packages` | Không deploy trực tiếp — tag/release cho downstream |
-| **hub-event-monorepo** | `"role": "downstream"` | `apps/hub-event` + packages kế thừa | PM2 check-in, clone repo sản phẩm |
-| **hub-parent-monorepo** | `"role": "downstream"` | `apps/hub-parent` + packages | PM2 site chính |
+**Cấm trên downstream:** `apps/main/`, sync copy `main/api` → `hub-event/api` (`pull:checkin` legacy).
 
-## Quy tắc vàng
-
-1. **Feature / UI / admin / API client** → sửa **`packages/*`** trên template, merge xuống downstream bằng `pnpm pull:template`.
-2. **`apps/main`** → chỉ trên template (API/admin đầy đủ).
-3. **`apps/hub-event`**, **`apps/hub-parent`** trên template → **reference** để `init:downstream`; bản deploy sống trong repo sản phẩm riêng.
-4. **Downstream không fork-sửa lâu dài `packages/`** — PR ngược lên template.
+Catalog package: [`packages/README.md`](../packages/README.md).
 
 ---
 
-## Trên template (upstream) — hàng ngày
+## Upstream (repo template) — dev
 
 ```bash
 git checkout main
-# sửa apps/main + packages
+# Sửa packages/* trước khi sửa apps
 pnpm check
 pnpm push -- "feat: ..."
+git tag template/v2026.06.12 && git push origin template/v2026.06.12
 ```
 
-`pnpm push` trên template **chỉ push `main`** (không sync branch deploy — giảm mệt quản lý).
-
-Cập nhật downstream sau release:
-
-```bash
-git tag template/v2026.06.12
-git push origin template/v2026.06.12
-```
+| Thư mục | Vai trò |
+|---------|---------|
+| `packages/` | **Source of truth** — thư viện đầy đủ |
+| `apps/main/` | Sandbox dev API + admin đầy đủ |
+| `apps/hub-event`, `hub-parent` | Reference để `init:downstream` — không deploy từ đây |
 
 ---
 
-## Tạo monorepo sản phẩm mới
+## Downstream (repo sản phẩm)
+
+### Tạo mới
 
 ```bash
-# Từ root template
 node script-system/sync/init-downstream.cjs hub-event ../hub-event-monorepo
 cd ../hub-event-monorepo
 pnpm install
+pnpm verify:template-downstream
 pnpm check
-git remote add origin git@github.com:org/hub-event-monorepo.git
-git add -A && git commit -m "chore: init hub-event downstream"
-git push -u origin main
 ```
 
-Tương tự `hub-parent`, `store-sync` (xem `template.manifest.json` → `productLines`).
-
----
-
-## Downstream — cập nhật từ template
+### Cập nhật thư viện
 
 ```bash
 pnpm pull:template
 # hoặc pin tag:
 pnpm pull:template -- --ref template/v2026.06.12
 pnpm install
+pnpm verify:template-downstream
 pnpm check
-pnpm push -- "chore: sync template v2026.06.12"
+pnpm push -- "chore: sync template"
 ```
 
-File `.template-lock.json` ghi revision đã kéo.
+`pull:template` luôn checkout **cả thư mục `packages/`** — không subset.
+
+### API check-in (packages-first)
+
+```bash
+# Sau khi đổi api.app.config.json
+pnpm api:generate:checkin
+pnpm verify:checkin-api
+```
+
+Service extend `@workspace/api-server` — không copy từ `apps/main/api`.
+
+### Admin check-in
+
+```bash
+pnpm admin:generate:checkin
+pnpm verify:checkin-admin
+```
+
+Module CRUD từ `@workspace/admin-app`.
 
 ---
 
-## Transitional — vẫn 1 repo (legacy)
+## So sánh legacy vs packages-first
 
-Nếu chưa tách repo sản phẩm, sync branch deploy cũ:
+| | Legacy (1 repo, sync main→hub-event) | Packages-first (template) |
+|---|--------------------------------------|---------------------------|
+| Thư viện | Trùng lặp qua sync API | `packages/` một nguồn |
+| Deploy | Branch full monorepo | Repo nhỏ: apps + packages |
+| Cập nhật feature | pull:checkin + conflict | pull:template |
+| Dev feature | apps/main + sync | packages/ trên template → pull downstream |
+
+Legacy vẫn có trên template cho chuyển đổi dần:
 
 ```bash
-pnpm push:legacy -- "feat: ..."     # commit + sync hub-event + hub-parent + push branch
-pnpm push:checkin -- "feat: ..."    # chỉ line check-in
-pnpm push:parent -- "feat: ..."    # chỉ line site chính
+pnpm push:legacy -- "..."      # branch deploy — deprecated
+pnpm push:checkin -- "..."     # một line — deprecated
 ```
-
-Khuyến nghị: **chuyển sang repo downstream** thay vì duy trì branch `hub-event` / `hub-parent` trên template.
 
 ---
 
 ## Manifest
 
-`template.manifest.json` tại root:
+`template.manifest.json`:
 
-- `inheritPaths` — thư mục kéo từ template
-- `keepPaths` — không ghi đè (luôn có `apps/`)
-- `productLines` — cấu hình `init:downstream`
+- `library.root` = `"packages"`, `pullMode` = `"full"`
+- `inheritPaths` — luôn có `"packages"` đầu tiên
+- Downstream: `"role": "downstream"`, `"productLine": "hub-event"`
+
+Verify: `pnpm verify:template-downstream`
 
 ---
 
-## So sánh với mô hình cũ
+## Checklist agent
 
-| | Cũ (1 repo, 3 branch) | Template + downstream |
-|---|------------------------|------------------------|
-| Deploy check-in | `git pull origin hub-event` (full monorepo) | Clone **repo hub-event** nhỏ |
-| Push dev | Sync 2 line mỗi lần | Push **main** template only |
-| Packages | Cùng repo, dễ lẫn | Kéo có kiểm soát `pull:template` |
-| Mental load | Cao | Thấp |
-
-Chi tiết product line cũ: [`MONOREPO_STRUCTURE.md`](MONOREPO_STRUCTURE.md).
+1. Feature UI/admin → `packages/ui` / `packages/admin-app`
+2. Feature API client → `packages/api-client`
+3. CRUD Nest dùng chung → `packages/api-server`
+4. Chỉ entity/module composition → `apps/<line>/api`
+5. Downstream **không** sửa packages lâu dài — PR lên template upstream

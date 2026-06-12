@@ -1,8 +1,8 @@
 # Cấu trúc Monorepo (product lines)
 
-> **Mô hình template (khuyến nghị):** [`docs/TEMPLATE_MONOREPO.md`](TEMPLATE_MONOREPO.md) — upstream = repo này; downstream = repo sản phẩm (`hub-event`, `hub-parent`) kéo `packages/` qua `pnpm pull:template`.
+> **Mô hình template (packages-first):** [`docs/TEMPLATE_MONOREPO.md`](TEMPLATE_MONOREPO.md) · catalog [`packages/README.md`](../packages/README.md).
 
-Monorepo tổ chức theo **product line** — mỗi thư mục con trong `apps/` gồm **2 project deployable** (API + web). Phát triển đầy đủ tại `apps/main/`; các line khác **reference** hoặc **repo downstream** riêng.
+Monorepo tổ chức theo **product line** — logic dùng chung nằm trong **`packages/`** (thư viện đầy đủ). `apps/main/` = sandbox dev trên upstream; line deploy = repo downstream + `pull:template`.
 
 ## Sơ đồ
 
