@@ -1,17 +1,24 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseSessionsAdminService } from '@workspace/api-server/modules/sessions';
+import { BaseSessionsService } from '@workspace/api-server/modules/sessions';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { Session } from '../entities/session.entity';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Role } from '../entities/role.entity';
 
-export type { SessionRowDto, ListSessionsParams, ListSessionsResult, AccountWithSessionStatusDto, ListAccountsWithSessionStatusParams, ListAccountsWithSessionStatusResult } from '@workspace/api-server/modules/sessions';
+export type {
+  SessionRowDto,
+  ListSessionsParams,
+  ListSessionsResult,
+  AccountWithSessionStatusDto,
+  ListAccountsWithSessionStatusParams,
+  ListAccountsWithSessionStatusResult,
+} from '@workspace/api-server/modules/sessions';
 
 @Injectable()
-export class SessionsService extends BaseSessionsAdminService {
+export class SessionsService extends BaseSessionsService {
   constructor(private readonly em: EntityManager) {
     super();
   }

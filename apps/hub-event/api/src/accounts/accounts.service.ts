@@ -1,14 +1,18 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseAccountsAdminService } from '@workspace/api-server/modules/accounts';
+import { BaseAccountsService } from '@workspace/api-server/modules/accounts';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 
-export type { AccountProfileDto, UpdateAccountDto, UpdateAccountResult } from '@workspace/api-server/modules/accounts';
+export type {
+  AccountProfileDto,
+  UpdateAccountDto,
+  UpdateAccountResult,
+} from '@workspace/api-server/modules/accounts';
 
 @Injectable()
-export class AccountsService extends BaseAccountsAdminService {
+export class AccountsService extends BaseAccountsService {
   constructor(private readonly em: EntityManager) {
     super();
   }

@@ -1,13 +1,17 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseCommentsAdminService } from '@workspace/api-server/modules/comments';
+import { BaseCommentsService } from '@workspace/api-server/modules/comments';
 import { Comment } from '../entities/comment.entity';
 
-export type { CommentRowDto, ListCommentsParams, ListCommentsResult } from '@workspace/api-server/modules/comments';
+export type {
+  CommentRowDto,
+  ListCommentsParams,
+  ListCommentsResult,
+} from '@workspace/api-server/modules/comments';
 
 @Injectable()
-export class CommentsService extends BaseCommentsAdminService {
+export class CommentsService extends BaseCommentsService {
   constructor(private readonly em: EntityManager) {
     super();
   }

@@ -1,41 +1,23 @@
 /**
- * EventRegistrations Module barrel export.
+ * EventRegistrations module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseEventRegistrationsService,
+  BaseEventRegistrationsService as BaseEventRegistrationsAdminService,
+} from './event-registrations.service';
+export {
   BaseEventRegistrationsController,
-  BaseEventRegistrationsModule,
-} from './event-registration.module';
-
-export type {
-  EventRegistrationsRowDto,
-  EventRegistrationsCreateData,
-  EventRegistrationsUpdateData,
-} from './event-registration.service';
-
-export { BaseEventRegistrationsAdminService } from './event-registrations-admin.service';
+  BaseEventRegistrationsController as BaseEventRegistrationsAdminController,
+} from './event-registrations.controller';
+export type { IEventRegistrationsControllerService } from './event-registrations.controller';
+/** @deprecated Dùng `IEventRegistrationsControllerService`. */
+export type { IEventRegistrationsControllerService as IEventRegistrationsAdminControllerService } from './event-registrations.controller';
 export type {
   EventRegistrationRowDto,
   ListEventRegistrationsParams,
   ListEventRegistrationsResult,
   PublicEventRegistrantDto,
-} from './event-registrations-admin.service';
-
-export type {
-  ManualAttendanceAction,
-  IEventRegistrationsControllerService,
-} from './event-registration.controller';
-
+} from './event-registrations.service';
 export { BaseEventRegistrationAttendanceService } from './event-registration-attendance.service';
-export type { EventRegistrationAttendanceDeps } from './event-registration-attendance.deps';
-export type {
-  AttendanceSource,
-  ApplyAttendanceResult,
-  EventAttendanceSocketPayload,
-  AttendanceRegistrationRow,
-} from './event-registration-attendance.types';
-export {
-  REGISTRATION_STATUS,
-  ATTENDANCE_STATUS,
-  CHECKIN_METHOD,
-} from './event-registration-attendance.types';
+export type { AttendanceSource, ManualAttendanceAction, ApplyAttendanceResult } from './event-registration-attendance.types';
+export { BaseEventRegistrationsModule } from './event-registrations.module';

@@ -5,7 +5,11 @@ import {
   BaseLocationsService,
   type LocationsRowDto,
 } from '@workspace/api-server/modules/locations';
-import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import {
+  toIso,
+  type AdminColumnFiltersConfig,
+} from '@workspace/api-server/common';
+
 import { Location } from '../entities/location.entity';
 import { LOCATION_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -24,7 +28,6 @@ export class LocationsService extends BaseLocationsService {
   protected getEntity(): new () => Record<string, unknown> {
     return Location as unknown as new () => Record<string, unknown>;
   }
-
 
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return LOCATION_COLUMN_FILTERS;

@@ -1,14 +1,18 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventsAdminService } from '@workspace/api-server/modules/events';
+import { BaseEventsService } from '@workspace/api-server/modules/events';
 import { Event } from '../entities/event.entity';
 import { Camera } from '../entities/camera.entity';
 
-export type { EventRowDto, ListEventsParams, ListEventsResult } from '@workspace/api-server/modules/events';
+export type {
+  EventRowDto,
+  ListEventsParams,
+  ListEventsResult,
+} from '@workspace/api-server/modules/events';
 
 @Injectable()
-export class EventsService extends BaseEventsAdminService {
+export class EventsService extends BaseEventsService {
   constructor(private readonly em: EntityManager) {
     super();
   }

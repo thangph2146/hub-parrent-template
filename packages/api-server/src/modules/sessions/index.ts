@@ -1,21 +1,17 @@
 /**
- * Sessions Module barrel export.
+ * Sessions module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseSessionsService,
+  BaseSessionsService as BaseSessionsAdminService,
+} from './sessions.service';
+export {
   BaseSessionsController,
-  BaseSessionsModule,
-} from './sessions.module';
-
-export type { ISessionsControllerService } from './session.controller';
-
-export type {
-  SessionsRowDto,
-  SessionsCreateData,
-  SessionsUpdateData,
-} from './session.service';
-
-export { BaseSessionsAdminService } from './sessions-admin.service';
+  BaseSessionsController as BaseSessionsAdminController,
+} from './sessions.controller';
+export type { ISessionsControllerService } from './sessions.controller';
+/** @deprecated Dùng `ISessionsControllerService`. */
+export type { ISessionsControllerService as ISessionsAdminControllerService } from './sessions.controller';
 export type {
   SessionRowDto,
   ListSessionsParams,
@@ -23,5 +19,6 @@ export type {
   AccountWithSessionStatusDto,
   ListAccountsWithSessionStatusParams,
   ListAccountsWithSessionStatusResult,
-  AuthRoleNamesBinding,
-} from './sessions-admin.service';
+} from './sessions.service';
+export type { ISessionsSocketGateway, ISessionsSocketGateway as ISessionsAdminSocketGateway } from './sessions.controller';
+export { BaseSessionsModule } from './sessions.module';

@@ -1,4 +1,4 @@
-import type { EventRegistrationRowDto } from './event-registrations-admin.service';
+import type { EventRegistrationRowDto } from './event-registrations.service';
 
 export type AttendanceSource = 'hanet' | 'manual';
 

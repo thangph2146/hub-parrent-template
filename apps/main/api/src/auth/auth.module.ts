@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AuthAdminController } from './auth-admin.controller';
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 /**
- * Auth module - tuyen-sinh-api.
- * - auth/admin: đăng nhập cho Admin (CMS, tuyen-sinh-admin).
- * - Sau này có thể thêm auth/public cho đăng nhập public (site tuyen-sinh).
+ * Auth module — admin login (CMS). Public auth nằm ở `public/*` nếu có.
  */
 @Module({
   imports: [],
-  controllers: [AuthAdminController],
+  controllers: [AuthController],
   providers: [AuthService],
   exports: [AuthService],
 })

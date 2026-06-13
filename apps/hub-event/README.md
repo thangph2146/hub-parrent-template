@@ -27,21 +27,32 @@ apps/hub-event/api  (entities, app.module.ts, api.app.config.json)
 | Cập nhật packages | `pnpm pull:template` |
 | Verify | `pnpm test:checkin:full` |
 
-## API (`apps/hub-event/api`)
+## API (`apps/hub-event/api`) — packages-first
 
-**Giữ local (không ghi đè khi pull:template):**
+App **chỉ giữ binding mỏng**; logic admin nằm trong `@workspace/api-server`:
 
-- `api.sync-profile.json` — subset module (nếu còn dùng)
-- `api.app.config.json` — scaffold `@workspace/api-server`
-- `src/app.module.ts` — composition
-- `src/entities/`, migrations, seeders
+| Lớp app (AUTO-GENERATED) | Package |
+|--------------------------|---------|
+| `*.service.ts` extends `Base*AdminService` | `modules/<domain>/*-admin.service.ts` |
+| `*.controller.ts` extends `Package*Controller` | `modules/<domain>/*-admin.controller.ts` |
+| `*.module.ts` | Nest wiring + entity imports |
 
-**Generate service từ package:**
+**Native (chưa port package):** `public`, `system` — khai báo trong `api.app.config.json` → `native.controllers`.
 
 ```bash
-pnpm api:generate:checkin
-pnpm verify:checkin-api
+pnpm pull:checkin          # build api-server + generate + admin
+pnpm api:generate:checkin  # service binding + controller extend package
+pnpm verify:checkin-api    # kiểm tra AUTO-GENERATED + extends package
 ```
+
+Chuẩn hóa barrel package sau port admin:
+
+```bash
+node script-system/api/render-module-barrel.cjs
+node script-system/api/normalize-admin-controllers.cjs
+```
+
+App giữ: `entities/`, `app.module.ts`, `api.app.config.json`, socket/public helpers.
 
 ## Frontend (`hub-event-checkin-frontend`)
 

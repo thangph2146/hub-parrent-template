@@ -20,7 +20,7 @@ import {
   CHECKIN_METHOD,
   REGISTRATION_STATUS,
 } from './event-registration-attendance.types';
-import type { EventRegistrationRowDto } from './event-registrations-admin.service';
+import type { EventRegistrationRowDto } from './event-registrations.service';
 
 export class BaseEventRegistrationAttendanceService {
   private readonly logger = new Logger(BaseEventRegistrationAttendanceService.name);

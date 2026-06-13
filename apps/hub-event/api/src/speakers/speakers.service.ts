@@ -5,7 +5,11 @@ import {
   BaseSpeakersService,
   type SpeakersRowDto,
 } from '@workspace/api-server/modules/speakers';
-import { toIso, type AdminColumnFiltersConfig } from '@workspace/api-server/common';
+import {
+  toIso,
+  type AdminColumnFiltersConfig,
+} from '@workspace/api-server/common';
+
 import { Speaker } from '../entities/speaker.entity';
 import { SPEAKER_COLUMN_FILTERS } from '../common/admin-filter-configs';
 
@@ -24,7 +28,6 @@ export class SpeakersService extends BaseSpeakersService {
   protected getEntity(): new () => Record<string, unknown> {
     return Speaker as unknown as new () => Record<string, unknown>;
   }
-
 
   protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
     return SPEAKER_COLUMN_FILTERS;

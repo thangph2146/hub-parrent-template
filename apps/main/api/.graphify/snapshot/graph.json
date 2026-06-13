@@ -176,9 +176,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_auth_auth_admin_controller_ts",
-      "label": "auth-admin.controller.ts",
-      "path": "src/auth/auth-admin.controller.ts",
+      "id": "file_src_auth_auth_controller_ts",
+      "label": "auth.controller.ts",
+      "path": "src/auth/auth.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/auth",
@@ -4090,7 +4090,7 @@
     },
     {
       "source": "dir_src_auth",
-      "target": "file_src_auth_auth_admin_controller_ts",
+      "target": "file_src_auth_auth_controller_ts",
       "relation": "contains"
     },
     {
@@ -6544,28 +6544,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_auth_auth_admin_controller_ts",
+      "source": "file_src_auth_auth_controller_ts",
       "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_common_public_decorator_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_auth_auth_module_ts",
-      "target": "file_src_auth_auth_admin_controller_ts",
+      "target": "file_src_auth_auth_controller_ts",
       "relation": "imports"
     },
     {
@@ -6591,16 +6576,6 @@
     {
       "source": "file_src_auth_auth_service_spec_ts",
       "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_service_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_service_ts",
-      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -11575,32 +11550,12 @@
     },
     {
       "source": "file_src_system_system_controller_ts",
-      "target": "file_src_system_system_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
       "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_system_system_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_config_permissions_ts",
+      "target": "file_src_system_system_service_ts",
       "relation": "imports"
     },
     {
@@ -11621,101 +11576,6 @@
     {
       "source": "file_src_system_system_service_spec_ts",
       "target": "file_src_system_system_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_comment_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_contact_request_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_event_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_group_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_message_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_speaker_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_page_content_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_category_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_post_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_setting_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_student_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_tag_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_user_role_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_service_ts",
-      "target": "file_src_entities_user_entity_ts",
       "relation": "imports"
     },
     {

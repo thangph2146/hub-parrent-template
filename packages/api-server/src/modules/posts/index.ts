@@ -1,29 +1,22 @@
 /**
- * Posts Module barrel export.
+ * Posts module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BasePostsService,
-  BasePostsController,
-  BasePostsModule,
-} from './posts.module';
-
-export type { PostCreateData, PostUpdateData, IPostsService, PostsServiceContract } from './posts.service';
-export type { PostRowDto } from './posts.service';
-
+  BasePostsService as BasePostsAdminService,
+} from './posts.service';
 export {
-  BasePostsAdminService,
-  POSTS_FILTER_CATEGORIES_NONE,
-} from './posts-admin.service';
+  BasePostsController,
+  BasePostsController as BasePostsAdminController,
+} from './posts.controller';
+export type { IPostsControllerService } from './posts.controller';
+/** @deprecated Dùng `IPostsControllerService`. */
+export type { IPostsControllerService as IPostsAdminControllerService } from './posts.controller';
 export type {
-  PostRowDto as AdminPostRowDto,
+  PostRowDto,
   PostDetailDto,
   ListPostsParams,
   ListPostsResult,
-} from './posts-admin.service';
-export type { IPostsControllerService } from './posts.controller';
-
-export type {
-  PostActivityLog,
-  PostsModuleConfig,
-  PostBulkActionResult,
-} from './posts.types';
+} from './posts.service';
+export { POSTS_FILTER_CATEGORIES_NONE } from './posts.service';
+export { BasePostsModule } from './posts.module';

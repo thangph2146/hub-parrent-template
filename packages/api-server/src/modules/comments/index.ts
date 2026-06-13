@@ -1,18 +1,20 @@
 /**
- * Comments Module barrel export.
+ * Comments module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseCommentsService,
+  BaseCommentsService as BaseCommentsAdminService,
+} from './comments.service';
+export {
   BaseCommentsController,
-  BaseCommentsModule,
-} from './comments.module';
-
-export type { CommentCreateData, CommentUpdateData } from './comments.service';
-export type { CommentRowDto } from './comments.service';
-
-export { BaseCommentsAdminService } from './comments-admin.service';
+  BaseCommentsController as BaseCommentsAdminController,
+} from './comments.controller';
+export type { ICommentsControllerService } from './comments.controller';
+/** @deprecated Dùng `ICommentsControllerService`. */
+export type { ICommentsControllerService as ICommentsAdminControllerService } from './comments.controller';
 export type {
-  CommentRowDto as AdminCommentRowDto,
   ListCommentsParams,
   ListCommentsResult,
-} from './comments-admin.service';
+} from './comments.service';
+export type { CommentRowDto, CommentRowDto as AdminCommentRowDto } from './comments.service';
+export { BaseCommentsModule } from './comments.module';

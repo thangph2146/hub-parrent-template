@@ -27,9 +27,9 @@ export type PostBulkActionResult = BulkOperationResult & {
   totalRequested: number;
 };
 
-// Re-export từ service
 export type {
   PostRowDto,
-  PostCreateData,
-  PostUpdateData,
+  PostDetailDto,
+  ListPostsParams,
+  ListPostsResult,
 } from './posts.service';

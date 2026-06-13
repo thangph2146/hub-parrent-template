@@ -1,7 +1,7 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseSystemAdminService } from '@workspace/api-server/modules/system';
+import { BaseSystemService } from '@workspace/api-server/modules/system';
 import { ormEntities } from '../mikro-orm/orm-entities';
 import {
   runSuperadminBootstrap,
@@ -10,7 +10,7 @@ import {
 } from '../seeds/superadmin-bootstrap.runner';
 
 @Injectable()
-export class SystemService extends BaseSystemAdminService {
+export class SystemService extends BaseSystemService {
   constructor(em: EntityManager) {
     super(em, ormEntities, {
       runSuperadminBootstrap,

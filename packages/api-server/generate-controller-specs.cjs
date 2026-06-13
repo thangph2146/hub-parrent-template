@@ -1161,7 +1161,8 @@ describe('BaseUsersController — client contract', () => {
 
 const MODULE_CONTROLLERS = [
   ['academic-years', 'AcademicYear', 'BaseAcademicYearsController', 'academic-year.controller'],
-  ['accounts', 'Account', 'BaseAccountsController', 'account.controller'],
+  // posts + unified admin: spec riêng (generate-unified-controller-specs.cjs / posts.controller.spec.ts)
+  ['accounts', 'Account', 'BaseAccountsController', 'accounts.controller'],
   ['admission-results', 'AdmissionResult', 'BaseAdmissionResultsController', 'admission-result.controller'],
   ['cameras', 'Camera', 'BaseCamerasController', 'camera.controller'],
   ['categories', 'Category', 'BaseCategoriesController', 'categories.controller'],
@@ -1188,7 +1189,7 @@ const MODULE_CONTROLLERS = [
   ['parent-students', 'ParentStudent', 'BaseParentStudentsController', 'parent-student.controller'],
   ['post-categories', 'PostCategory', 'BasePostCategoriesController', 'post-category.controller'],
   ['post-tags', 'PostTag', 'BasePostTagsController', 'post-tag.controller'],
-  ['posts', 'Post', 'BasePostsController', 'posts.controller'],
+  // posts: spec thủ công (BaseAdminCrudController + bulk mở rộng) — xem posts.controller.spec.ts
   ['products', 'Product', 'BaseProductsController', 'product.controller'],
   ['promo-codes', 'PromoCode', 'BasePromoCodesController', 'promo-code.controller'],
   ['roles', 'Role', 'BaseRolesController', 'role.controller'],
@@ -1224,7 +1225,24 @@ function detectImports(content) {
   return m.map((x) => x.replace(/^export\s+class\s+/, ''));
 }
 
+const UNIFIED_ADMIN_SKIP = new Set([
+  'posts',
+  'events',
+  'comments',
+  'accounts',
+  'page-contents',
+  'notifications',
+  'sessions',
+  'event-checkins',
+  'event-registrations',
+  'event-speakers',
+])
+
 for (const [module, entity, cls, ctrlFile] of MODULE_CONTROLLERS) {
+  if (UNIFIED_ADMIN_SKIP.has(module)) {
+    skipped++
+    continue
+  }
   const ctrlPath = path.join(MODULES_DIR, module, ctrlFile + '.ts');
   if (!fs.existsSync(ctrlPath)) {
     console.warn(`[skip] missing controller file: ${ctrlPath}`);

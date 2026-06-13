@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/main/api (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.047Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T10:59:08.877Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -56,7 +56,7 @@
 - `src/academic-years/academic-years.controller.ts`
 - `src/accounts/accounts.controller.ts`
 - `src/admission-results/admission-results.controller.ts`
-- `src/auth/auth-admin.controller.ts`
+- `src/auth/auth.controller.ts`
 - `src/cameras/cameras.controller.ts`
 - `src/carts/public-carts.controller.ts`
 - `src/categories/categories.controller.ts`

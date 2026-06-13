@@ -1,4 +1,6 @@
 export { BaseHanetWebhookService } from './hanet-webhook.service';
+export { BaseHanetWebhookController } from './hanet-webhook.controller';
+export type { IHanetWebhookControllerService } from './hanet-webhook.controller';
 export type {
   HanetWebhookBody,
   HanetCameraRole,

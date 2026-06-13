@@ -13,6 +13,7 @@ export * from './bulk-actions';
 export * from './apply-column-filters';
 export * from './parse-list-query';
 export * from './parse-column-filters';
+export * from './normalize-relation-ids';
 export * from './build-admin-list-params';
 export * from './permissions.decorator';
 export * from './permissions.guard';

@@ -1,5 +1,5 @@
 /**
- * Comments Module.
+ * Comments Module — NestJS wiring cho admin comments.
  */
 import { Module, type ModuleMetadata } from '@nestjs/common';
 import { BaseCommentsController } from './comments.controller';
@@ -20,6 +20,6 @@ export { BaseCommentsController } from './comments.controller';
 export {
   BaseCommentsService,
   type CommentRowDto,
-  type CommentCreateData,
-  type CommentUpdateData,
+  type ListCommentsParams,
+  type ListCommentsResult,
 } from './comments.service';

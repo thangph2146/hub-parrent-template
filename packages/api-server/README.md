@@ -147,16 +147,48 @@ Pattern bám sát 100% `apps/main/api/src/<entity>/`:
 **4 rich modules** có logic riêng: `users`, `posts`, `comments`, `categories` (logic từ `apps/main/api/src/<entity>/` được tích hợp sẵn).
 **42 scaffold modules** tự động generate DTOs từ entity fields. Subclass chỉ cần override `getEntity()` để integrate với concrete entity.
 
+## Admin HTTP layer (hub-event check-in)
+
+**Unified modules** (1 controller + 1 service, không còn `*-admin.*`):
+
+`posts`, `events`, `comments`, `accounts`, `page-contents`, `notifications`, `sessions`, `event-checkins`, `event-registrations`, `event-speakers`, `uploads`, `system`, `auth`
+
+| Module | Ghi chú |
+| ------ | ------- |
+| CRUD admin | `Base*Controller` extends `BaseAdminCrudController` hoặc `BaseAdminHttpController` |
+| `uploads` | thêm `public-uploads.controller.ts` |
+| `auth` | thêm `public-auth.controller.ts` + `BaseAuthModule` |
+| `system` | maintenance auth qua `AuthService` inject; `@SkipThrottle` trên base |
+
+Workflow generate (packages-first):
+
+1. Logic trong `packages/api-server/src/modules/<module>/`
+2. `PACKAGE_CONTROLLER_DEFAULTS` + `UNIFIED_MODULES` trong `script-system/api/`
+3. `pnpm api:generate:checkin` — sinh service binding + controller extend ở `apps/hub-event/api`
+4. Native controller còn lại: **`public`** (`api.app.config.json` → `native.controllers`)
+5. Verify: `pnpm verify:checkin-api` + `pnpm verify:main-api-endpoint-parity`
+
+Script hữu ích:
+
+```bash
+node script-system/api/render-module-barrel.cjs
+node script-system/api/merge-unified-admin-modules.cjs [moduleId...]
+pnpm api:generate:unified-specs
+pnpm api:generate:checkin --prune   # xóa file AUTO-GENERATED cũ không còn trong registry
+```
+
+**Deprecated:** pattern `*-admin.controller.ts` / `*-admin.service.ts` — chỉ còn alias export (`Base*AdminController`) cho tương thích ngược.
+
 ## Khai báo scaffold (hub-event check-in)
 
 Song song `admin.app.config.json` + `@workspace/admin-app`:
 
-1. Khai báo module trong `apps/hub-event/api/api.app.config.json` → `scaffoldModules`
+1. Khai báo module trong `apps/hub-event/api/api.app.config.json` → `extraModules`
 2. Map metadata trong `script-system/api/api-module-registry.cjs` (nếu module mới)
-3. Chạy `pnpm api:generate:checkin` — sinh `*.service.ts` AUTO-GENERATED
+3. Chạy `pnpm api:generate:checkin` — sinh `*.service.ts` AUTO-GENERATED + controller extend package
 4. Verify: `pnpm verify:checkin-api`
 
-Controller Nest giữ local (`@Res()`, `X-User-Id`); chỉ **service** extend `Base*Service` từ package.
+**Service** extend `Base*Service`; **controller** extend `Base*Controller` từ package (trừ `public` native).
 
 ## Quick start - Tích hợp thủ công vào app
 
@@ -232,7 +264,7 @@ pnpm --filter @workspace/api-server test integration
 pnpm --filter @workspace/api-server test:cov
 ```
 
-Hiện có **254 tests / 27 suites**:
+Hiện có **300+ test suites** (unit + integration + controller contract):
 - `data-test/fixture.spec.ts` - Fixture loader
 - `data-test/fake-em.spec.ts` - In-memory EntityManager
 - `utils/*.spec.ts` - Pure utilities

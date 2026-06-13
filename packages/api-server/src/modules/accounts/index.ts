@@ -1,23 +1,20 @@
 /**
- * Accounts Module barrel export.
+ * Accounts module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseAccountsService,
+  BaseAccountsService as BaseAccountsAdminService,
+} from './accounts.service';
+export {
   BaseAccountsController,
-  BaseAccountsModule,
-} from './accounts.module';
-
-export type { IAccountsControllerService } from './account.controller';
-
-export type {
-  AccountsRowDto,
-  AccountsCreateData,
-  AccountsUpdateData,
-} from './account.service';
-
-export { BaseAccountsAdminService } from './accounts-admin.service';
+  BaseAccountsController as BaseAccountsAdminController,
+} from './accounts.controller';
+export type { IAccountsControllerService } from './accounts.controller';
+/** @deprecated Dùng `IAccountsControllerService`. */
+export type { IAccountsControllerService as IAccountsAdminControllerService } from './accounts.controller';
 export type {
   AccountProfileDto,
   UpdateAccountDto,
   UpdateAccountResult,
-} from './accounts-admin.service';
+} from './accounts.service';
+export { BaseAccountsModule } from './accounts.module';

@@ -1,6 +1,6 @@
 # ROUTE_SURFACE — Admin URL ↔ API ↔ api-client (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.493Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
+> **Sinh tự động:** `2026-06-13T10:59:09.478Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
 
 Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.tsx`); bảng dưới lấy **module id** từ config admin. Chi tiết file: `apps/*/backend/.graphify/markdown/ENTRY_POINTS.md`.
 
@@ -45,7 +45,6 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 |--------|------------|----------------------|
 | `accounts` | `src/accounts/accounts.controller.ts` | GET /admin/accounts; POST /admin/accounts/avatar; PUT /admin/accounts |
 | `admission-results` | `src/admission-results/admission-results.controller.ts` | DELETE /admin/admission-results/:id; DELETE /admin/admission-results/:id/hard-delete; GET /admin/admission-results; GET /admin/admission-results/:id; GET /admin/admission-results/options; POST /admin/admission-results; …+3 |
-| `auth` | `src/auth/auth-admin.controller.ts` | GET /auth/admin/google/config; GET /auth/admin/me; POST /auth/admin/dev-login; POST /auth/admin/google; POST /auth/admin/login; POST /auth/admin/logout |
 | `comments` | `src/comments/comments.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; GET /admin/comments; GET /admin/comments/:id; GET /admin/comments/options; POST /admin/comments/:id/approve; …+3 |
 | `dashboard` | `src/dashboard/dashboard.controller.ts` | GET /admin/dashboard/stats |
 | `event-checkins` | `src/event-checkins/event-checkins.controller.ts` | DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; GET /admin/event-checkins; GET /admin/event-checkins/:id; POST /admin/event-checkins; POST /admin/event-checkins/:id/restore; …+2 |
@@ -79,7 +78,7 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `speakers` | `/speakers` | ✓ |
 | `settings` | `/settings` | ✓ |
 | `file-storage` | `/file-storage` | ✓ |
-| `data` | `/data` | ✓ |
+| `data` | `/data` | — |
 
 ## PUBLIC_ROUTES (main API — tham chiếu nhanh)
 

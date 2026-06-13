@@ -1,23 +1,20 @@
 /**
- * Events Module barrel export.
+ * Events module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseEventsService,
+  BaseEventsService as BaseEventsAdminService,
+} from './events.service';
+export {
   BaseEventsController,
-  BaseEventsModule,
-} from './events.module';
-
-export type { IEventsControllerService } from './event.controller';
-
-export type {
-  EventsRowDto,
-  EventsCreateData,
-  EventsUpdateData,
-} from './event.service';
-
-export { BaseEventsAdminService } from './events-admin.service';
+  BaseEventsController as BaseEventsAdminController,
+} from './events.controller';
+export type { IEventsControllerService } from './events.controller';
+/** @deprecated Dùng `IEventsControllerService`. */
+export type { IEventsControllerService as IEventsAdminControllerService } from './events.controller';
 export type {
   EventRowDto,
   ListEventsParams,
   ListEventsResult,
-} from './events-admin.service';
+} from './events.service';
+export { BaseEventsModule } from './events.module';

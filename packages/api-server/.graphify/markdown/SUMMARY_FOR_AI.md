@@ -2,8 +2,8 @@
 
 > Package `@workspace/api-server` · `packages/api-server/`
 
-- **context.generatedAt:** 2026-06-12T14:19:36.684Z
-- **summary sinh:** `2026-06-12T14:20:21.469Z`
+- **context.generatedAt:** 2026-06-13T10:52:22.318Z
+- **summary sinh:** `2026-06-13T10:59:09.458Z`
 
 ## Mục lục artefact
 
@@ -22,7 +22,7 @@
 
 ## Thống kê snapshot
 
-- **totalFiles:** 633
+- **totalFiles:** 616
 - **clientComponents:** 0
 
 ## `src/` top-level

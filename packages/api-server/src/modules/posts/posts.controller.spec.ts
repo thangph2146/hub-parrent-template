@@ -1,416 +1,364 @@
 /**
- * Controller spec cho Post controller.
+ * Controller spec — BasePostsController (admin HTTP, gộp 1 lớp).
  *
- * Sinh tự động bởi `generate-controller-specs.cjs`. Mục tiêu:
- *   - 100% statement/branch coverage cho file controller tương ứng.
- *   - Validate contract mà `packages/api-client` đang dùng:
- *     route + envelope + filter[column] + hard-delete alias.
- *
- * Không spin Nest app: khởi tạo controller instance với service mock và
- * đọc route metadata qua `Reflect`. Đủ để phát hiện mismatch giữa client
- * và server.
+ * Validate route metadata + envelope response khớp `packages/api-client`.
+ * Không spin Nest app: mock service + fake Express `res`.
  */
 import 'reflect-metadata';
-import {
-  BadRequestException,
-  NotFoundException,
-  RequestMethod,
-} from '@nestjs/common';
-import {
-  METHOD_METADATA,
-  PATH_METADATA,
-} from '@nestjs/common/constants';
+import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { BasePostsController } from './posts.controller';
-import type { ICrudControllerService, BulkOperationResult, ListCrudParams, PaginatedResult, CrudRowDto } from '../../bases';
+import type { IPostsControllerService, PostRowDto } from './posts.service';
 
-class TestRow implements CrudRowDto {
-  id!: number;
-  title = '';
-  deletedAt: string | null = null;
-  createdAt = new Date().toISOString();
-  updatedAt = new Date().toISOString();
-}
-
-type ReqHandler = (req: unknown, res?: unknown, next?: unknown) => unknown;
 type RouteInfo = { method: string; path: string; handler: string };
+type ResponseMock = {
+  statusCode: number;
+  payload: unknown;
+  status: jest.Mock<ResponseMock, [number]>;
+  json: jest.Mock<ResponseMock, [unknown]>;
+};
 
-class TestController extends BasePostsController {
-  constructor(service: ICrudControllerService<TestRow>) {
-    super(service as never);
-  }
+function createResponseMock(): ResponseMock {
+  const response: ResponseMock = {
+    statusCode: 200,
+    payload: undefined,
+    status: jest.fn((code: number): ResponseMock => {
+      response.statusCode = code;
+      return response;
+    }),
+    json: jest.fn((payload: unknown): ResponseMock => {
+      response.payload = payload;
+      return response;
+    }),
+  };
+  return response;
 }
 
-describe('BasePostsController — client contract', () => {
-  let controller: TestController;
-  let service: jest.Mocked<ICrudControllerService<TestRow>>;
-  const sampleRow: TestRow = {
-    id: 1,
-    title: 'sample',
-    deletedAt: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+function getRoutes(ctrl: object): RouteInfo[] {
+  const out: RouteInfo[] = [];
+  const verbMap: Record<number, string> = {
+    0: 'GET',
+    1: 'POST',
+    2: 'PUT',
+    3: 'DELETE',
+    4: 'PATCH',
   };
-
-  function getRoutes(ctrl: object): RouteInfo[] {
-    const out: RouteInfo[] = [];
-    // Map RequestMethod enum number → verb name.
-    // RequestMethod: GET=0, POST=1, PUT=2, DELETE=3, PATCH=4, OPTIONS=9, HEAD=5, SEARCH=6, ALL=7
-    const VERB_MAP: Record<number, string> = {
-      0: 'GET',
-      1: 'POST',
-      2: 'PUT',
-      3: 'DELETE',
-      4: 'PATCH',
-      5: 'HEAD',
-      6: 'SEARCH',
-      7: 'ALL',
-      9: 'OPTIONS',
-    };
-    // Walk up the prototype chain vì decorator metadata có thể
-    // được đăng ký ở BaseCrudController.
-    const seen = new Set<string>();
-    let proto: object | null = Object.getPrototypeOf(ctrl);
-    while (proto && proto !== Object.prototype) {
-      for (const name of Object.getOwnPropertyNames(proto)) {
-        if (name === 'constructor') continue;
-        if (seen.has(name)) continue;
-        seen.add(name);
-        const desc = Object.getOwnPropertyDescriptor(proto, name);
-        if (!desc) continue;
-        const handler = desc.value as ReqHandler | undefined;
-        if (typeof handler !== 'function') continue;
-        const verb = Reflect.getMetadata(METHOD_METADATA, handler) as number | undefined;
-        if (typeof verb !== 'number') continue;
-        const verbName = VERB_MAP[verb];
-        if (!verbName) continue;
-        const pathMeta = Reflect.getMetadata(PATH_METADATA, handler) as
-          | string
-          | string[]
-          | undefined;
-        if (pathMeta == null) continue;
-        const normalized = Array.isArray(pathMeta) ? pathMeta[0] : pathMeta;
-        const cleanPath =
-          normalized === '' ? '/' : `/${String(normalized).replace(/^\//, '')}`;
-        out.push({ method: verbName, path: cleanPath, handler: name });
-      }
-      proto = Object.getPrototypeOf(proto);
+  const seen = new Set<string>();
+  let proto: object | null = Object.getPrototypeOf(ctrl);
+  while (proto && proto !== Object.prototype) {
+    for (const name of Object.getOwnPropertyNames(proto)) {
+      if (name === 'constructor' || seen.has(name)) continue;
+      seen.add(name);
+      const handler = Object.getOwnPropertyDescriptor(proto, name)?.value as
+        | ((...args: unknown[]) => unknown)
+        | undefined;
+      if (typeof handler !== 'function') continue;
+      const verb = Reflect.getMetadata(METHOD_METADATA, handler) as number | undefined;
+      const pathMeta = Reflect.getMetadata(PATH_METADATA, handler) as
+        | string
+        | string[]
+        | undefined;
+      if (typeof verb !== 'number' || pathMeta == null || !(verb in verbMap)) continue;
+      const normalized = Array.isArray(pathMeta) ? pathMeta[0] : pathMeta;
+      out.push({
+        method: verbMap[verb],
+        path: normalized === '' ? '/' : `/${String(normalized).replace(/^\//, '')}`,
+        handler: name,
+      });
     }
-    return out;
+    proto = Object.getPrototypeOf(proto);
   }
+  return out;
+}
+
+const sampleRow: PostRowDto = {
+  id: 1,
+  title: 'Bài viết mẫu',
+  slug: 'bai-viet-mau',
+  excerpt: null,
+  image: null,
+  published: true,
+  publishedAt: '2026-01-01T00:00:00.000Z',
+  eventStartAt: null,
+  eventEndAt: null,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-02T00:00:00.000Z',
+  deletedAt: null,
+  author: { id: 7, name: 'Admin', email: 'admin@example.com' },
+  categories: [],
+  tags: [],
+};
+
+function createServiceMock(): jest.Mocked<IPostsControllerService> {
+  return {
+    list: jest.fn(),
+    getOptions: jest.fn(),
+    getDatesWithPosts: jest.fn(),
+    getById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    bulkSetCategories: jest.fn(),
+    bulkClearImages: jest.fn(),
+    bulk: jest.fn(),
+    hardDelete: jest.fn(),
+    softDelete: jest.fn(),
+    restore: jest.fn(),
+  };
+}
+
+describe('BasePostsController — admin client contract', () => {
+  let controller: BasePostsController;
+  let service: jest.Mocked<IPostsControllerService>;
+  const headers = { 'x-user-id': '7' };
 
   beforeEach(() => {
-    service = {
-      list: jest.fn(async () => ({
-        data: [sampleRow],
-        pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
-      })),
-      getById: jest.fn(async (id) => ({ ...sampleRow, id: Number(id) })),
-      create: jest.fn(async (data) => ({ ...sampleRow, ...(data as object) } as TestRow)),
-      update: jest.fn(async (id, data) => ({ ...sampleRow, id: Number(id), ...(data as object) } as TestRow)),
-      softDelete: jest.fn(async () => true),
-      restore: jest.fn(async () => true),
-      hardDelete: jest.fn(async () => true),
-      bulk: jest.fn(async (_a, ids) => ({
-        success: ids.length,
-        failed: 0,
-        total: ids.length,
-        errors: [],
-        message: 'ok',
-      })),
-    };
-    controller = new TestController(service);
+    service = createServiceMock();
+    controller = new BasePostsController(service);
   });
 
-  // ─────────────────────────────────────────────────────────
-  // 1) Route metadata
-  // ─────────────────────────────────────────────────────────
-  describe('route metadata (api-client contract)', () => {
-    it('exposes GET / (list)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'list');
-      expect(r?.method).toBe('GET');
-      expect(r?.path).toBe('/');
-    });
-
-    it('exposes GET /:id (getById)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'getById');
-      expect(r?.method).toBe('GET');
-      expect(r?.path).toBe('/:id');
-    });
-
-    it('exposes POST / (create)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'create');
-      expect(r?.method).toBe('POST');
-      expect(r?.path).toBe('/');
-    });
-
-    it('exposes PUT /:id (update)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'update');
-      expect(r?.method).toBe('PUT');
-      expect(r?.path).toBe('/:id');
-    });
-
-    it('exposes DELETE /:id (softDelete)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'softDelete');
-      expect(r?.method).toBe('DELETE');
-      expect(r?.path).toBe('/:id');
-    });
-
-    it('exposes POST /:id/restore (restore)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'restore');
-      expect(r?.method).toBe('POST');
-      expect(r?.path).toBe('/:id/restore');
-    });
-
-    it('exposes DELETE /:id/hard (hardDelete)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'hardDelete');
-      expect(r?.method).toBe('DELETE');
-      expect(r?.path).toBe('/:id/hard');
-    });
-
-    it('exposes DELETE /:id/hard-delete (alias cho api-client.purge)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'hardDeleteAlias');
-      expect(r?.method).toBe('DELETE');
-      expect(r?.path).toBe('/:id/hard-delete');
-    });
-
-    it('exposes POST /bulk (bulk)', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'bulk');
-      expect(r?.method).toBe('POST');
-      expect(r?.path).toBe('/bulk');
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────
-  // 2) Envelope + happy path
-  // ─────────────────────────────────────────────────────────
-  describe('envelope contract (api-client.unwrapApiEnvelope)', () => {
-    it('list trả về success envelope với paginated data', async () => {
-      const result = await controller.list({});
-      expect(result).toEqual({
-        success: true,
-        message: expect.any(String),
-        error: null,
-        data: {
-          data: [sampleRow],
-          pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
-        },
-      });
-    });
-
-    it('getById trả về success envelope với row', async () => {
-      const result = await controller.getById('1');
-      expect(result.success).toBe(true);
-      expect((result.data as TestRow).id).toBe(1);
-    });
-
-    it('create trả về success envelope', async () => {
-      const result = await controller.create({ title: 'new' } as Record<string, unknown>);
-      expect(result.success).toBe(true);
-      expect((result.data as TestRow).title).toBe('new');
-    });
-
-    it('update trả về success envelope', async () => {
-      const result = await controller.update('1', { title: 'updated' } as Record<string, unknown>);
-      expect(result.success).toBe(true);
-      expect((result.data as TestRow).title).toBe('updated');
-    });
-
-    it('softDelete trả về success envelope với nested success/message', async () => {
-      const result = await controller.softDelete('1');
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual({ success: true, message: expect.any(String) });
-    });
-
-    it('restore trả về success envelope với nested success/message', async () => {
-      const result = await controller.restore('1');
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual({ success: true, message: expect.any(String) });
-    });
-
-    it('hardDelete trả về success envelope', async () => {
-      const result = await controller.hardDelete('1');
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual({ success: true, message: expect.any(String) });
-    });
-
-    it('hardDeleteAlias (DELETE :id/hard-delete) trả về cùng envelope', async () => {
-      const result = await controller.hardDeleteAlias('1');
-      expect(result.success).toBe(true);
-    });
-
-    it('bulk trả về success envelope với BulkOperationResult', async () => {
-      const result = await controller.bulk({ action: 'delete', ids: ['1', '2'] });
-      expect(result.success).toBe(true);
-      const data = result.data as BulkOperationResult;
-      expect(data.total).toBe(2);
-      expect(data.failed).toBe(0);
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────
-  // 3) Query contract
-  // ─────────────────────────────────────────────────────────
-  describe('query contract (api-client.buildAdminListQuery)', () => {
-    it('maps page/limit/search/status sang ListCrudParams', async () => {
-      await controller.list({ page: '2', limit: '25', search: 'foo', status: 'deleted' });
-      expect(service.list).toHaveBeenCalledWith({
-        page: 2,
-        limit: 25,
-        search: 'foo',
-        status: 'deleted',
-        filters: {},
-      });
-    });
-
-    it('maps filter[column] sang filters object', async () => {
-      await controller.list({
-        'filter[isActive]': 'true',
-        'filter[authorId]': '5',
-      });
-      expect(service.list).toHaveBeenCalledWith({
-        page: 1,
-        limit: 10,
-        search: '',
-        status: 'active',
-        filters: {
-          isActive: 'true',
-          authorId: '5',
-        },
-      });
-    });
-
-    it('bỏ filter[empty]', async () => {
-      await controller.list({
-        'filter[isActive]': '',
-        'filter[authorId]': '5',
-      });
-      expect(service.list).toHaveBeenCalledWith({
-        page: 1,
-        limit: 10,
-        search: '',
-        status: 'active',
-        filters: { authorId: '5' },
-      });
-    });
-
-    it('status invalid → fallback active', async () => {
-      await controller.list({ status: 'invalid' });
-      expect(service.list).toHaveBeenCalledWith({
-        page: 1,
-        limit: 10,
-        search: '',
-        status: 'active',
-        filters: {},
-      });
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────
-  // 4) Error contract
-  // ─────────────────────────────────────────────────────────
-  describe('error contract', () => {
-    it('invalid id throws BadRequestException', async () => {
-      await expect(controller.getById('0')).rejects.toThrow(BadRequestException);
-      await expect(controller.getById('abc')).rejects.toThrow(BadRequestException);
-      await expect(controller.getById('')).rejects.toThrow(BadRequestException);
-    });
-
-    it('getById not-found throws NotFoundException với error envelope', async () => {
-      service.getById.mockResolvedValueOnce(null);
-      try {
-        await controller.getById('1');
-        throw new Error('expected NotFoundException');
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        const body = (e as NotFoundException).getResponse() as { success: boolean; error: string };
-        expect(body.success).toBe(false);
-        expect(typeof body.error).toBe('string');
+  describe('route metadata', () => {
+    it('exposes handlers mà api-client posts admin dùng', () => {
+      const handlers = new Set(getRoutes(controller).map((r) => r.handler));
+      for (const h of [
+        'list',
+        'options',
+        'getDatesWithPosts',
+        'getById',
+        'create',
+        'update',
+        'bulk',
+        'softDelete',
+        'restore',
+        'hardDelete',
+      ]) {
+        expect(handlers.has(h)).toBe(true);
       }
     });
 
-    it('update not-found throws NotFoundException', async () => {
-      service.update.mockResolvedValueOnce(null);
-      await expect(controller.update('1', { title: 'x' } as Record<string, unknown>)).rejects.toThrow(NotFoundException);
-    });
-
-    it('softDelete not-found throws NotFoundException', async () => {
-      service.softDelete.mockResolvedValueOnce(false);
-      await expect(controller.softDelete('1')).rejects.toThrow(NotFoundException);
-    });
-
-    it('restore not-found throws NotFoundException', async () => {
-      service.restore.mockResolvedValueOnce(false);
-      await expect(controller.restore('1')).rejects.toThrow(NotFoundException);
-    });
-
-    it('hardDelete not-found throws NotFoundException', async () => {
-      service.hardDelete.mockResolvedValueOnce(false);
-      await expect(controller.hardDelete('1')).rejects.toThrow(NotFoundException);
-    });
-
-    it('hardDeleteAlias not-found throws NotFoundException', async () => {
-      service.hardDelete.mockResolvedValueOnce(false);
-      await expect(controller.hardDeleteAlias('1')).rejects.toThrow(NotFoundException);
-    });
-
-    it('bulk invalid action throws BadRequestException', async () => {
-      await expect(controller.bulk({ action: 'invalid', ids: ['1'] })).rejects.toThrow(BadRequestException);
-    });
-
-    it('bulk empty ids throws BadRequestException', async () => {
-      await expect(controller.bulk({ action: 'delete', ids: [] })).rejects.toThrow(BadRequestException);
-    });
-
-    it('bulk non-array ids throws BadRequestException', async () => {
-      await expect(
-        controller.bulk({ action: 'delete', ids: 'not-array' as unknown as Array<string> }),
-      ).rejects.toThrow(BadRequestException);
+    it('options và dates-with-posts là GET tĩnh (trước :id)', () => {
+      const routes = getRoutes(controller);
+      expect(routes.find((r) => r.handler === 'options')).toEqual(
+        expect.objectContaining({ method: 'GET', path: '/options' }),
+      );
+      expect(routes.find((r) => r.handler === 'getDatesWithPosts')).toEqual(
+        expect.objectContaining({ method: 'GET', path: '/dates-with-posts' }),
+      );
     });
   });
 
-  // ─────────────────────────────────────────────────────────
-  // 5) Pagination shape
-  // ─────────────────────────────────────────────────────────
-  describe('pagination shape (api-client.normalizePagedResult)', () => {
-    it('data.pagination có đủ 4 field', async () => {
-      const result = await controller.list({});
-      const data = result.data as PaginatedResult<TestRow>;
-      expect(data.pagination).toEqual({
-        page: 1,
-        limit: 10,
-        total: 1,
-        totalPages: 1,
+  describe('list', () => {
+    it('401 khi thiếu X-User-Id', async () => {
+      const res = createResponseMock();
+      await controller.list(res as never, {}, undefined, undefined, undefined, undefined, {});
+      expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    it('200 + pagination envelope', async () => {
+      service.list.mockResolvedValue({
+        data: [sampleRow],
+        pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
       });
-    });
-
-    it('data.data là array', async () => {
-      const result = await controller.list({});
-      const data = result.data as PaginatedResult<TestRow>;
-      expect(Array.isArray(data.data)).toBe(true);
+      const res = createResponseMock();
+      await controller.list(res as never, headers, '1', '10', undefined, undefined, {});
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.payload).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({
+            data: [sampleRow],
+            pagination: expect.objectContaining({ total: 1 }),
+          }),
+        }),
+      );
     });
   });
 
-  describe('posts-specific options endpoint', () => {
-    it('exposes GET /options', () => {
-      const r = getRoutes(controller).find((x) => x.handler === 'getOptions');
-      expect(r?.method).toBe('GET');
-      expect(r?.path).toBe('/options');
+  describe('options', () => {
+    it('401 khi thiếu header', async () => {
+      const res = createResponseMock();
+      await controller.options(res as never, {}, 'title');
+      expect(res.status).toHaveBeenCalledWith(401);
     });
 
-    it('getOptions uses default arguments and returns []', async () => {
-      const result = await controller.getOptions();
-      expect(result).toEqual([]);
+    it('gọi getOptions và trả success', async () => {
+      service.getOptions.mockResolvedValue([{ label: 'A', value: '1' }]);
+      const res = createResponseMock();
+      await controller.options(res as never, headers, 'title', 'a', '20');
+      expect(service.getOptions).toHaveBeenCalledWith('title', 'a', 20);
+      expect(res.payload).toEqual(
+        expect.objectContaining({ success: true, data: [{ label: 'A', value: '1' }] }),
+      );
+    });
+  });
+
+  describe('getDatesWithPosts', () => {
+    it('trả danh sách ngày', async () => {
+      service.getDatesWithPosts.mockResolvedValue(['2026-01-01', '2026-01-02']);
+      const res = createResponseMock();
+      await controller.getDatesWithPosts(res as never, headers);
+      expect(res.payload).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: { dates: ['2026-01-01', '2026-01-02'] },
+        }),
+      );
+    });
+  });
+
+  describe('getById', () => {
+    it('404 khi không tìm thấy', async () => {
+      service.getById.mockResolvedValue(null);
+      const res = createResponseMock();
+      await controller.getById(res as never, headers, '999');
+      expect(res.status).toHaveBeenCalledWith(404);
     });
 
-    it('getOptions forwards explicit args to helper', async () => {
-      const spy = jest
-        .spyOn(controller as unknown as { getOptionsInternal: (...args: unknown[]) => Promise<Array<{label:string;value:string}>> }, 'getOptionsInternal')
-        .mockResolvedValueOnce([{ label: 'A', value: '1' }]);
+    it('200 khi có bản ghi', async () => {
+      service.getById.mockResolvedValue({ ...sampleRow, content: {} });
+      const res = createResponseMock();
+      await controller.getById(res as never, headers, '1');
+      expect(res.payload).toEqual(
+        expect.objectContaining({ success: true, data: expect.objectContaining({ id: 1 }) }),
+      );
+    });
+  });
 
-      const result = await controller.getOptions('slug', 'news', '25');
+  describe('create', () => {
+    it('400 khi thiếu title hoặc slug', async () => {
+      const res = createResponseMock();
+      await controller.create(res as never, headers, { title: '  ', slug: 'ok' });
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
 
-      expect(spy).toHaveBeenCalledWith('slug', 'news', '25');
-      expect(result).toEqual([{ label: 'A', value: '1' }]);
+    it('201 khi hợp lệ', async () => {
+      service.create.mockResolvedValue(sampleRow);
+      const res = createResponseMock();
+      await controller.create(res as never, headers, {
+        title: 'Mới',
+        slug: 'moi',
+        content: {},
+        categoryIds: ['1'],
+        tagIds: ['2'],
+      });
+      expect(service.create).toHaveBeenCalledWith(
+        '7',
+        expect.objectContaining({ title: 'Mới', slug: 'moi', categoryIds: ['1'], tagIds: ['2'] }),
+      );
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+  });
+
+  describe('update', () => {
+    it('404 khi service trả null', async () => {
+      service.update.mockResolvedValue(null);
+      const res = createResponseMock();
+      await controller.update(res as never, headers, '1', { title: 'Sửa' });
+      expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('200 khi cập nhật thành công', async () => {
+      service.update.mockResolvedValue({ ...sampleRow, title: 'Sửa' });
+      const res = createResponseMock();
+      await controller.update(res as never, headers, '1', { title: 'Sửa' });
+      expect(res.payload).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ title: 'Sửa' }),
+        }),
+      );
+    });
+
+    it('400 khi lỗi nghiệp vụ (slug không hợp lệ)', async () => {
+      service.update.mockRejectedValue(new Error('Slug không hợp lệ'));
+      const res = createResponseMock();
+      await controller.update(res as never, headers, '1', { slug: 'bad' });
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('500 khi lỗi không có message', async () => {
+      service.update.mockRejectedValue({});
+      const res = createResponseMock();
+      await controller.update(res as never, headers, '1', { title: 'X' });
+      expect(res.status).toHaveBeenCalledWith(500);
+    });
+  });
+
+  describe('bulk', () => {
+    it('400 với action không hợp lệ', async () => {
+      const res = createResponseMock();
+      await controller.bulk(res as never, headers, { action: 'noop', ids: ['1'] });
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('set-categories gọi bulkSetCategories', async () => {
+      service.bulkSetCategories.mockResolvedValue({ affected: 2, message: 'ok' });
+      const res = createResponseMock();
+      await controller.bulk(res as never, headers, {
+        action: 'set-categories',
+        ids: ['1', '2'],
+        categoryIds: ['3'],
+        mode: 'add',
+      });
+      expect(service.bulkSetCategories).toHaveBeenCalledWith(['1', '2'], ['3'], 'add');
+      expect(res.payload).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ affected: 2 }),
+        }),
+      );
+    });
+
+    it('clear-images gọi bulkClearImages', async () => {
+      service.bulkClearImages.mockResolvedValue({ affected: 1, message: 'cleared' });
+      const res = createResponseMock();
+      await controller.bulk(res as never, headers, {
+        action: 'clear-images',
+        ids: ['1'],
+      });
+      expect(service.bulkClearImages).toHaveBeenCalledWith(['1']);
+    });
+
+    it('delete ủy quyền bulk CRUD chuẩn', async () => {
+      service.bulk.mockResolvedValue({ affected: 1, message: 'Đã xóa 1 bài viết' });
+      const res = createResponseMock();
+      await controller.bulk(res as never, headers, { action: 'delete', ids: ['1'] });
+      expect(service.bulk).toHaveBeenCalledWith('delete', ['1']);
+    });
+  });
+
+  describe('softDelete / restore / hardDelete', () => {
+    it('softDelete 404 khi thất bại', async () => {
+      service.softDelete.mockResolvedValue(false);
+      const res = createResponseMock();
+      await controller.softDelete(res as never, headers, '1');
+      expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('softDelete 200 khi thành công', async () => {
+      service.softDelete.mockResolvedValue(true);
+      const res = createResponseMock();
+      await controller.softDelete(res as never, headers, '1');
+      expect(res.payload).toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('restore 404 khi thất bại', async () => {
+      service.restore.mockResolvedValue(false);
+      const res = createResponseMock();
+      await controller.restore(res as never, headers, '1');
+      expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('hardDelete 404 khi không tìm thấy', async () => {
+      service.hardDelete.mockResolvedValue(false);
+      const res = createResponseMock();
+      await controller.hardDelete(res as never, headers, '1');
+      expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('hardDelete 200 khi thành công', async () => {
+      service.hardDelete.mockResolvedValue(true);
+      const res = createResponseMock();
+      await controller.hardDelete(res as never, headers, '1');
+      expect(res.payload).toEqual(expect.objectContaining({ success: true }));
     });
   });
 });

@@ -19,6 +19,26 @@
       "type": "directory"
     },
     {
+      "id": "file_src_bases_base_admin_crud_controller_ts",
+      "label": "base-admin-crud.controller.ts",
+      "path": "src/bases/base-admin-crud.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/bases",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_bases_base_admin_http_controller_ts",
+      "label": "base-admin-http.controller.ts",
+      "path": "src/bases/base-admin-http.controller.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/bases",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_bases_base_controller_class_spec_ts",
       "label": "base-controller.class.spec.ts",
       "path": "src/bases/base-controller.class.spec.ts",
@@ -328,6 +348,16 @@
       "client": false
     },
     {
+      "id": "file_src_common_normalize_relation_ids_ts",
+      "label": "normalize-relation-ids.ts",
+      "path": "src/common/normalize-relation-ids.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_pagination_spec_ts",
       "label": "pagination.spec.ts",
       "path": "src/common/pagination.spec.ts",
@@ -425,6 +455,16 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "file_src_config_app_config_ts",
+      "label": "app-config.ts",
+      "path": "src/config/app-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_config_constants_ts",
@@ -702,9 +742,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_modules_accounts_account_controller_spec_ts",
-      "label": "account.controller.spec.ts",
-      "path": "src/modules/accounts/account.controller.spec.ts",
+      "id": "file_src_modules_accounts_accounts_controller_spec_ts",
+      "label": "accounts.controller.spec.ts",
+      "path": "src/modules/accounts/accounts.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/accounts",
@@ -712,69 +752,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_accounts_account_controller_ts",
-      "label": "account.controller.ts",
-      "path": "src/modules/accounts/account.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_account_module_meta_spec_ts",
-      "label": "account.module-meta.spec.ts",
-      "path": "src/modules/accounts/account.module-meta.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_account_module_ts",
-      "label": "account.module.ts",
-      "path": "src/modules/accounts/account.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_account_service_integration_spec_ts",
-      "label": "account.service.integration.spec.ts",
-      "path": "src/modules/accounts/account.service.integration.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_account_service_spec_ts",
-      "label": "account.service.spec.ts",
-      "path": "src/modules/accounts/account.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_account_service_ts",
-      "label": "account.service.ts",
-      "path": "src/modules/accounts/account.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/accounts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_accounts_accounts_admin_service_ts",
-      "label": "accounts-admin.service.ts",
-      "path": "src/modules/accounts/accounts-admin.service.ts",
+      "id": "file_src_modules_accounts_accounts_controller_ts",
+      "label": "accounts.controller.ts",
+      "path": "src/modules/accounts/accounts.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/accounts",
@@ -795,6 +775,36 @@
       "id": "file_src_modules_accounts_accounts_module_ts",
       "label": "accounts.module.ts",
       "path": "src/modules/accounts/accounts.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/accounts",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_accounts_accounts_service_integration_spec_ts",
+      "label": "accounts.service.integration.spec.ts",
+      "path": "src/modules/accounts/accounts.service.integration.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/accounts",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_accounts_accounts_service_spec_ts",
+      "label": "accounts.service.spec.ts",
+      "path": "src/modules/accounts/accounts.service.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/accounts",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_accounts_accounts_service_ts",
+      "label": "accounts.service.ts",
+      "path": "src/modules/accounts/accounts.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/accounts",
@@ -930,9 +940,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_modules_auth_auth_admin_controller_spec_ts",
-      "label": "auth-admin.controller.spec.ts",
-      "path": "src/modules/auth/auth-admin.controller.spec.ts",
+      "id": "file_src_modules_auth_auth_controller_spec_ts",
+      "label": "auth.controller.spec.ts",
+      "path": "src/modules/auth/auth.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/auth",
@@ -940,9 +950,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_auth_auth_admin_controller_ts",
-      "label": "auth-admin.controller.ts",
-      "path": "src/modules/auth/auth-admin.controller.ts",
+      "id": "file_src_modules_auth_auth_controller_ts",
+      "label": "auth.controller.ts",
+      "path": "src/modules/auth/auth.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/auth",
@@ -1344,16 +1354,6 @@
       "size": 22,
       "community": "src/modules",
       "type": "directory"
-    },
-    {
-      "id": "file_src_modules_comments_comments_admin_service_ts",
-      "label": "comments-admin.service.ts",
-      "path": "src/modules/comments/comments-admin.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/comments",
-      "type": "ts",
-      "client": false
     },
     {
       "id": "file_src_modules_comments_comments_controller_spec_ts",
@@ -2010,9 +2010,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_controller_spec_ts",
-      "label": "event-checkin.controller.spec.ts",
-      "path": "src/modules/event-checkins/event-checkin.controller.spec.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_controller_spec_ts",
+      "label": "event-checkins.controller.spec.ts",
+      "path": "src/modules/event-checkins/event-checkins.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2020,9 +2020,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_controller_ts",
-      "label": "event-checkin.controller.ts",
-      "path": "src/modules/event-checkins/event-checkin.controller.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_controller_ts",
+      "label": "event-checkins.controller.ts",
+      "path": "src/modules/event-checkins/event-checkins.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2030,9 +2030,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_module_meta_spec_ts",
-      "label": "event-checkin.module-meta.spec.ts",
-      "path": "src/modules/event-checkins/event-checkin.module-meta.spec.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_module_ts",
+      "label": "event-checkins.module.ts",
+      "path": "src/modules/event-checkins/event-checkins.module.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2040,9 +2040,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_module_ts",
-      "label": "event-checkin.module.ts",
-      "path": "src/modules/event-checkins/event-checkin.module.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_service_integration_spec_ts",
+      "label": "event-checkins.service.integration.spec.ts",
+      "path": "src/modules/event-checkins/event-checkins.service.integration.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2050,9 +2050,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_service_integration_spec_ts",
-      "label": "event-checkin.service.integration.spec.ts",
-      "path": "src/modules/event-checkins/event-checkin.service.integration.spec.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_service_spec_ts",
+      "label": "event-checkins.service.spec.ts",
+      "path": "src/modules/event-checkins/event-checkins.service.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2060,29 +2060,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_checkins_event_checkin_service_spec_ts",
-      "label": "event-checkin.service.spec.ts",
-      "path": "src/modules/event-checkins/event-checkin.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-checkins",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_checkins_event_checkin_service_ts",
-      "label": "event-checkin.service.ts",
-      "path": "src/modules/event-checkins/event-checkin.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-checkins",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
-      "label": "event-checkins-admin.service.ts",
-      "path": "src/modules/event-checkins/event-checkins-admin.service.ts",
+      "id": "file_src_modules_event_checkins_event_checkins_service_ts",
+      "label": "event-checkins.service.ts",
+      "path": "src/modules/event-checkins/event-checkins.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-checkins",
@@ -2238,9 +2218,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_controller_spec_ts",
-      "label": "event-registration.controller.spec.ts",
-      "path": "src/modules/event-registrations/event-registration.controller.spec.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_controller_spec_ts",
+      "label": "event-registrations.controller.spec.ts",
+      "path": "src/modules/event-registrations/event-registrations.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2248,9 +2228,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_controller_ts",
-      "label": "event-registration.controller.ts",
-      "path": "src/modules/event-registrations/event-registration.controller.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "label": "event-registrations.controller.ts",
+      "path": "src/modules/event-registrations/event-registrations.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2258,9 +2238,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_module_meta_spec_ts",
-      "label": "event-registration.module-meta.spec.ts",
-      "path": "src/modules/event-registrations/event-registration.module-meta.spec.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_module_ts",
+      "label": "event-registrations.module.ts",
+      "path": "src/modules/event-registrations/event-registrations.module.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2268,9 +2248,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_module_ts",
-      "label": "event-registration.module.ts",
-      "path": "src/modules/event-registrations/event-registration.module.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_service_integration_spec_ts",
+      "label": "event-registrations.service.integration.spec.ts",
+      "path": "src/modules/event-registrations/event-registrations.service.integration.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2278,9 +2258,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_service_integration_spec_ts",
-      "label": "event-registration.service.integration.spec.ts",
-      "path": "src/modules/event-registrations/event-registration.service.integration.spec.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_service_spec_ts",
+      "label": "event-registrations.service.spec.ts",
+      "path": "src/modules/event-registrations/event-registrations.service.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2288,29 +2268,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_registrations_event_registration_service_spec_ts",
-      "label": "event-registration.service.spec.ts",
-      "path": "src/modules/event-registrations/event-registration.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-registrations",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_registrations_event_registration_service_ts",
-      "label": "event-registration.service.ts",
-      "path": "src/modules/event-registrations/event-registration.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-registrations",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
-      "label": "event-registrations-admin.service.ts",
-      "path": "src/modules/event-registrations/event-registrations-admin.service.ts",
+      "id": "file_src_modules_event_registrations_event_registrations_service_ts",
+      "label": "event-registrations.service.ts",
+      "path": "src/modules/event-registrations/event-registrations.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-registrations",
@@ -2347,9 +2307,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_controller_spec_ts",
-      "label": "event-speaker.controller.spec.ts",
-      "path": "src/modules/event-speakers/event-speaker.controller.spec.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_controller_spec_ts",
+      "label": "event-speakers.controller.spec.ts",
+      "path": "src/modules/event-speakers/event-speakers.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2357,9 +2317,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_controller_ts",
-      "label": "event-speaker.controller.ts",
-      "path": "src/modules/event-speakers/event-speaker.controller.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_controller_ts",
+      "label": "event-speakers.controller.ts",
+      "path": "src/modules/event-speakers/event-speakers.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2367,9 +2327,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_module_meta_spec_ts",
-      "label": "event-speaker.module-meta.spec.ts",
-      "path": "src/modules/event-speakers/event-speaker.module-meta.spec.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_module_ts",
+      "label": "event-speakers.module.ts",
+      "path": "src/modules/event-speakers/event-speakers.module.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2377,9 +2337,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_module_ts",
-      "label": "event-speaker.module.ts",
-      "path": "src/modules/event-speakers/event-speaker.module.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_service_integration_spec_ts",
+      "label": "event-speakers.service.integration.spec.ts",
+      "path": "src/modules/event-speakers/event-speakers.service.integration.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2387,9 +2347,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_service_integration_spec_ts",
-      "label": "event-speaker.service.integration.spec.ts",
-      "path": "src/modules/event-speakers/event-speaker.service.integration.spec.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_service_spec_ts",
+      "label": "event-speakers.service.spec.ts",
+      "path": "src/modules/event-speakers/event-speakers.service.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2397,29 +2357,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_event_speakers_event_speaker_service_spec_ts",
-      "label": "event-speaker.service.spec.ts",
-      "path": "src/modules/event-speakers/event-speaker.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-speakers",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_speakers_event_speaker_service_ts",
-      "label": "event-speaker.service.ts",
-      "path": "src/modules/event-speakers/event-speaker.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/event-speakers",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
-      "label": "event-speakers-admin.service.ts",
-      "path": "src/modules/event-speakers/event-speakers-admin.service.ts",
+      "id": "file_src_modules_event_speakers_event_speakers_service_ts",
+      "label": "event-speakers.service.ts",
+      "path": "src/modules/event-speakers/event-speakers.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/event-speakers",
@@ -2456,9 +2396,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_modules_events_event_controller_spec_ts",
-      "label": "event.controller.spec.ts",
-      "path": "src/modules/events/event.controller.spec.ts",
+      "id": "file_src_modules_events_events_controller_spec_ts",
+      "label": "events.controller.spec.ts",
+      "path": "src/modules/events/events.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/events",
@@ -2466,69 +2406,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_events_event_controller_ts",
-      "label": "event.controller.ts",
-      "path": "src/modules/events/event.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_event_module_meta_spec_ts",
-      "label": "event.module-meta.spec.ts",
-      "path": "src/modules/events/event.module-meta.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_event_module_ts",
-      "label": "event.module.ts",
-      "path": "src/modules/events/event.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_event_service_integration_spec_ts",
-      "label": "event.service.integration.spec.ts",
-      "path": "src/modules/events/event.service.integration.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_event_service_spec_ts",
-      "label": "event.service.spec.ts",
-      "path": "src/modules/events/event.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_event_service_ts",
-      "label": "event.service.ts",
-      "path": "src/modules/events/event.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/events",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_events_events_admin_service_ts",
-      "label": "events-admin.service.ts",
-      "path": "src/modules/events/events-admin.service.ts",
+      "id": "file_src_modules_events_events_controller_ts",
+      "label": "events.controller.ts",
+      "path": "src/modules/events/events.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/events",
@@ -2549,6 +2429,36 @@
       "id": "file_src_modules_events_events_module_ts",
       "label": "events.module.ts",
       "path": "src/modules/events/events.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/events",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_events_events_service_integration_spec_ts",
+      "label": "events.service.integration.spec.ts",
+      "path": "src/modules/events/events.service.integration.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/events",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_events_events_service_spec_ts",
+      "label": "events.service.spec.ts",
+      "path": "src/modules/events/events.service.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/events",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_events_events_service_ts",
+      "label": "events.service.ts",
+      "path": "src/modules/events/events.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/events",
@@ -2915,6 +2825,16 @@
       "id": "file_src_modules_hanet_hanet_payload_ts",
       "label": "hanet-payload.ts",
       "path": "src/modules/hanet/hanet-payload.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "label": "hanet-webhook.controller.ts",
+      "path": "src/modules/hanet/hanet-webhook.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/hanet",
@@ -3556,9 +3476,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_notifications_notification_controller_spec_ts",
-      "label": "notification.controller.spec.ts",
-      "path": "src/modules/notifications/notification.controller.spec.ts",
+      "id": "file_src_modules_notifications_notifications_controller_spec_ts",
+      "label": "notifications.controller.spec.ts",
+      "path": "src/modules/notifications/notifications.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/notifications",
@@ -3566,69 +3486,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_notifications_notification_controller_ts",
-      "label": "notification.controller.ts",
-      "path": "src/modules/notifications/notification.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notification_module_meta_spec_ts",
-      "label": "notification.module-meta.spec.ts",
-      "path": "src/modules/notifications/notification.module-meta.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notification_module_ts",
-      "label": "notification.module.ts",
-      "path": "src/modules/notifications/notification.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notification_service_integration_spec_ts",
-      "label": "notification.service.integration.spec.ts",
-      "path": "src/modules/notifications/notification.service.integration.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notification_service_spec_ts",
-      "label": "notification.service.spec.ts",
-      "path": "src/modules/notifications/notification.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notification_service_ts",
-      "label": "notification.service.ts",
-      "path": "src/modules/notifications/notification.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/notifications",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_notifications_notifications_admin_service_ts",
-      "label": "notifications-admin.service.ts",
-      "path": "src/modules/notifications/notifications-admin.service.ts",
+      "id": "file_src_modules_notifications_notifications_controller_ts",
+      "label": "notifications.controller.ts",
+      "path": "src/modules/notifications/notifications.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/notifications",
@@ -3649,6 +3509,36 @@
       "id": "file_src_modules_notifications_notifications_module_ts",
       "label": "notifications.module.ts",
       "path": "src/modules/notifications/notifications.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/notifications",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_notifications_notifications_service_integration_spec_ts",
+      "label": "notifications.service.integration.spec.ts",
+      "path": "src/modules/notifications/notifications.service.integration.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/notifications",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_notifications_notifications_service_spec_ts",
+      "label": "notifications.service.spec.ts",
+      "path": "src/modules/notifications/notifications.service.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/notifications",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_notifications_notifications_service_ts",
+      "label": "notifications.service.ts",
+      "path": "src/modules/notifications/notifications.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/notifications",
@@ -3804,9 +3694,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_controller_spec_ts",
-      "label": "page-content.controller.spec.ts",
-      "path": "src/modules/page-contents/page-content.controller.spec.ts",
+      "id": "file_src_modules_page_contents_page_contents_controller_spec_ts",
+      "label": "page-contents.controller.spec.ts",
+      "path": "src/modules/page-contents/page-contents.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -3814,9 +3704,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_controller_ts",
-      "label": "page-content.controller.ts",
-      "path": "src/modules/page-contents/page-content.controller.ts",
+      "id": "file_src_modules_page_contents_page_contents_controller_ts",
+      "label": "page-contents.controller.ts",
+      "path": "src/modules/page-contents/page-contents.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -3824,9 +3714,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_module_meta_spec_ts",
-      "label": "page-content.module-meta.spec.ts",
-      "path": "src/modules/page-contents/page-content.module-meta.spec.ts",
+      "id": "file_src_modules_page_contents_page_contents_module_ts",
+      "label": "page-contents.module.ts",
+      "path": "src/modules/page-contents/page-contents.module.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -3834,9 +3724,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_module_ts",
-      "label": "page-content.module.ts",
-      "path": "src/modules/page-contents/page-content.module.ts",
+      "id": "file_src_modules_page_contents_page_contents_service_integration_spec_ts",
+      "label": "page-contents.service.integration.spec.ts",
+      "path": "src/modules/page-contents/page-contents.service.integration.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -3844,9 +3734,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_service_integration_spec_ts",
-      "label": "page-content.service.integration.spec.ts",
-      "path": "src/modules/page-contents/page-content.service.integration.spec.ts",
+      "id": "file_src_modules_page_contents_page_contents_service_spec_ts",
+      "label": "page-contents.service.spec.ts",
+      "path": "src/modules/page-contents/page-contents.service.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -3854,29 +3744,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_page_contents_page_content_service_spec_ts",
-      "label": "page-content.service.spec.ts",
-      "path": "src/modules/page-contents/page-content.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/page-contents",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_page_contents_page_content_service_ts",
-      "label": "page-content.service.ts",
-      "path": "src/modules/page-contents/page-content.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/page-contents",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_page_contents_page_contents_admin_service_ts",
-      "label": "page-contents-admin.service.ts",
-      "path": "src/modules/page-contents/page-contents-admin.service.ts",
+      "id": "file_src_modules_page_contents_page_contents_service_ts",
+      "label": "page-contents.service.ts",
+      "path": "src/modules/page-contents/page-contents.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/page-contents",
@@ -4213,16 +4083,6 @@
       "id": "file_src_modules_posts_index_ts",
       "label": "index.ts",
       "path": "src/modules/posts/index.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/posts",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_posts_posts_admin_service_ts",
-      "label": "posts-admin.service.ts",
-      "path": "src/modules/posts/posts-admin.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/posts",
@@ -5073,9 +4933,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_sessions_session_controller_spec_ts",
-      "label": "session.controller.spec.ts",
-      "path": "src/modules/sessions/session.controller.spec.ts",
+      "id": "file_src_modules_sessions_sessions_controller_spec_ts",
+      "label": "sessions.controller.spec.ts",
+      "path": "src/modules/sessions/sessions.controller.spec.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/sessions",
@@ -5083,69 +4943,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_sessions_session_controller_ts",
-      "label": "session.controller.ts",
-      "path": "src/modules/sessions/session.controller.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_session_module_meta_spec_ts",
-      "label": "session.module-meta.spec.ts",
-      "path": "src/modules/sessions/session.module-meta.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_session_module_ts",
-      "label": "session.module.ts",
-      "path": "src/modules/sessions/session.module.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_session_service_integration_spec_ts",
-      "label": "session.service.integration.spec.ts",
-      "path": "src/modules/sessions/session.service.integration.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_session_service_spec_ts",
-      "label": "session.service.spec.ts",
-      "path": "src/modules/sessions/session.service.spec.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_session_service_ts",
-      "label": "session.service.ts",
-      "path": "src/modules/sessions/session.service.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/modules/sessions",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_modules_sessions_sessions_admin_service_ts",
-      "label": "sessions-admin.service.ts",
-      "path": "src/modules/sessions/sessions-admin.service.ts",
+      "id": "file_src_modules_sessions_sessions_controller_ts",
+      "label": "sessions.controller.ts",
+      "path": "src/modules/sessions/sessions.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/sessions",
@@ -5166,6 +4966,36 @@
       "id": "file_src_modules_sessions_sessions_module_ts",
       "label": "sessions.module.ts",
       "path": "src/modules/sessions/sessions.module.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/sessions",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_sessions_sessions_service_integration_spec_ts",
+      "label": "sessions.service.integration.spec.ts",
+      "path": "src/modules/sessions/sessions.service.integration.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/sessions",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_sessions_sessions_service_spec_ts",
+      "label": "sessions.service.spec.ts",
+      "path": "src/modules/sessions/sessions.service.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/sessions",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_sessions_sessions_service_ts",
+      "label": "sessions.service.ts",
+      "path": "src/modules/sessions/sessions.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/sessions",
@@ -5718,9 +5548,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_system_system_admin_service_ts",
-      "label": "system-admin.service.ts",
-      "path": "src/modules/system/system-admin.service.ts",
+      "id": "file_src_modules_system_system_bootstrap_deps_ts",
+      "label": "system-bootstrap.deps.ts",
+      "path": "src/modules/system/system-bootstrap.deps.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/system",
@@ -5728,9 +5558,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_system_system_bootstrap_deps_ts",
-      "label": "system-bootstrap.deps.ts",
-      "path": "src/modules/system/system-bootstrap.deps.ts",
+      "id": "file_src_modules_system_system_maintenance_ts",
+      "label": "system-maintenance.ts",
+      "path": "src/modules/system/system-maintenance.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/system",
@@ -6393,9 +6223,9 @@
       "client": false
     },
     {
-      "id": "file_src_modules_uploads_uploads_admin_service_ts",
-      "label": "uploads-admin.service.ts",
-      "path": "src/modules/uploads/uploads-admin.service.ts",
+      "id": "file_src_modules_uploads_uploads_disk_service_ts",
+      "label": "uploads-disk.service.ts",
+      "path": "src/modules/uploads/uploads-disk.service.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/uploads",
@@ -6936,6 +6766,16 @@
     },
     {
       "source": "dir_src_bases",
+      "target": "file_src_bases_base_admin_crud_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_bases",
+      "target": "file_src_bases_base_admin_http_controller_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_bases",
       "target": "file_src_bases_base_controller_class_spec_ts",
       "relation": "contains"
     },
@@ -7091,6 +6931,11 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_normalize_relation_ids_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_pagination_spec_ts",
       "relation": "contains"
     },
@@ -7137,6 +6982,11 @@
     {
       "source": "dir_src",
       "target": "dir_src_config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
+      "target": "file_src_config_app_config_ts",
       "relation": "contains"
     },
     {
@@ -7281,42 +7131,12 @@
     },
     {
       "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_controller_spec_ts",
+      "target": "file_src_modules_accounts_accounts_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_module_meta_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_service_integration_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_account_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_accounts",
-      "target": "file_src_modules_accounts_accounts_admin_service_ts",
+      "target": "file_src_modules_accounts_accounts_controller_ts",
       "relation": "contains"
     },
     {
@@ -7327,6 +7147,21 @@
     {
       "source": "dir_src_modules_accounts",
       "target": "file_src_modules_accounts_accounts_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_accounts",
+      "target": "file_src_modules_accounts_accounts_service_integration_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_accounts",
+      "target": "file_src_modules_accounts_accounts_service_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_accounts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
       "relation": "contains"
     },
     {
@@ -7396,12 +7231,12 @@
     },
     {
       "source": "dir_src_modules_auth",
-      "target": "file_src_modules_auth_auth_admin_controller_spec_ts",
+      "target": "file_src_modules_auth_auth_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_auth",
-      "target": "file_src_modules_auth_auth_admin_controller_ts",
+      "target": "file_src_modules_auth_auth_controller_ts",
       "relation": "contains"
     },
     {
@@ -7602,11 +7437,6 @@
     {
       "source": "dir_src_modules",
       "target": "dir_src_modules_comments",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_comments",
-      "target": "file_src_modules_comments_comments_admin_service_ts",
       "relation": "contains"
     },
     {
@@ -7941,42 +7771,32 @@
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_controller_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_controller_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_controller_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_module_meta_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_module_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_module_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_integration_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_service_integration_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_checkins",
-      "target": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "contains"
     },
     {
@@ -8056,42 +7876,32 @@
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_controller_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_controller_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_controller_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_module_meta_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_module_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_module_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_integration_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_service_integration_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_registrations",
-      "target": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "contains"
     },
     {
@@ -8111,42 +7921,32 @@
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_controller_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_controller_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_controller_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_module_meta_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_module_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_module_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_integration_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_service_integration_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_event_speakers",
-      "target": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
       "relation": "contains"
     },
     {
@@ -8166,42 +7966,12 @@
     },
     {
       "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_controller_spec_ts",
+      "target": "file_src_modules_events_events_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_module_meta_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_service_integration_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_event_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_events",
-      "target": "file_src_modules_events_events_admin_service_ts",
+      "target": "file_src_modules_events_events_controller_ts",
       "relation": "contains"
     },
     {
@@ -8212,6 +7982,21 @@
     {
       "source": "dir_src_modules_events",
       "target": "file_src_modules_events_events_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events",
+      "target": "file_src_modules_events_events_service_integration_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events",
+      "target": "file_src_modules_events_events_service_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events",
+      "target": "file_src_modules_events_events_service_ts",
       "relation": "contains"
     },
     {
@@ -8397,6 +8182,11 @@
     {
       "source": "dir_src_modules_hanet",
       "target": "file_src_modules_hanet_hanet_payload_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "file_src_modules_hanet_hanet_webhook_controller_ts",
       "relation": "contains"
     },
     {
@@ -8721,42 +8511,12 @@
     },
     {
       "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_controller_spec_ts",
+      "target": "file_src_modules_notifications_notifications_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_module_meta_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_service_integration_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_notifications",
-      "target": "file_src_modules_notifications_notifications_admin_service_ts",
+      "target": "file_src_modules_notifications_notifications_controller_ts",
       "relation": "contains"
     },
     {
@@ -8767,6 +8527,21 @@
     {
       "source": "dir_src_modules_notifications",
       "target": "file_src_modules_notifications_notifications_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_notifications",
+      "target": "file_src_modules_notifications_notifications_service_integration_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_notifications",
+      "target": "file_src_modules_notifications_notifications_service_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_notifications",
+      "target": "file_src_modules_notifications_notifications_service_ts",
       "relation": "contains"
     },
     {
@@ -8846,42 +8621,32 @@
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_controller_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_controller_ts",
+      "target": "file_src_modules_page_contents_page_contents_controller_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_module_meta_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_module_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_module_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_integration_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_service_integration_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_page_contents",
-      "target": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "contains"
     },
     {
@@ -9052,11 +8817,6 @@
     {
       "source": "dir_src_modules_posts",
       "target": "file_src_modules_posts_index_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_posts",
-      "target": "file_src_modules_posts_posts_admin_service_ts",
       "relation": "contains"
     },
     {
@@ -9486,42 +9246,12 @@
     },
     {
       "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_controller_spec_ts",
+      "target": "file_src_modules_sessions_sessions_controller_spec_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_controller_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_module_meta_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_module_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_service_integration_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_service_spec_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_session_service_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_modules_sessions",
-      "target": "file_src_modules_sessions_sessions_admin_service_ts",
+      "target": "file_src_modules_sessions_sessions_controller_ts",
       "relation": "contains"
     },
     {
@@ -9532,6 +9262,21 @@
     {
       "source": "dir_src_modules_sessions",
       "target": "file_src_modules_sessions_sessions_module_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_sessions",
+      "target": "file_src_modules_sessions_sessions_service_integration_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_sessions",
+      "target": "file_src_modules_sessions_sessions_service_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_sessions",
+      "target": "file_src_modules_sessions_sessions_service_ts",
       "relation": "contains"
     },
     {
@@ -9811,12 +9556,12 @@
     },
     {
       "source": "dir_src_modules_system",
-      "target": "file_src_modules_system_system_admin_service_ts",
+      "target": "file_src_modules_system_system_bootstrap_deps_ts",
       "relation": "contains"
     },
     {
       "source": "dir_src_modules_system",
-      "target": "file_src_modules_system_system_bootstrap_deps_ts",
+      "target": "file_src_modules_system_system_maintenance_ts",
       "relation": "contains"
     },
     {
@@ -10151,7 +9896,7 @@
     },
     {
       "source": "dir_src_modules_uploads",
-      "target": "file_src_modules_uploads_uploads_admin_service_ts",
+      "target": "file_src_modules_uploads_uploads_disk_service_ts",
       "relation": "contains"
     },
     {
@@ -10420,6 +10165,26 @@
       "relation": "contains"
     },
     {
+      "source": "file_src_bases_base_admin_crud_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_bases_base_admin_crud_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_bases_base_admin_http_controller_ts",
+      "target": "dir_src_config",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_bases_base_admin_http_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_bases_base_controller_class_spec_ts",
       "target": "file_src_bases_base_controller_class_ts",
       "relation": "imports"
@@ -10556,6 +10321,16 @@
     },
     {
       "source": "file_src_bases_index_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_bases_index_ts",
+      "target": "file_src_bases_base_admin_crud_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_bases_index_ts",
       "target": "file_src_bases_crud_factory_ts",
       "relation": "imports"
     },
@@ -10671,6 +10446,11 @@
     },
     {
       "source": "file_src_common_index_ts",
+      "target": "file_src_common_normalize_relation_ids_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_index_ts",
       "target": "file_src_common_build_admin_list_params_ts",
       "relation": "imports"
     },
@@ -10767,6 +10547,11 @@
     {
       "source": "file_src_config_index_ts",
       "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_index_ts",
+      "target": "file_src_config_app_config_ts",
       "relation": "imports"
     },
     {
@@ -10930,83 +10715,38 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_controller_spec_ts",
-      "target": "file_src_modules_accounts_account_controller_ts",
+      "source": "file_src_modules_accounts_accounts_controller_spec_ts",
+      "target": "file_src_modules_accounts_accounts_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_controller_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_controller_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "file_src_modules_uploads_uploads_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_module_meta_spec_ts",
-      "target": "file_src_modules_accounts_account_module_ts",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_module_ts",
-      "target": "file_src_modules_accounts_account_controller_ts",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_accounts_account_module_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_integration_spec_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_integration_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_integration_spec_ts",
-      "target": "file_src_data_test_fake_em_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_spec_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_account_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_accounts_admin_service_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_accounts_admin_service_ts",
-      "target": "file_src_common_date_utils_ts",
+      "source": "file_src_modules_accounts_accounts_controller_ts",
+      "target": "file_src_config_app_config_ts",
       "relation": "imports"
     },
     {
@@ -11016,12 +10756,42 @@
     },
     {
       "source": "file_src_modules_accounts_accounts_module_ts",
-      "target": "file_src_modules_accounts_account_controller_ts",
+      "target": "file_src_modules_accounts_accounts_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_accounts_accounts_module_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_integration_spec_ts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_integration_spec_ts",
+      "target": "file_src_data_test_fixture_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_integration_spec_ts",
+      "target": "file_src_data_test_fake_em_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_spec_ts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_accounts_service_ts",
+      "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
@@ -11031,22 +10801,17 @@
     },
     {
       "source": "file_src_modules_accounts_index_ts",
+      "target": "file_src_modules_accounts_accounts_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_index_ts",
+      "target": "file_src_modules_accounts_accounts_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_accounts_index_ts",
       "target": "file_src_modules_accounts_accounts_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_index_ts",
-      "target": "file_src_modules_accounts_account_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_index_ts",
-      "target": "file_src_modules_accounts_account_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_accounts_index_ts",
-      "target": "file_src_modules_accounts_accounts_admin_service_ts",
       "relation": "imports"
     },
     {
@@ -11135,22 +10900,22 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_auth_auth_admin_controller_spec_ts",
-      "target": "file_src_modules_auth_auth_admin_controller_ts",
+      "source": "file_src_modules_auth_auth_controller_spec_ts",
+      "target": "file_src_modules_auth_auth_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_auth_auth_admin_controller_ts",
+      "source": "file_src_modules_auth_auth_controller_ts",
       "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_auth_auth_admin_controller_ts",
+      "source": "file_src_modules_auth_auth_controller_ts",
       "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_auth_auth_admin_controller_ts",
+      "source": "file_src_modules_auth_auth_controller_ts",
       "target": "file_src_modules_auth_auth_service_ts",
       "relation": "imports"
     },
@@ -11161,7 +10926,7 @@
     },
     {
       "source": "file_src_modules_auth_auth_module_ts",
-      "target": "file_src_modules_auth_auth_admin_controller_ts",
+      "target": "file_src_modules_auth_auth_controller_ts",
       "relation": "imports"
     },
     {
@@ -11201,22 +10966,22 @@
     },
     {
       "source": "file_src_modules_auth_index_ts",
+      "target": "file_src_modules_auth_auth_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_index_ts",
+      "target": "file_src_modules_auth_auth_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_index_ts",
       "target": "file_src_modules_auth_auth_module_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_auth_index_ts",
-      "target": "file_src_modules_auth_auth_admin_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_auth_index_ts",
       "target": "file_src_modules_auth_public_auth_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_auth_index_ts",
-      "target": "file_src_modules_auth_auth_service_ts",
       "relation": "imports"
     },
     {
@@ -11485,33 +11250,23 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_comments_comments_admin_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_comments_comments_admin_service_ts",
-      "target": "file_src_common_date_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_comments_comments_admin_service_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_modules_comments_comments_controller_spec_ts",
       "target": "file_src_modules_comments_comments_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_comments_comments_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_comments_comments_controller_ts",
+      "target": "file_src_bases_base_admin_crud_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_comments_comments_controller_ts",
-      "target": "dir_src_bases",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_comments_comments_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
@@ -11555,18 +11310,18 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_comments_comments_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
+      "source": "file_src_modules_comments_comments_service_ts",
+      "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_comments_comments_service_ts",
-      "target": "dir_src_bases",
+      "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_comments_comments_service_ts",
-      "target": "dir_src_types",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -11576,17 +11331,17 @@
     },
     {
       "source": "file_src_modules_comments_index_ts",
-      "target": "file_src_modules_comments_comments_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_comments_index_ts",
       "target": "file_src_modules_comments_comments_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_comments_index_ts",
-      "target": "file_src_modules_comments_comments_admin_service_ts",
+      "target": "file_src_modules_comments_comments_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_comments_index_ts",
+      "target": "file_src_modules_comments_comments_module_ts",
       "relation": "imports"
     },
     {
@@ -12100,92 +11855,77 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_controller_spec_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_controller_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_controller_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_event_checkins_event_checkins_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_controller_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_event_checkins_event_checkins_controller_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_controller_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_module_meta_spec_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_module_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_controller_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_module_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_controller_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_module_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_module_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_module_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_service_integration_spec_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_integration_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_service_integration_spec_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_integration_spec_ts",
       "target": "file_src_data_test_fixture_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_service_integration_spec_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_integration_spec_ts",
       "target": "file_src_data_test_fake_em_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_service_spec_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_spec_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkin_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_checkins_event_checkin_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_checkins_event_checkin_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_ts",
       "target": "file_src_common_bulk_actions_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_ts",
       "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_ts",
       "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "source": "file_src_modules_event_checkins_event_checkins_service_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
@@ -12196,17 +11936,17 @@
     },
     {
       "source": "file_src_modules_event_checkins_index_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_module_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_checkins_index_ts",
-      "target": "file_src_modules_event_checkins_event_checkin_service_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_checkins_index_ts",
-      "target": "file_src_modules_event_checkins_event_checkins_admin_service_ts",
+      "target": "file_src_modules_event_checkins_event_checkins_module_ts",
       "relation": "imports"
     },
     {
@@ -12261,7 +12001,7 @@
     },
     {
       "source": "file_src_modules_event_registrations_event_registration_attendance_deps_ts",
-      "target": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
@@ -12286,106 +12026,96 @@
     },
     {
       "source": "file_src_modules_event_registrations_event_registration_attendance_service_ts",
-      "target": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_registrations_event_registration_attendance_types_ts",
-      "target": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_controller_spec_ts",
-      "target": "file_src_modules_event_registrations_event_registration_controller_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_controller_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_event_registration_controller_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
       "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_controller_ts",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_module_meta_spec_ts",
-      "target": "file_src_modules_event_registrations_event_registration_module_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_module_ts",
-      "target": "file_src_modules_event_registrations_event_registration_controller_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "target": "file_src_modules_event_registrations_event_registration_attendance_types_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_module_ts",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_controller_ts",
+      "target": "file_src_modules_event_registrations_event_registration_attendance_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_service_integration_spec_ts",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_module_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_service_integration_spec_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_module_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_event_registrations_event_registrations_service_integration_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_event_registrations_event_registrations_service_integration_spec_ts",
       "target": "file_src_data_test_fixture_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_service_integration_spec_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_integration_spec_ts",
       "target": "file_src_data_test_fake_em_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_service_spec_ts",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_spec_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registration_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_event_registration_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_event_registration_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_ts",
       "target": "file_src_common_bulk_actions_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_ts",
       "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_ts",
       "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
+      "source": "file_src_modules_event_registrations_event_registrations_service_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
@@ -12396,22 +12126,12 @@
     },
     {
       "source": "file_src_modules_event_registrations_index_ts",
-      "target": "file_src_modules_event_registrations_event_registration_module_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_registrations_index_ts",
-      "target": "file_src_modules_event_registrations_event_registration_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_index_ts",
-      "target": "file_src_modules_event_registrations_event_registrations_admin_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_index_ts",
-      "target": "file_src_modules_event_registrations_event_registration_controller_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_controller_ts",
       "relation": "imports"
     },
     {
@@ -12421,101 +12141,86 @@
     },
     {
       "source": "file_src_modules_event_registrations_index_ts",
-      "target": "file_src_modules_event_registrations_event_registration_attendance_deps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_registrations_index_ts",
       "target": "file_src_modules_event_registrations_event_registration_attendance_types_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_controller_spec_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_controller_ts",
+      "source": "file_src_modules_event_registrations_index_ts",
+      "target": "file_src_modules_event_registrations_event_registrations_module_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_event_speakers_event_speakers_controller_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_controller_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_event_speakers_event_speakers_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_controller_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_controller_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_module_meta_spec_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_module_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_module_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_controller_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_controller_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_module_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_module_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_service_integration_spec_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_module_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_service_integration_spec_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_integration_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_event_speakers_event_speakers_service_integration_spec_ts",
       "target": "file_src_data_test_fixture_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_service_integration_spec_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_integration_spec_ts",
       "target": "file_src_data_test_fake_em_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_service_spec_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_spec_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speaker_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_speakers_event_speaker_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_speakers_event_speaker_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_ts",
       "target": "file_src_common_bulk_actions_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_ts",
       "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_ts",
       "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "source": "file_src_modules_event_speakers_event_speakers_service_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
@@ -12526,122 +12231,42 @@
     },
     {
       "source": "file_src_modules_event_speakers_index_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_module_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_speakers_index_ts",
-      "target": "file_src_modules_event_speakers_event_speaker_service_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_event_speakers_index_ts",
-      "target": "file_src_modules_event_speakers_event_speakers_admin_service_ts",
+      "target": "file_src_modules_event_speakers_event_speakers_module_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_events_event_controller_spec_ts",
-      "target": "file_src_modules_events_event_controller_ts",
+      "source": "file_src_modules_events_events_controller_spec_ts",
+      "target": "file_src_modules_events_events_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_events_event_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_events_events_controller_ts",
+      "target": "file_src_bases_base_admin_crud_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_events_event_controller_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_events_events_controller_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_events_event_controller_ts",
-      "target": "file_src_modules_events_event_service_ts",
+      "source": "file_src_modules_events_events_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_events_event_module_meta_spec_ts",
-      "target": "file_src_modules_events_event_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_module_ts",
-      "target": "file_src_modules_events_event_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_module_ts",
-      "target": "file_src_modules_events_event_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_integration_spec_ts",
-      "target": "file_src_modules_events_event_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_integration_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_integration_spec_ts",
-      "target": "file_src_data_test_fake_em_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_spec_ts",
-      "target": "file_src_modules_events_event_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_event_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_date_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_poster_normalize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_apply_column_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_admin_filter_configs_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_events_admin_service_ts",
-      "target": "file_src_common_entity_id_ts",
+      "source": "file_src_modules_events_events_controller_ts",
+      "target": "file_src_modules_events_events_service_ts",
       "relation": "imports"
     },
     {
@@ -12651,12 +12276,67 @@
     },
     {
       "source": "file_src_modules_events_events_module_ts",
-      "target": "file_src_modules_events_event_controller_ts",
+      "target": "file_src_modules_events_events_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_events_events_module_ts",
-      "target": "file_src_modules_events_event_service_ts",
+      "target": "file_src_modules_events_events_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_integration_spec_ts",
+      "target": "file_src_modules_events_events_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_integration_spec_ts",
+      "target": "file_src_data_test_fixture_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_integration_spec_ts",
+      "target": "file_src_data_test_fake_em_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_spec_ts",
+      "target": "file_src_modules_events_events_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_bulk_actions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_date_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_poster_normalize_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_apply_column_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_admin_filter_configs_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_events_service_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -12666,22 +12346,17 @@
     },
     {
       "source": "file_src_modules_events_index_ts",
+      "target": "file_src_modules_events_events_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_index_ts",
+      "target": "file_src_modules_events_events_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events_index_ts",
       "target": "file_src_modules_events_events_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_index_ts",
-      "target": "file_src_modules_events_event_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_index_ts",
-      "target": "file_src_modules_events_event_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_events_index_ts",
-      "target": "file_src_modules_events_events_admin_service_ts",
       "relation": "imports"
     },
     {
@@ -12970,6 +12645,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "target": "dir_src_config",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "target": "file_src_modules_hanet_hanet_payload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "target": "file_src_modules_hanet_hanet_webhook_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_hanet_webhook_controller_ts",
+      "target": "file_src_modules_hanet_hanet_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_hanet_hanet_webhook_service_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
@@ -12987,6 +12687,11 @@
     {
       "source": "file_src_modules_hanet_index_ts",
       "target": "file_src_modules_hanet_hanet_webhook_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_index_ts",
+      "target": "file_src_modules_hanet_hanet_webhook_controller_ts",
       "relation": "imports"
     },
     {
@@ -13746,97 +13451,47 @@
     },
     {
       "source": "file_src_modules_notifications_index_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_index_ts",
+      "target": "file_src_modules_notifications_notifications_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_index_ts",
       "target": "file_src_modules_notifications_notifications_module_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_notifications_index_ts",
-      "target": "file_src_modules_notifications_notification_controller_ts",
+      "source": "file_src_modules_notifications_notifications_controller_spec_ts",
+      "target": "file_src_modules_notifications_notifications_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_notifications_index_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_index_ts",
-      "target": "file_src_modules_notifications_notifications_admin_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_controller_spec_ts",
-      "target": "file_src_modules_notifications_notification_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_controller_spec_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_controller_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_controller_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_module_meta_spec_ts",
-      "target": "file_src_modules_notifications_notification_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_module_ts",
-      "target": "file_src_modules_notifications_notification_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_module_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_integration_spec_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_integration_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_integration_spec_ts",
-      "target": "file_src_data_test_fake_em_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_spec_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notification_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_notifications_notifications_admin_service_ts",
+      "source": "file_src_modules_notifications_notifications_controller_ts",
       "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_controller_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_controller_ts",
+      "target": "dir_src_config",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
@@ -13846,12 +13501,37 @@
     },
     {
       "source": "file_src_modules_notifications_notifications_module_ts",
-      "target": "file_src_modules_notifications_notification_controller_ts",
+      "target": "file_src_modules_notifications_notifications_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_notifications_notifications_module_ts",
-      "target": "file_src_modules_notifications_notification_service_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_service_integration_spec_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_service_integration_spec_ts",
+      "target": "file_src_data_test_fixture_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_service_integration_spec_ts",
+      "target": "file_src_data_test_fake_em_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_service_spec_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_notifications_notifications_service_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -13971,106 +13651,91 @@
     },
     {
       "source": "file_src_modules_page_contents_index_ts",
-      "target": "file_src_modules_page_contents_page_content_module_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_page_contents_index_ts",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
+      "target": "file_src_modules_page_contents_page_contents_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_page_contents_index_ts",
-      "target": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "target": "file_src_modules_page_contents_page_contents_module_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_controller_spec_ts",
-      "target": "file_src_modules_page_contents_page_content_controller_ts",
+      "source": "file_src_modules_page_contents_page_contents_controller_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_controller_spec_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_page_contents_page_contents_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_controller_ts",
-      "target": "dir_src_bases",
+      "source": "file_src_modules_page_contents_page_contents_controller_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_controller_ts",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_module_meta_spec_ts",
-      "target": "file_src_modules_page_contents_page_content_module_ts",
+      "source": "file_src_modules_page_contents_page_contents_controller_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_module_ts",
-      "target": "file_src_modules_page_contents_page_content_controller_ts",
+      "source": "file_src_modules_page_contents_page_contents_module_ts",
+      "target": "file_src_modules_page_contents_page_contents_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_module_ts",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_module_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_service_integration_spec_ts",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_integration_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_service_integration_spec_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_integration_spec_ts",
       "target": "file_src_data_test_fixture_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_service_integration_spec_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_integration_spec_ts",
       "target": "file_src_data_test_fake_em_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_service_spec_ts",
-      "target": "file_src_modules_page_contents_page_content_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_spec_ts",
+      "target": "file_src_modules_page_contents_page_contents_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_content_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_page_contents_page_content_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_page_contents_page_content_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_ts",
       "target": "file_src_common_bulk_actions_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_ts",
       "target": "file_src_common_apply_column_filters_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_ts",
       "target": "file_src_common_admin_filter_configs_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_page_contents_page_contents_admin_service_ts",
+      "source": "file_src_modules_page_contents_page_contents_service_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
@@ -14346,52 +14011,17 @@
     },
     {
       "source": "file_src_modules_posts_index_ts",
-      "target": "file_src_modules_posts_posts_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_index_ts",
       "target": "file_src_modules_posts_posts_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_posts_index_ts",
-      "target": "file_src_modules_posts_posts_admin_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_index_ts",
       "target": "file_src_modules_posts_posts_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_posts_index_ts",
-      "target": "file_src_modules_posts_posts_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_posts_admin_service_ts",
-      "target": "file_src_common_resolve_relation_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_posts_admin_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_posts_admin_service_ts",
-      "target": "file_src_common_get_options_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_posts_admin_service_ts",
-      "target": "file_src_common_date_utils_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_posts_posts_admin_service_ts",
-      "target": "file_src_common_entity_id_ts",
+      "target": "file_src_modules_posts_posts_module_ts",
       "relation": "imports"
     },
     {
@@ -14401,12 +14031,22 @@
     },
     {
       "source": "file_src_modules_posts_posts_controller_spec_ts",
-      "target": "dir_src_bases",
+      "target": "file_src_modules_posts_posts_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_posts_posts_controller_ts",
-      "target": "dir_src_bases",
+      "target": "file_src_bases_base_admin_crud_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_posts_posts_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_posts_posts_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
@@ -14450,18 +14090,28 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_posts_posts_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
+      "source": "file_src_modules_posts_posts_service_ts",
+      "target": "file_src_common_resolve_relation_filters_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_posts_posts_service_ts",
-      "target": "dir_src_bases",
+      "target": "file_src_common_pagination_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_posts_posts_service_ts",
-      "target": "dir_src_types",
+      "target": "file_src_common_get_options_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_posts_posts_service_ts",
+      "target": "file_src_common_date_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_posts_posts_service_ts",
+      "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
@@ -15151,112 +14801,52 @@
     },
     {
       "source": "file_src_modules_sessions_index_ts",
+      "target": "file_src_modules_sessions_sessions_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_index_ts",
+      "target": "file_src_modules_sessions_sessions_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_index_ts",
       "target": "file_src_modules_sessions_sessions_module_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_index_ts",
-      "target": "file_src_modules_sessions_session_controller_ts",
+      "source": "file_src_modules_sessions_sessions_controller_spec_ts",
+      "target": "file_src_modules_sessions_sessions_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_index_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
+      "source": "file_src_modules_sessions_sessions_controller_ts",
+      "target": "file_src_modules_sessions_sessions_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_index_ts",
-      "target": "file_src_modules_sessions_sessions_admin_service_ts",
+      "source": "file_src_modules_sessions_sessions_controller_ts",
+      "target": "file_src_modules_notifications_notifications_service_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_session_controller_spec_ts",
-      "target": "file_src_modules_sessions_session_controller_ts",
+      "source": "file_src_modules_sessions_sessions_controller_ts",
+      "target": "file_src_bases_base_admin_http_controller_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_session_controller_spec_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_controller_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_controller_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_module_meta_spec_ts",
-      "target": "file_src_modules_sessions_session_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_module_ts",
-      "target": "file_src_modules_sessions_session_controller_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_module_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_integration_spec_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_integration_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_integration_spec_ts",
-      "target": "file_src_data_test_fake_em_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_spec_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_spec_ts",
-      "target": "file_src_data_test_fixture_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_ts",
-      "target": "dir_src_bases",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_session_service_ts",
-      "target": "dir_src_types",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_sessions_admin_service_ts",
-      "target": "file_src_common_resolve_relation_filters_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_sessions_admin_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_sessions_sessions_admin_service_ts",
+      "source": "file_src_modules_sessions_sessions_controller_ts",
       "target": "file_src_common_entity_id_ts",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_sessions_sessions_admin_service_ts",
-      "target": "file_src_common_date_utils_ts",
+      "source": "file_src_modules_sessions_sessions_controller_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_controller_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
@@ -15266,12 +14856,52 @@
     },
     {
       "source": "file_src_modules_sessions_sessions_module_ts",
-      "target": "file_src_modules_sessions_session_controller_ts",
+      "target": "file_src_modules_sessions_sessions_controller_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_sessions_sessions_module_ts",
-      "target": "file_src_modules_sessions_session_service_ts",
+      "target": "file_src_modules_sessions_sessions_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_integration_spec_ts",
+      "target": "file_src_modules_sessions_sessions_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_integration_spec_ts",
+      "target": "file_src_data_test_fixture_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_integration_spec_ts",
+      "target": "file_src_data_test_fake_em_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_spec_ts",
+      "target": "file_src_modules_sessions_sessions_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_ts",
+      "target": "file_src_common_resolve_relation_filters_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_sessions_sessions_service_ts",
+      "target": "file_src_common_date_utils_ts",
       "relation": "imports"
     },
     {
@@ -15711,27 +15341,17 @@
     },
     {
       "source": "file_src_modules_system_index_ts",
-      "target": "file_src_modules_system_system_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_index_ts",
-      "target": "file_src_modules_system_system_admin_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_index_ts",
-      "target": "file_src_modules_system_system_bootstrap_deps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_index_ts",
       "target": "file_src_modules_system_system_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_system_index_ts",
-      "target": "file_src_modules_system_system_types_ts",
+      "target": "file_src_modules_system_system_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_index_ts",
+      "target": "file_src_modules_system_system_module_ts",
       "relation": "imports"
     },
     {
@@ -15760,33 +15380,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "dir_src_common",
+      "source": "file_src_modules_system_system_maintenance_ts",
+      "target": "dir_src_config",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "file_src_modules_system_system_bootstrap_deps_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "file_src_modules_system_import_helpers_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "file_src_modules_system_export_schema_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "file_src_modules_system_legacy_import_id_map_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_system_system_admin_service_ts",
-      "target": "file_src_modules_system_import_reference_ts",
+      "source": "file_src_modules_system_system_maintenance_ts",
+      "target": "file_src_modules_auth_auth_service_ts",
       "relation": "imports"
     },
     {
@@ -15806,7 +15406,17 @@
     },
     {
       "source": "file_src_modules_system_system_controller_ts",
-      "target": "file_src_modules_system_system_types_ts",
+      "target": "dir_src_config",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_controller_ts",
+      "target": "file_src_modules_auth_auth_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_controller_ts",
+      "target": "file_src_modules_system_system_maintenance_ts",
       "relation": "imports"
     },
     {
@@ -15836,7 +15446,32 @@
     },
     {
       "source": "file_src_modules_system_system_service_ts",
-      "target": "file_src_modules_system_system_types_ts",
+      "target": "dir_src_common",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_service_ts",
+      "target": "file_src_modules_system_system_bootstrap_deps_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_service_ts",
+      "target": "file_src_modules_system_import_helpers_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_service_ts",
+      "target": "file_src_modules_system_export_schema_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_service_ts",
+      "target": "file_src_modules_system_legacy_import_id_map_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_system_system_service_ts",
+      "target": "file_src_modules_system_import_reference_ts",
       "relation": "imports"
     },
     {
@@ -16236,17 +15871,17 @@
     },
     {
       "source": "file_src_modules_uploads_index_ts",
-      "target": "file_src_modules_uploads_uploads_module_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_index_ts",
       "target": "file_src_modules_uploads_uploads_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_uploads_index_ts",
-      "target": "file_src_modules_uploads_uploads_admin_service_ts",
+      "target": "file_src_modules_uploads_uploads_controller_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_index_ts",
+      "target": "file_src_modules_uploads_uploads_module_ts",
       "relation": "imports"
     },
     {
@@ -16290,83 +15925,13 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_common_entity_id_ts",
+      "source": "file_src_modules_uploads_uploads_disk_service_ts",
+      "target": "dir_src_common",
       "relation": "imports"
     },
     {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_common_fs_unlink_retry_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_common_pagination_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_common_image_processor_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_zip_path_mapper_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
+      "source": "file_src_modules_uploads_uploads_disk_service_ts",
       "target": "file_src_modules_uploads_storage_media_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_folder_reorganize_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_folder_navigation_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_storage_folder_labels_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_storage_upload_policy_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_storage_path_resolver_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_storage_folder_name_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_order_image_snapshot_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_storage_protected_paths_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_uploads_uploads_admin_service_ts",
-      "target": "file_src_modules_uploads_upload_filename_ts",
       "relation": "imports"
     },
     {
@@ -16411,12 +15976,92 @@
     },
     {
       "source": "file_src_modules_uploads_uploads_service_spec_ts",
-      "target": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_uploads_disk_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_uploads_uploads_service_ts",
-      "target": "dir_src_common",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_common_fs_unlink_retry_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_common_parse_list_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_common_pagination_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_common_image_processor_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_zip_path_mapper_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_media_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_folder_reorganize_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_folder_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_folder_labels_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_upload_policy_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_path_resolver_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_folder_name_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_order_image_snapshot_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_storage_protected_paths_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_upload_filename_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_uploads_uploads_service_ts",
+      "target": "file_src_modules_uploads_uploads_disk_service_ts",
       "relation": "imports"
     },
     {

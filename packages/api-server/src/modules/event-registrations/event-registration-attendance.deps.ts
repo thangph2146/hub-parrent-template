@@ -1,5 +1,5 @@
 import type { EntityName } from '@mikro-orm/core';
-import type { EventRegistrationRowDto } from './event-registrations-admin.service';
+import type { EventRegistrationRowDto } from './event-registrations.service';
 import type { EventAttendanceSocketPayload } from './event-registration-attendance.types';
 
 export interface EventRegistrationAttendanceDeps {

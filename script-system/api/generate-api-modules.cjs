@@ -17,6 +17,7 @@ const {
   GENERATED_BANNER,
 } = require('./api-module-registry.cjs')
 const { renderController } = require('./render-api-controller.cjs')
+const { renderPackageExtendController } = require('./render-package-extend-controller.cjs')
 const { renderApiModule } = require('./render-api-module.cjs')
 const { resolveApiModules } = require('./resolve-api-modules.cjs')
 
@@ -68,9 +69,45 @@ function pruneModuleFolder(
     }
     if (!entry.isFile()) continue
     const content = fs.readFileSync(full, 'utf8')
-    if (!content.includes('AUTO-GENERATED')) {
+    if (content.includes('AUTO-GENERATED')) {
       fs.unlinkSync(full)
+      console.log(`[api:generate] pruned stale generated: ${entry.name}`)
+      continue
     }
+    fs.unlinkSync(full)
+  }
+}
+
+/** Xóa thư mục module src/ không thuộc api.app.config (rác từ sync main legacy). */
+function pruneOrphanModuleFolders(appRoot, modules) {
+  const srcDir = path.join(appRoot, 'src')
+  if (!fs.existsSync(srcDir)) return
+
+  const allowed = new Set([
+    'common',
+    'config',
+    'entities',
+    'mikro-orm',
+    'migrations',
+    'seeds',
+    'socket',
+    'proxy-image',
+  ])
+
+  for (const moduleId of modules) {
+    const def = REGISTRY[moduleId]
+    if (def?.folder) allowed.add(def.folder)
+  }
+
+  for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    if (!entry.isDirectory() || allowed.has(entry.name)) continue
+    const full = path.join(srcDir, entry.name)
+    const hasModuleFile = fs
+      .readdirSync(full)
+      .some((name) => name.endsWith('.module.ts'))
+    if (!hasModuleFile) continue
+    fs.rmSync(full, { recursive: true, force: true })
+    console.log(`[api:generate] pruned orphan module: ${path.relative(ROOT, full)}`)
   }
 }
 
@@ -91,6 +128,10 @@ function main() {
   if (!modules.length) {
     console.warn(`[api:generate] ${appRel}: modules rỗng — bỏ qua`)
     return
+  }
+
+  if (prune) {
+    pruneOrphanModuleFolders(appRoot, modules)
   }
 
   let servicesWritten = 0
@@ -120,17 +161,20 @@ function main() {
 
     if (prune) {
       const preserveControllerFiles = []
-      if (preserveControllers.has(moduleId)) {
-        if (def.controllerFile) preserveControllerFiles.push(def.controllerFile)
-        for (const item of def.extraControllers ?? []) {
-          preserveControllerFiles.push(item.file)
-        }
-        for (const item of def.extraProviders ?? []) {
-          preserveControllerFiles.push(item.file)
-        }
-        for (const file of def.preserveNativeFiles ?? []) {
-          preserveControllerFiles.push(file)
-        }
+      if (def.controllerFile) {
+        preserveControllerFiles.push(def.controllerFile)
+      }
+      for (const item of def.extraControllers ?? []) {
+        preserveControllerFiles.push(item.file)
+      }
+      for (const item of def.extraProviders ?? []) {
+        preserveControllerFiles.push(item.file)
+      }
+      for (const file of def.preserveNativeFiles ?? []) {
+        preserveControllerFiles.push(file)
+      }
+      if (preserveControllers.has(moduleId) && def.controllerFile) {
+        preserveControllerFiles.push(def.controllerFile)
       }
       pruneModuleFolder(
         destDir,
@@ -176,25 +220,41 @@ function main() {
     }
 
     if (scaffoldControllers) {
-      const hasControllerTemplate = Boolean(def.controllerTemplate || def.controller)
-      const skipController =
-        preserveControllers.has(moduleId) ||
-        (def.controllerNative && !def.controllerTemplate) ||
-        !def.controllerFile ||
-        !hasControllerTemplate
+      const skipByConfig = preserveControllers.has(moduleId)
 
-      if (skipController) {
-        console.log(`[api:generate] skip controller: ${moduleId}`)
+      if (skipByConfig) {
+        console.log(`[api:generate] skip controller (native config): ${moduleId}`)
         controllersSkipped++
-      } else {
+      } else if (def.packageController) {
         const controllerPath = path.join(destDir, def.controllerFile)
-        const controllerContent = renderController(def)
-        if (!controllerContent) {
+        writeFileWithRetry(
+          controllerPath,
+          renderPackageExtendController(def),
+        )
+        console.log(
+          `[api:generate] wrote package extend ${path.relative(ROOT, controllerPath)}`,
+        )
+        controllersWritten++
+      } else {
+        const hasControllerTemplate = Boolean(def.controllerTemplate || def.controller)
+        const skipController =
+          (def.controllerNative && !def.controllerTemplate) ||
+          !def.controllerFile ||
+          !hasControllerTemplate
+
+        if (skipController) {
+          console.log(`[api:generate] skip controller: ${moduleId}`)
           controllersSkipped++
         } else {
-          writeFileWithRetry(controllerPath, controllerContent)
-          console.log(`[api:generate] wrote ${path.relative(ROOT, controllerPath)}`)
-          controllersWritten++
+          const controllerPath = path.join(destDir, def.controllerFile)
+          const controllerContent = renderController(def)
+          if (!controllerContent) {
+            controllersSkipped++
+          } else {
+            writeFileWithRetry(controllerPath, controllerContent)
+            console.log(`[api:generate] wrote ${path.relative(ROOT, controllerPath)}`)
+            controllersWritten++
+          }
         }
       }
     }

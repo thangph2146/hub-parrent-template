@@ -13,4 +13,6 @@ export * from './base-service.class';
 export * from './base-controller.class';
 export * from './base-crud.service';
 export * from './base-crud.controller';
+export * from './base-admin-http.controller';
+export * from './base-admin-crud.controller';
 export * from './crud-factory';

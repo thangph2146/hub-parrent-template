@@ -6,7 +6,11 @@ import {
   type TagsRowDto,
 } from '@workspace/api-server/modules/tags';
 import { toIso } from '@workspace/api-server/common';
-import { getOptionsFromModel, type GetOptionsConfig } from '../common/get-options';
+
+import {
+  getOptionsFromModel,
+  type GetOptionsConfig,
+} from '../common/get-options';
 import { Tag } from '../entities/tag.entity';
 const TAG_OPTIONS_CONFIG: GetOptionsConfig = {
   id: { valueField: 'id', labelField: 'name', searchField: 'name' },
@@ -30,7 +34,6 @@ export class TagsService extends BaseTagsService {
   protected getEntity(): new () => Record<string, unknown> {
     return Tag as unknown as new () => Record<string, unknown>;
   }
-
 
   protected getSearchFields(): string[] {
     return ['name', 'slug'];

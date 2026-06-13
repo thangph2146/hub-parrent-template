@@ -1,7 +1,7 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseNotificationsAdminService } from '@workspace/api-server/modules/notifications';
+import { BaseNotificationsService } from '@workspace/api-server/modules/notifications';
 import { SocketGateway } from '../socket/socket.gateway';
 import {
   mapNotificationToPayload,
@@ -13,10 +13,18 @@ import { UserRole } from '../entities/user-role.entity';
 import { Message } from '../entities/message.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 
-export type { NotificationsListQuery, NotificationItemDto, NotificationsListResult, UnreadCountsResult, AdminTableRowDto, AdminTableQuery, AdminTableResult } from '@workspace/api-server/modules/notifications';
+export type {
+  NotificationsListQuery,
+  NotificationItemDto,
+  NotificationsListResult,
+  UnreadCountsResult,
+  AdminTableRowDto,
+  AdminTableQuery,
+  AdminTableResult,
+} from '@workspace/api-server/modules/notifications';
 
 @Injectable()
-export class NotificationsService extends BaseNotificationsAdminService {
+export class NotificationsService extends BaseNotificationsService {
   constructor(
     private readonly em: EntityManager,
     @Inject(forwardRef(() => SocketGateway))

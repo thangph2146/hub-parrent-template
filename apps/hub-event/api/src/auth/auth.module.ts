@@ -1,10 +1,10 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthAdminController } from './auth-admin.controller';
+import { AuthController } from './auth.controller';
 
 @Module({
-  controllers: [AuthAdminController],
+  controllers: [AuthController],
   providers: [AuthService],
   exports: [AuthService],
 })

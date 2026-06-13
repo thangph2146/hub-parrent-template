@@ -1,11 +1,8 @@
 /**
- * Pull/sync check-in từ main → hub-event (API subset + admin pages).
+ * @deprecated Legacy — copy API từ apps/main → hub-event.
+ * Dùng `pnpm pull:checkin` (packages-first) hoặc downstream `pnpm pull:template`.
  *
- * Workflow dev: sửa apps/main, push; trên máy deploy hoặc trước release check-in:
- *   pnpm pull:checkin   (alias)
- *   pnpm sync:checkin
- *
- * Không thay git pull — chạy SAU git pull khi cần cập nhật hub-event từ main.
+ *   pnpm pull:checkin:legacy
  */
 const { execSync } = require("node:child_process");
 const path = require("node:path");
@@ -18,7 +15,8 @@ const run = (cmd, label) => {
 
 console.log("[sync-checkin] main → hub-event (API profile + admin modules)\n");
 
-run("node script-system/sync/sync-api-from-main.cjs hub-event", "1/7 API từ main (api.sync-profile.json)");
+run("pnpm --filter @workspace/api-server run build", "0/8 build @workspace/api-server (trước generate)");
+run("node script-system/sync/sync-api-from-main.cjs hub-event", "1/8 API từ main (api.sync-profile.json) — LEGACY");
 run("node script-system/verify/verify-api-profile.mjs hub-event", "2/7 verify API profile");
 run(
   "node script-system/admin/migrate-admin-modules.cjs",

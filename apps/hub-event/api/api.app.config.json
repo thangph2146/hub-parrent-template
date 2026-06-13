@@ -23,23 +23,7 @@
   "native": {
     "modules": [],
     "controllers": [
-      "users",
-      "posts",
-      "comments",
-      "sessions",
-      "accounts",
-      "page-contents",
-      "uploads",
-      "event-speakers",
-      "event-checkins",
-      "event-registrations",
-      "dashboard",
-      "notifications",
-      "hanet",
-      "events",
-      "auth",
-      "public",
-      "system"
+      "public"
     ]
   }
 }

@@ -1,21 +1,20 @@
 /**
- * EventCheckins Module barrel export.
+ * EventCheckins module — HTTP admin + service binding (@workspace/api-server).
  */
 export {
   BaseEventCheckinsService,
+  BaseEventCheckinsService as BaseEventCheckinsAdminService,
+} from './event-checkins.service';
+export {
   BaseEventCheckinsController,
-  BaseEventCheckinsModule,
-} from './event-checkin.module';
-
-export type {
-  EventCheckinsRowDto,
-  EventCheckinsCreateData,
-  EventCheckinsUpdateData,
-} from './event-checkin.service';
-
-export { BaseEventCheckinsAdminService } from './event-checkins-admin.service';
+  BaseEventCheckinsController as BaseEventCheckinsAdminController,
+} from './event-checkins.controller';
+export type { IEventCheckinsControllerService } from './event-checkins.controller';
+/** @deprecated Dùng `IEventCheckinsControllerService`. */
+export type { IEventCheckinsControllerService as IEventCheckinsAdminControllerService } from './event-checkins.controller';
 export type {
   EventCheckinRowDto,
   ListEventCheckinsParams,
   ListEventCheckinsResult,
-} from './event-checkins-admin.service';
+} from './event-checkins.service';
+export { BaseEventCheckinsModule } from './event-checkins.module';

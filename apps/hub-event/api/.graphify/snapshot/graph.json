@@ -68,9 +68,9 @@
       "type": "directory"
     },
     {
-      "id": "file_src_auth_auth_admin_controller_ts",
-      "label": "auth-admin.controller.ts",
-      "path": "src/auth/auth-admin.controller.ts",
+      "id": "file_src_auth_auth_controller_ts",
+      "label": "auth.controller.ts",
+      "path": "src/auth/auth.controller.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/auth",
@@ -404,6 +404,26 @@
       "client": false
     },
     {
+      "id": "file_src_common_gift_rules_spec_ts",
+      "label": "gift-rules.spec.ts",
+      "path": "src/common/gift-rules.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_gift_rules_ts",
+      "label": "gift-rules.ts",
+      "path": "src/common/gift-rules.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_image_processor_ts",
       "label": "image-processor.ts",
       "path": "src/common/image-processor.ts",
@@ -514,6 +534,46 @@
       "client": false
     },
     {
+      "id": "file_src_common_product_units_spec_ts",
+      "label": "product-units.spec.ts",
+      "path": "src/common/product-units.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_product_units_ts",
+      "label": "product-units.ts",
+      "path": "src/common/product-units.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_promo_checkout_spec_ts",
+      "label": "promo-checkout.spec.ts",
+      "path": "src/common/promo-checkout.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_promo_checkout_ts",
+      "label": "promo-checkout.ts",
+      "path": "src/common/promo-checkout.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_common_public_decorator_ts",
       "label": "public.decorator.ts",
       "path": "src/common/public.decorator.ts",
@@ -537,6 +597,26 @@
       "id": "file_src_common_resolve_relation_filters_ts",
       "label": "resolve-relation-filters.ts",
       "path": "src/common/resolve-relation-filters.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_unit_pricing_spec_ts",
+      "label": "unit-pricing.spec.ts",
+      "path": "src/common/unit-pricing.spec.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/common",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_common_unit_pricing_ts",
+      "label": "unit-pricing.ts",
+      "path": "src/common/unit-pricing.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src/common",
@@ -1952,9 +2032,39 @@
       "type": "directory"
     },
     {
+      "id": "file_src_scripts_mark_migrations_executed_ts",
+      "label": "mark-migrations-executed.ts",
+      "path": "src/scripts/mark-migrations-executed.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/scripts",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_seed_demo_ts",
       "label": "seed-demo.ts",
       "path": "src/seed-demo.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_seed_full_export_ts",
+      "label": "seed-full-export.ts",
+      "path": "src/seed-full-export.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_seed_guides_ts",
+      "label": "seed-guides.ts",
+      "path": "src/seed-guides.ts",
       "color": "#00ff41",
       "size": 10,
       "community": "src",
@@ -2372,6 +2482,15 @@
       "client": false
     },
     {
+      "id": "dir_src_testing",
+      "label": "testing/",
+      "path": "src/testing",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
       "id": "dir_src_uploads",
       "label": "uploads/",
       "path": "src/uploads",
@@ -2493,7 +2612,7 @@
     },
     {
       "source": "dir_src_auth",
-      "target": "file_src_auth_auth_admin_controller_ts",
+      "target": "file_src_auth_auth_controller_ts",
       "relation": "contains"
     },
     {
@@ -2663,6 +2782,16 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_gift_rules_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_gift_rules_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_image_processor_ts",
       "relation": "contains"
     },
@@ -2718,6 +2847,26 @@
     },
     {
       "source": "dir_src_common",
+      "target": "file_src_common_product_units_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_product_units_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_promo_checkout_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
       "target": "file_src_common_public_decorator_ts",
       "relation": "contains"
     },
@@ -2729,6 +2878,16 @@
     {
       "source": "dir_src_common",
       "target": "file_src_common_resolve_relation_filters_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_unit_pricing_spec_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_common",
+      "target": "file_src_common_unit_pricing_ts",
       "relation": "contains"
     },
     {
@@ -3447,8 +3606,23 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_scripts",
+      "target": "file_src_scripts_mark_migrations_executed_ts",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src",
       "target": "file_src_seed_demo_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_seed_full_export_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_seed_guides_ts",
       "relation": "contains"
     },
     {
@@ -3663,6 +3837,11 @@
     },
     {
       "source": "dir_src",
+      "target": "dir_src_testing",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
       "target": "dir_src_uploads",
       "relation": "contains"
     },
@@ -3708,37 +3887,12 @@
     },
     {
       "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_accounts_accounts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
-      "target": "file_src_config_app_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_accounts_accounts_controller_ts",
       "target": "file_src_uploads_uploads_service_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_accounts_accounts_controller_ts",
+      "target": "file_src_accounts_accounts_service_ts",
       "relation": "imports"
     },
     {
@@ -3932,23 +4086,8 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_auth_auth_admin_controller_ts",
+      "source": "file_src_auth_auth_controller_ts",
       "target": "file_src_auth_auth_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_auth_auth_admin_controller_ts",
-      "target": "file_src_common_public_decorator_ts",
       "relation": "imports"
     },
     {
@@ -3958,7 +4097,7 @@
     },
     {
       "source": "file_src_auth_auth_module_ts",
-      "target": "file_src_auth_auth_admin_controller_ts",
+      "target": "file_src_auth_auth_controller_ts",
       "relation": "imports"
     },
     {
@@ -4003,16 +4142,6 @@
     },
     {
       "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_cameras_cameras_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -4028,12 +4157,7 @@
     },
     {
       "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_cameras_cameras_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_cameras_cameras_service_ts",
       "relation": "imports"
     },
     {
@@ -4058,16 +4182,6 @@
     },
     {
       "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_categories_categories_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -4083,12 +4197,7 @@
     },
     {
       "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_categories_categories_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_categories_categories_service_ts",
       "relation": "imports"
     },
     {
@@ -4123,47 +4232,7 @@
     },
     {
       "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
       "target": "file_src_comments_comments_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_comments_comments_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
       "relation": "imports"
     },
     {
@@ -4252,6 +4321,31 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_common_gift_rules_spec_ts",
+      "target": "file_src_common_gift_rules_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_spec_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_gift_rules_ts",
+      "target": "file_src_common_product_units_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_common_logging_interceptor_ts",
       "target": "file_src_config_app_config_ts",
       "relation": "imports"
@@ -4289,6 +4383,41 @@
     {
       "source": "file_src_common_permissions_guard_ts",
       "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_spec_ts",
+      "target": "file_src_common_product_units_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_spec_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_product_units_ts",
+      "target": "file_src_entities_product_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_spec_ts",
+      "target": "file_src_common_promo_checkout_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_spec_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_promo_checkout_ts",
+      "target": "file_src_entities_promo_code_entity_ts",
       "relation": "imports"
     },
     {
@@ -4362,22 +4491,17 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_common_unit_pricing_spec_ts",
+      "target": "file_src_common_unit_pricing_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_common_unit_pricing_ts",
+      "target": "file_src_common_product_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_config_app_config_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_controller_ts",
-      "target": "file_src_dashboard_dashboard_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_dashboard_dashboard_controller_ts",
       "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
@@ -4389,6 +4513,16 @@
     {
       "source": "file_src_dashboard_dashboard_controller_ts",
       "target": "file_src_config_permissions_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_dashboard_dashboard_controller_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_dashboard_dashboard_controller_ts",
+      "target": "file_src_dashboard_dashboard_service_ts",
       "relation": "imports"
     },
     {
@@ -4912,36 +5046,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkins_event_checkins_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_event_checkins_event_checkins_module_ts",
       "target": "file_src_event_checkins_event_checkins_service_ts",
       "relation": "imports"
@@ -4968,16 +5072,6 @@
     },
     {
       "source": "file_src_event_checkouts_event_checkouts_controller_ts",
-      "target": "file_src_event_checkouts_event_checkouts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkouts_event_checkouts_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_checkouts_event_checkouts_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -4993,7 +5087,7 @@
     },
     {
       "source": "file_src_event_checkouts_event_checkouts_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_event_checkouts_event_checkouts_service_ts",
       "relation": "imports"
     },
     {
@@ -5037,36 +5131,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_registrations_event_registrations_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_event_registrations_event_registrations_module_ts",
       "target": "file_src_event_registrations_event_registrations_service_ts",
       "relation": "imports"
@@ -5107,36 +5171,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_event_speakers_event_speakers_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_event_speakers_event_speakers_module_ts",
       "target": "file_src_event_speakers_event_speakers_service_ts",
       "relation": "imports"
@@ -5163,42 +5197,7 @@
     },
     {
       "source": "file_src_events_events_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
       "target": "file_src_events_events_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_events_events_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
       "relation": "imports"
     },
     {
@@ -5227,41 +5226,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_face_data_face_data_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_face_data_face_data_module_ts",
       "target": "file_src_face_data_face_data_service_ts",
       "relation": "imports"
@@ -5274,16 +5238,6 @@
     {
       "source": "file_src_face_data_face_data_service_ts",
       "target": "file_src_entities_face_data_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_webhook_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_hanet_hanet_webhook_controller_ts",
-      "target": "file_src_common_public_decorator_ts",
       "relation": "imports"
     },
     {
@@ -5328,16 +5282,6 @@
     },
     {
       "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_locations_locations_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -5353,12 +5297,7 @@
     },
     {
       "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_locations_locations_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_locations_locations_service_ts",
       "relation": "imports"
     },
     {
@@ -5648,32 +5587,7 @@
     },
     {
       "source": "file_src_notifications_notifications_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_controller_ts",
       "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_notifications_notifications_controller_ts",
-      "target": "file_src_config_constants_ts",
       "relation": "imports"
     },
     {
@@ -5743,57 +5657,7 @@
     },
     {
       "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
       "target": "file_src_page_contents_page_contents_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_auth_auth_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_page_contents_page_contents_controller_ts",
-      "target": "file_src_common_parse_column_filters_ts",
       "relation": "imports"
     },
     {
@@ -5823,47 +5687,7 @@
     },
     {
       "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
       "target": "file_src_posts_posts_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_posts_posts_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
       "relation": "imports"
     },
     {
@@ -6198,16 +6022,6 @@
     },
     {
       "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_roles_roles_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -6223,12 +6037,7 @@
     },
     {
       "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_roles_roles_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_roles_roles_service_ts",
       "relation": "imports"
     },
     {
@@ -6263,16 +6072,6 @@
     },
     {
       "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_screens_screens_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -6288,12 +6087,7 @@
     },
     {
       "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_screens_screens_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_screens_screens_service_ts",
       "relation": "imports"
     },
     {
@@ -6317,6 +6111,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_scripts_mark_migrations_executed_ts",
+      "target": "file_src_mikro_orm_mikro_orm_module_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_seed_demo_ts",
       "target": "file_src_mikro_orm_orm_entities_ts",
       "relation": "imports"
@@ -6324,6 +6123,131 @@
     {
       "source": "file_src_seed_demo_ts",
       "target": "file_src_seeds_checkin_demo_runner_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_common_entity_id_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_mikro_orm_orm_entities_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_account_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_admission_result_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_category_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_comment_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_contact_request_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_group_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_group_member_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_message_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_message_read_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_notification_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_page_content_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_post_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_post_category_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_post_tag_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_role_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_session_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_setting_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_student_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_tag_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_user_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_user_role_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_full_export_ts",
+      "target": "file_src_entities_verification_token_entity_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_seed_guides_ts",
+      "target": "file_src_entities_page_content_entity_ts",
       "relation": "imports"
     },
     {
@@ -6422,36 +6346,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_seo_metas_seo_metas_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_seo_metas_seo_metas_module_ts",
       "target": "file_src_seo_metas_seo_metas_service_ts",
       "relation": "imports"
@@ -6473,22 +6367,7 @@
     },
     {
       "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_sessions_sessions_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
       "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
       "relation": "imports"
     },
     {
@@ -6498,27 +6377,7 @@
     },
     {
       "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_sessions_sessions_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_sessions_sessions_service_ts",
       "relation": "imports"
     },
     {
@@ -6568,12 +6427,12 @@
     },
     {
       "source": "file_src_settings_settings_controller_ts",
-      "target": "file_src_settings_settings_service_ts",
+      "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_settings_settings_controller_ts",
-      "target": "file_src_common_api_response_ts",
+      "target": "file_src_config_permissions_ts",
       "relation": "imports"
     },
     {
@@ -6583,12 +6442,7 @@
     },
     {
       "source": "file_src_settings_settings_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_settings_settings_controller_ts",
-      "target": "file_src_config_permissions_ts",
+      "target": "file_src_settings_settings_service_ts",
       "relation": "imports"
     },
     {
@@ -6668,16 +6522,6 @@
     },
     {
       "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_speakers_speakers_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -6693,12 +6537,7 @@
     },
     {
       "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_speakers_speakers_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_speakers_speakers_service_ts",
       "relation": "imports"
     },
     {
@@ -6723,32 +6562,12 @@
     },
     {
       "source": "file_src_system_system_controller_ts",
-      "target": "file_src_system_system_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
       "target": "file_src_auth_auth_service_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_system_system_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_system_system_controller_ts",
-      "target": "file_src_config_permissions_ts",
+      "target": "file_src_system_system_service_ts",
       "relation": "imports"
     },
     {
@@ -6778,16 +6597,6 @@
     },
     {
       "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_tags_tags_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -6803,12 +6612,7 @@
     },
     {
       "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_tags_tags_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_tags_tags_service_ts",
       "relation": "imports"
     },
     {
@@ -6838,16 +6642,6 @@
     },
     {
       "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_templates_templates_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -6863,12 +6657,7 @@
     },
     {
       "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_bulk_actions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_templates_templates_controller_ts",
-      "target": "file_src_common_admin_list_params_ts",
+      "target": "file_src_templates_templates_service_ts",
       "relation": "imports"
     },
     {
@@ -6912,36 +6701,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_config_app_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_common_permissions_decorator_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_config_permissions_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_uploads_uploads_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_uploads_uploads_module_ts",
       "target": "file_src_uploads_uploads_service_ts",
       "relation": "imports"
@@ -6973,46 +6732,6 @@
     },
     {
       "source": "file_src_users_users_controller_ts",
-      "target": "file_src_common_entity_id_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_users_users_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_notifications_notifications_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_entities_notification_entity_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_sessions_sessions_service_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_socket_socket_gateway_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_common_api_response_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
-      "target": "file_src_config_constants_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_users_users_controller_ts",
       "target": "file_src_common_permissions_decorator_ts",
       "relation": "imports"
     },
@@ -7023,7 +6742,12 @@
     },
     {
       "source": "file_src_users_users_controller_ts",
-      "target": "file_src_common_parse_list_query_ts",
+      "target": "file_src_config_constants_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_users_users_controller_ts",
+      "target": "file_src_users_users_service_ts",
       "relation": "imports"
     },
     {

@@ -22,7 +22,9 @@ function renderApiModule(def) {
 
   const importsBlock =
     moduleImportEntries.length > 0
-      ? `\n  imports: [${moduleImportEntries.join(', ')}],\n`
+      ? moduleImportEntries.length === 1
+        ? `\n  imports: [${moduleImportEntries[0]}],\n`
+        : `\n  imports: [\n    ${moduleImportEntries.join(',\n    ')},\n  ],\n`
       : '\n'
 
   const extraControllers = def.extraControllers ?? []

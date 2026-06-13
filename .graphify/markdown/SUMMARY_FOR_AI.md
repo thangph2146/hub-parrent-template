@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.508Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-13T10:59:09.492Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -74,11 +74,11 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 
 | App | Files trong context | generatedAt (context) | SUMMARY |
 |-----|--------------------|------------------------|---------|
-| `@api` | 342 | 2026-06-12T12:59:23.678Z | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@api` | 343 | 2026-06-13T10:59:08.236Z | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@backend` | 202 | 2026-06-12T12:59:23.774Z | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@hub-parent/api` | 315 | 2026-06-12T12:59:24.010Z | [`apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@frontend` | 128 | 2026-06-12T12:59:24.112Z | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@hub-event/api` | 208 | 2026-06-12T12:59:24.214Z | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@hub-event/api` | 218 | 2026-06-13T10:52:22.437Z | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@hub-event-checkin-frontend` | 288 | 2026-06-12T12:59:24.344Z | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@store-sync/api` | 315 | 2026-06-12T12:59:24.640Z | [`apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@store-sync-frontend` | 110 | 2026-06-12T12:59:24.736Z | [`apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |

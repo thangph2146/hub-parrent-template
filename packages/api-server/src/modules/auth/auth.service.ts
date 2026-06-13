@@ -1,3 +1,4 @@
+/** @scaffold-only — Generic CRUD; hub-event dùng *-admin.* thay cho HTTP layer này. */
 import { Injectable } from '@nestjs/common';
 import type { EntityManager } from '@mikro-orm/core';
 import { compare, hash } from 'bcryptjs';

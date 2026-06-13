@@ -7,7 +7,11 @@ import { SocketModule } from '../socket/socket.module';
 import { SessionsModule } from '../sessions/sessions.module';
 
 @Module({
-  imports: [NotificationsModule, forwardRef(() => SocketModule), forwardRef(() => SessionsModule)],
+  imports: [
+    NotificationsModule,
+    forwardRef(() => SocketModule),
+    forwardRef(() => SessionsModule),
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

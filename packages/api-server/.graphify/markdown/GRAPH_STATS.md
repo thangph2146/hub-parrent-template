@@ -1,26 +1,26 @@
 # Thống kê graph — packages/api-server (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.405Z`
+> **Sinh tự động:** `2026-06-13T10:59:09.382Z`
 
 ## Top in-degree
 
 | File | Importers |
 |------|-----------|
-| `src/data-test/fixture.ts` | 98 |
+| `src/data-test/fixture.ts` | 88 |
 | `src/data-test/fake-em.ts` | 50 |
-| `src/common/entity-id.ts` | 20 |
+| `src/common/entity-id.ts` | 22 |
 | `src/common/pagination.ts` | 15 |
 | `src/common/date-utils.ts` | 11 |
+| `src/bases/base-admin-http.controller.ts` | 9 |
+| `src/modules/auth/auth.service.ts` | 8 |
+| `src/modules/event-registrations/event-registrations.service.ts` | 8 |
 | `src/common/bulk-actions.ts` | 7 |
 | `src/modules/contact-requests/contact-request.service.ts` | 7 |
+| `src/modules/posts/posts.service.ts` | 7 |
 | `src/modules/settings/setting.service.ts` | 7 |
-| `src/modules/accounts/account.service.ts` | 6 |
-| `src/modules/auth/auth.service.ts` | 6 |
-| `src/modules/cameras/camera.service.ts` | 6 |
-| `src/modules/courses/course.service.ts` | 6 |
 
 ## Nodes theo type
 
-- `ts`: 635
+- `ts`: 618
 - `directory`: 63
 - `json`: 1

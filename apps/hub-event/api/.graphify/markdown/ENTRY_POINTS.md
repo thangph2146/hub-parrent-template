@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/hub-event/api (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.185Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T10:59:09.059Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -45,7 +45,7 @@
 ## Controllers (`*.controller.ts`) — 31 file
 
 - `src/accounts/accounts.controller.ts`
-- `src/auth/auth-admin.controller.ts`
+- `src/auth/auth.controller.ts`
 - `src/cameras/cameras.controller.ts`
 - `src/categories/categories.controller.ts`
 - `src/comments/comments.controller.ts`
@@ -76,12 +76,14 @@
 - `src/uploads/uploads.controller.ts`
 - … và 1 controller khác
 
-## AUTO-GENERATED (không sửa tay) — 75 file
+## AUTO-GENERATED (không sửa tay) — 91 file
 
 Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
 
+- `src/accounts/accounts.controller.ts`
 - `src/accounts/accounts.module.ts`
 - `src/accounts/accounts.service.ts`
+- `src/auth/auth.controller.ts`
 - `src/auth/auth.module.ts`
 - `src/auth/auth.service.ts`
 - `src/cameras/cameras.controller.ts`
@@ -90,32 +92,30 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/categories/categories.controller.ts`
 - `src/categories/categories.module.ts`
 - `src/categories/categories.service.ts`
+- `src/comments/comments.controller.ts`
 - `src/comments/comments.module.ts`
 - `src/comments/comments.service.ts`
+- `src/dashboard/dashboard.controller.ts`
 - `src/dashboard/dashboard.module.ts`
 - `src/dashboard/dashboard.service.ts`
+- `src/event-checkins/event-checkins.controller.ts`
 - `src/event-checkins/event-checkins.module.ts`
 - `src/event-checkins/event-checkins.service.ts`
 - `src/event-checkouts/event-checkouts.controller.ts`
 - `src/event-checkouts/event-checkouts.module.ts`
 - `src/event-checkouts/event-checkouts.service.ts`
 - `src/event-registrations/event-registration-attendance.service.ts`
+- `src/event-registrations/event-registrations.controller.ts`
 - `src/event-registrations/event-registrations.module.ts`
 - `src/event-registrations/event-registrations.service.ts`
+- `src/event-speakers/event-speakers.controller.ts`
 - `src/event-speakers/event-speakers.module.ts`
 - `src/event-speakers/event-speakers.service.ts`
+- `src/events/events.controller.ts`
 - `src/events/events.module.ts`
 - `src/events/events.service.ts`
 - `src/face-data/face-data.controller.ts`
-- `src/face-data/face-data.module.ts`
-- `src/face-data/face-data.service.ts`
-- `src/hanet/hanet-webhook.service.ts`
-- `src/hanet/hanet.module.ts`
-- `src/locations/locations.controller.ts`
-- `src/locations/locations.module.ts`
-- `src/locations/locations.service.ts`
-- `src/notifications/notifications.module.ts`
-- … và 40 file khác
+- … và 56 file khác
 
 ## Làm mới
 

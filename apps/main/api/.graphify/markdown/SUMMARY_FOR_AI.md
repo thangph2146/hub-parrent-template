@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/main/api`
-- **context.generatedAt:** 2026-06-12T12:59:23.678Z
+- **context.generatedAt:** 2026-06-13T10:59:08.236Z
 
 ## Mục lục artefact Graphify
 
@@ -43,7 +43,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Pattern lặp:** [`PATTERN_CLUSTERS.md`](PATTERN_CLUSTERS.md) — boilerplate (loading, re-export generate).
 
 ## Thống kê
-- **totalFiles:** 342
+- **totalFiles:** 343
 - **clientComponents:** 0
 
 ## Góc hệ thống (@api) — đường dẫn gợi ý
@@ -128,7 +128,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/academic-years/academic-years.controller.ts`
 - `src/accounts/accounts.controller.ts`
 - `src/admission-results/admission-results.controller.ts`
-- `src/auth/auth-admin.controller.ts`
+- `src/auth/auth.controller.ts`
 - `src/cameras/cameras.controller.ts`
 - `src/carts/public-carts.controller.ts`
 - `src/categories/categories.controller.ts`
@@ -252,10 +252,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/admission-results/admission-results.service.spec.ts` | ts | no |  | src/admission-results/admission-results.service.ts, src/entities/admission-result.entity.ts |
 | `src/admission-results/admission-results.service.ts` | ts | no | AdmissionResultRowDto, ListAdmissionResultsParams, ListAdmissionResultsResult, AdmissionResultsService | src/common/entity-id.ts, src/entities/admission-result.entity.ts, src/common/pagination.ts, src/common/date-utils.ts |
 | `src/app.module.ts` | ts | no | AppModule | src/mikro-orm/mikro-orm.module.ts, src/common/permissions.guard.ts, src/public/public.module.ts, src/socket/socket.module.ts, src/auth/auth.module.ts, src/notifications/notifications.module.ts, src/ac |
-| `src/auth/auth-admin.controller.ts` | ts | no | LoginDto, DevLoginDto, GoogleLoginDto, LogoutDto, AuthAdminController | src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/public.decorator.ts |
-| `src/auth/auth.module.ts` | ts | no | AuthModule | src/auth/auth-admin.controller.ts, src/auth/auth.service.ts |
+| `src/auth/auth.controller.ts` | ts | no | AuthController | src/auth/auth.service.ts |
+| `src/auth/auth.module.ts` | ts | no | AuthModule | src/auth/auth.controller.ts, src/auth/auth.service.ts |
 | `src/auth/auth.service.spec.ts` | ts | no |  | src/auth/auth.service.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts |
-| `src/auth/auth.service.ts` | ts | no | LoginDto, GoogleProfileDto, AuthUserPayload, AuthService | src/config/constants.ts, src/common/entity-id.ts, src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/setting.entity.ts |
+| `src/auth/auth.service.ts` | ts | no | LoginDto, AuthService | src/entities/user.entity.ts, src/entities/role.entity.ts, src/entities/user-role.entity.ts, src/entities/setting.entity.ts |
 | `src/cameras/cameras.controller.ts` | ts | no | CamerasController | src/common/permissions.decorator.ts, src/config/permissions.ts, src/cameras/cameras.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/bulk-actions.ts, src/common/parse-list-q |
 | `src/cameras/cameras.module.ts` | ts | no | CamerasModule | src/cameras/cameras.controller.ts, src/cameras/cameras.service.ts |
 | `src/cameras/cameras.service.spec.ts` | ts | no |  | src/cameras/cameras.service.ts |
@@ -530,9 +530,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/students/students.module.ts` | ts | no | StudentsModule | src/notifications/notifications.module.ts, src/students/students.controller.ts, src/students/students.service.ts |
 | `src/students/students.service.spec.ts` | ts | no |  | src/students/students.service.ts, src/entities/student.entity.ts, src/entities/user.entity.ts |
 | `src/students/students.service.ts` | ts | no | StudentRowDto, ListStudentsParams, ListStudentsResult, StudentsService | src/common/entity-id.ts, src/entities/user.entity.ts, src/common/pagination.ts, src/common/get-options.ts, src/entities/student.entity.ts |
-| `src/system/system.controller.ts` | ts | no | SystemController | src/system/system.service.ts, src/auth/auth.service.ts, src/common/api-response.ts, src/config/constants.ts, src/common/permissions.decorator.ts, src/config/permissions.ts |
+| `src/system/system.controller.ts` | ts | no | SystemController | src/auth/auth.service.ts, src/system/system.service.ts |
 | `src/system/system.module.ts` | ts | no | SystemModule | src/system/system.controller.ts, src/system/system.service.ts, src/auth/auth.module.ts |
 | `src/system/system.service.spec.ts` | ts | no |  | src/system/system.service.ts |
+| `src/system/system.service.ts` | ts | no | SystemService | src/mikro-orm/orm-entities.ts, src/seeds/superadmin-bootstrap.runner.ts |
 | `src/tags/tags.controller.ts` | ts | no | TagsController | src/common/entity-id.ts, src/tags/tags.service.ts, src/notifications/notifications.service.ts, src/entities/notification.entity.ts, src/common/api-response.ts, src/config/constants.ts, src/common/perm |
 | `src/tags/tags.module.ts` | ts | no | TagsModule | src/notifications/notifications.module.ts, src/tags/tags.controller.ts, src/tags/tags.service.ts |
 | `src/tags/tags.service.spec.ts` | ts | no |  | src/tags/tags.service.ts, src/entities/tag.entity.ts |

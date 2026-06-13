@@ -1,139 +1,18 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import {
-  Controller,
-  Get,
-  Put,
-  Body,
-  Param,
-  Query,
-  Res,
-  Delete,
-  Logger,
-} from '@nestjs/common';
-import type { Response } from 'express';
-import { SettingsService } from './settings.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
-import { ADMIN_ROUTES } from '../config/constants';
+import { ApiTags } from '@nestjs/swagger';
+import { Inject } from '@nestjs/common';
+import { BaseSettingsController as PackageSettingsController } from '@workspace/api-server/modules/settings';
 import { Permissions } from '../common/permissions.decorator';
 import { PERMISSIONS } from '../config/permissions';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Controller } from '@nestjs/common';
+import { SettingsService } from './settings.service';
 
-@Permissions(PERMISSIONS.SETTINGS_VIEW)
+@ApiTags('Settings')
 @Controller(ADMIN_ROUTES.SETTINGS)
-export class SettingsController {
-  private readonly logger = new Logger(SettingsController.name);
-
-  constructor(private readonly settingsService: SettingsService) {}
-
-  private logApiError(api: string, error: unknown, metadata?: unknown): void {
-    const details =
-      error instanceof Error
-        ? {
-            api,
-            name: error.name,
-            message: error.message,
-            stack: error.stack ?? null,
-            metadata: metadata ?? null,
-          }
-        : {
-            api,
-            message: String(error),
-            stack: null,
-            metadata: metadata ?? null,
-          };
-    this.logger.error(JSON.stringify(details));
-  }
-
-  @Get()
-  async list(
-    @Res() res: Response,
-    @Query('group') group?: string,
-    @Query('search') search?: string,
-  ) {
-    try {
-      const data = await this.settingsService.listSettings({ group, search });
-      const { statusCode, body } = createSuccessResponse({ data });
-      return res.status(statusCode).json(body);
-    } catch (error) {
-      this.logApiError('GET /api/admin/settings', error, { group, search });
-      const { statusCode, body } = createErrorResponse('Internal Server Error', {
-        status: 500,
-      });
-      return res.status(statusCode).json(body);
-    }
-  }
-
-  @Get(':key')
-  async getByKey(@Res() res: Response, @Param('key') key: string) {
-    try {
-      const result = await this.settingsService.getByKey(key);
-      const { statusCode, body } = createSuccessResponse(result);
-      return res.status(statusCode).json(body);
-    } catch (error) {
-      this.logApiError('GET /api/admin/settings/:key', error, { key });
-      const { statusCode, body } = createErrorResponse('Internal Server Error', {
-        status: 500,
-      });
-      return res.status(statusCode).json(body);
-    }
-  }
-
-  @Permissions(PERMISSIONS.SETTINGS_UPDATE)
-  @Put()
-  async updateBulk(
-    @Res() res: Response,
-    @Body() settings: Record<string, unknown>,
-  ) {
-    try {
-      const result = await this.settingsService.bulkUpdate(settings);
-      const { statusCode, body } = createSuccessResponse(result);
-      return res.status(statusCode).json(body);
-    } catch (error) {
-      this.logApiError('PUT /api/admin/settings', error, {
-        keyCount: Object.keys(settings ?? {}).length,
-      });
-      const { statusCode, body } = createErrorResponse('Internal Server Error', {
-        status: 500,
-      });
-      return res.status(statusCode).json(body);
-    }
-  }
-
-  @Permissions(PERMISSIONS.SETTINGS_UPDATE)
-  @Put(':key')
-  async update(
-    @Res() res: Response,
-    @Param('key') key: string,
-    @Body('value') value: unknown,
-  ) {
-    try {
-      const result = await this.settingsService.updateByKey(key, value);
-      const { statusCode, body } = createSuccessResponse(result);
-      return res.status(statusCode).json(body);
-    } catch (error) {
-      this.logApiError('PUT /api/admin/settings/:key', error, { key });
-      const { statusCode, body } = createErrorResponse('Internal Server Error', {
-        status: 500,
-      });
-      return res.status(statusCode).json(body);
-    }
-  }
-
-  @Permissions(PERMISSIONS.SETTINGS_DELETE)
-  @Delete(':id')
-  async delete(@Res() res: Response, @Param('id') id: string) {
-    try {
-      const result = await this.settingsService.deleteSetting(id);
-      const { statusCode, body } = createSuccessResponse(result);
-      return res.status(statusCode).json(body);
-    } catch (error) {
-      this.logApiError('DELETE /api/admin/settings/:id', error, { id });
-      const { statusCode, body } = createErrorResponse('Internal Server Error', {
-        status: 500,
-      });
-      return res.status(statusCode).json(body);
-    }
+@Permissions(PERMISSIONS.SETTINGS_VIEW)
+export class SettingsController extends PackageSettingsController {
+  constructor(@Inject(SettingsService) settingsService: SettingsService) {
+    super(settingsService);
   }
 }

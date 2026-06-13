@@ -1,15 +1,19 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventSpeakersAdminService } from '@workspace/api-server/modules/event-speakers';
+import { BaseEventSpeakersService } from '@workspace/api-server/modules/event-speakers';
 import { EventSpeaker } from '../entities/event-speaker.entity';
 import { Event } from '../entities/event.entity';
 import { Speaker } from '../entities/speaker.entity';
 
-export type { EventSpeakerRowDto, ListEventSpeakersParams, ListEventSpeakersResult } from '@workspace/api-server/modules/event-speakers';
+export type {
+  EventSpeakerRowDto,
+  ListEventSpeakersParams,
+  ListEventSpeakersResult,
+} from '@workspace/api-server/modules/event-speakers';
 
 @Injectable()
-export class EventSpeakersService extends BaseEventSpeakersAdminService {
+export class EventSpeakersService extends BaseEventSpeakersService {
   constructor(private readonly em: EntityManager) {
     super();
   }

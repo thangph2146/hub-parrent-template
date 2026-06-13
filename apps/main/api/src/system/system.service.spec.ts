@@ -1,9 +1,5 @@
 /**
- * SystemService Unit Tests
- *
- * Pattern theo `apps/main/api/src/comments/comments.service.spec.ts`:
- *   - NestJS `Test.createTestingModule` với `EntityManager` mock.
- *   - Dữ liệu mẫu lấy từ fixture `packages/api-server/src/data-test/hub-system-export-2026-06-11.json`.
+ * SystemService — binding @workspace/api-server (main API).
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
@@ -12,14 +8,6 @@ import { SystemService } from './system.service';
 describe('SystemService', () => {
   let service: SystemService;
   let em: Partial<EntityManager>;
-
-  // Không có fixture - dùng mock entity mặc định
-  const mockEntity: Record<string, unknown> = {
-    id: 1,
-    deletedAt: null,
-    createdAt: new Date('2026-01-01'),
-    updatedAt: new Date('2026-01-01'),
-  };
 
   beforeEach(async () => {
     em = {
@@ -34,6 +22,10 @@ describe('SystemService', () => {
       remove: jest.fn(),
       removeAndFlush: jest.fn().mockResolvedValue(undefined),
       getRepository: jest.fn(),
+      getMetadata: jest.fn().mockReturnValue({
+        getAll: jest.fn().mockReturnValue([]),
+        find: jest.fn().mockReturnValue(null),
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -57,229 +49,20 @@ describe('SystemService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('list', () => {
-    it('should return paginated result', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.count as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          list: (p: { page: number; limit: number }) => Promise<{
-            data: unknown[];
-            pagination: { page: number; limit: number; total: number };
-          }>;
-        }
-      ).list({ page: 1, limit: 10 });
-
-      expect(result.data).toHaveLength(1);
-      expect(result.pagination.page).toBe(1);
-      expect(result.pagination.limit).toBe(10);
-      expect(result.pagination.total).toBe(1);
-    });
-
-    it('should pass search filter to EM', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([]);
-      (em.count as jest.Mock).mockResolvedValueOnce(0);
-
-      await (
-        service as unknown as {
-          list: (p: {
-            page: number;
-            limit: number;
-            search?: string;
-          }) => Promise<unknown>;
-        }
-      ).list({ page: 1, limit: 10, search: 'test' });
-
-      expect(em.find).toHaveBeenCalled();
-    });
-
-    it('should pass status filter to EM', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([]);
-      (em.count as jest.Mock).mockResolvedValueOnce(0);
-
-      await (
-        service as unknown as {
-          list: (p: {
-            page: number;
-            limit: number;
-            status?: string;
-          }) => Promise<unknown>;
-        }
-      ).list({ page: 1, limit: 10, status: 'deleted' });
-
-      expect(em.find).toHaveBeenCalled();
-    });
+  it('getModels trả danh sách model export từ ormEntities', () => {
+    const models = service.getModels();
+    expect(Array.isArray(models)).toBe(true);
+    expect(models.length).toBeGreaterThan(0);
+    const names = models.map((entry) => entry.modelName);
+    expect(names).toContain('user');
+    expect(names).toContain('post');
   });
 
-  describe('getById', () => {
-    it('should return existing record', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce({ ...mockEntity });
-
-      const result = await (
-        service as unknown as {
-          getById: (id: number) => Promise<Record<string, unknown> | null>;
-        }
-      ).getById(1);
-
-      expect(result).not.toBeNull();
-    });
-
-    it('should return null when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
-
-      const result = await (
-        service as unknown as {
-          getById: (id: number) => Promise<Record<string, unknown> | null>;
-        }
-      ).getById(99999);
-
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('softDelete', () => {
-    it('should soft delete record', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          softDelete: (id: number) => Promise<boolean>;
-        }
-      ).softDelete(1);
-
-      expect(result).toBe(true);
-    });
-
-    it('should return false when not found', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(0);
-
-      const result = await (
-        service as unknown as {
-          softDelete: (id: number) => Promise<boolean>;
-        }
-      ).softDelete(99999);
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('restore', () => {
-    it('should restore soft-deleted record', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          restore: (id: number) => Promise<boolean>;
-        }
-      ).restore(1);
-
-      expect(result).toBe(true);
-    });
-
-    it('should return false when not found', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(0);
-
-      const result = await (
-        service as unknown as {
-          restore: (id: number) => Promise<boolean>;
-        }
-      ).restore(99999);
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('hardDelete', () => {
-    it('should hard delete record', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce({ ...mockEntity });
-
-      const result = await (
-        service as unknown as {
-          hardDelete: (id: number) => Promise<boolean>;
-        }
-      ).hardDelete(1);
-
-      expect(result).toBe(true);
-      expect(em.remove).toHaveBeenCalled();
-    });
-
-    it('should return false when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
-
-      const result = await (
-        service as unknown as {
-          hardDelete: (id: number) => Promise<boolean>;
-        }
-      ).hardDelete(99999);
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('bulk', () => {
-    it('should soft-delete multiple records', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          bulk: (
-            action: string,
-            ids: number[],
-          ) => Promise<{ success: number; message?: string; total?: number }>;
-        }
-      ).bulk('delete', [1]);
-
-      expect(result.success).toBeGreaterThanOrEqual(0);
-      expect(result.message).toBeDefined();
-    });
-
-    it('should restore multiple records', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          bulk: (action: string, ids: number[]) => Promise<{ success: number }>;
-        }
-      ).bulk('restore', [1]);
-
-      expect(result.success).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should hard-delete multiple records', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.removeAndFlush as jest.Mock).mockResolvedValueOnce(undefined);
-
-      const result = await (
-        service as unknown as {
-          bulk: (action: string, ids: number[]) => Promise<{ total: number }>;
-        }
-      ).bulk('hard-delete', [1]);
-
-      expect(result.total).toBeGreaterThanOrEqual(0);
-    });
-  });
-
-  describe('bulk error handling', () => {
-    it('should throw on invalid action', async () => {
-      await expect(
-        (
-          service as unknown as {
-            bulk: (action: string, ids: number[]) => Promise<unknown>;
-          }
-        ).bulk('invalid-action', [1]),
-      ).rejects.toBeDefined();
-    });
-
-    it('should throw on empty ids', async () => {
-      await expect(
-        (
-          service as unknown as {
-            bulk: (action: string, ids: number[]) => Promise<unknown>;
-          }
-        ).bulk('delete', []),
-      ).rejects.toBeDefined();
-    });
+  it('getImportConfig trả modelOrder và bundles', () => {
+    const config = service.getImportConfig();
+    expect(Array.isArray(config.modelOrder)).toBe(true);
+    expect(typeof config.bundles).toBe('object');
+    expect(config.bundles.user).toEqual(['userRole']);
+    expect(typeof config.rowChunkSize).toBe('number');
   });
 });

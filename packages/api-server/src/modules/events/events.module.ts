@@ -1,33 +1,25 @@
 /**
- * Events Module.
- *
- * Bám sát pattern của `apps/main/api/src/events/events.module.ts`.
+ * Events Module — NestJS wiring cho admin events.
  */
 import { Module, type ModuleMetadata } from '@nestjs/common';
-import { BaseEventsController } from './event.controller';
+import { BaseEventsController } from './events.controller';
 
 @Module({})
 export class BaseEventsModule {
-  /**
-   * Configure module với metadata bổ sung.
-   */
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseEventsController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseEventsController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };
   }
 }
 
-export { BaseEventsController } from './event.controller';
+export { BaseEventsController } from './events.controller';
 export {
   BaseEventsService,
-  type EventsRowDto,
-  type EventsCreateData,
-  type EventsUpdateData,
-} from './event.service';
+  type EventRowDto,
+  type ListEventsParams,
+  type ListEventsResult,
+} from './events.service';

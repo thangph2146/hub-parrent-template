@@ -1,6 +1,6 @@
 # API — phụ thuộc giữa các domain (`src/`)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.047Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
+> **Sinh tự động:** `2026-06-13T10:59:08.877Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
 > **Domain** = thư mục cấp một dưới `src/` (ví dụ `posts`, `users`). File trực tiếp trong `src/*.ts` gom vào domain `_root`.
 
 Ý nghĩa: **domain hàng gọi (import) domain cột** — Nest module/controller/service trong một feature đang dùng code của feature khác hoặc layer dùng chung (`entities`, `common`, …).
@@ -73,8 +73,6 @@
 | `admission-results` | `config` | 2 | admission-results.controller.ts → constants.ts; admission-results.controller.ts → permissions.ts |
 | `admission-results` | `entities` | 3 | admission-results.controller.ts → notification.entity.ts; admission-results.service.spec.ts → admission-result.entity.ts; admission-results.service.ts → admission-result.entity.ts |
 | `admission-results` | `notifications` | 2 | admission-results.controller.ts → notifications.service.ts; admission-results.module.ts → notifications.module.ts |
-| `auth` | `common` | 3 | auth-admin.controller.ts → api-response.ts; auth-admin.controller.ts → public.decorator.ts; auth.service.ts → entity-id.ts |
-| `auth` | `config` | 2 | auth-admin.controller.ts → constants.ts; auth.service.ts → constants.ts |
 | `auth` | `entities` | 7 | auth.service.spec.ts → user.entity.ts; auth.service.spec.ts → role.entity.ts; auth.service.spec.ts → user-role.entity.ts; auth.service.ts → user.entity.ts |
 | `cameras` | `common` | 10 | cameras.controller.ts → permissions.decorator.ts; cameras.controller.ts → api-response.ts; cameras.controller.ts → bulk-actions.ts; cameras.controller.ts → parse-list-query.ts |
 | `cameras` | `config` | 2 | cameras.controller.ts → permissions.ts; cameras.controller.ts → constants.ts |
@@ -231,9 +229,6 @@
 | `students` | `entities` | 5 | students.controller.ts → notification.entity.ts; students.service.spec.ts → student.entity.ts; students.service.spec.ts → user.entity.ts; students.service.ts → user.entity.ts |
 | `students` | `notifications` | 2 | students.controller.ts → notifications.service.ts; students.module.ts → notifications.module.ts |
 | `system` | `auth` | 2 | system.controller.ts → auth.service.ts; system.module.ts → auth.module.ts |
-| `system` | `common` | 3 | system.controller.ts → api-response.ts; system.controller.ts → permissions.decorator.ts; system.service.ts → entity-id.ts |
-| `system` | `config` | 2 | system.controller.ts → constants.ts; system.controller.ts → permissions.ts |
-| `system` | `entities` | 18 | system.service.ts → category.entity.ts; system.service.ts → comment.entity.ts; system.service.ts → contact-request.entity.ts; system.service.ts → event.entity.ts |
 | `system` | `mikro-orm` | 1 | system.service.ts → orm-entities.ts |
 | `system` | `seeds` | 1 | system.service.ts → superadmin-bootstrap.runner.ts |
 | `tags` | `common` | 7 | tags.controller.ts → entity-id.ts; tags.controller.ts → api-response.ts; tags.controller.ts → permissions.decorator.ts; tags.controller.ts → parse-list-query.ts |
@@ -263,9 +258,9 @@
 
 Liệt kê domain **đích** (`to`) được nhiều cạnh `imports` nhất; kèm các domain **nguồn** (`from`) nổi bật.
 
-- **`common`**: **377** cạnh từ **51** domain — `orders` (16), `public` (12), `academic-years` (11), `courses` (11), `events` (11), `majors` (11), `promo-codes` (11), `training-levels` (11)
-- **`entities`**: **288** cạnh từ **51** domain — `mikro-orm` (46), `_root` (27), `common` (22), `system` (18), `public` (15), `seeds` (14), `dashboard` (12), `posts` (11)
-- **`config`**: **112** cạnh từ **51** domain — `uploads` (5), `common` (4), `messages` (4), `roles` (4), `accounts` (3), `orders` (3), `products` (3), `promo-codes` (3)
+- **`common`**: **371** cạnh từ **49** domain — `orders` (16), `public` (12), `academic-years` (11), `courses` (11), `events` (11), `majors` (11), `promo-codes` (11), `training-levels` (11)
+- **`entities`**: **270** cạnh từ **50** domain — `mikro-orm` (46), `_root` (27), `common` (22), `public` (15), `seeds` (14), `dashboard` (12), `posts` (11), `groups` (8)
+- **`config`**: **108** cạnh từ **49** domain — `uploads` (5), `common` (4), `messages` (4), `roles` (4), `accounts` (3), `orders` (3), `products` (3), `promo-codes` (3)
 - **`notifications`**: **25** cạnh từ **13** domain — `admission-results` (2), `categories` (2), `comments` (2), `contact-requests` (2), `groups` (2), `page-contents` (2), `posts` (2), `roles` (2)
 - **`socket`**: **25** cạnh từ **12** domain — `notifications` (4), `common` (3), `event-registrations` (3), `messages` (3), `groups` (2), `roles` (2), `sessions` (2), `users` (2)
 - **`auth`**: **9** cạnh từ **5** domain — `public` (3), `page-contents` (2), `system` (2), `_root` (1), `common` (1)
@@ -349,7 +344,6 @@ flowchart LR
     dom_socket["socket"]
     dom_speakers["speakers"]
     dom_students["students"]
-    dom_system["system"]
     dom_tags["tags"]
     dom_templates["templates"]
     dom_training_levels["training-levels"]
@@ -359,7 +353,6 @@ flowchart LR
     dom_mikro_orm -->|46| dom_entities
     dom_root -->|27| dom_entities
     dom_common -->|22| dom_entities
-    dom_system -->|18| dom_entities
     dom_orders -->|16| dom_common
     dom_public -->|15| dom_entities
     dom_seeds -->|14| dom_entities
@@ -429,13 +422,14 @@ flowchart LR
     dom_accounts -->|3| dom_common
     dom_accounts -->|3| dom_config
     dom_admission_results -->|3| dom_entities
-    dom_auth -->|3| dom_common
     dom_carts -->|3| dom_common
     dom_comments -->|3| dom_entities
     dom_common -->|3| dom_socket
     dom_dashboard -->|3| dom_common
     dom_entities -->|3| dom_common
     dom_event_checkins -->|3| dom_entities
+    dom_event_registrations -->|3| dom_socket
+    dom_event_speakers -->|3| dom_entities
 ```
 
 ## Ghi chú

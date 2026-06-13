@@ -1,5 +1,5 @@
 import { Module, type ModuleMetadata } from '@nestjs/common';
-import { BaseAuthAdminController } from './auth-admin.controller';
+import { BaseAuthController } from './auth.controller';
 import { BasePublicAuthController } from './public-auth.controller';
 
 @Module({})
@@ -9,7 +9,7 @@ export class BaseAuthModule {
       imports: metadata.imports ?? [],
       controllers: [
         ...(metadata.controllers ?? []),
-        BaseAuthAdminController,
+        BaseAuthController,
         BasePublicAuthController,
       ],
       providers: metadata.providers ?? [],
@@ -18,7 +18,7 @@ export class BaseAuthModule {
   }
 }
 
-export { BaseAuthAdminController } from './auth-admin.controller';
+export { BaseAuthController } from './auth.controller';
 export { BasePublicAuthController } from './public-auth.controller';
 export {
   BaseAuthService,

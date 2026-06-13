@@ -307,14 +307,36 @@ function matchFilter(
       }
     } else {
       if (value !== condition) {
-        // Special: id field có thể là number↔string (auto-generated ids cho join tables)
-        if (key === 'id') {
-          if (typeof value === 'string' && typeof condition === 'number') {
-            if (Number(value) === condition) continue;
+        // Special: id / *Id fields có thể là number↔string
+        if (key === 'id' || key.endsWith('Id')) {
+          const numValue = Number(value);
+          const numCondition = Number(condition);
+          if (
+            !Number.isNaN(numValue) &&
+            !Number.isNaN(numCondition) &&
+            numValue === numCondition
+          ) {
+            continue;
           }
-          if (typeof value === 'number' && typeof condition === 'string') {
-            if (Number(condition) === value) continue;
-          }
+        }
+        // Relation object: filter { event: 27 } khớp event: { id: 27 }
+        if (
+          value &&
+          typeof value === 'object' &&
+          !Array.isArray(value) &&
+          typeof condition === 'number'
+        ) {
+          const objId = (value as { id?: unknown }).id;
+          if (objId != null && Number(objId) === condition) continue;
+        }
+        // Relation shorthand: filter { event: 27 } khớp eventId trên row
+        if (
+          (value === undefined || value === null) &&
+          typeof condition === 'number'
+        ) {
+          const fkKey = `${key}Id`;
+          const fkValue = entity[fkKey];
+          if (fkValue != null && Number(fkValue) === condition) continue;
         }
         return false;
       }
@@ -445,6 +467,7 @@ export interface FakeEntityManager {
   count: jest.Mock;
   persist: jest.Mock;
   flush: jest.Mock;
+  persistAndFlush: jest.Mock;
   remove: jest.Mock;
   removeAndFlush: jest.Mock;
   transactional: jest.Mock;
@@ -609,6 +632,13 @@ export function createFakeEntityManager(
 
   const flush: jest.Mock = jest.fn(() => Promise.resolve(undefined));
 
+  const persistAndFlush: jest.Mock = jest.fn(
+    async (entity: Record<string, unknown> | Array<Record<string, unknown>>) => {
+      await persist(entity);
+      await flush();
+    },
+  );
+
   const remove: jest.Mock = jest.fn(
     (entity: Record<string, unknown>) => {
       const id = entity.id as string;
@@ -653,6 +683,7 @@ export function createFakeEntityManager(
         count,
         persist,
         flush,
+        persistAndFlush,
         remove,
         removeAndFlush,
         getReference,
@@ -738,6 +769,7 @@ export function createFakeEntityManager(
     count,
     persist,
     flush,
+    persistAndFlush,
     remove,
     removeAndFlush,
     transactional,

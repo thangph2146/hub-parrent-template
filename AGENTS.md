@@ -230,10 +230,11 @@ pnpm verify:checkin-api
 pnpm --filter @hub-event/api typecheck
 ```
 
-- **Registry:** `script-system/api/api-module-registry.cjs`
-- **Hub-event:** 29 module, **36 service** generated; controller phức tạp giữ **native** (`native.controllers` trong config)
-- **Kinds:** `crud`, `em-only`, `*-binding`, `public-multi-binding`, `system-binding`, `extraProviders` (vd. attendance)
-- **Main API:** chưa generate — sửa trực tiếp `apps/main/api`; `system` helpers từ `@workspace/api-server/modules/system`
+- **Registry:** `script-system/api/api-module-registry.cjs` · **parity:** `pnpm verify:main-api-endpoint-parity`
+- **Hub-event (`api.app.config.json`):** service + controller AUTO-GENERATED extend package; **`native.controllers` chỉ `public`**
+- **Unified modules (1 controller + 1 service trong package):** `posts`, `events`, `comments`, `accounts`, `page-contents`, `notifications`, `sessions`, `event-checkins`, `event-registrations`, `event-speakers`, `uploads`, `system`, `auth`
+- **Kinds còn lại:** `crud`, `em-only`, `*-binding`, `public-multi-binding`, `extraProviders` (vd. attendance)
+- **Main API:** `system` + `auth` extend `@workspace/api-server` (binding giống hub-event); các module CRUD khác vẫn native trong `apps/main/api`
 
 Chi tiết: [`packages/api-server/README.md`](packages/api-server/README.md).
 

@@ -3,6 +3,11 @@
  * Nguồn sự thật cho `generate-api-modules.cjs`.
  */
 const GENERATED_BANNER = `/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */\n`
+const {
+  formatExportTypeFrom,
+  formatNamedImport,
+  formatStringArrayLiteral,
+} = require('./format-generated-ts.cjs')
 
 /** @type {Record<string, object>} */
 const REGISTRY = {
@@ -264,7 +269,7 @@ const REGISTRY = {
     serviceFile: 'event-speakers.service.ts',
     serviceClass: 'EventSpeakersService',
     apiModule: 'event-speakers',
-    baseService: 'BaseEventSpeakersAdminService',
+    baseService: 'BaseEventSpeakersService',
     entity: { class: 'EventSpeaker', file: 'event-speaker.entity' },
     kind: 'event-speakers-binding',
     moduleClass: 'EventSpeakersModule',
@@ -285,8 +290,8 @@ const REGISTRY = {
     baseService: 'BaseAuthService',
     kind: 'auth-binding',
     moduleClass: 'AuthModule',
-    controllerFile: 'auth-admin.controller.ts',
-    controllerClass: 'AuthAdminController',
+    controllerFile: 'auth.controller.ts',
+    controllerClass: 'AuthController',
     controllerNative: true,
     preserveNativeFiles: ['auth.service.spec.ts'],
     reExportTypes: ['AuthLoginPayload', 'GoogleProfileDto'],
@@ -296,15 +301,19 @@ const REGISTRY = {
     serviceFile: 'system.service.ts',
     serviceClass: 'SystemService',
     apiModule: 'system',
-    baseService: 'BaseSystemAdminService',
+    baseService: 'BaseSystemService',
     kind: 'system-binding',
     moduleNative: true,
     moduleClass: 'SystemModule',
     controllerFile: 'system.controller.ts',
     controllerClass: 'SystemController',
     controllerNative: true,
+    controllerExtend: {
+      extraConstructorParams: ['authService: AuthService'],
+      extraConstructorArgs: ['authService'],
+      extraImports: ["import { AuthService } from '../auth/auth.service';"],
+    },
     preserveNativeFiles: [
-      'system.controller.ts',
       'system.module.ts',
     ],
   },
@@ -328,7 +337,7 @@ const REGISTRY = {
     serviceFile: 'events.service.ts',
     serviceClass: 'EventsService',
     apiModule: 'events',
-    baseService: 'BaseEventsAdminService',
+    baseService: 'BaseEventsService',
     kind: 'events-binding',
     moduleClass: 'EventsModule',
     controllerFile: 'events.controller.ts',
@@ -353,6 +362,11 @@ const REGISTRY = {
     controllerFile: 'hanet-webhook.controller.ts',
     controllerClass: 'HanetWebhookController',
     controllerNative: true,
+    preserveNativeFiles: [
+      'hanet-webhook.controller.ts',
+      'hanet.module.ts',
+      'hanet-webhook.service.spec.ts',
+    ],
     reExportTypes: [
       'HanetWebhookBody',
       'HanetCameraRole',
@@ -365,7 +379,7 @@ const REGISTRY = {
     serviceFile: 'notifications.service.ts',
     serviceClass: 'NotificationsService',
     apiModule: 'notifications',
-    baseService: 'BaseNotificationsAdminService',
+    baseService: 'BaseNotificationsService',
     kind: 'notifications-binding',
     moduleClass: 'NotificationsModule',
     moduleImports: [
@@ -410,7 +424,7 @@ const REGISTRY = {
     serviceFile: 'event-registrations.service.ts',
     serviceClass: 'EventRegistrationsService',
     apiModule: 'event-registrations',
-    baseService: 'BaseEventRegistrationsAdminService',
+    baseService: 'BaseEventRegistrationsService',
     entity: { class: 'EventRegistration', file: 'event-registration.entity' },
     kind: 'event-registrations-binding',
     moduleClass: 'EventRegistrationsModule',
@@ -428,6 +442,15 @@ const REGISTRY = {
     controllerFile: 'event-registrations.controller.ts',
     controllerClass: 'EventRegistrationsController',
     controllerNative: true,
+    controllerExtend: {
+      extraConstructorParams: [
+        'attendanceService: EventRegistrationAttendanceService',
+      ],
+      extraConstructorArgs: ['attendanceService'],
+      extraImports: [
+        "import { EventRegistrationAttendanceService } from './event-registration-attendance.service';",
+      ],
+    },
     reExportTypes: [
       'EventRegistrationRowDto',
       'ListEventRegistrationsParams',
@@ -440,7 +463,7 @@ const REGISTRY = {
     serviceFile: 'event-checkins.service.ts',
     serviceClass: 'EventCheckinsService',
     apiModule: 'event-checkins',
-    baseService: 'BaseEventCheckinsAdminService',
+    baseService: 'BaseEventCheckinsService',
     entity: { class: 'EventCheckin', file: 'event-checkin.entity' },
     kind: 'event-checkins-binding',
     moduleClass: 'EventCheckinsModule',
@@ -458,7 +481,7 @@ const REGISTRY = {
     serviceFile: 'uploads.service.ts',
     serviceClass: 'UploadsService',
     apiModule: 'uploads',
-    baseService: 'BaseUploadsAdminService',
+    baseService: 'BaseUploadsService',
     entity: { class: 'StorageFile', file: 'storage-file.entity' },
     kind: 'uploads-binding',
     moduleClass: 'UploadsModule',
@@ -490,7 +513,7 @@ const REGISTRY = {
     serviceFile: 'page-contents.service.ts',
     serviceClass: 'PageContentsService',
     apiModule: 'page-contents',
-    baseService: 'BasePageContentsAdminService',
+    baseService: 'BasePageContentsService',
     entity: { class: 'PageContent', file: 'page-content.entity' },
     kind: 'page-contents-binding',
     moduleClass: 'PageContentsModule',
@@ -508,7 +531,7 @@ const REGISTRY = {
     serviceFile: 'sessions.service.ts',
     serviceClass: 'SessionsService',
     apiModule: 'sessions',
-    baseService: 'BaseSessionsAdminService',
+    baseService: 'BaseSessionsService',
     entity: { class: 'Session', file: 'session.entity' },
     kind: 'sessions-binding',
     moduleClass: 'SessionsModule',
@@ -519,6 +542,17 @@ const REGISTRY = {
     controllerFile: 'sessions.controller.ts',
     controllerClass: 'SessionsController',
     controllerNative: true,
+    controllerExtend: {
+      extraConstructorParams: [
+        'notificationsService: NotificationsService',
+        'socketGateway: SocketGateway',
+      ],
+      extraConstructorArgs: ['notificationsService', 'socketGateway'],
+      extraImports: [
+        "import { NotificationsService } from '../notifications/notifications.service';",
+        "import { SocketGateway } from '../socket/socket.gateway';",
+      ],
+    },
     reExportTypes: [
       'SessionRowDto',
       'ListSessionsParams',
@@ -533,7 +567,7 @@ const REGISTRY = {
     serviceFile: 'accounts.service.ts',
     serviceClass: 'AccountsService',
     apiModule: 'accounts',
-    baseService: 'BaseAccountsAdminService',
+    baseService: 'BaseAccountsService',
     entity: { class: 'User', file: 'user.entity' },
     kind: 'accounts-binding',
     moduleClass: 'AccountsModule',
@@ -543,6 +577,13 @@ const REGISTRY = {
     controllerFile: 'accounts.controller.ts',
     controllerClass: 'AccountsController',
     controllerNative: true,
+    controllerExtend: {
+      extraConstructorParams: ['uploadsService: UploadsService'],
+      extraConstructorArgs: ['uploadsService'],
+      extraImports: [
+        "import { UploadsService } from '../uploads/uploads.service';",
+      ],
+    },
     reExportTypes: ['AccountProfileDto', 'UpdateAccountDto', 'UpdateAccountResult'],
   },
   comments: {
@@ -550,7 +591,7 @@ const REGISTRY = {
     serviceFile: 'comments.service.ts',
     serviceClass: 'CommentsService',
     apiModule: 'comments',
-    baseService: 'BaseCommentsAdminService',
+    baseService: 'BaseCommentsService',
     entity: { class: 'Comment', file: 'comment.entity' },
     kind: 'comments-binding',
     moduleClass: 'CommentsModule',
@@ -567,8 +608,7 @@ const REGISTRY = {
     serviceFile: 'posts.service.ts',
     serviceClass: 'PostsService',
     apiModule: 'posts',
-    baseService: 'BasePostsAdminService',
-    baseServiceModule: 'posts-admin.service',
+    baseService: 'BasePostsService',
     entity: { class: 'Post', file: 'post.entity' },
     kind: 'posts-binding',
     moduleClass: 'PostsModule',
@@ -853,8 +893,8 @@ function renderCrudService(def) {
     ? `import { ${def.columnFilters} } from '../common/admin-filter-configs';\n`
     : ''
   const adminCommonImport = def.columnFilters
-    ? 'import { toIso, type AdminColumnFiltersConfig } from \'@workspace/api-server/common\';'
-    : 'import { toIso } from \'@workspace/api-server/common\';'
+    ? "import {\n  toIso,\n  type AdminColumnFiltersConfig,\n} from '@workspace/api-server/common';\n"
+    : "import { toIso } from '@workspace/api-server/common';\n"
   const crudTypesImport = def.needsCrudTypesImport
     ? 'import type { ListCrudParams } from \'@workspace/api-server/types/crud.types\';\n'
     : ''
@@ -877,7 +917,7 @@ function renderCrudService(def) {
       )
     : ''
   const getOptionsImport = def.optionsConfig
-    ? `import { getOptionsFromModel, type GetOptionsConfig } from '../common/get-options';\n`
+    ? "import {\n  getOptionsFromModel,\n  type GetOptionsConfig,\n} from '../common/get-options';\n"
     : ''
   const getOptionsMethod = def.optionsConfig
     ? `
@@ -922,7 +962,7 @@ export class ${def.serviceClass} extends ${def.baseService} {
 
 ${columnFiltersMethod}${def.populate?.length ? `
   protected getListPopulate(): string[] {
-    return ${JSON.stringify(def.populate)};
+    return ${formatStringArrayLiteral(def.populate)};
   }
 ` : ''}${extraMethods}${getOptionsMethod}
 ${mapRowFn(entityClass, def.rowDto)}
@@ -1026,8 +1066,7 @@ import { EventSpeaker } from '../entities/event-speaker.entity';
 import { Event } from '../entities/event.entity';
 import { Speaker } from '../entities/speaker.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1089,8 +1128,7 @@ import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Setting } from '../entities/setting.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-export type { AuthLoginPayload as AuthUserPayload } from '${baseImport}';
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}export type { AuthLoginPayload as AuthUserPayload } from '${baseImport}';
 
 export type LoginDto = {
   email: string;
@@ -1135,8 +1173,7 @@ import { ${def.baseService} } from '${baseImport}';
 import { Event } from '../entities/event.entity';
 import { Camera } from '../entities/camera.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1169,8 +1206,7 @@ import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
 import { Camera } from '../entities/camera.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(
@@ -1262,8 +1298,7 @@ import { UserRole } from '../entities/user-role.entity';
 import { Message } from '../entities/message.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(
@@ -1321,8 +1356,7 @@ import { Category } from '../entities/category.entity';
 import { Post } from '../entities/post.entity';
 import { PostCategory } from '../entities/post-category.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1400,8 +1434,7 @@ import { EventRegistration } from '../entities/event-registration.entity';
 import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1437,8 +1470,7 @@ import { EventCheckin } from '../entities/event-checkin.entity';
 import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1470,13 +1502,12 @@ function renderUploadsBindingService(def) {
   const baseImport = `@workspace/api-server/modules/${def.apiModule}`
   return `${GENERATED_BANNER}import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { ${def.baseService}${valueExports ? `, ${valueExports}` : ''} } from '${baseImport}';
+import ${formatNamedImport([def.baseService, ...(def.reExportValues || [])])} from '${baseImport}';
 import { appConfig } from '../config/app.config';
 import { StorageFile } from '../entities/storage-file.entity';
 import { User } from '../entities/user.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-${valueExports ? `export { ${valueExports} };\n` : ''}
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}${valueExports ? `export { ${valueExports} };\n` : ''}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1511,8 +1542,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { ${def.baseService} } from '${baseImport}';
 import { ${entityClass} } from '../entities/${def.entity.file}';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1542,8 +1572,7 @@ import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Role } from '../entities/role.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1590,8 +1619,7 @@ import { ${def.baseService} } from '${baseImport}';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1622,8 +1650,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { ${def.baseService} } from '${baseImport}';
 import { ${entityClass} } from '../entities/${def.entity.file}';
 
-export type { ${typeExports} } from '${baseImport}';
-
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
   constructor(private readonly em: EntityManager) {
@@ -1646,7 +1673,10 @@ function renderPostsBindingService(def) {
   const baseImport = `@workspace/api-server/modules/${def.apiModule}`
   return `${GENERATED_BANNER}import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { ${def.baseService}, POSTS_FILTER_CATEGORIES_NONE } from '${baseImport}';
+import {
+  ${def.baseService},
+  POSTS_FILTER_CATEGORIES_NONE,
+} from '${baseImport}';
 import { Post } from '../entities/${def.entity.file}';
 import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
@@ -1654,8 +1684,7 @@ import { Category } from '../entities/category.entity';
 import { Tag } from '../entities/tag.entity';
 import { User } from '../entities/user.entity';
 
-export type { ${typeExports} } from '${baseImport}';
-export { POSTS_FILTER_CATEGORIES_NONE };
+${formatExportTypeFrom(def.reExportTypes || [], baseImport)}export { POSTS_FILTER_CATEGORIES_NONE };
 
 @Injectable()
 export class ${def.serviceClass} extends ${def.baseService} {
@@ -1842,7 +1871,10 @@ export class PublicEventsService extends BasePublicEventsService {
   protected getEventRegistrationsService() {
     const svc = this.eventRegistrationsService;
     return {
-      findActiveByEventAndEmail: async (eventId: string | number, email: string) => {
+      findActiveByEventAndEmail: async (
+        eventId: string | number,
+        email: string,
+      ) => {
         const row = await svc.findActiveByEventAndEmail(eventId, email);
         if (!row) return null;
         return {
@@ -2000,6 +2032,128 @@ export class PublicContactRequestsService extends BasePublicContactRequestsServi
 `,
     },
   ]
+}
+
+/** Map module id → Base*Controller trong @workspace/api-server (generate extend). */
+const PACKAGE_CONTROLLER_DEFAULTS = {
+  templates: { className: 'BaseTemplatesController', module: 'templates' },
+  'event-checkouts': {
+    className: 'BaseEventCheckoutsController',
+    module: 'event-checkouts',
+    adminRouteKey: 'EVENT_CHECKOUTS',
+    permissionPrefix: 'EVENT_CHECKOUTS',
+  },
+  locations: { className: 'BaseLocationsController', module: 'locations' },
+  speakers: { className: 'BaseSpeakersController', module: 'speakers' },
+  categories: { className: 'BaseCategoriesController', module: 'categories' },
+  tags: { className: 'BaseTagsController', module: 'tags' },
+  roles: { className: 'BaseRolesController', module: 'roles' },
+  cameras: { className: 'BaseCamerasController', module: 'cameras' },
+  screens: { className: 'BaseScreensController', module: 'screens' },
+  settings: {
+    className: 'BaseSettingsController',
+    module: 'settings',
+    adminRouteKey: 'SETTINGS',
+    permissionPrefix: 'SETTINGS',
+  },
+  users: {
+    className: 'BaseUsersController',
+    module: 'users',
+    adminRouteKey: 'USERS',
+    permissionPrefix: 'USERS',
+  },
+  auth: {
+    className: 'BaseAuthController',
+    module: 'auth',
+    skipControllerDecorator: true,
+  },
+  events: {
+    className: 'BaseEventsController',
+    module: 'events',
+    skipControllerDecorator: true,
+  },
+  hanet: {
+    className: 'BaseHanetWebhookController',
+    module: 'hanet',
+    skipControllerDecorator: true,
+  },
+  uploads: {
+    className: 'BaseUploadsController',
+    module: 'uploads',
+    skipControllerDecorator: true,
+  },
+  system: {
+    className: 'BaseSystemController',
+    module: 'system',
+    skipControllerDecorator: true,
+  },
+  dashboard: {
+    className: 'BaseDashboardController',
+    module: 'dashboard',
+    adminRouteKey: 'DASHBOARD',
+    permissionPrefix: 'DASHBOARD',
+  },
+  'seo-metas': { className: 'BaseSeoMetasController', module: 'seo-metas' },
+  'face-data': { className: 'BaseFaceDatasController', module: 'face-data' },
+  'event-checkins': {
+    className: 'BaseEventCheckinsController',
+    module: 'event-checkins',
+    skipControllerDecorator: true,
+  },
+  'event-speakers': {
+    className: 'BaseEventSpeakersController',
+    module: 'event-speakers',
+    skipControllerDecorator: true,
+  },
+  'event-registrations': {
+    className: 'BaseEventRegistrationsController',
+    module: 'event-registrations',
+    skipControllerDecorator: true,
+  },
+  accounts: {
+    className: 'BaseAccountsController',
+    module: 'accounts',
+    skipControllerDecorator: true,
+  },
+  comments: {
+    className: 'BaseCommentsController',
+    module: 'comments',
+    skipControllerDecorator: true,
+  },
+  'page-contents': {
+    className: 'BasePageContentsController',
+    module: 'page-contents',
+    skipControllerDecorator: true,
+  },
+  sessions: {
+    className: 'BaseSessionsController',
+    module: 'sessions',
+    skipControllerDecorator: true,
+  },
+  posts: {
+    className: 'BasePostsController',
+    module: 'posts',
+    skipControllerDecorator: true,
+  },
+  notifications: {
+    className: 'BaseNotificationsController',
+    module: 'notifications',
+    adminRouteKey: 'BASE',
+    permissionPrefix: 'NOTIFICATIONS',
+    skipControllerDecorator: true,
+  },
+}
+
+for (const [moduleId, pkgCtrl] of Object.entries(PACKAGE_CONTROLLER_DEFAULTS)) {
+  const def = REGISTRY[moduleId]
+  if (!def) continue
+  def.packageController = { ...pkgCtrl, ...(def.packageController ?? {}) }
+  if (pkgCtrl.adminRouteKey && def.controller && !def.controller.adminRouteKey) {
+    def.controller.adminRouteKey = pkgCtrl.adminRouteKey
+  }
+  if (pkgCtrl.permissionPrefix && def.controller && !def.controller.permissionPrefix) {
+    def.controller.permissionPrefix = pkgCtrl.permissionPrefix
+  }
 }
 
 function renderService(moduleId) {

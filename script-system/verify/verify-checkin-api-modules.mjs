@@ -102,7 +102,42 @@ for (const moduleId of modules) {
     def.controllerFile &&
     (def.controllerTemplate || (def.controller && !def.controllerNative))
 
-  if (shouldVerifyController) {
+  const usesPackageController = Boolean(def.packageController?.className)
+
+  if (
+    scaffoldControllers &&
+    !preserveControllers.has(moduleId) &&
+    def.controllerFile &&
+    usesPackageController
+  ) {
+    controllersChecked++
+    const controllerPath = path.join(appRoot, 'src', def.folder, def.controllerFile)
+    if (!fs.existsSync(controllerPath)) {
+      errors.push(`Thiếu file: ${path.relative(ROOT, controllerPath)}`)
+    } else {
+      const content = fs.readFileSync(controllerPath, 'utf8')
+      if (!content.includes('AUTO-GENERATED')) {
+        errors.push(
+          `${path.relative(ROOT, controllerPath)} không phải AUTO-GENERATED (chạy pnpm api:generate:checkin)`,
+        )
+      }
+      if (!content.includes('@workspace/api-server/modules/')) {
+        errors.push(
+          `${path.relative(ROOT, controllerPath)} phải import từ @workspace/api-server (packages-first)`,
+        )
+      }
+      if (!content.includes('extends Package')) {
+        errors.push(
+          `${path.relative(ROOT, controllerPath)} phải extend Base*Controller từ package (extends Package...)`,
+        )
+      }
+      if (!content.includes(`export class ${def.controllerClass}`)) {
+        errors.push(
+          `${path.relative(ROOT, controllerPath)} thiếu class ${def.controllerClass}`,
+        )
+      }
+    }
+  } else if (shouldVerifyController) {
     controllersChecked++
     const controllerPath = path.join(appRoot, 'src', def.folder, def.controllerFile)
     if (!fs.existsSync(controllerPath)) {

@@ -1,46 +1,40 @@
-export { BaseSystemService, BaseSystemController, BaseSystemModule } from './system.module';
-export { BaseSystemAdminService } from './system-admin.service';
-export type { SystemBootstrapDeps, SystemBootstrapResult } from './system-bootstrap.deps';
-export type { ExportDataResult, ImportDataResult } from './system.service';
-export type { DatabaseSchemaResponse, ImportConfigResponse } from './system.types';
-export type {
-  SchemaColumn,
-  SchemaTable,
-  SchemaRelation,
-  ImportVerificationModel,
-  ImportVerification,
-} from './system.types';
-
-export type { ImportRow } from './import-helpers';
+/**
+ * System module — HTTP admin + service binding (@workspace/api-server).
+ */
 export {
-  stripLegacyHeroSlideFromBundle,
+  BaseSystemService,
+  BaseSystemService as BaseSystemAdminService,
+} from './system.service';
+export type { ExportDataResult, ImportDataResult } from './system.service';
+export {
+  BaseSystemController,
+  BaseSystemController as BaseSystemAdminController,
+} from './system.controller';
+export type { ISystemControllerService, ISystemMaintenanceAuth } from './system.controller';
+/** @deprecated Dùng `ISystemControllerService`. */
+export type { ISystemControllerService as ISystemAdminControllerService } from './system.controller';
+export { BaseSystemModule } from './system.module';
+export {
   isSkippableImportRowError,
-  stripHeroSlidesPermissions,
+  orderCategoryRowsForImport,
   pivotFk,
   sanitizePivotRowsInExportJson,
-  orderCategoryRowsForImport,
+  stripHeroSlidesPermissions,
+  stripLegacyHeroSlideFromBundle,
 } from './import-helpers';
-
+export type { ImportRow } from './import-helpers';
 export {
-  LEGACY_TABLE_TO_MODEL,
-  LEGACY_IMPORT_FIELD_ALIASES,
-  resolveLegacyTableModelName,
   normalizeLegacyImportRow,
+  resolveLegacyTableModelName,
 } from './export-schema';
-
 export {
-  IMPORT_ID_MAP_GROUP,
-  importIdMapSettingKey,
   exportLegacyKey,
+  IMPORT_ID_MAP_GROUP,
   LegacyImportIdMap,
 } from './legacy-import-id-map';
-
-export type {
-  ImportReferenceManifest,
-  ImportVerificationResult,
-} from './import-reference';
 export {
+  buildImportVerification,
   getImportReferenceFilePath,
   loadImportReferenceManifest,
-  buildImportVerification,
 } from './import-reference';
+export type { ImportVerificationResult } from './import-reference';

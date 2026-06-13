@@ -1,13 +1,16 @@
 /** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BasePageContentsAdminService } from '@workspace/api-server/modules/page-contents';
+import { BasePageContentsService } from '@workspace/api-server/modules/page-contents';
 import { PageContent } from '../entities/page-content.entity';
 
-export type { PageContentCreateInput, PageContentUpdateInput } from '@workspace/api-server/modules/page-contents';
+export type {
+  PageContentCreateInput,
+  PageContentUpdateInput,
+} from '@workspace/api-server/modules/page-contents';
 
 @Injectable()
-export class PageContentsService extends BasePageContentsAdminService {
+export class PageContentsService extends BasePageContentsService {
   constructor(private readonly em: EntityManager) {
     super();
   }

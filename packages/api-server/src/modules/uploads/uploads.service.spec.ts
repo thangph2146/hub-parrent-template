@@ -8,11 +8,11 @@ import {
 } from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { BaseUploadsService } from './uploads.service';
+import { BaseUploadsDiskService } from './uploads-disk.service';
 
-class TestUploadsService extends BaseUploadsService {}
+class TestUploadsService extends BaseUploadsDiskService {}
 
-describe('BaseUploadsService', () => {
+describe('BaseUploadsDiskService', () => {
   let service: TestUploadsService;
   let storageRoot: string;
   const previousStorageDir = process.env.STORAGE_DIR;

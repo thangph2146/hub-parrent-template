@@ -6,7 +6,13 @@ import { Category } from '../entities/category.entity';
 import { Post } from '../entities/post.entity';
 import { PostCategory } from '../entities/post-category.entity';
 
-export type { DashboardStatsDto, DashboardOverviewDto, DashboardMonthlyItemDto, DashboardCategoryItemDto, DashboardTopPostDto } from '@workspace/api-server/modules/dashboard';
+export type {
+  DashboardStatsDto,
+  DashboardOverviewDto,
+  DashboardMonthlyItemDto,
+  DashboardCategoryItemDto,
+  DashboardTopPostDto,
+} from '@workspace/api-server/modules/dashboard';
 
 @Injectable()
 export class DashboardService extends BaseDashboardService {
