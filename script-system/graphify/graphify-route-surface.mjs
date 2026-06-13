@@ -89,12 +89,86 @@ function walkSrcFiles(dir, onFile) {
   }
 }
 
+const CONTROLLER_DECORATOR_RE =
+  /@Controller\(\s*(ADMIN_ROUTES\.(\w+)|PUBLIC_ROUTES\.(\w+)|['"]([^'"]+)['"]|`\$\{PUBLIC_ROUTES\.(\w+)\}([^`]*)`)\s*\)/g
+
+/** @param {RegExpMatchArray} match @param {Record<string, string>} routeMap */
+function resolveControllerBase(match, routeMap) {
+  if (match[2]) return routeMap[`ADMIN_ROUTES.${match[2]}`] ?? ""
+  if (match[3]) return routeMap[`PUBLIC_ROUTES.${match[3]}`] ?? ""
+  if (match[4]) return match[4]
+  if (match[5]) {
+    return `${routeMap[`PUBLIC_ROUTES.${match[5]}`] ?? ""}${match[6] ?? ""}`.replace(
+      /\/+/g,
+      "/"
+    )
+  }
+  return ""
+}
+
+/** @param {string} content @param {Record<string, string>} routeMap */
+function resolveAllControllerSegments(content, routeMap) {
+  const matches = [...content.matchAll(CONTROLLER_DECORATOR_RE)]
+  if (!matches.length) return []
+  return matches
+    .map((m, i) => {
+      const start = m.index ?? 0
+      const nextStart = matches[i + 1]?.index ?? content.length
+      return {
+        base: resolveControllerBase(m, routeMap),
+        segment: content.slice(start, nextStart),
+      }
+    })
+    .filter((s) => s.base)
+}
+
+function resolveControllerDecorator(content, routeMap) {
+  const first = resolveAllControllerSegments(content, routeMap)[0]
+  return first ? { base: first.base } : null
+}
+
+/** Controller mỏng extend @workspace/api-server — route trên Base*Controller. */
+function resolvePackageController(appContent) {
+  const pkgImport = appContent.match(
+    /from\s+['"]@workspace\/api-server\/modules\/([^'"]+)['"]/
+  )
+  if (!pkgImport || !/extends\s+Base\w+Controller/.test(appContent)) return null
+  const mod = pkgImport[1]
+  const pkgCtrl = join(
+    root,
+    "packages/api-server/src/modules",
+    mod,
+    `${mod}.controller.ts`
+  )
+  if (!existsSync(pkgCtrl)) return null
+  return {
+    mod,
+    rel: normPath(relative(root, pkgCtrl)),
+    content: readFileSync(pkgCtrl, "utf8"),
+  }
+}
+
+function extractHttpMethods(content, base) {
+  const methods = []
+  for (const m of content.matchAll(
+    /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)/g
+  )) {
+    const suffix = m[2] ?? ""
+    const path = suffix ? `${base}/${suffix}`.replace(/\/+/g, "/") : base
+    methods.push(`${m[1].toUpperCase()} /${path}`)
+  }
+  return [...new Set(methods)].sort()
+}
+
 /**
  * @param {string} apiRoot
  * @param {Record<string, string>} routeMap
+ * @param {{ packageRouteMap?: Record<string, string> }} [options]
  */
-function scanApiControllers(apiRoot, routeMap) {
-  /** @type {Map<string, { controller: string; base: string; methods: string[] }>} */
+export function scanApiControllers(apiRoot, routeMap, options = {}) {
+  const packageRouteMap =
+    options.packageRouteMap ?? loadRouteConstants("packages/api-server")
+  /** @type {Map<string, { controller: string; base: string; methods: string[]; viaPackage?: string }>} */
   const byDomain = new Map()
 
   walkSrcFiles(join(root, apiRoot, "src"), (rel) => {
@@ -107,42 +181,54 @@ function scanApiControllers(apiRoot, routeMap) {
       return
     }
 
-    const ctrl = content.match(
-      /@Controller\(\s*(ADMIN_ROUTES\.(\w+)|PUBLIC_ROUTES\.(\w+)|['"]([^'"]+)['"])\s*\)/
-    )
-    if (!ctrl) return
+    const domain = rel.replace(`${apiRoot}/src/`, "").split("/")[0]
+    let scanContent = content
+    let controllerLabel = rel.replace(`${apiRoot}/`, "")
+    let viaPackage
 
-    let base = ""
-    if (ctrl[2]) base = routeMap[`ADMIN_ROUTES.${ctrl[2]}`] ?? ""
-    else if (ctrl[3]) base = routeMap[`PUBLIC_ROUTES.${ctrl[3]}`] ?? ""
-    else base = ctrl[4] ?? ""
-
-    const domain = rel
-      .replace(`${apiRoot}/src/`, "")
-      .split("/")[0]
-
-    const methods = []
-    for (const m of content.matchAll(
-      /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)/g
-    )) {
-      const suffix = m[2] ?? ""
-      const path = suffix ? `${base}/${suffix}`.replace(/\/+/g, "/") : base
-      methods.push(`${m[1].toUpperCase()} /${path}`)
+    let segments = resolveAllControllerSegments(content, routeMap)
+    if (!segments.length) {
+      const pkg = resolvePackageController(content)
+      if (!pkg) return
+      scanContent = pkg.content
+      viaPackage = pkg.mod
+      controllerLabel = `${controllerLabel} → ${pkg.rel.replace("packages/api-server/", "")}`
+      segments = resolveAllControllerSegments(scanContent, packageRouteMap)
+      if (!segments.length) return
     }
 
-    const key = domain
-    const row = byDomain.get(key) ?? {
-      controller: rel.replace(`${apiRoot}/`, ""),
-      base,
-      methods: [],
+    for (const { base, segment } of segments) {
+      const methods = extractHttpMethods(
+        segment === content ? scanContent : segment,
+        base
+      )
+      const key = domain
+      const row = byDomain.get(key) ?? {
+        controller: controllerLabel,
+        base,
+        bases: [],
+        methods: [],
+        viaPackage,
+      }
+      if (!row.bases.includes(base)) row.bases.push(base)
+      if (!row.base) row.base = base
+      if (viaPackage) row.viaPackage = viaPackage
+      if (segments.length > 1 && !row.controller.includes("(multi)")) {
+        row.controller = `${controllerLabel} (multi @Controller)`
+      }
+      row.methods.push(...methods)
+      byDomain.set(key, row)
     }
-    if (!row.base && base) row.base = base
-    row.methods.push(...methods)
-    byDomain.set(key, row)
   })
 
   for (const row of byDomain.values()) {
     row.methods = [...new Set(row.methods)].sort()
+    if (row.bases?.length > 1) {
+      row.base = row.bases
+        .map((b) => (b.startsWith("/") ? b : `/${b}`))
+        .join(", ")
+    }
+    delete row.bases
   }
   return byDomain
 }
@@ -283,7 +369,7 @@ export function writeRouteSurfaceMd() {
     "2. Đổi **HTTP contract** → `apps/main/api` controller + `packages/api-client` resource tương ứng."
   )
   lines.push(
-    "3. Check-in deploy → `SYNC_DELTA.md` + `pnpm pull:checkin` sau khi sửa main API."
+    "3. Check-in deploy → `SYNC_DELTA.md` + `pnpm pull:checkin` sau khi sửa `@workspace/api-server` hoặc registry."
   )
   lines.push("")
   lines.push("## Làm mới")
@@ -292,6 +378,111 @@ export function writeRouteSurfaceMd() {
   lines.push("")
 
   const outPath = join(mdDir, "ROUTE_SURFACE.md")
+  writeFileSync(outPath, lines.join("\n"), "utf8")
+  console.log(`[graphify-route-surface] Đã ghi ${outPath}`)
+}
+
+/** Bản đồ endpoint đầy đủ cho `apps/main/api` (Graphify local). */
+export function writeMainApiEndpointsMd() {
+  const apiRoot = MAIN_API
+  const generatedAt = new Date().toISOString()
+  const routeMap = loadRouteConstants(apiRoot)
+  const packageRouteMap = loadRouteConstants("packages/api-server")
+  const controllers = scanApiControllers(apiRoot, routeMap, { packageRouteMap })
+  const globalPrefix = "api"
+
+  const outDir = join(root, apiRoot, ".graphify/markdown")
+  const lines = [
+    "# API endpoints — @api (`apps/main/api`)",
+    "",
+    `> **Sinh tự động:** \`${generatedAt}\` — quét \`src/**/*.controller.ts\` + route từ \`Base*Controller\` trong \`@workspace/api-server\` khi app extend mỏng.`,
+    "",
+    "## Global prefix",
+    "",
+    `- Nest \`setGlobalPrefix('${globalPrefix}')\` → URL thực tế: \`/${globalPrefix}/<path-dưới>\``,
+    "- Ví dụ: `GET /admin/users` trong bảng = **`GET /api/admin/users`** trên wire.",
+    "",
+    "Nguồn route constants: [`src/config/constants.ts`](../../src/config/constants.ts) (`ADMIN_ROUTES`, `PUBLIC_ROUTES`).",
+    "",
+    "Verify contract: `pnpm verify:api-contract` · parity package: `pnpm verify:main-api-endpoint-parity`.",
+    "",
+    "## Prefix admin (`ADMIN_ROUTES`)",
+    "",
+    "| Key | Path (không gồm `/api`) |",
+    "|-----|------------------------|",
+  ]
+
+  for (const [key, path] of Object.entries(routeMap).sort((a, b) =>
+    a[1].localeCompare(b[1])
+  )) {
+    if (!key.startsWith("ADMIN_ROUTES.")) continue
+    lines.push(`| \`${key.replace("ADMIN_ROUTES.", "")}\` | \`/${path}\` |`)
+  }
+
+  lines.push("")
+  lines.push("## Prefix public & khác (`PUBLIC_ROUTES` + uploads)",
+    "",
+    "| Key | Path |",
+    "|-----|------|",
+  )
+  for (const [key, path] of Object.entries(routeMap).sort((a, b) =>
+    a[1].localeCompare(b[1])
+  )) {
+    if (!key.startsWith("PUBLIC_ROUTES.")) continue
+    lines.push(`| \`${key.replace("PUBLIC_ROUTES.", "")}\` | \`/${path}\` |`)
+  }
+
+  lines.push("")
+  lines.push("## Endpoint theo domain (Nest controller)",
+    "",
+    "Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend).",
+    "",
+  )
+
+  for (const [domain, row] of [...controllers.entries()].sort((a, b) =>
+    a[0].localeCompare(b[0])
+  )) {
+    lines.push(`### \`${domain}\``)
+    lines.push("")
+    lines.push(`- **Controller:** \`${row.controller}\``)
+    const baseLabel = row.base.startsWith("/") ? row.base : `/${row.base}`
+    lines.push(`- **Base:** \`${baseLabel}\``)
+    if (row.viaPackage) {
+      lines.push(
+        `- **Package:** \`@workspace/api-server/modules/${row.viaPackage}\` (unified — không duplicate route trong app)`,
+      )
+    }
+    lines.push("")
+    if (!row.methods.length) {
+      lines.push("_Không trích được `@Get`/`@Post` — kiểm tra decorator._")
+      lines.push("")
+      continue
+    }
+    lines.push("| Method | Path (relative, chưa `/api`) | Full URL mẫu |")
+    lines.push("|--------|------------------------------|--------------|")
+    for (const methodLine of row.methods) {
+      const m = methodLine.match(/^(GET|POST|PUT|PATCH|DELETE)\s+\/(.+)$/)
+      if (!m) continue
+      const full = `/${globalPrefix}/${m[2]}`.replace(/\/+/g, "/")
+      lines.push(`| \`${m[1]}\` | \`/${m[2]}\` | \`${full}\` |`)
+    }
+    lines.push("")
+  }
+
+  lines.push("## Liên kết")
+  lines.push("")
+  lines.push("- Monorepo: [ROUTE_SURFACE.md](../../../../.graphify/markdown/ROUTE_SURFACE.md) (admin ↔ api-client)")
+  lines.push("- [`../README.md`](../README.md) · [`SUMMARY_FOR_AI.md`](SUMMARY_FOR_AI.md)")
+  lines.push("")
+  lines.push("## Làm mới")
+  lines.push("")
+  lines.push("```bash")
+  lines.push("node script-system/graphify/graphify-update.cjs apps/main/api")
+  lines.push("pnpm graphify:ai-summary")
+  lines.push("```")
+  lines.push("")
+
+  const outPath = join(outDir, "API_ENDPOINTS.md")
   writeFileSync(outPath, lines.join("\n"), "utf8")
   console.log(`[graphify-route-surface] Đã ghi ${outPath}`)
 }

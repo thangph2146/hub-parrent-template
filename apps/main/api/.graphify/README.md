@@ -2,20 +2,34 @@
 
 Package **@api**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
 
-## File trong thư mục này
+## API endpoints (đọc trước khi sửa HTTP)
+
+| File | Mục đích |
+|------|----------|
+| **[`markdown/API_ENDPOINTS.md`](markdown/API_ENDPOINTS.md)** | **Bản đồ endpoint hiện tại** — mọi domain, method, path (kèm `/api` global prefix) |
+| [`../../../../.graphify/markdown/ROUTE_SURFACE.md`](../../../../.graphify/markdown/ROUTE_SURFACE.md) | Admin URL ↔ Nest ↔ `@workspace/api-client` (monorepo) |
+| [`src/config/constants.ts`](../src/config/constants.ts) | Nguồn `ADMIN_ROUTES` / `PUBLIC_ROUTES` |
+
+**Global prefix:** Nest `setGlobalPrefix('api')` → client gọi `GET /api/admin/...`.
+
+**Controller extend package** (`auth`, `system`, …): route khai báo trên `@workspace/api-server` — `API_ENDPOINTS.md` ghi rõ `→ packages/api-server/...`.
+
+**Verify sau đổi route:** `pnpm verify:api-contract` · `pnpm verify:main-api-endpoint-parity`.
+
+## File Graphify khác
 
 | File / Thư mục | Mục đích |
 |----------------|----------|
-| `snapshot/graph.json` | Đồ thị node/link (`node script-system/graphify/graphify-update.cjs apps/main/api`) |
-| `snapshot/context.json` | Snapshot nội dung file để AI hiểu hệ thống |
-| `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module (sinh bởi `pnpm graphify:ai-summary`) |
+| `snapshot/graph.json` | Đồ thị node/link |
+| `snapshot/context.json` | Snapshot nội dung file |
+| `markdown/SUMMARY_FOR_AI.md` | Tóm tắt module |
 | `markdown/FOLDER_TREE.md` | Cây thư mục `src/` |
 | `markdown/GRAPH_STATS.md` | Thống kê graph |
-| `markdown/IMPACT_RADIUS.md` | File in-degree cao + mẫu importer |
-| `markdown/ENTRY_POINTS.md` | Bootstrap, route, AUTO-GENERATED |
-| `markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp (loading, re-export) |
-| `markdown/API_DOMAIN_IMPORTS.md` | Phụ thuộc chéo domain NestJS |
-| `README.md` | File này (mô tả layout) |
+| `markdown/IMPACT_RADIUS.md` | File in-degree cao |
+| `markdown/ENTRY_POINTS.md` | Bootstrap, module Nest |
+| `markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp |
+| `markdown/API_DOMAIN_IMPORTS.md` | Import chéo domain |
+| `README.md` | File này |
 
 ## Làm mới
 
@@ -24,8 +38,10 @@ node script-system/graphify/graphify-update.cjs apps/main/api
 pnpm graphify:ai-summary
 ```
 
+(`graphify:ai-summary` sinh lại `API_ENDPOINTS.md` + `ROUTE_SURFACE.md` monorepo.)
+
 ## Liên kết
 
 - [SUMMARY monorepo](../../../../.graphify/markdown/SUMMARY_FOR_AI.md)
-- [packages SUMMARY](../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [`@workspace/api-server`](../../../../packages/api-server/README.md)
 - [AGENTS.md](../../../../AGENTS.md)

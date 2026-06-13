@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.492Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-13T11:10:25.532Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -12,6 +12,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |
 | Cây `src/` một app | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | `SUMMARY_FOR_AI.md` cùng app |
 | Quy mô graph, điểm nóng import | [`../../apps/main/api/.graphify/markdown/GRAPH_STATS.md`](../../apps/main/api/.graphify/markdown/GRAPH_STATS.md) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |
+| **Endpoint Nest (@api)** | [`../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md) | [`ROUTE_SURFACE.md`](ROUTE_SURFACE.md), `src/config/constants.ts`, `pnpm verify:main-api-endpoint-parity` |
 | Domain Nest import lẫn nhau | [`../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
 | UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
