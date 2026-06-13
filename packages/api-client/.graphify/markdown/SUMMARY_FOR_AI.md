@@ -3,7 +3,7 @@
 > Package `@workspace/api-client` · `packages/api-client/`
 
 - **context.generatedAt:** 2026-06-12T14:19:36.367Z
-- **summary sinh:** `2026-06-12T14:20:21.401Z`
+- **summary sinh:** `2026-06-13T10:59:09.378Z`
 
 ## Mục lục artefact
 

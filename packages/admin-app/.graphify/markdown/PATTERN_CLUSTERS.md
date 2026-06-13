@@ -1,12 +1,12 @@
 # Pattern clusters — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-12T14:20:21.329Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-13T10:59:09.258Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
 ## Theo signature nội dung (count ≥ 2)
 
-### AdminRouteLoading variant="form" (@ui) (37 file)
+### Re-export → @workspace/admin-app/routing/admin-form-route-loading (37 file)
 
 - `src/modules/academic-years/new/loading.tsx`
 - `src/modules/academic-years/[id]/edit/loading.tsx`
@@ -18,7 +18,7 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 - `src/modules/courses/[id]/edit/loading.tsx`
 - … và 29 file tương tự
 
-### AdminRouteLoading variant="detail" (@ui) (19 file)
+### Re-export → @workspace/admin-app/routing/admin-detail-route-loading (19 file)
 
 - `src/modules/academic-years/[id]/loading.tsx`
 - `src/modules/cameras/[id]/loading.tsx`
@@ -58,7 +58,7 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 
 | Basename | Số file | Gợi ý |
 |----------|---------|--------|
-| `index.ts` | 137 | — |
+| `index.ts` | 138 | — |
 | `page.tsx` | 94 | CRUD page — logic trong `packages/admin-app` |
 | `loading.tsx` | 58 | Sửa `AdminRouteLoading` trong `@ui` hoặc module `admin-app` |
 | `types.ts` | 28 | — |
