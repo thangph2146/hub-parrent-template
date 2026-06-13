@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.089Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T11:10:25.259Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 

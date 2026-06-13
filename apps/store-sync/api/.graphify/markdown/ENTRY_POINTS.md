@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/store-sync/api (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.126Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T11:10:25.293Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 

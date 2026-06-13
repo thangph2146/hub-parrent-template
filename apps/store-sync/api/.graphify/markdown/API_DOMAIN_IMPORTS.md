@@ -1,6 +1,6 @@
 # API — phụ thuộc giữa các domain (`src/`)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.126Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
+> **Sinh tự động:** `2026-06-13T11:10:25.293Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
 > **Domain** = thư mục cấp một dưới `src/` (ví dụ `posts`, `users`). File trực tiếp trong `src/*.ts` gom vào domain `_root`.
 
 Ý nghĩa: **domain hàng gọi (import) domain cột** — Nest module/controller/service trong một feature đang dùng code của feature khác hoặc layer dùng chung (`entities`, `common`, …).

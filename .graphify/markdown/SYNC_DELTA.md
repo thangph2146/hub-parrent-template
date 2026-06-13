@@ -1,6 +1,6 @@
 # SYNC_DELTA — main API ↔ hub-event API (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.477Z` — so sánh domain `src/<tên>/` giữa `apps/main/api` và `apps/hub-event/api`, theo `api.sync-profile.json`.
+> **Sinh tự động:** `2026-06-13T11:10:25.512Z` — so sánh domain `src/<tên>/` giữa `apps/main/api` và `apps/hub-event/api`, theo `api.sync-profile.json`.
 
 > Hub-event check-in API — subset từ main: có users/roles/events; loại trừ store (products/orders/carts/promo), đào tạo, phụ huynh/SV.
 

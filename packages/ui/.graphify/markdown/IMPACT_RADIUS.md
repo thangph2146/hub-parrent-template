@@ -1,6 +1,6 @@
 # Bán kính ảnh hưởng import — packages/ui (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.205Z` từ `../snapshot/graph.json` — file **in-degree cao** = nhiều nơi import; sửa cần kiểm tra downstream.
+> **Sinh tự động:** `2026-06-13T11:10:25.344Z` từ `../snapshot/graph.json` — file **in-degree cao** = nhiều nơi import; sửa cần kiểm tra downstream.
 
 Graphify chỉ quét **import tĩnh** trong `src/`; không thấy Nest DI, dynamic import, hay route Next theo convention.
 

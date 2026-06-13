@@ -1,6 +1,6 @@
 # Thống kê graph — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.089Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-13T11:10:25.259Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 

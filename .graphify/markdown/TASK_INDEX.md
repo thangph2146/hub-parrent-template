@@ -1,6 +1,6 @@
 # TASK_INDEX — module/feature → file (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.474Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
+> **Sinh tự động:** `2026-06-13T11:10:25.510Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
 
 ## Brief nhanh (agent)
 

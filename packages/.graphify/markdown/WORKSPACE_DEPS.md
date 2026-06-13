@@ -1,6 +1,6 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.199Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-13T11:10:25.341Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 

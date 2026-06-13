@@ -1,6 +1,6 @@
 # Điểm vào (entry) — packages/ui (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.205Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T11:10:25.344Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 

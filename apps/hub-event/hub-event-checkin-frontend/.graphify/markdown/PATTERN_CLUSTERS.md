@@ -1,6 +1,6 @@
 # Pattern clusters — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T10:59:09.089Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-13T11:10:25.259Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
