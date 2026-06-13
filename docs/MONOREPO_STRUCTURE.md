@@ -77,31 +77,35 @@ Test stack deploy: **`pnpm dev:parent`**.
 
 ### Cập nhật deploy check-in (`hub-event`)
 
-Sau `git pull`, khi cần đưa thay đổi main sang line deploy check-in:
+**Packages-first (mặc định):** không copy file từ `main/api`.
 
 ```bash
 pnpm pull:checkin
-# hoặc
-pnpm sync:checkin
+# = build @workspace/api-server + api:generate:checkin --prune
+# + admin migrate/generate + verify
 ```
 
-Lệnh này (không thay `git pull`):
+Downstream **hub-event-monorepo**: `pnpm pull:template` (full `packages/`).
 
-1. Sync **subset API** `main/api` → `hub-event/api` theo `api.sync-profile.json` (loại store/HRM/đào tạo, `prune` dead code).
-2. `verify:api-profile` — `app.module.ts` khớp profile.
-3. Migrate admin → `@workspace/admin-app` + `pnpm admin:generate:checkin` (re-export, không copy source).
+**Legacy (deprecated):** copy subset `main/api` → `hub-event/api`:
 
-Test stack deploy thật: **`pnpm dev:checkin`** (`@hub-event/api` + check-in frontend).
+```bash
+pnpm pull:checkin:legacy
+# = sync-checkin.cjs + verify:api-profile + admin generate
+```
 
-### API sync chi tiết
+Test stack deploy: **`pnpm dev:checkin`**. Verify: **`pnpm test:checkin:full`**.
+
+### API check-in (packages-first)
 
 | File | Vai trò |
 |------|---------|
-| `apps/hub-event/api/api.sync-profile.json` | `excludeDirs` / `includeDirs`, `keepFiles`, `prune` |
-| `apps/hub-event/api/src/app.module.ts` | Composition check-in — **giữ local**, không ghi đè khi sync |
-| `api.sync-keep.json` (legacy) | Vẫn merge vào `keepFiles` nếu còn |
+| `apps/hub-event/api/api.app.config.json` | Module generate vs `native.controllers` (chỉ `public`) |
+| `script-system/api/api-module-registry.cjs` | Binding service + `Base*Controller` trong package |
+| `apps/hub-event/api/src/app.module.ts` | Composition — **giữ local** |
+| `apps/hub-event/api/api.sync-profile.json` | Chỉ dùng với **`pull:checkin:legacy`** |
 
-Lệnh chỉ API: `pnpm sync:api:hub-event` · Verify: `pnpm verify:api-profile` · Test: `pnpm test:api:hub-event`
+Lệnh: `pnpm api:generate:checkin` · Verify: `pnpm verify:checkin-api` · Parity unified: `pnpm verify:main-api-endpoint-parity`
 
 ### Test sau sync (`test:*`)
 
@@ -125,7 +129,7 @@ Các line khác (`hub-parent`, `store-sync`): `pnpm sync:api` — copy full tr�
 - **`pnpm admin:migrate`** — đưa module từ `main/backend` vào package.
 - **`pnpm admin:generate:checkin`** — sinh page re-export dưới `src/app/admin/{module}` (không copy source).
 - Menu: vẫn `sync-checkin-menu-tree.cjs` (sẽ gộp vào generate).
-- Legacy copy `copy-checkin-admin-modules.cjs` — **deprecated** (dùng `pnpm pull:checkin`).
+- Legacy copy `copy-checkin-admin-modules.cjs` — **deprecated** (dùng `pnpm pull:checkin` packages-first; copy API: `pull:checkin:legacy`).
 
 Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
 
@@ -174,7 +178,7 @@ Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCEN
 ## Giữ cấu trúc `apps/` sạch
 
 - Chỉ **4 product line** dưới `apps/`: `main`, `hub-parent`, `hub-event`, `store-sync` — không tạo `apps/api` phẳng (legacy).
-- Dev feature → **`apps/main/`**; line deploy cập nhật qua sync (`pull:checkin`, `sync:api`), không copy thủ công.
+- Dev feature → **`apps/main/`** hoặc **`packages/*`**; line deploy cập nhật qua **`pnpm pull:checkin`** (generate) hoặc **`pnpm pull:template`** (downstream), không copy thủ công.
 - Artifact build (`dist/`, `.next/`) không commit.
 - Kiểm tra: `pnpm verify:apps` (registry + tên package); hub-event API: `pnpm verify:api-profile`.
 

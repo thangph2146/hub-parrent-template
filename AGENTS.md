@@ -145,7 +145,8 @@ docs/
 | **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
 | Downstream kéo **full packages/** | `pnpm pull:template` · catalog [`packages/README.md`](packages/README.md) |
 | Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
-| Sau `git pull` — sync check-in (legacy) | `pnpm pull:checkin` |
+| Regenerate check-in từ packages (template upstream) | `pnpm pull:checkin` (không copy `main/api`) |
+| Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
 **Dev hàng ngày (upstream):** sửa `packages/admin-app` / `packages/api-server` / `packages/*`, tag template.  
@@ -172,7 +173,8 @@ pnpm verify:imports           # alias @ui
 | Ranh giới service | `pnpm verify:bounds` (trong `pnpm check`) |
 | API ↔ client khớp | `pnpm verify:api-contract` khi đổi API hoặc `@workspace/api-client` |
 | Admin generate khớp | `pnpm verify:main-admin` / `verify:checkin-admin` |
-| Check-in API khớp main | `pnpm verify:checkin-api` + `verify:api-profile` sau sửa `apps/main/api` domain check-in |
+| Check-in API scaffold | `pnpm verify:checkin-api` sau sửa registry / `api:generate:checkin` |
+| Unified module parity | `pnpm verify:main-api-endpoint-parity` khi đổi `Base*Controller` trong package |
 | Build sạch | `pnpm check` pass |
 | Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
 | Deploy branch cập nhật | Downstream: `pnpm pull:template` · Legacy: `pnpm push:legacy` |
@@ -258,11 +260,37 @@ Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-p
 
 - Mutation admin: `useAdminMutation` (`packages/ui`) — không toast thủ công trong `onSuccess`/`onError`
 - Realtime: `docs/api-client-pattern/REALTIME.md`
-- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemAdminService` (check-in) / `system.service.ts` (main)
+- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemService` (main + hub-event binding)
 
 ---
 
-## 10. PM2 production (2 stack — không chạy cùng lúc)
+## 10. Quy tắc chống duplicate (đọc trước khi thêm file)
+
+**Một nguồn sự thật — không copy logic giữa app và package.**
+
+| Loại | Sửa tại (source of truth) | App (`apps/*/api` hoặc backend) chỉ |
+|------|---------------------------|-------------------------------------|
+| CRUD admin UI | `packages/admin-app` | `admin.app.config.json` + page AUTO-GENERATED re-export |
+| HTTP admin + service logic (unified) | `packages/api-server` (`Base*Service`, `Base*Controller`) | Subclass: `getEm()`, `getEntity()`, `mapRow`, inject constructor |
+| HTTP/service chưa unified | `apps/main/api` (dev) → port vào package trước khi generate hub-event | Không copy ngược từ hub-event sang main |
+| Entity / migration / seed | App API tương ứng | Không đưa entity vào `packages/` |
+| Component UI | `packages/ui` (`@ui/components/...`) | Không tạo admin component local |
+| API HTTP từ Next | `packages/api-client` | Không `fetch` / `sdk.http` trực tiếp |
+
+**Luồng quyết định (agent):**
+
+1. Feature dùng trên **hub-event** → implement trong `packages/api-server` hoặc `packages/admin-app` trước.
+2. Chạy generate: `pnpm api:generate:checkin` / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
+3. **Main API:** `system` + `auth` đã extend package; CRUD còn lại native — khi port, xóa bản copy trong `apps/main/api`, không giữ song song.
+4. **Downstream** (`hub-event-monorepo`): `pnpm pull:template` — không chạy `pull:checkin:legacy`.
+
+**Cấm:** file dump/export JSON trong `src/`, duplicate type (`StorageMediaKind`…), controller `*-admin.controller.ts` song song với unified `*.controller.ts`, doc mới trùng nội dung mục 3–9.
+
+Chi tiết check-in: [`apps/hub-event/README.md`](apps/hub-event/README.md) · template: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
+
+---
+
+## 11. PM2 production (2 stack — không chạy cùng lúc)
 
 | Stack | PM2 file | Apps |
 |-------|---------|------|
@@ -280,7 +308,7 @@ Chi tiết deploy, xóa process, chuyển stack: [`README.md`](README.md) (mục
 
 ---
 
-## 11. Đọc thêm (theo thứ tự khi onboarding)
+## 12. Đọc thêm (theo thứ tự khi onboarding)
 
 1. [`docs/admin-pattern/README.md`](docs/admin-pattern/README.md)
 2. [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md)

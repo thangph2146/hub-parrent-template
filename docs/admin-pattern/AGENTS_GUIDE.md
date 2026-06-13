@@ -56,7 +56,7 @@ pnpm check:full
 | Admin page CRUD          | `ADMIN_PAGE_PATTERN.md` + `useAdminMutation` (`@workspace/ui`)    |
 | Toast mutation + socket  | `docs/api-client-pattern/REALTIME.md`, `toast-coordinator.ts`     |
 | API + client contract    | `docs/api-pattern/README.md`, `docs/api-client-pattern/README.md` |
-| Import/backup data admin | `apps/main/backend/src/app/data/_component/`, `system.service.ts` (main) / `BaseSystemAdminService` (check-in) |
+| Import/backup data admin | `apps/main/backend/src/app/data/_component/`, `BaseSystemService` (main + hub-event binding) |
 
 ## 4. Vòng chuẩn hóa (kết thúc task lớn)
 

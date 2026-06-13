@@ -20,7 +20,8 @@ Chi tiết workflow: [`docs/MONOREPO_STRUCTURE.md`](../docs/MONOREPO_STRUCTURE.m
 |------|---------|-----------|
 | Feature API / admin mới | `apps/main/api`, `apps/main/backend` | Copy thủ công sang line deploy |
 | Dev check-in UI + main API | `pnpm dev:main:checkin` | Sửa `hub-event/api` khi chưa cần deploy |
-| Cập nhật deploy check-in | Repo downstream + `pnpm pull:template` (legacy: `pnpm pull:checkin` trên template) |
+| Cập nhật deploy check-in (template upstream) | `pnpm pull:checkin` — generate từ packages |
+| Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
 | Logic dùng chung | `packages/*` | Import chéo `apps/*` |
 | Component admin | `@workspace/ui` | Tạo component admin local trong từng app |
 
