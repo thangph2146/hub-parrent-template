@@ -1,6 +1,6 @@
 # Pattern clusters — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.330Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-13T21:25:57.506Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 

@@ -26,7 +26,6 @@
     "paths": {
       "@workspace/api-server": ["./src/index.ts"],
       "@workspace/api-server/types/*": ["./src/types/*"],
-      "@workspace/api-server/interfaces/*": ["./src/interfaces/*"],
       "@workspace/api-server/bases/*": ["./src/bases/*"],
       "@workspace/api-server/utils/*": ["./src/utils/*"],
       "@workspace/api-server/modules/*": ["./src/modules/*"],

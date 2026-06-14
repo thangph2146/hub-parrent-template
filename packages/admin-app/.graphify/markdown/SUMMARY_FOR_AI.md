@@ -3,7 +3,7 @@
 > Package `@workspace/admin-app` · `packages/admin-app/`
 
 - **context.generatedAt:** 2026-06-12T14:19:36.274Z
-- **summary sinh:** `2026-06-13T11:10:25.424Z`
+- **summary sinh:** `2026-06-13T21:25:57.595Z`
 
 ## Mục lục artefact
 

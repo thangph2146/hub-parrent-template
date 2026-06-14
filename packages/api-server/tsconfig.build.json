@@ -10,9 +10,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "**/*.spec.ts",
-    "src/index.ts",
-    "src/modules/index.ts",
-    "src/modules/products/**"
+    "**/*.spec.ts"
   ]
 }

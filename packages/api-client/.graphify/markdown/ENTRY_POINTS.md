@@ -1,6 +1,6 @@
 # Điểm vào (entry) — packages/api-client (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.434Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-13T21:25:57.606Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
