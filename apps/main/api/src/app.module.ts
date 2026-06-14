@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, Reflector } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { DatabaseModule } from './mikro-orm/mikro-orm.module';
-import { PermissionsGuard } from './common/permissions.guard';
+import { PermissionsGuard } from './common';
+import { AuthService } from './auth/auth.service';
 import { PublicModule } from './public/public.module';
 import { SocketModule } from './socket/socket.module';
 import { AuthModule } from './auth/auth.module';
@@ -117,7 +118,9 @@ import { CartsModule } from './carts/carts.module';
     },
     {
       provide: APP_GUARD,
-      useClass: PermissionsGuard,
+      useFactory: (reflector: Reflector, authService: AuthService) =>
+        new PermissionsGuard(reflector, authService),
+      inject: [Reflector, AuthService],
     },
   ],
 })

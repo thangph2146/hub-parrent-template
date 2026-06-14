@@ -16,13 +16,8 @@ export {
   toEntityId,
   toEntityIdList,
   toEntityIdListSafe,
-  toEntityIdOrDefault,
-  toEntityIdStrict,
-  isNumericId,
-  isValidEntityId,
   relationEntityId,
   coerceImportPrimaryKey,
-  parseEntityIdLoose,
 } from '../common/entity-id';
 export {
   normalizePageLimit,

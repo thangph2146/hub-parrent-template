@@ -11,7 +11,6 @@
  *   - `bases/*`   — abstract base service/controller cho MỌI entity
  *   - `modules/*` — per-entity CRUD scaffold
  *   - `types/*`   — generic TypeScript types
- *   - `interfaces/*` — service contracts
  *
  * @example
  * ```typescript
@@ -35,9 +34,6 @@
 // Types
 export * from './types';
 
-// Interfaces
-export * from './interfaces';
-
 // Common utilities (mirror apps/main/api/src/common/)
 export * from './common';
 
@@ -47,10 +43,8 @@ export * from './config';
 // Base classes
 export * from './bases';
 
-// NOTE: utils/ folder chỉ chứa các file test spec cũ (date-utils.spec.ts,
-// entity-id.spec.ts, pagination.spec.ts) re-export từ common/* cho
-// backward compat. KHÔNG export từ root để tránh duplicate constants
-// (ADMIN_TABLE_EXPORT_MAX_LIMIT, DEFAULT_PAGE_LIMIT) với common/.
+// NOTE: `@workspace/api-server/utils/*` re-export `common/*` (backward compat).
+// Root barrel không export utils/ để tránh trùng hằng pagination với `common/`.
 
 // Modules
 export * from './modules';

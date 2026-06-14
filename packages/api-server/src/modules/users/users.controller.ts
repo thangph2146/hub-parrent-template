@@ -581,9 +581,10 @@ export class BaseUsersController {
       return res.status(statusCode).json(errorBody);
     }
 
-    if (!this.isBulkAction(body.action)) {
+    const bulkAction = body.action as string;
+    if (!this.isBulkAction(bulkAction)) {
       const { statusCode, body: errorBody } = this.createErrorResponse(
-        `Action không hợp lệ: ${body.action}`,
+        `Action không hợp lệ: ${bulkAction}`,
         { statusCode: 400 },
       );
       return res.status(statusCode).json(errorBody);

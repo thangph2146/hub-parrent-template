@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { toEntityId } from './common/entity-id';
+import { toEntityId } from './common';
 import { config } from 'dotenv';
 import {
   MikroORM,
@@ -39,7 +39,7 @@ import {
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
-} from '@workspace/api-server/modules/system';
+} from './common/module-bases/system/import-helpers';
 
 config();
 

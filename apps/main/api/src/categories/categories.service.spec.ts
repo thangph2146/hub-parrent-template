@@ -8,10 +8,13 @@ describe('CategoriesService', () => {
   let em: Partial<EntityManager>;
 
   const mockCategory = {
-    id: 'cat-1',
+    id: 1,
     name: 'Test Category',
     slug: 'test-category',
     description: 'Test description',
+    icon: null,
+    sortOrder: 0,
+    type: 'post',
     parent: null,
     children: [],
     childrenCount: 0,
@@ -25,16 +28,19 @@ describe('CategoriesService', () => {
     em = {
       findOne: jest.fn(),
       find: jest.fn(),
-      persist: jest.fn(),
-      flush: jest.fn().mockImplementation(() => {
-        // Mock flush to set dates if needed
+      persist: jest.fn().mockImplementation((entity: { id?: number }) => {
+        if (entity.id == null) entity.id = 2;
       }),
+      flush: jest.fn().mockResolvedValue(undefined),
       count: jest.fn(),
-      getReference: jest.fn().mockImplementation((entity, id) => ({ id })),
+      getReference: jest.fn().mockImplementation((_entity, id) => ({ id })),
       nativeDelete: jest.fn(),
       nativeUpdate: jest.fn(),
       remove: jest.fn(),
       getRepository: jest.fn(),
+      getConnection: jest.fn().mockReturnValue({
+        execute: jest.fn().mockResolvedValue([]),
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -104,7 +110,7 @@ describe('CategoriesService', () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);
 
-      const result = await service.getById('cat-1');
+      const result = await service.getById('1');
 
       expect(result).not.toBeNull();
       expect(result?.name).toBe('Test Category');
@@ -115,7 +121,7 @@ describe('CategoriesService', () => {
     it('should return null when category not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.getById('nonexistent');
+      const result = await service.getById('999');
 
       expect(result).toBeNull();
     });
@@ -125,7 +131,7 @@ describe('CategoriesService', () => {
     it('should create category successfully', async () => {
       const createdCategory = {
         ...mockCategory,
-        id: 'new-cat',
+        id: 2,
         name: 'New Category',
       };
       (em.findOne as jest.Mock).mockResolvedValue(createdCategory);
@@ -144,7 +150,7 @@ describe('CategoriesService', () => {
     it('should create category with parent', async () => {
       const createdCategory = {
         ...mockCategory,
-        id: 'new-cat',
+        id: 3,
         name: 'Child Category',
       };
       (em.findOne as jest.Mock).mockResolvedValue(createdCategory);
@@ -154,10 +160,10 @@ describe('CategoriesService', () => {
       const result = await service.create({
         name: 'Child Category',
         slug: 'child-category',
-        parentId: 'parent-id',
+        parentId: '2',
       });
 
-      expect(em.getReference).toHaveBeenCalledWith(Category, 'parent-id');
+      expect(em.getReference).toHaveBeenCalledWith(Category, 2);
       expect(result.name).toBe('Child Category');
     });
   });
@@ -173,7 +179,7 @@ describe('CategoriesService', () => {
       (em.count as jest.Mock).mockResolvedValue(0);
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      const result = await service.update('cat-1', {
+      const result = await service.update('1', {
         name: 'Updated Name',
       });
 
@@ -184,7 +190,7 @@ describe('CategoriesService', () => {
     it('should return null when category not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.update('nonexistent', { name: 'New' });
+      const result = await service.update('999', { name: 'New' });
 
       expect(result).toBeNull();
     });
@@ -196,9 +202,9 @@ describe('CategoriesService', () => {
       (em.count as jest.Mock).mockResolvedValue(0);
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      await service.update('cat-1', { parentId: 'new-parent' });
+      await service.update('1', { parentId: '2' });
 
-      expect(em.getReference).toHaveBeenCalledWith(Category, 'new-parent');
+      expect(em.getReference).toHaveBeenCalledWith(Category, 2);
     });
 
     it('should remove parent when parentId is null', async () => {
@@ -208,7 +214,7 @@ describe('CategoriesService', () => {
       (em.count as jest.Mock).mockResolvedValue(0);
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      await service.update('cat-1', { parentId: null });
+      await service.update('1', { parentId: null });
 
       expect(existingCategory.parent).toBeNull();
     });
@@ -219,7 +225,7 @@ describe('CategoriesService', () => {
       const category = { ...mockCategory, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(category);
 
-      const result = await service.softDelete('cat-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(true);
       expect(category.deletedAt).not.toBeNull();
@@ -228,7 +234,7 @@ describe('CategoriesService', () => {
     it('should return false when category not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('nonexistent');
+      const result = await service.softDelete('999');
 
       expect(result).toBe(false);
     });
@@ -237,7 +243,7 @@ describe('CategoriesService', () => {
       const category = { ...mockCategory, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(category);
 
-      const result = await service.softDelete('cat-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(false);
     });
@@ -248,7 +254,7 @@ describe('CategoriesService', () => {
       const category = { ...mockCategory, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(category);
 
-      const result = await service.restore('cat-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(true);
       expect(category.deletedAt).toBeNull();
@@ -258,7 +264,7 @@ describe('CategoriesService', () => {
       const category = { ...mockCategory, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(category);
 
-      const result = await service.restore('cat-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(false);
     });
@@ -268,7 +274,7 @@ describe('CategoriesService', () => {
     it('should hard delete category', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockCategory);
 
-      const result = await service.hardDelete('cat-1');
+      const result = await service.hardDelete('1');
 
       expect(result).toBe(true);
       expect(em.remove).toHaveBeenCalled();
@@ -277,7 +283,7 @@ describe('CategoriesService', () => {
     it('should return false when category not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.hardDelete('nonexistent');
+      const result = await service.hardDelete('999');
 
       expect(result).toBe(false);
     });
@@ -287,7 +293,7 @@ describe('CategoriesService', () => {
     it('should bulk delete categories', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk('delete', ['cat-1', 'cat-2']);
+      const result = await service.bulk('delete', ['1', '2']);
 
       expect(result.affected).toBe(2);
       expect(result.message).toContain('2 danh mục');
@@ -296,7 +302,7 @@ describe('CategoriesService', () => {
     it('should bulk restore categories', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(3);
 
-      const result = await service.bulk('restore', ['cat-1', 'cat-2', 'cat-3']);
+      const result = await service.bulk('restore', ['1', '2', '3']);
 
       expect(result.affected).toBe(3);
       expect(result.message).toContain('3 danh mục');
@@ -305,23 +311,18 @@ describe('CategoriesService', () => {
     it('should bulk hard delete categories', async () => {
       (em.find as jest.Mock).mockResolvedValue([mockCategory]);
 
-      const result = await service.bulk('hard-delete', ['cat-1']);
+      const result = await service.bulk('hard-delete', ['1']);
 
       expect(result.affected).toBe(1);
       expect(result.message).toContain('1 danh mục');
     });
 
     it('should bulk set parent', async () => {
-      (em.find as jest.Mock)
-        .mockResolvedValueOnce([{ id: 'parent-id', deletedAt: null }])
-        .mockResolvedValueOnce([]);
+      (em.findOne as jest.Mock).mockResolvedValue({ id: 2, deletedAt: null });
+      (em.find as jest.Mock).mockResolvedValue([]);
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk(
-        'set-parent',
-        ['cat-1', 'cat-2'],
-        'parent-id',
-      );
+      const result = await service.bulk('set-parent', ['1', '3'], '2');
 
       expect(result.affected).toBeGreaterThanOrEqual(0);
       expect(result.message.length).toBeGreaterThan(0);
@@ -335,31 +336,26 @@ describe('CategoriesService', () => {
     });
 
     it('should prevent setting parent to itself', async () => {
-      const result = await service.bulk('set-parent', ['cat-1'], 'cat-1');
+      const result = await service.bulk('set-parent', ['1'], '1');
 
       expect(result.affected).toBe(0);
       expect(result.message).toContain('không được nằm trong danh sách');
     });
 
     it('should prevent circular parent reference', async () => {
-      (em.find as jest.Mock)
-        .mockResolvedValueOnce([{ id: 'parent-id', deletedAt: null }])
-        .mockResolvedValueOnce(['parent-id']);
+      (em.findOne as jest.Mock).mockResolvedValue({ id: 3, deletedAt: null });
+      (em.find as jest.Mock).mockResolvedValue([{ id: 3 }]);
 
-      const result = await service.bulk(
-        'set-parent',
-        ['parent-id'],
-        'child-id',
-      );
+      const result = await service.bulk('set-parent', ['2'], '3');
 
       expect(result.affected).toBe(0);
-      expect(result.message.length).toBeGreaterThan(0);
+      expect(result.message).toContain('vòng lặp');
     });
 
     it('should return error when parent not found', async () => {
-      (em.find as jest.Mock).mockResolvedValue([]);
+      (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.bulk('set-parent', ['cat-1'], 'nonexistent');
+      const result = await service.bulk('set-parent', ['1'], '999');
 
       expect(result.affected).toBe(0);
       expect(result.message.length).toBeGreaterThan(0);
@@ -368,7 +364,7 @@ describe('CategoriesService', () => {
     it('should set parent to null (root level)', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk('set-parent', ['cat-1', 'cat-2'], null);
+      const result = await service.bulk('set-parent', ['1', '2'], null);
 
       expect(result.affected).toBe(2);
       expect(result.message).toContain('cấp gốc');
@@ -378,8 +374,8 @@ describe('CategoriesService', () => {
   describe('getOptions', () => {
     it('should return category options', async () => {
       (em.find as jest.Mock).mockResolvedValue([
-        { id: 'cat-1', name: 'Category 1' },
-        { id: 'cat-2', name: 'Category 2' },
+        { id: 1, name: 'Category 1' },
+        { id: 2, name: 'Category 2' },
       ]);
 
       const result = await service.getOptions('name', 'Category', 10);
@@ -389,7 +385,7 @@ describe('CategoriesService', () => {
 
     it('should filter by search term', async () => {
       (em.find as jest.Mock).mockResolvedValue([
-        { id: 'cat-1', name: 'Test Category' },
+        { id: 1, name: 'Test Category' },
       ]);
 
       const result = await service.getOptions('name', 'Test', 10);
@@ -399,8 +395,8 @@ describe('CategoriesService', () => {
 
     it('should return unique options', async () => {
       (em.find as jest.Mock).mockResolvedValue([
-        { id: 'cat-1', name: 'Same' },
-        { id: 'cat-2', name: 'Same' },
+        { id: 1, name: 'Same' },
+        { id: 2, name: 'Same' },
       ]);
 
       const result = await service.getOptions('name', '', 10);

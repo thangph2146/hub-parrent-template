@@ -21,15 +21,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SkipThrottle } from '@nestjs/throttler';
 import type { Response, Request } from 'express';
 import { UploadsService } from './uploads.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { appConfig } from '../config/app.config';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseAdminListLimit } from '../common';
 
 /** Giới hạn kích thước file upload đơn lẻ (multer). */
 const MAX_UPLOAD_FILE_BYTES = 50 * 1024 * 1024;

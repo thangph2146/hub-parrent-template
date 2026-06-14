@@ -17,8 +17,6 @@ export * from './normalize-relation-ids';
 export * from './build-admin-list-params';
 export * from './permissions.decorator';
 export * from './permissions.guard';
-export * from './legacy-audit-timestamps';
-export * from './admin-filter-configs';
 export * from './get-options';
 export * from './resolve-relation-filters';
 export * from './image-processor';

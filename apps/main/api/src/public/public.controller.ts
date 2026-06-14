@@ -28,12 +28,9 @@ import type { CreateContactRequestDto } from './public-contact-requests.service'
 import { AuthService } from '../auth/auth.service';
 import type { AuthUserPayload } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 import {

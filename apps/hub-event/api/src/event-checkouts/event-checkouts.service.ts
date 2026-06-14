@@ -1,20 +1,14 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import {
-  BaseEventCheckoutsService,
-  type BulkClearCheckoutsResult,
-  EventCheckoutRowDto,
-  ListEventCheckoutsParams,
-  ListEventCheckoutsResult,
-} from '@workspace/api-server/modules/event-checkouts';
-
+import { BaseEventCheckoutsService } from '../common/module-bases/event-checkouts/event-checkout.service';
 export type {
-  BulkClearCheckoutsResult,
   EventCheckoutRowDto,
   ListEventCheckoutsParams,
   ListEventCheckoutsResult,
-};
+  BulkClearCheckoutsResult,
+} from '../common/module-bases/event-checkouts/event-checkout.service';
 
 @Injectable()
 export class EventCheckoutsService extends BaseEventCheckoutsService {

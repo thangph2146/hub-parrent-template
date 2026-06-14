@@ -1,4 +1,5 @@
-import { toEntityId } from '../common/entity-id';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { toEntityId } from '../common';
 /**
  * Notifications API cho admin (chuông thông báo + unread count).
  * Service được inject bởi Nest, type đầy đủ từ notifications.service.
@@ -24,11 +25,8 @@ import type {
   UnreadCountsResult,
   AdminTableResult,
 } from './notifications.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
-import { Permissions } from '../common/permissions.decorator';
+import { createSuccessResponse, createErrorResponse } from '../common';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 

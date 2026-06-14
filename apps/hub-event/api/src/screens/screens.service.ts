@@ -1,19 +1,15 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { SCREEN_COLUMN_FILTERS } from '../common/admin/filter-configs';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import {
-  BaseScreensService,
-  type ScreensRowDto,
-} from '@workspace/api-server/modules/screens';
-import {
-  toIso,
-  type AdminColumnFiltersConfig,
-} from '@workspace/api-server/common';
-
 import { Screen } from '../entities/screen.entity';
-import { SCREEN_COLUMN_FILTERS } from '../common/admin-filter-configs';
-
-export type ScreenRowDto = ScreensRowDto;
+import { BaseScreensService } from '../common/module-bases/screens/screen.service';
+export type {
+  ScreensRowDto,
+  ScreensCreateData,
+  ScreensUpdateData,
+} from '../common/module-bases/screens/screen.service';
 
 @Injectable()
 export class ScreensService extends BaseScreensService {
@@ -25,33 +21,15 @@ export class ScreensService extends BaseScreensService {
     return this.em;
   }
 
-  protected getEntity(): new () => Record<string, unknown> {
+  protected getEntity() {
     return Screen as unknown as new () => Record<string, unknown>;
   }
 
-  protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
+  protected getSearchFields(): string[] {
+    return ['name', 'code'];
+  }
+
+  protected getColumnFiltersConfig() {
     return SCREEN_COLUMN_FILTERS;
-  }
-
-  protected getListPopulate(): string[] {
-    return ['camera', 'template'];
-  }
-
-  protected mapRow(entity: Record<string, unknown>): ScreensRowDto {
-    const row = entity as unknown as Screen;
-    return {
-      id: row.id,
-      name: row.name,
-      code: row.code ?? null,
-      cameraId: row.camera?.id ?? null,
-      cameraName: row.camera?.name ?? null,
-      templateId: row.template?.id ?? null,
-      templateName: row.template?.name ?? null,
-      status: row.status,
-      isActive: row.status !== 0,
-      createdAt: toIso(row.createdAt) ?? '',
-      updatedAt: toIso(row.updatedAt) ?? '',
-      deletedAt: toIso(row.deletedAt),
-    };
   }
 }

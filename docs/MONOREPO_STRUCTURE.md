@@ -77,35 +77,39 @@ Test stack deploy: **`pnpm dev:parent`**.
 
 ### Cập nhật deploy check-in (`hub-event`)
 
-**Packages-first (mặc định):** không copy file từ `main/api`.
+**Native đã commit (`materialize.committed: true`):** `hub-event/api` là bản copy từ `apps/main/api` — **commit trong git**. `pnpm pull:checkin` **không** regenerate API; chỉ verify + admin generate.
 
 ```bash
 pnpm pull:checkin
-# = build @workspace/api-server + api:generate:checkin --prune
-# + admin migrate/generate + verify
+# = verify API native + parity (cần main/api cho parity) + admin migrate/generate
 ```
 
-Downstream **hub-event-monorepo**: `pnpm pull:template` (full `packages/`).
+**Cập nhật logic API** (dev monorepo có `apps/main/api`):
 
-**Legacy (deprecated):** copy subset `main/api` → `hub-event/api`:
+```bash
+pnpm api:render apps/hub-event/api --mode=native   # hoặc pnpm api:regenerate:checkin
+git add apps/hub-event/api && git commit ...
+```
+
+**Legacy packages-first** (bỏ `materialize.committed` hoặc `committed: false`): generate từ `@workspace/api-server`.
+
+**Legacy copy main → hub-event (deprecated):**
 
 ```bash
 pnpm pull:checkin:legacy
-# = sync-checkin.cjs + verify:api-profile + admin generate
 ```
 
 Test stack deploy: **`pnpm dev:checkin`**. Verify: **`pnpm test:checkin:full`**.
 
-### API check-in (packages-first)
+### API check-in (native committed)
 
 | File | Vai trò |
 |------|---------|
-| `apps/hub-event/api/api.app.config.json` | Module generate vs `native.controllers` (chỉ `public`) |
-| `script-system/api/api-module-registry.cjs` | Binding service + `Base*Controller` trong package |
-| `apps/hub-event/api/src/app.module.ts` | Composition — **giữ local** |
-| `apps/hub-event/api/api.sync-profile.json` | Chỉ dùng với **`pull:checkin:legacy`** |
+| `apps/hub-event/api/api.app.config.json` | `materialize.committed: true` — pull skip generate |
+| `apps/hub-event/api/src/**` | Native main-port — **commit**, cập nhật qua `pnpm api:render` |
+| `apps/hub-event/hub-event-checkin-frontend/admin.app.config.json` | Admin modules |
 
-Lệnh: `pnpm api:generate:checkin` · Verify: `pnpm verify:checkin-api` · Parity unified: `pnpm verify:main-api-endpoint-parity`
+Lệnh: `pnpm pull:checkin` (verify + admin) · Regenerate API: `pnpm api:regenerate:checkin` · Parity: `pnpm verify:main-api-endpoint-parity`
 
 ### Test sau sync (`test:*`)
 

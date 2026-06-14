@@ -17,10 +17,20 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request, Response } from 'express';
 import { BaseAdminHttpController } from '../../bases/base-admin-http.controller';
 import type { BaseAccountsService, UpdateAccountDto } from './accounts.service';
-import type { BaseUploadsService } from '../uploads/uploads.service';
 import { Permissions } from '../../common';
 import { ADMIN_ROUTES, PERMISSIONS } from '../../config';
 import { apiServerAppConfig } from '../../config/app-config';
+
+type AvatarUploadsBinding = {
+  saveFile: (
+    file: { buffer: Buffer; originalname: string; mimetype: string },
+    folderPath?: string,
+    isExistingFolder?: boolean,
+    serveBaseUrl?: string,
+    userId?: string,
+    ownerUserId?: string,
+  ) => Promise<{ url: string }>;
+};
 
 const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
@@ -37,7 +47,7 @@ export type IAccountsAdminControllerService = IAccountsControllerService;
 export class BaseAccountsController extends BaseAdminHttpController {
   constructor(
     protected readonly service: IAccountsControllerService,
-    protected readonly uploadsService: Pick<BaseUploadsService, 'saveFile'>,
+    protected readonly uploadsService: Pick<AvatarUploadsBinding, 'saveFile'>,
   ) {
     super();
   }

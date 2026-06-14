@@ -1,4 +1,4 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+import { toEntityId, toEntityIdList } from '../common';
 import {
   Controller,
   Post,
@@ -12,16 +12,13 @@ import {
 import type { Response } from 'express';
 import { EntityManager } from '@mikro-orm/core';
 import { SocketGateway } from '../socket/socket.gateway';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { Message, MessageType } from '../entities/message.entity';
 import { MessageRead } from '../entities/message-read.entity';
 import { GroupMember } from '../entities/group-member.entity';
 import { Group } from '../entities/group.entity';
 import { User } from '../entities/user.entity';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 

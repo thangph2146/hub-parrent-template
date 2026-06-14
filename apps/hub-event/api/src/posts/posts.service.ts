@@ -1,24 +1,18 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import {
-  BasePostsService,
-  POSTS_FILTER_CATEGORIES_NONE,
-} from '@workspace/api-server/modules/posts';
 import { Post } from '../entities/post.entity';
 import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
-import { Category } from '../entities/category.entity';
-import { Tag } from '../entities/tag.entity';
 import { User } from '../entities/user.entity';
-
+import { BasePostsService } from '../common/module-bases/posts/posts.service';
 export type {
   PostRowDto,
   PostDetailDto,
   ListPostsParams,
   ListPostsResult,
-} from '@workspace/api-server/modules/posts';
-export { POSTS_FILTER_CATEGORIES_NONE };
+} from '../common/module-bases/posts/posts.service';
 
 @Injectable()
 export class PostsService extends BasePostsService {
@@ -30,27 +24,27 @@ export class PostsService extends BasePostsService {
     return this.em;
   }
 
-  protected getPostEntity(): new () => Record<string, unknown> {
+  protected getPostEntity() {
     return Post as unknown as new () => Record<string, unknown>;
   }
 
-  protected getCategoryEntity(): new () => Record<string, unknown> {
-    return Category as unknown as new () => Record<string, unknown>;
-  }
-
-  protected getTagEntity(): new () => Record<string, unknown> {
-    return Tag as unknown as new () => Record<string, unknown>;
-  }
-
-  protected getPostCategoryEntity(): new () => Record<string, unknown> {
+  protected getCategoryEntity() {
     return PostCategory as unknown as new () => Record<string, unknown>;
   }
 
-  protected getPostTagEntity(): new () => Record<string, unknown> {
+  protected getTagEntity() {
     return PostTag as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserEntity(): new () => Record<string, unknown> {
+  protected getPostCategoryEntity() {
+    return PostCategory as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getPostTagEntity() {
+    return PostTag as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getUserEntity() {
     return User as unknown as new () => Record<string, unknown>;
   }
 }

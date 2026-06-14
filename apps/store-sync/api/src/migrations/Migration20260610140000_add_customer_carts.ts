@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Migration } from '@mikro-orm/migrations';
 
 export class Migration20260610140000_add_customer_carts extends Migration {

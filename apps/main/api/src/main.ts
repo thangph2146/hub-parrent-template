@@ -13,12 +13,12 @@ import helmet from 'helmet';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { LoggingInterceptor } from './common/logging.interceptor';
+import { LoggingInterceptor } from './common/infra/logging.interceptor';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { appConfig } from './config/app.config';
-import { DatabaseHttpExceptionFilter } from './common/database-http-exception.filter';
-import { RequestIdMiddleware } from './common/request-id.middleware';
-import { ApiAccessMiddleware } from './common/api-access.middleware';
+import { DatabaseHttpExceptionFilter } from './common/infra/database-http-exception.filter';
+import { RequestIdMiddleware } from './common/infra/request-id.middleware';
+import { ApiAccessMiddleware } from './common/infra/api-access.middleware';
 
 /**
  * Reverse-proxy đôi khi strip `/api` (vd. Nginx `location /api/` + `proxy_pass .../`)

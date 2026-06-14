@@ -3,7 +3,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { UploadsService } from './uploads.service';
 import { PUBLIC_ROUTES } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 /** Serve ảnh/tệp công khai — không áp rate limit (trang admin có thể tải hàng chục thumbnail cùng lúc). */
 @Public()

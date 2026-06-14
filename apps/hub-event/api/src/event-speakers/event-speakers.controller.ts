@@ -1,12 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { Inject } from '@nestjs/common';
-import { BaseEventSpeakersController as PackageEventSpeakersController } from '@workspace/api-server/modules/event-speakers';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
+import { PERMISSIONS } from '../config/permissions';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseEventSpeakersController } from '../common/module-bases/event-speakers/event-speakers.controller';
 import { EventSpeakersService } from './event-speakers.service';
 
-export class EventSpeakersController extends PackageEventSpeakersController {
-  constructor(
-    @Inject(EventSpeakersService) eventSpeakersService: EventSpeakersService,
-  ) {
-    super(eventSpeakersService);
+@Permissions(PERMISSIONS.EVENT_SPEAKERS_VIEW)
+@Controller(ADMIN_ROUTES.EVENT_SPEAKERS)
+export class EventSpeakersController extends BaseEventSpeakersController {
+  constructor(service: EventSpeakersService) {
+    super(service);
   }
 }

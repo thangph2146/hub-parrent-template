@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Migration } from '@mikro-orm/migrations';
 
 export class Migration20260610034339_convert_base_entity_ids_to_int extends Migration {

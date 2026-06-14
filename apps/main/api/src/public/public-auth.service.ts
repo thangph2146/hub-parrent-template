@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Role } from '../entities/role.entity';

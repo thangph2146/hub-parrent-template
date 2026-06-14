@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.532Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-13T21:25:57.671Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -12,7 +12,8 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |
 | Cây `src/` một app | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | `SUMMARY_FOR_AI.md` cùng app |
 | Quy mô graph, điểm nóng import | [`../../apps/main/api/.graphify/markdown/GRAPH_STATS.md`](../../apps/main/api/.graphify/markdown/GRAPH_STATS.md) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |
-| **Endpoint Nest (@api)** | [`../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md) | [`ROUTE_SURFACE.md`](ROUTE_SURFACE.md), `src/config/constants.ts`, `pnpm verify:main-api-endpoint-parity` |
+| **Endpoint Nest (@api main)** | [`../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md) | [`ROUTE_SURFACE.md`](ROUTE_SURFACE.md), `pnpm verify:main-api-endpoint-parity` |
+| **Endpoint Nest (check-in)** | [`../../apps/hub-event/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/hub-event/api/.graphify/markdown/API_ENDPOINTS.md) | `pnpm api:render:checkin`, `pnpm verify:checkin-api` |
 | Domain Nest import lẫn nhau | [`../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
 | UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
@@ -79,7 +80,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | `@backend` | 202 | 2026-06-12T12:59:23.774Z | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@hub-parent/api` | 315 | 2026-06-12T12:59:24.010Z | [`apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@frontend` | 128 | 2026-06-12T12:59:24.112Z | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@hub-event/api` | 218 | 2026-06-13T10:52:22.437Z | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@hub-event/api` | — | — | chưa có snapshot/context.json |
 | `@hub-event-checkin-frontend` | 288 | 2026-06-12T12:59:24.344Z | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@store-sync/api` | 315 | 2026-06-12T12:59:24.640Z | [`apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@store-sync-frontend` | 110 | 2026-06-12T12:59:24.736Z | [`apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |

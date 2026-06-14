@@ -1,5 +1,5 @@
 /**
- * Loader cho dữ liệu test fixture từ `hub-system-export-2026-06-11.json`.
+ * Loader cho dữ liệu test fixture từ `hub-system-export-2026-06-11.json.gz`.
  *
  * File JSON này là kết quả export từ database production của `apps/main/api/`,
  * chứa các entity thực (role, user, post, category, tag, setting, pageContent,
@@ -11,14 +11,24 @@
  */
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+import { gunzipSync } from 'node:zlib';
 
 /**
- * Đường dẫn tuyệt đối tới file fixture mặc định.
+ * Đường dẫn tuyệt đối tới file fixture mặc định (gzip — ~3MB thay vì ~45MB JSON thuần).
  */
 export const DEFAULT_FIXTURE_PATH = path.join(
   __dirname,
-  'hub-system-export-2026-06-11.json',
+  'fixtures',
+  'hub-system-export-2026-06-11.json.gz',
 );
+
+function readFixtureText(filePath: string): string {
+  const buf = fs.readFileSync(filePath);
+  if (filePath.endsWith('.gz')) {
+    return gunzipSync(buf).toString('utf-8');
+  }
+  return buf.toString('utf-8');
+}
 
 /**
  * Shape dữ liệu export - mỗi key là tên entity (snake_case), value là mảng bản ghi.
@@ -90,7 +100,7 @@ export function loadFixture(
   if (cachedFixture && filePath === DEFAULT_FIXTURE_PATH) {
     return cachedFixture;
   }
-  const raw = fs.readFileSync(filePath, 'utf-8');
+  const raw = readFixtureText(filePath);
   const parsed = JSON.parse(raw) as FullExportFixture;
   if (filePath === DEFAULT_FIXTURE_PATH) {
     cachedFixture = parsed;

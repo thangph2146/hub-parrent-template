@@ -336,8 +336,6 @@ export class BaseSessionsController extends BaseAdminHttpController {
         );
       }
     }
-    if (actorId && toEntityId(actorId) !== session.userId) {
-    }
     const { statusCode, body: okBody } = createSuccessResponse(session, {
       message: 'Session created successfully',
       status: 201,

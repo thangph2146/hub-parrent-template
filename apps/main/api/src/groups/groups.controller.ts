@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 /**
  * Groups Admin API Controller.
  * POST /groups — tạo nhóm. GET /groups — danh sách. GET /groups/:id — chi tiết.
@@ -23,14 +23,11 @@ import { GroupsService } from './groups.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationKind } from '../entities/notification.entity';
 import { SocketGateway } from '../socket/socket.gateway';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseAdminListLimit } from '../common';
 
 @Permissions(PERMISSIONS.GROUPS_VIEW)
 @Controller(ADMIN_ROUTES.GROUPS)

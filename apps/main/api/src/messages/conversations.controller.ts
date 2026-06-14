@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 import {
   Controller,
   Get,
@@ -11,15 +11,12 @@ import {
 } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import type { Response } from 'express';
 import { SocketGateway } from '../socket/socket.gateway';
 import { Message, MessageType } from '../entities/message.entity';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
 
 @Controller(ADMIN_ROUTES.CONVERSATIONS)

@@ -486,7 +486,7 @@ export class BaseUsersService {
 
     const user = await this.getUserWithRoles(created.id as number);
     if (!user) {
-      throw new Error(`Failed to refetch user ${created.id}`);
+      throw new Error(`Failed to refetch user ${String(created.id)}`);
     }
 
     return this.mapRow(user);

@@ -1,17 +1,15 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseNotificationsService } from '@workspace/api-server/modules/notifications';
-import { SocketGateway } from '../socket/socket.gateway';
-import {
-  mapNotificationToPayload,
-  type NotificationLike,
-} from '../socket/notification-mapper';
 import { Notification } from '../entities/notification.entity';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Message } from '../entities/message.entity';
 import { ContactRequest } from '../entities/contact-request.entity';
+import { SocketGateway } from '../socket/socket.gateway';
+import { mapNotificationToPayload } from '../socket/notification-mapper';
+import { BaseNotificationsService } from '../common/module-bases/notifications/notifications.service';
 
 export type {
   NotificationsListQuery,
@@ -21,7 +19,7 @@ export type {
   AdminTableRowDto,
   AdminTableQuery,
   AdminTableResult,
-} from '@workspace/api-server/modules/notifications';
+} from '../common/module-bases/notifications/notifications.service';
 
 @Injectable()
 export class NotificationsService extends BaseNotificationsService {
@@ -37,23 +35,23 @@ export class NotificationsService extends BaseNotificationsService {
     return this.em;
   }
 
-  protected getNotificationEntity(): new () => Record<string, unknown> {
+  protected getNotificationEntity() {
     return Notification as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserEntity(): new () => Record<string, unknown> {
+  protected getUserEntity() {
     return User as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserRoleEntity(): new () => Record<string, unknown> {
+  protected getUserRoleEntity() {
     return UserRole as unknown as new () => Record<string, unknown>;
   }
 
-  protected getMessageEntity(): new () => Record<string, unknown> {
+  protected getMessageEntity() {
     return Message as unknown as new () => Record<string, unknown>;
   }
 
-  protected getContactRequestEntity(): new () => Record<string, unknown> {
+  protected getContactRequestEntity() {
     return ContactRequest as unknown as new () => Record<string, unknown>;
   }
 
@@ -61,9 +59,7 @@ export class NotificationsService extends BaseNotificationsService {
     recipientUserId: number,
     notification: Record<string, unknown>,
   ): void {
-    const payload = mapNotificationToPayload(
-      notification as unknown as NotificationLike,
-    );
+    const payload = mapNotificationToPayload(notification as never);
     this.socketGateway.emitNotificationToUser(recipientUserId, payload);
   }
 }

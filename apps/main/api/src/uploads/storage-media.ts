@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { isImageExt } from '../common/image-processor';
+import { isImageExt } from '../common';
 import {
   resolveStorageFolderDisplayLabel,
   type StorageFolderLabelLookup,

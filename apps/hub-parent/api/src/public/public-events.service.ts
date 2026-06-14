@@ -1,14 +1,15 @@
-import { relationEntityId } from '../common/entity-id';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { relationEntityId } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, QueryOrder, type FilterQuery } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
-import { normalizePosterField } from '../common/poster-normalize';
-import { resolveEventTimeStatus } from '../common/event-time-status';
+import { normalizePageLimit, paginationMeta } from '../common';
+import { normalizePosterField } from '../common';
+import { resolveEventTimeStatus } from '../common';
 import { EventRegistrationsService } from '../event-registrations/event-registrations.service';
 import { EventSpeakersService } from '../event-speakers/event-speakers.service';
-import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common';
 
 export type EventTimeFilter =
   | 'upcoming'

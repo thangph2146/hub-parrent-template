@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T11:10:25.510Z",
+  "generatedAt": "2026-06-13T21:25:57.639Z",
   "productLines": {
     "main": {
       "api": {
@@ -593,13 +593,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -622,13 +626,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -651,13 +659,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -680,13 +692,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -709,13 +725,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -738,13 +758,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -770,13 +794,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -802,13 +830,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -835,13 +867,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -900,13 +936,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -932,13 +972,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -961,13 +1005,17 @@
       "lines": {
         "main": true,
         "checkinAdmin": false,
-        "checkinApi": false
+        "checkinApi": true
       },
       "verify": [
         "pnpm check",
         "pnpm verify:main-admin",
         "pnpm verify:permissions",
-        "pnpm verify:api-contract"
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
       ],
       "docs": [
         "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
@@ -1090,23 +1138,6 @@
       "apps/hub-event/hub-event-checkin-frontend/src/app/_component/index.ts"
     ]
   },
-  "syncExclude": [
-    "products",
-    "orders",
-    "carts",
-    "promo-codes",
-    "parent-students",
-    "imported-users",
-    "students",
-    "training-systems",
-    "training-levels",
-    "courses",
-    "majors",
-    "academic-years",
-    "departments",
-    "groups",
-    "messages",
-    "contact-requests"
-  ],
+  "syncExclude": [],
   "devRule": "Dev hàng ngày: sửa apps/main/* + packages/*; hub-event cập nhật qua pnpm pull:checkin."
 }

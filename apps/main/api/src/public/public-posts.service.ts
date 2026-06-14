@@ -1,11 +1,11 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+import { toEntityId, toEntityIdList } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { Post } from '../entities/post.entity';
 import { Category } from '../entities/category.entity';
 import { Tag } from '../entities/tag.entity';
 import { Setting } from '../entities/setting.entity';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
+import { normalizePageLimit, paginationMeta } from '../common';
 
 export interface PublicPostsQuery {
   page: number;

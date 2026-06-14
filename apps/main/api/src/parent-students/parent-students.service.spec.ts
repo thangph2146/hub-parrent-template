@@ -1,48 +1,54 @@
 /**
  * ParentStudentsService Unit Tests
- *
- * Pattern theo `apps/main/api/src/comments/comments.service.spec.ts`:
- *   - NestJS `Test.createTestingModule` với `EntityManager` mock.
- *   - Dữ liệu mẫu lấy từ fixture `packages/api-server/src/data-test/hub-system-export-2026-06-11.json`.
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
+import { AdminRealtimeBroadcastService } from '../common/admin/realtime/broadcast.service';
 import { ParentStudentsService } from './parent-students.service';
 
 describe('ParentStudentsService', () => {
   let service: ParentStudentsService;
   let em: Partial<EntityManager>;
+  let adminRealtime: {
+    pendingApproval: jest.Mock;
+    parentStudentReviewed: jest.Mock;
+  };
 
-  // Không có fixture - dùng mock entity mặc định
-  const mockEntity: Record<string, unknown> = {
+  const mockRow = {
     id: 1,
-    deletedAt: null,
+    parent: { id: 10, email: 'parent@test.com', name: 'Parent', phone: '090' },
+    studentCode: 'SV001',
+    studentName: 'Student One',
+    note: null,
+    status: 'pending',
+    reviewedBy: null,
+    reviewedAt: null,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
   };
 
   beforeEach(async () => {
+    adminRealtime = {
+      pendingApproval: jest.fn(),
+      parentStudentReviewed: jest.fn(),
+    };
+
     em = {
       findOne: jest.fn(),
       find: jest.fn(),
-      persist: jest.fn(),
       persistAndFlush: jest.fn().mockResolvedValue(undefined),
-      flush: jest.fn(),
-      count: jest.fn(),
-      getReference: jest.fn().mockReturnValue({ id: 1 }),
-      nativeDelete: jest.fn(),
-      nativeUpdate: jest.fn(),
-      remove: jest.fn(),
       removeAndFlush: jest.fn().mockResolvedValue(undefined),
-      getRepository: jest.fn(),
+      count: jest.fn(),
+      getReference: jest.fn().mockReturnValue({ id: 10 }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ParentStudentsService,
+        { provide: EntityManager, useValue: em },
         {
-          provide: EntityManager,
-          useValue: em,
+          provide: AdminRealtimeBroadcastService,
+          useValue: adminRealtime,
         },
       ],
     }).compile();
@@ -50,257 +56,148 @@ describe('ParentStudentsService', () => {
     service = module.get<ParentStudentsService>(ParentStudentsService);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('list', () => {
+  describe('listAll', () => {
     it('should return paginated result', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.count as jest.Mock).mockResolvedValueOnce(1);
+      (em.find as jest.Mock).mockResolvedValue([mockRow]);
+      (em.count as jest.Mock).mockResolvedValue(1);
 
-      const result = await (
-        service as unknown as {
-          list: (p: { page: number; limit: number }) => Promise<{
-            data: unknown[];
-            pagination: { page: number; limit: number; total: number };
-          }>;
-        }
-      ).list({ page: 1, limit: 10 });
+      const result = await service.listAll({ page: 1, limit: 10 });
 
       expect(result.data).toHaveLength(1);
-      expect(result.pagination.page).toBe(1);
-      expect(result.pagination.limit).toBe(10);
+      expect(result.data[0].studentCode).toBe('SV001');
       expect(result.pagination.total).toBe(1);
     });
 
     it('should pass search filter to EM', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([]);
-      (em.count as jest.Mock).mockResolvedValueOnce(0);
+      (em.find as jest.Mock).mockResolvedValue([]);
+      (em.count as jest.Mock).mockResolvedValue(0);
 
-      await (
-        service as unknown as {
-          list: (p: {
-            page: number;
-            limit: number;
-            search?: string;
-          }) => Promise<unknown>;
-        }
-      ).list({ page: 1, limit: 10, search: 'test' });
+      await service.listAll({ page: 1, limit: 10, search: 'SV' });
 
       expect(em.find).toHaveBeenCalled();
     });
+  });
 
-    it('should pass status filter to EM', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([]);
-      (em.count as jest.Mock).mockResolvedValueOnce(0);
+  describe('listPending', () => {
+    it('should list pending requests', async () => {
+      (em.find as jest.Mock).mockResolvedValue([mockRow]);
+      (em.count as jest.Mock).mockResolvedValue(1);
 
-      await (
-        service as unknown as {
-          list: (p: {
-            page: number;
-            limit: number;
-            status?: string;
-          }) => Promise<unknown>;
-        }
-      ).list({ page: 1, limit: 10, status: 'deleted' });
+      const result = await service.listPending({ page: 1, limit: 10 });
 
-      expect(em.find).toHaveBeenCalled();
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].status).toBe('pending');
+    });
+  });
+
+  describe('listByParent', () => {
+    it('should list by parent id', async () => {
+      (em.find as jest.Mock).mockResolvedValue([mockRow]);
+
+      const result = await service.listByParent('10');
+
+      expect(result).toHaveLength(1);
+      expect(result[0].parentId).toBe(10);
     });
   });
 
   describe('getById', () => {
     it('should return existing record', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce({ ...mockEntity });
+      (em.findOne as jest.Mock).mockResolvedValue(mockRow);
 
-      const result = await (
-        service as unknown as {
-          getById: (id: number) => Promise<Record<string, unknown> | null>;
-        }
-      ).getById(1);
+      const result = await service.getById('1');
 
       expect(result).not.toBeNull();
+      expect(result?.studentCode).toBe('SV001');
     });
 
     it('should return null when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
+      (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await (
-        service as unknown as {
-          getById: (id: number) => Promise<Record<string, unknown> | null>;
-        }
-      ).getById(99999);
+      const result = await service.getById('999');
 
       expect(result).toBeNull();
     });
   });
 
-  describe('softDelete', () => {
-    it('should soft delete record', async () => {
-      // apps/main/api pattern: em.findOne(Entity, {id}) → check deletedAt → persistAndFlush
-      (em.findOne as jest.Mock).mockResolvedValueOnce({
-        ...mockEntity,
-        deletedAt: null,
+  describe('addStudentRequest', () => {
+    it('should create request and broadcast pending', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(null);
+
+      const result = await service.addStudentRequest({
+        parentId: 10,
+        studentCode: 'SV002',
+        studentName: 'New Student',
       });
-      (em.persistAndFlush as jest.Mock).mockResolvedValueOnce(undefined);
 
-      const result = await (
-        service as unknown as {
-          softDelete: (id: number) => Promise<boolean>;
-        }
-      ).softDelete(1);
-
-      expect(result).toBe(true);
+      expect(em.persistAndFlush).toHaveBeenCalled();
+      expect(result.studentCode).toBe('SV002');
+      expect(adminRealtime.pendingApproval).toHaveBeenCalled();
     });
 
-    it('should return false when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
+    it('should throw when duplicate', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(mockRow);
 
-      const result = await (
-        service as unknown as {
-          softDelete: (id: number) => Promise<boolean>;
-        }
-      ).softDelete(99999);
-
-      expect(result).toBe(false);
+      await expect(
+        service.addStudentRequest({
+          parentId: 10,
+          studentCode: 'SV001',
+        }),
+      ).rejects.toThrow('Bạn đã gửi yêu cầu liên kết');
     });
   });
 
-  describe('restore', () => {
-    it('should restore soft-deleted record', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce({
-        ...mockEntity,
-        deletedAt: new Date(),
-      });
-      (em.persistAndFlush as jest.Mock).mockResolvedValueOnce(undefined);
+  describe('review', () => {
+    it('should approve and broadcast review', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue({ ...mockRow });
 
-      const result = await (
-        service as unknown as {
-          restore: (id: number) => Promise<boolean>;
-        }
-      ).restore(1);
+      const result = await service.review('1', 'approved', 'admin@test.com');
 
-      expect(result).toBe(true);
+      expect(result).not.toBeNull();
+      expect(result?.status).toBe('approved');
+      expect(adminRealtime.parentStudentReviewed).toHaveBeenCalled();
     });
 
-    it('should return false when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
+    it('should return null when not found', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await (
-        service as unknown as {
-          restore: (id: number) => Promise<boolean>;
-        }
-      ).restore(99999);
+      const result = await service.review('999', 'rejected', 'admin@test.com');
 
-      expect(result).toBe(false);
+      expect(result).toBeNull();
     });
   });
 
-  describe('hardDelete', () => {
-    it('should hard delete record', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce({ ...mockEntity });
-      (em.removeAndFlush as jest.Mock).mockResolvedValueOnce(undefined);
+  describe('remove', () => {
+    it('should remove owned link', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(mockRow);
 
-      const result = await (
-        service as unknown as {
-          hardDelete: (id: number) => Promise<boolean>;
-        }
-      ).hardDelete(1);
+      const result = await service.remove('1', '10');
 
       expect(result).toBe(true);
       expect(em.removeAndFlush).toHaveBeenCalled();
     });
 
     it('should return false when not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValueOnce(null);
+      (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await (
-        service as unknown as {
-          hardDelete: (id: number) => Promise<boolean>;
-        }
-      ).hardDelete(99999);
+      const result = await service.remove('999', '10');
 
       expect(result).toBe(false);
     });
   });
 
-  describe('bulk', () => {
-    // apps/main/api: BulkResult = { affected: number, message: string }
-    it('should soft-delete multiple records', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
+  describe('removeByAdmin', () => {
+    it('should hard delete by admin', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(mockRow);
 
-      const result = await (
-        service as unknown as {
-          bulk: (
-            action: string,
-            ids: number[],
-          ) => Promise<{ affected: number; message: string }>;
-        }
-      ).bulk('delete', [1]);
+      const result = await service.removeByAdmin('1');
 
-      expect(result.affected).toBeGreaterThanOrEqual(0);
-      expect(result.message).toBeDefined();
-    });
-
-    it('should restore multiple records', async () => {
-      (em.nativeUpdate as jest.Mock).mockResolvedValueOnce(1);
-
-      const result = await (
-        service as unknown as {
-          bulk: (
-            action: string,
-            ids: number[],
-          ) => Promise<{ affected: number; message: string }>;
-        }
-      ).bulk('restore', [1]);
-
-      expect(result.affected).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should hard-delete multiple records', async () => {
-      (em.find as jest.Mock).mockResolvedValueOnce([{ ...mockEntity }]);
-      (em.removeAndFlush as jest.Mock).mockResolvedValueOnce(undefined);
-
-      const result = await (
-        service as unknown as {
-          bulk: (
-            action: string,
-            ids: number[],
-          ) => Promise<{ affected: number; message: string }>;
-        }
-      ).bulk('hard-delete', [1]);
-
-      expect(result.affected).toBeGreaterThanOrEqual(0);
-    });
-  });
-
-  describe('bulk error handling', () => {
-    it('should throw on invalid action', async () => {
-      await expect(
-        (
-          service as unknown as {
-            bulk: (action: string, ids: number[]) => Promise<unknown>;
-          }
-        ).bulk('invalid-action', [1]),
-      ).rejects.toBeDefined();
-    });
-
-    it('should return affected=0 for empty ids (apps/main/api behavior)', async () => {
-      const result = await (
-        service as unknown as {
-          bulk: (
-            action: string,
-            ids: number[],
-          ) => Promise<{ affected: number; message: string }>;
-        }
-      ).bulk('delete', []);
-      expect(result.affected).toBe(0);
-      expect(result.message).toBeDefined();
+      expect(result).toBe(true);
+      expect(em.removeAndFlush).toHaveBeenCalled();
     });
   });
 });

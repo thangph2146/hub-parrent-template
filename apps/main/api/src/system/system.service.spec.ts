@@ -1,5 +1,5 @@
 /**
- * SystemService — binding @workspace/api-server (main API).
+ * SystemService — import/export admin (OOP native main API).
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';

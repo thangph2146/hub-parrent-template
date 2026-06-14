@@ -9,7 +9,7 @@ import {
   type BulkResult,
 } from '../../common/bulk-actions';
 import { applyColumnFilters } from '../../common/apply-column-filters';
-import { GUIDE_COLUMN_FILTERS } from '../../common/admin-filter-configs';
+import { GUIDE_COLUMN_FILTERS } from './page-contents-column-filters';
 import { toEntityId } from '../../common/entity-id';
 
 export interface PageContentCreateInput {

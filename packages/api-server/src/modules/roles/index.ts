@@ -7,10 +7,10 @@ export {
   BaseRolesModule,
 } from './roles.module';
 
-export type { IRolesControllerService } from './role.controller';
-
 export type {
   RolesRowDto,
   RolesCreateData,
   RolesUpdateData,
+  ListRolesParams,
+  ListRolesResult,
 } from './role.service';

@@ -62,9 +62,9 @@ export abstract class BaseMajorsService extends BaseCrudService<
     return 'id';
   }
 
-  /** Soft delete field - null nếu entity không hỗ trợ. */
+  /** Soft delete field. */
   protected getSoftDeleteField(): string | null {
-    return null;
+    return 'deletedAt';
   }
 
   /** Fields cho phép search LIKE. Override trong subclass nếu cần. */

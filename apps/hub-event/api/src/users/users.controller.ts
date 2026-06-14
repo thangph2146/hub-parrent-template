@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseUsersController as PackageUsersController } from '@workspace/api-server/modules/users';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
-import { ADMIN_ROUTES } from '../config/constants';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Controller } from '@nestjs/common';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common';
+import { PERMISSIONS } from '../config/permissions';
+import { BaseUsersController } from '../common/module-bases/users/users.controller';
 import { UsersService } from './users.service';
 
-@ApiTags('Users')
-@Controller(ADMIN_ROUTES.USERS)
 @Permissions(PERMISSIONS.USERS_VIEW)
-export class UsersController extends PackageUsersController {
-  constructor(@Inject(UsersService) usersService: UsersService) {
-    super(usersService);
+@Controller(ADMIN_ROUTES.USERS)
+export class UsersController extends BaseUsersController {
+  constructor(service: UsersService) {
+    super(service);
   }
 }

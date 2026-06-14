@@ -14,6 +14,9 @@ export type {
   UpdateUserData,
   BulkOperationResult,
   PaginatedResult,
+  DevLoginOption,
+  DevLoginRole,
+  DevLoginOptionsQuery,
 } from '../../types';
 
 // Service
@@ -21,10 +24,7 @@ export {
   BaseUsersService,
   ADMIN_TABLE_EXPORT_MAX_LIMIT,
 } from './users.service';
-export type {
-  UserOption,
-  DevLoginOptionsQuery,
-} from './users.service';
+export type { UserOption } from './users.service';
 
 // Controller
 export {

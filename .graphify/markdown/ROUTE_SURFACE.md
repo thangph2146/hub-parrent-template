@@ -1,6 +1,6 @@
 # ROUTE_SURFACE — Admin URL ↔ API ↔ api-client (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.512Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
+> **Sinh tự động:** `2026-06-13T21:25:57.641Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
 
 Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.tsx`); bảng dưới lấy **module id** từ config admin. Chi tiết file: `apps/*/backend/.graphify/markdown/ENTRY_POINTS.md`.
 
@@ -20,7 +20,7 @@ Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.t
 | `locations` | `/locations` | `locations` | `/admin/locations` | `locations.ts` | /admin/locations; /admin/locations/${id}; /admin/locations/${id}/hard-delete; /admin/locations/${id}/restore; …+1 |
 | `speakers` | `/speakers` | `speakers` | `/admin/speakers` | `speakers.ts` | /admin/speakers; /admin/speakers/${id}; /admin/speakers/${id}/hard-delete; /admin/speakers/${id}/restore; …+1 |
 | `settings` | `/settings` | `settings` | `/admin/settings` | `settings.ts` | /admin/settings; /admin/settings/${id}; /admin/settings/${key}; /public/site-branding |
-| `file-storage` | `/file-storage` | `uploads` | `/uploads` | `uploads.ts` | /admin/uploads; /admin/uploads/bulk-delete; /admin/uploads/bulk-move; /admin/uploads/export; …+2 |
+| `file-storage` | `/file-storage` | `uploads` | `//uploads, /admin/uploads` | `uploads.ts` | /admin/uploads; /admin/uploads/bulk-delete; /admin/uploads/bulk-move; /admin/uploads/export; …+2 |
 | `data` | `/data` | `system` | `/admin/system` | `system.ts` | /admin/system/database-schema; /admin/system/import-config |
 | `events` | `/events` | `events` | `/admin/events` | `events.ts` | /admin/events; /admin/events/${id}; /admin/events/${id}/hard-delete; /admin/events/${id}/restore; …+1 |
 | `departments` | `/departments` | `departments` | `/admin/departments` | `departments.ts` | /admin/departments; /admin/departments/${id}; /admin/departments/${id}/hard-delete; /admin/departments/${id}/restore; …+1 |
@@ -29,12 +29,12 @@ Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.t
 | `majors` | `/majors` | `majors` | `/admin/majors` | `majors.ts` | /admin/majors; /admin/majors/${id}; /admin/majors/${id}/hard-delete; /admin/majors/${id}/restore; …+1 |
 | `training-levels` | `/training-levels` | `training-levels` | `/admin/training-levels` | `training-levels.ts` | /admin/training-levels; /admin/training-levels/${id}; /admin/training-levels/${id}/hard-delete; /admin/training-levels/${id}/restore; …+1 |
 | `training-systems` | `/training-systems` | `training-systems` | `/admin/training-systems` | `training-systems.ts` | /admin/training-systems; /admin/training-systems/${id}; /admin/training-systems/${id}/hard-delete; /admin/training-systems/${id}/restore; …+1 |
-| `products` | `/products` | `products` | `/admin/products` | `products.ts` | /admin/products; /admin/products/${id}; /admin/products/${id}/restore; /public/products; …+2 |
-| `orders` | `/orders` | `orders` | `/admin/orders` | `orders.ts` | /admin/orders; /admin/orders/${id}; /admin/orders/${id}/status; /admin/orders/staff/status-counts; …+2 |
-| `promo-codes` | `/promo-codes` | `promo-codes` | `/admin/promo-codes` | `promo-codes.ts` | /admin/promo-codes; /admin/promo-codes/${id}; /public/promo-codes |
+| `products` | `/products` | `products` | `//admin/products, /public/products` | `products.ts` | /admin/products; /admin/products/${id}; /admin/products/${id}/restore; /public/products; …+2 |
+| `orders` | `/orders` | `orders` | `//admin/orders, /public/orders` | `orders.ts` | /admin/orders; /admin/orders/${id}; /admin/orders/${id}/status; /admin/orders/staff/status-counts; …+2 |
+| `promo-codes` | `/promo-codes` | `promo-codes` | `//admin/promo-codes, /public/promo-codes` | `promo-codes.ts` | /admin/promo-codes; /admin/promo-codes/${id}; /public/promo-codes |
 | `seo-metas` | `/seo-metas` | `seo-metas` | `/admin/seo-metas` | `seo-metas.ts` | /admin/seo-metas; /admin/seo-metas/${id}; /admin/seo-metas/${id}/hard-delete; /admin/seo-metas/${id}/restore; …+4 |
 | `contact-requests` | `/contact-requests` | `contact-requests` | `/admin/contact-requests` | `contact-requests.ts` | /admin/contact-requests; /admin/contact-requests/${id}; /admin/contact-requests/${id}/hard-delete; /admin/contact-requests/${id}/restore; …+1 |
-| `parent-students` | `/parent-students` | `parent-students` | `/parent/my-students` | `parent-students.ts` | /admin/parent-students; /admin/parent-students/${id}; /admin/parent-students/${id}/review |
+| `parent-students` | `/parent-students` | `parent-students` | `//parent/my-students, /admin/parent-students` | `parent-students.ts` | /admin/parent-students; /admin/parent-students/${id}; /admin/parent-students/${id}/review |
 | `my-students` | `/my-students` | `students` | `/admin/students` | `—` | — |
 
 ## API domain không có module admin riêng (main API)
@@ -45,7 +45,8 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 |--------|------------|----------------------|
 | `accounts` | `src/accounts/accounts.controller.ts` | GET /admin/accounts; POST /admin/accounts/avatar; PUT /admin/accounts |
 | `admission-results` | `src/admission-results/admission-results.controller.ts` | DELETE /admin/admission-results/:id; DELETE /admin/admission-results/:id/hard-delete; GET /admin/admission-results; GET /admin/admission-results/:id; GET /admin/admission-results/options; POST /admin/admission-results; …+3 |
-| `auth` | `src/auth/auth.controller.ts → src/modules/auth/auth.controller.ts` | GET /auth/admin/google/config; GET /auth/admin/me; POST /auth/admin/dev-login; POST /auth/admin/google; POST /auth/admin/login; POST /auth/admin/logout |
+| `auth` | `src/auth/auth.controller.ts` | GET /auth/admin/google/config; GET /auth/admin/me; POST /auth/admin/dev-login; POST /auth/admin/google; POST /auth/admin/login; POST /auth/admin/logout |
+| `carts` | `src/carts/public-carts.controller.ts` | DELETE /public/cart; GET /public/cart; PUT /public/cart |
 | `comments` | `src/comments/comments.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; GET /admin/comments; GET /admin/comments/:id; GET /admin/comments/options; POST /admin/comments/:id/approve; …+3 |
 | `dashboard` | `src/dashboard/dashboard.controller.ts` | GET /admin/dashboard/stats |
 | `event-checkins` | `src/event-checkins/event-checkins.controller.ts` | DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; GET /admin/event-checkins; GET /admin/event-checkins/:id; POST /admin/event-checkins; POST /admin/event-checkins/:id/restore; …+2 |

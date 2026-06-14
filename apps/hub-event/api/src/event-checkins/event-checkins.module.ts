@@ -1,7 +1,7 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module } from '@nestjs/common';
-import { EventCheckinsService } from './event-checkins.service';
 import { EventCheckinsController } from './event-checkins.controller';
+import { EventCheckinsService } from './event-checkins.service';
 
 @Module({
   controllers: [EventCheckinsController],

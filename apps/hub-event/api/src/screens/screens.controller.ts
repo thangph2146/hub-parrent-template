@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseScreensController as PackageScreensController } from '@workspace/api-server/modules/screens';
-import { Permissions } from '../common/permissions.decorator';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
 import { PERMISSIONS } from '../config/permissions';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Controller } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseScreensController } from '../common/module-bases/screens/screen.controller';
 import { ScreensService } from './screens.service';
 
-@ApiTags('Screens')
-@Controller(ADMIN_ROUTES.SCREENS)
 @Permissions(PERMISSIONS.SCREENS_VIEW)
-export class ScreensController extends PackageScreensController {
-  constructor(@Inject(ScreensService) screensService: ScreensService) {
-    super(screensService);
+@Controller(ADMIN_ROUTES.SCREENS)
+export class ScreensController extends BaseScreensController {
+  constructor(service: ScreensService) {
+    super(service);
   }
 }

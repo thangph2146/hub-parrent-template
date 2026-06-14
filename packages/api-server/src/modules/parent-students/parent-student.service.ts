@@ -1,228 +1,337 @@
 /**
- * ParentStudents Service.
- *
- * Bám sát pattern của `apps/main/api/src/parent-students/parent-students.service.ts`.
- * Extend `BaseCrudService` từ `@workspace/api-server/bases`.
+ * ParentStudents Service — domain logic (materialize → apps/main/api module-bases).
  */
 import { Injectable, Logger } from '@nestjs/common';
-import { BaseCrudService } from '../../bases';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData, ListCrudParams } from '../../types';
+import type { EntityManager, FilterQuery } from '@mikro-orm/core';
+import { applyColumnFilters } from '../../common/apply-column-filters';
+import {
+  ADMIN_TABLE_EXPORT_MAX_LIMIT,
+  normalizePageLimit,
+  paginationMeta,
+  relationEntityId,
+  safeIsoString,
+  safeIsoStringNow,
+  toEntityId,
+} from '../../common';
+import { PARENT_STUDENT_COLUMN_FILTERS } from './parent-student-column-filters';
 
-export interface ParentStudentsRowDto extends CrudRowDto {
-  id: number | string;
-  parentId?: number | string | null;
-  parentEmail?: string | null;
-  parentName?: string | null;
-  parentPhone?: string | null;
-  studentCode?: string;
-  studentName?: string | null;
-  note?: string | null;
-  status?: 'pending' | 'approved' | 'rejected';
-  reviewedBy?: string | null;
-  reviewedAt?: string | null;
+export interface ParentStudentsRowDto {
+  id: number;
+  parentId: number;
+  parentEmail: string | null;
+  parentName: string | null;
+  parentPhone: string | null;
+  studentCode: string;
+  studentName: string | null;
+  note: string | null;
+  status: string;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ParentStudentsCreateData extends CrudCreateData {
-  parentId?: number | string;
-  studentCode?: string;
-  studentName?: string | null;
-  note?: string | null;
-  status?: 'pending' | 'approved' | 'rejected';
-}
-
-export interface ParentStudentsUpdateData extends CrudUpdateData {
-  studentCode?: string;
-  studentName?: string | null;
-  note?: string | null;
-  status?: 'pending' | 'approved' | 'rejected';
-  reviewedBy?: string | null;
-  reviewedAt?: string | null;
+export interface ListParentStudentsResult {
+  data: ParentStudentsRowDto[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface AddParentStudentInput {
   parentId: number;
   studentCode: string;
-  studentName?: string | null;
-  note?: string | null;
+  studentName?: string;
+  note?: string;
+}
+
+export interface ParentStudentsRealtimePort {
+  pendingApproval(payload: {
+    resource: string;
+    id: number;
+    status: string;
+    title: string;
+    description?: string | null;
+    actionUrl?: string | null;
+    actorUserId?: string;
+  }): void;
+  parentStudentReviewed(payload: {
+    id: number;
+    parentId: number;
+    studentCode: string;
+    studentName: string | null;
+    status: 'approved' | 'rejected';
+    reviewedAt: string;
+    reviewedBy: string;
+  }): void;
+}
+
+function mapRow(r: Record<string, unknown>): ParentStudentsRowDto {
+  const parent = r.parent;
+  const parentObj =
+    parent != null && typeof parent === 'object'
+      ? (parent as Record<string, unknown>)
+      : null;
+  return {
+    id: r.id as number,
+    parentId: relationEntityId(r.parent) ?? relationEntityId(parentObj) ?? 0,
+    parentEmail:
+      typeof parentObj?.email === 'string' ? parentObj.email : null,
+    parentName:
+      parentObj?.name == null
+        ? null
+        : typeof parentObj.name === 'string'
+          ? parentObj.name
+          : null,
+    parentPhone:
+      typeof parentObj?.phone === 'string' ? parentObj.phone : null,
+    studentCode: String(r.studentCode ?? ''),
+    studentName: (r.studentName as string | null | undefined) ?? null,
+    note: (r.note as string | null | undefined) ?? null,
+    status: String(r.status ?? ''),
+    reviewedBy: (r.reviewedBy as string | null | undefined) ?? null,
+    reviewedAt: safeIsoString(r.reviewedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
+    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+  };
 }
 
 @Injectable()
-export abstract class BaseParentStudentsService extends BaseCrudService<
-  ParentStudentsRowDto,
-  ParentStudentsCreateData,
-  ParentStudentsUpdateData
-> {
+export abstract class BaseParentStudentsService {
   protected readonly logger = new Logger(BaseParentStudentsService.name);
+
+  protected abstract getEm(): EntityManager;
   protected abstract getEntity(): new () => Record<string, unknown>;
-  private toIsoOrEmpty(value: unknown): string {
-    const date = new Date(String(value ?? ''));
-    return Number.isNaN(date.getTime()) ? '' : date.toISOString();
-  }
-  protected getEntityName(): string {
-    return 'ParentStudents';
-  }
-  protected getSearchFields(): string[] {
-    return ['studentCode', 'studentName'];
-  }
-  protected getFilterableFields(): string[] {
-    return ['status', 'parentId'];
-  }
-  protected getSoftDeleteField(): string | null {
-    return null;
+  protected abstract getUserEntity(): new () => Record<string, unknown>;
+  protected abstract getAdminRealtime(): ParentStudentsRealtimePort;
+
+  async listByParent(parentId: string): Promise<ParentStudentsRowDto[]> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const rows = await em.find(
+      Entity,
+      { parent: toEntityId(parentId) },
+      {
+        populate: ['parent'] as never,
+        orderBy: { createdAt: 'DESC' },
+      },
+    );
+    return rows.map((row) => mapRow(row as Record<string, unknown>));
   }
 
-  protected mapRow(entity: Record<string, unknown>): ParentStudentsRowDto {
-    const parent =
-      entity.parent && typeof entity.parent === 'object'
-        ? (entity.parent as Record<string, unknown>)
-        : null;
+  async listPending(params: {
+    page: number;
+    limit: number;
+  }): Promise<ListParentStudentsResult> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where = { status: 'pending' } as FilterQuery<Record<string, unknown>>;
+    const [rows, total] = await Promise.all([
+      em.find(Entity, where, {
+        populate: ['parent'] as never,
+        orderBy: { createdAt: 'ASC' },
+        offset: skip,
+        limit,
+      }),
+      em.count(Entity, where),
+    ]);
     return {
-      ...(entity as CrudRowDto),
-      id: entity.id as number | string,
-      parentId: (entity.parentId as number | string | null | undefined) ?? (parent?.id as number | string | null | undefined) ?? null,
-      parentEmail:
-        typeof parent?.email === 'string' ? parent.email : null,
-      parentName:
-        typeof parent?.name === 'string' ? parent.name : null,
-      parentPhone:
-        typeof parent?.phone === 'string' ? parent.phone : null,
-      studentCode:
-        typeof entity.studentCode === 'string' ? entity.studentCode : undefined,
-      studentName:
-        typeof entity.studentName === 'string' ? entity.studentName : null,
-      note: typeof entity.note === 'string' ? entity.note : null,
-      status:
-        entity.status === 'approved' || entity.status === 'rejected' || entity.status === 'pending'
-          ? entity.status
-          : undefined,
-      reviewedBy:
-        typeof entity.reviewedBy === 'string' ? entity.reviewedBy : null,
-      reviewedAt:
-        entity.reviewedAt == null ? null : new Date(String(entity.reviewedAt)).toISOString(),
-      createdAt: this.toIsoOrEmpty(entity.createdAt),
-      updatedAt: this.toIsoOrEmpty(entity.updatedAt),
+      data: rows.map((row) => mapRow(row as Record<string, unknown>)),
+      pagination: paginationMeta(page, limit, total),
     };
   }
 
-  protected buildWhere(params: ListCrudParams): Record<string, unknown> {
-    const where = super.buildWhere({ ...params, status: 'all' });
-    const flatStatus =
-      params.filters?.status ?? (params as unknown as { status?: unknown }).status;
+  async listAll(params: {
+    page: number;
+    limit: number;
+    status?: string;
+    search?: string;
+    createdAt?: string;
+    filters?: Record<string, string>;
+  }): Promise<ListParentStudentsResult> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const { page, limit, skip } = normalizePageLimit(
+      params.page,
+      params.limit,
+      ADMIN_TABLE_EXPORT_MAX_LIMIT,
+    );
+    const where: Record<string, unknown> = {};
     if (
-      typeof flatStatus === 'string' &&
-      ['pending', 'approved', 'rejected'].includes(flatStatus)
+      params.status &&
+      ['pending', 'approved', 'rejected'].includes(params.status)
     ) {
-      where.status = flatStatus;
+      where.status = params.status;
     }
-
-    const createdAt = params.filters?.createdAt;
-    if (typeof createdAt === 'string' && createdAt.trim()) {
-      const [fromStr, toStr] = createdAt.split(',');
-      const range: Record<string, Date> = {};
+    if (params.search?.trim()) {
+      const q = params.search.trim();
+      const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      where.$or = [
+        { studentCode: { $re: `(?i)${escaped}` } },
+        { studentName: { $re: `(?i)${escaped}` } },
+        { parentId: { $re: `(?i)${escaped}` } },
+      ];
+    }
+    if (params.createdAt?.trim()) {
+      const [fromStr, toStr] = params.createdAt.split(',');
+      const dateRange: Record<string, Date> = {};
       if (fromStr?.trim()) {
-        const from = new Date(fromStr.trim());
-        if (!Number.isNaN(from.getTime())) range.$gte = from;
+        const fromDate = new Date(fromStr.trim());
+        if (!Number.isNaN(fromDate.getTime())) {
+          dateRange.$gte = fromDate;
+        }
       }
       if (toStr?.trim()) {
-        const to = new Date(toStr.trim());
-        to.setHours(23, 59, 59, 999);
-        if (!Number.isNaN(to.getTime())) range.$lte = to;
+        const toDate = new Date(toStr.trim());
+        toDate.setHours(23, 59, 59, 999);
+        if (!Number.isNaN(toDate.getTime())) {
+          dateRange.$lte = toDate;
+        }
       }
-      if (Object.keys(range).length > 0) {
-        where.createdAt = range;
+      if (Object.keys(dateRange).length > 0) {
+        where.createdAt = dateRange;
       }
     }
-
-    return where;
+    applyColumnFilters(where, params.filters, PARENT_STUDENT_COLUMN_FILTERS);
+    const whereQuery = where as FilterQuery<Record<string, unknown>>;
+    const [rows, total] = await Promise.all([
+      em.find(Entity, whereQuery, {
+        populate: ['parent'] as never,
+        orderBy: { createdAt: 'DESC' },
+        offset: skip,
+        limit,
+      }),
+      em.count(Entity, whereQuery),
+    ]);
+    return {
+      data: rows.map((row) => mapRow(row as Record<string, unknown>)),
+      pagination: paginationMeta(page, limit, total),
+    };
   }
 
-  async review(
-    id: string | number,
-    action: 'approved' | 'rejected',
-    reviewerId: string,
-  ): Promise<ParentStudentsRowDto | null> {
-    return this.update(id, {
-      status: action,
-      reviewedBy: reviewerId,
-      reviewedAt: new Date().toISOString(),
+  /** Alias cho template controller pkg (list admin chuẩn). */
+  async list(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+    filters?: Record<string, string>;
+  }): Promise<ListParentStudentsResult> {
+    return this.listAll({
+      page: params.page,
+      limit: params.limit,
+      search: params.search,
+      status: params.filters?.status ?? params.status,
+      createdAt: params.filters?.createdAt,
+      filters: params.filters,
     });
   }
 
-  async listByParent(parentId: string | number): Promise<ParentStudentsRowDto[]> {
+  async addStudentRequest(
+    data: AddParentStudentInput,
+  ): Promise<ParentStudentsRowDto> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const entityId = this.toEntityId(parentId);
-    const options = {
-      populate: ['parent'],
-      orderBy: { createdAt: 'DESC' as const },
-    } as never;
-
-    let rows = await em.find(
-      Entity,
-      { parent: entityId } as Record<string, unknown>,
-      options,
-    );
-    if (!Array.isArray(rows) || rows.length === 0) {
-      rows = await em.find(
-        Entity,
-        { parentId: entityId } as Record<string, unknown>,
-        options,
-      );
-    }
-    return rows.map((row) => this.mapRow(row as Record<string, unknown>));
-  }
-
-  async addStudentRequest(data: AddParentStudentInput): Promise<ParentStudentsRowDto> {
-    const em = this.getEm();
-    const Entity = this.getEntity();
-    const parentId = this.toEntityId(data.parentId);
-    const studentCode = data.studentCode.trim();
-    const duplicate =
-      (await em.findOne(Entity, {
-        parent: parentId,
-        studentCode,
-      } as Record<string, unknown>)) ??
-      (await em.findOne(Entity, {
-        parentId,
-        studentCode,
-      } as Record<string, unknown>));
-    if (duplicate) {
+    const User = this.getUserEntity();
+    const existing = await em.findOne(Entity, {
+      parent: toEntityId(String(data.parentId)),
+      studentCode: data.studentCode.trim(),
+    });
+    if (existing) {
       throw new Error('Bạn đã gửi yêu cầu liên kết với mã sinh viên này rồi.');
     }
 
-    const entity = new Entity() as Record<string, unknown>;
-    entity.parent = em.getReference('User' as never, parentId);
-    entity.parentId = parentId;
-    entity.studentCode = studentCode;
-    entity.studentName = data.studentName?.trim() ?? null;
-    entity.note = data.note?.trim() ?? null;
-    entity.status = 'pending';
-    em.persist(entity);
-    await em.flush();
-    return this.mapRow(entity);
+    const ps = new Entity() as Record<string, unknown>;
+    ps.parent = em.getReference(User, data.parentId);
+    ps.studentCode = data.studentCode.trim();
+    ps.studentName = data.studentName?.trim() ?? null;
+    ps.note = data.note?.trim() ?? null;
+    ps.status = 'pending';
+    await em.persistAndFlush(ps);
+    const row = mapRow(ps);
+    this.getAdminRealtime().pendingApproval({
+      resource: 'parent-students',
+      id: row.id,
+      status: 'pending',
+      title: 'Yêu cầu liên kết phụ huynh mới',
+      description: `${row.studentCode}${row.studentName ? ` — ${row.studentName}` : ''}`,
+      actionUrl: '/admin/parent-students',
+      actorUserId: String(data.parentId),
+    });
+    return row;
+  }
+
+  async review(
+    id: string,
+    action: 'approved' | 'rejected',
+    reviewedBy: string,
+  ): Promise<ParentStudentsRowDto | null> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const ps = await em.findOne(Entity, { id: toEntityId(id) });
+    if (!ps) return null;
+    const row = ps as Record<string, unknown>;
+    row.status = action;
+    row.reviewedBy = reviewedBy;
+    row.reviewedAt = new Date();
+    await em.persistAndFlush(ps);
+    const mapped = mapRow(row);
+    this.getAdminRealtime().parentStudentReviewed({
+      id: mapped.id,
+      parentId: mapped.parentId,
+      studentCode: mapped.studentCode,
+      studentName: mapped.studentName,
+      status: action,
+      reviewedAt: mapped.reviewedAt ?? new Date().toISOString(),
+      reviewedBy,
+    });
+    return mapped;
+  }
+
+  async remove(id: string, parentId: string): Promise<boolean> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const ps = await em.findOne(Entity, {
+      id: toEntityId(id),
+      parent: toEntityId(parentId),
+    });
+    if (!ps) return false;
+    await em.removeAndFlush(ps);
+    return true;
   }
 
   async removeForParent(
     id: string | number,
     parentId: string | number,
   ): Promise<boolean> {
+    return this.remove(String(id), String(parentId));
+  }
+
+  async removeByAdmin(id: string): Promise<boolean> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const entityId = this.toEntityId(id);
-    const ownerId = this.toEntityId(parentId);
-    const found =
-      (await em.findOne(Entity, {
-        id: entityId,
-        parent: ownerId,
-      } as Record<string, unknown>)) ??
-      (await em.findOne(Entity, {
-        id: entityId,
-        parentId: ownerId,
-      } as Record<string, unknown>));
-    if (!found) return false;
-    await em.removeAndFlush(found);
+    const ps = await em.findOne(Entity, { id: toEntityId(id) });
+    if (!ps) return false;
+    await em.removeAndFlush(ps);
     return true;
+  }
+
+  async getById(id: string): Promise<ParentStudentsRowDto | null> {
+    const em = this.getEm();
+    const Entity = this.getEntity();
+    const ps = await em.findOne(
+      Entity,
+      { id: toEntityId(id) },
+      { populate: ['parent'] as never },
+    );
+    return ps ? mapRow(ps as Record<string, unknown>) : null;
   }
 }

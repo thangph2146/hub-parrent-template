@@ -2,8 +2,8 @@
 
 > Package `@workspace/api-server` · `packages/api-server/`
 
-- **context.generatedAt:** 2026-06-13T10:52:22.318Z
-- **summary sinh:** `2026-06-13T11:10:25.497Z`
+- **context.generatedAt:** 2026-06-13T21:25:48.473Z
+- **summary sinh:** `2026-06-13T21:25:57.632Z`
 
 ## Mục lục artefact
 
@@ -13,16 +13,18 @@
 ## Doc & verify
 
 - **Doc:** [`packages/api-server/README.md`](../../../packages/api-server/README.md)
-- **Verify:** `pnpm check`
+- **Verify:** `pnpm verify:api-template`, `pnpm --filter @workspace/api-server test`
 
 ## Focus paths (agent)
 
-- `packages/api-server/src/registry/`
-- `packages/api-server/src/generate/`
+- `packages/api-server/src/modules/`
+- `packages/api-server/deploy/cli/`
+- `packages/api-server/deploy/config/`
+- `packages/api-server/deploy/nest/`
 
 ## Thống kê snapshot
 
-- **totalFiles:** 616
+- **totalFiles:** 243
 - **clientComponents:** 0
 
 ## `src/` top-level
@@ -31,7 +33,6 @@
 - `src/common/`
 - `src/config/`
 - `src/data-test/`
-- `src/interfaces/`
 - `src/modules/`
 - `src/types/`
 - `src/utils/`

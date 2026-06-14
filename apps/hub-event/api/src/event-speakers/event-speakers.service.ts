@@ -1,16 +1,14 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventSpeakersService } from '@workspace/api-server/modules/event-speakers';
 import { EventSpeaker } from '../entities/event-speaker.entity';
-import { Event } from '../entities/event.entity';
-import { Speaker } from '../entities/speaker.entity';
-
+import { BaseEventSpeakersService } from '../common/module-bases/event-speakers/event-speakers.service';
 export type {
   EventSpeakerRowDto,
   ListEventSpeakersParams,
   ListEventSpeakersResult,
-} from '@workspace/api-server/modules/event-speakers';
+} from '../common/module-bases/event-speakers/event-speakers.service';
 
 @Injectable()
 export class EventSpeakersService extends BaseEventSpeakersService {
@@ -22,15 +20,15 @@ export class EventSpeakersService extends BaseEventSpeakersService {
     return this.em;
   }
 
-  protected getEventSpeakerEntity(): new () => Record<string, unknown> {
+  protected getEventSpeakerEntity() {
     return EventSpeaker as unknown as new () => Record<string, unknown>;
   }
 
-  protected getEventEntity(): new () => Record<string, unknown> {
-    return Event as unknown as new () => Record<string, unknown>;
+  protected getEventEntity() {
+    return EventSpeaker as unknown as new () => Record<string, unknown>;
   }
 
-  protected getSpeakerEntity(): new () => Record<string, unknown> {
-    return Speaker as unknown as new () => Record<string, unknown>;
+  protected getSpeakerEntity() {
+    return EventSpeaker as unknown as new () => Record<string, unknown>;
   }
 }

@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export type EventTimeStatus = 'upcoming' | 'ongoing' | 'past';
 
 function toValidDate(value: Date | string | null | undefined): Date | null {
@@ -7,10 +8,7 @@ function toValidDate(value: Date | string | null | undefined): Date | null {
 }
 
 /**
- * Trạng thái thời gian sự kiện — khớp bộ lọc public list:
- * - upcoming: startDate > now
- * - ongoing: startDate <= now && endDate >= now
- * - past: endDate < now, hoặc đã bắt đầu nhưng không có endDate
+ * Trạng thái thời gian sự kiện — khớp bộ lọc public list.
  */
 export function resolveEventTimeStatus(
   startDate: Date | string | null | undefined,

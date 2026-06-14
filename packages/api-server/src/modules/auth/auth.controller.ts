@@ -16,17 +16,16 @@ import {
 import { ADMIN_ROUTES, APP_HEADERS } from '../../config';
 import type { BaseAuthService, GoogleProfileDto } from './auth.service';
 
-export interface IAuthControllerService
-  extends Pick<
-    BaseAuthService,
-    | 'login'
-    | 'tryAuthPayloadByUserId'
-    | 'loginAsDevelopmentUser'
-    | 'verifyGoogleToken'
-    | 'loginWithGoogle'
-    | 'loginWithGoogleAsStudent'
-    | 'logout'
-  > {}
+export type IAuthControllerService = Pick<
+  BaseAuthService,
+  | 'login'
+  | 'tryAuthPayloadByUserId'
+  | 'loginAsDevelopmentUser'
+  | 'verifyGoogleToken'
+  | 'loginWithGoogle'
+  | 'loginWithGoogleAsStudent'
+  | 'logout'
+>;
 
 /** @deprecated Dùng `IAuthControllerService`. */
 export type IAuthAdminControllerService = IAuthControllerService;

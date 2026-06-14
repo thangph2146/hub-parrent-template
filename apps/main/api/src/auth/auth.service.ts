@@ -1,21 +1,21 @@
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseAuthService } from '@workspace/api-server/modules/auth';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Setting } from '../entities/setting.entity';
+import { BaseAuthService } from '../common/module-bases/auth/auth.service';
 
 export type {
-  AuthLoginPayload,
+  AuthRolePayload,
   GoogleProfileDto,
-} from '@workspace/api-server/modules/auth';
-export type { AuthLoginPayload as AuthUserPayload } from '@workspace/api-server/modules/auth';
+  AuthLoginPayload,
+  DevLoginOptionDto,
+} from '../common/module-bases/auth/auth.service';
 
-export type LoginDto = {
-  email: string;
-  password: string;
-};
+export type AuthUserPayload =
+  import('../common/module-bases/auth/auth.service').AuthLoginPayload;
 
 @Injectable()
 export class AuthService extends BaseAuthService {
@@ -27,19 +27,19 @@ export class AuthService extends BaseAuthService {
     return this.em;
   }
 
-  protected getUserEntity(): new () => Record<string, unknown> {
+  protected getUserEntity() {
     return User as unknown as new () => Record<string, unknown>;
   }
 
-  protected getRoleEntity(): new () => Record<string, unknown> {
+  protected getRoleEntity() {
     return Role as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserRoleEntity(): new () => Record<string, unknown> {
+  protected getUserRoleEntity() {
     return UserRole as unknown as new () => Record<string, unknown>;
   }
 
-  protected getSettingEntity(): new () => Record<string, unknown> {
+  protected getSettingEntity() {
     return Setting as unknown as new () => Record<string, unknown>;
   }
 }

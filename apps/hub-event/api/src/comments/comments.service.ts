@@ -1,14 +1,14 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseCommentsService } from '@workspace/api-server/modules/comments';
 import { Comment } from '../entities/comment.entity';
-
+import { BaseCommentsService } from '../common/module-bases/comments/comments.service';
 export type {
   CommentRowDto,
   ListCommentsParams,
   ListCommentsResult,
-} from '@workspace/api-server/modules/comments';
+} from '../common/module-bases/comments/comments.service';
 
 @Injectable()
 export class CommentsService extends BaseCommentsService {
@@ -20,7 +20,7 @@ export class CommentsService extends BaseCommentsService {
     return this.em;
   }
 
-  protected getCommentEntity(): new () => Record<string, unknown> {
+  protected getCommentEntity() {
     return Comment as unknown as new () => Record<string, unknown>;
   }
 }

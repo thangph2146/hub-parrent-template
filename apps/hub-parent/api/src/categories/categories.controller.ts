@@ -1,4 +1,5 @@
-import { toEntityId } from '../common/entity-id';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { toEntityId } from '../common';
 /**
  * Categories Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; POST bulk; DELETE :id/hard-delete; DELETE :id; POST :id/restore.
@@ -30,14 +31,11 @@ import type { Response } from 'express';
 import { CategoriesService } from './categories.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationKind } from '../entities/notification.entity';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseAdminListLimit } from '../common';
 
 type CategoryListStatus = 'active' | 'deleted' | 'all';
 type CategoryBulkAction = 'delete' | 'restore' | 'hard-delete' | 'set-parent';

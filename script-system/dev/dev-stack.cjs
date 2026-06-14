@@ -130,6 +130,7 @@ const stackEnv = {
   /** Root predev đã kill port + clean .next — im lặng prep từng app */
   HUB_DEV_SKIP_PORT_KILL: "1",
   HUB_DEV_SKIP_NEXT_CLEAN: "1",
+  TURBO_NO_UPDATE_NOTIFIER: "1",
 }
 
 if (stack.useWebpack) {

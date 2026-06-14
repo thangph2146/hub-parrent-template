@@ -1,30 +1,44 @@
 # SYNC_DELTA — main API ↔ hub-event API (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.512Z` — so sánh domain `src/<tên>/` giữa `apps/main/api` và `apps/hub-event/api`, theo `api.sync-profile.json`.
+> **Sinh tự động:** `2026-06-13T21:25:57.640Z` — so sánh domain `src/<tên>/` giữa `apps/main/api` và `apps/hub-event/api`, theo `api.sync-profile.json`.
 
-> Hub-event check-in API — subset từ main: có users/roles/events; loại trừ store (products/orders/carts/promo), đào tạo, phụ huynh/SV.
+
 
 Dev hàng ngày: sửa **`apps/main/api`** (+ `packages/api-server`). Deploy check-in: **`pnpm pull:checkin`**.
 
 ## Domain có trên cả hai (sau sync)
 
+- `academic-years`
 - `accounts`
+- `admission-results`
 - `auth`
 - `cameras`
+- `carts`
 - `categories`
 - `comments`
+- `contact-requests`
+- `courses`
 - `dashboard`
+- `departments`
 - `event-checkins`
 - `event-checkouts`
 - `event-registrations`
 - `event-speakers`
 - `events`
 - `face-data`
+- `groups`
 - `hanet`
+- `imported-users`
 - `locations`
+- `majors`
+- `messages`
 - `notifications`
+- `orders`
 - `page-contents`
+- `parent-students`
 - `posts`
+- `products`
+- `promo-codes`
 - `proxy-image`
 - `public`
 - `roles`
@@ -34,35 +48,22 @@ Dev hàng ngày: sửa **`apps/main/api`** (+ `packages/api-server`). Deploy che
 - `settings`
 - `socket`
 - `speakers`
+- `students`
 - `system`
 - `tags`
 - `templates`
-- `testing`
+- `training-levels`
+- `training-systems`
 - `uploads`
 - `users`
 
 ## Domain chỉ main — loại trừ bởi `excludeDirs` (không sync sang check-in)
 
-- `academic-years`
-- `carts`
-- `contact-requests`
-- `courses`
-- `departments`
-- `groups`
-- `imported-users`
-- `majors`
-- `messages`
-- `orders`
-- `parent-students`
-- `products`
-- `promo-codes`
-- `students`
-- `training-levels`
-- `training-systems`
+- (danh sách exclude trống)
 
 ## Domain chỉ main — không có trên check-in (ngoài exclude list)
 
-- `admission-results`
+- `testing`
 
 ## Quy trình agent
 

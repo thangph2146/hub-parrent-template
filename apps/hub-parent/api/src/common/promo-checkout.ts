@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { PromoCode } from '../entities/promo-code.entity';
 
 export type PromoDiscountResult = {

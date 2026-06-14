@@ -1,17 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventRegistrationsService } from '@workspace/api-server/modules/event-registrations';
 import { EventRegistration } from '../entities/event-registration.entity';
-import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
-
+import { BaseEventRegistrationsService } from '../common/module-bases/event-registrations/event-registrations.service';
 export type {
   EventRegistrationRowDto,
   ListEventRegistrationsParams,
   ListEventRegistrationsResult,
   PublicEventRegistrantDto,
-} from '@workspace/api-server/modules/event-registrations';
+} from '../common/module-bases/event-registrations/event-registrations.service';
 
 @Injectable()
 export class EventRegistrationsService extends BaseEventRegistrationsService {
@@ -23,15 +22,15 @@ export class EventRegistrationsService extends BaseEventRegistrationsService {
     return this.em;
   }
 
-  protected getEventRegistrationEntity(): new () => Record<string, unknown> {
+  protected getEventRegistrationEntity() {
     return EventRegistration as unknown as new () => Record<string, unknown>;
   }
 
-  protected getEventEntity(): new () => Record<string, unknown> {
-    return Event as unknown as new () => Record<string, unknown>;
+  protected getEventEntity() {
+    return EventRegistration as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserEntity(): new () => Record<string, unknown> {
+  protected getUserEntity() {
     return User as unknown as new () => Record<string, unknown>;
   }
 }

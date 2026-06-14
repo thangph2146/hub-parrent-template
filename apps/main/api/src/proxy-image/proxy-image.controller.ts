@@ -6,7 +6,7 @@ import { Controller, Get, Query, Res, Logger } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 @Public()
 @SkipThrottle()

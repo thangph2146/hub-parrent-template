@@ -9,11 +9,11 @@ describe('GroupsService', () => {
   let em: Partial<EntityManager>;
 
   const mockGroup = {
-    id: 'group-1',
+    id: 1,
     name: 'Test Group',
     description: 'Test description',
     avatar: null,
-    creator: { id: 'user-1' },
+    creator: { id: 1 },
     members: [],
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -24,8 +24,10 @@ describe('GroupsService', () => {
     em = {
       findOne: jest.fn(),
       find: jest.fn(),
-      persist: jest.fn(),
-      flush: jest.fn(),
+      persist: jest.fn().mockImplementation((entity: { id?: number; name?: string }) => {
+        if (entity.name != null && entity.id == null) entity.id = 2;
+      }),
+      flush: jest.fn().mockResolvedValue(undefined),
       count: jest.fn(),
       remove: jest.fn(),
       getReference: jest.fn().mockImplementation((entity, id) => ({ id })),
@@ -48,36 +50,36 @@ describe('GroupsService', () => {
     it('should create group with members', async () => {
       const groupWithMembers = {
         ...mockGroup,
-        id: 'new-group',
+        id: 2,
         name: 'New Group',
         members: [
           {
-            id: 'member-1',
-            user: { id: 'user-1' },
+            id: 1,
+            user: { id: 1 },
             role: GroupRole.OWNER,
             joinedAt: new Date(),
             leftAt: null,
-            group: { id: 'new-group' },
+            group: { id: 2 },
           },
           {
-            id: 'member-2',
-            user: { id: 'user-2' },
+            id: 2,
+            user: { id: 2 },
             role: GroupRole.MEMBER,
             joinedAt: new Date(),
             leftAt: null,
-            group: { id: 'new-group' },
+            group: { id: 2 },
           },
         ],
-        creator: { id: 'user-1' },
+        creator: { id: 1 },
       };
       (em.findOne as jest.Mock)
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(groupWithMembers);
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      const result = await service.create('user-1', {
+      const result = await service.create('1', {
         name: 'New Group',
-        memberIds: ['user-2'],
+        memberIds: ['2'],
       });
 
       expect(em.persist).toHaveBeenCalled();
@@ -86,7 +88,7 @@ describe('GroupsService', () => {
 
     it('should throw when name is empty', async () => {
       await expect(
-        service.create('user-1', { name: '   ', memberIds: [] }),
+        service.create('1', { name: '   ', memberIds: [] }),
       ).rejects.toThrow('Tên nhóm là bắt buộc');
     });
 
@@ -94,7 +96,7 @@ describe('GroupsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockGroup);
 
       await expect(
-        service.create('user-1', { name: 'Test Group', memberIds: [] }),
+        service.create('1', { name: 'Test Group', memberIds: [] }),
       ).rejects.toThrow('Đã tồn tại nhóm với tên này');
     });
   });
@@ -104,7 +106,7 @@ describe('GroupsService', () => {
       (em.find as jest.Mock).mockResolvedValue([mockGroup]);
       (em.count as jest.Mock).mockResolvedValue(1);
 
-      const result = await service.list('user-1', {
+      const result = await service.list('1', {
         page: 1,
         limit: 10,
       });
@@ -118,7 +120,7 @@ describe('GroupsService', () => {
       (em.find as jest.Mock).mockResolvedValue([]);
       (em.count as jest.Mock).mockResolvedValue(0);
 
-      await service.list('user-1', {
+      await service.list('1', {
         page: 1,
         limit: 10,
         search: 'test',
@@ -131,7 +133,7 @@ describe('GroupsService', () => {
       (em.find as jest.Mock).mockResolvedValue([]);
       (em.count as jest.Mock).mockResolvedValue(0);
 
-      await service.list('user-1', {
+      await service.list('1', {
         page: 1,
         limit: 10,
         includeDeleted: true,
@@ -145,7 +147,7 @@ describe('GroupsService', () => {
     it('should return group by id', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockGroup);
 
-      const result = await service.findById('group-1', 'user-1');
+      const result = await service.findById('1', '1');
 
       expect(result).not.toBeNull();
       expect(result?.name).toBe('Test Group');
@@ -154,7 +156,7 @@ describe('GroupsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.findById('nonexistent', 'user-1');
+      const result = await service.findById('999', '1');
 
       expect(result).toBeNull();
     });
@@ -167,7 +169,7 @@ describe('GroupsService', () => {
         .mockResolvedValueOnce(existing)
         .mockResolvedValueOnce({ ...existing, name: 'Updated Group' });
 
-      const result = await service.update('group-1', 'user-1', {
+      const result = await service.update('1', '1', {
         name: 'Updated Group',
         description: 'Updated description',
       });
@@ -179,7 +181,7 @@ describe('GroupsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.update('nonexistent', 'user-1', {
+      const result = await service.update('999', '1', {
         name: 'New',
       });
 
@@ -192,7 +194,7 @@ describe('GroupsService', () => {
         .mockResolvedValueOnce(existing)
         .mockResolvedValueOnce(existing);
 
-      await service.update('group-1', 'user-1', { name: '  Trimmed  ' });
+      await service.update('1', '1', { name: '  Trimmed  ' });
 
       expect(existing.name).toBe('Trimmed');
     });
@@ -203,7 +205,7 @@ describe('GroupsService', () => {
       const group = { ...mockGroup, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(group);
 
-      const result = await service.softDelete('group-1', 'user-1');
+      const result = await service.softDelete('1', '1');
 
       expect(result).toBe(true);
       expect(group.deletedAt).not.toBeNull();
@@ -212,7 +214,7 @@ describe('GroupsService', () => {
     it('should return false when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('nonexistent', 'user-1');
+      const result = await service.softDelete('999', '1');
 
       expect(result).toBe(false);
     });
@@ -220,7 +222,7 @@ describe('GroupsService', () => {
     it('should return false when already deleted', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('group-1', 'user-1');
+      const result = await service.softDelete('1', '1');
 
       expect(result).toBe(false);
     });
@@ -228,7 +230,7 @@ describe('GroupsService', () => {
     it('should return false when user is not a member', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('group-1', 'non-member');
+      const result = await service.softDelete('1', '99');
 
       expect(result).toBe(false);
     });
@@ -239,7 +241,7 @@ describe('GroupsService', () => {
       const group = { ...mockGroup, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(group);
 
-      const result = await service.restore('group-1', 'user-1');
+      const result = await service.restore('1', '1');
 
       expect(result).toBe(true);
       expect(group.deletedAt).toBeNull();
@@ -249,7 +251,7 @@ describe('GroupsService', () => {
       const group = { ...mockGroup, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(group);
 
-      const result = await service.restore('group-1', 'user-1');
+      const result = await service.restore('1', '1');
 
       expect(result).toBe(false);
     });
@@ -259,7 +261,7 @@ describe('GroupsService', () => {
     it('should hard delete group', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockGroup);
 
-      const result = await service.hardDelete('group-1', 'user-1');
+      const result = await service.hardDelete('1', '1');
 
       expect(result).toBe(true);
       expect(em.remove).toHaveBeenCalled();
@@ -268,7 +270,7 @@ describe('GroupsService', () => {
     it('should return false when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.hardDelete('nonexistent', 'user-1');
+      const result = await service.hardDelete('999', '1');
 
       expect(result).toBe(false);
     });
@@ -280,9 +282,9 @@ describe('GroupsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(group);
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      const result = await service.addMembers('group-1', 'user-1', [
-        'user-2',
-        'user-3',
+      const result = await service.addMembers('1', '1', [
+        '2',
+        '3',
       ]);
 
       expect(result).toBe(true);
@@ -292,8 +294,8 @@ describe('GroupsService', () => {
     it('should return false when group not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.addMembers('nonexistent', 'user-1', [
-        'user-2',
+      const result = await service.addMembers('999', '1', [
+        '2',
       ]);
 
       expect(result).toBe(false);
@@ -302,9 +304,9 @@ describe('GroupsService', () => {
     it('should skip existing members', async () => {
       const group = { ...mockGroup, members: [] };
       (em.findOne as jest.Mock).mockResolvedValue(group);
-      (em.find as jest.Mock).mockResolvedValue([{ user: { id: 'user-2' } }]);
+      (em.find as jest.Mock).mockResolvedValue([{ user: { id: '2' } }]);
 
-      const result = await service.addMembers('group-1', 'user-1', ['user-2']);
+      const result = await service.addMembers('1', '1', ['2']);
 
       expect(result).toBe(true);
     });
@@ -314,15 +316,15 @@ describe('GroupsService', () => {
     it('should remove member from group', async () => {
       const group = { ...mockGroup, members: [] };
       const member = {
-        id: 'member-1',
+        id: 10,
         leftAt: null,
-        user: { id: 'user-2' },
+        user: { id: 2 },
       } as unknown as GroupMember;
       (em.findOne as jest.Mock)
         .mockResolvedValueOnce(group)
         .mockResolvedValueOnce(member);
 
-      const result = await service.removeMember('group-1', 'user-1', 'user-2');
+      const result = await service.removeMember('1', '1', '2');
 
       expect(result).toBe(true);
       expect(member.leftAt).not.toBeNull();
@@ -332,9 +334,9 @@ describe('GroupsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
       const result = await service.removeMember(
-        'nonexistent',
-        'user-1',
-        'user-2',
+        '999',
+        '1',
+        '2',
       );
 
       expect(result).toBe(false);
@@ -346,7 +348,7 @@ describe('GroupsService', () => {
         .mockResolvedValueOnce(group)
         .mockResolvedValueOnce(null);
 
-      const result = await service.removeMember('group-1', 'user-1', 'user-2');
+      const result = await service.removeMember('1', '1', '2');
 
       expect(result).toBe(false);
     });
@@ -358,25 +360,25 @@ describe('GroupsService', () => {
         ...mockGroup,
         members: [
           {
-            id: 'member-1',
-            user: { id: 'user-1' },
+            id: 10,
+            user: { id: 1 },
             role: GroupRole.OWNER,
           },
           {
-            id: 'member-2',
-            user: { id: 'user-2' },
+            id: 11,
+            user: { id: 2 },
             role: GroupRole.MEMBER,
           },
         ],
       };
       (em.findOne as jest.Mock)
         .mockResolvedValueOnce(group)
-        .mockResolvedValueOnce({ id: 'member-2', role: GroupRole.MEMBER });
+        .mockResolvedValueOnce({ id: 11, role: GroupRole.MEMBER });
 
       const result = await service.updateMemberRole(
-        'group-1',
-        'user-1',
-        'user-2',
+        '1',
+        '1',
+        '2',
         'ADMIN',
       );
 
@@ -388,8 +390,8 @@ describe('GroupsService', () => {
         ...mockGroup,
         members: [
           {
-            id: 'member-1',
-            user: { id: 'user-1' },
+            id: 10,
+            user: { id: '1' },
             role: GroupRole.MEMBER,
           },
         ],
@@ -397,9 +399,9 @@ describe('GroupsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(group);
 
       const result = await service.updateMemberRole(
-        'group-1',
-        'user-1',
-        'user-2',
+        '1',
+        '1',
+        '2',
         'ADMIN',
       );
 
@@ -410,9 +412,9 @@ describe('GroupsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
       const result = await service.updateMemberRole(
-        'nonexistent',
-        'user-1',
-        'user-2',
+        '999',
+        '1',
+        '2',
         'ADMIN',
       );
 
@@ -428,7 +430,7 @@ describe('GroupsService', () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);
 
-      const result = await service.getMessages('group-1', 'user-1');
+      const result = await service.getMessages('1', '1');
 
       expect(Array.isArray(result)).toBe(true);
     });
@@ -436,7 +438,7 @@ describe('GroupsService', () => {
     it('should return empty array when group not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.getMessages('nonexistent', 'user-1');
+      const result = await service.getMessages('999', '1');
 
       expect(result).toEqual([]);
     });
@@ -450,7 +452,7 @@ describe('GroupsService', () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);
 
-      const result = await service.markRead('group-1', 'user-1');
+      const result = await service.markRead('1', '1');
 
       expect(result).toBe(true);
     });
@@ -458,7 +460,7 @@ describe('GroupsService', () => {
     it('should return false when group not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.markRead('nonexistent', 'user-1');
+      const result = await service.markRead('999', '1');
 
       expect(result).toBe(false);
     });

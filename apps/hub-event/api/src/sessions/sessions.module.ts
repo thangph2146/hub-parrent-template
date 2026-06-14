@@ -1,9 +1,10 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module, forwardRef } from '@nestjs/common';
-import { SessionsService } from './sessions.service';
-import { SessionsController } from './sessions.controller';
+
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SocketModule } from '../socket/socket.module';
+import { SessionsService } from './sessions.service';
+import { SessionsController } from './sessions.controller';
 
 @Module({
   imports: [NotificationsModule, forwardRef(() => SocketModule)],

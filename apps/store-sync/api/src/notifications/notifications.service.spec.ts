@@ -1,3 +1,5 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
 import { NotificationsService } from './notifications.service';
@@ -30,8 +32,10 @@ describe('NotificationsService', () => {
     em = {
       findOne: jest.fn(),
       find: jest.fn(),
-      persist: jest.fn(),
-      flush: jest.fn(),
+      persist: jest.fn().mockImplementation((entity: { id?: number; title?: string }) => {
+        if (entity.id == null) entity.id = 1;
+      }),
+      flush: jest.fn().mockResolvedValue(undefined),
       count: jest.fn(),
       nativeUpdate: jest.fn(),
       nativeDelete: jest.fn(),
@@ -124,7 +128,7 @@ describe('NotificationsService', () => {
         .mockResolvedValueOnce({ ...notif, isRead: true });
       (em.nativeUpdate as jest.Mock).mockResolvedValue(1);
 
-      const result = await service.markRead('notif-1', 'user-1', true);
+      const result = await service.markRead('1', '1', true);
 
       expect(result).not.toBeNull();
       expect(em.nativeUpdate).toHaveBeenCalled();
@@ -137,7 +141,7 @@ describe('NotificationsService', () => {
         .mockResolvedValueOnce({ ...notif, isRead: false });
       (em.nativeUpdate as jest.Mock).mockResolvedValue(1);
 
-      const result = await service.markRead('notif-1', 'user-1', false);
+      const result = await service.markRead('1', '1', false);
 
       expect(result).not.toBeNull();
     });
@@ -145,7 +149,7 @@ describe('NotificationsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.markRead('nonexistent', 'user-1', true);
+      const result = await service.markRead('999', '1', true);
 
       expect(result).toBeNull();
     });
@@ -155,7 +159,7 @@ describe('NotificationsService', () => {
     it('should mark all notifications as read', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(5);
 
-      const result = await service.markAllAsRead('user-1');
+      const result = await service.markAllAsRead('1');
 
       expect(result.count).toBe(5);
       expect(em.nativeUpdate).toHaveBeenCalled();
@@ -164,7 +168,7 @@ describe('NotificationsService', () => {
     it('should return 0 when no unread notifications', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(0);
 
-      const result = await service.markAllAsRead('user-1');
+      const result = await service.markAllAsRead('1');
 
       expect(result.count).toBe(0);
     });
@@ -174,10 +178,10 @@ describe('NotificationsService', () => {
     it('should bulk mark as read', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(3);
 
-      const result = await service.bulkMarkReadUnread('user-1', 'mark-read', [
-        'n1',
-        'n2',
-        'n3',
+      const result = await service.bulkMarkReadUnread('1', 'mark-read', [
+        '1',
+        '2',
+        '3',
       ]);
 
       expect(result.count).toBe(3);
@@ -186,9 +190,9 @@ describe('NotificationsService', () => {
     it('should bulk mark as unread', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulkMarkReadUnread('user-1', 'mark-unread', [
-        'n1',
-        'n2',
+      const result = await service.bulkMarkReadUnread('1', 'mark-unread', [
+        '1',
+        '2',
       ]);
 
       expect(result.count).toBe(2);
@@ -196,7 +200,7 @@ describe('NotificationsService', () => {
 
     it('should return 0 when ids are empty', async () => {
       const result = await service.bulkMarkReadUnread(
-        'user-1',
+        '1',
         'mark-read',
         [],
       );
@@ -210,13 +214,13 @@ describe('NotificationsService', () => {
     it('should bulk delete notifications', async () => {
       (em.nativeDelete as jest.Mock).mockResolvedValue(3);
 
-      const result = await service.bulkDelete('user-1', ['n1', 'n2', 'n3']);
+      const result = await service.bulkDelete('1', ['1', '2', '3']);
 
       expect(result.count).toBe(3);
     });
 
     it('should return 0 when ids are empty', async () => {
-      const result = await service.bulkDelete('user-1', []);
+      const result = await service.bulkDelete('1', []);
 
       expect(result.count).toBe(0);
     });
@@ -227,7 +231,7 @@ describe('NotificationsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockNotification);
       (em.nativeDelete as jest.Mock).mockResolvedValue(1);
 
-      const result = await service.deleteOne('notif-1', 'user-1');
+      const result = await service.deleteOne('1', '1');
 
       expect(result).toBe(true);
     });
@@ -235,7 +239,7 @@ describe('NotificationsService', () => {
     it('should return false when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.deleteOne('nonexistent', 'user-1');
+      const result = await service.deleteOne('999', '1');
 
       expect(result).toBe(false);
     });
@@ -312,8 +316,8 @@ describe('NotificationsService', () => {
   describe('getSuperAdminUserIds', () => {
     it('should return super admin user ids', async () => {
       (em.find as jest.Mock).mockResolvedValue([
-        { user: { id: 'admin-1' } },
-        { user: { id: 'admin-2' } },
+        { user: { id: 10 } },
+        { user: { id: 11 } },
       ]);
 
       const result = await service.getSuperAdminUserIds();
@@ -323,8 +327,8 @@ describe('NotificationsService', () => {
 
     it('should return unique ids', async () => {
       (em.find as jest.Mock).mockResolvedValue([
-        { user: { id: 'admin-1' } },
-        { user: { id: 'admin-1' } },
+        { user: { id: 10 } },
+        { user: { id: 10 } },
       ]);
 
       const result = await service.getSuperAdminUserIds();
@@ -338,7 +342,7 @@ describe('NotificationsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockNotification);
 
       const result = await service.hasRecentLoginNotification(
-        'user-1',
+        '1',
         'Test description',
       );
 
@@ -349,7 +353,7 @@ describe('NotificationsService', () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
       const result = await service.hasRecentLoginNotification(
-        'user-1',
+        '1',
         'Test description',
       );
 
@@ -361,7 +365,7 @@ describe('NotificationsService', () => {
     it('should return true when recent welcome back exists', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockNotification);
 
-      const result = await service.hasRecentWelcomeBackNotification('user-1');
+      const result = await service.hasRecentWelcomeBackNotification('1');
 
       expect(result).toBe(true);
     });
@@ -369,7 +373,7 @@ describe('NotificationsService', () => {
     it('should return false when no recent welcome back', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.hasRecentWelcomeBackNotification('user-1');
+      const result = await service.hasRecentWelcomeBackNotification('1');
 
       expect(result).toBe(false);
     });

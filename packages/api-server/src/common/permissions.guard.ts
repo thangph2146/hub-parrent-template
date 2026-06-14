@@ -73,6 +73,7 @@ export const Public = () => {
 export class PermissionsGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
+    /** App binding: AuthService — wire qua AppModule APP_GUARD useFactory (sync patch). */
     private readonly authService: AuthPayloadResolver,
   ) {}
 

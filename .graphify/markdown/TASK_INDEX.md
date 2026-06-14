@@ -1,6 +1,6 @@
 # TASK_INDEX — module/feature → file (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.510Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
+> **Sinh tự động:** `2026-06-13T21:25:57.639Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
 
 ## Brief nhanh (agent)
 
@@ -29,19 +29,19 @@ pnpm graphify:brief --task "mô tả task ngắn"
 | `file-storage` | `uploads` | `packages/admin-app/src/modules/file-storage/` | `apps/main/backend/src/app/file-storage/page.tsx` | `apps/main/api/src/uploads/` | `packages/api-client/src/resources/uploads.ts` | ✓ |
 | `data` | `data` | `packages/admin-app/src/modules/data/` | `apps/main/backend/src/app/data/page.tsx` | `—` | `—` | — |
 | `events` | `events` | `packages/admin-app/src/modules/events/` | `apps/main/backend/src/app/events/page.tsx` | `apps/main/api/src/events/` | `packages/api-client/src/resources/events.ts` | ✓ |
-| `departments` | `departments` | `packages/admin-app/src/modules/departments/` | `apps/main/backend/src/app/departments/page.tsx` | `apps/main/api/src/departments/` | `packages/api-client/src/resources/departments.ts` | — |
-| `academic-years` | `academic-years` | `packages/admin-app/src/modules/academic-years/` | `apps/main/backend/src/app/academic-years/page.tsx` | `apps/main/api/src/academic-years/` | `packages/api-client/src/resources/academic-years.ts` | — |
-| `courses` | `courses` | `packages/admin-app/src/modules/courses/` | `apps/main/backend/src/app/courses/page.tsx` | `apps/main/api/src/courses/` | `packages/api-client/src/resources/courses.ts` | — |
-| `majors` | `majors` | `packages/admin-app/src/modules/majors/` | `apps/main/backend/src/app/majors/page.tsx` | `apps/main/api/src/majors/` | `packages/api-client/src/resources/majors.ts` | — |
-| `training-levels` | `training-levels` | `packages/admin-app/src/modules/training-levels/` | `apps/main/backend/src/app/training-levels/page.tsx` | `apps/main/api/src/training-levels/` | `packages/api-client/src/resources/training-levels.ts` | — |
-| `training-systems` | `training-systems` | `packages/admin-app/src/modules/training-systems/` | `apps/main/backend/src/app/training-systems/page.tsx` | `apps/main/api/src/training-systems/` | `packages/api-client/src/resources/training-systems.ts` | — |
-| `products` | `products` | `packages/admin-app/src/modules/products/` | `apps/main/backend/src/app/products/page.tsx` | `apps/main/api/src/products/` | `packages/api-client/src/resources/products.ts` | — |
-| `orders` | `orders` | `packages/admin-app/src/modules/orders/` | `apps/main/backend/src/app/orders/page.tsx` | `apps/main/api/src/orders/` | `packages/api-client/src/resources/orders.ts` | — |
-| `promo-codes` | `promo-codes` | `packages/admin-app/src/modules/promo-codes/` | `apps/main/backend/src/app/promo-codes/page.tsx` | `apps/main/api/src/promo-codes/` | `packages/api-client/src/resources/promo-codes.ts` | — |
+| `departments` | `departments` | `packages/admin-app/src/modules/departments/` | `apps/main/backend/src/app/departments/page.tsx` | `apps/main/api/src/departments/` | `packages/api-client/src/resources/departments.ts` | ✓ |
+| `academic-years` | `academic-years` | `packages/admin-app/src/modules/academic-years/` | `apps/main/backend/src/app/academic-years/page.tsx` | `apps/main/api/src/academic-years/` | `packages/api-client/src/resources/academic-years.ts` | ✓ |
+| `courses` | `courses` | `packages/admin-app/src/modules/courses/` | `apps/main/backend/src/app/courses/page.tsx` | `apps/main/api/src/courses/` | `packages/api-client/src/resources/courses.ts` | ✓ |
+| `majors` | `majors` | `packages/admin-app/src/modules/majors/` | `apps/main/backend/src/app/majors/page.tsx` | `apps/main/api/src/majors/` | `packages/api-client/src/resources/majors.ts` | ✓ |
+| `training-levels` | `training-levels` | `packages/admin-app/src/modules/training-levels/` | `apps/main/backend/src/app/training-levels/page.tsx` | `apps/main/api/src/training-levels/` | `packages/api-client/src/resources/training-levels.ts` | ✓ |
+| `training-systems` | `training-systems` | `packages/admin-app/src/modules/training-systems/` | `apps/main/backend/src/app/training-systems/page.tsx` | `apps/main/api/src/training-systems/` | `packages/api-client/src/resources/training-systems.ts` | ✓ |
+| `products` | `products` | `packages/admin-app/src/modules/products/` | `apps/main/backend/src/app/products/page.tsx` | `apps/main/api/src/products/` | `packages/api-client/src/resources/products.ts` | ✓ |
+| `orders` | `orders` | `packages/admin-app/src/modules/orders/` | `apps/main/backend/src/app/orders/page.tsx` | `apps/main/api/src/orders/` | `packages/api-client/src/resources/orders.ts` | ✓ |
+| `promo-codes` | `promo-codes` | `packages/admin-app/src/modules/promo-codes/` | `apps/main/backend/src/app/promo-codes/page.tsx` | `apps/main/api/src/promo-codes/` | `packages/api-client/src/resources/promo-codes.ts` | ✓ |
 | `seo-metas` | `seo-metas` | `packages/admin-app/src/modules/seo-metas/` | `apps/main/backend/src/app/seo-metas/page.tsx` | `apps/main/api/src/seo-metas/` | `packages/api-client/src/resources/seo-metas.ts` | ✓ |
-| `contact-requests` | `contact-requests` | `packages/admin-app/src/modules/contact-requests/` | `apps/main/backend/src/app/contact-requests/page.tsx` | `apps/main/api/src/contact-requests/` | `packages/api-client/src/resources/contact-requests.ts` | — |
-| `parent-students` | `parent-students` | `packages/admin-app/src/modules/parent-students/` | `apps/main/backend/src/app/parent-students/page.tsx` | `apps/main/api/src/parent-students/` | `packages/api-client/src/resources/parent-students.ts` | — |
-| `my-students` | `students` | `packages/admin-app/src/modules/my-students/` | `apps/main/backend/src/app/my-students/page.tsx` | `apps/main/api/src/students/` | `—` | — |
+| `contact-requests` | `contact-requests` | `packages/admin-app/src/modules/contact-requests/` | `apps/main/backend/src/app/contact-requests/page.tsx` | `apps/main/api/src/contact-requests/` | `packages/api-client/src/resources/contact-requests.ts` | ✓ |
+| `parent-students` | `parent-students` | `packages/admin-app/src/modules/parent-students/` | `apps/main/backend/src/app/parent-students/page.tsx` | `apps/main/api/src/parent-students/` | `packages/api-client/src/resources/parent-students.ts` | ✓ |
+| `my-students` | `students` | `packages/admin-app/src/modules/my-students/` | `apps/main/backend/src/app/my-students/page.tsx` | `apps/main/api/src/students/` | `—` | ✓ |
 
 ## Packages workspace
 
@@ -81,22 +81,6 @@ pnpm graphify:brief --task "mô tả task ngắn"
 
 Chi tiết so sánh main ↔ check-in: [`SYNC_DELTA.md`](SYNC_DELTA.md). Các domain **exclude** (chỉ sửa `apps/main/api`):
 
-- `products`
-- `orders`
-- `carts`
-- `promo-codes`
-- `parent-students`
-- `imported-users`
-- `students`
-- `training-systems`
-- `training-levels`
-- `courses`
-- `majors`
-- `academic-years`
-- `departments`
-- `groups`
-- `messages`
-- `contact-requests`
 
 ## Làm mới
 

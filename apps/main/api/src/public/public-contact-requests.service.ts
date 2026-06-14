@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { ContactRequest } from '../entities/contact-request.entity';
-import { AdminRealtimeBroadcastService } from '../common/admin-realtime-broadcast.service';
+import { AdminRealtimeBroadcastService } from '../common/admin/realtime/broadcast.service';
 import { ADMIN_ROUTES } from '../config/constants';
 
 export interface CreateContactRequestDto {

@@ -8,7 +8,7 @@ import {
 import type {
   OrderGiftSnapshot,
   OrderItemSnapshot,
-} from '../common/product-types';
+} from '../common/commerce/product-types';
 import { User } from './user.entity';
 
 export type OrderStatus =

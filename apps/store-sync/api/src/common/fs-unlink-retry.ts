@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { unlink } from 'fs/promises';
 
 const RETRYABLE_CODES = new Set(['EBUSY', 'EPERM', 'EACCES']);
@@ -5,7 +6,6 @@ const RETRYABLE_CODES = new Set(['EBUSY', 'EPERM', 'EACCES']);
 export type UnlinkWithRetryOptions = {
   maxAttempts?: number;
   baseDelayMs?: number;
-  /** Không ném lỗi khi file đã không tồn tại. */
   ignoreMissing?: boolean;
 };
 
@@ -13,9 +13,6 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Xóa file trên disk — retry khi Windows/antivirus/Sharp giữ handle (EBUSY).
- */
 export async function unlinkWithRetry(
   filePath: string,
   options: UnlinkWithRetryOptions = {},

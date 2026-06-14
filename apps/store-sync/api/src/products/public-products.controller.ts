@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Controller,
   Get,
@@ -9,12 +10,9 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ProductsService } from './products.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 @Public()
 @Controller(`${PUBLIC_ROUTES.BASE}/products`)
@@ -38,7 +36,7 @@ export class PublicProductsController {
         50,
         Math.max(1, parseInt(String(limit), 10) || 20),
       );
-      const result = await this.productsService.list({
+      const result = await this.productsService.listPublic({
         page: pageNum,
         limit: limitNum,
         activeOnly: active !== 'false',

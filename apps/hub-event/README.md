@@ -10,12 +10,12 @@ packages/admin-app  ──► admin CRUD, generate route
        ▼
 apps/hub-event/hub-event-checkin-frontend  (native routes + admin.app.config)
 
-packages/api-server ──► base Nest (unified + binding services)
+packages/api-server ──► shared types / dev tooling (hub-event API = native copy đã commit)
        ▼
-apps/hub-event/api  (entities, app.module.ts, api.app.config.json)
+apps/hub-event/api  (native main-port từ main — commit, không regenerate khi pull)
 ```
 
-**Không** copy logic từ `apps/main/api` (`pnpm pull:checkin:legacy`). Cập nhật thư viện downstream: **`pnpm pull:template`**.
+**Cập nhật API:** sửa `apps/main/api` → `pnpm api:render apps/hub-event/api --mode=native` → commit. **`pnpm pull:checkin`** chỉ verify + admin (không cần regenerate trên server).
 
 ## Dev
 
@@ -25,33 +25,22 @@ apps/hub-event/api  (entities, app.module.ts, api.app.config.json)
 | Sandbox template upstream | `pnpm dev:main:checkin` (main API + check-in UI) |
 | Test stack hub-event | `pnpm dev:checkin` |
 | Cập nhật packages (downstream) | `pnpm pull:template` |
-| Regenerate check-in (template upstream) | `pnpm pull:checkin` |
+| Regenerate check-in (template upstream) | `pnpm pull:checkin` (verify + admin; API đã commit) |
+| Cập nhật API sau sửa main | `pnpm api:regenerate:checkin` → commit |
 | Verify | `pnpm test:checkin:full` |
 
-## API (`apps/hub-event/api`) — packages-first
+## API (`apps/hub-event/api`) — native committed
 
-App **chỉ giữ binding mỏng**; logic admin nằm trong `@workspace/api-server`:
-
-| Lớp app (AUTO-GENERATED) | Package |
-|--------------------------|---------|
-| `*.service.ts` extends `Base*Service` | `modules/<domain>/*.service.ts` |
-| `*.controller.ts` extends `Base*Controller` | `modules/<domain>/*.controller.ts` |
-| `*.module.ts` | Nest wiring + entity imports |
-
-**Unified modules (HTTP + service trong package):** `posts`, `events`, `comments`, `accounts`, `page-contents`, `notifications`, `sessions`, `event-checkins`, `event-registrations`, `event-speakers`, `uploads`, `system`, `auth`.
-
-**Native controller (app):** chỉ `public` — khai báo `api.app.config.json` → `native.controllers`.
-
-**Native logic (không generate):** `dashboard`, `hanet`, `public/*`, `event-registration-attendance`, …
+Logic nằm trong repo (`main-port` từ `apps/main/api`). **`materialize.committed: true`** — không generate lại khi `pull:checkin`.
 
 ```bash
-pnpm pull:checkin          # build + generate + admin (packages-first)
-pnpm api:generate:checkin  # chỉ API scaffold
+pnpm pull:checkin              # verify native + admin (server / sau pull)
+pnpm api:regenerate:checkin    # dev: render lại từ main (cần apps/main/api)
 pnpm verify:checkin-api
 pnpm verify:main-api-endpoint-parity
 ```
 
-App giữ: `entities/`, `app.module.ts`, `api.app.config.json`, seed, socket/public helpers.
+**Quy trình dev (monorepo có main):** sửa `apps/main/api` → `pnpm api:regenerate:checkin` → commit `apps/hub-event/api`.
 
 ## Frontend (`hub-event-checkin-frontend`)
 

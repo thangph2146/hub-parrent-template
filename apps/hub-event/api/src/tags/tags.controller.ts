@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseTagsController as PackageTagsController } from '@workspace/api-server/modules/tags';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
-import { ADMIN_ROUTES } from '../config/constants';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Controller } from '@nestjs/common';
+import { ADMIN_ROUTES } from '../config/constants';
+import { PERMISSIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseTagsController } from '../common/module-bases/tags/tag.controller';
 import { TagsService } from './tags.service';
 
-@ApiTags('Tags')
-@Controller(ADMIN_ROUTES.TAGS)
 @Permissions(PERMISSIONS.TAGS_VIEW)
-export class TagsController extends PackageTagsController {
-  constructor(@Inject(TagsService) tagsService: TagsService) {
-    super(tagsService);
+@Controller(ADMIN_ROUTES.TAGS)
+export class TagsController extends BaseTagsController {
+  constructor(service: TagsService) {
+    super(service);
   }
 }

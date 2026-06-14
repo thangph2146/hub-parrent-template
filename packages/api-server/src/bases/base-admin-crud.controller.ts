@@ -29,7 +29,6 @@ import {
   isBulkAction,
   buildAdminListCrudParams,
   type AdminListQueryInput,
-  type BulkAction,
   type BulkResult,
 } from '../common';
 import { BaseAdminHttpController } from './base-admin-http.controller';
@@ -53,7 +52,7 @@ export interface IAdminCrudControllerService<
   softDelete(id: string): Promise<boolean>;
   restore(id: string): Promise<boolean>;
   hardDelete(id: string): Promise<boolean>;
-  bulk(action: BulkAction | string, ids: string[]): Promise<BulkResult>;
+  bulk(action: string, ids: string[]): Promise<BulkResult>;
 }
 
 export abstract class BaseAdminCrudController<

@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 /**
  * Admission Results Admin API Controller.
  * GET list, options, :id; POST (create); PUT :id; DELETE :id; POST :id/restore; DELETE :id/hard-delete; POST bulk.
@@ -21,14 +21,11 @@ import type { Response } from 'express';
 import { AdmissionResultsService } from './admission-results.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationKind } from '../entities/notification.entity';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS, RESOURCES, ACTIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
+import { parseAdminListLimit } from '../common';
 
 type AdmissionListStatus = 'active' | 'deleted' | 'all';
 type AdmissionBulkAction = 'delete' | 'restore' | 'hard-delete';

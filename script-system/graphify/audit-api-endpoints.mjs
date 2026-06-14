@@ -5,12 +5,13 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs"
 import { join, relative } from "node:path"
 import { createRequire } from "node:module"
-import { scanApiControllers } from "./graphify-route-surface.mjs"
+import { scanApiControllers, listPackageModuleControllerPaths } from "./graphify-route-surface.mjs"
 
 const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
 
-const MAIN_API = "apps/main/api"
+const DEFAULT_API = "apps/main/api"
+const apiRel = process.argv[2] ?? DEFAULT_API
 const CONTROLLER_DECORATOR_RE =
   /@Controller\(\s*(ADMIN_ROUTES\.(\w+)|PUBLIC_ROUTES\.(\w+)|['"]([^'"]+)['"]|`\$\{PUBLIC_ROUTES\.(\w+)\}([^`]*)`)\s*\)/g
 
@@ -91,31 +92,37 @@ function listControllers(dir) {
 }
 
 function collectTruthEndpoints() {
-  const routeMap = loadRouteConstants(MAIN_API)
+  const routeMap = loadRouteConstants(apiRel)
   const pkgRouteMap = loadRouteConstants("packages/api-server")
   /** @type {Set<string>} */
   const truth = new Set()
   /** @type {string[]} */
   const unresolved = []
 
-  for (const abs of listControllers(join(root, MAIN_API, "src"))) {
-    const rel = relative(join(root, MAIN_API, "src"), abs).replace(/\\/g, "/")
+  for (const abs of listControllers(join(root, apiRel, "src"))) {
+    const rel = relative(join(root, apiRel, "src"), abs).replace(/\\/g, "/")
     let content = readFileSync(abs, "utf8")
     let map = routeMap
 
     let segments = resolveAllControllerSegments(content, map)
-    if (!segments.length && /extends\s+Base\w+Controller/.test(content)) {
+    if (
+      !segments.length &&
+      /extends\s+(Base\w+Controller|Package\w+Controller)/.test(content)
+    ) {
       const pkg = content.match(
         /from\s+['"]@workspace\/api-server\/modules\/([^'"]+)['"]/
       )
       if (pkg) {
-        const pkgPath = join(
+        const candidates = listPackageModuleControllerPaths(pkg[1])
+        const preferred = join(
           root,
           "packages/api-server/src/modules",
           pkg[1],
-          `${pkg[1]}.controller.ts`
+          `${pkg[1]}.controller.ts`,
         )
-        if (existsSync(pkgPath)) {
+        const pkgPath =
+          candidates.find((p) => p === preferred) ?? candidates[0]
+        if (pkgPath && existsSync(pkgPath)) {
           content = readFileSync(pkgPath, "utf8")
           map = pkgRouteMap
           segments = resolveAllControllerSegments(content, map)
@@ -132,9 +139,9 @@ function collectTruthEndpoints() {
 }
 
 function collectGraphifyEndpoints() {
-  const routeMap = loadRouteConstants(MAIN_API)
+  const routeMap = loadRouteConstants(apiRel)
   const pkgRouteMap = loadRouteConstants("packages/api-server")
-  const byDomain = scanApiControllers(MAIN_API, routeMap, {
+  const byDomain = scanApiControllers(apiRel, routeMap, {
     packageRouteMap: pkgRouteMap,
   })
   /** @type {Set<string>} */
@@ -151,13 +158,13 @@ const { doc, domainCount } = collectGraphifyEndpoints()
 const missingInDoc = [...truth].filter((m) => !doc.has(m)).sort()
 const extraInDoc = [...doc].filter((m) => !truth.has(m)).sort()
 
-console.log("=== Audit API endpoints (@api) ===")
+console.log(`=== Audit API endpoints (${apiRel}) ===`)
 console.log(`Truth (full scan): ${truth.size} routes`)
 console.log(`Graphify doc:      ${doc.size} routes (${domainCount} domains)`)
 console.log(`Unresolved files:  ${unresolved.length}`)
 if (unresolved.length) console.log(unresolved.map((f) => `  - ${f}`).join("\n"))
 
-console.log(`\nMissing in API_ENDPOINTS.md: ${missingInDoc.length}`)
+console.log(`\nMissing in graphify scan: ${missingInDoc.length}`)
 for (const m of missingInDoc) console.log(`  ${m}`)
 
 if (extraInDoc.length) {

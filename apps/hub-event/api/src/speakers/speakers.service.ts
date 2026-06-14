@@ -1,19 +1,15 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { SPEAKER_COLUMN_FILTERS } from '../common/admin/filter-configs';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import {
-  BaseSpeakersService,
-  type SpeakersRowDto,
-} from '@workspace/api-server/modules/speakers';
-import {
-  toIso,
-  type AdminColumnFiltersConfig,
-} from '@workspace/api-server/common';
-
 import { Speaker } from '../entities/speaker.entity';
-import { SPEAKER_COLUMN_FILTERS } from '../common/admin-filter-configs';
-
-export type SpeakerRowDto = SpeakersRowDto;
+import { BaseSpeakersService } from '../common/module-bases/speakers/speaker.service';
+export type {
+  SpeakersRowDto,
+  SpeakersCreateData,
+  SpeakersUpdateData,
+} from '../common/module-bases/speakers/speaker.service';
 
 @Injectable()
 export class SpeakersService extends BaseSpeakersService {
@@ -25,30 +21,15 @@ export class SpeakersService extends BaseSpeakersService {
     return this.em;
   }
 
-  protected getEntity(): new () => Record<string, unknown> {
+  protected getEntity() {
     return Speaker as unknown as new () => Record<string, unknown>;
   }
 
-  protected getColumnFiltersConfig(): AdminColumnFiltersConfig {
-    return SPEAKER_COLUMN_FILTERS;
+  protected getSearchFields(): string[] {
+    return ['name', 'title', 'organization', 'email'];
   }
 
-  protected mapRow(entity: Record<string, unknown>): SpeakersRowDto {
-    const row = entity as unknown as Speaker;
-    return {
-      id: row.id,
-      name: row.name,
-      title: row.title ?? null,
-      organization: row.organization ?? null,
-      bio: row.bio ?? null,
-      avatar: row.avatar ?? null,
-      email: row.email ?? null,
-      phone: row.phone ?? null,
-      status: row.status,
-      isActive: row.status !== 0,
-      createdAt: toIso(row.createdAt) ?? '',
-      updatedAt: toIso(row.updatedAt) ?? '',
-      deletedAt: toIso(row.deletedAt),
-    };
+  protected getColumnFiltersConfig() {
+    return SPEAKER_COLUMN_FILTERS;
   }
 }

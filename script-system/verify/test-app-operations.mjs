@@ -43,8 +43,12 @@ const typecheck = (pkg, label) => {
 /** @param {string} lineKey */
 function testHubEvent() {
   run(
-    "node script-system/verify/verify-checkin-api-modules.mjs",
-    "hub-event API — @workspace/api-server scaffold",
+    "pnpm --filter @workspace/api-server run verify:checkin-api",
+    "hub-event API — template materialize",
+  );
+  run(
+    "pnpm --filter @workspace/api-server run verify:endpoint-parity",
+    "hub-event API — route parity vs main",
   );
   run(
     "node script-system/verify/verify-api-profile.mjs hub-event",

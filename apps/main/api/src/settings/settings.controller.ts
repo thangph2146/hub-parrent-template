@@ -11,12 +11,9 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { SettingsService } from './settings.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
 
 @Permissions(PERMISSIONS.SETTINGS_VIEW)
@@ -52,11 +49,11 @@ export class SettingsController {
     @Query('search') search?: string,
   ) {
     try {
-      const result = await this.settingsService.list({
+      const rows = await this.settingsService.listSettings({
         group,
         search,
       });
-      const { statusCode, body } = createSuccessResponse(result);
+      const { statusCode, body } = createSuccessResponse({ data: rows });
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/settings', error, { group, search });
@@ -120,7 +117,7 @@ export class SettingsController {
     @Body('value') value: unknown,
   ) {
     try {
-      const result = await this.settingsService.update(key, value);
+      const result = await this.settingsService.updateByKey(key, value);
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);
     } catch (error) {
@@ -139,7 +136,7 @@ export class SettingsController {
   @Delete(':id')
   async delete(@Res() res: Response, @Param('id') id: string) {
     try {
-      const result = await this.settingsService.delete(id);
+      const result = await this.settingsService.deleteSetting(id);
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);
     } catch (error) {

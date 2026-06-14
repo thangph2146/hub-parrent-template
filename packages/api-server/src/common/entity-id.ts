@@ -1,8 +1,7 @@
 /**
  * Entity ID Utilities.
  *
- * Bám sát pattern `apps/main/api/src/common/entity-id.ts` + mở rộng
- * `isValidEntityId()` để hỗ trợ UUID/CUID legacy.
+ * Bám sát pattern `apps/main/api/src/common/entity-id.ts`.
  */
 import { BadRequestException } from '@nestjs/common';
 
@@ -75,65 +74,4 @@ export function coerceImportPrimaryKey(
     if (isEntityId(trimmed)) return parseEntityId(trimmed);
   }
   return undefined;
-}
-
-// ────────────────────────────────────────────────────────────
-// Backward-compat helpers (kept cho tests / downstream apps)
-// ────────────────────────────────────────────────────────────
-
-/** Backward-compat alias - returns number or throws Error. */
-export function toEntityIdStrict(id: string | number): number {
-  if (typeof id === 'number') return id;
-  const trimmed = id.trim();
-  const parsed = Number.parseInt(trimmed, 10);
-  if (Number.isNaN(parsed)) {
-    throw new Error(`Invalid entity ID: ${id}`);
-  }
-  return parsed;
-}
-
-export function toEntityIdOrDefault(
-  id: string | number,
-  defaultValue: number = 0,
-): number {
-  try {
-    return toEntityId(id);
-  } catch {
-    return defaultValue;
-  }
-}
-
-export function isNumericId(id: string): boolean {
-  return /^\d+$/.test(id.trim());
-}
-
-/**
- * Parse ID từ nhiều format: numeric string / number / UUID.
- * Trả về number nếu parse được, ngược lại trả về string.
- */
-export function parseEntityIdLoose(
-  id: string | number,
-): number | string {
-  if (typeof id === 'number') return id;
-  const trimmed = id.trim();
-  if (isNumericId(trimmed)) {
-    return Number.parseInt(trimmed, 10);
-  }
-  return trimmed;
-}
-
-/**
- * Validate entity ID format: number dương, numeric string, hoặc UUID.
- */
-export function isValidEntityId(id: string | number): boolean {
-  if (typeof id === 'number') return id > 0;
-  const trimmed = id.trim();
-  return isNumericId(trimmed) || isUuid(trimmed);
-}
-
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-function isUuid(value: string): boolean {
-  return UUID_REGEX.test(value);
 }

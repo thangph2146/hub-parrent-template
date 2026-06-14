@@ -127,20 +127,51 @@ function resolveControllerDecorator(content, routeMap) {
   return first ? { base: first.base } : null
 }
 
+/** @param {string} mod */
+export function listPackageModuleControllerPaths(mod) {
+  const modDir = join(root, "packages/api-server/src/modules", mod)
+  if (!existsSync(modDir)) return []
+  return readdirSync(modDir)
+    .filter(
+      (f) =>
+        f.endsWith(".controller.ts") &&
+        !f.includes(".spec.") &&
+        !f.startsWith("public-"),
+    )
+    .map((f) => join(modDir, f))
+}
+
 /** Controller mỏng extend @workspace/api-server — route trên Base*Controller. */
 function resolvePackageController(appContent) {
   const pkgImport = appContent.match(
-    /from\s+['"]@workspace\/api-server\/modules\/([^'"]+)['"]/
+    /from\s+['"]@workspace\/api-server\/modules\/([^'"]+)['"]/,
   )
-  if (!pkgImport || !/extends\s+Base\w+Controller/.test(appContent)) return null
+  if (
+    !pkgImport ||
+    !/extends\s+(Base|Package)\w+Controller/.test(appContent)
+  ) {
+    return null
+  }
   const mod = pkgImport[1]
-  const pkgCtrl = join(
+  const candidates = listPackageModuleControllerPaths(mod)
+  if (!candidates.length) return null
+
+  const preferred = join(
     root,
     "packages/api-server/src/modules",
     mod,
-    `${mod}.controller.ts`
+    `${mod}.controller.ts`,
   )
-  if (!existsSync(pkgCtrl)) return null
+  let pkgCtrl =
+    candidates.find((p) => p === preferred) ?? candidates[0]
+  for (const p of candidates) {
+    const src = readFileSync(p, "utf8")
+    if (/export class Base\w+Controller/.test(src)) {
+      pkgCtrl = p
+      break
+    }
+  }
+
   return {
     mod,
     rel: normPath(relative(root, pkgCtrl)),
@@ -148,16 +179,47 @@ function resolvePackageController(appContent) {
   }
 }
 
+const BASE_CRUD_CONTROLLER_SRC = join(
+  root,
+  "packages/api-server/src/bases/base-crud.controller.ts",
+)
+const BASE_ADMIN_CRUD_CONTROLLER_SRC = join(
+  root,
+  "packages/api-server/src/bases/base-admin-crud.controller.ts",
+)
+
 function extractHttpMethods(content, base) {
   const methods = []
   for (const m of content.matchAll(
-    /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)/g
+    /@(Get|Post|Put|Patch|Delete)\(\s*(?:['"]([^'"]*)['"])?\s*\)/g,
   )) {
     const suffix = m[2] ?? ""
     const path = suffix ? `${base}/${suffix}`.replace(/\/+/g, "/") : base
     methods.push(`${m[1].toUpperCase()} /${path}`)
   }
   return [...new Set(methods)].sort()
+}
+
+/** Route kế thừa từ BaseCrudController / BaseAdminCrudController (không lặp trên subclass). */
+function mergeInheritedHttpMethods(content, base, methods) {
+  let merged = [...methods]
+  if (/extends BaseCrudController/.test(content) && existsSync(BASE_CRUD_CONTROLLER_SRC)) {
+    merged.push(
+      ...extractHttpMethods(readFileSync(BASE_CRUD_CONTROLLER_SRC, "utf8"), base),
+    )
+  }
+  if (
+    /extends BaseAdminCrudController/.test(content) &&
+    existsSync(BASE_ADMIN_CRUD_CONTROLLER_SRC)
+  ) {
+    merged.push(
+      ...extractHttpMethods(
+        readFileSync(BASE_ADMIN_CRUD_CONTROLLER_SRC, "utf8"),
+        base,
+      ),
+    )
+  }
+  return [...new Set(merged)].sort()
 }
 
 /**
@@ -198,10 +260,11 @@ export function scanApiControllers(apiRoot, routeMap, options = {}) {
     }
 
     for (const { base, segment } of segments) {
-      const methods = extractHttpMethods(
-        segment === content ? scanContent : segment,
-        base
-      )
+      const segmentSrc = segment === content ? scanContent : segment
+      let methods = extractHttpMethods(segmentSrc, base)
+      if (viaPackage) {
+        methods = mergeInheritedHttpMethods(scanContent, base, methods)
+      }
       const key = domain
       const row = byDomain.get(key) ?? {
         controller: controllerLabel,
@@ -382,9 +445,17 @@ export function writeRouteSurfaceMd() {
   console.log(`[graphify-route-surface] Đã ghi ${outPath}`)
 }
 
-/** Bản đồ endpoint đầy đủ cho `apps/main/api` (Graphify local). */
-export function writeMainApiEndpointsMd() {
-  const apiRoot = MAIN_API
+/**
+ * @param {string} apiRoot
+ * @param {{
+ *   title: string
+ *   intro?: string
+ *   verifyLine?: string
+ *   refreshCmd?: string
+ *   monorepoLinks?: string[]
+ * }} meta
+ */
+export function writeApiEndpointsMd(apiRoot, meta) {
   const generatedAt = new Date().toISOString()
   const routeMap = loadRouteConstants(apiRoot)
   const packageRouteMap = loadRouteConstants("packages/api-server")
@@ -393,10 +464,15 @@ export function writeMainApiEndpointsMd() {
 
   const outDir = join(root, apiRoot, ".graphify/markdown")
   const lines = [
-    "# API endpoints — @api (`apps/main/api`)",
+    `# ${meta.title}`,
     "",
-    `> **Sinh tự động:** \`${generatedAt}\` — quét \`src/**/*.controller.ts\` + route từ \`Base*Controller\` trong \`@workspace/api-server\` khi app extend mỏng.`,
+    `> **Sinh tự động:** \`${generatedAt}\` — quét \`src/**/*.controller.ts\` + route từ \`Base*Controller\` / \`BaseCrudController\` trong \`@workspace/api-server\` khi app extend mỏng.`,
     "",
+  ]
+  if (meta.intro) {
+    lines.push(meta.intro, "")
+  }
+  lines.push(
     "## Global prefix",
     "",
     `- Nest \`setGlobalPrefix('${globalPrefix}')\` → URL thực tế: \`/${globalPrefix}/<path-dưới>\``,
@@ -404,13 +480,16 @@ export function writeMainApiEndpointsMd() {
     "",
     "Nguồn route constants: [`src/config/constants.ts`](../../src/config/constants.ts) (`ADMIN_ROUTES`, `PUBLIC_ROUTES`).",
     "",
-    "Verify contract: `pnpm verify:api-contract` · parity package: `pnpm verify:main-api-endpoint-parity`.",
-    "",
+  )
+  if (meta.verifyLine) {
+    lines.push(meta.verifyLine, "")
+  }
+  lines.push(
     "## Prefix admin (`ADMIN_ROUTES`)",
     "",
     "| Key | Path (không gồm `/api`) |",
     "|-----|------------------------|",
-  ]
+  )
 
   for (const [key, path] of Object.entries(routeMap).sort((a, b) =>
     a[1].localeCompare(b[1])
@@ -471,18 +550,50 @@ export function writeMainApiEndpointsMd() {
 
   lines.push("## Liên kết")
   lines.push("")
-  lines.push("- Monorepo: [ROUTE_SURFACE.md](../../../../.graphify/markdown/ROUTE_SURFACE.md) (admin ↔ api-client)")
-  lines.push("- [`../README.md`](../README.md) · [`SUMMARY_FOR_AI.md`](SUMMARY_FOR_AI.md)")
+  for (const link of meta.monorepoLinks ?? [
+    "- Monorepo: [ROUTE_SURFACE.md](../../../../.graphify/markdown/ROUTE_SURFACE.md) (admin ↔ api-client)",
+    "- [`../README.md`](../README.md) · [`SUMMARY_FOR_AI.md`](SUMMARY_FOR_AI.md)",
+  ]) {
+    lines.push(link)
+  }
   lines.push("")
   lines.push("## Làm mới")
   lines.push("")
   lines.push("```bash")
-  lines.push("node script-system/graphify/graphify-update.cjs apps/main/api")
+  lines.push(meta.refreshCmd ?? `node script-system/graphify/graphify-update.cjs ${apiRoot}`)
   lines.push("pnpm graphify:ai-summary")
   lines.push("```")
   lines.push("")
 
   const outPath = join(outDir, "API_ENDPOINTS.md")
   writeFileSync(outPath, lines.join("\n"), "utf8")
-  console.log(`[graphify-route-surface] Đã ghi ${outPath}`)
+  console.log(`[graphify-route-surface] Đã ghi ${outPath} (${controllers.size} domain)`)
+}
+
+/** Bản đồ endpoint đầy đủ cho `apps/main/api` (Graphify local). */
+export function writeMainApiEndpointsMd() {
+  writeApiEndpointsMd(MAIN_API, {
+    title: "API endpoints — @api (`apps/main/api`)",
+    verifyLine:
+      "Verify contract: `pnpm verify:api-contract` · parity package: `pnpm verify:main-api-endpoint-parity`.",
+    refreshCmd: "node script-system/graphify/graphify-update.cjs apps/main/api",
+  })
+}
+
+/** Bản đồ endpoint deploy line check-in (`apps/hub-event/api`). */
+export function writeCheckinApiEndpointsMd() {
+  writeApiEndpointsMd(CHECKIN_API, {
+    title: "API endpoints — @hub-event/api (`apps/hub-event/api`)",
+    intro:
+      "Deploy line check-in — controller/service AUTO-GENERATED từ `@workspace/api-server` + `api.app.config.json`. Native giữ tay: `public.controller.ts`, `system.module.ts`, `public-uploads.controller.ts`. Render: `pnpm api:render:checkin`.",
+    verifyLine:
+      "Verify: `pnpm verify:checkin-api` · `pnpm verify:main-api-endpoint-parity` (28 module vs `apps/main/api`) · `pnpm verify:api-contract`.",
+    refreshCmd:
+      "pnpm api:render:checkin && node script-system/graphify/graphify-update.cjs apps/hub-event/api",
+    monorepoLinks: [
+      "- Main dev API: [`../../main/api/.graphify/markdown/API_ENDPOINTS.md`](../../main/api/.graphify/markdown/API_ENDPOINTS.md)",
+      "- Monorepo: [ROUTE_SURFACE.md](../../../../.graphify/markdown/ROUTE_SURFACE.md)",
+      "- [`../README.md`](../README.md) · [`SUMMARY_FOR_AI.md`](SUMMARY_FOR_AI.md) · [`packages/api-server/README.md`](../../../../packages/api-server/README.md)",
+    ],
+  })
 }

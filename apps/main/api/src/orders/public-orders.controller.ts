@@ -12,12 +12,9 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { OrdersService } from './orders.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 @Public()
 @Controller(`${PUBLIC_ROUTES.BASE}/orders`)

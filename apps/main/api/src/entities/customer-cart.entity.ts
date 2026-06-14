@@ -1,5 +1,5 @@
 import { Entity, Index, PrimaryKey, Property } from '@mikro-orm/core';
-import type { CustomerCartLine } from '../common/cart-types';
+import type { CustomerCartLine } from '../common/commerce/cart-types';
 
 @Entity({ tableName: 'customer_carts' })
 export class CustomerCart {

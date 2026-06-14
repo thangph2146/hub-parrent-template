@@ -1,13 +1,13 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BasePageContentsService } from '@workspace/api-server/modules/page-contents';
 import { PageContent } from '../entities/page-content.entity';
-
+import { BasePageContentsService } from '../common/module-bases/page-contents/page-contents.service';
 export type {
   PageContentCreateInput,
   PageContentUpdateInput,
-} from '@workspace/api-server/modules/page-contents';
+} from '../common/module-bases/page-contents/page-contents.service';
 
 @Injectable()
 export class PageContentsService extends BasePageContentsService {
@@ -19,7 +19,7 @@ export class PageContentsService extends BasePageContentsService {
     return this.em;
   }
 
-  protected getPageContentEntity(): new () => Record<string, unknown> {
+  protected getPageContentEntity() {
     return PageContent as unknown as new () => Record<string, unknown>;
   }
 }

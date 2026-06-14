@@ -1,8 +1,4 @@
-import {
-  toEntityId,
-  toEntityIdList,
-  relationEntityId,
-} from '../common/entity-id';
+import { toEntityId, toEntityIdList, relationEntityId } from '../common';
 import {
   Injectable,
   Logger,

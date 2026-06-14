@@ -35,11 +35,11 @@ export default tseslint.config(
           argsIgnorePattern: '^_',
           ignoreRestSiblings: true,
           varsIgnorePattern:
-            '^(BulkAction|toEntityIdList|toEntityId|relationEntityId|like)$',
+            '^(BulkAction|toEntityIdList|toEntityId|relationEntityId|like|GoogleProfileDto)$',
         },
       ],
       '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',

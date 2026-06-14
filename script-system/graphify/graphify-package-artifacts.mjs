@@ -47,8 +47,13 @@ export const GRAPHIFY_PACKAGES = [
     pkg: "@workspace/api-server",
     label: "Logic API Nest dùng chung",
     doc: "packages/api-server/README.md",
-    verify: ["pnpm check"],
-    focus: ["src/registry/", "src/generate/"],
+    verify: ["pnpm verify:api-template", "pnpm --filter @workspace/api-server test"],
+    focus: [
+      "src/modules/",
+      "deploy/cli/",
+      "deploy/config/",
+      "deploy/nest/",
+    ],
   },
 ]
 

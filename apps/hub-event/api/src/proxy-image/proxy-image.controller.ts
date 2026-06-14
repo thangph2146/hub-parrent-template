@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * GET /api/admin/proxy-image?url=... - Proxy ảnh từ URL ngoài (tránh CORS).
  * Chấp nhận cả /proxy-image và /proxy-image/ (trailing slash).
@@ -6,7 +7,7 @@ import { Controller, Get, Query, Res, Logger } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 @Public()
 @SkipThrottle()

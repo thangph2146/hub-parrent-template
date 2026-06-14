@@ -1,0 +1,21 @@
+import type { AdminColumnFiltersConfig } from '../../common/apply-column-filters';
+import {
+  columnFilterDateRange,
+  columnFilterEntityId,
+  columnFilterExact,
+  columnFilterText,
+} from '../../common/column-filter-builders';
+
+export const PARENT_STUDENT_COLUMN_FILTERS: AdminColumnFiltersConfig = {
+  parent: columnFilterText(['parent', 'name']),
+  parentName: columnFilterText(['parent', 'name']),
+  parentEmail: columnFilterText(['parent', 'email']),
+  student: columnFilterText('studentCode'),
+  studentCode: columnFilterText('studentCode'),
+  studentName: columnFilterText('studentName'),
+  note: columnFilterText('note'),
+  status: columnFilterExact('status'),
+  createdAt: columnFilterDateRange('createdAt'),
+  updatedAt: columnFilterDateRange('updatedAt'),
+  id: columnFilterEntityId('id'),
+};

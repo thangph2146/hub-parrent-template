@@ -1,5 +1,6 @@
-/** @scaffold-only — Generic CRUD; hub-event dùng *-admin.* thay cho HTTP layer này. */
-import { Injectable } from '@nestjs/common';
+/**
+ * Auth Service — login / OAuth / dev options (materialize → apps/main/api module-bases).
+ */
 import type { EntityManager } from '@mikro-orm/core';
 import { compare, hash } from 'bcryptjs';
 import { randomBytes } from 'node:crypto';
@@ -85,7 +86,6 @@ function normalizeRoleNamesCsv(value: string | undefined): string[] {
     .filter(Boolean);
 }
 
-@Injectable()
 export abstract class BaseAuthService {
   protected abstract getEm(): EntityManager;
 

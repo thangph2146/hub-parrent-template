@@ -31,18 +31,17 @@ export interface ISystemMaintenanceAuth {
   getAuthPayloadByUserId(userId: string): Promise<AuthLoginPayload | null>;
 }
 
-export interface ISystemControllerService
-  extends Pick<
-    BaseSystemService,
-    | 'getModels'
-    | 'exportData'
-    | 'exportExcelData'
-    | 'importData'
-    | 'importExcelData'
-    | 'runSuperadminBootstrapSeed'
-    | 'getImportConfig'
-    | 'getDatabaseSchema'
-  > {}
+export type ISystemControllerService = Pick<
+  BaseSystemService,
+  | 'getModels'
+  | 'exportData'
+  | 'exportExcelData'
+  | 'importData'
+  | 'importExcelData'
+  | 'runSuperadminBootstrapSeed'
+  | 'getImportConfig'
+  | 'getDatabaseSchema'
+>;
 
 /** Import/export nhiều chunk — không áp dụng giới hạn 100 req/phút toàn cục. */
 @SkipThrottle()

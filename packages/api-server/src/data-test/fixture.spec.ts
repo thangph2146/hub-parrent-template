@@ -1,6 +1,6 @@
 /**
  * Integration test cho `data-test/fixture.ts`.
- * Đọc file `full-export-2026-06-11.json` 48MB và xác nhận helpers trả về đúng.
+ * Đọc file `hub-system-export-2026-06-11.json.gz` và xác nhận helpers trả về đúng.
  */
 import {
   clearFixtureCache,
@@ -136,7 +136,7 @@ describe('data-test/fixture', () => {
 
   describe('DEFAULT_FIXTURE_PATH', () => {
     it('should point to hub-system-export file', () => {
-      expect(DEFAULT_FIXTURE_PATH).toContain('hub-system-export-2026-06-11.json');
+      expect(DEFAULT_FIXTURE_PATH).toContain('hub-system-export-2026-06-11.json.gz');
     });
   });
 });

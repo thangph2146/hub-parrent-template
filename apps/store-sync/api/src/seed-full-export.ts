@@ -1,5 +1,6 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import 'reflect-metadata';
-import { toEntityId } from './common/entity-id';
+import { toEntityId } from './common';
 import { config } from 'dotenv';
 import {
   MikroORM,
@@ -39,7 +40,7 @@ import {
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
-} from './system/import-helpers';
+} from './common/module-bases/system/import-helpers';
 
 config();
 

@@ -2,7 +2,7 @@
  * E2E test cho fake EntityManager với fixture data.
  *
  * Verify fake EM hoạt động đúng trên **TẤT CẢ 46 entity** trong
- * `hub-system-export-2026-06-11.json`. Đây là lớp test quan trọng nhất
+ * `hub-system-export-2026-06-11.json.gz`. Đây là lớp test quan trọng nhất
  * đảm bảo các BaseCrudService có thể chạy CRUD nghiệp vụ với data thật.
  */
 import { createFakeEntityManager, entityNameToStoreKey } from './fake-em';

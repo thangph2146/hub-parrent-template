@@ -9,11 +9,10 @@ import type {
   BaseSettingsService,
 } from './setting.service';
 
-export interface ISettingsControllerService
-  extends Pick<
-    BaseSettingsService,
-    'listSettings' | 'getByKey' | 'bulkUpdate' | 'updateByKey' | 'deleteSetting'
-  > {}
+export type ISettingsControllerService = Pick<
+  BaseSettingsService,
+  'listSettings' | 'getByKey' | 'bulkUpdate' | 'updateByKey' | 'deleteSetting'
+>;
 
 @ApiTags('Settings')
 @Controller()

@@ -8,7 +8,7 @@ describe('AdmissionResultsService', () => {
   let em: Partial<EntityManager>;
 
   const mockAdmissionResult = {
-    id: 'ar-1',
+    id: 1,
     cccd: '012345678901',
     soBaoDanh: 'SBD001',
     hoTen: 'Nguyen Van A',
@@ -85,7 +85,7 @@ describe('AdmissionResultsService', () => {
     it('should return admission result', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockAdmissionResult);
 
-      const result = await service.getById('ar-1');
+      const result = await service.getById('1');
 
       expect(result).not.toBeNull();
       expect(result?.hoTen).toBe('Nguyen Van A');
@@ -95,7 +95,7 @@ describe('AdmissionResultsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.getById('nonexistent');
+      const result = await service.getById('999');
 
       expect(result).toBeNull();
     });
@@ -149,7 +149,7 @@ describe('AdmissionResultsService', () => {
       const existing = { ...mockAdmissionResult };
       (em.findOne as jest.Mock).mockResolvedValue(existing);
 
-      const result = await service.update('ar-1', {
+      const result = await service.update('1', {
         hoTen: 'Updated Name',
         diemTong: '28.0',
       });
@@ -162,7 +162,7 @@ describe('AdmissionResultsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.update('nonexistent', { hoTen: 'New' });
+      const result = await service.update('999', { hoTen: 'New' });
 
       expect(result).toBeNull();
     });
@@ -171,7 +171,7 @@ describe('AdmissionResultsService', () => {
       const existing = { ...mockAdmissionResult };
       (em.findOne as jest.Mock).mockResolvedValue(existing);
 
-      await service.update('ar-1', {
+      await service.update('1', {
         hoTen: '  Updated  ',
         nganhDangKy: '  Updated Major  ',
       });
@@ -186,7 +186,7 @@ describe('AdmissionResultsService', () => {
       const ar = { ...mockAdmissionResult, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(ar);
 
-      const result = await service.softDelete('ar-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(true);
       expect(ar.deletedAt).not.toBeNull();
@@ -195,7 +195,7 @@ describe('AdmissionResultsService', () => {
     it('should return false when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('nonexistent');
+      const result = await service.softDelete('999');
 
       expect(result).toBe(false);
     });
@@ -204,7 +204,7 @@ describe('AdmissionResultsService', () => {
       const ar = { ...mockAdmissionResult, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(ar);
 
-      const result = await service.softDelete('ar-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(false);
     });
@@ -215,7 +215,7 @@ describe('AdmissionResultsService', () => {
       const ar = { ...mockAdmissionResult, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(ar);
 
-      const result = await service.restore('ar-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(true);
       expect(ar.deletedAt).toBeNull();
@@ -225,7 +225,7 @@ describe('AdmissionResultsService', () => {
       const ar = { ...mockAdmissionResult, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(ar);
 
-      const result = await service.restore('ar-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(false);
     });
@@ -235,7 +235,7 @@ describe('AdmissionResultsService', () => {
     it('should hard delete admission result', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockAdmissionResult);
 
-      const result = await service.hardDelete('ar-1');
+      const result = await service.hardDelete('1');
 
       expect(result).toBe(true);
       expect(em.remove).toHaveBeenCalled();
@@ -244,7 +244,7 @@ describe('AdmissionResultsService', () => {
     it('should return false when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.hardDelete('nonexistent');
+      const result = await service.hardDelete('999');
 
       expect(result).toBe(false);
     });
@@ -254,7 +254,7 @@ describe('AdmissionResultsService', () => {
     it('should bulk delete', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk('delete', ['ar-1', 'ar-2']);
+      const result = await service.bulk('delete', ['1', '2']);
 
       expect(result.affected).toBe(2);
       expect(result.message.length).toBeGreaterThan(0);
@@ -263,7 +263,7 @@ describe('AdmissionResultsService', () => {
     it('should bulk restore', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(3);
 
-      const result = await service.bulk('restore', ['ar-1', 'ar-2', 'ar-3']);
+      const result = await service.bulk('restore', ['1', '2', '3']);
 
       expect(result.affected).toBe(3);
     });
@@ -271,7 +271,7 @@ describe('AdmissionResultsService', () => {
     it('should bulk hard delete', async () => {
       (em.nativeDelete as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk('hard-delete', ['ar-1', 'ar-2']);
+      const result = await service.bulk('hard-delete', ['1', '2']);
 
       expect(result.affected).toBe(2);
     });

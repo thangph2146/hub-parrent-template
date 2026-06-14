@@ -1,3 +1,8 @@
+/**
+ * Entity ID Utilities.
+ *
+ * Bám sát pattern `apps/main/api/src/common/entity-id.ts`.
+ */
 import { BadRequestException } from '@nestjs/common';
 
 export type EntityId = number;

@@ -1,16 +1,15 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventCheckinsService } from '@workspace/api-server/modules/event-checkins';
 import { EventCheckin } from '../entities/event-checkin.entity';
-import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
-
+import { BaseEventCheckinsService } from '../common/module-bases/event-checkins/event-checkins.service';
 export type {
   EventCheckinRowDto,
   ListEventCheckinsParams,
   ListEventCheckinsResult,
-} from '@workspace/api-server/modules/event-checkins';
+} from '../common/module-bases/event-checkins/event-checkins.service';
 
 @Injectable()
 export class EventCheckinsService extends BaseEventCheckinsService {
@@ -22,15 +21,15 @@ export class EventCheckinsService extends BaseEventCheckinsService {
     return this.em;
   }
 
-  protected getEventCheckinEntity(): new () => Record<string, unknown> {
+  protected getEventCheckinEntity() {
     return EventCheckin as unknown as new () => Record<string, unknown>;
   }
 
-  protected getEventEntity(): new () => Record<string, unknown> {
-    return Event as unknown as new () => Record<string, unknown>;
+  protected getEventEntity() {
+    return EventCheckin as unknown as new () => Record<string, unknown>;
   }
 
-  protected getEventRegistrationEntity(): new () => Record<string, unknown> {
+  protected getEventRegistrationEntity() {
     return EventRegistration as unknown as new () => Record<string, unknown>;
   }
 }

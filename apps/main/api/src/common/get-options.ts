@@ -46,17 +46,18 @@ export async function getOptionsFromModel<T extends object>(
     valueField === labelField ? [valueField] : [valueField, labelField];
 
   const rows = await delegate.find(where, {
-    fields: fields as any,
-    orderBy: { [labelField]: 'ASC' } as any,
+    fields: fields as never,
+    orderBy: { [labelField]: 'ASC' } as never,
     limit,
   });
 
   if (valueField !== labelField) {
     const seen = new Set<string>();
     return rows
-      .map((row: any) => {
-        const value = row[valueField];
-        const label = row[labelField];
+      .map((row) => {
+        const rec = row as Record<string, unknown>;
+        const value = rec[valueField];
+        const label = rec[labelField];
         const normalizedValue = typeof value === 'string' ? value.trim() : '';
         const normalizedLabel =
           typeof label === 'string' ? label.trim() : normalizedValue;
@@ -77,7 +78,7 @@ export async function getOptionsFromModel<T extends object>(
 
   const seen = new Set<string>();
   return rows
-    .map((row: any) => row[valueField] as string)
+    .map((row) => (row as Record<string, unknown>)[valueField] as string)
     .filter(
       (value): value is string =>
         typeof value === 'string' && value.trim() !== '',

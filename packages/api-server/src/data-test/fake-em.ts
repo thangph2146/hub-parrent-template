@@ -2,7 +2,7 @@
  * In-memory EntityManager cho integration test.
  *
  * Tạo một EntityManager giả lập (mockable) hoạt động trên dữ liệu từ
- * `data-test/hub-system-export-2026-06-11.json`. Mục đích: chạy được các
+ * `data-test/fixtures/hub-system-export-2026-06-11.json.gz`. Mục đích: chạy được các
  * service method (findOne/find/persist/flush/count/getReference/nativeUpdate/
  * nativeDelete/remove) mà không cần database thật.
  *

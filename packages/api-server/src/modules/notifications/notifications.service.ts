@@ -1,6 +1,7 @@
 /**
- * Notifications admin service — logic dùng chung; app binding entity và realtime deps.
+ * Notifications admin service — domain logic (materialize → apps/main/api module-bases).
  */
+import { Injectable } from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { relationEntityId, toEntityId, toEntityIdList } from '../../common/entity-id';
 
@@ -102,6 +103,7 @@ function mapRow(n: NotificationWithUser): NotificationItemDto {
   };
 }
 
+@Injectable()
 export abstract class BaseNotificationsService {
   protected abstract getEm(): EntityManager;
   protected abstract getNotificationEntity(): new () => Record<string, unknown>;

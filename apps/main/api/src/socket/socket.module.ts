@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AdminRealtimeInterceptor } from '../common/admin-realtime.interceptor';
-import { AdminRealtimeBroadcastService } from '../common/admin-realtime-broadcast.service';
+import { AdminRealtimeInterceptor } from '../common/admin/realtime/interceptor';
+import { AdminRealtimeBroadcastService } from '../common/admin/realtime/broadcast.service';
 import { SocketGateway } from './socket.gateway';
 import { SessionsModule } from '../sessions/sessions.module';
 

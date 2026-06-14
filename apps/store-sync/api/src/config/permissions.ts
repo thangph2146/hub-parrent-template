@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Permission System Configuration
  * Defines resources, actions, and the full set of permissions for the API.

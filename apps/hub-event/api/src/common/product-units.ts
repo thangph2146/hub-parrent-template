@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { ProductUnitType, QuantityCondition } from './product-types';
 import type { Product } from '../entities/product.entity';
 

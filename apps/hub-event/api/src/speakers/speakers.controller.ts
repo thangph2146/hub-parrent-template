@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseSpeakersController as PackageSpeakersController } from '@workspace/api-server/modules/speakers';
-import { Permissions } from '../common/permissions.decorator';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
 import { PERMISSIONS } from '../config/permissions';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Controller } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseSpeakersController } from '../common/module-bases/speakers/speaker.controller';
 import { SpeakersService } from './speakers.service';
 
-@ApiTags('Speakers')
-@Controller(ADMIN_ROUTES.SPEAKERS)
 @Permissions(PERMISSIONS.SPEAKERS_VIEW)
-export class SpeakersController extends PackageSpeakersController {
-  constructor(@Inject(SpeakersService) speakersService: SpeakersService) {
-    super(speakersService);
+@Controller(ADMIN_ROUTES.SPEAKERS)
+export class SpeakersController extends BaseSpeakersController {
+  constructor(service: SpeakersService) {
+    super(service);
   }
 }

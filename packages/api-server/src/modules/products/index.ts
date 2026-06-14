@@ -8,7 +8,8 @@ export {
 } from './products.module';
 
 export type {
-  ProductsRowDto,
-  ProductsCreateData,
-  ProductsUpdateData,
+  ProductRowDto,
+  ProductListParams,
+  ProductListResult,
+  ProductWriteData,
 } from './product.service';

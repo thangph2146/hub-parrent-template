@@ -1,5 +1,5 @@
 import type { EntityManager } from '@mikro-orm/core';
-import { evaluateOrderGifts } from '../common/gift-rules';
+import { evaluateOrderGifts } from '../common/commerce/gift-rules';
 import { Order } from '../entities/order.entity';
 import { Product } from '../entities/product.entity';
 import { User } from '../entities/user.entity';

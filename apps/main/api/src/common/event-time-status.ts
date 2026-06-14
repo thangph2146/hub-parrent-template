@@ -7,10 +7,7 @@ function toValidDate(value: Date | string | null | undefined): Date | null {
 }
 
 /**
- * Trạng thái thời gian sự kiện — khớp bộ lọc public list:
- * - upcoming: startDate > now
- * - ongoing: startDate <= now && endDate >= now
- * - past: endDate < now, hoặc đã bắt đầu nhưng không có endDate
+ * Trạng thái thời gian sự kiện — khớp bộ lọc public list.
  */
 export function resolveEventTimeStatus(
   startDate: Date | string | null | undefined,

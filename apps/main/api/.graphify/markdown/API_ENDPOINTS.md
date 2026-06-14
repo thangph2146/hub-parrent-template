@@ -1,6 +1,6 @@
 # API endpoints — @api (`apps/main/api`)
 
-> **Sinh tự động:** `2026-06-13T11:15:24.046Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` trong `@workspace/api-server` khi app extend mỏng.
+> **Sinh tự động:** `2026-06-13T21:25:57.651Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
 
 ## Global prefix
 
@@ -130,9 +130,8 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 
 ### `auth`
 
-- **Controller:** `src/auth/auth.controller.ts → src/modules/auth/auth.controller.ts`
+- **Controller:** `src/auth/auth.controller.ts`
 - **Base:** `/auth/admin`
-- **Package:** `@workspace/api-server/modules/auth` (unified — không duplicate route trong app)
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|
@@ -720,9 +719,8 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 
 ### `system`
 
-- **Controller:** `src/system/system.controller.ts → src/modules/system/system.controller.ts`
+- **Controller:** `src/system/system.controller.ts`
 - **Base:** `/admin/system`
-- **Package:** `@workspace/api-server/modules/system` (unified — không duplicate route trong app)
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|

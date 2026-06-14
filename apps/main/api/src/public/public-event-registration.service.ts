@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Event } from '../entities/event.entity';
@@ -8,7 +8,7 @@ import {
   RegistrationStatus,
 } from '../entities/event-registration.entity';
 import { EventRegistrationsService } from '../event-registrations/event-registrations.service';
-import { normalizePosterField } from '../common/poster-normalize';
+import { normalizePosterField } from '../common';
 
 export interface RegisterForEventResult {
   id: number;

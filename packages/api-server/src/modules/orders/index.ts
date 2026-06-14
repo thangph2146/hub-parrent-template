@@ -1,16 +1,18 @@
-/**
- * Orders Module barrel export.
- */
 export {
   BaseOrdersService,
-  BaseOrdersController,
-  BaseOrdersModule,
-} from './orders.module';
-
-export type { IOrdersControllerService } from './order.controller';
-
-export type {
-  OrdersRowDto,
-  OrdersCreateData,
-  OrdersUpdateData,
+  type OrderRowDto,
+  type CreateOrderDto,
+  type OrderStatus,
+  type StaffOrderStatusCounts,
+  type OrdersProductsPort,
+  type OrdersPromoPort,
+  type OrdersUploadsPort,
 } from './order.service';
+
+export {
+  mergeCreateOrderLines,
+  buildOrderItemsFromProducts,
+  buildOrderNumber,
+  type CreateOrderLineInput,
+  type CheckoutProduct,
+} from './order-checkout';

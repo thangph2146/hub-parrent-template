@@ -5,16 +5,15 @@ import { PUBLIC_ROUTES } from '../../config';
 import { AUTH_ROLE_NAMES } from '../../config';
 import type { AuthLoginPayload, BaseAuthService, GoogleProfileDto } from './auth.service';
 
-export interface IPublicAuthControllerService
-  extends Pick<
-    BaseAuthService,
-    | 'listDevelopmentLoginOptions'
-    | 'register'
-    | 'login'
-    | 'loginAsDevelopmentUser'
-    | 'verifyGoogleToken'
-    | 'loginWithGoogleAsStudent'
-  > {}
+export type IPublicAuthControllerService = Pick<
+  BaseAuthService,
+  | 'listDevelopmentLoginOptions'
+  | 'register'
+  | 'login'
+  | 'loginAsDevelopmentUser'
+  | 'verifyGoogleToken'
+  | 'loginWithGoogleAsStudent'
+>;
 
 const EVENT_STUDENT_EMAIL_SUFFIX = '@st.buh.edu.vn';
 const EVENT_STUDENT_EMAIL_ERROR =

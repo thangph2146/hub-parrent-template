@@ -1,6 +1,7 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import * as path from 'path';
 
-import { isImageExt } from '../common/image-processor';
+import { isImageExt } from '../common';
 import {
   resolveStorageFolderDisplayLabel,
   type StorageFolderLabelLookup,

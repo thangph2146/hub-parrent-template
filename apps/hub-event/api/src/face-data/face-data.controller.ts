@@ -1,12 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseFaceDatasController as PackageFaceDataController } from '@workspace/api-server/modules/face-data';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
+import { PERMISSIONS } from '../config/permissions';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseFaceDatasController } from '../common/module-bases/face-data/face-data.controller';
 import { FaceDataService } from './face-data.service';
 
-@ApiTags('FaceData')
-export class FaceDataController extends PackageFaceDataController {
-  constructor(@Inject(FaceDataService) faceDataService: FaceDataService) {
-    super(faceDataService);
+@Permissions(PERMISSIONS.FACE_DATA_VIEW)
+@Controller(ADMIN_ROUTES.FACE_DATA)
+export class FaceDataController extends BaseFaceDatasController {
+  constructor(service: FaceDataService) {
+    super(service);
   }
 }

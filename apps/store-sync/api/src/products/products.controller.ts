@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Controller,
   Get,
@@ -14,17 +15,11 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ProductsService } from './products.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { ADMIN_ROUTES, APP_HEADERS } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
-import {
-  parseAdminListLimit,
-  parseAdminListPage,
-} from '../common/parse-list-query';
+import { parseAdminListLimit, parseAdminListPage } from '../common';
 
 @Permissions(PERMISSIONS.PRODUCTS_VIEW)
 @Controller(ADMIN_ROUTES.PRODUCTS)

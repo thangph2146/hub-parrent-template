@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Request, Response, NextFunction } from 'express';
 import { randomUUID } from 'crypto';
 

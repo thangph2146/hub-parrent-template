@@ -36,12 +36,8 @@ run(
   "7/8 verify admin check-in",
 );
 run(
-  "node script-system/api/generate-api-modules.cjs apps/hub-event/api --prune",
-  "8/8 generate API scaffold (@workspace/api-server)",
-);
-run(
-  "node script-system/verify/verify-checkin-api-modules.mjs",
-  "verify API scaffold",
+  "pnpm --filter @workspace/api-server run verify:checkin-api",
+  "8/8 verify API template",
 );
 
 console.log("\n[sync-checkin] Hoàn tất. Test deploy: pnpm dev:checkin");

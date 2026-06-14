@@ -19,10 +19,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
-  BaseCrudController,
-  type ICrudControllerService,
-} from '../../bases';
-import {
   createSuccessResponse,
   createErrorResponse,
   parseAdminListLimit,
@@ -31,41 +27,35 @@ import {
 } from '../../common';
 import type {
   ParentStudentsRowDto,
-  ParentStudentsCreateData,
-  ParentStudentsUpdateData,
+  AddParentStudentInput,
 } from './parent-student.service';
 
-export interface IParentStudentsControllerService
-  extends ICrudControllerService<
-    ParentStudentsRowDto,
-    ParentStudentsCreateData,
-    ParentStudentsUpdateData
-  > {
+export interface IParentStudentsControllerService {
+  list(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+    filters?: Record<string, string>;
+  }): Promise<{
+    data: ParentStudentsRowDto[];
+    pagination: { page: number; limit: number; total: number; totalPages: number };
+  }>;
   review(
     id: string | number,
     action: 'approved' | 'rejected',
     reviewerId: string,
   ): Promise<ParentStudentsRowDto | null>;
   listByParent(parentId: string | number): Promise<ParentStudentsRowDto[]>;
-  addStudentRequest(data: {
-    parentId: number;
-    studentCode: string;
-    studentName?: string | null;
-    note?: string | null;
-  }): Promise<ParentStudentsRowDto>;
+  addStudentRequest(data: AddParentStudentInput): Promise<ParentStudentsRowDto>;
   removeForParent(id: string | number, parentId: string | number): Promise<boolean>;
 }
 
 @ApiTags('ParentStudents')
-export class BaseParentStudentsController extends BaseCrudController<
-  ParentStudentsRowDto,
-  ParentStudentsCreateData,
-  ParentStudentsUpdateData
-> {
+export class BaseParentStudentsController {
   private readonly parentStudentsService: IParentStudentsControllerService;
 
   constructor(service: IParentStudentsControllerService) {
-    super(service, 'parent-students');
     this.parentStudentsService = service;
   }
 
@@ -95,7 +85,7 @@ export class BaseParentStudentsController extends BaseCrudController<
       filters.createdAt = query.createdAt.trim();
     }
 
-    const result = await this.service.list({
+    const result = await this.parentStudentsService.list({
       page: parseAdminListPage(query.page),
       limit: parseAdminListLimit(query.limit, 20),
       search: typeof query.search === 'string' ? query.search.trim() : '',
@@ -316,7 +306,7 @@ export class BaseParentMyStudentsController {
   async getOverallAverage(
     @Param('studentCode') studentCode: string,
     @Headers() headers: Record<string, string | undefined>,
-  ): Promise<ApiResponsePayload<unknown | null>> {
+  ): Promise<ApiResponsePayload<unknown>> {
     const parentId = this.getUserId(headers);
     await this.ensureApprovedStudent(parentId, studentCode);
     return this.fetchExternalData(

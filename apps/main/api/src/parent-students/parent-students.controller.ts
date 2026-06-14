@@ -1,4 +1,4 @@
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 /**
  * Routes phụ huynh (parent role):
  *   POST   /parent/my-students           — yêu cầu liên kết học sinh
@@ -30,15 +30,12 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ParentStudentsService } from './parent-students.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES, PUBLIC_ROUTES } from '../config/constants';
-import { Permissions } from '../common/permissions.decorator';
+import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { parseColumnFiltersFromQuery } from '../common/parse-column-filters';
+import { parseAdminListLimit } from '../common';
+import { parseColumnFiltersFromQuery } from '../common';
 
 @Controller(PUBLIC_ROUTES.PARENT_MY_STUDENTS)
 export class ParentStudentsPublicController {

@@ -1,3 +1,5 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
 import { RolesService } from './roles.service';
@@ -8,7 +10,7 @@ describe('RolesService', () => {
   let em: Partial<EntityManager>;
 
   const mockRole = {
-    id: 'role-1',
+    id: 1,
     name: 'admin',
     displayName: 'Admin',
     description: 'Administrator role',
@@ -91,7 +93,7 @@ describe('RolesService', () => {
     it('should return role', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockRole);
 
-      const result = await service.getById('role-1');
+      const result = await service.getById('1');
 
       expect(result).not.toBeNull();
       expect(result?.name).toBe('admin');
@@ -101,7 +103,7 @@ describe('RolesService', () => {
     it('should return null when role not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.getById('nonexistent');
+      const result = await service.getById('999');
 
       expect(result).toBeNull();
     });
@@ -137,7 +139,7 @@ describe('RolesService', () => {
       const existingRole = { ...mockRole };
       (em.findOne as jest.Mock).mockResolvedValue(existingRole);
 
-      const result = await service.update('role-1', {
+      const result = await service.update('1', {
         name: 'super-admin',
         displayName: 'Super Admin',
       });
@@ -150,7 +152,7 @@ describe('RolesService', () => {
     it('should return null when role not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.update('nonexistent', { name: 'new' });
+      const result = await service.update('999', { name: 'new' });
 
       expect(result).toBeNull();
     });
@@ -159,7 +161,7 @@ describe('RolesService', () => {
       const existingRole = { ...mockRole };
       (em.findOne as jest.Mock).mockResolvedValue(existingRole);
 
-      await service.update('role-1', {
+      await service.update('1', {
         permissions: ['read', 'write', 'delete'],
       });
 
@@ -170,7 +172,7 @@ describe('RolesService', () => {
       const existingRole = { ...mockRole };
       (em.findOne as jest.Mock).mockResolvedValue(existingRole);
 
-      await service.update('role-1', { isActive: false });
+      await service.update('1', { isActive: false });
 
       expect(existingRole.isActive).toBe(false);
     });
@@ -181,7 +183,7 @@ describe('RolesService', () => {
       const role = { ...mockRole, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(role);
 
-      const result = await service.softDelete('role-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(true);
       expect(role.deletedAt).not.toBeNull();
@@ -190,7 +192,7 @@ describe('RolesService', () => {
     it('should return false when role not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.softDelete('nonexistent');
+      const result = await service.softDelete('999');
 
       expect(result).toBe(false);
     });
@@ -199,7 +201,7 @@ describe('RolesService', () => {
       const role = { ...mockRole, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(role);
 
-      const result = await service.softDelete('role-1');
+      const result = await service.softDelete('1');
 
       expect(result).toBe(false);
     });
@@ -210,7 +212,7 @@ describe('RolesService', () => {
       const role = { ...mockRole, deletedAt: new Date() };
       (em.findOne as jest.Mock).mockResolvedValue(role);
 
-      const result = await service.restore('role-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(true);
       expect(role.deletedAt).toBeNull();
@@ -220,7 +222,7 @@ describe('RolesService', () => {
       const role = { ...mockRole, deletedAt: null };
       (em.findOne as jest.Mock).mockResolvedValue(role);
 
-      const result = await service.restore('role-1');
+      const result = await service.restore('1');
 
       expect(result).toBe(false);
     });
@@ -230,7 +232,7 @@ describe('RolesService', () => {
     it('should hard delete role', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockRole);
 
-      const result = await service.hardDelete('role-1');
+      const result = await service.hardDelete('1');
 
       expect(result).toBe(true);
       expect(em.removeAndFlush).toHaveBeenCalled();
@@ -239,7 +241,7 @@ describe('RolesService', () => {
     it('should return false when role not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.hardDelete('nonexistent');
+      const result = await service.hardDelete('999');
 
       expect(result).toBe(false);
     });
@@ -247,9 +249,10 @@ describe('RolesService', () => {
 
   describe('bulk', () => {
     it('should bulk delete roles', async () => {
+      (em.find as jest.Mock).mockResolvedValue([]);
       (em.nativeUpdate as jest.Mock).mockResolvedValue(2);
 
-      const result = await service.bulk('delete', ['role-1', 'role-2']);
+      const result = await service.bulk('delete', ['1', '2']);
 
       expect(result.affected).toBe(2);
       expect(result.message).toContain('2 vai trò');
@@ -258,11 +261,7 @@ describe('RolesService', () => {
     it('should bulk restore roles', async () => {
       (em.nativeUpdate as jest.Mock).mockResolvedValue(3);
 
-      const result = await service.bulk('restore', [
-        'role-1',
-        'role-2',
-        'role-3',
-      ]);
+      const result = await service.bulk('restore', ['1', '2', '3']);
 
       expect(result.affected).toBe(3);
       expect(result.message).toContain('3 vai trò');
@@ -271,7 +270,7 @@ describe('RolesService', () => {
     it('should bulk hard delete roles', async () => {
       (em.find as jest.Mock).mockResolvedValue([mockRole]);
 
-      const result = await service.bulk('hard-delete', ['role-1']);
+      const result = await service.bulk('hard-delete', ['1']);
 
       expect(result.affected).toBe(1);
       expect(result.message).toContain('1 vai trò');
@@ -291,7 +290,7 @@ describe('RolesService', () => {
         find: jest
           .fn()
           .mockResolvedValue([
-            { id: 'role-1', name: 'Admin', displayName: 'Administrator' },
+            { id: 1, name: 'Admin', displayName: 'Administrator' },
           ]),
       };
       (em.getRepository as jest.Mock).mockReturnValue(mockRepo);

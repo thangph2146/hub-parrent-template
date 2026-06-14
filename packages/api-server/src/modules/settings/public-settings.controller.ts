@@ -4,8 +4,10 @@ import { createErrorResponse, createSuccessResponse, Public } from '../../common
 import { PUBLIC_ROUTES } from '../../config';
 import type { BaseSettingsService, PublicSiteBranding } from './setting.service';
 
-export interface IPublicSettingsControllerService
-  extends Pick<BaseSettingsService, 'getPublicBranding'> {}
+export type IPublicSettingsControllerService = Pick<
+  BaseSettingsService,
+  'getPublicBranding'
+>;
 
 @Public()
 @Controller(PUBLIC_ROUTES.BASE)

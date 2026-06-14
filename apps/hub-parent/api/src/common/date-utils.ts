@@ -1,29 +1,108 @@
-/** Các hàm tiện ích xử lý Date an toàn cho backend. */
-
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
- * Chuyển đổi một giá trị Date (hoặc string từ DB driver) sang ISO string an toàn.
- * Giúp tránh lỗi .toISOString() is not a function nếu driver trả về string thay vì Date object.
+ * Date Utilities.
+ *
+ * Bám sát pattern `apps/main/api/src/common/date-utils.ts` + mở rộng
+ * một số helper (parseDate, isValidDate, formatDate, formatDateTime)
+ * tiện cho client UI.
  */
-export function safeIsoString(d: unknown): string | null {
-  if (d == null) return null;
-  if (d instanceof Date) {
-    try {
-      return d.toISOString();
-    } catch {
-      return null;
-    }
+
+/** Convert Date/string/number sang ISO string hoặc null. */
+export function toIso(v: unknown): string | null {
+  if (v == null) return null;
+  if (v instanceof Date) {
+    return Number.isNaN(v.getTime()) ? null : v.toISOString();
   }
-  if (typeof d === 'string') {
-    // Nếu là string đã có định dạng ISO hoặc gần giống, trả về luôn
-    // Có thể thêm regex check nếu cần khắt khe hơn
-    return d;
+  if (typeof v === 'string' || typeof v === 'number') {
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d.toISOString();
   }
   return null;
 }
 
+/** Convert Date/string/number sang ISO string hoặc fallback to current time. */
+export function toIsoNow(v: unknown): string {
+  return toIso(v) ?? new Date().toISOString();
+}
+
+/** Parse string/number input thành Date hoặc null. */
+export function parseDateInput(value: string | number | null | undefined): Date | null {
+  if (value == null || value === '') return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Normalize ngày nhập dạng text (YYYY-MM-DD hoặc ISO) → YYYY-MM-DD hoặc null. */
+export function normalizeDateInput(value: string | null | undefined): string | null {
+  const trimmed = typeof value === 'string' ? value.trim() : '';
+  if (!trimmed) return null;
+  const date = new Date(trimmed);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().slice(0, 10);
+}
+
+// ────────────────────────────────────────────────────────────
+// Backward-compat helpers (kept cho tests / downstream apps)
+// ────────────────────────────────────────────────────────────
+
 /**
- * Trả về ISO string hiện tại (now) nếu giá trị input null/không hợp lệ.
+ * Convert Date/string → ISO string, null nếu input null/undefined.
+ * Alias của `toIso()`.
  */
-export function safeIsoStringNow(d: unknown): string {
-  return safeIsoString(d) || new Date().toISOString();
+export function safeIsoString(
+  date: Date | string | null | undefined,
+): string | null {
+  return toIso(date);
+}
+
+/**
+ * Convert Date/string → ISO string, fallback `now()` nếu null.
+ * Alias của `toIsoNow()`.
+ */
+export function safeIsoStringNow(
+  date: Date | string | null | undefined,
+): string {
+  return toIsoNow(date);
+}
+
+/**
+ * Parse date từ string|Date → Date hoặc null.
+ * Alias của `parseDateInput()`.
+ */
+export function parseDate(
+  input: string | Date | null | undefined,
+): Date | null {
+  if (!input) return null;
+  if (input instanceof Date) return Number.isNaN(input.getTime()) ? null : input;
+  return parseDateInput(input);
+}
+
+/** Check date có hợp lệ không. */
+export function isValidDate(
+  date: Date | string | null | undefined,
+): boolean {
+  if (!date) return false;
+  if (date instanceof Date) return !Number.isNaN(date.getTime());
+  const parsed = new Date(date);
+  return !Number.isNaN(parsed.getTime());
+}
+
+/** Format date theo locale (mặc định `vi-VN`). */
+export function formatDate(
+  date: Date | string | null | undefined,
+  locale = 'vi-VN',
+): string {
+  const parsed = parseDate(date);
+  if (!parsed) return '';
+  return parsed.toLocaleDateString(locale);
+}
+
+/** Format datetime theo locale (mặc định `vi-VN`). */
+export function formatDateTime(
+  date: Date | string | null | undefined,
+  locale = 'vi-VN',
+): string {
+  const parsed = parseDate(date);
+  if (!parsed) return '';
+  return parsed.toLocaleString(locale);
 }

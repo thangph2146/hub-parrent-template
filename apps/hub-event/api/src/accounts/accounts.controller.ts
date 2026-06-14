@@ -1,14 +1,17 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { Inject } from '@nestjs/common';
-import { BaseAccountsController as PackageAccountsController } from '@workspace/api-server/modules/accounts';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
+import { PERMISSIONS } from '../config/permissions';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
 import { UploadsService } from '../uploads/uploads.service';
+import { BaseAccountsController } from '../common/module-bases/accounts/accounts.controller';
 import { AccountsService } from './accounts.service';
 
-export class AccountsController extends PackageAccountsController {
-  constructor(
-    @Inject(AccountsService) accountsService: AccountsService,
-    @Inject(UploadsService) uploadsService: UploadsService,
-  ) {
-    super(accountsService, uploadsService);
+@Permissions(PERMISSIONS.ACCOUNTS_VIEW)
+@Controller(ADMIN_ROUTES.ACCOUNTS)
+export class AccountsController extends BaseAccountsController {
+  constructor(service: AccountsService, uploadsService: UploadsService) {
+    super(service, uploadsService);
   }
 }

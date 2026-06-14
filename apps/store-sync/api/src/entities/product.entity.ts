@@ -1,5 +1,6 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, Index, PrimaryKey, Property } from '@mikro-orm/core';
-import type { ProductUnitType } from '../common/product-types';
+import type { ProductUnitType } from '../common/commerce/product-types';
 
 @Entity({ tableName: 'products' })
 @Index({ properties: ['sku'] })

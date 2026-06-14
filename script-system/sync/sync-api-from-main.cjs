@@ -37,6 +37,9 @@ const INHERITED_API_EXCLUDE_FILES = [
   "scripts/fix-entity-id-imports.mjs",
 ];
 
+/** Mỗi product line có ENV_TEMPLATE/ENV_STACK riêng — không ghi đè từ main. */
+const INHERITED_API_KEEP_FILES = [".env.example"];
+
 function norm(rel) {
   return rel.replace(/\\/g, "/");
 }
@@ -223,6 +226,9 @@ function syncProduct(productKey) {
   const profile = loadProfile(dest);
   for (const rel of INHERITED_API_EXCLUDE_FILES) {
     profile.excludeFiles.add(rel);
+  }
+  for (const rel of INHERITED_API_KEEP_FILES) {
+    profile.keepFiles.add(rel);
   }
   const modeLabel = profile.mode ?? "full";
   console.log(`[sync-api] ${MAIN_API_PATH} → ${entry.path} (mode: ${modeLabel})`);

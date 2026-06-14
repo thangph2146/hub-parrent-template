@@ -15,7 +15,7 @@ import {
 import { safeIsoString } from '../../common/date-utils';
 import { normalizePosterField } from '../../common/poster-normalize';
 import { buildStandardAdminListWhere } from '../../common/apply-column-filters';
-import { EVENT_COLUMN_FILTERS } from '../../common/admin-filter-configs';
+import { EVENT_COLUMN_FILTERS } from './events-column-filters';
 import { toEntityId } from '../../common/entity-id';
 
 export interface EventRowDto {

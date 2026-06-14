@@ -1,6 +1,6 @@
 # Cây thư mục — packages/api-server (Graphify)
 
-> **Sinh tự động:** `2026-06-13T11:10:25.444Z`
+> **Sinh tự động:** `2026-06-13T21:25:57.613Z`
 
 ```text
 src/
@@ -8,7 +8,7 @@ src/
 ├── common/
 ├── config/
 ├── data-test/
-├── interfaces/
+│   └── fixtures/
 ├── modules/
 │   ├── academic-years/
 │   ├── accounts/
@@ -20,7 +20,6 @@ src/
 │   ├── comments/
 │   ├── contact-requests/
 │   ├── courses/
-│   ├── customer-carts/
 │   ├── dashboard/
 │   ├── departments/
 │   ├── event-checkins/
@@ -29,41 +28,30 @@ src/
 │   ├── event-speakers/
 │   ├── events/
 │   ├── face-data/
-│   ├── group-members/
 │   ├── groups/
-│   ├── hanet/
 │   ├── imported-users/
 │   ├── locations/
 │   ├── majors/
-│   ├── message-reads/
-│   ├── messages/
 │   ├── notifications/
 │   ├── orders/
 │   ├── page-contents/
 │   ├── parent-students/
-│   ├── post-categories/
-│   ├── post-tags/
 │   ├── posts/
 │   ├── products/
 │   ├── promo-codes/
-│   ├── public/
 │   ├── roles/
 │   ├── screens/
 │   ├── seo-metas/
 │   ├── sessions/
 │   ├── settings/
 │   ├── speakers/
-│   ├── storage-files/
 │   ├── students/
 │   ├── system/
 │   ├── tags/
 │   ├── templates/
 │   ├── training-levels/
 │   ├── training-systems/
-│   ├── uploads/
-│   ├── user-roles/
-│   ├── users/
-│   └── verification-tokens/
+│   └── users/
 ├── types/
 └── utils/
 ```

@@ -346,7 +346,7 @@ export abstract class BaseCrudService<
       throw new BadRequestException('ids must be a non-empty array');
     }
     if (!isBulkAction(action)) {
-      throw new BadRequestException(`Invalid bulk action: ${action}`);
+      throw new BadRequestException(`Invalid bulk action: ${String(action)}`);
     }
     const result = await applyBulkAction(
       this.getEm(),

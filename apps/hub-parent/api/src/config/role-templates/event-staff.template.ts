@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Mẫu role `event_staff` (ban tổ chức / BTC) — cổng admin check-in sự kiện.
  *

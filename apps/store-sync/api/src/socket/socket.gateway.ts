@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -8,7 +9,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { EntityManager } from '@mikro-orm/core';
-import { toEntityId } from '../common/entity-id';
+import { toEntityId } from '../common';
 import { SessionsService } from '../sessions/sessions.service';
 import { Notification } from '../entities/notification.entity';
 import { User } from '../entities/user.entity';

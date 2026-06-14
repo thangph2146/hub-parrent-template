@@ -1,3 +1,5 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
 import { SettingsService } from './settings.service';
@@ -8,7 +10,7 @@ describe('SettingsService', () => {
   let em: Partial<EntityManager>;
 
   const mockSetting = {
-    id: 'setting-1',
+    id: 1,
     key: 'site_name',
     value: 'Test Site',
     group: 'general',
@@ -37,20 +39,20 @@ describe('SettingsService', () => {
     service = module.get<SettingsService>(SettingsService);
   });
 
-  describe('list', () => {
+  describe('listSettings', () => {
     it('should return all settings', async () => {
       (em.find as jest.Mock).mockResolvedValue([mockSetting]);
 
-      const result = await service.list();
+      const result = await service.listSettings();
 
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].key).toBe('site_name');
+      expect(result).toHaveLength(1);
+      expect(result[0].key).toBe('site_name');
     });
 
     it('should filter by group', async () => {
       (em.find as jest.Mock).mockResolvedValue([mockSetting]);
 
-      await service.list({ group: 'general' });
+      await service.listSettings({ group: 'general' });
 
       expect(em.find).toHaveBeenCalled();
     });
@@ -58,9 +60,9 @@ describe('SettingsService', () => {
     it('should apply search filter', async () => {
       (em.find as jest.Mock).mockResolvedValue([]);
 
-      const result = await service.list({ search: 'site' });
+      const result = await service.listSettings({ search: 'site' });
 
-      expect(result.data).toHaveLength(0);
+      expect(result).toHaveLength(0);
     });
   });
 
@@ -83,23 +85,24 @@ describe('SettingsService', () => {
     });
   });
 
-  describe('update', () => {
+  describe('updateByKey', () => {
     it('should update existing setting', async () => {
       const existing = { ...mockSetting, value: 'Old Value' };
       (em.findOne as jest.Mock).mockResolvedValue(existing);
 
-      const result = await service.update('site_name', 'New Value');
+      const result = await service.updateByKey('site_name', 'New Value');
 
       expect(result.value).toBe('New Value');
-      expect(em.persistAndFlush).toHaveBeenCalled();
+      expect(em.flush).toHaveBeenCalled();
     });
 
     it('should create setting if not exists', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.update('new_setting', 'New Value');
+      const result = await service.updateByKey('new_setting', 'New Value');
 
-      expect(em.persistAndFlush).toHaveBeenCalled();
+      expect(em.persist).toHaveBeenCalled();
+      expect(em.flush).toHaveBeenCalled();
       expect(result.key).toBe('new_setting');
       expect(result.value).toBe('New Value');
       expect(result.group).toBe('general');
@@ -163,11 +166,11 @@ describe('SettingsService', () => {
     });
   });
 
-  describe('delete', () => {
+  describe('deleteSetting', () => {
     it('should delete setting', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(mockSetting);
 
-      const result = await service.delete('setting-1');
+      const result = await service.deleteSetting('1');
 
       expect(result).not.toBeNull();
       expect(em.removeAndFlush).toHaveBeenCalled();
@@ -176,7 +179,7 @@ describe('SettingsService', () => {
     it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
 
-      const result = await service.delete('nonexistent');
+      const result = await service.deleteSetting('999');
 
       expect(result).toBeNull();
     });

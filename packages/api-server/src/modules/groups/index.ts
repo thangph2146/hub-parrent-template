@@ -7,10 +7,9 @@ export {
   BaseGroupsModule,
 } from './groups.module';
 
-export type { IGroupsControllerService } from './group.controller';
-
 export type {
-  GroupsRowDto,
-  GroupsCreateData,
-  GroupsUpdateData,
+  CreateGroupInput,
+  ListGroupsInput,
+  GroupWithMembersDto,
+  GroupMessageDto,
 } from './group.service';

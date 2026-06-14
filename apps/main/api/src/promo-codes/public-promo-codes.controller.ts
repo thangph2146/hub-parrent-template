@@ -1,12 +1,9 @@
 import { Controller, Get, Res, Logger } from '@nestjs/common';
 import type { Response } from 'express';
 import { PromoCodesService } from './promo-codes.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 
 @Public()
 @Controller(`${PUBLIC_ROUTES.BASE}/promo-codes`)

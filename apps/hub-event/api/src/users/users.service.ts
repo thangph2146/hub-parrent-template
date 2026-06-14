@@ -1,20 +1,33 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseUsersService } from '@workspace/api-server/modules/users';
-import {
-  canEditProtectedAdminUser,
-  isProtectedAdminEmail,
-} from '../config/protected-admin';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Setting } from '../entities/setting.entity';
-
-export type {
-  DevLoginOptionDto,
+import { BaseUsersService } from '../common/module-bases/users/users.service';
+import type {
+  UserRowDto,
+  ListUsersParams,
+  PaginatedResult,
+  DevLoginOption,
   DevLoginOptionsQuery,
-} from '../common/dev-login-options';
+  DevLoginRole,
+} from '../common/module-types';
+export type {
+  UserRowDto,
+  ListUsersParams,
+  PaginatedResult,
+  DevLoginOption,
+  DevLoginOptionsQuery,
+  DevLoginRole,
+};
+export type ListUsersResult = PaginatedResult<UserRowDto>;
+export type DevLoginOptionDto = DevLoginOption;
+export type DevLoginRoleDto = DevLoginRole;
+
+export { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/module-bases/users/users.service';
 
 @Injectable()
 export class UsersService extends BaseUsersService {
@@ -26,30 +39,19 @@ export class UsersService extends BaseUsersService {
     return this.em;
   }
 
-  protected getUserEntity(): unknown {
-    return User;
+  protected getUserEntity() {
+    return User as unknown as new () => Record<string, unknown>;
   }
 
-  protected getRoleEntity(): unknown {
-    return Role;
+  protected getRoleEntity() {
+    return Role as unknown as new () => Record<string, unknown>;
   }
 
-  protected getUserRoleEntity(): unknown {
-    return UserRole;
+  protected getUserRoleEntity() {
+    return UserRole as unknown as new () => Record<string, unknown>;
   }
 
-  protected getSettingEntity(): unknown {
-    return Setting;
-  }
-
-  protected canEditProtectedAdminUser(
-    actorEmail: string,
-    targetEmail: string,
-  ): boolean {
-    return canEditProtectedAdminUser(actorEmail, targetEmail);
-  }
-
-  protected isProtectedAdminEmail(email: string): boolean {
-    return isProtectedAdminEmail(email);
+  protected getSettingEntity() {
+    return Setting as unknown as new () => Record<string, unknown>;
   }
 }

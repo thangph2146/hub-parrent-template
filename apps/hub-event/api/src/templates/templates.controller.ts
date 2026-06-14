@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseTemplatesController as PackageTemplatesController } from '@workspace/api-server/modules/templates';
-import { Permissions } from '../common/permissions.decorator';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
 import { PERMISSIONS } from '../config/permissions';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Controller } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseTemplatesController } from '../common/module-bases/templates/template.controller';
 import { TemplatesService } from './templates.service';
 
-@ApiTags('Templates')
-@Controller(ADMIN_ROUTES.TEMPLATES)
 @Permissions(PERMISSIONS.TEMPLATES_VIEW)
-export class TemplatesController extends PackageTemplatesController {
-  constructor(@Inject(TemplatesService) templatesService: TemplatesService) {
-    super(templatesService);
+@Controller(ADMIN_ROUTES.TEMPLATES)
+export class TemplatesController extends BaseTemplatesController {
+  constructor(service: TemplatesService) {
+    super(service);
   }
 }

@@ -1,7 +1,7 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
+/** AUTO-GENERATED — extends BaseEventRegistrationAttendanceService (local module-bases). */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseEventRegistrationAttendanceService } from '@workspace/api-server/modules/event-registrations';
+import { BaseEventRegistrationAttendanceService } from '../common/module-bases/event-registrations/event-registration-attendance.service';
 import { Event } from '../entities/event.entity';
 import { EventRegistration } from '../entities/event-registration.entity';
 import { SocketGateway } from '../socket/socket.gateway';
@@ -11,7 +11,7 @@ export type {
   AttendanceSource,
   ManualAttendanceAction,
   ApplyAttendanceResult,
-} from '@workspace/api-server/modules/event-registrations';
+} from '../common/module-bases/event-registrations/event-registration-attendance.types';
 
 @Injectable()
 export class EventRegistrationAttendanceService extends BaseEventRegistrationAttendanceService {
@@ -21,13 +21,13 @@ export class EventRegistrationAttendanceService extends BaseEventRegistrationAtt
     eventRegistrationsService: EventRegistrationsService,
   ) {
     super(em, {
-      eventEntity: Event as unknown as new () => Record<string, unknown>,
-      eventRegistrationEntity: EventRegistration as unknown as new () => Record<
-        string,
-        unknown
-      >,
+      eventEntity: Event,
+      eventRegistrationEntity: EventRegistration,
       getRegistrationById: (id) => eventRegistrationsService.getById(id),
-      emitAttendance: (payload) => socketGateway.emitEventAttendance(payload),
+      emitAttendance: (payload) =>
+        socketGateway.emitEventAttendance(
+          payload as import('../socket/socket.types').EventAttendanceSocketPayload,
+        ),
     });
   }
 }

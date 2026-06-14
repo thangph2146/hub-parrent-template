@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Controller,
   Get,
@@ -28,12 +29,9 @@ import type { CreateContactRequestDto } from './public-contact-requests.service'
 import { AuthService } from '../auth/auth.service';
 import type { AuthUserPayload } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 import {
@@ -867,6 +865,11 @@ export class PublicController {
       const filter = (query.filter as EventTimeFilter) ?? 'all';
       const categorySlug = query.categorySlug?.trim() || undefined;
       const search = query.search?.trim() || undefined;
+      const registerableRaw = (query.registerable ?? '').trim().toLowerCase();
+      const registerable =
+        registerableRaw === '1' ||
+        registerableRaw === 'true' ||
+        registerableRaw === 'yes';
       const result = await this.publicEventsService.list({
         page,
         limit,
@@ -875,6 +878,7 @@ export class PublicController {
           : 'all',
         categorySlug,
         search,
+        registerable: registerable || undefined,
       });
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

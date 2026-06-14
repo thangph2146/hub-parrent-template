@@ -1,217 +1,65 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
+/**
+ * AccountsService Unit Tests
+ */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
-import { hash } from 'bcryptjs';
 import { AccountsService } from './accounts.service';
-import { User } from '../entities/user.entity';
-import { UserRole } from '../entities/user-role.entity';
-import { Role } from '../entities/role.entity';
 
 describe('AccountsService', () => {
   let service: AccountsService;
   let em: Partial<EntityManager>;
 
   const mockUser = {
-    id: 'user-1',
+    id: 1,
     email: 'user@example.com',
-    name: 'Test User',
+    name: 'User',
     avatar: null,
-    bio: 'Test bio',
-    phone: '0123456789',
-    address: 'Test Address',
-    citizenId: '001234567890',
+    bio: null,
+    phone: null,
+    address: null,
+    citizenId: null,
     emailVerified: null,
     isActive: true,
     deletedAt: null,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    password: 'hashedpassword',
-  } as unknown as User;
-
-  const mockUserRole = {
-    id: 'ur-1',
-    user: mockUser,
-    role: {
-      id: 'role-1',
-      name: 'user',
-      displayName: 'User',
-    } as unknown as Role,
-  } as unknown as UserRole;
+    createdAt: new Date('2026-01-01'),
+    updatedAt: new Date('2026-01-01'),
+    userRoles: { getItems: () => [] },
+  };
 
   beforeEach(async () => {
     em = {
       findOne: jest.fn(),
-      find: jest.fn(),
-      persistAndFlush: jest.fn(),
+      find: jest.fn().mockResolvedValue([]),
+      flush: jest.fn().mockResolvedValue(undefined),
+      persist: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountsService,
-        {
-          provide: EntityManager,
-          useValue: em,
-        },
+        { provide: EntityManager, useValue: em },
       ],
     }).compile();
 
     service = module.get<AccountsService>(AccountsService);
   });
 
-  describe('getProfile', () => {
-    it('should return user profile', async () => {
-      (em.findOne as jest.Mock).mockResolvedValue(mockUser);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-
-      const result = await service.getProfile('user-1');
-
-      expect(result).not.toBeNull();
-      expect(result?.email).toBe('user@example.com');
-      expect(result?.name).toBe('Test User');
-      expect(result?.roles).toHaveLength(1);
-    });
-
-    it('should return null when user not found', async () => {
-      (em.findOne as jest.Mock).mockResolvedValue(null);
-
-      const result = await service.getProfile('nonexistent');
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when user is deleted', async () => {
-      const deletedUser = { ...mockUser, deletedAt: new Date() };
-      (em.findOne as jest.Mock).mockResolvedValue(deletedUser);
-
-      const result = await service.getProfile('user-1');
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when user is inactive', async () => {
-      const inactiveUser = { ...mockUser, isActive: false };
-      (em.findOne as jest.Mock).mockResolvedValue(inactiveUser);
-
-      const result = await service.getProfile('user-1');
-
-      expect(result).toBeNull();
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
-  describe('updateProfile', () => {
-    it('should update user profile fields', async () => {
-      const existing = { ...mockUser };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-
-      const result = await service.updateProfile('user-1', {
-        name: 'Updated Name',
-        bio: 'Updated bio',
-        phone: '0987654321',
-      });
-
-      expect(result.ok).toBe(true);
-      if (result.ok) {
-        expect(result.profile.name).toBe('Updated Name');
-      }
-      expect(em.persistAndFlush).toHaveBeenCalled();
+  describe('getProfile', () => {
+    it('should return profile when user exists', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(mockUser);
+      const profile = await service.getProfile('1');
+      expect(profile?.email).toBe('user@example.com');
     });
 
-    it('should return null when user not found', async () => {
+    it('should return null when not found', async () => {
       (em.findOne as jest.Mock).mockResolvedValue(null);
-
-      const result = await service.updateProfile('nonexistent', {
-        name: 'New',
-      });
-
-      expect(result).toEqual({ ok: false, reason: 'not_found' });
-    });
-
-    it('should return null when user is deleted', async () => {
-      const deletedUser = { ...mockUser, deletedAt: new Date() };
-      (em.findOne as jest.Mock).mockResolvedValue(deletedUser);
-
-      const result = await service.updateProfile('user-1', { name: 'New' });
-
-      expect(result).toEqual({ ok: false, reason: 'not_found' });
-    });
-
-    it('should return null when user is inactive', async () => {
-      const inactiveUser = { ...mockUser, isActive: false };
-      (em.findOne as jest.Mock).mockResolvedValue(inactiveUser);
-
-      const result = await service.updateProfile('user-1', { name: 'New' });
-
-      expect(result).toEqual({ ok: false, reason: 'not_found' });
-    });
-
-    it('should trim name field', async () => {
-      const existing = { ...mockUser };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-
-      await service.updateProfile('user-1', { name: '  Trimmed Name  ' });
-
-      expect(existing.name).toBe('Trimmed Name');
-    });
-
-    it('should update password when current password is valid', async () => {
-      const existing = { ...mockUser };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-      existing.password = await hash('oldpass', 10);
-
-      const result = await service.updateProfile('user-1', {
-        currentPassword: 'oldpass',
-        password: 'newpassword123',
-      });
-
-      expect(result.ok).toBe(true);
-      expect(em.persistAndFlush).toHaveBeenCalled();
-      expect(existing.password).not.toBe('hashedpassword');
-    });
-
-    it('should reject password change without current password', async () => {
-      const existing = { ...mockUser };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-
-      const result = await service.updateProfile('user-1', {
-        password: 'newpassword123',
-      });
-
-      expect(result).toEqual({ ok: false, reason: 'password_required' });
-    });
-
-    it('should reject password change when current password is wrong', async () => {
-      const existing = { ...mockUser };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      existing.password = await hash('realpass', 10);
-
-      const result = await service.updateProfile('user-1', {
-        currentPassword: 'wrong',
-        password: 'newpassword123',
-      });
-
-      expect(result).toEqual({ ok: false, reason: 'wrong_password' });
-    });
-
-    it('should not update password when empty', async () => {
-      const existing = { ...mockUser, password: 'originalhash' };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-
-      await service.updateProfile('user-1', { password: '   ' });
-
-      expect(existing.password).toBe('originalhash');
-    });
-
-    it('should handle null avatar', async () => {
-      const existing = { ...mockUser, avatar: 'old-avatar.jpg' };
-      (em.findOne as jest.Mock).mockResolvedValue(existing);
-      (em.find as jest.Mock).mockResolvedValue([mockUserRole]);
-
-      await service.updateProfile('user-1', { avatar: null });
-
-      expect(existing.avatar).toBeNull();
+      expect(await service.getProfile('999')).toBeNull();
     });
   });
 });

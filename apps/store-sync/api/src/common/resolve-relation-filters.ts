@@ -1,34 +1,6 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { EntityManager } from '@mikro-orm/core';
-import { AdmissionResult } from '../entities/admission-result.entity';
-import { Category } from '../entities/category.entity';
-import { ContactRequest } from '../entities/contact-request.entity';
-import { Group } from '../entities/group.entity';
-import { Message } from '../entities/message.entity';
-import { Notification } from '../entities/notification.entity';
-import { Post } from '../entities/post.entity';
-import { Role } from '../entities/role.entity';
-import { Session } from '../entities/session.entity';
-import { Setting } from '../entities/setting.entity';
-import { Student } from '../entities/student.entity';
-import { Tag } from '../entities/tag.entity';
-import { User } from '../entities/user.entity';
 import { isEntityId } from './entity-id';
-
-const entityByModelName = {
-  admissionResult: AdmissionResult,
-  category: Category,
-  contactRequest: ContactRequest,
-  group: Group,
-  message: Message,
-  notification: Notification,
-  post: Post,
-  role: Role,
-  session: Session,
-  setting: Setting,
-  student: Student,
-  tag: Tag,
-  user: User,
-} as const;
 
 export interface RelationFilterConfig {
   model: string;
@@ -38,12 +10,17 @@ export interface RelationFilterConfig {
 
 export type RelationFiltersConfig = Record<string, RelationFilterConfig>;
 
+export type RelationEntityResolver = (
+  model: string,
+) => (new () => object) | undefined;
+
 async function batchFindByEntity(
   em: EntityManager,
   rel: RelationFilterConfig,
   values: string[],
+  resolveEntity: RelationEntityResolver,
 ): Promise<Map<string, string>> {
-  const entity = entityByModelName[rel.model as keyof typeof entityByModelName];
+  const entity = resolveEntity(rel.model);
   if (!entity) return new Map();
 
   const result = new Map<string, string>();
@@ -96,6 +73,7 @@ export async function resolveRelationFilters(
   em: EntityManager,
   filters: Record<string, string> | undefined,
   config: RelationFiltersConfig,
+  resolveEntity: RelationEntityResolver,
 ): Promise<Record<string, string> | undefined> {
   if (!filters) return undefined;
   let output = { ...filters };
@@ -112,7 +90,7 @@ export async function resolveRelationFilters(
           .filter(Boolean)
       : [value];
 
-    const resolvedMap = await batchFindByEntity(em, rel, parts);
+    const resolvedMap = await batchFindByEntity(em, rel, parts, resolveEntity);
     const resolved = parts
       .map((p) => resolvedMap.get(p))
       .filter((id): id is string => typeof id === 'string' && id.length > 0);

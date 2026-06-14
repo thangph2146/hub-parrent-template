@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Controller,
   Get,
@@ -22,17 +23,15 @@ import {
   PublicAuthService,
   type CreatePublicRegisterDto,
 } from './public-auth.service';
+import { AdmissionResultsService } from '../admission-results/admission-results.service';
 import { PageContentsService } from '../page-contents/page-contents.service';
 import type { CreateContactRequestDto } from './public-contact-requests.service';
 import { AuthService } from '../auth/auth.service';
 import type { AuthUserPayload } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from '../common/api-response';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { PUBLIC_ROUTES, APP_HEADERS } from '../config/constants';
-import { Public } from '../common/public.decorator';
+import { Public } from '../common';
 import { AUTH_ROLE_NAMES } from '../config/constants';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 import {
@@ -80,6 +79,7 @@ export class PublicController {
     private readonly publicAuthService: PublicAuthService,
     private readonly publicEventsService: PublicEventsService,
     private readonly publicEventCategoriesService: PublicEventCategoriesService,
+    private readonly admissionResultsService: AdmissionResultsService,
     private readonly pageContentsService: PageContentsService,
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
@@ -204,6 +204,48 @@ export class PublicController {
       this.logApiError(logLabel, error);
       const { statusCode, body } = createErrorResponse(
         'Không thể tải danh sách tài khoản development.',
+        { status: 500 },
+      );
+      return res.status(statusCode).json(body);
+    }
+  }
+
+  @Get('admission-results/lookup')
+  async lookupAdmissionResult(
+    @Query('cccd') cccd: string,
+    @Query('soBaoDanh') soBaoDanh: string,
+    @Res() res: Response,
+  ) {
+    this.logger.log(
+      `lookupAdmissionResult cccd=${cccd} soBaoDanh=${soBaoDanh}`,
+    );
+    try {
+      if (!cccd?.trim() || !soBaoDanh?.trim()) {
+        const { statusCode, body } = createErrorResponse(
+          'Vui lòng nhập đầy đủ số CCCD và số báo danh.',
+          { status: 400 },
+        );
+        return res.status(statusCode).json(body);
+      }
+
+      const result = await this.admissionResultsService.lookup(cccd, soBaoDanh);
+      if (!result) {
+        const { statusCode, body } = createErrorResponse(
+          'Không tìm thấy kết quả trúng tuyển với thông tin đã cung cấp.',
+          { status: 404 },
+        );
+        return res.status(statusCode).json(body);
+      }
+
+      const { statusCode, body } = createSuccessResponse(result);
+      return res.status(statusCode).json(body);
+    } catch (error) {
+      this.logApiError('GET /api/public/admission-results/lookup', error, {
+        cccd,
+        soBaoDanh,
+      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
         { status: 500 },
       );
       return res.status(statusCode).json(body);

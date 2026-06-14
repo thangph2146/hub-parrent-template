@@ -23,7 +23,7 @@ const EXTENDED_ROUTE_CONTRACTS = [
     label: "event-registrations.setAttendance",
     clientSnippet: "/admin/event-registrations/",
     subPath: "/attendance",
-    specFile: "event-registration.controller.spec.ts",
+    specFile: "event-registrations.controller.spec.ts",
     specMarkers: ["setAttendance", "/:id/attendance"],
   },
   {

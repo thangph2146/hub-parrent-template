@@ -12,7 +12,7 @@ Package **@api**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và *
 
 **Global prefix:** Nest `setGlobalPrefix('api')` → client gọi `GET /api/admin/...`.
 
-**Controller extend package** (`auth`, `system`, …): route khai báo trên `@workspace/api-server` — `API_ENDPOINTS.md` ghi rõ `→ packages/api-server/...`.
+**Controller extend package:** route khai báo trên `@workspace/api-server` — `API_ENDPOINTS.md` ghi rõ `→ packages/api-server/...`.
 
 **Verify sau đổi route:** `pnpm verify:api-contract` · `pnpm verify:main-api-endpoint-parity`.
 

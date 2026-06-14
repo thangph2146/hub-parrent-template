@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseLocationsController as PackageLocationsController } from '@workspace/api-server/modules/locations';
-import { Permissions } from '../common/permissions.decorator';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
 import { PERMISSIONS } from '../config/permissions';
 import { ADMIN_ROUTES } from '../config/constants';
-import { Controller } from '@nestjs/common';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseLocationsController } from '../common/module-bases/locations/location.controller';
 import { LocationsService } from './locations.service';
 
-@ApiTags('Locations')
-@Controller(ADMIN_ROUTES.LOCATIONS)
 @Permissions(PERMISSIONS.LOCATIONS_VIEW)
-export class LocationsController extends PackageLocationsController {
-  constructor(@Inject(LocationsService) locationsService: LocationsService) {
-    super(locationsService);
+@Controller(ADMIN_ROUTES.LOCATIONS)
+export class LocationsController extends BaseLocationsController {
+  constructor(service: LocationsService) {
+    super(service);
   }
 }

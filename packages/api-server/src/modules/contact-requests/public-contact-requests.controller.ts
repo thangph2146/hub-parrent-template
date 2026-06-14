@@ -18,8 +18,10 @@ export type CreatePublicContactRequestDto = {
   content?: string;
 };
 
-export interface IPublicContactRequestsControllerService
-  extends Pick<BaseContactRequestsService, 'create'> {}
+export type IPublicContactRequestsControllerService = Pick<
+  BaseContactRequestsService,
+  'create'
+>;
 
 @Public()
 @Controller(PUBLIC_ROUTES.BASE)

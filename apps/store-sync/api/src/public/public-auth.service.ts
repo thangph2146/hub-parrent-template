@@ -1,4 +1,5 @@
-import { toEntityId } from '../common/entity-id';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { toEntityId } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Role } from '../entities/role.entity';

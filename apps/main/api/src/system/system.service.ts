@@ -1,6 +1,7 @@
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { BaseSystemService } from '@workspace/api-server/modules/system';
+import { BaseSystemService } from '../common/module-bases/system/system.service';
 import { ormEntities } from '../mikro-orm/orm-entities';
 import {
   runSuperadminBootstrap,
@@ -8,9 +9,14 @@ import {
   ensureSeedUserRoleLinks,
 } from '../seeds/superadmin-bootstrap.runner';
 
+export type {
+  ExportDataResult,
+  ImportDataResult,
+} from '../common/module-bases/system/system.service';
+
 @Injectable()
 export class SystemService extends BaseSystemService {
-  constructor(em: EntityManager) {
+  constructor(protected readonly em: EntityManager) {
     super(em, ormEntities, {
       runSuperadminBootstrap,
       ensureSeedUserRoleLinks,

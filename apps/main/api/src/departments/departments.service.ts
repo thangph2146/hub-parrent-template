@@ -1,140 +1,34 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { DEPARTMENT_COLUMN_FILTERS } from '../common/admin/filter-configs';
 import { Injectable } from '@nestjs/common';
-import { EntityManager, type FilterQuery } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Department } from '../entities/department.entity';
-import {
-  applyBulkAction,
-  type BulkAction,
-  type BulkResult,
-} from '../common/bulk-actions';
-import { normalizePageLimit, paginationMeta } from '../common/pagination';
-import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
-import { buildStandardAdminWhere } from '../common/apply-column-filters';
-import { DEPARTMENT_COLUMN_FILTERS } from '../common/admin-filter-configs';
-
-export interface DepartmentRowDto {
-  id: number;
-  name: string;
-  code: string;
-  description: string | null;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
-
-function toIso(v: Date | string | number | undefined | null): string | null {
-  if (v == null) return null;
-  if (v instanceof Date)
-    return Number.isNaN(v.getTime()) ? null : v.toISOString();
-  return null;
-}
-
-function mapRow(r: Department): DepartmentRowDto {
-  return {
-    id: r.id,
-    name: r.name,
-    code: r.code,
-    description: r.description ?? null,
-    status: r.status,
-    createdAt: toIso(r.createdAt) ?? '',
-    updatedAt: toIso(r.updatedAt) ?? '',
-    deletedAt: toIso(r.deletedAt),
-  };
-}
+import { BaseDepartmentsService } from '../common/module-bases/departments/department.service';
+export type {
+  DepartmentsRowDto,
+  DepartmentsCreateData,
+  DepartmentsUpdateData,
+} from '../common/module-bases/departments/department.service';
 
 @Injectable()
-export class DepartmentsService {
-  constructor(private readonly em: EntityManager) {}
-
-  async list(params: {
-    page: number;
-    limit: number;
-    search?: string;
-    status?: 'active' | 'deleted' | 'all';
-    statusFilter?: number;
-    updatedAtFrom?: string;
-    updatedAtTo?: string;
-    deletedAtFrom?: string;
-    deletedAtTo?: string;
-    filters?: Record<string, string>;
-  }) {
-    const { page, limit, skip } = normalizePageLimit(
-      params.page,
-      params.limit,
-      ADMIN_TABLE_EXPORT_MAX_LIMIT,
-    );
-    const where = buildStandardAdminWhere({
-      ...params,
-      searchFields: ['name', 'code', 'description'],
-      filterConfig: DEPARTMENT_COLUMN_FILTERS,
-    });
-    const [rows, total] = await Promise.all([
-      this.em.find(Department, where as FilterQuery<Department>, {
-        orderBy: { updatedAt: 'DESC' },
-        offset: skip,
-        limit,
-      }),
-      this.em.count(Department, where as FilterQuery<Department>),
-    ]);
-    return {
-      data: rows.map(mapRow),
-      pagination: paginationMeta(page, limit, total),
-    };
+export class DepartmentsService extends BaseDepartmentsService {
+  constructor(private readonly em: EntityManager) {
+    super();
   }
 
-  async getById(id: string): Promise<DepartmentRowDto | null> {
-    const r = await this.em.findOne(Department, { id: toEntityId(id) });
-    return r ? mapRow(r) : null;
+  protected getEm(): EntityManager {
+    return this.em;
   }
 
-  async create(data: Record<string, unknown>): Promise<DepartmentRowDto> {
-    const created = new Department();
-    const fields = ['name', 'code', 'description', 'status'] as const;
-    for (const f of fields) {
-      if (data[f] !== undefined) (created as any)[f] = data[f];
-    }
-    await this.em.persistAndFlush(created);
-    return mapRow(created);
+  protected getEntity() {
+    return Department as unknown as new () => Record<string, unknown>;
   }
 
-  async update(
-    id: string,
-    data: Record<string, unknown>,
-  ): Promise<DepartmentRowDto | null> {
-    const existing = await this.em.findOne(Department, { id: toEntityId(id) });
-    if (!existing) return null;
-    const fields = ['name', 'code', 'description', 'status'] as const;
-    for (const f of fields) {
-      if (data[f] !== undefined) (existing as any)[f] = data[f];
-    }
-    await this.em.persistAndFlush(existing);
-    return mapRow(existing);
+  protected getSearchFields(): string[] {
+    return ['name', 'code', 'description'];
   }
 
-  async softDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id: toEntityId(id) });
-    if (!r || r.deletedAt) return false;
-    r.deletedAt = new Date();
-    await this.em.persistAndFlush(r);
-    return true;
-  }
-  async restore(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id: toEntityId(id) });
-    if (!r || !r.deletedAt) return false;
-    r.deletedAt = null;
-    await this.em.persistAndFlush(r);
-    return true;
-  }
-  async hardDelete(id: string): Promise<boolean> {
-    const r = await this.em.findOne(Department, { id: toEntityId(id) });
-    if (!r) return false;
-    await this.em.removeAndFlush(r);
-    return true;
-  }
-  async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
-    return applyBulkAction(this.em, Department, action, ids, {
-      label: 'phong khoa',
-    });
+  protected getColumnFiltersConfig() {
+    return DEPARTMENT_COLUMN_FILTERS;
   }
 }

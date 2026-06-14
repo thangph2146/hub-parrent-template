@@ -1,12 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { Inject } from '@nestjs/common';
-import { BaseEventCheckinsController as PackageEventCheckinsController } from '@workspace/api-server/modules/event-checkins';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Controller } from '@nestjs/common';
+import { PERMISSIONS } from '../config/permissions';
+import { ADMIN_ROUTES } from '../config/constants';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseEventCheckinsController } from '../common/module-bases/event-checkins/event-checkins.controller';
 import { EventCheckinsService } from './event-checkins.service';
 
-export class EventCheckinsController extends PackageEventCheckinsController {
-  constructor(
-    @Inject(EventCheckinsService) eventCheckinsService: EventCheckinsService,
-  ) {
-    super(eventCheckinsService);
+@Permissions(PERMISSIONS.EVENT_CHECKINS_VIEW)
+@Controller(ADMIN_ROUTES.EVENT_CHECKINS)
+export class EventCheckinsController extends BaseEventCheckinsController {
+  constructor(service: EventCheckinsService) {
+    super(service);
   }
 }

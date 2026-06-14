@@ -1,18 +1,16 @@
-/** AUTO-GENERATED — chạy pnpm api:generate:checkin. Không sửa tay; override trong api.app.config.json → native.* */
-import { ApiTags } from '@nestjs/swagger';
-import { Inject } from '@nestjs/common';
-import { BaseDashboardController as PackageDashboardController } from '@workspace/api-server/modules/dashboard';
-import { Permissions } from '../common/permissions.decorator';
-import { PERMISSIONS } from '../config/permissions';
-import { ADMIN_ROUTES } from '../config/constants';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Controller } from '@nestjs/common';
+import { ADMIN_ROUTES } from '../config/constants';
+import { PERMISSIONS } from '../config/permissions';
+import { Permissions } from '../common/permissions.decorator';
+import { BaseDashboardController } from '../common/module-bases/dashboard/dashboard.controller';
 import { DashboardService } from './dashboard.service';
 
-@ApiTags('Dashboard')
-@Controller(ADMIN_ROUTES.DASHBOARD)
 @Permissions(PERMISSIONS.DASHBOARD_VIEW)
-export class DashboardController extends PackageDashboardController {
-  constructor(@Inject(DashboardService) dashboardService: DashboardService) {
-    super(dashboardService);
+@Controller(ADMIN_ROUTES.DASHBOARD)
+export class DashboardController extends BaseDashboardController {
+  constructor(service: DashboardService) {
+    super(service);
   }
 }

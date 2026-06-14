@@ -1,4 +1,5 @@
-import { toEntityId, toEntityIdList } from '../common/entity-id';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { toEntityId, toEntityIdList } from '../common';
 /**
  * Uploads Service - Quản lý file/thư mục upload (lưu trên disk tại API).
  * Cấu trúc thư mục: STORAGE_DIR/uploads/images và STORAGE_DIR/[custom].
@@ -27,9 +28,9 @@ import type { ReadStream } from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
 import { appConfig } from '../config/app.config';
-import { unlinkWithRetry } from '../common/fs-unlink-retry';
-import { parseAdminListLimit } from '../common/parse-list-query';
-import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/pagination';
+import { unlinkWithRetry } from '../common';
+import { parseAdminListLimit } from '../common';
+import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common';
 
 /** Số file tối đa mỗi lần gọi bulk-delete (khớp export admin). */
 export const UPLOADS_BULK_DELETE_MAX_PATHS = ADMIN_TABLE_EXPORT_MAX_LIMIT;
@@ -42,11 +43,7 @@ export type UploadsBulkDeleteResult = {
   failed: number;
   errors: Array<{ path: string; message: string }>;
 };
-import {
-  isImageMime,
-  isImageExt,
-  processImageBuffer,
-} from '../common/image-processor';
+import { isImageMime, isImageExt, processImageBuffer } from '../common';
 import {
   mapZipPathToStoragePath,
   normalizeZipEntryPath,

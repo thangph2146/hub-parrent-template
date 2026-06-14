@@ -10,6 +10,6 @@ export {
 
 export type {
   ParentStudentsRowDto,
-  ParentStudentsCreateData,
-  ParentStudentsUpdateData,
+  AddParentStudentInput,
+  ListParentStudentsResult,
 } from './parent-student.service';
