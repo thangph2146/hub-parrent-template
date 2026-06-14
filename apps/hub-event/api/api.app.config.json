@@ -1,29 +1,7 @@
 {
   "id": "hub-checkin-api",
-  "description": "Hub-event check-in API — scaffold từ @workspace/api-server (pattern admin.app.config.json + pnpm admin:generate).",
   "alignAdminApp": "../hub-event-checkin-frontend/admin.app.config.json",
-  "extraModules": [
-    "system",
-    "public",
-    "auth",
-    "events",
-    "hanet",
-    "notifications",
-    "dashboard",
-    "comments",
-    "event-checkouts",
-    "event-speakers",
-    "event-checkins",
-    "event-registrations",
-    "seo-metas",
-    "face-data"
-  ],
-  "scaffoldControllers": true,
-  "scaffoldModuleFiles": true,
-  "native": {
-    "modules": [],
-    "controllers": [
-      "public"
-    ]
+  "packageModuleTemplates": {
+    "enabled": true
   }
 }

@@ -1,0 +1,20 @@
+{
+  "id": "store-sync-api",
+  "description": "Store Sync — catalog, cart, checkout",
+  "modules": [
+    "products",
+    "orders",
+    "promo-codes",
+    "carts",
+    "uploads",
+    "categories",
+    "settings",
+    "users",
+    "roles",
+    "sessions",
+    "accounts"
+  ],
+  "packageModuleTemplates": {
+    "enabled": true
+  }
+}

@@ -20,11 +20,16 @@ const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
+const API_ENDPOINTS_APP_PATHS = new Set([
+  PRODUCT_LINES.main.api.path,
+  PRODUCT_LINES["hub-event"].api.path,
+])
+
 import {
   writeAgentArtifactsForApp,
   writeSyncDeltaMd,
 } from "./graphify-agent-artifacts.mjs"
-import { writeRouteSurfaceMd, writeMainApiEndpointsMd } from "./graphify-route-surface.mjs"
+import { writeRouteSurfaceMd, writeMainApiEndpointsMd, writeCheckinApiEndpointsMd } from "./graphify-route-surface.mjs"
 import { writeAllPackageGraphifyArtifacts } from "./graphify-package-artifacts.mjs"
 import { writeTaskIndexArtifacts } from "./graphify-task-index.mjs"
 
@@ -173,7 +178,7 @@ function linesAppMarkdownToc(appRelPath) {
   if (isNestApiApp(appRelPath)) {
     parts[parts.length - 1] +=
       " — [`API_DOMAIN_IMPORTS.md`](API_DOMAIN_IMPORTS.md)"
-    if (appRelPath === PRODUCT_LINES.main.api.path) {
+    if (API_ENDPOINTS_APP_PATHS.has(appRelPath)) {
       parts[parts.length - 1] +=
         " — **[`API_ENDPOINTS.md`](API_ENDPOINTS.md)** (endpoint HTTP hiện tại)"
     }
@@ -762,7 +767,12 @@ function summarizeApp(app) {
         `- **Phụ thuộc chéo giữa domain API:** [\`API_DOMAIN_IMPORTS.md\`](API_DOMAIN_IMPORTS.md) — domain \`src/<tên>\` nào import domain nào (cạnh \`imports\` trong graph).`
       )
     }
-    if (app.path === PRODUCT_LINES.main.api.path) {
+    if (appRelPath === "apps/main/api") {
+      lines.push(
+        `- **Entity graph (MikroORM closure):** [\`API_ENTITY_GRAPH.md\`](API_ENTITY_GRAPH.md) — quan hệ entity + module→entity; bắt buộc khi \`--prune-entities\` (sinh bởi \`pnpm api:sync-template\`).`
+      )
+    }
+    if (API_ENDPOINTS_APP_PATHS.has(app.path)) {
       lines.push(
         `- **Endpoint HTTP hiện tại:** [\`API_ENDPOINTS.md\`](API_ENDPOINTS.md) — method, path (kèm global prefix \`/api\`); controller extend \`@workspace/api-server\` ghi rõ package.`
       )
@@ -1033,7 +1043,8 @@ function getMonorepoAiTopicGuideLines() {
     "| Ranh giới service / check | [`../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](../../docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md) | [`../../AGENTS.md`](../../AGENTS.md), `pnpm verify:bounds` |",
     `| Cây \`src/\` một app | [\`../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md\`](../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | \`SUMMARY_FOR_AI.md\` cùng app |`,
     `| Quy mô graph, điểm nóng import | [\`../../${mainApi}/.graphify/markdown/GRAPH_STATS.md\`](../../${mainApi}/.graphify/markdown/GRAPH_STATS.md) | \`FOLDER_TREE.md\`, \`snapshot/context.json\` (khi cần) |`,
-    `| **Endpoint Nest (@api)** | [\`../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md\`](../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md) | [\`ROUTE_SURFACE.md\`](ROUTE_SURFACE.md), \`src/config/constants.ts\`, \`pnpm verify:main-api-endpoint-parity\` |`,
+    `| **Endpoint Nest (@api main)** | [\`../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md\`](../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md) | [\`ROUTE_SURFACE.md\`](ROUTE_SURFACE.md), \`pnpm verify:main-api-endpoint-parity\` |`,
+    `| **Endpoint Nest (check-in)** | [\`../../${PRODUCT_LINES["hub-event"].api.path}/.graphify/markdown/API_ENDPOINTS.md\`](../../${PRODUCT_LINES["hub-event"].api.path}/.graphify/markdown/API_ENDPOINTS.md) | \`pnpm api:render:checkin\`, \`pnpm verify:checkin-api\` |`,
     `| Domain Nest import lẫn nhau | [\`../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md\`](../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md) | \`GRAPH_STATS.md\`, bảng controller trong \`SUMMARY\` |`,
     "| Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |",
     `| UX storefront (Next công khai) | [\`../../docs/admin-pattern/FRONTEND_UX.md\`](../../docs/admin-pattern/FRONTEND_UX.md) | [\`../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md) |`,
@@ -1400,13 +1411,15 @@ function writeAppGraphifyReadme(app) {
   const monorepoRel = `${"../".repeat(app.path.split("/").length + 1)}`
   const isApi = isNestApiApp(app)
   const isMainApi = app.pkg === "@api"
+  const isCheckinApi = app.pkg === "@hub-event/api"
+  const hasApiEndpointsDoc = isMainApi || isCheckinApi
   const lines = [
     `# Graphify — \`${app.path}\``,
     "",
     `Package **${app.pkg}**. Thư mục \`.graphify/\` giữ **snapshot** (\`snapshot/\`) và **Markdown cho AI** (\`markdown/\`).`,
     "",
   ]
-  if (isMainApi) {
+  if (hasApiEndpointsDoc) {
     lines.push(
       "## API endpoints (đọc trước khi sửa HTTP)",
       "",
@@ -1418,8 +1431,16 @@ function writeAppGraphifyReadme(app) {
       "",
       "**Global prefix:** Nest `setGlobalPrefix('api')` → client gọi `GET /api/admin/...`.",
       "",
-      "**Controller extend package** (`auth`, `system`, …): route khai báo trên `@workspace/api-server` — `API_ENDPOINTS.md` ghi rõ `→ packages/api-server/...`.",
+      "**Controller extend package:** route khai báo trên `@workspace/api-server` — `API_ENDPOINTS.md` ghi rõ `→ packages/api-server/...`.",
       "",
+    )
+    if (isCheckinApi) {
+      lines.push(
+        "**Check-in deploy:** AUTO-GENERATED — `pnpm api:render:checkin` · verify `pnpm verify:checkin-api` · `pnpm verify:main-api-endpoint-parity`.",
+        "",
+      )
+    }
+    lines.push(
       "**Verify sau đổi route:** `pnpm verify:api-contract` · `pnpm verify:main-api-endpoint-parity`.",
       "",
       "## File Graphify khác",
@@ -1428,7 +1449,7 @@ function writeAppGraphifyReadme(app) {
   } else {
     lines.push("## File trong thư mục này", "", "| File / Thư mục | Mục đích |", "|----------------|----------|")
   }
-  if (!isMainApi) {
+  if (!hasApiEndpointsDoc) {
     lines.push(
       `| \`snapshot/graph.json\` | Đồ thị node/link (\`node script-system/graphify/graphify-update.cjs ${app.path}\`) |`,
       "| `snapshot/context.json` | Snapshot nội dung file để AI hiểu hệ thống |",
@@ -1455,12 +1476,12 @@ function writeAppGraphifyReadme(app) {
       "| `README.md` | File này |",
     )
   }
-  if (isApi && !isMainApi) {
+  if (isApi && !hasApiEndpointsDoc) {
     lines.push(
       "| `markdown/API_DOMAIN_IMPORTS.md` | Phụ thuộc chéo domain NestJS |"
     )
   }
-  if (!isMainApi) {
+  if (!hasApiEndpointsDoc) {
     lines.push("| `README.md` | File này (mô tả layout) |")
   }
   lines.push("")
@@ -1470,7 +1491,7 @@ function writeAppGraphifyReadme(app) {
   lines.push(`node script-system/graphify/graphify-update.cjs ${app.path}`)
   lines.push("pnpm graphify:ai-summary")
   lines.push("```")
-  if (isMainApi) {
+  if (hasApiEndpointsDoc) {
     lines.push("")
     lines.push("(`graphify:ai-summary` sinh lại `API_ENDPOINTS.md` + `ROUTE_SURFACE.md` monorepo.)")
   }
@@ -1480,7 +1501,7 @@ function writeAppGraphifyReadme(app) {
   lines.push(
     `- [SUMMARY monorepo](${monorepoRel}.graphify/markdown/SUMMARY_FOR_AI.md)`
   )
-  if (isMainApi) {
+  if (hasApiEndpointsDoc) {
     lines.push(
       `- [\`@workspace/api-server\`](${monorepoRel}packages/api-server/README.md)`
     )
@@ -1506,6 +1527,7 @@ writeTaskIndexArtifacts()
 writeSyncDeltaMd()
 writeRouteSurfaceMd()
 writeMainApiEndpointsMd()
+writeCheckinApiEndpointsMd()
 writeMonorepoRootSummary()
 
 for (const app of GRAPHIFY_APPS) {

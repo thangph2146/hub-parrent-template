@@ -1,0 +1,790 @@
+{
+  "source": "apps/main/api",
+  "generatedAt": "2026-06-14T11:12:04.381Z",
+  "entityCount": 46,
+  "entities": {
+    "AcademicYear": {
+      "fileName": "academic-year.entity.ts",
+      "relations": []
+    },
+    "Account": {
+      "fileName": "account.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "AdmissionResult": {
+      "fileName": "admission-result.entity.ts",
+      "relations": []
+    },
+    "Camera": {
+      "fileName": "camera.entity.ts",
+      "relations": [
+        "Event"
+      ]
+    },
+    "Category": {
+      "fileName": "category.entity.ts",
+      "relations": [
+        "Category",
+        "PostCategory"
+      ]
+    },
+    "Comment": {
+      "fileName": "comment.entity.ts",
+      "relations": [
+        "Post",
+        "User"
+      ]
+    },
+    "ContactRequest": {
+      "fileName": "contact-request.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "Course": {
+      "fileName": "course.entity.ts",
+      "relations": []
+    },
+    "CustomerCart": {
+      "fileName": "customer-cart.entity.ts",
+      "relations": []
+    },
+    "Department": {
+      "fileName": "department.entity.ts",
+      "relations": []
+    },
+    "EventCheckin": {
+      "fileName": "event-checkin.entity.ts",
+      "relations": [
+        "Event",
+        "EventRegistration"
+      ]
+    },
+    "EventRegistration": {
+      "fileName": "event-registration.entity.ts",
+      "relations": [
+        "Event"
+      ]
+    },
+    "EventSpeaker": {
+      "fileName": "event-speaker.entity.ts",
+      "relations": [
+        "Event",
+        "Speaker"
+      ]
+    },
+    "Event": {
+      "fileName": "event.entity.ts",
+      "relations": [
+        "Camera",
+        "EventCheckin",
+        "EventRegistration",
+        "EventSpeaker",
+        "User"
+      ]
+    },
+    "FaceData": {
+      "fileName": "face-data.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "GroupMember": {
+      "fileName": "group-member.entity.ts",
+      "relations": [
+        "Group",
+        "User"
+      ]
+    },
+    "Group": {
+      "fileName": "group.entity.ts",
+      "relations": [
+        "GroupMember",
+        "Message",
+        "User"
+      ]
+    },
+    "ImportedUser": {
+      "fileName": "imported-user.entity.ts",
+      "relations": [
+        "AcademicYear",
+        "Major",
+        "TrainingLevel",
+        "TrainingSystem"
+      ]
+    },
+    "Location": {
+      "fileName": "location.entity.ts",
+      "relations": []
+    },
+    "Major": {
+      "fileName": "major.entity.ts",
+      "relations": []
+    },
+    "MessageRead": {
+      "fileName": "message-read.entity.ts",
+      "relations": [
+        "Message",
+        "User"
+      ]
+    },
+    "Message": {
+      "fileName": "message.entity.ts",
+      "relations": [
+        "Group",
+        "Message",
+        "MessageRead",
+        "User"
+      ]
+    },
+    "Notification": {
+      "fileName": "notification.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "Order": {
+      "fileName": "order.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "PageContent": {
+      "fileName": "page-content.entity.ts",
+      "relations": []
+    },
+    "ParentStudent": {
+      "fileName": "parent-student.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "PostCategory": {
+      "fileName": "post-category.entity.ts",
+      "relations": [
+        "Category",
+        "Post"
+      ]
+    },
+    "PostTag": {
+      "fileName": "post-tag.entity.ts",
+      "relations": [
+        "Post",
+        "Tag"
+      ]
+    },
+    "Post": {
+      "fileName": "post.entity.ts",
+      "relations": [
+        "Comment",
+        "PostCategory",
+        "PostTag",
+        "User"
+      ]
+    },
+    "Product": {
+      "fileName": "product.entity.ts",
+      "relations": []
+    },
+    "PromoCode": {
+      "fileName": "promo-code.entity.ts",
+      "relations": []
+    },
+    "Role": {
+      "fileName": "role.entity.ts",
+      "relations": [
+        "UserRole"
+      ]
+    },
+    "Screen": {
+      "fileName": "screen.entity.ts",
+      "relations": [
+        "Camera",
+        "Template"
+      ]
+    },
+    "SeoMeta": {
+      "fileName": "seo-meta.entity.ts",
+      "relations": []
+    },
+    "Session": {
+      "fileName": "session.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "Setting": {
+      "fileName": "setting.entity.ts",
+      "relations": []
+    },
+    "Speaker": {
+      "fileName": "speaker.entity.ts",
+      "relations": []
+    },
+    "StorageFile": {
+      "fileName": "storage-file.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "Student": {
+      "fileName": "student.entity.ts",
+      "relations": [
+        "User"
+      ]
+    },
+    "Tag": {
+      "fileName": "tag.entity.ts",
+      "relations": [
+        "PostTag"
+      ]
+    },
+    "Template": {
+      "fileName": "template.entity.ts",
+      "relations": []
+    },
+    "TrainingLevel": {
+      "fileName": "training-level.entity.ts",
+      "relations": []
+    },
+    "TrainingSystem": {
+      "fileName": "training-system.entity.ts",
+      "relations": []
+    },
+    "UserRole": {
+      "fileName": "user-role.entity.ts",
+      "relations": [
+        "Role",
+        "User"
+      ]
+    },
+    "User": {
+      "fileName": "user.entity.ts",
+      "relations": [
+        "Account",
+        "Comment",
+        "Group",
+        "GroupMember",
+        "Message",
+        "MessageRead",
+        "Notification",
+        "Post",
+        "Session",
+        "Student",
+        "UserRole"
+      ]
+    },
+    "VerificationToken": {
+      "fileName": "verification-token.entity.ts",
+      "relations": []
+    }
+  },
+  "relationEdges": [
+    [
+      "Account",
+      "User"
+    ],
+    [
+      "Camera",
+      "Event"
+    ],
+    [
+      "Category",
+      "Category"
+    ],
+    [
+      "Category",
+      "PostCategory"
+    ],
+    [
+      "Comment",
+      "Post"
+    ],
+    [
+      "Comment",
+      "User"
+    ],
+    [
+      "ContactRequest",
+      "User"
+    ],
+    [
+      "EventCheckin",
+      "Event"
+    ],
+    [
+      "EventCheckin",
+      "EventRegistration"
+    ],
+    [
+      "EventRegistration",
+      "Event"
+    ],
+    [
+      "EventSpeaker",
+      "Event"
+    ],
+    [
+      "EventSpeaker",
+      "Speaker"
+    ],
+    [
+      "Event",
+      "Camera"
+    ],
+    [
+      "Event",
+      "EventCheckin"
+    ],
+    [
+      "Event",
+      "EventRegistration"
+    ],
+    [
+      "Event",
+      "EventSpeaker"
+    ],
+    [
+      "Event",
+      "User"
+    ],
+    [
+      "FaceData",
+      "User"
+    ],
+    [
+      "GroupMember",
+      "Group"
+    ],
+    [
+      "GroupMember",
+      "User"
+    ],
+    [
+      "Group",
+      "GroupMember"
+    ],
+    [
+      "Group",
+      "Message"
+    ],
+    [
+      "Group",
+      "User"
+    ],
+    [
+      "ImportedUser",
+      "AcademicYear"
+    ],
+    [
+      "ImportedUser",
+      "Major"
+    ],
+    [
+      "ImportedUser",
+      "TrainingLevel"
+    ],
+    [
+      "ImportedUser",
+      "TrainingSystem"
+    ],
+    [
+      "MessageRead",
+      "Message"
+    ],
+    [
+      "MessageRead",
+      "User"
+    ],
+    [
+      "Message",
+      "Group"
+    ],
+    [
+      "Message",
+      "Message"
+    ],
+    [
+      "Message",
+      "MessageRead"
+    ],
+    [
+      "Message",
+      "User"
+    ],
+    [
+      "Notification",
+      "User"
+    ],
+    [
+      "Order",
+      "User"
+    ],
+    [
+      "ParentStudent",
+      "User"
+    ],
+    [
+      "PostCategory",
+      "Category"
+    ],
+    [
+      "PostCategory",
+      "Post"
+    ],
+    [
+      "PostTag",
+      "Post"
+    ],
+    [
+      "PostTag",
+      "Tag"
+    ],
+    [
+      "Post",
+      "Comment"
+    ],
+    [
+      "Post",
+      "PostCategory"
+    ],
+    [
+      "Post",
+      "PostTag"
+    ],
+    [
+      "Post",
+      "User"
+    ],
+    [
+      "Role",
+      "UserRole"
+    ],
+    [
+      "Screen",
+      "Camera"
+    ],
+    [
+      "Screen",
+      "Template"
+    ],
+    [
+      "Session",
+      "User"
+    ],
+    [
+      "StorageFile",
+      "User"
+    ],
+    [
+      "Student",
+      "User"
+    ],
+    [
+      "Tag",
+      "PostTag"
+    ],
+    [
+      "UserRole",
+      "Role"
+    ],
+    [
+      "UserRole",
+      "User"
+    ],
+    [
+      "User",
+      "Account"
+    ],
+    [
+      "User",
+      "Comment"
+    ],
+    [
+      "User",
+      "Group"
+    ],
+    [
+      "User",
+      "GroupMember"
+    ],
+    [
+      "User",
+      "Message"
+    ],
+    [
+      "User",
+      "MessageRead"
+    ],
+    [
+      "User",
+      "Notification"
+    ],
+    [
+      "User",
+      "Post"
+    ],
+    [
+      "User",
+      "Session"
+    ],
+    [
+      "User",
+      "Student"
+    ],
+    [
+      "User",
+      "UserRole"
+    ]
+  ],
+  "moduleEntities": {
+    "academic-years": [
+      "AcademicYear"
+    ],
+    "accounts": [
+      "User",
+      "UserRole"
+    ],
+    "admission-results": [
+      "AdmissionResult"
+    ],
+    "auth": [
+      "Role",
+      "Setting",
+      "User",
+      "UserRole"
+    ],
+    "cameras": [
+      "Camera"
+    ],
+    "carts": [],
+    "categories": [
+      "Category",
+      "PostCategory"
+    ],
+    "comments": [
+      "Comment"
+    ],
+    "config": [],
+    "contact-requests": [
+      "ContactRequest"
+    ],
+    "courses": [
+      "Course"
+    ],
+    "dashboard": [
+      "Category",
+      "PostCategory"
+    ],
+    "departments": [
+      "Department"
+    ],
+    "event-checkins": [
+      "EventCheckin",
+      "EventRegistration"
+    ],
+    "event-checkouts": [],
+    "event-registrations": [
+      "Event",
+      "EventRegistration",
+      "User"
+    ],
+    "event-speakers": [
+      "EventSpeaker"
+    ],
+    "events": [
+      "Camera",
+      "Event"
+    ],
+    "face-data": [
+      "FaceData"
+    ],
+    "groups": [
+      "Group",
+      "GroupMember",
+      "Message",
+      "MessageRead",
+      "User"
+    ],
+    "hanet": [
+      "Camera",
+      "Event",
+      "EventRegistration"
+    ],
+    "imported-users": [
+      "ImportedUser"
+    ],
+    "locations": [
+      "Location"
+    ],
+    "majors": [
+      "Major"
+    ],
+    "messages": [
+      "Group",
+      "GroupMember",
+      "Message",
+      "MessageRead",
+      "User"
+    ],
+    "migrations": [],
+    "mikro-orm": [
+      "AcademicYear",
+      "Account",
+      "AdmissionResult",
+      "Camera",
+      "Category",
+      "Comment",
+      "ContactRequest",
+      "Course",
+      "CustomerCart",
+      "Department",
+      "Event",
+      "EventCheckin",
+      "EventRegistration",
+      "EventSpeaker",
+      "FaceData",
+      "Group",
+      "GroupMember",
+      "ImportedUser",
+      "Location",
+      "Major",
+      "Message",
+      "MessageRead",
+      "Notification",
+      "Order",
+      "PageContent",
+      "ParentStudent",
+      "Post",
+      "PostCategory",
+      "PostTag",
+      "Product",
+      "PromoCode",
+      "Role",
+      "Screen",
+      "SeoMeta",
+      "Session",
+      "Setting",
+      "Speaker",
+      "StorageFile",
+      "Student",
+      "Tag",
+      "Template",
+      "TrainingLevel",
+      "TrainingSystem",
+      "User",
+      "UserRole",
+      "VerificationToken"
+    ],
+    "notifications": [
+      "ContactRequest",
+      "Message",
+      "Notification",
+      "User",
+      "UserRole"
+    ],
+    "orders": [
+      "Order",
+      "Product",
+      "User"
+    ],
+    "page-contents": [
+      "PageContent"
+    ],
+    "parent-students": [
+      "ParentStudent",
+      "User"
+    ],
+    "posts": [
+      "Post",
+      "PostCategory",
+      "PostTag",
+      "User"
+    ],
+    "products": [
+      "Product"
+    ],
+    "promo-codes": [
+      "PromoCode"
+    ],
+    "proxy-image": [],
+    "public": [
+      "Category",
+      "ContactRequest",
+      "Event",
+      "EventRegistration",
+      "Post",
+      "Role",
+      "Setting",
+      "Tag",
+      "User"
+    ],
+    "roles": [
+      "Role",
+      "User"
+    ],
+    "screens": [
+      "Screen"
+    ],
+    "scripts": [],
+    "seeders": [],
+    "seeds": [
+      "Event",
+      "EventRegistration",
+      "Order",
+      "PageContent",
+      "Product",
+      "PromoCode",
+      "Role",
+      "User",
+      "UserRole"
+    ],
+    "seo-metas": [
+      "SeoMeta"
+    ],
+    "sessions": [
+      "Role",
+      "Session",
+      "User",
+      "UserRole"
+    ],
+    "settings": [
+      "Setting"
+    ],
+    "socket": [
+      "Notification",
+      "User"
+    ],
+    "speakers": [
+      "Speaker"
+    ],
+    "students": [
+      "User"
+    ],
+    "system": [],
+    "tags": [
+      "Tag"
+    ],
+    "templates": [
+      "Template"
+    ],
+    "training-levels": [
+      "TrainingLevel"
+    ],
+    "training-systems": [
+      "TrainingSystem"
+    ],
+    "uploads": [
+      "StorageFile",
+      "User"
+    ],
+    "users": [
+      "Role",
+      "Setting",
+      "User",
+      "UserRole"
+    ]
+  }
+}

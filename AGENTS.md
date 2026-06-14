@@ -145,7 +145,8 @@ docs/
 | **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
 | Downstream kéo **full packages/** | `pnpm pull:template` · catalog [`packages/README.md`](packages/README.md) |
 | Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
-| Regenerate check-in từ packages (template upstream) | `pnpm pull:checkin` (không copy `main/api`) |
+| Sync check-in (verify + admin; API native đã commit) | `pnpm pull:checkin` |
+| Cập nhật hub-event API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-event/api` → commit |
 | Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
@@ -173,7 +174,7 @@ pnpm verify:imports           # alias @ui
 | Ranh giới service | `pnpm verify:bounds` (trong `pnpm check`) |
 | API ↔ client khớp | `pnpm verify:api-contract` khi đổi API hoặc `@workspace/api-client` |
 | Admin generate khớp | `pnpm verify:main-admin` / `verify:checkin-admin` |
-| Check-in API scaffold | `pnpm verify:checkin-api` sau sửa registry / `api:generate:checkin` |
+| Check-in API materialize | `pnpm verify:api-template` + `pnpm verify:checkin-api` · cập nhật: `pnpm api:sync-template && pnpm api:render apps/hub-event/api` |
 | Unified module parity | `pnpm verify:main-api-endpoint-parity` khi đổi `Base*Controller` trong package |
 | Build sạch | `pnpm check` pass |
 | Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
@@ -222,21 +223,20 @@ Pattern song song admin-app:
 | Admin (Next) | API (Nest) |
 |--------------|------------|
 | `admin.app.config.json` | `api.app.config.json` (`apps/hub-event/api/`) |
-| `pnpm admin:generate:checkin` | `pnpm api:generate:checkin` |
-| Page re-export `@workspace/admin-app` | Service AUTO-GENERATED extend `Base*Service` |
+| `pnpm admin:generate:checkin` | **`pnpm api:render:checkin`** (verify) · config trong `packages/api-server/deploy/config/` |
 
 ```bash
-pnpm --filter @workspace/api-server run build
-pnpm api:generate:checkin
+pnpm api:sync-template              # @workspace/api-server/deploy/cli/sync-template.cjs
+pnpm api:render apps/hub-event/api
+pnpm verify:api-template            # packages/api-server/deploy/cli/verify/
 pnpm verify:checkin-api
-pnpm --filter @hub-event/api typecheck
+pnpm verify:main-api-endpoint-parity
 ```
 
-- **Registry:** `script-system/api/api-module-registry.cjs` · **parity:** `pnpm verify:main-api-endpoint-parity`
-- **Hub-event (`api.app.config.json`):** service + controller AUTO-GENERATED extend package; **`native.controllers` chỉ `public`**
-- **Unified modules (1 controller + 1 service trong package):** `posts`, `events`, `comments`, `accounts`, `page-contents`, `notifications`, `sessions`, `event-checkins`, `event-registrations`, `event-speakers`, `uploads`, `system`, `auth`
-- **Kinds còn lại:** `crud`, `em-only`, `*-binding`, `public-multi-binding`, `extraProviders` (vd. attendance)
-- **Main API:** `system` + `auth` extend `@workspace/api-server` (binding giống hub-event); các module CRUD khác vẫn native trong `apps/main/api`
+- **Template OOP:** `packages/api-server/deploy/nest/` · **Config:** `packages/api-server/deploy/config/`
+- **Base* template:** `src/modules/` (registry) → `module-bases/` (active thin, copy khi render) · `package-module-templates.cjs` · `PACKAGE_MODULE_TEMPLATES.meta.json`
+- **Materialize:** `thin` (extends Base* module-bases, vd. `users`) · `crud` (`common/crud`, 13 module) · `mirror` (copy `main/api`)
+- **`main/api`:** auth/system native — app deploy **không** import runtime `@workspace/api-server/modules/*`
 
 Chi tiết: [`packages/api-server/README.md`](packages/api-server/README.md).
 
@@ -280,7 +280,7 @@ Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-p
 **Luồng quyết định (agent):**
 
 1. Feature dùng trên **hub-event** → implement trong `packages/api-server` hoặc `packages/admin-app` trước.
-2. Chạy generate: `pnpm api:generate:checkin` / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
+2. Chạy generate: **`pnpm api:render:checkin`** (hub-event API) / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
 3. **Main API:** `system` + `auth` đã extend package; CRUD còn lại native — khi port, xóa bản copy trong `apps/main/api`, không giữ song song.
 4. **Downstream** (`hub-event-monorepo`): `pnpm pull:template` — không chạy `pull:checkin:legacy`.
 

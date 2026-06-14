@@ -1,0 +1,9 @@
+{
+  "id": "hub-parent-api",
+  "description": "Hub Parent deploy API — full template mirror",
+  "renderAllModules": true,
+  "alignAdminApp": "../../main/backend/admin.app.config.json",
+  "packageModuleTemplates": {
+    "enabled": true
+  }
+}
