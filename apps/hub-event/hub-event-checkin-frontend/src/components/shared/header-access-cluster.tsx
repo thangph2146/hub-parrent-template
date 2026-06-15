@@ -10,11 +10,12 @@ import {
   HeaderGuestAccessDropdown,
   HeaderGuestAccessOptions,
 } from "@/components/shared/header-guest-access-menu"
+import { isCheckinAdminShellPath } from "@/config/admin/checkin-admin-access"
 import {
   getActiveCheckinSessionKind,
   readEventSession,
   subscribeEventSession,
-} from "@/lib/event-auth"
+} from "@/lib/portal/event-auth"
 
 function useEventSession() {
   return useSyncExternalStore(
@@ -36,7 +37,7 @@ export function HeaderAccessCluster({
   const pathname = usePathname()
   const session = useEventSession()
   const adminUser = useAdminSession()
-  const showAdminEntry = !pathname.startsWith("/admin")
+  const showAdminEntry = !isCheckinAdminShellPath(pathname)
 
   useEffect(() => {
     getActiveCheckinSessionKind()

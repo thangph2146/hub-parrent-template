@@ -29,7 +29,7 @@ function fixContent(content, filePath) {
   )
   out = out.replace(
     /@\/features\/auth\//g,
-    "@workspace/admin-app/features/auth/",
+    "@workspace/admin-app/modules/auth/_lib/",
   )
   out = out.replace(/@\/types\//g, "@workspace/admin-app/types/")
   out = out.replace(

@@ -1,1 +1,1 @@
-export { default } from "@workspace/admin-app/features/tools/admin-graph-page"
+export { default } from "@workspace/admin-app/modules/graph/page"

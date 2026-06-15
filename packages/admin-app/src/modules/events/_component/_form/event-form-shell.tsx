@@ -45,6 +45,7 @@ import { slugify } from "@workspace/api-client"
 import type { EventFormValues, EventFormSpeaker } from "../types"
 import { EventPosterField } from "./event-poster-field"
 import { api } from "@workspace/admin-app/lib/api"
+import { useAdminModulePath } from "@workspace/admin-app/runtime"
 
 interface LocationOption {
   value: string
@@ -282,6 +283,7 @@ export function EventFormShell({
   onBack,
   onReset,
 }: EventFormShellProps) {
+  const cameraNewPath = useAdminModulePath("cameras")
   const { control, setValue, watch } = form
   const watchedTitle = watch("title")
   const watchedPosterUrl = watch("posterUrl") ?? ""
@@ -798,7 +800,7 @@ export function EventFormShell({
               ) : !cameras?.length ? (
                 <p className="text-xs text-amber-700 dark:text-amber-400">
                   Chưa có camera —{" "}
-                  <Link href="/cameras/new" className="font-medium underline">
+                  <Link href={cameraNewPath("new")} className="font-medium underline">
                     thêm camera
                   </Link>{" "}
                   trước khi gắn sự kiện.

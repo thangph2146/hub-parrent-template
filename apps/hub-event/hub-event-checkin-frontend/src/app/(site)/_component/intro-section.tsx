@@ -4,7 +4,7 @@ import { Button } from "@ui/components/button"
 import { Container } from "@ui/components/layout"
 import { Heading, Text } from "@ui/components/typography"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
-import { SITE_BRAND } from "@/lib/site-nav"
+import { SITE_BRAND } from "@/lib/site/site-nav"
 import { LANDING_INTRO, LANDING_ROUTES } from "./data"
 
 export function LandingIntroSection() {

@@ -10,8 +10,8 @@ import { Container } from "@ui/components/layout"
 import { Heading } from "@ui/components/typography"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
 import { HeroProductMockup } from "./hero-product-mockup"
-import type { PublicEventItem } from "@/lib/public-events"
-import { SITE_BRAND } from "@/lib/site-nav"
+import type { PublicEventItem } from "@/lib/site/public-events"
+import { SITE_BRAND } from "@/lib/site/site-nav"
 import { LANDING_HERO, LANDING_HERO_BADGES, LANDING_ROUTES } from "./data"
 
 type LandingHeroSectionProps = {

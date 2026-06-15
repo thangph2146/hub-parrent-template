@@ -1,6 +1,6 @@
 "use client"
 
-import type { PublicEventDetail } from "@/lib/public-events"
+import type { PublicEventDetail } from "@/lib/site/public-events"
 import { EventRegistrationPanel } from "./event-registration-panel"
 
 type EventDetailRegistrationAsideProps = {

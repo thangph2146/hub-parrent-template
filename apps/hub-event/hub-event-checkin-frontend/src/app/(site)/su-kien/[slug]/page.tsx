@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { Page, PageContent } from "@ui/components/layout"
 import { EventDetailView } from "../_component/event-detail-view"
-import { getPublicEventBySlug } from "@/lib/public-events"
+import { getPublicEventBySlug } from "@/lib/site/public-events"
 
 type Props = {
   params: Promise<{ slug: string }>

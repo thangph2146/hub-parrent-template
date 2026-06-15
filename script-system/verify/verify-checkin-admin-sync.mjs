@@ -15,16 +15,20 @@ const {
 } = require("../sync/lib/build-checkin-menu.cjs")
 const { ROOT } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
 
 const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)
 const MAIN_BACKEND = path.join(ROOT, PRODUCT_LINES.main.backend.path)
 const ADMIN_ROOT = path.join(CHECKIN_FRONT, "src/app/admin")
-const CONFIG_JSON = path.join(CHECKIN_FRONT, "admin.app.config.json")
+const CONFIG_JSON = resolveAdminAppConfigFile(CHECKIN_FRONT)
 const CONFIG_LEGACY = path.join(CHECKIN_FRONT, "admin.sync-modules.json")
 const PACKAGE_MODULES = path.join(ROOT, "packages/admin-app/src/modules")
 
 function loadAdminConfig() {
-  const pathToRead = fs.existsSync(CONFIG_JSON) ? CONFIG_JSON : CONFIG_LEGACY
+  const pathToRead = CONFIG_JSON ?? (fs.existsSync(CONFIG_LEGACY) ? CONFIG_LEGACY : null)
+  if (!pathToRead) {
+    throw new Error("thiếu config/admin.app.config.json (check-in frontend)")
+  }
   return JSON.parse(fs.readFileSync(pathToRead, "utf8"))
 }
 const MENU_TREE_PATH = path.join(
@@ -91,8 +95,16 @@ const FORBIDDEN_IMPORTS = [
     hint: "dùng @/config/admin/checkin-admin-layout-static",
   },
   {
-    pattern: /@\/lib\/admin\/checkin-session-exclusive/,
-    hint: "dùng @/lib/checkin-session-exclusive (lib native check-in)",
+    pattern: /@\/lib\/admin\/(?:portal|site)\//,
+    hint: "dùng @/lib/portal/... hoặc @/lib/site/... (lib native check-in)",
+  },
+  {
+    pattern: /@\/config\/event-portal-/,
+    hint: "dùng @/config/portal/...",
+  },
+  {
+    pattern: /@\/providers\/event-portal-/,
+    hint: "dùng @/providers/portal/...",
   },
   {
     pattern: /@\/types\/admin\/admin\//,

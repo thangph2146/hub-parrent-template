@@ -15,8 +15,8 @@ import {
   getEventStatus,
   getPosterUrl,
   type PublicEventDetail,
-} from "@/lib/public-events"
-import { FORMAT_LABELS } from "@/lib/registration-format"
+} from "@/lib/site/public-events"
+import { FORMAT_LABELS } from "@/lib/site/registration-format"
 import { cn } from "@ui/lib/utils"
 
 const HERO_STATUS_STYLES = {

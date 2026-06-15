@@ -20,6 +20,7 @@ import {
   usePostForm,
   buildCategoryOptionTree,
   normalizeContentForEditor,
+  normalizePostFormValues,
   toLocalInputValue,
 } from "../../_component"
 import {
@@ -61,21 +62,23 @@ function EditPostPageInner() {
   useHydrateOncePerEntity(postId, post, (post) => {
     const draft = loadEntityDraft(buildEntityDraftKey("posts", postId))
     if (draft) {
-      form.reset(draft)
+      form.reset(normalizePostFormValues(draft as Partial<PostFormValues>))
       return
     }
-    form.reset({
-      id: post.id,
-      title: post.title,
-      slug: post.slug,
-      excerpt: post.excerpt ?? "",
-      image: post.image ?? "",
-      content: normalizeContentForEditor(post.content),
-      published: post.published,
-      publishedAt: toLocalInputValue(post.publishedAt ?? ""),
-      categoryIds: post.categories.map((item) => item.id),
-      tagIds: post.tags.map((item) => item.id),
-    })
+    form.reset(
+      normalizePostFormValues({
+        id: String(post.id),
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt ?? "",
+        image: post.image ?? "",
+        content: normalizeContentForEditor(post.content),
+        published: post.published,
+        publishedAt: toLocalInputValue(post.publishedAt ?? ""),
+        categoryIds: post.categories.map((item) => String(item.id)),
+        tagIds: post.tags.map((item) => String(item.id)),
+      }),
+    )
   })
 
   const updateMutation = useAdminMutation({

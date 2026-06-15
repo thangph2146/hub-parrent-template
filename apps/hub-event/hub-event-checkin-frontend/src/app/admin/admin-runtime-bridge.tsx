@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import adminAppConfig from "../../../admin.app.config.json"
+import adminAppConfig from "../../../config/admin.app.config.json"
 import type { AdminAppConfig } from "@workspace/admin-app/config"
 import { AdminAppRuntimeProvider } from "@workspace/admin-app/runtime"
 import {

@@ -152,4 +152,9 @@ module.exports = {
     "cameras-query.ts",
     "product-image-storage-stub.ts",
   ]),
+  STORE_LIB_ADMIN_SUBSTANTIVE: new Set([
+    "api.ts",
+    "auth-routes.ts",
+    "product-image-storage-stub.ts",
+  ]),
 }

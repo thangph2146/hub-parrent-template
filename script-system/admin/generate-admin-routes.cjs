@@ -11,6 +11,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execSync } = require("node:child_process")
 const { ROOT } = require("../lib/paths.cjs")
+const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
 const {
   consolidateAdminModuleLoading,
 } = require("./consolidate-admin-loading.cjs")
@@ -54,9 +55,10 @@ function withFsRetry(label, fn, { retries = 8, delayMs = 80 } = {}) {
 }
 
 function readConfig(appRel) {
-  const jsonPath = path.join(ROOT, appRel, "admin.app.config.json")
-  const legacyPath = path.join(ROOT, appRel, "admin.sync-modules.json")
-  if (fs.existsSync(jsonPath)) {
+  const appRoot = path.join(ROOT, appRel)
+  const jsonPath = resolveAdminAppConfigFile(appRoot)
+  const legacyPath = path.join(appRoot, "admin.sync-modules.json")
+  if (jsonPath && !jsonPath.endsWith("admin.sync-modules.json")) {
     return JSON.parse(fs.readFileSync(jsonPath, "utf8"))
   }
   if (fs.existsSync(legacyPath)) {

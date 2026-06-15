@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { Container } from "@ui/components/layout"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
-import type { PublicEventCategoryItem, PublicEventItem } from "@/lib/public-events"
+import type { PublicEventCategoryItem, PublicEventItem } from "@/lib/site/public-events"
 import { EventRowCard } from "./event-row-card"
 
 export type CategoryWithEvents = {

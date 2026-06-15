@@ -25,7 +25,7 @@ export type AdminNativeRoutePreserve = {
 export type AdminAppConfig = {
   /** Định danh deploy (vd. `hub-main`, `hub-checkin`). */
   id: string
-  /** Prefix route Next (main: `""`, check-in: `/admin`). */
+  /** Prefix route Next (main: `""`, deploy line: `/admin`, `/manage`, …). */
   basePath: "" | `/${string}`
   title: string
   /** Module CRUD bật — render + menu tự lọc. */

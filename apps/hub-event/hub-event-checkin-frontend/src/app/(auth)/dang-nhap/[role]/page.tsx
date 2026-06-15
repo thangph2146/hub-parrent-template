@@ -5,7 +5,7 @@ import {
   portalEventsPath,
   portalLoginPath,
   type EventPortalRole,
-} from "@/lib/event-portal-routes"
+} from "@/lib/portal/event-portal-routes"
 
 type LegacyDangNhapRolePageProps = {
   params: Promise<{ role: string }>

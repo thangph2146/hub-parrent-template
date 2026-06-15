@@ -26,7 +26,7 @@ import {
   CHECKIN_ADMIN_LOGIN_PATH,
 } from "@/config/admin/checkin-admin-access"
 import { useAdminSession } from "@/components/shared/use-admin-session"
-import { buildLoginHref, readEventSession } from "@/lib/event-auth"
+import { buildLoginHref, readEventSession } from "@/lib/portal/event-auth"
 
 type GuestAccessOptionsProps = {
   showAdmin: boolean

@@ -11,10 +11,12 @@ export function OrderItemsTable({
   orderId,
   items,
   actionHandlers,
+  getProductDetailHref,
 }: {
   orderId: string
   items?: OrderItem[]
   actionHandlers: OrderItemRowActionHandlers
+  getProductDetailHref: (productId: string | number) => string
 }) {
   const rows = useMemo(
     () => mapOrderItemRows(orderId, items),
@@ -22,8 +24,8 @@ export function OrderItemsTable({
   )
 
   const columns = useMemo(
-    () => getOrderItemColumns({ actionHandlers }),
-    [actionHandlers]
+    () => getOrderItemColumns({ actionHandlers, getProductDetailHref }),
+    [actionHandlers, getProductDetailHref]
   )
 
   if (rows.length === 0) {

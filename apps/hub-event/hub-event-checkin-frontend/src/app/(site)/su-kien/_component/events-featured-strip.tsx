@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { EventFeaturedCard } from "./event-featured-card"
-import type { PublicEventItem } from "@/lib/public-events"
+import type { PublicEventItem } from "@/lib/site/public-events"
 import { LANDING_ROUTES } from "../../_component/data"
 
 type EventsFeaturedStripProps = {

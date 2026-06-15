@@ -1,0 +1,101 @@
+{
+  "id": "hub-checkin",
+  "basePath": "/admin",
+  "title": "HUB Check-in Admin",
+  "modules": [
+    "staff",
+    "rbac",
+    "categories",
+    "tags",
+    "guides",
+    "posts",
+    "cameras",
+    "templates",
+    "screens",
+    "locations",
+    "speakers",
+    "settings",
+    "file-storage",
+    "data",
+    "contact-requests"
+  ],
+  "native": {
+    "files": [
+      "layout.tsx",
+      "page.tsx",
+      "dang-nhap/page.tsx",
+      "dang-ky/page.tsx",
+      "profile/page.tsx",
+      "check-in-ky-tuc-xa/page.tsx",
+      "new/page.tsx",
+      "new/loading.tsx",
+      "[id]/page.tsx",
+      "[id]/loading.tsx",
+      "[id]/edit/page.tsx",
+      "[id]/edit/loading.tsx"
+    ]
+  },
+  "dashboard": {
+    "relativePath": "tong-quan/page.tsx",
+    "subtitle": "Đây là bảng điều khiển quản trị HUB Check-in."
+  },
+  "nativePreserveInModules": [
+    "settings/_component/checkin-settings-presets.ts"
+  ],
+  "menu": {
+    "alwaysIncludeHrefs": ["/", "/events"],
+    "excludeHrefs": [
+      "/my-students",
+      "/parent-students",
+      "/products",
+      "/orders",
+      "/promo-codes",
+      "/carts",
+      "/tu-tuc-xa",
+      "/training-levels",
+      "/training-systems",
+      "/majors",
+      "/courses",
+      "/academic-years",
+      "/database-schema",
+      "/graph"
+    ],
+    "hrefOverrides": {
+      "/events": "@root"
+    },
+    "nativeGroups": [
+      {
+        "type": "group",
+        "label": "Ký túc xá & Check-in",
+        "icon": "Building2",
+        "replaceLabel": "Ký túc xá & Check-in",
+        "children": [
+          {
+            "href": "check-in-ky-tuc-xa",
+            "label": "Check-in ký túc xá",
+            "icon": "Home",
+            "permission": null
+          }
+        ]
+      }
+    ]
+  },
+  "pageGuardPermissionPrefix": {
+    "staff": "USERS",
+    "rbac": "ROLES",
+    "data": "SETTINGS",
+    "categories": "CATEGORIES",
+    "tags": "TAGS",
+    "posts": "POSTS",
+    "cameras": "CAMERAS",
+    "templates": "TEMPLATES",
+    "screens": "SCREENS",
+    "locations": "LOCATIONS",
+    "speakers": "SPEAKERS",
+    "guides": "PAGE_CONTENTS",
+    "file-storage": "UPLOADS",
+    "contact-requests": "CONTACT_REQUESTS",
+    "tong-quan": "DASHBOARD"
+  },
+  "pageGuardRoleModulesSkip": ["settings"]
+}

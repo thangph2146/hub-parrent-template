@@ -1,7 +1,7 @@
 ﻿import { createAuthAdminApi, type DevLoginOption } from "@workspace/api-client"
 import { getApiBaseUrl } from "@/lib/admin/api-base-url"
 
-export * from "@workspace/admin-app/features/auth/auth-api"
+export * from "@workspace/admin-app/modules/auth/_lib/auth-api"
 
 /** Dev picker cổng /admin — loại sinh viên/phụ huynh/khách, giữ staff (super_admin, admin, editor, event_staff, …). */
 export async function fetchDevLoginOptions(): Promise<DevLoginOption[]> {

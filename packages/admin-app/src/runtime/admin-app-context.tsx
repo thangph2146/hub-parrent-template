@@ -28,6 +28,13 @@ export type AdminAppAuthContext = {
 export type AdminAppRuntimeAdapters = {
   useAuth: () => AdminAppAuthContext
   api: ReturnType<typeof createStoreSyncSdk>
+  /** Cập nhật cache session sau khi lưu hồ sơ portal (check-in SV/khách). */
+  patchAuthProfile?: (patch: AuthProfilePatch) => void
+}
+
+export type AuthProfilePatch = {
+  name?: string
+  image?: string | null
 }
 
 type AdminAppContextValue = AdminAppConfig & AdminAppRuntimeAdapters
@@ -83,4 +90,8 @@ export function useAuth() {
 /** Thay `import { api } from '@workspace/admin-app/lib/api'` trong module package. */
 export function useAdminApi() {
   return useAdminApp().api
+}
+
+export function usePatchAuthProfile() {
+  return useAdminApp().patchAuthProfile
 }

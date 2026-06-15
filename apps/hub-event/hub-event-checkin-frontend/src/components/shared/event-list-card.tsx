@@ -10,7 +10,7 @@ import {
   type PublicEventItem,
   formatEventDate,
   getEventStatus,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 const FORMAT_LABELS: Record<number, string> = {
   0: "Offline",

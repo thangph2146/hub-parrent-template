@@ -2,6 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Post } from '../entities/post.entity';
+import { Category } from '../entities/category.entity';
+import { Tag } from '../entities/tag.entity';
 import { PostCategory } from '../entities/post-category.entity';
 import { PostTag } from '../entities/post-tag.entity';
 import { User } from '../entities/user.entity';
@@ -28,11 +30,11 @@ export class PostsService extends BasePostsService {
   }
 
   protected getCategoryEntity() {
-    return PostCategory as unknown as new () => Record<string, unknown>;
+    return Category as unknown as new () => Record<string, unknown>;
   }
 
   protected getTagEntity() {
-    return PostTag as unknown as new () => Record<string, unknown>;
+    return Tag as unknown as new () => Record<string, unknown>;
   }
 
   protected getPostCategoryEntity() {

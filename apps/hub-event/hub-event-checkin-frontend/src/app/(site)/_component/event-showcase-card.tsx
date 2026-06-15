@@ -7,7 +7,7 @@ import {
   formatEventDate,
   getEventStatus,
   type PublicEventItem,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 type EventShowcaseCardProps = {
   event: PublicEventItem

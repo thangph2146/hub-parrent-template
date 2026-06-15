@@ -9,6 +9,7 @@ import {
   FileText,
   FolderOpen,
   FolderTree,
+  Headset,
   Home,
   Image,
   LayoutDashboard,
@@ -47,6 +48,20 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
         label: "Phân quyền",
         icon: ShieldCheck,
         permission: "roles:view",
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "Sinh viên",
+    icon: FolderTree,
+    children: [
+      {
+        href: "/admin/contact-requests",
+        label: "Liên hệ hỗ trợ",
+        icon: Headset,
+        permission: null,
+        anyPermission: ["contact_requests:view","contact_requests:manage","contact_requests:update","contact_requests:assign"],
       },
     ],
   },
@@ -139,7 +154,7 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: CalendarPlus,
     children: [
       {
-        href: "/admin",
+        href: "@root",
         label: "Sự kiện",
         icon: CalendarPlus,
         permission: null,
@@ -160,7 +175,7 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
     icon: Building2,
     children: [
       {
-        href: "/admin/check-in-ky-tuc-xa",
+        href: "/admincheck-in-ky-tuc-xa",
         label: "Check-in ký túc xá",
         icon: Home,
         permission: null,

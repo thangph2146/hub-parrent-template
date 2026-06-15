@@ -8,17 +8,16 @@ const path = require("node:path")
 const { execSync } = require("node:child_process")
 const { ROOT } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
 const {
   buildCheckinMenu,
   verifyMenuOrderAgainstMain,
 } = require("./lib/build-checkin-menu.cjs")
 
 const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)
-const CONFIG_PATH = fs.existsSync(
-  path.join(CHECKIN_FRONT, "admin.app.config.json"),
-)
-  ? path.join(CHECKIN_FRONT, "admin.app.config.json")
-  : path.join(CHECKIN_FRONT, "admin.sync-modules.json")
+const CONFIG_PATH =
+  resolveAdminAppConfigFile(CHECKIN_FRONT) ??
+  path.join(CHECKIN_FRONT, "admin.sync-modules.json")
 const OUT_PATH = path.join(
   CHECKIN_FRONT,
   "src/config/admin/checkin-admin-menu-tree.tsx",

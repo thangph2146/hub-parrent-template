@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   createContext,
@@ -28,7 +28,7 @@ import { AUTH_LOGIN_PATH } from "@/lib/admin/auth-routes"
 import {
   assertCanLoginAs,
   clearOtherCheckinSessions,
-} from "@/lib/checkin-session-exclusive"
+} from "@/lib/portal/checkin-session-exclusive"
 
 function subscribe(callback: () => void) {
   if (typeof window === "undefined") return () => {}

@@ -11,8 +11,8 @@ import {
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
-import { EVENT_STATUS_LABELS, type PublicEventCategoryItem } from "@/lib/public-events"
-import type { EventsListQuery } from "@/lib/events-list-query"
+import { EVENT_STATUS_LABELS, type PublicEventCategoryItem } from "@/lib/site/public-events"
+import type { EventsListQuery } from "@/lib/site/events-list-query"
 
 type EventsFilterSidebarProps = {
   query: EventsListQuery

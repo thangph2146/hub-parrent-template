@@ -1,10 +1,7 @@
 import type { Metadata } from "next"
-import { StudentProfilePage } from "@/features/my-registered-events"
+
+export { default } from "@workspace/admin-app/modules/student-portal-profile/page"
 
 export const metadata: Metadata = {
   title: "Hồ sơ sinh viên",
-}
-
-export default function StudentProfileRoute() {
-  return <StudentProfilePage />
 }

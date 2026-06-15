@@ -1,16 +1,16 @@
-﻿"use client"
+"use client"
 
 import { canAccessCheckinAdmin } from "@/config/admin/checkin-admin-access"
 import { CHECKIN_ADMIN_HOME_PATH } from "@/config/admin/checkin-admin-access"
 import {
   assertCanLoginAs,
   clearOtherCheckinSessions,
-} from "@/lib/checkin-session-exclusive"
+} from "@/lib/portal/checkin-session-exclusive"
 import { useClientReady } from "@/providers/admin/auth-provider"
 import {
   AdminSignInForm,
   type AdminSignInFormConfig,
-} from "@workspace/admin-app/features/auth/sign-in-form"
+} from "@workspace/admin-app/modules/auth/_component/sign-in-form"
 
 const CHECKIN_ADMIN_SIGN_IN_CONFIG: AdminSignInFormConfig = {
   canAccessAdmin: canAccessCheckinAdmin,

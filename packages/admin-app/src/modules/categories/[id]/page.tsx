@@ -40,7 +40,7 @@ import {
   AdminDataTable,
   defineBooleanSelectExportMeta,
 } from "@ui/components/data-table"
-import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
+import {useAdminAuth as useAuth, useAdminModuleNavigation, useAdminModulePath } from "@workspace/admin-app/runtime"
 import {
   PERMISSION_CODES,
   canUserAccess,
@@ -52,14 +52,17 @@ import { useCategoryDetailQuery } from "../_component"
 import type { CategoryDetail } from "../_component"
 import type { ColumnDef } from "@tanstack/react-table"
 
-const childColumns: ColumnDef<ChildCategory, unknown>[] = [
+function buildChildCategoryColumns(
+  categoryDetailPath: (id: string | number) => string,
+): ColumnDef<ChildCategory, unknown>[] {
+  return [
   {
     accessorKey: "name",
     header: "Tên danh mục",
     enableColumnFilter: false,
     cell: ({ row }) => (
       <Link
-        href={`/categories/${row.original.id}`}
+        href={categoryDetailPath(row.original.id)}
         className="line-clamp-1 font-medium text-primary underline-offset-4 hover:underline"
       >
         {row.original.name}
@@ -93,16 +96,20 @@ const childColumns: ColumnDef<ChildCategory, unknown>[] = [
       <span className="tabular-nums">{row.original.postCount}</span>
     ),
   },
-]
+  ]
+}
 
-const relatedPostColumns: ColumnDef<RelatedPost, unknown>[] = [
+function buildRelatedPostColumns(
+  postDetailPath: (id: string | number) => string,
+): ColumnDef<RelatedPost, unknown>[] {
+  return [
   {
     accessorKey: "title",
     header: "Tiêu đề",
     enableColumnFilter: false,
     cell: ({ row }) => (
       <Link
-        href={`/posts/${row.original.id}`}
+        href={postDetailPath(row.original.id)}
         className="line-clamp-1 font-medium text-primary underline-offset-4 hover:underline"
       >
         {row.original.title}
@@ -131,7 +138,8 @@ const relatedPostColumns: ColumnDef<RelatedPost, unknown>[] = [
       />
     ),
   },
-]
+  ]
+}
 
 function DetailSidebar({
   category,
@@ -195,6 +203,9 @@ function DetailSidebar({
 
 function CategoryDetailInner() {
   const crudNav = useAdminModuleNavigation("categories")
+  const categoryDetailPath = useAdminModulePath("categories")
+  const postDetailPath = useAdminModulePath("posts")
+  const postsListPath = useAdminModulePath("posts")
   const params = useParams()
   const categoryId = params.id as string
   const { user } = useAuth()
@@ -210,6 +221,14 @@ function CategoryDetailInner() {
 
   const children = useMemo(() => category?.children ?? [], [category?.children])
   const posts = useMemo(() => category?.posts ?? [], [category?.posts])
+  const childColumns = useMemo(
+    () => buildChildCategoryColumns(categoryDetailPath),
+    [categoryDetailPath],
+  )
+  const relatedPostColumns = useMemo(
+    () => buildRelatedPostColumns(postDetailPath),
+    [postDetailPath],
+  )
 
   useEffect(() => {
     if (isError) {
@@ -333,7 +352,7 @@ function CategoryDetailInner() {
             <FieldSetContent variant="section" className="pt-0">
               {category.postCount > 10 && (
                 <div className="mb-3 flex justify-end">
-                  <Link href="/posts">
+                  <Link href={postsListPath()}>
                     <Button variant="ghost" size="sm" className="gap-1">
                       Xem tất cả
                       <ArrowUpRight className="size-4" aria-hidden />

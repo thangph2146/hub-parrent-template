@@ -6,7 +6,7 @@ import {
   FOOTER_EVENT_LINKS,
   FOOTER_RESOURCE_LINKS,
   SITE_BRAND,
-} from "@/lib/site-nav"
+} from "@/lib/site/site-nav"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()

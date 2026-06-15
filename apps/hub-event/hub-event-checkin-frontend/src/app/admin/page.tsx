@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
 import { useAdminCrudNavigation } from "@/lib/admin/admin-navigation"
+import { CHECKIN_ADMIN_INDEX_PATH } from "@/config/admin/checkin-admin-access"
 import { AlertCircle, Calendar, Plus } from "lucide-react"
 import { useDebouncedValue } from "@/hooks/admin/use-debounced-value"
 import { useAuth } from "@/providers/admin/auth-provider"
@@ -38,14 +39,14 @@ import {
   useEventsListQuery,
   useEventsTrashQuery,
   prefetchEventDetail,
-} from "./_component"
-import type { EventRow } from "./_component"
+} from "@/components/admin/events"
+import type { EventRow } from "@/components/admin/events"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { defaultBulkOperationToast } from "@ui/lib/admin-operation-toast"
 function EventsPageInner() {
   const queryClient = useQueryClient()
-  const crudNav = useAdminCrudNavigation("/admin", {
+  const crudNav = useAdminCrudNavigation(CHECKIN_ADMIN_INDEX_PATH as `/${string}`, {
     prefetchDetail: (id) => prefetchEventDetail(queryClient, api, id),
   })
   const { user } = useAuth()

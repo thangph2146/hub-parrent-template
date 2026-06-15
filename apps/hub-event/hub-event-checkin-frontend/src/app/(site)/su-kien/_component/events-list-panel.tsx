@@ -22,8 +22,8 @@ import {
 import { Text } from "@ui/components/typography"
 import { cn } from "@ui/lib/utils"
 import { EventCatalogCard } from "./event-catalog-card"
-import type { EventsListQuery } from "@/lib/events-list-query"
-import type { PublicEventItem } from "@/lib/public-events"
+import type { EventsListQuery } from "@/lib/site/events-list-query"
+import type { PublicEventItem } from "@/lib/site/public-events"
 
 type EventsListPanelProps = {
   query: EventsListQuery

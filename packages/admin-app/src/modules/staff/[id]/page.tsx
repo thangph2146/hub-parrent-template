@@ -2,8 +2,9 @@
 import { api } from "@workspace/admin-app/lib/api"
 import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import { useParams } from "next/navigation"
+import { useMemo } from "react"
 import { useStaffProfile } from "@workspace/admin-app/hooks/queries"
-import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
+import {useAdminAuth as useAuth, useAdminModuleNavigation, useAdminModulePath } from "@workspace/admin-app/runtime"
 import { canEditProtectedAdminUser } from "@workspace/admin-app/config/protected-admin"
 import {
   AdminDetailLayout,
@@ -56,14 +57,17 @@ import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { PostListRow } from "@workspace/admin-app/modules/posts/_component/types"
 
-const postColumns: ColumnDef<PostListRow, unknown>[] = [
+function buildPostColumns(
+  postDetailPath: (id: string | number) => string,
+): ColumnDef<PostListRow, unknown>[] {
+  return [
   {
     accessorKey: "title",
     header: "Tiêu đề",
     enableColumnFilter: false,
     cell: ({ row }) => (
       <Link
-        href={`/posts/${row.original.id}`}
+        href={postDetailPath(row.original.id)}
         className="line-clamp-1 font-medium text-primary underline-offset-4 hover:underline"
       >
         {row.original.title}
@@ -105,7 +109,8 @@ const postColumns: ColumnDef<PostListRow, unknown>[] = [
       />
     ),
   },
-]
+  ]
+}
 
 function AvatarDisplay({
   user,
@@ -134,6 +139,8 @@ function AvatarDisplay({
 function StaffDetailPageInner() {
   const params = useParams()
   const crudNav = useAdminModuleNavigation("staff")
+  const postDetailPath = useAdminModulePath("posts")
+  const postsListPath = useAdminModulePath("posts")
   const { user: session } = useAuth()
   const canManageUsers =
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
@@ -148,6 +155,10 @@ function StaffDetailPageInner() {
 
   const user = userQuery.data
   const posts = postsQuery.data?.items || []
+  const postColumns = useMemo(
+    () => buildPostColumns(postDetailPath),
+    [postDetailPath],
+  )
 
   if (!session || !canManageUsers) {
     return (
@@ -270,7 +281,7 @@ function StaffDetailPageInner() {
             <FieldSetContent variant="section" className="pt-0">
               {postsQuery.data?.total != null && postsQuery.data.total > 5 && (
                 <div className="mb-3 flex justify-end">
-                  <Link href="/posts">
+                  <Link href={postsListPath()}>
                     <Button variant="ghost" size="sm" className="gap-1">
                       Xem tất cả
                       <ArrowUpRight className="size-4" aria-hidden />

@@ -5,7 +5,7 @@ import { LandingIntroSection } from "./intro-section"
 import { LandingMarqueeSection } from "./marquee-section"
 import { LandingQuickActions } from "./landing-quick-actions"
 import { LandingUpcomingEventsSection } from "./upcoming-events-section"
-import { getFeaturedPublicEvents, getPublicEvents, type PublicEventItem } from "@/lib/public-events"
+import { getFeaturedPublicEvents, getPublicEvents, type PublicEventItem } from "@/lib/site/public-events"
 
 function mergeFeaturedWithUpcoming(
   featured: PublicEventItem[],

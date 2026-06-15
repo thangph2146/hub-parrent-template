@@ -21,8 +21,8 @@ import {
   isEventPortalSession,
   readEventSession,
   subscribeEventSession,
-} from "@/lib/event-auth"
-import { MAIN_NAV, MY_EVENTS_NAV, SITE_BRAND, isNavActive } from "@/lib/site-nav"
+} from "@/lib/portal/event-auth"
+import { MAIN_NAV, MY_EVENTS_NAV, SITE_BRAND, isNavActive } from "@/lib/site/site-nav"
 
 function useEventSession() {
   return useSyncExternalStore(

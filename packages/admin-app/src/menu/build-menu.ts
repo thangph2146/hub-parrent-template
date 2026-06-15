@@ -1,4 +1,5 @@
 import type { AdminAppConfig } from "../config/types"
+import { resolveAdminDashboardDir } from "../config/admin-access-paths"
 import type {
   AdminMenuLeafData,
   AdminMenuTreeItemData,
@@ -49,22 +50,51 @@ function buildIncludeHrefs(config: AdminAppConfig): Set<string> {
   return hrefs
 }
 
+function resolveHrefOverride(override: string, config: AdminAppConfig): string {
+  const base = (config.basePath ?? "").replace(/\/$/, "")
+  if (override === "@root" || override === ".") {
+    return base ? `/${base}` : "/"
+  }
+  if (override.startsWith("/")) {
+    return override
+  }
+  const segment = override.replace(/^\/+/, "")
+  return base ? `/${base}/${segment}` : `/${segment}`
+}
+
 function remapHrefForConfig(
   href: string,
   config: AdminAppConfig,
   overrides: Record<string, string>,
 ) {
   if (Object.prototype.hasOwnProperty.call(overrides, href)) {
-    return overrides[href]!
+    return resolveHrefOverride(overrides[href]!, config)
   }
   const basePath = config.basePath ?? ""
   if (href === "/") {
-    const rel = config.dashboard?.relativePath ?? "tong-quan"
+    const rel = resolveAdminDashboardDir(config.dashboard?.relativePath)
     const prefix = basePath.replace(/\/$/, "")
     return prefix ? `${prefix}/${rel}` : `/${rel}`
   }
   const prefix = basePath.replace(/\/$/, "")
   return prefix ? `${prefix}${href}` : href
+}
+
+function remapNativeMenuHref(
+  href: string,
+  config: AdminAppConfig,
+  overrides: Record<string, string>,
+): string {
+  if (!href.startsWith("/")) {
+    const base = (config.basePath ?? "").replace(/\/$/, "")
+    const segment = href.replace(/^\/+/, "")
+    return base ? `/${base}/${segment}` : `/${segment}`
+  }
+  const base = (config.basePath ?? "").replace(/\/$/, "")
+  if (base && (href === `/${base}` || href.startsWith(`/${base}/`))) {
+    return href
+  }
+  return remapHrefForConfig(href, config, overrides)
 }
 
 function remapNativeGroup(
@@ -77,10 +107,7 @@ function remapNativeGroup(
     ...group,
     children: group.children.map((c) => ({
       ...c,
-      href:
-        typeof c.href === "string" && c.href.startsWith(config.basePath || "/admin")
-          ? c.href
-          : remapHrefForConfig(c.href, config, overrides),
+      href: remapNativeMenuHref(c.href, config, overrides),
     })),
   }
 }

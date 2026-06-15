@@ -5,6 +5,7 @@ import { LayoutDashboard, Shield } from "lucide-react"
 import {
   CHECKIN_ADMIN_HOME_PATH,
   CHECKIN_ADMIN_LOGIN_PATH,
+  isCheckinAdminShellPath,
 } from "@/config/admin/checkin-admin-access"
 import { HeaderActionTile } from "@/components/shared/header-action-tile"
 import { useAdminSession } from "@/components/shared/use-admin-session"
@@ -13,7 +14,7 @@ export function HeaderAdminLink({ inMenu = false }: { inMenu?: boolean }) {
   const pathname = usePathname()
   const adminUser = useAdminSession()
 
-  if (pathname.startsWith("/admin")) return null
+  if (isCheckinAdminShellPath(pathname)) return null
 
   const signedIn = Boolean(adminUser)
   const href = signedIn ? CHECKIN_ADMIN_HOME_PATH : CHECKIN_ADMIN_LOGIN_PATH

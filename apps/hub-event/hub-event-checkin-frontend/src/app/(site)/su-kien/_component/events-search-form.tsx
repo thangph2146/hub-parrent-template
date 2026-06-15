@@ -8,7 +8,7 @@ import { Input } from "@ui/components/input"
 import {
   buildEventsHref,
   type EventsListQuery,
-} from "@/lib/events-list-query"
+} from "@/lib/site/events-list-query"
 
 type EventsSearchFormProps = {
   initialSearch: string

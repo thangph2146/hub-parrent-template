@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation"
-import { getPublicEventBySlug } from "@/lib/public-events"
+import { getPublicEventBySlug } from "@/lib/site/public-events"
 
 type Props = {
   params: Promise<{ slug: string }>

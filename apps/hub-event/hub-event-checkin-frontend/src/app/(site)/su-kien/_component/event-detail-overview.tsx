@@ -6,8 +6,8 @@ import {
   MapPin,
   Users,
 } from "lucide-react"
-import { formatRange } from "@/lib/registration-format"
-import type { PublicEventDetail } from "@/lib/public-events"
+import { formatRange } from "@/lib/site/registration-format"
+import type { PublicEventDetail } from "@/lib/site/public-events"
 
 type EventDetailOverviewProps = {
   event: PublicEventDetail

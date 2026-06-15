@@ -69,6 +69,8 @@ pnpm dev:checkin
 
 ```bash
 pnpm env:init store
+pnpm db:bootstrap:store   # DB trống hub_store: schema + seed mẫu
+pnpm dev:store
 ```
 
 ## Lệnh

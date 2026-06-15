@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Container } from "@ui/components/layout"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
-import { LANDING_QUICK_ACTIONS } from "@/lib/site-nav"
+import { LANDING_QUICK_ACTIONS } from "@/lib/site/site-nav"
 
 export function LandingQuickActions() {
   return (

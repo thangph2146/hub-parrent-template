@@ -3,14 +3,14 @@ import { ArrowUpRight, MapPin, Monitor, Star } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import { Card } from "@ui/components/card"
 import { EventPoster } from "@/components/shared/event-poster"
-import { FORMAT_LABELS } from "@/lib/registration-format"
+import { FORMAT_LABELS } from "@/lib/site/registration-format"
 import {
   EVENT_STATUS_LABELS,
   formatEventScheduleText,
   getEventLocationLabel,
   getEventStatus,
   type PublicEventItem,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 import { cn } from "@ui/lib/utils"
 
 const STATUS_STYLES = {

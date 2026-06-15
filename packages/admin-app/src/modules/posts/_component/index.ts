@@ -31,7 +31,7 @@ export { SummaryBadges } from "./summary-badges"
 
 export { getPostColumns } from "./columns"
 
-export { usePostForm, postFormSchema } from "./_hooks"
+export { usePostForm, postFormSchema, normalizePostFormValues } from "./_hooks"
 export type { PostFormValues } from "./_hooks"
 
 export { PostFormShell } from "./_form"

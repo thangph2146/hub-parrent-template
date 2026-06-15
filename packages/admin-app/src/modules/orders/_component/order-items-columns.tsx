@@ -15,8 +15,10 @@ import type { OrderItemRow } from "./types"
 
 export function getOrderItemColumns({
   actionHandlers,
+  getProductDetailHref,
 }: {
   actionHandlers: OrderItemRowActionHandlers
+  getProductDetailHref: (productId: string | number) => string
 }): ColumnDef<OrderItemRow>[] {
   return [
     {
@@ -32,7 +34,7 @@ export function getOrderItemColumns({
           : null
         return (
           <Link
-            href={`/products/${item.productId}`}
+            href={getProductDetailHref(item.productId)}
             className="flex min-w-[10rem] items-center gap-3 rounded-lg transition-colors hover:bg-muted/40"
           >
             {imageSrc ? (

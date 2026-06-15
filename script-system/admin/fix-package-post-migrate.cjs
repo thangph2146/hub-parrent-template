@@ -49,7 +49,7 @@ for (const file of walk(PKG_SRC)) {
 
 const nativeUtils = path.join(
   ROOT,
-  "apps/hub-event/hub-event-checkin-frontend/src/app/admin/_component/utils.ts",
+  "apps/hub-event/hub-event-checkin-frontend/src/components/admin/events/utils.ts",
 )
 if (fs.existsSync(nativeUtils)) {
   let content = fs.readFileSync(nativeUtils, "utf8")

@@ -1,1 +1,1 @@
-export * from "@workspace/admin-app/features/auth/auth-api"
+export * from "@workspace/admin-app/modules/auth/_lib/auth-api"

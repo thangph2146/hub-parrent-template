@@ -115,11 +115,11 @@ function verify() {
       continue
     }
     const thinNativePages = {
-      "profile/page.tsx": "@workspace/admin-app/features/profile",
-      "graph/page.tsx": "@workspace/admin-app/features/tools",
-      "database-schema/page.tsx": "@workspace/admin-app/features/tools",
-      "login/page.tsx": "@workspace/admin-app/features/auth",
-      "register/page.tsx": "@workspace/admin-app/features/auth",
+      "profile/page.tsx": "@workspace/admin-app/modules/profile",
+      "graph/page.tsx": "@workspace/admin-app/modules/graph",
+      "database-schema/page.tsx": "@workspace/admin-app/modules/database-schema",
+      "login/page.tsx": "@workspace/admin-app/modules/auth/login",
+      "register/page.tsx": "@workspace/admin-app/modules/auth/register",
     }
     const pkgPrefix = thinNativePages[rel]
     if (pkgPrefix) {

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { safeRelativeNext } from "@/lib/auth-routes"
-import { portalEventsPath, portalLoginPath } from "@/lib/event-portal-routes"
+import { portalEventsPath, portalLoginPath } from "@/lib/portal/event-portal-routes"
 
 type LegacyGuestLoginPageProps = {
   searchParams: Promise<{ next?: string }>

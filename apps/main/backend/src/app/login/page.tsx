@@ -1,1 +1,1 @@
-export { default } from "@workspace/admin-app/features/auth/login-page"
+export { default } from "@workspace/admin-app/modules/auth/login/page"

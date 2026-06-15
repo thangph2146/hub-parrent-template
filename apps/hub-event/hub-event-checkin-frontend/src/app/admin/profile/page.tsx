@@ -1,4 +1,4 @@
-import { AdminProfilePage } from "@workspace/admin-app/features/profile/admin-profile-page"
+import { AdminProfilePage } from "@workspace/admin-app/modules/profile/_component/admin-profile-page"
 
 const CHECKIN_ADMIN_PROFILE_CONFIG = {
   subtitle:

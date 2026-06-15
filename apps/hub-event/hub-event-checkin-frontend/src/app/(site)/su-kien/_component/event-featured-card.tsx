@@ -9,7 +9,7 @@ import {
   getEventLocationLabel,
   getEventStatus,
   type PublicEventItem,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 type EventFeaturedCardProps = {
   event: PublicEventItem

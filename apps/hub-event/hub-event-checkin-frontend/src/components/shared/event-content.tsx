@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { resolveEventDetailContent } from "@/lib/event-detail-content"
+import { resolveEventDetailContent } from "@/lib/site/event-detail-content"
 
 const LexicalEditor = dynamic(
   () =>

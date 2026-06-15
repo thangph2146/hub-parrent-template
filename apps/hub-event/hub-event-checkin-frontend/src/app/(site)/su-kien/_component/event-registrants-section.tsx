@@ -6,8 +6,8 @@ import { UserRound } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Badge } from "@ui/components/badge";
 import { DataTable } from "@ui/components/data-table";
-import type { PublicEventRegistrant } from "@/lib/public-events";
-import { formatEventDateTime } from "@/lib/public-events";
+import type { PublicEventRegistrant } from "@/lib/site/public-events";
+import { formatEventDateTime } from "@/lib/site/public-events";
 
 type EventRegistrantsSectionProps = {
   registrants: PublicEventRegistrant[];

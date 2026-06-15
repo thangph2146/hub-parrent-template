@@ -14,8 +14,8 @@ import {
   buildEventsHref,
   parseEventsListQuery,
   type EventsListQuery,
-} from "@/lib/events-list-query"
-import { EVENT_STATUS_LABELS } from "@/lib/public-events"
+} from "@/lib/site/events-list-query"
+import { EVENT_STATUS_LABELS } from "@/lib/site/public-events"
 import {
   useEventCategorySections,
   useFeaturedPublicEvents,

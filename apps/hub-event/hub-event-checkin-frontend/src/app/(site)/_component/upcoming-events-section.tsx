@@ -5,7 +5,7 @@ import { Container } from "@ui/components/layout"
 import { Heading, Text } from "@ui/components/typography"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
 import { EventShowcaseCard } from "./event-showcase-card"
-import type { PublicEventItem } from "@/lib/public-events"
+import type { PublicEventItem } from "@/lib/site/public-events"
 import { LANDING_ROUTES } from "./data"
 
 const SHOWCASE_COUNT = 3

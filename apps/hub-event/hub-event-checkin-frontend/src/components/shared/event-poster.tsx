@@ -1,6 +1,6 @@
 import { ImageIcon } from "lucide-react"
 import { cn } from "@ui/lib/utils"
-import { getPosterUrl } from "@/lib/public-events"
+import { getPosterUrl } from "@/lib/site/public-events"
 
 type EventPosterProps = {
   poster?: unknown

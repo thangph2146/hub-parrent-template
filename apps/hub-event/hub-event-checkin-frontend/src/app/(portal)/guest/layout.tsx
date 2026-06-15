@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
-import { EventPortalLayoutProvider } from "@/providers/event-portal-layout"
+import { EventPortalLayoutProvider } from "@/providers/portal/layout"
+import { EventPortalRuntimeBridge } from "@/providers/portal/runtime-bridge"
 
 export default function GuestPortalLayout({
   children,
@@ -7,6 +8,8 @@ export default function GuestPortalLayout({
   children: ReactNode
 }) {
   return (
-    <EventPortalLayoutProvider role="guest">{children}</EventPortalLayoutProvider>
+    <EventPortalRuntimeBridge role="guest">
+      <EventPortalLayoutProvider role="guest">{children}</EventPortalLayoutProvider>
+    </EventPortalRuntimeBridge>
   )
 }

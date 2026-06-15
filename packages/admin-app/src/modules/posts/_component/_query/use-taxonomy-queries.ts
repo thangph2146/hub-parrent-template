@@ -36,7 +36,10 @@ export function useTagsQuery(
         limit: 200,
         status: "active",
       })
-      return paged.items
+      return paged.items.map((item) => ({
+        id: String(item.id),
+        name: item.name,
+      }))
     },
   })
 }

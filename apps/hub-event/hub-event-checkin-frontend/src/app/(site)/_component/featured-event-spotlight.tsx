@@ -17,7 +17,7 @@ import {
   getEventStatus,
   getPosterUrl,
   type PublicEventItem,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 type FeaturedEventSpotlightProps = {
   event: PublicEventItem | null

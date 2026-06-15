@@ -18,6 +18,7 @@ import { cn } from "@ui/lib/utils"
 import {
   CHECKIN_ADMIN_HOME_PATH,
   CHECKIN_ADMIN_PROFILE_PATH,
+  isCheckinAdminShellPath,
 } from "@/config/admin/checkin-admin-access"
 import { useAdminSession } from "@/components/shared/use-admin-session"
 import {
@@ -56,13 +57,13 @@ export function HeaderStaffAccountMenu({
 
   const name = displayNameOf(adminUser)
   const avatarUrl = adminUser.image?.trim() || null
-  const inAdmin = pathname.startsWith("/admin")
+  const inAdmin = isCheckinAdminShellPath(pathname)
 
   const handleLogout = () => {
     clearAdminSession()
     window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))
     onNavigate?.()
-    if (pathname.startsWith("/admin")) {
+    if (isCheckinAdminShellPath(pathname)) {
       router.replace("/")
       router.refresh()
       return

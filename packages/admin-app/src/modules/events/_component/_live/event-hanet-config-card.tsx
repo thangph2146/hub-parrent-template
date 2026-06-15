@@ -14,6 +14,7 @@ import {
   buildHanetWebhookAutoUrl,
   buildHanetWebhookUrl,
 } from "@workspace/admin-app/lib/hanet-webhook-url"
+import { useAdminModulePath } from "@workspace/admin-app/runtime"
 
 export type EventHanetCameraInfo = {
   checkinCameraName: string | null
@@ -71,6 +72,8 @@ export function EventHanetConfigCard({
   eventId: string
   cameras?: EventHanetCameraInfo
 }) {
+  const cameraNewPath = useAdminModulePath("cameras")
+  const eventEditPath = useAdminModulePath("events")
   const webhookPerEvent = buildHanetWebhookUrl(eventId)
   const webhookAuto = buildHanetWebhookAutoUrl()
   const hasCameras = Boolean(
@@ -152,7 +155,7 @@ export function EventHanetConfigCard({
               <ol className="list-inside list-decimal space-y-1 text-xs text-muted-foreground">
                 <li>
                   <Link
-                    href="/cameras/new"
+                    href={cameraNewPath("new")}
                     className="text-primary hover:underline"
                   >
                     Thêm camera
@@ -162,7 +165,7 @@ export function EventHanetConfigCard({
                 </li>
                 <li>
                   <Link
-                    href={`/events/${eventId}/edit`}
+                    href={eventEditPath(eventId, "edit")}
                     className="text-primary hover:underline"
                   >
                     Chỉnh sửa sự kiện
@@ -203,7 +206,7 @@ export function EventHanetConfigCard({
               <p className="text-xs text-amber-700 dark:text-amber-400">
                 Chưa chọn camera —{" "}
                 <Link
-                  href={`/events/${eventId}/edit`}
+                  href={eventEditPath(eventId, "edit")}
                   className="font-medium underline underline-offset-2"
                 >
                   mở Chỉnh sửa sự kiện → Camera HANET

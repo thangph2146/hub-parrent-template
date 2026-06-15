@@ -1,8 +1,8 @@
 import { Mic } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card";
 import { Badge } from "@ui/components/badge";
-import type { PublicEventSpeaker } from "@/lib/public-events";
-import { getPosterUrl } from "@/lib/public-events";
+import type { PublicEventSpeaker } from "@/lib/site/public-events";
+import { getPosterUrl } from "@/lib/site/public-events";
 import { cn } from "@ui/lib/utils";
 
 type EventSpeakersSectionProps = {

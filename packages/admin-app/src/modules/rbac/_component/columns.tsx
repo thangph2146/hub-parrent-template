@@ -2,8 +2,6 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 
-import Link from "next/link"
-
 import { Badge } from "@ui/components/badge"
 
 import { UsageStatusFromValue } from "@ui/components/usage-status-badge"
@@ -78,9 +76,10 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
       meta: { filterPlaceholder: "Lọc tên vai trò…" },
 
       cell: ({ row }) => (
-        <Link
-          href={`/rbac/${row.original.id}`}
-          className="group flex items-center gap-2"
+        <button
+          type="button"
+          onClick={() => onView(row.original)}
+          className="group flex w-full items-center gap-2 text-left"
         >
           <div>
             <div className="font-medium group-hover:text-primary group-hover:underline">
@@ -96,7 +95,7 @@ export function getRbacColumns(props: RbacColumnsProps): ColumnDef<RoleRow>[] {
             className="size-3 shrink-0 text-muted-foreground/40 group-hover:text-primary"
             aria-hidden
           />
-        </Link>
+        </button>
       ),
     },
 

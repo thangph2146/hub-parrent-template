@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react"
 import { Container } from "@ui/components/layout"
 import { STORE_CONTAINER_INSET_WIDE, STORE_CONTAINER_MAX_DEFAULT } from "@ui/lib/layout-shell"
 import { EventsSearchForm } from "./events-search-form"
-import type { EventsListQuery } from "@/lib/events-list-query"
+import type { EventsListQuery } from "@/lib/site/events-list-query"
 
 type EventsPageBannerProps = {
   query: EventsListQuery

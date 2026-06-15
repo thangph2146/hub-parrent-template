@@ -127,9 +127,8 @@ const stackEnv = {
   HUB_DEV_WAIT_API: "1",
   HUB_DEV_API_PORT: String(stack.apiPort),
   HUB_DEV_STACK: stackName,
-  /** Root predev đã kill port + clean .next — im lặng prep từng app */
+  /** Root predev đã kill port — prep từng app vẫn xóa .next trước next dev */
   HUB_DEV_SKIP_PORT_KILL: "1",
-  HUB_DEV_SKIP_NEXT_CLEAN: "1",
   TURBO_NO_UPDATE_NOTIFIER: "1",
 }
 

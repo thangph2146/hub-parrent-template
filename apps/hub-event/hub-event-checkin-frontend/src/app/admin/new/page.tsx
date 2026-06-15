@@ -1,18 +1,19 @@
 ﻿"use client"
 
 import { useAdminCrudNavigation } from "@/lib/admin/admin-navigation"
+import { CHECKIN_ADMIN_INDEX_PATH } from "@/config/admin/checkin-admin-access"
 
 import { useCallback } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
 import { PERMISSION_CODES } from "@workspace/api-client"
 import { api } from "@/lib/admin/api"
-import { EventFormShell, useEventForm, buildEventPayload } from "../_component"
-import type { EventFormValues } from "../_component"
+import { EventFormShell, useEventForm, buildEventPayload } from "@/components/admin/events"
+import type { EventFormValues } from "@/components/admin/events"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 function NewEventPageInner() {
-  const crudNav = useAdminCrudNavigation("/admin")
+  const crudNav = useAdminCrudNavigation(CHECKIN_ADMIN_INDEX_PATH as `/${string}`)
   const queryClient = useQueryClient()
   const { form } = useEventForm()
 

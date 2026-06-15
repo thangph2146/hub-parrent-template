@@ -17,6 +17,7 @@ import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const { readAdminAppConfig } = require("../lib/admin-app-config-path.cjs")
 
 const MAIN_BACKEND = PRODUCT_LINES.main.backend.path
 const MAIN_API = PRODUCT_LINES.main.api.path
@@ -124,8 +125,8 @@ function permissionPrefix(mainAdminConfig, moduleId) {
 
 export function buildTaskCatalog() {
   const generatedAt = new Date().toISOString()
-  const mainAdmin = readJson(`${MAIN_BACKEND}/admin.app.config.json`)
-  const checkinAdmin = readJson(`${CHECKIN_FRONT}/admin.app.config.json`)
+  const mainAdmin = readAdminAppConfig(join(root, MAIN_BACKEND))
+  const checkinAdmin = readAdminAppConfig(join(root, CHECKIN_FRONT))
   const syncExclude = loadSyncExcludeDomains()
   const mainApiDomains = listApiDomains(MAIN_API)
 

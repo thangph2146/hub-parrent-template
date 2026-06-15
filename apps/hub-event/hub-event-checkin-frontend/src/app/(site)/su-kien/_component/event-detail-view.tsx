@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { PublicEventDetail } from "@/lib/public-events"
+import type { PublicEventDetail } from "@/lib/site/public-events"
 import { EventDetailHero } from "./event-detail-hero"
 import { EventDetailNotice } from "./event-detail-notice"
 import { EventDetailRegistrationAside } from "./event-detail-registration-aside"

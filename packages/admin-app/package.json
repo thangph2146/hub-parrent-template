@@ -12,7 +12,6 @@
     "./routing/*": "./src/routing/*",
     "./config/*": "./src/config/*",
     "./types/*": "./src/types/*",
-    "./features/*": "./src/features/*",
     "./lib": "./src/lib/index.ts",
     "./lib/*": "./src/lib/*",
     "./hooks/*": "./src/hooks/*",

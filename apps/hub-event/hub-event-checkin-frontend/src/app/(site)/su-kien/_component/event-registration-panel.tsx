@@ -21,18 +21,18 @@ import {
   readEventSession,
   subscribeEventSession,
   type EventSessionUser,
-} from "@/lib/event-auth"
+} from "@/lib/portal/event-auth"
 import {
   getRegistrationWindowState,
   registerForEvent,
   type RegistrationWindowState,
-} from "@/lib/event-registration"
-import { formatRange } from "@/lib/registration-format"
+} from "@/lib/site/event-registration"
+import { formatRange } from "@/lib/site/registration-format"
 import {
   getPublicEventBySlug,
   type PublicEventDetail,
   type PublicViewerRegistration,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 type EventRegistrationPanelProps = {
   event: PublicEventDetail

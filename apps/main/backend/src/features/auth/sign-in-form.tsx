@@ -1,1 +1,1 @@
-export { SignInForm } from "@workspace/admin-app/features/auth/sign-in-form"
+export { SignInForm } from "@workspace/admin-app/modules/auth/_component/sign-in-form"

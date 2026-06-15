@@ -47,19 +47,18 @@ const forbidWorkspaceUiImports = {
  * Sau bước `@/lib/` → `@/lib/admin/` của sync, khôi phục các import này.
  */
 const CHECKIN_NATIVE_LIB_MODULES = [
-  "event-detail-content",
-  "event-auth",
-  "event-registration",
-  "event-session",
-  "public-events",
-  "event-portal-routes",
-  "checkin-session-exclusive",
-  "my-registered-events",
-  "student-profile",
-  "student-email",
-  "registration-format",
-  "events-list-query",
-  "site-nav",
+  "portal/event-auth",
+  "portal/event-session",
+  "portal/event-portal-routes",
+  "portal/checkin-session-exclusive",
+  "site/api",
+  "site/public-events",
+  "site/event-detail-content",
+  "site/event-registration",
+  "site/student-email",
+  "site/registration-format",
+  "site/events-list-query",
+  "site/site-nav",
 ]
 
 /** @param {string} content */
@@ -77,7 +76,7 @@ function restoreCheckinNativeLibImports(content) {
  */
 const CHECKIN_ADMIN_APP_IMPORT_REWRITES = [
   [/@\/app\/cameras\/_component/g, "@/lib/admin/cameras-query"],
-  [/@\/app\/events\/_component/g, "@/app/admin/_component"],
+  [/@\/app\/events\/_component/g, "@/components/admin/events"],
   [
     /@\/app\/products\/_component\/product-image-storage/g,
     "@/lib/admin/product-image-storage-stub",

@@ -1,1 +1,1 @@
-export { RegisterForm } from "@workspace/admin-app/features/auth/register-form"
+export { RegisterForm } from "@workspace/admin-app/modules/auth/_component/register-form"

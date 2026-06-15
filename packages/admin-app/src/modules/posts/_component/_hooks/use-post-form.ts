@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { createSerializedEditorState, createParagraphNode } from "../utils"
 
 export const postFormSchema = z.object({
-  id: z.string().optional(),
+  id: z.coerce.string().optional(),
   title: z.string().min(1, "Tiêu đề không được để trống"),
   slug: z.string(),
   excerpt: z.string(),
@@ -14,11 +14,31 @@ export const postFormSchema = z.object({
   content: z.record(z.any()),
   published: z.boolean(),
   publishedAt: z.string(),
-  categoryIds: z.array(z.string()),
-  tagIds: z.array(z.string()),
+  categoryIds: z.array(z.coerce.string()),
+  tagIds: z.array(z.coerce.string()),
 })
 
 export type PostFormValues = z.infer<typeof postFormSchema>
+
+/** API/draft có thể trả id số — form + TreeMultiSelect cần string. */
+export function normalizePostFormValues(
+  values: Partial<PostFormValues>,
+): PostFormValues {
+  return {
+    ...EMPTY_VALUES,
+    ...values,
+    id: values.id != null && values.id !== "" ? String(values.id) : undefined,
+    title: values.title ?? "",
+    slug: values.slug ?? "",
+    excerpt: values.excerpt ?? "",
+    image: values.image ?? "",
+    content: values.content ?? EMPTY_VALUES.content,
+    published: values.published ?? false,
+    publishedAt: values.publishedAt ?? "",
+    categoryIds: (values.categoryIds ?? []).map(String),
+    tagIds: (values.tagIds ?? []).map(String),
+  }
+}
 
 const EMPTY_VALUES: PostFormValues = {
   title: "",

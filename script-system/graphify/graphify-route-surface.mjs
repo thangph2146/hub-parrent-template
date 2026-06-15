@@ -14,6 +14,7 @@ import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
 const { ROOT: root } = require("../lib/paths.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const { readAdminAppConfig } = require("../lib/admin-app-config-path.cjs")
 
 const MAIN_API = PRODUCT_LINES.main.api.path
 const MAIN_BACKEND = PRODUCT_LINES.main.backend.path
@@ -324,8 +325,8 @@ function adminNextBase(moduleId) {
   return `/${moduleId}`
 }
 
-function loadAdminModules(backendRoot) {
-  const cfg = readJson(`${backendRoot}/admin.app.config.json`)
+function loadAdminModules(appRel) {
+  const cfg = readAdminAppConfig(join(root, appRel))
   return Array.isArray(cfg?.modules) ? cfg.modules : []
 }
 

@@ -9,7 +9,7 @@ import {
   formatEventScheduleText,
   getEventLocationLabel,
   getEventStatus,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 
 type EventRowCardProps = {
   event: PublicEventItem

@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
 import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { ShoppingCart, AlertCircle } from "lucide-react"
@@ -23,7 +22,7 @@ import {
 } from "@ui/lib/layout-shell"
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@workspace/admin-app/lib/build-admin-filter-query"
 import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-value"
-import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
+import {useAdminAuth as useAuth, useAdminModuleNavigation, useAdminModulePath } from "@workspace/admin-app/runtime"
 import {
   canUserAccess,
   PERMISSION_CODES,
@@ -56,7 +55,6 @@ const STATUS_TABS: Array<{ value: OrderStatus | "all"; label: string }> = [
 ]
 
 function OrdersPageInner() {
-  const router = useRouter()
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const canUpdate = user
@@ -71,6 +69,7 @@ function OrdersPageInner() {
   const crudNav = useAdminModuleNavigation("orders", {
     prefetchDetail: (id) => prefetchOrderDetail(queryClient, api, id),
   })
+  const productDetailPath = useAdminModulePath("products")
   const [status, setStatus] = useState<OrderStatus | "all">("all")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
@@ -208,7 +207,7 @@ function OrdersPageInner() {
   const itemActionHandlers = useMemo<OrderItemRowActionHandlers>(
     () => ({
       onViewProduct: (item: OrderItemRow) => {
-        router.push(`/products/${item.productId}`)
+        crudNav.push(productDetailPath(String(item.productId)))
       },
       onCopySku: async (item: OrderItemRow) => {
         setBusyItemId(item.id)
@@ -223,7 +222,7 @@ function OrdersPageInner() {
       },
       busyItemId,
     }),
-    [busyItemId, router]
+    [busyItemId, crudNav, productDetailPath]
   )
 
   const renderExpandedRow = useCallback(
@@ -232,9 +231,10 @@ function OrdersPageInner() {
         orderId={row.original.id}
         items={row.original.items}
         actionHandlers={itemActionHandlers}
+        getProductDetailHref={(productId) => productDetailPath(String(productId))}
       />
     ),
-    [itemActionHandlers]
+    [itemActionHandlers, productDetailPath]
   )
 
   const getRowCanExpand = useCallback(

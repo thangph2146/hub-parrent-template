@@ -43,16 +43,16 @@ import {
   EventDetailContentPanel,
   useEventDetailQuery,
   useEventSpeakersQuery,
-} from "../_component"
-import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
-import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
-import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
-import { getPosterUrlFromValue } from "../_component/utils"
+} from "@/components/admin/events"
+import { EventRegistrationsLiveTable } from "@/components/admin/events/event-registrations-live-table"
+import { EventAttendanceProvider } from "@/components/admin/events/_live/event-attendance-provider"
+import { EventLiveMonitorTab } from "@/components/admin/events/_live/event-live-monitor-tab"
+import { getPosterUrlFromValue } from "@/components/admin/events/utils"
 
 import {
   RegistrationAvatarCell,
   resolveRegistrationAvatarUrl,
-} from "../_component/registration-avatar-cell"
+} from "@/components/admin/events/registration-avatar-cell"
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—"

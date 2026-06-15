@@ -38,7 +38,7 @@ import {
   isSuperAdminRoleCode,
   PERMISSION_CODES,
 } from "@workspace/api-client"
-import { useAdminAuth as useAuth } from "@workspace/admin-app/runtime"
+import { useAdminAuth as useAuth, useAdminPath } from "@workspace/admin-app/runtime"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import {
   extractSettingValue,
@@ -76,6 +76,7 @@ function parseTab(value: string | null): SettingsTabId {
 
 export default function SettingsPage() {
   const router = useRouter()
+  const adminPath = useAdminPath()
   const searchParams = useSearchParams()
   const queryClient = useQueryClient()
   const { user: session } = useAuth()
@@ -98,9 +99,9 @@ export default function SettingsPage() {
     (tab: SettingsTabId) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set("tab", tab)
-      router.replace(`/settings?${params.toString()}`)
+      router.replace(`${adminPath("settings")}?${params.toString()}`)
     },
-    [router, searchParams]
+    [adminPath, router, searchParams]
   )
 
   const publicBrandingQuery = useQuery({

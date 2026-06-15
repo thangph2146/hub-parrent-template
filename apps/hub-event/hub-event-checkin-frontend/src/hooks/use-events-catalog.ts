@@ -1,8 +1,8 @@
 "use client"
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import type { EventsListQuery } from "@/lib/events-list-query"
-import { toValidEventFilter } from "@/lib/events-list-query"
+import type { EventsListQuery } from "@/lib/site/events-list-query"
+import { toValidEventFilter } from "@/lib/site/events-list-query"
 import {
   filterEventsByTimeStatus,
   getFeaturedPublicEvents,
@@ -10,7 +10,7 @@ import {
   getPublicEvents,
   type PublicEventCategoryItem,
   type PublicEventItem,
-} from "@/lib/public-events"
+} from "@/lib/site/public-events"
 import type { CategoryWithEvents } from "@/app/(site)/su-kien/_component/events-category-sections"
 
 export const eventsCatalogKeys = {

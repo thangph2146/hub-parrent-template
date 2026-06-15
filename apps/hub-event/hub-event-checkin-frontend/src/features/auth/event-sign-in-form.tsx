@@ -44,15 +44,15 @@ import {
   readEventSession,
   type EventLoginKind,
   type EventSessionUser,
-} from "@/lib/event-auth"
+} from "@/lib/portal/event-auth"
 import {
   resolveLoginRoleFromReturnPath,
   resolvePostLoginDestination,
-} from "@/lib/event-portal-routes"
+} from "@/lib/portal/event-portal-routes"
 import {
   assertStudentSchoolEmail,
   STUDENT_EMAIL_SUFFIX,
-} from "@/lib/student-email"
+} from "@/lib/site/student-email"
 
 const HUB_CAMPUS_IMAGE =
   "https://hub.edu.vn/DATA/IMAGES/2024/12/31/20241231235033-1vehub.jpg"

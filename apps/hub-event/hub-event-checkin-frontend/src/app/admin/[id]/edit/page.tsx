@@ -22,13 +22,13 @@ import {
   useEventForm,
   useEventDetailQuery,
   buildEventPayload,
-} from "../../_component"
-import { getPosterUrlFromValue } from "../../_component/utils"
+} from "@/components/admin/events"
+import { getPosterUrlFromValue } from "@/components/admin/events/utils"
 import type {
   EventDetail,
   EventFormValues,
   EventFormSpeaker,
-} from "../../_component"
+} from "@/components/admin/events"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { useAdminFormDraftPersistence } from "@/hooks/admin/use-admin-edit-form-hydration"

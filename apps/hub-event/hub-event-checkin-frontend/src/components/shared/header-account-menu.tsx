@@ -33,7 +33,7 @@ import {
   isStudentSession,
   readEventSession,
   subscribeEventSession,
-} from "@/lib/event-auth"
+} from "@/lib/portal/event-auth"
 
 function useEventSession() {
   return useSyncExternalStore(
