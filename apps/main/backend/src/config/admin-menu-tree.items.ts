@@ -237,6 +237,17 @@ export const BACKEND_ADMIN_MENU_ITEMS: AdminMenuTreeItemData[] = [
         ],
       },
       {
+        href: "/hanet-avatars",
+        label: "Avatar HANET",
+        icon: "ScanFace",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+          PERMISSION_CODES.FACE_DATA_VIEW,
+        ],
+      },
+      {
         href: "/speakers",
         label: "Diễn giả",
         icon: "Mic",

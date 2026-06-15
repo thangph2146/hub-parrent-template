@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-12T12:59:24.736Z",
+  "generatedAt": "2026-06-15T03:40:52.675Z",
   "projectRoot": "D:/HUB/working/2026/hub-parrent-template/apps/store-sync/store-sync-frontend",
   "summary": {
-    "totalFiles": 110,
-    "clientComponents": 45,
+    "totalFiles": 189,
+    "clientComponents": 52,
     "pages": [
       "src/app/(store-sync)/cart/page.tsx",
       "src/app/(store-sync)/catalog/page.tsx",
@@ -19,6 +19,44 @@
       "src/app/(store-sync)/register/page.tsx",
       "src/app/(store-sync)/support/page.tsx",
       "src/app/(store-sync)/terms/page.tsx",
+      "src/app/admin/categories/new/page.tsx",
+      "src/app/admin/categories/page.tsx",
+      "src/app/admin/categories/[id]/edit/page.tsx",
+      "src/app/admin/categories/[id]/page.tsx",
+      "src/app/admin/dang-ky/page.tsx",
+      "src/app/admin/dang-nhap/page.tsx",
+      "src/app/admin/data/page.tsx",
+      "src/app/admin/file-storage/page.tsx",
+      "src/app/admin/guides/new/page.tsx",
+      "src/app/admin/guides/page.tsx",
+      "src/app/admin/guides/[id]/edit/page.tsx",
+      "src/app/admin/guides/[id]/page.tsx",
+      "src/app/admin/orders/page.tsx",
+      "src/app/admin/orders/[id]/edit/page.tsx",
+      "src/app/admin/orders/[id]/page.tsx",
+      "src/app/admin/page.tsx",
+      "src/app/admin/products/new/page.tsx",
+      "src/app/admin/products/page.tsx",
+      "src/app/admin/products/[id]/edit/page.tsx",
+      "src/app/admin/products/[id]/page.tsx",
+      "src/app/admin/profile/page.tsx",
+      "src/app/admin/promo-codes/new/page.tsx",
+      "src/app/admin/promo-codes/page.tsx",
+      "src/app/admin/promo-codes/[id]/edit/page.tsx",
+      "src/app/admin/promo-codes/[id]/page.tsx",
+      "src/app/admin/rbac/page.tsx",
+      "src/app/admin/rbac/[id]/edit/page.tsx",
+      "src/app/admin/rbac/[id]/page.tsx",
+      "src/app/admin/seo-metas/new/page.tsx",
+      "src/app/admin/seo-metas/page.tsx",
+      "src/app/admin/seo-metas/[id]/edit/page.tsx",
+      "src/app/admin/seo-metas/[id]/page.tsx",
+      "src/app/admin/settings/page.tsx",
+      "src/app/admin/staff/new/page.tsx",
+      "src/app/admin/staff/page.tsx",
+      "src/app/admin/staff/[id]/edit/page.tsx",
+      "src/app/admin/staff/[id]/page.tsx",
+      "src/app/admin/tong-quan/page.tsx",
       "src/app/graph/page.tsx",
       "src/app/page.tsx",
       "src/app/store/orders/page.tsx",
@@ -42,6 +80,7 @@
       "src/app/(store-sync)/register/layout.tsx",
       "src/app/(store-sync)/support/layout.tsx",
       "src/app/(store-sync)/terms/layout.tsx",
+      "src/app/admin/layout.tsx",
       "src/app/graph/layout.tsx",
       "src/app/layout.tsx",
       "src/app/store/layout.tsx"
@@ -613,6 +652,725 @@
       ],
       "content": "import Link from \"next/link\";\r\nimport { Card, CardContent, CardHeader, CardTitle } from \"@ui/components/card\";\r\nimport { Button } from \"@ui/components/button\";\r\nimport { FileCheck2, Scale, ShieldCheck } from \"lucide-react\";\r\nimport { Container, Page, PageContent } from \"@ui/components/layout\";\r\nimport {\r\n  STORE_CONTAINER_INSET,\r\n  STORE_CONTAINER_MAX_DEFAULT,\r\n  STORE_PAGE_CONTENT_CLASS,\r\n} from \"@ui/lib/layout-shell\";\r\n\r\nconst sections = [\r\n  {\r\n    title: \"Điều kiện tài khoản đại lý\",\r\n    content:\r\n      \"Tài khoản dùng cho mục đích nhập hàng sỉ hợp lệ. Đại lý cam kết cung cấp thông tin chính xác và chịu trách nhiệm bảo mật thông tin đăng nhập.\",\r\n  },\r\n  {\r\n    title: \"Chính sách đặt hàng và giao nhận\",\r\n    content:\r\n      \"Đơn hàng được xác nhận theo tồn kho thực tế tại thời điểm xử lý. Thời gian giao nhận có thể thay đổi theo khu vực và điều kiện vận chuyển.\",\r\n  },\r\n  {\r\n    title: \"Điều khoản Đổi trả và khiếu nại\",\r\n    content:\r\n      \"Hub B2B hỗ trợ đổi trả theo chính sách từng nhóm hàng. Khiếu nại cần được gửi trong thời hạn quy định kèm chứng từ và hình ảnh liên quan.\",\r\n  },\r\n];\r\n\r\nexport default function TermsPage() {\r\n  return (\r\n    <Page>\r\n      <PageContent className={STORE_PAGE_CONTENT_CLASS}>\r\n        <section>\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={`${STORE_CONTAINER_INSET} space-y-6`}>\r\n            <Card className=\"rounded-2xl border-outline-variant\">\r\n              <CardHeader className=\"space-y-3\">\r\n                <div className=\"inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-sm font-bold\">\r\n                  <Scale className=\"w-4 h-4\" />\r\n                  Terms of Service\r\n                </div>\r\n                <CardTitle className=\"text-4xl font-black tracking-tight\">\r\n                  Điều khoản sử dụng Hub B2B\r\n                </CardTitle>\r\n              </CardHeader>\r\n              <CardContent className=\"space-y-4\">\r\n                {sections.map((section) => (\r\n                  <div key={section.title} className=\"rounded-xl border border-outline-variant/40 p-4 bg-surface/40\">\r\n                    <p className=\"font-bold flex items-center gap-2\">\r\n                      <FileCheck2 className=\"w-4 h-4 text-primary\" />\r\n                      {section.title}\r\n                    </p>\r\n                    <p className=\"mt-2 text-muted-foreground\">{section.content}</p>\r\n                  </div>\r\n                ))}\r\n                <div className=\"pt-2\">\r\n                  <Link href=\"/support\" className=\"block w-fit\">\r\n                    <Button className=\"rounded-xl\">\r\n                      <ShieldCheck className=\"w-4 h-4 mr-2\" />\r\n                      Liên hệ hỗ trợ chính sách\r\n                    </Button>\r\n                  </Link>\r\n                </div>\r\n              </CardContent>\r\n            </Card>\r\n          </Container>\r\n        </section>\r\n      </PageContent>\r\n    </Page>\r\n  );\r\n}\r\n"
     },
+    "src/app/admin/admin-runtime-bridge.tsx": {
+      "id": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "AdminRuntimeBridge"
+      ],
+      "imports": [
+        "src/providers/admin/auth-provider.tsx",
+        "src/lib/admin/api.ts"
+      ],
+      "importedBy": [
+        "src/app/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useMemo } from \"react\"\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\nimport type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\nimport { AdminAppRuntimeProvider } from \"@workspace/admin-app/runtime\"\r\nimport {\r\n  useAuth as useAppAuth,\r\n  useClientReady,\r\n} from \"@/providers/admin/auth-provider\"\r\nimport { api } from \"@/lib/admin/api\"\r\n\r\nfunction useAdminAppAuthAdapter() {\r\n  const clientReady = useClientReady()\r\n  const session = useAppAuth()\r\n  return useMemo(\r\n    () => ({\r\n      ...session,\r\n      isLoading: !clientReady,\r\n      isAuthenticated: clientReady && session.user !== null,\r\n    }),\r\n    [clientReady, session],\r\n  )\r\n}\r\n\r\nexport function AdminRuntimeBridge({\r\n  children,\r\n}: {\r\n  children: React.ReactNode\r\n}) {\r\n  return (\r\n    <AdminAppRuntimeProvider\r\n      config={adminAppConfig as AdminAppConfig}\r\n      adapters={{ useAuth: useAdminAppAuthAdapter, api }}\r\n    >\r\n      {children}\r\n    </AdminAppRuntimeProvider>\r\n  )\r\n}\r\n"
+    },
+    "src/app/admin/categories/new/loading.tsx": {
+      "id": "file_src_app_admin_categories_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/new/loading\"\n"
+    },
+    "src/app/admin/categories/new/page.tsx": {
+      "id": "file_src_app_admin_categories_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/new/page\"\n"
+    },
+    "src/app/admin/categories/page.tsx": {
+      "id": "file_src_app_admin_categories_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/page\"\n"
+    },
+    "src/app/admin/categories/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/categories/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_categories__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/edit/page\"\n"
+    },
+    "src/app/admin/categories/[id]/loading.tsx": {
+      "id": "file_src_app_admin_categories__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/loading\"\n"
+    },
+    "src/app/admin/categories/[id]/page.tsx": {
+      "id": "file_src_app_admin_categories__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/page\"\n"
+    },
+    "src/app/admin/dang-ky/page.tsx": {
+      "id": "file_src_app_admin_dang_ky_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminRegisterPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/register-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/dang-ky"
+      ],
+      "content": "import { RegisterForm } from \"@/features/admin-auth/register-form\"\r\n\r\nexport default function StoreAdminRegisterPage() {\r\n  return <RegisterForm />\r\n}\r\n"
+    },
+    "src/app/admin/dang-nhap/page.tsx": {
+      "id": "file_src_app_admin_dang_nhap_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminLoginPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/sign-in-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/dang-nhap"
+      ],
+      "content": "import { SignInForm } from \"@/features/admin-auth/sign-in-form\"\r\n\r\nexport default function StoreAdminLoginPage() {\r\n  return <SignInForm />\r\n}\r\n"
+    },
+    "src/app/admin/data/page.tsx": {
+      "id": "file_src_app_admin_data_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/data"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/data/page\"\n"
+    },
+    "src/app/admin/file-storage/page.tsx": {
+      "id": "file_src_app_admin_file_storage_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/file-storage"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/file-storage/page\"\n"
+    },
+    "src/app/admin/guides/new/loading.tsx": {
+      "id": "file_src_app_admin_guides_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/new/loading\"\n"
+    },
+    "src/app/admin/guides/new/page.tsx": {
+      "id": "file_src_app_admin_guides_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/new/page\"\n"
+    },
+    "src/app/admin/guides/page.tsx": {
+      "id": "file_src_app_admin_guides_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/page\"\n"
+    },
+    "src/app/admin/guides/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/guides/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_guides__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/edit/page\"\n"
+    },
+    "src/app/admin/guides/[id]/loading.tsx": {
+      "id": "file_src_app_admin_guides__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/loading\"\n"
+    },
+    "src/app/admin/guides/[id]/page.tsx": {
+      "id": "file_src_app_admin_guides__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/page\"\n"
+    },
+    "src/app/admin/layout.tsx": {
+      "id": "file_src_app_admin_layout_tsx",
+      "type": "layout",
+      "client": false,
+      "exports": [
+        "StoreAdminLayout"
+      ],
+      "imports": [
+        "src/app/admin/page.tsx",
+        "src/providers/admin/query-provider.tsx",
+        "src/providers/admin/auth-provider.tsx",
+        "src/providers/admin/store-admin-layout.tsx",
+        "src/app/admin/admin-runtime-bridge.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin"
+      ],
+      "content": "import { QueryProvider } from \"@/providers/admin/query-provider\"\r\nimport { AuthProvider } from \"@/providers/admin/auth-provider\"\r\nimport { StoreAdminLayoutProvider } from \"@/providers/admin/store-admin-layout\"\r\nimport { AdminRuntimeBridge } from \"./admin-runtime-bridge\"\r\n\r\nexport default function StoreAdminLayout({\r\n  children,\r\n}: Readonly<{\r\n  children: React.ReactNode\r\n}>) {\r\n  return (\r\n    <QueryProvider>\r\n      <AuthProvider>\r\n        <AdminRuntimeBridge>\r\n          <StoreAdminLayoutProvider>{children}</StoreAdminLayoutProvider>\r\n        </AdminRuntimeBridge>\r\n      </AuthProvider>\r\n    </QueryProvider>\r\n  )\r\n}\r\n"
+    },
+    "src/app/admin/orders/page.tsx": {
+      "id": "file_src_app_admin_orders_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/page\"\n"
+    },
+    "src/app/admin/orders/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_orders__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/[id]/edit/page\"\n"
+    },
+    "src/app/admin/orders/[id]/page.tsx": {
+      "id": "file_src_app_admin_orders__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/[id]/page\"\n"
+    },
+    "src/app/admin/page.tsx": {
+      "id": "file_src_app_admin_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminIndexPage"
+      ],
+      "imports": [
+        "src/config/admin/store-admin-access.ts"
+      ],
+      "importedBy": [
+        "src/app/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "import { redirect } from \"next/navigation\"\r\nimport { STORE_ADMIN_HOME_PATH } from \"@/config/admin/store-admin-access\"\r\n\r\n/** Index admin (`basePath`) → dashboard tổng quan. */\r\nexport default function StoreAdminIndexPage() {\r\n  redirect(STORE_ADMIN_HOME_PATH)\r\n}\r\n"
+    },
+    "src/app/admin/products/new/page.tsx": {
+      "id": "file_src_app_admin_products_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/new/page\"\n"
+    },
+    "src/app/admin/products/page.tsx": {
+      "id": "file_src_app_admin_products_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/page\"\n"
+    },
+    "src/app/admin/products/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_products__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/[id]/edit/page\"\n"
+    },
+    "src/app/admin/products/[id]/page.tsx": {
+      "id": "file_src_app_admin_products__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/[id]/page\"\n"
+    },
+    "src/app/admin/profile/page.tsx": {
+      "id": "file_src_app_admin_profile_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminProfilePage"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/profile"
+      ],
+      "content": "import { AdminProfilePage } from \"@workspace/admin-app/modules/profile/_component/admin-profile-page\"\r\n\r\nconst STORE_ADMIN_PROFILE_CONFIG = {\r\n  subtitle:\r\n    \"Cập nhật thông tin tài khoản quản trị cửa hàng B2B và mật khẩu đăng nhập.\",\r\n} as const\r\n\r\nexport default function StoreAdminProfilePage() {\r\n  return <AdminProfilePage config={STORE_ADMIN_PROFILE_CONFIG} />\r\n}\r\n"
+    },
+    "src/app/admin/promo-codes/new/page.tsx": {
+      "id": "file_src_app_admin_promo_codes_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/new/page\"\n"
+    },
+    "src/app/admin/promo-codes/page.tsx": {
+      "id": "file_src_app_admin_promo_codes_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/page\"\n"
+    },
+    "src/app/admin/promo-codes/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/[id]/edit/page\"\n"
+    },
+    "src/app/admin/promo-codes/[id]/page.tsx": {
+      "id": "file_src_app_admin_promo_codes__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/[id]/page\"\n"
+    },
+    "src/app/admin/rbac/page.tsx": {
+      "id": "file_src_app_admin_rbac_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/page\"\n"
+    },
+    "src/app/admin/rbac/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/rbac/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/edit/page\"\n"
+    },
+    "src/app/admin/rbac/[id]/loading.tsx": {
+      "id": "file_src_app_admin_rbac__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/loading\"\n"
+    },
+    "src/app/admin/rbac/[id]/page.tsx": {
+      "id": "file_src_app_admin_rbac__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/page\"\n"
+    },
+    "src/app/admin/seo-metas/new/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/new/loading\"\n"
+    },
+    "src/app/admin/seo-metas/new/page.tsx": {
+      "id": "file_src_app_admin_seo_metas_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/new/page\"\n"
+    },
+    "src/app/admin/seo-metas/page.tsx": {
+      "id": "file_src_app_admin_seo_metas_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/page\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/edit/page\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/loading\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/page.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/page\"\n"
+    },
+    "src/app/admin/settings/page.tsx": {
+      "id": "file_src_app_admin_settings_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/settings"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/settings/page\"\n"
+    },
+    "src/app/admin/staff/new/loading.tsx": {
+      "id": "file_src_app_admin_staff_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/new/loading\"\n"
+    },
+    "src/app/admin/staff/new/page.tsx": {
+      "id": "file_src_app_admin_staff_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/new/page\"\n"
+    },
+    "src/app/admin/staff/page.tsx": {
+      "id": "file_src_app_admin_staff_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/page\"\n"
+    },
+    "src/app/admin/staff/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/staff/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_staff__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/edit/page\"\n"
+    },
+    "src/app/admin/staff/[id]/loading.tsx": {
+      "id": "file_src_app_admin_staff__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/loading\"\n"
+    },
+    "src/app/admin/staff/[id]/page.tsx": {
+      "id": "file_src_app_admin_staff__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/page\"\n"
+    },
+    "src/app/admin/tong-quan/page.tsx": {
+      "id": "file_src_app_admin_tong_quan_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tong-quan"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/dashboard/page\"\n"
+    },
     "src/app/api/graphify/route.ts": {
       "id": "file_src_app_api_graphify_route_ts",
       "type": "api-route",
@@ -715,7 +1473,7 @@
         "src/app",
         "src/app/layout.tsx"
       ],
-      "content": "\"use client\";\r\n\r\nimport React, { useEffect, useMemo, useState } from \"react\";\r\nimport {\r\n  ArrowRight,\r\n  Zap,\r\n  TrendingUp,\r\n  Package,\r\n  ChevronRight,\r\n  Flame,\r\n  CheckCircle2,\r\n} from \"lucide-react\";\r\nimport Link from \"next/link\";\r\nimport {\r\n  Page,\r\n  PageContent,\r\n  Container,\r\n  Grid,\r\n} from \"@ui/components/layout\";\r\nimport {\r\n  STORE_CONTAINER_INSET_WIDE,\r\n  STORE_CONTAINER_MAX_DEFAULT,\r\n  STORE_LANDING_PAGE_CONTENT_CLASS,\r\n} from \"@ui/lib/layout-shell\";\r\nimport { cn } from \"@ui/lib/utils\";\r\nimport { Heading, Text, Badge, LiveDot } from \"@ui/components/typography\";\r\nimport { Badge as UiBadge } from \"@ui/components/badge\";\r\nimport { Button } from \"@ui/components/button\";\r\nimport { ProductCard } from \"@/components/shared/product-card\";\r\nimport { ProductWideCard } from \"@/components/shared/product-wide-card\";\r\nimport { useCategories, useProducts } from \"@/hooks/queries\";\r\nimport { formatVND } from \"@/lib/format\";\r\nimport { hasUnitWholesalePromo } from \"@workspace/api-client\";\r\nimport type { Product } from \"@/lib/api\";\r\nimport { getProductUnits } from \"@/lib/catalog-filters\";\r\n\r\nconst PLACEHOLDER_IMAGE =\r\n  \"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600\";\r\n\r\n/**\r\n * Pick the best per-unit price for the homepage cards. Giá khuyến mãi (wholesale)\r\n * thường được ưu tiên hiển thị cùng nhãn khớp catalog.\r\n */\r\nfunction pickPrimaryPrice(p: Product): {\r\n  price: number;\r\n  original: number | null;\r\n  label: string;\r\n} {\r\n  const units = getProductUnits(p);\r\n  const wholesaleUnit = units.find((u) => hasUnitWholesalePromo(u));\r\n  if (wholesaleUnit) {\r\n    return {\r\n      price: wholesaleUnit.wholesalePrice!,\r\n      original: wholesaleUnit.retailPrice,\r\n      label: wholesaleUnit.label,\r\n    };\r\n  }\r\n  const firstUnit = units[0];\r\n  if (firstUnit) {\r\n    return {\r\n      price: firstUnit.retailPrice,\r\n      original: null,\r\n      label: firstUnit.label,\r\n    };\r\n  }\r\n  const w = Number(p.wholesalePrice);\r\n  const r = Number(p.retailPrice);\r\n  if (Number.isFinite(w) && w > 0 && w < r) {\r\n    return { price: w, original: r, label: p.unit };\r\n  }\r\n  return {\r\n    price: r || w || 0,\r\n    original: null,\r\n    label: p.unit,\r\n  };\r\n}\r\n\r\nexport default function Home() {\r\n  const [timeLeft, setTimeLeft] = useState({\r\n    hours: 5,\r\n    minutes: 24,\r\n    seconds: 45,\r\n  });\r\n\r\n  useEffect(() => {\r\n    const timer = setInterval(() => {\r\n      setTimeLeft((prev) => {\r\n        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };\r\n        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };\r\n        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };\r\n        return prev;\r\n      });\r\n    }, 1000);\r\n    return () => clearInterval(timer);\r\n  }, []);\r\n\r\n  const { data: productsData, isLoading: productsLoading } = useProducts();\r\n  const { data: categoriesData } = useCategories(true);\r\n\r\n  const products = useMemo(() => productsData ?? [], [productsData]);\r\n  const categories = useMemo(() => categoriesData ?? [], [categoriesData]);\r\n\r\n  const categoryMap = useMemo(() => {\r\n    const map = new Map<string, string>();\r\n    for (const c of categories) map.set(c.slug, c.name);\r\n    return map;\r\n  }, [categories]);\r\n\r\n  const flashSale = useMemo(\r\n    () =>\r\n      products\r\n        .filter((p) => {\r\n          const coupons = Array.isArray(p.coupons)\r\n            ? p.coupons\r\n            : typeof p.coupons === \"string\"\r\n              ? (() => {\r\n                  try {\r\n                    const v: unknown = JSON.parse(p.coupons);\r\n                    return Array.isArray(v) ? v : [];\r\n                  } catch {\r\n                    return [];\r\n                  }\r\n                })()\r\n              : [];\r\n          return (\r\n            coupons.length > 0 ||\r\n            getProductUnits(p).some((u) => hasUnitWholesalePromo(u))\r\n          );\r\n        })\r\n        .slice(0, 4),\r\n    [products],\r\n  );\r\n\r\n  const bestSellers = useMemo(\r\n    () => [...products].sort((a, b) => b.stock - a.stock).slice(0, 4),\r\n    [products],\r\n  );\r\n\r\n  return (\r\n    <Page className=\"selection:bg-primary/30 scroll-smooth\">\r\n      <PageContent className={STORE_LANDING_PAGE_CONTENT_CLASS}>\r\n        {/* --- Hero Section --- */}\r\n        <section className=\"relative overflow-hidden pt-12 pb-24 md:pt-28 md:pb-40 w-full\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-16 items-center\">\r\n              <div className=\"space-y-10 animate-in fade-in slide-in-from-left duration-700\">\r\n                <Badge variant=\"primary\" size=\"lg\" className=\"flex w-fit items-center gap-2 text-base font-bold\">\r\n                  <LiveDot /> Hệ thống nhập hàng B2B lớn nhất VN\r\n                </Badge>\r\n                <Heading as=\"h1\" size=\"display\" className=\"leading-tight tracking-tighter\">\r\n                  Nâng Tầm Cửa Hàng <br />\r\n                  <span className=\"bg-gradient-to-r from-primary to-gradient-hero-end bg-clip-text text-transparent\">\r\n                    Với Hub B2B\r\n                  </span>\r\n                </Heading>\r\n                <Text variant=\"muted\" className=\"text-2xl leading-relaxed\">\r\n                  Cung cấp giải pháp nhập hàng sỉ đa dạng mặt hàng tiêu dùng từ các thương hiệu lớn với mức giá ưu đãi dành riêng cho đại lý.\r\n                </Text>\r\n                <div className=\"flex flex-col sm:flex-row gap-4 pt-4\">\r\n                  <Link href=\"/catalog\">\r\n                    <Button size=\"lg\" className=\"h-16 px-10 text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 shadow-xl shadow-primary/20 transition-all hover:scale-105 group\">\r\n                      Nhập hàng sỉ ngay\r\n                      <ChevronRight className=\"ml-2 size-5 group-hover:translate-x-1 transition-transform\" />\r\n                    </Button>\r\n                  </Link>\r\n                  <Link href=\"/register\">\r\n                    <Button variant=\"outline\" size=\"lg\" className=\"h-16 px-10 text-xl font-bold rounded-2xl border-2 border-outline-variant hover:bg-muted transition-all\">\r\n                      Đăng ký Đại lý\r\n                    </Button>\r\n                  </Link>\r\n                </div>\r\n                <div className=\"flex items-center gap-8 pt-8 border-t border-border/50\">\r\n                  <div className=\"space-y-1\">\r\n                    <Heading as=\"span\" size=\"section\">10k+</Heading>\r\n                    <Text variant=\"small\" className=\"uppercase tracking-widest font-bold\">Đại lý tin dùng</Text>\r\n                  </div>\r\n                  <div className=\"space-y-1\">\r\n                    <Heading as=\"span\" size=\"section\">{products.length || \"5000\"}+</Heading>\r\n                    <Text variant=\"small\" className=\"uppercase tracking-widest font-bold\">Mặt hàng sỉ</Text>\r\n                  </div>\r\n                  <div className=\"space-y-1\">\r\n                    <Heading as=\"span\" size=\"section\">24h</Heading>\r\n                    <Text variant=\"small\" className=\"uppercase tracking-widest font-bold\">Giao nhận nhanh</Text>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n              <div className=\"relative hidden lg:block animate-in fade-in slide-in-from-right duration-1000\">\r\n                <div className=\"absolute inset-0 bg-primary/20 blur-[120px] rounded-full scale-75 opacity-50\"></div>\r\n                <img\r\n                  src=\"/storesync_b2b_hero_banner_1778054250920.png\"\r\n                  alt=\"Hub B2B — nhập hàng sỉ\"\r\n                  className=\"relative z-10 w-full rotate-2 rounded-[2.5rem] border border-border/40 shadow-2xl transition-transform duration-700 hover:rotate-0\"\r\n                />\r\n                <div className=\"animate-bounce-subtle absolute -bottom-6 -left-6 z-20 rounded-3xl border border-border bg-card p-6 shadow-2xl\">\r\n                  <div className=\"flex items-center gap-4\">\r\n                    <div className=\"bg-success/10 p-3 rounded-2xl\">\r\n                      <TrendingUp className=\"text-success size-8\" />\r\n                    </div>\r\n                    <div>\r\n                      <Text variant=\"small\" className=\"font-bold\">Doanh thu tăng</Text>\r\n                      <Heading as=\"span\" size=\"title\">+35% mỗi tháng</Heading>\r\n                    </div>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Flash Sale Section (data-driven) --- */}\r\n        <section className=\"py-24 relative overflow-hidden w-full\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"flex flex-col md:flex-row justify-between items-end gap-8 mb-16\">\r\n              <div className=\"space-y-6\">\r\n                <UiBadge variant=\"coupon\" size=\"lg\" shape=\"pill\" className=\"flex w-fit items-center gap-2 text-base font-bold\">\r\n                  <Zap className=\"size-5 fill-destructive\" /> Flash Sale Đại lý\r\n                </UiBadge>\r\n                <div className=\"flex flex-col md:flex-row md:items-center gap-8\">\r\n                  <Heading as=\"h2\" size=\"display\" className=\"tracking-tighter uppercase leading-none\">Giá Sốc Giờ Vàng</Heading>\r\n                  <div className=\"flex items-center gap-4 bg-background/50 backdrop-blur-sm p-2 rounded-2xl border border-border/50 shadow-sm\">\r\n                    <Text as=\"span\" variant=\"body\" className=\"text-muted-foreground font-bold ml-2\">Kết thúc sau:</Text>\r\n                    <div className=\"flex gap-2\">\r\n                      <div className=\"bg-foreground text-background px-4 py-3 rounded-xl font-black text-2xl w-16 text-center\">{timeLeft.hours.toString().padStart(2, '0')}</div>\r\n                      <span className=\"text-3xl font-bold text-foreground self-center\">:</span>\r\n                      <div className=\"bg-foreground text-background px-4 py-3 rounded-xl font-black text-2xl w-16 text-center\">{timeLeft.minutes.toString().padStart(2, '0')}</div>\r\n                      <span className=\"text-3xl font-bold text-foreground self-center\">:</span>\r\n                      <div className=\"bg-foreground text-background px-4 py-3 rounded-xl font-black text-2xl w-16 text-center\">{timeLeft.seconds.toString().padStart(2, '0')}</div>\r\n                    </div>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n              <Link href=\"/catalog\" className=\"text-primary font-black text-xl flex items-center gap-2 group hover:underline mb-2\">\r\n                Xem tất cả ưu đãi <ArrowRight className=\"size-6 group-hover:translate-x-2 transition-transform\" />\r\n              </Link>\r\n            </div>\r\n\r\n            {productsLoading ? (\r\n              <Grid cols={4} gap={8}>\r\n                {Array.from({ length: 4 }).map((_, i) => (\r\n                  <div key={i} className=\"h-[520px] rounded-3xl bg-muted/40 animate-pulse\" />\r\n                ))}\r\n              </Grid>\r\n            ) : flashSale.length === 0 ? (\r\n              <div className=\"text-center py-12 bg-muted/20 border border-dashed border-outline-variant rounded-2xl\">\r\n                <Package className=\"w-16 h-16 mx-auto text-outline-variant opacity-30 mb-4\" />\r\n                <p className=\"text-xl font-bold\">Chưa có chương trình giảm giá</p>\r\n                <p className=\"text-muted-foreground mt-1\">\r\n                  Quay lại sau để bắt deal mới nhé.\r\n                </p>\r\n              </div>\r\n            ) : (\r\n              <Grid cols={4} gap={8}>\r\n                {flashSale.map((p) => {\r\n                  const primary = pickPrimaryPrice(p);\r\n                  const discount =\r\n                    primary.original != null &&\r\n                    primary.original > primary.price\r\n                      ? Math.round(\r\n                          ((primary.original - primary.price) /\r\n                            primary.original) *\r\n                            100,\r\n                        )\r\n                      : null;\r\n                  return (\r\n                    <ProductCard\r\n                      key={p.id}\r\n                      variant=\"flash\"\r\n                      href={`/catalog/${p.id}`}\r\n                      name={p.name}\r\n                      image={p.images?.[0] ?? PLACEHOLDER_IMAGE}\r\n                      originalPrice={\r\n                        primary.original != null &&\r\n                        primary.original > primary.price\r\n                          ? formatVND(primary.original)\r\n                          : undefined\r\n                      }\r\n                      price={formatVND(primary.price)}\r\n                      discountLabel={discount ? `-${discount}%` : undefined}\r\n                      soldText={`Tồn kho ${p.stock} ${p.unit}`}\r\n                      progressPercent={Math.min(100, (p.stock / 1000) * 100)}\r\n                      primaryCtaLabel=\"Xem chi tiết\"\r\n                    />\r\n                  );\r\n                })}\r\n              </Grid>\r\n            )}\r\n          </Container>\r\n        </section>\r\n\r\n\r\n        {/* --- Most Purchased Section (data-driven) --- */}\r\n        <section className=\"py-32 mx-0 md:mx-6 w-full md:w-[calc(100%-3rem)]\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={cn(STORE_CONTAINER_INSET_WIDE, \"w-full\")}>\r\n            <div className=\"flex flex-col lg:flex-row gap-16 items-start min-w-0 w-full\">\r\n              <div className=\"w-full lg:w-[380px] flex-shrink-0 space-y-10\">\r\n                <Badge variant=\"primary\" size=\"lg\" className=\"text-base font-bold\">\r\n                  <Flame className=\"mr-2 size-6 fill-primary\" /> Top Mua Nhiều Nhất\r\n                </Badge>\r\n                <Heading as=\"h2\" size=\"section\" className=\"leading-none tracking-tighter\">\r\n                  Sản phẩm <br />\r\n                  <span className=\"text-primary\">Bán chạy tháng 5</span>\r\n                </Heading>\r\n                <Text variant=\"lead\" className=\"leading-relaxed\">\r\n                  Danh sách các mặt hàng đại lý nhập nhiều nhất trong tháng qua. Hàng về liên tục, cam kết date mới nhất 2026.\r\n                </Text>\r\n                <div className=\"space-y-4 pt-4\">\r\n                  {[\r\n                    \"Hàng chính hãng 100%\",\r\n                    \"Mức giá khuyến mãi cạnh tranh nhất thị trường\",\r\n                    \"Hỗ trợ đổi trả trong 7 ngày\",\r\n                    \"Chiết khấu thêm cho đơn hàng lớn\"\r\n                  ].map((item, i) => (\r\n                    <div key={i} className=\"flex items-center gap-3\">\r\n                      <div className=\"bg-success/20 p-1 rounded-full\">\r\n                        <CheckCircle2 className=\"size-5 text-success\" />\r\n                      </div>\r\n                      <Text as=\"span\" variant=\"body\" className=\"font-bold\">{item}</Text>\r\n                    </div>\r\n                  ))}\r\n                </div>\r\n                <Link href=\"/catalog\">\r\n                  <Button size=\"lg\" variant=\"outline\" className=\"h-16 px-10 text-xl font-bold rounded-2xl border-2 mt-4 hover:bg-muted group\">\r\n                    Xem bảng xếp hạng\r\n                    <ArrowRight className=\"ml-2 size-5 group-hover:translate-x-1 transition-transform\" />\r\n                  </Button>\r\n                </Link>\r\n              </div>\r\n              <div className=\"flex-1 min-w-0 w-full\">\r\n                {productsLoading ? (\r\n                  <Grid cols={2} gap={8}>\r\n                    {Array.from({ length: 4 }).map((_, i) => (\r\n                      <div key={i} className=\"h-44 rounded-[2.5rem] bg-muted/40 animate-pulse\" />\r\n                    ))}\r\n                  </Grid>\r\n                ) : (\r\n                  <Grid cols={2} gap={8}>\r\n                    {bestSellers.map((p, idx) => {\r\n                      const primary = pickPrimaryPrice(p);\r\n                      const tag = [\"Best Seller\", \"Trending\", \"Hot Stock\", \"Top Rated\"][idx] ?? \"Hot\";\r\n                      return (\r\n                        <ProductWideCard\r\n                          key={p.id}\r\n                          productId={String(p.id)}\r\n                          name={p.name}\r\n                          listPrice={\r\n                            primary.original != null &&\r\n                            primary.original > primary.price\r\n                              ? formatVND(primary.original)\r\n                              : undefined\r\n                          }\r\n                          price={`${formatVND(primary.price)} / ${primary.label}`}\r\n                          sold={`${p.stock.toLocaleString(\"vi-VN\")} ${p.unit}`}\r\n                          image={p.images?.[0] ?? PLACEHOLDER_IMAGE}\r\n                          tag={tag}\r\n                          category={categoryMap.get(p.category) ?? p.category}\r\n                        />\r\n                      );\r\n                    })}\r\n                  </Grid>\r\n                )}\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Trust & Branding --- */}\r\n        <section className=\"py-24 overflow-hidden bg-background w-full\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"text-center mb-16 space-y-2\">\r\n              <Text variant=\"label\" className=\"font-black text-primary tracking-[0.3em]\">Đối tác tin cậy</Text>\r\n              <Heading as=\"h3\" size=\"title\">Hợp tác cùng 100+ thương hiệu lớn</Heading>\r\n            </div>\r\n            <div className=\"flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700\">\r\n              {[\"Vinamilk\", \"Coca-Cola\", \"Unilever\", \"Nestle\", \"Pepsico\", \"P&G\", \"Masan\"].map((brand, i) => (\r\n                <Text as=\"div\" key={i} variant=\"lead\" className=\"font-black tracking-tighter hover:scale-110 transition-transform cursor-default\">{brand}</Text>\r\n              ))}\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Final CTA --- */}\r\n        <section className=\"pb-32 px-4 w-full\">\r\n          <div className=\"max-w-7xl mx-auto bg-primary rounded-none md:rounded-[4rem] p-12 md:p-24 text-center space-y-10 relative overflow-hidden shadow-2xl shadow-primary/30 w-full\">\r\n            <div className=\"absolute top-0 left-0 w-full h-full bg-[url('/hot_sale_consumer_goods_collage_1778054273471.png')] opacity-10 bg-cover bg-center\"></div>\r\n            <div className=\"relative z-10 space-y-10\">\r\n              <Heading as=\"h2\" size=\"display\" className=\"text-primary-foreground leading-tight tracking-tighter\">\r\n                Sẵn sàng bùng nổ doanh số <br />\r\n                cùng Hub B2B?\r\n              </Heading>\r\n              <Text variant=\"lead\" align=\"center\" className=\"text-primary-foreground/90 max-w-4xl mx-auto font-medium leading-relaxed\">\r\n                Đăng ký tài khoản đại lý ngay hôm nay để nhận bảng báo giá khuyến mãi độc quyền và ưu đãi miễn phí vận chuyển cho đơn hàng đầu tiên.\r\n              </Text>\r\n              <div className=\"flex flex-col sm:flex-row gap-8 justify-center pt-8\">\r\n                <Link href=\"/register\">\r\n                  <Button size=\"lg\" className=\"h-20 rounded-3xl bg-primary-foreground px-12 text-3xl font-black text-primary shadow-2xl transition-all hover:bg-primary-foreground/90 hover:scale-105 active:scale-95\">\r\n                    Đăng ký ngay\r\n                  </Button>\r\n                </Link>\r\n                <Link href=\"/support\">\r\n                  <Button size=\"lg\" variant=\"outline\" className=\"h-20 rounded-3xl border-2 border-primary-foreground/30 bg-transparent px-12 text-3xl font-black text-primary-foreground transition-all hover:bg-primary-foreground/10 active:scale-95\">\r\n                    Tư vấn trực tiếp\r\n                  </Button>\r\n                </Link>\r\n              </div>\r\n            </div>\r\n          </div>\r\n        </section>\r\n      </PageContent>\r\n    </Page>\r\n  );\r\n}\r\n"
+      "content": "\"use client\";\r\n\r\nimport React, { useEffect, useMemo, useState } from \"react\";\r\nimport {\r\n  ArrowRight,\r\n  Zap,\r\n  TrendingUp,\r\n  Package,\r\n  ChevronRight,\r\n  Flame,\r\n  CheckCircle2,\r\n} from \"lucide-react\";\r\nimport Link from \"next/link\";\r\nimport {\r\n  Page,\r\n  PageContent,\r\n  Container,\r\n  Grid,\r\n} from \"@ui/components/layout\";\r\nimport {\r\n  STORE_CONTAINER_INSET_WIDE,\r\n  STORE_CONTAINER_MAX_DEFAULT,\r\n  STORE_LANDING_PAGE_CONTENT_CLASS,\r\n} from \"@ui/lib/layout-shell\";\r\nimport { cn } from \"@ui/lib/utils\";\r\nimport { Heading, Text, Badge, LiveDot } from \"@ui/components/typography\";\r\nimport { Badge as UiBadge } from \"@ui/components/badge\";\r\nimport { Button } from \"@ui/components/button\";\r\nimport { ProductCard } from \"@/components/shared/product-card\";\r\nimport { ProductWideCard } from \"@/components/shared/product-wide-card\";\r\nimport { useCategories, useProducts } from \"@/hooks/queries\";\r\nimport { formatVND } from \"@/lib/format\";\r\nimport { hasUnitWholesalePromo } from \"@workspace/api-client\";\r\nimport type { Product } from \"@/lib/api\";\r\nimport { getProductUnits } from \"@/lib/catalog-filters\";\r\n\r\nconst PLACEHOLDER_IMAGE =\r\n  \"https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600\";\r\n\r\n/**\r\n * Pick the best per-unit price for the homepage cards. Giá khuyến mãi (wholesale)\r\n * thường được ưu tiên hiển thị cùng nhãn khớp catalog.\r\n */\r\nfunction pickPrimaryPrice(p: Product): {\r\n  price: number;\r\n  original: number | null;\r\n  label: string;\r\n} {\r\n  const units = getProductUnits(p);\r\n  const wholesaleUnit = units.find((u) => hasUnitWholesalePromo(u));\r\n  if (wholesaleUnit) {\r\n    return {\r\n      price: wholesaleUnit.wholesalePrice!,\r\n      original: wholesaleUnit.retailPrice,\r\n      label: wholesaleUnit.label,\r\n    };\r\n  }\r\n  const firstUnit = units[0];\r\n  if (firstUnit) {\r\n    return {\r\n      price: firstUnit.retailPrice,\r\n      original: null,\r\n      label: firstUnit.label,\r\n    };\r\n  }\r\n  const w = Number(p.wholesalePrice);\r\n  const r = Number(p.retailPrice);\r\n  if (Number.isFinite(w) && w > 0 && w < r) {\r\n    return { price: w, original: r, label: p.unit };\r\n  }\r\n  return {\r\n    price: r || w || 0,\r\n    original: null,\r\n    label: p.unit,\r\n  };\r\n}\r\n\r\nexport default function Home() {\r\n  const [timeLeft, setTimeLeft] = useState({\r\n    hours: 5,\r\n    minutes: 24,\r\n    seconds: 45,\r\n  });\r\n\r\n  useEffect(() => {\r\n    const timer = setInterval(() => {\r\n      setTimeLeft((prev) => {\r\n        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };\r\n        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };\r\n        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };\r\n        return prev;\r\n      });\r\n    }, 1000);\r\n    return () => clearInterval(timer);\r\n  }, []);\r\n\r\n  const { data: productsData, isLoading: productsLoading } = useProducts();\r\n  const { data: categoriesData } = useCategories(true);\r\n\r\n  const products = useMemo(() => productsData ?? [], [productsData]);\r\n  const categories = useMemo(() => categoriesData ?? [], [categoriesData]);\r\n\r\n  const categoryMap = useMemo(() => {\r\n    const map = new Map<string, string>();\r\n    for (const c of categories) map.set(c.slug, c.name);\r\n    return map;\r\n  }, [categories]);\r\n\r\n  const flashSale = useMemo(\r\n    () =>\r\n      products\r\n        .filter((p) => {\r\n          const coupons = Array.isArray(p.coupons)\r\n            ? p.coupons\r\n            : typeof p.coupons === \"string\"\r\n              ? (() => {\r\n                  try {\r\n                    const v: unknown = JSON.parse(p.coupons);\r\n                    return Array.isArray(v) ? v : [];\r\n                  } catch {\r\n                    return [];\r\n                  }\r\n                })()\r\n              : [];\r\n          return (\r\n            coupons.length > 0 ||\r\n            getProductUnits(p).some((u) => hasUnitWholesalePromo(u))\r\n          );\r\n        })\r\n        .slice(0, 4),\r\n    [products],\r\n  );\r\n\r\n  const bestSellers = useMemo(\r\n    () => [...products].sort((a, b) => b.stock - a.stock).slice(0, 4),\r\n    [products],\r\n  );\r\n\r\n  return (\r\n    <Page as=\"div\" className=\"selection:bg-primary/30 scroll-smooth\">\r\n      <PageContent className={STORE_LANDING_PAGE_CONTENT_CLASS}>\r\n        {/* --- Hero Section --- */}\r\n        <section className=\"relative w-full overflow-hidden pt-8 pb-12 md:pt-12 md:pb-16\">\r\n          <div\r\n            aria-hidden\r\n            className=\"pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_-10%,var(--primary)/0.12,transparent)]\"\r\n          />\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-10\">\r\n              <div className=\"animate-in fade-in slide-in-from-left space-y-5 duration-700\">\r\n                <Badge\r\n                  variant=\"primary\"\r\n                  size=\"sm\"\r\n                  className=\"flex w-fit items-center gap-1.5 font-bold\"\r\n                >\r\n                  <LiveDot /> Hệ thống nhập hàng B2B lớn nhất VN\r\n                </Badge>\r\n                <Heading\r\n                  as=\"h1\"\r\n                  size=\"section\"\r\n                  className=\"max-w-xl text-3xl leading-[1.15] tracking-tight md:text-4xl lg:text-[2.75rem]\"\r\n                >\r\n                  Nâng tầm cửa hàng{\" \"}\r\n                  <span className=\"bg-gradient-to-r from-primary to-gradient-hero-end bg-clip-text text-transparent\">\r\n                    với Hub B2B\r\n                  </span>\r\n                </Heading>\r\n                <Text\r\n                  variant=\"muted\"\r\n                  className=\"max-w-lg text-base leading-relaxed md:text-[17px]\"\r\n                >\r\n                  Nhập hàng sỉ đa dạng mặt hàng tiêu dùng từ thương hiệu lớn — giá ưu đãi dành riêng cho đại lý.\r\n                </Text>\r\n                <div className=\"flex flex-col gap-3 pt-1 sm:flex-row sm:items-center\">\r\n                  <Link href=\"/catalog\">\r\n                    <Button\r\n                      size=\"default\"\r\n                      className=\"group h-11 rounded-xl px-6 text-sm font-bold shadow-lg shadow-primary/15 transition-all hover:bg-primary/90 md:h-12 md:text-base\"\r\n                    >\r\n                      Nhập hàng sỉ ngay\r\n                      <ChevronRight className=\"ml-1.5 size-4 transition-transform group-hover:translate-x-0.5\" />\r\n                    </Button>\r\n                  </Link>\r\n                  <Link href=\"/register\">\r\n                    <Button\r\n                      variant=\"outline\"\r\n                      size=\"default\"\r\n                      className=\"h-11 rounded-xl border px-6 text-sm font-bold hover:bg-muted md:h-12 md:text-base\"\r\n                    >\r\n                      Đăng ký đại lý\r\n                    </Button>\r\n                  </Link>\r\n                </div>\r\n                <div className=\"flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border/50 pt-4\">\r\n                  {[\r\n                    { value: \"10k+\", label: \"Đại lý tin dùng\" },\r\n                    {\r\n                      value: `${Math.max(products.length, 500)}+`,\r\n                      label: \"Mặt hàng sỉ\",\r\n                    },\r\n                    { value: \"24h\", label: \"Giao nhận nhanh\" },\r\n                  ].map((stat) => (\r\n                    <div key={stat.label} className=\"min-w-[5.5rem]\">\r\n                      <p className=\"text-xl font-black tabular-nums text-foreground md:text-2xl\">\r\n                        {stat.value}\r\n                      </p>\r\n                      <Text\r\n                        variant=\"small\"\r\n                        className=\"text-[11px] font-bold uppercase tracking-wide text-muted-foreground\"\r\n                      >\r\n                        {stat.label}\r\n                      </Text>\r\n                    </div>\r\n                  ))}\r\n                </div>\r\n              </div>\r\n              <div className=\"relative hidden animate-in fade-in slide-in-from-right duration-1000 lg:block\">\r\n                <div className=\"absolute inset-0 scale-75 rounded-full bg-primary/15 opacity-60 blur-[80px]\" />\r\n                <img\r\n                  src=\"/storesync_b2b_hero_banner_1778054250920.png\"\r\n                  alt=\"Hub B2B — nhập hàng sỉ\"\r\n                  className=\"relative z-10 w-full rounded-2xl border border-border/40 shadow-xl transition-transform duration-700 hover:rotate-0 lg:rotate-1\"\r\n                />\r\n                <div className=\"animate-bounce-subtle absolute -bottom-3 -left-3 z-20 rounded-2xl border border-border/80 bg-card/95 p-3.5 shadow-lg backdrop-blur-sm\">\r\n                  <div className=\"flex items-center gap-3\">\r\n                    <div className=\"rounded-xl bg-success/10 p-2\">\r\n                      <TrendingUp className=\"size-5 text-success\" />\r\n                    </div>\r\n                    <div>\r\n                      <Text variant=\"small\" className=\"text-xs font-bold\">\r\n                        Doanh thu tăng\r\n                      </Text>\r\n                      <p className=\"text-base font-black text-foreground\">\r\n                        +35% / tháng\r\n                      </p>\r\n                    </div>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Flash Sale Section (data-driven) --- */}\r\n        <section className=\"relative w-full overflow-hidden border-y border-primary/10 bg-gradient-to-b from-primary/[0.06] via-background to-background py-10 md:py-14\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-center md:justify-between\">\r\n              <div className=\"flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2\">\r\n                <UiBadge\r\n                  variant=\"coupon\"\r\n                  size=\"sm\"\r\n                  shape=\"pill\"\r\n                  className=\"flex w-fit items-center gap-1.5 font-bold\"\r\n                >\r\n                  <Zap className=\"size-3.5 fill-destructive\" /> Flash Sale Đại lý\r\n                </UiBadge>\r\n                <Heading\r\n                  as=\"h2\"\r\n                  size=\"section\"\r\n                  className=\"uppercase leading-none tracking-tight\"\r\n                >\r\n                  Giá sốc giờ vàng\r\n                </Heading>\r\n                <div className=\"flex items-center gap-2 rounded-xl border border-border/60 bg-background/80 px-2.5 py-1.5 shadow-sm backdrop-blur-sm\">\r\n                  <Text\r\n                    as=\"span\"\r\n                    variant=\"small\"\r\n                    className=\"shrink-0 font-semibold text-muted-foreground\"\r\n                  >\r\n                    Kết thúc\r\n                  </Text>\r\n                  <div className=\"flex items-center gap-1\">\r\n                    {[\r\n                      timeLeft.hours,\r\n                      timeLeft.minutes,\r\n                      timeLeft.seconds,\r\n                    ].map((value, i) => (\r\n                      <span key={i} className=\"flex items-center gap-1\">\r\n                        {i > 0 && (\r\n                          <span className=\"text-sm font-bold text-muted-foreground\">\r\n                            :\r\n                          </span>\r\n                        )}\r\n                        <span className=\"min-w-[2rem] rounded-md bg-foreground px-2 py-1 text-center text-sm font-black tabular-nums text-background\">\r\n                          {value.toString().padStart(2, \"0\")}\r\n                        </span>\r\n                      </span>\r\n                    ))}\r\n                  </div>\r\n                </div>\r\n              </div>\r\n              <Link\r\n                href=\"/catalog\"\r\n                className=\"group flex shrink-0 items-center gap-1.5 text-sm font-bold text-primary hover:underline md:text-base\"\r\n              >\r\n                Xem tất cả ưu đãi\r\n                <ArrowRight className=\"size-4 transition-transform group-hover:translate-x-0.5 md:size-5\" />\r\n              </Link>\r\n            </div>\r\n\r\n            {productsLoading ? (\r\n              <Grid cols={4} gap={4}>\r\n                {Array.from({ length: 4 }).map((_, i) => (\r\n                  <div\r\n                    key={i}\r\n                    className=\"h-[340px] animate-pulse rounded-2xl bg-muted/40 md:h-[360px]\"\r\n                  />\r\n                ))}\r\n              </Grid>\r\n            ) : flashSale.length === 0 ? (\r\n              <div className=\"rounded-2xl border border-dashed border-outline-variant bg-muted/20 py-10 text-center\">\r\n                <Package className=\"mx-auto mb-3 size-12 text-outline-variant opacity-30\" />\r\n                <p className=\"text-lg font-bold\">Chưa có chương trình giảm giá</p>\r\n                <p className=\"mt-1 text-sm text-muted-foreground\">\r\n                  Quay lại sau để bắt deal mới nhé.\r\n                </p>\r\n              </div>\r\n            ) : (\r\n              <Grid cols={4} gap={4}>\r\n                {flashSale.map((p) => {\r\n                  const primary = pickPrimaryPrice(p);\r\n                  const discount =\r\n                    primary.original != null &&\r\n                    primary.original > primary.price\r\n                      ? Math.round(\r\n                          ((primary.original - primary.price) /\r\n                            primary.original) *\r\n                            100,\r\n                        )\r\n                      : null;\r\n                  return (\r\n                    <ProductCard\r\n                      key={p.id}\r\n                      variant=\"flash\"\r\n                      href={`/catalog/${p.id}`}\r\n                      name={p.name}\r\n                      image={p.images?.[0] ?? PLACEHOLDER_IMAGE}\r\n                      originalPrice={\r\n                        primary.original != null &&\r\n                        primary.original > primary.price\r\n                          ? formatVND(primary.original)\r\n                          : undefined\r\n                      }\r\n                      price={formatVND(primary.price)}\r\n                      discountLabel={discount ? `-${discount}%` : undefined}\r\n                      soldText={`Tồn kho ${p.stock} ${p.unit}`}\r\n                      progressPercent={Math.min(100, (p.stock / 1000) * 100)}\r\n                      primaryCtaLabel=\"Xem chi tiết\"\r\n                    />\r\n                  );\r\n                })}\r\n              </Grid>\r\n            )}\r\n          </Container>\r\n        </section>\r\n\r\n\r\n        {/* --- Most Purchased Section (data-driven) --- */}\r\n        <section className=\"w-full py-10 md:py-14\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={cn(STORE_CONTAINER_INSET_WIDE, \"w-full\")}>\r\n            <div className=\"flex min-w-0 w-full flex-col items-start gap-6 lg:flex-row lg:gap-8\">\r\n              <div className=\"w-full shrink-0 space-y-4 lg:max-w-[300px] xl:max-w-[320px]\">\r\n                <Badge variant=\"primary\" size=\"sm\" className=\"font-bold\">\r\n                  <Flame className=\"mr-1.5 size-4 fill-primary\" /> Top mua nhiều nhất\r\n                </Badge>\r\n                <Heading as=\"h2\" size=\"section\" className=\"leading-tight tracking-tight\">\r\n                  Sản phẩm{\" \"}\r\n                  <span className=\"text-primary\">bán chạy tháng 5</span>\r\n                </Heading>\r\n                <Text variant=\"body\" className=\"text-sm leading-relaxed text-muted-foreground md:text-[15px]\">\r\n                  Mặt hàng đại lý nhập nhiều nhất tháng qua — hàng về liên tục, date mới 2026.\r\n                </Text>\r\n                <ul className=\"grid gap-2 sm:grid-cols-2 lg:grid-cols-1\">\r\n                  {[\r\n                    \"Hàng chính hãng 100%\",\r\n                    \"Giá khuyến mãi cạnh tranh\",\r\n                    \"Đổi trả trong 7 ngày\",\r\n                    \"Chiết khấu đơn lớn\",\r\n                  ].map((item) => (\r\n                    <li key={item} className=\"flex items-start gap-2\">\r\n                      <CheckCircle2 className=\"mt-0.5 size-4 shrink-0 text-success\" />\r\n                      <Text as=\"span\" variant=\"small\" className=\"font-semibold leading-snug\">\r\n                        {item}\r\n                      </Text>\r\n                    </li>\r\n                  ))}\r\n                </ul>\r\n                <Link href=\"/catalog\" className=\"inline-block pt-1\">\r\n                  <Button\r\n                    size=\"sm\"\r\n                    variant=\"outline\"\r\n                    className=\"group h-9 rounded-xl border px-4 text-sm font-bold hover:bg-muted\"\r\n                  >\r\n                    Xem bảng xếp hạng\r\n                    <ArrowRight className=\"ml-1.5 size-4 transition-transform group-hover:translate-x-0.5\" />\r\n                  </Button>\r\n                </Link>\r\n              </div>\r\n              <div className=\"min-w-0 w-full flex-1\">\r\n                {productsLoading ? (\r\n                  <Grid cols={2} gap={4}>\r\n                    {Array.from({ length: 4 }).map((_, i) => (\r\n                      <div key={i} className=\"h-28 animate-pulse rounded-2xl bg-muted/40 md:h-32\" />\r\n                    ))}\r\n                  </Grid>\r\n                ) : (\r\n                  <Grid cols={2} gap={4}>\r\n                    {bestSellers.map((p, idx) => {\r\n                      const primary = pickPrimaryPrice(p);\r\n                      const tag = [\"Best Seller\", \"Trending\", \"Hot Stock\", \"Top Rated\"][idx] ?? \"Hot\";\r\n                      return (\r\n                        <ProductWideCard\r\n                          key={p.id}\r\n                          productId={String(p.id)}\r\n                          name={p.name}\r\n                          listPrice={\r\n                            primary.original != null &&\r\n                            primary.original > primary.price\r\n                              ? formatVND(primary.original)\r\n                              : undefined\r\n                          }\r\n                          price={`${formatVND(primary.price)} / ${primary.label}`}\r\n                          sold={`${p.stock.toLocaleString(\"vi-VN\")} ${p.unit}`}\r\n                          image={p.images?.[0] ?? PLACEHOLDER_IMAGE}\r\n                          tag={tag}\r\n                          category={categoryMap.get(p.category) ?? p.category}\r\n                        />\r\n                      );\r\n                    })}\r\n                  </Grid>\r\n                )}\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Trust & Branding --- */}\r\n        <section className=\"w-full border-y border-border/60 bg-muted/25 py-8 md:py-10\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"flex flex-col items-center gap-5 md:flex-row md:items-center md:justify-between md:gap-8\">\r\n              <div className=\"shrink-0 text-center md:text-left\">\r\n                <Text\r\n                  variant=\"label\"\r\n                  className=\"text-[10px] font-bold uppercase tracking-[0.2em] text-primary\"\r\n                >\r\n                  Đối tác tin cậy\r\n                </Text>\r\n                <Heading as=\"h3\" size=\"title\" className=\"mt-1 text-lg md:text-xl\">\r\n                  Hợp tác 100+ thương hiệu lớn\r\n                </Heading>\r\n              </div>\r\n              <div className=\"flex w-full flex-wrap items-center justify-center gap-2 md:max-w-3xl md:justify-end lg:gap-2.5\">\r\n                {[\r\n                  \"Vinamilk\",\r\n                  \"Coca-Cola\",\r\n                  \"Unilever\",\r\n                  \"Nestle\",\r\n                  \"Pepsico\",\r\n                  \"P&G\",\r\n                  \"Masan\",\r\n                ].map((brand) => (\r\n                  <span\r\n                    key={brand}\r\n                    className={cn(\r\n                      \"cursor-default rounded-full border border-border/70 bg-background/90 px-3 py-1.5\",\r\n                      \"text-xs font-bold tracking-tight text-muted-foreground shadow-sm\",\r\n                      \"transition-colors hover:border-primary/35 hover:text-foreground\",\r\n                    )}\r\n                  >\r\n                    {brand}\r\n                  </span>\r\n                ))}\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n\r\n        {/* --- Final CTA --- */}\r\n        <section className=\"w-full pb-10 md:pb-14\">\r\n          <Container max={STORE_CONTAINER_MAX_DEFAULT} className={STORE_CONTAINER_INSET_WIDE}>\r\n            <div className=\"relative mx-auto w-full overflow-hidden rounded-2xl bg-primary shadow-lg shadow-primary/25 md:rounded-3xl\">\r\n              <div\r\n                aria-hidden\r\n                className=\"absolute inset-0 bg-[url('/hot_sale_consumer_goods_collage_1778054273471.png')] bg-cover bg-center opacity-[0.14]\"\r\n              />\r\n              <div\r\n                aria-hidden\r\n                className=\"absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/92 to-primary/88\"\r\n              />\r\n              <div className=\"relative z-10 flex w-full flex-col items-center px-6 py-10 md:px-12 md:py-12\">\r\n                <div className=\"flex w-full max-w-2xl flex-col items-center gap-5 text-center\">\r\n                  <Heading\r\n                    as=\"h2\"\r\n                    size=\"section\"\r\n                    align=\"center\"\r\n                    className=\"w-full text-primary-foreground leading-tight tracking-tight\"\r\n                  >\r\n                    Sẵn sàng bùng nổ doanh số cùng Hub B2B?\r\n                  </Heading>\r\n                  <Text\r\n                    variant=\"body\"\r\n                    align=\"center\"\r\n                    className=\"w-full text-sm leading-relaxed text-primary-foreground/90 md:text-base\"\r\n                  >\r\n                    Đăng ký đại lý để nhận bảng giá khuyến mãi và miễn phí vận chuyển đơn đầu tiên.\r\n                  </Text>\r\n                  <div className=\"flex w-full flex-col items-center justify-center gap-3 pt-1 sm:flex-row\">\r\n                    <Link href=\"/register\" className=\"inline-flex\">\r\n                      <Button\r\n                        size=\"default\"\r\n                        className=\"h-11 min-w-[10.5rem] rounded-xl bg-primary-foreground px-6 text-sm font-bold text-primary shadow-md transition-all hover:bg-primary-foreground/90 md:h-12 md:text-base\"\r\n                      >\r\n                        Đăng ký ngay\r\n                      </Button>\r\n                    </Link>\r\n                    <Link href=\"/support\" className=\"inline-flex\">\r\n                      <Button\r\n                        size=\"default\"\r\n                        variant=\"outline\"\r\n                        className=\"h-11 min-w-[10.5rem] rounded-xl border border-primary-foreground/35 bg-primary-foreground/5 px-6 text-sm font-bold text-primary-foreground hover:bg-primary-foreground/10 md:h-12 md:text-base\"\r\n                      >\r\n                        Tư vấn trực tiếp\r\n                      </Button>\r\n                    </Link>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n            </div>\r\n          </Container>\r\n        </section>\r\n      </PageContent>\r\n    </Page>\r\n  );\r\n}\r\n"
     },
     "src/app/store/layout.tsx": {
       "id": "file_src_app_store_layout_tsx",
@@ -1267,7 +2025,7 @@
         "src/components/shared",
         "src/app/page.tsx"
       ],
-      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { ArrowRight, Plus, ShoppingCart, Tag } from \"lucide-react\";\r\nimport { Card, CardContent, CardFooter } from \"@ui/components/card\";\r\nimport { Badge } from \"@ui/components/badge\";\r\nimport { Button } from \"@ui/components/button\";\r\nimport { Heading, Text } from \"@ui/components/typography\";\r\n\r\ntype ProductCardVariant = \"catalog\" | \"flash\";\r\n\r\ntype ProductCardProps = {\r\n  variant: ProductCardVariant;\r\n  href: string;\r\n  name: string;\r\n  image: string;\r\n  price: string;\r\n  originalPrice?: string;\r\n  category?: string;\r\n  minQty?: string;\r\n  coupon?: string;\r\n  discountLabel?: string;\r\n  soldText?: string;\r\n  progressPercent?: number;\r\n  topRightBadge?: string;\r\n  primaryCtaLabel?: string;\r\n  onAddToCart?: () => void;\r\n};\r\n\r\nexport function ProductCard({\r\n  variant,\r\n  href,\r\n  name,\r\n  image,\r\n  price,\r\n  originalPrice,\r\n  category,\r\n  minQty,\r\n  coupon,\r\n  discountLabel,\r\n  soldText,\r\n  progressPercent,\r\n  topRightBadge = \"Chính hãng\",\r\n  primaryCtaLabel = \"Xem chi tiết\",\r\n  onAddToCart,\r\n}: ProductCardProps) {\r\n  return (\r\n    <Card className=\"py-0 border-outline-variant overflow-hidden group hover:shadow-xl transition-all duration-300 bg-background rounded-2xl\">\r\n      <Link href={href} className={`block relative ${variant === \"catalog\" ? \"w-full h-64\" : \"h-64\"} bg-gradient-to-b from-white to-muted/20`}>\r\n        <div className=\"w-full h-full rounded-2xl bg-white/70 border border-outline-variant/30 shadow-inner flex items-center justify-center overflow-hidden\">\r\n          <img\r\n            src={image}\r\n            alt={name}\r\n            className=\"w-full h-full rounded-3xl object-cover drop-shadow-[0_10px_20px_rgba(0,0,0,0.18)] rounded-lg transition-transform duration-500 group-hover:scale-105\"\r\n          />\r\n        </div>\r\n\r\n        <div className=\"absolute top-4 right-4\">\r\n          <Badge variant=\"overlay\" size=\"sm\" className=\"shadow-sm\">\r\n            {topRightBadge}\r\n          </Badge>\r\n        </div>\r\n\r\n        {coupon && variant === \"catalog\" && (\r\n          <div className=\"absolute top-4 left-4 bg-warning/20 text-warning-foreground px-3 py-1.5 rounded-xl font-bold text-sm border border-warning/30 flex items-center gap-1.5 shadow-sm backdrop-blur-sm\">\r\n            <Tag className=\"w-4 h-4\" />\r\n            {coupon}\r\n          </div>\r\n        )}\r\n\r\n        {discountLabel && variant === \"flash\" && (\r\n          <div className=\"absolute top-4 left-4 bg-destructive text-white px-3 py-1.5 rounded-xl font-black text-sm shadow-lg\">\r\n            {discountLabel}\r\n          </div>\r\n        )}\r\n      </Link>\r\n\r\n      <CardContent className={`p-6 flex flex-col ${variant === \"catalog\" ? \"h-[260px]\" : \"h-[245px]\"} space-y-4`}>\r\n        {category && (\r\n          <div className=\"text-sm font-bold text-primary/80 uppercase tracking-widest\">{category}</div>\r\n        )}\r\n\r\n        <Link href={href} className=\"group/title\">\r\n          <Heading\r\n            as=\"h3\"\r\n            size=\"title\"\r\n            className={`line-clamp-2 leading-tight group-hover/title:text-primary transition-colors ${variant === \"catalog\" ? \"min-h-[4rem]\" : \"min-h-[3.5rem]\"}`}\r\n          >\r\n            {name}\r\n          </Heading>\r\n        </Link>\r\n\r\n        <div className=\"mt-auto pt-4 border-t border-outline-variant/30 space-y-2\">\r\n          <div className=\"flex flex-wrap items-baseline gap-2\">\r\n            {originalPrice && (\r\n              <Text variant=\"muted\" className=\"line-through font-medium text-sm shrink-0\">\r\n                {originalPrice}\r\n              </Text>\r\n            )}\r\n            <Heading as=\"span\" size=\"title\" color=\"primary\" className=\"shrink-0\">\r\n              {price}\r\n            </Heading>\r\n          </div>\r\n\r\n          {variant === \"catalog\" && minQty && (\r\n            <div className=\"text-base font-bold text-primary mt-1 flex items-center gap-1\">\r\n              <Plus className=\"w-4 h-4\" />\r\n              {minQty}\r\n            </div>\r\n          )}\r\n\r\n          {variant === \"flash\" && soldText && (\r\n            <div className=\"space-y-2\">\r\n              <div className=\"flex justify-between text-sm font-bold\">\r\n                <Text as=\"span\" variant=\"muted\">{soldText}</Text>\r\n                <Text as=\"span\" variant=\"body\" className=\"text-primary font-bold\">Hot 🔥</Text>\r\n              </div>\r\n              <div className=\"h-3 bg-muted rounded-full overflow-hidden border border-border/50 p-0.5\">\r\n                <div\r\n                  className=\"h-full bg-gradient-to-r from-primary to-teal-500 rounded-full\"\r\n                  style={{ width: `${Math.max(0, Math.min(100, progressPercent ?? 0))}%` }}\r\n                />\r\n              </div>\r\n            </div>\r\n          )}\r\n        </div>\r\n      </CardContent>\r\n\r\n      <CardFooter className={variant === \"catalog\" ? \"\" : undefined}>\r\n        <div className={`w-full flex ${variant === \"catalog\" ? \"items-center gap-2\" : \"\"}`}>\r\n          <Link href={href} className={variant === \"catalog\" ? \"flex-1\" : \"w-full\"}>\r\n            <Button className=\"w-full h-14 rounded-2xl font-bold text-lg shadow-lg hover:bg-primary/90 transition-all flex gap-2\">\r\n              <ArrowRight className=\"size-5\" />\r\n              {primaryCtaLabel}\r\n            </Button>\r\n          </Link>\r\n          {variant === \"catalog\" && onAddToCart && (\r\n            <Button\r\n              className=\"h-14 w-14 rounded-2xl shadow-lg hover:scale-110 transition-all hover:bg-primary/90\"\r\n              aria-label=\"Thêm vào giỏ\"\r\n              onClick={onAddToCart}\r\n            >\r\n              <ShoppingCart className=\"w-7 h-7\" />\r\n            </Button>\r\n          )}\r\n        </div>\r\n      </CardFooter>\r\n    </Card>\r\n  );\r\n}\r\n"
+      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { ArrowRight, Plus, ShoppingCart, Tag } from \"lucide-react\";\r\nimport { Card, CardContent, CardFooter } from \"@ui/components/card\";\r\nimport { Badge } from \"@ui/components/badge\";\r\nimport { Button } from \"@ui/components/button\";\r\nimport { Heading, Text } from \"@ui/components/typography\";\r\nimport { cn } from \"@ui/lib/utils\";\r\n\r\ntype ProductCardVariant = \"catalog\" | \"flash\";\r\n\r\ntype ProductCardProps = {\r\n  variant: ProductCardVariant;\r\n  href: string;\r\n  name: string;\r\n  image: string;\r\n  price: string;\r\n  originalPrice?: string;\r\n  category?: string;\r\n  minQty?: string;\r\n  coupon?: string;\r\n  discountLabel?: string;\r\n  soldText?: string;\r\n  progressPercent?: number;\r\n  topRightBadge?: string;\r\n  primaryCtaLabel?: string;\r\n  onAddToCart?: () => void;\r\n};\r\n\r\nexport function ProductCard({\r\n  variant,\r\n  href,\r\n  name,\r\n  image,\r\n  price,\r\n  originalPrice,\r\n  category,\r\n  minQty,\r\n  coupon,\r\n  discountLabel,\r\n  soldText,\r\n  progressPercent,\r\n  topRightBadge = \"Chính hãng\",\r\n  primaryCtaLabel = \"Xem chi tiết\",\r\n  onAddToCart,\r\n}: ProductCardProps) {\r\n  const isFlash = variant === \"flash\";\r\n\r\n  return (\r\n    <Card\r\n      className={cn(\r\n        \"group overflow-hidden rounded-2xl border-outline-variant/80 bg-background py-0 transition-all duration-300 hover:border-primary/25 hover:shadow-lg\",\r\n        isFlash && \"shadow-sm\",\r\n      )}\r\n    >\r\n      <Link\r\n        href={href}\r\n        className={cn(\r\n          \"relative block bg-gradient-to-b from-white to-muted/15\",\r\n          isFlash ? \"h-44 md:h-48\" : \"h-64 w-full\",\r\n        )}\r\n      >\r\n        <div className=\"flex h-full items-center justify-center overflow-hidden border-b border-outline-variant/20 bg-white/70\">\r\n          <img\r\n            src={image}\r\n            alt={name}\r\n            className=\"h-full w-full object-cover transition-transform duration-500 group-hover:scale-105\"\r\n          />\r\n        </div>\r\n\r\n        <div className=\"absolute right-2 top-2\">\r\n          <Badge variant=\"overlay\" size=\"sm\" className=\"px-2 py-0.5 text-[10px] shadow-sm\">\r\n            {topRightBadge}\r\n          </Badge>\r\n        </div>\r\n\r\n        {coupon && variant === \"catalog\" && (\r\n          <div className=\"absolute left-4 top-4 flex items-center gap-1.5 rounded-xl border border-warning/30 bg-warning/20 px-3 py-1.5 text-sm font-bold text-warning-foreground shadow-sm backdrop-blur-sm\">\r\n            <Tag className=\"size-4\" />\r\n            {coupon}\r\n          </div>\r\n        )}\r\n\r\n        {discountLabel && isFlash && (\r\n          <div className=\"absolute left-2 top-2 rounded-lg bg-destructive px-2 py-1 text-xs font-black text-white shadow-md\">\r\n            {discountLabel}\r\n          </div>\r\n        )}\r\n      </Link>\r\n\r\n      <CardContent\r\n        className={cn(\r\n          \"flex flex-col\",\r\n          isFlash ? \"gap-2 p-3.5 pb-2\" : \"h-[260px] space-y-4 p-6\",\r\n        )}\r\n      >\r\n        {category && (\r\n          <div className=\"text-sm font-bold uppercase tracking-widest text-primary/80\">\r\n            {category}\r\n          </div>\r\n        )}\r\n\r\n        <Link href={href} className=\"group/title\">\r\n          {isFlash ? (\r\n            <p className=\"line-clamp-2 text-sm font-bold leading-snug text-foreground transition-colors group-hover/title:text-primary md:text-[15px]\">\r\n              {name}\r\n            </p>\r\n          ) : (\r\n            <Heading\r\n              as=\"h3\"\r\n              size=\"title\"\r\n              className=\"line-clamp-2 min-h-[4rem] leading-tight transition-colors group-hover/title:text-primary\"\r\n            >\r\n              {name}\r\n            </Heading>\r\n          )}\r\n        </Link>\r\n\r\n        <div\r\n          className={cn(\r\n            \"mt-auto space-y-2\",\r\n            !isFlash && \"border-t border-outline-variant/30 pt-4\",\r\n          )}\r\n        >\r\n          <div className=\"flex flex-wrap items-baseline gap-x-2 gap-y-0.5\">\r\n            {originalPrice && (\r\n              <Text\r\n                variant=\"muted\"\r\n                className={cn(\r\n                  \"shrink-0 font-medium line-through\",\r\n                  isFlash ? \"text-xs\" : \"text-sm\",\r\n                )}\r\n              >\r\n                {originalPrice}\r\n              </Text>\r\n            )}\r\n            {isFlash ? (\r\n              <span className=\"text-lg font-black tabular-nums text-primary\">\r\n                {price}\r\n              </span>\r\n            ) : (\r\n              <Heading as=\"span\" size=\"title\" color=\"primary\" className=\"shrink-0\">\r\n                {price}\r\n              </Heading>\r\n            )}\r\n          </div>\r\n\r\n          {variant === \"catalog\" && minQty && (\r\n            <div className=\"mt-1 flex items-center gap-1 text-base font-bold text-primary\">\r\n              <Plus className=\"size-4\" />\r\n              {minQty}\r\n            </div>\r\n          )}\r\n\r\n          {isFlash && soldText && (\r\n            <div className=\"space-y-1.5\">\r\n              <div className=\"flex items-center justify-between gap-2 text-[11px] font-semibold\">\r\n                <Text as=\"span\" variant=\"muted\" className=\"truncate\">\r\n                  {soldText}\r\n                </Text>\r\n                <span className=\"shrink-0 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary\">\r\n                  Hot\r\n                </span>\r\n              </div>\r\n              <div className=\"h-1.5 overflow-hidden rounded-full bg-muted\">\r\n                <div\r\n                  className=\"h-full rounded-full bg-gradient-to-r from-primary to-teal-500 transition-[width] duration-500\"\r\n                  style={{\r\n                    width: `${Math.max(0, Math.min(100, progressPercent ?? 0))}%`,\r\n                  }}\r\n                />\r\n              </div>\r\n            </div>\r\n          )}\r\n        </div>\r\n      </CardContent>\r\n\r\n      <CardFooter className={isFlash ? \"px-3.5 pb-3.5 pt-0\" : undefined}>\r\n        <div\r\n          className={cn(\r\n            \"flex w-full\",\r\n            variant === \"catalog\" ? \"items-center gap-2\" : \"\",\r\n          )}\r\n        >\r\n          <Link href={href} className={variant === \"catalog\" ? \"flex-1\" : \"w-full\"}>\r\n            <Button\r\n              size={isFlash ? \"sm\" : \"lg\"}\r\n              className={cn(\r\n                \"w-full gap-1.5 font-bold shadow-md transition-all hover:bg-primary/90\",\r\n                isFlash\r\n                  ? \"h-9 rounded-xl text-xs md:text-sm\"\r\n                  : \"h-14 rounded-2xl text-lg shadow-lg\",\r\n              )}\r\n            >\r\n              <ArrowRight className={isFlash ? \"size-3.5\" : \"size-5\"} />\r\n              {primaryCtaLabel}\r\n            </Button>\r\n          </Link>\r\n          {variant === \"catalog\" && onAddToCart && (\r\n            <Button\r\n              className=\"h-14 w-14 rounded-2xl shadow-lg transition-all hover:scale-110 hover:bg-primary/90\"\r\n              aria-label=\"Thêm vào giỏ\"\r\n              onClick={onAddToCart}\r\n            >\r\n              <ShoppingCart className=\"size-7\" />\r\n            </Button>\r\n          )}\r\n        </div>\r\n      </CardFooter>\r\n    </Card>\r\n  );\r\n}\r\n"
     },
     "src/components/shared/product-detail.tsx": {
       "id": "file_src_components_shared_product_detail_tsx",
@@ -1319,7 +2077,7 @@
         "src/components/shared",
         "src/app/page.tsx"
       ],
-      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { Star } from \"lucide-react\";\r\nimport { Heading, Text } from \"@ui/components/typography\";\r\nimport { Badge } from \"@ui/components/badge\";\r\n\r\ntype ProductWideCardProps = {\r\n  productId: string;\r\n  name: string;\r\n  /** Giá đang bán (ưu đãi) */\r\n  price: string;\r\n  /** Giá ban đầu — gạch ngang khi có giá khuyến mãi thấp hơn */\r\n  listPrice?: string;\r\n  sold: string;\r\n  image: string;\r\n  tag: string;\r\n  category?: string;\r\n};\r\n\r\nexport function ProductWideCard({\r\n  productId,\r\n  name,\r\n  price,\r\n  listPrice,\r\n  sold,\r\n  image,\r\n  tag,\r\n  category,\r\n}: ProductWideCardProps) {\r\n  return (\r\n    <Link href={`/catalog/${productId}`} className=\"block\">\r\n      <div className=\"flex items-center gap-8 bg-background p-6 rounded-[2.5rem] border border-outline-variant hover:shadow-2xl transition-all duration-300 group cursor-pointer hover:border-primary/30 w-full\">\r\n        <div className=\"w-40 h-40 bg-gradient-to-b from-white to-muted/20 rounded-3xl flex-shrink-0 flex items-center justify-center relative border border-outline-variant/30\">\r\n          <img\r\n            src={image}\r\n            alt={name}\r\n            className=\"w-full h-full rounded-3xl object-cover drop-shadow-[0_10px_16px_rgba(0,0,0,0.16)] group-hover:scale-105 transition-transform duration-500\"\r\n          />\r\n          <div className=\"absolute -top-3 -right-3 bg-primary text-white text-xs font-black px-3 py-1.5 rounded-xl uppercase shadow-lg z-10\">\r\n            {tag}\r\n          </div>\r\n        </div>\r\n        <div className=\"flex-1 min-w-0 flex flex-col justify-center space-y-3\">\r\n          {category && (\r\n            <Text variant=\"caption\" className=\"font-black text-primary uppercase tracking-widest\">\r\n              {category}\r\n            </Text>\r\n          )}\r\n          <Heading as=\"h4\" size=\"title\" className=\"leading-tight group-hover:text-primary transition-colors line-clamp-3\">\r\n            {name}\r\n          </Heading>\r\n          <div className=\"flex items-baseline gap-2 flex-wrap\">\r\n            {listPrice && (\r\n              <Text as=\"span\" variant=\"muted\" className=\"text-sm font-semibold line-through\">\r\n                {listPrice}\r\n              </Text>\r\n            )}\r\n            <Heading as=\"span\" size=\"title\" className=\"text-primary\">\r\n              {price}\r\n            </Heading>\r\n            <Badge variant=\"success\" size=\"sm\">\r\n              Bán chạy\r\n            </Badge>\r\n          </div>\r\n          <Text variant=\"small\" className=\"uppercase tracking-widest font-bold flex items-center gap-2\">\r\n            <Star className=\"size-5 fill-yellow-400 text-yellow-400\" /> {sold} đã nhập\r\n          </Text>\r\n        </div>\r\n      </div>\r\n    </Link>\r\n  );\r\n}\r\n"
+      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { Star } from \"lucide-react\";\r\nimport { Text } from \"@ui/components/typography\";\r\nimport { Badge } from \"@ui/components/badge\";\r\nimport { cn } from \"@ui/lib/utils\";\r\n\r\ntype ProductWideCardProps = {\r\n  productId: string;\r\n  name: string;\r\n  /** Giá đang bán (ưu đãi) */\r\n  price: string;\r\n  /** Giá ban đầu — gạch ngang khi có giá khuyến mãi thấp hơn */\r\n  listPrice?: string;\r\n  sold: string;\r\n  image: string;\r\n  tag: string;\r\n  category?: string;\r\n};\r\n\r\nexport function ProductWideCard({\r\n  productId,\r\n  name,\r\n  price,\r\n  listPrice,\r\n  sold,\r\n  image,\r\n  tag,\r\n  category,\r\n}: ProductWideCardProps) {\r\n  return (\r\n    <Link href={`/catalog/${productId}`} className=\"block h-full\">\r\n      <div\r\n        className={cn(\r\n          \"group flex h-full cursor-pointer items-center gap-3 rounded-2xl border border-outline-variant/80\",\r\n          \"bg-background p-3 transition-all duration-300 hover:border-primary/30 hover:shadow-md md:gap-4 md:p-3.5\",\r\n        )}\r\n      >\r\n        <div className=\"relative size-20 shrink-0 overflow-hidden rounded-xl border border-outline-variant/30 bg-gradient-to-b from-white to-muted/20 md:size-24\">\r\n          <img\r\n            src={image}\r\n            alt={name}\r\n            className=\"size-full object-cover transition-transform duration-500 group-hover:scale-105\"\r\n          />\r\n          <span className=\"absolute left-1 top-1 max-w-[calc(100%-0.5rem)] truncate rounded-md bg-primary px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-primary-foreground shadow-sm md:text-[10px]\">\r\n            {tag}\r\n          </span>\r\n        </div>\r\n\r\n        <div className=\"flex min-w-0 flex-1 flex-col justify-center gap-1.5\">\r\n          {category && (\r\n            <Text\r\n              variant=\"caption\"\r\n              className=\"truncate text-[10px] font-bold uppercase tracking-wider text-primary/80 md:text-[11px]\"\r\n            >\r\n              {category}\r\n            </Text>\r\n          )}\r\n\r\n          <p className=\"line-clamp-2 text-sm font-bold leading-snug text-foreground transition-colors group-hover:text-primary md:text-[15px]\">\r\n            {name}\r\n          </p>\r\n\r\n          <div className=\"flex flex-wrap items-center gap-x-2 gap-y-1\">\r\n            {listPrice && (\r\n              <Text as=\"span\" variant=\"muted\" className=\"text-xs font-medium line-through\">\r\n                {listPrice}\r\n              </Text>\r\n            )}\r\n            <span className=\"text-sm font-black tabular-nums text-primary md:text-base\">\r\n              {price}\r\n            </span>\r\n            <Badge variant=\"success\" size=\"sm\" className=\"h-5 px-1.5 text-[10px]\">\r\n              Bán chạy\r\n            </Badge>\r\n          </div>\r\n\r\n          <Text\r\n            variant=\"small\"\r\n            className=\"flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground\"\r\n          >\r\n            <Star className=\"size-3.5 shrink-0 fill-yellow-400 text-yellow-400\" />\r\n            <span className=\"truncate\">{sold} đã nhập</span>\r\n          </Text>\r\n        </div>\r\n      </div>\r\n    </Link>\r\n  );\r\n}\r\n"
     },
     "src/components/shared/promo-rules-sync.tsx": {
       "id": "file_src_components_shared_promo_rules_sync_tsx",
@@ -1404,7 +2162,67 @@
         "src/components/shared",
         "src/app/layout.tsx"
       ],
-      "content": "\"use client\";\r\n\r\nimport type { ReactNode } from \"react\";\r\nimport { usePathname } from \"next/navigation\";\r\nimport { Header } from \"@/components/shared/header\";\r\nimport { Footer } from \"@/components/shared/footer\";\r\n\r\n/** Header/footer storefront — ẩn khi vào cổng quản lý `/store`. */\r\nexport function StorefrontChrome({ children }: { children: ReactNode }) {\r\n  const pathname = usePathname();\r\n  const isStorePortal = pathname?.startsWith(\"/store\");\r\n\r\n  if (isStorePortal) {\r\n    return <>{children}</>;\r\n  }\r\n\r\n  return (\r\n    <>\r\n      <Header />\r\n      <main className=\"flex-1\">{children}</main>\r\n      <Footer />\r\n    </>\r\n  );\r\n}\r\n"
+      "content": "\"use client\";\r\n\r\nimport type { ReactNode } from \"react\";\r\nimport { usePathname } from \"next/navigation\";\r\nimport type { AdminAppConfig } from \"@workspace/admin-app/config\";\r\nimport { isPathUnderAdminBase } from \"@workspace/admin-app/config/admin-access-paths\";\r\nimport adminAppConfig from \"../../../admin.app.config.json\";\r\nimport { Header } from \"@/components/shared/header\";\r\nimport { Footer } from \"@/components/shared/footer\";\r\n\r\nconst ADMIN_BASE_PATH = (adminAppConfig as AdminAppConfig).basePath;\r\n\r\n/** Header/footer storefront — ẩn khi vào cổng `/store` hoặc admin (`basePath`). */\r\nexport function StorefrontChrome({ children }: { children: ReactNode }) {\r\n  const pathname = usePathname();\r\n  const hideStorefrontChrome =\r\n    pathname?.startsWith(\"/store\") ||\r\n    isPathUnderAdminBase(pathname, ADMIN_BASE_PATH);\r\n\r\n  if (hideStorefrontChrome) {\r\n    return <>{children}</>;\r\n  }\r\n\r\n  return (\r\n    <>\r\n      <Header />\r\n      <main className=\"flex-1\">{children}</main>\r\n      <Footer />\r\n    </>\r\n  );\r\n}\r\n"
+    },
+    "src/config/admin/store-admin-access.ts": {
+      "id": "file_src_config_admin_store_admin_access_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "STORE_ADMIN_BASE_PATH",
+        "STORE_ADMIN_HOME_PATH",
+        "STORE_ADMIN_LOGIN_PATH",
+        "STORE_ADMIN_PROFILE_PATH",
+        "STORE_ADMIN_REGISTER_PATH",
+        "STORE_ADMIN_INDEX_PATH",
+        "STORE_ADMIN_ENTRY_PERMISSIONS",
+        "hasAnyStoreAdminPermission",
+        "canAccessStoreAdmin",
+        "isStoreAdminShellPath"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/config/admin",
+        "src/app/admin/page.tsx",
+        "src/config/admin/store-admin-layout-static.ts",
+        "src/features/admin-auth/sign-in-form.tsx",
+        "src/lib/admin/auth-routes.ts",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import {\r\n\r\n  canUserAccess,\r\n\r\n  PERMISSION_CODES,\r\n\r\n  type AuthUser,\r\n\r\n  type PermissionCode,\r\n\r\n} from \"@workspace/api-client\"\r\n\r\nimport type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\n\r\nimport { buildAdminShellPaths, isPathUnderAdminBase } from \"@workspace/admin-app/config/admin-access-paths\"\r\n\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\n\r\n\r\n\r\nconst STORE_ADMIN_PATHS = buildAdminShellPaths(adminAppConfig as AdminAppConfig)\r\n\r\n\r\n\r\n/** Prefix route admin — đọc từ `admin.app.config.json` (`basePath`). */\r\n\r\nexport const STORE_ADMIN_BASE_PATH = STORE_ADMIN_PATHS.basePath\r\n\r\nexport const STORE_ADMIN_HOME_PATH = STORE_ADMIN_PATHS.homePath\r\n\r\nexport const STORE_ADMIN_LOGIN_PATH = STORE_ADMIN_PATHS.loginPath\r\n\r\nexport const STORE_ADMIN_PROFILE_PATH = STORE_ADMIN_PATHS.profilePath\r\n\r\nexport const STORE_ADMIN_REGISTER_PATH = STORE_ADMIN_PATHS.registerPath\r\n\r\nexport const STORE_ADMIN_INDEX_PATH = STORE_ADMIN_PATHS.indexPath\r\n\r\n\r\n\r\n/** Quyền tối thiểu để vào cổng quản trị store. */\r\n\r\nexport const STORE_ADMIN_ENTRY_PERMISSIONS: PermissionCode[] = [\r\n\r\n  PERMISSION_CODES.DASHBOARD_VIEW,\r\n\r\n  PERMISSION_CODES.USERS_VIEW,\r\n\r\n  PERMISSION_CODES.USERS_MANAGE,\r\n\r\n  PERMISSION_CODES.ROLES_VIEW,\r\n\r\n  PERMISSION_CODES.PRODUCTS_VIEW,\r\n\r\n  PERMISSION_CODES.PRODUCTS_MANAGE,\r\n\r\n  PERMISSION_CODES.ORDERS_VIEW,\r\n\r\n  PERMISSION_CODES.ORDERS_MANAGE,\r\n\r\n  PERMISSION_CODES.SETTINGS_VIEW,\r\n\r\n]\r\n\r\n\r\n\r\nexport function hasAnyStoreAdminPermission(user: AuthUser): boolean {\r\n\r\n  return STORE_ADMIN_ENTRY_PERMISSIONS.some((code) => canUserAccess(user, code))\r\n\r\n}\r\n\r\n\r\n\r\nexport function canAccessStoreAdmin(user: AuthUser): boolean {\r\n\r\n  return hasAnyStoreAdminPermission(user)\r\n\r\n}\r\n\r\n\r\n\r\nexport function isStoreAdminShellPath(pathname: string | null | undefined): boolean {\r\n\r\n  return isPathUnderAdminBase(pathname, STORE_ADMIN_BASE_PATH)\r\n\r\n}\r\n\r\n"
+    },
+    "src/config/admin/store-admin-layout-static.ts": {
+      "id": "file_src_config_admin_store_admin_layout_static_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "STORE_ADMIN_LAYOUT_STATIC"
+      ],
+      "imports": [
+        "src/config/admin/store-admin-menu-tree.tsx",
+        "src/config/admin/store-admin-access.ts",
+        "src/lib/admin/auth-session.ts",
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/config/admin",
+        "src/providers/admin/store-admin-layout.tsx"
+      ],
+      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\"\r\nimport { STORE_ADMIN_MENU_TREE } from \"@/config/admin/store-admin-menu-tree\"\r\nimport {\r\n  STORE_ADMIN_HOME_PATH,\r\n  STORE_ADMIN_LOGIN_PATH,\r\n  STORE_ADMIN_PROFILE_PATH,\r\n  canAccessStoreAdmin,\r\n} from \"@/config/admin/store-admin-access\"\r\nimport { ADMIN_SESSION_EVENT, clearAdminSession } from \"@/lib/admin/auth-session\"\r\nimport { isStoreAdminAuthPath } from \"@/lib/admin/auth-routes\"\r\n\r\nexport const STORE_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_ADMIN_MENU_TREE,\r\n  loginPath: STORE_ADMIN_LOGIN_PATH,\r\n  isAuthPath: isStoreAdminAuthPath,\r\n  canAccessApp: canAccessStoreAdmin,\r\n  clearSession: clearAdminSession,\r\n  sessionEventName: ADMIN_SESSION_EVENT,\r\n  mobileHeaderTitle: \"StoreSync Admin\",\r\n  homePath: STORE_ADMIN_HOME_PATH,\r\n  profilePath: STORE_ADMIN_PROFILE_PATH,\r\n  publicSitePath: \"/\",\r\n  publicSiteLabel: \"Trang chủ B2B\",\r\n}\r\n"
+    },
+    "src/config/admin/store-admin-menu-tree.tsx": {
+      "id": "file_src_config_admin_store_admin_menu_tree_tsx",
+      "type": "tsx",
+      "client": false,
+      "exports": [
+        "STORE_ADMIN_MENU_TREE"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/config/admin",
+        "src/config/admin/store-admin-layout-static.ts"
+      ],
+      "content": "import type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\nimport {\r\n  buildAdminMenuFromConfig,\r\n  resolveAdminMenuIcons,\r\n} from \"@workspace/admin-app/menu\"\r\nimport type { AdminMenuTreeItem } from \"@ui/components/admin\"\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\n\r\nexport const STORE_ADMIN_MENU_TREE: AdminMenuTreeItem[] = resolveAdminMenuIcons(\r\n  buildAdminMenuFromConfig(adminAppConfig as AdminAppConfig),\r\n)\r\n"
     },
     "src/config/store-portal-layout-static.ts": {
       "id": "file_src_config_store_portal_layout_static_ts",
@@ -1427,7 +2245,7 @@
         "src/app/store/page.tsx",
         "src/providers/store-portal-layout.tsx"
       ],
-      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\";\r\nimport type { AuthUser } from \"@workspace/api-client\";\r\nimport { isStoreAuthPath } from \"@/lib/auth-routes\";\r\nimport {\r\n  STORE_SESSION_EVENT,\r\n  STORE_SESSION_STORAGE_KEY,\r\n} from \"@/lib/store-auth\";\r\nimport { STORE_PORTAL_MENU_TREE } from \"./store-portal-menu-tree\";\r\n\r\nexport const STORE_PORTAL_HOME = \"/store/orders\";\r\n\r\nexport function canAccessStorePortal(user: AuthUser): boolean {\r\n  return Boolean(user?.id?.trim());\r\n}\r\n\r\nexport function clearStorePortalSession(): void {\r\n  if (typeof window === \"undefined\") return;\r\n  localStorage.removeItem(STORE_SESSION_STORAGE_KEY);\r\n}\r\n\r\n/** Cấu hình layout admin shell cho cổng cửa hàng. */\r\nexport const STORE_PORTAL_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_PORTAL_MENU_TREE,\r\n  loginPath: \"/login\",\r\n  isAuthPath: isStoreAuthPath,\r\n  canAccessApp: canAccessStorePortal,\r\n  clearSession: clearStorePortalSession,\r\n  sessionEventName: STORE_SESSION_EVENT,\r\n  mobileHeaderTitle: \"Cửa hàng\",\r\n  homePath: STORE_PORTAL_HOME,\r\n  profilePath: \"/store/profile\",\r\n  accessDeniedReason: \"store_denied\",\r\n};\r\n"
+      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\";\r\nimport type { AuthUser } from \"@workspace/api-client\";\r\nimport { isStoreAuthPath } from \"@/lib/auth-routes\";\r\nimport {\r\n  STORE_SESSION_EVENT,\r\n  STORE_SESSION_STORAGE_KEY,\r\n} from \"@/lib/store-auth\";\r\nimport { STORE_PORTAL_MENU_TREE } from \"./store-portal-menu-tree\";\r\n\r\nexport const STORE_PORTAL_HOME = \"/store/orders\";\r\n\r\nexport function canAccessStorePortal(user: AuthUser): boolean {\r\n  return typeof user?.id === \"number\" && Number.isFinite(user.id) && user.id > 0;\r\n}\r\n\r\nexport function clearStorePortalSession(): void {\r\n  if (typeof window === \"undefined\") return;\r\n  localStorage.removeItem(STORE_SESSION_STORAGE_KEY);\r\n}\r\n\r\n/** Cấu hình layout admin shell cho cổng cửa hàng. */\r\nexport const STORE_PORTAL_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_PORTAL_MENU_TREE,\r\n  loginPath: \"/login\",\r\n  isAuthPath: isStoreAuthPath,\r\n  canAccessApp: canAccessStorePortal,\r\n  clearSession: clearStorePortalSession,\r\n  sessionEventName: STORE_SESSION_EVENT,\r\n  mobileHeaderTitle: \"Cửa hàng\",\r\n  homePath: STORE_PORTAL_HOME,\r\n  profilePath: \"/store/profile\",\r\n  accessDeniedReason: \"store_denied\",\r\n};\r\n"
     },
     "src/config/store-portal-menu-tree.tsx": {
       "id": "file_src_config_store_portal_menu_tree_tsx",
@@ -1442,6 +2260,154 @@
         "src/config/store-portal-layout-static.ts"
       ],
       "content": "import { Package, ShoppingCart } from \"lucide-react\";\r\nimport type { AdminMenuTreeItem } from \"@ui/components/admin\";\r\n\r\n/** Menu sidebar cổng quản lý cửa hàng `/store`. */\r\nexport const STORE_PORTAL_MENU_TREE: AdminMenuTreeItem[] = [\r\n  {\r\n    type: \"leaf\",\r\n    href: \"/store/orders\",\r\n    label: \"Đơn hàng\",\r\n    icon: Package,\r\n    permission: null,\r\n  },\r\n  {\r\n    type: \"group\",\r\n    label: \"Mua hàng\",\r\n    icon: ShoppingCart,\r\n    children: [\r\n      {\r\n        href: \"/catalog\",\r\n        label: \"Danh mục sỉ\",\r\n        icon: ShoppingCart,\r\n        permission: null,\r\n      },\r\n      {\r\n        href: \"/cart\",\r\n        label: \"Giỏ hàng\",\r\n        icon: ShoppingCart,\r\n        permission: null,\r\n      },\r\n    ],\r\n  },\r\n];\r\n"
+    },
+    "src/features/admin-auth/auth-api.ts": {
+      "id": "file_src_features_admin_auth_auth_api_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [
+        "src/lib/admin/api-base-url.ts"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import { createAuthAdminApi, type DevLoginOption } from \"@workspace/api-client\"\r\nimport { getApiBaseUrl } from \"@/lib/admin/api-base-url\"\r\n\r\nexport * from \"@workspace/admin-app/modules/auth/_lib/auth-api\"\r\n\r\nexport async function fetchDevLoginOptions(): Promise<DevLoginOption[]> {\r\n  if (process.env.NODE_ENV !== \"development\") {\r\n    return []\r\n  }\r\n\r\n  try {\r\n    return await createAuthAdminApi({\r\n      baseUrl: getApiBaseUrl(),\r\n      devLogTag: \"STORE_SYNC_ADMIN\",\r\n    }).fetchDevLoginOptions({\r\n      excludeRoles: \"student,parent,user\",\r\n      activeOnly: true,\r\n    })\r\n  } catch (error) {\r\n    console.warn(\"[STORE_SYNC_ADMIN] fetchDevLoginOptions failed:\", error)\r\n    return []\r\n  }\r\n}\r\n"
+    },
+    "src/features/admin-auth/register-form.tsx": {
+      "id": "file_src_features_admin_auth_register_form_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "RegisterForm"
+      ],
+      "imports": [
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/app/admin/dang-ky/page.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { AUTH_LOGIN_PATH } from \"@/lib/admin/auth-routes\"\r\nimport { AdminRegisterForm } from \"@workspace/admin-app/modules/auth/_component/register-form\"\r\n\r\nexport function RegisterForm() {\r\n  return <AdminRegisterForm config={{ loginPath: AUTH_LOGIN_PATH }} />\r\n}\r\n"
+    },
+    "src/features/admin-auth/sign-in-form.tsx": {
+      "id": "file_src_features_admin_auth_sign_in_form_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "SignInForm"
+      ],
+      "imports": [
+        "src/config/admin/store-admin-access.ts",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/app/admin/dang-nhap/page.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { canAccessStoreAdmin } from \"@/config/admin/store-admin-access\"\r\nimport { STORE_ADMIN_HOME_PATH } from \"@/config/admin/store-admin-access\"\r\nimport { useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport {\r\n  AdminSignInForm,\r\n  type AdminSignInFormConfig,\r\n} from \"@workspace/admin-app/modules/auth/_component/sign-in-form\"\r\n\r\nconst STORE_ADMIN_SIGN_IN_CONFIG: AdminSignInFormConfig = {\r\n  canAccessAdmin: canAccessStoreAdmin,\r\n  homePath: STORE_ADMIN_HOME_PATH,\r\n  staffOnlyMessage:\r\n    \"Tài khoản không có quyền quản trị cửa hàng (dashboard / products / orders).\",\r\n  staffOnlyDevMessage:\r\n    \"Tài khoản development không có quyền quản trị store.\",\r\n  staffOnlyGoogleMessage:\r\n    \"Tài khoản không có quyền quản trị cửa hàng B2B.\",\r\n}\r\n\r\nexport function SignInForm() {\r\n  const clientReady = useClientReady()\r\n\r\n  return (\r\n    <AdminSignInForm\r\n      config={STORE_ADMIN_SIGN_IN_CONFIG}\r\n      loginLock={clientReady ? { ok: true as const } : { ok: true as const }}\r\n    />\r\n  )\r\n}\r\n"
+    },
+    "src/hooks/admin/index.ts": {
+      "id": "file_src_hooks_admin_index_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useDebouncedValue",
+        "useAdminEditFormHydration",
+        "useAdminFormDraftPersistence",
+        "useAdminTableState"
+      ],
+      "imports": [
+        "src/hooks/admin/use-debounced-value.ts",
+        "src/hooks/admin/use-admin-edit-form-hydration.ts",
+        "src/hooks/admin/use-admin-table-state.ts"
+      ],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export { useDebouncedValue } from \"./use-debounced-value\"\r\nexport {\r\n  useAdminEditFormHydration,\r\n  useAdminFormDraftPersistence,\r\n  type UseAdminEditFormHydrationOptions,\r\n} from \"./use-admin-edit-form-hydration\"\r\nexport {\r\n  useAdminTableState,\r\n  type UseAdminTableStateOptions,\r\n  type UseAdminTableStateReturn,\r\n  type AdminTableTab,\r\n} from \"./use-admin-table-state\"\r\n"
+    },
+    "src/hooks/admin/queries.ts": {
+      "id": "file_src_hooks_admin_queries_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/hooks/queries\"\r\n"
+    },
+    "src/hooks/admin/use-admin-edit-form-hydration.ts": {
+      "id": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminEditFormHydration",
+        "useAdminFormDraftPersistence"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export {\r\n  useAdminEditFormHydration,\r\n  useAdminFormDraftPersistence,\r\n  type UseAdminEditFormHydrationOptions,\r\n} from \"@workspace/admin-app/hooks/use-admin-edit-form-hydration\"\r\n"
+    },
+    "src/hooks/admin/use-admin-mutation.ts": {
+      "id": "file_src_hooks_admin_use_admin_mutation_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminMutation"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export { useAdminMutation } from \"@ui/hooks/use-admin-mutation\"\r\n"
+    },
+    "src/hooks/admin/use-admin-realtime-sync.ts": {
+      "id": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminRealtimeSync"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/providers/admin/admin-realtime-sync.tsx"
+      ],
+      "content": "export { useAdminRealtimeSync } from \"@workspace/admin-app/hooks/use-admin-realtime-sync\"\r\n"
+    },
+    "src/hooks/admin/use-admin-table-state.ts": {
+      "id": "file_src_hooks_admin_use_admin_table_state_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminTableState"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export {\r\n  useAdminTableState,\r\n  type UseAdminTableStateOptions,\r\n  type UseAdminTableStateReturn,\r\n  type AdminTableTab,\r\n} from \"@workspace/admin-app/hooks/use-admin-table-state\"\r\n"
+    },
+    "src/hooks/admin/use-debounced-value.ts": {
+      "id": "file_src_hooks_admin_use_debounced_value_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useDebouncedValue"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export { useDebouncedValue } from \"@workspace/admin-app/hooks/use-debounced-value\"\r\n"
     },
     "src/hooks/queries.ts": {
       "id": "file_src_hooks_queries_ts",
@@ -1645,6 +2611,120 @@
         "src/providers/store-portal-layout.tsx"
       ],
       "content": "\"use client\";\r\n\r\nimport { useMemo, useSyncExternalStore } from \"react\";\r\n\r\nexport type MockSession = {\r\n  id: string;\r\n  username: string;\r\n  role: \"admin\" | \"store\";\r\n  displayName: string;\r\n};\r\n\r\nconst STORAGE_KEY = \"storesync_session\";\r\n\r\nfunction getSnapshot(): string | null {\r\n  if (typeof window === \"undefined\") return null;\r\n  return window.localStorage.getItem(STORAGE_KEY);\r\n}\r\n\r\nfunction getServerSnapshot(): string | null {\r\n  return null;\r\n}\r\n\r\nfunction subscribe(callback: () => void) {\r\n  if (typeof window === \"undefined\") return () => {};\r\n  const onStorage = (event: StorageEvent) => {\r\n    if (event.key === STORAGE_KEY || event.key === null) callback();\r\n  };\r\n  const onCustom = () => callback();\r\n  window.addEventListener(\"storage\", onStorage);\r\n  window.addEventListener(\"storesync-session\", onCustom);\r\n  return () => {\r\n    window.removeEventListener(\"storage\", onStorage);\r\n    window.removeEventListener(\"storesync-session\", onCustom);\r\n  };\r\n}\r\n\r\nexport function useSession(): MockSession | null {\r\n  const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);\r\n  return useMemo(() => {\r\n    if (!raw) return null;\r\n    try {\r\n      return JSON.parse(raw) as MockSession;\r\n    } catch {\r\n      return null;\r\n    }\r\n  }, [raw]);\r\n}\r\n"
+    },
+    "src/lib/admin/admin-navigation.ts": {
+      "id": "file_src_lib_admin_admin_navigation_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/admin-navigation\"\r\n"
+    },
+    "src/lib/admin/api-base-url.ts": {
+      "id": "file_src_lib_admin_api_base_url_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin",
+        "src/features/admin-auth/auth-api.ts",
+        "src/lib/admin/api.ts"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/api-base-url\"\r\n"
+    },
+    "src/lib/admin/api.ts": {
+      "id": "file_src_lib_admin_api_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "api",
+        "ApiError"
+      ],
+      "imports": [
+        "src/lib/admin/api-base-url.ts",
+        "src/lib/admin/auth-session.ts"
+      ],
+      "importedBy": [
+        "src/lib/admin",
+        "src/app/admin/admin-runtime-bridge.tsx",
+        "src/providers/admin/store-admin-layout.tsx"
+      ],
+      "content": "import { createStoreSyncSdk } from \"@workspace/api-client\"\r\nimport { getApiBaseUrl } from \"@/lib/admin/api-base-url\"\r\nimport { getAdminDevAuthLogContext, getAdminUserId } from \"./auth-session\"\r\n\r\n/** SDK admin — gửi `X-User-Id` từ phiên `storesync_admin_session`. */\r\nexport const api = createStoreSyncSdk({\r\n  baseUrl: getApiBaseUrl(),\r\n  getUserId: () => {\r\n    if (typeof window === \"undefined\") return null\r\n    return getAdminUserId()\r\n  },\r\n  devLogging: process.env.NODE_ENV === \"development\",\r\n  devLogTag: \"STORE_SYNC_ADMIN\",\r\n  getDevAuthContext: () => getAdminDevAuthLogContext(),\r\n})\r\n\r\nexport type {\r\n  AccountProfile,\r\n  AuthUser,\r\n  ChangeAccountPasswordInput,\r\n  ChangePasswordInput,\r\n  UpdateAccountInput,\r\n  CreateUserInput,\r\n  RbacPermission,\r\n  RbacRole,\r\n  User,\r\n  UserRoleRef,\r\n  Category,\r\n  CategoryUsage,\r\n  CreateCategoryInput,\r\n  UpdateCategoryInput,\r\n  UpdateProfileInput,\r\n  UpdateUserInput,\r\n} from \"@workspace/api-client\"\r\nexport { ApiError } from \"@workspace/api-client\"\r\n"
+    },
+    "src/lib/admin/auth-routes.ts": {
+      "id": "file_src_lib_admin_auth_routes_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "AUTH_LOGIN_PATH",
+        "AUTH_REGISTER_PATH",
+        "isStoreAdminAuthPath",
+        "getAdminAppHomeExternalPath",
+        "getAdminLoginExternalPath",
+        "STORE_ADMIN_HOME_PATH",
+        "STORE_ADMIN_LOGIN_PATH"
+      ],
+      "imports": [
+        "src/config/admin/store-admin-access.ts"
+      ],
+      "importedBy": [
+        "src/lib/admin",
+        "src/config/admin/store-admin-layout-static.ts",
+        "src/features/admin-auth/register-form.tsx",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import {\r\n\r\n  STORE_ADMIN_HOME_PATH,\r\n\r\n  STORE_ADMIN_LOGIN_PATH,\r\n\r\n  STORE_ADMIN_REGISTER_PATH,\r\n\r\n} from \"@/config/admin/store-admin-access\"\r\n\r\n\r\n\r\nexport { STORE_ADMIN_HOME_PATH, STORE_ADMIN_LOGIN_PATH }\r\n\r\nexport const AUTH_LOGIN_PATH = STORE_ADMIN_LOGIN_PATH\r\n\r\nexport const AUTH_REGISTER_PATH = STORE_ADMIN_REGISTER_PATH\r\n\r\n\r\n\r\nconst STORE_ADMIN_AUTH_PATHS = [\r\n\r\n  STORE_ADMIN_LOGIN_PATH,\r\n\r\n  AUTH_REGISTER_PATH,\r\n\r\n] as const\r\n\r\n\r\n\r\nconst AUTH_SET = new Set<string>(STORE_ADMIN_AUTH_PATHS)\r\n\r\n\r\n\r\nexport function isStoreAdminAuthPath(\r\n\r\n  pathname: string | null | undefined,\r\n\r\n): boolean {\r\n\r\n  if (!pathname) return false\r\n\r\n  const normalized = pathname.replace(/\\/+$/, \"\") || \"/\"\r\n\r\n  return AUTH_SET.has(normalized)\r\n\r\n}\r\n\r\n\r\n\r\nexport function getAdminAppHomeExternalPath(): string {\r\n\r\n  return STORE_ADMIN_HOME_PATH\r\n\r\n}\r\n\r\n\r\n\r\nexport function getAdminLoginExternalPath(): string {\r\n\r\n  return STORE_ADMIN_LOGIN_PATH\r\n\r\n}\r\n\r\n"
+    },
+    "src/lib/admin/auth-session.ts": {
+      "id": "file_src_lib_admin_auth_session_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin",
+        "src/config/admin/store-admin-layout-static.ts",
+        "src/lib/admin/api.ts",
+        "src/providers/admin/auth-provider.tsx",
+        "src/providers/admin/store-admin-layout.tsx"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/auth-session\"\r\n"
+    },
+    "src/lib/admin/index.ts": {
+      "id": "file_src_lib_admin_index_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/index\"\r\n"
+    },
+    "src/lib/admin/product-image-storage-stub.ts": {
+      "id": "file_src_lib_admin_product_image_storage_stub_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "PRODUCT_IMAGE_PARENT_LABEL",
+        "PRODUCT_IMAGE_PARENT_SLUG",
+        "ProductImageUploadInput",
+        "ProductImageUploadContext",
+        "resolveProductImageSlug",
+        "buildProductImageUploadContext",
+        "resolveProductImageFolderNav",
+        "folderMatchesProductImage",
+        "findProductImageFolder"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin"
+      ],
+      "content": "import { resolveStorageFolderSlugPath } from \"@workspace/api-client\"\r\nimport {\r\n  createStorageFolder,\r\n  fetchStorageFolders,\r\n  type FolderItem,\r\n} from \"@workspace/admin-app/lib/admin-uploads\"\r\nimport { resolveFolderPathAfterCreate } from \"@workspace/admin-app/modules/file-storage/_component/utils\"\r\nimport {\r\n  extensionsFromGroupIds,\r\n  getRealmDefaultGroupIds,\r\n} from \"@workspace/admin-app/modules/file-storage/_component/storage-upload-policy\"\r\n\r\nexport const PRODUCT_IMAGE_PARENT_LABEL = \"Sản phẩm\"\r\nexport const PRODUCT_IMAGE_PARENT_SLUG = \"san-pham\"\r\n\r\nexport type ProductImageUploadInput = {\r\n  productName?: string\r\n  productSlug?: string\r\n  productSku?: string\r\n}\r\n\r\nexport type ProductImageUploadContext = {\r\n  productName: string\r\n  productSlug: string\r\n  productSku?: string\r\n  folderLabel: string\r\n}\r\n\r\nfunction leafSlugFromText(input: string): string {\r\n  const from = resolveStorageFolderSlugPath(input.trim())\r\n  if (!from?.slugPath) return \"\"\r\n  const parts = from.slugPath.split(\"/\").filter(Boolean)\r\n  return parts[parts.length - 1] ?? \"\"\r\n}\r\n\r\nexport function resolveProductImageSlug(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): string {\r\n  const explicit = productSlug?.trim()\r\n  if (explicit) return explicit\r\n\r\n  const fromName = leafSlugFromText(productName)\r\n  if (fromName) return fromName\r\n\r\n  return leafSlugFromText(productSku ?? \"\")\r\n}\r\n\r\nexport function buildProductImageUploadContext(\r\n  input: ProductImageUploadInput,\r\n): ProductImageUploadContext | null {\r\n  const name = input.productName?.trim() ?? \"\"\r\n  const sku = input.productSku?.trim() ?? \"\"\r\n  const folderLabel = name || sku\r\n  const slug = resolveProductImageSlug(name, input.productSlug, sku)\r\n\r\n  if (!folderLabel || !slug) return null\r\n\r\n  return {\r\n    productName: name || folderLabel,\r\n    productSlug: slug,\r\n    productSku: sku || undefined,\r\n    folderLabel,\r\n  }\r\n}\r\n\r\nexport function resolveProductImageFolderNav(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): { navPath: string; slug: string; label: string } | null {\r\n  const ctx = buildProductImageUploadContext({\r\n    productName,\r\n    productSlug,\r\n    productSku,\r\n  })\r\n  if (!ctx) return null\r\n  return {\r\n    navPath: `${PRODUCT_IMAGE_PARENT_SLUG}/${ctx.productSlug}`,\r\n    slug: ctx.productSlug,\r\n    label: ctx.folderLabel,\r\n  }\r\n}\r\n\r\nfunction folderNavPath(folder: FolderItem): string {\r\n  return resolveFolderPathAfterCreate(folder.path.replace(/\\\\/g, \"/\"), \"images\")\r\n}\r\n\r\nexport function folderMatchesProductImage(\r\n  folder: FolderItem,\r\n  slug: string,\r\n): boolean {\r\n  const nav = folderNavPath(folder)\r\n  if (nav === `${PRODUCT_IMAGE_PARENT_SLUG}/${slug}`) return true\r\n  if (!nav.startsWith(`${PRODUCT_IMAGE_PARENT_SLUG}/`)) return false\r\n  const leaf = nav.split(\"/\").pop()\r\n  return leaf === slug\r\n}\r\n\r\nexport function findProductImageFolder(\r\n  folders: FolderItem[],\r\n  input: ProductImageUploadInput,\r\n): { navPath: string; uploadFolderPath: string } | null {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) return null\r\n  const match = folders.find((folder) =>\r\n    folderMatchesProductImage(folder, resolved.slug),\r\n  )\r\n  if (!match) return null\r\n  const navPath = folderNavPath(match)\r\n  return { navPath, uploadFolderPath: navPath }\r\n}\r\n\r\nasync function ensureProductImageParentFolder(\r\n  folders: FolderItem[],\r\n): Promise<void> {\r\n  const parentExists = folders.some((folder) => {\r\n    const nav = folderNavPath(folder)\r\n    return nav === PRODUCT_IMAGE_PARENT_SLUG\r\n  })\r\n  if (parentExists) return\r\n\r\n  await createStorageFolder({\r\n    folderName: PRODUCT_IMAGE_PARENT_LABEL,\r\n    parentPath: \"images\",\r\n    resourceType: \"images\",\r\n    allowedExtensions: extensionsFromGroupIds(\r\n      \"images\",\r\n      getRealmDefaultGroupIds(\"images\"),\r\n    ),\r\n  })\r\n}\r\n\r\nexport async function ensureProductImageFolder(\r\n  input: ProductImageUploadInput,\r\n): Promise<{ navPath: string; uploadFolderPath: string; created: boolean }> {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) {\r\n    throw new Error(\r\n      \"Nhập tên hoặc SKU sản phẩm ở form — hệ thống cần tạo slug folder lưu ảnh\",\r\n    )\r\n  }\r\n\r\n  let folders = await fetchStorageFolders()\r\n  const existing = findProductImageFolder(folders, input)\r\n  if (existing) {\r\n    return { ...existing, created: false }\r\n  }\r\n\r\n  await ensureProductImageParentFolder(folders)\r\n  folders = await fetchStorageFolders()\r\n\r\n  const parentFolder = folders.find(\r\n    (folder) => folderNavPath(folder) === PRODUCT_IMAGE_PARENT_SLUG,\r\n  )\r\n  const parentDisk =\r\n    parentFolder?.path.replace(/\\\\/g, \"/\") ??\r\n    `images/${PRODUCT_IMAGE_PARENT_SLUG}`\r\n\r\n  const created = await createStorageFolder({\r\n    folderName: resolved.label,\r\n    parentPath: parentDisk,\r\n    resourceType: \"images\",\r\n  })\r\n\r\n  const navPath = resolveFolderPathAfterCreate(created.folderPath, \"images\")\r\n  return {\r\n    navPath,\r\n    uploadFolderPath: navPath,\r\n    created: true,\r\n  }\r\n}\r\n"
     },
     "src/lib/api.ts": {
       "id": "file_src_lib_api_ts",
@@ -1851,7 +2931,7 @@
         "src/lib",
         "src/providers/store-portal-layout.tsx"
       ],
-      "content": "import type { AuthUser } from \"@workspace/api-client\";\r\nimport type { MockSession } from \"@/hooks/use-session\";\r\n\r\n/** Map phiên storefront localStorage → shape `AuthUser` cho AdminShell. */\r\nexport function mockSessionToAdminUser(session: MockSession): AuthUser {\r\n  const isAdmin = session.role === \"admin\";\r\n  return {\r\n    id: session.id,\r\n    email: session.username,\r\n    name: session.displayName,\r\n    image: null,\r\n    phone: null,\r\n    address: null,\r\n    roles: isAdmin\r\n      ? [{ id: \"store-admin\", name: \"admin\", displayName: \"Quản trị cửa hàng\" }]\r\n      : [{ id: \"store-dealer\", name: \"store\", displayName: \"Đại lý\" }],\r\n    permissions: [],\r\n  };\r\n}\r\n"
+      "content": "import type { AuthUser } from \"@workspace/api-client\";\r\nimport type { MockSession } from \"@/hooks/use-session\";\r\n\r\nfunction mockUserId(sessionId: string): number {\r\n  const parsed = Number(sessionId);\r\n  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;\r\n}\r\n\r\n/** Map phiên storefront localStorage → shape `AuthUser` cho AdminShell. */\r\nexport function mockSessionToAdminUser(session: MockSession): AuthUser {\r\n  const isAdmin = session.role === \"admin\";\r\n  return {\r\n    id: mockUserId(session.id),\r\n    email: session.username,\r\n    name: session.displayName,\r\n    image: null,\r\n    phone: null,\r\n    address: null,\r\n    roles: isAdmin\r\n      ? [{ id: 1, name: \"admin\", displayName: \"Quản trị cửa hàng\" }]\r\n      : [{ id: 2, name: \"store\", displayName: \"Đại lý\" }],\r\n    permissions: [],\r\n  };\r\n}\r\n"
     },
     "src/lib/promo-rules-registry.ts": {
       "id": "file_src_lib_promo_rules_registry_ts",
@@ -1934,19 +3014,82 @@
       ],
       "content": "export { cn } from \"@ui/lib/utils\";\r\n"
     },
-    "src/middleware.ts": {
-      "id": "file_src_middleware_ts",
-      "type": "middleware",
-      "client": false,
+    "src/providers/admin/admin-realtime-sync.tsx": {
+      "id": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "type": "tsx",
+      "client": true,
       "exports": [
-        "middleware",
-        "config"
+        "AdminRealtimeSync"
+      ],
+      "imports": [
+        "src/providers/admin/auth-provider.tsx",
+        "src/hooks/admin/use-admin-realtime-sync.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/providers/admin/store-admin-layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useQueryClient } from \"@tanstack/react-query\"\r\nimport { useAuth } from \"@/providers/admin/auth-provider\"\r\nimport { useAdminRealtimeSync } from \"@/hooks/admin/use-admin-realtime-sync\"\r\n\r\nexport function AdminRealtimeSync() {\r\n  const { user } = useAuth()\r\n  const queryClient = useQueryClient()\r\n  useAdminRealtimeSync(!!user, queryClient)\r\n  return null\r\n}\r\n"
+    },
+    "src/providers/admin/auth-provider.tsx": {
+      "id": "file_src_providers_admin_auth_provider_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "StaffLoginResult",
+        "AuthProvider",
+        "useAuth",
+        "useClientReady"
+      ],
+      "imports": [
+        "src/config/admin/store-admin-access.ts",
+        "src/features/admin-auth/auth-api.ts",
+        "src/lib/admin/auth-session.ts",
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/app/admin/admin-runtime-bridge.tsx",
+        "src/app/admin/layout.tsx",
+        "src/features/admin-auth/sign-in-form.tsx",
+        "src/providers/admin/admin-realtime-sync.tsx",
+        "src/providers/admin/store-admin-layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useMemo,\r\n  useSyncExternalStore,\r\n  type ReactNode,\r\n} from \"react\"\r\nimport { useRouter } from \"next/navigation\"\r\nimport type { AuthUser } from \"@workspace/api-client\"\r\nimport { canAccessStoreAdmin } from \"@/config/admin/store-admin-access\"\r\nimport {\r\n  loginWithDevelopmentUser,\r\n  loginWithEmail,\r\n  loginWithGoogle,\r\n  toAdminSessionUser,\r\n} from \"@/features/admin-auth/auth-api\"\r\nimport {\r\n  ADMIN_SESSION_EVENT,\r\n  ADMIN_SESSION_KEY,\r\n  clearAdminSession,\r\n  readAdminSession,\r\n  writeAdminSession,\r\n} from \"@/lib/admin/auth-session\"\r\nimport { AUTH_LOGIN_PATH } from \"@/lib/admin/auth-routes\"\r\n\r\nfunction subscribe(callback: () => void) {\r\n  if (typeof window === \"undefined\") return () => {}\r\n  const onStorage = (e: StorageEvent) => {\r\n    if (e.key === null || e.key === ADMIN_SESSION_KEY) callback()\r\n  }\r\n  const onCustom = () => callback()\r\n  window.addEventListener(\"storage\", onStorage)\r\n  window.addEventListener(ADMIN_SESSION_EVENT, onCustom)\r\n  return () => {\r\n    window.removeEventListener(\"storage\", onStorage)\r\n    window.removeEventListener(ADMIN_SESSION_EVENT, onCustom)\r\n  }\r\n}\r\n\r\nfunction getSessionSnapshot(): AuthUser | null {\r\n  return readAdminSession()\r\n}\r\n\r\nfunction getServerSnapshot(): null {\r\n  return null\r\n}\r\n\r\nexport type StaffLoginResult =\r\n  | \"success\"\r\n  | \"invalid_credentials\"\r\n  | \"staff_only\"\r\n\r\ntype AuthContextValue = {\r\n  user: AuthUser | null\r\n  login: (email: string, password: string) => Promise<StaffLoginResult>\r\n  loginDevelopment: (userId: string) => Promise<StaffLoginResult>\r\n  loginGoogle: (credential: string) => Promise<StaffLoginResult>\r\n  logout: () => void\r\n}\r\n\r\nconst AuthContext = createContext<AuthContextValue | null>(null)\r\n\r\nexport function AuthProvider({ children }: { children: ReactNode }) {\r\n  const router = useRouter()\r\n  const user = useSyncExternalStore(\r\n    subscribe,\r\n    getSessionSnapshot,\r\n    getServerSnapshot,\r\n  )\r\n\r\n  const login = useCallback(async (email: string, password: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithEmail({\r\n        email: email.trim(),\r\n        password,\r\n      })\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessStoreAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const loginDevelopment = useCallback(async (userId: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithDevelopmentUser({\r\n        userId: userId.trim(),\r\n      })\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessStoreAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const loginGoogle = useCallback(async (credential: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithGoogle(credential)\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessStoreAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const logout = useCallback(() => {\r\n    clearAdminSession()\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    router.replace(AUTH_LOGIN_PATH)\r\n  }, [router])\r\n\r\n  const value = useMemo(\r\n    () => ({ user, login, loginDevelopment, loginGoogle, logout }),\r\n    [user, login, loginDevelopment, loginGoogle, logout],\r\n  )\r\n\r\n  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>\r\n}\r\n\r\nexport function useAuth(): AuthContextValue {\r\n  const ctx = useContext(AuthContext)\r\n  if (!ctx) {\r\n    throw new Error(\"useAuth phải dùng bên trong AuthProvider\")\r\n  }\r\n  return ctx\r\n}\r\n\r\nconst noopSubscribe = () => () => {}\r\n\r\nexport function useClientReady(): boolean {\r\n  return useSyncExternalStore(\r\n    noopSubscribe,\r\n    () => true,\r\n    () => false,\r\n  )\r\n}\r\n"
+    },
+    "src/providers/admin/query-provider.tsx": {
+      "id": "file_src_providers_admin_query_provider_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "QueryProvider"
       ],
       "imports": [],
       "importedBy": [
-        "src"
+        "src/providers/admin",
+        "src/app/admin/layout.tsx"
       ],
-      "content": "import type { NextRequest } from \"next/server\";\r\nimport { NextResponse } from \"next/server\";\r\n\r\n/**\r\n * Chỉ khi NODE_ENV=development: log ngắn mỗi request (storefront).\r\n */\r\nexport function middleware(request: NextRequest) {\r\n  if (process.env.NODE_ENV === \"development\") {\r\n    const { pathname, search } = request.nextUrl;\r\n    console.log(\r\n      `[frontend] ${request.method} ${pathname}${search ? search : \"\"}`,\r\n    );\r\n  }\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [\r\n    \"/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)\",\r\n  ],\r\n};\r\n"
+      "content": "\"use client\"\r\n\r\nimport { useState } from \"react\"\r\nimport { QueryClientProvider } from \"@tanstack/react-query\"\r\nimport {\r\n  createHubQueryClient,\r\n  hubAdminQueryClientDefaultOptions,\r\n} from \"@workspace/query-client\"\r\nimport { createAdminMutationCache } from \"@ui/lib/admin-operation-toast\"\r\n\r\nexport function QueryProvider({ children }: { children: React.ReactNode }) {\r\n  const [client] = useState(() =>\r\n    createHubQueryClient({\r\n      mutationCache: createAdminMutationCache(),\r\n      defaultOptions: hubAdminQueryClientDefaultOptions,\r\n    }),\r\n  )\r\n\r\n  return <QueryClientProvider client={client}>{children}</QueryClientProvider>\r\n}\r\n"
+    },
+    "src/providers/admin/store-admin-layout.tsx": {
+      "id": "file_src_providers_admin_store_admin_layout_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "StoreAdminLayoutProvider"
+      ],
+      "imports": [
+        "src/lib/admin/api.ts",
+        "src/config/admin/store-admin-layout-static.ts",
+        "src/providers/admin/admin-realtime-sync.tsx",
+        "src/providers/admin/auth-provider.tsx",
+        "src/lib/admin/auth-session.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useEffect, useMemo, type ReactNode } from \"react\"\r\nimport {\r\n  ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n  ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n  ADMIN_SITE_SEO_PAGE_KEY,\r\n  AdminLayoutBridge,\r\n  buildAdminLayoutValue,\r\n  useAdminDocumentHeadOverride,\r\n  useAdminDocumentTitle,\r\n  useAdminSiteBranding,\r\n  useAdminPublicSiteSeo,\r\n} from \"@ui/components/admin\"\r\nimport { api } from \"@/lib/admin/api\"\r\nimport { STORE_ADMIN_LAYOUT_STATIC } from \"@/config/admin/store-admin-layout-static\"\r\nimport { AdminRealtimeSync } from \"@/providers/admin/admin-realtime-sync\"\r\nimport { useAuth, useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport { syncAdminSessionIfCurrentUser } from \"@/lib/admin/auth-session\"\r\n\r\nexport function StoreAdminLayoutProvider({\r\n  children,\r\n}: {\r\n  children: ReactNode\r\n}) {\r\n  const clientReady = useClientReady()\r\n  const { user, logout } = useAuth()\r\n\r\n  useEffect(() => {\r\n    if (!clientReady || user?.id == null) return\r\n    void syncAdminSessionIfCurrentUser(user.id)\r\n  }, [clientReady, user?.id])\r\n\r\n  const branding = useAdminSiteBranding({\r\n    queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n    fetchBranding: ({ signal }) => api.settings.getPublicBranding({ signal }),\r\n  })\r\n\r\n  const siteSeo = useAdminPublicSiteSeo({\r\n    queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n    page: ADMIN_SITE_SEO_PAGE_KEY,\r\n    fetchSiteSeo: ({ signal, page }) =>\r\n      api.seoMetas.getPublicByPage(page, { signal }),\r\n  })\r\n\r\n  const documentHeadOverride = useAdminDocumentHeadOverride()\r\n\r\n  useAdminDocumentTitle({\r\n    siteName: documentHeadOverride?.siteName ?? branding.siteName,\r\n    siteDescription:\r\n      documentHeadOverride?.siteDescription ?? branding.siteDescription,\r\n    metaTitle:\r\n      documentHeadOverride?.metaTitle ??\r\n      (siteSeo.isReady ? siteSeo.data?.title : undefined),\r\n    metaDescription:\r\n      documentHeadOverride?.metaDescription ??\r\n      (siteSeo.isReady ? siteSeo.data?.description : undefined),\r\n    titleFallback: \"Quản trị StoreSync\",\r\n    descriptionFallback: \"Quản lý sản phẩm, đơn hàng và cửa hàng B2B\",\r\n  })\r\n\r\n  const value = useMemo(\r\n    () =>\r\n      buildAdminLayoutValue({\r\n        user: user ?? null,\r\n        clientReady,\r\n        logout,\r\n        branding,\r\n        static: STORE_ADMIN_LAYOUT_STATIC,\r\n      }),\r\n    [branding, clientReady, logout, user],\r\n  )\r\n\r\n  return (\r\n    <AdminLayoutBridge value={value}>\r\n      <AdminRealtimeSync />\r\n      {children}\r\n    </AdminLayoutBridge>\r\n  )\r\n}\r\n"
     },
     "src/providers/query-provider.tsx": {
       "id": "file_src_providers_query_provider_tsx",
@@ -1984,17 +3127,42 @@
       ],
       "content": "\"use client\";\r\n\r\nimport { useCallback, useMemo, type ReactNode } from \"react\";\r\nimport { useRouter } from \"next/navigation\";\r\nimport {\r\n  AdminLayoutBridge,\r\n  buildAdminLayoutValue,\r\n} from \"@ui/components/admin\";\r\nimport { cartStore } from \"@/hooks/use-cart\";\r\nimport { useClientReady } from \"@/hooks/use-client-ready\";\r\nimport { useSession } from \"@/hooks/use-session\";\r\nimport { resetCartHydration } from \"@/lib/cart-sync\";\r\nimport { mockSessionToAdminUser } from \"@/lib/mock-session-to-admin-user\";\r\nimport {\r\n  STORE_SESSION_EVENT,\r\n  STORE_SESSION_STORAGE_KEY,\r\n} from \"@/lib/store-auth\";\r\nimport { STORE_PORTAL_LAYOUT_STATIC } from \"@/config/store-portal-layout-static\";\r\n\r\nexport function StorePortalLayoutProvider({\r\n  children,\r\n}: {\r\n  children: ReactNode;\r\n}) {\r\n  const router = useRouter();\r\n  const clientReady = useClientReady();\r\n  const session = useSession();\r\n\r\n  const user = useMemo(\r\n    () => (session ? mockSessionToAdminUser(session) : null),\r\n    [session],\r\n  );\r\n\r\n  const logout = useCallback(() => {\r\n    resetCartHydration();\r\n    localStorage.removeItem(STORE_SESSION_STORAGE_KEY);\r\n    cartStore.clear();\r\n    window.dispatchEvent(new Event(STORE_SESSION_EVENT));\r\n    router.push(\"/login?next=/store/orders\");\r\n  }, [router]);\r\n\r\n  const value = useMemo(\r\n    () =>\r\n      buildAdminLayoutValue({\r\n        user,\r\n        clientReady,\r\n        logout,\r\n        branding: {\r\n          siteName: \"Hub B2B\",\r\n          siteDescription: \"Quản lý cửa hàng đại lý\",\r\n          isReady: true,\r\n        },\r\n        static: STORE_PORTAL_LAYOUT_STATIC,\r\n      }),\r\n    [clientReady, logout, user],\r\n  );\r\n\r\n  return <AdminLayoutBridge value={value}>{children}</AdminLayoutBridge>;\r\n}\r\n"
     },
+    "src/proxy.ts": {
+      "id": "file_src_proxy_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "proxy",
+        "config"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src"
+      ],
+      "content": "import type { NextRequest } from \"next/server\";\r\nimport { NextResponse } from \"next/server\";\r\n\r\n/**\r\n * Chỉ khi NODE_ENV=development: log ngắn mỗi request (storefront).\r\n */\r\nexport function proxy(request: NextRequest) {\r\n  if (process.env.NODE_ENV === \"development\") {\r\n    const { pathname, search } = request.nextUrl;\r\n    console.log(\r\n      `[frontend] ${request.method} ${pathname}${search ? search : \"\"}`,\r\n    );\r\n  }\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [\r\n    \"/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)\",\r\n  ],\r\n};\r\n"
+    },
+    "src/types/google-gsi.d.ts": {
+      "id": "file_src_types_google_gsi_d_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/types"
+      ],
+      "content": "/**\r\n * GSI + Maps trên cùng `window.google` — store có `@react-google-maps/api`\r\n * nên cần merge type thủ công (check-in không có maps picker).\r\n */\r\ndeclare global {\r\n  interface Window {\r\n    google?: {\r\n      maps?: typeof google.maps\r\n      accounts?: {\r\n        id?: {\r\n          initialize: (config: {\r\n            client_id: string\r\n            callback: (response: { credential?: string }) => void | Promise<void>\r\n          }) => void\r\n          renderButton: (\r\n            element: HTMLElement,\r\n            config: Record<string, unknown>,\r\n          ) => void\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n\r\nexport {}\r\n"
+    },
     "tsconfig.json": {
       "type": "config",
-      "content": "{\r\n  \"compilerOptions\": {\r\n    \"target\": \"ES2017\",\r\n    \"lib\": [\"dom\", \"dom.iterable\", \"esnext\"],\r\n    \"allowJs\": true,\r\n    \"skipLibCheck\": true,\r\n    \"strict\": true,\r\n    \"noEmit\": true,\r\n    \"esModuleInterop\": true,\r\n    \"module\": \"esnext\",\r\n    \"moduleResolution\": \"bundler\",\r\n    \"resolveJsonModule\": true,\r\n    \"isolatedModules\": true,\r\n    \"jsx\": \"react-jsx\",\r\n    \"incremental\": true,\r\n    \"plugins\": [\r\n      {\r\n        \"name\": \"next\"\r\n      }\r\n    ],\r\n    \"paths\": {\r\n      \"@/*\": [\"./src/*\"],\r\n      \"@ui/globals.css\": [\"../../../packages/ui/src/styles/globals.css\"],\r\n      \"@ui/components/*\": [\"../../../packages/ui/src/components/*\"],\r\n      \"@ui/*\": [\"../../../packages/ui/src/*\"]\r\n    }\r\n  },\r\n  \"include\": [\r\n    \"next-env.d.ts\",\r\n    \"**/*.ts\",\r\n    \"**/*.tsx\",\r\n    \".next/types/**/*.ts\",\r\n    \".next/dev/types/**/*.ts\",\r\n    \"**/*.mts\"\r\n  ],\r\n  \"exclude\": [\"node_modules\"]\r\n}\r\n"
+      "content": "{\r\n  \"compilerOptions\": {\r\n    \"target\": \"ES2017\",\r\n    \"lib\": [\"dom\", \"dom.iterable\", \"esnext\"],\r\n    \"allowJs\": true,\r\n    \"skipLibCheck\": true,\r\n    \"strict\": true,\r\n    \"noEmit\": true,\r\n    \"esModuleInterop\": true,\r\n    \"module\": \"esnext\",\r\n    \"moduleResolution\": \"bundler\",\r\n    \"resolveJsonModule\": true,\r\n    \"isolatedModules\": true,\r\n    \"jsx\": \"react-jsx\",\r\n    \"incremental\": true,\r\n    \"plugins\": [\r\n      {\r\n        \"name\": \"next\"\r\n      }\r\n    ],\r\n    \"paths\": {\r\n      \"@/*\": [\"./src/*\"],\r\n      \"@ui/globals.css\": [\"../../../packages/ui/src/styles/globals.css\"],\r\n      \"@ui/components/*\": [\"../../../packages/ui/src/components/*\"],\r\n      \"@ui/*\": [\"../../../packages/ui/src/*\"],\r\n      \"@workspace/admin-app\": [\"../../../packages/admin-app/src/index.ts\"],\r\n      \"@workspace/admin-app/*\": [\"../../../packages/admin-app/src/*\"]\r\n    }\r\n  },\r\n  \"include\": [\r\n    \"next-env.d.ts\",\r\n    \"**/*.ts\",\r\n    \"**/*.tsx\",\r\n    \".next/types/**/*.ts\",\r\n    \".next/dev/types/**/*.ts\",\r\n    \"**/*.mts\"\r\n  ],\r\n  \"exclude\": [\"node_modules\"]\r\n}\r\n"
     },
     "package.json": {
       "type": "config",
-      "content": "{\r\n  \"name\": \"@store-sync-frontend\",\r\n  \"version\": \"0.1.0\",\r\n  \"private\": true,\r\n  \"scripts\": {\r\n    \"dev\": \"node ../../../script-system/dev/dev-next.cjs 3000\",\r\n    \"predev\": \"node ../../../script-system/dev/dev-prep-next.cjs 3000 apps/store-sync/store-sync-frontend\",\r\n    \"kill\": \"node ../../../script-system/dev/kill-ports.cjs 3000\",\r\n    \"build\": \"next build\",\r\n    \"start\": \"next start\",\r\n    \"typecheck\": \"tsc --noEmit\",\r\n    \"lint\": \"eslint --max-warnings=0\",\r\n    \"lint:fix\": \"eslint --fix\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@base-ui/react\": \"^1.4.1\",\r\n    \"@react-google-maps/api\": \"^2.20.8\",\r\n    \"@react-three/drei\": \"^10.7.7\",\r\n    \"@react-three/fiber\": \"^9.6.0\",\r\n    \"@tanstack/react-query\": \"^5.100.9\",\r\n    \"@tanstack/react-table\": \"8.21.3\",\r\n    \"@tanstack/react-query-devtools\": \"^5.100.9\",\r\n    \"@workspace/ui\": \"workspace:*\",\r\n    \"@workspace/api-client\": \"workspace:*\",\r\n    \"@workspace/query-client\": \"workspace:*\",\r\n    \"@workspace/promo-codes\": \"workspace:*\",\r\n    \"@workspace/dealer-support\": \"workspace:*\",\r\n    \"class-variance-authority\": \"^0.7.1\",\r\n    \"clsx\": \"^2.1.1\",\r\n    \"cmdk\": \"^1.1.1\",\r\n    \"date-fns\": \"^4.1.0\",\r\n    \"input-otp\": \"^1.4.2\",\r\n    \"lucide-react\": \"^1.8.0\",\r\n    \"maath\": \"^0.10.8\",\r\n    \"next\": \"16.2.4\",\r\n    \"next-themes\": \"^0.4.6\",\r\n    \"nextjs-toploader\": \"^3.9.17\",\r\n    \"react\": \"19.2.4\",\r\n    \"react-day-picker\": \"^9.14.0\",\r\n    \"react-dom\": \"19.2.4\",\r\n    \"react-force-graph-3d\": \"^1.29.1\",\r\n    \"react-resizable-panels\": \"^4.10.0\",\r\n    \"recharts\": \"3.8.0\",\r\n    \"shadcn\": \"^4.4.0\",\r\n    \"sonner\": \"^2.0.7\",\r\n    \"tailwind-merge\": \"^3.5.0\",\r\n    \"three\": \"^0.184.0\",\r\n    \"three-forcegraph\": \"^1.43.4\",\r\n    \"tw-animate-css\": \"^1.4.0\",\r\n    \"vaul\": \"^1.1.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@workspace/eslint-config\": \"workspace:*\",\r\n    \"@tailwindcss/postcss\": \"^4\",\r\n    \"@types/node\": \"^20\",\r\n    \"@types/react\": \"^19\",\r\n    \"@types/react-dom\": \"^19\",\r\n    \"@types/three\": \"^0.184.0\",\r\n    \"babel-plugin-react-compiler\": \"1.0.0\",\r\n    \"eslint\": \"^9\",\r\n    \"eslint-config-next\": \"16.2.4\",\r\n    \"graphifyy\": \"^0.4.25\",\r\n    \"tailwindcss\": \"^4\",\r\n    \"typescript\": \"^5\"\r\n  }\r\n}"
+      "content": "{\r\n  \"name\": \"@store-sync-frontend\",\r\n  \"version\": \"0.1.0\",\r\n  \"private\": true,\r\n  \"scripts\": {\r\n    \"dev\": \"node ../../../script-system/dev/dev-next.cjs 3000\",\r\n    \"predev\": \"node ../../../script-system/dev/dev-prep-next.cjs 3000 apps/store-sync/store-sync-frontend\",\r\n    \"kill\": \"node ../../../script-system/dev/kill-ports.cjs 3000\",\r\n    \"build\": \"next build\",\r\n    \"start\": \"next start\",\r\n    \"typecheck\": \"tsc --noEmit\",\r\n    \"lint\": \"eslint --max-warnings=0\",\r\n    \"lint:fix\": \"eslint --fix\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@base-ui/react\": \"^1.4.1\",\r\n    \"@hookform/resolvers\": \"^5.2.2\",\r\n    \"@react-google-maps/api\": \"^2.20.8\",\r\n    \"@react-three/drei\": \"^10.7.7\",\r\n    \"@react-three/fiber\": \"^9.6.0\",\r\n    \"@tanstack/react-query\": \"^5.100.9\",\r\n    \"@tanstack/react-table\": \"8.21.3\",\r\n    \"@tanstack/react-query-devtools\": \"^5.100.9\",\r\n    \"@thangph2146/lexical-editor\": \"workspace:*\",\r\n    \"@workspace/admin-app\": \"workspace:*\",\r\n    \"@workspace/ui\": \"workspace:*\",\r\n    \"@workspace/api-client\": \"workspace:*\",\r\n    \"@workspace/query-client\": \"workspace:*\",\r\n    \"@workspace/promo-codes\": \"workspace:*\",\r\n    \"@workspace/dealer-support\": \"workspace:*\",\r\n    \"@workspace/site-config\": \"workspace:*\",\r\n    \"class-variance-authority\": \"^0.7.1\",\r\n    \"clsx\": \"^2.1.1\",\r\n    \"cmdk\": \"^1.1.1\",\r\n    \"date-fns\": \"^4.1.0\",\r\n    \"input-otp\": \"^1.4.2\",\r\n    \"jszip\": \"^3.10.1\",\r\n    \"lexical\": \"^0.38.2\",\r\n    \"lucide-react\": \"^1.8.0\",\r\n    \"maath\": \"^0.10.8\",\r\n    \"next\": \"16.2.4\",\r\n    \"next-themes\": \"^0.4.6\",\r\n    \"nextjs-toploader\": \"^3.9.17\",\r\n    \"react\": \"19.2.4\",\r\n    \"react-day-picker\": \"^9.14.0\",\r\n    \"react-dom\": \"19.2.4\",\r\n    \"react-hook-form\": \"^7.75.0\",\r\n    \"react-force-graph-3d\": \"^1.29.1\",\r\n    \"react-resizable-panels\": \"^4.10.0\",\r\n    \"recharts\": \"3.8.0\",\r\n    \"shadcn\": \"^4.4.0\",\r\n    \"socket.io-client\": \"^4.8.1\",\r\n    \"sonner\": \"^2.0.7\",\r\n    \"tailwind-merge\": \"^3.5.0\",\r\n    \"three\": \"^0.184.0\",\r\n    \"three-forcegraph\": \"^1.43.4\",\r\n    \"tw-animate-css\": \"^1.4.0\",\r\n    \"vaul\": \"^1.1.2\",\r\n    \"xlsx\": \"^0.18.5\",\r\n    \"zod\": \"^3.25.76\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@workspace/eslint-config\": \"workspace:*\",\r\n    \"@tailwindcss/postcss\": \"^4\",\r\n    \"@types/node\": \"^20\",\r\n    \"@types/react\": \"^19\",\r\n    \"@types/react-dom\": \"^19\",\r\n    \"@types/three\": \"^0.184.0\",\r\n    \"babel-plugin-react-compiler\": \"1.0.0\",\r\n    \"eslint\": \"^9\",\r\n    \"eslint-config-next\": \"16.2.4\",\r\n    \"graphifyy\": \"^0.4.25\",\r\n    \"tailwindcss\": \"^4\",\r\n    \"typescript\": \"^5\"\r\n  }\r\n}"
     },
     "next.config.ts": {
       "type": "config",
-      "content": "import type { NextConfig } from \"next\";\r\n\r\nconst nextConfig: NextConfig = {\r\n  /* config options here */\r\n  reactCompiler: true,\r\n  transpilePackages: [\r\n    \"@workspace/ui\",\r\n    \"@workspace/api-client\",\r\n    \"@workspace/dealer-support\",\r\n  ],\r\n};\r\n\r\nexport default nextConfig;\r\n"
+      "content": "import type { NextConfig } from \"next\";\r\n\r\nconst nextConfig: NextConfig = {\r\n  /* config options here */\r\n  reactCompiler: true,\r\n  transpilePackages: [\r\n    \"@workspace/ui\",\r\n    \"@workspace/api-client\",\r\n    \"@workspace/admin-app\",\r\n    \"@workspace/dealer-support\",\r\n    \"@thangph2146/lexical-editor\",\r\n  ],\r\n};\r\n\r\nexport default nextConfig;\r\n"
     },
     "components.json": {
       "type": "config",

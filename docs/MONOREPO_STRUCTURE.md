@@ -133,7 +133,7 @@ Các line khác (`hub-parent`, `store-sync`): `pnpm sync:api` — copy full tr�
 - **`pnpm admin:migrate`** — đưa module từ `main/backend` vào package.
 - **`pnpm admin:generate:checkin`** — sinh page re-export dưới `src/app/admin/{module}` (không copy source).
 - Menu: vẫn `sync-checkin-menu-tree.cjs` (sẽ gộp vào generate).
-- Legacy copy `copy-checkin-admin-modules.cjs` — **deprecated** (dùng `pnpm pull:checkin` packages-first; copy API: `pull:checkin:legacy`).
+- Legacy copy `sync/deprecated/` — **deprecated** (`pnpm pull:checkin`; copy API: `pull:checkin:legacy`).
 
 Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
 
@@ -184,6 +184,10 @@ Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCEN
 - Chỉ **4 product line** dưới `apps/`: `main`, `hub-parent`, `hub-event`, `store-sync` — không tạo `apps/api` phẳng (legacy).
 - Dev feature → **`apps/main/`** hoặc **`packages/*`**; line deploy cập nhật qua **`pnpm pull:checkin`** (generate) hoặc **`pnpm pull:template`** (downstream), không copy thủ công.
 - Artifact build (`dist/`, `.next/`) không commit.
+- Export JSON / backup / scratch: **`data/`** tại repo root (`seed/`, `exports/`, `local/`) — không đặt trong `apps/*/api/src/`. Kiểm tra: `pnpm verify:data-layout`.
+- Pipeline meta API: **`apps/*/api/.pipeline/`** — commit `main` + `deploy/nest`; deploy line khác gitignore, tái tạo bằng `pnpm api:registry:sync`.
+- PM2 production: **`ecosystem/`** — không file `ecosystem.*.cjs` ở root; xem [`ecosystem/README.md`](../ecosystem/README.md).
+- Upload media runtime: **`STORAGE_DIR`** ngoài repo — xem [`docs/storage/README.md`](storage/README.md).
 - Kiểm tra: `pnpm verify:apps` (registry + tên package); hub-event API: `pnpm verify:api-profile`.
 
 Quy tắc ngắn cho dev/agent: [`apps/README.md`](../apps/README.md) · hub-event native vs sync: [`apps/hub-event/README.md`](../apps/hub-event/README.md).

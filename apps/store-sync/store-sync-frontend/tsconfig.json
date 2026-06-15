@@ -22,7 +22,9 @@
       "@/*": ["./src/*"],
       "@ui/globals.css": ["../../../packages/ui/src/styles/globals.css"],
       "@ui/components/*": ["../../../packages/ui/src/components/*"],
-      "@ui/*": ["../../../packages/ui/src/*"]
+      "@ui/*": ["../../../packages/ui/src/*"],
+      "@workspace/admin-app": ["../../../packages/admin-app/src/index.ts"],
+      "@workspace/admin-app/*": ["../../../packages/admin-app/src/*"]
     }
   },
   "include": [

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 /**
  * Chỉ khi NODE_ENV=development: log ngắn mỗi request (storefront).
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (process.env.NODE_ENV === "development") {
     const { pathname, search } = request.nextUrl;
     console.log(

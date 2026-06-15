@@ -3,7 +3,7 @@
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
 - **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/store-sync/store-sync-frontend`
-- **context.generatedAt:** 2026-06-12T12:59:24.736Z
+- **context.generatedAt:** 2026-06-15T03:40:52.675Z
 
 ## Mục lục artefact Graphify
 
@@ -43,10 +43,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Pattern lặp:** [`PATTERN_CLUSTERS.md`](PATTERN_CLUSTERS.md) — boilerplate (loading, re-export generate).
 
 ## Thống kê
-- **totalFiles:** 110
-- **clientComponents:** 45
+- **totalFiles:** 189
+- **clientComponents:** 52
 
-## Trang (pages) (20)
+## Trang (pages) (58)
 - `src/app/(store-sync)/cart/page.tsx`
 - `src/app/(store-sync)/catalog/page.tsx`
 - `src/app/(store-sync)/catalog/[productId]/page.tsx`
@@ -61,6 +61,44 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/(store-sync)/register/page.tsx`
 - `src/app/(store-sync)/support/page.tsx`
 - `src/app/(store-sync)/terms/page.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/dang-ky/page.tsx`
+- `src/app/admin/dang-nhap/page.tsx`
+- `src/app/admin/data/page.tsx`
+- `src/app/admin/file-storage/page.tsx`
+- `src/app/admin/guides/new/page.tsx`
+- `src/app/admin/guides/page.tsx`
+- `src/app/admin/guides/[id]/edit/page.tsx`
+- `src/app/admin/guides/[id]/page.tsx`
+- `src/app/admin/orders/page.tsx`
+- `src/app/admin/orders/[id]/edit/page.tsx`
+- `src/app/admin/orders/[id]/page.tsx`
+- `src/app/admin/page.tsx`
+- `src/app/admin/products/new/page.tsx`
+- `src/app/admin/products/page.tsx`
+- `src/app/admin/products/[id]/edit/page.tsx`
+- `src/app/admin/products/[id]/page.tsx`
+- `src/app/admin/profile/page.tsx`
+- `src/app/admin/promo-codes/new/page.tsx`
+- `src/app/admin/promo-codes/page.tsx`
+- `src/app/admin/promo-codes/[id]/edit/page.tsx`
+- `src/app/admin/promo-codes/[id]/page.tsx`
+- `src/app/admin/rbac/page.tsx`
+- `src/app/admin/rbac/[id]/edit/page.tsx`
+- `src/app/admin/rbac/[id]/page.tsx`
+- `src/app/admin/seo-metas/new/page.tsx`
+- `src/app/admin/seo-metas/page.tsx`
+- `src/app/admin/seo-metas/[id]/edit/page.tsx`
+- `src/app/admin/seo-metas/[id]/page.tsx`
+- `src/app/admin/settings/page.tsx`
+- `src/app/admin/staff/new/page.tsx`
+- `src/app/admin/staff/page.tsx`
+- `src/app/admin/staff/[id]/edit/page.tsx`
+- `src/app/admin/staff/[id]/page.tsx`
+- `src/app/admin/tong-quan/page.tsx`
 - `src/app/graph/page.tsx`
 - `src/app/page.tsx`
 - `src/app/store/orders/page.tsx`
@@ -68,7 +106,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/store/page.tsx`
 - `src/app/store/profile/page.tsx`
 
-## Layout (18)
+## Layout (19)
 - `src/app/(store-sync)/cart/layout.tsx`
 - `src/app/(store-sync)/catalog/layout.tsx`
 - `src/app/(store-sync)/catalog/[productId]/layout.tsx`
@@ -84,6 +122,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/(store-sync)/register/layout.tsx`
 - `src/app/(store-sync)/support/layout.tsx`
 - `src/app/(store-sync)/terms/layout.tsx`
+- `src/app/admin/layout.tsx`
 - `src/app/graph/layout.tsx`
 - `src/app/layout.tsx`
 - `src/app/store/layout.tsx`
@@ -93,7 +132,6 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 
 ## Góc hệ thống (@store-sync-frontend) — đường dẫn gợi ý
 
-- **Middleware:** `src/middleware.ts`
 - **Root layout:** `src/app/layout.tsx`
 - **Route handlers dưới `src/app/api/`:** 1 file (danh sách `apiRoutes` ở trên nếu có).
 
@@ -139,6 +177,60 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/(store-sync)/support/page.tsx` | page | no | dynamic |  |
 | `src/app/(store-sync)/terms/layout.tsx` | layout | no | metadata, TermsLayout | src/app/(store-sync)/terms/page.tsx |
 | `src/app/(store-sync)/terms/page.tsx` | page | no | TermsPage |  |
+| `src/app/admin/admin-runtime-bridge.tsx` | tsx | yes | AdminRuntimeBridge | src/providers/admin/auth-provider.tsx, src/lib/admin/api.ts |
+| `src/app/admin/categories/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/new/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/page.tsx` | page | no | default |  |
+| `src/app/admin/dang-ky/page.tsx` | page | no | StoreAdminRegisterPage | src/features/admin-auth/register-form.tsx |
+| `src/app/admin/dang-nhap/page.tsx` | page | no | StoreAdminLoginPage | src/features/admin-auth/sign-in-form.tsx |
+| `src/app/admin/data/page.tsx` | page | no | default |  |
+| `src/app/admin/file-storage/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/new/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/page.tsx` | page | no | default |  |
+| `src/app/admin/layout.tsx` | layout | no | StoreAdminLayout | src/app/admin/page.tsx, src/providers/admin/query-provider.tsx, src/providers/admin/auth-provider.tsx, src/providers/admin/store-admin-layout.tsx, src/app/admin/admin-runtime-bridge.tsx |
+| `src/app/admin/orders/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/orders/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/orders/page.tsx` | page | no | default |  |
+| `src/app/admin/page.tsx` | page | no | StoreAdminIndexPage | src/config/admin/store-admin-access.ts |
+| `src/app/admin/products/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/products/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/products/new/page.tsx` | page | no | default |  |
+| `src/app/admin/products/page.tsx` | page | no | default |  |
+| `src/app/admin/profile/page.tsx` | page | no | StoreAdminProfilePage |  |
+| `src/app/admin/promo-codes/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/new/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/rbac/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/rbac/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/new/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/page.tsx` | page | no | default |  |
+| `src/app/admin/settings/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/new/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/page.tsx` | page | no | default |  |
+| `src/app/admin/tong-quan/page.tsx` | page | no | default |  |
 | `src/app/api/graphify/route.ts` | api-route | no |  | src/lib/graphify-context.ts |
 | `src/app/graph/layout.tsx` | layout | no | metadata, GraphLayout | src/app/graph/page.tsx |
 | `src/app/graph/loading.tsx` | loading | no | GraphLoading | src/components/shared/route-loading.tsx |
@@ -182,8 +274,21 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/store-auth-gate.tsx` | tsx | yes | StoreAuthGate | src/hooks/use-session.ts, src/hooks/use-client-ready.ts, src/lib/auth-routes.ts |
 | `src/components/shared/store-location-map-picker.tsx` | tsx | yes | StoreLocationMapPicker |  |
 | `src/components/shared/storefront-chrome.tsx` | tsx | yes | StorefrontChrome | src/components/shared/header.tsx, src/components/shared/footer.tsx |
+| `src/config/admin/store-admin-access.ts` | ts | no | STORE_ADMIN_BASE_PATH, STORE_ADMIN_HOME_PATH, STORE_ADMIN_LOGIN_PATH, STORE_ADMIN_PROFILE_PATH, STORE_ADMIN_REGISTER_PATH, STORE_ADMIN_INDEX_PATH, STORE_ADMIN_ENTRY_PERMISSIONS, hasAnyStoreAdminPermis |  |
+| `src/config/admin/store-admin-layout-static.ts` | ts | no | STORE_ADMIN_LAYOUT_STATIC | src/config/admin/store-admin-menu-tree.tsx, src/config/admin/store-admin-access.ts, src/lib/admin/auth-session.ts, src/lib/admin/auth-routes.ts |
+| `src/config/admin/store-admin-menu-tree.tsx` | tsx | no | STORE_ADMIN_MENU_TREE |  |
 | `src/config/store-portal-layout-static.ts` | ts | no | STORE_PORTAL_HOME, canAccessStorePortal, clearStorePortalSession, STORE_PORTAL_LAYOUT_STATIC | src/lib/auth-routes.ts, src/lib/store-auth.ts, src/config/store-portal-menu-tree.tsx |
 | `src/config/store-portal-menu-tree.tsx` | tsx | no | STORE_PORTAL_MENU_TREE |  |
+| `src/features/admin-auth/auth-api.ts` | ts | no |  | src/lib/admin/api-base-url.ts |
+| `src/features/admin-auth/register-form.tsx` | tsx | yes | RegisterForm | src/lib/admin/auth-routes.ts |
+| `src/features/admin-auth/sign-in-form.tsx` | tsx | yes | SignInForm | src/config/admin/store-admin-access.ts, src/providers/admin/auth-provider.tsx |
+| `src/hooks/admin/index.ts` | ts | no | useDebouncedValue, useAdminEditFormHydration, useAdminFormDraftPersistence, useAdminTableState | src/hooks/admin/use-debounced-value.ts, src/hooks/admin/use-admin-edit-form-hydration.ts, src/hooks/admin/use-admin-table-state.ts |
+| `src/hooks/admin/queries.ts` | ts | no |  |  |
+| `src/hooks/admin/use-admin-edit-form-hydration.ts` | ts | no | useAdminEditFormHydration, useAdminFormDraftPersistence |  |
+| `src/hooks/admin/use-admin-mutation.ts` | ts | no | useAdminMutation |  |
+| `src/hooks/admin/use-admin-realtime-sync.ts` | ts | no | useAdminRealtimeSync |  |
+| `src/hooks/admin/use-admin-table-state.ts` | ts | no | useAdminTableState |  |
+| `src/hooks/admin/use-debounced-value.ts` | ts | no | useDebouncedValue |  |
 | `src/hooks/queries.ts` | ts | yes | queryKeys, useProducts, useCatalogProducts, useCategoryUsage, useProduct, useCartStockProducts, useProductBySku, useSuggestedProducts, useCategories, useOrders, useOrder, useStoreAccountProfile, useUp | src/lib/api.ts |
 | `src/hooks/use-cart.ts` | ts | yes | CartLine, cartLineKey, cartLineQuantity, mergeLinesForCreateOrder, CartAddResult, cartStore, cartNeedsStockSync, CartSummary, useCart, useCartStockSync | src/lib/promo-rules-registry.ts, src/lib/api.ts |
 | `src/hooks/use-checkout-draft.ts` | ts | yes | CheckoutDraftFields, useCheckoutDraft |  |
@@ -193,6 +298,13 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/hooks/use-graphify.ts` | ts | yes | UseGraphifyReturn, useGraphify | src/lib/graphify-context.ts |
 | `src/hooks/use-mobile.ts` | ts | no | useIsMobile |  |
 | `src/hooks/use-session.ts` | ts | yes | MockSession, useSession |  |
+| `src/lib/admin/admin-navigation.ts` | ts | no |  |  |
+| `src/lib/admin/api-base-url.ts` | ts | no |  |  |
+| `src/lib/admin/api.ts` | ts | no | api, ApiError | src/lib/admin/api-base-url.ts, src/lib/admin/auth-session.ts |
+| `src/lib/admin/auth-routes.ts` | ts | no | AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, isStoreAdminAuthPath, getAdminAppHomeExternalPath, getAdminLoginExternalPath, STORE_ADMIN_HOME_PATH, STORE_ADMIN_LOGIN_PATH | src/config/admin/store-admin-access.ts |
+| `src/lib/admin/auth-session.ts` | ts | no |  |  |
+| `src/lib/admin/index.ts` | ts | no |  |  |
+| `src/lib/admin/product-image-storage-stub.ts` | ts | no | PRODUCT_IMAGE_PARENT_LABEL, PRODUCT_IMAGE_PARENT_SLUG, ProductImageUploadInput, ProductImageUploadContext, resolveProductImageSlug, buildProductImageUploadContext, resolveProductImageFolderNav, folder |  |
 | `src/lib/api.ts` | ts | no | api, ApiError |  |
 | `src/lib/auth-routes.ts` | ts | no | STORE_AUTH_PATHS, isStoreAuthPath, safeRelativeNext |  |
 | `src/lib/cart-gift-rules.ts` | ts | no | giftRulesForCartLine, isCartGiftRuleUnlocked, describeCartGiftRuleParts, summarizeCartGiftRule | src/hooks/use-cart.ts |
@@ -207,9 +319,14 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/store-auth.ts` | ts | no | STORE_SESSION_STORAGE_KEY, STORE_SESSION_EVENT, toStoreSession, writeStoreSession, patchStoreSession | src/hooks/use-session.ts, src/lib/api.ts |
 | `src/lib/store-ui.ts` | ts | no | STORE_AUTH_FORM_CARD_CLASS |  |
 | `src/lib/utils.ts` | ts | no | cn |  |
-| `src/middleware.ts` | middleware | no | middleware, config |  |
+| `src/providers/admin/admin-realtime-sync.tsx` | tsx | yes | AdminRealtimeSync | src/providers/admin/auth-provider.tsx, src/hooks/admin/use-admin-realtime-sync.ts |
+| `src/providers/admin/auth-provider.tsx` | tsx | yes | StaffLoginResult, AuthProvider, useAuth, useClientReady | src/config/admin/store-admin-access.ts, src/features/admin-auth/auth-api.ts, src/lib/admin/auth-session.ts, src/lib/admin/auth-routes.ts |
+| `src/providers/admin/query-provider.tsx` | tsx | yes | QueryProvider |  |
+| `src/providers/admin/store-admin-layout.tsx` | tsx | yes | StoreAdminLayoutProvider | src/lib/admin/api.ts, src/config/admin/store-admin-layout-static.ts, src/providers/admin/admin-realtime-sync.tsx, src/providers/admin/auth-provider.tsx, src/lib/admin/auth-session.ts |
 | `src/providers/query-provider.tsx` | tsx | yes | QueryProvider |  |
 | `src/providers/store-portal-layout.tsx` | tsx | yes | StorePortalLayoutProvider | src/hooks/use-cart.ts, src/hooks/use-client-ready.ts, src/hooks/use-session.ts, src/lib/cart-sync.ts, src/lib/mock-session-to-admin-user.ts, src/lib/store-auth.ts, src/config/store-portal-layout-stati |
+| `src/proxy.ts` | ts | no | proxy, config |  |
+| `src/types/google-gsi.d.ts` | ts | no |  |  |
 | `tsconfig.json` | config | — | — | — |
 ## File Markdown trong scope app
 

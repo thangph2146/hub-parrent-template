@@ -1,28 +1,27 @@
 # Thống kê graph — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.506Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-15T03:40:54.553Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `directory` | 33 |
-| `tsx` | 30 |
-| `ts` | 29 |
-| `page` | 20 |
-| `layout` | 18 |
-| `loading` | 7 |
+| `directory` | 78 |
+| `page` | 58 |
+| `ts` | 48 |
+| `tsx` | 38 |
+| `loading` | 21 |
+| `layout` | 19 |
 | `api-route` | 1 |
-| `middleware` | 1 |
 | `route-group` | 1 |
 
 ## Links theo `relation`
 
 | relation | Số |
 |----------|-----|
-| `imports` | 170 |
-| `contains` | 138 |
-| `renders` | 17 |
+| `contains` | 262 |
+| `imports` | 204 |
+| `renders` | 18 |
 | `assets` | 3 |
 
 ## Top file theo số cạnh `imports` đi ra (out-degree)
@@ -45,12 +44,12 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 | `src/app/store/orders/_component/store-order-actions.ts` | 5 |
 | `src/app/store/profile/page.tsx` | 5 |
 | `src/components/shared/product-detail.tsx` | 5 |
+| `src/providers/admin/store-admin-layout.tsx` | 5 |
+| `src/app/admin/layout.tsx` | 4 |
 | `src/app/store/orders/[orderId]/page.tsx` | 4 |
 | `src/app/store/orders/_component/store-order-items-table.tsx` | 4 |
 | `src/components/shared/cart-line-item.tsx` | 4 |
 | `src/components/shared/cart-sync-bridge.tsx` | 4 |
-| `src/components/shared/header.tsx` | 4 |
-| `src/hooks/use-gift-product-catalog.ts` | 4 |
 
 ## Top file theo số cạnh `imports` đi vào (in-degree)
 
@@ -67,12 +66,12 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 | `src/components/shared/route-loading.tsx` | 7 |
 | `src/lib/catalog-filters.ts` | 6 |
 | `src/lib/cart-sync.ts` | 5 |
+| `src/providers/admin/auth-provider.tsx` | 5 |
+| `src/config/admin/store-admin-access.ts` | 5 |
 | `src/hooks/use-gift-product-catalog.ts` | 4 |
 | `src/lib/store-auth.ts` | 4 |
 | `src/lib/graphify-context.ts` | 4 |
 | `src/components/shared/cart-drawer.tsx` | 4 |
-| `src/lib/cart-gift-rules.ts` | 4 |
-| `src/lib/auth-routes.ts` | 3 |
 
 ## Làm mới
 

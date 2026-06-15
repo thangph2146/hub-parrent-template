@@ -2,15 +2,22 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import type { AdminAppConfig } from "@workspace/admin-app/config";
+import { isPathUnderAdminBase } from "@workspace/admin-app/config/admin-access-paths";
+import adminAppConfig from "../../../admin.app.config.json";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 
-/** Header/footer storefront — ẩn khi vào cổng quản lý `/store`. */
+const ADMIN_BASE_PATH = (adminAppConfig as AdminAppConfig).basePath;
+
+/** Header/footer storefront — ẩn khi vào cổng `/store` hoặc admin (`basePath`). */
 export function StorefrontChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isStorePortal = pathname?.startsWith("/store");
+  const hideStorefrontChrome =
+    pathname?.startsWith("/store") ||
+    isPathUnderAdminBase(pathname, ADMIN_BASE_PATH);
 
-  if (isStorePortal) {
+  if (hideStorefrontChrome) {
     return <>{children}</>;
   }
 

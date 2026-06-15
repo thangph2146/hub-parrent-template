@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { Heading, Text } from "@ui/components/typography";
+import { Text } from "@ui/components/typography";
 import { Badge } from "@ui/components/badge";
+import { cn } from "@ui/lib/utils";
 
 type ProductWideCardProps = {
   productId: string;
@@ -29,42 +30,58 @@ export function ProductWideCard({
   category,
 }: ProductWideCardProps) {
   return (
-    <Link href={`/catalog/${productId}`} className="block">
-      <div className="flex items-center gap-8 bg-background p-6 rounded-[2.5rem] border border-outline-variant hover:shadow-2xl transition-all duration-300 group cursor-pointer hover:border-primary/30 w-full">
-        <div className="w-40 h-40 bg-gradient-to-b from-white to-muted/20 rounded-3xl flex-shrink-0 flex items-center justify-center relative border border-outline-variant/30">
+    <Link href={`/catalog/${productId}`} className="block h-full">
+      <div
+        className={cn(
+          "group flex h-full cursor-pointer items-center gap-3 rounded-2xl border border-outline-variant/80",
+          "bg-background p-3 transition-all duration-300 hover:border-primary/30 hover:shadow-md md:gap-4 md:p-3.5",
+        )}
+      >
+        <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border border-outline-variant/30 bg-gradient-to-b from-white to-muted/20 md:size-24">
           <img
             src={image}
             alt={name}
-            className="w-full h-full rounded-3xl object-cover drop-shadow-[0_10px_16px_rgba(0,0,0,0.16)] group-hover:scale-105 transition-transform duration-500"
+            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute -top-3 -right-3 bg-primary text-white text-xs font-black px-3 py-1.5 rounded-xl uppercase shadow-lg z-10">
+          <span className="absolute left-1 top-1 max-w-[calc(100%-0.5rem)] truncate rounded-md bg-primary px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-primary-foreground shadow-sm md:text-[10px]">
             {tag}
-          </div>
+          </span>
         </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-center space-y-3">
+
+        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
           {category && (
-            <Text variant="caption" className="font-black text-primary uppercase tracking-widest">
+            <Text
+              variant="caption"
+              className="truncate text-[10px] font-bold uppercase tracking-wider text-primary/80 md:text-[11px]"
+            >
               {category}
             </Text>
           )}
-          <Heading as="h4" size="title" className="leading-tight group-hover:text-primary transition-colors line-clamp-3">
+
+          <p className="line-clamp-2 text-sm font-bold leading-snug text-foreground transition-colors group-hover:text-primary md:text-[15px]">
             {name}
-          </Heading>
-          <div className="flex items-baseline gap-2 flex-wrap">
+          </p>
+
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             {listPrice && (
-              <Text as="span" variant="muted" className="text-sm font-semibold line-through">
+              <Text as="span" variant="muted" className="text-xs font-medium line-through">
                 {listPrice}
               </Text>
             )}
-            <Heading as="span" size="title" className="text-primary">
+            <span className="text-sm font-black tabular-nums text-primary md:text-base">
               {price}
-            </Heading>
-            <Badge variant="success" size="sm">
+            </span>
+            <Badge variant="success" size="sm" className="h-5 px-1.5 text-[10px]">
               Bán chạy
             </Badge>
           </div>
-          <Text variant="small" className="uppercase tracking-widest font-bold flex items-center gap-2">
-            <Star className="size-5 fill-yellow-400 text-yellow-400" /> {sold} đã nhập
+
+          <Text
+            variant="small"
+            className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            <Star className="size-3.5 shrink-0 fill-yellow-400 text-yellow-400" />
+            <span className="truncate">{sold} đã nhập</span>
           </Text>
         </div>
       </div>

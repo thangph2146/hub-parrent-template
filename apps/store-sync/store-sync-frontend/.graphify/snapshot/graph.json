@@ -504,6 +504,888 @@
       "client": false
     },
     {
+      "id": "dir_src_app_admin",
+      "label": "admin/",
+      "path": "src/app/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "label": "admin-runtime-bridge.tsx",
+      "path": "src/app/admin/admin-runtime-bridge.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_admin_categories",
+      "label": "categories/",
+      "path": "src/app/admin/categories",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_categories_new",
+      "label": "new/",
+      "path": "src/app/admin/categories/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_categories_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_categories__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/categories/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_categories__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/categories/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_dang_ky",
+      "label": "dang-ky/",
+      "path": "src/app/admin/dang-ky",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_dang_ky_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/dang-ky/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/dang-ky",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_dang_nhap",
+      "label": "dang-nhap/",
+      "path": "src/app/admin/dang-nhap",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_dang_nhap_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/dang-nhap/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/dang-nhap",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_data",
+      "label": "data/",
+      "path": "src/app/admin/data",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_data_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/data/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/data",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_file_storage",
+      "label": "file-storage/",
+      "path": "src/app/admin/file-storage",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_file_storage_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/file-storage/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/file-storage",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_guides",
+      "label": "guides/",
+      "path": "src/app/admin/guides",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_guides_new",
+      "label": "new/",
+      "path": "src/app/admin/guides/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_guides_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_guides__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/guides/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_guides__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/guides/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_layout_tsx",
+      "label": "layout.tsx",
+      "path": "src/app/admin/layout.tsx",
+      "color": "#ff6b35",
+      "size": 20,
+      "community": "src/app/admin",
+      "type": "layout",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_orders",
+      "label": "orders/",
+      "path": "src/app/admin/orders",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_orders_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_orders__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/orders/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/orders",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_orders__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/orders/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/orders/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_orders__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_orders__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_products",
+      "label": "products/",
+      "path": "src/app/admin/products",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_products_new",
+      "label": "new/",
+      "path": "src/app/admin/products/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_products_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_products_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_products__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/products/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_products__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/products/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_products__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_products__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_profile",
+      "label": "profile/",
+      "path": "src/app/admin/profile",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_profile_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/profile/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/profile",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes",
+      "label": "promo-codes/",
+      "path": "src/app/admin/promo-codes",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes_new",
+      "label": "new/",
+      "path": "src/app/admin/promo-codes/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_promo_codes_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_promo_codes_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/promo-codes/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/promo-codes/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_promo_codes__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_rbac",
+      "label": "rbac/",
+      "path": "src/app/admin/rbac",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_rbac_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_rbac__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/rbac/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/rbac",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_rbac__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/rbac/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/rbac/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/rbac/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/rbac/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas",
+      "label": "seo-metas/",
+      "path": "src/app/admin/seo-metas",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas_new",
+      "label": "new/",
+      "path": "src/app/admin/seo-metas/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/seo-metas/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/seo-metas/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_settings",
+      "label": "settings/",
+      "path": "src/app/admin/settings",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_settings_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/settings/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/settings",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_staff",
+      "label": "staff/",
+      "path": "src/app/admin/staff",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_staff_new",
+      "label": "new/",
+      "path": "src/app/admin/staff/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_staff_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_staff__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/staff/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_staff__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/staff/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_tong_quan",
+      "label": "tong-quan/",
+      "path": "src/app/admin/tong-quan",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_tong_quan_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/tong-quan/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/tong-quan",
+      "type": "page",
+      "client": false
+    },
+    {
       "id": "dir_src_app_api",
       "label": "api/",
       "path": "src/app/api",
@@ -1051,6 +1933,45 @@
       "type": "directory"
     },
     {
+      "id": "dir_src_config_admin",
+      "label": "admin/",
+      "path": "src/config/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/config",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_config_admin_store_admin_access_ts",
+      "label": "store-admin-access.ts",
+      "path": "src/config/admin/store-admin-access.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_config_admin_store_admin_layout_static_ts",
+      "label": "store-admin-layout-static.ts",
+      "path": "src/config/admin/store-admin-layout-static.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_config_admin_store_admin_menu_tree_tsx",
+      "label": "store-admin-menu-tree.tsx",
+      "path": "src/config/admin/store-admin-menu-tree.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "tsx",
+      "client": false
+    },
+    {
       "id": "file_src_config_store_portal_layout_static_ts",
       "label": "store-portal-layout-static.ts",
       "path": "src/config/store-portal-layout-static.ts",
@@ -1071,6 +1992,54 @@
       "client": false
     },
     {
+      "id": "dir_src_features",
+      "label": "features/",
+      "path": "src/features",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_features_admin_auth",
+      "label": "admin-auth/",
+      "path": "src/features/admin-auth",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/features",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_features_admin_auth_auth_api_ts",
+      "label": "auth-api.ts",
+      "path": "src/features/admin-auth/auth-api.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_features_admin_auth_register_form_tsx",
+      "label": "register-form.tsx",
+      "path": "src/features/admin-auth/register-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_features_admin_auth_sign_in_form_tsx",
+      "label": "sign-in-form.tsx",
+      "path": "src/features/admin-auth/sign-in-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "dir_src_hooks",
       "label": "hooks/",
       "path": "src/hooks",
@@ -1078,6 +2047,85 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "dir_src_hooks_admin",
+      "label": "admin/",
+      "path": "src/hooks/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/hooks",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_hooks_admin_index_ts",
+      "label": "index.ts",
+      "path": "src/hooks/admin/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_queries_ts",
+      "label": "queries.ts",
+      "path": "src/hooks/admin/queries.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "label": "use-admin-edit-form-hydration.ts",
+      "path": "src/hooks/admin/use-admin-edit-form-hydration.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_mutation_ts",
+      "label": "use-admin-mutation.ts",
+      "path": "src/hooks/admin/use-admin-mutation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "label": "use-admin-realtime-sync.ts",
+      "path": "src/hooks/admin/use-admin-realtime-sync.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_table_state_ts",
+      "label": "use-admin-table-state.ts",
+      "path": "src/hooks/admin/use-admin-table-state.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_debounced_value_ts",
+      "label": "use-debounced-value.ts",
+      "path": "src/hooks/admin/use-debounced-value.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_hooks_queries_ts",
@@ -1177,6 +2225,85 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "dir_src_lib_admin",
+      "label": "admin/",
+      "path": "src/lib/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/lib",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_lib_admin_admin_navigation_ts",
+      "label": "admin-navigation.ts",
+      "path": "src/lib/admin/admin-navigation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_api_base_url_ts",
+      "label": "api-base-url.ts",
+      "path": "src/lib/admin/api-base-url.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_api_ts",
+      "label": "api.ts",
+      "path": "src/lib/admin/api.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_auth_routes_ts",
+      "label": "auth-routes.ts",
+      "path": "src/lib/admin/auth-routes.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_auth_session_ts",
+      "label": "auth-session.ts",
+      "path": "src/lib/admin/auth-session.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_index_ts",
+      "label": "index.ts",
+      "path": "src/lib/admin/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_product_image_storage_stub_ts",
+      "label": "product-image-storage-stub.ts",
+      "path": "src/lib/admin/product-image-storage-stub.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_lib_api_ts",
@@ -1319,16 +2446,6 @@
       "client": false
     },
     {
-      "id": "file_src_middleware_ts",
-      "label": "middleware.ts",
-      "path": "src/middleware.ts",
-      "color": "#ff00ff",
-      "size": 16,
-      "community": "src",
-      "type": "middleware",
-      "client": false
-    },
-    {
       "id": "dir_src_providers",
       "label": "providers/",
       "path": "src/providers",
@@ -1336,6 +2453,55 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "dir_src_providers_admin",
+      "label": "admin/",
+      "path": "src/providers/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/providers",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "label": "admin-realtime-sync.tsx",
+      "path": "src/providers/admin/admin-realtime-sync.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_auth_provider_tsx",
+      "label": "auth-provider.tsx",
+      "path": "src/providers/admin/auth-provider.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_query_provider_tsx",
+      "label": "query-provider.tsx",
+      "path": "src/providers/admin/query-provider.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_store_admin_layout_tsx",
+      "label": "store-admin-layout.tsx",
+      "path": "src/providers/admin/store-admin-layout.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "file_src_providers_query_provider_tsx",
@@ -1356,6 +2522,35 @@
       "community": "src/providers",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_proxy_ts",
+      "label": "proxy.ts",
+      "path": "src/proxy.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_types",
+      "label": "types/",
+      "path": "src/types",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_types_google_gsi_d_ts",
+      "label": "google-gsi.d.ts",
+      "path": "src/types/google-gsi.d.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/types",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "dir_public",
@@ -1621,6 +2816,466 @@
     {
       "source": "dir_src_app__store_sync__terms",
       "target": "file_src_app__store_sync__terms_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
+      "target": "dir_src_app_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_categories",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "dir_src_app_admin_categories_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories_new",
+      "target": "file_src_app_admin_categories_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories_new",
+      "target": "file_src_app_admin_categories_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "file_src_app_admin_categories_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "dir_src_app_admin_categories__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "dir_src_app_admin_categories__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id__edit",
+      "target": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id__edit",
+      "target": "file_src_app_admin_categories__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "file_src_app_admin_categories__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "file_src_app_admin_categories__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_dang_ky",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_dang_ky",
+      "target": "file_src_app_admin_dang_ky_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_dang_nhap",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_dang_nhap",
+      "target": "file_src_app_admin_dang_nhap_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_data",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_data",
+      "target": "file_src_app_admin_data_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_file_storage",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_file_storage",
+      "target": "file_src_app_admin_file_storage_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_guides",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "dir_src_app_admin_guides_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides_new",
+      "target": "file_src_app_admin_guides_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides_new",
+      "target": "file_src_app_admin_guides_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "file_src_app_admin_guides_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "dir_src_app_admin_guides__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "dir_src_app_admin_guides__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id__edit",
+      "target": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id__edit",
+      "target": "file_src_app_admin_guides__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "file_src_app_admin_guides__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "file_src_app_admin_guides__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_orders",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders",
+      "target": "file_src_app_admin_orders_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders",
+      "target": "dir_src_app_admin_orders__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id_",
+      "target": "dir_src_app_admin_orders__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id__edit",
+      "target": "file_src_app_admin_orders__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id_",
+      "target": "file_src_app_admin_orders__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_products",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "dir_src_app_admin_products_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products_new",
+      "target": "file_src_app_admin_products_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "file_src_app_admin_products_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "dir_src_app_admin_products__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id_",
+      "target": "dir_src_app_admin_products__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id__edit",
+      "target": "file_src_app_admin_products__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id_",
+      "target": "file_src_app_admin_products__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_profile",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_profile",
+      "target": "file_src_app_admin_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_promo_codes",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "dir_src_app_admin_promo_codes_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes_new",
+      "target": "file_src_app_admin_promo_codes_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "file_src_app_admin_promo_codes_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "dir_src_app_admin_promo_codes__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id_",
+      "target": "dir_src_app_admin_promo_codes__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id__edit",
+      "target": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id_",
+      "target": "file_src_app_admin_promo_codes__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_rbac",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac",
+      "target": "file_src_app_admin_rbac_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac",
+      "target": "dir_src_app_admin_rbac__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "dir_src_app_admin_rbac__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id__edit",
+      "target": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id__edit",
+      "target": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "file_src_app_admin_rbac__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "file_src_app_admin_rbac__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_seo_metas",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "dir_src_app_admin_seo_metas_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas_new",
+      "target": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas_new",
+      "target": "file_src_app_admin_seo_metas_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "file_src_app_admin_seo_metas_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "dir_src_app_admin_seo_metas__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "dir_src_app_admin_seo_metas__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id__edit",
+      "target": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id__edit",
+      "target": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "file_src_app_admin_seo_metas__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_settings",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_settings",
+      "target": "file_src_app_admin_settings_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_staff",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "dir_src_app_admin_staff_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff_new",
+      "target": "file_src_app_admin_staff_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff_new",
+      "target": "file_src_app_admin_staff_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "file_src_app_admin_staff_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "dir_src_app_admin_staff__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "dir_src_app_admin_staff__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id__edit",
+      "target": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id__edit",
+      "target": "file_src_app_admin_staff__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "file_src_app_admin_staff__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "file_src_app_admin_staff__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_tong_quan",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tong_quan",
+      "target": "file_src_app_admin_tong_quan_page_tsx",
       "relation": "contains"
     },
     {
@@ -1905,6 +3560,26 @@
     },
     {
       "source": "dir_src_config",
+      "target": "dir_src_config_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_store_admin_layout_static_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_store_admin_menu_tree_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
       "target": "file_src_config_store_portal_layout_static_ts",
       "relation": "contains"
     },
@@ -1915,7 +3590,72 @@
     },
     {
       "source": "dir_src",
+      "target": "dir_src_features",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features",
+      "target": "dir_src_features_admin_auth",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_auth_api_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_register_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_sign_in_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
       "target": "dir_src_hooks",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
+      "target": "dir_src_hooks_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_mutation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_table_state_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_debounced_value_ts",
       "relation": "contains"
     },
     {
@@ -1966,6 +3706,46 @@
     {
       "source": "dir_src",
       "target": "dir_src_lib",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "dir_src_lib_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_admin_navigation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_product_image_storage_stub_ts",
       "relation": "contains"
     },
     {
@@ -2040,12 +3820,32 @@
     },
     {
       "source": "dir_src",
-      "target": "file_src_middleware_ts",
+      "target": "dir_src_providers",
       "relation": "contains"
     },
     {
-      "source": "dir_src",
-      "target": "dir_src_providers",
+      "source": "dir_src_providers",
+      "target": "dir_src_providers_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_query_provider_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_store_admin_layout_tsx",
       "relation": "contains"
     },
     {
@@ -2056,6 +3856,21 @@
     {
       "source": "dir_src_providers",
       "target": "file_src_providers_store_portal_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "file_src_proxy_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
+      "target": "dir_src_types",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_types",
+      "target": "file_src_types_google_gsi_d_ts",
       "relation": "contains"
     },
     {
@@ -2126,6 +3941,11 @@
     {
       "source": "file_src_app__store_sync__terms_layout_tsx",
       "target": "file_src_app__store_sync__terms_page_tsx",
+      "relation": "renders"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_app_admin_page_tsx",
       "relation": "renders"
     },
     {
@@ -2336,6 +4156,51 @@
     {
       "source": "file_src_app__store_sync__register_page_tsx",
       "target": "file_src_lib_store_ui_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_dang_ky_page_tsx",
+      "target": "file_src_features_admin_auth_register_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_dang_nhap_page_tsx",
+      "target": "file_src_features_admin_auth_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_query_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_store_admin_layout_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_page_tsx",
+      "target": "file_src_config_admin_store_admin_access_ts",
       "relation": "imports"
     },
     {
@@ -2884,6 +4749,26 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_config_admin_store_admin_layout_static_ts",
+      "target": "file_src_config_admin_store_admin_menu_tree_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_store_admin_layout_static_ts",
+      "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_store_admin_layout_static_ts",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_store_admin_layout_static_ts",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_config_store_portal_layout_static_ts",
       "target": "file_src_lib_auth_routes_ts",
       "relation": "imports"
@@ -2896,6 +4781,41 @@
     {
       "source": "file_src_config_store_portal_layout_static_ts",
       "target": "file_src_config_store_portal_menu_tree_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_auth_api_ts",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_register_form_tsx",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_sign_in_form_tsx",
+      "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_sign_in_form_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_admin_table_state_ts",
       "relation": "imports"
     },
     {
@@ -2939,6 +4859,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_api_ts",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_api_ts",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_auth_routes_ts",
+      "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_cart_gift_rules_ts",
       "target": "file_src_hooks_use_cart_ts",
       "relation": "imports"
@@ -2971,6 +4906,61 @@
     {
       "source": "file_src_lib_store_auth_ts",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "target": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_features_admin_auth_auth_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_store_admin_layout_tsx",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_store_admin_layout_tsx",
+      "target": "file_src_config_admin_store_admin_layout_static_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_store_admin_layout_tsx",
+      "target": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_store_admin_layout_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_store_admin_layout_tsx",
+      "target": "file_src_lib_admin_auth_session_ts",
       "relation": "imports"
     },
     {

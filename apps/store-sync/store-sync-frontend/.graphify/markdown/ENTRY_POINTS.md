@@ -1,15 +1,15 @@
 # Điểm vào (entry) — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.506Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-15T03:40:54.553Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
-- `src/middleware.ts`
+- (không có `main.ts` / `app.module.ts` trong graph)
 
 ## Nest modules (`*.module.ts`) — 0 file
 
 
-## Next App Router (`page` / `layout` / `route`) — 39 file
+## Next App Router (`page` / `layout` / `route`) — 78 file
 
 - `src/app/(store-sync)/cart/layout.tsx`
 - `src/app/(store-sync)/cart/page.tsx`
@@ -40,33 +40,88 @@
 - `src/app/(store-sync)/support/page.tsx`
 - `src/app/(store-sync)/terms/layout.tsx`
 - `src/app/(store-sync)/terms/page.tsx`
-- `src/app/api/graphify/route.ts`
-- `src/app/graph/layout.tsx`
-- `src/app/graph/page.tsx`
-- `src/app/layout.tsx`
-- `src/app/page.tsx`
-- `src/app/store/layout.tsx`
-- `src/app/store/orders/[orderId]/page.tsx`
-- `src/app/store/orders/page.tsx`
-- `src/app/store/page.tsx`
-- `src/app/store/profile/page.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/dang-ky/page.tsx`
+- `src/app/admin/dang-nhap/page.tsx`
+- `src/app/admin/data/page.tsx`
+- `src/app/admin/file-storage/page.tsx`
+- `src/app/admin/guides/[id]/edit/page.tsx`
+- `src/app/admin/guides/[id]/page.tsx`
+- `src/app/admin/guides/new/page.tsx`
+- `src/app/admin/guides/page.tsx`
+- `src/app/admin/layout.tsx`
+- `src/app/admin/orders/[id]/edit/page.tsx`
+- `src/app/admin/orders/[id]/page.tsx`
+- `src/app/admin/orders/page.tsx`
+- `src/app/admin/page.tsx`
+- `src/app/admin/products/[id]/edit/page.tsx`
+- `src/app/admin/products/[id]/page.tsx`
+- `src/app/admin/products/new/page.tsx`
+- `src/app/admin/products/page.tsx`
+- … và 28 route file khác
 
-## `loading.tsx` (pattern skeleton) — 7 file
+## `loading.tsx` (pattern skeleton) — 21 file
 
 Nhiều trang admin dùng cùng pattern loading; ưu tiên sửa shared UI (`@ui`) thay vì từng file.
 
-- Tổng: **7** file `loading.tsx` trong graph
+- Tổng: **21** file `loading.tsx` trong graph
   - `src/app/(store-sync)/cart/loading.tsx`
   - `src/app/(store-sync)/catalog/[productId]/loading.tsx`
   - `src/app/(store-sync)/catalog/loading.tsx`
   - `src/app/(store-sync)/checkout/loading.tsx`
   - `src/app/(store-sync)/orders/[orderId]/loading.tsx`
   - `src/app/(store-sync)/orders/loading.tsx`
-  - `src/app/graph/loading.tsx`
+  - `src/app/admin/categories/[id]/edit/loading.tsx`
+  - `src/app/admin/categories/[id]/loading.tsx`
+  - `src/app/admin/categories/new/loading.tsx`
+  - `src/app/admin/guides/[id]/edit/loading.tsx`
+  - `src/app/admin/guides/[id]/loading.tsx`
+  - `src/app/admin/guides/new/loading.tsx`
+  - … và 9 file khác
 
-## AUTO-GENERATED (không sửa tay) — 0 file
+## AUTO-GENERATED (không sửa tay) — 48 file
 
-- (không phát hiện marker `AUTO-GENERATED` trong header file)
+Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
+
+- `src/app/admin/categories/[id]/edit/loading.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/loading.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/categories/new/loading.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/data/page.tsx`
+- `src/app/admin/file-storage/page.tsx`
+- `src/app/admin/guides/[id]/edit/loading.tsx`
+- `src/app/admin/guides/[id]/edit/page.tsx`
+- `src/app/admin/guides/[id]/loading.tsx`
+- `src/app/admin/guides/[id]/page.tsx`
+- `src/app/admin/guides/new/loading.tsx`
+- `src/app/admin/guides/new/page.tsx`
+- `src/app/admin/guides/page.tsx`
+- `src/app/admin/orders/[id]/edit/page.tsx`
+- `src/app/admin/orders/[id]/page.tsx`
+- `src/app/admin/orders/page.tsx`
+- `src/app/admin/products/[id]/edit/page.tsx`
+- `src/app/admin/products/[id]/page.tsx`
+- `src/app/admin/products/new/page.tsx`
+- `src/app/admin/products/page.tsx`
+- `src/app/admin/promo-codes/[id]/edit/page.tsx`
+- `src/app/admin/promo-codes/[id]/page.tsx`
+- `src/app/admin/promo-codes/new/page.tsx`
+- `src/app/admin/promo-codes/page.tsx`
+- `src/app/admin/rbac/[id]/edit/loading.tsx`
+- `src/app/admin/rbac/[id]/edit/page.tsx`
+- `src/app/admin/rbac/[id]/loading.tsx`
+- `src/app/admin/rbac/[id]/page.tsx`
+- `src/app/admin/rbac/page.tsx`
+- `src/app/admin/seo-metas/[id]/edit/loading.tsx`
+- `src/app/admin/seo-metas/[id]/edit/page.tsx`
+- `src/app/admin/seo-metas/[id]/loading.tsx`
+- … và 13 file khác
 
 ## Làm mới
 

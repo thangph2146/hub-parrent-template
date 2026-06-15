@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@workspace/ui",
     "@workspace/api-client",
+    "@workspace/admin-app",
     "@workspace/dealer-support",
+    "@thangph2146/lexical-editor",
   ],
 };
 
