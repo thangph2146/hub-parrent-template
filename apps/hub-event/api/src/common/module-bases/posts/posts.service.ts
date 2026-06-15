@@ -20,12 +20,6 @@ import {
 } from '../../get-options';
 import { safeIsoString, safeIsoStringNow } from '../../date-utils';
 import { toEntityId, toEntityIdList } from '../../entity-id';
-import {
-  deletePostCategoryPivots,
-  deletePostTagPivots,
-  insertPostCategoryPivot,
-  insertPostTagPivot,
-} from '../../post-pivot-insert';
 
 export interface PostRowDto {
   id: number;
@@ -535,21 +529,29 @@ export abstract class BasePostsService {
     this.getEm().persist(postObj);
     await this.getEm().flush();
 
-    const createdPostId = toEntityId(postObj.id as string | number);
-    for (const categoryId of categoryIds) {
-      await insertPostCategoryPivot(
-        this.getEm(),
-        createdPostId,
-        toEntityId(categoryId),
-      );
+    if (categoryIds.length) {
+      for (const categoryId of categoryIds) {
+        const postCategory = new (this.getPostCategoryEntity())();
+        postCategory.post = this.getEm().getReference(this.getPostEntity(), postObj.id);
+        postCategory.category = this.getEm().getReference(this.getCategoryEntity(),
+          toEntityId(categoryId),
+        );
+        this.getEm().persist(postCategory);
+      }
     }
-    for (const tagId of tagIds) {
-      await insertPostTagPivot(this.getEm(), createdPostId, toEntityId(tagId));
+    if (tagIds.length) {
+      for (const tagId of tagIds) {
+        const postTag = new (this.getPostTagEntity())();
+        postTag.post = this.getEm().getReference(this.getPostEntity(), postObj.id);
+        postTag.tag = this.getEm().getReference(this.getTagEntity(), toEntityId(tagId));
+        this.getEm().persist(postTag);
+      }
     }
+    await this.getEm().flush();
 
     const created = await this.getEm().findOne(
       this.getPostEntity(),
-      { id: createdPostId },
+      { id: postObj.id },
       {
         populate: POST_POPULATE,
       },
@@ -632,14 +634,18 @@ export abstract class BasePostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateCategoryIds(categoryIds);
-      await deletePostCategoryPivots(this.getEm(), toEntityId(existing.id));
-      for (const categoryId of categoryIds) {
-        try {
-          await insertPostCategoryPivot(
-            this.getEm(),
-            toEntityId(existing.id),
+      await this.getEm().nativeDelete(this.getPostCategoryEntity(), { post: existing.id });
+      if (categoryIds.length > 0) {
+        for (const categoryId of categoryIds) {
+          const postCategory = new (this.getPostCategoryEntity())();
+          postCategory.post = this.getEm().getReference(this.getPostEntity(), existing.id);
+          postCategory.category = this.getEm().getReference(this.getCategoryEntity(),
             toEntityId(categoryId),
           );
+          this.getEm().persist(postCategory);
+        }
+        try {
+          await this.getEm().flush();
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new BadRequestException(`Lỗi lưu danh mục: ${msg}`);
@@ -651,14 +657,16 @@ export abstract class BasePostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateTagIds(tagIds);
-      await deletePostTagPivots(this.getEm(), toEntityId(existing.id));
-      for (const tagId of tagIds) {
+      await this.getEm().nativeDelete(this.getPostTagEntity(), { post: existing.id });
+      if (tagIds.length > 0) {
+        for (const tagId of tagIds) {
+          const postTag = new (this.getPostTagEntity())();
+          postTag.post = this.getEm().getReference(this.getPostEntity(), existing.id);
+          postTag.tag = this.getEm().getReference(this.getTagEntity(), toEntityId(tagId));
+          this.getEm().persist(postTag);
+        }
         try {
-          await insertPostTagPivot(
-            this.getEm(),
-            toEntityId(existing.id),
-            toEntityId(tagId),
-          );
+          await this.getEm().flush();
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new BadRequestException(`Lỗi lưu thẻ: ${msg}`);
@@ -729,9 +737,15 @@ export abstract class BasePostsService {
         affected += 1;
 
         if (mode === 'replace') {
-          await deletePostCategoryPivots(tx, post.id);
-          for (const categoryId of cats) {
-            await insertPostCategoryPivot(tx, post.id, categoryId);
+          await tx.nativeDelete(this.getPostCategoryEntity(), { post: post.id });
+          if (cats.length > 0) {
+            for (const categoryId of cats) {
+              const postCategory = new (this.getPostCategoryEntity())();
+              postCategory.post = tx.getReference(this.getPostEntity(), post.id);
+              postCategory.category = tx.getReference(this.getCategoryEntity(), categoryId);
+              tx.persist(postCategory);
+            }
+            await tx.flush();
           }
         } else {
           const existing = await tx.find(
@@ -751,8 +765,14 @@ export abstract class BasePostsService {
               .filter((id): id is number => id != null),
           );
           const toAdd = cats.filter((c) => !have.has(c));
-          for (const categoryId of toAdd) {
-            await insertPostCategoryPivot(tx, post.id, categoryId);
+          if (toAdd.length > 0) {
+            for (const categoryId of toAdd) {
+              const postCategory = new (this.getPostCategoryEntity())();
+              postCategory.post = tx.getReference(this.getPostEntity(), post.id);
+              postCategory.category = tx.getReference(this.getCategoryEntity(), categoryId);
+              tx.persist(postCategory);
+            }
+            await tx.flush();
           }
         }
       }
