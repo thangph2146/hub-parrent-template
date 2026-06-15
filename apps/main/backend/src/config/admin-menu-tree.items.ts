@@ -237,17 +237,6 @@ export const BACKEND_ADMIN_MENU_ITEMS: AdminMenuTreeItemData[] = [
         ],
       },
       {
-        href: "/hanet-avatars",
-        label: "Avatar HANET",
-        icon: "ScanFace",
-        permission: null,
-        anyPermission: [
-          PERMISSION_CODES.EVENTS_VIEW,
-          PERMISSION_CODES.EVENTS_MANAGE,
-          PERMISSION_CODES.FACE_DATA_VIEW,
-        ],
-      },
-      {
         href: "/speakers",
         label: "Diễn giả",
         icon: "Mic",
@@ -255,6 +244,74 @@ export const BACKEND_ADMIN_MENU_ITEMS: AdminMenuTreeItemData[] = [
         anyPermission: [
           PERMISSION_CODES.SPEAKERS_VIEW,
           PERMISSION_CODES.SPEAKERS_MANAGE,
+        ],
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "HANET",
+    icon: "PlugZap",
+    children: [
+      {
+        href: "/hanet/ket-noi",
+        label: "Kết nối",
+        icon: "PlugZap",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
+      },
+      {
+        href: "/hanet/dia-diem",
+        label: "Địa điểm",
+        icon: "MapPin",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
+      },
+      {
+        href: "/hanet/thiet-bi",
+        label: "Thiết bị",
+        icon: "Camera",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
+      },
+      {
+        href: "/hanet/nguoi",
+        label: "Người đăng ký",
+        icon: "Users",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
+      },
+      {
+        href: "/hanet/checkin",
+        label: "Check-in ngày",
+        icon: "CalendarCheck",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+        ],
+      },
+      {
+        href: "/hanet/avatar",
+        label: "Avatar Hub",
+        icon: "ScanFace",
+        permission: null,
+        anyPermission: [
+          PERMISSION_CODES.EVENTS_VIEW,
+          PERMISSION_CODES.EVENTS_MANAGE,
+          PERMISSION_CODES.FACE_DATA_VIEW,
         ],
       },
     ],

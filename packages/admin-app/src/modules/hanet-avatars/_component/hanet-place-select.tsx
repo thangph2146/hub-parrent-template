@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useId, useMemo } from "react"
 import { Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@ui/components/button"
+import { DataTableToolbarField } from "@ui/components/data-table"
 import {
   Select,
   SelectContent,
@@ -10,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/components/select"
+import { cn } from "@ui/lib/utils"
 import { useHanetPlacesQuery } from "./use-hanet-places-query"
 import { HANET_ADMIN_PLACE_STORAGE_KEY } from "@workspace/admin-app/lib/hanet-place-storage"
 
@@ -38,12 +40,18 @@ export function HanetPlaceSelect({
   onChange,
   defaultPlaceId,
   disabled,
+  layout = "inline",
+  className,
 }: {
   value: string
   onChange: (placeId: string) => void
   defaultPlaceId?: string | null
   disabled?: boolean
+  /** `stacked` — label trên, dùng trong toolbar DataTable. */
+  layout?: "inline" | "stacked"
+  className?: string
 }) {
+  const selectId = useId()
   const { placesQuery, places, resolvedDefault } =
     useHanetSelectedPlaceId(defaultPlaceId)
 
@@ -115,30 +123,51 @@ export function HanetPlaceSelect({
   const selectedPlaceId = value || resolvedDefault
   const selectedPlace = places.find((p) => p.placeId === selectedPlaceId)
 
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm text-muted-foreground">Địa điểm HANET</span>
-      <Select
-        value={selectedPlaceId}
-        onValueChange={onChange}
-        disabled={disabled}
+  const selectControl = (
+    <Select
+      value={selectedPlaceId}
+      onValueChange={onChange}
+      disabled={disabled}
+    >
+      <SelectTrigger
+        id={selectId}
+        className={cn(
+          layout === "stacked" ? "h-8 w-full" : "h-9 w-full max-w-xs"
+        )}
       >
-        <SelectTrigger className="h-9 w-full max-w-xs">
-          <SelectValue placeholder="Chọn địa điểm">
-            {selectedPlace?.name ?? null}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {places.map((place) => (
-            <SelectItem key={place.placeId} value={place.placeId}>
-              {place.name}{" "}
-              <span className="font-mono text-xs text-muted-foreground">
-                ({place.placeId})
-              </span>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <SelectValue placeholder="Chọn địa điểm">
+          {selectedPlace?.name ?? null}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {places.map((place) => (
+          <SelectItem key={place.placeId} value={place.placeId}>
+            {place.name}{" "}
+            <span className="font-mono text-xs text-muted-foreground">
+              ({place.placeId})
+            </span>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+
+  if (layout === "stacked") {
+    return (
+      <DataTableToolbarField
+        label="Địa điểm HANET"
+        htmlFor={selectId}
+        className={cn("w-full max-w-xs sm:max-w-sm", className)}
+      >
+        {selectControl}
+      </DataTableToolbarField>
+    )
+  }
+
+  return (
+    <div className={cn("flex flex-wrap items-center gap-2", className)}>
+      <span className="text-sm text-muted-foreground">Địa điểm HANET</span>
+      {selectControl}
     </div>
   )
 }

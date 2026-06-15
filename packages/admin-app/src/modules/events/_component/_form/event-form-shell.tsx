@@ -40,8 +40,11 @@ import {
   Mic,
   Star,
 } from "lucide-react"
-import { useCamerasListQuery } from "@workspace/admin-app/modules/cameras/_component"
 import { slugify } from "@workspace/api-client"
+import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { useHanetDevicesQuery } from "@workspace/admin-app/modules/hanet/_component/use-hanet-devices-query"
+import { useHanetStatusQuery } from "../_query/use-hanet-status"
 import type { EventFormValues, EventFormSpeaker } from "../types"
 import { EventPosterField } from "./event-poster-field"
 import { api } from "@workspace/admin-app/lib/api"
@@ -266,12 +269,12 @@ function LocationSelector({ form }: { form: EventFormShellProps["form"] }) {
   )
 }
 
-function buildCameraSelectOptions(
-  cameras: { id: string; name: string; code: string | null }[] | undefined
+function buildHanetDeviceSelectOptions(
+  devices: { deviceId: string; name: string }[] | undefined
 ) {
-  return (cameras ?? []).map((cam) => ({
-    value: String(cam.id),
-    label: cam.code ? `${cam.name} (${cam.code})` : cam.name,
+  return (devices ?? []).map((device) => ({
+    value: device.deviceId,
+    label: `${device.name} (${device.deviceId})`,
   }))
 }
 
@@ -283,15 +286,19 @@ export function EventFormShell({
   onBack,
   onReset,
 }: EventFormShellProps) {
-  const cameraNewPath = useAdminModulePath("cameras")
+  const hanetPath = useAdminModulePath("hanet")
   const { control, setValue, watch } = form
   const watchedTitle = watch("title")
   const watchedPosterUrl = watch("posterUrl") ?? ""
-  const { data: cameras, isLoading: camerasLoading } = useCamerasListQuery(
-    api,
-    true
+  const { data: hanetStatus } = useHanetStatusQuery()
+  const [hanetPlaceId, setHanetPlaceId] = useState(readHanetAdminPlaceId)
+  const effectivePlaceId =
+    hanetPlaceId || hanetStatus?.defaultPlaceId || ""
+  const { data: hanetDevices, isLoading: devicesLoading } = useHanetDevicesQuery(
+    effectivePlaceId,
+    hanetStatus?.configured === true
   )
-  const cameraOptions = buildCameraSelectOptions(cameras)
+  const deviceOptions = buildHanetDeviceSelectOptions(hanetDevices)
 
   return (
     <>
@@ -750,23 +757,44 @@ export function EventFormShell({
                 Camera HANET
               </p>
               <p className="px-1 text-xs text-muted-foreground">
-                Chọn camera từ danh sách — mã camera phải trùng{" "}
-                <code className="text-[10px]">deviceID</code> trên HANET.
+                Chọn thiết bị từ cổng HANET —{" "}
+                <code className="text-[10px]">deviceID</code> được đồng bộ tự
+                động khi lưu sự kiện.{" "}
+                <Link href={`${hanetPath()}/thiet-bi`} className="text-primary hover:underline">
+                  Quản lý HANET
+                </Link>
               </p>
+              {hanetStatus?.configured ? (
+                <div className="px-1">
+                  <HanetPlaceSelect
+                    value={hanetPlaceId}
+                    onChange={setHanetPlaceId}
+                    defaultPlaceId={hanetStatus.defaultPlaceId}
+                  />
+                </div>
+              ) : (
+                <p className="px-1 text-xs text-amber-700 dark:text-amber-400">
+                  Chưa cấu hình OAuth HANET — chỉnh .env API hoặc mở{" "}
+                  <Link href={hanetPath()} className="font-medium underline">
+                    trang HANET
+                  </Link>
+                  .
+                </p>
+              )}
               <Controller
-                name="checkinCameraId"
+                name="checkinHanetDeviceId"
                 control={control}
                 render={({ field }) => (
-                  <FormFieldCol label="Camera check-in">
+                  <FormFieldCol label="Camera check-in (HANET)">
                     <SelectPicker
                       value={String(field.value ?? "")}
                       onChange={(v) =>
                         field.onChange(v != null ? String(v) : "")
                       }
-                      options={cameraOptions}
+                      options={deviceOptions}
                       placeholder={
-                        camerasLoading
-                          ? "Đang tải camera…"
+                        devicesLoading
+                          ? "Đang tải thiết bị HANET…"
                           : "Chọn camera check-in"
                       }
                     />
@@ -774,36 +802,37 @@ export function EventFormShell({
                 )}
               />
               <Controller
-                name="checkoutCameraId"
+                name="checkoutHanetDeviceId"
                 control={control}
                 render={({ field }) => (
-                  <FormFieldCol label="Camera check-out">
+                  <FormFieldCol label="Camera check-out (HANET)">
                     <SelectPicker
                       value={String(field.value ?? "")}
                       onChange={(v) =>
                         field.onChange(v != null ? String(v) : "")
                       }
-                      options={cameraOptions}
+                      options={deviceOptions}
                       placeholder={
-                        camerasLoading
-                          ? "Đang tải camera…"
+                        devicesLoading
+                          ? "Đang tải thiết bị HANET…"
                           : "Chọn camera check-out"
                       }
                     />
                   </FormFieldCol>
                 )}
               />
-              {camerasLoading ? (
+              {devicesLoading ? (
                 <p className="text-xs text-muted-foreground">
-                  Đang tải danh sách camera…
+                  Đang tải danh sách thiết bị HANET…
                 </p>
-              ) : !cameras?.length ? (
+              ) : hanetStatus?.configured && effectivePlaceId && !hanetDevices?.length ? (
                 <p className="text-xs text-amber-700 dark:text-amber-400">
-                  Chưa có camera —{" "}
-                  <Link href={cameraNewPath("new")} className="font-medium underline">
-                    thêm camera
-                  </Link>{" "}
-                  trước khi gắn sự kiện.
+                  Không có thiết bị cho place này — kiểm tra cổng HANET hoặc chọn
+                  place khác trên{" "}
+                  <Link href={`${hanetPath()}/thiet-bi`} className="font-medium underline">
+                    trang HANET
+                  </Link>
+                  .
                 </p>
               ) : null}
             </FieldSetContent>

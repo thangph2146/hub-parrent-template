@@ -49,11 +49,12 @@ export class HanetPartnerService {
 
   async getConnectionStatus(deviceId: string) {
     this.assertReady();
-    if (!deviceId.trim()) {
+    const normalized = deviceId.trim();
+    if (!normalized) {
       throw new BadRequestException('Thiếu deviceID');
     }
     return this.client.postPartner('/device/getConnectionStatus', {
-      deviceID: deviceId.trim(),
+      deviceIDs: normalized,
     });
   }
 

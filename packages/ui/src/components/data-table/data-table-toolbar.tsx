@@ -16,15 +16,29 @@ import { Input } from "../input"
 import { TreeMultiSelectPicker } from "../pickers"
 import { cn } from "../../lib/utils"
 import type { AdminDataTableBulkAction } from "./data-table"
+import { DataTableToolbarField } from "./data-table-toolbar-field"
 
 const FILTER_GRID_CLASS =
   "grid grid-cols-1 gap-x-2 gap-y-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
 
 function ToolbarActionCluster({ children }: { children: ReactNode }) {
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-1 bg-background p-1">
-      {children}
-    </div>
+    <div className="flex shrink-0 flex-wrap items-center gap-1">{children}</div>
+  )
+}
+
+function ToolbarButtonContent({
+  icon: Icon,
+  label,
+}: {
+  icon: ComponentType<{ className?: string }>
+  label: string
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Icon className="size-3.5 shrink-0" aria-hidden />
+      <span className="leading-none">{label}</span>
+    </span>
   )
 }
 
@@ -36,8 +50,10 @@ function ToolbarLabeledButton({
   return (
     <Button
       type="button"
-      size="sm"
-      className={cn("h-8 gap-1.5 rounded-md px-2.5 text-xs", className)}
+      className={cn(
+        "h-8 min-h-8 gap-0 rounded-md px-2.5 text-xs leading-none",
+        className
+      )}
       {...props}
     >
       {children}
@@ -49,6 +65,7 @@ type DataTableToolbarProps<TData> = {
   globalFilterControlId: string
   showGlobalFilter: boolean
   globalFilterPlaceholder: string
+  globalFilterLabel?: string
   globalFilter: string
   onGlobalFilterChange: (value: string) => void
   showClearFiltersButton: boolean
@@ -84,6 +101,7 @@ export function DataTableToolbar<TData>({
   globalFilterControlId,
   showGlobalFilter,
   globalFilterPlaceholder,
+  globalFilterLabel,
   globalFilter,
   onGlobalFilterChange,
   showClearFiltersButton,
@@ -144,28 +162,34 @@ export function DataTableToolbar<TData>({
   return (
     <div className="overflow-hidden rounded-lg border border-border/80 bg-card shadow-sm">
       {showGlobalFilter || showTopActions ? (
-        <div className="flex flex-wrap items-center gap-2 px-2.5 py-1.5">
+        <div className="flex flex-wrap items-end gap-3 px-2.5 py-2">
           {showGlobalFilter ? (
-            <div className="relative min-w-[min(100%,12rem)] flex-1">
-              <Search
-                className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground"
-                aria-hidden
-              />
-              <Input
-                id={globalFilterControlId}
-                placeholder={globalFilterPlaceholder}
-                value={globalFilter}
-                onChange={(e) => onGlobalFilterChange(e.target.value)}
-                className="h-8 w-full rounded-md border-border/80 bg-background pl-7 text-sm shadow-none"
-              />
-            </div>
+            <DataTableToolbarField
+              label={globalFilterLabel ?? "Tìm kiếm"}
+              htmlFor={globalFilterControlId}
+              className="min-w-[min(100%,12rem)] flex-1"
+            >
+              <div className="relative">
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden
+                />
+                <Input
+                  id={globalFilterControlId}
+                  placeholder={globalFilterPlaceholder}
+                  value={globalFilter}
+                  onChange={(e) => onGlobalFilterChange(e.target.value)}
+                  className="h-8 w-full rounded-md border-border/80 bg-background pl-7 text-sm shadow-none"
+                />
+              </div>
+            </DataTableToolbarField>
           ) : null}
 
+          {filterToolbarExtra}
+
           {showTopActions ? (
-            <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
-              {showClearFiltersButton ||
-              xlsxExportEnabled ||
-              filterToolbarExtra ? (
+            <div className="flex flex-wrap items-end gap-1.5 sm:ml-auto">
+              {showClearFiltersButton || xlsxExportEnabled ? (
                 <ToolbarActionCluster>
                   {showClearFiltersButton ? (
                     <ToolbarLabeledButton
@@ -173,8 +197,10 @@ export function DataTableToolbar<TData>({
                       onClick={onClearFilters}
                       title="Xóa tìm nhanh và toàn bộ bộ lọc theo cột"
                     >
-                      <FilterX className="size-3.5 shrink-0" aria-hidden />
-                      Xóa bộ lọc
+                      <ToolbarButtonContent
+                        icon={FilterX}
+                        label="Xóa bộ lọc"
+                      />
                     </ToolbarLabeledButton>
                   ) : null}
                   {xlsxExportEnabled ? (
@@ -184,24 +210,30 @@ export function DataTableToolbar<TData>({
                       onClick={onXlsxExport}
                       title="Tải Excel theo cột đang hiển thị"
                     >
-                      <Download className="size-3.5 shrink-0" aria-hidden />
-                      Xuất Excel
+                      <ToolbarButtonContent
+                        icon={Download}
+                        label="Xuất Excel"
+                      />
                     </ToolbarLabeledButton>
                   ) : null}
-                  {filterToolbarExtra}
                 </ToolbarActionCluster>
               ) : null}
 
               {hideableTableColumnOptions.length > 0 ? (
-                <TreeMultiSelectPicker
-                  value={visibleTableColumnIds}
-                  onChange={onTableColumnVisibilityChange}
-                  options={hideableTableColumnOptions}
-                  placeholder="Hiện cột"
-                  showBulkActions
-                  size="sm"
+                <DataTableToolbarField
+                  label="Hiện cột"
                   className="w-[9.5rem] sm:w-[9.5rem]"
-                />
+                >
+                  <TreeMultiSelectPicker
+                    value={visibleTableColumnIds}
+                    onChange={onTableColumnVisibilityChange}
+                    options={hideableTableColumnOptions}
+                    placeholder="Chọn cột"
+                    showBulkActions
+                    size="sm"
+                    className="w-full"
+                  />
+                </DataTableToolbarField>
               ) : null}
             </div>
           ) : null}

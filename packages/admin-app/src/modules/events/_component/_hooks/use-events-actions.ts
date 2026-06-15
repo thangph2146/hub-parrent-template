@@ -50,6 +50,8 @@ const EMPTY_VALUES: EventFormValues = {
   requireFaceId: false,
   checkinCameraId: "",
   checkoutCameraId: "",
+  checkinHanetDeviceId: "",
+  checkoutHanetDeviceId: "",
   maxParticipants: 0,
   format: 0,
   onlineLink: "",

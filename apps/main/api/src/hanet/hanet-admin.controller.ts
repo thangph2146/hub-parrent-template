@@ -90,6 +90,38 @@ export class HanetAdminController {
 
 
 
+  @Get('profile')
+
+  @ApiOperation({ summary: 'POST /profile/getProfile — thông tin tài khoản partner' })
+
+  async getProfile() {
+
+    const data = await this.hanetAdminService.getProfile();
+
+    return { success: true, data };
+
+  }
+
+
+
+  @Get('devices/connection-status')
+
+  @ApiOperation({ summary: 'POST /device/getConnectionStatus' })
+
+  async deviceConnectionStatus(@Query('deviceId') deviceId?: string) {
+
+    const data = await this.hanetAdminService.getDeviceConnectionStatus(
+
+      deviceId?.trim() ?? '',
+
+    );
+
+    return { success: true, data };
+
+  }
+
+
+
   @Get('devices')
 
   @ApiOperation({ summary: 'POST /device/getListDeviceByPlace' })
@@ -195,6 +227,32 @@ export class HanetAdminController {
   async syncPersonAvatars(@Query('placeId') placeId?: string) {
 
     const data = await this.hanetAdminService.syncPersonAvatars(placeId?.trim());
+
+    return { success: true, data };
+
+  }
+
+
+
+  @Post('cameras/ensure')
+
+  @Permissions(PERMISSIONS.EVENTS_MANAGE)
+
+  @ApiOperation({
+
+    summary:
+
+      'Tạo/cập nhật camera Hub từ deviceID HANET (trước khi gắn sự kiện)',
+
+  })
+
+  async ensureCamera(
+
+    @Body() body: { deviceId: string; name?: string },
+
+  ) {
+
+    const data = await this.hanetAdminService.ensureCamera(body);
 
     return { success: true, data };
 

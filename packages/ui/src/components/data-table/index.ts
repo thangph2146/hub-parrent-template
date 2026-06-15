@@ -84,6 +84,9 @@ export {
   type DataTableHorizontalScrollProps,
 } from "./data-table-horizontal-scroll"
 export {
+  DataTableToolbarField,
+} from "./data-table-toolbar-field"
+export {
   DataTableUserSearchFilter,
   type DataTableUserSearchHandlers,
   type DataTableUserSearchOption,

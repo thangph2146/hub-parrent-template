@@ -89,7 +89,7 @@ export class HanetPersonRegisterService {
 
     try {
       const partnerResult = await this.partner.registerPersonByUrl({
-        placeId: input.placeId,
+        placeId: input.placeId ?? '',
         name,
         aliasId: email,
         url: avatarUrl,

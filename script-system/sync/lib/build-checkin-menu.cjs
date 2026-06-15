@@ -36,6 +36,16 @@ function buildIncludeHrefs(config, moduleToHref) {
   return hrefs
 }
 
+/** Menu con của module (vd. /hanet/ket-noi khi module hanet có trong config). */
+function isCheckinHrefIncluded(href, includeHrefs, config, moduleToHref) {
+  if (includeHrefs.has(href)) return true
+  for (const mod of config.modules ?? []) {
+    const base = moduleToHref(mod)
+    if (href === base || href.startsWith(`${base}/`)) return true
+  }
+  return false
+}
+
 function remapHref(href, overrides) {
   if (Object.prototype.hasOwnProperty.call(overrides, href)) {
     return overrides[href]
@@ -90,7 +100,7 @@ function buildCheckinMenu(mainItems, config, moduleToHref) {
     }
 
     const children = item.children
-      .filter((c) => includeHrefs.has(c.href))
+      .filter((c) => isCheckinHrefIncluded(c.href, includeHrefs, config, moduleToHref))
       .map((c) => ({ ...c, href: remapHref(c.href, overrides) }))
     if (children.length === 0) continue
     out.push({ ...item, children })
@@ -139,6 +149,7 @@ function verifyMenuOrderAgainstMain(mainItems, checkinMenu, config) {
 module.exports = {
   buildCheckinMenu,
   buildIncludeHrefs,
+  isCheckinHrefIncluded,
   normalizeMenuLabel,
   verifyMenuOrderAgainstMain,
 }

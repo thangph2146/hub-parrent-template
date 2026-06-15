@@ -17,6 +17,45 @@ export class HanetSyncService {
 
   constructor(private readonly em: EntityManager) {}
 
+  /** Tạo hoặc cập nhật bản ghi `cameras` từ deviceID HANET (gắn sự kiện / webhook). */
+  async ensureCameraFromDevice(
+    deviceId: string,
+    deviceName?: string,
+  ): Promise<{ id: number; name: string; code: string }> {
+    const trimmedId = deviceId.trim();
+    if (!trimmedId) {
+      throw new Error('Thiếu deviceID');
+    }
+    const label = deviceName?.trim() || trimmedId;
+
+    let camera = await this.em.findOne(Camera, {
+      code: trimmedId,
+      deletedAt: null,
+    } as FilterQuery<Camera>);
+
+    if (!camera) {
+      const now = new Date();
+      camera = this.em.create(Camera, {
+        name: label,
+        code: trimmedId,
+        status: 1,
+        createdAt: now,
+        updatedAt: now,
+      });
+      this.em.persist(camera);
+    } else if (label && camera.name !== label) {
+      camera.name = label;
+    }
+
+    await this.em.flush();
+
+    return {
+      id: camera.id,
+      name: camera.name,
+      code: camera.code ?? trimmedId,
+    };
+  }
+
   async handleSync(body: HanetWebhookBody): Promise<HanetSyncResult> {
     const dataType = pickHanetDataType(body);
     const action = pickHanetActionType(body) || 'update';

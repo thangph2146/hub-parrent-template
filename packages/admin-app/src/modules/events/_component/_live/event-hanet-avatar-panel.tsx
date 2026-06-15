@@ -24,7 +24,7 @@ export function EventHanetAvatarPanel({
   defaultPlaceId?: string | null
 }) {
   const queryClient = useQueryClient()
-  const avatarsPath = useAdminModulePath("hanet-avatars")
+  const hanetPath = useAdminModulePath("hanet")
   const { data: hanetStatus } = useHanetStatusQuery()
   const [search, setSearch] = useState("")
   const [selectedPlaceId, setSelectedPlaceId] = useState(readHanetAdminPlaceId)
@@ -68,7 +68,7 @@ export function EventHanetAvatarPanel({
         <p className="font-medium text-foreground">Avatar HANET đã lưu</p>
         <span className="text-muted-foreground">{total} bản ghi</span>
         <Link
-          href={avatarsPath()}
+          href={`${hanetPath()}/avatar`}
           className="inline-flex items-center gap-1 text-primary hover:underline"
         >
           Xem trang đầy đủ
@@ -121,8 +121,8 @@ export function EventHanetAvatarPanel({
       ) : (
         <p className="py-3 text-center text-muted-foreground">
           Chưa có avatar —{" "}
-          <Link href={avatarsPath()} className="text-primary hover:underline">
-            mở trang Avatar HANET
+          <Link href={`${hanetPath()}?tab=avatars`} className="text-primary hover:underline">
+            mở trang HANET → Avatar
           </Link>
         </p>
       )}

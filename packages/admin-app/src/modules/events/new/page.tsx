@@ -4,8 +4,9 @@ import { useAdminModuleNavigation } from "@workspace/admin-app/runtime"
 import { useCallback } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { AdminPageGuard, AdminPageSection } from "@ui/components/admin"
-import { EventFormShell, useEventForm, buildEventPayload } from "../_component"
+import { EventFormShell, useEventForm } from "../_component"
 import type { EventFormValues } from "../_component"
+import { buildEventSubmitPayload } from "@workspace/admin-app/lib/build-event-submit-payload"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 function NewEventPageInner() {
@@ -35,7 +36,9 @@ function NewEventPageInner() {
 
   const handleSubmit = useCallback(
     async (values: EventFormValues) => {
-      const result = await createMutation.mutateAsync(buildEventPayload(values))
+      const result = await createMutation.mutateAsync(
+        await buildEventSubmitPayload(values)
+      )
       const newEventId = (result as { id?: string })?.id
       if (newEventId && values.speakers?.length) {
         await Promise.all(

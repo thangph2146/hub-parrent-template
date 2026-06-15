@@ -8,7 +8,6 @@ import {
   Check,
   Link2,
   ExternalLink,
-  PlugZap,
   Loader2,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/components/card"
@@ -19,16 +18,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@ui/components/collapsible"
-import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
-import { api } from "@workspace/admin-app/lib/api"
 import {
   buildHanetWebhookAutoUrl,
   buildHanetWebhookUrl,
 } from "@workspace/admin-app/lib/hanet-webhook-url"
 import { useAdminModulePath } from "@workspace/admin-app/runtime"
-import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import { useHanetStatusQuery } from "../_query/use-hanet-status"
-import { EventHanetAvatarPanel } from "./event-hanet-avatar-panel"
 
 export type EventHanetCameraInfo = {
   checkinCameraName: string | null
@@ -86,72 +81,14 @@ export function EventHanetConfigCard({
   eventId: string
   cameras?: EventHanetCameraInfo
 }) {
-  const cameraNewPath = useAdminModulePath("cameras")
   const eventEditPath = useAdminModulePath("events")
+  const hanetPath = useAdminModulePath("hanet")
   const { data: hanetStatus, isLoading: loadingStatus } =
     useHanetStatusQuery(eventId)
 
   const webhookPerEvent =
     hanetStatus?.urls.forEvent ?? buildHanetWebhookUrl(eventId)
   const webhookAuto = hanetStatus?.urls.auto ?? buildHanetWebhookAutoUrl()
-
-  const testMutation = useAdminMutation({
-    mutationKey: ["hanet", "test-connection"],
-    mutationFn: () => api.hanet.testConnection(),
-    toast: {
-      loading: "Đang kiểm tra OAuth HANET…",
-      success: (res) => res.message,
-      error: (err) =>
-        err instanceof Error ? err.message : "Không kết nối được HANET",
-    },
-  })
-
-  const partnerMutation = useAdminMutation({
-    mutationKey: ["hanet", "test-partner"],
-    mutationFn: () => api.hanet.testPartnerApi(),
-    toast: {
-      loading: "Đang gọi partner API…",
-      success: (res) => res.message,
-      error: (err) =>
-        err instanceof Error ? err.message : "Partner API HANET lỗi",
-    },
-  })
-
-  const placesMutation = useAdminMutation({
-    mutationKey: ["hanet", "places"],
-    mutationFn: () => api.hanet.listPlaces(),
-    toast: {
-      loading: "Đang tải địa điểm HANET…",
-      success: "Đã tải danh sách place — xem console hoặc response",
-      error: (err) =>
-        err instanceof Error ? err.message : "Không tải được places",
-    },
-    onSuccess: (data) => {
-      console.info("[HANET places]", data)
-    },
-  })
-
-  const devicesMutation = useAdminMutation({
-    mutationKey: ["hanet", "devices"],
-    mutationFn: () => {
-      const placeId =
-        hanetStatus?.defaultPlaceId?.trim() ||
-        readHanetAdminPlaceId() ||
-        undefined
-      return api.hanet.listDevices(placeId)
-    },
-    toast: {
-      loading: "Đang tải thiết bị HANET…",
-      success: "Đã tải danh sách device",
-      error: (err) =>
-        err instanceof Error
-          ? err.message
-          : "Không tải được devices — chọn place hoặc đặt HANET_DEFAULT_PLACE_ID",
-    },
-    onSuccess: (data) => {
-      console.info("[HANET devices]", data)
-    },
-  })
 
   const hasCameras = Boolean(
     cameras?.checkinCameraName || cameras?.checkoutCameraName
@@ -168,7 +105,7 @@ export function EventHanetConfigCard({
                 aria-hidden
               />
               <Link2 className="size-5 text-primary" />
-              Cấu hình HANET
+              Webhook HANET
               {loadingStatus ? (
                 <Loader2 className="size-4 animate-spin text-muted-foreground" />
               ) : hanetStatus?.configured ? (
@@ -192,169 +129,25 @@ export function EventHanetConfigCard({
               </a>
               <span className="w-full text-xs font-normal text-muted-foreground sm:ml-auto sm:w-auto">
                 {hasCameras
-                  ? "Đã gắn camera · bấm để xem webhook"
-                  : "Chưa gắn camera · bấm để mở hướng dẫn"}
+                  ? "Đã gắn camera HANET"
+                  : "Chưa gắn camera · chọn trên form sự kiện"}
               </span>
             </CardTitle>
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent className="pb-4">
           <CardContent className="space-y-4 border-t border-primary/15 pt-4 text-sm">
-            {hanetStatus ? (
-              <div className="flex flex-wrap items-center gap-2 rounded-md border border-border/70 bg-background px-3 py-2 text-xs">
-                <span className="text-muted-foreground">API:</span>
-                <code className="text-[10px]">{hanetStatus.apiBaseUrl}</code>
-                {hanetStatus.clientId ? (
-                  <span className="text-muted-foreground">
-                    · client{" "}
-                    <code className="text-[10px]">
-                      {hanetStatus.clientId.slice(0, 8)}…
-                    </code>
-                  </span>
-                ) : null}
-                {hanetStatus.webhookVerify ? (
-                  <Badge variant="secondary" className="text-[10px]">
-                    verify hash
-                  </Badge>
-                ) : null}
-                {hanetStatus.defaultPlaceId ? (
-                  <span className="text-muted-foreground">
-                    · place{" "}
-                    <code className="text-[10px]">
-                      {hanetStatus.defaultPlaceId}
-                    </code>
-                  </span>
-                ) : null}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="ml-auto h-7 gap-1.5 text-xs"
-                  disabled={!hanetStatus.configured || testMutation.isPending}
-                  onClick={() => testMutation.mutate()}
-                >
-                  {testMutation.isPending ? (
-                    <Loader2 className="size-3.5 animate-spin" />
-                  ) : (
-                    <PlugZap className="size-3.5" />
-                  )}
-                  Test OAuth
-                </Button>
-              </div>
-            ) : null}
-
-            {hanetStatus?.configured ? (
-              <div className="space-y-2 rounded-md border border-border/70 bg-background px-3 py-2.5 text-xs">
-                <p className="font-medium text-foreground">
-                  Partner API (Postman)
-                </p>
-                <p className="text-muted-foreground">
-                  Gọi REST <code className="text-[10px]">partner.hanet.ai</code>{" "}
-                  — cần{" "}
-                  <code className="text-[10px]">HANET_DEFAULT_PLACE_ID</code>{" "}
-                  cho device/check-in query.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-7 text-xs"
-                    disabled={partnerMutation.isPending}
-                    onClick={() => partnerMutation.mutate()}
-                  >
-                    Test partner
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-7 text-xs"
-                    disabled={placesMutation.isPending}
-                    onClick={() => placesMutation.mutate()}
-                  >
-                    Tải places
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-7 text-xs"
-                    disabled={
-                      devicesMutation.isPending ||
-                      (!hanetStatus?.defaultPlaceId && !readHanetAdminPlaceId())
-                    }
-                    onClick={() => devicesMutation.mutate()}
-                  >
-                    Tải devices
-                  </Button>
-                </div>
-              </div>
-            ) : null}
-
-            {hanetStatus?.configured ? (
-              <EventHanetAvatarPanel
-                defaultPlaceId={hanetStatus.defaultPlaceId}
-              />
-            ) : null}
-
-            <div className="rounded-md border border-border/70 bg-background px-3 py-2.5 text-xs text-muted-foreground">
-              <p className="font-medium text-foreground">
-                Yêu cầu (theo HANET)
-              </p>
-              <ul className="mt-2 list-inside list-disc space-y-1">
-                <li>
-                  Tài khoản + App trên{" "}
-                  <a
-                    href="https://developers.hanet.ai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    developers.hanet.ai
-                  </a>{" "}
-                  — mục Webhook, URL trả về HTTP 2xx khi POST.
-                </li>
-                <li>
-                  API HUB public (HTTPS) — HANET gọi được từ internet; URL lấy
-                  từ <code className="text-[10px]">NEXT_PUBLIC_API_URL</code>.
-                </li>
-                <li>
-                  Mã thiết bị <code className="text-[10px]">deviceID</code> trên
-                  payload = <strong>mã camera</strong> trong HUB (nhập tay khi
-                  tạo camera).
-                </li>
-                <li>
-                  Người quét phải đã <strong>đăng ký sự kiện</strong> (email /
-                  mã người khớp danh sách).
-                </li>
-                <li>
-                  Ảnh khuôn mặt (cổng SV): <strong>JPG/PNG</strong>, tối thiểu{" "}
-                  200×200px, URL public HTTPS qua{" "}
-                  <code className="text-[10px]">API_PUBLIC_URL</code> — dùng{" "}
-                  <code className="text-[10px]">registerByUrl</code>.
-                </li>
-              </ul>
-              <p className="mt-2 text-[11px]">
-                OAuth2 (<code className="text-[10px]">client_id</code> /{" "}
-                <code className="text-[10px]">access_token</code>) chỉ cần khi
-                gọi HTTP API HANET — webhook realtime không bắt buộc.
-              </p>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Kết nối OAuth, địa điểm, thiết bị và avatar — quản lý tập trung trên{" "}
+              <Link href={`${hanetPath()}/ket-noi`} className="font-medium text-primary hover:underline">
+                trang HANET
+              </Link>
+              .
+            </p>
 
             <div className="space-y-1">
-              <p className="font-medium">Cấu hình tay trong HUB</p>
+              <p className="font-medium text-sm">Gắn camera cho sự kiện</p>
               <ol className="list-inside list-decimal space-y-1 text-xs text-muted-foreground">
-                <li>
-                  <Link
-                    href={cameraNewPath("new")}
-                    className="text-primary hover:underline"
-                  >
-                    Thêm camera
-                  </Link>{" "}
-                  — nhập <strong>Mã camera (deviceID HANET)</strong> đúng như
-                  trên cổng HANET (có thể gắn thêm sự kiện mặc định ở camera).
-                </li>
                 <li>
                   <Link
                     href={eventEditPath(eventId, "edit")}
@@ -362,11 +155,11 @@ export function EventHanetConfigCard({
                   >
                     Chỉnh sửa sự kiện
                   </Link>{" "}
-                  → mục <strong>Camera HANET</strong>: chọn camera check-in /
-                  check-out; bật khung giờ check-in/out.
+                  → mục <strong>Camera HANET</strong>: chọn thiết bị check-in /
+                  check-out từ danh sách HANET.
                 </li>
                 <li>
-                  Copy URL webhook bên dưới → dán vào App HANET (Webhook).
+                  Copy URL webhook bên dưới → dán vào App trên cổng HANET.
                 </li>
               </ol>
             </div>
@@ -403,7 +196,7 @@ export function EventHanetConfigCard({
                 >
                   mở Chỉnh sửa sự kiện → Camera HANET
                 </Link>
-                , hoặc tạo camera trước tại menu Camera.
+                .
               </p>
             )}
 

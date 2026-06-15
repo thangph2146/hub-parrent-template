@@ -12,6 +12,7 @@ import { getHanetConfig, isHanetConfigured } from './hanet.config';
 
 import { HanetPartnerService } from './hanet-partner.service';
 import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service';
+import { HanetSyncService } from './hanet-sync.service';
 
 import type { HanetRegisterPersonByUrlInput } from './hanet-partner.types';
 
@@ -30,6 +31,8 @@ export class HanetAdminService {
     private readonly partner: HanetPartnerService,
 
     private readonly avatarSync: HanetPersonAvatarSyncService,
+
+    private readonly sync: HanetSyncService,
 
   ) {}
 
@@ -149,6 +152,22 @@ export class HanetAdminService {
 
 
 
+  getProfile() {
+
+    return this.partner.getProfile();
+
+  }
+
+
+
+  getDeviceConnectionStatus(deviceId: string) {
+
+    return this.partner.getConnectionStatus(deviceId);
+
+  }
+
+
+
   registerPersonByUrl(body: HanetRegisterPersonByUrlInput) {
 
     return this.partner.registerPersonByUrl(body);
@@ -200,6 +219,22 @@ export class HanetAdminService {
   }) {
 
     return this.avatarSync.listStored(params);
+
+  }
+
+
+
+  ensureCamera(body: { deviceId: string; name?: string }) {
+
+    const deviceId = body.deviceId?.trim();
+
+    if (!deviceId) {
+
+      throw new BadRequestException('Thiếu deviceID');
+
+    }
+
+    return this.sync.ensureCameraFromDevice(deviceId, body.name?.trim());
 
   }
 

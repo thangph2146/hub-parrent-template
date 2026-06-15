@@ -73,6 +73,8 @@ export const eventFormSchema = z.object({
   requireFaceId: z.coerce.boolean(),
   checkinCameraId: z.string().optional(),
   checkoutCameraId: z.string().optional(),
+  checkinHanetDeviceId: z.string().optional(),
+  checkoutHanetDeviceId: z.string().optional(),
   maxParticipants: z.coerce.number(),
   format: z.coerce.number().optional(),
   onlineLink: z.string().optional(),

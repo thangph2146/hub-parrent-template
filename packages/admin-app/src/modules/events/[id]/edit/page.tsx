@@ -20,8 +20,8 @@ import {
   EventFormShell,
   useEventForm,
   useEventDetailQuery,
-  buildEventPayload,
 } from "../../_component"
+import { buildEventSubmitPayload } from "@workspace/admin-app/lib/build-event-submit-payload"
 import { getPosterUrlFromValue } from "../../_component/utils"
 import type {
   EventDetail,
@@ -99,6 +99,8 @@ function buildFormValues(
     requireFaceId: entity.requireFaceId ?? false,
     checkinCameraId: entity.checkinCameraId ?? "",
     checkoutCameraId: entity.checkoutCameraId ?? "",
+    checkinHanetDeviceId: entity.checkinCameraCode ?? "",
+    checkoutHanetDeviceId: entity.checkoutCameraCode ?? "",
     maxParticipants: entity.maxParticipants ?? 0,
     format: entity.format ?? 0,
     onlineLink: entity.onlineLink ?? "",
@@ -196,7 +198,7 @@ function EditEventPageInner() {
 
   const handleSubmit = useCallback(
     async (values: EventFormValues) => {
-      await updateMutation.mutateAsync(buildEventPayload(values))
+      await updateMutation.mutateAsync(await buildEventSubmitPayload(values))
       const newSpeakers = values.speakers ?? []
       const existingMap = new Map(existingSpeakers.map((a) => [a.speakerId, a]))
       const newIds = newSpeakers.map((s) => s.speakerId)

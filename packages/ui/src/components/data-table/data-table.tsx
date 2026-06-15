@@ -288,6 +288,8 @@ export type AdminDataTableProps<TData> = {
   /** Ô tìm nhanh (chuỗi do bạn cung cấp cho mỗi dòng) */
   getGlobalFilterText?: (row: TData) => string
   globalFilterPlaceholder?: string
+  /** Label phía trên ô tìm nhanh (toolbar). */
+  globalFilterLabel?: string
   /** Bật khi lọc do API/server — chỉ giữ state ô lọc, không lọc lại `data` trên client */
   manualFiltering?: boolean
   /** true: lọc từ lá lên (giữ cha khi còn lá con khớp) — dùng cho cây */
@@ -760,6 +762,7 @@ export function AdminDataTable<TData>({
   onRowPointerEnter,
   getGlobalFilterText,
   globalFilterPlaceholder = "Tìm trong bảng…",
+  globalFilterLabel,
   manualFiltering = false,
   filterFromLeafRows: filterFromLeafRowsProp = false,
   columnFilters: columnFiltersControlled,
@@ -1877,6 +1880,7 @@ export function AdminDataTable<TData>({
           globalFilterControlId={globalFilterControlId}
           showGlobalFilter={showGlobalFilter}
           globalFilterPlaceholder={globalFilterPlaceholder}
+          globalFilterLabel={globalFilterLabel}
           globalFilter={globalFilter}
           onGlobalFilterChange={setGlobalFilter}
           showClearFiltersButton={showClearFiltersButton}

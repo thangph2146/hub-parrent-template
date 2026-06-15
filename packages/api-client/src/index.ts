@@ -152,6 +152,8 @@ export {
   type HanetSyncAvatarsResult,
   type HanetPersonListPage,
   type HanetRegisterPersonByUrlInput,
+  type HanetCameraEnsureDto,
+  type HanetDeviceOption,
 } from "./resources/hanet"
 export {
   UploadsApi,

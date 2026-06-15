@@ -14,7 +14,7 @@
 
 @source "../../../../apps/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
-
+@source "../../../../packages/**/*.{ts,tsx}";
 @theme inline {
   /* Colors */
   --color-background: var(--background);

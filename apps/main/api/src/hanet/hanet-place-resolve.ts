@@ -22,7 +22,7 @@ export async function resolveHanetPlaceId(
 
   if (places.length > 1) {
     throw new BadRequestException(
-      'Thiếu placeID — chọn địa điểm trên trang Avatar HANET hoặc đặt HANET_DEFAULT_PLACE_ID trong .env API',
+      'Thiếu placeID — chọn địa điểm trên trang HANET hoặc đặt HANET_DEFAULT_PLACE_ID trong .env API',
     );
   }
 

@@ -78,6 +78,18 @@ export type HanetPersonListPage = {
   total?: number;
 };
 
+export type HanetCameraEnsureDto = {
+  id: number;
+  name: string;
+  code: string;
+};
+
+export type HanetDeviceOption = {
+  deviceId: string;
+  name: string;
+  placeId?: string;
+};
+
 export class HanetAdminApi {
   constructor(private readonly http: ApiClient) {}
 
@@ -114,6 +126,32 @@ export class HanetAdminApi {
       ? `?placeId=${encodeURIComponent(placeId)}`
       : "";
     return getData<unknown>(this.http, `/admin/hanet/devices${query}`);
+  }
+
+  getProfile(): Promise<unknown> {
+    return postData<HanetPartnerProbeDto>(
+      this.http,
+      "/admin/hanet/test-partner",
+      {},
+    ).then((res) => res.profile ?? res);
+  }
+
+  getDeviceConnectionStatus(deviceId: string): Promise<unknown> {
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/devices/connection-status?deviceId=${encodeURIComponent(deviceId)}`,
+    );
+  }
+
+  ensureCamera(body: {
+    deviceId: string;
+    name?: string;
+  }): Promise<HanetCameraEnsureDto> {
+    return postData<HanetCameraEnsureDto>(
+      this.http,
+      "/admin/hanet/cameras/ensure",
+      body,
+    );
   }
 
   registerPersonByUrl(

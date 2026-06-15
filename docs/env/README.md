@@ -149,6 +149,8 @@ Chỉ **`@api` (main)** và **`@hub-event/api`** — cùng khối biến, sinh t
 | Endpoint hub | HANET Postman |
 |--------------|---------------|
 | `POST /api/admin/hanet/test-partner` | `/profile/getProfile` |
+| `GET /api/admin/hanet/profile` | `/profile/getProfile` (alias, cần API mới) |
+| `GET /api/admin/hanet/devices/connection-status?deviceId=` | `/device/getConnectionStatus` (`deviceIDs` trên partner) |
 | `GET /api/admin/hanet/places` | `/place/getPlaces` |
 | `GET /api/admin/hanet/devices?placeId=` | `/device/getListDeviceByPlace` |
 | `POST /api/admin/hanet/person/register-by-url` | `/person/registerByUrl` |
