@@ -1,16 +1,15 @@
 /**
  * Kiểm tra apps/<line>/api khớp api.sync-profile.json và app.module.ts.
  *
- * Usage: node script-system/verify-api-profile.mjs hub-event
+ * Usage: node script-system/verify-api-profile.cjs hub-event
  */
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const { ROOT } = require("../lib/paths.cjs");
-const { PRODUCT_LINES, API_INHERITS_FROM_MAIN } = require("../lib/monorepo-apps.cjs");
+const fs = require("node:fs");
+const path = require("node:path");
+const {
+  ROOT,
+  PRODUCT_LINES,
+  API_INHERITS_FROM_MAIN,
+} = require("../lib/monorepo-root.cjs");
 
 function norm(rel) {
   return rel.replace(/\\/g, "/");
@@ -104,7 +103,7 @@ function verify(productKey) {
 
 const arg = process.argv[2] ?? "hub-event";
 if (!API_INHERITS_FROM_MAIN.includes(arg)) {
-  console.error(`Usage: node script-system/verify-api-profile.mjs <${API_INHERITS_FROM_MAIN.join("|")}>`);
+  console.error(`Usage: node script-system/verify-api-profile.cjs <${API_INHERITS_FROM_MAIN.join("|")}>`);
   process.exit(1);
 }
 verify(arg);

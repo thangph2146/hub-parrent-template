@@ -3,14 +3,9 @@
  *
  * Chạy: pnpm verify:sdk-http
  */
-import { createRequire } from "node:module";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, dirname, relative } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const require = createRequire(import.meta.url);
-const { ROOT: root } = require("../lib/paths.cjs");
-const { NEXT_APP_PATHS } = require("../lib/monorepo-apps.cjs");
+const { existsSync, readFileSync, readdirSync } = require("node:fs");
+const { join, relative } = require("node:path");
+const { ROOT: root, NEXT_APP_PATHS } = require("../lib/monorepo-root.cjs");
 
 const RAW_SDK_HTTP = /\b(api|apiClient|sdk)\.http\b/;
 

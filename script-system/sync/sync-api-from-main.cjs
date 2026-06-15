@@ -16,7 +16,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { ROOT } = require("../lib/paths.cjs");
+const { ROOT } = require("../lib/monorepo-root.cjs");
 const { PRODUCT_LINES, API_INHERITS_FROM_MAIN, MAIN_API_PATH } = require("../lib/monorepo-apps.cjs");
 const SRC = path.join(ROOT, MAIN_API_PATH);
 
@@ -30,11 +30,11 @@ const SKIP_DIRS = new Set([
 
 const SKIP_FILES = new Set([".env", ".env.local", "api.sync-keep.json"]);
 
-/** Script một lần — chỉ giữ trên apps/main/api, không copy sang line kế thừa. */
+/** Script một lần — chỉ giữ trên apps/main/api/scripts/archive, không copy sang line kế thừa. */
 const INHERITED_API_EXCLUDE_FILES = [
-  "scripts/migrate-entity-ids.mjs",
-  "scripts/migrate-entity-ids-queries.mjs",
-  "scripts/fix-entity-id-imports.mjs",
+  "scripts/archive/migrate-entity-ids.mjs",
+  "scripts/archive/migrate-entity-ids-queries.mjs",
+  "scripts/archive/fix-entity-id-imports.mjs",
 ];
 
 /** Mỗi product line có ENV_TEMPLATE/ENV_STACK riêng — không ghi đè từ main. */

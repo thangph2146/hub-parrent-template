@@ -1,6 +1,6 @@
 {
   "role": "downstream",
-  "description": "Monorepo sản phẩm — kế thừa FULL packages/ + script-system từ mono-repo-template.",
+  "description": "Monorepo sản phẩm — kế thừa FULL packages/ + script-system + ecosystem từ mono-repo-template.",
   "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
   "defaultRef": "main",
   "remoteName": "template",
@@ -11,6 +11,7 @@
   "inheritPaths": [
     "packages",
     "script-system",
+    "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
     "docs/api-client-pattern",
@@ -23,7 +24,6 @@
   ],
   "inheritRootFiles": [
     "turbo.json",
-    "ecosystem.shared.cjs",
     "AGENTS.md",
     "packages/README.md"
   ],
@@ -33,9 +33,7 @@
     "package.json",
     "template.manifest.json",
     ".template-lock.json",
-    "ecosystem.checkin.cjs",
-    "ecosystem.main.cjs",
-    "ecosystem.store.cjs",
+    "ecosystem",
     ".env",
     ".env.local"
   ]

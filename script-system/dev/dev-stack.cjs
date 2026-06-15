@@ -5,7 +5,7 @@
  */
 const { spawn } = require("child_process")
 const path = require("path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 const { startResourceGuard } = require("./dev-resource-guard.cjs")
 const { stackBanner } = require("./dev-log.cjs")

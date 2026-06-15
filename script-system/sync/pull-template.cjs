@@ -12,7 +12,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
-const { ROOT: SCRIPT_ROOT } = require("../lib/paths.cjs")
+const { ROOT: SCRIPT_ROOT } = require("../lib/monorepo-root.cjs")
 
 function resolveRepoRoot() {
   const cwd = process.cwd()

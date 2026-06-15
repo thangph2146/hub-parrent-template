@@ -1,15 +1,11 @@
 /**
  * Kiểm tra main/backend sau admin-app generate.
  *
- * Usage: node script-system/verify/verify-main-admin-sync.mjs
+ * Usage: node script-system/verify/verify-main-admin-sync.cjs
  */
-import fs from "node:fs"
-import path from "node:path"
-import { createRequire } from "node:module"
-
-const require = createRequire(import.meta.url)
-const { ROOT } = require("../lib/paths.cjs")
-const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const fs = require("node:fs");
+const path = require("node:path");
+const { ROOT, PRODUCT_LINES } = require("../lib/monorepo-root.cjs");
 const {
   verifyAdminHostLibDir,
   verifyAdminHostHooksDir,

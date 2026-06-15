@@ -14,7 +14,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 function loadManifest() {
   const p = path.join(ROOT, "template.manifest.json")

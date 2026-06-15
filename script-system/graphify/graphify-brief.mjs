@@ -10,7 +10,7 @@ import { join } from "node:path"
 
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
-const { ROOT: root } = require("../lib/paths.cjs")
+const { ROOT: root } = require("../lib/monorepo-root.cjs")
 
 import {
   buildTaskCatalog,

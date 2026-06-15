@@ -9,7 +9,7 @@
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const { ENV_STACKS, allEnvApps } = require("./manifest.cjs")
 
 const args = process.argv.slice(2)

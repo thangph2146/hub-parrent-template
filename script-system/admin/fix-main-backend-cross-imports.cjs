@@ -4,7 +4,7 @@
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const MAIN_SRC = path.join(ROOT, "apps/main/backend/src")
 const CONFIG_PATH = path.join(ROOT, "apps/main/backend/admin.app.config.json")

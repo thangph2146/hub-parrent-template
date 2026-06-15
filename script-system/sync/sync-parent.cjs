@@ -6,7 +6,7 @@
  */
 const { execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const run = (cmd, label) => {
   console.log(`\n[sync-parent] ${label}\n`)
@@ -20,7 +20,7 @@ run(
   "1/2 API từ main (full copy, giữ app.module local)",
 )
 run(
-  "node script-system/verify/verify-api-profile.mjs hub-parent",
+  "node script-system/verify/verify-api-profile.cjs hub-parent",
   "2/2 verify API profile",
 )
 

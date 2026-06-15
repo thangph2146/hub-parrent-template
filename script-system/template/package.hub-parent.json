@@ -5,8 +5,8 @@
     "pull:template": "node script-system/sync/pull-template.cjs",
     "check": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm lint && pnpm typecheck",
     "dev:parent": "node script-system/dev/dev-stack.cjs parent",
-    "pm2:start": "node script-system/deploy/pm2-stack.cjs start parent",
-    "pm2:reload": "node script-system/deploy/pm2-stack.cjs reload parent",
+    "pm2:start": "node ecosystem/pm2-stack.cjs start parent",
+    "pm2:reload": "node ecosystem/pm2-stack.cjs reload parent",
     "push": "node script-system/git/commit-and-push.cjs",
     "env:init": "node script-system/env/env-init.cjs parent"
   },

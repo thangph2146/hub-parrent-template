@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url"
 
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
-const { ROOT: root } = require("../lib/paths.cjs")
+const { ROOT: root } = require("../lib/monorepo-root.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 const { readAdminAppConfig } = require("../lib/admin-app-config-path.cjs")
 

@@ -1,15 +1,11 @@
 /**
  * Kiểm tra alias import chuẩn trên mọi app Next (UI → @ui/, không bypass packages/).
  *
- * Usage: node script-system/verify/verify-import-aliases.mjs
+ * Usage: node script-system/verify/verify-import-aliases.cjs
  */
-import fs from "node:fs"
-import path from "node:path"
-import { createRequire } from "node:module"
-
-const require = createRequire(import.meta.url)
-const { ROOT } = require("../lib/paths.cjs")
-const { NEXT_APP_PATHS } = require("../lib/monorepo-apps.cjs")
+const fs = require("node:fs");
+const path = require("node:path");
+const { ROOT, NEXT_APP_PATHS } = require("../lib/monorepo-root.cjs");
 const {
   REQUIRED_UI_TSCONFIG_PATHS,
   NEXT_APP_FORBIDDEN_SOURCE_PATTERNS,

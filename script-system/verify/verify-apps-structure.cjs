@@ -1,24 +1,27 @@
 /**
  * Kiểm tra cấu trúc apps/ khớp product line registry — không legacy layout phẳng.
  *
- * Usage: node script-system/verify-apps-structure.mjs
+ * Usage: node script-system/verify-apps-structure.cjs
  */
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const { ROOT } = require("../lib/paths.cjs");
+const fs = require("node:fs");
+const path = require("node:path");
+const {
+  ROOT,
+  PRODUCT_LINES,
+  API_INHERITS_FROM_MAIN,
+  MAIN_API_PATH,
+} = require("../lib/monorepo-root.cjs");
 const APPS = path.join(ROOT, "apps");
-const { PRODUCT_LINES, API_INHERITS_FROM_MAIN, MAIN_API_PATH } = require("../lib/monorepo-apps.cjs");
 
-/** Script migration một lần — chỉ được ở main API. */
+/** Script migration một lần — chỉ được ở main API (thư mục archive). */
 const MAIN_ONLY_API_SCRIPTS = [
-  "scripts/migrate-entity-ids.mjs",
-  "scripts/migrate-entity-ids-queries.mjs",
-  "scripts/fix-entity-id-imports.mjs",
+  "scripts/archive/migrate-entity-ids.mjs",
+  "scripts/archive/migrate-entity-ids-queries.mjs",
+  "scripts/archive/fix-entity-id-imports.mjs",
 ];
+
+/** Deploy line không được có archive migration. */
+const MAIN_ONLY_API_SCRIPT_DIRS = ["scripts/archive"];
 
 /** Monorepo sync scripts thuộc script-system/, không apps/.../scripts/. */
 const FORBIDDEN_APP_SCRIPT_DIRS = [
@@ -76,6 +79,11 @@ function verify() {
     for (const scriptRel of MAIN_ONLY_API_SCRIPTS) {
       if (fs.existsSync(path.join(ROOT, apiPath, scriptRel))) {
         errors.push(`${apiPath}/${scriptRel}: chỉ giữ trên ${MAIN_API_PATH}`);
+      }
+    }
+    for (const dirRel of MAIN_ONLY_API_SCRIPT_DIRS) {
+      if (fs.existsSync(path.join(ROOT, apiPath, dirRel))) {
+        errors.push(`${apiPath}/${dirRel}: chỉ giữ trên ${MAIN_API_PATH}`);
       }
     }
   }

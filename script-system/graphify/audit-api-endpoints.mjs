@@ -8,7 +8,7 @@ import { createRequire } from "node:module"
 import { scanApiControllers, listPackageModuleControllerPaths } from "./graphify-route-surface.mjs"
 
 const require = createRequire(import.meta.url)
-const { ROOT: root } = require("../lib/paths.cjs")
+const { ROOT: root } = require("../lib/monorepo-root.cjs")
 
 const DEFAULT_API = "apps/main/api"
 const apiRel = process.argv[2] ?? DEFAULT_API

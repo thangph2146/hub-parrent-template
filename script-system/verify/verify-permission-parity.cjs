@@ -5,13 +5,9 @@
  *
  * Chạy: pnpm verify:permissions
  */
-import { existsSync, readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const { ROOT: root } = require("../lib/paths.cjs");
+const { existsSync, readFileSync } = require("node:fs");
+const { join } = require("node:path");
+const { ROOT: root } = require("../lib/monorepo-root.cjs");
 
 const API_PERMS_PATH = join(root, "apps/main/api/src/config/permissions.ts");
 const CLIENT_PERMS_PATH = join(

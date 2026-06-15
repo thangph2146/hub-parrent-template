@@ -9,7 +9,7 @@
 const fs = require("fs")
 const path = require("path")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const modulesRoot = path.join(ROOT, "packages/admin-app/src/modules")
 const skip = new Set(["posts/loading.tsx", "posts/[id]/loading.tsx"])
 const ROUTING_RE =

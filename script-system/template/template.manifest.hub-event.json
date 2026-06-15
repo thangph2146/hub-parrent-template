@@ -19,6 +19,7 @@
   "inheritPaths": [
     "packages",
     "script-system",
+    "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
     "docs/api-client-pattern",
@@ -31,7 +32,6 @@
   ],
   "inheritRootFiles": [
     "turbo.json",
-    "ecosystem.shared.cjs",
     "AGENTS.md",
     "packages/README.md"
   ],
@@ -42,7 +42,7 @@
     "template.manifest.json",
     ".template-lock.json",
     "README.md",
-    "ecosystem.checkin.cjs",
+    "ecosystem",
     ".env",
     ".env.local"
   ]

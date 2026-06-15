@@ -2,7 +2,7 @@
  * Test/verify thao tác sync @apps/ — đối xứng với sync:* / pull:checkin.
  *
  * Usage:
- *   node script-system/test-app-operations.mjs [target] [--quick]
+ *   node script-system/test-app-operations.cjs [target] [--quick]
  *
  * Targets:
  *   all        — mọi product line (mặc định)
@@ -13,14 +13,8 @@
  *   store-sync — @store-sync/api + frontend
  *   api-all    — verify API profile mọi line kế thừa (có profile)
  */
-import { execSync } from "node:child_process";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const { ROOT } = require("../lib/paths.cjs");
-const { PRODUCT_LINES, API_INHERITS_FROM_MAIN } = require("../lib/monorepo-apps.cjs");
+const { execSync } = require("node:child_process");
+const { ROOT, PRODUCT_LINES, API_INHERITS_FROM_MAIN } = require("../lib/monorepo-root.cjs");
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith("-")));
@@ -51,11 +45,11 @@ function testHubEvent() {
     "hub-event API — route parity vs main",
   );
   run(
-    "node script-system/verify/verify-api-profile.mjs hub-event",
+    "node script-system/verify/verify-api-profile.cjs hub-event",
     "hub-event API — profile + app.module",
   );
   run(
-    "node script-system/verify/verify-checkin-admin-sync.mjs",
+    "node script-system/verify/verify-checkin-admin-sync.cjs",
     "hub-event frontend — admin sync state",
   );
   typecheck("@hub-event/api", "typecheck @hub-event/api");
@@ -65,7 +59,7 @@ function testHubEvent() {
 /** @param {string} lineKey */
 function testInheritedApi(lineKey) {
   run(
-    `node script-system/verify/verify-api-profile.mjs ${lineKey}`,
+    `node script-system/verify/verify-api-profile.cjs ${lineKey}`,
     `${lineKey} API — profile (skip nếu không có file)`,
   );
 }
@@ -89,7 +83,7 @@ function testProductLine(lineKey) {
 
   if (lineKey === "main") {
     run(
-      "node script-system/verify/verify-main-admin-sync.mjs",
+      "node script-system/verify/verify-main-admin-sync.cjs",
       "main backend — admin-app generate + lib/hooks host",
     );
   }
@@ -100,7 +94,7 @@ function testProductLine(lineKey) {
 }
 
 function testAll() {
-  run("node script-system/verify/verify-apps-structure.mjs", "cấu trúc apps/ + registry");
+  run("node script-system/verify/verify-apps-structure.cjs", "cấu trúc apps/ + registry");
   for (const lineKey of Object.keys(PRODUCT_LINES)) {
     testProductLine(lineKey);
   }

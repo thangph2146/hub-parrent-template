@@ -12,12 +12,12 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const LINE_CONFIG = {
   "hub-event": {
     branch: "hub-event",
-    sync: "node script-system/sync/sync-checkin.cjs",
+    sync: "node script-system/sync/sync-checkin-packages.cjs",
     label: "hub-event (pull:checkin)",
   },
   "hub-parent": {

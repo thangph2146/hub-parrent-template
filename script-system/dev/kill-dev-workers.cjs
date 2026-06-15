@@ -9,7 +9,7 @@
 const { execSync, spawnSync } = require("node:child_process");
 const path = require("node:path");
 
-const { ROOT } = require("../lib/paths.cjs");
+const { ROOT } = require("../lib/monorepo-root.cjs");
 const ROOT_NORM = ROOT.replace(/\\/g, "/").toLowerCase();
 const portsOnly = process.argv.includes("--ports-only");
 const killMcp = process.argv.includes("--mcp");

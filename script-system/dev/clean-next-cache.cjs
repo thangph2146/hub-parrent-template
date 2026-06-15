@@ -10,7 +10,7 @@
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const { NEXT_APP_PATHS, PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
 /** @type {Record<string, string[]>} */

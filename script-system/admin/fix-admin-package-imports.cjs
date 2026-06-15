@@ -3,7 +3,7 @@
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const { MODULE_IDS } = require("./lib/rewrite-package-imports.cjs")
 
 const PKG_SRC = path.join(ROOT, "packages/admin-app/src")

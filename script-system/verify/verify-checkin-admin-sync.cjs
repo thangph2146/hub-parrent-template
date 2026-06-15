@@ -1,20 +1,16 @@
 /**
  * Kiểm tra admin check-in sau sync: file native + import path chuẩn.
  *
- * Usage: node script-system/verify-checkin-admin-sync.mjs
+ * Usage: node script-system/verify-checkin-admin-sync.cjs
  */
-import fs from "node:fs"
-import path from "node:path"
-import { execSync } from "node:child_process"
-import { createRequire } from "node:module"
-
-const require = createRequire(import.meta.url)
+const fs = require("node:fs");
+const path = require("node:path");
+const { execSync  } = require("node:child_process");
 const {
   buildCheckinMenu,
   verifyMenuOrderAgainstMain,
 } = require("../sync/lib/build-checkin-menu.cjs")
-const { ROOT } = require("../lib/paths.cjs")
-const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
+const { ROOT, PRODUCT_LINES } = require("../lib/monorepo-root.cjs");
 const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
 
 const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)

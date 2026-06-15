@@ -2,22 +2,21 @@
  * Kiểm tra ranh giới microservice ở tầng khai báo: package.json không được phụ thuộc
  * trực tiếp vào service khác (bổ sung cho ESLint service-boundaries trên import).
  *
+ * API Nest: không kiểm tra devDependencies (vd. @workspace/api-client cho script test:live —
+ * ESLint service-boundaries vẫn cấm import trong src/).
+ *
  * Chạy: pnpm verify:bounds
  */
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+const { existsSync, readFileSync, readdirSync } = require("node:fs");
+const { join } = require("node:path");
+const { ROOT: root } = require("../lib/monorepo-root.cjs");
 
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const { ROOT: root } = require("../lib/paths.cjs");
-
-const API_PACKAGES = [
+const API_PACKAGES = new Set([
   "@api",
   "@hub-event/api",
   "@hub-parent/api",
   "@store-sync/api",
-];
+]);
 
 const API_FORBIDDEN = [
   "@frontend",
@@ -35,7 +34,7 @@ const FORBIDDEN_DEPS = {
   "@frontend": [
     "@backend",
     "@api",
-    ...API_PACKAGES.filter((p) => p !== "@api"),
+    ...[...API_PACKAGES].filter((p) => p !== "@api"),
     "@store-sync-frontend",
   ],
   "@store-sync-frontend": [
@@ -107,7 +106,11 @@ function main() {
     const name = pkg.name;
     if (!name || !FORBIDDEN_DEPS[name]) continue;
     const forbidden = FORBIDDEN_DEPS[name];
-    for (const field of DEP_FIELDS) {
+    const depFields =
+      API_PACKAGES.has(name)
+        ? DEP_FIELDS.filter((f) => f !== "devDependencies")
+        : DEP_FIELDS;
+    for (const field of depFields) {
       const block = pkg[field];
       if (!block || typeof block !== "object") continue;
       for (const dep of Object.keys(block)) {

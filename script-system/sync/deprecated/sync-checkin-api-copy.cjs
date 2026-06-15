@@ -5,9 +5,9 @@
  *   pnpm pull:checkin:legacy
  */
 const { execSync } = require("node:child_process");
-const path = require("node:path");
 
-const { ROOT } = require("../lib/paths.cjs");
+const { ROOT } = require("../../lib/monorepo-root.cjs");
+
 const run = (cmd, label) => {
   console.log(`\n[sync-checkin] ${label}\n`);
   execSync(cmd, { cwd: ROOT, stdio: "inherit" });
@@ -15,9 +15,18 @@ const run = (cmd, label) => {
 
 console.log("[sync-checkin] main → hub-event (API profile + admin modules)\n");
 
-run("pnpm --filter @workspace/api-server run build", "0/8 build @workspace/api-server (trước generate)");
-run("node script-system/sync/sync-api-from-main.cjs hub-event", "1/8 API từ main (api.sync-profile.json) — LEGACY");
-run("node script-system/verify/verify-api-profile.mjs hub-event", "2/7 verify API profile");
+run(
+  "pnpm --filter @workspace/api-server run build",
+  "0/8 build @workspace/api-server (trước generate)",
+);
+run(
+  "node script-system/sync/sync-api-from-main.cjs hub-event",
+  "1/8 API từ main (api.sync-profile.json) — LEGACY",
+);
+run(
+  "node script-system/verify/verify-api-profile.cjs hub-event",
+  "2/7 verify API profile",
+);
 run(
   "node script-system/admin/migrate-admin-modules.cjs",
   "3/7 admin package (rewrite import, không ghi đè module generated)",
@@ -32,7 +41,7 @@ run(
   "6/7 generate route + menu check-in",
 );
 run(
-  "node script-system/verify/verify-checkin-admin-sync.mjs",
+  "node script-system/verify/verify-checkin-admin-sync.cjs",
   "7/8 verify admin check-in",
 );
 run(

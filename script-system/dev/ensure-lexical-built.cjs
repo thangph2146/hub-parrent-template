@@ -5,7 +5,7 @@ const { existsSync } = require("node:fs")
 const { join } = require("node:path")
 const { execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 const distEntry = join(ROOT, "packages/editor/dist/index.js")
 
 if (existsSync(distEntry)) {

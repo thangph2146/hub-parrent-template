@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url"
 
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
-const { ROOT: root } = require("../lib/paths.cjs")
+const { ROOT: root } = require("../lib/monorepo-root.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
 const API_ENDPOINTS_APP_PATHS = new Set([
@@ -767,7 +767,7 @@ function summarizeApp(app) {
         `- **Phụ thuộc chéo giữa domain API:** [\`API_DOMAIN_IMPORTS.md\`](API_DOMAIN_IMPORTS.md) — domain \`src/<tên>\` nào import domain nào (cạnh \`imports\` trong graph).`
       )
     }
-    if (appRelPath === "apps/main/api") {
+    if (app.path === "apps/main/api") {
       lines.push(
         `- **Entity graph (MikroORM closure):** [\`API_ENTITY_GRAPH.md\`](API_ENTITY_GRAPH.md) — quan hệ entity + module→entity; bắt buộc khi \`--prune-entities\` (sinh bởi \`pnpm api:sync-template\`).`
       )
@@ -1050,7 +1050,7 @@ function getMonorepoAiTopicGuideLines() {
     `| UX storefront (Next công khai) | [\`../../docs/admin-pattern/FRONTEND_UX.md\`](../../docs/admin-pattern/FRONTEND_UX.md) | [\`../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md) |`,
     `| Admin Next (dev) | [\`../../${mainBackend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${mainBackend}/.graphify/markdown/SUMMARY_FOR_AI.md) | [\`../../docs/admin-pattern/ADMIN_PAGE_PATTERN.md\`](../../docs/admin-pattern/ADMIN_PAGE_PATTERN.md) |`,
     "| Quy trình agent (đọc thứ tự) | [`../../docs/admin-pattern/AGENTS_GUIDE.md`](../../docs/admin-pattern/AGENTS_GUIDE.md) | [`../../AGENTS.md`](../../AGENTS.md) |",
-    "| Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.mjs`](../../script-system/verify/verify-service-boundaries.mjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |",
+    "| Kiểm tra ranh giới tự động | [`../../script-system/verify/verify-service-boundaries.cjs`](../../script-system/verify/verify-service-boundaries.cjs) | `pnpm verify:bounds`, ESLint `service-boundaries` |",
     "| Vòng chuẩn hóa → check → graph | [`../README.md`](../README.md) (checklist) | [`../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](../../.cursor/skills/hub-graphify-standardize-loop/SKILL.md) |",
     "| Task → file cụ thể | [`TASK_INDEX.md`](TASK_INDEX.md) | `pnpm graphify:brief --task \"...\"`, [`../../AGENTS.md`](../../AGENTS.md) mục 3.1 |",
     `| Sửa file shared / helper | [\`../../${mainApi}/.graphify/markdown/IMPACT_RADIUS.md\`](../../${mainApi}/.graphify/markdown/IMPACT_RADIUS.md) | \`GRAPH_STATS.md\`, grep importer |`,

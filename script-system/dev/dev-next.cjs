@@ -8,7 +8,7 @@ const { startNextDev } = require("./next-dev.cjs")
 const { cleanNextDir } = require("./clean-next-cache.cjs")
 const { dim, cyan, pkgLabel, prepRow, green } = require("./dev-log.cjs")
 const path = require("path")
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const port = Number(process.argv[2])
 if (!port) {

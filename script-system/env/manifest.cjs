@@ -100,4 +100,15 @@ function allEnvApps() {
   return out
 }
 
-module.exports = { ENV_STACKS, allEnvApps }
+/** Map apps/<line>/api → stack key (checkin, parent, …). */
+function envStackForAppPath(appPathRel) {
+  const normalized = appPathRel.replace(/\\/g, "/")
+  for (const [stackKey, stack] of Object.entries(ENV_STACKS)) {
+    for (const app of stack.apps) {
+      if (app.path === normalized) return stackKey
+    }
+  }
+  return null
+}
+
+module.exports = { ENV_STACKS, allEnvApps, envStackForAppPath }

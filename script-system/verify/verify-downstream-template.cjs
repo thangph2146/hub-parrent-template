@@ -1,16 +1,12 @@
 /**
  * Verify repo downstream đúng mô hình packages-first template.
  *
- * Usage: node script-system/verify/verify-downstream-template.mjs
+ * Usage: node script-system/verify/verify-downstream-template.cjs
  */
-import fs from "node:fs"
-import path from "node:path"
-import { createRequire } from "node:module"
-
-const require = createRequire(import.meta.url)
-const { ROOT } = require("../lib/paths.cjs")
-
-const MANIFEST = path.join(ROOT, "template.manifest.json")
+const fs = require("node:fs");
+const path = require("node:path");
+const { ROOT } = require("../lib/monorepo-root.cjs");
+const MANIFEST = path.join(ROOT, "template.manifest.json");
 const REQUIRED_PACKAGES = [
   "packages/ui",
   "packages/admin-app",

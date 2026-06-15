@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { ROOT: MONOREPO_ROOT } = require('../lib/paths.cjs');
+const { ROOT: MONOREPO_ROOT } = require('../lib/monorepo-root.cjs');
 const APP_REL = process.argv[2] || '.';
 const APP_DIR = path.resolve(MONOREPO_ROOT, APP_REL);
 const GRAPHIFY_DIR = path.join(APP_DIR, '.graphify');

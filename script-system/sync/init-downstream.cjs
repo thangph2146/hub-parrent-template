@@ -9,7 +9,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const TEMPLATE_DIR = path.join(ROOT, "script-system/template")
 
@@ -112,16 +112,9 @@ if (fs.existsSync(turboSrc)) {
 fs.mkdirSync(path.join(destRoot, "apps"), { recursive: true })
 copyDir(appsSrc, path.join(destRoot, line.appsPath))
 
-const ecoSrc = path.join(ROOT, line.ecosystem)
-if (fs.existsSync(ecoSrc)) {
-  fs.copyFileSync(ecoSrc, path.join(destRoot, path.basename(line.ecosystem)))
-}
-
-if (fs.existsSync(path.join(ROOT, "ecosystem.shared.cjs"))) {
-  fs.copyFileSync(
-    path.join(ROOT, "ecosystem.shared.cjs"),
-    path.join(destRoot, "ecosystem.shared.cjs"),
-  )
+const ecoDir = path.join(ROOT, "ecosystem")
+if (fs.existsSync(ecoDir)) {
+  copyDir(ecoDir, path.join(destRoot, "ecosystem"))
 }
 
 fs.copyFileSync(

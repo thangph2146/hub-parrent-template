@@ -2,7 +2,7 @@
  * @deprecated Thay bằng `pnpm pull:checkin` (API + migrate + admin:generate:checkin).
  * Giữ file để script/bookmark cũ báo lỗi rõ ràng thay vì copy lại module.
  */
-const { ROOT } = require("../lib/paths.cjs")
+const { ROOT } = require("../../lib/monorepo-root.cjs");
 
 console.error(
   [
@@ -15,6 +15,6 @@ console.error(
     "",
     `ROOT: ${ROOT}`,
   ].join("\n"),
-)
+);
 
-process.exit(1)
+process.exit(1);
