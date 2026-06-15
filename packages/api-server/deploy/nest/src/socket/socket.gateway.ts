@@ -27,6 +27,7 @@ import {
   type AdminCacheInvalidatePayload,
   type AdminStatusChangePayload,
   type EventAttendanceSocketPayload,
+  type EventHanetSyncSocketPayload,
   type ParentStudentReviewSocketPayload,
 } from './socket.types';
 import { appConfig } from '../config/app.config';
@@ -152,6 +153,16 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .to(eventRoom(payload.eventId))
       .emit('event:attendance', payload);
     this.server.to(roleRoom('ADMIN')).emit('event:attendance', payload);
+  }
+
+  emitEventHanetSync(payload: EventHanetSyncSocketPayload): void {
+    if (!this.server) return;
+    this.server.to(roleRoom('ADMIN')).emit('event:hanet-sync', payload);
+    if (payload.eventId != null) {
+      this.server
+        .to(eventRoom(payload.eventId))
+        .emit('event:hanet-sync', payload);
+    }
   }
 
   emitParentStudentReview(payload: ParentStudentReviewSocketPayload): void {

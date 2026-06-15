@@ -252,11 +252,10 @@ function writeTemplatesMeta(destRoot) {
     modules,
   }
 
-  fs.writeFileSync(
-    path.join(destRoot, 'PACKAGE_MODULE_TEMPLATES.meta.json'),
-    `${JSON.stringify(meta, null, 2)}\n`,
-    'utf8',
-  )
+  const pipelineDir = path.join(destRoot, '.pipeline')
+  fs.mkdirSync(pipelineDir, { recursive: true })
+  const outPath = path.join(pipelineDir, 'PACKAGE_MODULE_TEMPLATES.meta.json')
+  fs.writeFileSync(outPath, `${JSON.stringify(meta, null, 2)}\n`, 'utf8')
   return meta
 }
 

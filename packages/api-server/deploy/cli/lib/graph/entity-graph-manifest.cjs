@@ -4,6 +4,7 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { buildEntityGraph } = require('./build-entity-graph.cjs')
+const { writeFileWithRetry } = require('../fs-write-retry.cjs')
 
 const MANIFEST_REL = 'packages/api-server/deploy/config/entity-graph.manifest.json'
 const MARKDOWN_REL = 'packages/api-server/deploy/config/API_ENTITY_GRAPH.md'
@@ -37,6 +38,16 @@ function formatEntityGraphMarkdown(graph) {
     '|--------|----------|------------|',
     '| **Mặc định (khuyến nghị)** | Copy **full** `src/entities/` | Copy full |',
     '| `--prune-entities` (thử nghiệm) | Closure từ graph module + quan hệ | Vẫn full (schema thống nhất) |',
+    '',
+    '## Module runtime (dọn dư)',
+    '',
+    '| Kiểm tra | Lệnh |',
+    '|----------|------|',
+    '| Module closure (import peer) | `resolve-module-closure` + `API_DOMAIN_IMPORTS.md` |',
+    '| Không còn `src/{module}/` dư | `pnpm verify:module-graph` |',
+    '| Dọn sau render subset | `pnpm api:render <app> --prune` (mặc định bật cho line không `renderAllModules`) |',
+    '',
+    'Module **không** nằm trong config+closure graph → phải xóa (`--prune`), không giữ thủ công.',
     '',
     'Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-closure`) là **hai lớp độc lập** — graphify/API_DOMAIN_IMPORTS cho module; manifest này cho entity.',
     '',
@@ -73,6 +84,7 @@ function formatEntityGraphMarkdown(graph) {
   lines.push('```bash')
   lines.push('pnpm api:sync-template')
   lines.push('pnpm verify:entity-closure')
+  lines.push('pnpm verify:module-graph')
   lines.push('```')
   lines.push('')
 
@@ -87,15 +99,15 @@ function writeEntityGraphManifest(root, opts = {}) {
   const graph = buildEntityGraph()
   const manifestAbs = manifestPath(root)
   fs.mkdirSync(path.dirname(manifestAbs), { recursive: true })
-  fs.writeFileSync(manifestAbs, `${JSON.stringify(graph, null, 2)}\n`, 'utf8')
+  writeFileWithRetry(manifestAbs, `${JSON.stringify(graph, null, 2)}\n`)
 
   const md = formatEntityGraphMarkdown(graph)
   const mdAbs = path.join(root, MARKDOWN_REL)
-  fs.writeFileSync(mdAbs, md, 'utf8')
+  writeFileWithRetry(mdAbs, md)
 
   const graphifyMdAbs = path.join(root, MAIN_API_GRAPHIFY_MD)
   fs.mkdirSync(path.dirname(graphifyMdAbs), { recursive: true })
-  fs.writeFileSync(graphifyMdAbs, md, 'utf8')
+  writeFileWithRetry(graphifyMdAbs, md)
 
   if (!opts.quiet) {
     opts.log?.detail?.(

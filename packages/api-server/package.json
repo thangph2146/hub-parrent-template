@@ -47,6 +47,7 @@
     "render:regenerate:checkin": "node deploy/cli/render.cjs apps/hub-event/api --skip-sync-template",
     "verify:template": "node deploy/cli/verify/template.mjs",
     "verify:entity-closure": "node deploy/cli/verify/verify-entity-closure.mjs",
+    "verify:module-graph": "node deploy/cli/verify/verify-module-graph.mjs",
     "verify:checkin-api": "node deploy/cli/verify/checkin-api.mjs",
     "verify:endpoint-parity": "node deploy/cli/verify/endpoint-parity.mjs",
     "test:nest-contract": "jest --config deploy/jest.nest-contract.config.cjs",

@@ -7,6 +7,12 @@ const { createLogger } = require('../cli-logger.cjs')
 
 const RENDER_BOOTSTRAP_MODULES = ['auth', 'public', 'socket']
 
+/** Luôn giữ trong app.module — shell Nest, không phải feature module. */
+const RENDER_APP_MODULE_SHELL = new Set(['DatabaseModule'])
+
+/** Import từ thư mục shell (mikro-orm) — không cắt khi partial. */
+const RENDER_SHELL_IMPORT_DIRS = new Set(['mikro-orm'])
+
 function moduleIdToNestModuleName(moduleId) {
   const base = moduleId
     .split('-')
@@ -35,10 +41,18 @@ function patchRenderAppModule(appRoot, keepModuleIds, options = {}) {
 
   for (const line of lines) {
     const moduleId = extractModuleIdFromImportLine(line)
+    if (moduleId && RENDER_SHELL_IMPORT_DIRS.has(moduleId)) {
+      next.push(line)
+      continue
+    }
     if (moduleId && !keep.has(moduleId)) continue
 
     if (/^\s+[A-Z][A-Za-z0-9]+Module,\s*$/.test(line)) {
       const name = line.trim().replace(/,$/, '')
+      if (RENDER_APP_MODULE_SHELL.has(name)) {
+        next.push(line)
+        continue
+      }
       if (!keepNestModules.has(name)) continue
     }
 
@@ -54,4 +68,9 @@ function patchRenderAppModule(appRoot, keepModuleIds, options = {}) {
   return true
 }
 
-module.exports = { patchRenderAppModule, RENDER_BOOTSTRAP_MODULES, moduleIdToNestModuleName }
+module.exports = {
+  patchRenderAppModule,
+  RENDER_BOOTSTRAP_MODULES,
+  RENDER_APP_MODULE_SHELL,
+  moduleIdToNestModuleName,
+}

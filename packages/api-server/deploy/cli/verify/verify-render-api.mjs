@@ -11,6 +11,10 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const { ROOT } = require('../lib/monorepo-root.cjs')
 const { resolveApiModules } = require('../../config/render.config.cjs')
+const {
+  auditRenderModuleGraph,
+  resolveRenderModuleSet,
+} = require('../lib/render/resolve-render-module-set.cjs')
 
 const APP_REL = (process.argv[2] ?? 'apps/hub-event/api').replace(/\\/g, '/')
 const appRoot = path.join(ROOT, APP_REL)
@@ -21,21 +25,41 @@ if (!fs.existsSync(path.join(appRoot, 'api.app.config.json'))) {
 }
 
 const { modules } = resolveApiModules(APP_REL)
+const expected = resolveRenderModuleSet(APP_REL)
 const errors = []
 
 for (const rel of ['package.json', 'nest-cli.json', 'src/main.ts', 'src/app.module.ts']) {
   if (!fs.existsSync(path.join(appRoot, rel))) errors.push(`Thiếu ${rel}`)
 }
 
-for (const moduleId of modules) {
+const appModuleSrc = fs.existsSync(path.join(appRoot, 'src/app.module.ts'))
+  ? fs.readFileSync(path.join(appRoot, 'src/app.module.ts'), 'utf8')
+  : ''
+if (appModuleSrc && !/\bDatabaseModule\b/.test(appModuleSrc)) {
+  errors.push(
+    'app.module.ts thiếu DatabaseModule — chạy lại pnpm api:render với pipeline mới',
+  )
+}
+
+for (const moduleId of expected) {
   const moduleDir = path.join(appRoot, 'src', moduleId)
   if (!fs.existsSync(moduleDir)) {
-    errors.push(`Thiếu src/${moduleId}/`)
+    errors.push(`Thiếu src/${moduleId}/ (closure graph)`)
     continue
   }
   if (!fs.readdirSync(moduleDir).some((n) => n.endsWith('.module.ts'))) {
     errors.push(`src/${moduleId}/ không có *.module.ts`)
   }
+}
+
+const { orphans, missing } = auditRenderModuleGraph(APP_REL)
+if (orphans.length) {
+  errors.push(
+    `Module dư (không thuộc graph closure): ${orphans.join(', ')} — chạy pnpm api:render ${APP_REL} --prune`,
+  )
+}
+if (missing.length) {
+  errors.push(`Module thiếu so với closure: ${missing.join(', ')}`)
 }
 
 if (errors.length) {
@@ -44,4 +68,6 @@ if (errors.length) {
 }
 
 const label = APP_REL.split('/').slice(1, 2).join('-') || 'api'
-console.log(`[verify:render-api] OK — ${APP_REL} · ${modules.length} module (${label})`)
+console.log(
+  `[verify:render-api] OK — ${APP_REL} · ${expected.length} module graph (${label})`,
+)

@@ -9,6 +9,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { ROOT } = require('../monorepo-root.cjs')
 const { createLogger } = require('../cli-logger.cjs')
+const { rmWithRetry } = require('../fs-write-retry.cjs')
 const {
   MAIN_API_PATH,
   SYNC_SKIP_SRC_DIRS,
@@ -71,12 +72,12 @@ function pruneStaleTemplateMirror(destRoot, options = {}) {
 
       const abs = path.join(nestSrc, name)
       if (mainDirs.has(name)) {
-        fs.rmSync(abs, { recursive: true, force: true })
+        rmWithRetry(abs)
         wipedDirs++
         wipedNames.push(name)
         log.detail('prune:stale-mirror', `wiped src/${name}/ (refresh from main)`)
       } else {
-        fs.rmSync(abs, { recursive: true, force: true })
+        rmWithRetry(abs)
         removedOrphans++
         orphanNames.push(name)
         log.detail('prune:stale-mirror', `removed orphan src/${name}/`)

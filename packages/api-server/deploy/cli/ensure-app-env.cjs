@@ -1,51 +1,69 @@
 /**
- * Tạo .env từ .env.example cho app API sau render.
+ * Tạo / patch .env từ env profile sau render.
  */
 const fs = require('node:fs')
 const path = require('node:path')
-const { execSync } = require('node:child_process')
 const { ROOT } = require('./lib/monorepo-root.cjs')
-const { PRODUCT_LINES } = require('../config/product-lines.cjs')
+const {
+  writeApiEnvExampleForAppPath,
+  applyApiEnvProfileToDotEnv,
+  getApiEnvProfileForAppPath,
+} = require(path.join(ROOT, 'script-system/env/api-env-profiles.cjs'))
 
-function stackForAppRel(appRel) {
-  for (const [stack, apps] of Object.entries(PRODUCT_LINES)) {
-    if (apps.api?.path === appRel) return stack
+function formatEnvResult(appRel, result) {
+  if (result.skipped) {
+    if (result.reason === 'no-example') {
+      console.warn(`[api:render] bỏ qua .env — thiếu ${appRel}/.env.example`)
+    } else if (result.reason === 'no-profile') {
+      console.warn(`[api:render] bỏ qua .env — không có env profile: ${appRel}`)
+    }
+    return result
   }
-  return null
+
+  const dbTag = result.database ? ` (db=${result.database})` : ''
+  if (result.overwritten) {
+    console.log(`[api:render] ghi đè ${appRel}/.env từ .env.example${dbTag}`)
+  } else if (result.created) {
+    console.log(`[api:render] tạo ${appRel}/.env từ .env.example${dbTag}`)
+  } else if (result.patched) {
+    const keys = result.patchedKeys?.join(', ') ?? 'profile'
+    console.log(`[api:render] patch ${appRel}/.env — ${keys}${dbTag}`)
+  } else {
+    console.log(`[api:render] .env đã khớp profile${dbTag}: ${appRel}/.env`)
+  }
+
+  return result
 }
 
 function ensureAppEnv(appRel, { force = false } = {}) {
-  const appRoot = path.join(ROOT, appRel)
-  const example = path.join(appRoot, '.env.example')
-  const dest = path.join(appRoot, '.env')
+  const normalized = appRel.replace(/\\/g, '/')
 
-  if (!fs.existsSync(example)) {
-    console.warn(`[api:render] bỏ qua .env — thiếu ${appRel}/.env.example`)
-    return { created: false, skipped: true }
+  if (normalized !== 'apps/main/api') {
+    writeApiEnvExampleForAppPath(normalized)
   }
 
-  if (fs.existsSync(dest) && !force) {
-    console.log(`[api:render] .env đã có: ${appRel}/.env`)
-    return { created: false, skipped: true }
-  }
-
-  const stack = stackForAppRel(appRel)
-  if (stack) {
-    try {
-      const flag = force ? '--force' : ''
-      execSync(`node script-system/env/init-env.cjs ${stack} ${flag}`.trim(), {
-        cwd: ROOT,
-        stdio: 'inherit',
-      })
-      return { created: true, skipped: false, via: 'env:init' }
-    } catch {
-      /* fallback copy */
+  const profile = getApiEnvProfileForAppPath(normalized)
+  if (!profile) {
+    const example = path.join(ROOT, normalized, '.env.example')
+    const dest = path.join(ROOT, normalized, '.env')
+    if (!fs.existsSync(example)) {
+      console.warn(`[api:render] bỏ qua .env — thiếu ${normalized}/.env.example`)
+      return { created: false, skipped: true, reason: 'no-example' }
     }
+    if (fs.existsSync(dest) && !force) {
+      console.log(`[api:render] .env đã có: ${normalized}/.env`)
+      return { created: false, skipped: true, reason: 'exists' }
+    }
+    fs.copyFileSync(example, dest)
+    console.log(`[api:render] tạo ${normalized}/.env từ .env.example`)
+    return { created: true, skipped: false, via: 'copy' }
   }
 
-  fs.copyFileSync(example, dest)
-  console.log(`[api:render] tạo ${appRel}/.env từ .env.example`)
-  return { created: true, skipped: false, via: 'copy' }
+  const result = applyApiEnvProfileToDotEnv(normalized, {
+    createIfMissing: true,
+    force,
+  })
+  return formatEnvResult(normalized, result)
 }
 
-module.exports = { ensureAppEnv, stackForAppRel }
+module.exports = { ensureAppEnv }

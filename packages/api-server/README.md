@@ -27,7 +27,7 @@ packages/api-server/
 
 **Không commit:** `src/modules/**/*.spec.ts` (test CRUD trên `apps/main/api`).
 
-**Meta sync (có chủ đích):** `deploy/nest/TEMPLATE.meta.json`, `PACKAGE_MODULE_TEMPLATES.meta.json` — output pipeline, không trùng `deploy/config/*.cjs`.
+**Meta sync (có chủ đích):** `deploy/nest/TEMPLATE.meta.json`, `.pipeline/PACKAGE_MODULE_TEMPLATES.meta.json` — output pipeline, không trùng `deploy/config/*.cjs`.
 
 **Đã bỏ:** thư mục `tooling/` (script sinh spec cũ — test CRUD nằm ở `apps/main/api`).
 

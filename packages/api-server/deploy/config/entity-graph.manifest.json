@@ -1,6 +1,6 @@
 {
   "source": "apps/main/api",
-  "generatedAt": "2026-06-14T11:12:04.381Z",
+  "generatedAt": "2026-06-15T05:48:46.474Z",
   "entityCount": 46,
   "entities": {
     "AcademicYear": {
@@ -611,7 +611,10 @@
     "hanet": [
       "Camera",
       "Event",
-      "EventRegistration"
+      "EventRegistration",
+      "FaceData",
+      "Location",
+      "User"
     ],
     "imported-users": [
       "ImportedUser"
@@ -698,9 +701,11 @@
       "User"
     ],
     "posts": [
+      "Category",
       "Post",
       "PostCategory",
       "PostTag",
+      "Tag",
       "User"
     ],
     "products": [

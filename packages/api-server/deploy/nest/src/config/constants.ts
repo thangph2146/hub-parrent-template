@@ -60,6 +60,7 @@ export const ADMIN_ROUTES = {
   PRODUCTS: 'admin/products',
   ORDERS: 'admin/orders',
   PROMO_CODES: 'admin/promo-codes',
+  HANET: 'admin/hanet',
 } as const;
 
 export const PUBLIC_ROUTES = {

@@ -14,11 +14,14 @@ const {
   TEMPLATE_INFRA_FILES,
 } = require('../../../config/template-common.cjs')
 const { createLogger } = require('../cli-logger.cjs')
+const { copyFileWithRetry, rmWithRetry } = require('../fs-write-retry.cjs')
 
 const PKG_COMMON = path.join(PACKAGE_ROOT, 'src/common')
 const MAIN_COMMON = path.join(ROOT, MAIN_API_PATH, 'src/common')
 /** Subtree mirror từ main — binding deploy import ../common/admin|commerce|infra|app */
 const MAIN_COMMON_DIRS = ['admin', 'commerce', 'infra', 'app']
+/** File root `src/common/` — không nằm pkg/api-server common */
+const MAIN_COMMON_ROOT_FILES = ['data-paths.ts']
 
 const PKG_SKIP = new Set([
   'apply-column-filters.ts',
@@ -42,7 +45,7 @@ function copyMainCommonDir(srcDir, destDir) {
       continue
     }
     if (!entry.name.endsWith('.ts') || isSpecFile(entry.name)) continue
-    fs.copyFileSync(srcPath, destPath)
+    copyFileWithRetry(srcPath, destPath)
     count++
   }
   return count
@@ -52,7 +55,7 @@ function syncCommonRoot(destRoot, options = {}) {
   const log = options.log ?? createLogger(options)
   const dest = path.join(destRoot, 'src/common')
   if (fs.existsSync(dest)) {
-    fs.rmSync(dest, { recursive: true, force: true })
+    rmWithRetry(dest)
   }
   fs.mkdirSync(dest, { recursive: true })
 
@@ -60,7 +63,7 @@ function syncCommonRoot(destRoot, options = {}) {
   for (const file of fs.readdirSync(PKG_COMMON)) {
     if (!file.endsWith('.ts')) continue
     if (PKG_SKIP.has(file) || isSpecFile(file)) continue
-    fs.copyFileSync(path.join(PKG_COMMON, file), path.join(dest, file))
+    copyFileWithRetry(path.join(PKG_COMMON, file), path.join(dest, file))
     fromPkg++
   }
 
@@ -72,7 +75,7 @@ function syncCommonRoot(destRoot, options = {}) {
         `[sync:common] Thiếu deploy/template-common/${file} — copy từ apps/main/api/src/common`,
       )
     }
-    fs.copyFileSync(src, path.join(dest, file))
+    copyFileWithRetry(src, path.join(dest, file))
     fromInfra++
   }
 
@@ -83,12 +86,22 @@ function syncCommonRoot(destRoot, options = {}) {
     fromMainDirs += copyMainCommonDir(path.join(MAIN_COMMON, dir), path.join(dest, dir))
   }
 
+  let fromMainRoot = 0
+  for (const file of MAIN_COMMON_ROOT_FILES) {
+    const src = path.join(MAIN_COMMON, file)
+    if (!fs.existsSync(src)) {
+      throw new Error(`[sync:common] Thiếu ${MAIN_API_PATH}/src/common/${file}`)
+    }
+    copyFileWithRetry(src, path.join(dest, file))
+    fromMainRoot++
+  }
+
   log.step(
     'sync:common',
-    `root ← pkg=${fromPkg} template-common=${fromInfra} main-dirs=${fromMainDirs} file`,
+    `root ← pkg=${fromPkg} template-common=${fromInfra} main-dirs=${fromMainDirs} main-root=${fromMainRoot} file`,
   )
 
-  return fromPkg + fromInfra + fromMainDirs
+  return fromPkg + fromInfra + fromMainDirs + fromMainRoot
 }
 
 module.exports = { syncCommonRoot, PKG_SKIP }

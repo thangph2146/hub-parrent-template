@@ -4,7 +4,7 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { ROOT } = require('../monorepo-root.cjs')
-const { PRODUCT_LINES } = require('../../../config/product-lines.cjs')
+const { PRODUCT_LINES, MAIN_API_PATH } = require('../../../config/product-lines.cjs')
 const {
   resolveTemplateRoot,
   listTemplateModuleIds,
@@ -76,21 +76,7 @@ function packageNameForApp(appRel) {
   return `@${slug}`
 }
 
-function writeFileWithRetry(filePath, content) {
-  for (let attempt = 0; attempt < 6; attempt++) {
-    try {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true })
-      fs.writeFileSync(filePath, content, 'utf8')
-      return
-    } catch (err) {
-      if (attempt === 5) throw err
-      const end = Date.now() + 50 * (attempt + 1)
-      while (Date.now() < end) {
-        /* Windows FS */
-      }
-    }
-  }
-}
+const { writeFileWithRetry } = require('../fs-write-retry.cjs')
 
 function withBanner(relPath, content) {
   if (!relPath.endsWith('.ts')) return content
@@ -260,6 +246,17 @@ function renderApiFromTemplate(appRel, opts = {}) {
   }
 
   console.log(`[render:template] xong → ${appRel}`)
+
+  const normalizedRel = appRel.replace(/\\/g, '/')
+  if (normalizedRel !== MAIN_API_PATH) {
+    const { writeApiEnvExampleForAppPath } = require(path.join(
+      ROOT,
+      'script-system/env/api-env-profiles.cjs',
+    ))
+    if (writeApiEnvExampleForAppPath(normalizedRel)) {
+      console.log(`[render:template] .env.example ← env profile (${normalizedRel})`)
+    }
+  }
 
   return {
     moduleIds,

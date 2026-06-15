@@ -31,6 +31,7 @@ const { syncModuleServiceSpecs } = require('./lib/sync/sync-module-service-specs
 const { patchTemplateAppModule } = require('./lib/sync/patch-template-app-module.cjs')
 const { pruneStaleTemplateMirror } = require('./lib/prune/prune-stale-template-mirror.cjs')
 const { writeEntityGraphManifest } = require('./lib/graph/entity-graph-manifest.cjs')
+const { writeFileWithRetry, copyFileWithRetry, rmWithRetry } = require('./lib/fs-write-retry.cjs')
 
 const SYNC_HELP = `
 api:sync-template — copy apps/main/api → packages/api-server/deploy/nest
@@ -52,8 +53,7 @@ function shouldSkipFile(name) {
 }
 
 function removePath(absPath) {
-  if (!fs.existsSync(absPath)) return
-  fs.rmSync(absPath, { recursive: true, force: true })
+  rmWithRetry(absPath)
 }
 
 function copyRecursive(src, dest, { rel = '' } = {}) {
@@ -80,7 +80,7 @@ function copyRecursive(src, dest, { rel = '' } = {}) {
     }
 
     fs.mkdirSync(path.dirname(destPath), { recursive: true })
-    fs.copyFileSync(srcPath, destPath)
+    copyFileWithRetry(srcPath, destPath)
     count++
   }
   return count
@@ -100,7 +100,7 @@ function patchTemplatePackageJson(destRoot) {
   if (pkg.scripts?.predev) {
     pkg.scripts.predev = 'node ../../../../script-system/dev/dev-prep-api.cjs 3002'
   }
-  fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, 'utf8')
+  writeFileWithRetry(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
 }
 
 function writeTemplateMeta(destRoot) {
@@ -126,10 +126,9 @@ function writeTemplateMeta(destRoot) {
       ],
     },
   }
-  fs.writeFileSync(
+  writeFileWithRetry(
     path.join(destRoot, 'TEMPLATE.meta.json'),
     `${JSON.stringify(meta, null, 2)}\n`,
-    'utf8',
   )
 }
 
@@ -234,6 +233,21 @@ function syncApiTemplate(options = {}) {
   return stats
 }
 
+const TEMPLATE_FRESH_MS = 120_000
+
+/** Template vừa sync — tránh sync lặp ngay sau api:sync-template. */
+function isTemplateFresh(maxAgeMs = TEMPLATE_FRESH_MS) {
+  const metaPath = path.join(resolveTemplateRoot(), 'TEMPLATE.meta.json')
+  if (!fs.existsSync(metaPath)) return false
+  try {
+    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'))
+    if (!meta.syncedAt) return false
+    return Date.now() - new Date(meta.syncedAt).getTime() < maxAgeMs
+  } catch {
+    return false
+  }
+}
+
 if (require.main === module) {
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
     console.log(SYNC_HELP)
@@ -242,4 +256,4 @@ if (require.main === module) {
   syncApiTemplate({ printSummary: true })
 }
 
-module.exports = { syncApiTemplate, SYNC_HELP }
+module.exports = { syncApiTemplate, SYNC_HELP, isTemplateFresh, TEMPLATE_FRESH_MS }

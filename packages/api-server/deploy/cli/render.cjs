@@ -18,7 +18,7 @@ const { pickApiAppTarget, pickPackageModules, assertTty } = require('./render-pr
 const { printApiRenderHelp } = require('./lib/render/render-help.cjs')
 const { renderApiFromTemplate } = require('./lib/render/render-from-template.cjs')
 const { printApiRenderSummary } = require('./lib/render/render-summary.cjs')
-const { syncApiTemplate } = require('./sync-template.cjs')
+const { syncApiTemplate, isTemplateFresh } = require('./sync-template.cjs')
 const { ensureAppEnv } = require('./ensure-app-env.cjs')
 
 const args = process.argv.slice(2).filter((a) => a !== '--')
@@ -110,14 +110,16 @@ async function main() {
     })
   }
 
-  const skipSync = hasFlag('--skip-sync-template')
+  const skipSync =
+    hasFlag('--skip-sync-template') ||
+    (!hasFlag('--force-sync-template') && isTemplateFresh())
   const skipEnv = hasFlag('--skip-env')
   const skipTypecheck = hasFlag('--skip-typecheck')
   const skipVerify = hasFlag('--skip-verify')
   const skipParity = hasFlag('--skip-parity')
   const heal = hasFlag('--heal')
   const wantFull = hasFlag('--full')
-  const prune = hasFlag('--prune') || wantFull
+  let subsetLine = false
   const pruneEntities = hasFlag('--prune-entities')
   const pipelineSteps = []
 
@@ -130,6 +132,12 @@ async function main() {
     pipelineSteps.push({ label: 'sync template ← apps/main/api', ok: true })
   } else if (!templateHasSource()) {
     throw new Error('[api:render] Thiếu template. Chạy pnpm api:sync-template')
+  } else if (skipSync && isTemplateFresh() && !hasFlag('--skip-sync-template')) {
+    pipelineSteps.push({
+      label: 'sync template',
+      skipped: true,
+      detail: 'template vừa sync — dùng --force-sync-template để ép',
+    })
   } else if (skipSync) {
     pipelineSteps.push({
       label: 'sync template',
@@ -146,6 +154,7 @@ async function main() {
     try {
       const { renderAllModules } = resolveApiModules(appRel)
       if (renderAllModules) wantAll = true
+      else subsetLine = true
     } catch {
       /* config chưa hợp lệ — render sẽ báo lỗi sau */
     }
@@ -161,6 +170,10 @@ async function main() {
   ) {
     wantAll = true
   }
+
+  const prune =
+    !hasFlag('--no-prune') &&
+    (hasFlag('--prune') || wantFull || subsetLine)
 
   const renderOpts = {
     modules: await resolveModuleList(appRel, wantAll),
@@ -178,8 +191,19 @@ async function main() {
   })
 
   if (!skipEnv) {
-    ensureAppEnv(appRel, { force: hasFlag('--force-env') })
-    pipelineSteps.push({ label: 'chuẩn bị .env', ok: true })
+    const envResult = ensureAppEnv(appRel, { force: hasFlag('--force-env') })
+    let detail
+    if (envResult.database) {
+      detail = `db=${envResult.database}`
+      if (envResult.patched && envResult.patchedKeys?.length) {
+        detail += ` · ${envResult.patchedKeys.join(', ')}`
+      } else if (envResult.overwritten) {
+        detail += ' · ghi đè'
+      } else if (envResult.created) {
+        detail += ' · tạo mới'
+      }
+    }
+    pipelineSteps.push({ label: 'chuẩn bị .env', ok: !envResult.skipped, detail })
   } else {
     pipelineSteps.push({ label: 'chuẩn bị .env', skipped: true, detail: '--skip-env' })
   }
