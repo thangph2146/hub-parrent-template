@@ -9,7 +9,10 @@ export class BaseEventRegistrationsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseEventRegistrationsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseEventRegistrationsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

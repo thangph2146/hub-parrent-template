@@ -9,7 +9,10 @@ export class BaseImportedUsersModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseImportedUsersController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseImportedUsersController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

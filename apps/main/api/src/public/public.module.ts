@@ -17,6 +17,7 @@ import { EventSpeakersModule } from '../event-speakers/event-speakers.module';
 import { PublicEventRegistrationService } from './public-event-registration.service';
 import { SeoMetasModule } from '../seo-metas/seo-metas.module';
 import { SettingsModule } from '../settings/settings.module';
+import { HanetModule } from '../hanet/hanet.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SettingsModule } from '../settings/settings.module';
     EventSpeakersModule,
     SeoMetasModule,
     SettingsModule,
+    HanetModule,
   ],
   controllers: [PublicController],
   providers: [

@@ -36,7 +36,11 @@ import {
 import { normalizePageLimit, paginationMeta } from '../pagination';
 import { toEntityId, toEntityIdList } from '../entity-id';
 import { toIso, toIsoNow } from './crud-date';
-import { applyBulkAction, isBulkAction, type BulkAction } from '../bulk-actions';
+import {
+  applyBulkAction,
+  isBulkAction,
+  type BulkAction,
+} from '../bulk-actions';
 import {
   buildStandardAdminWhere,
   type AdminColumnFiltersConfig,
@@ -199,8 +203,13 @@ export abstract class BaseCrudService<
   async list(params: ListCrudParams): Promise<PaginatedResult<TRow>> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const { page, limit, skip } = this.normalizePageLimit(params.page, params.limit);
-    const where = this.buildWhere(params) as FilterQuery<Record<string, unknown>>;
+    const { page, limit, skip } = this.normalizePageLimit(
+      params.page,
+      params.limit,
+    );
+    const where = this.buildWhere(params) as FilterQuery<
+      Record<string, unknown>
+    >;
 
     const populate = this.getListPopulate();
     const findOptions: Record<string, unknown> = {
@@ -252,7 +261,7 @@ export abstract class BaseCrudService<
     const em = this.getEm();
     const Entity = this.getEntity();
     const before = await this.beforeCreate(data);
-    const entity = new Entity() as Record<string, unknown>;
+    const entity = new Entity();
     Object.assign(entity, before);
     em.persist(entity);
     await em.flush();
@@ -401,9 +410,14 @@ export abstract class BaseCrudService<
       const term = `%${params.search.trim()}%`;
       // Merge với $or (giữ soft-delete + filters)
       const existing = (where as Record<string, unknown>).$and;
-      const orClause = searchFields.map((field) => ({ [field]: { $like: term } }));
+      const orClause = searchFields.map((field) => ({
+        [field]: { $like: term },
+      }));
       if (existing) {
-        (where as Record<string, unknown>).$and = [...(existing as unknown[]), { $or: orClause }];
+        (where as Record<string, unknown>).$and = [
+          ...(existing as unknown[]),
+          { $or: orClause },
+        ];
       } else {
         (where as Record<string, unknown>).$or = orClause;
       }
@@ -420,7 +434,12 @@ export abstract class BaseCrudService<
     limit: number | string | undefined,
     maxLimit: number = MAX_LIMIT,
   ): { page: number; limit: number; skip: number } {
-    return normalizePageLimit(page ?? DEFAULT_PAGE, limit ?? DEFAULT_LIMIT, maxLimit, DEFAULT_LIMIT);
+    return normalizePageLimit(
+      page ?? DEFAULT_PAGE,
+      limit ?? DEFAULT_LIMIT,
+      maxLimit,
+      DEFAULT_LIMIT,
+    );
   }
 
   /**
@@ -451,7 +470,9 @@ export abstract class BaseCrudService<
   /**
    * Convert Date/string → ISO string (null-safe) — dùng `toIso()` từ common.
    */
-  protected safeIsoString(date: Date | string | null | undefined): string | null {
+  protected safeIsoString(
+    date: Date | string | null | undefined,
+  ): string | null {
     return toIso(date);
   }
 

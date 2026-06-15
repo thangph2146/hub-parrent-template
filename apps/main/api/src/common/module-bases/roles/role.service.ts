@@ -76,8 +76,12 @@ function mapRow(r: Record<string, unknown>): RolesRowDto {
     description: (r.description as string | null | undefined) ?? null,
     permissions: r.permissions,
     isActive: Boolean(r.isActive),
-    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      r.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      r.updatedAt as Date | string | null | undefined,
+    ),
     deletedAt: safeIsoString(r.deletedAt as Date | string | null | undefined),
   };
 }
@@ -142,7 +146,9 @@ export abstract class BaseRolesService {
     }
   }
 
-  private assertSuperAdminRoleNotDeletable(role: Record<string, unknown>): void {
+  private assertSuperAdminRoleNotDeletable(
+    role: Record<string, unknown>,
+  ): void {
     if (isSystemSuperAdminRoleName(String(role.name ?? ''))) {
       throw new ForbiddenException(
         'Vai trò Super Admin là vai trò hệ thống, không thể xóa.',
@@ -200,7 +206,7 @@ export abstract class BaseRolesService {
   async create(data: RolesCreateData): Promise<RolesRowDto> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const created = new Entity() as Record<string, unknown>;
+    const created = new Entity();
     created.name = data.name;
     created.displayName = data.displayName;
     created.description = data.description ?? null;
@@ -225,7 +231,10 @@ export abstract class BaseRolesService {
     if (
       isSystemSuperAdminRoleName(String(row.name ?? '')) &&
       data.name != null &&
-      data.name.trim().toLowerCase() !== String(row.name ?? '').trim().toLowerCase()
+      data.name.trim().toLowerCase() !==
+        String(row.name ?? '')
+          .trim()
+          .toLowerCase()
     ) {
       throw new ForbiddenException('Không thể đổi mã vai trò Super Admin.');
     }

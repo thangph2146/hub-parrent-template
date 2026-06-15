@@ -8,10 +8,7 @@ import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { hash } from 'bcryptjs';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../../index';
-import {
-  filterDevLoginOptions,
-  mapUserToDevLoginOption,
-} from './users.mapper';
+import { filterDevLoginOptions, mapUserToDevLoginOption } from './users.mapper';
 
 /**
  * Type exports from parent
@@ -82,7 +79,9 @@ export class BaseUsersService {
    * Override in subclass to provide app-specific EM
    */
   protected getEm(): EntityManager {
-    throw new Error('EntityManager not configured. Override getEm() in subclass.');
+    throw new Error(
+      'EntityManager not configured. Override getEm() in subclass.',
+    );
   }
 
   /**
@@ -90,7 +89,9 @@ export class BaseUsersService {
    * Override in subclass
    */
   protected getUserEntity(): unknown {
-    throw new Error('User entity not configured. Override getUserEntity() in subclass.');
+    throw new Error(
+      'User entity not configured. Override getUserEntity() in subclass.',
+    );
   }
 
   /**
@@ -98,7 +99,9 @@ export class BaseUsersService {
    * Override in subclass
    */
   protected getRoleEntity(): unknown {
-    throw new Error('Role entity not configured. Override getRoleEntity() in subclass.');
+    throw new Error(
+      'Role entity not configured. Override getRoleEntity() in subclass.',
+    );
   }
 
   /**
@@ -106,7 +109,9 @@ export class BaseUsersService {
    * Override in subclass
    */
   protected getUserRoleEntity(): unknown {
-    throw new Error('UserRole entity not configured. Override getUserRoleEntity() in subclass.');
+    throw new Error(
+      'UserRole entity not configured. Override getUserRoleEntity() in subclass.',
+    );
   }
 
   /**
@@ -187,7 +192,9 @@ export class BaseUsersService {
   /**
    * Safe ISO string conversion
    */
-  protected safeIsoString(date: Date | string | null | undefined): string | null {
+  protected safeIsoString(
+    date: Date | string | null | undefined,
+  ): string | null {
     if (!date) return null;
     if (typeof date === 'string') return date;
     return date.toISOString();
@@ -206,12 +213,16 @@ export class BaseUsersService {
    * Map user entity to UserRowDto
    */
   protected mapRow(user: Record<string, unknown>): UserRowDto {
-    const userRoles = user.userRoles as Array<{ role: { id: number; name: string; displayName: string } }> | undefined;
-    const roles = userRoles ? userRoles.map((ur) => ({
-      id: ur.role.id,
-      name: ur.role.name,
-      displayName: ur.role.displayName,
-    })) : [];
+    const userRoles = user.userRoles as
+      | Array<{ role: { id: number; name: string; displayName: string } }>
+      | undefined;
+    const roles = userRoles
+      ? userRoles.map((ur) => ({
+          id: ur.role.id,
+          name: ur.role.name,
+          displayName: ur.role.displayName,
+        }))
+      : [];
 
     const email = user.email;
     const name = user.name;
@@ -235,7 +246,9 @@ export class BaseUsersService {
       isActive: user.isActive as boolean,
       createdAt: this.safeIsoStringNow(user.createdAt as Date | string),
       updatedAt: this.safeIsoStringNow(user.updatedAt as Date | string),
-      deletedAt: this.safeIsoString(user.deletedAt as Date | string | null | undefined),
+      deletedAt: this.safeIsoString(
+        user.deletedAt as Date | string | null | undefined,
+      ),
       roles,
     };
   }
@@ -350,7 +363,9 @@ export class BaseUsersService {
       params.limit,
     );
 
-    const where = this.buildWhere(params) as FilterQuery<Record<string, unknown>>;
+    const where = this.buildWhere(params) as FilterQuery<
+      Record<string, unknown>
+    >;
 
     const [rows, total] = await Promise.all([
       em.find(User, where, {
@@ -362,7 +377,9 @@ export class BaseUsersService {
       em.count(User, where),
     ]);
 
-    const mappedRows = rows.map((row) => this.mapRow(row as Record<string, unknown>));
+    const mappedRows = rows.map((row) =>
+      this.mapRow(row as Record<string, unknown>),
+    );
 
     return {
       data: mappedRows,
@@ -433,12 +450,15 @@ export class BaseUsersService {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
     const Role = this.getRoleEntity() as new () => Record<string, unknown>;
-    const UserRole = this.getUserRoleEntity() as new () => Record<string, unknown>;
+    const UserRole = this.getUserRoleEntity() as new () => Record<
+      string,
+      unknown
+    >;
 
     const email = data.email.trim().toLowerCase();
     const passwordHash = await hash(data.password, 10);
 
-    const created = new User() as Record<string, unknown>;
+    const created = new User();
     created.email = email;
     created.name = data.name ? data.name.trim() : null;
     created.password = passwordHash;
@@ -454,28 +474,36 @@ export class BaseUsersService {
 
     if (data.roleIds && data.roleIds.length) {
       for (const roleId of data.roleIds) {
-        const userRole = new UserRole() as Record<string, unknown>;
+        const userRole = new UserRole();
         userRole.user = created;
         userRole.role = em.getReference(Role, this.toEntityId(roleId));
         em.persist(userRole);
       }
       await em.flush();
     } else {
-      const Setting = this.getSettingEntity() as (new () => Record<string, unknown>) | null;
+      const Setting = this.getSettingEntity() as
+        | (new () => Record<string, unknown>)
+        | null;
       if (Setting) {
         const setting = await em.findOne(Setting, {
           key: 'default_new_user_role',
         });
         const settingRecord = setting as Record<string, unknown> | null;
         let defaultRoleName = 'user';
-        if (settingRecord && settingRecord.value && typeof settingRecord.value === 'string') {
-          defaultRoleName = settingRecord.value.trim().toLowerCase().replace(/^"|"$/g, '') || 'user';
+        if (
+          settingRecord &&
+          settingRecord.value &&
+          typeof settingRecord.value === 'string'
+        ) {
+          defaultRoleName =
+            settingRecord.value.trim().toLowerCase().replace(/^"|"$/g, '') ||
+            'user';
         }
         const defaultRole = await em.findOne(Role, { name: defaultRoleName });
         const defaultRoleRecord = defaultRole as Record<string, unknown> | null;
 
         if (defaultRoleRecord) {
-          const userRole = new UserRole() as Record<string, unknown>;
+          const userRole = new UserRole();
           userRole.user = created;
           userRole.role = defaultRoleRecord;
           em.persist(userRole);
@@ -503,7 +531,10 @@ export class BaseUsersService {
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
     const Role = this.getRoleEntity() as new () => Record<string, unknown>;
-    const UserRole = this.getUserRoleEntity() as new () => Record<string, unknown>;
+    const UserRole = this.getUserRoleEntity() as new () => Record<
+      string,
+      unknown
+    >;
 
     const entityId = this.toEntityIdValue(id);
     const found = await em.findOne(User, { id: entityId });
@@ -511,7 +542,10 @@ export class BaseUsersService {
     if (!existing) return null;
 
     const existingEmail = existing.email as string;
-    if (actorEmail && !this.canEditProtectedAdminUser(actorEmail, existingEmail)) {
+    if (
+      actorEmail &&
+      !this.canEditProtectedAdminUser(actorEmail, existingEmail)
+    ) {
       throw new ForbiddenException(
         `Tài khoản ${existingEmail} là tài khoản hệ thống. Chỉ chính tài khoản đó mới được chỉnh sửa.`,
       );
@@ -519,7 +553,9 @@ export class BaseUsersService {
 
     if (this.isProtectedAdminEmail(existingEmail) && data.email != null) {
       const nextEmail = data.email.trim().toLowerCase();
-      const existingEmailTrimmed = existingEmail ? existingEmail.trim().toLowerCase() : '';
+      const existingEmailTrimmed = existingEmail
+        ? existingEmail.trim().toLowerCase()
+        : '';
       if (nextEmail !== existingEmailTrimmed) {
         throw new ForbiddenException(
           'Không thể đổi email tài khoản quản trị hệ thống.',
@@ -528,15 +564,21 @@ export class BaseUsersService {
     }
 
     if (data.email != null) existing.email = data.email.trim().toLowerCase();
-    if (data.name !== undefined) existing.name = data.name ? data.name.trim() : null;
+    if (data.name !== undefined)
+      existing.name = data.name ? data.name.trim() : null;
     if (data.password != null && data.password !== '') {
       existing.password = await hash(data.password, 10);
     }
-    if (data.bio !== undefined) existing.bio = data.bio ? data.bio.trim() : null;
-    if (data.avatar !== undefined) existing.avatar = data.avatar ? data.avatar.trim() : null;
-    if (data.phone !== undefined) existing.phone = data.phone ? data.phone.trim() : null;
-    if (data.address !== undefined) existing.address = data.address ? data.address.trim() : null;
-    if (data.citizenId !== undefined) existing.citizenId = data.citizenId ? data.citizenId.trim() : null;
+    if (data.bio !== undefined)
+      existing.bio = data.bio ? data.bio.trim() : null;
+    if (data.avatar !== undefined)
+      existing.avatar = data.avatar ? data.avatar.trim() : null;
+    if (data.phone !== undefined)
+      existing.phone = data.phone ? data.phone.trim() : null;
+    if (data.address !== undefined)
+      existing.address = data.address ? data.address.trim() : null;
+    if (data.citizenId !== undefined)
+      existing.citizenId = data.citizenId ? data.citizenId.trim() : null;
     if (data.isActive !== undefined) existing.isActive = data.isActive;
 
     em.persist(existing);
@@ -551,7 +593,7 @@ export class BaseUsersService {
 
       if (roleIds.length > 0) {
         for (const roleId of roleIds) {
-          const userRole = new UserRole() as Record<string, unknown>;
+          const userRole = new UserRole();
           userRole.user = existing;
           userRole.role = em.getReference(Role, this.toEntityId(roleId));
           em.persist(userRole);
@@ -574,7 +616,10 @@ export class BaseUsersService {
     const protectedEmails = ['admin@localhost', 'superadmin@localhost'];
     const normalizedActor = actorEmail.trim().toLowerCase();
     const normalizedTarget = targetEmail.trim().toLowerCase();
-    return normalizedActor === normalizedTarget || !protectedEmails.includes(normalizedTarget);
+    return (
+      normalizedActor === normalizedTarget ||
+      !protectedEmails.includes(normalizedTarget)
+    );
   }
 
   /**
@@ -669,12 +714,21 @@ export class BaseUsersService {
     ids: string[],
   ): Promise<UserBulkResult> {
     if (!ids.length) {
-      return { success: 0, failed: 0, total: 0, affected: 0, message: 'Không có bản ghi nào' };
+      return {
+        success: 0,
+        failed: 0,
+        total: 0,
+        affected: 0,
+        message: 'Không có bản ghi nào',
+      };
     }
 
     const em = this.getEm();
     const User = this.getUserEntity() as new () => Record<string, unknown>;
-    const UserRole = this.getUserRoleEntity() as new () => Record<string, unknown>;
+    const UserRole = this.getUserRoleEntity() as new () => Record<
+      string,
+      unknown
+    >;
 
     if (action === 'delete') {
       const users = await em.find(User, {
@@ -699,7 +753,13 @@ export class BaseUsersService {
         skipCount > 0
           ? `Đã xóa ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
           : `Đã xóa ${filtered.length} người dùng`;
-      return { success: filtered.length, failed: skipCount, total: users.length, affected: filtered.length, message: msg };
+      return {
+        success: filtered.length,
+        failed: skipCount,
+        total: users.length,
+        affected: filtered.length,
+        message: msg,
+      };
     }
 
     if (action === 'restore') {
@@ -719,7 +779,9 @@ export class BaseUsersService {
     }
 
     if (action === 'hard-delete') {
-      const users = await em.find(User, { id: { $in: this.toEntityIdList(ids) } });
+      const users = await em.find(User, {
+        id: { $in: this.toEntityIdList(ids) },
+      });
       const filtered = users.filter(
         (u) => !this.isProtectedAdminEmail(u.email as string),
       );
@@ -736,7 +798,13 @@ export class BaseUsersService {
         skipCount > 0
           ? `Đã xóa vĩnh viễn ${filtered.length} người dùng, bỏ qua ${skipCount} tài khoản hệ thống`
           : `Đã xóa vĩnh viễn ${filtered.length} người dùng`;
-      return { success: filtered.length, failed: skipCount, total: users.length, affected: filtered.length, message: msg };
+      return {
+        success: filtered.length,
+        failed: skipCount,
+        total: users.length,
+        affected: filtered.length,
+        message: msg,
+      };
     }
 
     if (action === 'active') {
@@ -801,6 +869,12 @@ export class BaseUsersService {
       };
     }
 
-    return { success: 0, failed: 0, total: 0, affected: 0, message: 'Action không hợp lệ' };
+    return {
+      success: 0,
+      failed: 0,
+      total: 0,
+      affected: 0,
+      message: 'Action không hợp lệ',
+    };
   }
 }

@@ -2,7 +2,11 @@
  * Categories Service — domain logic (materialize → apps/main/api module-bases).
  */
 import { Injectable, Logger } from '@nestjs/common';
-import { Reference, type EntityManager, type FilterQuery } from '@mikro-orm/core';
+import {
+  Reference,
+  type EntityManager,
+  type FilterQuery,
+} from '@mikro-orm/core';
 import {
   normalizePageLimit,
   paginationMeta,
@@ -105,17 +109,16 @@ function resolveCategoryParentId(r: CategoryRecord): number | null {
   const parent = r.parent;
   if (parent == null || parent === undefined) return null;
   if (Reference.isReference(parent)) {
-    const pk = Reference.unwrapReference(parent)?.id ?? (parent as { id?: unknown }).id;
+    const pk =
+      Reference.unwrapReference(parent)?.id ?? (parent as { id?: unknown }).id;
     return typeof pk === 'number' && pk > 0 ? pk : null;
   }
-  const parentRec = parent as CategoryRecord;
+  const parentRec = parent;
   return typeof parentRec.id === 'number' ? parentRec.id : null;
 }
 
 function mapRow(r: CategoryRecord): CategoryRowDto {
-  const parent = Reference.isReference(r.parent)
-    ? null
-    : (r.parent as CategoryRecord | null | undefined);
+  const parent = Reference.isReference(r.parent) ? null : r.parent;
   return {
     id: r.id as number,
     name: String(r.name ?? ''),
@@ -127,8 +130,12 @@ function mapRow(r: CategoryRecord): CategoryRowDto {
     icon: (r.icon as string | null | undefined) ?? null,
     sortOrder: Number(r.sortOrder ?? 0),
     type: String(r.type ?? 'post'),
-    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      r.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      r.updatedAt as Date | string | null | undefined,
+    ),
     deletedAt: safeIsoString(r.deletedAt as Date | string | null | undefined),
     _count: { children: Number(r.childrenCount ?? 0) },
     postCount: 0,
@@ -304,9 +311,7 @@ export abstract class BaseCategoriesService {
         visited.add(id);
         next.push(id);
 
-        const p = Reference.isReference(row.parent)
-          ? null
-          : (row.parent as CategoryRecord | null | undefined);
+        const p = Reference.isReference(row.parent) ? null : row.parent;
         const parentId = p?.id as number | undefined;
         if (!parentId) continue;
         if (rootSet.has(parentId)) {
@@ -409,11 +414,15 @@ export abstract class BaseCategoriesService {
       else if (column === 'parentId') where.parent = toEntityId(q);
       else where.name = { $like: `%${q}%` };
     }
-    const rows = await em.find(Entity, where as FilterQuery<Record<string, unknown>>, {
-      fields: [column] as never,
-      orderBy: { [column]: 'ASC' } as never,
-      limit,
-    });
+    const rows = await em.find(
+      Entity,
+      where as FilterQuery<Record<string, unknown>>,
+      {
+        fields: [column] as never,
+        orderBy: { [column]: 'ASC' } as never,
+        limit,
+      },
+    );
     const seen = new Set<string>();
     return rows
       .map((r) => {
@@ -469,7 +478,7 @@ export abstract class BaseCategoriesService {
 
     const children = childrenRows.map((child) => {
       const c = child as CategoryRecord;
-      const childChildren = (c.children ?? []) as CategoryRecord[];
+      const childChildren = c.children ?? [];
       return {
         id: c.id as number,
         name: String(c.name ?? ''),
@@ -489,8 +498,12 @@ export abstract class BaseCategoriesService {
         title: String(p.title ?? ''),
         slug: String(p.slug ?? ''),
         published: Boolean(p.published),
-        publishedAt: safeIsoString(p.publishedAt as Date | string | null | undefined),
-        createdAt: safeIsoStringNow(p.createdAt as Date | string | null | undefined),
+        publishedAt: safeIsoString(
+          p.publishedAt as Date | string | null | undefined,
+        ),
+        createdAt: safeIsoStringNow(
+          p.createdAt as Date | string | null | undefined,
+        ),
       };
     });
 
@@ -538,7 +551,8 @@ export abstract class BaseCategoriesService {
     const row = existing as CategoryRecord;
     if (data.name != null) row.name = data.name;
     if (data.slug != null) row.slug = data.slug;
-    if (data.description !== undefined) row.description = data.description ?? null;
+    if (data.description !== undefined)
+      row.description = data.description ?? null;
     if (data.icon !== undefined) row.icon = data.icon ?? null;
     if (data.sortOrder !== undefined) {
       row.sortOrder = Number.isFinite(data.sortOrder) ? data.sortOrder : 0;
@@ -720,7 +734,11 @@ export abstract class BaseCategoriesService {
         slug: String((row as Record<string, unknown>).slug ?? '').trim(),
         productCount: Number(
           (row as Record<string, unknown>).productCount ??
-            ((row as Record<string, unknown>)._count as Record<string, unknown> | undefined)?.posts ??
+            (
+              (row as Record<string, unknown>)._count as
+                | Record<string, unknown>
+                | undefined
+            )?.posts ??
             0,
         ),
       }))

@@ -1,6 +1,6 @@
 # API endpoints — @api (`apps/main/api`)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.651Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
+> **Sinh tự động:** `2026-06-15T03:40:54.737Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
 
 ## Global prefix
 
@@ -89,27 +89,14 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/academic-years/academic-years.controller.ts`
 - **Base:** `/admin/academic-years`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/academic-years/:id` | `/api/admin/academic-years/:id` |
-| `DELETE` | `/admin/academic-years/:id/hard-delete` | `/api/admin/academic-years/:id/hard-delete` |
-| `GET` | `/admin/academic-years` | `/api/admin/academic-years` |
-| `GET` | `/admin/academic-years/:id` | `/api/admin/academic-years/:id` |
-| `POST` | `/admin/academic-years` | `/api/admin/academic-years` |
-| `POST` | `/admin/academic-years/:id/restore` | `/api/admin/academic-years/:id/restore` |
-| `POST` | `/admin/academic-years/bulk` | `/api/admin/academic-years/bulk` |
-| `PUT` | `/admin/academic-years/:id` | `/api/admin/academic-years/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `accounts`
 
 - **Controller:** `src/accounts/accounts.controller.ts`
 - **Base:** `/admin/accounts`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `GET` | `/admin/accounts` | `/api/admin/accounts` |
-| `POST` | `/admin/accounts/avatar` | `/api/admin/accounts/avatar` |
-| `PUT` | `/admin/accounts` | `/api/admin/accounts` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `admission-results`
 
@@ -147,20 +134,11 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/cameras/cameras.controller.ts`
 - **Base:** `/admin/cameras`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/cameras/:id` | `/api/admin/cameras/:id` |
-| `DELETE` | `/admin/cameras/:id/hard-delete` | `/api/admin/cameras/:id/hard-delete` |
-| `GET` | `/admin/cameras` | `/api/admin/cameras` |
-| `GET` | `/admin/cameras/:id` | `/api/admin/cameras/:id` |
-| `POST` | `/admin/cameras` | `/api/admin/cameras` |
-| `POST` | `/admin/cameras/:id/restore` | `/api/admin/cameras/:id/restore` |
-| `POST` | `/admin/cameras/bulk` | `/api/admin/cameras/bulk` |
-| `PUT` | `/admin/cameras/:id` | `/api/admin/cameras/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `carts`
 
-- **Controller:** `src/carts/public-carts.controller.ts`
+- **Controller:** `src/carts/carts.controller.ts`
 - **Base:** `/public/cart`
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
@@ -191,164 +169,199 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/comments/comments.controller.ts`
 - **Base:** `/admin/comments`
 
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
+
+### `common`
+
+- **Controller:** `src/common/crud/base-crud.controller.ts`
+- **Base:** `/admin/posts, /admin/accounts, /auth/admin, /public, /admin/comments, /admin/event-checkins, /admin/event-registrations, /admin/event-speakers, /admin/events, /admin, /admin/page-contents, /admin/sessions, /admin/system, /users`
+
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|
 | `DELETE` | `/admin/comments/:id` | `/api/admin/comments/:id` |
 | `DELETE` | `/admin/comments/:id/hard-delete` | `/api/admin/comments/:id/hard-delete` |
-| `GET` | `/admin/comments` | `/api/admin/comments` |
+| `DELETE` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
+| `DELETE` | `/admin/event-checkins/:id/hard-delete` | `/api/admin/event-checkins/:id/hard-delete` |
+| `DELETE` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
+| `DELETE` | `/admin/event-registrations/:id/hard-delete` | `/api/admin/event-registrations/:id/hard-delete` |
+| `DELETE` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
+| `DELETE` | `/admin/events/:id` | `/api/admin/events/:id` |
+| `DELETE` | `/admin/events/:id/hard-delete` | `/api/admin/events/:id/hard-delete` |
+| `DELETE` | `/admin/notifications/:id` | `/api/admin/notifications/:id` |
+| `DELETE` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
+| `DELETE` | `/admin/posts/:id` | `/api/admin/posts/:id` |
+| `DELETE` | `/admin/posts/:id/hard` | `/api/admin/posts/:id/hard` |
+| `DELETE` | `/admin/posts/:id/hard-delete` | `/api/admin/posts/:id/hard-delete` |
+| `DELETE` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
+| `DELETE` | `/admin/sessions/:id/hard-delete` | `/api/admin/sessions/:id/hard-delete` |
+| `DELETE` | `/users/:id` | `/api/users/:id` |
+| `DELETE` | `/users/:id/hard-delete` | `/api/users/:id/hard-delete` |
+| `GET` | `/admin/accounts` | `/api/admin/accounts` |
 | `GET` | `/admin/comments/:id` | `/api/admin/comments/:id` |
 | `GET` | `/admin/comments/options` | `/api/admin/comments/options` |
+| `GET` | `/admin/event-checkins` | `/api/admin/event-checkins` |
+| `GET` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
+| `GET` | `/admin/event-registrations` | `/api/admin/event-registrations` |
+| `GET` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
+| `GET` | `/admin/event-speakers` | `/api/admin/event-speakers` |
+| `GET` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
+| `GET` | `/admin/events/:id` | `/api/admin/events/:id` |
+| `GET` | `/admin/notifications` | `/api/admin/notifications` |
+| `GET` | `/admin/notifications/options` | `/api/admin/notifications/options` |
+| `GET` | `/admin/notifications/table` | `/api/admin/notifications/table` |
+| `GET` | `/admin/page-contents` | `/api/admin/page-contents` |
+| `GET` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
+| `GET` | `/admin/posts` | `/api/admin/posts` |
+| `GET` | `/admin/posts/:id` | `/api/admin/posts/:id` |
+| `GET` | `/admin/posts/dates-with-posts` | `/api/admin/posts/dates-with-posts` |
+| `GET` | `/admin/posts/options` | `/api/admin/posts/options` |
+| `GET` | `/admin/sessions` | `/api/admin/sessions` |
+| `GET` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
+| `GET` | `/admin/sessions/accounts` | `/api/admin/sessions/accounts` |
+| `GET` | `/admin/sessions/options` | `/api/admin/sessions/options` |
+| `GET` | `/admin/system/database-schema` | `/api/admin/system/database-schema` |
+| `GET` | `/admin/system/export` | `/api/admin/system/export` |
+| `GET` | `/admin/system/export/excel` | `/api/admin/system/export/excel` |
+| `GET` | `/admin/system/import-config` | `/api/admin/system/import-config` |
+| `GET` | `/admin/system/models` | `/api/admin/system/models` |
+| `GET` | `/admin/unread-counts` | `/api/admin/unread-counts` |
+| `GET` | `/auth/admin/google/config` | `/api/auth/admin/google/config` |
+| `GET` | `/auth/admin/me` | `/api/auth/admin/me` |
+| `GET` | `/public/auth/dev-login-options` | `/api/public/auth/dev-login-options` |
+| `GET` | `/public/auth/google/config` | `/api/public/auth/google/config` |
+| `GET` | `/public/dev-login-options` | `/api/public/dev-login-options` |
+| `GET` | `/public/site-branding` | `/api/public/site-branding` |
+| `GET` | `/users` | `/api/users` |
+| `GET` | `/users/:id` | `/api/users/:id` |
+| `GET` | `/users/dev-login-options` | `/api/users/dev-login-options` |
+| `GET` | `/users/options` | `/api/users/options` |
+| `PATCH` | `/admin/notifications/:id` | `/api/admin/notifications/:id` |
+| `POST` | `/admin/accounts/avatar` | `/api/admin/accounts/avatar` |
 | `POST` | `/admin/comments/:id/approve` | `/api/admin/comments/:id/approve` |
 | `POST` | `/admin/comments/:id/restore` | `/api/admin/comments/:id/restore` |
 | `POST` | `/admin/comments/:id/unapprove` | `/api/admin/comments/:id/unapprove` |
 | `POST` | `/admin/comments/bulk` | `/api/admin/comments/bulk` |
+| `POST` | `/admin/event-checkins` | `/api/admin/event-checkins` |
+| `POST` | `/admin/event-checkins/:id/restore` | `/api/admin/event-checkins/:id/restore` |
+| `POST` | `/admin/event-checkins/bulk` | `/api/admin/event-checkins/bulk` |
+| `POST` | `/admin/event-registrations` | `/api/admin/event-registrations` |
+| `POST` | `/admin/event-registrations/:id/attendance` | `/api/admin/event-registrations/:id/attendance` |
+| `POST` | `/admin/event-registrations/:id/restore` | `/api/admin/event-registrations/:id/restore` |
+| `POST` | `/admin/event-registrations/bulk` | `/api/admin/event-registrations/bulk` |
+| `POST` | `/admin/event-speakers` | `/api/admin/event-speakers` |
+| `POST` | `/admin/event-speakers/bulk` | `/api/admin/event-speakers/bulk` |
+| `POST` | `/admin/events` | `/api/admin/events` |
+| `POST` | `/admin/events/:id/restore` | `/api/admin/events/:id/restore` |
+| `POST` | `/admin/events/bulk` | `/api/admin/events/bulk` |
+| `POST` | `/admin/notifications/bulk` | `/api/admin/notifications/bulk` |
+| `POST` | `/admin/notifications/mark-all-read` | `/api/admin/notifications/mark-all-read` |
+| `POST` | `/admin/page-contents` | `/api/admin/page-contents` |
+| `POST` | `/admin/page-contents/bulk` | `/api/admin/page-contents/bulk` |
+| `POST` | `/admin/posts` | `/api/admin/posts` |
+| `POST` | `/admin/posts/:id/restore` | `/api/admin/posts/:id/restore` |
+| `POST` | `/admin/posts/bulk` | `/api/admin/posts/bulk` |
+| `POST` | `/admin/sessions` | `/api/admin/sessions` |
+| `POST` | `/admin/sessions/:id/restore` | `/api/admin/sessions/:id/restore` |
+| `POST` | `/admin/sessions/bulk` | `/api/admin/sessions/bulk` |
+| `POST` | `/admin/sessions/revoke-by-user/:userId` | `/api/admin/sessions/revoke-by-user/:userId` |
+| `POST` | `/admin/system/import` | `/api/admin/system/import` |
+| `POST` | `/admin/system/import/excel` | `/api/admin/system/import/excel` |
+| `POST` | `/admin/system/seed-bootstrap` | `/api/admin/system/seed-bootstrap` |
+| `POST` | `/auth/admin/dev-login` | `/api/auth/admin/dev-login` |
+| `POST` | `/auth/admin/google` | `/api/auth/admin/google` |
+| `POST` | `/auth/admin/login` | `/api/auth/admin/login` |
+| `POST` | `/auth/admin/logout` | `/api/auth/admin/logout` |
+| `POST` | `/public/auth/dev-login` | `/api/public/auth/dev-login` |
+| `POST` | `/public/auth/google` | `/api/public/auth/google` |
+| `POST` | `/public/auth/guest-dev-login` | `/api/public/auth/guest-dev-login` |
+| `POST` | `/public/auth/guest-login` | `/api/public/auth/guest-login` |
+| `POST` | `/public/auth/login` | `/api/public/auth/login` |
+| `POST` | `/public/auth/store-dev-login` | `/api/public/auth/store-dev-login` |
+| `POST` | `/public/auth/store-login` | `/api/public/auth/store-login` |
+| `POST` | `/public/contact-requests` | `/api/public/contact-requests` |
+| `POST` | `/public/register` | `/api/public/register` |
+| `POST` | `/users` | `/api/users` |
+| `POST` | `/users/:id/restore` | `/api/users/:id/restore` |
+| `POST` | `/users/bulk` | `/api/users/bulk` |
+| `PUT` | `/admin/accounts` | `/api/admin/accounts` |
+| `PUT` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
+| `PUT` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
+| `PUT` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
+| `PUT` | `/admin/events/:id` | `/api/admin/events/:id` |
+| `PUT` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
+| `PUT` | `/admin/posts/:id` | `/api/admin/posts/:id` |
+| `PUT` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
+| `PUT` | `/users/:id` | `/api/users/:id` |
 
 ### `contact-requests`
 
 - **Controller:** `src/contact-requests/contact-requests.controller.ts`
 - **Base:** `/admin/contact-requests`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/contact-requests/:id` | `/api/admin/contact-requests/:id` |
-| `DELETE` | `/admin/contact-requests/:id/hard-delete` | `/api/admin/contact-requests/:id/hard-delete` |
-| `GET` | `/admin/contact-requests` | `/api/admin/contact-requests` |
-| `GET` | `/admin/contact-requests/:id` | `/api/admin/contact-requests/:id` |
-| `GET` | `/admin/contact-requests/options` | `/api/admin/contact-requests/options` |
-| `POST` | `/admin/contact-requests/:id/assign` | `/api/admin/contact-requests/:id/assign` |
-| `POST` | `/admin/contact-requests/:id/restore` | `/api/admin/contact-requests/:id/restore` |
-| `POST` | `/admin/contact-requests/bulk` | `/api/admin/contact-requests/bulk` |
-| `PUT` | `/admin/contact-requests/:id` | `/api/admin/contact-requests/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `courses`
 
 - **Controller:** `src/courses/courses.controller.ts`
 - **Base:** `/admin/courses`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/courses/:id` | `/api/admin/courses/:id` |
-| `DELETE` | `/admin/courses/:id/hard-delete` | `/api/admin/courses/:id/hard-delete` |
-| `GET` | `/admin/courses` | `/api/admin/courses` |
-| `GET` | `/admin/courses/:id` | `/api/admin/courses/:id` |
-| `POST` | `/admin/courses` | `/api/admin/courses` |
-| `POST` | `/admin/courses/:id/restore` | `/api/admin/courses/:id/restore` |
-| `POST` | `/admin/courses/bulk` | `/api/admin/courses/bulk` |
-| `PUT` | `/admin/courses/:id` | `/api/admin/courses/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `dashboard`
 
 - **Controller:** `src/dashboard/dashboard.controller.ts`
 - **Base:** `/admin/dashboard`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `GET` | `/admin/dashboard/stats` | `/api/admin/dashboard/stats` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `departments`
 
 - **Controller:** `src/departments/departments.controller.ts`
 - **Base:** `/admin/departments`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/departments/:id` | `/api/admin/departments/:id` |
-| `DELETE` | `/admin/departments/:id/hard-delete` | `/api/admin/departments/:id/hard-delete` |
-| `GET` | `/admin/departments` | `/api/admin/departments` |
-| `GET` | `/admin/departments/:id` | `/api/admin/departments/:id` |
-| `POST` | `/admin/departments` | `/api/admin/departments` |
-| `POST` | `/admin/departments/:id/restore` | `/api/admin/departments/:id/restore` |
-| `POST` | `/admin/departments/bulk` | `/api/admin/departments/bulk` |
-| `PUT` | `/admin/departments/:id` | `/api/admin/departments/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `event-checkins`
 
 - **Controller:** `src/event-checkins/event-checkins.controller.ts`
 - **Base:** `/admin/event-checkins`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
-| `DELETE` | `/admin/event-checkins/:id/hard-delete` | `/api/admin/event-checkins/:id/hard-delete` |
-| `GET` | `/admin/event-checkins` | `/api/admin/event-checkins` |
-| `GET` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
-| `POST` | `/admin/event-checkins` | `/api/admin/event-checkins` |
-| `POST` | `/admin/event-checkins/:id/restore` | `/api/admin/event-checkins/:id/restore` |
-| `POST` | `/admin/event-checkins/bulk` | `/api/admin/event-checkins/bulk` |
-| `PUT` | `/admin/event-checkins/:id` | `/api/admin/event-checkins/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `event-checkouts`
 
 - **Controller:** `src/event-checkouts/event-checkouts.controller.ts`
 - **Base:** `/admin/event-checkouts`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `GET` | `/admin/event-checkouts` | `/api/admin/event-checkouts` |
-| `POST` | `/admin/event-checkouts/bulk` | `/api/admin/event-checkouts/bulk` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `event-registrations`
 
 - **Controller:** `src/event-registrations/event-registrations.controller.ts`
 - **Base:** `/admin/event-registrations`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
-| `DELETE` | `/admin/event-registrations/:id/hard-delete` | `/api/admin/event-registrations/:id/hard-delete` |
-| `GET` | `/admin/event-registrations` | `/api/admin/event-registrations` |
-| `GET` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
-| `POST` | `/admin/event-registrations` | `/api/admin/event-registrations` |
-| `POST` | `/admin/event-registrations/:id/attendance` | `/api/admin/event-registrations/:id/attendance` |
-| `POST` | `/admin/event-registrations/:id/restore` | `/api/admin/event-registrations/:id/restore` |
-| `POST` | `/admin/event-registrations/bulk` | `/api/admin/event-registrations/bulk` |
-| `PUT` | `/admin/event-registrations/:id` | `/api/admin/event-registrations/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `event-speakers`
 
 - **Controller:** `src/event-speakers/event-speakers.controller.ts`
 - **Base:** `/admin/event-speakers`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
-| `GET` | `/admin/event-speakers` | `/api/admin/event-speakers` |
-| `GET` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
-| `POST` | `/admin/event-speakers` | `/api/admin/event-speakers` |
-| `POST` | `/admin/event-speakers/bulk` | `/api/admin/event-speakers/bulk` |
-| `PUT` | `/admin/event-speakers/:id` | `/api/admin/event-speakers/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `events`
 
 - **Controller:** `src/events/events.controller.ts`
 - **Base:** `/admin/events`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/events/:id` | `/api/admin/events/:id` |
-| `DELETE` | `/admin/events/:id/hard-delete` | `/api/admin/events/:id/hard-delete` |
-| `GET` | `/admin/events` | `/api/admin/events` |
-| `GET` | `/admin/events/:id` | `/api/admin/events/:id` |
-| `POST` | `/admin/events` | `/api/admin/events` |
-| `POST` | `/admin/events/:id/restore` | `/api/admin/events/:id/restore` |
-| `POST` | `/admin/events/bulk` | `/api/admin/events/bulk` |
-| `PUT` | `/admin/events/:id` | `/api/admin/events/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `face-data`
 
 - **Controller:** `src/face-data/face-data.controller.ts`
 - **Base:** `/admin/face-data`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/face-data/:id` | `/api/admin/face-data/:id` |
-| `DELETE` | `/admin/face-data/:id/hard-delete` | `/api/admin/face-data/:id/hard-delete` |
-| `GET` | `/admin/face-data` | `/api/admin/face-data` |
-| `GET` | `/admin/face-data/:id` | `/api/admin/face-data/:id` |
-| `POST` | `/admin/face-data` | `/api/admin/face-data` |
-| `POST` | `/admin/face-data/:id/restore` | `/api/admin/face-data/:id/restore` |
-| `POST` | `/admin/face-data/bulk` | `/api/admin/face-data/bulk` |
-| `PUT` | `/admin/face-data/:id` | `/api/admin/face-data/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `groups`
 
@@ -385,48 +398,21 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/imported-users/imported-users.controller.ts`
 - **Base:** `/admin/imported-users`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/imported-users/:id` | `/api/admin/imported-users/:id` |
-| `DELETE` | `/admin/imported-users/:id/hard-delete` | `/api/admin/imported-users/:id/hard-delete` |
-| `GET` | `/admin/imported-users` | `/api/admin/imported-users` |
-| `GET` | `/admin/imported-users/:id` | `/api/admin/imported-users/:id` |
-| `POST` | `/admin/imported-users` | `/api/admin/imported-users` |
-| `POST` | `/admin/imported-users/:id/restore` | `/api/admin/imported-users/:id/restore` |
-| `POST` | `/admin/imported-users/bulk` | `/api/admin/imported-users/bulk` |
-| `PUT` | `/admin/imported-users/:id` | `/api/admin/imported-users/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `locations`
 
 - **Controller:** `src/locations/locations.controller.ts`
 - **Base:** `/admin/locations`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/locations/:id` | `/api/admin/locations/:id` |
-| `DELETE` | `/admin/locations/:id/hard-delete` | `/api/admin/locations/:id/hard-delete` |
-| `GET` | `/admin/locations` | `/api/admin/locations` |
-| `GET` | `/admin/locations/:id` | `/api/admin/locations/:id` |
-| `POST` | `/admin/locations` | `/api/admin/locations` |
-| `POST` | `/admin/locations/:id/restore` | `/api/admin/locations/:id/restore` |
-| `POST` | `/admin/locations/bulk` | `/api/admin/locations/bulk` |
-| `PUT` | `/admin/locations/:id` | `/api/admin/locations/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `majors`
 
 - **Controller:** `src/majors/majors.controller.ts`
 - **Base:** `/admin/majors`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/majors/:id` | `/api/admin/majors/:id` |
-| `DELETE` | `/admin/majors/:id/hard-delete` | `/api/admin/majors/:id/hard-delete` |
-| `GET` | `/admin/majors` | `/api/admin/majors` |
-| `GET` | `/admin/majors/:id` | `/api/admin/majors/:id` |
-| `POST` | `/admin/majors` | `/api/admin/majors` |
-| `POST` | `/admin/majors/:id/restore` | `/api/admin/majors/:id/restore` |
-| `POST` | `/admin/majors/bulk` | `/api/admin/majors/bulk` |
-| `PUT` | `/admin/majors/:id` | `/api/admin/majors/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `messages`
 
@@ -478,14 +464,7 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/page-contents/page-contents.controller.ts`
 - **Base:** `/admin/page-contents`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
-| `GET` | `/admin/page-contents` | `/api/admin/page-contents` |
-| `GET` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
-| `POST` | `/admin/page-contents` | `/api/admin/page-contents` |
-| `POST` | `/admin/page-contents/bulk` | `/api/admin/page-contents/bulk` |
-| `PUT` | `/admin/page-contents/:id` | `/api/admin/page-contents/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `parent-students`
 
@@ -511,18 +490,7 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/posts/posts.controller.ts`
 - **Base:** `/admin/posts`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/posts/:id` | `/api/admin/posts/:id` |
-| `DELETE` | `/admin/posts/:id/hard-delete` | `/api/admin/posts/:id/hard-delete` |
-| `GET` | `/admin/posts` | `/api/admin/posts` |
-| `GET` | `/admin/posts/:id` | `/api/admin/posts/:id` |
-| `GET` | `/admin/posts/dates-with-posts` | `/api/admin/posts/dates-with-posts` |
-| `GET` | `/admin/posts/options` | `/api/admin/posts/options` |
-| `POST` | `/admin/posts` | `/api/admin/posts` |
-| `POST` | `/admin/posts/:id/restore` | `/api/admin/posts/:id/restore` |
-| `POST` | `/admin/posts/bulk` | `/api/admin/posts/bulk` |
-| `PUT` | `/admin/posts/:id` | `/api/admin/posts/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `products`
 
@@ -548,12 +516,7 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|
-| `DELETE` | `/admin/promo-codes/:id` | `/api/admin/promo-codes/:id` |
-| `GET` | `/admin/promo-codes` | `/api/admin/promo-codes` |
-| `GET` | `/admin/promo-codes/:id` | `/api/admin/promo-codes/:id` |
 | `GET` | `/public/promo-codes` | `/api/public/promo-codes` |
-| `POST` | `/admin/promo-codes` | `/api/admin/promo-codes` |
-| `PUT` | `/admin/promo-codes/:id` | `/api/admin/promo-codes/:id` |
 
 ### `proxy-image`
 
@@ -623,53 +586,21 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/screens/screens.controller.ts`
 - **Base:** `/admin/screens`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/screens/:id` | `/api/admin/screens/:id` |
-| `DELETE` | `/admin/screens/:id/hard-delete` | `/api/admin/screens/:id/hard-delete` |
-| `GET` | `/admin/screens` | `/api/admin/screens` |
-| `GET` | `/admin/screens/:id` | `/api/admin/screens/:id` |
-| `POST` | `/admin/screens` | `/api/admin/screens` |
-| `POST` | `/admin/screens/:id/restore` | `/api/admin/screens/:id/restore` |
-| `POST` | `/admin/screens/bulk` | `/api/admin/screens/bulk` |
-| `PUT` | `/admin/screens/:id` | `/api/admin/screens/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `seo-metas`
 
 - **Controller:** `src/seo-metas/seo-metas.controller.ts`
 - **Base:** `/admin/seo-metas`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/seo-metas/:id` | `/api/admin/seo-metas/:id` |
-| `DELETE` | `/admin/seo-metas/:id/hard-delete` | `/api/admin/seo-metas/:id/hard-delete` |
-| `GET` | `/admin/seo-metas` | `/api/admin/seo-metas` |
-| `GET` | `/admin/seo-metas/:id` | `/api/admin/seo-metas/:id` |
-| `GET` | `/admin/seo-metas/lookup` | `/api/admin/seo-metas/lookup` |
-| `POST` | `/admin/seo-metas` | `/api/admin/seo-metas` |
-| `POST` | `/admin/seo-metas/:id/restore` | `/api/admin/seo-metas/:id/restore` |
-| `POST` | `/admin/seo-metas/bulk` | `/api/admin/seo-metas/bulk` |
-| `PUT` | `/admin/seo-metas/:id` | `/api/admin/seo-metas/:id` |
-| `PUT` | `/admin/seo-metas/upsert` | `/api/admin/seo-metas/upsert` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `sessions`
 
 - **Controller:** `src/sessions/sessions.controller.ts`
 - **Base:** `/admin/sessions`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
-| `DELETE` | `/admin/sessions/:id/hard-delete` | `/api/admin/sessions/:id/hard-delete` |
-| `GET` | `/admin/sessions` | `/api/admin/sessions` |
-| `GET` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
-| `GET` | `/admin/sessions/accounts` | `/api/admin/sessions/accounts` |
-| `GET` | `/admin/sessions/options` | `/api/admin/sessions/options` |
-| `POST` | `/admin/sessions` | `/api/admin/sessions` |
-| `POST` | `/admin/sessions/:id/restore` | `/api/admin/sessions/:id/restore` |
-| `POST` | `/admin/sessions/bulk` | `/api/admin/sessions/bulk` |
-| `POST` | `/admin/sessions/revoke-by-user/:userId` | `/api/admin/sessions/revoke-by-user/:userId` |
-| `PUT` | `/admin/sessions/:id` | `/api/admin/sessions/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `settings`
 
@@ -689,33 +620,14 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/speakers/speakers.controller.ts`
 - **Base:** `/admin/speakers`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/speakers/:id` | `/api/admin/speakers/:id` |
-| `DELETE` | `/admin/speakers/:id/hard-delete` | `/api/admin/speakers/:id/hard-delete` |
-| `GET` | `/admin/speakers` | `/api/admin/speakers` |
-| `GET` | `/admin/speakers/:id` | `/api/admin/speakers/:id` |
-| `POST` | `/admin/speakers` | `/api/admin/speakers` |
-| `POST` | `/admin/speakers/:id/restore` | `/api/admin/speakers/:id/restore` |
-| `POST` | `/admin/speakers/bulk` | `/api/admin/speakers/bulk` |
-| `PUT` | `/admin/speakers/:id` | `/api/admin/speakers/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `students`
 
 - **Controller:** `src/students/students.controller.ts`
 - **Base:** `/admin/students`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/students/:id` | `/api/admin/students/:id` |
-| `DELETE` | `/admin/students/:id/hard-delete` | `/api/admin/students/:id/hard-delete` |
-| `GET` | `/admin/students` | `/api/admin/students` |
-| `GET` | `/admin/students/:id` | `/api/admin/students/:id` |
-| `GET` | `/admin/students/options` | `/api/admin/students/options` |
-| `POST` | `/admin/students` | `/api/admin/students` |
-| `POST` | `/admin/students/:id/restore` | `/api/admin/students/:id/restore` |
-| `POST` | `/admin/students/bulk` | `/api/admin/students/bulk` |
-| `PUT` | `/admin/students/:id` | `/api/admin/students/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `system`
 
@@ -738,65 +650,28 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/tags/tags.controller.ts`
 - **Base:** `/admin/tags`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/tags/:id` | `/api/admin/tags/:id` |
-| `DELETE` | `/admin/tags/:id/hard-delete` | `/api/admin/tags/:id/hard-delete` |
-| `GET` | `/admin/tags` | `/api/admin/tags` |
-| `GET` | `/admin/tags/:id` | `/api/admin/tags/:id` |
-| `GET` | `/admin/tags/options` | `/api/admin/tags/options` |
-| `POST` | `/admin/tags` | `/api/admin/tags` |
-| `POST` | `/admin/tags/:id/restore` | `/api/admin/tags/:id/restore` |
-| `POST` | `/admin/tags/bulk` | `/api/admin/tags/bulk` |
-| `PUT` | `/admin/tags/:id` | `/api/admin/tags/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `templates`
 
 - **Controller:** `src/templates/templates.controller.ts`
 - **Base:** `/admin/templates`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/templates/:id` | `/api/admin/templates/:id` |
-| `DELETE` | `/admin/templates/:id/hard-delete` | `/api/admin/templates/:id/hard-delete` |
-| `GET` | `/admin/templates` | `/api/admin/templates` |
-| `GET` | `/admin/templates/:id` | `/api/admin/templates/:id` |
-| `POST` | `/admin/templates` | `/api/admin/templates` |
-| `POST` | `/admin/templates/:id/restore` | `/api/admin/templates/:id/restore` |
-| `POST` | `/admin/templates/bulk` | `/api/admin/templates/bulk` |
-| `PUT` | `/admin/templates/:id` | `/api/admin/templates/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `training-levels`
 
 - **Controller:** `src/training-levels/training-levels.controller.ts`
 - **Base:** `/admin/training-levels`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/training-levels/:id` | `/api/admin/training-levels/:id` |
-| `DELETE` | `/admin/training-levels/:id/hard-delete` | `/api/admin/training-levels/:id/hard-delete` |
-| `GET` | `/admin/training-levels` | `/api/admin/training-levels` |
-| `GET` | `/admin/training-levels/:id` | `/api/admin/training-levels/:id` |
-| `POST` | `/admin/training-levels` | `/api/admin/training-levels` |
-| `POST` | `/admin/training-levels/:id/restore` | `/api/admin/training-levels/:id/restore` |
-| `POST` | `/admin/training-levels/bulk` | `/api/admin/training-levels/bulk` |
-| `PUT` | `/admin/training-levels/:id` | `/api/admin/training-levels/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `training-systems`
 
 - **Controller:** `src/training-systems/training-systems.controller.ts`
 - **Base:** `/admin/training-systems`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/training-systems/:id` | `/api/admin/training-systems/:id` |
-| `DELETE` | `/admin/training-systems/:id/hard-delete` | `/api/admin/training-systems/:id/hard-delete` |
-| `GET` | `/admin/training-systems` | `/api/admin/training-systems` |
-| `GET` | `/admin/training-systems/:id` | `/api/admin/training-systems/:id` |
-| `POST` | `/admin/training-systems` | `/api/admin/training-systems` |
-| `POST` | `/admin/training-systems/:id/restore` | `/api/admin/training-systems/:id/restore` |
-| `POST` | `/admin/training-systems/bulk` | `/api/admin/training-systems/bulk` |
-| `PUT` | `/admin/training-systems/:id` | `/api/admin/training-systems/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `uploads`
 
@@ -822,17 +697,7 @@ Cột **Package** = HTTP khai báo trên `packages/api-server` (app chỉ extend
 - **Controller:** `src/users/users.controller.ts`
 - **Base:** `/admin/users`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/users/:id` | `/api/admin/users/:id` |
-| `DELETE` | `/admin/users/:id/hard-delete` | `/api/admin/users/:id/hard-delete` |
-| `GET` | `/admin/users` | `/api/admin/users` |
-| `GET` | `/admin/users/:id` | `/api/admin/users/:id` |
-| `GET` | `/admin/users/options` | `/api/admin/users/options` |
-| `POST` | `/admin/users` | `/api/admin/users` |
-| `POST` | `/admin/users/:id/restore` | `/api/admin/users/:id/restore` |
-| `POST` | `/admin/users/bulk` | `/api/admin/users/bulk` |
-| `PUT` | `/admin/users/:id` | `/api/admin/users/:id` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ## Liên kết
 

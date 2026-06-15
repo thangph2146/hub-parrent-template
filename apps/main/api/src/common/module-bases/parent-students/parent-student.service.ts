@@ -78,24 +78,26 @@ function mapRow(r: Record<string, unknown>): ParentStudentsRowDto {
   return {
     id: r.id as number,
     parentId: relationEntityId(r.parent) ?? relationEntityId(parentObj) ?? 0,
-    parentEmail:
-      typeof parentObj?.email === 'string' ? parentObj.email : null,
+    parentEmail: typeof parentObj?.email === 'string' ? parentObj.email : null,
     parentName:
       parentObj?.name == null
         ? null
         : typeof parentObj.name === 'string'
           ? parentObj.name
           : null,
-    parentPhone:
-      typeof parentObj?.phone === 'string' ? parentObj.phone : null,
+    parentPhone: typeof parentObj?.phone === 'string' ? parentObj.phone : null,
     studentCode: String(r.studentCode ?? ''),
     studentName: (r.studentName as string | null | undefined) ?? null,
     note: (r.note as string | null | undefined) ?? null,
     status: String(r.status ?? ''),
     reviewedBy: (r.reviewedBy as string | null | undefined) ?? null,
     reviewedAt: safeIsoString(r.reviewedAt as Date | string | null | undefined),
-    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      r.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      r.updatedAt as Date | string | null | undefined,
+    ),
   };
 }
 
@@ -249,7 +251,7 @@ export abstract class BaseParentStudentsService {
       throw new Error('Bạn đã gửi yêu cầu liên kết với mã sinh viên này rồi.');
     }
 
-    const ps = new Entity() as Record<string, unknown>;
+    const ps = new Entity();
     ps.parent = em.getReference(User, data.parentId);
     ps.studentCode = data.studentCode.trim();
     ps.studentName = data.studentName?.trim() ?? null;

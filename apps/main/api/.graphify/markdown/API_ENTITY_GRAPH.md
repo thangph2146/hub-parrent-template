@@ -1,6 +1,6 @@
 # API — entity graph (MikroORM closure)
 
-> **Sinh tự động:** `2026-06-14T11:12:04.381Z` từ `apps/main/api`.
+> **Sinh tự động:** `2026-06-15T05:48:46.474Z` từ `apps/main/api`.
 > **Mục đích:** partial render / prune entity **bắt buộc** dùng closure từ manifest này — không cắt entity thủ công.
 
 ## Chính sách render
@@ -9,6 +9,16 @@
 |--------|----------|------------|
 | **Mặc định (khuyến nghị)** | Copy **full** `src/entities/` | Copy full |
 | `--prune-entities` (thử nghiệm) | Closure từ graph module + quan hệ | Vẫn full (schema thống nhất) |
+
+## Module runtime (dọn dư)
+
+| Kiểm tra | Lệnh |
+|----------|------|
+| Module closure (import peer) | `resolve-module-closure` + `API_DOMAIN_IMPORTS.md` |
+| Không còn `src/{module}/` dư | `pnpm verify:module-graph` |
+| Dọn sau render subset | `pnpm api:render <app> --prune` (mặc định bật cho line không `renderAllModules`) |
+
+Module **không** nằm trong config+closure graph → phải xóa (`--prune`), không giữ thủ công.
 
 Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-closure`) là **hai lớp độc lập** — graphify/API_DOMAIN_IMPORTS cho module; manifest này cho entity.
 
@@ -87,7 +97,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `events` | `Camera`, `Event` |
 | `face-data` | `FaceData` |
 | `groups` | `Group`, `GroupMember`, `Message`, `MessageRead`, `User` |
-| `hanet` | `Camera`, `Event`, `EventRegistration` |
+| `hanet` | `Camera`, `Event`, `EventRegistration`, `FaceData`, `Location`, `User` |
 | `imported-users` | `ImportedUser` |
 | `locations` | `Location` |
 | `majors` | `Major` |
@@ -98,7 +108,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `orders` | `Order`, `Product`, `User` |
 | `page-contents` | `PageContent` |
 | `parent-students` | `ParentStudent`, `User` |
-| `posts` | `Post`, `PostCategory`, `PostTag`, `User` |
+| `posts` | `Category`, `Post`, `PostCategory`, `PostTag`, `Tag`, `User` |
 | `products` | `Product` |
 | `promo-codes` | `PromoCode` |
 | `proxy-image` | — |
@@ -127,4 +137,5 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 ```bash
 pnpm api:sync-template
 pnpm verify:entity-closure
+pnpm verify:module-graph
 ```

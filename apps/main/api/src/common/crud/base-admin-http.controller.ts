@@ -49,16 +49,15 @@ export abstract class BaseAdminHttpController {
     return res.status(statusCode).json(body);
   }
 
-  protected sendError(
-    res: Response,
-    message: string,
-    status = 400,
-  ): Response {
+  protected sendError(res: Response, message: string, status = 400): Response {
     const { statusCode, body } = createErrorResponse(message, { status });
     return res.status(statusCode).json(body);
   }
 
-  protected sendNotFound(res: Response, message = 'Không tìm thấy bản ghi'): Response {
+  protected sendNotFound(
+    res: Response,
+    message = 'Không tìm thấy bản ghi',
+  ): Response {
     return this.sendError(res, message, 404);
   }
 

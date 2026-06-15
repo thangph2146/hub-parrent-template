@@ -24,28 +24,22 @@ import type { Response } from 'express';
 import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import { Permissions, parseAdminListLimit, isBulkAction } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type { BaseEventSpeakersService } from './event-speakers.service';
 
 export type IEventSpeakersControllerService = Pick<
   BaseEventSpeakersService,
-  | 'list'
-  | 'getById'
-  | 'create'
-  | 'update'
-  | 'delete'
-  | 'bulk'
+  'list' | 'getById' | 'create' | 'update' | 'delete' | 'bulk'
 >;
 /** @deprecated Dùng `IEventSpeakersControllerService`. */
-export type IEventSpeakersAdminControllerService = IEventSpeakersControllerService;
+export type IEventSpeakersAdminControllerService =
+  IEventSpeakersControllerService;
 
 @ApiTags('Event Speakers')
 @Permissions(PERMISSIONS.EVENT_SPEAKERS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_SPEAKERS)
 export class BaseEventSpeakersController extends BaseAdminHttpController {
-  constructor(
-    protected readonly service: IEventSpeakersControllerService,
-  ) {
+  constructor(protected readonly service: IEventSpeakersControllerService) {
     super();
   }
 

@@ -11,7 +11,10 @@ export {
   type AdminCrudControllerConfig,
   type IAdminCrudControllerService,
 } from './base-admin-crud.controller';
-export { buildAdminListCrudParams, type AdminListQueryInput } from './build-admin-list-params';
+export {
+  buildAdminListCrudParams,
+  type AdminListQueryInput,
+} from './build-admin-list-params';
 export { BaseCrudService } from './base-crud.service';
 export {
   BaseCrudController,

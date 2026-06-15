@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import type { EntityManager } from '@mikro-orm/core';
 import { Event, EventFormat } from '../entities/event.entity';
@@ -12,6 +11,7 @@ import {
   loadExportPosts,
   type ExportPostSeedSource,
 } from './load-export-posts';
+import { resolveSeedExportPath } from '../common/data-paths';
 import {
   isLexicalContentEmpty,
   isLexicalEditorState,
@@ -130,32 +130,16 @@ function resolveEventContent(post: ExportPostSeedSource): unknown {
 function resolveDefaultExportPath(log?: (message: string) => void): string {
   const fromEnv = process.env.CHECKIN_DEMO_POSTS_EXPORT?.trim();
   if (fromEnv) {
-    const resolved = path.resolve(fromEnv);
-    if (fs.existsSync(resolved)) return resolved;
-    log?.(
-      `CHECKIN_DEMO_POSTS_EXPORT không tồn tại (${resolved}), thử file export mặc định.`,
-    );
+    try {
+      return resolveSeedExportPath({ explicitPath: fromEnv });
+    } catch {
+      log?.(
+        `CHECKIN_DEMO_POSTS_EXPORT không tồn tại (${fromEnv}), thử data/seed/.`,
+      );
+    }
   }
 
-  const candidates = [
-    path.resolve(
-      process.cwd(),
-      '..',
-      '..',
-      'data',
-      'full-export-2026-06-10.json',
-    ),
-    path.join(__dirname, '..', 'full-export-2026-06-10.json'),
-    path.join(__dirname, '..', 'full-export-2026-05-14.json'),
-  ];
-
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) return candidate;
-  }
-
-  throw new Error(
-    'Không tìm thấy file export bài viết. Đặt CHECKIN_DEMO_POSTS_EXPORT hoặc thêm full-export vào apps/data/ hoặc apps/main/api/src/.',
-  );
+  return resolveSeedExportPath({ legacyDir: path.join(__dirname, '..') });
 }
 
 async function applyDemoEventContent(

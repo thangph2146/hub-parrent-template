@@ -14,10 +14,7 @@ export class BaseCoursesModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseCoursesController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseCoursesController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

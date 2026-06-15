@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import * as path from 'path';
+
+import { resolveImportReferencePath } from '../../data-paths';
 
 export type ImportReferenceManifest = {
   source: string;
@@ -9,24 +10,8 @@ export type ImportReferenceManifest = {
   notes?: Record<string, string>;
 };
 
-const DEFAULT_REFERENCE_REL = 'data/import-reference-2026-06-10.json';
-
-function resolveReferencePath(relOrAbs: string): string {
-  if (path.isAbsolute(relOrAbs)) return relOrAbs;
-  const candidates = [
-    path.join(process.cwd(), relOrAbs),
-    path.join(process.cwd(), '..', '..', relOrAbs),
-  ];
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) return candidate;
-  }
-  return candidates[0];
-}
-
 export function getImportReferenceFilePath(): string {
-  const rel =
-    process.env.SYSTEM_IMPORT_REFERENCE_FILE?.trim() || DEFAULT_REFERENCE_REL;
-  return resolveReferencePath(rel);
+  return resolveImportReferencePath();
 }
 
 export function loadImportReferenceManifest(): ImportReferenceManifest | null {

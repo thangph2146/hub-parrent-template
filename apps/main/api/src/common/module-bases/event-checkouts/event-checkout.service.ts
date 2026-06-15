@@ -24,7 +24,12 @@ export interface ListEventCheckoutsParams {
 
 export interface ListEventCheckoutsResult {
   data: EventCheckoutRowDto[];
-  pagination: { page: number; limit: number; total: number; totalPages: number };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface BulkClearCheckoutsResult {
@@ -38,7 +43,9 @@ export abstract class BaseEventCheckoutsService {
 
   protected abstract getEm(): EntityManager;
 
-  async list(params: ListEventCheckoutsParams): Promise<ListEventCheckoutsResult> {
+  async list(
+    params: ListEventCheckoutsParams,
+  ): Promise<ListEventCheckoutsResult> {
     const em = this.getEm();
     const connection = em.getConnection();
     const { eventId, page, limit, search } = params;
@@ -58,7 +65,9 @@ export abstract class BaseEventCheckoutsService {
       `SELECT COUNT(*) AS cnt FROM event_registrations er WHERE er.eventId = ? AND er.hasCheckout = true AND er.deletedAt IS NULL ${whereExtra}`,
       bindings,
     );
-    const total = Number((countRow as Array<Record<string, unknown>>)[0]?.cnt ?? 0);
+    const total = Number(
+      (countRow as Array<Record<string, unknown>>)[0]?.cnt ?? 0,
+    );
 
     const rows = await connection.execute(
       `SELECT er.id, er.eventId, er.email, er.fullName, er.phone, er.updatedAt AS checkoutTime, er.attendanceStatus, er.attendanceMinutes, er.hasCheckin, er.faceVerified, er.createdAt FROM event_registrations er WHERE er.eventId = ? AND er.hasCheckout = true AND er.deletedAt IS NULL ${whereExtra} ORDER BY er.updatedAt DESC LIMIT ? OFFSET ?`,
@@ -71,12 +80,16 @@ export abstract class BaseEventCheckoutsService {
       email: String(r.email ?? ''),
       fullName: String(r.fullName ?? ''),
       phone: r.phone ? String(r.phone) : null,
-      checkoutTime: r.checkoutTime ? new Date(r.checkoutTime as string).toISOString() : null,
+      checkoutTime: r.checkoutTime
+        ? new Date(r.checkoutTime as string).toISOString()
+        : null,
       attendanceStatus: Number(r.attendanceStatus ?? 0),
       attendanceMinutes: Number(r.attendanceMinutes ?? 0),
       hasCheckin: r.hasCheckin === true || r.hasCheckin === 1,
       faceVerified: r.faceVerified === true || r.faceVerified === 1,
-      createdAt: r.createdAt ? new Date(r.createdAt as string).toISOString() : null,
+      createdAt: r.createdAt
+        ? new Date(r.createdAt as string).toISOString()
+        : null,
     }));
 
     const totalPages = Math.ceil(total / safeLimit) || 1;
@@ -93,10 +106,12 @@ export abstract class BaseEventCheckoutsService {
     }
     const em = this.getEm();
     const placeholders = ids.map(() => '?').join(',');
-    const result = await em.getConnection().execute(
-      `UPDATE event_registrations SET hasCheckout = false, updatedAt = NOW() WHERE id IN (${placeholders}) AND hasCheckout = true AND deletedAt IS NULL`,
-      ids,
-    );
+    const result = await em
+      .getConnection()
+      .execute(
+        `UPDATE event_registrations SET hasCheckout = false, updatedAt = NOW() WHERE id IN (${placeholders}) AND hasCheckout = true AND deletedAt IS NULL`,
+        ids,
+      );
     const affected = (result as { affectedRows?: number }).affectedRows ?? 0;
     return {
       affected,

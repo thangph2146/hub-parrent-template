@@ -1,13 +1,15 @@
-import { Controller, Get, Put, Delete, Body, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
-  createSuccessResponse,
-  type ApiResponsePayload,
-} from '../../index';
-import type {
-  SettingsRowDto,
-  BaseSettingsService,
-} from './setting.service';
+  Controller,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { createSuccessResponse, type ApiResponsePayload } from '../../index';
+import type { SettingsRowDto, BaseSettingsService } from './setting.service';
 
 export type ISettingsControllerService = Pick<
   BaseSettingsService,

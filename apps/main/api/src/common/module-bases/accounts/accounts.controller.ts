@@ -19,7 +19,7 @@ import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import type { BaseAccountsService, UpdateAccountDto } from './accounts.service';
 import { Permissions } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import { apiServerAppConfig } from '../../../config/app-config';
 
 type AvatarUploadsBinding = {
@@ -30,6 +30,7 @@ type AvatarUploadsBinding = {
     serveBaseUrl?: string,
     userId?: string,
     ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
   ) => Promise<{ url: string }>;
 };
 
@@ -37,8 +38,7 @@ const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 export type IAccountsControllerService = Pick<
   BaseAccountsService,
-  | 'getProfile'
-  | 'updateProfile'
+  'getProfile' | 'updateProfile'
 >;
 /** @deprecated Dùng `IAccountsControllerService`. */
 export type IAccountsAdminControllerService = IAccountsControllerService;
@@ -140,6 +140,19 @@ export class BaseAccountsController extends BaseAdminHttpController {
       return this.sendError(res, 'Thiếu file ảnh', 400);
     }
 
+    const mimePrimary = (file.mimetype || '').split(';')[0].trim().toLowerCase();
+    if (
+      mimePrimary &&
+      mimePrimary !== 'application/octet-stream' &&
+      !['image/jpeg', 'image/jpg', 'image/png'].includes(mimePrimary)
+    ) {
+      return this.sendError(
+        res,
+        'Ảnh khuôn mặt HANET chỉ chấp nhận JPG hoặc PNG',
+        400,
+      );
+    }
+
     try {
       const data = await this.uploadsService.saveFile(
         {
@@ -152,6 +165,7 @@ export class BaseAccountsController extends BaseAdminHttpController {
         this.getServeBaseUrl(req),
         userId,
         userId,
+        { imageOutput: 'jpeg-face' },
       );
       return this.sendSuccess(res, { url: data.url });
     } catch (err) {

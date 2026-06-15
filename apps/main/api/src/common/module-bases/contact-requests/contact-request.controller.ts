@@ -1,12 +1,17 @@
 /**
  * ContactRequests Controller.
  */
-import { Get, Query, Patch, Param, Body, Post, BadRequestException } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
-  BaseCrudController,
-  type ICrudControllerService,
-} from '../../crud';
+  Get,
+  Query,
+  Patch,
+  Param,
+  Body,
+  Post,
+  BadRequestException,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { BaseCrudController, type ICrudControllerService } from '../../crud';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -21,12 +26,11 @@ import type {
   ContactRequestsUpdateData,
 } from './contact-request.service';
 
-export interface IContactRequestsControllerService
-  extends ICrudControllerService<
-    ContactRequestsRowDto,
-    ContactRequestsCreateData,
-    ContactRequestsUpdateData
-  > {
+export interface IContactRequestsControllerService extends ICrudControllerService<
+  ContactRequestsRowDto,
+  ContactRequestsCreateData,
+  ContactRequestsUpdateData
+> {
   update(
     id: string | number,
     data: ContactRequestsUpdateData,
@@ -61,13 +65,21 @@ export class BaseContactRequestsController extends BaseCrudController<
 
   @Get()
   @ApiOperation({ summary: 'List contact requests' })
-  @ApiResponse({ status: 200, description: 'Contact requests retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Contact requests retrieved successfully',
+  })
   async list(
     @Query() query: Record<string, string | string[] | undefined>,
   ): Promise<
     ApiResponsePayload<{
       data: ContactRequestsRowDto[];
-      pagination: { page: number; limit: number; total: number; totalPages: number };
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
     }>
   > {
     const filters: Record<string, string> = {};
@@ -103,7 +115,10 @@ export class BaseContactRequestsController extends BaseCrudController<
 
   @Patch(':id/archive')
   @ApiOperation({ summary: 'Archive contact request' })
-  @ApiResponse({ status: 200, description: 'Contact request archived successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Contact request archived successfully',
+  })
   async archive(
     @Param('id') id: string,
   ): Promise<ApiResponsePayload<ContactRequestsRowDto | null>> {
@@ -113,7 +128,10 @@ export class BaseContactRequestsController extends BaseCrudController<
 
   @Patch(':id/assign')
   @ApiOperation({ summary: 'Assign contact request to user' })
-  @ApiResponse({ status: 200, description: 'Contact request assigned successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Contact request assigned successfully',
+  })
   async assign(
     @Param('id') id: string,
     @Body() body: { assigneeId?: string | number | null },
@@ -127,14 +145,20 @@ export class BaseContactRequestsController extends BaseCrudController<
 
   @Post('bulk')
   @ApiOperation({ summary: 'Bulk update contact requests' })
-  @ApiResponse({ status: 200, description: 'Bulk action completed successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Bulk action completed successfully',
+  })
   async bulkContactRequests(
-    @Body() body: {
+    @Body()
+    body: {
       action: ContactRequestBulkAction;
       ids: string[];
       status?: ContactRequestsUpdateData['status'];
     },
-  ): Promise<ApiResponsePayload<{ affected: number; message: string | undefined }>> {
+  ): Promise<
+    ApiResponsePayload<{ affected: number; message: string | undefined }>
+  > {
     if (!this.contactBulkActions.has(body.action)) {
       throw new BadRequestException(
         createErrorResponse('Action không hợp lệ', { status: 400 }).body,
@@ -142,7 +166,8 @@ export class BaseContactRequestsController extends BaseCrudController<
     }
     if (!Array.isArray(body.ids) || body.ids.length === 0) {
       throw new BadRequestException(
-        createErrorResponse('ids phải là mảng không rỗng', { status: 400 }).body,
+        createErrorResponse('ids phải là mảng không rỗng', { status: 400 })
+          .body,
       );
     }
     if (
@@ -155,7 +180,11 @@ export class BaseContactRequestsController extends BaseCrudController<
         createErrorResponse('status không hợp lệ', { status: 400 }).body,
       );
     }
-    const data = await this.contactService.bulkAction(body.action, body.ids, body.status);
+    const data = await this.contactService.bulkAction(
+      body.action,
+      body.ids,
+      body.status,
+    );
     return createSuccessResponse({
       affected: data.affectedCount,
       message: data.message,

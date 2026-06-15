@@ -1,5 +1,5 @@
 import { AUTH_ROLE_NAMES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type { AuthLoginPayload } from '../auth/auth.service';
 
 /** Khớp admin `/data`: settings:manage|import|export hoặc system:manage|import. */

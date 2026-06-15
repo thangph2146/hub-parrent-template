@@ -140,7 +140,10 @@ function resolveRegistrationAvatar(
 
 export abstract class BaseEventRegistrationsService {
   protected abstract getEm(): EntityManager;
-  protected abstract getEventRegistrationEntity(): new () => Record<string, unknown>;
+  protected abstract getEventRegistrationEntity(): new () => Record<
+    string,
+    unknown
+  >;
   protected abstract getEventEntity(): new () => Record<string, unknown>;
   protected abstract getUserEntity(): new () => Record<string, unknown>;
 
@@ -161,7 +164,10 @@ export abstract class BaseEventRegistrationsService {
       deletedAt: null,
     } as FilterQuery<object>);
 
-    for (const user of users as Array<{ email?: string; avatar?: string | null }>) {
+    for (const user of users as Array<{
+      email?: string;
+      avatar?: string | null;
+    }>) {
       const email = user.email?.trim().toLowerCase();
       if (!email) continue;
       map.set(email, user.avatar?.trim() || null);
@@ -183,7 +189,11 @@ export abstract class BaseEventRegistrationsService {
     const Event = this.getEventEntity();
     const eid = normalizeEventIdParam(eventId);
     const count = await this.countActiveForEvent(eid);
-    await this.getEm().nativeUpdate(Event, { id: eid }, { totalRegistrations: count });
+    await this.getEm().nativeUpdate(
+      Event,
+      { id: eid },
+      { totalRegistrations: count },
+    );
     return count;
   }
 
@@ -228,7 +238,9 @@ export abstract class BaseEventRegistrationsService {
       status: { $ne: REGISTRATION_STATUS_CANCELLED },
     } as FilterQuery<object>);
     if (!row) return null;
-    const avatarByEmail = await this.loadAvatarByEmails([(row as EventRegistrationRow).email]);
+    const avatarByEmail = await this.loadAvatarByEmails([
+      (row as EventRegistrationRow).email,
+    ]);
     return mapRow(row as EventRegistrationRow, avatarByEmail);
   }
 
@@ -279,9 +291,13 @@ export abstract class BaseEventRegistrationsService {
 
   async getById(id: string | number): Promise<EventRegistrationRowDto | null> {
     const EventRegistration = this.getEventRegistrationEntity();
-    const r = await this.getEm().findOne(EventRegistration, { id: toEntityId(id) });
+    const r = await this.getEm().findOne(EventRegistration, {
+      id: toEntityId(id),
+    });
     if (!r) return null;
-    const avatarByEmail = await this.loadAvatarByEmails([(r as EventRegistrationRow).email]);
+    const avatarByEmail = await this.loadAvatarByEmails([
+      (r as EventRegistrationRow).email,
+    ]);
     return mapRow(r as EventRegistrationRow, avatarByEmail);
   }
 
@@ -295,7 +311,8 @@ export abstract class BaseEventRegistrationsService {
   }): Promise<EventRegistrationRowDto> {
     const EventRegistration = this.getEventRegistrationEntity();
     const Event = this.getEventEntity();
-    const created = new EventRegistration() as EventRegistrationRow & Record<string, unknown>;
+    const created = new EventRegistration() as EventRegistrationRow &
+      Record<string, unknown>;
     created.event = this.getEm().getReference(Event, toEntityId(data.eventId));
     created.email = data.email;
     created.fullName = data.fullName;
@@ -330,8 +347,10 @@ export abstract class BaseEventRegistrationsService {
     if (data.phone !== undefined) row.phone = data.phone;
     if (data.status !== undefined) row.status = data.status;
     if (data.faceVerified !== undefined) row.faceVerified = data.faceVerified;
-    if (data.attendanceStatus !== undefined) row.attendanceStatus = data.attendanceStatus;
-    if (data.checkinMethod !== undefined) row.checkinMethod = data.checkinMethod;
+    if (data.attendanceStatus !== undefined)
+      row.attendanceStatus = data.attendanceStatus;
+    if (data.checkinMethod !== undefined)
+      row.checkinMethod = data.checkinMethod;
     await this.getEm().persistAndFlush(existing);
     const avatarByEmail = await this.loadAvatarByEmails([row.email]);
     return mapRow(row, avatarByEmail);
@@ -339,7 +358,9 @@ export abstract class BaseEventRegistrationsService {
 
   async softDelete(id: string): Promise<boolean> {
     const EventRegistration = this.getEventRegistrationEntity();
-    const r = await this.getEm().findOne(EventRegistration, { id: toEntityId(id) });
+    const r = await this.getEm().findOne(EventRegistration, {
+      id: toEntityId(id),
+    });
     if (!r) return false;
     const row = r as EventRegistrationRow & { deletedAt?: Date | null };
     if (row.deletedAt) return false;
@@ -350,7 +371,9 @@ export abstract class BaseEventRegistrationsService {
 
   async restore(id: string): Promise<boolean> {
     const EventRegistration = this.getEventRegistrationEntity();
-    const r = await this.getEm().findOne(EventRegistration, { id: toEntityId(id) });
+    const r = await this.getEm().findOne(EventRegistration, {
+      id: toEntityId(id),
+    });
     if (!r) return false;
     const row = r as EventRegistrationRow & { deletedAt?: Date | null };
     if (!row.deletedAt) return false;
@@ -361,7 +384,9 @@ export abstract class BaseEventRegistrationsService {
 
   async hardDelete(id: string): Promise<boolean> {
     const EventRegistration = this.getEventRegistrationEntity();
-    const r = await this.getEm().findOne(EventRegistration, { id: toEntityId(id) });
+    const r = await this.getEm().findOne(EventRegistration, {
+      id: toEntityId(id),
+    });
     if (!r) return false;
     await this.getEm().removeAndFlush(r);
     return true;

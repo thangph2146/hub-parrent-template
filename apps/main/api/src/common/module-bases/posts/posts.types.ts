@@ -1,9 +1,7 @@
 /**
  * Posts Module Types.
  */
-import type {
-  BulkOperationResult,
-} from '../../module-types';
+import type { BulkOperationResult } from '../../module-types';
 
 export interface PostActivityLog {
   postId: string | number;

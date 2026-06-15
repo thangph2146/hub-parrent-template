@@ -7,7 +7,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { FilterQuery } from '@mikro-orm/core';
 import { BaseCrudService } from '../../crud';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
+import type {
+  CrudRowDto,
+  CrudCreateData,
+  CrudUpdateData,
+} from '../../module-types';
 
 export interface SeoMetasRowDto extends CrudRowDto {
   id: number | string;
@@ -61,7 +65,14 @@ export abstract class BaseSeoMetasService extends BaseCrudService<
     return 'SeoMetas';
   }
   protected getSearchFields(): string[] {
-    return ['page', 'title', 'description', 'keywords', 'ogTitle', 'ogDescription'];
+    return [
+      'page',
+      'title',
+      'description',
+      'keywords',
+      'ogTitle',
+      'ogDescription',
+    ];
   }
   protected getFilterableFields(): string[] {
     return ['status', 'isActive'];
@@ -93,12 +104,14 @@ export abstract class BaseSeoMetasService extends BaseCrudService<
     } as FilterQuery<Record<string, unknown>>);
 
     if (found) {
-      Object.assign(found as Record<string, unknown>, data, { page: normalizedPage });
+      Object.assign(found as Record<string, unknown>, data, {
+        page: normalizedPage,
+      });
       await em.flush();
       return this.mapRow(found as Record<string, unknown>);
     }
 
-    const entity = new Entity() as Record<string, unknown>;
+    const entity = new Entity();
     Object.assign(entity, data, { page: normalizedPage });
     em.persist(entity);
     await em.flush();

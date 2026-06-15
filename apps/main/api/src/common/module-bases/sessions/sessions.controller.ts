@@ -25,7 +25,7 @@ import {
   Permissions,
 } from '../../index';
 import { APP_HEADERS, ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import { parseAdminListLimit } from '../../index';
 
 export type ISessionsControllerService = Pick<
@@ -49,14 +49,25 @@ export type ISessionsAdminControllerService = ISessionsControllerService;
 export type ISessionsAdminSocketGateway = ISessionsSocketGateway;
 
 export interface ISessionsSocketGateway {
-  emitSessionUpsert(session: unknown, fromStatus: string, toStatus: string): void;
+  emitSessionUpsert(
+    session: unknown,
+    fromStatus: string,
+    toStatus: string,
+  ): void;
   emitSessionRevoked(sessionId: string): void;
   emitSessionRemove(sessionId: string, status: string): void;
   emitNotificationToUser(
     userId: string | number,
     payload: {
       id: number;
-      kind: 'info' | 'success' | 'warning' | 'system' | 'message' | 'announcement' | 'alert';
+      kind:
+        | 'info'
+        | 'success'
+        | 'warning'
+        | 'system'
+        | 'message'
+        | 'announcement'
+        | 'alert';
       title: string;
       description: string | null;
       toUserId: string;
@@ -72,7 +83,13 @@ export interface ISessionsSocketGateway {
 export class BaseSessionsController extends BaseAdminHttpController {
   constructor(
     protected readonly service: ISessionsControllerService,
-    protected readonly notificationsService: Pick<BaseNotificationsService, 'create' | 'getSuperAdminUserIds' | 'hasRecentLoginNotification' | 'hasRecentWelcomeBackNotification'>,
+    protected readonly notificationsService: Pick<
+      BaseNotificationsService,
+      | 'create'
+      | 'getSuperAdminUserIds'
+      | 'hasRecentLoginNotification'
+      | 'hasRecentWelcomeBackNotification'
+    >,
     protected readonly socketGateway: ISessionsSocketGateway,
   ) {
     super();
@@ -398,8 +415,7 @@ export class BaseSessionsController extends BaseAdminHttpController {
       );
       return res.status(statusCode).json(body);
     }
-    const isSuperAdmin =
-      await this.service.userHasSuperAdminRole(userId);
+    const isSuperAdmin = await this.service.userHasSuperAdminRole(userId);
     if (isSuperAdmin) {
       const { statusCode, body } = createErrorResponse(
         'Không thể cưỡng chế đăng xuất tài khoản Super Admin',
@@ -407,8 +423,9 @@ export class BaseSessionsController extends BaseAdminHttpController {
       );
       return res.status(statusCode).json(body);
     }
-    const { count, sessionIds } =
-      await this.service.revokeAllSessionsByUserId(String(userId));
+    const { count, sessionIds } = await this.service.revokeAllSessionsByUserId(
+      String(userId),
+    );
     for (const sessionId of sessionIds) {
       this.socketGateway.emitSessionRevoked(String(sessionId));
       this.socketGateway.emitSessionRemove(String(sessionId), 'active');

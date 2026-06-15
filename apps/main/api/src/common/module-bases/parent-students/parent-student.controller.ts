@@ -39,7 +39,12 @@ export interface IParentStudentsControllerService {
     filters?: Record<string, string>;
   }): Promise<{
     data: ParentStudentsRowDto[];
-    pagination: { page: number; limit: number; total: number; totalPages: number };
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
   }>;
   review(
     id: string | number,
@@ -48,7 +53,10 @@ export interface IParentStudentsControllerService {
   ): Promise<ParentStudentsRowDto | null>;
   listByParent(parentId: string | number): Promise<ParentStudentsRowDto[]>;
   addStudentRequest(data: AddParentStudentInput): Promise<ParentStudentsRowDto>;
-  removeForParent(id: string | number, parentId: string | number): Promise<boolean>;
+  removeForParent(
+    id: string | number,
+    parentId: string | number,
+  ): Promise<boolean>;
 }
 
 @ApiTags('ParentStudents')
@@ -61,13 +69,21 @@ export class BaseParentStudentsController {
 
   @Get()
   @ApiOperation({ summary: 'List parent-student requests' })
-  @ApiResponse({ status: 200, description: 'Parent-student requests retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Parent-student requests retrieved successfully',
+  })
   async list(
     @Query() query: Record<string, string | string[] | undefined>,
   ): Promise<
     ApiResponsePayload<{
       data: ParentStudentsRowDto[];
-      pagination: { page: number; limit: number; total: number; totalPages: number };
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
     }>
   > {
     const filters: Record<string, string> = {};
@@ -97,7 +113,10 @@ export class BaseParentStudentsController {
 
   @Patch(':id/review')
   @ApiOperation({ summary: 'Review parent-student request' })
-  @ApiResponse({ status: 200, description: 'Parent-student request reviewed successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Parent-student request reviewed successfully',
+  })
   async review(
     @Param('id') id: string,
     @Body() body: { action: 'approved' | 'rejected'; note?: string },
@@ -111,10 +130,12 @@ export class BaseParentStudentsController {
       );
     }
     const reviewerId =
-      headers['x-user-id']?.trim() ||
-      headers['X-User-Id']?.trim() ||
-      'system';
-    const result = await this.parentStudentsService.review(id, body.action, reviewerId);
+      headers['x-user-id']?.trim() || headers['X-User-Id']?.trim() || 'system';
+    const result = await this.parentStudentsService.review(
+      id,
+      body.action,
+      reviewerId,
+    );
     if (!result) {
       throw new NotFoundException(
         createErrorResponse('Không tìm thấy', { status: 404 }).body,
@@ -170,7 +191,8 @@ export class BaseParentMyStudentsController {
   ): Promise<ApiResponsePayload<T>> {
     const externalApiUrl = process.env.EXTERNAL_API_URL;
     if (!externalApiUrl) {
-      return createSuccessResponse(fallbackData, { message: noConfigMessage }).body;
+      return createSuccessResponse(fallbackData, { message: noConfigMessage })
+        .body;
     }
 
     const fetchHeaders: Record<string, string> = {
@@ -193,7 +215,8 @@ export class BaseParentMyStudentsController {
     } catch (error) {
       this.logger.error(errorMessage, error);
       const message =
-        error instanceof Error && error.message.startsWith('API điểm trả về lỗi:')
+        error instanceof Error &&
+        error.message.startsWith('API điểm trả về lỗi:')
           ? error.message
           : errorMessage;
       throw new BadRequestException(

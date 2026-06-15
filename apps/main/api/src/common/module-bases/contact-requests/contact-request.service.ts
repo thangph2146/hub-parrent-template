@@ -6,7 +6,12 @@
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../crud';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData, ListCrudParams } from '../../module-types';
+import type {
+  CrudRowDto,
+  CrudCreateData,
+  CrudUpdateData,
+  ListCrudParams,
+} from '../../module-types';
 import { toEntityIdList } from '../../index';
 
 export interface ContactRequestsRowDto extends CrudRowDto {
