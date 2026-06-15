@@ -65,6 +65,7 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 | **API server (logic chung)** | `packages/api-server/README.md` + `docs/api-pattern/README.md` | `packages/api-server/` |
 | **Admin CRUD dùng chung** | `docs/admin-pattern/ADMIN_APP_PACKAGE.md` | `packages/admin-app/` + generate ở app |
 | **Env / deploy** | `docs/env/README.md` · PM2: `README.md` (mục PM2) | `.env.example` từng app |
+| **Upload / disk / seed JSON** | `docs/storage/README.md` · `data/README.md` | `STORAGE_DIR`, `data/seed/` |
 
 ### Graphify — mở đúng app
 
@@ -234,7 +235,7 @@ pnpm verify:main-api-endpoint-parity
 ```
 
 - **Template OOP:** `packages/api-server/deploy/nest/` · **Config:** `packages/api-server/deploy/config/`
-- **Base* template:** `src/modules/` (registry) → `module-bases/` (active thin, copy khi render) · `package-module-templates.cjs` · `PACKAGE_MODULE_TEMPLATES.meta.json`
+- **Base* template:** `src/modules/` (registry) → `module-bases/` (active thin, copy khi render) · `package-module-templates.cjs` · `.pipeline/PACKAGE_MODULE_TEMPLATES.meta.json`
 - **Materialize:** `thin` (extends Base* module-bases, vd. `users`) · `crud` (`common/crud`, 13 module) · `mirror` (copy `main/api`)
 - **`main/api`:** auth/system native — app deploy **không** import runtime `@workspace/api-server/modules/*`
 
@@ -290,21 +291,25 @@ Chi tiết check-in: [`apps/hub-event/README.md`](apps/hub-event/README.md) · t
 
 ---
 
-## 11. PM2 production (2 stack — không chạy cùng lúc)
+## 11. PM2 production (3 stack — không chạy cùng lúc)
 
-| Stack | PM2 file | Apps |
-|-------|---------|------|
-| Site chính | `ecosystem.main.cjs` | hub-parent-api :3002, hub-parent-backend :3001, hub-parent-frontend :3000 |
-| Check-in | `ecosystem.checkin.cjs` | hub-checkin-api :3002, hub-checkin-frontend :3000 |
+Nguồn sự thật: [`ecosystem/`](ecosystem/README.md) — CLI: `node ecosystem/pm2-stack.cjs`.
+
+| Stack | File PM2 | Apps |
+|-------|----------|------|
+| Site chính | `ecosystem/main.cjs` | hub-parent-api :3002, hub-parent-backend :3001, hub-parent-frontend :3000 |
+| Check-in | `ecosystem/checkin.cjs` | hub-checkin-api :3002, hub-checkin-frontend :3000 |
+| Store sync | `ecosystem/store.cjs` | hub-store-api :3002, hub-store-frontend :3000 |
 
 ```bash
 pnpm pm2:start          # site chính
 pnpm pm2:start:checkin  # check-in
+pnpm pm2:start:store    # store sync
 pnpm pm2:reload         # sau pull code
 pnpm pm2:delete         # dừng stack tương ứng
 ```
 
-Chi tiết deploy, xóa process, chuyển stack: [`README.md`](README.md) (mục PM2).
+Kiểm tra layout: `pnpm verify:ecosystem`. Chi tiết deploy, xóa process, chuyển stack: [`README.md`](README.md) (mục PM2).
 
 ---
 

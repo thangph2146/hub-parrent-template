@@ -37,7 +37,7 @@ Chi tiết workflow: [`docs/MONOREPO_STRUCTURE.md`](../docs/MONOREPO_STRUCTURE.m
 | Vị trí | Được phép |
 |--------|-----------|
 | `script-system/` | Dev, sync, verify, graphify, deploy — xem `script-system/README.md` |
-| `apps/main/api/scripts/` | `ensure-dist.mjs` + migration một lần (nếu còn) |
+| `apps/main/api/scripts/` | `ensure-dist.mjs`, `test-live-admin-api.ts`; migration một lần trong `scripts/archive/` |
 | `apps/*/api/scripts/` (line deploy) | Chỉ `ensure-dist.mjs` |
 | `apps/*/.../scripts/` (frontend) | **Không** — dùng `script-system/` |
 

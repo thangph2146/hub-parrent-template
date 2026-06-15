@@ -64,4 +64,4 @@ pnpm init:downstream hub-event ../hub-event-monorepo
 
 ## PM2
 
-`pnpm pm2:start:checkin` — xem `ecosystem.checkin.cjs`.
+`pnpm pm2:start:checkin` — xem `ecosystem/checkin.cjs`.

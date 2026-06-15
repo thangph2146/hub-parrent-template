@@ -244,12 +244,12 @@ pnpm db -- seeder:run
 
 ### 5) Chạy app bằng PM2
 
-Repo đã có `ecosystem.config.cjs` ở root.
+Cấu hình PM2 trong thư mục `ecosystem/` (store: `ecosystem/store.cjs`).
 
 ```bash
 cd /var/www/store-sync
 pnpm add -g pm2
-pm2 start ecosystem.config.cjs
+pm2 start ecosystem/store.cjs
 pm2 status
 pm2 save
 pm2 startup systemd -u $USER --hp /home/$USER
@@ -337,7 +337,7 @@ git pull
 pnpm install --frozen-lockfile
 pnpm build
 pnpm db -- migration:up
-pm2 reload ecosystem.config.cjs --update-env
+pm2 reload ecosystem/store.cjs --update-env
 ```
 
 ### 9) Checklist nhanh khi lỗi

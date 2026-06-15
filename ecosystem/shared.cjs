@@ -1,8 +1,7 @@
 /** Cấu hình PM2 dùng chung cho các stack production trong monorepo. */
+const { PRODUCT_LINES } = require("../script-system/lib/monorepo-apps.cjs");
 
-const { PRODUCT_LINES } = require("./script-system/monorepo-apps.cjs")
-
-const PROD_ENV = { NODE_ENV: "production" }
+const PROD_ENV = { NODE_ENV: "production" };
 
 /** @returns {import('pm2').StartOptions} */
 function createApiApp(name, cwd) {
@@ -15,7 +14,7 @@ function createApiApp(name, cwd) {
       ...PROD_ENV,
       PORT: "3002",
     },
-  }
+  };
 }
 
 /** @returns {import('pm2').StartOptions} */
@@ -26,7 +25,7 @@ function createBackendApp(name, cwd) {
     script: "pnpm",
     args: "next start -p 3001",
     env: PROD_ENV,
-  }
+  };
 }
 
 /** @returns {import('pm2').StartOptions} */
@@ -37,7 +36,7 @@ function createNextFrontendApp(name, cwd, port = 3000) {
     script: "pnpm",
     args: `next start -p ${port}`,
     env: PROD_ENV,
-  }
+  };
 }
 
 /** Site chính: hub-parent API + main admin + hub-parent storefront */
@@ -50,7 +49,7 @@ function createParentStack() {
       PRODUCT_LINES["hub-parent"].frontend.path,
       3000,
     ),
-  ]
+  ];
 }
 
 /** Check-in: API + frontend (admin gộp trong check-in frontend) */
@@ -62,7 +61,7 @@ function createCheckinStack() {
       PRODUCT_LINES["hub-event"].frontend.path,
       3000,
     ),
-  ]
+  ];
 }
 
 /** Store sync: API + storefront */
@@ -74,11 +73,11 @@ function createStoreStack() {
       PRODUCT_LINES["store-sync"].frontend.path,
       3000,
     ),
-  ]
+  ];
 }
 
 /** @deprecated dùng createParentStack */
-const createMainStack = createParentStack
+const createMainStack = createParentStack;
 
 module.exports = {
   PROD_ENV,
@@ -89,4 +88,4 @@ module.exports = {
   createMainStack,
   createCheckinStack,
   createStoreStack,
-}
+};
