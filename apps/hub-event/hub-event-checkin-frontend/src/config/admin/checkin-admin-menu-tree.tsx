@@ -17,6 +17,7 @@ import {
   MapPin,
   Mic,
   Monitor,
+  ScanFace,
   ShieldCheck,
   Tags,
   Users,
@@ -159,6 +160,13 @@ export const CHECKIN_ADMIN_MENU_TREE: AdminMenuTreeItem[] = [
         icon: CalendarPlus,
         permission: null,
         anyPermission: ["events:view","events:manage"],
+      },
+      {
+        href: "/admin/hanet-avatars",
+        label: "Avatar HANET",
+        icon: ScanFace,
+        permission: null,
+        anyPermission: ["events:view","events:manage","face_data:view"],
       },
       {
         href: "/admin/speakers",

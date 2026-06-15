@@ -9,4 +9,8 @@ export type AdminProfilePageConfig = {
   maxAvatarChanges?: number
   /** `account` — GET/PUT `/admin/accounts` (cổng SV/khách). Mặc định `staff`. */
   profileSource?: "staff" | "account"
+  /** Gợi ý ảnh chân dung cho HANET (registerByUrl). */
+  avatarGuidance?: string
+  /** `accept` trên input file — mặc định `image/*`. */
+  avatarAccept?: string
 }

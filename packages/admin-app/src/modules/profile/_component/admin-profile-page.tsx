@@ -37,6 +37,7 @@ import {
 import { patchAdminSessionProfile } from "@workspace/admin-app/lib/auth-session"
 import { uploadAdminImage } from "@workspace/admin-app/lib/admin-upload"
 import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
+import { resolveMediaUrl } from "@ui/lib/resolve-media-url"
 import { MAIN_ADMIN_PROFILE_CONFIG } from "../_config/profile-page.main-config"
 import type { AdminProfilePageConfig } from "../_config/profile-page.types"
 import {
@@ -134,6 +135,10 @@ export function AdminProfilePageInner({
     () => formatAvatarChangeLimitMessage(avatarLimit),
     [avatarLimit],
   )
+
+  const avatarPreviewSrc = avatar.trim()
+    ? resolveMediaUrl(avatar.trim(), 480)
+    : ""
 
   useEffect(() => {
     if (!profile || userId == null) return
@@ -323,9 +328,9 @@ export function AdminProfilePageInner({
               <div className="flex items-start gap-4">
                 <div className="flex flex-col gap-2.5">
                   <div className="relative aspect-[3/4] w-40 shrink-0 sm:w-60">
-                    {avatar ? (
+                    {avatarPreviewSrc ? (
                       <img
-                        src={avatar}
+                        src={avatarPreviewSrc}
                         alt="Avatar"
                         className="h-full w-full rounded-lg border-2 border-border/60 object-cover shadow-sm"
                       />
@@ -351,7 +356,7 @@ export function AdminProfilePageInner({
                     <input
                       ref={avatarInputRef}
                       type="file"
-                      accept="image/*"
+                      accept={config.avatarAccept ?? "image/*"}
                       className="hidden"
                       onChange={(e) => {
                         const file = e.target.files?.[0]
@@ -397,6 +402,11 @@ export function AdminProfilePageInner({
                     />
                     {avatarLimitMessage ? (
                       <AvatarChangeLimitNotice message={avatarLimitMessage} />
+                    ) : null}
+                    {config.avatarGuidance ? (
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        {config.avatarGuidance}
+                      </p>
                     ) : null}
                   </div>
                   <FieldSectionField label="Email">
