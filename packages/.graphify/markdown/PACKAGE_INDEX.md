@@ -1,6 +1,6 @@
 # PACKAGE_INDEX — graphify per-package (agent)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.636Z` — package workspace có snapshot `.graphify/snapshot/`.
+> **Sinh tự động:** `2026-06-15T03:40:54.715Z` — package workspace có snapshot `.graphify/snapshot/`.
 
 | Package | Path | Graphify | Doc |
 |---------|------|----------|-----|

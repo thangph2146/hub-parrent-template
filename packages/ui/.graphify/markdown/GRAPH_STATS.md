@@ -1,6 +1,6 @@
 # Thống kê graph — packages/ui (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.519Z`
+> **Sinh tự động:** `2026-06-15T03:40:54.575Z`
 
 ## Top in-degree
 

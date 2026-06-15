@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T12:59:23.774Z",
+  "generatedAt": "2026-06-15T03:40:50.754Z",
   "projectRoot": "D:/HUB/working/2026/hub-parrent-template/apps/main/backend",
   "summary": {
     "totalFiles": 202,
@@ -551,7 +551,7 @@
       "importedBy": [
         "src/app/database-schema"
       ],
-      "content": "export { default } from \"@workspace/admin-app/features/tools/admin-database-schema-page\"\r\n"
+      "content": "export { default } from \"@workspace/admin-app/modules/database-schema/page\"\r\n"
     },
     "src/app/departments/new/loading.tsx": {
       "id": "file_src_app_departments_new_loading_tsx",
@@ -772,7 +772,7 @@
       "importedBy": [
         "src/app/graph"
       ],
-      "content": "export { default } from \"@workspace/admin-app/features/tools/admin-graph-page\"\r\n"
+      "content": "export { default } from \"@workspace/admin-app/modules/graph/page\"\r\n"
     },
     "src/app/guides/new/loading.tsx": {
       "id": "file_src_app_guides_new_loading_tsx",
@@ -1000,7 +1000,7 @@
       "importedBy": [
         "src/app/login"
       ],
-      "content": "export { default } from \"@workspace/admin-app/features/auth/login-page\"\r\n"
+      "content": "export { default } from \"@workspace/admin-app/modules/auth/login/page\"\r\n"
     },
     "src/app/majors/new/loading.tsx": {
       "id": "file_src_app_majors_new_loading_tsx",
@@ -1339,7 +1339,7 @@
       "importedBy": [
         "src/app/profile"
       ],
-      "content": "export { default } from \"@workspace/admin-app/features/profile/admin-profile-page\"\r\n"
+      "content": "export { default } from \"@workspace/admin-app/modules/profile/page\"\r\n"
     },
     "src/app/promo-codes/new/page.tsx": {
       "id": "file_src_app_promo_codes_new_page_tsx",
@@ -1469,7 +1469,7 @@
       "importedBy": [
         "src/app/register"
       ],
-      "content": "export { default } from \"@workspace/admin-app/features/auth/register-page\"\r\n"
+      "content": "export { default } from \"@workspace/admin-app/modules/auth/register/page\"\r\n"
     },
     "src/app/robots.ts": {
       "id": "file_src_app_robots_ts",
@@ -2347,7 +2347,7 @@
         "src/features/auth/session.ts",
         "src/providers/auth-provider.tsx"
       ],
-      "content": "export * from \"@workspace/admin-app/features/auth/auth-api\"\r\n"
+      "content": "export * from \"@workspace/admin-app/modules/auth/_lib/auth-api\"\r\n"
     },
     "src/features/auth/index.ts": {
       "id": "file_src_features_auth_index_ts",
@@ -2378,7 +2378,7 @@
         "src/features/auth",
         "src/features/auth/index.ts"
       ],
-      "content": "export { RegisterForm } from \"@workspace/admin-app/features/auth/register-form\"\r\n"
+      "content": "export { RegisterForm } from \"@workspace/admin-app/modules/auth/_component/register-form\"\r\n"
     },
     "src/features/auth/session.ts": {
       "id": "file_src_features_auth_session_ts",
@@ -2409,7 +2409,7 @@
         "src/features/auth",
         "src/features/auth/index.ts"
       ],
-      "content": "export { SignInForm } from \"@workspace/admin-app/features/auth/sign-in-form\"\r\n"
+      "content": "export { SignInForm } from \"@workspace/admin-app/modules/auth/_component/sign-in-form\"\r\n"
     },
     "src/hooks/index.ts": {
       "id": "file_src_hooks_index_ts",

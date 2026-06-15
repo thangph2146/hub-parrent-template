@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T21:25:57.639Z",
+  "generatedAt": "2026-06-15T03:40:54.717Z",
   "productLines": {
     "main": {
       "api": {
@@ -935,7 +935,7 @@
       },
       "lines": {
         "main": true,
-        "checkinAdmin": false,
+        "checkinAdmin": true,
         "checkinApi": true
       },
       "verify": [
@@ -1134,8 +1134,7 @@
       "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/page.tsx",
       "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/loading.tsx",
       "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/loading.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/_component/index.ts"
+      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/loading.tsx"
     ]
   },
   "syncExclude": [],

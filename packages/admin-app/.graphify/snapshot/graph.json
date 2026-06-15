@@ -19,6 +19,16 @@
       "type": "directory"
     },
     {
+      "id": "file_src_config_admin_access_paths_ts",
+      "label": "admin-access-paths.ts",
+      "path": "src/config/admin-access-paths.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_config_define_admin_app_ts",
       "label": "define-admin-app.ts",
       "path": "src/config/define-admin-app.ts",
@@ -55,242 +65,6 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/config",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_features",
-      "label": "features/",
-      "path": "src/features",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src",
-      "type": "directory"
-    },
-    {
-      "id": "dir_src_features_auth",
-      "label": "auth/",
-      "path": "src/features/auth",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/features",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_features_auth_admin_bridge_ts",
-      "label": "admin-bridge.ts",
-      "path": "src/features/auth/admin-bridge.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_auth_api_ts",
-      "label": "auth-api.ts",
-      "path": "src/features/auth/auth-api.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_index_ts",
-      "label": "index.ts",
-      "path": "src/features/auth/index.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_login_page_tsx",
-      "label": "login-page.tsx",
-      "path": "src/features/auth/login-page.tsx",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "tsx",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_register_form_tsx",
-      "label": "register-form.tsx",
-      "path": "src/features/auth/register-form.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_features_auth_register_form_types_ts",
-      "label": "register-form.types.ts",
-      "path": "src/features/auth/register-form.types.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_register_page_tsx",
-      "label": "register-page.tsx",
-      "path": "src/features/auth/register-page.tsx",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "tsx",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_session_ts",
-      "label": "session.ts",
-      "path": "src/features/auth/session.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_sign_in_form_main_config_ts",
-      "label": "sign-in-form.main-config.ts",
-      "path": "src/features/auth/sign-in-form.main-config.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_auth_sign_in_form_tsx",
-      "label": "sign-in-form.tsx",
-      "path": "src/features/auth/sign-in-form.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_features_auth_sign_in_form_types_ts",
-      "label": "sign-in-form.types.ts",
-      "path": "src/features/auth/sign-in-form.types.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/auth",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_features_profile",
-      "label": "profile/",
-      "path": "src/features/profile",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/features",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_features_profile_admin_profile_page_tsx",
-      "label": "admin-profile-page.tsx",
-      "path": "src/features/profile/admin-profile-page.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/features/profile",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_features_profile_index_ts",
-      "label": "index.ts",
-      "path": "src/features/profile/index.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/profile",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_profile_profile_page_main_config_ts",
-      "label": "profile-page.main-config.ts",
-      "path": "src/features/profile/profile-page.main-config.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/profile",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_profile_profile_page_types_ts",
-      "label": "profile-page.types.ts",
-      "path": "src/features/profile/profile-page.types.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/profile",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "dir_src_features_tools",
-      "label": "tools/",
-      "path": "src/features/tools",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/features",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_features_tools_admin_database_schema_page_tsx",
-      "label": "admin-database-schema-page.tsx",
-      "path": "src/features/tools/admin-database-schema-page.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/features/tools",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_features_tools_admin_graph_page_tsx",
-      "label": "admin-graph-page.tsx",
-      "path": "src/features/tools/admin-graph-page.tsx",
-      "color": "#00ddff",
-      "size": 10,
-      "community": "src/features/tools",
-      "type": "tsx",
-      "client": true
-    },
-    {
-      "id": "file_src_features_tools_graph_page_main_config_ts",
-      "label": "graph-page.main-config.ts",
-      "path": "src/features/tools/graph-page.main-config.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/tools",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_tools_graph_page_types_ts",
-      "label": "graph-page.types.ts",
-      "path": "src/features/tools/graph-page.types.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/tools",
-      "type": "ts",
-      "client": false
-    },
-    {
-      "id": "file_src_features_tools_index_ts",
-      "label": "index.ts",
-      "path": "src/features/tools/index.ts",
-      "color": "#00ff41",
-      "size": 10,
-      "community": "src/features/tools",
       "type": "ts",
       "client": false
     },
@@ -1047,6 +821,170 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/academic-years/_component/_table",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth",
+      "label": "auth/",
+      "path": "src/modules/auth",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth_index_ts",
+      "label": "index.ts",
+      "path": "src/modules/auth/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth_login",
+      "label": "login/",
+      "path": "src/modules/auth/login",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/auth",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth_login_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/auth/login/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/auth/login",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth_register",
+      "label": "register/",
+      "path": "src/modules/auth/register",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/auth",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth_register_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/auth/register/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/auth/register",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth__component",
+      "label": "_component/",
+      "path": "src/modules/auth/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/auth",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth__component_register_form_tsx",
+      "label": "register-form.tsx",
+      "path": "src/modules/auth/_component/register-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_auth__component_register_form_types_ts",
+      "label": "register-form.types.ts",
+      "path": "src/modules/auth/_component/register-form.types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_auth__component_sign_in_form_tsx",
+      "label": "sign-in-form.tsx",
+      "path": "src/modules/auth/_component/sign-in-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_auth__component_sign_in_form_types_ts",
+      "label": "sign-in-form.types.ts",
+      "path": "src/modules/auth/_component/sign-in-form.types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth__config",
+      "label": "_config/",
+      "path": "src/modules/auth/_config",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/auth",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth__config_sign_in_form_main_config_ts",
+      "label": "sign-in-form.main-config.ts",
+      "path": "src/modules/auth/_config/sign-in-form.main-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_auth__lib",
+      "label": "_lib/",
+      "path": "src/modules/auth/_lib",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/auth",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_auth__lib_admin_bridge_ts",
+      "label": "admin-bridge.ts",
+      "path": "src/modules/auth/_lib/admin-bridge.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_auth__lib_auth_api_ts",
+      "label": "auth-api.ts",
+      "path": "src/modules/auth/_lib/auth-api.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_auth__lib_session_ts",
+      "label": "session.ts",
+      "path": "src/modules/auth/_lib/session.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_lib",
       "type": "ts",
       "client": false
     },
@@ -2321,6 +2259,25 @@
       "client": true
     },
     {
+      "id": "dir_src_modules_database_schema",
+      "label": "database-schema/",
+      "path": "src/modules/database-schema",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_database_schema_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/database-schema/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/database-schema",
+      "type": "page",
+      "client": true
+    },
+    {
       "id": "dir_src_modules_departments",
       "label": "departments/",
       "path": "src/modules/departments",
@@ -3376,6 +3333,54 @@
       "client": false
     },
     {
+      "id": "dir_src_modules_graph",
+      "label": "graph/",
+      "path": "src/modules/graph",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_graph_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/graph/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/graph",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_graph__config",
+      "label": "_config/",
+      "path": "src/modules/graph/_config",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/graph",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_graph__config_graph_page_main_config_ts",
+      "label": "graph-page.main-config.ts",
+      "path": "src/modules/graph/_config/graph-page.main-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/graph/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_graph__config_graph_page_types_ts",
+      "label": "graph-page.types.ts",
+      "path": "src/modules/graph/_config/graph-page.types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/graph/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_modules_guides",
       "label": "guides/",
       "path": "src/modules/guides",
@@ -4284,6 +4289,251 @@
       "community": "src/modules/majors/_component/_table",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "dir_src_modules_my_registered_events",
+      "label": "my-registered-events/",
+      "path": "src/modules/my-registered-events",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_my_registered_events_guest_portal_page_tsx",
+      "label": "guest-portal-page.tsx",
+      "path": "src/modules/my-registered-events/guest-portal-page.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/my-registered-events/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/my-registered-events",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_my_registered_events__component",
+      "label": "_component/",
+      "path": "src/modules/my-registered-events/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/my-registered-events",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_columns_tsx",
+      "label": "columns.tsx",
+      "path": "src/modules/my-registered-events/_component/columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_event_schedule_cells_tsx",
+      "label": "event-schedule-cells.tsx",
+      "path": "src/modules/my-registered-events/_component/event-schedule-cells.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "label": "my-registered-events-bulk-actions.tsx",
+      "path": "src/modules/my-registered-events/_component/my-registered-events-bulk-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "label": "my-registered-events-page.tsx",
+      "path": "src/modules/my-registered-events/_component/my-registered-events-page.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_my_registered_events_row_actions_tsx",
+      "label": "my-registered-events-row-actions.tsx",
+      "path": "src/modules/my-registered-events/_component/my-registered-events-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_my_registered_events_stat_cards_tsx",
+      "label": "my-registered-events-stat-cards.tsx",
+      "path": "src/modules/my-registered-events/_component/my-registered-events-stat-cards.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_registration_status_badge_tsx",
+      "label": "registration-status-badge.tsx",
+      "path": "src/modules/my-registered-events/_component/registration-status-badge.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_types_ts",
+      "label": "types.ts",
+      "path": "src/modules/my-registered-events/_component/types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component_utils_ts",
+      "label": "utils.ts",
+      "path": "src/modules/my-registered-events/_component/utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_my_registered_events__component__query",
+      "label": "_query/",
+      "path": "src/modules/my-registered-events/_component/_query",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component__query_index_ts",
+      "label": "index.ts",
+      "path": "src/modules/my-registered-events/_component/_query/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component/_query",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component__query_use_my_registered_events_ts",
+      "label": "use-my-registered-events.ts",
+      "path": "src/modules/my-registered-events/_component/_query/use-my-registered-events.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component/_query",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_my_registered_events__component__table",
+      "label": "_table/",
+      "path": "src/modules/my-registered-events/_component/_table",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/my-registered-events/_component",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component__table_index_ts",
+      "label": "index.ts",
+      "path": "src/modules/my-registered-events/_component/_table/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component/_table",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__component__table_my_registered_events_table_tsx",
+      "label": "my-registered-events-table.tsx",
+      "path": "src/modules/my-registered-events/_component/_table/my-registered-events-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_component/_table",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_my_registered_events__config_ts",
+      "label": "_config.ts",
+      "path": "src/modules/my-registered-events/_config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_my_registered_events__lib",
+      "label": "_lib/",
+      "path": "src/modules/my-registered-events/_lib",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/my-registered-events",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_my_registered_events__lib_event_display_ts",
+      "label": "event-display.ts",
+      "path": "src/modules/my-registered-events/_lib/event-display.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "label": "my-registered-events.ts",
+      "path": "src/modules/my-registered-events/_lib/my-registered-events.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__lib_registration_format_ts",
+      "label": "registration-format.ts",
+      "path": "src/modules/my-registered-events/_lib/registration-format.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_my_registered_events__lib_registration_period_ts",
+      "label": "registration-period.ts",
+      "path": "src/modules/my-registered-events/_lib/registration-period.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/my-registered-events/_lib",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "dir_src_modules_my_students",
@@ -5316,6 +5566,112 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/products/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_profile",
+      "label": "profile/",
+      "path": "src/modules/profile",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_profile_index_ts",
+      "label": "index.ts",
+      "path": "src/modules/profile/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/profile",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_profile_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/profile/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/profile",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_profile__component",
+      "label": "_component/",
+      "path": "src/modules/profile/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/profile",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "label": "admin-profile-page.tsx",
+      "path": "src/modules/profile/_component/admin-profile-page.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/profile/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_profile__config",
+      "label": "_config/",
+      "path": "src/modules/profile/_config",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/profile",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_profile__config_profile_page_checkin_config_ts",
+      "label": "profile-page.checkin-config.ts",
+      "path": "src/modules/profile/_config/profile-page.checkin-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/profile/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_profile__config_profile_page_main_config_ts",
+      "label": "profile-page.main-config.ts",
+      "path": "src/modules/profile/_config/profile-page.main-config.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/profile/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_profile__config_profile_page_types_ts",
+      "label": "profile-page.types.ts",
+      "path": "src/modules/profile/_config/profile-page.types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/profile/_config",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_profile__lib",
+      "label": "_lib/",
+      "path": "src/modules/profile/_lib",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/profile",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_profile__lib_profile_avatar_limit_ts",
+      "label": "profile-avatar-limit.ts",
+      "path": "src/modules/profile/_lib/profile-avatar-limit.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/profile/_lib",
       "type": "ts",
       "client": false
     },
@@ -6937,6 +7293,25 @@
       "client": false
     },
     {
+      "id": "dir_src_modules_student_portal_profile",
+      "label": "student-portal-profile/",
+      "path": "src/modules/student-portal-profile",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_student_portal_profile_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/student-portal-profile/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/student-portal-profile",
+      "type": "page",
+      "client": true
+    },
+    {
       "id": "dir_src_modules_tags",
       "label": "tags/",
       "path": "src/modules/tags",
@@ -8116,6 +8491,45 @@
       "client": false
     },
     {
+      "id": "dir_src_routing",
+      "label": "routing/",
+      "path": "src/routing",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_routing_admin_detail_route_loading_tsx",
+      "label": "admin-detail-route-loading.tsx",
+      "path": "src/routing/admin-detail-route-loading.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/routing",
+      "type": "tsx",
+      "client": false
+    },
+    {
+      "id": "file_src_routing_admin_form_route_loading_tsx",
+      "label": "admin-form-route-loading.tsx",
+      "path": "src/routing/admin-form-route-loading.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/routing",
+      "type": "tsx",
+      "client": false
+    },
+    {
+      "id": "file_src_routing_index_ts",
+      "label": "index.ts",
+      "path": "src/routing/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/routing",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "dir_src_runtime",
       "label": "runtime/",
       "path": "src/runtime",
@@ -8132,6 +8546,16 @@
       "size": 10,
       "community": "src/runtime",
       "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_runtime_admin_path_ts",
+      "label": "admin-path.ts",
+      "path": "src/runtime/admin-path.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/runtime",
+      "type": "ts",
       "client": true
     },
     {
@@ -8212,6 +8636,11 @@
     },
     {
       "source": "dir_src_config",
+      "target": "file_src_config_admin_access_paths_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
       "target": "file_src_config_define_admin_app_ts",
       "relation": "contains"
     },
@@ -8228,126 +8657,6 @@
     {
       "source": "dir_src_config",
       "target": "file_src_config_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src",
-      "target": "dir_src_features",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features",
-      "target": "dir_src_features_auth",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_admin_bridge_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_auth_api_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_index_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_login_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_register_form_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_register_form_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_register_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_session_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_sign_in_form_main_config_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_sign_in_form_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_auth",
-      "target": "file_src_features_auth_sign_in_form_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features",
-      "target": "dir_src_features_profile",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_profile",
-      "target": "file_src_features_profile_admin_profile_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_profile",
-      "target": "file_src_features_profile_index_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_profile",
-      "target": "file_src_features_profile_profile_page_main_config_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_profile",
-      "target": "file_src_features_profile_profile_page_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features",
-      "target": "dir_src_features_tools",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_tools",
-      "target": "file_src_features_tools_admin_database_schema_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_tools",
-      "target": "file_src_features_tools_admin_graph_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_tools",
-      "target": "file_src_features_tools_graph_page_main_config_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_tools",
-      "target": "file_src_features_tools_graph_page_types_ts",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_features_tools",
-      "target": "file_src_features_tools_index_ts",
       "relation": "contains"
     },
     {
@@ -8733,6 +9042,91 @@
     {
       "source": "dir_src_modules_academic_years__component__table",
       "target": "file_src_modules_academic_years__component__table_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
+      "target": "dir_src_modules_auth",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "file_src_modules_auth_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "dir_src_modules_auth_login",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth_login",
+      "target": "file_src_modules_auth_login_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "dir_src_modules_auth_register",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth_register",
+      "target": "file_src_modules_auth_register_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "dir_src_modules_auth__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_register_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_register_form_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_sign_in_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_sign_in_form_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "dir_src_modules_auth__config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__config",
+      "target": "file_src_modules_auth__config_sign_in_form_main_config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth",
+      "target": "dir_src_modules_auth__lib",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__lib",
+      "target": "file_src_modules_auth__lib_admin_bridge_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__lib",
+      "target": "file_src_modules_auth__lib_auth_api_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__lib",
+      "target": "file_src_modules_auth__lib_session_ts",
       "relation": "contains"
     },
     {
@@ -9392,6 +9786,16 @@
     },
     {
       "source": "dir_src_modules",
+      "target": "dir_src_modules_database_schema",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_database_schema",
+      "target": "file_src_modules_database_schema_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
       "target": "dir_src_modules_departments",
       "relation": "contains"
     },
@@ -9932,6 +10336,31 @@
     },
     {
       "source": "dir_src_modules",
+      "target": "dir_src_modules_graph",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_graph",
+      "target": "file_src_modules_graph_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_graph",
+      "target": "dir_src_modules_graph__config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_graph__config",
+      "target": "file_src_modules_graph__config_graph_page_main_config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_graph__config",
+      "target": "file_src_modules_graph__config_graph_page_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
       "target": "dir_src_modules_guides",
       "relation": "contains"
     },
@@ -10398,6 +10827,131 @@
     {
       "source": "dir_src_modules_majors__component__table",
       "target": "file_src_modules_majors__component__table_majors_trash_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
+      "target": "dir_src_modules_my_registered_events",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events",
+      "target": "file_src_modules_my_registered_events_guest_portal_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events",
+      "target": "file_src_modules_my_registered_events_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events",
+      "target": "dir_src_modules_my_registered_events__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_event_schedule_cells_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_stat_cards_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_registration_status_badge_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "file_src_modules_my_registered_events__component_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "dir_src_modules_my_registered_events__component__query",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component__query",
+      "target": "file_src_modules_my_registered_events__component__query_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component__query",
+      "target": "file_src_modules_my_registered_events__component__query_use_my_registered_events_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component",
+      "target": "dir_src_modules_my_registered_events__component__table",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component__table",
+      "target": "file_src_modules_my_registered_events__component__table_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__component__table",
+      "target": "file_src_modules_my_registered_events__component__table_my_registered_events_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events",
+      "target": "file_src_modules_my_registered_events__config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events",
+      "target": "dir_src_modules_my_registered_events__lib",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__lib",
+      "target": "file_src_modules_my_registered_events__lib_event_display_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__lib",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__lib",
+      "target": "file_src_modules_my_registered_events__lib_registration_format_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_my_registered_events__lib",
+      "target": "file_src_modules_my_registered_events__lib_registration_period_ts",
       "relation": "contains"
     },
     {
@@ -10928,6 +11482,61 @@
     {
       "source": "dir_src_modules_products__component",
       "target": "file_src_modules_products__component_use_products_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
+      "target": "dir_src_modules_profile",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile",
+      "target": "file_src_modules_profile_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile",
+      "target": "file_src_modules_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile",
+      "target": "dir_src_modules_profile__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile__component",
+      "target": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile",
+      "target": "dir_src_modules_profile__config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile__config",
+      "target": "file_src_modules_profile__config_profile_page_checkin_config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile__config",
+      "target": "file_src_modules_profile__config_profile_page_main_config_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile__config",
+      "target": "file_src_modules_profile__config_profile_page_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile",
+      "target": "dir_src_modules_profile__lib",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_profile__lib",
+      "target": "file_src_modules_profile__lib_profile_avatar_limit_ts",
       "relation": "contains"
     },
     {
@@ -11767,6 +12376,16 @@
     },
     {
       "source": "dir_src_modules",
+      "target": "dir_src_modules_student_portal_profile",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_student_portal_profile",
+      "target": "file_src_modules_student_portal_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
       "target": "dir_src_modules_tags",
       "relation": "contains"
     },
@@ -12377,12 +12996,37 @@
     },
     {
       "source": "dir_src",
+      "target": "dir_src_routing",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_routing",
+      "target": "file_src_routing_admin_detail_route_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_routing",
+      "target": "file_src_routing_admin_form_route_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_routing",
+      "target": "file_src_routing_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
       "target": "dir_src_runtime",
       "relation": "contains"
     },
     {
       "source": "dir_src_runtime",
       "target": "file_src_runtime_admin_app_context_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_runtime",
+      "target": "file_src_runtime_admin_path_ts",
       "relation": "contains"
     },
     {
@@ -12421,6 +13065,11 @@
       "relation": "contains"
     },
     {
+      "source": "file_src_config_admin_access_paths_ts",
+      "target": "file_src_config_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_config_define_admin_app_ts",
       "target": "file_src_config_types_ts",
       "relation": "imports"
@@ -12432,117 +13081,17 @@
     },
     {
       "source": "file_src_config_index_ts",
+      "target": "file_src_config_admin_access_paths_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_index_ts",
       "target": "file_src_config_types_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_config_types_ts",
       "target": "file_src_menu_admin_menu_tree_items_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_index_ts",
-      "target": "file_src_features_auth_sign_in_form_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_index_ts",
-      "target": "file_src_features_auth_register_form_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_login_page_tsx",
-      "target": "file_src_features_auth_sign_in_form_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_register_form_tsx",
-      "target": "file_src_features_auth_auth_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_register_form_tsx",
-      "target": "file_src_features_auth_register_form_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_register_page_tsx",
-      "target": "file_src_features_auth_register_form_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_session_ts",
-      "target": "file_src_features_auth_auth_api_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_sign_in_form_main_config_ts",
-      "target": "file_src_features_auth_sign_in_form_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_sign_in_form_tsx",
-      "target": "file_src_features_auth_sign_in_form_main_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_auth_sign_in_form_tsx",
-      "target": "file_src_features_auth_sign_in_form_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_profile_admin_profile_page_tsx",
-      "target": "file_src_features_profile_profile_page_main_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_profile_admin_profile_page_tsx",
-      "target": "file_src_features_profile_profile_page_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_profile_index_ts",
-      "target": "file_src_features_profile_admin_profile_page_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_profile_index_ts",
-      "target": "file_src_features_profile_profile_page_main_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_profile_profile_page_main_config_ts",
-      "target": "file_src_features_profile_profile_page_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_admin_graph_page_tsx",
-      "target": "file_src_features_tools_graph_page_main_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_admin_graph_page_tsx",
-      "target": "file_src_features_tools_graph_page_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_graph_page_main_config_ts",
-      "target": "file_src_features_tools_graph_page_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_index_ts",
-      "target": "file_src_features_tools_admin_graph_page_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_index_ts",
-      "target": "file_src_features_tools_graph_page_main_config_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_features_tools_index_ts",
-      "target": "file_src_features_tools_admin_database_schema_page_tsx",
       "relation": "imports"
     },
     {
@@ -12653,6 +13202,11 @@
     {
       "source": "file_src_menu_build_menu_ts",
       "target": "file_src_config_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_menu_build_menu_ts",
+      "target": "file_src_config_admin_access_paths_ts",
       "relation": "imports"
     },
     {
@@ -12778,6 +13332,56 @@
     {
       "source": "file_src_modules_academic_years__component__table_index_ts",
       "target": "file_src_modules_academic_years__component__table_academic_years_trash_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_index_ts",
+      "target": "file_src_modules_auth__component_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_index_ts",
+      "target": "file_src_modules_auth__component_register_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_login_page_tsx",
+      "target": "file_src_modules_auth__component_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth_register_page_tsx",
+      "target": "file_src_modules_auth__component_register_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__lib_auth_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_register_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__config_sign_in_form_main_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_sign_in_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__config_sign_in_form_main_config_ts",
+      "target": "file_src_modules_auth__component_sign_in_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__lib_session_ts",
+      "target": "file_src_modules_auth__lib_auth_api_ts",
       "relation": "imports"
     },
     {
@@ -14151,6 +14755,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_graph_page_tsx",
+      "target": "file_src_modules_graph__config_graph_page_main_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_graph_page_tsx",
+      "target": "file_src_modules_graph__config_graph_page_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_graph__config_graph_page_main_config_ts",
+      "target": "file_src_modules_graph__config_graph_page_types_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_guides_new_page_tsx",
       "target": "dir_src_modules_guides__component",
       "relation": "imports"
@@ -14553,6 +15172,191 @@
     {
       "source": "file_src_modules_majors__component__table_majors_trash_table_tsx",
       "target": "file_src_modules_majors__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events_guest_portal_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events_guest_portal_page_tsx",
+      "target": "file_src_modules_my_registered_events__config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__lib_event_display_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__lib_registration_format_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__component_event_schedule_cells_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__component_registration_status_badge_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_columns_tsx",
+      "target": "file_src_modules_my_registered_events__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_event_schedule_cells_tsx",
+      "target": "file_src_modules_my_registered_events__lib_event_display_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "target": "file_src_modules_my_registered_events__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "dir_src_modules_my_registered_events__component__table",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "dir_src_modules_my_registered_events__component__query",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_bulk_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_my_registered_events_stat_cards_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_page_tsx",
+      "target": "file_src_modules_my_registered_events__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_row_actions_tsx",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_row_actions_tsx",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_my_registered_events_stat_cards_tsx",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_registration_status_badge_tsx",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_types_ts",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component_utils_ts",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component__query_index_ts",
+      "target": "file_src_modules_my_registered_events__component__query_use_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component__query_use_my_registered_events_ts",
+      "target": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component__table_index_ts",
+      "target": "file_src_modules_my_registered_events__component__table_my_registered_events_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component__table_my_registered_events_table_tsx",
+      "target": "file_src_modules_my_registered_events__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__component__table_my_registered_events_table_tsx",
+      "target": "file_src_modules_my_registered_events__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "target": "file_src_modules_my_registered_events__lib_event_display_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__lib_my_registered_events_ts",
+      "target": "file_src_modules_my_registered_events__lib_registration_period_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_my_registered_events__lib_registration_format_ts",
+      "target": "file_src_modules_my_registered_events__lib_event_display_ts",
       "relation": "imports"
     },
     {
@@ -15208,6 +16012,56 @@
     {
       "source": "file_src_modules_products__component_use_products_queries_ts",
       "target": "file_src_modules_products__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile_index_ts",
+      "target": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile_index_ts",
+      "target": "file_src_modules_profile__config_profile_page_main_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile_index_ts",
+      "target": "file_src_modules_profile__config_profile_page_checkin_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile_index_ts",
+      "target": "file_src_modules_profile__lib_profile_avatar_limit_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile_page_tsx",
+      "target": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "target": "file_src_modules_profile__config_profile_page_main_config_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "target": "file_src_modules_profile__config_profile_page_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile__component_admin_profile_page_tsx",
+      "target": "file_src_modules_profile__lib_profile_avatar_limit_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile__config_profile_page_checkin_config_ts",
+      "target": "file_src_modules_profile__config_profile_page_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_profile__config_profile_page_main_config_ts",
+      "target": "file_src_modules_profile__config_profile_page_types_ts",
       "relation": "imports"
     },
     {
@@ -16296,6 +17150,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_routing_index_ts",
+      "target": "file_src_routing_admin_form_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_routing_index_ts",
+      "target": "file_src_routing_admin_detail_route_loading_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_runtime_admin_app_context_tsx",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -16306,6 +17170,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_runtime_admin_path_ts",
+      "target": "file_src_config_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_runtime_admin_path_ts",
+      "target": "file_src_registry_module_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_runtime_admin_path_ts",
+      "target": "file_src_runtime_admin_app_context_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_runtime_index_ts",
       "target": "file_src_runtime_admin_app_context_tsx",
       "relation": "imports"
@@ -16313,6 +17192,11 @@
     {
       "source": "file_src_runtime_index_ts",
       "target": "file_src_runtime_use_admin_module_navigation_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_runtime_index_ts",
+      "target": "file_src_runtime_admin_path_ts",
       "relation": "imports"
     },
     {

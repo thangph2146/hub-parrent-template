@@ -2,8 +2,8 @@
 
 > Package `@workspace/api-client` · `packages/api-client/`
 
-- **context.generatedAt:** 2026-06-12T14:19:36.367Z
-- **summary sinh:** `2026-06-13T21:25:57.611Z`
+- **context.generatedAt:** 2026-06-15T03:40:53.368Z
+- **summary sinh:** `2026-06-15T03:40:54.684Z`
 
 ## Mục lục artefact
 

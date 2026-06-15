@@ -18,6 +18,7 @@
   "inheritPaths": [
     "packages",
     "script-system",
+    "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
     "docs/api-client-pattern",
@@ -30,7 +31,6 @@
   ],
   "inheritRootFiles": [
     "turbo.json",
-    "ecosystem.shared.cjs",
     "AGENTS.md",
     "packages/README.md"
   ],
@@ -40,28 +40,26 @@
     "package.json",
     "template.manifest.json",
     ".template-lock.json",
-    "ecosystem.checkin.cjs",
-    "ecosystem.main.cjs",
-    "ecosystem.store.cjs",
+    "ecosystem",
     ".env",
     ".env.local"
   ],
   "productLines": {
     "hub-event": {
       "appsPath": "apps/hub-event",
-      "ecosystem": "ecosystem.checkin.cjs",
+      "ecosystem": "ecosystem/checkin.cjs",
       "pm2Start": "pnpm pm2:start:checkin",
       "packages": ["ui", "admin-app", "api-client", "api-server", "query-client", "logger", "site-config", "editor"]
     },
     "hub-parent": {
       "appsPath": "apps/hub-parent",
-      "ecosystem": "ecosystem.main.cjs",
+      "ecosystem": "ecosystem/main.cjs",
       "pm2Start": "pnpm pm2:start",
       "packages": ["ui", "api-client", "api-server", "query-client", "logger", "site-config", "editor", "promo-codes"]
     },
     "store-sync": {
       "appsPath": "apps/store-sync",
-      "ecosystem": "ecosystem.store.cjs",
+      "ecosystem": "ecosystem/store.cjs",
       "pm2Start": "pnpm pm2:start:store",
       "packages": ["ui", "api-client", "api-server", "query-client", "promo-codes"]
     }

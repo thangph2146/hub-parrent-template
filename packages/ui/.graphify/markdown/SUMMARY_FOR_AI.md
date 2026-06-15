@@ -2,8 +2,8 @@
 
 > Package `@workspace/ui` · `packages/ui/`
 
-- **context.generatedAt:** 2026-06-12T14:19:36.060Z
-- **summary sinh:** `2026-06-13T21:25:57.539Z`
+- **context.generatedAt:** 2026-06-15T03:40:53.092Z
+- **summary sinh:** `2026-06-15T03:40:54.597Z`
 
 ## Mục lục artefact
 

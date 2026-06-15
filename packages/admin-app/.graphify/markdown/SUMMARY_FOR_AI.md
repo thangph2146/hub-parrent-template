@@ -2,8 +2,8 @@
 
 > Package `@workspace/admin-app` · `packages/admin-app/`
 
-- **context.generatedAt:** 2026-06-12T14:19:36.274Z
-- **summary sinh:** `2026-06-13T21:25:57.595Z`
+- **context.generatedAt:** 2026-06-15T03:40:53.290Z
+- **summary sinh:** `2026-06-15T03:40:54.665Z`
 
 ## Mục lục artefact
 
@@ -23,30 +23,35 @@
 
 ## Thống kê snapshot
 
-- **totalFiles:** 608
-- **clientComponents:** 262
-- **pages (module):** 94 file
+- **totalFiles:** 636
+- **clientComponents:** 275
+- **pages (module):** 101 file
 
-## Admin modules (`29`)
+## Admin modules (`35`)
 
 - `src/modules/academic-years/`
+- `src/modules/auth/`
 - `src/modules/cameras/`
 - `src/modules/categories/`
 - `src/modules/contact-requests/`
 - `src/modules/courses/`
 - `src/modules/dashboard/`
 - `src/modules/data/`
+- `src/modules/database-schema/`
 - `src/modules/departments/`
 - `src/modules/events/`
 - `src/modules/file-storage/`
+- `src/modules/graph/`
 - `src/modules/guides/`
 - `src/modules/locations/`
 - `src/modules/majors/`
+- `src/modules/my-registered-events/`
 - `src/modules/my-students/`
 - `src/modules/orders/`
 - `src/modules/parent-students/`
 - `src/modules/posts/`
 - `src/modules/products/`
+- `src/modules/profile/`
 - `src/modules/promo-codes/`
 - `src/modules/rbac/`
 - `src/modules/screens/`
@@ -54,6 +59,7 @@
 - `src/modules/settings/`
 - `src/modules/speakers/`
 - `src/modules/staff/`
+- `src/modules/student-portal-profile/`
 - `src/modules/tags/`
 - `src/modules/templates/`
 - `src/modules/training-levels/`

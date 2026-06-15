@@ -1,17 +1,17 @@
 # Thống kê graph — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.438Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
+> **Sinh tự động:** `2026-06-15T03:40:54.458Z` từ `../snapshot/graph.json` — giúp AI nắm **quy mô** và **điểm nóng import** mà không mở full graph.
 
 ## Nodes theo `type`
 
 | type | Số |
 |------|-----|
-| `directory` | 104 |
-| `ts` | 86 |
-| `tsx` | 86 |
-| `page` | 70 |
-| `loading` | 36 |
-| `layout` | 6 |
+| `directory` | 108 |
+| `ts` | 82 |
+| `tsx` | 76 |
+| `page` | 72 |
+| `loading` | 37 |
+| `layout` | 7 |
 | `route-group` | 3 |
 | `styles` | 1 |
 
@@ -19,8 +19,8 @@
 
 | relation | Số |
 |----------|-----|
-| `contains` | 390 |
-| `imports` | 356 |
+| `contains` | 384 |
+| `imports` | 333 |
 | `assets` | 5 |
 | `renders` | 4 |
 
@@ -32,24 +32,24 @@ Các file `src/...` import nhiều target nhất (thường là module barrel, s
 |------|-----------------|
 | `src/app/(site)/su-kien/_component/events-page-client.tsx` | 9 |
 | `src/app/admin/[id]/page.tsx` | 9 |
-| `src/app/admin/_component/index.ts` | 9 |
+| `src/components/admin/events/index.ts` | 9 |
 | `src/app/(site)/_component/landing-home.tsx` | 8 |
-| `src/features/my-registered-events/index.ts` | 8 |
-| `src/app/admin/page.tsx` | 7 |
-| `src/app/admin/_component/_live/event-live-monitor-tab.tsx` | 7 |
-| `src/features/my-registered-events/columns.tsx` | 7 |
-| `src/features/my-registered-events/my-registered-events-page.tsx` | 7 |
+| `src/app/admin/page.tsx` | 8 |
+| `src/lib/site/index.ts` | 8 |
+| `src/components/admin/events/_live/event-live-monitor-tab.tsx` | 7 |
+| `src/components/shared/header-access-cluster.tsx` | 7 |
 | `src/app/(site)/su-kien/_component/event-detail-tabs.tsx` | 6 |
 | `src/app/admin/[id]/edit/page.tsx` | 6 |
-| `src/components/shared/header-access-cluster.tsx` | 6 |
 | `src/app/(site)/su-kien/_component/event-detail-view.tsx` | 5 |
-| `src/app/admin/_component/event-registrations-live-table.tsx` | 5 |
+| `src/components/admin/events/event-registrations-live-table.tsx` | 5 |
 | `src/providers/admin/auth-provider.tsx` | 5 |
 | `src/providers/admin/checkin-admin-layout.tsx` | 5 |
 | `src/app/(site)/su-kien/_component/event-registration-panel.tsx` | 4 |
 | `src/app/(site)/_component/hero-section.tsx` | 4 |
 | `src/app/admin/layout.tsx` | 4 |
-| `src/app/admin/_component/registration-attendance-actions.tsx` | 4 |
+| `src/app/admin/new/page.tsx` | 4 |
+| `src/components/admin/events/registration-attendance-actions.tsx` | 4 |
+| `src/components/admin/events/registration-columns.tsx` | 4 |
 
 ## Top file theo số cạnh `imports` đi vào (in-degree)
 
@@ -57,21 +57,21 @@ File được nhiều nguồn import tới (tiện ích dùng chung, entity, typ
 
 | File | Số lần bị import |
 |------|------------------|
-| `src/lib/public-events.ts` | 31 |
-| `src/lib/event-portal-routes.ts` | 14 |
-| `src/lib/event-auth.ts` | 12 |
+| `src/lib/site/public-events.ts` | 29 |
+| `src/lib/portal/event-portal-routes.ts` | 14 |
 | `src/lib/admin/api.ts` | 12 |
+| `src/config/admin/checkin-admin-access.ts` | 11 |
+| `src/lib/portal/event-auth.ts` | 10 |
 | `src/app/(site)/_component/data.ts` | 9 |
-| `src/app/admin/_component/types.ts` | 9 |
+| `src/components/admin/events/types.ts` | 9 |
+| `src/lib/portal/event-session.ts` | 9 |
 | `src/components/shared/event-poster.tsx` | 8 |
 | `src/lib/admin/auth-session.ts` | 8 |
-| `src/config/admin/checkin-admin-access.ts` | 8 |
-| `src/lib/event-session.ts` | 8 |
+| `src/lib/site/events-list-query.ts` | 7 |
 | `src/providers/admin/auth-provider.tsx` | 7 |
-| `src/app/admin/_component/_live/event-attendance-sync.ts` | 7 |
-| `src/lib/my-registered-events.ts` | 7 |
-| `src/lib/events-list-query.ts` | 6 |
-| `src/app/admin/_component/utils.ts` | 6 |
+| `src/components/admin/events/_live/event-attendance-sync.ts` | 7 |
+| `src/lib/site/site-nav.ts` | 6 |
+| `src/components/admin/events/utils.ts` | 6 |
 
 ## Làm mới
 

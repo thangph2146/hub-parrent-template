@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.438Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-15T03:40:54.458Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -9,7 +9,7 @@
 ## Nest modules (`*.module.ts`) — 0 file
 
 
-## Next App Router (`page` / `layout` / `route`) — 76 file
+## Next App Router (`page` / `layout` / `route`) — 79 file
 
 - `src/app/(auth)/dang-nhap/[role]/page.tsx`
 - `src/app/(auth)/dang-nhap/page.tsx`
@@ -41,6 +41,8 @@
 - `src/app/admin/categories/new/page.tsx`
 - `src/app/admin/categories/page.tsx`
 - `src/app/admin/check-in-ky-tuc-xa/page.tsx`
+- `src/app/admin/contact-requests/[id]/page.tsx`
+- `src/app/admin/contact-requests/page.tsx`
 - `src/app/admin/dang-ky/page.tsx`
 - `src/app/admin/dang-nhap/page.tsx`
 - `src/app/admin/data/page.tsx`
@@ -59,15 +61,13 @@
 - `src/app/admin/posts/[id]/edit/page.tsx`
 - `src/app/admin/posts/[id]/page.tsx`
 - `src/app/admin/posts/new/page.tsx`
-- `src/app/admin/posts/page.tsx`
-- `src/app/admin/profile/page.tsx`
-- … và 26 route file khác
+- … và 29 route file khác
 
-## `loading.tsx` (pattern skeleton) — 36 file
+## `loading.tsx` (pattern skeleton) — 37 file
 
 Nhiều trang admin dùng cùng pattern loading; ưu tiên sửa shared UI (`@ui`) thay vì từng file.
 
-- Tổng: **36** file `loading.tsx` trong graph
+- Tổng: **37** file `loading.tsx` trong graph
   - `src/app/admin/[id]/edit/loading.tsx`
   - `src/app/admin/[id]/loading.tsx`
   - `src/app/admin/cameras/[id]/edit/loading.tsx`
@@ -76,13 +76,13 @@ Nhiều trang admin dùng cùng pattern loading; ưu tiên sửa shared UI (`@ui
   - `src/app/admin/categories/[id]/edit/loading.tsx`
   - `src/app/admin/categories/[id]/loading.tsx`
   - `src/app/admin/categories/new/loading.tsx`
+  - `src/app/admin/contact-requests/[id]/loading.tsx`
   - `src/app/admin/guides/[id]/edit/loading.tsx`
   - `src/app/admin/guides/[id]/loading.tsx`
   - `src/app/admin/guides/new/loading.tsx`
-  - `src/app/admin/locations/[id]/edit/loading.tsx`
-  - … và 24 file khác
+  - … và 25 file khác
 
-## AUTO-GENERATED (không sửa tay) — 81 file
+## AUTO-GENERATED (không sửa tay) — 84 file
 
 Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
 
@@ -100,6 +100,9 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/app/admin/categories/new/loading.tsx`
 - `src/app/admin/categories/new/page.tsx`
 - `src/app/admin/categories/page.tsx`
+- `src/app/admin/contact-requests/[id]/loading.tsx`
+- `src/app/admin/contact-requests/[id]/page.tsx`
+- `src/app/admin/contact-requests/page.tsx`
 - `src/app/admin/data/page.tsx`
 - `src/app/admin/file-storage/page.tsx`
 - `src/app/admin/guides/[id]/edit/loading.tsx`
@@ -118,10 +121,7 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/app/admin/locations/page.tsx`
 - `src/app/admin/posts/[id]/edit/loading.tsx`
 - `src/app/admin/posts/[id]/edit/page.tsx`
-- `src/app/admin/posts/[id]/loading.tsx`
-- `src/app/admin/posts/[id]/page.tsx`
-- `src/app/admin/posts/loading.tsx`
-- … và 46 file khác
+- … và 49 file khác
 
 ## Làm mới
 

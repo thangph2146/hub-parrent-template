@@ -1,6 +1,6 @@
 # TASK_INDEX — module/feature → file (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.639Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
+> **Sinh tự động:** `2026-06-15T03:40:54.717Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
 
 ## Brief nhanh (agent)
 
@@ -75,7 +75,6 @@ pnpm graphify:brief --task "mô tả task ngắn"
 - `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/loading.tsx`
 - `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/page.tsx`
 - `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/loading.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/_component/index.ts`
 
 ## Hub-event — domain loại trừ khi sync từ main
 

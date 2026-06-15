@@ -1,6 +1,6 @@
 # ROUTE_SURFACE — Admin URL ↔ API ↔ api-client (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.641Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
+> **Sinh tự động:** `2026-06-15T03:40:54.719Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
 
 Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.tsx`); bảng dưới lấy **module id** từ config admin. Chi tiết file: `apps/*/backend/.graphify/markdown/ENTRY_POINTS.md`.
 
@@ -43,25 +43,26 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 
 | Domain | Controller | HTTP (Nest, rút gọn) |
 |--------|------------|----------------------|
-| `accounts` | `src/accounts/accounts.controller.ts` | GET /admin/accounts; POST /admin/accounts/avatar; PUT /admin/accounts |
+| `accounts` | `src/accounts/accounts.controller.ts` | — |
 | `admission-results` | `src/admission-results/admission-results.controller.ts` | DELETE /admin/admission-results/:id; DELETE /admin/admission-results/:id/hard-delete; GET /admin/admission-results; GET /admin/admission-results/:id; GET /admin/admission-results/options; POST /admin/admission-results; …+3 |
 | `auth` | `src/auth/auth.controller.ts` | GET /auth/admin/google/config; GET /auth/admin/me; POST /auth/admin/dev-login; POST /auth/admin/google; POST /auth/admin/login; POST /auth/admin/logout |
-| `carts` | `src/carts/public-carts.controller.ts` | DELETE /public/cart; GET /public/cart; PUT /public/cart |
-| `comments` | `src/comments/comments.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; GET /admin/comments; GET /admin/comments/:id; GET /admin/comments/options; POST /admin/comments/:id/approve; …+3 |
-| `dashboard` | `src/dashboard/dashboard.controller.ts` | GET /admin/dashboard/stats |
-| `event-checkins` | `src/event-checkins/event-checkins.controller.ts` | DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; GET /admin/event-checkins; GET /admin/event-checkins/:id; POST /admin/event-checkins; POST /admin/event-checkins/:id/restore; …+2 |
-| `event-checkouts` | `src/event-checkouts/event-checkouts.controller.ts` | GET /admin/event-checkouts; POST /admin/event-checkouts/bulk |
-| `event-registrations` | `src/event-registrations/event-registrations.controller.ts` | DELETE /admin/event-registrations/:id; DELETE /admin/event-registrations/:id/hard-delete; GET /admin/event-registrations; GET /admin/event-registrations/:id; POST /admin/event-registrations; POST /admin/event-registrations/:id/attendance; …+3 |
-| `event-speakers` | `src/event-speakers/event-speakers.controller.ts` | DELETE /admin/event-speakers/:id; GET /admin/event-speakers; GET /admin/event-speakers/:id; POST /admin/event-speakers; POST /admin/event-speakers/bulk; PUT /admin/event-speakers/:id |
-| `face-data` | `src/face-data/face-data.controller.ts` | DELETE /admin/face-data/:id; DELETE /admin/face-data/:id/hard-delete; GET /admin/face-data; GET /admin/face-data/:id; POST /admin/face-data; POST /admin/face-data/:id/restore; …+2 |
+| `carts` | `src/carts/carts.controller.ts` | DELETE /public/cart; GET /public/cart; PUT /public/cart |
+| `comments` | `src/comments/comments.controller.ts` | — |
+| `common` | `src/common/crud/base-crud.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; DELETE /admin/event-registrations/:id; DELETE /admin/event-registrations/:id/hard-delete; …+108 |
+| `dashboard` | `src/dashboard/dashboard.controller.ts` | — |
+| `event-checkins` | `src/event-checkins/event-checkins.controller.ts` | — |
+| `event-checkouts` | `src/event-checkouts/event-checkouts.controller.ts` | — |
+| `event-registrations` | `src/event-registrations/event-registrations.controller.ts` | — |
+| `event-speakers` | `src/event-speakers/event-speakers.controller.ts` | — |
+| `face-data` | `src/face-data/face-data.controller.ts` | — |
 | `groups` | `src/groups/groups.controller.ts` | DELETE /admin/groups/:id; DELETE /admin/groups/:id/hard-delete; DELETE /admin/groups/:id/members/:userId; GET /admin/groups; GET /admin/groups/:id; GET /admin/groups/:id/messages; …+6 |
 | `hanet` | `src/hanet/hanet-webhook.controller.ts` | POST /public/hanet/webhook; POST /public/hanet/webhook/:eventId |
-| `imported-users` | `src/imported-users/imported-users.controller.ts` | DELETE /admin/imported-users/:id; DELETE /admin/imported-users/:id/hard-delete; GET /admin/imported-users; GET /admin/imported-users/:id; POST /admin/imported-users; POST /admin/imported-users/:id/restore; …+2 |
+| `imported-users` | `src/imported-users/imported-users.controller.ts` | — |
 | `messages` | `src/messages/conversations.controller.ts` | GET /admin/conversations; PATCH /admin/messages/:id; POST /admin/conversations/:otherUserId/mark-read; POST /admin/messages |
 | `notifications` | `src/notifications/notifications.controller.ts` | DELETE /admin/notifications/:id; GET /admin/notifications; GET /admin/notifications/options; GET /admin/notifications/table; GET /admin/unread-counts; PATCH /admin/notifications/:id; …+2 |
 | `proxy-image` | `src/proxy-image/proxy-image.controller.ts` | GET /admin/proxy-image; GET /admin/proxy-image/ |
 | `public` | `src/public/public.controller.ts` | GET /public/admission-results/lookup; GET /public/auth/dev-login-options; GET /public/auth/google/config; GET /public/categories; GET /public/dev-login-options; GET /public/event-categories; …+21 |
-| `sessions` | `src/sessions/sessions.controller.ts` | DELETE /admin/sessions/:id; DELETE /admin/sessions/:id/hard-delete; GET /admin/sessions; GET /admin/sessions/:id; GET /admin/sessions/accounts; GET /admin/sessions/options; …+5 |
+| `sessions` | `src/sessions/sessions.controller.ts` | — |
 
 ## Check-in admin modules (`hub-event-checkin-frontend`)
 
@@ -81,6 +82,7 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `settings` | `/settings` | ✓ |
 | `file-storage` | `/file-storage` | ✓ |
 | `data` | `/data` | ✓ |
+| `contact-requests` | `/contact-requests` | ✓ |
 
 ## PUBLIC_ROUTES (main API — tham chiếu nhanh)
 

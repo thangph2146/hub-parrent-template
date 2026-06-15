@@ -1,14 +1,10 @@
 # Cây thư mục — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.546Z`
+> **Sinh tự động:** `2026-06-15T03:40:54.605Z`
 
 ```text
 src/
 ├── config/
-├── features/
-│   ├── auth/
-│   ├── profile/
-│   └── tools/
 ├── hooks/
 ├── lib/
 ├── menu/
@@ -23,6 +19,12 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── auth/
+│   │   ├── _component/
+│   │   ├── _config/
+│   │   ├── _lib/
+│   │   ├── login/
+│   │   └── register/
 │   ├── cameras/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -63,6 +65,7 @@ src/
 │   ├── data/
 │   │   └── _component/
 │   │       └── _hooks/
+│   ├── database-schema/
 │   ├── departments/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -88,6 +91,8 @@ src/
 │   │   └── _component/
 │   │       ├── _hooks/
 │   │       └── _table/
+│   ├── graph/
+│   │   └── _config/
 │   ├── guides/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -118,6 +123,11 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── my-registered-events/
+│   │   ├── _component/
+│   │   │   ├── _query/
+│   │   │   └── _table/
+│   │   └── _lib/
 │   ├── my-students/
 │   │   └── _component/
 │   │       └── _table/
@@ -144,6 +154,10 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── profile/
+│   │   ├── _component/
+│   │   ├── _config/
+│   │   └── _lib/
 │   ├── promo-codes/
 │   │   ├── _component/
 │   │   ├── [id]/
@@ -197,6 +211,7 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── student-portal-profile/
 │   ├── tags/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/
@@ -238,6 +253,7 @@ src/
 │       │   └── edit/
 │       └── new/
 ├── registry/
+├── routing/
 ├── runtime/
 └── types/
 ```

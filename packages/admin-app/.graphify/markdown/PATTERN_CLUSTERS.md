@@ -1,6 +1,6 @@
 # Pattern clusters — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.546Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-15T03:40:54.605Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
@@ -42,28 +42,28 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 - `src/modules/majors/_component/_alert-dialog/index.ts`
 - … và 8 file tương tự
 
-### Re-export → @workspace/admin-app/hooks/use-table-filters (10 file)
+### Re-export → @workspace/admin-app/hooks/use-table-filters (9 file)
 
 - `src/modules/academic-years/_component/_hooks/index.ts`
 - `src/modules/courses/_component/_hooks/index.ts`
 - `src/modules/departments/_component/_hooks/index.ts`
 - `src/modules/locations/_component/_hooks/index.ts`
 - `src/modules/majors/_component/_hooks/index.ts`
-- `src/modules/posts/_component/_hooks/index.ts`
 - `src/modules/speakers/_component/_hooks/index.ts`
 - `src/modules/tags/_component/_hooks/index.ts`
-- … và 2 file tương tự
+- `src/modules/training-levels/_component/_hooks/index.ts`
+- … và 1 file tương tự
 
 ## Theo tên file (basename)
 
 | Basename | Số file | Gợi ý |
 |----------|---------|--------|
-| `index.ts` | 138 | — |
-| `page.tsx` | 94 | CRUD page — logic trong `packages/admin-app` |
+| `index.ts` | 139 | — |
+| `page.tsx` | 101 | CRUD page — logic trong `packages/admin-app` |
 | `loading.tsx` | 58 | Sửa `AdminRouteLoading` trong `@ui` hoặc module `admin-app` |
-| `types.ts` | 28 | — |
-| `columns.tsx` | 27 | — |
-| `utils.ts` | 11 | — |
+| `types.ts` | 29 | — |
+| `columns.tsx` | 28 | — |
+| `utils.ts` | 12 | — |
 
 ## Làm mới
 

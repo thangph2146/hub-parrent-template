@@ -1,6 +1,6 @@
 # Pattern clusters — apps/main/backend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.359Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-15T03:40:54.285Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
@@ -89,6 +89,12 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 - `src/app/guides/new/loading.tsx`
 - `src/app/locations/new/loading.tsx`
 - … và 10 file tương tự
+
+### Re-export → @workspace/admin-app/modules/*/page (3 file)
+
+- `src/app/database-schema/page.tsx`
+- `src/app/graph/page.tsx`
+- `src/app/profile/page.tsx`
 
 ## Theo tên file (basename)
 

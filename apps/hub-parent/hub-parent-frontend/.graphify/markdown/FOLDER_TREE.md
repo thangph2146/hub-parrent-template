@@ -1,6 +1,6 @@
 # Cây thư mục — apps/hub-parent/hub-parent-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.420Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-15T03:40:54.374Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/

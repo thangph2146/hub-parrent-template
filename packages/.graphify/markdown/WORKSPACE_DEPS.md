@@ -1,6 +1,6 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.516Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-15T03:40:54.571Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 
@@ -37,6 +37,7 @@
 
 | App (from) | Phụ thuộc workspace | spec | Thư mục |
 |------------|---------------------|------|---------|
+| `@api` | `@workspace/api-client` | `workspace:*` | `apps/main/api/` |
 | `@api` | `@workspace/api-server` | `workspace:*` | `apps/main/api/` |
 | `@api` | `@workspace/eslint-config` | `workspace:*` | `apps/main/api/` |
 | `@backend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/main/backend/` |
@@ -63,16 +64,23 @@
 | `@hub-event-checkin-frontend` | `@workspace/query-client` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
 | `@hub-event-checkin-frontend` | `@workspace/site-config` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
 | `@hub-event-checkin-frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
+| `@hub-event/api` | `@workspace/api-client` | `workspace:*` | `apps/hub-event/api/` |
 | `@hub-event/api` | `@workspace/api-server` | `workspace:*` | `apps/hub-event/api/` |
 | `@hub-event/api` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event/api/` |
+| `@hub-parent/api` | `@workspace/api-client` | `workspace:*` | `apps/hub-parent/api/` |
 | `@hub-parent/api` | `@workspace/api-server` | `workspace:*` | `apps/hub-parent/api/` |
 | `@hub-parent/api` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-parent/api/` |
+| `@store-sync-frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
+| `@store-sync-frontend` | `@workspace/admin-app` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/api-client` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/dealer-support` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/promo-codes` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/query-client` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
+| `@store-sync-frontend` | `@workspace/site-config` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
 | `@store-sync-frontend` | `@workspace/ui` | `workspace:*` | `apps/store-sync/store-sync-frontend/` |
+| `@store-sync/api` | `@workspace/api-client` | `workspace:*` | `apps/store-sync/api/` |
+| `@store-sync/api` | `@workspace/api-server` | `workspace:*` | `apps/store-sync/api/` |
 | `@store-sync/api` | `@workspace/eslint-config` | `workspace:*` | `apps/store-sync/api/` |
 
 ## Làm mới

@@ -1,6 +1,6 @@
 # Thống kê graph — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.546Z`
+> **Sinh tự động:** `2026-06-15T03:40:54.605Z`
 
 ## Top in-degree
 
@@ -14,15 +14,15 @@
 | `src/modules/contact-requests/_component/types.ts` | 9 |
 | `src/modules/events/_component/types.ts` | 9 |
 | `src/modules/orders/_component/types.ts` | 9 |
+| `src/config/types.ts` | 8 |
 | `src/modules/products/_component/types.ts` | 8 |
 | `src/modules/tags/_component/types.ts` | 8 |
 | `src/modules/academic-years/_component/types.ts` | 7 |
-| `src/modules/cameras/_component/types.ts` | 7 |
 
 ## Nodes theo type
 
-- `ts`: 294
-- `directory`: 237
-- `tsx`: 161
-- `page`: 94
+- `ts`: 308
+- `directory`: 253
+- `tsx`: 168
+- `page`: 101
 - `loading`: 58

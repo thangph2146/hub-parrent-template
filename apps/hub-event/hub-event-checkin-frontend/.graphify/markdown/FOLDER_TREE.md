@@ -1,6 +1,6 @@
 # Cây thư mục — apps/hub-event/hub-event-checkin-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.438Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-15T03:40:54.458Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -27,13 +27,6 @@ src/
 │   │   │   └── [slug]/
 │   │   └── su-kien-cua-toi/
 │   └── admin/
-│       ├── _component/
-│       │   ├── _alert-dialog/
-│       │   ├── _form/
-│       │   ├── _hooks/
-│       │   ├── _live/
-│       │   ├── _query/
-│       │   └── _table/
 │       ├── [id]/
 │       │   └── edit/
 │       ├── cameras/
@@ -45,6 +38,8 @@ src/
 │       │   │   └── edit/
 │       │   └── new/
 │       ├── check-in-ky-tuc-xa/
+│       ├── contact-requests/
+│       │   └── [id]/
 │       ├── dang-ky/
 │       ├── dang-nhap/
 │       ├── data/
@@ -90,23 +85,32 @@ src/
 │       │   └── new/
 │       └── tong-quan/
 ├── components/
+│   ├── admin/
+│   │   └── events/
+│   │       ├── _alert-dialog/
+│   │       ├── _form/
+│   │       ├── _hooks/
+│   │       ├── _live/
+│   │       ├── _query/
+│   │       └── _table/
 │   ├── icons/
 │   └── shared/
 ├── config/
-│   └── admin/
+│   ├── admin/
+│   └── portal/
 ├── features/
 │   ├── admin-auth/
 │   ├── auth/
-│   ├── my-events/
 │   └── my-registered-events/
-│       ├── _query/
-│       └── _table/
 ├── hooks/
 │   └── admin/
 ├── lib/
-│   └── admin/
+│   ├── admin/
+│   ├── portal/
+│   └── site/
 ├── providers/
-│   └── admin/
+│   ├── admin/
+│   └── portal/
 └── types/
     └── admin/
 ```
