@@ -38,9 +38,12 @@ const SHELL_DIRS = [
   'src/common/module-bases',
   'src/common/module-types',
   'src/config',
+  'src/data-test',
   'src/entities',
   'src/mikro-orm',
 ]
+
+const BINARY_EXTENSIONS = new Set(['.gz', '.png', '.jpg', '.jpeg', '.webp', '.ico', '.woff', '.woff2'])
 const SHELL_FILES = ['src/main.ts', 'src/app.module.ts']
 const SRC_EXTRA_DIRS = ['migrations', 'seeders', 'seeds']
 const SRC_EXTRA_FILES = [
@@ -95,7 +98,17 @@ function withBanner(relPath, content) {
   return TEMPLATE_BANNER + content
 }
 
+function isBinaryFile(relPath) {
+  const ext = path.extname(relPath).toLowerCase()
+  return BINARY_EXTENSIONS.has(ext)
+}
+
 function copyFile(src, dest, relPath) {
+  if (isBinaryFile(relPath)) {
+    fs.mkdirSync(path.dirname(dest), { recursive: true })
+    fs.copyFileSync(src, dest)
+    return
+  }
   writeFileWithRetry(dest, withBanner(relPath, fs.readFileSync(src, 'utf8')))
 }
 

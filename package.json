@@ -59,6 +59,7 @@
     "check": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm verify:sdk-http && pnpm verify:permissions && pnpm verify:main-admin && pnpm verify:api-template && pnpm verify:checkin-api && pnpm verify:main-api-endpoint-parity && pnpm verify:api-profile && pnpm lint && pnpm typecheck",
     "check:full": "pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm verify:sdk-http && pnpm verify:permissions && pnpm verify:main-admin && pnpm lint && pnpm typecheck && pnpm graphify:ai-summary",
     "test": "pnpm --filter @api test:all",
+    "test:api:live": "pnpm --filter @api test:live",
     "test:watch": "pnpm --filter @api test:watch",
     "test:cov": "pnpm --filter @api test:cov",
     "graphify:update": "node script-system/graphify/graphify-update.cjs apps/main/api && node script-system/graphify/graphify-update.cjs apps/main/backend && node script-system/graphify/graphify-update.cjs apps/hub-parent/api && node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend && node script-system/graphify/graphify-update.cjs apps/hub-event/api && node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend && node script-system/graphify/graphify-update.cjs apps/store-sync/api && node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend",
