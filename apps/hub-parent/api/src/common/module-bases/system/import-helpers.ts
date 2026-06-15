@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Hàng import category: cha phải insert trước con (trùng logic seed-full-export). */
 export type ImportRow = Record<string, unknown>;
 

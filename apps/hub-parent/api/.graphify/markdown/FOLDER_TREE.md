@@ -1,6 +1,6 @@
 # Cây thư mục — apps/hub-parent/api (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.384Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-15T03:40:54.316Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -13,10 +13,63 @@ src/
 ├── categories/
 ├── comments/
 ├── common/
+│   ├── admin/
+│   │   └── realtime/
+│   ├── app/
+│   ├── commerce/
+│   ├── crud/
+│   ├── infra/
+│   ├── module-bases/
+│   │   ├── academic-years/
+│   │   ├── accounts/
+│   │   ├── admission-results/
+│   │   ├── auth/
+│   │   ├── cameras/
+│   │   ├── carts/
+│   │   ├── categories/
+│   │   ├── comments/
+│   │   ├── contact-requests/
+│   │   ├── courses/
+│   │   ├── dashboard/
+│   │   ├── departments/
+│   │   ├── event-checkins/
+│   │   ├── event-checkouts/
+│   │   ├── event-registrations/
+│   │   ├── event-speakers/
+│   │   ├── events/
+│   │   ├── face-data/
+│   │   ├── groups/
+│   │   ├── imported-users/
+│   │   ├── locations/
+│   │   ├── majors/
+│   │   ├── notifications/
+│   │   ├── orders/
+│   │   ├── page-contents/
+│   │   ├── parent-students/
+│   │   ├── posts/
+│   │   ├── products/
+│   │   ├── promo-codes/
+│   │   ├── roles/
+│   │   ├── screens/
+│   │   ├── seo-metas/
+│   │   ├── sessions/
+│   │   ├── settings/
+│   │   ├── speakers/
+│   │   ├── students/
+│   │   ├── system/
+│   │   ├── tags/
+│   │   ├── templates/
+│   │   ├── training-levels/
+│   │   ├── training-systems/
+│   │   └── users/
+│   └── module-types/
 ├── config/
+│   └── role-templates/
 ├── contact-requests/
 ├── courses/
 ├── dashboard/
+├── data-test/
+│   └── fixtures/
 ├── departments/
 ├── entities/
 ├── event-checkins/
@@ -56,6 +109,7 @@ src/
 ├── system/
 ├── tags/
 ├── templates/
+├── testing/
 ├── training-levels/
 ├── training-systems/
 ├── uploads/

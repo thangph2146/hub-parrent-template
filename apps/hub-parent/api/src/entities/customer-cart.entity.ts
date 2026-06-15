@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, Index, PrimaryKey, Property } from '@mikro-orm/core';
 import type { CustomerCartLine } from '../common/commerce/cart-types';
 

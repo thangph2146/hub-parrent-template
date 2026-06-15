@@ -25,7 +25,7 @@ import {
   parseAdminListLimit,
 } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type {
   BasePageContentsService,
   PageContentCreateInput,
@@ -34,22 +34,16 @@ import type {
 
 export type IPageContentsControllerService = Pick<
   BasePageContentsService,
-  | 'list'
-  | 'getById'
-  | 'create'
-  | 'update'
-  | 'delete'
-  | 'bulk'
+  'list' | 'getById' | 'create' | 'update' | 'delete' | 'bulk'
 >;
 /** @deprecated Dùng `IPageContentsControllerService`. */
-export type IPageContentsAdminControllerService = IPageContentsControllerService;
+export type IPageContentsAdminControllerService =
+  IPageContentsControllerService;
 
 @Permissions(PERMISSIONS.PAGE_CONTENTS_VIEW)
 @Controller(ADMIN_ROUTES.PAGE_CONTENTS)
 export class BasePageContentsController extends BaseAdminHttpController {
-  constructor(
-    protected readonly service: IPageContentsControllerService,
-  ) {
+  constructor(protected readonly service: IPageContentsControllerService) {
     super();
   }
 
@@ -79,7 +73,11 @@ export class BasePageContentsController extends BaseAdminHttpController {
       this.logger.error(
         `GET ${ADMIN_ROUTES.PAGE_CONTENTS} ${error instanceof Error ? error.message : String(error)}`,
       );
-      return this.sendError(res, 'Lỗi server khi lấy danh sách page contents', 500);
+      return this.sendError(
+        res,
+        'Lỗi server khi lấy danh sách page contents',
+        500,
+      );
     }
   }
 

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Permissions Guard.
  *
@@ -22,6 +21,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
   ForbiddenException,
+  SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from './permissions.decorator';
@@ -54,8 +54,7 @@ export interface AuthPayloadResolver {
 const FAILURE_MESSAGES: Record<AuthFailureReason, string> = {
   not_found:
     'Không tìm thấy tài khoản (sai id hoặc đã xóa). Vui lòng đăng nhập lại.',
-  inactive:
-    'Tài khoản đã bị vô hiệu hóa hoặc xóa mềm. Liên hệ quản trị viên.',
+  inactive: 'Tài khoản đã bị vô hiệu hóa hoặc xóa mềm. Liên hệ quản trị viên.',
   no_roles:
     'Tài khoản chưa được gán vai trò (user_roles). Liên hệ quản trị viên.',
   unknown: 'Người dùng không tồn tại hoặc không có quyền truy cập',
@@ -64,11 +63,7 @@ const FAILURE_MESSAGES: Record<AuthFailureReason, string> = {
 /**
  * Mark route as public (bypass auth/permission check).
  */
-export const Public = () => {
-  // Lazy require để tránh vòng lặp với reflector
-  const { SetMetadata } = require('@nestjs/common') as typeof import('@nestjs/common');
-  return SetMetadata(IS_PUBLIC_KEY, true);
-};
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

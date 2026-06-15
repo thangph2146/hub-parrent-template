@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Groups Service — domain logic (materialize → apps/main/api module-bases).
  */
@@ -62,23 +61,34 @@ export interface GroupMessageDto {
   replyToId: number | null;
 }
 
-function mapGroupWithMembers(group: Record<string, unknown>): GroupWithMembersDto {
-  const members = (group.members as Record<string, unknown>[] | undefined) ?? [];
+function mapGroupWithMembers(
+  group: Record<string, unknown>,
+): GroupWithMembersDto {
+  const members =
+    (group.members as Record<string, unknown>[] | undefined) ?? [];
   return {
     id: group.id as number,
     name: String(group.name ?? ''),
     description: (group.description as string | null | undefined) ?? null,
     avatar: (group.avatar as string | null | undefined) ?? null,
     createdById: relationEntityId(group.creator),
-    createdAt: safeIsoStringNow(group.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(group.updatedAt as Date | string | null | undefined),
-    deletedAt: safeIsoString(group.deletedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      group.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      group.updatedAt as Date | string | null | undefined,
+    ),
+    deletedAt: safeIsoString(
+      group.deletedAt as Date | string | null | undefined,
+    ),
     members: members.map((m) => ({
       id: m.id as number,
       groupId: relationEntityId(m.group),
       userId: relationEntityId(m.user),
       role: m.role,
-      joinedAt: safeIsoStringNow(m.joinedAt as Date | string | null | undefined),
+      joinedAt: safeIsoStringNow(
+        m.joinedAt as Date | string | null | undefined,
+      ),
       leftAt: safeIsoString(m.leftAt as Date | string | null | undefined),
       user: m.user,
     })),
@@ -122,7 +132,7 @@ export abstract class BaseGroupsService {
       new Set([createdById, ...(memberIds ?? []).filter(Boolean)]),
     );
 
-    const group = new Group() as Record<string, unknown>;
+    const group = new Group();
     group.name = nameTrim;
     group.description = description?.trim() || null;
     group.avatar = avatar?.trim() || null;
@@ -132,7 +142,7 @@ export abstract class BaseGroupsService {
 
     const groupId = group.id as number;
     for (const userId of uniqueIds) {
-      const member = new GroupMember() as Record<string, unknown>;
+      const member = new GroupMember();
       member.group = em.getReference(Group, groupId);
       member.user = em.getReference(User, toEntityId(userId));
       member.role =
@@ -328,7 +338,7 @@ export abstract class BaseGroupsService {
       .filter((mid) => !existingIds.has(mid));
     if (toAdd.length === 0) return true;
     for (const uid of toAdd) {
-      const member = new GroupMember() as Record<string, unknown>;
+      const member = new GroupMember();
       member.group = em.getReference(Group, gid);
       member.user = em.getReference(User, uid);
       member.role = GROUP_ROLE.MEMBER;
@@ -389,13 +399,13 @@ export abstract class BaseGroupsService {
     );
     if (!group) return false;
     const members =
-      ((group as Record<string, unknown>).members as Record<string, unknown>[]) ??
-      [];
+      ((group as Record<string, unknown>).members as Record<
+        string,
+        unknown
+      >[]) ?? [];
     const uid = toEntityId(userId);
     const targetUid = toEntityId(memberUserId);
-    const currentMember = members.find(
-      (m) => relationEntityId(m.user) === uid,
-    );
+    const currentMember = members.find((m) => relationEntityId(m.user) === uid);
     const targetMember = members.find(
       (m) => relationEntityId(m.user) === targetUid,
     );
@@ -435,7 +445,9 @@ export abstract class BaseGroupsService {
       { group: gid, deletedAt: null },
       { fields: ['id'] },
     );
-    const messageIds = messages.map((m) => (m as Record<string, unknown>).id as number);
+    const messageIds = messages.map(
+      (m) => (m as Record<string, unknown>).id as number,
+    );
     const existing = await em.find(
       MessageRead,
       { user: toEntityId(userId), message: { $in: messageIds } },
@@ -451,7 +463,7 @@ export abstract class BaseGroupsService {
     );
     if (toCreate.length > 0) {
       for (const m of toCreate) {
-        const read = new MessageRead() as Record<string, unknown>;
+        const read = new MessageRead();
         read.message = em.getReference(
           Message,
           (m as Record<string, unknown>).id as number,
@@ -514,7 +526,9 @@ export abstract class BaseGroupsService {
         content: String(row.content ?? ''),
         senderId: relationEntityId(row.sender),
         receiverId: relationEntityId(row.receiver),
-        timestamp: safeIsoStringNow(row.createdAt as Date | string | null | undefined),
+        timestamp: safeIsoStringNow(
+          row.createdAt as Date | string | null | undefined,
+        ),
         isRead: readSet.has(id),
         replyToId: relationEntityId(row.parent),
       };

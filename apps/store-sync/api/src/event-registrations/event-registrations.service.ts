@@ -3,6 +3,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { EventRegistration } from '../entities/event-registration.entity';
+import { Event } from '../entities/event.entity';
 import { User } from '../entities/user.entity';
 import { BaseEventRegistrationsService } from '../common/module-bases/event-registrations/event-registrations.service';
 export type {
@@ -27,7 +28,7 @@ export class EventRegistrationsService extends BaseEventRegistrationsService {
   }
 
   protected getEventEntity() {
-    return EventRegistration as unknown as new () => Record<string, unknown>;
+    return Event as unknown as new () => Record<string, unknown>;
   }
 
   protected getUserEntity() {

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * AdmissionResults Service — domain logic (materialize → apps/main/api module-bases).
  */
@@ -78,10 +77,15 @@ function mapRow(r: Record<string, unknown>): AdmissionResultsRowDto {
     diemMon3: (r.diemMon3 as string | null | undefined) ?? null,
     diemTong: (r.diemTong as string | null | undefined) ?? null,
     diemUuTienKhuVuc: (r.diemUuTienKhuVuc as string | null | undefined) ?? null,
-    diemUuTienDoiTuong: (r.diemUuTienDoiTuong as string | null | undefined) ?? null,
+    diemUuTienDoiTuong:
+      (r.diemUuTienDoiTuong as string | null | undefined) ?? null,
     ghiChu: (r.ghiChu as string | null | undefined) ?? null,
-    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      r.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      r.updatedAt as Date | string | null | undefined,
+    ),
     deletedAt: safeIsoString(r.deletedAt as Date | string | null | undefined),
   };
 }
@@ -158,15 +162,20 @@ export abstract class BaseAdmissionResultsService {
     if (search?.trim()) {
       const q = search.trim();
       if (column === 'hoTen') where.hoTen = { $like: `%${q}%` };
-      else if (column === 'nganhDangKy') where.nganhDangKy = { $like: `%${q}%` };
+      else if (column === 'nganhDangKy')
+        where.nganhDangKy = { $like: `%${q}%` };
       else if (column === 'soBaoDanh') where.soBaoDanh = { $like: `%${q}%` };
       else where.hoTen = { $like: `%${q}%` };
     }
-    const rows = await em.find(Entity, where as FilterQuery<Record<string, unknown>>, {
-      fields: [column] as never,
-      orderBy: { [column]: 'ASC' } as never,
-      limit,
-    });
+    const rows = await em.find(
+      Entity,
+      where as FilterQuery<Record<string, unknown>>,
+      {
+        fields: [column] as never,
+        orderBy: { [column]: 'ASC' } as never,
+        limit,
+      },
+    );
     const seen = new Set<string>();
     return rows
       .map((r) => String((r as Record<string, unknown>)[column] ?? ''))
@@ -225,10 +234,12 @@ export abstract class BaseAdmissionResultsService {
     return null;
   }
 
-  async create(data: AdmissionResultsCreateData): Promise<AdmissionResultsRowDto> {
+  async create(
+    data: AdmissionResultsCreateData,
+  ): Promise<AdmissionResultsRowDto> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const entity = new Entity() as Record<string, unknown>;
+    const entity = new Entity();
     entity.cccd = data.cccd?.trim() ?? null;
     entity.soBaoDanh = data.soBaoDanh?.trim() ?? null;
     entity.hoTen = data.hoTen.trim();
@@ -255,13 +266,18 @@ export abstract class BaseAdmissionResultsService {
     if (!existing) return null;
     const row = existing as Record<string, unknown>;
     if (data.cccd !== undefined) row.cccd = data.cccd?.trim() ?? null;
-    if (data.soBaoDanh !== undefined) row.soBaoDanh = data.soBaoDanh?.trim() ?? null;
+    if (data.soBaoDanh !== undefined)
+      row.soBaoDanh = data.soBaoDanh?.trim() ?? null;
     if (data.hoTen != null) row.hoTen = data.hoTen.trim();
     if (data.nganhDangKy != null) row.nganhDangKy = data.nganhDangKy.trim();
-    if (data.diemMon1 !== undefined) row.diemMon1 = data.diemMon1?.trim() ?? null;
-    if (data.diemMon2 !== undefined) row.diemMon2 = data.diemMon2?.trim() ?? null;
-    if (data.diemMon3 !== undefined) row.diemMon3 = data.diemMon3?.trim() ?? null;
-    if (data.diemTong !== undefined) row.diemTong = data.diemTong?.trim() ?? null;
+    if (data.diemMon1 !== undefined)
+      row.diemMon1 = data.diemMon1?.trim() ?? null;
+    if (data.diemMon2 !== undefined)
+      row.diemMon2 = data.diemMon2?.trim() ?? null;
+    if (data.diemMon3 !== undefined)
+      row.diemMon3 = data.diemMon3?.trim() ?? null;
+    if (data.diemTong !== undefined)
+      row.diemTong = data.diemTong?.trim() ?? null;
     if (data.diemUuTienKhuVuc !== undefined) {
       row.diemUuTienKhuVuc = data.diemUuTienKhuVuc?.trim() ?? null;
     }

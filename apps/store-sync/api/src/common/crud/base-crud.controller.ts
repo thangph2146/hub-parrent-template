@@ -49,7 +49,11 @@ import type {
   BulkOperationResult,
   CrudRowDto,
 } from './crud.types';
-import { createSuccessResponse, createErrorResponse, type ApiResponsePayload } from '../api-response';
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  type ApiResponsePayload,
+} from '../api-response';
 import { parseListQuery } from '../parse-list-query';
 import { isBulkAction, type BulkAction } from '../bulk-actions';
 import { Permissions } from '../permissions.decorator';
@@ -144,7 +148,11 @@ export class BaseCrudController<
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiQuery({ name: 'status', required: false, enum: ['active', 'deleted', 'all'] })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['active', 'deleted', 'all'],
+  })
   @ApiResponse({ status: 200, description: 'Paginated result' })
   async list(
     @Query() rawQuery: Record<string, unknown> = {},
@@ -230,12 +238,13 @@ export class BaseCrudController<
     const ok = await this.service.softDelete(numericId);
     if (!ok) {
       throw new NotFoundException(
-        createErrorResponse('Không tìm thấy bản ghi hoặc đã xóa', { status: 404 }).body,
+        createErrorResponse('Không tìm thấy bản ghi hoặc đã xóa', {
+          status: 404,
+        }).body,
       );
     }
-    return createSuccessResponse(
-      { success: true, message: 'Đã xóa bản ghi' },
-    ).body;
+    return createSuccessResponse({ success: true, message: 'Đã xóa bản ghi' })
+      .body;
   }
 
   /**
@@ -308,9 +317,10 @@ export class BaseCrudController<
         createErrorResponse('Không tìm thấy bản ghi', { status: 404 }).body,
       );
     }
-    return createSuccessResponse(
-      { success: true, message: 'Đã xóa vĩnh viễn bản ghi' },
-    ).body;
+    return createSuccessResponse({
+      success: true,
+      message: 'Đã xóa vĩnh viễn bản ghi',
+    }).body;
   }
 
   /**
@@ -318,7 +328,9 @@ export class BaseCrudController<
    */
   @Post('bulk')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Bulk action (delete/restore/hard-delete/active/unactive)' })
+  @ApiOperation({
+    summary: 'Bulk action (delete/restore/hard-delete/active/unactive)',
+  })
   async bulk(
     @Body() body: { action: string; ids: Array<string | number> },
   ): Promise<ApiResponsePayload<BulkOperationResult>> {
@@ -329,7 +341,8 @@ export class BaseCrudController<
     }
     if (!Array.isArray(body.ids) || body.ids.length === 0) {
       throw new BadRequestException(
-        createErrorResponse('ids phải là mảng không rỗng', { status: 400 }).body,
+        createErrorResponse('ids phải là mảng không rỗng', { status: 400 })
+          .body,
       );
     }
     const result = await this.service.bulk(body.action, body.ids);

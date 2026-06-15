@@ -37,6 +37,7 @@ import { CartsModule } from './carts/carts.module';
         limit: 100,
       },
     ]),
+    DatabaseModule,
     PublicModule,
     SocketModule,
     AuthModule,

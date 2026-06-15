@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { HanetCameraRole, HanetWebhookBody } from './hanet.types';
 
 /** Mã thiết bị / camera trên payload HANET thực tế. */

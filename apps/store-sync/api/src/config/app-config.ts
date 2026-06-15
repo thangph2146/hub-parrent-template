@@ -5,10 +5,10 @@
  */
 export const apiServerAppConfig = {
   get nodeEnv(): string {
-    return process.env.NODE_ENV ?? 'development'
+    return process.env.NODE_ENV ?? 'development';
   },
   get publicUrl(): string | undefined {
-    const v = process.env.PUBLIC_URL ?? process.env.NEXT_PUBLIC_APP_URL
-    return v?.trim() || undefined
+    const v = process.env.PUBLIC_URL ?? process.env.NEXT_PUBLIC_APP_URL;
+    return v?.trim() || undefined;
   },
-}
+};

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Accounts admin service — profile user hiện tại; app binding entity.
  */
@@ -96,7 +95,11 @@ export abstract class BaseAccountsService {
     const UserRole = this.getUserRoleEntity();
     const user = await this.getEm().findOne(User, { id: toEntityId(userId) });
 
-    if (!user || (user as UserWithProfile).deletedAt || !(user as UserWithProfile).isActive) {
+    if (
+      !user ||
+      (user as UserWithProfile).deletedAt ||
+      !(user as UserWithProfile).isActive
+    ) {
       return null;
     }
 

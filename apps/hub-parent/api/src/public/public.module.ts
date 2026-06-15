@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module, forwardRef } from '@nestjs/common';
 import { SocketModule } from '../socket/socket.module';
 import { PublicController } from './public.controller';

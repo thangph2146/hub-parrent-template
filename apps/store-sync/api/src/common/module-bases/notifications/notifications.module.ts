@@ -10,7 +10,10 @@ export class BaseNotificationsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseNotificationsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseNotificationsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

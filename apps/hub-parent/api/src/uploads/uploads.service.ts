@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { toEntityId, toEntityIdList } from '../common';
 /**
  * Uploads Service - Quản lý file/thư mục upload (lưu trên disk tại API).

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { StorageRealm } from './storage-media';
 
 export const STORAGE_POLICY_FILENAME = '.storage-policy.json';

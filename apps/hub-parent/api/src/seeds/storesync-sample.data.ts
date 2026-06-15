@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { OrderStatus, PaymentStatus } from '../entities/order.entity';
 import type { Product } from '../entities/product.entity';
 

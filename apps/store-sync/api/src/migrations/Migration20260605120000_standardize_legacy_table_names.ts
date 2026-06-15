@@ -6,7 +6,11 @@ import { Migration } from '@mikro-orm/migrations';
  * Chạy: pnpm --filter @api run db:migration:up
  */
 export class Migration20260605120000_standardize_legacy_table_names extends Migration {
-  override up(): void {
+  /** DB mới (schema:create) không có bảng legacy — bỏ qua. */
+  override async up(): Promise<void> {
+    const hasLegacy = await this.getKnex().schema.hasTable('nguoidung');
+    if (!hasLegacy) return;
+
     this.addSql(
       'alter table `nguoidung` drop foreign key `nguoidung_nam_hoc_id_foreign`;',
     );

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * PageContents Module — NestJS wiring cho admin page-contents.
  */
@@ -10,7 +9,10 @@ export class BasePageContentsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BasePageContentsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BasePageContentsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

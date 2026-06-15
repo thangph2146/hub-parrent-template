@@ -1,4 +1,4 @@
-/** AUTO-GENERATED — extends BaseEventRegistrationAttendanceService (local module-bases). */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { BaseEventRegistrationAttendanceService } from '../common/module-bases/event-registrations/event-registration-attendance.service';

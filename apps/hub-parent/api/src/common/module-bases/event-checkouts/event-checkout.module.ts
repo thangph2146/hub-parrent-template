@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Event Checkouts Module.
  *
@@ -15,7 +14,10 @@ export class BaseEventCheckoutsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseEventCheckoutsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseEventCheckoutsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

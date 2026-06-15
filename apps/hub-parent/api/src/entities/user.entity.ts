@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, Property, OneToMany } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
 import { Account } from './account.entity';

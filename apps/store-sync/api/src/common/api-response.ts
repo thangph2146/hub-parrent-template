@@ -55,10 +55,7 @@ export function ok<T>(data: T, message?: string): ApiResponsePayload<T> {
   };
 }
 
-export function fail(
-  message: string,
-  data?: unknown,
-): ApiResponsePayload {
+export function fail(message: string, data?: unknown): ApiResponsePayload {
   return {
     success: false,
     message,

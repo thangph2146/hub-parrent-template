@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * BaseAccountsController — HTTP admin accounts (@workspace/api-server).
  */
@@ -20,7 +19,7 @@ import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import type { BaseAccountsService, UpdateAccountDto } from './accounts.service';
 import { Permissions } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import { apiServerAppConfig } from '../../../config/app-config';
 
 type AvatarUploadsBinding = {
@@ -38,8 +37,7 @@ const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 export type IAccountsControllerService = Pick<
   BaseAccountsService,
-  | 'getProfile'
-  | 'updateProfile'
+  'getProfile' | 'updateProfile'
 >;
 /** @deprecated Dùng `IAccountsControllerService`. */
 export type IAccountsAdminControllerService = IAccountsControllerService;

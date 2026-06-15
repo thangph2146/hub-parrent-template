@@ -1,6 +1,6 @@
 # Pattern clusters — apps/hub-parent/api (Graphify)
 
-> **Sinh tự động:** `2026-06-13T21:25:57.384Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-15T03:40:54.316Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
@@ -12,7 +12,7 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 
 | Basename | Số file | Gợi ý |
 |----------|---------|--------|
-| — | 0 | — |
+| `index.ts` | 8 | — |
 
 ## Làm mới
 

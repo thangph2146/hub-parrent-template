@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { AcademicYear } from '../entities/academic-year.entity';
 import { Account } from '../entities/account.entity';
 import { AdmissionResult } from '../entities/admission-result.entity';

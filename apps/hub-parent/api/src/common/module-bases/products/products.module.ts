@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Products Module.
  *
@@ -15,10 +14,7 @@ export class BaseProductsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseProductsController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseProductsController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

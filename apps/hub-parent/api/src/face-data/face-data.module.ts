@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module } from '@nestjs/common';
 import { FaceDataController } from './face-data.controller';
 import { FaceDataService } from './face-data.service';

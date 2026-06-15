@@ -9,12 +9,16 @@ import { BadRequestException } from '@nestjs/common';
 export type EntityId = number;
 
 /** Parse id từ route param / query (luôn là chuỗi trên HTTP). */
-export function parseEntityId(value: string | number | null | undefined): number {
+export function parseEntityId(
+  value: string | number | null | undefined,
+): number {
   if (value == null || value === '') {
     throw new BadRequestException('Thiếu id.');
   }
   const n =
-    typeof value === 'number' ? value : Number.parseInt(String(value).trim(), 10);
+    typeof value === 'number'
+      ? value
+      : Number.parseInt(String(value).trim(), 10);
   if (!Number.isFinite(n) || n <= 0) {
     throw new BadRequestException('Id không hợp lệ.');
   }
@@ -64,9 +68,7 @@ export function relationEntityId(value: unknown): number | null {
  * PK import: chỉ giữ id số nguyên dương hợp lệ (không nhận UUID/CUID legacy).
  * Trả về undefined để caller bỏ qua field → DB autoincrement.
  */
-export function coerceImportPrimaryKey(
-  value: unknown,
-): number | undefined {
+export function coerceImportPrimaryKey(value: unknown): number | undefined {
   if (typeof value === 'number' && Number.isInteger(value) && value > 0) {
     return value;
   }

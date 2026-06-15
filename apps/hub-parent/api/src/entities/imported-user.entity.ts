@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { AcademicYear } from './academic-year.entity';
 import { TrainingLevel } from './training-level.entity';

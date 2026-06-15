@@ -1,7 +1,7 @@
 import {
   buildOrderItemsFromProducts,
   mergeCreateOrderLines,
-} from '../common/module-bases/orders/order-checkout';
+} from './order-checkout';
 import { Product } from '../entities/product.entity';
 
 function mockProduct(overrides: Partial<Product> = {}): Product {

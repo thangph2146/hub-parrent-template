@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * BaseEventCheckinsController — HTTP admin event checkins (@workspace/api-server).
  */
@@ -25,7 +24,7 @@ import type { Response } from 'express';
 import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import { Permissions, parseAdminListLimit, isBulkAction } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type {
   BaseEventCheckinsService,
   ListEventCheckinsParams,
@@ -43,15 +42,14 @@ export type IEventCheckinsControllerService = Pick<
   | 'bulk'
 >;
 /** @deprecated Dùng `IEventCheckinsControllerService`. */
-export type IEventCheckinsAdminControllerService = IEventCheckinsControllerService;
+export type IEventCheckinsAdminControllerService =
+  IEventCheckinsControllerService;
 
 @ApiTags('Event Checkins')
 @Permissions(PERMISSIONS.EVENT_CHECKINS_VIEW)
 @Controller(ADMIN_ROUTES.EVENT_CHECKINS)
 export class BaseEventCheckinsController extends BaseAdminHttpController {
-  constructor(
-    protected readonly service: IEventCheckinsControllerService,
-  ) {
+  constructor(protected readonly service: IEventCheckinsControllerService) {
     super();
   }
 

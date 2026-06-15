@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Notifications admin service — domain logic (materialize → apps/main/api module-bases).
  */
@@ -111,7 +110,10 @@ export abstract class BaseNotificationsService {
   protected abstract getUserEntity(): new () => Record<string, unknown>;
   protected abstract getUserRoleEntity(): new () => Record<string, unknown>;
   protected abstract getMessageEntity(): new () => Record<string, unknown>;
-  protected abstract getContactRequestEntity(): new () => Record<string, unknown>;
+  protected abstract getContactRequestEntity(): new () => Record<
+    string,
+    unknown
+  >;
   protected abstract emitNotificationToUser(
     recipientUserId: number,
     notification: Record<string, unknown>,
@@ -174,7 +176,8 @@ export abstract class BaseNotificationsService {
   }): Promise<NotificationItemDto> {
     const Notification = this.getNotificationEntity();
     const User = this.getUserEntity();
-    const entity = new Notification() as NotificationWithUser & Record<string, unknown>;
+    const entity = new Notification() as NotificationWithUser &
+      Record<string, unknown>;
     entity.user = this.getEm().getReference(User, toEntityId(data.userId));
     entity.kind = data.kind;
     entity.title = data.title;
@@ -212,7 +215,10 @@ export abstract class BaseNotificationsService {
         offset,
       }),
       this.getEm().count(Notification, whereQuery),
-      this.getEm().count(Notification, { user: toEntityId(userId), isRead: false }),
+      this.getEm().count(Notification, {
+        user: toEntityId(userId),
+        isRead: false,
+      }),
     ]);
 
     return {
@@ -390,23 +396,25 @@ export abstract class BaseNotificationsService {
       this.getEm().count(Notification, whereQuery),
     ]);
 
-    const data: AdminTableRowDto[] = (rows as NotificationWithUser[]).map((n) => ({
-      ...mapRow(n),
-      userEmail:
-        n.user &&
-        typeof n.user === 'object' &&
-        'email' in n.user &&
-        typeof n.user.email === 'string'
-          ? n.user.email
-          : null,
-      userName:
-        n.user &&
-        typeof n.user === 'object' &&
-        'name' in n.user &&
-        (typeof n.user.name === 'string' || n.user.name == null)
-          ? (n.user.name ?? null)
-          : null,
-    }));
+    const data: AdminTableRowDto[] = (rows as NotificationWithUser[]).map(
+      (n) => ({
+        ...mapRow(n),
+        userEmail:
+          n.user &&
+          typeof n.user === 'object' &&
+          'email' in n.user &&
+          typeof n.user.email === 'string'
+            ? n.user.email
+            : null,
+        userName:
+          n.user &&
+          typeof n.user === 'object' &&
+          'name' in n.user &&
+          (typeof n.user.name === 'string' || n.user.name == null)
+            ? (n.user.name ?? null)
+            : null,
+      }),
+    );
 
     return {
       data,

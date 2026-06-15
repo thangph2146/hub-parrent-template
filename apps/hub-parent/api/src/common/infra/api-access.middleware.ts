@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { NextFunction, Request, Response } from 'express';
 import { Logger } from '@nestjs/common';
 import { APP_HEADERS } from '../../config/constants';

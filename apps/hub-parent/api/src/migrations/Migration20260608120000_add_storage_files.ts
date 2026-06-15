@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Migration } from '@mikro-orm/migrations';
 
 /** Bảng metadata upload — lưu người upload thực tế, không suy từ tên file. */

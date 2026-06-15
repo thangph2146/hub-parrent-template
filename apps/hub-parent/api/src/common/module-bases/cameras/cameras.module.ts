@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Cameras Module.
  *
@@ -15,10 +14,7 @@ export class BaseCamerasModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseCamerasController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseCamerasController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

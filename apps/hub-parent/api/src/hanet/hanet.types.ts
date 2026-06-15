@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Payload webhook HANET (linh hoạt theo tài liệu developers.hanet.ai). */
 export type HanetWebhookBody = Record<string, unknown>;
 

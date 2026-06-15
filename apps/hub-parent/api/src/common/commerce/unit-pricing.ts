@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { ProductPriceTier, ProductUnitType } from './product-types';
 
 export type LinePricingResult = {

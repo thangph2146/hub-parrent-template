@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import 'reflect-metadata';
 import { toEntityId } from './common';
 import { config } from 'dotenv';
@@ -11,7 +10,6 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { SqliteDriver } from '@mikro-orm/sqlite';
 import { MySqlDriver } from '@mikro-orm/mysql';
 import * as fs from 'fs';
-import * as path from 'path';
 import { ormEntities } from './mikro-orm/orm-entities';
 import { Account } from './entities/account.entity';
 import { AdmissionResult } from './entities/admission-result.entity';
@@ -35,6 +33,7 @@ import { Tag } from './entities/tag.entity';
 import { User } from './entities/user.entity';
 import { UserRole } from './entities/user-role.entity';
 import { VerificationToken } from './entities/verification-token.entity';
+import { resolveSeedExportPath } from './common/data-paths';
 import {
   orderCategoryRowsForImport,
   sanitizePivotRowsInExportJson,
@@ -217,12 +216,10 @@ async function insertPostTagPivot(
 function resolveExportPath(): string {
   const fromEnv = process.env.SEED_EXPORT_PATH?.trim();
   const fromArg = process.argv[2]?.trim();
-  const fallback = path.join(__dirname, 'full-export-2026-05-14.json');
-  const p = fromEnv || fromArg || fallback;
-  if (!fs.existsSync(p)) {
-    throw new Error(`Không tìm thấy file export: ${p}`);
-  }
-  return p;
+  return resolveSeedExportPath({
+    explicitPath: fromEnv || fromArg || null,
+    legacyDir: __dirname,
+  });
 }
 
 function loadExport(filePath: string): ExportBundle {

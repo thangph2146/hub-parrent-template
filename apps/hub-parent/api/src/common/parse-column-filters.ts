@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Trích `filter[columnId]` từ query string admin list. */
 export function parseColumnFiltersFromQuery(
   query?: Record<string, string | undefined>,

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * PromoCodes Service.
  *
@@ -7,7 +6,11 @@
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../crud';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
+import type {
+  CrudRowDto,
+  CrudCreateData,
+  CrudUpdateData,
+} from '../../module-types';
 
 export interface PromoCodesRowDto extends CrudRowDto {
   id: number | string;

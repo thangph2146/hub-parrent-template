@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Users Mapper
  * Maps between User entity and DTOs
@@ -98,9 +97,8 @@ function listDevLoginRoles(
 ): DevLoginRole[] {
   const roles = (userRoles ?? [])
     .map((userRole) => userRole.role)
-    .filter(
-      (role): role is NonNullable<typeof role> =>
-        Boolean(role && role.deletedAt == null),
+    .filter((role): role is NonNullable<typeof role> =>
+      Boolean(role && role.deletedAt == null),
     );
 
   const seen = new Set<number>();
@@ -120,22 +118,20 @@ function listDevLoginRoles(
 /**
  * Map user to dev login option
  */
-export function mapUserToDevLoginOption(
-  user: {
-    id: number | string;
-    email?: string | null;
-    name?: string | null;
-    isActive?: boolean;
-    userRoles?: Array<{
-      role?: {
-        id: number;
-        name: string;
-        displayName?: string | null;
-        deletedAt?: Date | string | null;
-      } | null;
-    }>;
-  },
-): DevLoginOption | null {
+export function mapUserToDevLoginOption(user: {
+  id: number | string;
+  email?: string | null;
+  name?: string | null;
+  isActive?: boolean;
+  userRoles?: Array<{
+    role?: {
+      id: number;
+      name: string;
+      displayName?: string | null;
+      deletedAt?: Date | string | null;
+    } | null;
+  }>;
+}): DevLoginOption | null {
   const email = user.email?.trim() ?? '';
   if (!email) return null;
 
@@ -203,9 +199,7 @@ export function filterDevLoginOptions(
 /**
  * Default date mapper
  */
-function defaultMapDate(
-  date: Date | string | null | undefined,
-): string | null {
+function defaultMapDate(date: Date | string | null | undefined): string | null {
   if (!date) return null;
   if (typeof date === 'string') return date;
   return date.toISOString();
