@@ -15,12 +15,18 @@ import {
   eventRegistrationsPollInterval,
   useEventAttendanceSocket,
 } from "./use-event-attendance-socket"
-import type { EventAttendanceSocketPayload } from "./use-event-attendance-socket"
+import type {
+  EventAttendanceSocketPayload,
+  EventHanetSyncSocketPayload,
+} from "./use-event-attendance-socket"
+
+const MAX_HANET_SYNC_LOG = 50
 
 type EventAttendanceContextValue = {
   connected: boolean
   socketError: boolean
   lastPayload: EventAttendanceSocketPayload | null
+  hanetSyncLog: EventHanetSyncSocketPayload[]
   /** Tăng mỗi lần check-in/out — ép bảng re-render tức thì. */
   liveRevision: number
   applyAttendance: (payload: EventAttendanceSocketPayload) => void
@@ -43,6 +49,9 @@ export function EventAttendanceProvider({
   const [liveRevision, setLiveRevision] = useState(0)
   const [lastPayload, setLastPayload] =
     useState<EventAttendanceSocketPayload | null>(null)
+  const [hanetSyncLog, setHanetSyncLog] = useState<
+    EventHanetSyncSocketPayload[]
+  >([])
 
   const applyAttendance = useCallback(
     (payload: EventAttendanceSocketPayload) => {
@@ -53,10 +62,15 @@ export function EventAttendanceProvider({
     [queryClient, eventId]
   )
 
+  const appendHanetSync = useCallback((payload: EventHanetSyncSocketPayload) => {
+    setHanetSyncLog((prev) => [payload, ...prev].slice(0, MAX_HANET_SYNC_LOG))
+  }, [])
+
   const { connected, socketError } = useEventAttendanceSocket(
     eventId,
     enabled,
-    applyAttendance
+    applyAttendance,
+    appendHanetSync
   )
 
   const pollMs = eventRegistrationsPollInterval(connected)
@@ -71,10 +85,18 @@ export function EventAttendanceProvider({
       connected,
       socketError,
       lastPayload,
+      hanetSyncLog,
       liveRevision,
       applyAttendance,
     }),
-    [applyAttendance, connected, lastPayload, liveRevision, socketError]
+    [
+      applyAttendance,
+      connected,
+      hanetSyncLog,
+      lastPayload,
+      liveRevision,
+      socketError,
+    ]
   )
 
   return (
@@ -91,6 +113,7 @@ export function useEventAttendanceContext(): EventAttendanceContextValue {
       connected: false,
       socketError: false,
       lastPayload: null,
+      hanetSyncLog: [],
       liveRevision: 0,
       applyAttendance: () => {},
     }

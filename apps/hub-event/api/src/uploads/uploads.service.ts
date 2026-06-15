@@ -43,7 +43,13 @@ export type UploadsBulkDeleteResult = {
   failed: number;
   errors: Array<{ path: string; message: string }>;
 };
-import { isImageMime, isImageExt, processImageBuffer } from '../common';
+import {
+  isImageMime,
+  isImageExt,
+  processImageBuffer,
+  processFaceImageJpegBuffer,
+  isHanetFaceMime,
+} from '../common';
 import {
   mapZipPathToStoragePath,
   normalizeZipEntryPath,
@@ -1211,6 +1217,7 @@ export class UploadsService {
     serveBaseUrl?: string,
     userId?: string,
     ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
   ): Promise<{
     fileName: string;
     originalName: string;
@@ -1298,15 +1305,36 @@ export class UploadsService {
       isImageExt(ext) &&
       isImageMime(file.mimetype)
     ) {
-      try {
-        const processed = await processImageBuffer(file.buffer);
-        writeBuffer = processed.webpBuffer;
-        finalExt = '.webp';
-        finalMime = 'image/webp';
-        finalSize = writeBuffer.length;
-        isImage = true;
-      } catch {
-        // fallback: lưu file gốc nếu xử lý ảnh thất bại
+      const imageOutput = options?.imageOutput ?? 'webp';
+      if (imageOutput === 'jpeg-face') {
+        if (!isHanetFaceMime(file.mimetype) && !['.jpg', '.jpeg', '.png'].includes(ext)) {
+          throw new Error(
+            'Ảnh khuôn mặt HANET chỉ chấp nhận JPG hoặc PNG.',
+          );
+        }
+        try {
+          const processed = await processFaceImageJpegBuffer(file.buffer);
+          writeBuffer = processed.jpegBuffer;
+          finalExt = '.jpg';
+          finalMime = 'image/jpeg';
+          finalSize = writeBuffer.length;
+          isImage = true;
+        } catch (err) {
+          throw err instanceof Error
+            ? err
+            : new Error('Không xử lý được ảnh khuôn mặt');
+        }
+      } else {
+        try {
+          const processed = await processImageBuffer(file.buffer);
+          writeBuffer = processed.webpBuffer;
+          finalExt = '.webp';
+          finalMime = 'image/webp';
+          finalSize = writeBuffer.length;
+          isImage = true;
+        } catch {
+          // fallback: lưu file gốc nếu xử lý ảnh thất bại
+        }
       }
     }
 
@@ -1314,9 +1342,14 @@ export class UploadsService {
       uploadKind === 'images'
         ? resolveImageFileOwnerId(ownerUserId, userId)
         : undefined;
+    const storedImageExt = isImage
+      ? options?.imageOutput === 'jpeg-face'
+        ? '.jpg'
+        : '.webp'
+      : finalExt;
     const uniqueName = buildStoredUploadFileName(
       baseName,
-      isImage ? '.webp' : finalExt,
+      storedImageExt,
       { userId: nameUserId },
     );
 

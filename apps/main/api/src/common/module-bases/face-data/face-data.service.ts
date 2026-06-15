@@ -6,22 +6,35 @@
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../crud';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
+import type {
+  CrudRowDto,
+  CrudCreateData,
+  CrudUpdateData,
+} from '../../module-types';
 
 export interface FaceDatasRowDto extends CrudRowDto {
   userId?: number | null;
+  hanetPersonId?: string | null;
+  hanetAliasId?: string | null;
+  displayName?: string | null;
   imagePath?: string;
   status?: number;
 }
 
 export interface FaceDatasCreateData extends CrudCreateData {
   userId?: number | null;
+  hanetPersonId?: string | null;
+  hanetAliasId?: string | null;
+  displayName?: string | null;
   imagePath?: string;
   status?: number;
 }
 
 export interface FaceDatasUpdateData extends CrudUpdateData {
   userId?: number | null;
+  hanetPersonId?: string | null;
+  hanetAliasId?: string | null;
+  displayName?: string | null;
   imagePath?: string;
   status?: number;
 }
@@ -40,7 +53,7 @@ export abstract class BaseFaceDatasService extends BaseCrudService<
   }
 
   protected getSearchFields(): string[] {
-    return ['imagePath'];
+    return ['imagePath', 'displayName', 'hanetPersonId', 'hanetAliasId'];
   }
 
   protected getFilterableFields(): string[] {

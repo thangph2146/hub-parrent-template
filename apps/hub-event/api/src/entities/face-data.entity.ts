@@ -12,6 +12,18 @@ export class FaceData extends BaseEntity {
   })
   user?: User | null;
 
+  /** personID từ HANET Face Data webhook. */
+  @Property({ nullable: true, unique: true })
+  hanetPersonId?: string | null;
+
+  /** aliasID từ HANET — thường là email hoặc mã nội bộ. */
+  @Property({ nullable: true })
+  hanetAliasId?: string | null;
+
+  /** personName từ HANET. */
+  @Property({ nullable: true })
+  displayName?: string | null;
+
   @Property()
   imagePath!: string;
 

@@ -12,3 +12,4 @@ export {
   useEventCheckoutsQuery,
   useEventSpeakersQuery,
 } from "./use-event-sub-queries"
+export { useHanetStatusQuery, hanetStatusQueryKey } from "./use-hanet-status"

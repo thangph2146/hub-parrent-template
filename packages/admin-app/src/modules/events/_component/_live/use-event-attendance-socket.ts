@@ -38,6 +38,33 @@ export type EventAttendanceSocketPayload = {
   hasCheckout?: boolean
 }
 
+export type EventHanetSyncSocketPayload = {
+  kind:
+    | "device"
+    | "place"
+    | "person"
+    | "checkin"
+    | "checkout"
+    | "unknown"
+  action?: string
+  eventId?: number | string | null
+  at: string
+  summary: string
+  deviceId?: string
+  placeId?: string
+  personId?: string
+  personName?: string
+  entityId?: number
+  linkedUserId?: number
+  linkedRegistrations?: number
+  email?: string
+  fullName?: string
+  registrationId?: number | string | null
+  duplicate?: boolean
+  acknowledged: boolean
+  error?: string
+}
+
 function getSocketOrigin(): string {
   const api = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
     /\/$/,
@@ -65,7 +92,9 @@ export function useEventAttendanceSocket(
 
   enabled: boolean,
 
-  onAttendance?: (payload: EventAttendanceSocketPayload) => void
+  onAttendance?: (payload: EventAttendanceSocketPayload) => void,
+
+  onHanetSync?: (payload: EventHanetSyncSocketPayload) => void
 ): {
   connected: boolean
 
@@ -74,10 +103,15 @@ export function useEventAttendanceSocket(
   const socketRef = useRef<Socket | null>(null)
 
   const onAttendanceRef = useRef(onAttendance)
+  const onHanetSyncRef = useRef(onHanetSync)
 
   useEffect(() => {
     onAttendanceRef.current = onAttendance
   }, [onAttendance])
+
+  useEffect(() => {
+    onHanetSyncRef.current = onHanetSync
+  }, [onHanetSync])
 
   const [connected, setConnected] = useState(false)
 
@@ -156,6 +190,14 @@ export function useEventAttendanceSocket(
       onAttendanceRef.current?.(payload)
     }
 
+    const onHanetSync = (payload: EventHanetSyncSocketPayload) => {
+      if (disposed) return
+      const payloadEventId =
+        payload.eventId != null ? String(payload.eventId) : null
+      if (payloadEventId && payloadEventId !== eventId) return
+      onHanetSyncRef.current?.(payload)
+    }
+
     socket.on("connect", onConnect)
 
     socket.on("disconnect", onDisconnect)
@@ -163,6 +205,8 @@ export function useEventAttendanceSocket(
     socket.on("connect_error", onConnectError)
 
     socket.on("event:attendance", onAttendance)
+
+    socket.on("event:hanet-sync", onHanetSync)
 
     return () => {
       disposed = true
@@ -174,6 +218,8 @@ export function useEventAttendanceSocket(
       socket.off("connect_error", onConnectError)
 
       socket.off("event:attendance", onAttendance)
+
+      socket.off("event:hanet-sync", onHanetSync)
 
       if (socket.connected) {
         socket.emit("event:leave", { eventId })

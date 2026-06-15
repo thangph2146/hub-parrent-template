@@ -45,6 +45,7 @@ import {
 import { EventRegistrationsLiveTable } from "../_component/event-registrations-live-table"
 import { EventAttendanceProvider } from "../_component/_live/event-attendance-provider"
 import { EventLiveMonitorTab } from "../_component/_live/event-live-monitor-tab"
+import { EventHanetConfigCard } from "../_component/_live/event-hanet-config-card"
 import { getPosterUrlFromValue } from "../_component/utils"
 
 import {
@@ -118,6 +119,16 @@ function EventDetailInner() {
 
             <div className="lg:col-span-1">
               <div className="sticky top-2 flex max-h-[calc(100vh-6rem)] flex-col gap-4 overflow-y-auto">
+                <EventHanetConfigCard
+                  eventId={id}
+                  cameras={{
+                    checkinCameraName: entity.checkinCameraName ?? null,
+                    checkinCameraCode: entity.checkinCameraCode ?? null,
+                    checkoutCameraName: entity.checkoutCameraName ?? null,
+                    checkoutCameraCode: entity.checkoutCameraCode ?? null,
+                  }}
+                />
+
                 <FieldSet variant="section">
                   <FieldSectionLegend
                     icon={Calendar}

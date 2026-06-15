@@ -1,17 +1,21 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Logger,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PUBLIC_ROUTES } from '../config/constants';
 import { Public } from '../common';
+import { getHanetConfig, isHanetConfigured } from './hanet.config';
 import { normalizeHanetBody } from './hanet-payload';
 import { HanetWebhookService } from './hanet-webhook.service';
+import { getHanetWebhookUrls } from './hanet-webhook-urls';
 import type { HanetWebhookBody } from './hanet.types';
 
 @ApiTags('HANET Webhook')
@@ -21,6 +25,20 @@ export class HanetWebhookController {
   private readonly logger = new Logger(HanetWebhookController.name);
 
   constructor(private readonly hanetWebhookService: HanetWebhookService) {}
+
+  @Get('info')
+  @ApiOperation({
+    summary: 'URL webhook + trạng thái cấu hình HANET (đăng ký trên developers.hanet.ai)',
+  })
+  getWebhookInfo(@Query('eventId') eventId?: string) {
+    const config = getHanetConfig();
+    return {
+      configured: isHanetConfigured(config),
+      webhookVerify: config.webhookVerify,
+      clientId: config.clientId || null,
+      urls: getHanetWebhookUrls(eventId?.trim() || undefined),
+    };
+  }
 
   @Post()
   @HttpCode(HttpStatus.OK)

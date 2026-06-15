@@ -28,6 +28,7 @@ import {
 } from "./event-attendance-sync"
 import { useEventAttendanceContext } from "./event-attendance-provider"
 import { EventHanetConfigCard } from "./event-hanet-config-card"
+import { EventHanetSyncLog } from "./event-hanet-sync-log"
 import {
   buildLiveActivitiesFromRegistrations,
   getEventLiveActivityColumns,
@@ -63,6 +64,7 @@ export function EventLiveMonitorTab({
     socketError,
     lastPayload,
     liveRevision,
+    hanetSyncLog,
   } = useEventAttendanceContext()
 
   const pollOptions = useMemo<EventLiveQueryOptions>(
@@ -187,6 +189,8 @@ export function EventLiveMonitorTab({
   return (
     <div className="space-y-4">
       <EventHanetConfigCard eventId={eventId} cameras={hanetCameras} />
+
+      <EventHanetSyncLog entries={hanetSyncLog} connected={socketConnected} />
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/70 bg-card px-4 py-3">
         <div className="flex items-center gap-2">

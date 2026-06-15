@@ -9,6 +9,7 @@ import {
   RegistrationStatus,
 } from '../entities/event-registration.entity';
 import { EventRegistrationsService } from '../event-registrations/event-registrations.service';
+import { HanetPersonRegisterService } from '../hanet/hanet-person-register.service';
 import { normalizePosterField } from '../common';
 
 export interface RegisterForEventResult {
@@ -74,6 +75,7 @@ export class PublicEventRegistrationService {
   constructor(
     private readonly em: EntityManager,
     private readonly eventRegistrationsService: EventRegistrationsService,
+    private readonly hanetPersonRegister: HanetPersonRegisterService,
   ) {}
 
   private async getActiveUser(userId: string): Promise<ActiveEventUser> {
@@ -284,6 +286,16 @@ export class PublicEventRegistrationService {
     const totalRegistrations =
       await this.eventRegistrationsService.syncEventRegistrationCount(event.id);
     event.totalRegistrations = totalRegistrations;
+
+    const avatar = user.avatar?.trim();
+    if (avatar) {
+      void this.hanetPersonRegister.syncUserFaceToHanet({
+        userId: user.id,
+        email,
+        name: fullName,
+        avatarUrl: avatar,
+      });
+    }
 
     return {
       id: row.id,

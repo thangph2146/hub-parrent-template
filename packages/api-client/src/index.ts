@@ -144,6 +144,16 @@ export {
   type DashboardTopPostDto,
 } from "./resources/dashboard"
 export {
+  HanetAdminApi,
+  type HanetAdminStatusDto,
+  type HanetTestConnectionDto,
+  type HanetWebhookUrlsDto,
+  type HanetStoredAvatarRow,
+  type HanetSyncAvatarsResult,
+  type HanetPersonListPage,
+  type HanetRegisterPersonByUrlInput,
+} from "./resources/hanet"
+export {
   UploadsApi,
   type ImageItem,
   type FolderItem,
@@ -207,6 +217,7 @@ export {
   type AdminStatusChangePayload,
   type AdminSocketEventName,
   type EventAttendanceSocketPayload,
+  type EventHanetSyncSocketPayload,
   type ParentStudentReviewSocketPayload,
   type RealtimeToastMethod,
   type SocketAuthData,

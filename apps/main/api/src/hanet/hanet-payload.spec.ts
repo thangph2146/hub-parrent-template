@@ -40,6 +40,16 @@ describe('hanet-payload', () => {
     expect(pickHanetAttendanceKind({ person_type: 1 })).toBe('checkout');
   });
 
+  it('does not treat personType on Face Data sync as attendance', () => {
+    expect(
+      pickHanetAttendanceKind({
+        data_type: 'person',
+        action_type: 'add',
+        personType: 0,
+      }),
+    ).toBeNull();
+  });
+
   it('unwraps JSON string in message field', () => {
     const wrapped = normalizeHanetBody({
       message: JSON.stringify(sample),

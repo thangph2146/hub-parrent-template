@@ -83,3 +83,31 @@ export type EventAttendanceSocketPayload = {
   hasCheckin?: boolean
   hasCheckout?: boolean
 }
+
+/** Log webhook HANET trên tab theo dõi realtime admin. */
+export type EventHanetSyncSocketPayload = {
+  kind:
+    | "device"
+    | "place"
+    | "person"
+    | "checkin"
+    | "checkout"
+    | "unknown"
+  action?: string
+  eventId?: number | string | null
+  at: string
+  summary: string
+  deviceId?: string
+  placeId?: string
+  personId?: string
+  personName?: string
+  entityId?: number
+  linkedUserId?: number
+  linkedRegistrations?: number
+  email?: string
+  fullName?: string
+  registrationId?: number | string | null
+  duplicate?: boolean
+  acknowledged: boolean
+  error?: string
+}

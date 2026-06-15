@@ -37,6 +37,7 @@ import { ProductsApi } from './resources/products';
 import { OrdersApi } from './resources/orders';
 import { PromoCodesApi } from './resources/promo-codes';
 import { CartsApi } from './resources/carts';
+import { HanetAdminApi } from './resources/hanet';
 import type { HealthStatus } from './types';
 
 /**
@@ -91,6 +92,7 @@ export class StoreSyncSdk {
   readonly orders: OrdersApi;
   readonly promoCodes: PromoCodesApi;
   readonly carts: CartsApi;
+  readonly hanet: HanetAdminApi;
   readonly public: PublicApi;
 
   constructor(options: ApiClientOptions) {
@@ -132,6 +134,7 @@ export class StoreSyncSdk {
     this.orders = new OrdersApi(this.http);
     this.promoCodes = new PromoCodesApi(this.http);
     this.carts = new CartsApi(this.http);
+    this.hanet = new HanetAdminApi(this.http);
     this.public = new PublicApi(this.http);
   }
 
