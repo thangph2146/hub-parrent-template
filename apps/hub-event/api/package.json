@@ -27,6 +27,7 @@
     "test:live": "tsx scripts/test-live-admin-api.ts",
     "seed:superadmin": "ts-node -r tsconfig-paths/register src/seed-superadmin.ts",
     "seed:demo": "ts-node -r tsconfig-paths/register src/seed-demo.ts",
+    "db:ensure:face-data-hanet": "ts-node -r tsconfig-paths/register scripts/ensure-face-data-hanet-columns.ts",
     "orm": "mikro-orm",
     "db:create": "mikro-orm schema:create --run",
     "db:create:dump": "mikro-orm schema:create --dump",

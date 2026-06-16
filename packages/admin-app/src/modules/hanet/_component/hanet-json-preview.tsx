@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  formatHanetTimeDisplay,
+  isHanetTimeField,
+} from "@workspace/admin-app/lib/hanet-time-format"
+
 function collectRows(data: unknown): Record<string, unknown>[] {
   if (Array.isArray(data)) {
     return data.filter(
@@ -16,7 +21,13 @@ function collectRows(data: unknown): Record<string, unknown>[] {
   return []
 }
 
-export function HanetJsonPreview({ data }: { data: unknown }) {
+export function HanetJsonPreview({
+  data,
+  formatTimeFields = false,
+}: {
+  data: unknown
+  formatTimeFields?: boolean
+}) {
   const rows = collectRows(data)
   if (rows.length) {
     const keys = Array.from(
@@ -39,7 +50,7 @@ export function HanetJsonPreview({ data }: { data: unknown }) {
               <tr key={index} className="border-b border-border/40">
                 {keys.map((key) => (
                   <td key={key} className="max-w-[14rem] truncate px-3 py-2">
-                    {formatCell(row[key])}
+                    {formatCell(row[key], key, formatTimeFields)}
                   </td>
                 ))}
               </tr>
@@ -62,7 +73,15 @@ export function HanetJsonPreview({ data }: { data: unknown }) {
   )
 }
 
-function formatCell(value: unknown): string {
+function formatCell(
+  value: unknown,
+  key?: string,
+  formatTimeFields = false,
+): string {
+  if (formatTimeFields && key && isHanetTimeField(key)) {
+    const formatted = formatHanetTimeDisplay(value)
+    if (formatted) return formatted
+  }
   if (value == null) return "—"
   if (typeof value === "string" || typeof value === "number") return String(value)
   return JSON.stringify(value)

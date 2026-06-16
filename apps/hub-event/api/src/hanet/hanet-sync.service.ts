@@ -91,7 +91,12 @@ export class HanetSyncService {
       pickHanetString(body, ['deviceName', 'device_name']) || deviceId;
 
     if (!deviceId) {
-      return { kind: 'device', action, acknowledged: false, error: 'Thiếu deviceID' };
+      return {
+        kind: 'device',
+        action,
+        acknowledged: false,
+        error: 'Thiếu deviceID',
+      };
     }
 
     if (action === 'delete') {
@@ -145,7 +150,12 @@ export class HanetSyncService {
     const mapUrl = placeId ? `hanet:place:${placeId}` : '';
 
     if (!placeId) {
-      return { kind: 'place', action, acknowledged: false, error: 'Thiếu placeID' };
+      return {
+        kind: 'place',
+        action,
+        acknowledged: false,
+        error: 'Thiếu placeID',
+      };
     }
 
     if (action === 'delete') {

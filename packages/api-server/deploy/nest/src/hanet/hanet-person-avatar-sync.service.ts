@@ -8,6 +8,7 @@ import {
   parseHanetPersonListPage,
   type HanetPersonRow,
 } from './hanet-person-list.parse';
+import { resolveHanetPlaceId } from './hanet-place-resolve';
 
 export type HanetSyncAvatarsResult = {
   placeId: string;
@@ -18,6 +19,26 @@ export type HanetSyncAvatarsResult = {
   skipped: number;
   linkedRegistrations: number;
   linkedUsers: number;
+  /** Tổng trên HANET (getTotalPersonByPlaceID). */
+  hanetTotal?: number;
+  /** Partner getListByPlace chỉ expose tối đa ~50 người / lần gọi. */
+  hanetListCap?: number;
+  /** true khi hanetTotal > fetched (không kéo đủ qua Partner API). */
+  listLimited?: boolean;
+};
+
+export type HanetPersonListFromHanetResult = {
+  placeId: string;
+  pageIndex: number;
+  pageSize: number;
+  items: HanetPersonRow[];
+  /** Số dòng admin có thể phân trang (face_data hoặc ~50 live HANET). */
+  total: number;
+  /** Tổng person trên HANET — chỉ mang tính tham chiếu. */
+  hanetTotal?: number;
+  syncedTotal: number;
+  hanetListCap: number;
+  listLimited: boolean;
 };
 
 export type HanetStoredAvatarRow = {
@@ -33,6 +54,8 @@ export type HanetStoredAvatarRow = {
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGES = 200;
+/** Partner HANET getListByPlace — giới hạn thực tế trên tài khoản hiện tại. */
+const HANET_PARTNER_LIST_CAP = 50;
 
 @Injectable()
 export class HanetPersonAvatarSyncService {
@@ -47,6 +70,91 @@ export class HanetPersonAvatarSyncService {
     placeId?: string,
     pageIndex = 0,
     pageSize = DEFAULT_PAGE_SIZE,
+  ): Promise<HanetPersonListFromHanetResult> {
+    const resolvedPlaceId = await this.resolvePlaceId(placeId);
+    let hanetTotal: number | undefined;
+    try {
+      const grandTotal =
+        await this.partner.getTotalPersonByPlace(resolvedPlaceId);
+      if (grandTotal > 0) hanetTotal = grandTotal;
+    } catch {
+      // ignore
+    }
+
+    const stored = await this.listStored({
+      page: pageIndex + 1,
+      limit: pageSize,
+    });
+
+    const listLimited =
+      hanetTotal != null &&
+      hanetTotal > Math.max(stored.total, HANET_PARTNER_LIST_CAP);
+
+    // Đã có face_data → phân trang local; total = số bản ghi thực có.
+    if (stored.total > 0) {
+      return {
+        placeId: resolvedPlaceId,
+        pageIndex,
+        pageSize,
+        items: stored.items.map((row) => this.storedToPersonRow(row)),
+        total: stored.total,
+        hanetTotal,
+        syncedTotal: stored.total,
+        hanetListCap: HANET_PARTNER_LIST_CAP,
+        listLimited,
+      };
+    }
+
+    const liveBrowsable = Math.min(
+      HANET_PARTNER_LIST_CAP,
+      hanetTotal ?? HANET_PARTNER_LIST_CAP,
+    );
+
+    // Chưa sync — chỉ trang 1 lấy live từ HANET (~50 người); không giả 4426 trang.
+    if (pageIndex > 0) {
+      return {
+        placeId: resolvedPlaceId,
+        pageIndex,
+        pageSize,
+        items: [],
+        total: liveBrowsable,
+        hanetTotal,
+        syncedTotal: 0,
+        hanetListCap: HANET_PARTNER_LIST_CAP,
+        listLimited: listLimited || (hanetTotal ?? 0) > 0,
+      };
+    }
+
+    const hanetPage = await this.fetchHanetPersonPage(
+      resolvedPlaceId,
+      0,
+      pageSize,
+    );
+    const browsable =
+      hanetTotal != null && hanetTotal > hanetPage.items.length
+        ? Math.min(HANET_PARTNER_LIST_CAP, hanetTotal)
+        : hanetPage.items.length;
+
+    return {
+      placeId: resolvedPlaceId,
+      pageIndex,
+      pageSize,
+      items: hanetPage.items,
+      total: browsable,
+      hanetTotal,
+      syncedTotal: 0,
+      hanetListCap: HANET_PARTNER_LIST_CAP,
+      listLimited:
+        hanetTotal != null
+          ? hanetTotal > hanetPage.items.length
+          : hanetPage.items.length >= HANET_PARTNER_LIST_CAP,
+    };
+  }
+
+  private async fetchHanetPersonPage(
+    placeId: string,
+    pageIndex: number,
+    pageSize: number,
   ) {
     const response = await this.partner.getListPersonByPlace({
       placeId,
@@ -56,9 +164,17 @@ export class HanetPersonAvatarSyncService {
     const parsed = parseHanetPersonListPage(response.data);
     return {
       placeId: response.placeId,
-      pageIndex,
-      pageSize,
-      ...parsed,
+      items: parsed.items,
+      total: parsed.total,
+    };
+  }
+
+  private storedToPersonRow(row: HanetStoredAvatarRow): HanetPersonRow {
+    return {
+      personId: row.hanetPersonId ?? '',
+      displayName: row.displayName ?? '',
+      aliasId: row.hanetAliasId ?? '',
+      avatar: row.imagePath,
     };
   }
 
@@ -100,6 +216,7 @@ export class HanetPersonAvatarSyncService {
 
   /** Kéo toàn bộ person (kèm avatar) từ HANET → bảng face_data. */
   async syncFromPlace(placeId?: string): Promise<HanetSyncAvatarsResult> {
+    const resolvedPlaceId = await this.resolvePlaceId(placeId);
     let pageIndex = 0;
     let pages = 0;
     let fetched = 0;
@@ -108,17 +225,15 @@ export class HanetPersonAvatarSyncService {
     let skipped = 0;
     let linkedRegistrations = 0;
     let linkedUsers = 0;
-    let resolvedPlaceId = '';
     let lastPageFirstId: string | null = null;
     const seenPersonIds = new Set<string>();
 
     while (pages < MAX_PAGES) {
-      const page = await this.listFromHanet(
-        placeId,
+      const page = await this.fetchHanetPersonPage(
+        resolvedPlaceId,
         pageIndex,
         DEFAULT_PAGE_SIZE,
       );
-      if (!resolvedPlaceId) resolvedPlaceId = page.placeId;
       pages += 1;
 
       if (!page.items.length) break;
@@ -164,8 +279,26 @@ export class HanetPersonAvatarSyncService {
       }
 
       if (page.items.length < DEFAULT_PAGE_SIZE) break;
-      if (page.total != null && seenPersonIds.size >= page.total) break;
+      if (
+        page.total != null &&
+        page.total > DEFAULT_PAGE_SIZE &&
+        seenPersonIds.size >= page.total
+      ) {
+        break;
+      }
       pageIndex += 1;
+    }
+
+    let hanetTotal = 0;
+    try {
+      hanetTotal = await this.partner.getTotalPersonByPlace(resolvedPlaceId);
+    } catch {
+      // ignore
+    }
+    if (hanetTotal > fetched && fetched <= DEFAULT_PAGE_SIZE) {
+      this.logger.warn(
+        `HANET getListByPlace chỉ trả ${fetched}/${hanetTotal} person — partner API có thể giới hạn phân trang; kiểm tra gói cloud HANET.`,
+      );
     }
 
     this.logger.log(
@@ -181,14 +314,16 @@ export class HanetPersonAvatarSyncService {
       skipped,
       linkedRegistrations,
       linkedUsers,
+      hanetTotal: hanetTotal > 0 ? hanetTotal : undefined,
+      hanetListCap: HANET_PARTNER_LIST_CAP,
+      listLimited: hanetTotal > fetched,
     };
   }
 
   private async upsertPersonAvatar(
     person: HanetPersonRow,
   ): Promise<'created' | 'updated' | 'skipped'> {
-    const imagePath =
-      person.avatar.trim() || `hanet:person:${person.personId}`;
+    const imagePath = person.avatar.trim() || `hanet:person:${person.personId}`;
 
     let face = await this.em.findOne(FaceData, {
       hanetPersonId: person.personId,
@@ -230,6 +365,10 @@ export class HanetPersonAvatarSyncService {
     face.updatedAt = now;
     await this.em.flush();
     return 'updated';
+  }
+
+  private async resolvePlaceId(placeId?: string): Promise<string> {
+    return resolveHanetPlaceId(this.partner, placeId);
   }
 
   private toStoredRow(row: FaceData): HanetStoredAvatarRow {

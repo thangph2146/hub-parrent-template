@@ -7,9 +7,7 @@ const UPLOADS_PREFIX = '/api/uploads/';
 /** Gốc API public (HTTPS) — HANET tải ảnh từ URL này khi registerByUrl. */
 export function getHanetPublicApiOrigin(): string | undefined {
   const raw =
-    apiServerAppConfig.publicUrl?.trim() ||
-    appConfig.publicUrl?.trim() ||
-    '';
+    apiServerAppConfig.publicUrl?.trim() || appConfig.publicUrl?.trim() || '';
   if (!raw) return undefined;
   return raw.replace(/\/+$/, '').replace(/\/api$/i, '');
 }

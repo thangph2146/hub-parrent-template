@@ -84,7 +84,9 @@ export class HanetApiClient {
 
     this.cachedAccessToken = data.access_token;
     if (data.refresh_token) {
-      this.logger.debug('HANET refresh trả refresh_token mới — cập nhật HANET_REFRESH_TOKEN trong .env');
+      this.logger.debug(
+        'HANET refresh trả refresh_token mới — cập nhật HANET_REFRESH_TOKEN trong .env',
+      );
     }
     return data.access_token;
   }
@@ -115,7 +117,9 @@ export class HanetApiClient {
     try {
       parsed = JSON.parse(text) as T;
     } catch {
-      throw new Error(`HANET API ${path} — response không phải JSON (${res.status})`);
+      throw new Error(
+        `HANET API ${path} — response không phải JSON (${res.status})`,
+      );
     }
 
     if (!res.ok) {
@@ -167,6 +171,81 @@ export class HanetApiClient {
     params: Record<string, string | number | undefined>,
   ): Promise<T> {
     const envelope = await this.postPartnerRaw(path, params);
+    return assertHanetPartnerOk(envelope, path) as T;
+  }
+
+  /** POST multipart/form-data — updateByFaceImage* (field `file`). */
+  async postPartnerMultipartRaw(
+    path: string,
+    fields: Record<string, string | number | undefined>,
+    file: {
+      fieldName?: string;
+      buffer: Buffer;
+      filename: string;
+      mimeType: string;
+    },
+    retryOnTokenExpired = true,
+  ): Promise<HanetPartnerEnvelope> {
+    const config = this.getConfig();
+    const token = await this.getAccessToken();
+    const url = `${config.apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+
+    const form = new FormData();
+    form.set('token', token);
+    for (const [key, value] of Object.entries(fields)) {
+      if (value == null || value === '') continue;
+      form.set(key, String(value));
+    }
+    form.set(
+      file.fieldName ?? 'file',
+      new Blob([new Uint8Array(file.buffer)], { type: file.mimeType }),
+      file.filename,
+    );
+
+    const res = await fetch(url, { method: 'POST', body: form });
+    const text = await res.text();
+    let parsed: HanetPartnerEnvelope;
+    try {
+      parsed = JSON.parse(text) as HanetPartnerEnvelope;
+    } catch {
+      throw new Error(
+        `HANET API ${path} — response không phải JSON (${res.status})`,
+      );
+    }
+
+    if (
+      retryOnTokenExpired &&
+      isHanetPartnerEnvelope(parsed) &&
+      isHanetTokenExpiredEnvelope(parsed)
+    ) {
+      this.invalidateAccessToken();
+      const refreshed = await this.refreshAccessToken();
+      if (refreshed) {
+        this.logger.log(
+          `HANET token hết hạn — đã refresh, gọi lại ${path} (multipart)`,
+        );
+        return this.postPartnerMultipartRaw(path, fields, file, false);
+      }
+    }
+
+    if (!isHanetPartnerEnvelope(parsed)) {
+      throw new Error(`HANET API ${path} — thiếu returnCode trong response`);
+    }
+
+    return parsed;
+  }
+
+  async postPartnerMultipart<T = unknown>(
+    path: string,
+    fields: Record<string, string | number | undefined>,
+    file: {
+      fieldName?: string;
+      buffer: Buffer;
+      filename: string;
+      mimeType: string;
+    },
+  ): Promise<T> {
+    const envelope = await this.postPartnerMultipartRaw(path, fields, file);
     return assertHanetPartnerOk(envelope, path) as T;
   }
 }

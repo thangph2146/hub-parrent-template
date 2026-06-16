@@ -3,11 +3,9 @@ import { appConfig } from '../config/app.config';
 
 /** URL webhook đăng ký trên developers.hanet.ai. */
 export function getHanetWebhookUrls(eventId?: string | number) {
-  const base =
-    (appConfig.publicUrl ?? `http://localhost:${appConfig.port}`).replace(
-      /\/+$/,
-      '',
-    );
+  const base = (
+    appConfig.publicUrl ?? `http://localhost:${appConfig.port}`
+  ).replace(/\/+$/, '');
   const prefix = `${base}/api/${PUBLIC_ROUTES.HANET_WEBHOOK}`;
 
   return {

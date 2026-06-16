@@ -1,5 +1,5 @@
 import type { ApiClient } from "../client";
-import { getData, postData } from "./_shared";
+import { deleteData, getData, patchData, postData } from "./_shared";
 
 export type HanetWebhookUrlsDto = {
   auto: string;
@@ -63,6 +63,9 @@ export type HanetSyncAvatarsResult = {
   skipped: number;
   linkedRegistrations: number;
   linkedUsers: number;
+  hanetTotal?: number;
+  hanetListCap?: number;
+  listLimited?: boolean;
 };
 
 export type HanetPersonListPage = {
@@ -75,7 +78,14 @@ export type HanetPersonListPage = {
     aliasId: string;
     avatar: string;
   }>;
-  total?: number;
+  /** Số dòng admin phân trang được (face_data hoặc ~50 live HANET). */
+  total: number;
+  /** Tổng trên HANET (getTotalPersonByPlaceID) — tham chiếu. */
+  hanetTotal?: number;
+  /** Số bản ghi đã lưu face_data. */
+  syncedTotal?: number;
+  hanetListCap?: number;
+  listLimited?: boolean;
 };
 
 export type HanetCameraEnsureDto = {
@@ -88,6 +98,23 @@ export type HanetDeviceOption = {
   deviceId: string;
   name: string;
   placeId?: string;
+};
+
+export type HanetCreatePlaceInput = {
+  placeName: string;
+  address?: string;
+  type?: number;
+};
+
+export type HanetUpdatePlaceInput = {
+  placeId: string;
+  placeName: string;
+  address?: string;
+};
+
+export type HanetPlaceMutationResult = {
+  placeId: string | null;
+  data?: unknown;
 };
 
 export class HanetAdminApi {
@@ -117,8 +144,59 @@ export class HanetAdminApi {
     );
   }
 
+  listPartnerUsers(): Promise<unknown> {
+    return getData<unknown>(this.http, "/admin/hanet/partner/users");
+  }
+
+  removePartnerUser(clientId: string): Promise<unknown> {
+    return deleteData<unknown>(
+      this.http,
+      `/admin/hanet/partner/users?clientId=${encodeURIComponent(clientId)}`,
+    );
+  }
+
+  updatePartnerToken(
+    body?: Record<string, string>,
+  ): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/partner/update-token",
+      body ?? {},
+    );
+  }
+
   listPlaces(): Promise<unknown> {
     return getData<unknown>(this.http, "/admin/hanet/places");
+  }
+
+  getPlaceInfo(placeId: string): Promise<unknown> {
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/places/info?placeId=${encodeURIComponent(placeId)}`,
+    );
+  }
+
+  createPlace(body: HanetCreatePlaceInput): Promise<HanetPlaceMutationResult> {
+    return postData<HanetPlaceMutationResult>(
+      this.http,
+      "/admin/hanet/places",
+      body,
+    );
+  }
+
+  updatePlace(body: HanetUpdatePlaceInput): Promise<HanetPlaceMutationResult> {
+    return patchData<HanetPlaceMutationResult>(
+      this.http,
+      "/admin/hanet/places",
+      body,
+    );
+  }
+
+  removePlace(placeId: string): Promise<HanetPlaceMutationResult> {
+    return deleteData<HanetPlaceMutationResult>(
+      this.http,
+      `/admin/hanet/places?placeId=${encodeURIComponent(placeId)}`,
+    );
   }
 
   listDevices(placeId?: string): Promise<unknown> {
@@ -126,6 +204,26 @@ export class HanetAdminApi {
       ? `?placeId=${encodeURIComponent(placeId)}`
       : "";
     return getData<unknown>(this.http, `/admin/hanet/devices${query}`);
+  }
+
+  getDeviceInfo(deviceId: string): Promise<unknown> {
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/devices/info?deviceId=${encodeURIComponent(deviceId)}`,
+    );
+  }
+
+  updateDevice(body: {
+    deviceId: string;
+    deviceName: string;
+  }): Promise<unknown> {
+    return patchData<unknown>(this.http, "/admin/hanet/devices", body);
+  }
+
+  setDeviceMqtt(
+    body: { deviceId: string } & Record<string, string | number | boolean>,
+  ): Promise<unknown> {
+    return postData<unknown>(this.http, "/admin/hanet/devices/mqtt", body);
   }
 
   getProfile(): Promise<unknown> {
@@ -146,6 +244,8 @@ export class HanetAdminApi {
   ensureCamera(body: {
     deviceId: string;
     name?: string;
+    placeId?: string;
+    placeName?: string;
   }): Promise<HanetCameraEnsureDto> {
     return postData<HanetCameraEnsureDto>(
       this.http,
@@ -164,6 +264,201 @@ export class HanetAdminApi {
     );
   }
 
+  updatePersonFaceByUrl(body: {
+    placeId: string;
+    url: string;
+    personId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-url",
+      body,
+    );
+  }
+
+  updatePersonFaceByUrlAlias(body: {
+    placeId: string;
+    url: string;
+    aliasId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-url-by-alias-id",
+      body,
+    );
+  }
+
+  updatePersonFaceByUrlPersonId(body: {
+    placeId: string;
+    url: string;
+    personId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-url-by-person-id",
+      body,
+    );
+  }
+
+  updatePersonFaceByImage(body: {
+    placeId: string;
+    fileBase64: string;
+    personId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-image",
+      body,
+    );
+  }
+
+  updatePersonFaceByImageAlias(body: {
+    placeId: string;
+    fileBase64: string;
+    aliasId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-image-by-alias-id",
+      body,
+    );
+  }
+
+  updatePersonFaceByImagePersonId(body: {
+    placeId: string;
+    fileBase64: string;
+    personId: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/update-by-image-by-person-id",
+      body,
+    );
+  }
+
+  takePersonFacePicture(body: {
+    placeId: string;
+    deviceId: string;
+    personId?: string;
+    aliasId?: string;
+  }): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/face/take-picture",
+      body,
+    );
+  }
+
+  registerPerson(body: Record<string, unknown>): Promise<unknown> {
+    return postData<unknown>(this.http, "/admin/hanet/person/register", body);
+  }
+
+  listPersonByAliasAll(aliasId: string): Promise<unknown> {
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/person/by-alias-all?aliasId=${encodeURIComponent(aliasId)}`,
+    );
+  }
+
+  listPersonByAlias(params: {
+    aliasId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ aliasId: params.aliasId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/person/by-alias?${search.toString()}`,
+    );
+  }
+
+  getPersonUserByAlias(params: {
+    aliasId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ aliasId: params.aliasId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/person/user-by-alias?${search.toString()}`,
+    );
+  }
+
+  getPersonUserById(params: {
+    personId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ personId: params.personId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/person/user-by-id?${search.toString()}`,
+    );
+  }
+
+  updatePerson(body: Record<string, unknown>): Promise<unknown> {
+    return patchData<unknown>(this.http, "/admin/hanet/person", body);
+  }
+
+  updatePersonInfo(body: Record<string, unknown>): Promise<unknown> {
+    return patchData<unknown>(this.http, "/admin/hanet/person/info", body);
+  }
+
+  updatePersonAliasId(body: Record<string, unknown>): Promise<unknown> {
+    return patchData<unknown>(this.http, "/admin/hanet/person/alias-id", body);
+  }
+
+  removePerson(params: {
+    personId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ personId: params.personId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return deleteData<unknown>(
+      this.http,
+      `/admin/hanet/person?${search.toString()}`,
+    );
+  }
+
+  removePersonByPlace(params: {
+    aliasId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ aliasId: params.aliasId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return deleteData<unknown>(
+      this.http,
+      `/admin/hanet/person/by-place?${search.toString()}`,
+    );
+  }
+
+  removePersonsByAliasIds(body: Record<string, unknown>): Promise<unknown> {
+    return postData<unknown>(
+      this.http,
+      "/admin/hanet/person/remove-by-alias-ids",
+      body,
+    );
+  }
+
+  removeAllPersonsInPlace(placeId: string): Promise<unknown> {
+    return deleteData<unknown>(
+      this.http,
+      `/admin/hanet/person/in-place?placeId=${encodeURIComponent(placeId)}`,
+    );
+  }
+
+  removePersonById(params: {
+    personId: string;
+    placeId?: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({ personId: params.personId });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return deleteData<unknown>(
+      this.http,
+      `/admin/hanet/person/by-id?${search.toString()}`,
+    );
+  }
+
   getCheckinsByPlaceDay(params?: {
     placeId?: string;
     date?: string;
@@ -175,6 +470,22 @@ export class HanetAdminApi {
     return getData<unknown>(
       this.http,
       `/admin/hanet/checkins${q ? `?${q}` : ""}`,
+    );
+  }
+
+  getCheckinsByPlaceTimestamp(params: {
+    placeId?: string;
+    from: string;
+    to: string;
+  }): Promise<unknown> {
+    const search = new URLSearchParams({
+      from: params.from,
+      to: params.to,
+    });
+    if (params.placeId) search.set("placeId", params.placeId);
+    return getData<unknown>(
+      this.http,
+      `/admin/hanet/checkins/timestamp?${search.toString()}`,
     );
   }
 

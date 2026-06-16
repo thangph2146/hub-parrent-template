@@ -34,8 +34,8 @@ import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common';
 /** Số file tối đa mỗi lần gọi bulk-delete (khớp export admin). */
 export const UPLOADS_BULK_DELETE_MAX_PATHS = ADMIN_TABLE_EXPORT_MAX_LIMIT;
 
-/** Windows: giảm song song để tránh EBUSY khi ảnh vừa được serve/resize. */
-const UPLOADS_BULK_DELETE_CONCURRENCY = process.platform === 'win32' ? 4 : 32;
+/** Windows: xóa tuần tự để tránh EBUSY khi ảnh vừa được serve/resize. */
+const UPLOADS_BULK_DELETE_CONCURRENCY = process.platform === 'win32' ? 1 : 32;
 
 export type UploadsBulkDeleteResult = {
   deleted: number;
@@ -102,6 +102,11 @@ import {
   resolveImageFileOwnerId,
   storedUploadFilePrefix,
 } from './upload-filename';
+import {
+  avatarFolderPath,
+  normalizeAvatarFolderSegment,
+  normalizeNumericStudentCode,
+} from '../common/student-code-resolve';
 
 const STORAGE_DIR = path.normalize(appConfig.storageDir);
 const UPLOADS_DIR = path.normalize(path.join(STORAGE_DIR, 'uploads'));
@@ -1191,6 +1196,41 @@ export class UploadsService {
     };
   }
 
+  /**
+   * Tạo thư mục `images/avatars/{segment}` trước khi upload ảnh khuôn mặt.
+   * Segment = MSSV (sinh viên) hoặc user id (tài khoản khác).
+   */
+  async ensureAvatarFolder(folderSegment: string): Promise<string> {
+    const segment = normalizeAvatarFolderSegment(folderSegment);
+    if (!segment) {
+      throw new Error('Tên thư mục avatar không hợp lệ.');
+    }
+
+    const avatarsParent = 'images/avatars';
+    const avatarsRoot = path.join(IMAGES_DIR, 'avatars');
+    await this.ensureDir(avatarsRoot);
+    assertStoragePathMutable(avatarsParent);
+
+    const targetDir = path.join(avatarsRoot, segment);
+    const targetRelative = `images/avatars/${segment}`;
+    assertStoragePathMutable(targetRelative);
+    await this.ensureDir(targetDir);
+
+    const policy = buildFolderPolicy('images', ['.jpg', '.jpeg', '.png', '.webp']);
+    await this.writePolicyFile(targetDir, policy);
+
+    return avatarFolderPath(segment);
+  }
+
+  /** @deprecated Dùng `ensureAvatarFolder`. */
+  async ensureStudentAvatarFolder(studentCode: string): Promise<string> {
+    const code = normalizeNumericStudentCode(studentCode);
+    if (!code) {
+      throw new Error('Mã số sinh viên phải là số (5–12 chữ số).');
+    }
+    return this.ensureAvatarFolder(code);
+  }
+
   /** Lưu file upload (buffer) và trả về metadata. Không cho phép upload trùng tên (cùng tên file trong cùng thư mục). */
   private fixUtf8Filename(name: string): string {
     // Busboy/Multer trên Windows đôi khi decode UTF-8 filename thành Latin-1.
@@ -1306,10 +1346,11 @@ export class UploadsService {
     ) {
       const imageOutput = options?.imageOutput ?? 'webp';
       if (imageOutput === 'jpeg-face') {
-        if (!isHanetFaceMime(file.mimetype) && !['.jpg', '.jpeg', '.png'].includes(ext)) {
-          throw new Error(
-            'Ảnh khuôn mặt HANET chỉ chấp nhận JPG hoặc PNG.',
-          );
+        if (
+          !isHanetFaceMime(file.mimetype) &&
+          !['.jpg', '.jpeg', '.png'].includes(ext)
+        ) {
+          throw new Error('Ảnh khuôn mặt HANET chỉ chấp nhận JPG hoặc PNG.');
         }
         try {
           const processed = await processFaceImageJpegBuffer(file.buffer);
@@ -1346,11 +1387,9 @@ export class UploadsService {
         ? '.jpg'
         : '.webp'
       : finalExt;
-    const uniqueName = buildStoredUploadFileName(
-      baseName,
-      storedImageExt,
-      { userId: nameUserId },
-    );
+    const uniqueName = buildStoredUploadFileName(baseName, storedImageExt, {
+      userId: nameUserId,
+    });
 
     const { fullPath, relativePath, urlPath } = this.generateFilePath(
       uniqueName,

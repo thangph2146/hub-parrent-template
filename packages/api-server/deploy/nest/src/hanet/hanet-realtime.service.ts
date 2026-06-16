@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { SocketGateway } from '../socket/socket.gateway';
 import type { EventHanetSyncSocketPayload } from '../socket/socket.types';
 import type {
-  HanetSyncResult,
   HanetWebhookHandleResult,
   HanetWebhookResult,
 } from './hanet.types';
@@ -31,7 +30,7 @@ function buildSummary(result: HanetWebhookHandleResult): string {
     return `${label}: ${result.fullName} (${result.email})${dup}`;
   }
 
-  const sync = result as HanetSyncResult;
+  const sync = result;
   const label = actionLabel(sync.action);
 
   if (sync.error) {
@@ -61,9 +60,7 @@ function toPayload(
   result: HanetWebhookHandleResult,
   routeEventId?: number | null,
 ): EventHanetSyncSocketPayload {
-  const at = isAttendanceResult(result)
-    ? result.at
-    : new Date().toISOString();
+  const at = isAttendanceResult(result) ? result.at : new Date().toISOString();
 
   const eventId = isAttendanceResult(result)
     ? result.eventId
@@ -83,7 +80,7 @@ function toPayload(
     };
   }
 
-  const sync = result as HanetSyncResult;
+  const sync = result;
   return {
     kind: sync.kind,
     action: sync.action,

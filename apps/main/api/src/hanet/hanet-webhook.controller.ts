@@ -28,7 +28,8 @@ export class HanetWebhookController {
 
   @Get('info')
   @ApiOperation({
-    summary: 'URL webhook + trạng thái cấu hình HANET (đăng ký trên developers.hanet.ai)',
+    summary:
+      'URL webhook + trạng thái cấu hình HANET (đăng ký trên developers.hanet.ai)',
   })
   getWebhookInfo(@Query('eventId') eventId?: string) {
     const config = getHanetConfig();

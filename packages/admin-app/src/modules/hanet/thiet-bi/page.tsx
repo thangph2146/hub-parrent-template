@@ -9,8 +9,9 @@ import {
 } from "@ui/components/field"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { api } from "@workspace/admin-app/lib/api"
+import type { HanetDeviceOption } from "@workspace/admin-app/lib/hanet-device-parse"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
-import { HANET_PARTNER_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
+import { HANET_PAGE_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
 import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import {
@@ -25,6 +26,7 @@ function ThietBiContent() {
   const { data: hanetStatus } = useHanetStatusQuery()
   const [selectedPlaceId, setSelectedPlaceId] = useState(readHanetAdminPlaceId)
   const [statusDeviceId, setStatusDeviceId] = useState<string | null>(null)
+  const [ensureDeviceId, setEnsureDeviceId] = useState<string | null>(null)
   const [connectionStatusByDeviceId, setConnectionStatusByDeviceId] =
     useState<HanetDeviceConnectionStatusMap>({})
 
@@ -34,6 +36,7 @@ function ThietBiContent() {
   useEffect(() => {
     setConnectionStatusByDeviceId({})
     setStatusDeviceId(null)
+    setEnsureDeviceId(null)
   }, [effectivePlaceId])
 
   const devicesQuery = useHanetDevicesQuery(
@@ -62,12 +65,36 @@ function ThietBiContent() {
     },
   })
 
+  const ensureMutation = useAdminMutation({
+    mutationKey: ["hanet", "cameras", "ensure"],
+    mutationFn: (device: HanetDeviceOption) =>
+      api.hanet.ensureCamera({
+        deviceId: device.deviceId,
+        name: device.name,
+        placeId: effectivePlaceId || device.placeId,
+      }),
+    toast: {
+      loading: "Đang gắn camera Hub…",
+      success: "Đã đồng bộ camera Hub từ deviceID HANET",
+      error: (err) =>
+        err instanceof Error ? err.message : "Không gắn được camera Hub",
+    },
+  })
+
   const handleCheckConnection = useCallback(
     (deviceId: string) => {
       setStatusDeviceId(deviceId)
       statusMutation.mutate(deviceId)
     },
     [statusMutation]
+  )
+
+  const handleEnsureCamera = useCallback(
+    (device: HanetDeviceOption) => {
+      setEnsureDeviceId(device.deviceId)
+      ensureMutation.mutate(device)
+    },
+    [ensureMutation]
   )
 
   if (!hanetStatus?.configured) {
@@ -99,8 +126,11 @@ function ThietBiContent() {
         }
         checkingDeviceId={statusDeviceId}
         isCheckingConnection={statusMutation.isPending}
+        ensuringDeviceId={ensureDeviceId}
+        isEnsuringCamera={ensureMutation.isPending}
         connectionStatusByDeviceId={connectionStatusByDeviceId}
         onCheckConnection={handleCheckConnection}
+        onEnsureCamera={handleEnsureCamera}
         filterToolbarExtra={
           <HanetPlaceSelect
             layout="stacked"
@@ -110,7 +140,6 @@ function ThietBiContent() {
           />
         }
       />
-
     </div>
   )
 }
@@ -120,9 +149,8 @@ export default function HanetThietBiPage() {
     <HanetModuleShell
       icon={Camera}
       title="Thiết bị"
-      subtitle="Camera AI HANET — deviceID dùng cho webhook và gắn sự kiện."
-      endpoint={HANET_PARTNER_ENDPOINTS.devices}
-      endpointExtra="?placeId="
+      subtitle="Camera AI HANET — danh sách qua Partner API; thay đổi thiết bị qua webhook Device Data."
+      endpoints={HANET_PAGE_ENDPOINTS.thietBi}
       contentClassName="max-w-full"
     >
       <ThietBiContent />

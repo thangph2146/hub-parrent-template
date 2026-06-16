@@ -28,6 +28,27 @@ function parsePlaceRecord(raw: unknown): HanetPlaceOption | null {
   return { placeId, name: name || `Place ${placeId}` };
 }
 
+/** Parse chi tiết từ `getPlaceInfo` hoặc payload place đơn lẻ. */
+export function parseHanetPlaceDetail(data: unknown): {
+  placeName: string;
+  address: string;
+  type?: number;
+} {
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return { placeName: "", address: "" };
+  }
+  const record = data as Record<string, unknown>;
+  const typeValue = record.type ?? record.placeType;
+  return {
+    placeName: pickString(record, ["placeName", "place_name", "name", "title"]),
+    address: pickString(record, ["address", "placeAddress", "place_address"]),
+    type:
+      typeof typeValue === "number" && Number.isFinite(typeValue)
+        ? typeValue
+        : undefined,
+  };
+}
+
 function collectArray(value: unknown): unknown[] {
   if (Array.isArray(value)) return value;
   if (!value || typeof value !== 'object') return [];

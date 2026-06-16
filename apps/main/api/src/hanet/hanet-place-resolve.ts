@@ -18,7 +18,7 @@ export async function resolveHanetPlaceId(
 
   const data = await provider.getPlaces();
   const places = parseHanetPlaceList(data);
-  if (places.length === 1) return places[0]!.placeId;
+  if (places.length === 1) return places[0].placeId;
 
   if (places.length > 1) {
     throw new BadRequestException(

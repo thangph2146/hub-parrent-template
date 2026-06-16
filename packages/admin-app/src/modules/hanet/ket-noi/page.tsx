@@ -6,6 +6,7 @@ import {
   Globe,
   KeyRound,
   Loader2,
+  MapPin,
   PlugZap,
   UserCircle2,
   XCircle,
@@ -14,8 +15,6 @@ import { useQuery } from "@tanstack/react-query"
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import {
-  FieldPanelGrid,
-  FieldPanelItem,
   FieldSectionDivider,
   FieldSectionField,
   FieldSectionLegend,
@@ -25,7 +24,7 @@ import {
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { cn } from "@ui/lib/utils"
 import { api } from "@workspace/admin-app/lib/api"
-import { HANET_PARTNER_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
+import { HANET_PAGE_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import { HanetJsonPreview } from "../_component/hanet-json-preview"
 import { HanetModuleShell } from "../_component/hanet-module-shell"
@@ -167,28 +166,42 @@ function KetNoiContent() {
                 />
               </div>
 
-              <FieldPanelGrid columns={1}>
-                <FieldPanelItem label="API base" showColon={false}>
-                  <code className="text-[11px]">{hanetStatus.apiBaseUrl}</code>
-                </FieldPanelItem>
+              <div className="space-y-3">
+                <FieldSectionField
+                  label="API base"
+                  icon={Globe}
+                  copyable
+                  copyText={hanetStatus.apiBaseUrl}
+                >
+                  <code className="font-mono text-xs break-all">
+                    {hanetStatus.apiBaseUrl}
+                  </code>
+                </FieldSectionField>
                 {hanetStatus.clientId ? (
-                  <FieldPanelItem label="Client ID" showColon={false}>
-                    <code
-                      className="text-[11px] break-all"
-                      data-copy-text={hanetStatus.clientId}
-                    >
+                  <FieldSectionField
+                    label="Client ID"
+                    icon={KeyRound}
+                    copyable
+                    copyText={hanetStatus.clientId}
+                  >
+                    <code className="font-mono text-xs break-all">
                       {hanetStatus.clientId}
                     </code>
-                  </FieldPanelItem>
+                  </FieldSectionField>
                 ) : null}
                 {hanetStatus.defaultPlaceId ? (
-                  <FieldPanelItem label="Place mặc định" showColon={false}>
-                    <code className="text-[11px]">
+                  <FieldSectionField
+                    label="Place mặc định"
+                    icon={MapPin}
+                    copyable
+                    copyText={hanetStatus.defaultPlaceId}
+                  >
+                    <code className="font-mono text-xs break-all">
                       {hanetStatus.defaultPlaceId}
                     </code>
-                  </FieldPanelItem>
+                  </FieldSectionField>
                 ) : null}
-              </FieldPanelGrid>
+              </div>
             </>
           ) : (
             <p className="text-xs leading-relaxed text-amber-800 dark:text-amber-200">
@@ -201,31 +214,36 @@ function KetNoiContent() {
 
           <FieldSectionDivider />
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2 pt-1">
             <Button
               type="button"
               variant="default"
               size="sm"
-              className="h-8"
+              className="h-8 gap-1.5"
               disabled={!configured || oauthMutation.isPending}
               onClick={() => oauthMutation.mutate()}
             >
               {oauthMutation.isPending ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-3.5 shrink-0 animate-spin" />
               ) : (
-                <PlugZap className="size-3.5" />
+                <PlugZap className="size-3.5 shrink-0" />
               )}
-              Test OAuth
+              <span className="leading-none">Test OAuth</span>
             </Button>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-8"
+              className="h-8 gap-1.5"
               disabled={!configured || profileQuery.isFetching}
               onClick={() => setProfileEnabled(true)}
             >
-              getProfile
+              {profileQuery.isFetching ? (
+                <Loader2 className="size-3.5 shrink-0 animate-spin" />
+              ) : (
+                <UserCircle2 className="size-3.5 shrink-0" />
+              )}
+              <span className="leading-none">getProfile</span>
             </Button>
           </div>
         </FieldSetContent>
@@ -279,7 +297,7 @@ export default function HanetKetNoiPage() {
       icon={PlugZap}
       title="Kết nối HANET"
       subtitle="Kiểm tra OAuth và profile partner."
-      endpoint={HANET_PARTNER_ENDPOINTS.profile}
+      endpoints={HANET_PAGE_ENDPOINTS.ketNoi}
     >
       <KetNoiContent />
     </HanetModuleShell>

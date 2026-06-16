@@ -78,7 +78,13 @@ export function parseHanetPersonListPage(data: unknown): {
   let total: number | undefined;
   if (data && typeof data === 'object' && !Array.isArray(data)) {
     const record = data as Record<string, unknown>;
-    const totalRaw = record.total ?? record.totalCount ?? record.count;
+    const totalRaw =
+      record.total ??
+      record.totalCount ??
+      record.count ??
+      record.totalPerson ??
+      record.personTotal ??
+      record.totalRecord;
     if (typeof totalRaw === 'number' && Number.isFinite(totalRaw)) {
       total = totalRaw;
     } else if (typeof totalRaw === 'string' && totalRaw.trim()) {

@@ -36,7 +36,9 @@ export async function linkHanetPersonToRegistrationsByEmail(
     if (current === personId) continue;
 
     const base =
-      reg.formData && typeof reg.formData === 'object' && !Array.isArray(reg.formData)
+      reg.formData &&
+      typeof reg.formData === 'object' &&
+      !Array.isArray(reg.formData)
         ? (reg.formData as Record<string, unknown>)
         : {};
 

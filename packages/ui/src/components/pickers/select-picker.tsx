@@ -53,9 +53,7 @@ export function SelectPicker({
           id={id}
           className={pickerTriggerClassName(size, className)}
         >
-          <span className="truncate">
-            {selectedOption?.render ? selectedOption.render() : selectedLabel}
-          </span>
+          <span className="truncate">{selectedLabel}</span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>

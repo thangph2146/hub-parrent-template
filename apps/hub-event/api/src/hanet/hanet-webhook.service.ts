@@ -100,9 +100,7 @@ export class HanetWebhookService {
       result = await this.handleAttendance(eventIdParam, body);
     }
 
-    const routeEventId = eventIdParam?.trim()
-      ? toEntityId(eventIdParam)
-      : null;
+    const routeEventId = eventIdParam?.trim() ? toEntityId(eventIdParam) : null;
     this.realtimeService.emitWebhookResult(result, routeEventId);
     return result;
   }
@@ -211,13 +209,10 @@ export class HanetWebhookService {
       );
     }
 
-    const eventCheckin = await this.em.findOne(
-      Event,
-      {
-        deletedAt: null,
-        checkinCamera: { code: deviceId, deletedAt: null },
-      } as FilterQuery<Event>,
-    );
+    const eventCheckin = await this.em.findOne(Event, {
+      deletedAt: null,
+      checkinCamera: { code: deviceId, deletedAt: null },
+    } as FilterQuery<Event>);
 
     if (eventCheckin) {
       this.logger.debug(
@@ -226,13 +221,10 @@ export class HanetWebhookService {
       return { eventId: eventCheckin.id, cameraRole: 'checkin' };
     }
 
-    const eventCheckout = await this.em.findOne(
-      Event,
-      {
-        deletedAt: null,
-        checkoutCamera: { code: deviceId, deletedAt: null },
-      } as FilterQuery<Event>,
-    );
+    const eventCheckout = await this.em.findOne(Event, {
+      deletedAt: null,
+      checkoutCamera: { code: deviceId, deletedAt: null },
+    } as FilterQuery<Event>);
 
     if (eventCheckout) {
       this.logger.debug(
@@ -258,7 +250,7 @@ export class HanetWebhookService {
       if (event) {
         const role = await this.inferCameraRole(event.id, deviceId);
         this.logger.debug(
-          `HANET deviceID=${deviceId} → event ${linkedId} (camera "${camera!.name}")`,
+          `HANET deviceID=${deviceId} → event ${linkedId} (camera "${camera.name}")`,
         );
         return { eventId: event.id, cameraRole: role };
       }

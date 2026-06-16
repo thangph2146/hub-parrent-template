@@ -3,8 +3,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { getHanetConfig, type HanetConfig } from './hanet.config';
 import {
   assertHanetPartnerOk,
-  HANET_RETURN_TOKEN_EXPIRED,
   isHanetPartnerEnvelope,
+  isHanetTokenExpiredEnvelope,
 } from './hanet-partner.response';
 import type { HanetPartnerEnvelope } from './hanet-partner.types';
 
@@ -27,22 +27,33 @@ export class HanetApiClient {
 
   private cachedAccessToken: string | null = null;
 
+  /** Bỏ qua HANET_ACCESS_TOKEN env sau khi partner báo token hết hạn. */
+  private ignoreEnvAccessToken = false;
+
   getConfig(): HanetConfig {
     return getHanetConfig();
   }
 
-  /** Token ưu tiên env HANET_ACCESS_TOKEN, sau đó cache refresh. */
+  /** Token ưu tiên cache refresh, sau đó env HANET_ACCESS_TOKEN. */
   async getAccessToken(): Promise<string> {
     const config = this.getConfig();
     if (this.cachedAccessToken) return this.cachedAccessToken;
-    if (config.accessToken) return config.accessToken;
+    if (!this.ignoreEnvAccessToken && config.accessToken) {
+      return config.accessToken;
+    }
     if (config.refreshToken) {
       const refreshed = await this.refreshAccessToken();
       if (refreshed) return refreshed;
     }
+    if (config.accessToken) return config.accessToken;
     throw new Error(
       'Thiếu HANET access token — đặt HANET_ACCESS_TOKEN hoặc HANET_REFRESH_TOKEN trong .env',
     );
+  }
+
+  private invalidateAccessToken(): void {
+    this.cachedAccessToken = null;
+    this.ignoreEnvAccessToken = true;
   }
 
   async refreshAccessToken(): Promise<string | null> {
@@ -74,7 +85,9 @@ export class HanetApiClient {
 
     this.cachedAccessToken = data.access_token;
     if (data.refresh_token) {
-      this.logger.debug('HANET refresh trả refresh_token mới — cập nhật HANET_REFRESH_TOKEN trong .env');
+      this.logger.debug(
+        'HANET refresh trả refresh_token mới — cập nhật HANET_REFRESH_TOKEN trong .env',
+      );
     }
     return data.access_token;
   }
@@ -105,10 +118,16 @@ export class HanetApiClient {
     try {
       parsed = JSON.parse(text) as T;
     } catch {
-      throw new Error(`HANET API ${path} — response không phải JSON (${res.status})`);
+      throw new Error(
+        `HANET API ${path} — response không phải JSON (${res.status})`,
+      );
     }
 
     if (!res.ok) {
+      // Partner API có thể trả HTTP 401 + envelope { returnCode: 401 } — để postPartnerRaw refresh token.
+      if (isHanetPartnerEnvelope(parsed)) {
+        return parsed;
+      }
       throw new Error(
         `HANET API ${path} failed (${res.status}): ${JSON.stringify(parsed)}`,
       );
@@ -127,13 +146,17 @@ export class HanetApiClient {
     if (
       retryOnTokenExpired &&
       isHanetPartnerEnvelope(parsed) &&
-      parsed.returnCode === HANET_RETURN_TOKEN_EXPIRED
+      isHanetTokenExpiredEnvelope(parsed)
     ) {
-      this.cachedAccessToken = null;
+      this.invalidateAccessToken();
       const refreshed = await this.refreshAccessToken();
       if (refreshed) {
+        this.logger.log(`HANET token hết hạn — đã refresh, gọi lại ${path}`);
         return this.postPartnerRaw(path, params, false);
       }
+      this.logger.warn(
+        `HANET token hết hạn nhưng refresh thất bại — kiểm tra HANET_REFRESH_TOKEN`,
+      );
     }
 
     if (!isHanetPartnerEnvelope(parsed)) {
@@ -149,6 +172,81 @@ export class HanetApiClient {
     params: Record<string, string | number | undefined>,
   ): Promise<T> {
     const envelope = await this.postPartnerRaw(path, params);
+    return assertHanetPartnerOk(envelope, path) as T;
+  }
+
+  /** POST multipart/form-data — updateByFaceImage* (field `file`). */
+  async postPartnerMultipartRaw(
+    path: string,
+    fields: Record<string, string | number | undefined>,
+    file: {
+      fieldName?: string;
+      buffer: Buffer;
+      filename: string;
+      mimeType: string;
+    },
+    retryOnTokenExpired = true,
+  ): Promise<HanetPartnerEnvelope> {
+    const config = this.getConfig();
+    const token = await this.getAccessToken();
+    const url = `${config.apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+
+    const form = new FormData();
+    form.set('token', token);
+    for (const [key, value] of Object.entries(fields)) {
+      if (value == null || value === '') continue;
+      form.set(key, String(value));
+    }
+    form.set(
+      file.fieldName ?? 'file',
+      new Blob([new Uint8Array(file.buffer)], { type: file.mimeType }),
+      file.filename,
+    );
+
+    const res = await fetch(url, { method: 'POST', body: form });
+    const text = await res.text();
+    let parsed: HanetPartnerEnvelope;
+    try {
+      parsed = JSON.parse(text) as HanetPartnerEnvelope;
+    } catch {
+      throw new Error(
+        `HANET API ${path} — response không phải JSON (${res.status})`,
+      );
+    }
+
+    if (
+      retryOnTokenExpired &&
+      isHanetPartnerEnvelope(parsed) &&
+      isHanetTokenExpiredEnvelope(parsed)
+    ) {
+      this.invalidateAccessToken();
+      const refreshed = await this.refreshAccessToken();
+      if (refreshed) {
+        this.logger.log(
+          `HANET token hết hạn — đã refresh, gọi lại ${path} (multipart)`,
+        );
+        return this.postPartnerMultipartRaw(path, fields, file, false);
+      }
+    }
+
+    if (!isHanetPartnerEnvelope(parsed)) {
+      throw new Error(`HANET API ${path} — thiếu returnCode trong response`);
+    }
+
+    return parsed;
+  }
+
+  async postPartnerMultipart<T = unknown>(
+    path: string,
+    fields: Record<string, string | number | undefined>,
+    file: {
+      fieldName?: string;
+      buffer: Buffer;
+      filename: string;
+      mimeType: string;
+    },
+  ): Promise<T> {
+    const envelope = await this.postPartnerMultipartRaw(path, fields, file);
     return assertHanetPartnerOk(envelope, path) as T;
   }
 }

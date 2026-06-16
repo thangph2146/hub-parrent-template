@@ -91,10 +91,23 @@ export function pickHanetTimestamp(body: HanetWebhookBody): Date {
     if (!Number.isNaN(date.getTime())) return date;
   }
 
+  const rawTimeField = body.time;
+  if (typeof rawTimeField === 'number' && Number.isFinite(rawTimeField)) {
+    const ms = rawTimeField > 1e12 ? rawTimeField : rawTimeField * 1000;
+    const date = new Date(ms);
+    if (!Number.isNaN(date.getTime())) return date;
+  }
+
   const timeStr = pickHanetString(body, ['time']);
   if (timeStr) {
     const compact = parseHanetCompactTime(timeStr);
     if (compact) return compact;
+    const numeric = Number(timeStr);
+    if (Number.isFinite(numeric)) {
+      const ms = numeric > 1e12 ? numeric : numeric * 1000;
+      const date = new Date(ms);
+      if (!Number.isNaN(date.getTime())) return date;
+    }
     const parsed = new Date(timeStr);
     if (!Number.isNaN(parsed.getTime())) return parsed;
   }

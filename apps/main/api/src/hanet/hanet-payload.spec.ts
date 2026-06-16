@@ -57,4 +57,13 @@ describe('hanet-payload', () => {
     expect(pickHanetDeviceId(wrapped)).toBe('F2231FV0420');
     expect(wrapped.person_name).toBe('T.A');
   });
+
+  it('parses webhook sync time as epoch milliseconds', () => {
+    const at = pickHanetTimestamp({
+      data_type: 'device',
+      action_type: 'update',
+      time: 1607660080000,
+    });
+    expect(at.getTime()).toBe(1607660080000);
+  });
 });

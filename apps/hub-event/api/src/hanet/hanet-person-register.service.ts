@@ -17,7 +17,12 @@ export type HanetSyncUserFaceInput = {
 };
 
 export type HanetSyncUserFaceResult =
-  | { ok: true; personId: string; faceDataId: number; linkedRegistrations: number }
+  | {
+      ok: true;
+      personId: string;
+      faceDataId: number;
+      linkedRegistrations: number;
+    }
   | { ok: false; skipped: true; reason: string }
   | { ok: false; skipped: false; error: string };
 
@@ -31,12 +36,7 @@ function envAutoRegisterFace(): boolean {
 export function extractHanetPersonId(data: unknown): string {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return '';
   const record = data as Record<string, unknown>;
-  return pickHanetString(record, [
-    'personID',
-    'personId',
-    'person_id',
-    'id',
-  ]);
+  return pickHanetString(record, ['personID', 'personId', 'person_id', 'id']);
 }
 
 @Injectable()
@@ -56,7 +56,11 @@ export class HanetPersonRegisterService {
     input: HanetSyncUserFaceInput,
   ): Promise<HanetSyncUserFaceResult> {
     if (!envAutoRegisterFace()) {
-      return { ok: false, skipped: true, reason: 'HANET_AUTO_REGISTER_FACE=false' };
+      return {
+        ok: false,
+        skipped: true,
+        reason: 'HANET_AUTO_REGISTER_FACE=false',
+      };
     }
     if (!isHanetConfigured(getHanetConfig())) {
       return { ok: false, skipped: true, reason: 'Chưa cấu hình HANET OAuth' };
@@ -77,10 +81,7 @@ export class HanetPersonRegisterService {
     }
 
     const existingFace = await this.findExistingFace(input.userId, email);
-    if (
-      existingFace?.hanetPersonId &&
-      existingFace.imagePath === avatarUrl
-    ) {
+    if (existingFace?.hanetPersonId && existingFace.imagePath === avatarUrl) {
       return {
         ok: false,
         skipped: true,
@@ -114,12 +115,11 @@ export class HanetPersonRegisterService {
         personId,
       });
 
-      const linkedRegistrations =
-        await linkHanetPersonToRegistrationsByEmail(
-          this.em,
-          personId,
-          email,
-        );
+      const linkedRegistrations = await linkHanetPersonToRegistrationsByEmail(
+        this.em,
+        personId,
+        email,
+      );
 
       this.logger.log(
         `HANET registerByUrl ok personId=${personId} user=${input.userId ?? '-'} email=${email} faceData=${faceDataId} linkedRegs=${linkedRegistrations}`,
@@ -134,9 +134,7 @@ export class HanetPersonRegisterService {
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'HANET registerByUrl thất bại';
-      this.logger.warn(
-        `HANET syncUserFace skipped for ${email}: ${message}`,
-      );
+      this.logger.warn(`HANET syncUserFace skipped for ${email}: ${message}`);
       return { ok: false, skipped: false, error: message };
     }
   }

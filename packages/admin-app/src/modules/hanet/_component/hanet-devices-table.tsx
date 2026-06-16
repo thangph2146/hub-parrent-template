@@ -2,12 +2,15 @@
 
 import { useMemo, type ReactNode } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Camera, Loader2, Radio } from "lucide-react"
-import { Button } from "@ui/components/button"
-import { AdminDataTable } from "@ui/components/data-table"
+import { Camera, Loader2 } from "lucide-react"
+import { AdminDataTable, defineDataTableActionsColumn } from "@ui/components/data-table"
 import { FieldCopyButton } from "@ui/components/field"
 import type { HanetDeviceOption } from "@workspace/admin-app/lib/hanet-device-parse"
 import { ConnectionStatusBadge } from "./hanet-device-connection-panel"
+import {
+  HanetDeviceRowActions,
+  hanetDeviceActionsColumnMeta,
+} from "./hanet-device-row-actions"
 
 export type HanetDeviceConnectionStatusMap = Record<string, boolean | undefined>
 
@@ -19,7 +22,10 @@ export type HanetDevicesTableProps = {
   connectionStatusByDeviceId?: HanetDeviceConnectionStatusMap
   checkingDeviceId?: string | null
   isCheckingConnection?: boolean
+  ensuringDeviceId?: string | null
+  isEnsuringCamera?: boolean
   onCheckConnection: (deviceId: string) => void
+  onEnsureCamera?: (device: HanetDeviceOption) => void
 }
 
 export function HanetDevicesTable({
@@ -30,7 +36,10 @@ export function HanetDevicesTable({
   connectionStatusByDeviceId = {},
   checkingDeviceId = null,
   isCheckingConnection = false,
+  ensuringDeviceId = null,
+  isEnsuringCamera = false,
   onCheckConnection,
+  onEnsureCamera,
 }: HanetDevicesTableProps) {
   const columns = useMemo<ColumnDef<HanetDeviceOption>[]>(
     () => [
@@ -96,38 +105,40 @@ export function HanetDevicesTable({
           return <ConnectionStatusBadge online={online} />
         },
       },
-      {
-        id: "connection",
-        header: "Kiểm tra",
-        enableColumnFilter: false,
-        enableHiding: false,
-        size: 180,
+      defineDataTableActionsColumn<HanetDeviceOption>({
+        columnMeta: hanetDeviceActionsColumnMeta,
         cell: ({ row }) => {
           const deviceId = row.original.deviceId
-          const isActive =
+          const isBusy =
             isCheckingConnection && checkingDeviceId === deviceId
+          const isEnsuring =
+            isEnsuringCamera && ensuringDeviceId === deviceId
 
           return (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-7 gap-1 text-xs"
-              disabled={isCheckingConnection}
-              onClick={() => onCheckConnection(deviceId)}
-            >
-              {isActive ? (
-                <Loader2 className="size-3 animate-spin" aria-hidden />
-              ) : (
-                <Radio className="size-3" aria-hidden />
-              )}
-              getConnectionStatus
-            </Button>
+            <HanetDeviceRowActions
+              device={row.original}
+              busy={isBusy}
+              ensureBusy={isEnsuring}
+              onCheckConnection={() => onCheckConnection(deviceId)}
+              onEnsureCamera={
+                onEnsureCamera
+                  ? () => onEnsureCamera(row.original)
+                  : undefined
+              }
+            />
           )
         },
-      },
+      }),
     ],
-    [checkingDeviceId, connectionStatusByDeviceId, isCheckingConnection, onCheckConnection]
+    [
+      checkingDeviceId,
+      connectionStatusByDeviceId,
+      ensuringDeviceId,
+      isCheckingConnection,
+      isEnsuringCamera,
+      onCheckConnection,
+      onEnsureCamera,
+    ]
   )
 
   return (

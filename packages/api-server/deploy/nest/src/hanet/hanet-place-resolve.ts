@@ -6,6 +6,9 @@ type PlaceListProvider = {
   getPlaces(): Promise<unknown>;
 };
 
+/**
+ * placeId từ tham số → HANET_DEFAULT_PLACE_ID → (nếu chỉ 1 place trên HANET thì tự chọn).
+ */
 export async function resolveHanetPlaceId(
   provider: PlaceListProvider,
   placeId?: string,
@@ -15,7 +18,7 @@ export async function resolveHanetPlaceId(
 
   const data = await provider.getPlaces();
   const places = parseHanetPlaceList(data);
-  if (places.length === 1) return places[0]!.placeId;
+  if (places.length === 1) return places[0].placeId;
 
   if (places.length > 1) {
     throw new BadRequestException(

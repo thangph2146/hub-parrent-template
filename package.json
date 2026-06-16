@@ -141,6 +141,7 @@
     "db:demo:checkin": "pnpm --filter \"@hub-event/api\" run seed:demo",
     "db:bootstrap:store": "node script-system/db/bootstrap-fresh-api.cjs store-sync",
     "db:bootstrap:checkin": "node script-system/db/bootstrap-fresh-api.cjs hub-event",
+    "db:ensure:checkin-face-data": "pnpm --filter \"@hub-event/api\" run db:ensure:face-data-hanet",
     "db:bootstrap:parent": "node script-system/db/bootstrap-fresh-api.cjs hub-parent",
     "storage:init": "node script-system/db/init-storage-dirs.cjs main",
     "storage:init:checkin": "node script-system/db/init-storage-dirs.cjs hub-event",

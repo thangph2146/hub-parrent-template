@@ -11,6 +11,7 @@ import {
   shouldShowRealtimeSyncToast,
   type AdminCacheInvalidatePayload,
   type AdminStatusChangePayload,
+  type EventHanetSyncSocketPayload,
   type ParentStudentReviewSocketPayload,
   type SocketNotificationPayload,
 } from "@workspace/api-client/realtime"
@@ -77,6 +78,26 @@ function showRealtimeToast(
 function invalidateNotificationQueries(queryClient: QueryClient) {
   void queryClient.invalidateQueries({ queryKey: ["notifications"] })
   void queryClient.invalidateQueries({ queryKey: ["dashboard"] })
+}
+
+function invalidateHanetSyncQueries(
+  queryClient: QueryClient,
+  payload: EventHanetSyncSocketPayload,
+) {
+  if (
+    payload.kind === "place" ||
+    payload.kind === "device" ||
+    payload.kind === "person"
+  ) {
+    void queryClient.invalidateQueries({ queryKey: ["hanet", "places"] })
+  }
+  if (payload.kind === "device") {
+    void queryClient.invalidateQueries({ queryKey: ["hanet", "devices"] })
+  }
+  if (payload.kind === "person") {
+    void queryClient.invalidateQueries({ queryKey: ["hanet", "persons"] })
+    void queryClient.invalidateQueries({ queryKey: ["hanet", "avatars"] })
+  }
 }
 
 /**
@@ -190,6 +211,11 @@ export function useAdminRealtimeSync(
       })
     }
 
+    const onHanetSync = (payload: EventHanetSyncSocketPayload) => {
+      if (disposed || !payload?.kind) return
+      invalidateHanetSyncQueries(queryClientRef.current, payload)
+    }
+
     socket.on("connect", onConnect)
     socket.on("disconnect", onDisconnect)
     socket.on("connect_error", onConnectError)
@@ -205,6 +231,7 @@ export function useAdminRealtimeSync(
       ADMIN_SOCKET_EVENTS.parentStudentReviewed,
       onParentStudentReviewed
     )
+    socket.on("event:hanet-sync", onHanetSync)
 
     return () => {
       disposed = true
@@ -223,6 +250,7 @@ export function useAdminRealtimeSync(
         ADMIN_SOCKET_EVENTS.parentStudentReviewed,
         onParentStudentReviewed
       )
+      socket.off("event:hanet-sync", onHanetSync)
       socket.close()
       setConnected(false)
       setSocketError(false)

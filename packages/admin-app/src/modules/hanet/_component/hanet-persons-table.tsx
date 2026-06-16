@@ -4,9 +4,15 @@ import { useMemo, type ReactNode } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/avatar"
-import { AdminDataTable } from "@ui/components/data-table"
+import { AdminDataTable, defineDataTableActionsColumn } from "@ui/components/data-table"
 import { FieldCopyButton } from "@ui/components/field"
 import type { HanetPersonListPage } from "@workspace/api-client"
+import type { HanetFaceActionId } from "@workspace/admin-app/lib/hanet-face-actions"
+import type { HanetPersonActionId } from "@workspace/admin-app/lib/hanet-person-api-actions"
+import {
+  HanetPersonRowActions,
+  hanetPersonActionsColumnMeta,
+} from "./hanet-person-row-actions"
 
 export type HanetPersonRow = HanetPersonListPage["items"][number]
 
@@ -18,19 +24,14 @@ export type HanetPersonsTableProps = {
   pageIndex: number
   pageSize: number
   total?: number
+  hanetTotal?: number
+  listLimited?: boolean
   onPageIndexChange: (pageIndex: number) => void
   onPageSizeChange: (pageSize: number) => void
-}
-
-function resolvePersonListTotal(
-  pageIndex: number,
-  pageSize: number,
-  rowCount: number,
-  total?: number,
-): number {
-  if (total != null && Number.isFinite(total)) return total
-  if (rowCount < pageSize) return pageIndex * pageSize + rowCount
-  return (pageIndex + 2) * pageSize
+  onFaceAction?: (actionId: HanetFaceActionId, person: HanetPersonRow) => void
+  onPersonAction?: (actionId: HanetPersonActionId, person: HanetPersonRow) => void
+  /** Tra cứu: ẩn phân trang và cột thao tác. */
+  compact?: boolean
 }
 
 export function HanetPersonsTable({
@@ -40,16 +41,21 @@ export function HanetPersonsTable({
   filterToolbarExtra,
   pageIndex,
   pageSize,
-  total,
+  total = 0,
+  hanetTotal,
+  listLimited = false,
   onPageIndexChange,
   onPageSizeChange,
+  onFaceAction,
+  onPersonAction,
+  compact = false,
 }: HanetPersonsTableProps) {
-  const resolvedTotal = resolvePersonListTotal(
-    pageIndex,
-    pageSize,
-    data.length,
-    total,
-  )
+  const resolvedTotal =
+    total != null && Number.isFinite(total) && total > 0
+      ? total
+      : data.length < pageSize
+        ? pageIndex * pageSize + data.length
+        : (pageIndex + 1) * pageSize
 
   const columns = useMemo<ColumnDef<HanetPersonRow>[]>(
     () => [
@@ -75,7 +81,7 @@ export function HanetPersonsTable({
               rel="noopener noreferrer"
               className="inline-flex shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Avatar size="xl" className="size-22">
+              <Avatar size="lg" className="size-22">
                 <AvatarImage src={avatar} alt="" />
                 <AvatarFallback className="text-xs">?</AvatarFallback>
               </Avatar>
@@ -139,8 +145,22 @@ export function HanetPersonsTable({
           )
         },
       },
+      ...(compact
+        ? []
+        : [
+            defineDataTableActionsColumn<HanetPersonRow>({
+              columnMeta: hanetPersonActionsColumnMeta,
+              cell: ({ row }) => (
+                <HanetPersonRowActions
+                  person={row.original}
+                  onFaceAction={onFaceAction}
+                  onPersonAction={onPersonAction}
+                />
+              ),
+            }),
+          ]),
     ],
-    []
+    [compact, onFaceAction, onPersonAction],
   )
 
   return (
@@ -157,30 +177,43 @@ export function HanetPersonsTable({
         [row.displayName, row.personId, row.aliasId].filter(Boolean).join(" ")
       }
       filterToolbarExtra={filterToolbarExtra}
-      pagination={{
-        page: pageIndex + 1,
-        pageSize,
-        total: resolvedTotal,
-        currentPageRowCount: data.length,
-        appliedPage: pageIndex + 1,
-        appliedPageSize: pageSize,
-        onPageChange: (nextPage) => onPageIndexChange(Math.max(0, nextPage - 1)),
-        onPageSizeChange: (nextSize) => {
-          onPageSizeChange(nextSize)
-          onPageIndexChange(0)
-        },
-        itemLabel: "người",
-        isLoading,
-        pageSizeOptions: [20, 50, 100],
-      }}
+      pagination={
+        compact
+          ? undefined
+          : {
+              page: pageIndex + 1,
+              pageSize,
+              total: resolvedTotal,
+              currentPageRowCount: data.length,
+              appliedPage: pageIndex + 1,
+              appliedPageSize: pageSize,
+              onPageChange: (nextPage) =>
+                onPageIndexChange(Math.max(0, nextPage - 1)),
+              onPageSizeChange: (nextSize) => {
+                onPageSizeChange(nextSize)
+                onPageIndexChange(0)
+              },
+              itemLabel: "người",
+              isLoading,
+              pageSizeOptions: [20, 50, 100],
+            }
+      }
       footer={
-        <p className="text-sm text-muted-foreground">
-          {isLoading
-            ? "Đang tải…"
-            : total != null
-              ? `Tổng ${total} người · trang ${pageIndex + 1}`
-              : `Trang ${pageIndex + 1} · ${data.length} người trên trang này`}
-        </p>
+        compact ? (
+          <p className="text-sm text-muted-foreground">
+            {isLoading
+              ? "Đang tải…"
+              : `Hiển thị ${data.length} kết quả tra cứu`}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {isLoading
+              ? "Đang tải…"
+              : listLimited && hanetTotal != null && hanetTotal > resolvedTotal
+                ? `Hiển thị ${resolvedTotal} / ${hanetTotal} người trên HANET (Partner API chỉ trả ~50/lần) · trang ${pageIndex + 1}`
+                : `Tổng ${resolvedTotal} người · trang ${pageIndex + 1}`}
+          </p>
+        )
       }
     />
   )
