@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 import { Alert, AlertDescription, AlertTitle } from "@ui/components/alert"
 import { Badge } from "@ui/components/badge"
@@ -10,11 +11,7 @@ import {
   FieldSet,
   FieldSetContent,
 } from "@ui/components/field"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { GitBranch, Loader2, TableProperties } from "lucide-react"
 import { getEntityRelationColumns, getEntitySchemaColumns } from "./columns"
 import { useDatabaseSchema } from "./_hooks"
@@ -133,22 +130,22 @@ export function EntitySchemaPanel() {
             value={schemaTab}
             onValueChange={(v) => setSchemaTab(v as "tables" | "relations")}
           >
-            <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-              <TabsTrigger
+            <AdminListTabsList>
+              <AdminListTabsTrigger
                 value="tables"
-                className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                
               >
                 <TableProperties className="size-4" />
                 Bảng ({entityRows.length})
-              </TabsTrigger>
-              <TabsTrigger
+              </AdminListTabsTrigger>
+              <AdminListTabsTrigger
                 value="relations"
-                className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                
               >
                 <GitBranch className="size-4" />
                 Quan hệ FK ({relationRows.length})
-              </TabsTrigger>
-            </TabsList>
+              </AdminListTabsTrigger>
+            </AdminListTabsList>
 
             <TabsContent value="tables">
               <AdminDataTable

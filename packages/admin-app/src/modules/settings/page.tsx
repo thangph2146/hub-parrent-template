@@ -8,14 +8,13 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Textarea } from "@ui/components/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import {
   FieldSet,
   FieldSetContent,
   FieldSectionLegend,
 } from "@ui/components/field"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
   ADMIN_PUBLIC_BRANDING_QUERY_KEY,
@@ -24,15 +23,10 @@ import {
   ADMIN_SITE_SEO_PAGE_KEY,
   AdminAccessDeniedPanel,
   AdminDocumentHeadOverrideProvider,
-  AdminReadOnlyHint,
-} from "@ui/components/admin"
+  AdminReadOnlyHint, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { Separator } from "@ui/components/separator"
 import { TypographyPSmallMuted } from "@ui/components/typography"
 import { SelectPicker, type SelectPickerOption } from "@ui/components/pickers"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
 import {
   canUserAccess,
   isSuperAdminRoleCode,
@@ -475,26 +469,26 @@ export default function SettingsPage() {
             }}
             className="space-y-4"
           >
-            <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+            <AdminListTabsList>
               {canManageSettings ? (
-                <TabsTrigger
+                <AdminListTabsTrigger
                   value="display"
-                  className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                  
                 >
                   <Monitor className="size-4" aria-hidden />
                   Hiển thị & hệ thống
-                </TabsTrigger>
+                </AdminListTabsTrigger>
               ) : null}
               {canManageSettings || canViewSeo ? (
-                <TabsTrigger
+                <AdminListTabsTrigger
                   value="seo-global"
-                  className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                  
                 >
                   <Globe className="size-4" aria-hidden />
                   SEO mặc định
-                </TabsTrigger>
+                </AdminListTabsTrigger>
               ) : null}
-            </TabsList>
+            </AdminListTabsList>
 
             {canManageSettings ? (
               <TabsContent value="display" className="mt-0 space-y-4">

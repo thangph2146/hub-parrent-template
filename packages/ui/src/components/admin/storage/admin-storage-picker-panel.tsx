@@ -11,12 +11,12 @@ import {
 import type { OnChangeFn, Row, RowSelectionState } from "@tanstack/react-table"
 import type { StorageRealm } from "@workspace/api-client"
 import { Button } from "../../button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../tabs"
+import { Tabs, TabsContent } from "../../tabs"
 import { AdminPageLoading } from "../pages/admin-page-loading"
 import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "../../../lib/layout-shell"
+  AdminListTabsList,
+  AdminListTabsTrigger,
+} from "../admin-list-tabs"
 import { toast } from "../../sonner"
 import {
   FileText,
@@ -548,21 +548,17 @@ export function AdminStoragePickerPanel({
           }}
         >
           <div className="flex flex-wrap items-center gap-2">
-            <TabsList className={`${ADMIN_LIST_TABS_LIST_CLASS} flex-wrap`}>
+            <AdminListTabsList wrap>
               {realmTabs.map((realm) => {
                 const Icon = REALM_ICONS[realm.id as StorageRealm] ?? ImageIcon
                 return (
-                  <TabsTrigger
-                    key={realm.id}
-                    value={realm.id}
-                    className={ADMIN_LIST_TABS_TRIGGER_CLASS}
-                  >
-                    <Icon className="size-4" />
+                  <AdminListTabsTrigger key={realm.id} value={realm.id}>
+                    <Icon className="size-3.5" />
                     {realm.label}
-                  </TabsTrigger>
+                  </AdminListTabsTrigger>
                 )
               })}
-            </TabsList>
+            </AdminListTabsList>
             <p className="w-full text-xs text-muted-foreground">
               {imagesOnly
                 ? multiSelect

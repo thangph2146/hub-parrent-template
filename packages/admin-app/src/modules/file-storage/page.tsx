@@ -1,25 +1,20 @@
 "use client"
 import { api } from "@workspace/admin-app/lib/api"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import type {
   ColumnFiltersState,
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table"
 import { Button } from "@ui/components/button"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageLoading,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { ImageLightbox } from "@ui/components/image-lightbox"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import type { DataTableUserSearchHandlers } from "@ui/components/data-table"
 import { useAdminAuth as useAuth } from "@workspace/admin-app/runtime"
@@ -75,6 +70,14 @@ const REALM_ICONS: Record<StorageRealm, typeof ImageIcon> = {
 }
 
 function FileStoragePageInner() {
+  const searchParams = useSearchParams()
+  const queryRealm = searchParams.get("realm")
+  const queryFolder = searchParams.get("folder")?.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "") ?? ""
+  const initialRealm: StorageRealm =
+    queryRealm && REALM_ORDER.includes(queryRealm as StorageRealm)
+      ? (queryRealm as StorageRealm)
+      : "images"
+
   const { user } = useAuth()
   const canUpload = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_CREATE) ||
@@ -96,8 +99,8 @@ function FileStoragePageInner() {
   const [moveDialogOpen, setMoveDialogOpen] = useState(false)
   const [moveRows, setMoveRows] = useState<FileStorageRow[]>([])
 
-  const [activeRealm, setActiveRealm] = useState<StorageRealm>("images")
-  const [activeFolderPath, setActiveFolderPath] = useState("")
+  const [activeRealm, setActiveRealm] = useState<StorageRealm>(initialRealm)
+  const [activeFolderPath, setActiveFolderPath] = useState(queryFolder)
   const [includeDescendants, setIncludeDescendants] = useState(false)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [page, setPage] = useState(1)
@@ -494,22 +497,22 @@ function FileStoragePageInner() {
       ) : (
         <Tabs value={activeRealm} onValueChange={handleRealmChange}>
           <div className="flex flex-wrap items-center gap-2">
-            <TabsList className={`${ADMIN_LIST_TABS_LIST_CLASS} flex-wrap`}>
+            <AdminListTabsList wrap>
               {realmTabs.map((realm) => {
                 const Icon = REALM_ICONS[realm.id as StorageRealm] ?? ImageIcon
                 return (
-                  <TabsTrigger
+                  <AdminListTabsTrigger
                     key={realm.id}
                     value={realm.id}
-                    className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+                    
                   >
                     <Icon className="size-4" />
                     {realm.label}
                     <AdminTabCountBadge count={realm.count} />
-                  </TabsTrigger>
+                  </AdminListTabsTrigger>
                 )
               })}
-            </TabsList>
+            </AdminListTabsList>
             <p className="w-full text-xs text-muted-foreground">
               Tab «{activeRealmMeta?.label ?? activeRealm}»: cho phép import{" "}
               {realmUploadHint}. Folder cấp 1 có thể tùy chỉnh khi tạo mới.

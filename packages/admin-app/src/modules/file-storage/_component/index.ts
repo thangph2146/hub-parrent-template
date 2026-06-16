@@ -1,3 +1,5 @@
+export { FileStorageScopedBrowse } from "./file-storage-scoped-browse"
+export type { FileStorageScopedBrowseProps } from "./file-storage-scoped-browse"
 export { getFileStorageColumns } from "./columns"
 export { FileStorageRowActions } from "./file-row-actions"
 export { StorageVideoPreview } from "./storage-video-preview"

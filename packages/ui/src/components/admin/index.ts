@@ -55,6 +55,12 @@ export {
 } from "./integration/admin-document-head-override"
 export * from "./presets"
 export * from "./pages"
+export {
+  AdminListTabsList,
+  AdminListTabsTrigger,
+  type AdminListTabsListProps,
+  type AdminListTabsTriggerProps,
+} from "./admin-list-tabs"
 export * from "./forms"
 export * from "./storage"
 export {

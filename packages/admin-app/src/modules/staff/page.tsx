@@ -16,20 +16,14 @@ import {
 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "@ui/components/sonner"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { TypographyH3 } from "@ui/components/typography"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import {
   prefetchStaffProfile,
   queryKeys,
@@ -535,18 +529,18 @@ function StaffPageInner() {
         }}
         className="space-y-4"
       >
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+        <AdminListTabsList>
+          <AdminListTabsTrigger value="list" >
             <Layers className="size-4 shrink-0" aria-hidden />
             Danh sách
             <AdminTabCountBadge count={staffTotal} />
-          </TabsTrigger>
-          <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+          </AdminListTabsTrigger>
+          <AdminListTabsTrigger value="trash" >
             <ArchiveRestore className="size-4 shrink-0" aria-hidden />
             Thùng rác
             <AdminTabCountBadge count={trashStaffTotal} />
-          </TabsTrigger>
-        </TabsList>
+          </AdminListTabsTrigger>
+        </AdminListTabsList>
 
         <TabsContent value="list" className="mt-0 space-y-4">
           <p className="flex gap-2 text-sm text-muted-foreground">

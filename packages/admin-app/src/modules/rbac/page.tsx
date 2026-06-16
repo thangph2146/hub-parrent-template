@@ -32,16 +32,14 @@ import {
 } from "@ui/components/dialog"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { ScrollArea } from "@ui/components/scroll-area"
 import { Switch } from "@ui/components/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { Textarea } from "@ui/components/textarea"
 import { TypographyPSmallMuted } from "@ui/components/typography"
 import {
@@ -64,6 +62,10 @@ import {
   permissionLabelVi,
 } from "@workspace/admin-app/lib/permission-labels"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
+import {
+  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
+  ADMIN_DIALOG_CONTENT_LG_CLASS,
+} from "@ui/lib/layout-shell"
 import { canEditSuperAdminRole } from "@workspace/admin-app/config/protected-admin"
 import { getRbacColumns } from "./_component/columns"
 import {
@@ -71,13 +73,6 @@ import {
   mapRoleRow,
   type RoleRow,
 } from "./_component/utils"
-import {
-  ADMIN_ALERT_DIALOG_CONTENT_CLASS,
-  ADMIN_DIALOG_CONTENT_LG_CLASS,
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
-
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { defaultBulkOperationToast } from "@ui/lib/admin-operation-toast"
 type PagedResult<T> = {
@@ -561,16 +556,16 @@ export default function RbacPage() {
             value === "list" || value === "trash" ? setTab(value) : null
           }
         >
-          <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-            <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+          <AdminListTabsList>
+            <AdminListTabsTrigger value="list" >
               Danh sách
               <AdminTabCountBadge count={listQuery.data?.total ?? 0} />
-            </TabsTrigger>
-            <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+            </AdminListTabsTrigger>
+            <AdminListTabsTrigger value="trash" >
               Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
-            </TabsTrigger>
-          </TabsList>
+            </AdminListTabsTrigger>
+          </AdminListTabsList>
 
           <TabsContent value="list" className="mt-4 space-y-4">
             <AdminDataTable<RoleRow>

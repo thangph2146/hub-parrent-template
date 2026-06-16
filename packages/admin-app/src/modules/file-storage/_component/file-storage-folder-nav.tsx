@@ -42,6 +42,8 @@ type FileStorageFolderNavProps = {
   onIncludeDescendantsChange: (value: boolean) => void
   onNavigate: (folderPath: string) => void
   foldersRefreshKey?: number
+  /** Khi set — nút Home quay về folder này thay vì root realm. */
+  homeFolderPath?: string
   actions?: ReactNode
   className?: string
 }
@@ -75,9 +77,11 @@ export function FileStorageFolderNav({
   onIncludeDescendantsChange,
   onNavigate,
   foldersRefreshKey = 0,
+  homeFolderPath,
   actions,
   className,
 }: FileStorageFolderNavProps) {
+  const homePath = homeFolderPath?.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "") ?? ""
   const searchInputId = useId()
   const listId = `${searchInputId}-results`
   const searchRootRef = useRef<HTMLDivElement>(null)
@@ -136,10 +140,14 @@ export function FileStorageFolderNav({
           >
             <Button
               type="button"
-              variant={activeFolderPath ? "ghost" : "secondary"}
+              variant={
+                activeFolderPath === homePath || (!activeFolderPath && !homePath)
+                  ? "secondary"
+                  : "ghost"
+              }
               size="sm"
               className="h-7 shrink-0 gap-1 px-2 text-xs"
-              onClick={() => handleNavigate("")}
+              onClick={() => handleNavigate(homePath)}
             >
               <Home className="size-3.5" />
               <span className="max-w-[8rem] truncate">{realmLabel}</span>

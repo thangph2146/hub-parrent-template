@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { BookOpen, Calendar, TrendingUp, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@ui/components/alert"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
+import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { YearAveragesList } from "./year-averages-list"
 import { TermAveragesList } from "./term-averages-list"
 import { DetailedScoresList } from "./detailed-scores-list"
@@ -48,18 +49,18 @@ export const StudentScoresSection = ({
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList variant="default" className="w-full">
+      <AdminListTabsList fullWidth className="grid grid-cols-3">
         {[
           { value: "detailed", label: "Điểm chi tiết", icon: BookOpen },
           { value: "term", label: "Điểm học kỳ", icon: Calendar },
           { value: "year", label: "Điểm năm học", icon: TrendingUp },
         ].map(({ value, label, icon: Icon }) => (
-          <TabsTrigger key={value} value={value}>
+          <AdminListTabsTrigger key={value} value={value} stretch>
             <Icon className="size-3.5" />
             <span>{label}</span>
-          </TabsTrigger>
+          </AdminListTabsTrigger>
         ))}
-      </TabsList>
+      </AdminListTabsList>
 
       <div className="mt-4">
         <TabsContent value="detailed">

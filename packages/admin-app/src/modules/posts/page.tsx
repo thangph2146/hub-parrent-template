@@ -7,16 +7,14 @@ import type {
   RowSelectionState,
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { AlertCircle, FileText, Plus } from "lucide-react"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import { PostsTable, PostsTrashTable } from "./_component/_table"
 import {
@@ -37,10 +35,6 @@ import {
   prefetchPostDetail,
 } from "./_component/_query"
 import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-value"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
 import type { PostListRow } from "./_component"
 import {
   buildCategoryOptionTree,
@@ -247,21 +241,21 @@ function PostsPageInner() {
           v === "list" || v === "trash" ? setMainTab(v) : null
         }
       >
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+        <AdminListTabsList>
+          <AdminListTabsTrigger value="list" >
             Danh sách
             <AdminTabCountBadge count={postsQuery.data?.total ?? 0} />
-          </TabsTrigger>
+          </AdminListTabsTrigger>
           {canRestore && (
-            <TabsTrigger
+            <AdminListTabsTrigger
               value="trash"
-              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+              
             >
               Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
-            </TabsTrigger>
+            </AdminListTabsTrigger>
           )}
-        </TabsList>
+        </AdminListTabsList>
 
         <TabsContent value="list" className="mt-4 space-y-4">
           {postsQuery.error ? (

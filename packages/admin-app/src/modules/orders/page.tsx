@@ -4,22 +4,16 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import type { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { ShoppingCart, AlertCircle } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
 import { toast } from "@ui/components/sonner"
-import {
-  AdminListPageHeader,
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { buildAdminFilterQuery, COMMON_FILTER_MAPPINGS } from "@workspace/admin-app/lib/build-admin-filter-query"
 import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-value"
 import {useAdminAuth as useAuth, useAdminModuleNavigation, useAdminModulePath } from "@workspace/admin-app/runtime"
@@ -266,18 +260,18 @@ function OrdersPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
+        <AdminListTabsList>
           {STATUS_TABS.map((tab) => (
-            <TabsTrigger
+            <AdminListTabsTrigger
               key={tab.value}
               value={tab.value}
-              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+              
             >
               {tab.label}
               <AdminTabCountBadge count={countFor(tab.value) ?? "—"} />
-            </TabsTrigger>
+            </AdminListTabsTrigger>
           ))}
-        </TabsList>
+        </AdminListTabsList>
 
         <TabsContent value={status} className="mt-0">
           {listQuery.error ? (

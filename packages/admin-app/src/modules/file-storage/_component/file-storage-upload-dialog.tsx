@@ -12,7 +12,8 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { toast } from "@ui/components/sonner"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
+import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import {
   createStorageFolder,
   fetchStorageFolders,
@@ -366,16 +367,16 @@ export function FileStorageUploadDialog({
         value={folderMode}
         onValueChange={(v) => setFolderMode(v === "new" ? "new" : "existing")}
       >
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="existing" className="gap-1.5">
-            <FolderOpen className="size-4" />
+        <AdminListTabsList fullWidth className="grid grid-cols-2">
+          <AdminListTabsTrigger value="existing" stretch>
+            <FolderOpen className="size-3.5" />
             Thư mục có sẵn
-          </TabsTrigger>
-          <TabsTrigger value="new" className="gap-1.5">
-            <FolderPlus className="size-4" />
+          </AdminListTabsTrigger>
+          <AdminListTabsTrigger value="new" stretch>
+            <FolderPlus className="size-3.5" />
             Tạo mới
-          </TabsTrigger>
-        </TabsList>
+          </AdminListTabsTrigger>
+        </AdminListTabsList>
 
         <TabsContent value="existing" className="mt-4 space-y-3">
           <PanelDialogSearch

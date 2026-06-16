@@ -6,13 +6,11 @@ import type {
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Headset } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import {
-  AdminListPageHeader,
+import { Tabs, TabsContent } from "@ui/components/tabs"
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import {
   prefetchContactRequestDetail,
   useContactRequests,
@@ -40,11 +38,6 @@ import {
   useBulkPurgeContactRequest,
   useUpdateContactRequest,
 } from "./_component/_query/use-contact-queries"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
-
 function ContactRequestsPageInner() {
   const { user } = useAuth()
   const canDelete = user
@@ -267,16 +260,16 @@ function ContactRequestsPageInner() {
       />
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as "list" | "trash")}>
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+        <AdminListTabsList>
+          <AdminListTabsTrigger value="list" >
             Đang hoạt động
             <AdminTabCountBadge count={activeTotal} />
-          </TabsTrigger>
-          <TabsTrigger value="trash" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+          </AdminListTabsTrigger>
+          <AdminListTabsTrigger value="trash" >
             Thùng rác
             <AdminTabCountBadge count={trashTotal} />
-          </TabsTrigger>
-        </TabsList>
+          </AdminListTabsTrigger>
+        </AdminListTabsList>
 
         <TabsContent value="list" className="mt-0">
           <ContactRequestTable

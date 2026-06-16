@@ -192,12 +192,16 @@ export const ADMIN_PAGE_GRID_MAIN_CLASS = "space-y-6 lg:col-span-2"
 
 export const ADMIN_PAGE_GRID_SIDEBAR_CLASS = "space-y-6 lg:col-span-1"
 
-/** Tabs danh sách / thùng rác trên trang list. */
+/** Tabs danh sách / thùng rác — một hàng, cao cố định h-9. */
 export const ADMIN_LIST_TABS_LIST_CLASS =
-  "h-auto min-h-9 flex-wrap gap-1 rounded-lg p-1"
+  "h-9 min-h-0 w-fit max-w-full flex-nowrap gap-1 rounded-lg p-1"
+
+/** Tabs nhiều cột / xuống dòng (vd. realm file-storage). */
+export const ADMIN_LIST_TABS_LIST_WRAP_CLASS =
+  "h-auto min-h-9 w-fit max-w-full flex flex-wrap gap-1 rounded-lg p-1"
 
 export const ADMIN_LIST_TABS_TRIGGER_CLASS =
-  "group/tab flex items-center gap-2 rounded-lg px-4 py-2 data-active:bg-primary data-active:text-primary-foreground data-active:hover:text-primary-foreground dark:data-active:hover:text-primary-foreground"
+  "group/tab flex h-7 shrink-0 items-center justify-center gap-1.5 rounded-lg px-2.5 py-0 text-xs font-medium whitespace-nowrap data-active:bg-primary data-active:text-primary-foreground data-active:hover:text-primary-foreground dark:data-active:hover:text-primary-foreground [&_svg:not([class*='size-'])]:size-3.5"
 
 /** Badge đếm trong tab — đổi tông khi tab active (nền primary). */
 export const ADMIN_LIST_TABS_COUNT_BADGE_CLASS =

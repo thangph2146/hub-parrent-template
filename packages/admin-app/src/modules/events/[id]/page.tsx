@@ -26,15 +26,17 @@ import {
   FieldSectionField,
   FieldSectionLegend,
 } from "@ui/components/field"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import { AdminDataTable } from "@ui/components/data-table"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import {
+  AdminListTabsList,
+  AdminListTabsTrigger,
   buildEventDetailXlsxExport,
   AdminPageGuard,
   AdminPageSection,
   AdminPageLoading,
   AdminDetailPageHeader,
 } from "@ui/components/admin"
+import { AdminDataTable } from "@ui/components/data-table"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
 import { PERMISSION_CODES, canUserAccess } from "@workspace/api-client"
 import {
@@ -96,17 +98,17 @@ function EventDetailInner() {
       />
 
       <Tabs defaultValue="info" className="my-6">
-        <TabsList className="w-full">
-          <TabsTrigger value="info" className="flex-1 gap-1.5">
-            <FileText className="size-4" /> Thông tin sự kiện
-          </TabsTrigger>
-          <TabsTrigger value="live" className="flex-1 gap-1.5">
-            <Radio className="size-4" /> Theo dõi realtime
-          </TabsTrigger>
-          <TabsTrigger value="lists" className="flex-1 gap-1.5">
-            <ClipboardList className="size-4" /> Danh sách
-          </TabsTrigger>
-        </TabsList>
+        <AdminListTabsList fullWidth>
+          <AdminListTabsTrigger value="info" stretch>
+            <FileText className="size-3.5" /> Thông tin sự kiện
+          </AdminListTabsTrigger>
+          <AdminListTabsTrigger value="live" stretch>
+            <Radio className="size-3.5" /> Theo dõi realtime
+          </AdminListTabsTrigger>
+          <AdminListTabsTrigger value="lists" stretch>
+            <ClipboardList className="size-3.5" /> Danh sách
+          </AdminListTabsTrigger>
+        </AdminListTabsList>
 
         <TabsContent value="info" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-3">
@@ -415,14 +417,14 @@ function EventDetailInner() {
 
         <TabsContent value="lists" className="mt-6">
           <Tabs defaultValue="registrations">
-            <TabsList className="w-full max-w-md">
-              <TabsTrigger value="registrations" className="flex-1 gap-1.5">
-                <ClipboardList className="size-4" /> Danh sách đăng ký
-              </TabsTrigger>
-              <TabsTrigger value="speakers" className="flex-1 gap-1.5">
-                <Mic className="size-4" /> Diễn giả
-              </TabsTrigger>
-            </TabsList>
+            <AdminListTabsList fullWidth className="max-w-md grid grid-cols-2">
+              <AdminListTabsTrigger value="registrations" stretch>
+                <ClipboardList className="size-3.5" /> Danh sách đăng ký
+              </AdminListTabsTrigger>
+              <AdminListTabsTrigger value="speakers" stretch>
+                <Mic className="size-3.5" /> Diễn giả
+              </AdminListTabsTrigger>
+            </AdminListTabsList>
             <TabsContent value="registrations" className="mt-4">
               <EventRegistrationsLiveTable
                 eventId={id}

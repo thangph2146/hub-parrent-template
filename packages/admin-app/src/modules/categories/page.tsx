@@ -8,23 +8,17 @@ import type {
 } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs, TabsContent } from "@ui/components/tabs"
 import { AlertCircle, Tags, Plus } from "lucide-react"
 import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-value"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
-import {
-  AdminPageGuard,
+import { AdminPageGuard,
   AdminPageSection,
   AdminListPageHeader,
   AdminReadOnlyHint,
   AdminPageHeaderPrimaryButton,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { useAdminCrudRowHandlers } from "@workspace/admin-app/lib/admin-row-action-handlers"
 import {
   CategoriesTable,
@@ -257,21 +251,21 @@ function CategoriesPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+        <AdminListTabsList>
+          <AdminListTabsTrigger value="list" >
             Danh sách
             <AdminTabCountBadge count={categoriesQuery.data?.total ?? 0} />
-          </TabsTrigger>
+          </AdminListTabsTrigger>
           {canWriteCategories ? (
-            <TabsTrigger
+            <AdminListTabsTrigger
               value="trash"
-              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+              
             >
               Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
-            </TabsTrigger>
+            </AdminListTabsTrigger>
           ) : null}
-        </TabsList>
+        </AdminListTabsList>
 
         <TabsContent value="list" className="mt-0 space-y-4">
           {categoriesQuery.error ? (

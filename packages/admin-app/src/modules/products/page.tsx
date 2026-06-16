@@ -4,19 +4,13 @@ import { useEffect, useMemo, useState } from "react"
 import type { ColumnDef, RowSelectionState } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import { Package, Plus, AlertCircle } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs"
-import {
-  AdminListPageHeader,
+import { Tabs, TabsContent } from "@ui/components/tabs"
+import { AdminListPageHeader,
   AdminPageGuard,
   AdminPageHeaderPrimaryButton,
   AdminPageSection,
   AdminReadOnlyHint,
-  AdminTabCountBadge,
-} from "@ui/components/admin"
-import {
-  ADMIN_LIST_TABS_LIST_CLASS,
-  ADMIN_LIST_TABS_TRIGGER_CLASS,
-} from "@ui/lib/layout-shell"
+  AdminTabCountBadge, AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-value"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
 import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
@@ -158,21 +152,21 @@ function ProductsPageInner() {
         }}
         className="space-y-6"
       >
-        <TabsList className={ADMIN_LIST_TABS_LIST_CLASS}>
-          <TabsTrigger value="list" className={ADMIN_LIST_TABS_TRIGGER_CLASS}>
+        <AdminListTabsList>
+          <AdminListTabsTrigger value="list" >
             Danh sách
             <AdminTabCountBadge count={listQuery.data?.total ?? 0} />
-          </TabsTrigger>
+          </AdminListTabsTrigger>
           {canWrite && (
-            <TabsTrigger
+            <AdminListTabsTrigger
               value="trash"
-              className={ADMIN_LIST_TABS_TRIGGER_CLASS}
+              
             >
               Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
-            </TabsTrigger>
+            </AdminListTabsTrigger>
           )}
-        </TabsList>
+        </AdminListTabsList>
 
         <TabsContent value="list" className="mt-0">
           {listQuery.error ? (

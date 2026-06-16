@@ -14,7 +14,8 @@ import {
   PanelDialogTreePanel,
 } from "@ui/components/dialogs"
 
-import { Tabs, TabsList, TabsTrigger } from "@ui/components/tabs"
+import { Tabs } from "@ui/components/tabs"
+import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 
 import { toast } from "@ui/components/sonner"
 
@@ -215,19 +216,19 @@ export function FileStorageMoveDialog({
           setSelectedPath("")
         }}
       >
-        <TabsList className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:grid-cols-4">
+        <AdminListTabsList
+          wrap
+          fullWidth
+          className="grid grid-cols-2 sm:grid-cols-4"
+        >
           {(Object.keys(REALM_STORAGE_LABELS) as StorageRealm[]).map(
             (realm) => (
-              <TabsTrigger
-                key={realm}
-                value={realm}
-                className="text-xs sm:text-sm"
-              >
+              <AdminListTabsTrigger key={realm} value={realm} stretch>
                 {REALM_STORAGE_LABELS[realm]}
-              </TabsTrigger>
+              </AdminListTabsTrigger>
             )
           )}
-        </TabsList>
+        </AdminListTabsList>
       </Tabs>
 
       <PanelDialogSearch
