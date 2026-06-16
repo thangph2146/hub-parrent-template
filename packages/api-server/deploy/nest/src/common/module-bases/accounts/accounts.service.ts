@@ -16,6 +16,8 @@ export interface AccountProfileDto {
   phone: string | null;
   address: string | null;
   citizenId: string | null;
+  /** MSSV — đọc từ bảng `students` hoặc email `@st.buh.edu.vn`. */
+  studentCode?: string | null;
   emailVerified: string | null;
   isActive: boolean;
   createdAt: string;
@@ -30,13 +32,21 @@ export interface UpdateAccountDto {
   address?: string | null;
   citizenId?: string | null;
   avatar?: string | null;
+  studentCode?: string | null;
   currentPassword?: string;
   password?: string;
 }
 
 export type UpdateAccountResult =
   | { ok: true; profile: AccountProfileDto }
-  | { ok: false; reason: 'not_found' | 'wrong_password' | 'password_required' };
+  | {
+      ok: false;
+      reason:
+        | 'not_found'
+        | 'wrong_password'
+        | 'password_required'
+        | 'invalid_student_code';
+    };
 
 type UserWithProfile = {
   id: number;
@@ -90,12 +100,32 @@ export abstract class BaseAccountsService {
   protected abstract getUserEntity(): new () => Record<string, unknown>;
   protected abstract getUserRoleEntity(): new () => Record<string, unknown>;
 
+  /** App binding có thể override để gắn MSSV từ entity `Student`. */
+  protected async resolveStudentCode(
+    _userId: string,
+    _email: string,
+  ): Promise<string | null> {
+    return null;
+  }
+
+  async resolveAvatarUploadFolder(
+    _userId: string,
+  ): Promise<
+    { ok: true; folderPath: string } | { ok: false; message: string }
+  > {
+    return { ok: true, folderPath: 'avatars' };
+  }
+
   async getProfile(userId: string): Promise<AccountProfileDto | null> {
     const User = this.getUserEntity();
     const UserRole = this.getUserRoleEntity();
     const user = await this.getEm().findOne(User, { id: toEntityId(userId) });
 
-    if (!user || (user as UserWithProfile).deletedAt || !(user as UserWithProfile).isActive) {
+    if (
+      !user ||
+      (user as UserWithProfile).deletedAt ||
+      !(user as UserWithProfile).isActive
+    ) {
       return null;
     }
 
@@ -105,7 +135,9 @@ export abstract class BaseAccountsService {
       { populate: ['role'] },
     )) as UserRoleWithRole[];
 
-    return mapToProfile(user as UserWithProfile, userRoles);
+    const profile = mapToProfile(user as UserWithProfile, userRoles);
+    const studentCode = await this.resolveStudentCode(userId, profile.email);
+    return studentCode ? { ...profile, studentCode } : profile;
   }
 
   async updateProfile(

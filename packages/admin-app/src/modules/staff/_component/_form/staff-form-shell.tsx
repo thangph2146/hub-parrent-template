@@ -1,6 +1,5 @@
 "use client"
 
-import { useRef, useState } from "react"
 import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import {
   Camera,
@@ -28,14 +27,16 @@ import {
 } from "@ui/components/admin"
 import { Controller } from "react-hook-form"
 import type { UseFormReturn } from "react-hook-form"
-import type { StaffFormValues } from "../_hooks/use-staff-form"
-import { toast } from "@ui/components/sonner"
+
+import type { StaffFormValues } from "../_hooks/staff-form.schema"
+import { useStaffAvatarUpload } from "../_hooks/use-staff-avatar-upload"
+import { StaffStudentCodeField } from "./staff-student-code-field"
 
 export interface StaffFormShellProps {
   isEdit: boolean
   form: UseFormReturn<StaffFormValues>
   roles: Array<{ code: string; name: string }>
-  /** ID tài khoản nhân sự đang sửa — dùng đặt tên file ảnh đại diện. */
+  /** ID tài khoản nhân sự đang sửa — dùng upload avatar theo MSSV hoặc userId. */
   subjectUserId?: string
   onSubmit: () => Promise<void> | void
   onCancel: () => void
@@ -46,26 +47,8 @@ export function StaffFormShell(props: StaffFormShellProps) {
   const { isEdit, form, roles, subjectUserId, onSubmit, onCancel, submitting } =
     props
 
-  const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const avatarInputRef = useRef<HTMLInputElement>(null)
-  const avatarValue = form.watch("avatar")
-
-  const handleUploadAvatar = async (file: File) => {
-    setUploadingAvatar(true)
-    try {
-      const { uploadAdminImage } = await import("@workspace/admin-app/lib/admin-upload")
-      const url = await uploadAdminImage(file, {
-        folderPath: "avatars",
-        ownerUserId: subjectUserId,
-      })
-      form.setValue("avatar", url, { shouldDirty: true })
-      toast.success("Đã tải ảnh đại diện")
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Lỗi upload ảnh")
-    } finally {
-      setUploadingAvatar(false)
-    }
-  }
+  const { uploadingAvatar, avatarInputRef, avatarValue, handleUploadAvatar } =
+    useStaffAvatarUpload({ form, subjectUserId })
 
   return (
     <>
@@ -236,6 +219,7 @@ export function StaffFormShell(props: StaffFormShellProps) {
                         </FormFieldCol>
                       )}
                     />
+                    {isEdit ? <StaffStudentCodeField form={form} /> : null}
                   </div>
                   <Controller
                     name="address"

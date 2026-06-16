@@ -2,7 +2,11 @@
 import { api } from "@workspace/admin-app/lib/api"
 import { useParams } from "next/navigation"
 import { useAdminEditFormHydration } from "@workspace/admin-app/hooks/use-admin-edit-form-hydration"
-import { useStaffForm, useStaffMutations } from "../../_component"
+import {
+  mapStaffUserToFormValues,
+  useStaffForm,
+  useStaffMutations,
+} from "../../_component"
 import { StaffFormShell } from "../../_component/_form"
 import { useRbacCatalog, useStaffProfile } from "@workspace/admin-app/hooks/queries"
 import {useAdminAuth as useAuth, useAdminModuleNavigation } from "@workspace/admin-app/runtime"
@@ -42,17 +46,7 @@ function EditStaffPageInner() {
     entityId: userId,
     data: user,
     form,
-    toFormValues: (profile) => ({
-      email: profile.email,
-      fullName: profile.fullName,
-      password: "",
-      isActive: profile.isActive,
-      roleCodes: profile.roles.map((r) => r.code),
-      avatar: profile.avatar ?? "",
-      phone: profile.phone ?? "",
-      address: profile.address ?? "",
-      citizenId: profile.citizenId ?? "",
-    }),
+    toFormValues: mapStaffUserToFormValues,
   })
 
   const handleSubmit = async () => {

@@ -83,6 +83,11 @@ export {
   type UpdateAccountInput,
   type ChangeAccountPasswordInput,
 } from "./resources/accounts"
+export {
+  NUMERIC_STUDENT_CODE_PATTERN,
+  normalizeNumericStudentCode,
+  validateNumericStudentCode,
+} from "./student-code"
 export { PostsApi } from "./resources/posts"
 export { ProductsApi } from "./resources/products"
 export { OrdersApi } from "./resources/orders"

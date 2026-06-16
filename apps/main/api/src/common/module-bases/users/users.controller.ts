@@ -30,9 +30,13 @@ import {
   Query,
   Headers,
   Res,
+  Req,
   Logger,
   ForbiddenException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
@@ -41,7 +45,7 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import type {
   CreateUserData,
   UpdateUserData,
@@ -56,6 +60,22 @@ import type {
   DevLoginOptionsQuery,
 } from './users.service';
 import { parseAdminListLimit } from '../../parse-list-query';
+import { apiServerAppConfig } from '../../../config/app-config';
+
+type UserAvatarUploadsBinding = {
+  ensureAvatarFolder?: (folderSegment: string) => Promise<string>;
+  saveFile: (
+    file: { buffer: Buffer; originalname: string; mimetype: string },
+    folderPath?: string,
+    isExistingFolder?: boolean,
+    serveBaseUrl?: string,
+    userId?: string,
+    ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
+  ) => Promise<{ url: string }>;
+};
+
+const MAX_USER_AVATAR_BYTES = 5 * 1024 * 1024;
 
 /**
  * DTOs for request/response
@@ -69,6 +89,7 @@ export class CreateUserDto implements CreateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -82,6 +103,7 @@ export class UpdateUserDto implements UpdateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -161,7 +183,16 @@ export class BaseUsersController {
         query?: DevLoginOptionsQuery,
       ): Promise<DevLoginOptionDto[]>;
       resolveActorEmail(userId: string): Promise<string | null>;
+      resolveAvatarUploadFolder?(
+        userId: string,
+      ): Promise<
+        { ok: true; folderPath: string } | { ok: false; message: string }
+      >;
     },
+    protected readonly uploadsService?: Pick<
+      UserAvatarUploadsBinding,
+      'saveFile' | 'ensureAvatarFolder'
+    >,
   ) {
     this.logger = new Logger(BaseUsersController.name);
   }
@@ -485,6 +516,7 @@ export class BaseUsersController {
         phone: body.phone ?? null,
         address: body.address ?? null,
         citizenId: body.citizenId ?? null,
+        studentCode: body.studentCode ?? null,
         isActive: body.isActive ?? true,
         roleIds: body.roleIds,
       });
@@ -557,6 +589,7 @@ export class BaseUsersController {
           phone: body?.phone?.trim(),
           address: body?.address?.trim(),
           citizenId: body?.citizenId?.trim(),
+          studentCode: body?.studentCode,
           isActive: body?.isActive,
           roleIds: body?.roleIds,
         },
@@ -589,6 +622,135 @@ export class BaseUsersController {
       );
       return res.status(statusCode).json(errorBody);
     }
+  }
+
+  /**
+   * POST /admin/users/:id/avatar — upload ảnh đại diện cho nhân sự (admin).
+   */
+  @Post(':id/avatar')
+  @ApiOperation({ summary: 'Upload avatar for user' })
+  @ApiHeader({ name: 'X-User-Id', required: true })
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: MAX_USER_AVATAR_BYTES } }),
+  )
+  async uploadAvatar(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Headers('x-user-id') actorUserId?: string,
+    @Param('id') id?: string,
+    @UploadedFile()
+    file?: { buffer: Buffer; originalname: string; mimetype: string },
+  ): Promise<Response> {
+    if (!actorUserId?.trim()) {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'Thiếu header X-User-Id',
+        { statusCode: 401 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+    if (!id?.trim()) {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'Thiếu ID người dùng',
+        { statusCode: 400 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+    if (!this.uploadsService || !this.service.resolveAvatarUploadFolder) {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'Upload avatar chưa được cấu hình',
+        { statusCode: 501 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+    if (!file?.buffer?.length) {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'Thiếu file ảnh',
+        { statusCode: 400 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+
+    const mimePrimary = (file.mimetype || '')
+      .split(';')[0]
+      .trim()
+      .toLowerCase();
+    if (
+      mimePrimary &&
+      mimePrimary !== 'application/octet-stream' &&
+      !['image/jpeg', 'image/jpg', 'image/png'].includes(mimePrimary)
+    ) {
+      const { statusCode, body: errorBody } = this.createErrorResponse(
+        'Ảnh khuôn mặt HANET chỉ chấp nhận JPG hoặc PNG',
+        { statusCode: 400 },
+      );
+      return res.status(statusCode).json(errorBody);
+    }
+
+    try {
+      await this.service.resolveActorEmail(actorUserId);
+      const folderResolved = await this.service.resolveAvatarUploadFolder(
+        id.trim(),
+      );
+      if (!folderResolved.ok) {
+        const { statusCode, body: errorBody } = this.createErrorResponse(
+          folderResolved.message,
+          { statusCode: 400 },
+        );
+        return res.status(statusCode).json(errorBody);
+      }
+
+      let uploadFolder = folderResolved.folderPath;
+      const folderSegment = folderResolved.folderPath.replace(/^avatars\//, '');
+      if (this.uploadsService.ensureAvatarFolder) {
+        uploadFolder =
+          await this.uploadsService.ensureAvatarFolder(folderSegment);
+      }
+
+      const data = await this.uploadsService.saveFile(
+        {
+          buffer: file.buffer,
+          originalname: file.originalname || 'avatar',
+          mimetype: file.mimetype || 'application/octet-stream',
+        },
+        uploadFolder,
+        true,
+        this.getAvatarServeBaseUrl(req),
+        actorUserId,
+        id.trim(),
+        { imageOutput: 'jpeg-face' },
+      );
+
+      const { statusCode, body: successBody } = this.createSuccessResponse({
+        url: data.url,
+      });
+      return res.status(statusCode).json(successBody);
+    } catch (error) {
+      this.logger.error(`uploadAvatar failed: ${error}`);
+      if (error instanceof ForbiddenException) {
+        const { statusCode, body: errorBody } = this.createErrorResponse(
+          error.message,
+          { statusCode: 403 },
+        );
+        return res.status(statusCode).json(errorBody);
+      }
+      const message =
+        error instanceof Error ? error.message : 'Đã xảy ra lỗi khi upload ảnh';
+      const { statusCode, body: errorBody } = this.createErrorResponse(message, {
+        statusCode: 400,
+      });
+      return res.status(statusCode).json(errorBody);
+    }
+  }
+
+  private getAvatarServeBaseUrl(req?: Request): string {
+    if (apiServerAppConfig.publicUrl) {
+      return `${apiServerAppConfig.publicUrl.replace(/\/$/, '')}/api/uploads`;
+    }
+    if (apiServerAppConfig.nodeEnv === 'production') {
+      return '';
+    }
+    const fallback = req && `${req.protocol || 'http'}://${req.get('host')}`;
+    return fallback ? `${fallback.replace(/\/$/, '')}/api/uploads` : '';
   }
 
   /**

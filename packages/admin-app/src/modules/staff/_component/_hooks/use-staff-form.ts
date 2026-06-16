@@ -1,28 +1,41 @@
 import { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 
-export const staffFormSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
-  fullName: z.string().min(1, "Họ tên không được để trống"),
-  password: z
-    .string()
-    .min(6, "Mật khẩu tối thiểu 6 ký tự")
-    .optional()
-    .or(z.literal("")),
-  isActive: z.boolean(),
-  roleCodes: z.array(z.string()).min(1, "Vui lòng chọn ít nhất một vai trò"),
-  avatar: z.string().optional(),
-  phone: z.string().optional().or(z.literal("")),
-  address: z.string().optional().or(z.literal("")),
-  citizenId: z.string().optional().or(z.literal("")),
-})
+import type { StaffRow } from "../types"
+import {
+  buildStaffSubmitPayload,
+  type StaffSubmitPayload,
+} from "../staff-form.types"
+import {
+  STAFF_FORM_DEFAULT_VALUES,
+  staffFormSchema,
+  type StaffFormValues,
+} from "./staff-form.schema"
 
-export type StaffFormValues = z.infer<typeof staffFormSchema>
+export {
+  staffFormSchema,
+  STAFF_FORM_DEFAULT_VALUES,
+  type StaffFormValues,
+} from "./staff-form.schema"
 
 interface UseStaffFormOptions {
   editingId?: string | null
+}
+
+export function mapStaffUserToFormValues(user: StaffRow): StaffFormValues {
+  return {
+    email: user.email,
+    fullName: user.fullName,
+    password: "",
+    isActive: user.isActive,
+    roleCodes: user.roles.map((role) => role.code),
+    avatar: user.avatar ?? "",
+    phone: user.phone ?? "",
+    address: user.address ?? "",
+    citizenId: user.citizenId ?? "",
+    studentCode: user.studentCode ?? "",
+  }
 }
 
 export function useStaffForm(options: UseStaffFormOptions = {}) {
@@ -30,57 +43,19 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
-    defaultValues: {
-      email: "",
-      fullName: "",
-      password: "",
-      isActive: true,
-      roleCodes: [],
-      avatar: "",
-      phone: "",
-      address: "",
-      citizenId: "",
-    },
+    defaultValues: STAFF_FORM_DEFAULT_VALUES,
     mode: "onChange",
   })
 
   const resetForm = useCallback(() => {
-    form.reset({
-      email: "",
-      fullName: "",
-      password: "",
-      isActive: true,
-      roleCodes: [],
-      phone: "",
-      address: "",
-      citizenId: "",
-    })
+    form.reset(STAFF_FORM_DEFAULT_VALUES)
   }, [form])
 
   const populateForm = useCallback(
-    (user: {
-      email: string
-      fullName: string
-      isActive: boolean
-      roles: { code: string }[]
-      avatar?: string | null
-      phone?: string | null
-      address?: string | null
-      citizenId?: string | null
-    }) => {
-      form.reset({
-        email: user.email,
-        fullName: user.fullName,
-        password: "",
-        isActive: user.isActive,
-        roleCodes: user.roles.map((r) => r.code),
-        avatar: user.avatar ?? "",
-        phone: user.phone ?? "",
-        address: user.address ?? "",
-        citizenId: user.citizenId ?? "",
-      })
+    (user: StaffRow) => {
+      form.reset(mapStaffUserToFormValues(user))
     },
-    [form]
+    [form],
   )
 
   const toggleRole = useCallback(
@@ -93,58 +68,16 @@ export function useStaffForm(options: UseStaffFormOptions = {}) {
       } else {
         form.setValue(
           "roleCodes",
-          currentRoles.filter((c) => c !== code),
-          { shouldDirty: true }
+          currentRoles.filter((roleCode) => roleCode !== code),
+          { shouldDirty: true },
         )
       }
     },
-    [form]
+    [form],
   )
 
-  const getPayload = useCallback((): {
-    email: string
-    fullName: string
-    password: string
-    isActive: boolean
-    roleCodes: string[]
-    avatar?: string | null
-    phone?: string | null
-    address?: string | null
-    citizenId?: string | null
-  } => {
-    const values = form.getValues()
-    const payload: {
-      email: string
-      fullName: string
-      password: string
-      isActive: boolean
-      roleCodes: string[]
-      avatar?: string | null
-      phone?: string | null
-      address?: string | null
-      citizenId?: string | null
-    } = {
-      fullName: values.fullName.trim(),
-      isActive: values.isActive,
-      email: "",
-      password: "",
-      roleCodes: values.roleCodes,
-      avatar: values.avatar?.trim() || null,
-      phone: values.phone?.trim() || null,
-      address: values.address?.trim() || null,
-      citizenId: values.citizenId?.trim() || null,
-    }
-
-    if (!editingId) {
-      payload.email = values.email.trim()
-      payload.password = values.password?.trim() || ""
-    } else {
-      payload.email = values.email.trim()
-      const pw = values.password?.trim()
-      payload.password = pw || ""
-    }
-
-    return payload
+  const getPayload = useCallback((): StaffSubmitPayload => {
+    return buildStaffSubmitPayload(form.getValues(), editingId)
   }, [form, editingId])
 
   return {

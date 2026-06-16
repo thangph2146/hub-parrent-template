@@ -16,6 +16,8 @@ export interface UserRowDto {
   phone: string | null;
   address: string | null;
   citizenId: string | null;
+  /** MSSV — bảng `students` (nếu có). */
+  studentCode?: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -73,6 +75,7 @@ export interface CreateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -89,6 +92,7 @@ export interface UpdateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }

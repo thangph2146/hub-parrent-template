@@ -17,6 +17,8 @@ export type AccountProfile = {
   phone: string | null;
   address: string | null;
   citizenId: string | null;
+  /** MSSV — cổng sinh viên (đọc-only). */
+  studentCode?: string | null;
   emailVerified: string | null;
   isActive: boolean;
   createdAt: string;
@@ -31,6 +33,7 @@ export type UpdateAccountInput = {
   address?: string | null;
   citizenId?: string | null;
   avatar?: string | null;
+  studentCode?: string | null;
   /** Một số client (cổng sinh viên) đặt mật khẩu mới qua PUT `/admin/accounts`. */
   password?: string;
 };
@@ -57,6 +60,7 @@ export class AccountsApi {
       address: input.address,
       citizenId: input.citizenId,
       avatar: input.avatar,
+      studentCode: input.studentCode,
       password: input.password,
     });
   }

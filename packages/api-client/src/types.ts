@@ -34,6 +34,8 @@ export interface User extends AuditFields {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  /** MSSV (5–12 chữ số) — lưu bảng students, dùng folder avatar. */
+  studentCode?: string | null;
   avatar?: string | null;
   roles: UserRoleRef[];
   isActive: boolean;

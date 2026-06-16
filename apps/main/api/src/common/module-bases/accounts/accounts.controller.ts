@@ -23,6 +23,9 @@ import { PERMISSIONS } from '../../../config/permissions';
 import { apiServerAppConfig } from '../../../config/app-config';
 
 type AvatarUploadsBinding = {
+  ensureAvatarFolder?: (folderSegment: string) => Promise<string>;
+  /** @deprecated Dùng `ensureAvatarFolder`. */
+  ensureStudentAvatarFolder?: (studentCode: string) => Promise<string>;
   saveFile: (
     file: { buffer: Buffer; originalname: string; mimetype: string },
     folderPath?: string,
@@ -38,7 +41,7 @@ const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 export type IAccountsControllerService = Pick<
   BaseAccountsService,
-  'getProfile' | 'updateProfile'
+  'getProfile' | 'updateProfile' | 'resolveAvatarUploadFolder'
 >;
 /** @deprecated Dùng `IAccountsControllerService`. */
 export type IAccountsAdminControllerService = IAccountsControllerService;
@@ -48,7 +51,10 @@ export type IAccountsAdminControllerService = IAccountsControllerService;
 export class BaseAccountsController extends BaseAdminHttpController {
   constructor(
     protected readonly service: IAccountsControllerService,
-    protected readonly uploadsService: Pick<AvatarUploadsBinding, 'saveFile'>,
+    protected readonly uploadsService: Pick<
+      AvatarUploadsBinding,
+      'saveFile' | 'ensureAvatarFolder' | 'ensureStudentAvatarFolder'
+    >,
   ) {
     super();
   }
@@ -83,6 +89,7 @@ export class BaseAccountsController extends BaseAdminHttpController {
       'address',
       'citizenId',
       'avatar',
+      'studentCode',
       'currentPassword',
       'password',
     ] as const;
@@ -113,6 +120,11 @@ export class BaseAccountsController extends BaseAdminHttpController {
           status: 400,
           message: 'Cần nhập mật khẩu hiện tại để đổi mật khẩu',
         },
+        invalid_student_code: {
+          status: 400,
+          message:
+            'Mã số sinh viên không hợp lệ hoặc đã được sử dụng. MSSV phải là số (5–12 chữ số).',
+        },
       };
       const picked = messages[result.reason];
       return this.sendError(res, picked.message, picked.status);
@@ -140,7 +152,10 @@ export class BaseAccountsController extends BaseAdminHttpController {
       return this.sendError(res, 'Thiếu file ảnh', 400);
     }
 
-    const mimePrimary = (file.mimetype || '').split(';')[0].trim().toLowerCase();
+    const mimePrimary = (file.mimetype || '')
+      .split(';')[0]
+      .trim()
+      .toLowerCase();
     if (
       mimePrimary &&
       mimePrimary !== 'application/octet-stream' &&
@@ -154,14 +169,31 @@ export class BaseAccountsController extends BaseAdminHttpController {
     }
 
     try {
+      const folderResolved = await this.service.resolveAvatarUploadFolder(
+        userId,
+      );
+      if (!folderResolved.ok) {
+        return this.sendError(res, folderResolved.message, 400);
+      }
+
+      let uploadFolder = folderResolved.folderPath;
+      const folderSegment = folderResolved.folderPath.replace(/^avatars\//, '');
+      if (this.uploadsService.ensureAvatarFolder) {
+        uploadFolder =
+          await this.uploadsService.ensureAvatarFolder(folderSegment);
+      } else if (this.uploadsService.ensureStudentAvatarFolder) {
+        uploadFolder =
+          await this.uploadsService.ensureStudentAvatarFolder(folderSegment);
+      }
+
       const data = await this.uploadsService.saveFile(
         {
           buffer: file.buffer,
           originalname: file.originalname || 'avatar',
           mimetype: file.mimetype || 'application/octet-stream',
         },
-        'avatars',
-        undefined,
+        uploadFolder,
+        true,
         this.getServeBaseUrl(req),
         userId,
         userId,

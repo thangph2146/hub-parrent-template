@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react"
 import { toast } from "@ui/components/sonner"
 import {
   Field,
@@ -15,7 +15,8 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Textarea } from "@ui/components/textarea"
-import { AlertTriangle, Camera, KeyRound, Loader2, MapPin, Save } from "lucide-react"
+import { AlertTriangle, Camera, GraduationCap, KeyRound, Loader2, MapPin, Save } from "lucide-react"
+import { Badge } from "@ui/components/badge"
 import {
   AdminListPageHeader,
   AdminPageGuard,
@@ -35,7 +36,10 @@ import {
   useUpdateStaffProfile,
 } from "@workspace/admin-app/hooks/queries"
 import { patchAdminSessionProfile } from "@workspace/admin-app/lib/auth-session"
-import { uploadAdminImage } from "@workspace/admin-app/lib/admin-upload"
+import {
+  normalizeNumericStudentCode,
+  validateNumericStudentCode,
+} from "@workspace/api-client"
 import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
 import { resolveMediaUrl } from "@ui/lib/resolve-media-url"
 import { MAIN_ADMIN_PROFILE_CONFIG } from "../_config/profile-page.main-config"
@@ -68,9 +72,78 @@ const PROFILE_ACTION_BAR_CLASS =
 
 function AvatarChangeLimitNotice({ message }: { message: string }) {
   return (
-    <div className="mt-2 flex items-start gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+    <div className="flex items-start gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
       <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
       <span>{message}</span>
+    </div>
+  )
+}
+
+type ProfileAvatarPickerProps = {
+  avatarPreviewSrc: string
+  fullName: string
+  avatarInputRef: RefObject<HTMLInputElement | null>
+  uploadingAvatar: boolean
+  canChangeAvatar: boolean
+  isLoading: boolean
+  hasProfile: boolean
+  avatarAccept?: string
+  onFileSelected: (file: File) => void
+  compact?: boolean
+}
+
+function ProfileAvatarPicker({
+  avatarPreviewSrc,
+  fullName,
+  avatarInputRef,
+  uploadingAvatar,
+  canChangeAvatar,
+  isLoading,
+  hasProfile,
+  avatarAccept,
+  onFileSelected,
+  compact = false,
+}: ProfileAvatarPickerProps) {
+  const frameClass = compact
+    ? "relative aspect-[3/4] w-28 shrink-0 sm:w-32"
+    : "relative aspect-[3/4] w-40 shrink-0 sm:w-60"
+
+  return (
+    <div className={frameClass}>
+      {avatarPreviewSrc ? (
+        <img
+          src={avatarPreviewSrc}
+          alt="Avatar"
+          className="h-full w-full rounded-xl border-2 border-border/60 object-cover shadow-sm"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center rounded-xl border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
+          {fullName ? formatPersonInitials(fullName) : "?"}
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={() => avatarInputRef.current?.click()}
+        disabled={uploadingAvatar || !canChangeAvatar || isLoading || !hasProfile}
+        className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full border border-border bg-background shadow-sm hover:bg-accent disabled:opacity-50"
+        title="Tải ảnh đại diện"
+      >
+        {uploadingAvatar ? (
+          <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+        ) : (
+          <Camera className="size-3.5 text-muted-foreground" />
+        )}
+      </button>
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept={avatarAccept ?? "image/*"}
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) onFileSelected(file)
+        }}
+      />
     </div>
   )
 }
@@ -84,6 +157,20 @@ export function AdminProfilePageInner({
   const patchAuthProfile = usePatchAuthProfile()
   const profileSource = config.profileSource ?? "staff"
   const maxAvatarChanges = normalizeMaxAvatarChanges(config.maxAvatarChanges)
+  const showAddress = config.showAddress !== false
+  const showChangePassword = config.showChangePassword !== false
+  const showStudentCode =
+    config.showStudentCode === true && profileSource === "account"
+  const studentCodeEditable =
+    showStudentCode && config.studentCodeEditable === true
+  const contactSectionTitle =
+    config.contactSectionTitle ?? "Thông tin liên hệ & địa chỉ"
+  const contactSectionDescription =
+    config.contactSectionDescription ??
+    "Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các màn nội bộ liên quan."
+  const layout = config.layout ?? "split"
+  const showAvatarUrl = config.showAvatarUrl !== false
+  const isStackLayout = layout === "stack"
 
   const { user: sessionUser } = useAuth()
   const userId = sessionUser?.id
@@ -111,6 +198,7 @@ export function AdminProfilePageInner({
   const [phone, setPhone] = useState("")
   const [address, setAddress] = useState("")
   const [avatar, setAvatar] = useState("")
+  const [studentCode, setStudentCode] = useState("")
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [avatarChangesUsed, setAvatarChangesUsed] = useState(0)
   const avatarInputRef = useRef<HTMLInputElement>(null)
@@ -121,6 +209,18 @@ export function AdminProfilePageInner({
   const initialAvatarRef = useRef<string | null>(null)
 
   const email = profile?.email ?? sessionUser?.email ?? ""
+
+  const savedStudentCode = useMemo(() => {
+    if (!showStudentCode || profileSource !== "account") return null
+    return normalizeNumericStudentCode(
+      (profile as { studentCode?: string | null } | undefined)?.studentCode,
+    )
+  }, [profile, profileSource, showStudentCode])
+
+  const studentCodeError = useMemo(
+    () => (showStudentCode ? validateNumericStudentCode(studentCode) : null),
+    [showStudentCode, studentCode],
+  )
 
   const avatarLimit = useMemo(
     () =>
@@ -151,7 +251,11 @@ export function AdminProfilePageInner({
     if (initialAvatarRef.current === null) {
       initialAvatarRef.current = profileAvatar.trim() || null
       setAvatarChangesUsed(
-        resolveInitialAvatarChangesUsed(userId, initialAvatarRef.current),
+        resolveInitialAvatarChangesUsed(
+          userId,
+          initialAvatarRef.current,
+          maxAvatarChanges,
+        ),
       )
     }
 
@@ -163,23 +267,101 @@ export function AdminProfilePageInner({
     setPhone(profile.phone ?? "")
     setAddress(profile.address ?? "")
     setAvatar(profileAvatar)
-  }, [profile, profileSource, userId])
+    if (showStudentCode) {
+      setStudentCode(
+        normalizeNumericStudentCode(
+          (profile as { studentCode?: string | null }).studentCode,
+        ) ?? "",
+      )
+    }
+  }, [profile, profileSource, userId, maxAvatarChanges, showStudentCode])
+
+  const buildAccountProfilePayload = (overrides?: { avatar?: string | null }) => {
+    const name =
+      fullName.trim() ||
+      (profile as { name?: string | null })?.name?.trim() ||
+      email
+    const payload = {
+      name,
+      phone: phone.trim() || null,
+      ...(showAddress ? { address: address.trim() || null } : {}),
+      avatar:
+        overrides && "avatar" in overrides
+          ? overrides.avatar
+          : avatar.trim() || null,
+      ...(showStudentCode && studentCodeEditable
+        ? { studentCode: studentCode.trim() || null }
+        : {}),
+    }
+    return payload
+  }
+
+  const ensureStudentCodeSavedForUpload = async (): Promise<boolean> => {
+    if (!showStudentCode) return true
+    const err = validateNumericStudentCode(studentCode)
+    if (err) {
+      toast.error(err)
+      return false
+    }
+    if (savedStudentCode === studentCode.trim()) return true
+
+    try {
+      const u = await updateAccountProfile.mutateAsync(
+        buildAccountProfilePayload(),
+      )
+      patchSessionProfile({
+        name: u.name ?? fullName.trim(),
+        phone: u.phone,
+        address: u.address,
+        image: u.avatar,
+        updatedAt: u.updatedAt,
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  const persistAccountAvatarAfterUpload = async (url: string) => {
+    const payload = buildAccountProfilePayload({ avatar: url })
+    if (!payload.name) {
+      throw new Error("Vui lòng nhập họ tên trước khi lưu ảnh")
+    }
+    const u = await updateAccountProfile.mutateAsync(payload)
+    patchSessionProfile({
+      name: u.name ?? payload.name,
+      phone: u.phone,
+      address: u.address,
+      image: u.avatar,
+      updatedAt: u.updatedAt,
+    })
+  }
 
   const handleUploadAvatar = async (file: File) => {
     if (!userId || !avatarLimit.canChangeAvatar) return
+    if (showStudentCode && studentCodeError) {
+      toast.error(`${studentCodeError} Lưu hồ sơ trước khi tải ảnh.`)
+      return
+    }
     setUploadingAvatar(true)
     try {
-      const url =
-        profileSource === "account"
-          ? (await api.accounts.uploadAvatar(file)).url
-          : await uploadAdminImage(file, {
-              folderPath: "avatars",
-              ownerUserId: userId,
-            })
+      if (profileSource === "account" && showStudentCode) {
+        const ready = await ensureStudentCodeSavedForUpload()
+        if (!ready) return
+      }
+
+      const url = (await api.accounts.uploadAvatar(file)).url
       setAvatar(url)
-      const nextUsed = recordAvatarChange(userId)
-      setAvatarChangesUsed(nextUsed)
-      toast.success("Đã tải ảnh đại diện")
+
+      if (profileSource === "account" && maxAvatarChanges !== null) {
+        await persistAccountAvatarAfterUpload(url)
+        const nextUsed = recordAvatarChange(userId)
+        setAvatarChangesUsed(nextUsed)
+        toast.success("Đã tải và lưu ảnh đại diện")
+        return
+      }
+
+      toast.success("Đã tải ảnh đại diện — nhấn Lưu hồ sơ để áp dụng")
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Lỗi upload ảnh")
     } finally {
@@ -214,14 +396,15 @@ export function AdminProfilePageInner({
       toast.error("Vui lòng nhập họ tên")
       return
     }
+    if (showStudentCode && studentCodeEditable && studentCodeError) {
+      toast.error(studentCodeError)
+      return
+    }
     try {
       if (profileSource === "account") {
-        const u = await updateAccountProfile.mutateAsync({
-          name,
-          phone: phone.trim() || null,
-          address: address.trim() || null,
-          avatar: avatar.trim() || null,
-        })
+        const u = await updateAccountProfile.mutateAsync(
+          buildAccountProfilePayload(),
+        )
         patchSessionProfile({
           name: u.name ?? name,
           phone: u.phone,
@@ -299,6 +482,11 @@ export function AdminProfilePageInner({
       ? changeAccountPw.isPending
       : changeStaffPw.isPending
 
+  const canUploadAvatar =
+    avatarLimit.canChangeAvatar &&
+    !savingProfile &&
+    (!showStudentCode || !studentCodeError)
+
   if (!sessionUser) {
     return null
   }
@@ -316,54 +504,188 @@ export function AdminProfilePageInner({
         </p>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.20fr)_minmax(0,0.80fr)]">
+      <div
+        className={
+          showChangePassword
+            ? "grid gap-6 xl:grid-cols-[minmax(0,1.20fr)_minmax(0,0.80fr)]"
+            : isStackLayout
+              ? "grid w-full gap-6"
+              : "grid max-w-3xl gap-6"
+        }
+      >
         <div className="space-y-6">
           <FieldSet variant="section">
             <FieldSectionLegend
-              icon={MapPin}
-              title="Thông tin liên hệ & địa chỉ"
-              description="Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các màn nội bộ liên quan."
+              icon={isStackLayout && showStudentCode ? GraduationCap : MapPin}
+              title={contactSectionTitle}
+              description={contactSectionDescription}
             />
             <FieldSetContent variant="section" className="space-y-5">
+              {isStackLayout ? (
+                <>
+                  <div className="flex flex-col gap-5 border-b border-border/60 pb-6 sm:flex-row sm:items-start">
+                    <ProfileAvatarPicker
+                      avatarPreviewSrc={avatarPreviewSrc}
+                      fullName={fullName}
+                      avatarInputRef={avatarInputRef}
+                      uploadingAvatar={uploadingAvatar}
+                      canChangeAvatar={canUploadAvatar}
+                      isLoading={isLoading}
+                      hasProfile={Boolean(profile)}
+                      avatarAccept={config.avatarAccept}
+                      onFileSelected={(file) => void handleUploadAvatar(file)}
+                      compact
+                    />
+                    <div className="min-w-0 flex-1 space-y-3">
+                      <div>
+                        <p className="text-lg font-semibold leading-tight">
+                          {fullName.trim() || "Chưa có tên"}
+                        </p>
+                        <p className="mt-1 font-mono text-sm text-muted-foreground">
+                          {email}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {profile ? (
+                          <Badge
+                            variant={profile.isActive ? "default" : "secondary"}
+                          >
+                            {profile.isActive ? "Đang hoạt động" : "Đã khoá"}
+                          </Badge>
+                        ) : null}
+                        {profile ? (
+                          <Badge variant="secondary">
+                            Cập nhật {formatDateTime(profile.updatedAt)}
+                          </Badge>
+                        ) : null}
+                      </div>
+                      {avatarLimitMessage ? (
+                        <AvatarChangeLimitNotice message={avatarLimitMessage} />
+                      ) : null}
+                      {config.avatarGuidance ? (
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {config.avatarGuidance}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 pt-1 sm:grid-cols-2">
+                    {showStudentCode ? (
+                      <Field>
+                        <FieldLabel htmlFor="admin-studentCode">
+                          Mã số sinh viên
+                        </FieldLabel>
+                        <FieldContent>
+                          <Input
+                            id="admin-studentCode"
+                            value={studentCode}
+                            onChange={(e) => {
+                              if (!studentCodeEditable) return
+                              setStudentCode(
+                                e.target.value.replace(/\D/g, "").slice(0, 12),
+                              )
+                            }}
+                            readOnly={!studentCodeEditable}
+                            disabled={isLoading || !profile || !studentCodeEditable}
+                            inputMode="numeric"
+                            autoComplete="off"
+                            placeholder="VD: 202600001"
+                            className={`${PROFILE_FIELD_CLASS} font-mono`}
+                            aria-invalid={Boolean(studentCodeError)}
+                          />
+                          {studentCodeError ? (
+                            <p className="mt-1 text-xs text-destructive">
+                              {studentCodeError}
+                            </p>
+                          ) : showStudentCode && studentCodeEditable ? (
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              MSSV là số (5–12 chữ số), dùng làm thư mục lưu ảnh
+                              khuôn mặt HANET.
+                            </p>
+                          ) : null}
+                        </FieldContent>
+                      </Field>
+                    ) : null}
+                    <Field>
+                      <FieldLabel htmlFor="admin-fullName-stack">
+                        Họ và tên
+                      </FieldLabel>
+                      <FieldContent>
+                        <Input
+                          id="admin-fullName-stack"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          disabled={isLoading || !profile}
+                          className={PROFILE_FIELD_CLASS}
+                        />
+                      </FieldContent>
+                    </Field>
+                    <Field className="sm:col-span-2">
+                      <FieldLabel htmlFor="admin-phone-stack">
+                        Số điện thoại
+                      </FieldLabel>
+                      <FieldContent>
+                        <Input
+                          id="admin-phone-stack"
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          disabled={isLoading || !profile}
+                          placeholder="VD: 0901234567"
+                          className={PROFILE_FIELD_CLASS}
+                        />
+                      </FieldContent>
+                    </Field>
+                    {showAddress ? (
+                      <Field className="sm:col-span-2">
+                        <FieldLabel htmlFor="admin-address-stack">
+                          Địa chỉ / văn phòng
+                        </FieldLabel>
+                        <FieldContent>
+                          <Textarea
+                            id="admin-address-stack"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            disabled={isLoading || !profile}
+                            placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
+                            className={PROFILE_TEXTAREA_CLASS}
+                          />
+                        </FieldContent>
+                      </Field>
+                    ) : null}
+                  </div>
+
+                  <div className={PROFILE_ACTION_BAR_CLASS}>
+                    <Button
+                      type="button"
+                      className="min-w-32 rounded-lg sm:min-w-40"
+                      onClick={() => void handleSaveProfile()}
+                      disabled={isLoading || !profile || savingProfile}
+                    >
+                      {savingProfile ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <Save className="size-4" />
+                      )}
+                      <span className="ml-2">Lưu hồ sơ</span>
+                    </Button>
+                  </div>
+                </>
+              ) : (
               <div className="flex items-start gap-4">
                 <div className="flex flex-col gap-2.5">
-                  <div className="relative aspect-[3/4] w-40 shrink-0 sm:w-60">
-                    {avatarPreviewSrc ? (
-                      <img
-                        src={avatarPreviewSrc}
-                        alt="Avatar"
-                        className="h-full w-full rounded-lg border-2 border-border/60 object-cover shadow-sm"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-border/60 bg-muted text-lg font-bold text-muted-foreground">
-                        {fullName ? formatPersonInitials(fullName) : "?"}
-                      </div>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => avatarInputRef.current?.click()}
-                      disabled={
-                        uploadingAvatar ||
-                        !avatarLimit.canChangeAvatar ||
-                        isLoading ||
-                        !profile
-                      }
-                      className="absolute -right-1 -bottom-1 flex size-7 items-center justify-center rounded-full border border-border bg-background shadow-sm hover:bg-accent disabled:opacity-50"
-                      title="Tải ảnh đại diện"
-                    >
-                      <Camera className="size-3.5 text-muted-foreground" />
-                    </button>
-                    <input
-                      ref={avatarInputRef}
-                      type="file"
-                      accept={config.avatarAccept ?? "image/*"}
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) void handleUploadAvatar(file)
-                      }}
-                    />
-                  </div>
+                  <ProfileAvatarPicker
+                    avatarPreviewSrc={avatarPreviewSrc}
+                    fullName={fullName}
+                    avatarInputRef={avatarInputRef}
+                    uploadingAvatar={uploadingAvatar}
+                    canChangeAvatar={canUploadAvatar}
+                    isLoading={isLoading}
+                    hasProfile={Boolean(profile)}
+                    avatarAccept={config.avatarAccept}
+                    onFileSelected={(file) => void handleUploadAvatar(file)}
+                  />
                   {profile && (
                     <div className="flex w-full flex-col gap-2.5">
                       <div className="rounded-lg border border-border/60 bg-muted/20 p-3">
@@ -386,29 +708,31 @@ export function AdminProfilePageInner({
                   )}
                 </div>
                 <div className="flex w-full flex-col gap-2.5">
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <Label htmlFor="admin-avatar-url">URL ảnh đại diện</Label>
-                    <Input
-                      id="admin-avatar-url"
-                      value={avatar}
-                      onChange={(e) => setAvatar(e.target.value)}
-                      disabled={
-                        isLoading ||
-                        !profile ||
-                        !avatarLimit.canChangeAvatar
-                      }
-                      placeholder="https://example.com/avatar.jpg"
-                      className={PROFILE_FIELD_CLASS}
-                    />
-                    {avatarLimitMessage ? (
-                      <AvatarChangeLimitNotice message={avatarLimitMessage} />
-                    ) : null}
-                    {config.avatarGuidance ? (
-                      <p className="text-xs leading-relaxed text-muted-foreground">
-                        {config.avatarGuidance}
-                      </p>
-                    ) : null}
-                  </div>
+                  {showAvatarUrl ? (
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <Label htmlFor="admin-avatar-url">URL ảnh đại diện</Label>
+                      <Input
+                        id="admin-avatar-url"
+                        value={avatar}
+                        onChange={(e) => setAvatar(e.target.value)}
+                        disabled={
+                          isLoading ||
+                          !profile ||
+                          !avatarLimit.canChangeAvatar
+                        }
+                        placeholder="https://example.com/avatar.jpg"
+                        className={PROFILE_FIELD_CLASS}
+                      />
+                      {avatarLimitMessage ? (
+                        <AvatarChangeLimitNotice message={avatarLimitMessage} />
+                      ) : null}
+                      {config.avatarGuidance ? (
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {config.avatarGuidance}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
                   <FieldSectionField label="Email">
                     <span className="font-mono text-sm">{email}</span>
                   </FieldSectionField>
@@ -416,6 +740,37 @@ export function AdminProfilePageInner({
                     Email đăng nhập đang được quản trị tập trung từ hệ thống và
                     không chỉnh trực tiếp ở màn này.
                   </p>
+                  {showStudentCode ? (
+                    <Field>
+                      <FieldLabel htmlFor="admin-studentCode-split">
+                        Mã số sinh viên
+                      </FieldLabel>
+                      <FieldContent>
+                        <Input
+                          id="admin-studentCode-split"
+                          value={studentCode}
+                          onChange={(e) => {
+                            if (!studentCodeEditable) return
+                            setStudentCode(
+                              e.target.value.replace(/\D/g, "").slice(0, 12),
+                            )
+                          }}
+                          readOnly={!studentCodeEditable}
+                          disabled={isLoading || !profile || !studentCodeEditable}
+                          inputMode="numeric"
+                          autoComplete="off"
+                          placeholder="VD: 202600001"
+                          className={`${PROFILE_FIELD_CLASS} font-mono`}
+                          aria-invalid={Boolean(studentCodeError)}
+                        />
+                        {studentCodeError ? (
+                          <p className="mt-1 text-xs text-destructive">
+                            {studentCodeError}
+                          </p>
+                        ) : null}
+                      </FieldContent>
+                    </Field>
+                  ) : null}
                   <Field>
                     <FieldLabel htmlFor="admin-fullName">Họ và tên</FieldLabel>
                     <FieldContent>
@@ -442,21 +797,23 @@ export function AdminProfilePageInner({
                       />
                     </FieldContent>
                   </Field>
-                  <Field>
-                    <FieldLabel htmlFor="admin-address">
-                      Địa chỉ / văn phòng
-                    </FieldLabel>
-                    <FieldContent>
-                      <Textarea
-                        id="admin-address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        disabled={isLoading || !profile}
-                        placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
-                        className={PROFILE_TEXTAREA_CLASS}
-                      />
-                    </FieldContent>
-                  </Field>
+                  {showAddress ? (
+                    <Field>
+                      <FieldLabel htmlFor="admin-address">
+                        Địa chỉ / văn phòng
+                      </FieldLabel>
+                      <FieldContent>
+                        <Textarea
+                          id="admin-address"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          disabled={isLoading || !profile}
+                          placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
+                          className={PROFILE_TEXTAREA_CLASS}
+                        />
+                      </FieldContent>
+                    </Field>
+                  ) : null}
                   <div className={PROFILE_ACTION_BAR_CLASS}>
                     <Button
                       type="button"
@@ -474,9 +831,11 @@ export function AdminProfilePageInner({
                   </div>
                 </div>
               </div>
+              )}
             </FieldSetContent>
           </FieldSet>
         </div>
+        {showChangePassword ? (
         <div className="space-y-6">
           <FieldSet variant="section">
             <FieldSectionLegend
@@ -550,6 +909,7 @@ export function AdminProfilePageInner({
             </FieldSetContent>
           </FieldSet>
         </div>
+        ) : null}
       </div>
     </AdminPageSection>
   )

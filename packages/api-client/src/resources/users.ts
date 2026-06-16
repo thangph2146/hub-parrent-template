@@ -22,6 +22,7 @@ type ApiUserRow = {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   avatar?: string | null;
   isActive?: boolean;
   createdAt?: string;
@@ -70,6 +71,7 @@ function mapUserRow(row: ApiUserRow): User {
     phone: row.phone ?? null,
     address: row.address ?? null,
     citizenId: row.citizenId ?? null,
+    studentCode: row.studentCode ?? null,
     avatar: row.avatar ?? null,
     roles: (row.roles ?? []).map(mapRole),
     isActive: row.isActive ?? true,
@@ -174,6 +176,7 @@ export class UsersApi {
       phone: input.phone,
       address: input.address,
       citizenId: input.citizenId,
+      studentCode: input.studentCode,
       isActive: input.isActive,
       roleIds,
     });
@@ -189,6 +192,7 @@ export class UsersApi {
       phone: input.phone,
       address: input.address,
       citizenId: input.citizenId,
+      studentCode: input.studentCode,
       avatar: input.avatar,
       isActive: input.isActive,
       roleIds,
@@ -230,5 +234,12 @@ export class UsersApi {
 
   async bulk(body: { action: string; ids: string[] }): Promise<{ affected: number; message: string }> {
     return postData<{ affected: number; message: string }>(this.http, "/admin/users/bulk", body);
+  }
+
+  /** POST `/admin/users/:id/avatar` — upload ảnh đại diện nhân sự (folder MSSV hoặc userId). */
+  async uploadAvatar(id: string | number, file: File): Promise<{ url: string }> {
+    const fd = new FormData();
+    fd.append("file", file);
+    return postData<{ url: string }>(this.http, `/admin/users/${id}/avatar`, fd);
   }
 }

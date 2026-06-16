@@ -1,37 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query"
-import type {
-  CreateUserInput,
-  StoreSyncSdk,
-  UpdateUserInput,
-} from "@workspace/api-client"
+import type { StoreSyncSdk } from "@workspace/api-client"
 import { ApiError } from "@workspace/admin-app/lib/api"
 import { queryKeys } from "@workspace/admin-app/hooks/queries"
 import { syncAdminSessionIfCurrentUser } from "@workspace/admin-app/lib/auth-session"
-
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
-type CreateStaffInput = Pick<
-  CreateUserInput,
-  | "email"
-  | "fullName"
-  | "password"
-  | "isActive"
-  | "roleCodes"
-  | "phone"
-  | "address"
-  | "citizenId"
->
 
-type UpdateStaffInput = Pick<
-  UpdateUserInput,
-  | "fullName"
-  | "password"
-  | "isActive"
-  | "roleCodes"
-  | "avatar"
-  | "phone"
-  | "address"
-  | "citizenId"
->
+import type { StaffCreateInput, StaffUpdateInput } from "../staff-form.types"
 
 export interface UseStaffMutationsProps {
   api: StoreSyncSdk
@@ -47,22 +21,11 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       error: (error) =>
         error instanceof ApiError ? error.message : "Không tạo được user",
     },
-    mutationFn: async (input: CreateStaffInput) => {
-      return apiClient.users.create({
-        email: input.email,
-        fullName: input.fullName,
-        password: input.password,
-        isActive: input.isActive,
-        roleCodes: input.roleCodes,
-        phone: input.phone,
-        address: input.address,
-        citizenId: input.citizenId,
-      })
+    mutationFn: async (input: StaffCreateInput) => {
+      return apiClient.users.create(input)
     },
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() }),
-      ])
+      await queryClient.invalidateQueries({ queryKey: queryKeys.staffUserList() })
     },
   })
 
@@ -78,18 +41,9 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
       input,
     }: {
       id: string | number
-      input: UpdateStaffInput
+      input: StaffUpdateInput
     }) => {
-      return apiClient.users.update(id, {
-        fullName: input.fullName,
-        isActive: input.isActive,
-        password: input.password,
-        roleCodes: input.roleCodes,
-        avatar: input.avatar,
-        phone: input.phone,
-        address: input.address,
-        citizenId: input.citizenId,
-      })
+      return apiClient.users.update(id, input)
     },
     onSuccess: async (data, variables) => {
       await Promise.all([

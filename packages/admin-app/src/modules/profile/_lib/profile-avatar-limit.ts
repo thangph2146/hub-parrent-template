@@ -15,6 +15,11 @@ export function readAvatarChangeCount(userId: string | number): number {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0
 }
 
+export function clearAvatarChangeCount(userId: string | number): void {
+  if (typeof window === "undefined") return
+  localStorage.removeItem(`${STORAGE_PREFIX}${userId}`)
+}
+
 export function recordAvatarChange(userId: string | number): number {
   const next = readAvatarChangeCount(userId) + 1
   if (typeof window !== "undefined") {
@@ -31,14 +36,28 @@ export function normalizeMaxAvatarChanges(
   return Math.floor(value)
 }
 
-/** Số lần đã dùng khi mở form — ảnh sẵn có tính 1 lần nếu chưa có bản ghi local. */
+/** Số lần đã dùng khi mở form — đồng bộ localStorage với ảnh đã lưu trên server. */
 export function resolveInitialAvatarChangesUsed(
   userId: string | number,
   initialAvatar: string | null | undefined,
+  maxAvatarChanges: number | null = null,
 ): number {
+  const persisted = initialAvatar?.trim() ?? ""
   const stored = readAvatarChangeCount(userId)
+
+  // Upload từng ghi localStorage nhưng chưa lưu DB — cho phép thử lại.
+  if (stored > 0 && !persisted) {
+    clearAvatarChangeCount(userId)
+    return 0
+  }
+
   if (stored > 0) return stored
-  return initialAvatar?.trim() ? 1 : 0
+
+  if (maxAvatarChanges !== null && maxAvatarChanges > 0 && persisted) {
+    return maxAvatarChanges
+  }
+
+  return 0
 }
 
 export function buildAvatarChangeLimitState(options: {

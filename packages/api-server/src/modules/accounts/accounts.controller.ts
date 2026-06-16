@@ -29,6 +29,7 @@ type AvatarUploadsBinding = {
     serveBaseUrl?: string,
     userId?: string,
     ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
   ) => Promise<{ url: string }>;
 };
 
