@@ -127,6 +127,8 @@ Nguồn sự thật `.env.example` API deploy: `script-system/env/api-env-profil
 
 Chỉ **`@api` (main)** và **`@hub-event/api`** — cùng khối biến, sinh từ `api-env-profiles.cjs`.
 
+**Hướng dẫn đầy đủ (Postman, endpoint, pitfall):** [`docs/api-pattern/HANET.md`](../api-pattern/HANET.md).
+
 | Biến | Bắt buộc | Mô tả |
 |------|----------|--------|
 | `HANET_CLIENT_ID` | Có | Client ID trên [developers.hanet.ai](https://developers.hanet.ai/apps) |

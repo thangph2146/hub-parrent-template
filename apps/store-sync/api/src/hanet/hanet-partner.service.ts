@@ -530,6 +530,22 @@ export class HanetPartnerService {
     return this.client.postPartner(path, params);
   }
 
+  private shouldFallbackToRemoveById(error: unknown): boolean {
+    const message =
+      error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+    return (
+      message.includes("invalid input param") ||
+      message.includes("person get error") ||
+      message.includes("/person/remove")
+    );
+  }
+
+  private isPersonAlreadyRemoved(error: unknown): boolean {
+    const message =
+      error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+    return message.includes('not found') || message.includes('person not found');
+  }
+
   async registerPerson(input: HanetPersonHubInput) {
     this.assertReady();
     const params = await this.buildPersonPartnerParams(input, {
@@ -610,7 +626,17 @@ export class HanetPartnerService {
       requirePlace: true,
     });
     this.assertPersonParams(params, ['personID'], 'person/remove');
-    return this.postPerson('/person/remove', params);
+    try {
+      return await this.postPerson('/person/remove', params);
+    } catch (error) {
+      if (!this.shouldFallbackToRemoveById(error)) {
+        throw error;
+      }
+      this.logger.warn(
+        `HANET /person/remove trả Invalid input param, fallback -> /person/removePersonByID (personID=${String(params.personID ?? '')})`,
+      );
+      return this.postPerson('/person/removePersonByID', params);
+    }
   }
 
   async removePersonByPlace(input: HanetPersonHubInput) {
@@ -647,10 +673,55 @@ export class HanetPartnerService {
   async removePersonById(input: HanetPersonHubInput) {
     this.assertReady();
     const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
+      requirePlace: false,
     });
     this.assertPersonParams(params, ['personID'], 'person/removePersonByID');
-    return this.postPerson('/person/removePersonByID', params);
+    const variants = [params];
+    if (params.personID) {
+      variants.push({
+        ...params,
+        personId: String(params.personID),
+      });
+    }
+    if (params.placeID || params.personID) {
+      variants.push({
+        ...params,
+        ...(params.placeID ? { placeId: String(params.placeID) } : {}),
+        ...(params.personID ? { personId: String(params.personID) } : {}),
+      });
+    }
+    if (params.personID) {
+      variants.push({
+        personID: String(params.personID),
+      });
+    }
+    const uniqueVariants = variants.filter(
+      (payload, index, arr) =>
+        arr.findIndex((candidate) => JSON.stringify(candidate) === JSON.stringify(payload)) ===
+        index,
+    );
+    const endpointVariants = [
+      '/person/removePersonByID',
+      '/person/removePersonById',
+      '/person/remove',
+    ];
+    let lastError;
+    for (const endpoint of endpointVariants) {
+      for (const payload of uniqueVariants) {
+        try {
+          return await this.postPerson(endpoint, payload);
+        } catch (error) {
+          if (this.isPersonAlreadyRemoved(error)) {
+            return { success: true, alreadyDeleted: true };
+          }
+          lastError = error;
+          if (!this.shouldFallbackToRemoveById(error)) {
+            throw error;
+          }
+        }
+      }
+    }
+    throw lastError;
   }
 
   async getListPersonByPlace(query: HanetPersonListQuery = {}) {

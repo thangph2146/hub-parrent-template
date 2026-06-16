@@ -20,7 +20,7 @@ const STORAGE_KEY = HANET_ADMIN_PLACE_STORAGE_KEY
 export function useHanetSelectedPlaceId(defaultPlaceId?: string | null) {
   const placesQuery = useHanetPlacesQuery(Boolean(defaultPlaceId) || true)
 
-  const places = placesQuery.data ?? []
+  const places = useMemo(() => placesQuery.data ?? [], [placesQuery.data])
 
   const resolvedDefault = useMemo(() => {
     if (defaultPlaceId?.trim()) return defaultPlaceId.trim()

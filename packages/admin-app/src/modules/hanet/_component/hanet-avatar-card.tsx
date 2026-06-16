@@ -131,7 +131,6 @@ function HanetAvatarInlineCard({
     <div className="flex min-w-0 items-stretch gap-2.5 overflow-hidden rounded-lg border border-border/70 bg-card p-2 shadow-sm transition-colors hover:border-primary/30">
       <div className="relative h-[4.5rem] w-14 shrink-0 overflow-hidden rounded-md bg-muted">
         {src ? (
-          // eslint-disable-next-line @next/next/no-img-element -- URL HANET / media ngoài domain
           <img
             src={src}
             alt={label}
@@ -224,7 +223,6 @@ export function HanetAvatarCard({
           )}
         >
           {src ? (
-            // eslint-disable-next-line @next/next/no-img-element -- URL HANET / media ngoài domain
             <img
               src={src}
               alt={label}
