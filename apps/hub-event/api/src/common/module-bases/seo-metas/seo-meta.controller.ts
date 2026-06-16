@@ -4,26 +4,19 @@
  */
 import { Get, Put, Query, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import {
-  BaseCrudController,
-  type ICrudControllerService,
-} from '../../crud';
-import {
-  createSuccessResponse,
-  type ApiResponsePayload,
-} from '../../index';
+import { BaseCrudController, type ICrudControllerService } from '../../crud';
+import { createSuccessResponse, type ApiResponsePayload } from '../../index';
 import type {
   SeoMetasRowDto,
   SeoMetasCreateData,
   SeoMetasUpdateData,
 } from './seo-meta.service';
 
-export interface ISeoMetasControllerService
-  extends ICrudControllerService<
-    SeoMetasRowDto,
-    SeoMetasCreateData,
-    SeoMetasUpdateData
-  > {
+export interface ISeoMetasControllerService extends ICrudControllerService<
+  SeoMetasRowDto,
+  SeoMetasCreateData,
+  SeoMetasUpdateData
+> {
   getByPage(page: string): Promise<SeoMetasRowDto | null>;
   upsertByPage(
     page: string,

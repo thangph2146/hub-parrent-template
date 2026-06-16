@@ -133,8 +133,7 @@ type EventRow = {
 function mapRow(r: EventRow): EventRowDto {
   let content: unknown = null;
   if (r.content != null) {
-    content =
-      typeof r.content === 'string' ? JSON.parse(r.content) : r.content;
+    content = typeof r.content === 'string' ? JSON.parse(r.content) : r.content;
   }
 
   return {
@@ -235,14 +234,20 @@ export abstract class BaseEventsService {
       const raw = data.checkinCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
       event.checkinCamera = id
-        ? (this.getEm().getReference(Camera, toEntityId(id)) as EventRow['checkinCamera'])
+        ? (this.getEm().getReference(
+            Camera,
+            toEntityId(id),
+          ) as EventRow['checkinCamera'])
         : null;
     }
     if (data.checkoutCameraId !== undefined) {
       const raw = data.checkoutCameraId;
       const id = raw === null || raw === '' ? '' : String(raw).trim();
       event.checkoutCamera = id
-        ? (this.getEm().getReference(Camera, toEntityId(id)) as EventRow['checkoutCamera'])
+        ? (this.getEm().getReference(
+            Camera,
+            toEntityId(id),
+          ) as EventRow['checkoutCamera'])
         : null;
     }
   }
@@ -263,7 +268,10 @@ export abstract class BaseEventsService {
         deletedAt: null,
       })) as { linkedEvent?: unknown } | null;
       if (camera) {
-        camera.linkedEvent = this.getEm().getReference(Event, toEntityId(eventId));
+        camera.linkedEvent = this.getEm().getReference(
+          Event,
+          toEntityId(eventId),
+        );
       }
     }
 
@@ -272,7 +280,10 @@ export abstract class BaseEventsService {
       deletedAt: null,
     } as FilterQuery<object>);
 
-    for (const camera of previouslyLinked as Array<{ id: number; linkedEvent?: unknown }>) {
+    for (const camera of previouslyLinked as Array<{
+      id: number;
+      linkedEvent?: unknown;
+    }>) {
       if (!selected.has(camera.id)) {
         camera.linkedEvent = null;
       }
@@ -428,6 +439,8 @@ export abstract class BaseEventsService {
 
   async bulk(action: BulkAction, ids: string[]): Promise<BulkResult> {
     const Event = this.getEventEntity();
-    return applyBulkAction(this.getEm(), Event, action, ids, { label: 'su kien' });
+    return applyBulkAction(this.getEm(), Event, action, ids, {
+      label: 'su kien',
+    });
   }
 }

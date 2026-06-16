@@ -9,15 +9,8 @@ import {
   normalizePageLimit,
   paginationMeta,
 } from '../pagination';
-import {
-  applyBulkAction,
-  type BulkAction,
-  type BulkResult,
-} from '../bulk-actions';
-import {
-  buildStandardAdminWhere,
-  type AdminColumnFiltersConfig,
-} from './crud-apply-column-filters';
+import { applyBulkAction, type BulkAction, type BulkResult } from '../bulk-actions';
+import { buildStandardAdminWhere, type AdminColumnFiltersConfig } from './crud-apply-column-filters';
 
 function backfillLegacyAuditTimestampsIfMissing(_row: object): boolean {
   return false;
@@ -51,8 +44,7 @@ export abstract class BaseStandardAdminCrudService<
   TEntity extends object,
   TRow,
   TListParams extends StandardAdminListParams = StandardAdminListParams,
-  TListResult extends StandardAdminListResult<TRow> =
-    StandardAdminListResult<TRow>,
+  TListResult extends StandardAdminListResult<TRow> = StandardAdminListResult<TRow>,
 > {
   protected abstract getEm(): EntityManager;
   protected abstract getEntityClass(): new () => TEntity;
@@ -183,10 +175,7 @@ export abstract class BaseStandardAdminCrudService<
     return true;
   }
 
-  async bulk(
-    action: BulkAction,
-    ids: Array<number | string>,
-  ): Promise<BulkResult> {
+  async bulk(action: BulkAction, ids: Array<number | string>): Promise<BulkResult> {
     const Entity = this.getEntityClass();
     return applyBulkAction(
       this.getEm(),

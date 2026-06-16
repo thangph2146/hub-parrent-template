@@ -25,7 +25,7 @@ import type { Response } from 'express';
 import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import { Permissions, parseAdminListLimit, isBulkAction } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type { BaseEventRegistrationsService } from './event-registrations.service';
 import type { ManualAttendanceAction } from './event-registration-attendance.types';
 import type { BaseEventRegistrationAttendanceService } from './event-registration-attendance.service';
@@ -43,7 +43,8 @@ export type IEventRegistrationsControllerService = Pick<
   | 'bulk'
 >;
 /** @deprecated Dùng `IEventRegistrationsControllerService`. */
-export type IEventRegistrationsAdminControllerService = IEventRegistrationsControllerService;
+export type IEventRegistrationsAdminControllerService =
+  IEventRegistrationsControllerService;
 
 @ApiTags('Event Registrations')
 @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_VIEW)
@@ -206,7 +207,8 @@ export class BaseEventRegistrationsController extends BaseAdminHttpController {
       attendanceStatus: body?.attendanceStatus,
       checkinMethod: body?.checkinMethod,
     });
-    if (!updated) return this.sendNotFound(res, 'Không tìm thấy đăng ký sự kiện');
+    if (!updated)
+      return this.sendNotFound(res, 'Không tìm thấy đăng ký sự kiện');
     return this.sendSuccess(res, updated);
   }
 

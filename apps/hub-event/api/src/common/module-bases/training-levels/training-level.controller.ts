@@ -3,10 +3,7 @@
  * TrainingLevels Controller.
  */
 import { ApiTags } from '@nestjs/swagger';
-import {
-  BaseCrudController,
-  type ICrudControllerService,
-} from '../../crud';
+import { BaseCrudController, type ICrudControllerService } from '../../crud';
 import type {
   TrainingLevelsRowDto,
   TrainingLevelsCreateData,

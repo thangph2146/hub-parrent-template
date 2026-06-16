@@ -190,6 +190,12 @@ function renderApiFromTemplate(appRel, opts = {}) {
   for (const rel of ROOT_DIRS) {
     copyTree(path.join(templateRoot, rel), path.join(appRoot, rel), rel)
   }
+  if (appRel.replace(/\\/g, '/') !== MAIN_API_PATH.replace(/\\/g, '/')) {
+    const archiveDir = path.join(appRoot, 'scripts', 'archive')
+    if (fs.existsSync(archiveDir)) {
+      fs.rmSync(archiveDir, { recursive: true, force: true })
+    }
+  }
   for (const rel of SHELL_DIRS) {
     const src = path.join(templateRoot, rel)
     const dest = path.join(appRoot, rel)

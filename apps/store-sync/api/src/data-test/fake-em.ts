@@ -57,9 +57,7 @@ function buildStoreFromFixture(fixture: FullExportFixture): FakeStore {
       // Join table không có id → tổng hợp từ FK
       if (id === undefined || id === null) {
         // Common FK patterns (ưu tiên theo thứ tự)
-        const fkKeys = Object.keys(r).filter(
-          (k) => /Id[A-Z]?\b|Id$/.test(k) || k.endsWith('Id'),
-        );
+        const fkKeys = Object.keys(r).filter((k) => /Id[A-Z]?\b|Id$/.test(k) || k.endsWith('Id'));
         if (fkKeys.length > 0) {
           // Sắp xếp FK keys ổn định
           fkKeys.sort();
@@ -250,9 +248,7 @@ function matchFilter(
   filter: unknown,
 ): boolean {
   if (!filter || typeof filter !== 'object') return true;
-  for (const [key, condition] of Object.entries(
-    filter as Record<string, unknown>,
-  )) {
+  for (const [key, condition] of Object.entries(filter as Record<string, unknown>)) {
     if (key === '$or' && Array.isArray(condition)) {
       if (!condition.some((sub) => matchFilter(entity, sub))) return false;
       continue;
@@ -266,20 +262,13 @@ function matchFilter(
       if (value !== null && value !== undefined) return false;
       continue;
     }
-    if (
-      condition &&
-      typeof condition === 'object' &&
-      !Array.isArray(condition)
-    ) {
+    if (condition && typeof condition === 'object' && !Array.isArray(condition)) {
       const condObj = condition as Record<string, unknown>;
       if ('$in' in condObj) {
         const arr = condObj.$in as unknown[];
         if (!arr.includes(value as never)) {
           // Special: id field có thể là number↔string
-          if (
-            key === 'id' &&
-            (typeof value === 'string' || typeof value === 'number')
-          ) {
+          if (key === 'id' && (typeof value === 'string' || typeof value === 'number')) {
             const numVal = Number(value);
             if (arr.some((x) => Number(x as never) === numVal)) continue;
           }
@@ -295,29 +284,21 @@ function matchFilter(
         }
       } else if ('$like' in condObj) {
         const pattern = String(condObj.$like).replace(/%/g, '');
-        if (
-          typeof value !== 'string' ||
-          !value.toLowerCase().includes(pattern.toLowerCase())
-        ) {
+        if (typeof value !== 'string' || !value.toLowerCase().includes(pattern.toLowerCase())) {
           return false;
         }
       } else if ('$gt' in condObj) {
-        if (typeof value !== 'number' || !(value > Number(condObj.$gt)))
-          return false;
+        if (typeof value !== 'number' || !(value > Number(condObj.$gt))) return false;
       } else if ('$gte' in condObj) {
-        if (typeof value !== 'number' || !(value >= Number(condObj.$gte)))
-          return false;
+        if (typeof value !== 'number' || !(value >= Number(condObj.$gte))) return false;
       } else if ('$lt' in condObj) {
-        if (typeof value !== 'number' || !(value < Number(condObj.$lt)))
-          return false;
+        if (typeof value !== 'number' || !(value < Number(condObj.$lt))) return false;
       } else if ('$lte' in condObj) {
-        if (typeof value !== 'number' || !(value <= Number(condObj.$lte)))
-          return false;
+        if (typeof value !== 'number' || !(value <= Number(condObj.$lte))) return false;
       } else if ('$null' in condObj) {
         const shouldBeNull = Boolean(condObj.$null);
         if (shouldBeNull && value !== null && value !== undefined) return false;
-        if (!shouldBeNull && (value === null || value === undefined))
-          return false;
+        if (!shouldBeNull && (value === null || value === undefined)) return false;
       } else {
         // Nested object
         if (!value || typeof value !== 'object') return false;
@@ -428,21 +409,13 @@ function populateRelations(
     } else if (path === 'tag' && storeKey === 'post_tags') {
       const tag = store.tags?.get(String(item.tagId));
       copy.tag = tag ? { ...tag } : null;
-    } else if (
-      path === 'post' &&
-      (storeKey === 'post_categories' || storeKey === 'post_tags')
-    ) {
+    } else if (path === 'post' && (storeKey === 'post_categories' || storeKey === 'post_tags')) {
       const post = store.posts?.get(String(item.postId));
       copy.post = post ? { ...post } : null;
     } else if (path === 'speaker' && storeKey === 'event_speakers') {
       const speaker = store.speakers?.get(String(item.speakerId));
       copy.speaker = speaker ? { ...speaker } : null;
-    } else if (
-      path === 'event' &&
-      (storeKey === 'event_speakers' ||
-        storeKey === 'event_registrations' ||
-        storeKey === 'event_checkins')
-    ) {
+    } else if (path === 'event' && (storeKey === 'event_speakers' || storeKey === 'event_registrations' || storeKey === 'event_checkins')) {
       const event = store.events?.get(String(item.eventId));
       copy.event = event ? { ...event } : null;
     }
@@ -558,9 +531,8 @@ export function createFakeEntityManager(
       const storeKey = resolveStoreKey(entity, store);
       if (!storeKey) return [];
       // 1) Populate FIRST so filter có thể reference populated fields
-      const items = Array.from(store[storeKey].values()).map((it) =>
-        populateRelations(it, storeKey, options?.populate, store),
-      );
+      const items = Array.from(store[storeKey].values())
+        .map((it) => populateRelations(it, storeKey, options?.populate, store));
       // 2) Filter
       const filtered = items.filter((it) => matchFilter(it, filter));
       // 3) Order
@@ -583,7 +555,7 @@ export function createFakeEntityManager(
       const list = Array.isArray(entity) ? entity : [entity];
       for (const item of list) {
         if (!item || typeof item !== 'object') continue;
-        const id = item.id;
+        const id = (item as Record<string, unknown>).id;
         if (id === undefined || id === null) continue;
         const idKey = String(id);
         let targetKey: string | null = null;
@@ -616,15 +588,11 @@ export function createFakeEntityManager(
         };
 
         if (!targetKey) {
-          const ctorName = (item as { constructor?: { name?: string } })
-            .constructor?.name;
+          const ctorName = (item as { constructor?: { name?: string } }).constructor
+            ?.name;
           if (ctorName) {
             const normalizedCtor = ctorName.trim();
-            if (
-              normalizedCtor &&
-              normalizedCtor !== 'Object' &&
-              normalizedCtor !== 'Array'
-            ) {
+            if (normalizedCtor && normalizedCtor !== 'Object' && normalizedCtor !== 'Array') {
               const key = entityNameToStoreKey(normalizedCtor);
               if (store[key]) targetKey = key;
             }
@@ -636,10 +604,7 @@ export function createFakeEntityManager(
           let bestScore = 0;
           for (const [storeKey, fields] of Object.entries(fieldSignature)) {
             if (!store[storeKey]) continue;
-            const score = fields.reduce(
-              (acc, f) => acc + (f in item ? 1 : 0),
-              0,
-            );
+            const score = fields.reduce((acc, f) => acc + (f in item ? 1 : 0), 0);
             if (score > bestScore) {
               bestScore = score;
               bestKey = storeKey;
@@ -669,24 +634,24 @@ export function createFakeEntityManager(
   const flush: jest.Mock = jest.fn(() => Promise.resolve(undefined));
 
   const persistAndFlush: jest.Mock = jest.fn(
-    async (
-      entity: Record<string, unknown> | Array<Record<string, unknown>>,
-    ) => {
+    async (entity: Record<string, unknown> | Array<Record<string, unknown>>) => {
       await persist(entity);
       await flush();
     },
   );
 
-  const remove: jest.Mock = jest.fn((entity: Record<string, unknown>) => {
-    const id = entity.id as string;
-    for (const key of Object.keys(store)) {
-      if (store[key].has(id)) {
-        store[key].delete(id);
-        break;
+  const remove: jest.Mock = jest.fn(
+    (entity: Record<string, unknown>) => {
+      const id = entity.id as string;
+      for (const key of Object.keys(store)) {
+        if (store[key].has(id)) {
+          store[key].delete(id);
+          break;
+        }
       }
-    }
-    return Promise.resolve(undefined);
-  });
+      return Promise.resolve(undefined);
+    },
+  );
 
   /**
    * Remove + flush trong 1 lần. Used by bulk-actions.ts for hard-delete.
@@ -696,7 +661,7 @@ export function createFakeEntityManager(
       const list = Array.isArray(entities) ? entities : [entities];
       for (const entity of list) {
         if (!entity || typeof entity !== 'object') continue;
-        const id = entity.id;
+        const id = (entity as Record<string, unknown>).id;
         if (id === undefined || id === null) continue;
         const idKey = String(id);
         for (const key of Object.keys(store)) {

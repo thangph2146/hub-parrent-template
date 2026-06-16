@@ -21,9 +21,7 @@ import {
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import {
-  BaseAdminCrudController,
-} from '../../crud/base-admin-crud.controller';
+import { BaseAdminCrudController } from '../../crud/base-admin-crud.controller';
 import {
   Permissions,
   parseColumnFiltersFromQuery,
@@ -31,7 +29,7 @@ import {
   type AdminListQueryInput,
 } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';;
+import { PERMISSIONS } from '../../../config/permissions';
 import type {
   BaseEventsService,
   EventRowDto,
@@ -66,7 +64,9 @@ export class BaseEventsController extends BaseAdminCrudController<
     super(service, { entityLabel: 'sự kiện', listDefaultLimit: 10 });
   }
 
-  protected override buildListParams(input: AdminListQueryInput): ListEventsParams {
+  protected override buildListParams(
+    input: AdminListQueryInput,
+  ): ListEventsParams {
     return {
       page: Math.max(1, parseInt(String(input.page), 10) || 1),
       limit: parseAdminListLimit(input.limit, 10),

@@ -1,16 +1,14 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
-import {
-  Controller,
-  Get,
-  Put,
-  Delete,
-  Body,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { createSuccessResponse, type ApiResponsePayload } from '../../index';
-import type { SettingsRowDto, BaseSettingsService } from './setting.service';
+import {
+  createSuccessResponse,
+  type ApiResponsePayload,
+} from '../../index';
+import type {
+  SettingsRowDto,
+  BaseSettingsService,
+} from './setting.service';
 
 export type ISettingsControllerService = Pick<
   BaseSettingsService,

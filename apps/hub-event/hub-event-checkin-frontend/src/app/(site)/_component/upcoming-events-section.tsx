@@ -23,7 +23,7 @@ export function LandingUpcomingEventsSection({ events }: LandingUpcomingEventsSe
         max={STORE_CONTAINER_MAX_DEFAULT}
         className={`${STORE_CONTAINER_INSET_WIDE} space-y-8`}
       >
-        <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-border/80 bg-card p-6 shadow-sm sm:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">
               Sự kiện nổi bật

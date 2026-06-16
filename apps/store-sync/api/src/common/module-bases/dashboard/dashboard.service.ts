@@ -101,7 +101,11 @@ export abstract class BaseDashboardService {
     connection: ReturnType<EntityManager['getConnection']>,
   ): Promise<DashboardMonthlyItemDto[]> {
     const now = new Date();
-    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    const twelveMonthsAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 11,
+      1,
+    );
 
     const rows = (await connection.execute(
       `
@@ -192,15 +196,9 @@ export abstract class BaseDashboardService {
       em.find(Post, { deletedAt: null }, { fields: ['id'] }),
     ]);
 
-    type CategoryRow = {
-      id: number;
-      name: string;
-      parent?: { id: number } | null;
-    };
+    type CategoryRow = { id: number; name: string; parent?: { id: number } | null };
     const categories = allCategories as CategoryRow[];
-    const activePostIds = (activePosts as Array<{ id: number }>).map(
-      (p) => p.id,
-    );
+    const activePostIds = (activePosts as Array<{ id: number }>).map((p) => p.id);
     const postCategoryRows = await em.find(
       PostCategory,
       { post: { id: { $in: toEntityIdList(activePostIds) } } },

@@ -99,13 +99,7 @@ export type EventAttendanceSocketPayload = {
 
 /** Log webhook HANET (sync device/place/person + check-in/out) trên admin realtime. */
 export type EventHanetSyncSocketPayload = {
-  kind:
-    | 'device'
-    | 'place'
-    | 'person'
-    | 'checkin'
-    | 'checkout'
-    | 'unknown';
+  kind: 'device' | 'place' | 'person' | 'checkin' | 'checkout' | 'unknown';
   action?: string;
   eventId?: number | null;
   at: string;

@@ -107,8 +107,6 @@ export async function processFaceImageJpegBuffer(
     });
   }
 
-  const jpegBuffer = await image
-    .jpeg({ quality, mozjpeg: true })
-    .toBuffer();
+  const jpegBuffer = await image.jpeg({ quality, mozjpeg: true }).toBuffer();
   return { jpegBuffer, width, height };
 }

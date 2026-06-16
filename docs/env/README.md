@@ -152,6 +152,10 @@ Chỉ **`@api` (main)** và **`@hub-event/api`** — cùng khối biến, sinh t
 | `GET /api/admin/hanet/profile` | `/profile/getProfile` (alias, cần API mới) |
 | `GET /api/admin/hanet/devices/connection-status?deviceId=` | `/device/getConnectionStatus` (`deviceIDs` trên partner) |
 | `GET /api/admin/hanet/places` | `/place/getPlaces` |
+| `GET /api/admin/hanet/places/info?placeId=` | `/place/getPlaceInfo` |
+| `POST /api/admin/hanet/places` | `/place/addPlace` + `/partner/addPlacePartner` |
+| `PATCH /api/admin/hanet/places` | `/place/updatePlace` |
+| `DELETE /api/admin/hanet/places?placeId=` | `/place/removePlace` (+ gỡ partner nếu có) |
 | `GET /api/admin/hanet/devices?placeId=` | `/device/getListDeviceByPlace` |
 | `POST /api/admin/hanet/person/register-by-url` | `/person/registerByUrl` |
 | `GET /api/admin/hanet/checkins?placeId=&date=` | `/person/getCheckinByPlaceIdInDay` |

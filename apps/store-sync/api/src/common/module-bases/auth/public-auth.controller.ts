@@ -1,18 +1,10 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import type { Response } from 'express';
-import {
-  Public,
-  createErrorResponse,
-  createSuccessResponse,
-} from '../../index';
-import { PUBLIC_ROUTES } from '../../../config/constants';
-import { AUTH_ROLE_NAMES } from '../../../config/constants';
-import type {
-  AuthLoginPayload,
-  BaseAuthService,
-  GoogleProfileDto,
-} from './auth.service';
+import { Public, createErrorResponse, createSuccessResponse } from '../../index';
+import { PUBLIC_ROUTES } from '../../../config/constants';;
+import { AUTH_ROLE_NAMES } from '../../../config/constants';;
+import type { AuthLoginPayload, BaseAuthService, GoogleProfileDto } from './auth.service';
 
 export type IPublicAuthControllerService = Pick<
   BaseAuthService,
@@ -43,10 +35,7 @@ function isStudentPayload(payload: AuthLoginPayload): boolean {
 }
 
 function isEventGuestPayload(payload: AuthLoginPayload): boolean {
-  return (
-    hasRole(payload, AUTH_ROLE_NAMES.PARENT) ||
-    hasRole(payload, AUTH_ROLE_NAMES.USER)
-  );
+  return hasRole(payload, AUTH_ROLE_NAMES.PARENT) || hasRole(payload, AUTH_ROLE_NAMES.USER);
 }
 
 @Public()
@@ -140,7 +129,7 @@ export class BasePublicAuthController {
         return res.status(statusCode).json(errBody);
       }
 
-      const user = await this.service.loginWithGoogleAsStudent(profile);
+      const user = await this.service.loginWithGoogleAsStudent(profile as GoogleProfileDto);
       if (!user || !isStudentPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
           user
@@ -193,10 +182,7 @@ export class BasePublicAuthController {
         return res.status(statusCode).json(errBody);
       }
 
-      const user = await this.service.login({
-        email,
-        password,
-      });
+      const user = (await this.service.login({ email, password })) as AuthLoginPayload | null;
       if (!user || !isStudentPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
           user
@@ -234,17 +220,14 @@ export class BasePublicAuthController {
 
     const userId = body?.userId?.trim();
     if (!userId) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'Thiếu userId.',
-        {
-          status: 400,
-        },
-      );
+      const { statusCode, body: errBody } = createErrorResponse('Thiếu userId.', {
+        status: 400,
+      });
       return res.status(statusCode).json(errBody);
     }
 
     try {
-      const user = await this.service.loginAsDevelopmentUser(userId);
+      const user = (await this.service.loginAsDevelopmentUser(userId)) as AuthLoginPayload | null;
       if (!user || !isStudentPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
           user
@@ -292,10 +275,7 @@ export class BasePublicAuthController {
         return res.status(statusCode).json(errBody);
       }
 
-      const user = await this.service.login({
-        email,
-        password,
-      });
+      const user = (await this.service.login({ email, password })) as AuthLoginPayload | null;
       if (!user || !isEventGuestPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
           user
@@ -333,17 +313,14 @@ export class BasePublicAuthController {
 
     const userId = body?.userId?.trim();
     if (!userId) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'Thiếu userId.',
-        {
-          status: 400,
-        },
-      );
+      const { statusCode, body: errBody } = createErrorResponse('Thiếu userId.', {
+        status: 400,
+      });
       return res.status(statusCode).json(errBody);
     }
 
     try {
-      const user = await this.service.loginAsDevelopmentUser(userId);
+      const user = (await this.service.loginAsDevelopmentUser(userId)) as AuthLoginPayload | null;
       if (!user || !isEventGuestPayload(user)) {
         const { statusCode, body: errBody } = createErrorResponse(
           user
@@ -419,12 +396,9 @@ export class BasePublicAuthController {
 
     const userId = body?.userId?.trim();
     if (!userId) {
-      const { statusCode, body: errBody } = createErrorResponse(
-        'Thiếu userId.',
-        {
-          status: 400,
-        },
-      );
+      const { statusCode, body: errBody } = createErrorResponse('Thiếu userId.', {
+        status: 400,
+      });
       return res.status(statusCode).json(errBody);
     }
 
@@ -460,13 +434,10 @@ export class BasePublicAuthController {
     @Query('activeOnly') activeOnly: string | undefined,
     @Res() res: Response,
   ): Promise<Response> {
-    return this.respondDevelopmentLoginOptions(res, {
-      role,
-      roles,
-      excludeRoles,
-      emailSuffix,
-      activeOnly,
-    });
+    return this.respondDevelopmentLoginOptions(
+      res,
+      { role, roles, excludeRoles, emailSuffix, activeOnly },
+    );
   }
 
   @Get('auth/dev-login-options')
@@ -478,13 +449,10 @@ export class BasePublicAuthController {
     @Query('activeOnly') activeOnly: string | undefined,
     @Res() res: Response,
   ): Promise<Response> {
-    return this.respondDevelopmentLoginOptions(res, {
-      role,
-      roles,
-      excludeRoles,
-      emailSuffix,
-      activeOnly,
-    });
+    return this.respondDevelopmentLoginOptions(
+      res,
+      { role, roles, excludeRoles, emailSuffix, activeOnly },
+    );
   }
 
   private async respondDevelopmentLoginOptions(

@@ -21,6 +21,13 @@ body {
 }
 
 .landing-marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
   mask-image: linear-gradient(
     to right,
     transparent,
@@ -32,6 +39,7 @@ body {
 
 .landing-marquee-track {
   animation: landing-marquee 40s linear infinite;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {

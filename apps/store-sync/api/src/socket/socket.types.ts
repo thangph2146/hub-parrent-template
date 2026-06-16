@@ -97,6 +97,28 @@ export type EventAttendanceSocketPayload = {
   hasCheckout?: boolean;
 };
 
+/** Log webhook HANET (sync device/place/person + check-in/out) trên admin realtime. */
+export type EventHanetSyncSocketPayload = {
+  kind: 'device' | 'place' | 'person' | 'checkin' | 'checkout' | 'unknown';
+  action?: string;
+  eventId?: number | null;
+  at: string;
+  summary: string;
+  deviceId?: string;
+  placeId?: string;
+  personId?: string;
+  personName?: string;
+  entityId?: number;
+  linkedUserId?: number;
+  linkedRegistrations?: number;
+  email?: string;
+  fullName?: string;
+  registrationId?: number | null;
+  duplicate?: boolean;
+  acknowledged: boolean;
+  error?: string;
+};
+
 /** Invalidate React Query cache trên admin clients sau mutation CRUD. */
 export type AdminCacheInvalidatePayload = {
   resource: string;

@@ -1,6 +1,9 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** CRUD runtime — template local (pnpm api:sync-template). */
-import type { BulkOperationResult, ListCrudParams } from './crud.types';
+import type {
+  BulkOperationResult,
+  ListCrudParams,
+} from './crud.types';
 import { parseColumnFiltersFromQuery } from '../parse-column-filters';
 import { parseAdminListLimit, parseAdminListPage } from '../parse-list-query';
 

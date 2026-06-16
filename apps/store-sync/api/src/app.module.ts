@@ -24,6 +24,7 @@ import { SystemModule } from './system/system.module';
 import { EventRegistrationsModule } from './event-registrations/event-registrations.module';
 import { EventSpeakersModule } from './event-speakers/event-speakers.module';
 import { SeoMetasModule } from './seo-metas/seo-metas.module';
+import { HanetModule } from './hanet/hanet.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { PromoCodesModule } from './promo-codes/promo-codes.module';
@@ -57,6 +58,7 @@ import { CartsModule } from './carts/carts.module';
     EventRegistrationsModule,
     EventSpeakersModule,
     SeoMetasModule,
+    HanetModule,
     ProductsModule,
     OrdersModule,
     PromoCodesModule,

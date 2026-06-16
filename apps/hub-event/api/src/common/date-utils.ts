@@ -26,14 +26,18 @@ export function toIsoNow(v: unknown): string {
 }
 
 /** Parse string/number input thành Date hoặc null. */
-export function parseDateInput(value: string | number | null | undefined): Date | null {
+export function parseDateInput(
+  value: string | number | null | undefined,
+): Date | null {
   if (value == null || value === '') return null;
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
 /** Normalize ngày nhập dạng text (YYYY-MM-DD hoặc ISO) → YYYY-MM-DD hoặc null. */
-export function normalizeDateInput(value: string | null | undefined): string | null {
+export function normalizeDateInput(
+  value: string | null | undefined,
+): string | null {
   const trimmed = typeof value === 'string' ? value.trim() : '';
   if (!trimmed) return null;
   const date = new Date(trimmed);
@@ -73,14 +77,13 @@ export function parseDate(
   input: string | Date | null | undefined,
 ): Date | null {
   if (!input) return null;
-  if (input instanceof Date) return Number.isNaN(input.getTime()) ? null : input;
+  if (input instanceof Date)
+    return Number.isNaN(input.getTime()) ? null : input;
   return parseDateInput(input);
 }
 
 /** Check date có hợp lệ không. */
-export function isValidDate(
-  date: Date | string | null | undefined,
-): boolean {
+export function isValidDate(date: Date | string | null | undefined): boolean {
   if (!date) return false;
   if (date instanceof Date) return !Number.isNaN(date.getTime());
   const parsed = new Date(date);

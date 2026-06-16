@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@ui/globals.css";
+import "./globals.css";
 import "@thangph2146/lexical-editor/styles"
 import { SiteRootProviders } from "@ui/components/site";
 import { SITE_ROOT_HTML_CLASSNAME } from "@ui/lib/site-fonts";

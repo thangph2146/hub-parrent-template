@@ -21,6 +21,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
   ForbiddenException,
+  SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from './permissions.decorator';
@@ -63,11 +64,7 @@ const FAILURE_MESSAGES: Record<AuthFailureReason, string> = {
 /**
  * Mark route as public (bypass auth/permission check).
  */
-export const Public = () => {
-  // Lazy require để tránh vòng lặp với reflector
-  const { SetMetadata } = require('@nestjs/common') as typeof import('@nestjs/common');
-  return SetMetadata(IS_PUBLIC_KEY, true);
-};
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

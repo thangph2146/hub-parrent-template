@@ -82,3 +82,4 @@ export type AttendanceRegistrationRow = {
   status: number;
   updatedAt: Date;
 };
+
