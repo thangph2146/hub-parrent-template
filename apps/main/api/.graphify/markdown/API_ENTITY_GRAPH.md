@@ -1,6 +1,6 @@
 # API — entity graph (MikroORM closure)
 
-> **Sinh tự động:** `2026-06-15T05:48:46.474Z` từ `apps/main/api`.
+> **Sinh tự động:** `2026-06-16T04:02:04.694Z` từ `apps/main/api`.
 > **Mục đích:** partial render / prune entity **bắt buộc** dùng closure từ manifest này — không cắt entity thủ công.
 
 ## Chính sách render
