@@ -50,6 +50,7 @@ Agent nên dùng các file step-by-step này làm lộ trình chính:
 | Doc | Áp dụng |
 |-----|---------|
 | `docs/api-pattern/README.md` | Nest API (`apps/main/api`, logic trong `packages/api-server`) |
+| [`docs/api-pattern/HANET.md`](HANET.md) | HANET Partner API — Postman, proxy Hub, person/check-in |
 | `docs/api-client-pattern/README.md` | `@workspace/api-client` |
 | `docs/api-client-pattern/REALTIME.md` | Socket admin + toast |
 | `docs/ui-pattern/README.md` | `@workspace/ui` |

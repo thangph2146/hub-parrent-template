@@ -15,6 +15,16 @@ export type HanetRegisterPersonByUrlInput = {
   personType?: number;
 };
 
+/** POST /person/register — multipart field `file` (JPEG/PNG). */
+export type HanetRegisterPersonInput = {
+  placeId: string;
+  name: string;
+  aliasId: string;
+  /** Base64 JPEG/PNG hoặc data URL — gửi multipart `file` lên HANET. */
+  fileBase64: string;
+  personType?: number;
+};
+
 export type HanetCheckinByPlaceQuery = {
   placeId: string;
   /** ISO yyyy-mm-dd hoặc dd/MM/yyyy — sẽ chuẩn hóa trước khi gọi HANET. */

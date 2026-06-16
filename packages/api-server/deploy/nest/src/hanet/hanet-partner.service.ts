@@ -17,6 +17,7 @@ import type {
   HanetCreatePlaceInput,
   HanetPersonListQuery,
   HanetRegisterPersonByUrlInput,
+  HanetRegisterPersonInput,
   HanetRemovePlaceInput,
   HanetSetDeviceMqttInput,
   HanetTakeFacePictureInput,
@@ -529,13 +530,45 @@ export class HanetPartnerService {
     return this.client.postPartner(path, params);
   }
 
-  async registerPerson(input: HanetPersonHubInput) {
+  private shouldFallbackToRemoveById(error: unknown): boolean {
+    const message =
+      error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+    return (
+      message.includes("invalid input param") ||
+      message.includes("/person/remove")
+    );
+  }
+
+  async registerPerson(input: HanetRegisterPersonInput) {
     this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
+    const placeId = await this.resolvePlaceId(input.placeId);
+    const name = input.name.trim();
+    const aliasID = input.aliasId.trim();
+    if (!name) {
+      throw new BadRequestException('Thiếu tên người (name)');
+    }
+    if (!aliasID) {
+      throw new BadRequestException('Thiếu aliasID (email hoặc mã nội bộ)');
+    }
+    if (!input.fileBase64?.trim()) {
+      throw new BadRequestException(
+        'Thiếu ảnh khuôn mặt — HANET /person/register yêu cầu multipart file JPEG/PNG',
+      );
+    }
+    const image = decodeHanetFaceImageBase64(input.fileBase64);
+    const fields: Record<string, string | number> = {
+      placeID: placeId,
+      name,
+      aliasID,
+    };
+    if (input.personType != null) {
+      fields.personType = input.personType;
+    }
+    return this.client.postPartnerMultipart('/person/register', fields, {
+      buffer: image.buffer,
+      filename: image.filename,
+      mimeType: image.mimeType,
     });
-    this.assertPersonParams(params, ['name', 'aliasID'], 'person/register');
-    return this.postPerson('/person/register', params);
   }
 
   async getListPersonByAliasAllPlace(aliasId: string) {
@@ -609,7 +642,17 @@ export class HanetPartnerService {
       requirePlace: true,
     });
     this.assertPersonParams(params, ['personID'], 'person/remove');
-    return this.postPerson('/person/remove', params);
+    try {
+      return await this.postPerson('/person/remove', params);
+    } catch (error) {
+      if (!this.shouldFallbackToRemoveById(error)) {
+        throw error;
+      }
+      this.logger.warn(
+        `HANET /person/remove trả Invalid input param, fallback -> /person/removePersonByID (personID=${String(params.personID ?? '')})`,
+      );
+      return this.postPerson('/person/removePersonByID', params);
+    }
   }
 
   async removePersonByPlace(input: HanetPersonHubInput) {
@@ -649,7 +692,32 @@ export class HanetPartnerService {
       requirePlace: true,
     });
     this.assertPersonParams(params, ['personID'], 'person/removePersonByID');
-    return this.postPerson('/person/removePersonByID', params);
+    const variants = [params];
+    if (params.personID) {
+      variants.push({
+        ...params,
+        personId: String(params.personID),
+      });
+    }
+    if (params.placeID || params.personID) {
+      variants.push({
+        ...params,
+        ...(params.placeID ? { placeId: String(params.placeID) } : {}),
+        ...(params.personID ? { personId: String(params.personID) } : {}),
+      });
+    }
+    let lastError;
+    for (const payload of variants) {
+      try {
+        return await this.postPerson('/person/removePersonByID', payload);
+      } catch (error) {
+        lastError = error;
+        if (!this.shouldFallbackToRemoveById(error)) {
+          throw error;
+        }
+      }
+    }
+    throw lastError;
   }
 
   async getListPersonByPlace(query: HanetPersonListQuery = {}) {

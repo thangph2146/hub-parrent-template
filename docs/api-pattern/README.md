@@ -6,6 +6,8 @@ Tài liệu này mô tả kiến trúc và pattern chuẩn cho API Nest — Mikr
 
 Các ví dụ dưới đây dùng cấu trúc `apps/main/api/src/` (tương đương `src/` trong từng app API).
 
+**Tích hợp HANET (camera AI / check-in):** [`HANET.md`](HANET.md) — Postman partner, proxy `/admin/hanet/*`, person, check-in, `face_data`.
+
 ## Kiến trúc tổng quan
 
 ```

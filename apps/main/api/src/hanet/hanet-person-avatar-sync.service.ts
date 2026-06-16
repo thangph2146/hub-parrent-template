@@ -371,6 +371,48 @@ export class HanetPersonAvatarSyncService {
     return resolveHanetPlaceId(this.partner, placeId);
   }
 
+  /** Soft-delete face_data local sau khi xóa person trên HANET — list admin ưu tiên bảng này. */
+  async purgeStoredPersons(opts: {
+    personIds?: string[];
+    aliasIds?: string[];
+    all?: boolean;
+  }): Promise<number> {
+    const now = new Date();
+    const personIds = (opts.personIds ?? [])
+      .map((id) => id.trim())
+      .filter(Boolean);
+    const aliasIds = (opts.aliasIds ?? [])
+      .map((id) => id.trim())
+      .filter(Boolean);
+
+    if (!opts.all && !personIds.length && !aliasIds.length) {
+      return 0;
+    }
+
+    const where: FilterQuery<FaceData> = {
+      deletedAt: null,
+      hanetPersonId: { $ne: null },
+    };
+
+    if (!opts.all) {
+      if (personIds.length) {
+        where.hanetPersonId = { $in: personIds };
+      } else if (aliasIds.length) {
+        where.hanetAliasId = { $in: aliasIds };
+      }
+    }
+
+    const rows = await this.em.find(FaceData, where);
+    if (!rows.length) return 0;
+
+    for (const row of rows) {
+      row.deletedAt = now;
+      row.updatedAt = now;
+    }
+    await this.em.flush();
+    return rows.length;
+  }
+
   private toStoredRow(row: FaceData): HanetStoredAvatarRow {
     return {
       id: row.id,

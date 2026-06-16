@@ -43,6 +43,14 @@ export type HanetRegisterPersonByUrlInput = {
   personType?: number;
 };
 
+export type HanetRegisterPersonInput = {
+  placeId: string;
+  name: string;
+  aliasId: string;
+  fileBase64: string;
+  personType?: number;
+};
+
 export type HanetStoredAvatarRow = {
   id: number;
   hanetPersonId: string | null;
@@ -349,7 +357,7 @@ export class HanetAdminApi {
     );
   }
 
-  registerPerson(body: Record<string, unknown>): Promise<unknown> {
+  registerPerson(body: HanetRegisterPersonInput): Promise<unknown> {
     return postData<unknown>(this.http, "/admin/hanet/person/register", body);
   }
 
@@ -416,7 +424,7 @@ export class HanetAdminApi {
     if (params.placeId) search.set("placeId", params.placeId);
     return deleteData<unknown>(
       this.http,
-      `/admin/hanet/person?${search.toString()}`,
+      `/admin/hanet/person/by-id?${search.toString()}`,
     );
   }
 
@@ -444,6 +452,7 @@ export class HanetAdminApi {
     return deleteData<unknown>(
       this.http,
       `/admin/hanet/person/in-place?placeId=${encodeURIComponent(placeId)}`,
+      { timeoutMs: 120_000 },
     );
   }
 

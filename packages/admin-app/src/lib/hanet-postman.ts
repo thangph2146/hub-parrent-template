@@ -1,4 +1,4 @@
-/** Tài liệu chính thức HANET Partner API (Postman). */
+/** Tài liệu chính thức HANET Partner API (Postman). Chi tiết monorepo: docs/api-pattern/HANET.md */
 export const HANET_POSTMAN_DOCS_URL =
   "https://documenter.getpostman.com/view/13088306/TVeqcn2C"
 
@@ -287,7 +287,7 @@ export const HANET_PARTNER_ENDPOINTS = {
     partnerMethod: "POST",
     partnerPath: "/person/removePersonByID",
     hubMethod: "DELETE",
-    hubPath: "/admin/hanet/person/by-id?personId=&placeId=",
+    hubPath: "/admin/hanet/person/by-id?personId=",
   },
   personUpdate: {
     group: "Person",

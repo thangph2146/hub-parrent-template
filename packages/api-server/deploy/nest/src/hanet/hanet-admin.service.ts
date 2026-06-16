@@ -18,6 +18,7 @@ import {
 import type {
   HanetCreatePlaceInput,
   HanetRegisterPersonByUrlInput,
+  HanetRegisterPersonInput,
   HanetRemovePlaceInput,
   HanetRemoveUserPartnerInput,
   HanetSetDeviceMqttInput,
@@ -239,7 +240,7 @@ export class HanetAdminService {
     return this.partner.takePersonFacePicture(body);
   }
 
-  registerPerson(body: HanetPersonHubInput) {
+  registerPerson(body: HanetRegisterPersonInput) {
     return this.partner.registerPerson(body);
   }
 

@@ -58,7 +58,8 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 | **Admin page (main)** | `PRE_CODE_PROTOCOL` → `ADMIN_PAGE_PATTERN.md` → `docs/pages/README.md` → graphify `apps/main/backend` | `apps/main/backend/` |
 | **API Nest (main, dev)** | `PRE_CODE_PROTOCOL` → `docs/api-pattern/README.md` → graphify `apps/main/api` | `apps/main/api/` |
 | **Storefront HUB** | `FRONTEND_UX.md` → graphify `apps/hub-parent/hub-parent-frontend` | `apps/hub-parent/hub-parent-frontend/` |
-| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → mục **api-server** bên dưới | `apps/hub-event/api/`, `apps/hub-event/hub-event-checkin-frontend/` |
+| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → mục **api-server** bên dưới | `apps/hub-event/api/`, `apps/hub-event/hub-event-checkin-frontend/` |
+| **HANET Partner API** | [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → `docs/env/README.md` (mục HANET) → `hanet-postman.ts` | `apps/main/api/src/hanet/`, `packages/api-client/src/resources/hanet.ts` |
 | **Store Sync** | `MONOREPO_STRUCTURE.md` → graphify `apps/store-sync/*` | `apps/store-sync/` |
 | **Package UI** | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` | `packages/ui/` |
 | **API client** | `docs/api-client-pattern/README.md` (+ `REALTIME.md` nếu socket) | `packages/api-client/` |
@@ -141,6 +142,7 @@ docs/
 | Mục đích | Lệnh |
 |----------|------|
 | Dev site chính | `pnpm dev` (main API + backend + hub-parent frontend) |
+| Dev parent line (hub-parent API + frontend) | `pnpm dev:parent` |
 | Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
 | Dev stack check-in deploy | `pnpm dev:checkin` |
 | **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
@@ -150,6 +152,8 @@ docs/
 | Cập nhật hub-event API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-event/api` → commit |
 | Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
 | Env | `pnpm env:init` · `pnpm verify:env` |
+
+**`pnpm dev:parent` (quan trọng):** chỉ chạy **2 app** của parent line: `apps/hub-parent/api` + `apps/hub-parent/hub-parent-frontend`. Frontend parent có route `/admin` (redirect sang admin URL), nên chỉ hiển thị/chạy chức năng liên quan parent line; không dùng để kiểm tra toàn bộ admin cross-line như `apps/main/backend` hoặc check-in.  
 
 **Dev hàng ngày (upstream):** sửa `packages/admin-app` / `packages/api-server` / `packages/*`, tag template.  
 **Repo chính deploy:** **hub-event-monorepo** — `pnpm dev:checkin`, `pnpm pull:template`.
@@ -233,6 +237,24 @@ pnpm verify:api-template            # packages/api-server/deploy/cli/verify/
 pnpm verify:checkin-api
 pnpm verify:main-api-endpoint-parity
 ```
+
+### API render theo graph/config chuẩn (bắt buộc)
+
+1. Định vị product line + module scope bằng graph:
+   - `pnpm graphify:brief --task "api render <line>"`
+   - đọc `.graphify/markdown/TASK_INDEX.md` + `SYNC_DELTA.md` (nếu sync main ↔ hub-event).
+2. Sync template trước khi render line:
+   - `pnpm api:sync-template`
+3. Render theo `api.app.config.json` của từng app (không render mù toàn module):
+   - mặc định: `pnpm api:render apps/<line>/api --prune`
+   - cần khóa entity theo closure graph: `pnpm api:render apps/<line>/api --prune --prune-entities`
+4. Verify bắt buộc sau render:
+   - `pnpm verify:api-template`
+   - `pnpm --filter @workspace/api-server run verify:entity-closure`
+
+Nếu gặp lỗi Windows kiểu `UNKNOWN: unknown error, open ...PACKAGE_MODULE_TEMPLATES.meta.json`:
+- chạy lại `pnpm api:sync-template` (pipeline đã có retry ghi file meta),
+- tránh chạy đồng thời nhiều lệnh render/sync vào cùng `deploy/nest/.pipeline/`.
 
 - **Template OOP:** `packages/api-server/deploy/nest/` · **Config:** `packages/api-server/deploy/config/`
 - **Base* template:** `src/modules/` (registry) → `module-bases/` (active thin, copy khi render) · `package-module-templates.cjs` · `.pipeline/PACKAGE_MODULE_TEMPLATES.meta.json`

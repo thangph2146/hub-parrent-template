@@ -3,9 +3,9 @@
 import { useMemo, type ReactNode } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { User } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/avatar"
 import { AdminDataTable, defineDataTableActionsColumn } from "@ui/components/data-table"
 import { FieldCopyButton } from "@ui/components/field"
+import { cn } from "@ui/lib/utils"
 import type { HanetPersonListPage } from "@workspace/api-client"
 import type { HanetFaceActionId } from "@workspace/admin-app/lib/hanet-face-actions"
 import type { HanetPersonActionId } from "@workspace/admin-app/lib/hanet-person-api-actions"
@@ -13,6 +13,13 @@ import {
   HanetPersonRowActions,
   hanetPersonActionsColumnMeta,
 } from "./hanet-person-row-actions"
+
+/** Khớp cột preview file-storage / check-in HANET */
+const HANET_PERSON_PREVIEW_COLUMN_CLASS =
+  "w-[120px] min-w-[120px] max-w-[120px]"
+
+const PERSON_PREVIEW_FRAME_CLASS =
+  "flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border border-border bg-muted"
 
 export type HanetPersonRow = HanetPersonListPage["items"][number]
 
@@ -61,30 +68,47 @@ export function HanetPersonsTable({
     () => [
       {
         accessorKey: "avatar",
-        header: "Avatar",
+        header: "Ảnh",
         enableColumnFilter: false,
         enableHiding: false,
-        size: 56,
+        size: 180,
+        minSize: 180,
         meta: {
           disableCellLineClamp: true,
-          className: "w-22 min-w-22 max-w-22",
+          className: HANET_PERSON_PREVIEW_COLUMN_CLASS,
         },
         cell: ({ getValue }) => {
           const avatar = String(getValue() ?? "").trim()
           if (!avatar || avatar.startsWith("hanet:person:")) {
-            return <span className="text-xs text-muted-foreground">—</span>
+            return (
+              <div
+                className={cn(
+                  PERSON_PREVIEW_FRAME_CLASS,
+                  "text-sm text-muted-foreground",
+                )}
+              >
+                —
+              </div>
+            )
           }
           return (
             <a
               href={avatar}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className={cn(
+                PERSON_PREVIEW_FRAME_CLASS,
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
+              title="Mở ảnh"
             >
-              <Avatar size="lg" className="size-22">
-                <AvatarImage src={avatar} alt="" />
-                <AvatarFallback className="text-xs">?</AvatarFallback>
-              </Avatar>
+              <img
+                src={avatar}
+                alt=""
+                className="size-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </a>
           )
         },

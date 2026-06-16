@@ -7,6 +7,9 @@ export type HanetCheckinRow = {
   personId: string
   aliasId: string
   deviceId: string
+  deviceName: string
+  placeName: string
+  avatarUrl: string
   personType: string
 }
 
@@ -36,12 +39,18 @@ function pickCheckinTime(record: Record<string, unknown>): string {
   return ""
 }
 
-function pickPersonType(record: Record<string, unknown>): string {
-  const value = record.person_type ?? record.personType ?? record.type
+/** Nhãn `type` / `person_type` trên response getCheckinByPlaceIdInDay (HANET Partner). */
+export function formatHanetCheckinListType(value: unknown): string {
   if (value === 0 || value === "0") return "Check-in"
   if (value === 1 || value === "1") return "Check-out"
-  if (value != null && String(value).trim()) return String(value)
+  if (value === 2 || value === "2") return "Chưa nhận diện"
+  if (value != null && String(value).trim()) return `Loại ${String(value)}`
   return ""
+}
+
+function pickPersonType(record: Record<string, unknown>): string {
+  const value = record.person_type ?? record.personType ?? record.type
+  return formatHanetCheckinListType(value)
 }
 
 export function parseHanetCheckinRows(rows: unknown[]): HanetCheckinRow[] {
@@ -56,10 +65,18 @@ export function parseHanetCheckinRows(rows: unknown[]): HanetCheckinRow[] {
       "personId",
       "person_id",
     ])
+    const deviceId = pickString(record, [
+      "deviceID",
+      "deviceId",
+      "device_id",
+      "camera_id",
+    ])
     const checkinAt = pickCheckinTime(record)
+    const checkinRaw = record.checkinTime ?? record.time ?? record.timestamp
     const rowId =
-      [personId, checkinAt, String(index)].filter(Boolean).join(":") ||
-      `row-${index}`
+      [personId, deviceId, String(checkinRaw), checkinAt, String(index)]
+        .filter(Boolean)
+        .join(":") || `row-${index}`
 
     return {
       rowId,
@@ -69,11 +86,15 @@ export function parseHanetCheckinRows(rows: unknown[]): HanetCheckinRow[] {
         "—",
       personId,
       aliasId: pickString(record, ["aliasID", "aliasId", "alias_id"]),
-      deviceId: pickString(record, [
-        "deviceID",
-        "deviceId",
-        "device_id",
-        "camera_id",
+      deviceId,
+      deviceName: pickString(record, ["deviceName", "device_name"]),
+      placeName: pickString(record, ["place", "placeName", "place_name"]),
+      avatarUrl: pickString(record, [
+        "avatar",
+        "faceUrl",
+        "face_url",
+        "image",
+        "imagePath",
       ]),
       personType: pickPersonType(record),
     }

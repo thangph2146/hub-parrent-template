@@ -22,6 +22,7 @@ import { HanetAdminService } from './hanet-admin.service';
 import type {
   HanetCreatePlaceInput,
   HanetRegisterPersonByUrlInput,
+  HanetRegisterPersonInput,
   HanetSetDeviceMqttInput,
   HanetTakeFacePictureInput,
   HanetUpdateDeviceInput,
@@ -282,8 +283,10 @@ export class HanetAdminController {
 
   @Post('person/register')
   @Permissions(PERMISSIONS.EVENTS_MANAGE)
-  @ApiOperation({ summary: 'POST /person/register' })
-  async registerPerson(@Body() body: HanetPersonHubInput) {
+  @ApiOperation({
+    summary: 'POST /person/register (multipart file JPEG/PNG)',
+  })
+  async registerPerson(@Body() body: HanetRegisterPersonInput) {
     const data = await this.hanetAdminService.registerPerson(body);
 
     return { success: true, data };

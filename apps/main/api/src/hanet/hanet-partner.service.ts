@@ -17,6 +17,7 @@ import type {
   HanetCreatePlaceInput,
   HanetPersonListQuery,
   HanetRegisterPersonByUrlInput,
+  HanetRegisterPersonInput,
   HanetRemovePlaceInput,
   HanetSetDeviceMqttInput,
   HanetTakeFacePictureInput,
@@ -529,13 +530,36 @@ export class HanetPartnerService {
     return this.client.postPartner(path, params);
   }
 
-  async registerPerson(input: HanetPersonHubInput) {
+  async registerPerson(input: HanetRegisterPersonInput) {
     this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
+    const placeId = await this.resolvePlaceId(input.placeId);
+    const name = input.name.trim();
+    const aliasID = input.aliasId.trim();
+    if (!name) {
+      throw new BadRequestException('Thiếu tên người (name)');
+    }
+    if (!aliasID) {
+      throw new BadRequestException('Thiếu aliasID (email hoặc mã nội bộ)');
+    }
+    if (!input.fileBase64?.trim()) {
+      throw new BadRequestException(
+        'Thiếu ảnh khuôn mặt — HANET /person/register yêu cầu multipart file JPEG/PNG',
+      );
+    }
+    const image = decodeHanetFaceImageBase64(input.fileBase64);
+    const fields: Record<string, string | number> = {
+      placeID: placeId,
+      name,
+      aliasID,
+    };
+    if (input.personType != null) {
+      fields.personType = input.personType;
+    }
+    return this.client.postPartnerMultipart('/person/register', fields, {
+      buffer: image.buffer,
+      filename: image.filename,
+      mimeType: image.mimeType,
     });
-    this.assertPersonParams(params, ['name', 'aliasID'], 'person/register');
-    return this.postPerson('/person/register', params);
   }
 
   async getListPersonByAliasAllPlace(aliasId: string) {
@@ -604,12 +628,7 @@ export class HanetPartnerService {
   }
 
   async removePerson(input: HanetPersonHubInput) {
-    this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
-    });
-    this.assertPersonParams(params, ['personID'], 'person/remove');
-    return this.postPerson('/person/remove', params);
+    return this.removePersonById(input);
   }
 
   async removePersonByPlace(input: HanetPersonHubInput) {
@@ -645,11 +664,11 @@ export class HanetPartnerService {
 
   async removePersonById(input: HanetPersonHubInput) {
     this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
-    });
-    this.assertPersonParams(params, ['personID'], 'person/removePersonByID');
-    return this.postPerson('/person/removePersonByID', params);
+    const personID = input.personId?.trim();
+    if (!personID) {
+      throw new BadRequestException('Thiếu personID');
+    }
+    return this.postPerson('/person/removePersonByID', { personID });
   }
 
   async getListPersonByPlace(query: HanetPersonListQuery = {}) {

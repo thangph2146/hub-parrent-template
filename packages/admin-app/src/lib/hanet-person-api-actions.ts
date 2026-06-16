@@ -26,6 +26,7 @@ export type HanetPersonActionMeta = {
   needsAliasId: boolean
   needsName: boolean
   needsAliasIds: boolean
+  needsFile?: boolean
   dangerous?: boolean
 }
 
@@ -89,7 +90,7 @@ export const HANET_PERSON_ACTIONS: HanetPersonActionMeta[] = [
   {
     id: "register",
     label: "register",
-    hint: "Đăng ký person (không URL ảnh)",
+    hint: "Đăng ký person + upload ảnh JPEG/PNG (multipart file)",
     partnerPath: "/person/register",
     hubMethod: "POST",
     hubPath: "/admin/hanet/person/register",
@@ -99,6 +100,7 @@ export const HANET_PERSON_ACTIONS: HanetPersonActionMeta[] = [
     needsAliasId: true,
     needsName: true,
     needsAliasIds: false,
+    needsFile: true,
   },
   {
     id: "update",

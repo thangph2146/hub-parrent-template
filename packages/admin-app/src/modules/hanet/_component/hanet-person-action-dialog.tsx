@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Loader2, Users } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import { FolderOpen, Loader2, Users } from "lucide-react"
 import { Button } from "@ui/components/button"
 import {
   Dialog,
@@ -11,16 +11,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@ui/components/dialog"
+import {
+  DataTableUserSearchFilter,
+} from "@ui/components/data-table"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Textarea } from "@ui/components/textarea"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { api } from "@workspace/admin-app/lib/api"
 import {
+  createHanetUserSearchHandlers,
+  fetchLocalAvatarAsFile,
+  isNumericUserId,
+  pickHanetAliasId,
+} from "@workspace/admin-app/lib/hanet-user-pick"
+import { StorageImagePickerDialog } from "@workspace/admin-app/lib/storage-image-picker-dialog"
+import {
   getHanetPersonActionMeta,
   type HanetPersonActionId,
 } from "@workspace/admin-app/lib/hanet-person-api-actions"
 import type { HanetPersonRow } from "./hanet-persons-table"
+
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result ?? ""))
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+}
 
 function parseAliasIds(raw: string): string[] {
   return raw
@@ -66,6 +85,15 @@ export function HanetPersonActionDialog({
   const [name, setName] = useState("")
   const [aliasIdsText, setAliasIdsText] = useState("")
   const [extraJson, setExtraJson] = useState("")
+  const [file, setFile] = useState<File | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
+  const [loadingUser, setLoadingUser] = useState(false)
+  const [avatarSkippedHint, setAvatarSkippedHint] = useState<string | null>(
+    null,
+  )
+  const [storagePickerOpen, setStoragePickerOpen] = useState(false)
+
+  const userSearchHandlers = useMemo(() => createHanetUserSearchHandlers(), [])
 
   useEffect(() => {
     if (!open || !actionId) return
@@ -74,7 +102,52 @@ export function HanetPersonActionDialog({
     setName(person?.displayName ?? "")
     setAliasIdsText(person?.aliasId ?? "")
     setExtraJson("")
+    setFile(null)
+    setSelectedUserId(undefined)
+    setLoadingUser(false)
+    setAvatarSkippedHint(null)
+    setStoragePickerOpen(false)
   }, [open, actionId, person])
+
+  useEffect(() => {
+    if (actionId !== "register" || !isNumericUserId(selectedUserId)) return
+    let cancelled = false
+    setLoadingUser(true)
+    void api.users
+      .get(selectedUserId)
+      .then(async (user) => {
+        if (cancelled) return
+        setName(user.fullName?.trim() || "")
+        setAliasId(pickHanetAliasId(user))
+        const rawAvatar = user.avatar?.trim() ?? ""
+        const avatarFile = rawAvatar
+          ? await fetchLocalAvatarAsFile(rawAvatar)
+          : null
+        if (avatarFile) {
+          setFile(avatarFile)
+          setAvatarSkippedHint(null)
+        } else if (rawAvatar) {
+          setFile(null)
+          setAvatarSkippedHint(
+            "Avatar user không tải được (Google/WebP/URL ngoài) — chọn file hoặc bấm Kho.",
+          )
+        } else {
+          setFile(null)
+          setAvatarSkippedHint(
+            "User chưa có avatar — chọn file JPEG/PNG hoặc bấm Kho.",
+          )
+        }
+      })
+      .catch(() => {
+        if (!cancelled) return
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingUser(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [actionId, selectedUserId])
 
   const mutation = useAdminMutation({
     mutationKey: ["hanet", "person-action", actionId, person?.personId],
@@ -92,8 +165,23 @@ export function HanetPersonActionDialog({
       }
 
       switch (actionId) {
-        case "register":
-          return api.hanet.registerPerson(body)
+        case "register": {
+          if (!name.trim()) throw new Error("Thiếu tên")
+          if (!alias) throw new Error("Thiếu aliasID")
+          if (!file) {
+            throw new Error(
+              "Chọn file ảnh JPEG/PNG — HANET register yêu cầu multipart file",
+            )
+          }
+          return api.hanet.registerPerson({
+            placeId,
+            name: name.trim(),
+            aliasId: alias,
+            fileBase64: await readFileAsBase64(file),
+            personType:
+              extra.personType != null ? Number(extra.personType) : 1,
+          })
+        }
         case "update":
           return api.hanet.updatePerson(body)
         case "update-info":
@@ -101,11 +189,11 @@ export function HanetPersonActionDialog({
         case "update-alias-id":
           return api.hanet.updatePersonAliasId(body)
         case "remove":
-          return api.hanet.removePerson({ placeId, personId: pid })
+          return api.hanet.removePerson({ personId: pid })
         case "remove-by-place":
           return api.hanet.removePersonByPlace({ placeId, aliasId: alias })
         case "remove-by-id":
-          return api.hanet.removePersonById({ placeId, personId: pid })
+          return api.hanet.removePersonById({ personId: pid })
         case "remove-by-alias-ids": {
           const aliasIds = parseAliasIds(aliasIdsText)
           if (!aliasIds.length) throw new Error("Nhập ít nhất một aliasID")
@@ -130,12 +218,13 @@ export function HanetPersonActionDialog({
   })
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) onClose()
-      }}
-    >
+    <>
+      <Dialog
+        open={open}
+        onOpenChange={(next) => {
+          if (!next) onClose()
+        }}
+      >
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -162,6 +251,35 @@ export function HanetPersonActionDialog({
                 </code>
               </p>
             </div>
+
+            {actionId === "register" ? (
+              <div className="grid gap-1.5">
+                <Label htmlFor="hanet-person-reg-user">Người dùng</Label>
+                <DataTableUserSearchFilter
+                  controlId="hanet-person-reg-user"
+                  value={selectedUserId ?? ""}
+                  onChange={setSelectedUserId}
+                  placeholder="Tìm tên, email hoặc ID…"
+                  handlers={userSearchHandlers}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Chọn user để điền <strong>Tên</strong>,{" "}
+                  <strong>aliasID</strong> và ảnh từ avatar (nếu lưu trên
+                  server).
+                </p>
+                {loadingUser ? (
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Loader2 className="size-3.5 animate-spin" />
+                    Đang tải thông tin user…
+                  </p>
+                ) : null}
+                {avatarSkippedHint ? (
+                  <p className="text-xs text-amber-700 dark:text-amber-400">
+                    {avatarSkippedHint}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
             {meta.needsPersonId ? (
               <div className="grid gap-1.5">
@@ -199,6 +317,40 @@ export function HanetPersonActionDialog({
               </div>
             ) : null}
 
+            {meta.needsFile ? (
+              <div className="grid gap-1.5">
+                <Label htmlFor="hanet-person-file">
+                  Ảnh khuôn mặt (JPEG/PNG) — bắt buộc
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="hanet-person-file"
+                    type="file"
+                    accept="image/jpeg,image/png,.jpg,.jpeg,.png"
+                    className="h-9 min-w-0 flex-1 py-1"
+                    onChange={(e) => {
+                      setFile(e.target.files?.[0] ?? null)
+                      setAvatarSkippedHint(null)
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-9 shrink-0 gap-1.5"
+                    onClick={() => setStoragePickerOpen(true)}
+                  >
+                    <FolderOpen className="size-3.5" />
+                    Kho
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  HANET <code>/person/register</code> yêu cầu upload file. Hoặc
+                  dùng <strong>registerByUrl</strong> nếu chỉ có URL public.
+                </p>
+              </div>
+            ) : null}
+
             {meta.needsAliasIds ? (
               <div className="grid gap-1.5">
                 <Label htmlFor="hanet-person-alias-ids">
@@ -214,7 +366,9 @@ export function HanetPersonActionDialog({
               </div>
             ) : null}
 
-            {meta.kind === "write" && actionId !== "register" ? (
+            {meta.kind === "write" &&
+            actionId !== "register" &&
+            actionId !== "remove-by-alias-ids" ? (
               <div className="grid gap-1.5">
                 <Label htmlFor="hanet-person-extra">
                   Field bổ sung (JSON, tùy chọn)
@@ -245,7 +399,15 @@ export function HanetPersonActionDialog({
           <Button
             type="button"
             variant={meta?.dangerous ? "destructive" : "default"}
-            disabled={!meta || !placeId || mutation.isPending}
+            disabled={
+              !meta ||
+              !placeId ||
+              mutation.isPending ||
+              loadingUser ||
+              (meta.needsFile && !file) ||
+              (meta.needsName && !name.trim()) ||
+              (meta.needsAliasId && !aliasId.trim())
+            }
             onClick={() => mutation.mutate()}
           >
             {mutation.isPending ? (
@@ -255,6 +417,25 @@ export function HanetPersonActionDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      <StorageImagePickerDialog
+        open={storagePickerOpen}
+        multiSelect={false}
+        title="Chọn ảnh khuôn mặt (JPG/PNG)"
+        onOpenChange={setStoragePickerOpen}
+        onSelect={async (urls) => {
+          const next = urls[0]?.trim()
+          if (next) {
+            const picked = await fetchLocalAvatarAsFile(next)
+            if (picked) {
+              setFile(picked)
+              setAvatarSkippedHint(null)
+            }
+          }
+          setStoragePickerOpen(false)
+        }}
+      />
+    </>
   )
 }
