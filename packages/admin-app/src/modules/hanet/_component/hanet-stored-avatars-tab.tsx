@@ -8,7 +8,7 @@ import { DataTableToolbarField } from "@ui/components/data-table"
 import {
   HanetAvatarCard,
   useHanetAvatarsQuery,
-} from "@workspace/admin-app/modules/hanet-avatars/_component"
+} from "@workspace/admin-app/modules/hanet/_component"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 
 const PAGE_SIZE = 24

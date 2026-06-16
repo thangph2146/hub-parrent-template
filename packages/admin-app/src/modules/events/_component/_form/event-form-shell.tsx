@@ -42,7 +42,7 @@ import {
 } from "lucide-react"
 import { slugify } from "@workspace/api-client"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { useHanetDevicesQuery } from "@workspace/admin-app/modules/hanet/_component/use-hanet-devices-query"
 import { useHanetStatusQuery } from "../_query/use-hanet-status"
 import type { EventFormValues, EventFormSpeaker } from "../types"

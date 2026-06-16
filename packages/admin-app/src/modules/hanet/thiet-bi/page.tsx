@@ -12,7 +12,7 @@ import { api } from "@workspace/admin-app/lib/api"
 import type { HanetDeviceOption } from "@workspace/admin-app/lib/hanet-device-parse"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import { HANET_PAGE_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import {
   HanetDevicesTable,

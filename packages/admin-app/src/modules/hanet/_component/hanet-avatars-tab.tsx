@@ -16,7 +16,7 @@ import type { HanetFaceActionId } from "@workspace/admin-app/lib/hanet-face-acti
 import type { HanetSyncAvatarsResult } from "@workspace/api-client"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { HanetFaceActionDialog } from "./hanet-face-action-dialog"
 import { HanetRegisterFaceDialog } from "./hanet-register-face-dialog"
 import { HanetPersonsTable } from "./hanet-persons-table"

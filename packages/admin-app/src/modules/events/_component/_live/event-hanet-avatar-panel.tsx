@@ -12,8 +12,8 @@ import type { HanetSyncAvatarsResult } from "@workspace/api-client"
 import {
   HanetAvatarCard,
   useHanetAvatarsQuery,
-} from "@workspace/admin-app/modules/hanet-avatars/_component"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+} from "@workspace/admin-app/modules/hanet/_component"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import { useCallback, useState } from "react"

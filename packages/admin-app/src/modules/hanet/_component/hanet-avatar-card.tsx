@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useState, type LucideIcon } from "react"
+import { useCallback, useState } from "react"
+import type { LucideIcon } from "lucide-react"
 import {
   Check,
   Clock3,

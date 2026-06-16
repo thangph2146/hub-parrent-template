@@ -21,7 +21,7 @@ import {
   todayLocalIsoDate,
 } from "@workspace/admin-app/lib/hanet-local-date"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import { HanetCheckinsTable } from "../_component/hanet-checkins-table"
 import { HANET_PAGE_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"

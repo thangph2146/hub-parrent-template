@@ -33,7 +33,7 @@ import {
   parseHanetPersonLookupResult,
   type HanetPersonParsedRow,
 } from "@workspace/admin-app/lib/hanet-person-parse"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { HanetJsonPreview } from "./hanet-json-preview"
 import { HanetPersonsTable } from "./hanet-persons-table"
 
@@ -225,7 +225,6 @@ export function HanetPersonLookupPanel({
             {modeMeta.needsPlace ? (
               <HanetPlaceSelect
                 layout="stacked"
-                compact
                 value={selectedPlaceId}
                 onChange={onPlaceChange}
                 defaultPlaceId={defaultPlaceId}

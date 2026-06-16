@@ -19,7 +19,7 @@ import type { HanetPlaceOption } from "@workspace/admin-app/lib/hanet-place-pars
 import {
   hanetPlacesQueryKey,
   useHanetPlacesQuery,
-} from "@workspace/admin-app/modules/hanet-avatars/_component/use-hanet-places-query"
+} from "@workspace/admin-app/modules/hanet/_component/use-hanet-places-query"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import { HanetModuleShell } from "../_component/hanet-module-shell"
 import { HanetPlaceDeleteDialog } from "../_component/hanet-place-delete-dialog"

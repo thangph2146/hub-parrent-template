@@ -14,8 +14,8 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet-avatars/_component/hanet-place-select"
-import { useHanetPlacesQuery } from "@workspace/admin-app/modules/hanet-avatars/_component/use-hanet-places-query"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
+import { useHanetPlacesQuery } from "@workspace/admin-app/modules/hanet/_component/use-hanet-places-query"
 import {
   hanetDevicesQueryKey,
   useHanetDevicesQuery,

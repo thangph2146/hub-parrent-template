@@ -126,7 +126,9 @@ export function HanetPlaceSelect({
   const selectControl = (
     <Select
       value={selectedPlaceId}
-      onValueChange={onChange}
+      onValueChange={(placeId) => {
+        if (placeId) onChange(placeId)
+      }}
       disabled={disabled}
     >
       <SelectTrigger
