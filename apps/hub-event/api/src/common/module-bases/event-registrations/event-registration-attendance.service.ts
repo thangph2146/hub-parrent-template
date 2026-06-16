@@ -1,6 +1,10 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Event registration attendance — check-in/out; app binding entity, socket emit, getById. */
-import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { EntityManager, type FilterQuery } from '@mikro-orm/core';
 import { relationEntityId, toEntityId } from '../../entity-id';
 import type { EventRegistrationAttendanceDeps } from './event-registration-attendance.deps';
@@ -20,9 +24,7 @@ import {
 import type { EventRegistrationRowDto } from './event-registrations.service';
 
 export class BaseEventRegistrationAttendanceService {
-  private readonly logger = new Logger(
-    BaseEventRegistrationAttendanceService.name,
-  );
+  private readonly logger = new Logger(BaseEventRegistrationAttendanceService.name);
 
   constructor(
     protected readonly em: EntityManager,
@@ -33,10 +35,13 @@ export class BaseEventRegistrationAttendanceService {
     registrationId: string,
     action: ManualAttendanceAction,
   ): Promise<EventRegistrationRowDto> {
-    const reg = await this.em.findOne(this.deps.eventRegistrationEntity, {
-      id: toEntityId(registrationId),
-      deletedAt: null,
-    } as FilterQuery<Record<string, unknown>>);
+    const reg = await this.em.findOne(
+      this.deps.eventRegistrationEntity,
+      {
+        id: toEntityId(registrationId),
+        deletedAt: null,
+      } as FilterQuery<Record<string, unknown>>,
+    );
     if (!reg) {
       throw new NotFoundException('Không tìm thấy đăng ký sự kiện');
     }
@@ -264,22 +269,16 @@ export class BaseEventRegistrationAttendanceService {
   }
 
   private async syncEventCounts(eventId: number): Promise<void> {
-    const checkinCount = await this.em.count(
-      this.deps.eventRegistrationEntity,
-      {
-        event: eventId,
-        hasCheckin: true,
-        deletedAt: null,
-      } as FilterQuery<Record<string, unknown>>,
-    );
-    const checkoutCount = await this.em.count(
-      this.deps.eventRegistrationEntity,
-      {
-        event: eventId,
-        hasCheckout: true,
-        deletedAt: null,
-      } as FilterQuery<Record<string, unknown>>,
-    );
+    const checkinCount = await this.em.count(this.deps.eventRegistrationEntity, {
+      event: eventId,
+      hasCheckin: true,
+      deletedAt: null,
+    } as FilterQuery<Record<string, unknown>>);
+    const checkoutCount = await this.em.count(this.deps.eventRegistrationEntity, {
+      event: eventId,
+      hasCheckout: true,
+      deletedAt: null,
+    } as FilterQuery<Record<string, unknown>>);
     await this.em.nativeUpdate(
       this.deps.eventEntity,
       { id: eventId },

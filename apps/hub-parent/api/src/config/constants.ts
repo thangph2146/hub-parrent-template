@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export const APP_HEADERS = {
   USER_ID: 'x-user-id',
   VIEW_ALL: 'x-view-all',
@@ -60,6 +61,7 @@ export const ADMIN_ROUTES = {
   PRODUCTS: 'admin/products',
   ORDERS: 'admin/orders',
   PROMO_CODES: 'admin/promo-codes',
+  HANET: 'admin/hanet',
 } as const;
 
 export const PUBLIC_ROUTES = {

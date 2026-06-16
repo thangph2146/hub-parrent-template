@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * TrainingLevels Module.
  */
@@ -9,10 +10,7 @@ export class BaseTrainingLevelsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseTrainingLevelsController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseTrainingLevelsController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

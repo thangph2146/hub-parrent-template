@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Socket.IO event types tương thích với tuyen-sinh-admin
  */
@@ -94,6 +95,28 @@ export type EventAttendanceSocketPayload = {
   /** Trạng thái sau cập nhật — client patch cache chính xác kể cả reset thủ công. */
   hasCheckin?: boolean;
   hasCheckout?: boolean;
+};
+
+/** Log webhook HANET (sync device/place/person + check-in/out) trên admin realtime. */
+export type EventHanetSyncSocketPayload = {
+  kind: 'device' | 'place' | 'person' | 'checkin' | 'checkout' | 'unknown';
+  action?: string;
+  eventId?: number | null;
+  at: string;
+  summary: string;
+  deviceId?: string;
+  placeId?: string;
+  personId?: string;
+  personName?: string;
+  entityId?: number;
+  linkedUserId?: number;
+  linkedRegistrations?: number;
+  email?: string;
+  fullName?: string;
+  registrationId?: number | null;
+  duplicate?: boolean;
+  acknowledged: boolean;
+  error?: string;
 };
 
 /** Invalidate React Query cache trên admin clients sau mutation CRUD. */

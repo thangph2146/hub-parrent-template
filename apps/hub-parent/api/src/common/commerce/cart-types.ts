@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { ProductGiftRule } from './product-types';
 
 /** Dòng giỏ lưu server — không lưu `stock` (client sync từ catalog). */

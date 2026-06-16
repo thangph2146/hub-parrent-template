@@ -16,7 +16,10 @@
  *   POST   /templates/bulk         - bulk action
  */
 import { ApiTags } from '@nestjs/swagger';
-import { BaseCrudController, type ICrudControllerService } from '../../crud';
+import {
+  BaseCrudController,
+  type ICrudControllerService,
+} from '../../crud';
 import type {
   TemplatesRowDto,
   TemplatesCreateData,

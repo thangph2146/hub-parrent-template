@@ -2,7 +2,7 @@ const HELP_LINES = `
 api:render — materialize deploy/nest → app API deploy
 
 CÁCH CHẠY
-  pnpm api:render                              Menu: repo → module → render + .env
+  pnpm api:render                              Menu: repo → chọn mẫu → (module) → render + .env
   pnpm api:render apps/hub-event/api --prune   Render full check-in + dọn module thừa
   pnpm api:sync-template                       Sync main/api → deploy/nest
 

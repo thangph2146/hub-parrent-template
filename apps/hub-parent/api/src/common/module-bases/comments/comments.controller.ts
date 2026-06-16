@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * BaseCommentsController — HTTP admin comments (@workspace/api-server).
  */
@@ -16,7 +17,7 @@ import type { Response } from 'express';
 import { BaseAdminCrudController } from '../../crud/base-admin-crud.controller';
 import { Permissions, parseAdminListLimit } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';
+import { PERMISSIONS } from '../../../config/permissions';;
 import type {
   BaseCommentsService,
   CommentRowDto,

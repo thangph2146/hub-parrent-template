@@ -38,7 +38,9 @@ export class BaseUsersModule {
     return {
       imports: metadata.imports ?? [],
       controllers: metadata.controllers ?? [],
-      providers: [...(metadata.providers ?? [])],
+      providers: [
+        ...(metadata.providers ?? []),
+      ],
       exports: metadata.exports ?? [],
     };
   }
@@ -48,10 +50,7 @@ export class BaseUsersModule {
  * Re-export commonly used classes
  */
 export { BaseUsersController } from './users.controller';
-export {
-  BaseUsersService,
-  ADMIN_TABLE_EXPORT_MAX_LIMIT,
-} from './users.service';
+export { BaseUsersService, ADMIN_TABLE_EXPORT_MAX_LIMIT } from './users.service';
 export type {
   CreateUserDto,
   UpdateUserDto,

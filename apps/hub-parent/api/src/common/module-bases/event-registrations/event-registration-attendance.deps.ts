@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityName } from '@mikro-orm/core';
 import type { EventRegistrationRowDto } from './event-registrations.service';
 import type { EventAttendanceSocketPayload } from './event-registration-attendance.types';

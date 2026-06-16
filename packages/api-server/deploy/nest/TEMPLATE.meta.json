@@ -1,7 +1,7 @@
 {
   "kind": "nestjs-api-template",
   "source": "apps/main/api",
-  "syncedAt": "2026-06-16T04:02:04.678Z",
+  "syncedAt": "2026-06-16T09:53:03.591Z",
   "moduleCount": 48,
   "modules": [
     "academic-years",

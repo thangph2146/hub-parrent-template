@@ -16,5 +16,8 @@
   ],
   "packageModuleTemplates": {
     "enabled": true
+  },
+  "render": {
+    "pruneEntities": false
   }
 }

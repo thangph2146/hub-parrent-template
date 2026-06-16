@@ -1,19 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-  Logger,
-  BadRequestException,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiQuery,
-  ApiBody,
-  ApiResponse,
-} from '@nestjs/swagger';
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { Controller, Get, Post, Body, Query, Logger, BadRequestException } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { BaseEventCheckoutsService } from './event-checkout.service';
 import {
   createSuccessResponse,
@@ -33,9 +20,7 @@ export class BaseEventCheckoutsController {
   }
 
   @Get()
-  @ApiOperation({
-    summary: 'List event checkouts (registrations with hasCheckout=true)',
-  })
+  @ApiOperation({ summary: 'List event checkouts (registrations with hasCheckout=true)' })
   @ApiQuery({ name: 'eventId', required: true, type: String })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -69,11 +54,7 @@ export class BaseEventCheckoutsController {
   @Permissions()
   @ApiOperation({ summary: 'Bulk clear checkouts (reset hasCheckout=false)' })
   @ApiBody({
-    schema: {
-      type: 'object',
-      properties: { ids: { type: 'array', items: { type: 'string' } } },
-      required: ['ids'],
-    },
+    schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } } }, required: ['ids'] },
   })
   @ApiResponse({ status: 200, description: 'Bulk action completed' })
   async bulk(

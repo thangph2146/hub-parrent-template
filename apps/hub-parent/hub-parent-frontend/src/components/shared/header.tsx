@@ -36,7 +36,6 @@ import {
 } from "@ui/components/dropdown-menu";
 import { useTextSize } from "@ui/components/text-size-provider";
 import { cn } from "@ui/lib/utils";
-import { getAdminLoginUrl, getAdminRegisterUrl } from "@/features/auth/admin-bridge";
 import { STORE_ENABLED } from "@/lib/store-feature";
 import { Logo } from "../icons/logo";
 
@@ -143,17 +142,19 @@ type TextSizeValue = (typeof TEXT_SIZE_OPTIONS)[number]["value"];
 function HeaderOptionsMenu({
   size,
   setSize,
-  adminLoginUrl,
-  adminRegisterUrl,
-  isLoginActive,
-  isRegisterActive,
+  adminPortalPath,
+  adminRegisterPath,
+  isStoreAuthActive,
+  isAdminPortalActive,
+  isAdminRegisterActive,
 }: {
   size: TextSizeValue;
   setSize: (value: TextSizeValue) => void;
-  adminLoginUrl: string;
-  adminRegisterUrl: string;
-  isLoginActive: boolean;
-  isRegisterActive: boolean;
+  adminPortalPath: string;
+  adminRegisterPath: string;
+  isStoreAuthActive: boolean;
+  isAdminPortalActive: boolean;
+  isAdminRegisterActive: boolean;
 }) {
   return (
     <DropdownMenu>
@@ -203,9 +204,9 @@ function HeaderOptionsMenu({
           </p>
         </div>
 
-        <div className="space-y-4 p-3">
-          <section className="rounded-lg border border-border/60 bg-muted/20 p-3">
-            <div className="mb-3 flex items-center gap-2">
+        <div className="space-y-3 p-2.5">
+          <section className="rounded-lg border border-border/60 bg-muted/20 p-2.5">
+            <div className="mb-2.5 flex items-center gap-2">
               <span className="flex size-8 items-center justify-center rounded-lg border border-border/70 bg-background text-primary">
                 <Type className="size-4" aria-hidden />
               </span>
@@ -232,7 +233,7 @@ function HeaderOptionsMenu({
                     aria-checked={isActive}
                     onClick={() => setSize(option.value)}
                     className={cn(
-                      "flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5 transition-all",
+                      "flex flex-col items-center gap-1 rounded-lg border px-2 py-2 transition-all",
                       isActive
                         ? "border-primary bg-primary text-primary-foreground shadow-sm"
                         : "border-border/70 bg-background text-foreground hover:border-primary/30 hover:bg-primary/5"
@@ -257,27 +258,26 @@ function HeaderOptionsMenu({
           </section>
 
           <section>
-            <p className="mb-2 px-1 text-xs font-semibold text-muted-foreground">
+            <p className="mb-1.5 px-1 text-xs font-semibold text-muted-foreground">
               Tài khoản
             </p>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {STORE_ENABLED ? (
-                <HeaderStoreAccountMenuItem isLoginActive={isLoginActive} />
+                <HeaderStoreAccountMenuItem isStoreAuthActive={isStoreAuthActive} />
               ) : null}
               <HeaderAccountLink
                 label="Cổng quản trị"
-                description="Đăng nhập khu vực quản trị"
+                description="Truy cập khu vực quản trị"
                 icon={ShieldCheck}
-                href={adminLoginUrl}
-                external
+                href={adminPortalPath}
+                active={isAdminPortalActive}
               />
               <HeaderAccountLink
                 label="Đăng ký quản trị"
                 description="Tạo tài khoản quản trị mới"
                 icon={UserPlus}
-                href={adminRegisterUrl}
-                external
-                active={isRegisterActive}
+                href={adminRegisterPath}
+                active={isAdminRegisterActive}
               />
             </div>
           </section>
@@ -351,9 +351,9 @@ function HeaderAccountLink({
 }
 
 function HeaderStoreAccountMenuItem({
-  isLoginActive,
+  isStoreAuthActive,
 }: {
-  isLoginActive: boolean;
+  isStoreAuthActive: boolean;
 }) {
   const session = useSession();
 
@@ -364,7 +364,7 @@ function HeaderStoreAccountMenuItem({
         session ? "Quản lý thông tin đại lý" : "Truy cập tài khoản cửa hàng"
       }
       icon={Store}
-      active={isLoginActive}
+      active={isStoreAuthActive}
       onClick={() => {
         window.location.assign(session ? "/profile" : "/login");
       }}
@@ -375,11 +375,13 @@ function HeaderStoreAccountMenuItem({
 export function Header() {
   const pathname = usePathname();
   const { size, setSize } = useTextSize();
-  const adminLoginUrl = getAdminLoginUrl();
-  const adminRegisterUrl = getAdminRegisterUrl();
+  const adminPortalPath = "/admin"
+  const adminRegisterPath = "/admin/dang-ky"
   const isSupportActive = supportLinks.some((link) => isExactOrNestedPath(pathname, link.href));
-  const isLoginActive = isExactOrNestedPath(pathname, "/login");
-  const isRegisterActive = isExactOrNestedPath(pathname, "/register");
+  const isStoreAuthActive = isExactOrNestedPath(pathname, "/login");
+  const isAdminPortalActive =
+    pathname === adminPortalPath || pathname === "/admin/dang-nhap"
+  const isAdminRegisterActive = isExactOrNestedPath(pathname, adminRegisterPath)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur">
@@ -482,10 +484,11 @@ export function Header() {
           <HeaderOptionsMenu
             size={size}
             setSize={setSize}
-            adminLoginUrl={adminLoginUrl}
-            adminRegisterUrl={adminRegisterUrl}
-            isLoginActive={isLoginActive}
-            isRegisterActive={isRegisterActive}
+            adminPortalPath={adminPortalPath}
+            adminRegisterPath={adminRegisterPath}
+            isStoreAuthActive={isStoreAuthActive}
+            isAdminPortalActive={isAdminPortalActive}
+            isAdminRegisterActive={isAdminRegisterActive}
           />
         </div>
       </div>

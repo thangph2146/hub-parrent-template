@@ -21,7 +21,11 @@ const MAIN_COMMON = path.join(ROOT, MAIN_API_PATH, 'src/common')
 /** Subtree mirror từ main — binding deploy import ../common/admin|commerce|infra|app */
 const MAIN_COMMON_DIRS = ['admin', 'commerce', 'infra', 'app']
 /** File root `src/common/` — không nằm pkg/api-server common */
-const MAIN_COMMON_ROOT_FILES = ['data-paths.ts']
+const MAIN_COMMON_ROOT_FILES = [
+  'data-paths.ts',
+  'student-code-resolve.ts',
+  'student-user-binding.ts',
+]
 
 const PKG_SKIP = new Set([
   'apply-column-filters.ts',

@@ -273,7 +273,11 @@ export class ApiClient {
 
     const controller = new AbortController()
     const timeoutMs = options?.timeoutMs ?? this.timeoutMs
-    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    let didTimeout = false
+    const timer = setTimeout(() => {
+      didTimeout = true
+      controller.abort(new Error(`Request timed out after ${timeoutMs}ms`))
+    }, timeoutMs)
     if (options?.signal) {
       options.signal.addEventListener("abort", () => controller.abort(), {
         once: true,
@@ -308,6 +312,14 @@ export class ApiClient {
         ...(options?.next !== undefined ? { next: options.next } : {}),
       })
     } catch (err) {
+      if (didTimeout) {
+        throw new ApiError(
+          408,
+          "Request Timeout",
+          null,
+          `Yeu cau API qua han sau ${timeoutMs}ms`
+        )
+      }
       if (this.devLogging && !isAbortLikeError(err)) {
         const ms =
           (typeof performance !== "undefined" &&

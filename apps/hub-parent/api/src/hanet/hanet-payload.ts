@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { HanetCameraRole, HanetWebhookBody } from './hanet.types';
 
 /** Mã thiết bị / camera trên payload HANET thực tế. */
@@ -56,6 +57,32 @@ export function pickHanetString(
   return '';
 }
 
+export function pickHanetDataType(body: HanetWebhookBody): string {
+  return pickHanetString(body, ['data_type', 'dataType']).toLowerCase();
+}
+
+export function pickHanetActionType(body: HanetWebhookBody): string {
+  return pickHanetString(body, ['action_type', 'actionType']).toLowerCase();
+}
+
+const HANET_SYNC_DATA_TYPES = new Set(['device', 'place', 'person']);
+const HANET_SYNC_ACTIONS = new Set(['add', 'update', 'delete']);
+
+/** Webhook push sync (Device / Face / Place Data) — có data_type + action_type. */
+export function isHanetSyncWebhook(body: HanetWebhookBody): boolean {
+  const dataType = pickHanetDataType(body);
+  if (!HANET_SYNC_DATA_TYPES.has(dataType)) return false;
+  const action = pickHanetActionType(body);
+  return HANET_SYNC_ACTIONS.has(action);
+}
+
+/** Webhook check-in camera tại sự kiện (person_type 0/1 + deviceID). */
+export function isHanetAttendanceWebhook(body: HanetWebhookBody): boolean {
+  if (isHanetSyncWebhook(body)) return false;
+  if (pickHanetDeviceId(body)) return true;
+  return body.person_type != null && body.person_type !== '';
+}
+
 export function pickHanetTimestamp(body: HanetWebhookBody): Date {
   const dateTime = body.date_time ?? body.dateTime;
   if (typeof dateTime === 'number' && Number.isFinite(dateTime)) {
@@ -64,10 +91,23 @@ export function pickHanetTimestamp(body: HanetWebhookBody): Date {
     if (!Number.isNaN(date.getTime())) return date;
   }
 
+  const rawTimeField = body.time;
+  if (typeof rawTimeField === 'number' && Number.isFinite(rawTimeField)) {
+    const ms = rawTimeField > 1e12 ? rawTimeField : rawTimeField * 1000;
+    const date = new Date(ms);
+    if (!Number.isNaN(date.getTime())) return date;
+  }
+
   const timeStr = pickHanetString(body, ['time']);
   if (timeStr) {
     const compact = parseHanetCompactTime(timeStr);
     if (compact) return compact;
+    const numeric = Number(timeStr);
+    if (Number.isFinite(numeric)) {
+      const ms = numeric > 1e12 ? numeric : numeric * 1000;
+      const date = new Date(ms);
+      if (!Number.isNaN(date.getTime())) return date;
+    }
     const parsed = new Date(timeStr);
     if (!Number.isNaN(parsed.getTime())) return parsed;
   }
@@ -96,13 +136,15 @@ export function pickHanetTimestamp(body: HanetWebhookBody): Date {
 }
 
 /**
- * Suy check-in / check-out theo [Webhook Push Data HANET](https://documenter.getpostman.com/view/13088306/TVmFmMEx):
- * `person_type` (0 = vào, 1 = ra), `action_type` / `data_type`, hoặc từ khóa trong chuỗi.
+ * Suy check-in / check-out từ webhook camera (person_type 0 = vào, 1 = ra).
+ * Không dùng personType trên webhook Face Data sync (0 = nhân viên, 1 = khách).
  */
 export function pickHanetAttendanceKind(
   body: HanetWebhookBody,
 ): HanetCameraRole | null {
-  const personType = body.person_type ?? body.personType;
+  if (isHanetSyncWebhook(body)) return null;
+
+  const personType = body.person_type;
   if (personType === 0 || personType === '0') return 'checkin';
   if (personType === 1 || personType === '1') return 'checkout';
 

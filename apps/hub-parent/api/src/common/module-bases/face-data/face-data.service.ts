@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * FaceData Service.
  *
@@ -6,11 +7,7 @@
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../crud';
-import type {
-  CrudRowDto,
-  CrudCreateData,
-  CrudUpdateData,
-} from '../../module-types';
+import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
 
 export interface FaceDatasRowDto extends CrudRowDto {
   userId?: number | null;

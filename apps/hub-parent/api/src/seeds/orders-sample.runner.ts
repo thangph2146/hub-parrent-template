@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { evaluateOrderGifts } from '../common/commerce/gift-rules';
 import { Order } from '../entities/order.entity';
@@ -6,7 +7,7 @@ import { User } from '../entities/user.entity';
 import {
   buildOrderItemsFromProducts,
   type CreateOrderLineInput,
-} from '../orders/order-checkout';
+} from '../common/module-bases/orders/order-checkout';
 import { STORESYNC_SAMPLE_ORDERS } from './storesync-sample.data';
 
 /** Seed đơn hàng mẫu StoreSync nếu chưa có orderNumber tương ứng. */

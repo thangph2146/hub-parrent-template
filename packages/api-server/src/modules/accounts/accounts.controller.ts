@@ -113,6 +113,11 @@ export class BaseAccountsController extends BaseAdminHttpController {
           status: 400,
           message: 'Cần nhập mật khẩu hiện tại để đổi mật khẩu',
         },
+        invalid_student_code: {
+          status: 400,
+          message:
+            'Mã số sinh viên không hợp lệ hoặc đã được sử dụng. MSSV phải là số (5–12 chữ số).',
+        },
       };
       const picked = messages[result.reason];
       return this.sendError(res, picked.message, picked.status);

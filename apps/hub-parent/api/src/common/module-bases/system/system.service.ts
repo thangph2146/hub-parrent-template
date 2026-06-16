@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export interface ExportDataResult {
   modelOrder: string[];
   data: Record<string, unknown[]>;
@@ -9,6 +10,7 @@ export interface ImportDataResult {
   message: string;
   errors?: string[];
 }
+
 
 /** System import/export admin — logic dùng chung; app binding: ormEntities + bootstrap deps. */
 import {
@@ -863,18 +865,10 @@ export class BaseSystemService {
     ];
     const [existingPosts, existingCats] = await Promise.all([
       postIds.length
-        ? em.find(
-            this.modelEntity('post'),
-            { id: { $in: postIds } },
-            { fields: ['id'] },
-          )
+        ? em.find(this.modelEntity('post'), { id: { $in: postIds } }, { fields: ['id'] })
         : [],
       categoryIds.length
-        ? em.find(
-            this.modelEntity('category'),
-            { id: { $in: categoryIds } },
-            { fields: ['id'] },
-          )
+        ? em.find(this.modelEntity('category'), { id: { $in: categoryIds } }, { fields: ['id'] })
         : [],
     ]);
     const pSet = new Set(existingPosts.map((p) => p.id));
@@ -1012,18 +1006,10 @@ export class BaseSystemService {
     ];
     const [users, roles] = await Promise.all([
       userIds.length
-        ? em.find(
-            this.modelEntity('user'),
-            { id: { $in: userIds } },
-            { fields: ['id'] },
-          )
+        ? em.find(this.modelEntity('user'), { id: { $in: userIds } }, { fields: ['id'] })
         : [],
       roleIds.length
-        ? em.find(
-            this.modelEntity('role'),
-            { id: { $in: roleIds } },
-            { fields: ['id'] },
-          )
+        ? em.find(this.modelEntity('role'), { id: { $in: roleIds } }, { fields: ['id'] })
         : [],
     ]);
     const uSet = new Set(users.map((u) => u.id));
@@ -1658,11 +1644,7 @@ export class BaseSystemService {
         assignedTo: null,
       },
     );
-    await em.nativeUpdate(
-      this.modelEntity('message'),
-      {},
-      { receiver: null, sender: null },
-    );
+    await em.nativeUpdate(this.modelEntity('message'), {}, { receiver: null, sender: null });
     await em.nativeUpdate(this.modelEntity('student'), {}, { user: null });
   }
 
@@ -1674,9 +1656,7 @@ export class BaseSystemService {
     em: EntityManager,
     isMysqlFamily: boolean,
   ): Promise<void> {
-    const meta = em
-      .getMetadata()
-      .get(this.getEntityName(this.modelEntity('category')));
+    const meta = em.getMetadata().get(this.getEntityName(this.modelEntity('category')));
     const table = meta.tableName;
     if (isMysqlFamily) {
       await em.getConnection().execute(`TRUNCATE TABLE \`${table}\``);
@@ -1797,10 +1777,7 @@ export class BaseSystemService {
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
       const idMap = new LegacyImportIdMap(
-        this.modelEntity('setting') as unknown as new () => Record<
-          string,
-          unknown
-        >,
+        this.modelEntity('setting') as unknown as new () => Record<string, unknown>,
       );
 
       try {
@@ -1910,10 +1887,7 @@ export class BaseSystemService {
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
       const idMap = new LegacyImportIdMap(
-        this.modelEntity('setting') as unknown as new () => Record<
-          string,
-          unknown
-        >,
+        this.modelEntity('setting') as unknown as new () => Record<string, unknown>,
       );
 
       try {
@@ -2263,8 +2237,7 @@ export class BaseSystemService {
             file: getImportReferenceFilePath(),
           }
         : null,
-      recommendedExportFile:
-        reference?.source ?? 'data/seed/full-export-2026-06-10.json',
+      recommendedExportFile: reference?.source ?? 'full-export-2026-06-10.json',
     };
   }
 
@@ -2440,12 +2413,9 @@ export class BaseSystemService {
         try {
           if (entry.exportModelName === 'setting') {
             const rowCount = await this.em.count(entry.entity, {});
-            const importIdMapRowCount = await this.em.count(
-              this.modelEntity('setting'),
-              {
-                group: IMPORT_ID_MAP_GROUP,
-              },
-            );
+            const importIdMapRowCount = await this.em.count(this.modelEntity('setting'), {
+              group: IMPORT_ID_MAP_GROUP,
+            });
             const businessRowCount = Math.max(
               0,
               rowCount - importIdMapRowCount,
@@ -2648,10 +2618,7 @@ export class BaseSystemService {
   private async exportUserRows(): Promise<Record<string, unknown>[]> {
     const rows = await this.em.find(this.modelEntity('user'), {});
     return rows.map((u) => {
-      const obj = this.flattenEntityRowForExport(
-        this.getEntityName(this.modelEntity('user')),
-        u,
-      );
+      const obj = this.flattenEntityRowForExport(this.getEntityName(this.modelEntity('user')), u);
       obj.password = u.password;
       return obj;
     });
@@ -2829,10 +2796,7 @@ export class BaseSystemService {
       if (isSqlite) await conn.execute('PRAGMA foreign_keys = OFF');
 
       const idMap = new LegacyImportIdMap(
-        this.modelEntity('setting') as unknown as new () => Record<
-          string,
-          unknown
-        >,
+        this.modelEntity('setting') as unknown as new () => Record<string, unknown>,
       );
 
       try {
@@ -3000,9 +2964,7 @@ export class BaseSystemService {
 
     const presentModels = this.modelOrder.filter(
       (m) =>
-        this.entityByModelName[m] &&
-        Array.isArray(data[m]) &&
-        data[m].length > 0,
+        this.entityByModelName[m] && Array.isArray(data[m]) && data[m].length > 0,
     );
     const ordered = this.orderModelsForDependencySafeImport(presentModels);
     const skipModels = new Set<string>();

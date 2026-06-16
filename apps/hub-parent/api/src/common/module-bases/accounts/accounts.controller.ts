@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * BaseAccountsController — HTTP admin accounts (@workspace/api-server).
  */
@@ -19,7 +20,7 @@ import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 import type { BaseAccountsService, UpdateAccountDto } from './accounts.service';
 import { Permissions } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';
+import { PERMISSIONS } from '../../../config/permissions';;
 import { apiServerAppConfig } from '../../../config/app-config';
 
 type AvatarUploadsBinding = {
@@ -30,6 +31,7 @@ type AvatarUploadsBinding = {
     serveBaseUrl?: string,
     userId?: string,
     ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
   ) => Promise<{ url: string }>;
 };
 
@@ -37,7 +39,8 @@ const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 export type IAccountsControllerService = Pick<
   BaseAccountsService,
-  'getProfile' | 'updateProfile'
+  | 'getProfile'
+  | 'updateProfile'
 >;
 /** @deprecated Dùng `IAccountsControllerService`. */
 export type IAccountsAdminControllerService = IAccountsControllerService;
@@ -111,6 +114,11 @@ export class BaseAccountsController extends BaseAdminHttpController {
         password_required: {
           status: 400,
           message: 'Cần nhập mật khẩu hiện tại để đổi mật khẩu',
+        },
+        invalid_student_code: {
+          status: 400,
+          message:
+            'Mã số sinh viên không hợp lệ hoặc đã được sử dụng. MSSV phải là số (5–12 chữ số).',
         },
       };
       const picked = messages[result.reason];

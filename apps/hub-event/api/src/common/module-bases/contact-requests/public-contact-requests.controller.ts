@@ -1,12 +1,8 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import type { Response } from 'express';
-import {
-  Public,
-  createErrorResponse,
-  createSuccessResponse,
-} from '../../index';
-import { PUBLIC_ROUTES } from '../../../config/constants';
+import { Public, createErrorResponse, createSuccessResponse } from '../../index';
+import { PUBLIC_ROUTES } from '../../../config/constants';;
 import type { BaseContactRequestsService } from './contact-request.service';
 
 export type CreatePublicContactRequestDto = {
@@ -31,9 +27,7 @@ export type IPublicContactRequestsControllerService = Pick<
 @Public()
 @Controller(PUBLIC_ROUTES.BASE)
 export class BasePublicContactRequestsController {
-  constructor(
-    private readonly service: IPublicContactRequestsControllerService,
-  ) {}
+  constructor(private readonly service: IPublicContactRequestsControllerService) {}
 
   @Post('contact-requests')
   async createContactRequest(
@@ -45,10 +39,10 @@ export class BasePublicContactRequestsController {
     const subject = body?.subject?.trim();
     const hasLegacyConsultationFields = Boolean(
       body?.address ||
-      body?.program ||
-      body?.major ||
-      body?.subscribeNewsletter ||
-      body?.subscribeConsultation,
+        body?.program ||
+        body?.major ||
+        body?.subscribeNewsletter ||
+        body?.subscribeConsultation,
     );
 
     if (!name || !email || (!subject && !hasLegacyConsultationFields)) {
@@ -74,8 +68,7 @@ export class BasePublicContactRequestsController {
         parts.push('Dang ky nhan thong tin tuyen sinh: Co');
       if (body.subscribeConsultation) parts.push('Dang ky tu van: Co');
       if (body.content?.trim()) parts.push(`Noi dung: ${body.content.trim()}`);
-      const content =
-        parts.length > 0 ? parts.join('\n') : 'Khong co noi dung them';
+      const content = parts.length > 0 ? parts.join('\n') : 'Khong co noi dung them';
 
       const created = await this.service.create({
         name,
@@ -101,3 +94,4 @@ export class BasePublicContactRequestsController {
     }
   }
 }
+

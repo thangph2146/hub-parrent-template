@@ -524,6 +524,9 @@ importers:
       '@thangph2146/lexical-editor':
         specifier: workspace:*
         version: link:../../../packages/editor
+      '@workspace/admin-app':
+        specifier: workspace:*
+        version: link:../../../packages/admin-app
       '@workspace/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client

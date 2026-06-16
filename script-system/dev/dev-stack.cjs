@@ -36,10 +36,8 @@ const STACKS = {
   parent: {
     apiPort: 3002,
     apps: [
-      PRODUCT_LINES.main.api.package,
-      PRODUCT_LINES.main.backend.package,
+      PRODUCT_LINES["hub-parent"].api.package,
       PRODUCT_LINES["hub-parent"].frontend.package,
-      "@thangph2146/lexical-editor",
     ],
   },
   /** hub-event API + check-in UI — không chạy tsup watch lexical (xem predev:checkin + ensure-lexical-built) */

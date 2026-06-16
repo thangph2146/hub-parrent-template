@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Integration test: DB thật + @workspace/api-client + @workspace/admin-app.
  *

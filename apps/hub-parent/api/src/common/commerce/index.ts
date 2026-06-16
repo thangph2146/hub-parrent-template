@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export * from './cart-types';
 export * from './gift-rules';
 export * from './product-types';

@@ -1,21 +1,6 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
-import {
-  Controller,
-  Get,
-  Put,
-  Delete,
-  Body,
-  Headers,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiHeader,
-  ApiBody,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { Controller, Get, Put, Delete, Body, Headers, Logger, UnauthorizedException } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiHeader, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { BaseCartsService, type CartDto } from './carts.service';
 import {
   createSuccessResponse,
@@ -33,9 +18,7 @@ export class BaseCartsController {
     this.logger = new Logger(this.constructor.name);
   }
 
-  protected resolveCustomerId(
-    headers: Record<string, string | undefined>,
-  ): string | null {
+  protected resolveCustomerId(headers: Record<string, string | undefined>): string | null {
     const id = headers[this.userIdHeader]?.trim();
     return id || null;
   }

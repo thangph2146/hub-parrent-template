@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** CRUD runtime — template local (pnpm api:sync-template). */
 /**
  * Base Admin CRUD Controller.
@@ -27,10 +28,7 @@ import {
 } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { isBulkAction, type BulkResult } from '../bulk-actions';
-import {
-  buildAdminListCrudParams,
-  type AdminListQueryInput,
-} from './build-admin-list-params';
+import { buildAdminListCrudParams, type AdminListQueryInput } from './build-admin-list-params';
 import { BaseAdminHttpController } from './base-admin-http.controller';
 
 export type AdminCrudControllerConfig = {
@@ -62,8 +60,11 @@ export abstract class BaseAdminCrudController<
     data: TRow[];
     pagination: Record<string, unknown>;
   } = { data: TRow[]; pagination: Record<string, unknown> },
-  TService extends IAdminCrudControllerService<TRow, TListParams, TListResult> =
-    IAdminCrudControllerService<TRow, TListParams, TListResult>,
+  TService extends IAdminCrudControllerService<
+    TRow,
+    TListParams,
+    TListResult
+  > = IAdminCrudControllerService<TRow, TListParams, TListResult>,
 > extends BaseAdminHttpController {
   constructor(
     protected readonly service: TService,

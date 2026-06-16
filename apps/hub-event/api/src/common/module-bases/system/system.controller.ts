@@ -23,7 +23,7 @@ import {
   Permissions,
 } from '../../index';
 import { APP_HEADERS, ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';
+import { PERMISSIONS } from '../../../config/permissions';;
 import type { AuthLoginPayload } from '../auth/auth.service';
 import { canAccessSystemMaintenance } from './system-maintenance';
 
@@ -123,12 +123,9 @@ export class BaseSystemController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/system/models', error);
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -147,12 +144,9 @@ export class BaseSystemController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/system/export', error, { model });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -186,12 +180,9 @@ export class BaseSystemController {
       return res.status(200).send(buffer);
     } catch (error) {
       this.logApiError('GET /api/admin/system/export/excel', error, { model });
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -237,7 +228,7 @@ export class BaseSystemController {
 
         try {
           const result = await this.service.importData(
-            data,
+            data as Record<string, unknown[]>,
             model,
             skipClear === 'true',
             onProgress,
@@ -259,7 +250,7 @@ export class BaseSystemController {
       }
 
       const result = await this.service.importData(
-        data,
+        data as Record<string, unknown[]>,
         model,
         skipClear === 'true',
         undefined,
@@ -401,12 +392,9 @@ export class BaseSystemController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/system/import-config', error);
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }
@@ -425,12 +413,9 @@ export class BaseSystemController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/system/database-schema', error);
-      const { statusCode, body } = createErrorResponse(
-        'Internal Server Error',
-        {
-          status: 500,
-        },
-      );
+      const { statusCode, body } = createErrorResponse('Internal Server Error', {
+        status: 500,
+      });
       return res.status(statusCode).json(body);
     }
   }

@@ -39,6 +39,23 @@ export function avatarFolderPath(segment: string): string {
   return `avatars/${segment}`;
 }
 
+/** MSSV nếu hợp lệ, không thì user id — dùng làm tên folder avatar. */
+export function resolveAvatarFolderSegment(options: {
+  studentCode?: string | null;
+  userId: string | number;
+}): string {
+  const code = normalizeNumericStudentCode(options.studentCode);
+  if (code) return code;
+  return String(options.userId);
+}
+
+export function resolveAvatarFolderPath(options: {
+  studentCode?: string | null;
+  userId: string | number;
+}): string {
+  return avatarFolderPath(resolveAvatarFolderSegment(options));
+}
+
 export function isStudentAccountRole(
   roles: Array<{ name: string }> | undefined,
 ): boolean {

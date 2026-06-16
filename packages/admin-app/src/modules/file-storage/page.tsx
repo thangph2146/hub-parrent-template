@@ -49,17 +49,15 @@ import {
   FileStorageUploadDialog,
   getFileStorageColumns,
   StorageVideoPreview,
+  isImageStorageRow,
   useFileStorageActions,
   useFileStorageList,
   normalizeFolderPath,
+  resolveFolderPathAfterCreate,
+  resolveStorageAssetUrl,
   type FileStorageRow,
   type StorageRealm,
 } from "./_component"
-import {
-  isImageStorageRow,
-  resolveFolderPathAfterCreate,
-  resolveStorageAssetUrl,
-} from "./_component/utils"
 
 const REALM_ORDER: StorageRealm[] = ["images", "files", "videos", "audio"]
 

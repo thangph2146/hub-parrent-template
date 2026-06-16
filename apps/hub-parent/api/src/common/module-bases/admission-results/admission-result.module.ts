@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * AdmissionResults Module.
  */
@@ -9,10 +10,7 @@ export class BaseAdmissionResultsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [
-        ...(metadata.controllers ?? []),
-        BaseAdmissionResultsController,
-      ],
+      controllers: [...(metadata.controllers ?? []), BaseAdmissionResultsController],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

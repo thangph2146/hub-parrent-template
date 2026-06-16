@@ -4,6 +4,7 @@
 const { execSync } = require('node:child_process')
 const fs = require('node:fs')
 const path = require('node:path')
+const clack = require('@clack/prompts')
 const { ROOT, PACKAGE_ROOT } = require('./lib/monorepo-root.cjs')
 const { MAIN_API_PATH } = require('../config/product-lines.cjs')
 const {
@@ -58,6 +59,40 @@ function parseModulesArg() {
   return raw.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean)
 }
 
+async function pickRenderPreset() {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) return 'config-default'
+  const picked = await clack.select({
+    message: 'Chọn mẫu api:render',
+    options: [
+      {
+        value: 'config-default',
+        label: 'Mặc định theo api.app.config.json',
+        hint: 'dùng module trong config app',
+      },
+      {
+        value: 'full-template',
+        label: 'Full template',
+        hint: 'render toàn bộ module + prune',
+      },
+      {
+        value: 'closure-entities',
+        label: 'Subset + prune entities (closure)',
+        hint: 'module theo config + cắt entity theo graph',
+      },
+      {
+        value: 'manual-pick',
+        label: 'Chọn module thủ công',
+        hint: 'mở picker module',
+      },
+    ],
+  })
+  if (clack.isCancel(picked)) {
+    clack.cancel('Đã hủy api:render')
+    process.exit(0)
+  }
+  return picked
+}
+
 async function resolveTargetApp() {
   const positional = args.find((a) => !a.startsWith('--') && a.includes('/'))
   if (positional) return positional.replace(/\\/g, '/')
@@ -70,11 +105,13 @@ async function resolveTargetApp() {
   throw new Error('[api:render] Thiếu repo. VD: pnpm api:render apps/hub-event/api')
 }
 
-async function resolveModuleList(appRel, wantAll = false) {
+async function resolveModuleList(appRel, wantAll = false, options = {}) {
+  const allowPick = options.allowPick !== false
   const explicit = parseModulesArg()
   if (explicit?.length) return explicit
 
   const wantsPick =
+    allowPick &&
     process.stdin.isTTY &&
     !explicit &&
     !wantAll &&
@@ -110,17 +147,27 @@ async function main() {
     })
   }
 
+  const isInteractiveDefaultRun =
+    process.stdin.isTTY &&
+    args.length === 0 &&
+    !hasFlag('--pick') &&
+    !hasFlag('--full') &&
+    !hasFlag('--all-modules') &&
+    !hasFlag('--prune-entities')
+
+  const preset = isInteractiveDefaultRun ? await pickRenderPreset() : null
+
   const skipSync =
-    hasFlag('--skip-sync-template') ||
-    (!hasFlag('--force-sync-template') && isTemplateFresh())
+    hasFlag('--skip-sync-template')
   const skipEnv = hasFlag('--skip-env')
   const skipTypecheck = hasFlag('--skip-typecheck')
   const skipVerify = hasFlag('--skip-verify')
   const skipParity = hasFlag('--skip-parity')
   const heal = hasFlag('--heal')
-  const wantFull = hasFlag('--full')
+  const wantFull = hasFlag('--full') || preset === 'full-template'
   let subsetLine = false
-  const pruneEntities = hasFlag('--prune-entities')
+  let pruneEntities =
+    hasFlag('--prune-entities') || preset === 'closure-entities'
   const pipelineSteps = []
 
   if (!skipSync && fs.existsSync(path.join(ROOT, MAIN_API_PATH, 'src', 'main.ts'))) {
@@ -132,12 +179,6 @@ async function main() {
     pipelineSteps.push({ label: 'sync template ← apps/main/api', ok: true })
   } else if (!templateHasSource()) {
     throw new Error('[api:render] Thiếu template. Chạy pnpm api:sync-template')
-  } else if (skipSync && isTemplateFresh() && !hasFlag('--skip-sync-template')) {
-    pipelineSteps.push({
-      label: 'sync template',
-      skipped: true,
-      detail: 'template vừa sync — dùng --force-sync-template để ép',
-    })
   } else if (skipSync) {
     pipelineSteps.push({
       label: 'sync template',
@@ -152,14 +193,26 @@ async function main() {
   let wantAll = hasFlag('--all-modules') || wantFull
   if (hasApiAppConfig(appRel)) {
     try {
-      const { renderAllModules } = resolveApiModules(appRel)
+      const { renderAllModules, disableEntityPrune } = resolveApiModules(appRel)
       if (renderAllModules) wantAll = true
       else subsetLine = true
+      if (disableEntityPrune && pruneEntities) {
+        pruneEntities = false
+        console.log(
+          `[api:render] bỏ qua prune-entities theo api.app.config.json (${appRel})`,
+        )
+      }
     } catch {
       /* config chưa hợp lệ — render sẽ báo lỗi sau */
     }
   }
   if (args.length === 0 && process.stdin.isTTY) {
+    wantAll = false
+  }
+  if (preset === 'manual-pick') {
+    wantAll = false
+  }
+  if (preset === 'closure-entities') {
     wantAll = false
   }
   if (
@@ -175,8 +228,27 @@ async function main() {
     !hasFlag('--no-prune') &&
     (hasFlag('--prune') || wantFull || subsetLine)
 
+  if (preset) {
+    const presetLabelMap = {
+      'config-default': 'theo api.app.config.json',
+      'full-template': 'full template',
+      'closure-entities': 'subset + prune entities',
+      'manual-pick': 'chọn module thủ công',
+    }
+    pipelineSteps.push({
+      label: 'mẫu render',
+      ok: true,
+      detail: presetLabelMap[preset] ?? preset,
+    })
+  }
+
+  const shouldAllowModulePick =
+    hasFlag('--pick') || preset === 'manual-pick'
+
   const renderOpts = {
-    modules: await resolveModuleList(appRel, wantAll),
+    modules: await resolveModuleList(appRel, wantAll, {
+      allowPick: shouldAllowModulePick,
+    }),
     allModules: wantAll,
     prune,
     pruneEntities,

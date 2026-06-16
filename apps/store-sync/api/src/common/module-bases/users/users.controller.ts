@@ -63,6 +63,7 @@ export class CreateUserDto implements CreateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -76,6 +77,7 @@ export class UpdateUserDto implements UpdateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -145,6 +147,23 @@ export class BaseUsersController {
       ): Promise<BulkOperationResult>;
       listDevelopmentLoginOptions(query?: DevLoginOptionsQuery): Promise<DevLoginOptionDto[]>;
       resolveActorEmail(userId: string): Promise<string | null>;
+      resolveAvatarUploadFolder?(
+        userId: string,
+      ): Promise<
+        { ok: true; folderPath: string } | { ok: false; message: string }
+      >;
+    },
+    protected readonly uploadsService?: {
+      ensureAvatarFolder?: (folderSegment: string) => Promise<string>;
+      saveFile: (
+        file: { buffer: Buffer; originalname: string; mimetype: string },
+        folderPath?: string,
+        isExistingFolder?: boolean,
+        serveBaseUrl?: string,
+        userId?: string,
+        ownerUserId?: string,
+        options?: { imageOutput?: 'webp' | 'jpeg-face' },
+      ) => Promise<{ url: string }>;
     },
   ) {
     this.logger = new Logger(BaseUsersController.name);

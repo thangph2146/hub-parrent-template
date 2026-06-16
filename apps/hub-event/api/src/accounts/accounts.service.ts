@@ -1,9 +1,9 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
-import { Student } from '../entities/student.entity';
 import {
   BaseAccountsService,
   type UpdateAccountDto,
@@ -12,11 +12,14 @@ import {
 import { HanetPersonRegisterService } from '../hanet/hanet-person-register.service';
 import { toEntityId } from '../common/entity-id';
 import {
-  avatarFolderPath,
-  isStudentAccountRole,
   normalizeNumericStudentCode,
+  resolveAvatarFolderPath,
   studentCodeFromSchoolEmail,
 } from '../common/student-code-resolve';
+import {
+  resolveStudentCodeForUser,
+  upsertStudentCodeForUser,
+} from '../common/student-user-binding';
 
 export type {
   AccountProfileDto,
@@ -49,13 +52,7 @@ export class AccountsService extends BaseAccountsService {
     userId: string,
     email: string,
   ): Promise<string | null> {
-    const student = await this.em.findOne(Student, {
-      user: toEntityId(userId),
-      deletedAt: null,
-    });
-    const fromDb = normalizeNumericStudentCode(student?.studentCode);
-    if (fromDb) return fromDb;
-    return studentCodeFromSchoolEmail(email);
+    return resolveStudentCodeForUser(this.em, userId, email);
   }
 
   override async resolveAvatarUploadFolder(userId: string): Promise<
@@ -66,19 +63,13 @@ export class AccountsService extends BaseAccountsService {
       return { ok: false, message: 'Không tìm thấy tài khoản' };
     }
 
-    if (isStudentAccountRole(profile.roles)) {
-      const code = normalizeNumericStudentCode(profile.studentCode);
-      if (!code) {
-        return {
-          ok: false,
-          message:
-            'Mã số sinh viên phải là số (5–12 chữ số). Vui lòng nhập và lưu hồ sơ trước khi tải ảnh.',
-        };
-      }
-      return { ok: true, folderPath: avatarFolderPath(code) };
-    }
-
-    return { ok: true, folderPath: avatarFolderPath(String(profile.id)) };
+    return {
+      ok: true,
+      folderPath: resolveAvatarFolderPath({
+        studentCode: profile.studentCode,
+        userId: profile.id,
+      }),
+    };
   }
 
   private async upsertStudentCode(
@@ -87,47 +78,13 @@ export class AccountsService extends BaseAccountsService {
     name: string | null,
     email: string,
   ): Promise<{ ok: true } | { ok: false; message: string }> {
-    const code = normalizeNumericStudentCode(rawCode);
-    if (!code) {
-      return {
-        ok: false,
-        message: 'Mã số sinh viên phải là số (5–12 chữ số).',
-      };
-    }
-
-    const taken = await this.em.findOne(
-      Student,
-      { studentCode: code, deletedAt: null },
-      { populate: ['user'] },
+    return upsertStudentCodeForUser(
+      this.em,
+      userId,
+      rawCode,
+      name,
+      email,
     );
-    if (taken && String(taken.user?.id) !== String(toEntityId(userId))) {
-      return {
-        ok: false,
-        message: 'Mã số sinh viên đã được liên kết với tài khoản khác.',
-      };
-    }
-
-    let student = await this.em.findOne(Student, {
-      user: toEntityId(userId),
-      deletedAt: null,
-    });
-
-    if (!student) {
-      student = new Student();
-      student.studentCode = code;
-      student.name = name?.trim() || null;
-      student.email = email.trim();
-      student.user = this.em.getReference(User, toEntityId(userId));
-      student.isActive = true;
-      this.em.persist(student);
-    } else {
-      student.studentCode = code;
-      if (name?.trim()) student.name = name.trim();
-      if (email.trim()) student.email = email.trim();
-    }
-
-    await this.em.flush();
-    return { ok: true };
   }
 
   override async updateProfile(

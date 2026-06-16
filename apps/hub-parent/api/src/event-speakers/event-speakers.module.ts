@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module } from '@nestjs/common';
 import { EventSpeakersController } from './event-speakers.controller';
 import { EventSpeakersService } from './event-speakers.service';

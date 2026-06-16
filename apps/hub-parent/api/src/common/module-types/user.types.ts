@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * User Types and DTOs
  * Shared types for user management across API servers
@@ -16,6 +17,8 @@ export interface UserRowDto {
   phone: string | null;
   address: string | null;
   citizenId: string | null;
+  /** MSSV — bảng `students` (nếu có). */
+  studentCode?: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -73,6 +76,7 @@ export interface CreateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -89,6 +93,7 @@ export interface UpdateUserData {
   phone?: string | null;
   address?: string | null;
   citizenId?: string | null;
+  studentCode?: string | null;
   isActive?: boolean;
   roleIds?: string[];
 }
@@ -96,12 +101,7 @@ export interface UpdateUserData {
 /**
  * Bulk action types for user management
  */
-export type BulkAction =
-  | 'delete'
-  | 'restore'
-  | 'hard-delete'
-  | 'active'
-  | 'unactive';
+export type BulkAction = 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive';
 
 /**
  * Bulk operation result

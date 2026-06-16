@@ -1,6 +1,8 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Chuẩn hóa mảng id quan hệ từ body admin (string, number hoặc object có `id`). */
-export function normalizeRelationIds(value: unknown): string[] | undefined {
+export function normalizeRelationIds(
+  value: unknown,
+): string[] | undefined {
   if (value === undefined || value === null) return undefined;
   if (Array.isArray(value)) {
     const arr = value

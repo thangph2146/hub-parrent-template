@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Departments Controller.
  *
@@ -15,7 +16,10 @@
  *   POST   /departments/bulk         - bulk action
  */
 import { ApiTags } from '@nestjs/swagger';
-import { BaseCrudController, type ICrudControllerService } from '../../crud';
+import {
+  BaseCrudController,
+  type ICrudControllerService,
+} from '../../crud';
 import type {
   DepartmentsRowDto,
   DepartmentsCreateData,

@@ -10,6 +10,7 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { PACKAGE_ROOT, ROOT } = require('../cli/lib/monorepo-root.cjs')
+const { writeFileWithRetry } = require('../cli/lib/fs-write-retry.cjs')
 const { MAIN_API_PATH } = require('./product-lines.cjs')
 
 const PKG_MODULES = path.join(PACKAGE_ROOT, 'src', 'modules')
@@ -255,7 +256,7 @@ function writeTemplatesMeta(destRoot) {
   const pipelineDir = path.join(destRoot, '.pipeline')
   fs.mkdirSync(pipelineDir, { recursive: true })
   const outPath = path.join(pipelineDir, 'PACKAGE_MODULE_TEMPLATES.meta.json')
-  fs.writeFileSync(outPath, `${JSON.stringify(meta, null, 2)}\n`, 'utf8')
+  writeFileWithRetry(outPath, `${JSON.stringify(meta, null, 2)}\n`)
   return meta
 }
 

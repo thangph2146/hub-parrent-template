@@ -31,6 +31,7 @@ type AvatarUploadsBinding = {
     serveBaseUrl?: string,
     userId?: string,
     ownerUserId?: string,
+    options?: { imageOutput?: 'webp' | 'jpeg-face' },
   ) => Promise<{ url: string }>;
 };
 
@@ -113,6 +114,11 @@ export class BaseAccountsController extends BaseAdminHttpController {
         password_required: {
           status: 400,
           message: 'Cần nhập mật khẩu hiện tại để đổi mật khẩu',
+        },
+        invalid_student_code: {
+          status: 400,
+          message:
+            'Mã số sinh viên không hợp lệ hoặc đã được sử dụng. MSSV phải là số (5–12 chữ số).',
         },
       };
       const picked = messages[result.reason];

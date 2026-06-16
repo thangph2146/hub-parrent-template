@@ -17,6 +17,7 @@ export interface UserRowDto {
   phone: string | null;
   address: string | null;
   citizenId: string | null;
+  /** MSSV — bảng `students` (nếu có). */
   studentCode?: string | null;
   isActive: boolean;
   createdAt: string;
@@ -100,12 +101,7 @@ export interface UpdateUserData {
 /**
  * Bulk action types for user management
  */
-export type BulkAction =
-  | 'delete'
-  | 'restore'
-  | 'hard-delete'
-  | 'active'
-  | 'unactive';
+export type BulkAction = 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive';
 
 /**
  * Bulk operation result

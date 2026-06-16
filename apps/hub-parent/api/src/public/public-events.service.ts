@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { relationEntityId } from '../common';
 import { Injectable } from '@nestjs/common';
 import { EntityManager, QueryOrder, type FilterQuery } from '@mikro-orm/core';

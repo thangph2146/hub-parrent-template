@@ -22,13 +22,9 @@ import {
   Headers,
   Res,
 } from '@nestjs/common';
-import {
-  Permissions,
-  createSuccessResponse,
-  createErrorResponse,
-} from '../../index';
+import { Permissions, createSuccessResponse, createErrorResponse } from '../../index';
 import { APP_HEADERS, ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';
+import { PERMISSIONS } from '../../../config/permissions';;
 import { BaseAdminHttpController } from '../../crud/base-admin-http.controller';
 
 export type INotificationsControllerService = Pick<
@@ -44,13 +40,14 @@ export type INotificationsControllerService = Pick<
   | 'bulkMarkReadUnread'
 >;
 /** @deprecated Dùng `INotificationsControllerService`. */
-export type INotificationsAdminControllerService =
-  INotificationsControllerService;
+export type INotificationsAdminControllerService = INotificationsControllerService;
 
 @Permissions(PERMISSIONS.NOTIFICATIONS_VIEW)
 @Controller(ADMIN_ROUTES.BASE)
 export class BaseNotificationsController extends BaseAdminHttpController {
-  constructor(protected readonly service: INotificationsControllerService) {
+  constructor(
+    protected readonly service: INotificationsControllerService,
+  ) {
     super();
   }
 
@@ -88,14 +85,15 @@ export class BaseNotificationsController extends BaseAdminHttpController {
     if (filterIsRead?.trim()) filters.isRead = filterIsRead.trim();
 
     try {
-      const result: AdminTableResult = await this.service.listForAdminTable({
-        userId: toEntityId(userId),
-        viewAll,
-        page,
-        limit,
-        search: searchParam?.trim() || undefined,
-        filters: Object.keys(filters).length > 0 ? filters : undefined,
-      });
+      const result: AdminTableResult =
+        await this.service.listForAdminTable({
+          userId: toEntityId(userId),
+          viewAll,
+          page,
+          limit,
+          search: searchParam?.trim() || undefined,
+          filters: Object.keys(filters).length > 0 ? filters : undefined,
+        });
       return this.sendSuccess(
         res,
         { data: result.data, pagination: result.pagination },
@@ -210,13 +208,14 @@ export class BaseNotificationsController extends BaseAdminHttpController {
     }
 
     try {
-      const result: NotificationsListResult = await this.service.list({
-        userId: toEntityId(userId),
-        limit,
-        offset,
-        unreadOnly: unreadOnlyParam === 'true',
-        mine: mineParam !== 'false',
-      });
+      const result: NotificationsListResult =
+        await this.service.list({
+          userId: toEntityId(userId),
+          limit,
+          offset,
+          unreadOnly: unreadOnlyParam === 'true',
+          mine: mineParam !== 'false',
+        });
       const { statusCode, body } = createSuccessResponse(result, {
         message: 'Lấy danh sách thông báo thành công',
       });
@@ -294,7 +293,11 @@ export class BaseNotificationsController extends BaseAdminHttpController {
     const isRead = body?.isRead !== false;
 
     try {
-      const updated = await this.service.markRead(id, userId, isRead);
+      const updated = await this.service.markRead(
+        id,
+        userId,
+        isRead,
+      );
       if (!updated) {
         const { statusCode, body: errBody } = createErrorResponse(
           'Không tìm thấy thông báo hoặc không có quyền',
@@ -442,7 +445,11 @@ export class BaseNotificationsController extends BaseAdminHttpController {
       if (action === 'delete') {
         result = await this.service.bulkDelete(userId, ids);
       } else {
-        result = await this.service.bulkMarkReadUnread(userId, action, ids);
+        result = await this.service.bulkMarkReadUnread(
+          userId,
+          action,
+          ids,
+        );
       }
 
       const { statusCode, body: okBody } = createSuccessResponse(result, {

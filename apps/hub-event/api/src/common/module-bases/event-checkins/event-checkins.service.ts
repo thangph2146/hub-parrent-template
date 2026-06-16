@@ -102,10 +102,7 @@ export abstract class BaseEventCheckinsService {
   protected abstract getEm(): EntityManager;
   protected abstract getEventCheckinEntity(): new () => Record<string, unknown>;
   protected abstract getEventEntity(): new () => Record<string, unknown>;
-  protected abstract getEventRegistrationEntity(): new () => Record<
-    string,
-    unknown
-  >;
+  protected abstract getEventRegistrationEntity(): new () => Record<string, unknown>;
 
   async list(
     params: ListEventCheckinsParams,

@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module } from '@nestjs/common';
 import { TrainingLevelsController } from './training-levels.controller';
 import { TrainingLevelsService } from './training-levels.service';

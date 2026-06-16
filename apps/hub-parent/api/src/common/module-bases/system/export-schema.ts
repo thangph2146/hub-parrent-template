@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Legacy Vietnamese table keys → export model name (camelCase entity key). */
 export const LEGACY_TABLE_TO_MODEL: Record<string, string> = {
   namhoc: 'academicYear',

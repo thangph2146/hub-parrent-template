@@ -7,22 +7,38 @@ const path = require('node:path')
 const { resolveEntityClosureForModules } = require('../graph/resolve-entity-closure.cjs')
 
 const IMPORT_LINE_RE =
-  /^import \{ (\w+) \} from '\.\.\/entities\/([^']+)';$/
+  /^import\s+\{\s*(\w+)\s*\}\s+from\s+['"]\.\.\/entities\/([^'"]+)['"];?\r?$/
 const EXPORT_ARRAY_START = 'export const ormEntities = ['
+const EXPORT_ARRAY_END_RE = /^\]\s*(?:as const)?;\s*$/
 
-function patchOrmEntities(appRoot, classNames) {
+function patchOrmEntities(appRoot, classNames, keepFiles = []) {
   const ormPath = path.join(appRoot, 'src/mikro-orm/orm-entities.ts')
   if (!fs.existsSync(ormPath)) return { patched: false }
 
   const keep = new Set(classNames)
+  const keepFileSet = new Set(keepFiles)
+  const strictByFiles = keepFileSet.size > 0
   const lines = fs.readFileSync(ormPath, 'utf8').split('\n')
   const out = []
   let inArray = false
+  let sawArrayEnd = false
+  const keptImports = new Set()
 
   for (const line of lines) {
     const imp = line.match(IMPORT_LINE_RE)
-    if (imp) {
-      if (keep.has(imp[1])) out.push(line)
+    const isEntityImportLine = line.includes("../entities/") || line.includes("..\\entities\\")
+    if (imp || isEntityImportLine) {
+      const className = imp?.[1] ?? line.match(/\{\s*(\w+)\s*\}/)?.[1]
+      const importEntityPath = imp?.[2] ?? line.match(/entities\/([^'"]+)/)?.[1]
+      const importEntityFile = importEntityPath ? `${importEntityPath}.ts` : null
+      const shouldKeepImport =
+        className != null &&
+        importEntityFile != null &&
+        (strictByFiles ? keepFileSet.has(importEntityFile) : keep.has(className))
+      if (shouldKeepImport) {
+        out.push(line)
+        keptImports.add(className)
+      }
       continue
     }
     if (line.startsWith(EXPORT_ARRAY_START)) {
@@ -32,16 +48,26 @@ function patchOrmEntities(appRoot, classNames) {
     }
     if (inArray) {
       const trimmed = line.trim()
-      if (trimmed === '];') {
+      if (EXPORT_ARRAY_END_RE.test(trimmed)) {
         out.push(line)
         inArray = false
+        sawArrayEnd = true
         continue
       }
       const name = trimmed.replace(/,$/, '')
-      if (keep.has(name)) out.push(line)
+      const shouldKeepItem = strictByFiles
+        ? keptImports.has(name)
+        : keptImports.has(name) || keep.has(name)
+      if (shouldKeepItem) out.push(line)
       continue
     }
     out.push(line)
+  }
+
+  // Guard: nếu file nguồn có format khác khiến không match được end marker,
+  // vẫn đóng mảng để tránh sinh file TS lỗi cú pháp.
+  if (inArray && !sawArrayEnd) {
+    out.push('];')
   }
 
   fs.writeFileSync(ormPath, out.join('\n'), 'utf8')
@@ -77,7 +103,7 @@ function pruneEntitiesRuntime(appRoot, moduleIds, opts = {}) {
     expandModuleClosure: false,
   })
   const prunedFiles = pruneEntityFiles(appRoot, result.files, opts)
-  const orm = patchOrmEntities(appRoot, result.classes)
+  const orm = patchOrmEntities(appRoot, result.classes, result.files)
 
   if (!opts.quiet) {
     console.log(

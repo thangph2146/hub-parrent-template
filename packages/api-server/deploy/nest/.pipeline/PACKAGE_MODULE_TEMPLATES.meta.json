@@ -3,7 +3,7 @@
   "source": "packages/api-server/src/modules",
   "referencePath": "packages/api-server/src/modules",
   "activePath": "src/common/module-bases",
-  "syncedAt": "2026-06-16T04:02:04.443Z",
+  "syncedAt": "2026-06-16T09:53:03.473Z",
   "moduleCount": 42,
   "thinMaterialize": [
     "academic-years",

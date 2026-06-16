@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { Product } from '../entities/product.entity';
 import { STORESYNC_SAMPLE_PRODUCTS } from './storesync-sample.data';

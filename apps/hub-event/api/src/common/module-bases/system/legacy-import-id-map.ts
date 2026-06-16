@@ -51,7 +51,7 @@ export class LegacyImportIdMap {
     let row = await em.findOne(Setting, { key } as never);
     const now = new Date();
     if (!row) {
-      row = new Setting();
+      row = new Setting() as Record<string, unknown>;
       row.key = key;
       row.group = IMPORT_ID_MAP_GROUP;
       row.value = newId;

@@ -1,6 +1,6 @@
 # API — entity graph (MikroORM closure)
 
-> **Sinh tự động:** `2026-06-16T04:02:04.694Z` từ `apps/main/api`.
+> **Sinh tự động:** `2026-06-16T09:53:03.607Z` từ `apps/main/api`.
 > **Mục đích:** partial render / prune entity **bắt buộc** dùng closure từ manifest này — không cắt entity thủ công.
 
 ## Chính sách render
@@ -117,7 +117,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `screens` | `Screen` |
 | `scripts` | — |
 | `seeders` | — |
-| `seeds` | `Event`, `EventRegistration`, `Order`, `PageContent`, `Product`, `PromoCode`, `Role`, `User`, `UserRole` |
+| `seeds` | `Event`, `EventRegistration`, `Order`, `PageContent`, `Product`, `PromoCode`, `Role`, `Student`, `User`, `UserRole` |
 | `seo-metas` | `SeoMeta` |
 | `sessions` | `Role`, `Session`, `User`, `UserRole` |
 | `settings` | `Setting` |

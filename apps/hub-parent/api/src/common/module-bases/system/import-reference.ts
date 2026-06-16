@@ -1,6 +1,6 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import * as fs from 'fs';
-
-import { resolveImportReferencePath } from '../../data-paths';
+import * as path from 'path';
 
 export type ImportReferenceManifest = {
   source: string;
@@ -10,8 +10,24 @@ export type ImportReferenceManifest = {
   notes?: Record<string, string>;
 };
 
+const DEFAULT_REFERENCE_REL = 'data/import-reference-2026-06-10.json';
+
+function resolveReferencePath(relOrAbs: string): string {
+  if (path.isAbsolute(relOrAbs)) return relOrAbs;
+  const candidates = [
+    path.join(process.cwd(), relOrAbs),
+    path.join(process.cwd(), '..', '..', relOrAbs),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return candidates[0];
+}
+
 export function getImportReferenceFilePath(): string {
-  return resolveImportReferencePath();
+  const rel =
+    process.env.SYSTEM_IMPORT_REFERENCE_FILE?.trim() || DEFAULT_REFERENCE_REL;
+  return resolveReferencePath(rel);
 }
 
 export function loadImportReferenceManifest(): ImportReferenceManifest | null {

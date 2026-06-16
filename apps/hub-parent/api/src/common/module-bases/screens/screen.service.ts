@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Screens Service.
  *
@@ -8,11 +9,7 @@
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../crud';
-import type {
-  CrudRowDto,
-  CrudCreateData,
-  CrudUpdateData,
-} from '../../module-types';
+import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
 
 /**
  * Screen row DTO trả về cho client.

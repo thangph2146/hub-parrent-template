@@ -1,4 +1,5 @@
-/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại hub-event/api. */
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Controller } from '@nestjs/common';
 import { ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common';

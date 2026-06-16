@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module, forwardRef } from '@nestjs/common';
 import { ParentStudentsService } from './parent-students.service';
 import {

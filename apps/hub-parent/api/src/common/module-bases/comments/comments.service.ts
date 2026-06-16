@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Comments admin service — logic dùng chung; app binding entity.
  * App binding: extend BaseCommentsService + wire Comment entity.

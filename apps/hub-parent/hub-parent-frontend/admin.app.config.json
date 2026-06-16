@@ -1,0 +1,60 @@
+{
+  "id": "hub-parent",
+  "basePath": "/admin",
+  "title": "HUB Parent Admin",
+  "modules": [
+    "staff",
+    "rbac",
+    "my-students",
+    "parent-students",
+    "posts",
+    "guides",
+    "categories",
+    "tags",
+    "file-storage",
+    "seo-metas",
+    "contact-requests",
+    "settings",
+    "data",
+    "hanet"
+  ],
+  "native": {
+    "files": [
+      "layout.tsx",
+      "admin-runtime-bridge.tsx",
+      "page.tsx",
+      "dang-nhap/page.tsx",
+      "dang-ky/page.tsx",
+      "profile/page.tsx"
+    ]
+  },
+  "dashboard": {
+    "relativePath": "tong-quan/page.tsx",
+    "subtitle": "Đây là bảng điều khiển quản trị HUB Parent (parent line)."
+  },
+  "menu": {
+    "alwaysIncludeHrefs": ["/"],
+    "hrefOverrides": {
+      "/events": "@root"
+    }
+  },
+  "pageGuardPermissionPrefix": {
+    "staff": "USERS",
+    "rbac": "ROLES",
+    "my-students": "STUDENTS",
+    "parent-students": "PARENT_STUDENTS",
+    "posts": "POSTS",
+    "guides": "PAGE_CONTENTS",
+    "categories": "CATEGORIES",
+    "tags": "TAGS",
+    "file-storage": "UPLOADS",
+    "seo-metas": "SEO_METAS",
+    "contact-requests": "CONTACT_REQUESTS",
+    "settings": "SETTINGS",
+    "data": "SETTINGS",
+    "hanet": "EVENTS",
+    "tong-quan": "DASHBOARD"
+  },
+  "pageGuardRoleModulesSkip": ["settings", "parent-students"]
+}
+

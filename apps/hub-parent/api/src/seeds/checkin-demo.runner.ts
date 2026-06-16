@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import * as path from 'path';
 import type { EntityManager } from '@mikro-orm/core';
 import { Event, EventFormat } from '../entities/event.entity';
@@ -6,6 +7,7 @@ import {
   RegistrationStatus,
 } from '../entities/event-registration.entity';
 import { User } from '../entities/user.entity';
+import { Student } from '../entities/student.entity';
 import { runSuperadminBootstrap } from './superadmin-bootstrap.runner';
 import {
   loadExportPosts,
@@ -284,6 +286,54 @@ async function seedDemoRegistrations(
   return created;
 }
 
+const DEMO_STUDENT_RECORDS = [
+  {
+    email: 'demo.sv@st.buh.edu.vn',
+    studentCode: '202600001',
+    name: 'Sinh viên demo (check-in)',
+  },
+  {
+    email: 'student@hub.edu.vn',
+    studentCode: '202400001',
+    name: 'Nguyễn Văn A',
+  },
+] as const;
+
+async function seedDemoStudentRecords(
+  em: EntityManager,
+  log: (message: string) => void,
+): Promise<number> {
+  let upserted = 0;
+  for (const row of DEMO_STUDENT_RECORDS) {
+    const user = await em.findOne(User, {
+      email: row.email.trim().toLowerCase(),
+      deletedAt: null,
+    });
+    if (!user) continue;
+
+    let student = await em.findOne(Student, {
+      user: user.id,
+      deletedAt: null,
+    });
+    if (!student) {
+      student = new Student();
+      student.user = user;
+      student.isActive = true;
+      em.persist(student);
+    }
+    student.studentCode = row.studentCode;
+    student.name = row.name;
+    student.email = row.email;
+    upserted += 1;
+  }
+
+  if (upserted > 0) {
+    await em.flush();
+    log(`Linked ${upserted} demo student record(s) with numeric MSSV.`);
+  }
+  return upserted;
+}
+
 /**
  * Seed demo check-in: tài khoản dev (`superadmin-bootstrap`) + sự kiện ngẫu nhiên từ bài viết export.
  * Idempotent theo slug `demo-*`.
@@ -311,6 +361,7 @@ export async function runCheckinDemoSeed(
   log(`Target events: ${eventCount}`);
 
   const bootstrap = await runSuperadminBootstrap(em, log);
+  await seedDemoStudentRecords(em, log);
 
   const posts = loadExportPosts(exportPath);
   if (!posts.length) {

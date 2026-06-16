@@ -1,5 +1,12 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
-import { Body, Controller, Get, Headers, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import {
@@ -7,7 +14,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from '../../index';
-import { ADMIN_ROUTES, APP_HEADERS } from '../../../config/constants';
+import { ADMIN_ROUTES, APP_HEADERS } from '../../../config/constants';;
 import type { BaseAuthService, GoogleProfileDto } from './auth.service';
 
 export type IAuthControllerService = Pick<
@@ -43,8 +50,7 @@ export class BaseAuthController {
       return res.status(statusCode).json(body);
     }
 
-    const { payload, reason } =
-      await this.service.tryAuthPayloadByUserId(userId);
+    const { payload, reason } = await this.service.tryAuthPayloadByUserId(userId);
     if (!payload) {
       const byReason: Record<
         NonNullable<typeof reason>,
@@ -60,8 +66,7 @@ export class BaseAuthController {
         },
         no_roles: {
           status: 404,
-          message:
-            'Khong tim thay tai khoan hop le cho phien dang nhap: thieu user_roles.',
+          message: 'Khong tim thay tai khoan hop le cho phien dang nhap: thieu user_roles.',
         },
       };
       const picked = reason ? byReason[reason] : byReason.not_found;
@@ -102,12 +107,9 @@ export class BaseAuthController {
     @Res() res: Response,
   ): Promise<Response> {
     if (process.env.NODE_ENV !== 'development') {
-      const { statusCode, body: responseBody } = createErrorResponse(
-        'Not Found',
-        {
-          status: 404,
-        },
-      );
+      const { statusCode, body: responseBody } = createErrorResponse('Not Found', {
+        status: 404,
+      });
       return res.status(statusCode).json(responseBody);
     }
     const userId = body?.userId?.trim();
@@ -166,7 +168,7 @@ export class BaseAuthController {
       return res.status(statusCode).json(responseBody);
     }
 
-    const payload = await this.service.loginWithGoogle(profile);
+    const payload = await this.service.loginWithGoogle(profile as GoogleProfileDto);
     if (!payload) {
       const { statusCode, body: responseBody } = createErrorResponse(
         'Khong the xac thuc tai khoan Google.',

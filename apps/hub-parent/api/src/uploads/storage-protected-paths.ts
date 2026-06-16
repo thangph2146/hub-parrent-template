@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Thư mục snapshot ảnh đơn hàng — chỉ ghi nội bộ lúc checkout, không xóa qua admin. */
 export const ORDER_SNAPSHOT_IMAGES_PREFIX = 'images/orders';
 

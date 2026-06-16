@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Event checkins admin service — logic dùng chung; app binding entity.
  */
@@ -101,10 +102,7 @@ export abstract class BaseEventCheckinsService {
   protected abstract getEm(): EntityManager;
   protected abstract getEventCheckinEntity(): new () => Record<string, unknown>;
   protected abstract getEventEntity(): new () => Record<string, unknown>;
-  protected abstract getEventRegistrationEntity(): new () => Record<
-    string,
-    unknown
-  >;
+  protected abstract getEventRegistrationEntity(): new () => Record<string, unknown>;
 
   async list(
     params: ListEventCheckinsParams,

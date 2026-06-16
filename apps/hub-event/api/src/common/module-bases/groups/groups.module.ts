@@ -15,7 +15,10 @@ export class BaseGroupsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseGroupsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseGroupsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

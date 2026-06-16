@@ -4,11 +4,11 @@ import {
   fetchStorageFolders,
   type FolderItem,
 } from "@workspace/admin-app/lib/admin-uploads"
-import { resolveFolderPathAfterCreate } from "@workspace/admin-app/modules/file-storage/_component/utils"
 import {
   extensionsFromGroupIds,
   getRealmDefaultGroupIds,
-} from "@workspace/admin-app/modules/file-storage/_component/storage-upload-policy"
+  resolveFolderPathAfterCreate,
+} from "@workspace/admin-app/modules/file-storage/_component"
 
 export const PRODUCT_IMAGE_PARENT_LABEL = "Sản phẩm"
 export const PRODUCT_IMAGE_PARENT_SLUG = "san-pham"

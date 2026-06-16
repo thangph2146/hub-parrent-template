@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Orders Service — commerce checkout (materialize → apps/main/api module-bases).
  */
@@ -186,12 +187,8 @@ function mapOrder(row: Record<string, unknown>): OrderRowDto {
     cancelledAt: safeIsoString(
       row.cancelledAt as Date | string | null | undefined,
     ),
-    createdAt: safeIsoStringNow(
-      row.createdAt as Date | string | null | undefined,
-    ),
-    updatedAt: safeIsoStringNow(
-      row.updatedAt as Date | string | null | undefined,
-    ),
+    createdAt: safeIsoStringNow(row.createdAt as Date | string | null | undefined),
+    updatedAt: safeIsoStringNow(row.updatedAt as Date | string | null | undefined),
     deletedAt: safeIsoString(row.deletedAt as Date | string | null | undefined),
   };
 }
@@ -251,7 +248,7 @@ export abstract class BaseOrdersService {
       whereBase.status = params.status;
     }
 
-    const where = whereBase;
+    const where = whereBase as Record<string, unknown>;
     const [rows, total] = await em.findAndCount(Order, where, {
       orderBy: { createdAt: 'DESC' },
       limit,
@@ -297,11 +294,7 @@ export abstract class BaseOrdersService {
     const record = row as Record<string, unknown>;
     if (email?.trim()) {
       const normalized = email.trim().toLowerCase();
-      if (
-        String(record.customerEmail ?? '')
-          .trim()
-          .toLowerCase() !== normalized
-      ) {
+      if (String(record.customerEmail ?? '').trim().toLowerCase() !== normalized) {
         return null;
       }
     }

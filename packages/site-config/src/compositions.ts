@@ -45,6 +45,14 @@ export const HUB_DISPLAY_PRESETS: HubDisplayPreset[] = [
     defaultNewUserRole: "student",
   },
   {
+    id: "hub-store",
+    label: "HUB Store",
+    hint: "Stack storefront B2B / store-sync (ecosystem.store)",
+    siteName: "HUB Store",
+    siteDescription: "Quản trị cửa hàng, sản phẩm và đơn hàng",
+    defaultNewUserRole: "customer",
+  },
+  {
     id: "hub-minimal",
     label: "Tối giản",
     hint: "Tên ngắn cho môi trường dev / demo nội bộ",
@@ -79,6 +87,19 @@ export const HUB_SEO_GLOBAL_PRESETS: HubSeoGlobalPreset[] = [
     keywords: "hub sự kiện, check-in, đăng ký sự kiện, qr check-in",
     ogTitle: "Hệ thống Sự kiện HUB",
     ogDescription: "Đăng ký sự kiện, quản lý tham dự và check-in trực tuyến.",
+    ogImage: DEFAULT_OG_IMAGE_URL,
+  },
+  {
+    id: "hub-store",
+    label: "HUB Store",
+    hint: "SEO cho storefront bán hàng / đặt hàng",
+    title: "HUB Store - Cửa hàng và đặt hàng trực tuyến",
+    description:
+      "HUB Store là nền tảng storefront của Trường Đại học Ngân hàng TP.HCM, hỗ trợ xem sản phẩm, đặt hàng và theo dõi đơn trực tuyến.",
+    keywords: "hub store, storefront, sản phẩm, đặt hàng, đại học ngân hàng",
+    ogTitle: "HUB Store - Cửa hàng trực tuyến",
+    ogDescription:
+      "Khám phá sản phẩm, đặt hàng nhanh và theo dõi đơn hàng trên HUB Store.",
     ogImage: DEFAULT_OG_IMAGE_URL,
   },
 ]

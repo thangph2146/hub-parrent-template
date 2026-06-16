@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EventRegistrationRowDto } from './event-registrations.service';
 
 export type AttendanceSource = 'hanet' | 'manual';
@@ -81,3 +82,4 @@ export type AttendanceRegistrationRow = {
   status: number;
   updatedAt: Date;
 };
+
