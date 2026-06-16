@@ -1,3 +1,4 @@
+/** UI components */
 export { FileStorageScopedBrowse } from "./file-storage-scoped-browse"
 export type { FileStorageScopedBrowseProps } from "./file-storage-scoped-browse"
 export { getFileStorageColumns } from "./columns"
@@ -22,13 +23,32 @@ export { FileStorageTable } from "./_table"
 export { FileStoragePickerPanel } from "./file-storage-picker-panel"
 export type { FileStoragePickerPanelProps } from "./file-storage-picker-panel"
 export type { ProductImageUploadContext } from "@workspace/admin-app/lib/product-image-storage-stub"
-export { useFileStorageActions, useFileStorageList } from "./_hooks"
+
+/** Hooks */
+export {
+  useFileStorageActions,
+  useFileStorageList,
+  useFolderNavSearch,
+  useStorageFolders,
+} from "./_hooks"
+
+/** Types */
 export type {
   FileStorageRow,
   FileStorageTab,
   StorageRealm,
   StorageTab,
 } from "./types"
+
+/** Domain helpers (path, breadcrumb, search state) */
+export {
+  clampFolderPath,
+  diskPathToNavPath,
+  normalizeFolderPath,
+  scopeFolderBreadcrumb,
+} from "./folder-domain"
+
+/** Row / asset utilities */
 export {
   formatFileSize,
   isImageStorageRow,

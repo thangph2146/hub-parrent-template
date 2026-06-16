@@ -1,4 +1,5 @@
 import type { StorageRealm } from "./types"
+import { normalizeFolderPath } from "./folder-domain"
 
 export type StorageExtensionGroupId =
   | "image"
@@ -182,9 +183,11 @@ export function findInheritedFolderExtensions(
   folders: Array<{ path: string; allowedExtensions?: string[] }>,
   diskPath: string
 ): string[] | undefined {
-  let current = diskPath.replace(/\\/g, "/").replace(/\/$/, "")
+  let current = normalizeFolderPath(diskPath)
   while (current) {
-    const folder = folders.find((item) => item.path === current)
+    const folder = folders.find(
+      (item) => normalizeFolderPath(item.path) === current
+    )
     if (folder?.allowedExtensions?.length) {
       return folder.allowedExtensions
     }

@@ -4,6 +4,14 @@ import type { FileStorageRow } from "./types"
 
 const STORAGE_UPLOADS_PREFIX = "/api/uploads/"
 
+function normalizePathSlashes(path: string): string {
+  return path.replace(/\\/g, "/")
+}
+
+function normalizePathNoTrailingSlash(path: string): string {
+  return normalizePathSlashes(path).replace(/\/$/, "")
+}
+
 function getApiOrigin(): string {
   const configured = process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL
   return configured.replace(/\/api\/?$/, "")
@@ -18,7 +26,7 @@ export function resolveStorageAssetUrl(row: StorageAssetRef): string {
     return raw
   }
   const apiOrigin = getApiOrigin()
-  const relative = row.relativePath.replace(/\\/g, "/").replace(/^\//, "")
+  const relative = normalizePathSlashes(row.relativePath).replace(/^\//, "")
   if (raw?.startsWith(STORAGE_UPLOADS_PREFIX)) {
     return `${apiOrigin}${raw}`
   }
@@ -76,7 +84,7 @@ export function storageZipEntryPath(
   used: Set<string>
 ): string {
   const relative =
-    row.relativePath.replace(/\\/g, "/").trim() ||
+    normalizePathSlashes(row.relativePath).trim() ||
     row.originalName?.trim() ||
     row.fileName?.trim() ||
     "file"
@@ -234,7 +242,7 @@ function normalizeFolderDiskPath(
   folderPath: string,
   realm: StorageRealmRef
 ): string {
-  const normalized = folderPath.replace(/\\/g, "/").replace(/\/$/, "")
+  const normalized = normalizePathNoTrailingSlash(folderPath)
   const root = storageRealmRoot(realm)
   if (normalized === root || normalized.startsWith(`${root}/`)) {
     return normalized
@@ -272,7 +280,7 @@ export function buildRealmFolderTree(
   const roots: StorageFolderTreeNode[] = []
   const nodeMap = new Map<string, StorageFolderTreeNode>()
   const folderByPath = new Map(
-    folders.map((folder) => [folder.path.replace(/\\/g, "/"), folder])
+    folders.map((folder) => [normalizePathSlashes(folder.path), folder])
   )
 
   for (const diskPath of diskPaths) {
@@ -309,12 +317,12 @@ export function buildStorageFolderTree(
   const roots: StorageFolderTreeNode[] = []
   const nodeMap = new Map<string, StorageFolderTreeNode>()
   const folderByPath = new Map(
-    folders.map((folder) => [folder.path.replace(/\\/g, "/"), folder])
+    folders.map((folder) => [normalizePathSlashes(folder.path), folder])
   )
 
   const sorted = [...folders].sort((a, b) => a.path.localeCompare(b.path))
   for (const folder of sorted) {
-    const parts = folder.path.replace(/\\/g, "/").split("/").filter(Boolean)
+    const parts = normalizePathSlashes(folder.path).split("/").filter(Boolean)
     let currentPath = ""
     let siblings = roots
 
@@ -382,7 +390,7 @@ export function expandStorageFolderAncestors(
   folderPath: string,
   expanded: Set<string>
 ): void {
-  const parts = folderPath.replace(/\\/g, "/").split("/").filter(Boolean)
+  const parts = normalizePathSlashes(folderPath).split("/").filter(Boolean)
   let current = ""
   for (let i = 0; i < parts.length - 1; i += 1) {
     const part = parts[i]
@@ -490,7 +498,7 @@ export function normalizeParentFolderDiskPath(
   realm: StorageRealmRef,
   folderPath: string
 ): string {
-  const fp = folderPath.trim().replace(/\\/g, "/").replace(/\/$/, "")
+  const fp = normalizePathNoTrailingSlash(folderPath.trim())
   if (!fp) return ""
   if (
     fp.startsWith("images/") ||
@@ -545,7 +553,7 @@ export function filterFoldersByRealm(
 ): StorageFolderRef[] {
   const root = storageRealmRoot(realm)
   return folders.filter((folder) => {
-    const path = folder.path.replace(/\\/g, "/")
+    const path = normalizePathSlashes(folder.path)
     if (realm === "images") {
       return (
         path.startsWith("images/") ||
@@ -578,11 +586,11 @@ export function filterStorageFoldersByQuery(
 
   const inRealm = filterFoldersByRealm(folders, realm)
   const matched = inRealm.filter((folder) => {
-    const path = normalizeFolderSearchText(folder.path.replace(/\\/g, "/"))
+    const path = normalizeFolderSearchText(normalizePathSlashes(folder.path))
     const name = normalizeFolderSearchText(folder.name)
     const label = normalizeFolderSearchText(folder.label ?? "")
     const leaf = normalizeFolderSearchText(
-      folder.path.replace(/\\/g, "/").split("/").pop() ?? ""
+      normalizePathSlashes(folder.path).split("/").pop() ?? ""
     )
     return (
       path.includes(q) ||
@@ -593,8 +601,8 @@ export function filterStorageFoldersByQuery(
   })
 
   matched.sort((a, b) => {
-    const aPath = a.path.replace(/\\/g, "/")
-    const bPath = b.path.replace(/\\/g, "/")
+    const aPath = normalizePathSlashes(a.path)
+    const bPath = normalizePathSlashes(b.path)
     const aLeaf = normalizeFolderSearchText(aPath.split("/").pop() ?? "")
     const bLeaf = normalizeFolderSearchText(bPath.split("/").pop() ?? "")
     const aExact = aLeaf === q ? 0 : 1
@@ -623,7 +631,7 @@ export function resolveFolderPathAfterCreate(
   folderPath: string,
   realm: StorageRealmRef
 ): string {
-  const parts = folderPath.replace(/\\/g, "/").split("/").filter(Boolean)
+  const parts = normalizePathSlashes(folderPath).split("/").filter(Boolean)
   if (!parts.length) return ""
 
   if (realm === "images") {
@@ -646,7 +654,7 @@ export function resolveFolderPathAfterCreate(
 export function inferFolderResourceType(
   folderPath: string
 ): "images" | "files" | "videos" | "audio" {
-  const normalized = folderPath.replace(/\\/g, "/").replace(/\/$/, "")
+  const normalized = normalizePathNoTrailingSlash(folderPath)
   if (normalized === "files" || normalized.startsWith("files/")) {
     return "files"
   }

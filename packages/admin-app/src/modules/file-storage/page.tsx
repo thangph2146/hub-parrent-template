@@ -51,13 +51,14 @@ import {
   StorageVideoPreview,
   useFileStorageActions,
   useFileStorageList,
+  normalizeFolderPath,
   type FileStorageRow,
   type StorageRealm,
 } from "./_component"
 import {
   isImageStorageRow,
-  resolveStorageAssetUrl,
   resolveFolderPathAfterCreate,
+  resolveStorageAssetUrl,
 } from "./_component/utils"
 
 const REALM_ORDER: StorageRealm[] = ["images", "files", "videos", "audio"]
@@ -72,7 +73,7 @@ const REALM_ICONS: Record<StorageRealm, typeof ImageIcon> = {
 function FileStoragePageInner() {
   const searchParams = useSearchParams()
   const queryRealm = searchParams.get("realm")
-  const queryFolder = searchParams.get("folder")?.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "") ?? ""
+  const queryFolder = normalizeFolderPath(searchParams.get("folder") ?? "")
   const initialRealm: StorageRealm =
     queryRealm && REALM_ORDER.includes(queryRealm as StorageRealm)
       ? (queryRealm as StorageRealm)

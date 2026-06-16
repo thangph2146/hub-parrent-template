@@ -26,36 +26,17 @@ import { FileStorageTable } from "./_table"
 import { useFileStorageActions, useFileStorageList } from "./_hooks"
 import type { FileStorageRow, StorageRealm } from "./types"
 import {
+  clampFolderPath,
+  normalizeFolderPath,
+  scopeFolderBreadcrumb,
+} from "./folder-domain"
+import {
   isImageStorageRow,
   resolveFolderPathAfterCreate,
   resolveStorageAssetUrl,
 } from "./utils"
 
 const UPLOAD_OWNER_FILTER_DEBOUNCE_MS = 400
-
-function normalizeRootFolderPath(path: string): string {
-  return path.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "")
-}
-
-function scopeBreadcrumb(
-  breadcrumb: Array<{ id: string; label: string }>,
-  rootFolderPath: string
-): Array<{ id: string; label: string }> {
-  const root = normalizeRootFolderPath(rootFolderPath)
-  if (!root) return breadcrumb
-  const idx = breadcrumb.findIndex((crumb) => crumb.id === root)
-  if (idx >= 0) return breadcrumb.slice(idx + 1)
-  return breadcrumb
-}
-
-function clampFolderPath(folderPath: string, rootFolderPath: string): string {
-  const root = normalizeRootFolderPath(rootFolderPath)
-  if (!root) return folderPath
-  const normalized = normalizeRootFolderPath(folderPath)
-  if (!normalized) return root
-  if (normalized === root || normalized.startsWith(`${root}/`)) return normalized
-  return root
-}
 
 export type FileStorageScopedBrowseProps = {
   realm?: StorageRealm
@@ -81,7 +62,7 @@ export function FileStorageScopedBrowse({
 }: FileStorageScopedBrowseProps) {
   const { user } = useAuth()
   const fileStoragePath = useAdminModulePath("file-storage")
-  const root = normalizeRootFolderPath(rootFolderPath)
+  const root = normalizeFolderPath(rootFolderPath)
 
   const canUpload = user
     ? canUserAccess(user, PERMISSION_CODES.UPLOADS_CREATE) ||
@@ -141,7 +122,7 @@ export function FileStorageScopedBrowse({
   )
 
   const scopedBreadcrumb = useMemo(
-    () => scopeBreadcrumb(breadcrumb, root),
+    () => scopeFolderBreadcrumb(breadcrumb, root),
     [breadcrumb, root]
   )
 
