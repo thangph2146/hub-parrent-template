@@ -272,24 +272,98 @@ export class HanetAdminService {
     return this.partner.updatePersonAliasId(body);
   }
 
-  removePerson(body: HanetPersonHubInput) {
-    return this.partner.removePerson(body);
+  async removePerson(body: HanetPersonHubInput) {
+    return this.removePersonById(body);
   }
 
-  removePersonByPlace(body: HanetPersonHubInput) {
-    return this.partner.removePersonByPlace(body);
+  async removePersonByPlace(body: HanetPersonHubInput) {
+    const aliasId = body.aliasId != null ? String(body.aliasId).trim() : '';
+    let data: unknown;
+    try {
+      data = await this.partner.removePersonByPlace(body);
+    } catch (error) {
+      if (aliasId && this.isHanetPersonGoneError(error)) {
+        data = { alreadyDeleted: true };
+      } else {
+        throw error;
+      }
+    }
+    const purgedLocal = aliasId
+      ? await this.avatarSync.purgeStoredPersons({ aliasIds: [aliasId] })
+      : 0;
+    return { ...(data as object), purgedLocal };
   }
 
-  removePersonsByAliasIds(body: HanetPersonHubInput) {
-    return this.partner.removePersonsByAliasIds(body);
+  async removePersonsByAliasIds(body: HanetPersonHubInput) {
+    const raw = body.aliasIds;
+    const aliasIds = Array.isArray(raw)
+      ? raw.map((id) => String(id).trim()).filter(Boolean)
+      : String(raw ?? '')
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean);
+    let data: unknown;
+    try {
+      data = await this.partner.removePersonsByAliasIds(body);
+    } catch (error) {
+      if (aliasIds.length && this.isHanetPersonGoneError(error)) {
+        data = { alreadyDeleted: true };
+      } else {
+        throw error;
+      }
+    }
+    const purgedLocal = aliasIds.length
+      ? await this.avatarSync.purgeStoredPersons({ aliasIds })
+      : 0;
+    return { ...(data as object), purgedLocal };
   }
 
-  removeAllPersonsInPlace(placeId?: string) {
-    return this.partner.removeAllPersonsInPlace(placeId);
+  async removeAllPersonsInPlace(placeId?: string) {
+    let data: unknown;
+    try {
+      data = await this.partner.removeAllPersonsInPlace(placeId);
+    } catch (error) {
+      if (this.isHanetPersonGoneError(error)) {
+        data = { alreadyDeleted: true };
+      } else {
+        throw error;
+      }
+    }
+    const purgedLocal = await this.avatarSync.purgeStoredPersons({ all: true });
+    return { ...(data as object), purgedLocal };
   }
 
-  removePersonById(body: HanetPersonHubInput) {
-    return this.partner.removePersonById(body);
+  async removePersonById(body: HanetPersonHubInput) {
+    const personId = body.personId != null ? String(body.personId).trim() : '';
+    let data: unknown;
+    try {
+      data = await this.partner.removePersonById(body);
+    } catch (error) {
+      if (personId && this.isHanetPersonGoneError(error)) {
+        data = { alreadyDeleted: true };
+      } else {
+        throw error;
+      }
+    }
+    const purgedLocal = personId
+      ? await this.avatarSync.purgeStoredPersons({ personIds: [personId] })
+      : 0;
+    return { ...(data as object), purgedLocal };
+  }
+
+  private isHanetPersonGoneError(error: unknown): boolean {
+    const message =
+      error instanceof BadRequestException
+        ? String(error.message)
+        : error instanceof Error
+          ? error.message
+          : String(error);
+    const lower = message.toLowerCase();
+    return (
+      lower.includes('person get error') ||
+      lower.includes('person not found') ||
+      lower.includes('not found')
+    );
   }
 
   getCheckinsByPlaceDay(placeId: string | undefined, date: string) {

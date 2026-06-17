@@ -16,7 +16,7 @@ import {
 
 /** Khớp cột preview file-storage / check-in HANET */
 const HANET_PERSON_PREVIEW_COLUMN_CLASS =
-  "w-[120px] min-w-[120px] max-w-[120px]"
+  "w-[50px] min-w-[50px] max-w-[50px]"
 
 const PERSON_PREVIEW_FRAME_CLASS =
   "flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border border-border bg-muted"
@@ -71,8 +71,8 @@ export function HanetPersonsTable({
         header: "Ảnh",
         enableColumnFilter: false,
         enableHiding: false,
-        size: 180,
-        minSize: 180,
+        size: 50,
+        minSize: 50,
         meta: {
           disableCellLineClamp: true,
           className: HANET_PERSON_PREVIEW_COLUMN_CLASS,

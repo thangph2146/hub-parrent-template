@@ -530,15 +530,6 @@ export class HanetPartnerService {
     return this.client.postPartner(path, params);
   }
 
-  private shouldFallbackToRemoveById(error: unknown): boolean {
-    const message =
-      error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
-    return (
-      message.includes("invalid input param") ||
-      message.includes("/person/remove")
-    );
-  }
-
   async registerPerson(input: HanetRegisterPersonInput) {
     this.assertReady();
     const placeId = await this.resolvePlaceId(input.placeId);
@@ -637,22 +628,7 @@ export class HanetPartnerService {
   }
 
   async removePerson(input: HanetPersonHubInput) {
-    this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
-    });
-    this.assertPersonParams(params, ['personID'], 'person/remove');
-    try {
-      return await this.postPerson('/person/remove', params);
-    } catch (error) {
-      if (!this.shouldFallbackToRemoveById(error)) {
-        throw error;
-      }
-      this.logger.warn(
-        `HANET /person/remove trả Invalid input param, fallback -> /person/removePersonByID (personID=${String(params.personID ?? '')})`,
-      );
-      return this.postPerson('/person/removePersonByID', params);
-    }
+    return this.removePersonById(input);
   }
 
   async removePersonByPlace(input: HanetPersonHubInput) {
@@ -688,36 +664,11 @@ export class HanetPartnerService {
 
   async removePersonById(input: HanetPersonHubInput) {
     this.assertReady();
-    const params = await this.buildPersonPartnerParams(input, {
-      requirePlace: true,
-    });
-    this.assertPersonParams(params, ['personID'], 'person/removePersonByID');
-    const variants = [params];
-    if (params.personID) {
-      variants.push({
-        ...params,
-        personId: String(params.personID),
-      });
+    const personID = input.personId?.trim();
+    if (!personID) {
+      throw new BadRequestException('Thiếu personID');
     }
-    if (params.placeID || params.personID) {
-      variants.push({
-        ...params,
-        ...(params.placeID ? { placeId: String(params.placeID) } : {}),
-        ...(params.personID ? { personId: String(params.personID) } : {}),
-      });
-    }
-    let lastError;
-    for (const payload of variants) {
-      try {
-        return await this.postPerson('/person/removePersonByID', payload);
-      } catch (error) {
-        lastError = error;
-        if (!this.shouldFallbackToRemoveById(error)) {
-          throw error;
-        }
-      }
-    }
-    throw lastError;
+    return this.postPerson('/person/removePersonByID', { personID });
   }
 
   async getListPersonByPlace(query: HanetPersonListQuery = {}) {
