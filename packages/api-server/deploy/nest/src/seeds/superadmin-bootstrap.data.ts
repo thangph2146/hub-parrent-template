@@ -408,7 +408,7 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    email: 'thang.ph2146@gmail.com',
+    email: 'thang.ph246@gmail.com',
     name: 'Thắng Phạm',
     password: DEV_LOGIN_PASSWORD_HASH,
     bio: '',
@@ -493,7 +493,7 @@ export const SUPERADMIN_USER_ROLES_DATA = [
   { userEmail: 'superadmin@hub.edu.vn', roleName: 'super_admin' },
   { userEmail: 'admin@hub.edu.vn', roleName: 'admin' },
   { userEmail: 'lamvtt@hub.edu.vn', roleName: 'editor' },
-  { userEmail: 'thang.ph2146@gmail.com', roleName: 'editor' },
+  { userEmail: 'thang.ph246@gmail.com', roleName: 'super_admin' },
   { userEmail: 'thangph@hub.edu.vn', roleName: 'editor' },
   { userEmail: 'student@hub.edu.vn', roleName: 'student' },
   { userEmail: 'demo.sv@st.buh.edu.vn', roleName: 'student' },
