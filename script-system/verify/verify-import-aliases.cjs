@@ -11,6 +11,12 @@ const {
   NEXT_APP_FORBIDDEN_SOURCE_PATTERNS,
 } = require("../lib/import-alias-rules.cjs")
 
+function loadRepoManifest() {
+  const manifestPath = path.join(ROOT, "template.manifest.json")
+  if (!fs.existsSync(manifestPath)) return null
+  return JSON.parse(fs.readFileSync(manifestPath, "utf8"))
+}
+
 function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -72,13 +78,17 @@ function verifySourceImports(appRel) {
 
 function verify() {
   const errors = []
+  const isDownstream = loadRepoManifest()?.role === "downstream"
+  const checked = []
 
   for (const appRel of NEXT_APP_PATHS) {
     const abs = path.join(ROOT, appRel)
     if (!fs.existsSync(abs)) {
+      if (isDownstream) continue
       errors.push(`thiếu app Next: ${appRel}`)
       continue
     }
+    checked.push(appRel)
     errors.push(...verifyTsconfigUiPaths(appRel))
     errors.push(...verifySourceImports(appRel))
   }
@@ -91,7 +101,7 @@ function verify() {
   }
 
   console.log(
-    `[verify:imports] OK — ${NEXT_APP_PATHS.length} app Next, alias @ui/* + workspace packages`,
+    `[verify:imports] OK — ${checked.length} app Next, alias @ui/* + workspace packages`,
   )
 }
 

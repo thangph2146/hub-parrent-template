@@ -11,10 +11,24 @@ const { API_ENV_PROFILES } = require("../env/api-env-profiles.cjs");
 
 const REQUIRED_MARKERS = ["ENV_TEMPLATE=", "ENV_STACK="]
 
+function loadRepoManifest() {
+  const manifestPath = path.join(ROOT, "template.manifest.json")
+  if (!fs.existsSync(manifestPath)) return null
+  return JSON.parse(fs.readFileSync(manifestPath, "utf8"))
+}
+
+function envAppsForRepo() {
+  const apps = allEnvApps()
+  const manifest = loadRepoManifest()
+  if (manifest?.role !== "downstream") return apps
+  return apps.filter((app) => fs.existsSync(path.join(ROOT, app.path)))
+}
+
 function verify() {
   const errors = []
+  const apps = envAppsForRepo()
 
-  for (const app of allEnvApps()) {
+  for (const app of apps) {
     const examplePath = path.join(ROOT, app.path, ".env.example")
     const rel = `${app.path}/.env.example`
 
@@ -74,7 +88,7 @@ function verify() {
   }
 
   console.log(
-    `[verify:env] OK — ${allEnvApps().length} app(s), marker ENV_TEMPLATE + ENV_STACK`,
+    `[verify:env] OK — ${apps.length} app(s), marker ENV_TEMPLATE + ENV_STACK`,
   )
 }
 
