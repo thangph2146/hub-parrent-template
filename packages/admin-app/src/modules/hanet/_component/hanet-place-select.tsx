@@ -5,12 +5,10 @@ import { Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@ui/components/button"
 import { DataTableToolbarField } from "@ui/components/data-table"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+  SelectPicker,
+  type SelectPickerOption,
+  type PickerSize,
+} from "@ui/components/pickers"
 import { cn } from "@ui/lib/utils"
 import { useHanetPlacesQuery } from "./use-hanet-places-query"
 import { HANET_ADMIN_PLACE_STORAGE_KEY } from "@workspace/admin-app/lib/hanet-place-storage"
@@ -41,6 +39,7 @@ export function HanetPlaceSelect({
   defaultPlaceId,
   disabled,
   layout = "inline",
+  pickerSize,
   className,
 }: {
   value: string
@@ -49,6 +48,8 @@ export function HanetPlaceSelect({
   disabled?: boolean
   /** `stacked` — label trên, dùng trong toolbar DataTable. */
   layout?: "inline" | "stacked"
+  /** Mặc định: `sm` khi stacked, `default` khi inline. */
+  pickerSize?: PickerSize
   className?: string
 }) {
   const selectId = useId()
@@ -69,6 +70,25 @@ export function HanetPlaceSelect({
       // ignore quota / private mode
     }
   }, [value])
+
+  const selectedPlaceId = value || resolvedDefault
+
+  const placeOptions = useMemo<SelectPickerOption[]>(
+    () =>
+      places.map((place) => ({
+        value: place.placeId,
+        label: place.name,
+        render: () => (
+          <>
+            {place.name}{" "}
+            <span className="font-mono text-xs text-muted-foreground">
+              ({place.placeId})
+            </span>
+          </>
+        ),
+      })),
+    [places]
+  )
 
   if (placesQuery.isLoading) {
     return (
@@ -120,38 +140,23 @@ export function HanetPlaceSelect({
     )
   }
 
-  const selectedPlaceId = value || resolvedDefault
-  const selectedPlace = places.find((p) => p.placeId === selectedPlaceId)
+  const resolvedPickerSize =
+    pickerSize ?? (layout === "stacked" ? "sm" : "default")
 
   const selectControl = (
-    <Select
+    <SelectPicker
+      id={selectId}
       value={selectedPlaceId}
-      onValueChange={(placeId) => {
-        if (placeId) onChange(placeId)
+      onChange={(placeId) => {
+        if (typeof placeId === "string" && placeId) onChange(placeId)
       }}
+      options={placeOptions}
+      placeholder="Chọn địa điểm"
       disabled={disabled}
-    >
-      <SelectTrigger
-        id={selectId}
-        className={cn(
-          layout === "stacked" ? "h-8 w-full" : "h-9 w-full max-w-xs"
-        )}
-      >
-        <SelectValue placeholder="Chọn địa điểm">
-          {selectedPlace?.name ?? null}
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent>
-        {places.map((place) => (
-          <SelectItem key={place.placeId} value={place.placeId}>
-            {place.name}{" "}
-            <span className="font-mono text-xs text-muted-foreground">
-              ({place.placeId})
-            </span>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      allowClear={false}
+      size={resolvedPickerSize}
+      className={layout === "stacked" ? "w-full" : "max-w-xs"}
+    />
   )
 
   if (layout === "stacked") {
@@ -159,7 +164,7 @@ export function HanetPlaceSelect({
       <DataTableToolbarField
         label="Địa điểm HANET"
         htmlFor={selectId}
-        className={cn("w-full max-w-xs sm:max-w-sm", className)}
+        className={cn("min-w-0", className)}
       >
         {selectControl}
       </DataTableToolbarField>

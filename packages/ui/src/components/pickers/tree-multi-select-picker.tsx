@@ -15,6 +15,8 @@ import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
 import {
+  pickerListOptionLabelClassName,
+  pickerListPopoverClassName,
   pickerTriggerClassName,
   type PickerSize,
 } from "./picker-trigger-styles"
@@ -71,7 +73,7 @@ function TreeMultiSelectItem({
       type="button"
       onClick={() => onSelect(value)}
       className={cn(
-        "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+        "flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-sm",
         isSelected && "bg-primary/10 font-medium text-primary",
         !isSelected && "cursor-pointer hover:bg-muted"
       )}
@@ -82,7 +84,7 @@ function TreeMultiSelectItem({
       ) : (
         <FileText className="size-4 shrink-0 text-muted-foreground" />
       )}
-      <span className="flex-1 truncate">{label}</span>
+      <span className={pickerListOptionLabelClassName}>{label}</span>
       {isSelected && <Check className="size-4 shrink-0" />}
     </button>
   )
@@ -218,7 +220,7 @@ export function TreeMultiSelectPicker({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-2" align="start">
+      <PopoverContent className={pickerListPopoverClassName()} align="start">
         {options.length === 0 ? (
           <p className="px-2 py-1 text-sm text-muted-foreground">
             Không có tùy chọn

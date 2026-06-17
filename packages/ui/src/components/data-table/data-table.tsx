@@ -1725,6 +1725,7 @@ export function AdminDataTable<TData>({
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.selectOptions ?? []}
+          placeholder={meta?.filterPlaceholder ?? "Tất cả"}
         />
       )
     }
@@ -1737,6 +1738,7 @@ export function AdminDataTable<TData>({
           value={col.getFilterValue()}
           onChange={(v: unknown) => col.setFilterValue(v)}
           options={meta?.selectOptions ?? []}
+          placeholder={meta?.filterPlaceholder ?? "Tất cả"}
         />
       )
     }

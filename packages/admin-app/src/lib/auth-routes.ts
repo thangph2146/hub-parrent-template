@@ -51,3 +51,12 @@ export function getAdminLoginExternalPath(
   const base = inferExternalAdminBase(pathname)
   return `${base}${AUTH_LOGIN_PATH}`
 }
+
+export function getAdminRegisterExternalPath(
+  pathname: string | null | undefined = typeof window !== "undefined"
+    ? window.location.pathname
+    : undefined
+): string {
+  const base = inferExternalAdminBase(pathname)
+  return `${base}${AUTH_REGISTER_PATH}`
+}

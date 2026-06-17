@@ -31,6 +31,7 @@ export function useAdminSiteBranding(options: {
   return {
     siteName: resolved?.siteName ?? "",
     siteDescription: resolved?.siteDescription ?? "",
+    authHeroImage: resolved?.authHeroImage ?? null,
     isReady: Boolean(data) || isFetched,
   }
 }

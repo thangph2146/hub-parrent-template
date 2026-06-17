@@ -10,6 +10,8 @@ export type HanetCheckinsTableProps = {
   data: HanetCheckinRow[]
   isLoading?: boolean
   emptyLabel?: string
+  /** Camera HANET của địa điểm — dropdown lọc cột deviceID. */
+  deviceSelectOptions?: { value: string; label: string }[]
   filterToolbarExtra?: ReactNode
   summaryLine?: string | null
 }
@@ -18,6 +20,7 @@ export function HanetCheckinsTable({
   data,
   isLoading = false,
   emptyLabel = "Chưa có dữ liệu check-in.",
+  deviceSelectOptions = [],
   filterToolbarExtra,
   summaryLine,
 }: HanetCheckinsTableProps) {
@@ -50,8 +53,12 @@ export function HanetCheckinsTable({
   )
 
   const columns = useMemo(
-    () => getHanetCheckinColumns({ onPreviewImage: openImagePreview }),
-    [openImagePreview],
+    () =>
+      getHanetCheckinColumns({
+        onPreviewImage: openImagePreview,
+        deviceSelectOptions,
+      }),
+    [openImagePreview, deviceSelectOptions],
   )
 
   return (

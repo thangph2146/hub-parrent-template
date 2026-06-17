@@ -31,10 +31,15 @@ export class SettingsService extends BaseSettingsService {
   }
 
   async getPublicBranding(): Promise<PublicSiteBranding> {
-    const [nameRow, descRow] = await Promise.all([
+    const [nameRow, descRow, heroRow] = await Promise.all([
       this.getByKey('site_name'),
       this.getByKey('site_description'),
+      this.getByKey('admin_login_hero_image'),
     ]);
+
+    const heroValue = heroRow?.value
+      ? parseSettingValue(heroRow.value, '')
+      : '';
 
     return {
       siteName: parseSettingValue(
@@ -45,6 +50,7 @@ export class SettingsService extends BaseSettingsService {
         descRow?.value,
         PUBLIC_BRANDING_DEFAULTS.siteDescription,
       ),
+      authHeroImage: heroValue.trim() || null,
     };
   }
 }

@@ -4,6 +4,7 @@ import {
   CHECKIN_ADMIN_HOME_PATH,
   CHECKIN_ADMIN_LOGIN_PATH,
   CHECKIN_ADMIN_PROFILE_PATH,
+  CHECKIN_ADMIN_REGISTER_PATH,
   canAccessCheckinAdmin,
 } from "@/config/admin/checkin-admin-access"
 import { ADMIN_SESSION_EVENT, clearAdminSession } from "@/lib/admin/auth-session"
@@ -12,6 +13,7 @@ import { isCheckinAdminAuthPath } from "@/lib/admin/auth-routes"
 export const CHECKIN_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   menuTree: CHECKIN_ADMIN_MENU_TREE,
   loginPath: CHECKIN_ADMIN_LOGIN_PATH,
+  registerPath: CHECKIN_ADMIN_REGISTER_PATH,
   isAuthPath: isCheckinAdminAuthPath,
   canAccessApp: canAccessCheckinAdmin,
   clearSession: clearAdminSession,

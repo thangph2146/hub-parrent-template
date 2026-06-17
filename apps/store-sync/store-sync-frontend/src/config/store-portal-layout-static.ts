@@ -22,6 +22,7 @@ export function clearStorePortalSession(): void {
 export const STORE_PORTAL_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   menuTree: STORE_PORTAL_MENU_TREE,
   loginPath: "/login",
+  registerPath: "/register",
   isAuthPath: isStoreAuthPath,
   canAccessApp: canAccessStorePortal,
   clearSession: clearStorePortalSession,

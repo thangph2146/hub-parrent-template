@@ -34,6 +34,7 @@ import {
 } from "@workspace/api-client"
 import { useAdminAuth as useAuth, useAdminPath } from "@workspace/admin-app/runtime"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
+import { resolveAdminOperationError } from "@ui/lib/admin-operation-error"
 import {
   extractSettingValue,
   getSettingsDisplayPreset,
@@ -192,6 +193,7 @@ export default function SettingsPage() {
 
   const [siteName, setSiteName] = useState("")
   const [siteDesc, setSiteDesc] = useState("")
+  const [loginHeroImage, setLoginHeroImage] = useState("")
   const [defaultRole, setDefaultRole] = useState("")
   const [seoTitle, setSeoTitle] = useState("")
   const [seoDescription, setSeoDescription] = useState("")
@@ -201,23 +203,18 @@ export default function SettingsPage() {
   const [seoOgImage, setSeoOgImage] = useState("")
 
   useEffect(() => {
-    const branding = publicBrandingQuery.data
-    if (!branding) return
-    setSiteName((prev) => (prev === "" ? branding.siteName : prev))
-    setSiteDesc((prev) => (prev === "" ? branding.siteDescription : prev))
-  }, [publicBrandingQuery.data])
-
-  useEffect(() => {
     if (
       !siteNameQuery.isSuccess ||
       !siteDescQuery.isSuccess ||
-      !defaultRoleQuery.isSuccess
+      !defaultRoleQuery.isSuccess ||
+      !publicBrandingQuery.isSuccess
     ) {
       return
     }
     setSiteName(siteNameQuery.data ?? "")
     setSiteDesc(siteDescQuery.data ?? "")
     setDefaultRole(defaultRoleQuery.data ?? "")
+    setLoginHeroImage(publicBrandingQuery.data?.authHeroImage ?? "")
   }, [
     siteNameQuery.isSuccess,
     siteNameQuery.data,
@@ -225,6 +222,8 @@ export default function SettingsPage() {
     siteDescQuery.data,
     defaultRoleQuery.isSuccess,
     defaultRoleQuery.data,
+    publicBrandingQuery.isSuccess,
+    publicBrandingQuery.data,
   ])
 
   useEffect(() => {
@@ -253,8 +252,11 @@ export default function SettingsPage() {
 
   const displayTabLoading =
     canManageSettings &&
-    (siteNameQuery.isPending || siteDescQuery.isPending) &&
-    publicBrandingQuery.isPending
+    (publicBrandingQuery.isPending ||
+      siteNameQuery.isPending ||
+      siteDescQuery.isPending ||
+      defaultRoleQuery.isPending ||
+      rolesQuery.isPending)
 
   const seoGlobalTabLoading =
     (canManageSettings || canViewSeo) &&
@@ -269,7 +271,8 @@ export default function SettingsPage() {
   const displayDirty =
     siteName !== (siteNameQuery.data ?? "") ||
     siteDesc !== (siteDescQuery.data ?? "") ||
-    defaultRole !== (defaultRoleQuery.data ?? "")
+    defaultRole !== (defaultRoleQuery.data ?? "") ||
+    loginHeroImage !== (publicBrandingQuery.data?.authHeroImage ?? "")
 
   const siteSeoBaseline = siteSeoQuery.data
   const seoGlobalDirty =
@@ -303,18 +306,21 @@ export default function SettingsPage() {
     toast: {
       loading: "Đang lưu cài đặt…",
       success: "Đã lưu cài đặt hiển thị",
-      error: "Không lưu được cài đặt",
+      error: (err) =>
+        `Không lưu được cài đặt: ${resolveAdminOperationError(err)}`,
     },
     mutationFn: async () =>
       api.settings.update({
         site_name: siteName,
         site_description: siteDesc,
         default_new_user_role: defaultRole,
+        admin_login_hero_image: loginHeroImage.trim() || "",
       }),
     onSuccess: async () => {
       queryClient.setQueryData(ADMIN_PUBLIC_BRANDING_QUERY_KEY, {
         siteName: siteName.trim(),
         siteDescription: siteDesc.trim(),
+        authHeroImage: loginHeroImage.trim() || null,
       })
       await Promise.all([
         queryClient.refetchQueries({
@@ -331,7 +337,8 @@ export default function SettingsPage() {
     toast: {
       loading: "Đang lưu SEO mặc định…",
       success: "Đã lưu SEO mặc định toàn site",
-      error: "Không lưu được SEO mặc định",
+      error: (err) =>
+        `Không lưu được SEO mặc định: ${resolveAdminOperationError(err)}`,
     },
     mutationFn: async () =>
       api.seoMetas.upsertByPage<{
@@ -531,6 +538,24 @@ export default function SettingsPage() {
                               onChange={(e) => setSiteDesc(e.target.value)}
                               placeholder="Quản trị hệ thống"
                             />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="login-hero-image">
+                              Ảnh trang đăng nhập
+                            </Label>
+                            <Input
+                              id="login-hero-image"
+                              value={loginHeroImage}
+                              onChange={(e) =>
+                                setLoginHeroImage(e.target.value)
+                              }
+                              placeholder="https://… (để trống dùng ảnh SEO hoặc mặc định)"
+                            />
+                            <TypographyPSmallMuted>
+                              URL ảnh panel bên phải màn đăng nhập admin. Nếu
+                              để trống, hệ thống dùng ảnh OG trong tab SEO
+                              toàn site.
+                            </TypographyPSmallMuted>
                           </div>
                         </div>
                         <Separator />

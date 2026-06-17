@@ -66,9 +66,10 @@ export function ParentAdminLayoutProvider({
         clientReady,
         logout,
         branding,
+        siteSeo,
         static: PARENT_ADMIN_LAYOUT_STATIC,
       }),
-    [branding, clientReady, logout, user],
+    [branding, clientReady, logout, siteSeo, user],
   )
 
   return (

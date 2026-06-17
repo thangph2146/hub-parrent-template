@@ -417,7 +417,12 @@ export class ApiClient {
 const extractMessage = (payload: unknown): string | undefined => {
   if (!payload || typeof payload !== "object") return undefined
   const record = payload as Record<string, unknown>
-  if (typeof record.message === "string") return record.message
+  if (typeof record.message === "string" && record.message.trim()) {
+    return record.message.trim()
+  }
   if (Array.isArray(record.message)) return record.message.join(", ")
+  if (typeof record.error === "string" && record.error.trim()) {
+    return record.error.trim()
+  }
   return undefined
 }

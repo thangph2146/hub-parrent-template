@@ -7,6 +7,8 @@ import { Button } from "../button"
 import { Popover, PopoverContent, PopoverTrigger } from "../popover"
 import { cn } from "../../lib/utils"
 import {
+  pickerListOptionLabelClassName,
+  pickerListPopoverClassName,
   pickerTriggerClassName,
   type PickerSize,
 } from "./picker-trigger-styles"
@@ -25,6 +27,9 @@ export interface SelectPickerProps {
   id?: string
   size?: PickerSize
   className?: string
+  disabled?: boolean
+  /** Mặc định `true` — hiện mục xóa lựa chọn (placeholder) ở đầu danh sách. */
+  allowClear?: boolean
 }
 
 export function SelectPicker({
@@ -35,6 +40,8 @@ export function SelectPicker({
   id,
   size = "default",
   className,
+  disabled = false,
+  allowClear = true,
 }: SelectPickerProps) {
   const [open, setOpen] = useState(false)
   const selected = typeof value === "string" ? value : ""
@@ -51,34 +58,39 @@ export function SelectPicker({
           type="button"
           variant="outline"
           id={id}
+          disabled={disabled}
           className={pickerTriggerClassName(size, className)}
         >
           <span className="truncate">{selectedLabel}</span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-2" align="start">
+      <PopoverContent className={pickerListPopoverClassName()} align="start">
         {options.length === 0 ? (
           <p className="px-2 py-1 text-sm text-muted-foreground">
             Không có tùy chọn
           </p>
         ) : (
           <div className="max-h-[min(60vh,18rem)] space-y-0.5 overflow-y-auto">
-            <button
-              type="button"
-              onClick={() => {
-                onChange(undefined)
-                setOpen(false)
-              }}
-              className={cn(
-                "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
-                !selected && "bg-primary/10 font-medium text-primary",
-                selected && "cursor-pointer hover:bg-muted"
-              )}
-            >
-              <span className="flex-1 truncate">{placeholder}</span>
-              {!selected && <Check className="size-4 shrink-0" />}
-            </button>
+            {allowClear ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(undefined)
+                  setOpen(false)
+                }}
+                className={cn(
+                  "flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+                  !selected && "bg-primary/10 font-medium text-primary",
+                  selected && "cursor-pointer hover:bg-muted"
+                )}
+              >
+                <span className={pickerListOptionLabelClassName}>
+                  {placeholder}
+                </span>
+                {!selected && <Check className="size-4 shrink-0" />}
+              </button>
+            ) : null}
             {options.map((o) => {
               const isSelected = selected === o.value
               return (
@@ -90,12 +102,12 @@ export function SelectPicker({
                     setOpen(false)
                   }}
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+                    "flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-sm",
                     isSelected && "bg-primary/10 font-medium text-primary",
                     !isSelected && "cursor-pointer hover:bg-muted"
                   )}
                 >
-                  <span className="flex-1 truncate">
+                  <span className={pickerListOptionLabelClassName}>
                     {o.render ? o.render() : o.label}
                   </span>
                   {isSelected && <Check className="size-4 shrink-0" />}

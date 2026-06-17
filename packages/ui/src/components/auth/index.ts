@@ -12,7 +12,11 @@ export { DevLoginAccountField } from "./dev-login-account-field"
 export type { DevLoginAccountFieldProps } from "./dev-login-account-field"
 export {
   formatDevLoginOptionPrimary,
+  formatDevLoginOptionRoleLabels,
   formatDevLoginOptionSecondary,
+  formatDevLoginOptionTriggerLabel,
   resolveDevLoginOption,
 } from "./dev-login-utils"
+export { DevLoginOptionRow } from "./dev-login-option-row"
+export type { DevLoginOptionRowProps } from "./dev-login-option-row"
 export { useDevLoginOptions } from "./use-dev-login-options"

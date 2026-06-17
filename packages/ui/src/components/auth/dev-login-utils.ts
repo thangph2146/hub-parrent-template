@@ -14,8 +14,20 @@ export function formatDevLoginOptionPrimary(option: DevLoginOption): string {
   return option.name?.trim() || option.email
 }
 
+export function formatDevLoginOptionRoleLabels(option: DevLoginOption): string[] {
+  return (option.roleLabels ?? []).map((label) => label.trim()).filter(Boolean)
+}
+
+/** Nhãn trigger — tên + vai trò ngắn gọn. */
+export function formatDevLoginOptionTriggerLabel(option: DevLoginOption): string {
+  const primary = formatDevLoginOptionPrimary(option)
+  const roles = formatDevLoginOptionRoleLabels(option)
+  if (roles.length === 0) return primary
+  return `${primary} — ${roles.join(", ")}`
+}
+
 export function formatDevLoginOptionSecondary(option: DevLoginOption): string {
-  const labels = option.roleLabels ?? []
+  const labels = formatDevLoginOptionRoleLabels(option)
   const roles = labels.length > 0 ? ` · ${labels.join(", ")}` : ""
   return `${option.email}${roles}`
 }

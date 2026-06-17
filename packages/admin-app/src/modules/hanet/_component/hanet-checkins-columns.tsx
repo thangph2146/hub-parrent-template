@@ -16,6 +16,41 @@ const CHECKIN_PREVIEW_FRAME_CLASS =
 
 export type HanetCheckinColumnsOptions = {
   onPreviewImage?: (row: HanetCheckinRow) => void
+  /** Danh sách camera HANET — dùng cho `filterVariant: select` trên cột deviceID. */
+  deviceSelectOptions?: { value: string; label: string }[]
+}
+
+/** Chuỗi hiển thị `checkinAt` (vi-VN) → `YYYY-MM-DD` cho date-range filter. */
+function parseHanetCheckinDisplayDate(value: unknown): string | null {
+  const text = String(value ?? "").trim()
+  if (!text || text === "—") return null
+
+  const viMatch = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)
+  if (viMatch) {
+    const [, dd, mm, yyyy] = viMatch
+    return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10)
+
+  const parsed = new Date(text)
+  return Number.isNaN(parsed.getTime())
+    ? null
+    : parsed.toISOString().slice(0, 10)
+}
+
+function hanetCheckinDateRangeFilterFn(
+  row: { getValue: (columnId: string) => unknown },
+  columnId: string,
+  filterValue: unknown,
+): boolean {
+  if (filterValue == null || filterValue === "") return true
+  const rowDate = parseHanetCheckinDisplayDate(row.getValue(columnId))
+  if (!rowDate) return false
+  const [fromStr = "", toStr = ""] = String(filterValue).split(",")
+  if (fromStr && rowDate < fromStr) return false
+  if (toStr && rowDate > toStr) return false
+  return true
 }
 
 export function getHanetCheckinColumns(
@@ -89,10 +124,12 @@ export function getHanetCheckinColumns(
       header: "Thời gian",
       enableColumnFilter: true,
       meta: {
-        filterPlaceholder: "Lọc thời gian…",
+        filterVariant: "date-range",
+        filterPlaceholder: "Chọn khoảng ngày",
         disableCellLineClamp: true,
         className: "py-2",
       },
+      filterFn: hanetCheckinDateRangeFilterFn,
       size: 168,
       cell: ({ getValue }) => {
         const value = String(getValue() ?? "").trim() || "—"
@@ -112,6 +149,7 @@ export function getHanetCheckinColumns(
       header: "Tên",
       enableColumnFilter: true,
       meta: {
+        filterVariant: "text",
         filterPlaceholder: "Lọc tên…",
         disableCellLineClamp: true,
         className: "py-2",
@@ -137,6 +175,7 @@ export function getHanetCheckinColumns(
       header: "aliasID",
       enableColumnFilter: true,
       meta: {
+        filterVariant: "text",
         filterPlaceholder: "Lọc aliasID…",
         disableCellLineClamp: true,
         className: "py-2",
@@ -158,6 +197,7 @@ export function getHanetCheckinColumns(
       header: "personID",
       enableColumnFilter: true,
       meta: {
+        filterVariant: "text",
         filterPlaceholder: "Lọc personID…",
         disableCellLineClamp: true,
         className: "py-2",
@@ -179,9 +219,15 @@ export function getHanetCheckinColumns(
       header: "deviceID",
       enableColumnFilter: true,
       meta: {
-        filterPlaceholder: "Lọc deviceID…",
+        filterVariant: "select",
+        filterPlaceholder: "Tất cả thiết bị",
+        selectOptions: options?.deviceSelectOptions ?? [],
         disableCellLineClamp: true,
         className: "py-2",
+      },
+      filterFn: (row, columnId, filterValue) => {
+        if (filterValue == null || filterValue === "") return true
+        return String(row.getValue(columnId) ?? "") === String(filterValue)
       },
       size: 160,
       cell: ({ row }) => {

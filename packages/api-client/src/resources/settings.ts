@@ -25,7 +25,7 @@ export class SettingsApi {
   }
 
   async getPublicBranding<
-    T = { siteName: string; siteDescription: string },
+    T = { siteName: string; siteDescription: string; authHeroImage: string | null },
   >(options?: Parameters<ApiClient["get"]>[1]): Promise<T> {
     return getData<T>(this.http, "/public/site-branding", options);
   }

@@ -15,12 +15,40 @@ import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-ty
 export type PublicSiteBranding = {
   siteName: string;
   siteDescription: string;
+  authHeroImage: string | null;
 };
 
 const PUBLIC_BRANDING_DEFAULTS: PublicSiteBranding = {
   siteName: 'HUB',
   siteDescription: 'Quan tri he thong',
+  authHeroImage: null,
 };
+
+function parseOptionalSettingString(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed || null;
+  }
+  if (value && typeof value === 'object' && 'value' in value) {
+    return parseOptionalSettingString((value as { value?: unknown }).value);
+  }
+  return null;
+}
+
+/** MikroORM `json` không chấp nhận `null` — chuẩn hóa trước khi ghi DB. */
+function normalizeSettingWriteValue(
+  value: unknown,
+  hasExistingRow: boolean,
+): unknown | null {
+  if (!hasExistingRow) {
+    if (value === null || value === undefined) return null;
+    if (typeof value === 'string' && !value.trim()) return null;
+    return value;
+  }
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string' && !value.trim()) return '';
+  return value;
+}
 
 function parseSettingString(value: unknown, fallback: string): string {
   if (typeof value === 'string') {
@@ -146,9 +174,10 @@ export abstract class BaseSettingsService extends BaseCrudService<
   }
 
   async getPublicBranding(): Promise<PublicSiteBranding> {
-    const [siteNameRow, siteDescriptionRow] = await Promise.all([
+    const [siteNameRow, siteDescriptionRow, heroRow] = await Promise.all([
       this.getByKey('site_name'),
       this.getByKey('site_description'),
+      this.getByKey('admin_login_hero_image'),
     ]);
 
     return {
@@ -160,6 +189,7 @@ export abstract class BaseSettingsService extends BaseCrudService<
         siteDescriptionRow?.value,
         PUBLIC_BRANDING_DEFAULTS.siteDescription,
       ),
+      authHeroImage: parseOptionalSettingString(heroRow?.value),
     };
   }
 
@@ -175,15 +205,18 @@ export abstract class BaseSettingsService extends BaseCrudService<
         key,
       } as FilterQuery<Record<string, unknown>>);
 
+      const writeValue = normalizeSettingWriteValue(value, Boolean(existing));
+      if (writeValue === null) continue;
+
       if (existing) {
-        (existing as Record<string, unknown>).value = value;
+        (existing as Record<string, unknown>).value = writeValue;
         results.push(this.mapRow(existing as Record<string, unknown>));
         continue;
       }
 
       const created = new Entity() as Record<string, unknown>;
       created.key = key;
-      created.value = value;
+      created.value = writeValue;
       created.group = 'general';
       em.persist(created);
       results.push(this.mapRow(created));
@@ -201,15 +234,29 @@ export abstract class BaseSettingsService extends BaseCrudService<
       key: normalizedKey,
     } as FilterQuery<Record<string, unknown>>);
 
+    const writeValue = normalizeSettingWriteValue(value, Boolean(existing));
+    if (writeValue === null) {
+      const now = new Date();
+      return {
+        id: '',
+        key: normalizedKey,
+        value: '',
+        group: 'general',
+        createdAt: now,
+        updatedAt: now,
+        isActive: true,
+      };
+    }
+
     if (existing) {
-      (existing as Record<string, unknown>).value = value;
+      (existing as Record<string, unknown>).value = writeValue;
       await em.flush();
       return this.mapRow(existing as Record<string, unknown>);
     }
 
     const created = new Entity() as Record<string, unknown>;
     created.key = normalizedKey;
-    created.value = value;
+    created.value = writeValue;
     created.group = 'general';
     em.persist(created);
     await em.flush();

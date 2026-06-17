@@ -21,6 +21,9 @@ export interface DatePickerProps {
   toYear?: number
   size?: PickerSize
   className?: string
+  disabled?: boolean
+  /** Mặc định `true`. */
+  allowClear?: boolean
 }
 
 function formatIsoDate(d: Date): string {
@@ -59,6 +62,8 @@ export function DatePicker({
   toYear,
   size = "default",
   className,
+  disabled = false,
+  allowClear = true,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
 
@@ -97,6 +102,7 @@ export function DatePicker({
           type="button"
           variant="outline"
           id={id}
+          disabled={disabled}
           className={pickerTriggerClassName(size, className)}
         >
           <span className="truncate">{displayLabel}</span>
@@ -118,7 +124,7 @@ export function DatePicker({
           }}
           initialFocus
         />
-        {dateValue && (
+        {dateValue && allowClear ? (
           <div className="mt-2 border-t pt-2">
             <Button
               type="button"
@@ -133,7 +139,7 @@ export function DatePicker({
               Xóa ngày
             </Button>
           </div>
-        )}
+        ) : null}
       </PopoverContent>
     </Popover>
   )

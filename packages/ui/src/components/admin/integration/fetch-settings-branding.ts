@@ -35,6 +35,12 @@ function extractPublicBranding(
       typeof payload.siteDescription === "string"
         ? payload.siteDescription
         : defaults.siteDescription,
+    authHeroImage:
+      typeof payload.authHeroImage === "string"
+        ? payload.authHeroImage.trim() || null
+        : payload.authHeroImage === null
+          ? null
+          : (defaults.authHeroImage ?? null),
   }
 }
 

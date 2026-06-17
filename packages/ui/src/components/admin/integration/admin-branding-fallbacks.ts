@@ -4,4 +4,5 @@ import type { AdminSiteBranding } from "../types"
 export const ADMIN_BRANDING_FALLBACK: AdminSiteBranding = {
   siteName: "HUB",
   siteDescription: "Quản trị hệ thống",
+  authHeroImage: null,
 }

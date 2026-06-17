@@ -66,9 +66,10 @@ export function StoreAdminLayoutProvider({
         clientReady,
         logout,
         branding,
+        siteSeo,
         static: STORE_ADMIN_LAYOUT_STATIC,
       }),
-    [branding, clientReady, logout, user],
+    [branding, clientReady, logout, siteSeo, user],
   )
 
   return (

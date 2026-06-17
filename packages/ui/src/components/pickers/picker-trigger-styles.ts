@@ -14,3 +14,15 @@ export function pickerTriggerClassName(
     className
   )
 }
+
+/** Popover danh sách — khớp chiều rộng trigger (Base UI `--anchor-width`). */
+export function pickerListPopoverClassName(className?: string) {
+  return cn(
+    "w-(--anchor-width) min-w-(--anchor-width) max-w-(--available-width) max-h-(--available-height) overflow-x-hidden p-2",
+    className
+  )
+}
+
+/** Nhãn mục trong danh sách — cho phép xuống dòng khi nội dung dài. */
+export const pickerListOptionLabelClassName =
+  "min-w-0 flex-1 whitespace-normal break-words text-left"

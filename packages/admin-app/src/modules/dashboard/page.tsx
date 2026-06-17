@@ -1,13 +1,14 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { LayoutDashboard, TrendingUp } from "lucide-react"
+import { AlertCircle, LayoutDashboard, TrendingUp } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import {
   AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
 } from "@ui/components/admin"
+import { Skeleton } from "@ui/components/skeleton"
 import { useAdminAuth, useAdminApp } from "@workspace/admin-app/runtime"
 import { api } from "@workspace/admin-app/lib/api"
 import type { DashboardStatsDto } from "@workspace/admin-app/types/dashboard"
@@ -43,10 +44,13 @@ export default function AdminDashboardPage() {
   const displayName = user?.name?.trim() || user?.email || "Người dùng"
   const subtitleText = dashboard?.subtitle ?? DEFAULT_SUBTITLE
 
-  const { data } = useQuery<DashboardStatsDto>({
+  const { data, error, isPending, refetch } = useQuery<DashboardStatsDto>({
     queryKey: ["dashboard", "stats"],
     queryFn: async () => api.dashboard.stats(),
   })
+
+  const monthlyData = data?.monthlyData ?? []
+  const hasMonthlyData = monthlyData.length > 0
 
   return (
     <AdminPageGuard>
@@ -64,15 +68,38 @@ export default function AdminDashboardPage() {
           }
           icon={LayoutDashboard}
         />
-        {data && (data.monthlyData?.length ?? 0) > 0 && (
+        {error ? (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-destructive">
+            <AlertCircle className="mb-2 size-5" aria-hidden />
+            <p className="text-sm font-medium">
+              Không tải được thống kê dashboard.
+            </p>
+            <p className="mt-1 text-sm opacity-90">{error.message}</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-3 text-sm font-medium underline underline-offset-2"
+            >
+              Thử lại
+            </button>
+          </div>
+        ) : isPending ? (
+          <div className="space-y-4">
+            <Skeleton className="h-5 w-40" />
+            <div className="grid gap-4 lg:grid-cols-2">
+              <Skeleton className="h-80 rounded-xl" />
+              <Skeleton className="h-80 rounded-xl" />
+            </div>
+          </div>
+        ) : hasMonthlyData ? (
           <div className="space-y-4">
             <div className="mb-1 flex items-center gap-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
               <TrendingUp className="size-4" aria-hidden />
               Biểu đồ thống kê
             </div>
             <div className="grid gap-4 lg:grid-cols-2">
-              <MonthlyLineChart data={data.monthlyData} />
-              <MonthlyBarChart data={data.monthlyData} />
+              <MonthlyLineChart data={monthlyData} />
+              <MonthlyBarChart data={monthlyData} />
             </div>
             <div className="grid gap-4 lg:grid-cols-2">
               {(data.categoryData?.length ?? 0) > 0 && (
@@ -83,6 +110,10 @@ export default function AdminDashboardPage() {
               )}
             </div>
           </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Chưa có dữ liệu thống kê theo tháng.
+          </p>
         )}
       </AdminPageSection>
     </AdminPageGuard>

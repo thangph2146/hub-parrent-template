@@ -4,6 +4,7 @@ import {
   PARENT_ADMIN_HOME_PATH,
   PARENT_ADMIN_LOGIN_PATH,
   PARENT_ADMIN_PROFILE_PATH,
+  PARENT_ADMIN_REGISTER_PATH,
   canAccessParentAdmin,
 } from "@/config/admin/parent-admin-access"
 import { ADMIN_SESSION_EVENT, clearAdminSession } from "@/lib/admin/auth-session"
@@ -12,6 +13,7 @@ import { isParentAdminAuthPath } from "@/lib/admin/auth-routes"
 export const PARENT_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   menuTree: PARENT_ADMIN_MENU_TREE,
   loginPath: PARENT_ADMIN_LOGIN_PATH,
+  registerPath: PARENT_ADMIN_REGISTER_PATH,
   isAuthPath: isParentAdminAuthPath,
   canAccessApp: canAccessParentAdmin,
   clearSession: clearAdminSession,

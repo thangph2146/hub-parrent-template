@@ -12,13 +12,7 @@ import {
 } from "@ui/components/dialog"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+import { SelectPicker } from "@ui/components/pickers"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { api } from "@workspace/admin-app/lib/api"
 import {
@@ -165,22 +159,20 @@ export function HanetPlaceFormDialog({
           {!isEdit ? (
             <div className="space-y-1.5">
               <Label>Loại địa điểm</Label>
-              <Select
+              <SelectPicker
                 value={placeType}
-                onValueChange={(value) => setPlaceType(value ?? "0")}
+                onChange={(value) =>
+                  setPlaceType(typeof value === "string" ? value : "0")
+                }
+                options={PLACE_TYPE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: option.label,
+                }))}
+                placeholder="Chọn loại"
                 disabled={mutation.isPending}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn loại" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PLACE_TYPE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                allowClear={false}
+                className="w-full"
+              />
             </div>
           ) : null}
 

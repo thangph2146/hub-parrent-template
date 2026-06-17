@@ -60,9 +60,10 @@ export function BackendAdminLayoutProvider({
         clientReady,
         logout,
         branding,
+        siteSeo,
         static: BACKEND_ADMIN_LAYOUT_STATIC,
       }),
-    [branding, clientReady, logout, user]
+    [branding, clientReady, logout, siteSeo, user]
   )
 
   return (

@@ -7,6 +7,12 @@ import {
 } from "@tanstack/react-query"
 import { toast } from "./hub-toast"
 import { suppressRealtimeToastAfterMutation } from "./admin-toast-suppress"
+import {
+  buildAdminOperationErrorToast,
+  resolveAdminOperationError,
+} from "./admin-operation-error"
+
+export { resolveAdminOperationError, formatAdminOperationErrorDetails } from "./admin-operation-error"
 
 export type AdminOperationToastMessages<
   TData = unknown,
@@ -55,15 +61,6 @@ function resolveMessage(
   return typeof message === "function"
     ? (message as (...a: unknown[]) => string)(...args)
     : message
-}
-
-export function resolveAdminOperationError(err: unknown): string {
-  if (err instanceof Error && err.message.trim()) return err.message.trim()
-  if (typeof err === "object" && err !== null && "message" in err) {
-    const message = (err as { message: unknown }).message
-    if (typeof message === "string" && message.trim()) return message.trim()
-  }
-  return "Không thực hiện được thao tác"
 }
 
 export function adminToastMeta<
@@ -124,13 +121,18 @@ export function createAdminMutationCache(): MutationCache {
       const adminToast = getAdminToastMeta(mutation)
       if (!adminToast) return
       const id = toastIds.get(mutation)
-      const message = adminToast.error
+      const title = adminToast.error
         ? resolveMessage(adminToast.error, error, variables)
         : resolveAdminOperationError(error)
+      const { message, description } = buildAdminOperationErrorToast(
+        error,
+        title,
+      )
+      const toastOptions = description ? { description } : undefined
       if (id != null) {
-        toast.error(message, { id })
+        toast.error(message, { id, ...toastOptions })
       } else {
-        toast.error(message)
+        toast.error(message, toastOptions)
       }
       toastIds.delete(mutation)
     },

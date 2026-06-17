@@ -7,12 +7,9 @@ import { cn } from "../../lib/utils"
 import { Field, FieldLabel } from "../field"
 import { Label } from "../label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../select"
+  SelectPicker,
+  type SelectPickerOption,
+} from "../pickers"
 import {
   DEV_LOGIN_EMPTY_PLACEHOLDER,
   DEV_LOGIN_FIELD_DESCRIPTION,
@@ -23,9 +20,9 @@ import {
   DEV_LOGIN_SELECT_PLACEHOLDER,
   isDevLoginEnabled,
 } from "./dev-login-constants"
+import { DevLoginOptionRow } from "./dev-login-option-row"
 import {
-  formatDevLoginOptionPrimary,
-  formatDevLoginOptionSecondary,
+  formatDevLoginOptionTriggerLabel,
   resolveDevLoginOption,
 } from "./dev-login-utils"
 
@@ -65,78 +62,54 @@ export function DevLoginAccountField({
   const selectedOption = resolveDevLoginOption(options, value)
   const selectValue = value || (allowManual ? manualValue : "")
 
-  const selectItems = useMemo(() => {
-    const items: Array<{ value: string; label: string }> = []
+  const pickerOptions = useMemo((): SelectPickerOption[] => {
+    const items: SelectPickerOption[] = []
     if (allowManual) {
       items.push({ value: manualValue, label: manualLabel })
     }
     for (const option of options) {
       items.push({
         value: String(option.id),
-        label: formatDevLoginOptionPrimary(option),
+        label: formatDevLoginOptionTriggerLabel(option),
+        render: () => <DevLoginOptionRow option={option} />,
       })
     }
     return items
   }, [allowManual, manualLabel, manualValue, options])
 
+  const placeholder = loading
+    ? DEV_LOGIN_LOADING_PLACEHOLDER
+    : options.length === 0
+      ? DEV_LOGIN_EMPTY_PLACEHOLDER
+      : DEV_LOGIN_SELECT_PLACEHOLDER
+
   if (!enabled) return null
 
-  const handleValueChange = (nextValue: string | null) => {
-    const resolved = nextValue ?? (allowManual ? manualValue : "")
+  const handleValueChange = (nextValue: unknown) => {
+    const resolved =
+      typeof nextValue === "string"
+        ? nextValue
+        : allowManual
+          ? manualValue
+          : ""
     onValueChange(resolved, resolveDevLoginOption(options, resolved))
   }
 
   const selectControl = (
-    <Select
-      value={selectValue}
-      onValueChange={handleValueChange}
+    <SelectPicker
+      id={id}
+      value={selectValue || undefined}
+      onChange={handleValueChange}
+      options={pickerOptions}
+      placeholder={placeholder}
       disabled={disabled || loading}
-      items={selectItems}
-    >
-      <SelectTrigger
-        id={id}
-        className={cn(
-          "h-11 w-full rounded-lg",
-          variant === "highlight" && "h-10 bg-background text-sm",
-          triggerClassName,
-        )}
-      >
-        <SelectValue
-          placeholder={
-            loading
-              ? DEV_LOGIN_LOADING_PLACEHOLDER
-              : options.length === 0
-                ? DEV_LOGIN_EMPTY_PLACEHOLDER
-                : DEV_LOGIN_SELECT_PLACEHOLDER
-          }
-        />
-      </SelectTrigger>
-      <SelectContent>
-        {allowManual ? (
-          <SelectItem value={manualValue}>{manualLabel}</SelectItem>
-        ) : null}
-        {options.map((option) => (
-          <SelectItem key={option.id} value={String(option.id)}>
-            {variant === "field" ? (
-              <>
-                {formatDevLoginOptionPrimary(option)}
-                <span className="text-xs text-muted-foreground">
-                  {" "}
-                  {formatDevLoginOptionSecondary(option)}
-                </span>
-              </>
-            ) : (
-              <span className="block">
-                <span className="block">{formatDevLoginOptionPrimary(option)}</span>
-                <span className="block font-mono text-[11px] text-muted-foreground">
-                  {formatDevLoginOptionSecondary(option)}
-                </span>
-              </span>
-            )}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      allowClear={false}
+      className={cn(
+        "h-11 w-full rounded-lg",
+        variant === "highlight" && "h-10 bg-background text-sm",
+        triggerClassName,
+      )}
+    />
   )
 
   if (variant === "highlight") {
@@ -170,7 +143,7 @@ export function DevLoginAccountField({
 
   return (
     <Field className={className}>
-      <FieldLabel className="font-medium text-primary">
+      <FieldLabel className="text-sm font-medium">
         {DEV_LOGIN_FIELD_LABEL}
       </FieldLabel>
       {selectControl}

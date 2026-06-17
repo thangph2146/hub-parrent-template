@@ -4,6 +4,7 @@ import {
   STORE_ADMIN_HOME_PATH,
   STORE_ADMIN_LOGIN_PATH,
   STORE_ADMIN_PROFILE_PATH,
+  STORE_ADMIN_REGISTER_PATH,
   canAccessStoreAdmin,
 } from "@/config/admin/store-admin-access"
 import { ADMIN_SESSION_EVENT, clearAdminSession } from "@/lib/admin/auth-session"
@@ -12,6 +13,7 @@ import { isStoreAdminAuthPath } from "@/lib/admin/auth-routes"
 export const STORE_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   menuTree: STORE_ADMIN_MENU_TREE,
   loginPath: STORE_ADMIN_LOGIN_PATH,
+  registerPath: STORE_ADMIN_REGISTER_PATH,
   isAuthPath: isStoreAdminAuthPath,
   canAccessApp: canAccessStoreAdmin,
   clearSession: clearAdminSession,

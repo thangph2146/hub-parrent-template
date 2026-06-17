@@ -26,6 +26,8 @@ export type AdminMenuTreeItem =
 export type AdminSiteBranding = {
   siteName: string
   siteDescription: string
+  /** Ảnh panel đăng nhập admin — setting `admin_login_hero_image`. */
+  authHeroImage?: string | null
 }
 
 /** SEO mặc định toàn site — tab seo-global / GET /api/public/seo-meta. */
@@ -49,7 +51,10 @@ export type AdminLayoutContextValue = {
   siteDescription: string
   /** Branding từ tab display đã fetch — tránh flash tên fallback trên màn loading. */
   brandingReady: boolean
+  /** Ảnh hero trang đăng nhập — `admin_login_hero_image` hoặc SEO ogImage. */
+  authHeroImage: string | null
   loginPath: string
+  registerPath: string
   isAuthPath: (pathname: string) => boolean
   canAccessApp: (user: AdminLayoutUser) => boolean
   clearSession: () => void
@@ -77,4 +82,5 @@ export type AdminLayoutStaticConfig = Omit<
   | "siteName"
   | "siteDescription"
   | "brandingReady"
+  | "authHeroImage"
 >

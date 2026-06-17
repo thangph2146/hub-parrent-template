@@ -3,9 +3,8 @@
 import { FormEvent, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Eye, EyeOff, MailPlus, Smartphone } from "lucide-react"
+import { Eye, EyeOff, Smartphone } from "lucide-react"
 import { Button } from "@ui/components/button"
-import { Card, CardContent } from "@ui/components/card"
 import {
   Field,
   FieldDescription,
@@ -15,12 +14,16 @@ import {
   FieldSeparator,
 } from "@ui/components/field"
 import { Input } from "@ui/components/input"
-import { PointerHighlight } from "@ui/components/pointer-highlight"
-import { TypographyH2 } from "@ui/components/typography"
 import { toast } from "@ui/components/sonner"
 import { useAdminLayout } from "@ui/components/admin"
-import { AUTH_LOGIN_PATH } from "@workspace/admin-app/lib/auth-routes"
+import { AdminAuthFormHeader } from "./admin-auth-form-header"
+import { AdminAuthFormHero } from "./admin-auth-form-hero"
+import { AdminAuthFormSkeleton } from "./admin-auth-form-skeleton"
+import { AdminAuthGoogleButton } from "./admin-auth-google-button"
+import { AdminAuthSplitLayout } from "./admin-auth-split-layout"
+import { useAdminAuthPageDisplay } from "./use-admin-auth-page-display"
 import { registerAccount } from "../_lib/auth-api"
+import { useAuth, useClientReady } from "@workspace/admin-app/runtime"
 import type { AdminRegisterFormConfig } from "./register-form.types"
 
 export type { AdminRegisterFormConfig } from "./register-form.types"
@@ -51,10 +54,15 @@ export function AdminRegisterForm({
 }: {
   config?: AdminRegisterFormConfig
 }) {
-  const loginPath = config?.loginPath ?? AUTH_LOGIN_PATH
+  const { loginPath: layoutLoginPath, homePath } = useAdminLayout()
+  const loginPath = config?.loginPath ?? layoutLoginPath
+  const afterAuthPath = homePath ?? loginPath
   const successToast = config?.successToast ?? DEFAULT_SUCCESS_TOAST
+  const { siteName, siteDescription, heroImageSrc, isReady: brandingReady } =
+    useAdminAuthPageDisplay()
+  const { loginGoogle } = useAuth()
+  const clientReady = useClientReady()
   const router = useRouter()
-  const { siteName, siteDescription } = useAdminLayout()
   const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -63,7 +71,7 @@ export function AdminRegisterForm({
 
   function updateField<Key extends keyof RegisterFormState>(
     key: Key,
-    value: RegisterFormState[Key]
+    value: RegisterFormState[Key],
   ) {
     setForm((current) => ({ ...current, [key]: value }))
   }
@@ -105,237 +113,226 @@ export function AdminRegisterForm({
       setSubmitting(false)
     }
   }
+
+  async function handleGoogleCredential(credential: string) {
+    if (!loginGoogle) {
+      toast.error("Đăng nhập Google chưa sẵn sàng.")
+      return
+    }
+    setError(null)
+    setSubmitting(true)
+    try {
+      const result = await loginGoogle(credential)
+      if (result !== "success") {
+        toast.error("Đăng nhập Google thất bại.")
+        return
+      }
+      toast.success("Đăng nhập Google thành công.")
+      router.replace(afterAuthPath)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
-    <div className="flex min-h-[100vh] flex-col items-center justify-center bg-muted p-6 md:p-10">
-      <div className="w-full max-w-sm md:max-w-5xl">
-        <Card className="w-full overflow-hidden rounded-lg border p-0 shadow-sm">
-          <CardContent className="grid grid-cols-1 p-0 md:grid-cols-2">
-            <form onSubmit={handleSubmit} className="p-6 md:p-8 lg:p-10">
-              <FieldGroup className="gap-4">
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
-                  <TypographyH2 className="text-2xl font-bold text-secondary sm:text-xl md:text-3xl lg:text-3xl">
-                    Đăng ký hệ thống
-                  </TypographyH2>
-                  <div className="flex flex-col items-center gap-1">
-                    <PointerHighlight>
-                      <p className="relative z-10 text-xl font-bold tracking-tight text-primary uppercase sm:text-sm md:text-2xl">
-                        {siteName}
-                      </p>
-                    </PointerHighlight>
-                    {siteDescription ? (
-                      <p className="text-xs font-medium text-muted-foreground italic sm:text-sm md:text-sm">
-                        {siteDescription}
-                      </p>
-                    ) : null}
+    <AdminAuthSplitLayout
+      visual={
+        <AdminAuthFormHero
+          siteName={siteName}
+          siteDescription={siteDescription}
+          imageSrc={heroImageSrc}
+          isReady={brandingReady}
+        />
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <FieldGroup className="gap-4">
+          {!brandingReady ? (
+            <AdminAuthFormSkeleton />
+          ) : (
+            <>
+              <AdminAuthFormHeader
+                title="Đăng ký hệ thống"
+                siteName={siteName}
+                siteDescription={siteDescription}
+              />
+
+              <Field>
+                <FieldLabel htmlFor="fullName" className="text-sm font-medium">
+                  Họ và tên
+                </FieldLabel>
+                <Input
+                  id="fullName"
+                  autoComplete="name"
+                  value={form.fullName}
+                  onChange={(event) =>
+                    updateField("fullName", event.target.value)
+                  }
+                  placeholder="Họ và tên"
+                  required
+                  disabled={submitting}
+                  className="h-11"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="email" className="text-sm font-medium">
+                  Email
+                </FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  value={form.email}
+                  onChange={(event) =>
+                    updateField("email", event.target.value)
+                  }
+                  placeholder="example@email.com"
+                  required
+                  disabled={submitting}
+                  className="h-11"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="phone" className="text-sm font-medium">
+                  Số điện thoại
+                </FieldLabel>
+                <div className="relative">
+                  <Input
+                    id="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={(event) =>
+                      updateField("phone", event.target.value)
+                    }
+                    placeholder="Nhập số điện thoại của bạn"
+                    disabled={submitting}
+                    className="h-11 pr-10"
+                  />
+                  <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground">
+                    <Smartphone className="size-4" aria-hidden />
                   </div>
                 </div>
+              </Field>
 
-                <Field>
-                  <FieldLabel
-                    htmlFor="fullName"
-                    className="font-medium text-primary"
-                  >
-                    Họ và tên
-                  </FieldLabel>
+              <Field>
+                <FieldLabel htmlFor="password" className="text-sm font-medium">
+                  Mật khẩu
+                </FieldLabel>
+                <div className="relative">
                   <Input
-                    id="fullName"
-                    autoComplete="name"
-                    value={form.fullName}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={form.password}
                     onChange={(event) =>
-                      updateField("fullName", event.target.value)
+                      updateField("password", event.target.value)
                     }
-                    placeholder="Họ và tên"
+                    placeholder="Tạo mật khẩu"
                     required
                     disabled={submitting}
+                    className="h-11 pr-10"
                   />
-                </Field>
-
-                <Field>
-                  <FieldLabel
-                    htmlFor="email"
-                    className="font-medium text-primary"
-                  >
-                    Email
-                  </FieldLabel>
-                  <Input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(event) =>
-                      updateField("email", event.target.value)
-                    }
-                    placeholder="example@email.com"
-                    required
-                    disabled={submitting}
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel
-                    htmlFor="phone"
-                    className="font-medium text-primary"
-                  >
-                    Số điện thoại
-                  </FieldLabel>
-                  <div className="relative">
-                    <Input
-                      id="phone"
-                      autoComplete="tel"
-                      value={form.phone}
-                      onChange={(event) =>
-                        updateField("phone", event.target.value)
-                      }
-                      placeholder="Nhập số điện thoại của bạn"
-                      disabled={submitting}
-                      className="pr-10"
-                    />
-                    <div className="pointer-events-none absolute top-0 right-0 flex h-full items-center px-3">
-                      <Smartphone
-                        className="size-4 text-muted-foreground"
-                        aria-hidden
-                      />
-                    </div>
-                  </div>
-                </Field>
-
-                <Field>
-                  <FieldLabel
-                    htmlFor="password"
-                    className="font-medium text-primary"
-                  >
-                    Mật khẩu
-                  </FieldLabel>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      value={form.password}
-                      onChange={(event) =>
-                        updateField("password", event.target.value)
-                      }
-                      placeholder="Tạo mật khẩu"
-                      required
-                      disabled={submitting}
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowPassword((value) => !value)}
-                      disabled={submitting}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                  </div>
-                </Field>
-
-                <Field>
-                  <FieldLabel
-                    htmlFor="confirmPassword"
-                    className="font-medium text-primary"
-                  >
-                    Xác nhận mật khẩu
-                  </FieldLabel>
-                  <div className="relative">
-                    <Input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      value={form.confirmPassword}
-                      onChange={(event) =>
-                        updateField("confirmPassword", event.target.value)
-                      }
-                      placeholder="Xác nhận mật khẩu của bạn"
-                      required
-                      disabled={submitting}
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowConfirmPassword((value) => !value)}
-                      disabled={submitting}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                  </div>
-                </Field>
-
-                <Field>
-                  <Button
-                    type="submit"
-                    className="min-h-[44px] w-full bg-destructive px-8 text-destructive-foreground hover:bg-destructive/90"
-                    disabled={submitting}
-                  >
-                    <MailPlus className="size-4" />
-                    <span className="text-base font-bold">
-                      {submitting ? "Đang tạo tài khoản..." : "Đăng ký"}
-                    </span>
-                  </Button>
-                </Field>
-
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                  Hoặc tiếp tục với
-                </FieldSeparator>
-
-                <Field>
                   <Button
                     type="button"
-                    variant="outline"
-                    className="min-h-[44px] w-full border-secondary/30 hover:bg-secondary/10"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="absolute top-1/2 right-1 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
+                    onClick={() => setShowPassword((value) => !value)}
+                    disabled={submitting}
+                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </Button>
+                </div>
+              </Field>
+
+              <Field>
+                <FieldLabel
+                  htmlFor="confirmPassword"
+                  className="text-sm font-medium"
+                >
+                  Xác nhận mật khẩu
+                </FieldLabel>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={form.confirmPassword}
+                    onChange={(event) =>
+                      updateField("confirmPassword", event.target.value)
+                    }
+                    placeholder="Xác nhận mật khẩu của bạn"
+                    required
+                    disabled={submitting}
+                    className="h-11 pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="absolute top-1/2 right-1 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
                     onClick={() =>
-                      toast.info(
-                        "Đăng ký Google cho hệ thống phụ huynh chưa được cấu hình."
-                      )
+                      setShowConfirmPassword((value) => !value)
+                    }
+                    disabled={submitting}
+                    aria-label={
+                      showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
                     }
                   >
-                    <span className="text-xl font-bold text-secondary">G</span>
-                    <span className="text-base font-bold text-secondary">
-                      Đăng ký bằng Google
-                    </span>
+                    {showConfirmPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
                   </Button>
-                </Field>
+                </div>
+              </Field>
 
-                <FieldError>{error}</FieldError>
+              <Field className="pt-1">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-11 w-full font-medium"
+                  disabled={submitting}
+                >
+                  {submitting ? "Đang tạo tài khoản..." : "Đăng ký"}
+                </Button>
+              </Field>
 
-                <FieldDescription className="text-center text-sm md:text-base">
-                  Đã có tài khoản?{" "}
-                  <Link
-                    href={loginPath}
-                    prefetch={false}
-                    className="font-bold text-primary transition-colors hover:text-primary/80"
-                  >
-                    Đăng nhập
-                  </Link>
-                </FieldDescription>
-              </FieldGroup>
-            </form>
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                Hoặc tiếp tục với
+              </FieldSeparator>
 
-            <div className="relative hidden bg-muted text-foreground md:flex">
-              <img
-                src="https://hub.edu.vn/DATA/IMAGES/2025/06/06/20250606095214z6676928339374_824596735893cad9e9d4402075fcccd2.jpg"
-                alt="Hình ảnh HUB"
-                title="Hình ảnh HUB"
-                loading="eager"
-                className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.85]"
+              <AdminAuthGoogleButton
+                disabled={submitting || !clientReady}
+                onCredential={handleGoogleCredential}
               />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+
+              <FieldError>{error}</FieldError>
+
+              <FieldDescription className="text-center text-sm">
+                Đã có tài khoản?{" "}
+                <Link
+                  href={loginPath}
+                  prefetch={false}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Đăng nhập
+                </Link>
+              </FieldDescription>
+            </>
+          )}
+        </FieldGroup>
+      </form>
+    </AdminAuthSplitLayout>
   )
 }
 
