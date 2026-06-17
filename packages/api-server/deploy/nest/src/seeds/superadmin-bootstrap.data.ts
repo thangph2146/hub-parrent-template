@@ -2,12 +2,12 @@ import {
   EVENT_CHECKIN_STAFF_PERMISSIONS,
   EVENT_STAFF_ROLE_TEMPLATE,
 } from '../config/role-templates/event-staff.template';
+import { hashSync } from 'bcryptjs';
 
-// Role data — mật khẩu plain `demo` (chỉ local / seed dev).
-export const DEV_LOGIN_PASSWORD_PLAIN = 'demo';
+// Role data — mật khẩu seed mặc định cho tài khoản hệ thống.
+export const DEV_LOGIN_PASSWORD_PLAIN = 'Buhcm@2026';
 
-export const DEV_LOGIN_PASSWORD_HASH =
-  '$2b$10$6gktuaAnT51RIaAhhkRozOYZpg664aG.B03tp/VQ0x7BlOVgXbE1y';
+export const DEV_LOGIN_PASSWORD_HASH = hashSync(DEV_LOGIN_PASSWORD_PLAIN, 10);
 
 export { EVENT_CHECKIN_STAFF_PERMISSIONS, EVENT_STAFF_ROLE_TEMPLATE };
 
