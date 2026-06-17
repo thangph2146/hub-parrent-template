@@ -23,6 +23,11 @@ import {
 import { queryPrefixesForAdminResource } from "@workspace/admin-app/lib/admin-realtime-query-map"
 import { rbacQueryKeys } from "@workspace/admin-app/modules/rbac/_component/_query/rbac-query-keys"
 import { queryKeys } from "@workspace/admin-app/hooks/queries"
+import {
+  dispatchHanetCheckinSyncEvent,
+  HANET_CHECKINS_QUERY_KEY,
+  isHanetCheckinSyncPayload,
+} from "@workspace/admin-app/lib/hanet-checkin-realtime"
 
 function invalidateAdminPayload(
   queryClient: QueryClient,
@@ -97,6 +102,10 @@ function invalidateHanetSyncQueries(
   if (payload.kind === "person") {
     void queryClient.invalidateQueries({ queryKey: ["hanet", "persons"] })
     void queryClient.invalidateQueries({ queryKey: ["hanet", "avatars"] })
+  }
+  if (isHanetCheckinSyncPayload(payload)) {
+    void queryClient.invalidateQueries({ queryKey: [...HANET_CHECKINS_QUERY_KEY] })
+    dispatchHanetCheckinSyncEvent(payload)
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState, type ReactNode } from "react"
 import { AdminDataTable } from "@ui/components/data-table"
+import { cn } from "@ui/lib/utils"
 import { ImageLightbox } from "@ui/components/image-lightbox"
 import type { HanetCheckinRow } from "@workspace/admin-app/lib/hanet-checkin-parse"
 import { getHanetCheckinColumns } from "./hanet-checkins-columns"
@@ -14,6 +15,8 @@ export type HanetCheckinsTableProps = {
   deviceSelectOptions?: { value: string; label: string }[]
   filterToolbarExtra?: ReactNode
   summaryLine?: string | null
+  /** Row id vừa xuất hiện qua realtime — highlight tạm thời. */
+  highlightRowIds?: ReadonlySet<string>
 }
 
 export function HanetCheckinsTable({
@@ -23,6 +26,7 @@ export function HanetCheckinsTable({
   deviceSelectOptions = [],
   filterToolbarExtra,
   summaryLine,
+  highlightRowIds,
 }: HanetCheckinsTableProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
@@ -72,6 +76,14 @@ export function HanetCheckinsTable({
         emptyLabel={emptyLabel}
         globalFilterPlaceholder="Tìm theo tên, aliasID, personID, deviceID…"
         globalFilterLabel="Tìm kiếm"
+        getRowClassName={(row) =>
+          highlightRowIds?.has(row.original.rowId)
+            ? cn(
+                "!bg-[color-mix(in_oklch,var(--primary)_12%,var(--card))]",
+                "ring-1 ring-inset ring-primary/25",
+              )
+            : undefined
+        }
         getGlobalFilterText={(row) =>
           [
             row.displayName,

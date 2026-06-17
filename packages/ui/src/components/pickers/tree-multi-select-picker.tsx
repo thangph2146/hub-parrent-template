@@ -220,7 +220,12 @@ export function TreeMultiSelectPicker({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={pickerListPopoverClassName()} align="start">
+      <PopoverContent
+        className={pickerListPopoverClassName(
+          showBulkActions ? "min-w-[300px]" : undefined,
+        )}
+        align="start"
+      >
         {options.length === 0 ? (
           <p className="px-2 py-1 text-sm text-muted-foreground">
             Không có tùy chọn

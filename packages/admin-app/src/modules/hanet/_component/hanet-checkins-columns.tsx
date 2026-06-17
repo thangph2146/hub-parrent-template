@@ -1,7 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { Clock, User } from "lucide-react"
+import { Clock, LogIn, LogOut, User, UserRoundX } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import { FieldCopyButton } from "@ui/components/field"
 import { cn } from "@ui/lib/utils"
@@ -9,10 +9,68 @@ import type { HanetCheckinRow } from "@workspace/admin-app/lib/hanet-checkin-par
 
 /** Khớp cột «Xem trước» trên /admin/file-storage */
 export const HANET_CHECKIN_PREVIEW_COLUMN_CLASS =
-  "w-[180px] min-w-[180px] max-w-[180px]"
+  "w-[120px] min-w-[120px] max-w-[120px]"
 
 const CHECKIN_PREVIEW_FRAME_CLASS =
   "flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-border bg-muted"
+
+function HanetCheckinTypeCell({ type }: { type: string }) {
+  const label = type.trim()
+  if (!label) return <>—</>
+
+  const isCheckin = label === "Check-in"
+  const isCheckout = label === "Check-out"
+  const isUnknown = label === "Chưa nhận diện"
+
+  const Icon = isCheckin
+    ? LogIn
+    : isCheckout
+      ? LogOut
+      : isUnknown
+        ? UserRoundX
+        : User
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <div
+        className={cn(
+          "flex size-7 shrink-0 items-center justify-center rounded-full",
+          isCheckin &&
+            "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
+          isCheckout &&
+            "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+          isUnknown &&
+            "bg-rose-500/10 text-rose-700 dark:text-rose-400",
+          !isCheckin &&
+            !isCheckout &&
+            !isUnknown &&
+            "bg-muted text-muted-foreground",
+        )}
+        aria-hidden
+      >
+        <Icon className="size-3.5" />
+      </div>
+      <Badge
+        variant={isCheckin ? "default" : "secondary"}
+        className={cn(
+          "h-5 shrink-0 text-[10px] font-medium",
+          isCheckin &&
+            "border-emerald-600/30 bg-emerald-600 text-white hover:bg-emerald-600/90 dark:border-emerald-500/40",
+          isCheckout &&
+            "border-amber-300/80 bg-amber-100 text-amber-900 hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200",
+          isUnknown &&
+            "border-rose-300/80 bg-rose-50 text-rose-800 hover:bg-rose-50 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200",
+          !isCheckin &&
+            !isCheckout &&
+            !isUnknown &&
+            "font-normal",
+        )}
+      >
+        {label}
+      </Badge>
+    </div>
+  )
+}
 
 export type HanetCheckinColumnsOptions = {
   onPreviewImage?: (row: HanetCheckinRow) => void
@@ -62,8 +120,8 @@ export function getHanetCheckinColumns(
       header: "Ảnh",
       enableColumnFilter: false,
       enableHiding: false,
-      size: 180,
-      minSize: 180,
+      size: 120,
+      minSize: 120,
       meta: {
         disableCellLineClamp: true,
         className: cn(HANET_CHECKIN_PREVIEW_COLUMN_CLASS, "py-2"),
@@ -268,22 +326,11 @@ export function getHanetCheckinColumns(
         if (filterValue == null || filterValue === "") return true
         return String(row.getValue(columnId) ?? "") === String(filterValue)
       },
-      size: 100,
-      cell: ({ getValue }) => {
-        const type = String(getValue() ?? "").trim()
-        if (!type) return "—"
-        const variant =
-          type === "Check-out"
-            ? ("secondary" as const)
-            : type === "Chưa nhận diện"
-              ? ("secondary" as const)
-              : ("outline" as const)
-        return (
-          <Badge variant={variant} className="h-5 text-[10px] font-normal">
-            {type}
-          </Badge>
-        )
-      },
+      size: 148,
+      minSize: 132,
+      cell: ({ getValue }) => (
+        <HanetCheckinTypeCell type={String(getValue() ?? "")} />
+      ),
     },
   ]
 }

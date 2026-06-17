@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { CalendarCheck, Clock, Loader2 } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@ui/components/alert"
 import { Button } from "@ui/components/button"
@@ -21,9 +21,15 @@ import {
   todayLocalIsoDate,
 } from "@workspace/admin-app/lib/hanet-local-date"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
+import {
+  HANET_CHECKIN_LIVE_POLL_MS,
+  HANET_CHECKIN_NEW_ROW_HIGHLIGHT_MS,
+} from "@workspace/admin-app/lib/hanet-checkin-realtime"
 import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
 import { HanetCheckinsTable } from "../_component/hanet-checkins-table"
+import { HanetCheckinLiveBar } from "../_component/hanet-checkin-live-bar"
+import { useHanetCheckinLive } from "../_component/use-hanet-checkin-live"
 import { useHanetDevicesQuery } from "../_component/use-hanet-devices-query"
 import { HANET_PAGE_ENDPOINTS } from "@workspace/admin-app/lib/hanet-postman"
 import { HanetModuleShell } from "../_component/hanet-module-shell"
@@ -85,10 +91,26 @@ function CheckinContent() {
   const [fromAt, setFromAt] = useState(() => localDayStartDatetime(todayLocalIsoDate()))
   const [toAt, setToAt] = useState(() => localDayEndDatetime(todayLocalIsoDate()))
   const [fetchEnabled, setFetchEnabled] = useState(false)
+  const [liveEnabled, setLiveEnabled] = useState(true)
   const [rangeError, setRangeError] = useState<string | null>(null)
+  const seenRowIdsRef = useRef<Set<string>>(new Set())
+  const [highlightRowIds, setHighlightRowIds] = useState<Set<string>>(
+    () => new Set(),
+  )
 
   const effectivePlaceId =
     selectedPlaceId || hanetStatus?.defaultPlaceId || ""
+
+  const liveActive = fetchEnabled && liveEnabled
+  const { lastSyncAt, lastPayload } = useHanetCheckinLive(liveActive)
+
+  const liveQueryOptions = useMemo(
+    () => ({
+      refetchInterval: liveActive ? HANET_CHECKIN_LIVE_POLL_MS : false,
+      staleTime: liveActive ? 0 : undefined,
+    }),
+    [liveActive],
+  )
 
   const devicesQuery = useHanetDevicesQuery(
     effectivePlaceId,
@@ -107,6 +129,7 @@ function CheckinContent() {
       mode === "day" &&
       hanetStatus?.configured === true &&
       Boolean(effectivePlaceId),
+    ...liveQueryOptions,
   })
 
   const timestampQuery = useQuery({
@@ -125,11 +148,53 @@ function CheckinContent() {
       Boolean(fromAt) &&
       Boolean(toAt) &&
       !rangeError,
+    ...liveQueryOptions,
   })
 
   const activeQuery = mode === "day" ? dayQuery : timestampQuery
   const payload = activeQuery.data as HanetCheckinPayload | undefined
   const { tableRows, total, hasData } = useCheckinPayload(payload, fetchEnabled)
+
+  useEffect(() => {
+    if (!fetchEnabled) {
+      seenRowIdsRef.current = new Set()
+      setHighlightRowIds(new Set())
+    }
+  }, [fetchEnabled])
+
+  useEffect(() => {
+    seenRowIdsRef.current = new Set()
+    setHighlightRowIds(new Set())
+  }, [mode, effectivePlaceId, date, fromAt, toAt])
+
+  useEffect(() => {
+    if (!fetchEnabled || activeQuery.isFetching || tableRows.length === 0) {
+      return
+    }
+
+    const currentIds = new Set(tableRows.map((row) => row.rowId))
+    const fresh = new Set<string>()
+
+    if (seenRowIdsRef.current.size > 0) {
+      for (const id of currentIds) {
+        if (!seenRowIdsRef.current.has(id)) fresh.add(id)
+      }
+    }
+
+    seenRowIdsRef.current = currentIds
+    if (fresh.size === 0) return
+
+    setHighlightRowIds((prev) => new Set([...prev, ...fresh]))
+    const timer = window.setTimeout(() => {
+      setHighlightRowIds((prev) => {
+        const next = new Set(prev)
+        for (const id of fresh) next.delete(id)
+        return next
+      })
+    }, HANET_CHECKIN_NEW_ROW_HIGHLIGHT_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [tableRows, fetchEnabled, activeQuery.isFetching])
 
   const deviceSelectOptions = useMemo(() => {
     const map = new Map<string, { value: string; label: string }>()
@@ -412,12 +477,23 @@ function CheckinContent() {
         </TabsContent>
       </Tabs>
 
+      {fetchEnabled ? (
+        <HanetCheckinLiveBar
+          liveEnabled={liveEnabled}
+          onLiveEnabledChange={setLiveEnabled}
+          lastSyncAt={lastSyncAt}
+          lastPayload={lastPayload}
+          isFetching={activeQuery.isFetching}
+        />
+      ) : null}
+
       <HanetCheckinsTable
         data={fetchEnabled && !activeQuery.error ? tableRows : []}
         isLoading={fetchEnabled && activeQuery.isFetching}
         emptyLabel={emptyLabel}
         summaryLine={summaryLine}
         deviceSelectOptions={deviceSelectOptions}
+        highlightRowIds={highlightRowIds}
       />
     </div>
   )
