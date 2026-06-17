@@ -14,6 +14,8 @@ import { Input } from "@ui/components/input"
 import { Textarea } from "@ui/components/textarea"
 import { FormFieldCol } from "@ui/components/typing"
 import {
+  DatePicker,
+  DateTimePicker,
   SelectPicker,
   TreePicker,
   TreeMultiSelectPicker,
@@ -420,7 +422,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Thời gian bắt đầu">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -429,7 +438,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Thời gian kết thúc">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -450,7 +466,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Check-in bắt đầu">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -459,7 +482,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Check-in kết thúc">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -470,7 +500,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Check-out bắt đầu">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -479,7 +516,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Check-out kết thúc">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -490,7 +534,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Đăng ký từ">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />
@@ -499,7 +550,14 @@ export function EventFormShell({
                   control={control}
                   render={({ field }) => (
                     <FormFieldCol label="Đăng ký đến">
-                      <Input type="datetime-local" {...field} />
+                      <DateTimePicker
+                        id={field.name}
+                        value={field.value}
+                        onChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
+                        }
+                        placeholder="Chọn thời gian"
+                      />
                     </FormFieldCol>
                   )}
                 />

@@ -55,6 +55,7 @@ export function buildEventPortalLayoutStatic(
   return {
     menuTree: buildEventPortalMenuTree(role),
     loginPath: EVENT_LOGIN_PATH,
+    registerPath: EVENT_LOGIN_PATH,
     isAuthPath: isEventAuthPath,
     canAccessApp: (user) =>
       sessionMatchesPortalRole(authUserToSession(user), role),

@@ -9,13 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@ui/components/collapsible"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+import { SelectPicker } from "@ui/components/pickers"
 import { cn } from "@ui/lib/utils"
 import { MyStudentsScoreTable } from "./_table/my-students-score-table"
 import type { TermAverage } from "@workspace/admin-app/types/student-scores"
@@ -174,24 +168,15 @@ export const TermAveragesList = ({ averages, isLoading }: Props) => {
   return (
     <ScrollArea className="max-h-[50vh] space-y-3 overflow-y-auto">
       <div className="space-y-3">
-        <Select
-          value={filterYear}
-          onValueChange={(v) => setFilterYear(v ?? "all")}
-        >
-          <SelectTrigger className="w-44">
-            <SelectValue>
-              {filterYear === "all" ? "Tất cả năm học" : filterYear}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tất cả năm học</SelectItem>
-            {years.map((y) => (
-              <SelectItem key={y} value={y}>
-                {y}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SelectPicker
+          value={filterYear === "all" ? undefined : filterYear}
+          onChange={(value) =>
+            setFilterYear(typeof value === "string" ? value : "all")
+          }
+          options={years.map((year) => ({ value: year, label: year }))}
+          placeholder="Tất cả năm học"
+          className="w-44"
+        />
         {Object.keys(grouped).length === 0 ? (
           <div className="py-6 text-center text-sm text-muted-foreground">
             Không tìm thấy dữ liệu

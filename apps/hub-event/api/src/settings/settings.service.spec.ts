@@ -130,6 +130,29 @@ describe('SettingsService', () => {
 
       expect(result).toHaveLength(0);
     });
+
+    it('should skip null values for keys that do not exist yet', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(null);
+
+      const result = await service.bulkUpdate({
+        admin_login_hero_image: null,
+      });
+
+      expect(result).toHaveLength(0);
+      expect(em.persist).not.toHaveBeenCalled();
+      expect(em.flush).toHaveBeenCalledTimes(1);
+    });
+
+    it('should skip empty string for keys that do not exist yet', async () => {
+      (em.findOne as jest.Mock).mockResolvedValue(null);
+
+      const result = await service.bulkUpdate({
+        admin_login_hero_image: '   ',
+      });
+
+      expect(result).toHaveLength(0);
+      expect(em.persist).not.toHaveBeenCalled();
+    });
   });
 
   describe('getPublicBranding', () => {
@@ -151,6 +174,7 @@ describe('SettingsService', () => {
       expect(result).toEqual({
         siteName: 'Hệ thống Sự kiện HUB',
         siteDescription: 'Quản trị check-in sự kiện',
+        authHeroImage: null,
       });
     });
 

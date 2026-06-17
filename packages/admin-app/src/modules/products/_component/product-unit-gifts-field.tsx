@@ -20,13 +20,7 @@ import {
 import { Button } from "@ui/components/button"
 import { FormFieldCol } from "@ui/components/typing"
 import { Input } from "@ui/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ui/components/select"
+import { SelectPicker } from "@ui/components/pickers"
 import { Plus, Trash2 } from "lucide-react"
 import {
   EMPTY_GIFT_ROW,
@@ -176,26 +170,30 @@ function GiftRuleCard({
           label="Phạm vi đếm SL"
           description="SL kiểm tra điều kiện nhận quà này."
         >
-          <Select
+          <SelectPicker
             value={gift.scope ?? "line"}
-            onValueChange={(v) =>
-              setValue(`${base}.scope`, v as "line" | "product")
+            onChange={(value) =>
+              setValue(
+                `${base}.scope`,
+                (typeof value === "string" ? value : "line") as
+                  | "line"
+                  | "product"
+              )
             }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Chọn phạm vi đếm SL">
-                {formatGiftScopeLabel(gift.scope, unitLabel)}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="line">
-                {formatGiftScopeLabel("line", unitLabel)}
-              </SelectItem>
-              <SelectItem value="product">
-                {formatGiftScopeLabel("product", unitLabel)}
-              </SelectItem>
-            </SelectContent>
-          </Select>
+            options={[
+              {
+                value: "line",
+                label: formatGiftScopeLabel("line", unitLabel),
+              },
+              {
+                value: "product",
+                label: formatGiftScopeLabel("product", unitLabel),
+              },
+            ]}
+            placeholder="Chọn phạm vi đếm SL"
+            allowClear={false}
+            className="w-full"
+          />
         </FormFieldCol>
         <FormFieldCol label="Nhãn KM (ngắn)">
           <Input {...register(`${base}.label`)} placeholder="Tặng cốc" />
