@@ -14,6 +14,7 @@ export type { PublicSiteBranding } from '../common/module-bases/settings/setting
 const PUBLIC_BRANDING_DEFAULTS: PublicSiteBranding = {
   siteName: 'HUB',
   siteDescription: 'Quản trị hệ thống',
+  authHeroImage: null,
 };
 
 @Injectable()

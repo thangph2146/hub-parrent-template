@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { SettingsService } from './settings.service';
-import { createSuccessResponse, createErrorResponse, resolveHttpErrorMessage } from '../common';
+import { createSuccessResponse, createErrorResponse } from '../common';
 import { ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common';
 import { PERMISSIONS } from '../config/permissions';
@@ -58,11 +58,12 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/settings', error, { group, search });
-      const message = resolveHttpErrorMessage(error);
-      const { statusCode, body } = createErrorResponse(message, {
-        status: 500,
-        error: message,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        {
+          status: 500,
+        },
+      );
       return res.status(statusCode).json(body);
     }
   }
@@ -75,11 +76,12 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('GET /api/admin/settings/:key', error, { key });
-      const message = resolveHttpErrorMessage(error);
-      const { statusCode, body } = createErrorResponse(message, {
-        status: 500,
-        error: message,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        {
+          status: 500,
+        },
+      );
       return res.status(statusCode).json(body);
     }
   }
@@ -98,11 +100,12 @@ export class SettingsController {
       this.logApiError('PUT /api/admin/settings', error, {
         keyCount: Object.keys(settings ?? {}).length,
       });
-      const message = resolveHttpErrorMessage(error);
-      const { statusCode, body } = createErrorResponse(message, {
-        status: 500,
-        error: message,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        {
+          status: 500,
+        },
+      );
       return res.status(statusCode).json(body);
     }
   }
@@ -120,11 +123,12 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('PUT /api/admin/settings/:key', error, { key });
-      const message = resolveHttpErrorMessage(error);
-      const { statusCode, body } = createErrorResponse(message, {
-        status: 500,
-        error: message,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        {
+          status: 500,
+        },
+      );
       return res.status(statusCode).json(body);
     }
   }
@@ -138,11 +142,12 @@ export class SettingsController {
       return res.status(statusCode).json(body);
     } catch (error) {
       this.logApiError('DELETE /api/admin/settings/:id', error, { id });
-      const message = resolveHttpErrorMessage(error);
-      const { statusCode, body } = createErrorResponse(message, {
-        status: 500,
-        error: message,
-      });
+      const { statusCode, body } = createErrorResponse(
+        'Internal Server Error',
+        {
+          status: 500,
+        },
+      );
       return res.status(statusCode).json(body);
     }
   }

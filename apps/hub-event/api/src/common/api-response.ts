@@ -46,20 +46,6 @@ export function createErrorResponse(
   };
 }
 
-/** Trích message client-safe từ exception — dùng trong catch controller. */
-export function resolveHttpErrorMessage(
-  error: unknown,
-  fallback = DEFAULT_ERROR_MESSAGE,
-): string {
-  if (error instanceof Error && error.message.trim()) {
-    return error.message.trim();
-  }
-  if (typeof error === 'string' && error.trim()) {
-    return error.trim();
-  }
-  return fallback;
-}
-
 export function ok<T>(data: T, message?: string): ApiResponsePayload<T> {
   return {
     success: true,

@@ -236,11 +236,15 @@ export abstract class BaseSettingsService extends BaseCrudService<
 
     const writeValue = normalizeSettingWriteValue(value, Boolean(existing));
     if (writeValue === null) {
+      const now = new Date();
       return {
         id: '',
         key: normalizedKey,
         value: '',
         group: 'general',
+        createdAt: now,
+        updatedAt: now,
+        isActive: true,
       };
     }
 

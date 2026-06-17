@@ -142,13 +142,10 @@ export class DatabaseHttpExceptionFilter
         2,
       ),
     );
-    const details = this.extractErrorDetails(exception);
     const { statusCode, body: errorBody } = createErrorResponse(
-      errorMessage,
+      'Internal server error',
       {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: errorMessage,
-        data: details,
       },
     );
     res.status(statusCode).json(errorBody);
