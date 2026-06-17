@@ -1,12 +1,12 @@
 /** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { PUBLIC_ROUTES } from '../config/constants';
 import { appConfig } from '../config/app.config';
+import { getHanetPublicApiOrigin } from './hanet-face-image';
 
 /** URL webhook đăng ký trên developers.hanet.ai. */
 export function getHanetWebhookUrls(eventId?: string | number) {
-  const base = (
-    appConfig.publicUrl ?? `http://localhost:${appConfig.port}`
-  ).replace(/\/+$/, '');
+  const base =
+    getHanetPublicApiOrigin() ?? `http://localhost:${appConfig.port}`;
   const prefix = `${base}/api/${PUBLIC_ROUTES.HANET_WEBHOOK}`;
 
   return {

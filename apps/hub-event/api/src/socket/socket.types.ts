@@ -105,6 +105,7 @@ export type EventHanetSyncSocketPayload = {
   at: string;
   summary: string;
   deviceId?: string;
+  deviceName?: string;
   placeId?: string;
   personId?: string;
   personName?: string;

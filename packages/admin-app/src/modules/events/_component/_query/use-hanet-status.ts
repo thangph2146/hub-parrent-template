@@ -8,11 +8,16 @@ export function hanetStatusQueryKey(eventId?: string) {
   return ["admin", "hanet", "status", eventId ?? "global"] as const
 }
 
-export function useHanetStatusQuery(eventId?: string) {
+export function useHanetStatusQuery(
+  eventId?: string,
+  options?: { refetchInterval?: number | false },
+) {
   return useQuery({
     queryKey: hanetStatusQueryKey(eventId),
     queryFn: () => api.hanet.status(eventId),
-    staleTime: 60_000,
+    staleTime: options?.refetchInterval ? 0 : 60_000,
+    refetchInterval: options?.refetchInterval,
+    refetchIntervalInBackground: Boolean(options?.refetchInterval),
   })
 }
 

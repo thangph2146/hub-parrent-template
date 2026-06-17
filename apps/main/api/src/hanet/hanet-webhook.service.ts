@@ -20,9 +20,12 @@ import { verifyHanetWebhookHash } from './hanet-signature';
 import { findEventRegistrationForHanet } from './hanet-registration-match';
 import { HanetSyncService } from './hanet-sync.service';
 import { HanetRealtimeService } from './hanet-realtime.service';
+import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
 import {
   HANET_PERSON_ID_KEYS,
   HANET_PERSON_NAME_KEYS,
+  buildHanetAttendanceNotifyResult,
+  isHanetAttendanceWebhook,
   isHanetSyncWebhook,
   pickHanetDeviceId,
   pickHanetString,
@@ -56,6 +59,7 @@ export class HanetWebhookService {
     private readonly attendanceService: EventRegistrationAttendanceService,
     private readonly syncService: HanetSyncService,
     private readonly realtimeService: HanetRealtimeService,
+    private readonly checkinLiveBuffer: HanetCheckinLiveBufferService,
   ) {}
 
   assertWebhookTrusted(body: HanetWebhookBody): void {
@@ -90,17 +94,44 @@ export class HanetWebhookService {
     this.assertWebhookTrusted(body);
 
     let result: HanetWebhookHandleResult;
-    if (isHanetSyncWebhook(body)) {
+    if (isHanetAttendanceWebhook(body)) {
+      try {
+        result = await this.handleAttendance(eventIdParam, body);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'HANET attendance notify';
+        this.logger.warn(`HANET attendance notify-only: ${message}`);
+        let eventId = 0;
+        let cameraRole: HanetCameraRole | null = null;
+        try {
+          const ctx = await this.resolveContext(eventIdParam, body);
+          eventId = ctx.eventId;
+          cameraRole = ctx.cameraRole;
+        } catch {
+          // Vẫn emit socket để admin check-in list refetch.
+        }
+        result = buildHanetAttendanceNotifyResult(body, {
+          eventId,
+          cameraRole,
+        });
+      }
+    } else if (isHanetSyncWebhook(body)) {
       this.logger.debug(
         `HANET sync data_type=${pickHanetString(body, ['data_type', 'dataType'])} action=${pickHanetString(body, ['action_type', 'actionType'])}`,
       );
       result = await this.syncService.handleSync(body);
+    } else if (pickHanetDeviceId(body)) {
+      this.logger.warn(
+        'HANET webhook không rõ loại — xử lý như attendance notify',
+      );
+      result = buildHanetAttendanceNotifyResult(body, {});
     } else {
-      result = await this.handleAttendance(eventIdParam, body);
+      result = await this.syncService.handleSync(body);
     }
 
     const routeEventId = eventIdParam?.trim() ? toEntityId(eventIdParam) : null;
     this.realtimeService.emitWebhookResult(result, routeEventId);
+    await this.checkinLiveBuffer.record(result, body);
     return result;
   }
 
@@ -131,10 +162,20 @@ export class HanetWebhookService {
     );
 
     if (!registration) {
-      throw new BadRequestException(
-        'Người này chưa có trong danh sách đăng ký sự kiện',
+      this.logger.debug(
+        `HANET ${kind} không khớp đăng ký event=${eventId} — notify realtime`,
       );
+      return buildHanetAttendanceNotifyResult(body, {
+        eventId,
+        cameraRole,
+      });
     }
+
+    const deviceId = pickHanetDeviceId(body) || null;
+    const deviceName =
+      pickHanetString(body, ['deviceName', 'device_name']) || null;
+    const placeId =
+      pickHanetString(body, ['placeID', 'placeId', 'place_id']) || undefined;
 
     if (kind === 'checkin') {
       const result = await this.attendanceService.recordCheckin({
@@ -142,9 +183,8 @@ export class HanetWebhookService {
         registration,
         at,
         source: 'hanet',
-        deviceId: pickHanetDeviceId(body) || null,
-        deviceName:
-          pickHanetString(body, ['deviceName', 'device_name']) || null,
+        deviceId,
+        deviceName,
       });
 
       return {
@@ -156,6 +196,10 @@ export class HanetWebhookService {
         checkinId: null,
         at: result.at,
         duplicate: result.duplicate,
+        deviceId: deviceId ?? undefined,
+        deviceName: deviceName ?? undefined,
+        placeId,
+        personId: aliasId || undefined,
       };
     }
 
@@ -175,6 +219,10 @@ export class HanetWebhookService {
       checkinId: null,
       at: result.at,
       duplicate: result.duplicate,
+      deviceId: deviceId ?? undefined,
+      deviceName: deviceName ?? undefined,
+      placeId,
+      personId: aliasId || undefined,
     };
   }
 

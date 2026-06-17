@@ -8,9 +8,10 @@ import { DataTableToolbarField } from "@ui/components/data-table"
 import { DatePicker, DateTimePicker } from "@ui/components/pickers"
 import { Tabs, TabsContent } from "@ui/components/tabs"
 import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { api } from "@workspace/admin-app/lib/api"
 import { parseHanetCheckinRows } from "@workspace/admin-app/lib/hanet-checkin-parse"
+import type { HanetCheckinRow } from "@workspace/admin-app/lib/hanet-checkin-parse"
 import { formatHanetCheckinError } from "@workspace/admin-app/lib/hanet-checkin-errors"
 import {
   formatDatetimeLocalVi,
@@ -18,12 +19,19 @@ import {
   formatIsoDateVi,
   localDayEndDatetime,
   localDayStartDatetime,
+  normalizeDatetimeLocalInput,
+  normalizeIsoDateInput,
+  nowLocalDatetime,
   todayLocalIsoDate,
 } from "@workspace/admin-app/lib/hanet-local-date"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
 import {
-  HANET_CHECKIN_LIVE_POLL_MS,
+  checkinRowFromSyncPayload,
   HANET_CHECKIN_NEW_ROW_HIGHLIGHT_MS,
+  HANET_CHECKINS_QUERY_KEY,
+  mergeHanetCheckinRows,
+  resolveHanetCheckinLivePollMs,
+  rowSignature,
 } from "@workspace/admin-app/lib/hanet-checkin-realtime"
 import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
@@ -84,10 +92,10 @@ function useCheckinPayload(
 }
 
 function CheckinContent() {
-  const { data: hanetStatus } = useHanetStatusQuery()
+  const queryClient = useQueryClient()
   const [mode, setMode] = useState<CheckinMode>("day")
   const [selectedPlaceId, setSelectedPlaceId] = useState(readHanetAdminPlaceId)
-  const [date, setDate] = useState(todayLocalIsoDate)
+  const [date, setDate] = useState(() => todayLocalIsoDate())
   const [fromAt, setFromAt] = useState(() => localDayStartDatetime(todayLocalIsoDate()))
   const [toAt, setToAt] = useState(() => localDayEndDatetime(todayLocalIsoDate()))
   const [fetchEnabled, setFetchEnabled] = useState(false)
@@ -97,20 +105,52 @@ function CheckinContent() {
   const [highlightRowIds, setHighlightRowIds] = useState<Set<string>>(
     () => new Set(),
   )
+  const [pendingLiveRows, setPendingLiveRows] = useState<HanetCheckinRow[]>([])
+
+  const { data: hanetStatus } = useHanetStatusQuery(undefined, {
+    refetchInterval: fetchEnabled && liveEnabled ? 5_000 : false,
+  })
 
   const effectivePlaceId =
     selectedPlaceId || hanetStatus?.defaultPlaceId || ""
 
   const liveActive = fetchEnabled && liveEnabled
-  const { lastSyncAt, lastPayload } = useHanetCheckinLive(liveActive)
+  const checkinViewFilter = useMemo(
+    () => ({
+      placeId: effectivePlaceId,
+      mode,
+      date,
+      fromAt,
+      toAt,
+    }),
+    [effectivePlaceId, mode, date, fromAt, toAt],
+  )
+  const { lastSyncAt, lastPayload, syncRevision, socketConnected, socketError } =
+    useHanetCheckinLive(liveActive, checkinViewFilter)
+
+  const livePollMs: number | false = useMemo(
+    () => (liveActive ? resolveHanetCheckinLivePollMs(lastSyncAt) : false),
+    [liveActive, lastSyncAt, syncRevision],
+  )
 
   const liveQueryOptions = useMemo(
     () => ({
-      refetchInterval: liveActive ? HANET_CHECKIN_LIVE_POLL_MS : false,
+      refetchInterval: livePollMs,
       staleTime: liveActive ? 0 : undefined,
+      refetchIntervalInBackground: true,
     }),
-    [liveActive],
+    [liveActive, livePollMs],
   )
+
+  const dayLiveFrom = useMemo(() => localDayStartDatetime(date), [date])
+  const dayLiveTo = useMemo(() => {
+    const day = localDayStartDatetime(date).slice(0, 10)
+    if (day === todayLocalIsoDate()) {
+      return nowLocalDatetime()
+    }
+    return localDayEndDatetime(date)
+  }, [date])
+  const useDayLiveTimestamp = liveActive && mode === "day"
 
   const devicesQuery = useHanetDevicesQuery(
     effectivePlaceId,
@@ -127,6 +167,30 @@ function CheckinContent() {
     enabled:
       fetchEnabled &&
       mode === "day" &&
+      !useDayLiveTimestamp &&
+      hanetStatus?.configured === true &&
+      Boolean(effectivePlaceId),
+    ...liveQueryOptions,
+  })
+
+  const dayLiveQuery = useQuery({
+    queryKey: [
+      "hanet",
+      "checkins",
+      "day-live",
+      effectivePlaceId,
+      date,
+      dayLiveTo,
+    ],
+    queryFn: () =>
+      api.hanet.getCheckinsByPlaceTimestamp({
+        placeId: effectivePlaceId || undefined,
+        from: dayLiveFrom,
+        to: dayLiveTo,
+      }),
+    enabled:
+      fetchEnabled &&
+      useDayLiveTimestamp &&
       hanetStatus?.configured === true &&
       Boolean(effectivePlaceId),
     ...liveQueryOptions,
@@ -151,28 +215,72 @@ function CheckinContent() {
     ...liveQueryOptions,
   })
 
-  const activeQuery = mode === "day" ? dayQuery : timestampQuery
+  const activeQuery =
+    mode === "day"
+      ? useDayLiveTimestamp
+        ? dayLiveQuery
+        : dayQuery
+      : timestampQuery
   const payload = activeQuery.data as HanetCheckinPayload | undefined
   const { tableRows, total, hasData } = useCheckinPayload(payload, fetchEnabled)
+  const displayRows = useMemo(
+    () => mergeHanetCheckinRows(tableRows, pendingLiveRows),
+    [tableRows, pendingLiveRows],
+  )
+  const isBackgroundRefetch =
+    fetchEnabled && activeQuery.isFetching && !activeQuery.isLoading
+
+  useEffect(() => {
+    if (!liveActive || !lastPayload) return
+    const row = checkinRowFromSyncPayload(lastPayload)
+    if (!row) return
+    setPendingLiveRows((prev) => {
+      if (prev.some((item) => item.rowId === row.rowId)) return prev
+      return [row, ...prev]
+    })
+    setHighlightRowIds((prev) => new Set([...prev, row.rowId]))
+    const timer = window.setTimeout(() => {
+      setHighlightRowIds((prev) => {
+        const next = new Set(prev)
+        next.delete(row.rowId)
+        return next
+      })
+    }, HANET_CHECKIN_NEW_ROW_HIGHLIGHT_MS)
+    void queryClient.refetchQueries({
+      queryKey: [...HANET_CHECKINS_QUERY_KEY],
+      type: "active",
+    })
+    return () => window.clearTimeout(timer)
+  }, [lastPayload, liveActive, queryClient, syncRevision])
 
   useEffect(() => {
     if (!fetchEnabled) {
       seenRowIdsRef.current = new Set()
       setHighlightRowIds(new Set())
+      setPendingLiveRows([])
     }
   }, [fetchEnabled])
 
   useEffect(() => {
     seenRowIdsRef.current = new Set()
     setHighlightRowIds(new Set())
+    setPendingLiveRows([])
   }, [mode, effectivePlaceId, date, fromAt, toAt])
 
   useEffect(() => {
-    if (!fetchEnabled || activeQuery.isFetching || tableRows.length === 0) {
+    if (pendingLiveRows.length === 0 || tableRows.length === 0) return
+    const apiSignatures = new Set(tableRows.map(rowSignature))
+    setPendingLiveRows((prev) =>
+      prev.filter((row) => !apiSignatures.has(rowSignature(row))),
+    )
+  }, [tableRows, pendingLiveRows.length])
+
+  useEffect(() => {
+    if (!fetchEnabled || activeQuery.isLoading) {
       return
     }
 
-    const currentIds = new Set(tableRows.map((row) => row.rowId))
+    const currentIds = new Set(displayRows.map((row) => row.rowId))
     const fresh = new Set<string>()
 
     if (seenRowIdsRef.current.size > 0) {
@@ -194,7 +302,7 @@ function CheckinContent() {
     }, HANET_CHECKIN_NEW_ROW_HIGHLIGHT_MS)
 
     return () => window.clearTimeout(timer)
-  }, [tableRows, fetchEnabled, activeQuery.isFetching])
+  }, [displayRows, fetchEnabled, activeQuery.isLoading])
 
   const deviceSelectOptions = useMemo(() => {
     const map = new Map<string, { value: string; label: string }>()
@@ -210,7 +318,7 @@ function CheckinContent() {
       })
     }
 
-    for (const row of tableRows) {
+    for (const row of displayRows) {
       const deviceId = row.deviceId.trim()
       if (!deviceId || map.has(deviceId)) continue
       const deviceName = row.deviceName.trim()
@@ -223,7 +331,7 @@ function CheckinContent() {
     return Array.from(map.values()).sort((a, b) =>
       a.label.localeCompare(b.label, "vi"),
     )
-  }, [devicesQuery.data, tableRows])
+  }, [devicesQuery.data, displayRows])
 
   const summaryLine =
     hasData && !activeQuery.isFetching && !activeQuery.error
@@ -335,9 +443,7 @@ function CheckinContent() {
                 <DatePicker
                   value={date}
                   onChange={(value) =>
-                    setDate(
-                      typeof value === "string" ? value : todayLocalIsoDate(),
-                    )
+                    setDate(normalizeIsoDateInput(value, todayLocalIsoDate()))
                   }
                   placeholder="Chọn ngày"
                   size="sm"
@@ -383,7 +489,7 @@ function CheckinContent() {
                 <DateTimePicker
                   value={fromAt}
                   onChange={(value) => {
-                    const next = typeof value === "string" ? value : fromAt
+                    const next = normalizeDatetimeLocalInput(value, fromAt)
                     setFromAt(next)
                     setRangeError(validateRange(next, toAt))
                   }}
@@ -397,7 +503,7 @@ function CheckinContent() {
                 <DateTimePicker
                   value={toAt}
                   onChange={(value) => {
-                    const next = typeof value === "string" ? value : toAt
+                    const next = normalizeDatetimeLocalInput(value, toAt)
                     setToAt(next)
                     setRangeError(validateRange(fromAt, next))
                   }}
@@ -415,9 +521,7 @@ function CheckinContent() {
                   <DatePicker
                     value={date}
                     onChange={(value) =>
-                      setDate(
-                        typeof value === "string" ? value : todayLocalIsoDate(),
-                      )
+                      setDate(normalizeIsoDateInput(value, todayLocalIsoDate()))
                     }
                     placeholder="Chọn ngày"
                     size="sm"
@@ -467,7 +571,10 @@ function CheckinContent() {
             <code className="rounded bg-muted px-1 py-0.5 text-[11px]">from</code> /{" "}
             <code className="rounded bg-muted px-1 py-0.5 text-[11px]">to</code> dạng
             DDMMYYYYHHmmss
-            {fromAt && toAt ? (
+            {typeof fromAt === "string" &&
+            typeof toAt === "string" &&
+            fromAt &&
+            toAt ? (
               <>
                 {" "}
                 (vd. {formatDatetimeLocalVi(fromAt)} → {formatDatetimeLocalVi(toAt)})
@@ -483,13 +590,19 @@ function CheckinContent() {
           onLiveEnabledChange={setLiveEnabled}
           lastSyncAt={lastSyncAt}
           lastPayload={lastPayload}
-          isFetching={activeQuery.isFetching}
+          isFetching={isBackgroundRefetch}
+          pollIntervalMs={typeof livePollMs === "number" ? livePollMs : null}
+          socketConnected={socketConnected}
+          socketError={socketError}
+          webhookLocalhost={hanetStatus?.webhookLocalhost === true}
+          webhookUrl={hanetStatus?.urls?.auto ?? null}
+          lastWebhookAt={hanetStatus?.webhookIngest?.lastReceivedAt ?? null}
         />
       ) : null}
 
       <HanetCheckinsTable
-        data={fetchEnabled && !activeQuery.error ? tableRows : []}
-        isLoading={fetchEnabled && activeQuery.isFetching}
+        data={fetchEnabled && !activeQuery.error ? displayRows : []}
+        isLoading={fetchEnabled && activeQuery.isLoading}
         emptyLabel={emptyLabel}
         summaryLine={summaryLine}
         deviceSelectOptions={deviceSelectOptions}

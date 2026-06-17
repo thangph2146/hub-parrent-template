@@ -12,6 +12,8 @@ import { HanetRealtimeService } from './hanet-realtime.service';
 import { HanetPartnerService } from './hanet-partner.service';
 import { HanetPersonRegisterService } from './hanet-person-register.service';
 import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service';
+import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
+import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
 
 @Module({
   imports: [EventRegistrationsModule, SocketModule],
@@ -25,6 +27,8 @@ import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service
     HanetPartnerService,
     HanetPersonRegisterService,
     HanetPersonAvatarSyncService,
+    HanetCheckinLiveBufferService,
+    HanetWebhookIngestService,
   ],
   exports: [
     HanetWebhookService,
@@ -32,6 +36,8 @@ import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service
     HanetAdminService,
     HanetPersonRegisterService,
     HanetPersonAvatarSyncService,
+    HanetCheckinLiveBufferService,
+    HanetWebhookIngestService,
   ],
 })
 export class HanetModule {}

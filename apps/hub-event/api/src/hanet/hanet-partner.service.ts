@@ -317,6 +317,14 @@ export class HanetPartnerService {
     });
   }
 
+  /** Tra placeID từ device — dùng khi webhook attendance thiếu placeID. */
+  async resolvePlaceIdByDeviceId(deviceId: string): Promise<string> {
+    const normalized = deviceId.trim();
+    if (!normalized) return '';
+    const info = await this.getDeviceInfo(normalized);
+    return this.extractPlaceIdFromPartnerData(info);
+  }
+
   async updateDevice(input: HanetUpdateDeviceInput) {
     this.assertReady();
     const deviceID = input.deviceId.trim();

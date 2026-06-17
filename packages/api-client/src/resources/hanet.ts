@@ -21,6 +21,17 @@ export type HanetAdminStatusDto = {
   apiBaseUrl: string;
   defaultPlaceId: string | null;
   urls: HanetWebhookUrlsDto;
+  webhookLocalhost?: boolean;
+  liveBuffer?: {
+    totalBuffered: number;
+    latestAt: string | null;
+  };
+  webhookIngest?: {
+    totalBuffered: number;
+    lastReceivedAt: string | null;
+    lastDeviceId: string | null;
+    lastPersonName: string | null;
+  };
 };
 
 export type HanetTestConnectionDto = {

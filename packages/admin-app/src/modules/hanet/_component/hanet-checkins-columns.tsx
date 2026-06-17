@@ -85,7 +85,10 @@ function parseHanetCheckinDisplayDate(value: unknown): string | null {
 
   const viMatch = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)
   if (viMatch) {
-    const [, dd, mm, yyyy] = viMatch
+    const dd = viMatch[1]
+    const mm = viMatch[2]
+    const yyyy = viMatch[3]
+    if (!dd || !mm || !yyyy) return null
     return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`
   }
 

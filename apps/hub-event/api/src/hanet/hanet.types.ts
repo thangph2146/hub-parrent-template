@@ -20,6 +20,10 @@ export type HanetWebhookResult = {
   at: string;
   /** Đã có trạng thái trước đó — vẫn emit socket để đồng bộ UI. */
   duplicate?: boolean;
+  deviceId?: string;
+  deviceName?: string;
+  placeId?: string;
+  personId?: string;
 };
 
 /** Push sync webhook: device / place / person (add|update|delete). */

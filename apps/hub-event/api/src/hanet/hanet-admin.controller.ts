@@ -50,6 +50,20 @@ export class HanetAdminController {
     };
   }
 
+  @Get('webhook/recent')
+  @ApiOperation({
+    summary:
+      'Webhook HANET gần đây (in-memory) — kiểm tra Hub có nhận push từ cloud',
+  })
+  getWebhookRecent(@Query('limit') limit?: string) {
+    const parsed =
+      limit != null ? Number.parseInt(limit, 10) : undefined;
+    return {
+      success: true,
+      data: this.hanetAdminService.getWebhookRecent(parsed),
+    };
+  }
+
   @Post('test-connection')
   @ApiOperation({ summary: 'Kiểm tra OAuth / access token HANET' })
   async testConnection() {

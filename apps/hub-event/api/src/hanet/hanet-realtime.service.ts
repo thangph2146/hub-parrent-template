@@ -78,6 +78,10 @@ function toPayload(
       registrationId: result.registrationId,
       duplicate: result.duplicate,
       acknowledged: true,
+      deviceId: result.deviceId,
+      deviceName: result.deviceName,
+      placeId: result.placeId,
+      personId: result.personId,
     };
   }
 

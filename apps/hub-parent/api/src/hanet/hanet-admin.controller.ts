@@ -22,6 +22,7 @@ import { HanetAdminService } from './hanet-admin.service';
 import type {
   HanetCreatePlaceInput,
   HanetRegisterPersonByUrlInput,
+  HanetRegisterPersonInput,
   HanetSetDeviceMqttInput,
   HanetTakeFacePictureInput,
   HanetUpdateDeviceInput,
@@ -46,6 +47,20 @@ export class HanetAdminController {
       success: true,
 
       data: this.hanetAdminService.getStatus(eventId?.trim() || undefined),
+    };
+  }
+
+  @Get('webhook/recent')
+  @ApiOperation({
+    summary:
+      'Webhook HANET gần đây (in-memory) — kiểm tra Hub có nhận push từ cloud',
+  })
+  getWebhookRecent(@Query('limit') limit?: string) {
+    const parsed =
+      limit != null ? Number.parseInt(limit, 10) : undefined;
+    return {
+      success: true,
+      data: this.hanetAdminService.getWebhookRecent(parsed),
     };
   }
 
@@ -282,8 +297,10 @@ export class HanetAdminController {
 
   @Post('person/register')
   @Permissions(PERMISSIONS.EVENTS_MANAGE)
-  @ApiOperation({ summary: 'POST /person/register' })
-  async registerPerson(@Body() body: HanetPersonHubInput) {
+  @ApiOperation({
+    summary: 'POST /person/register (multipart file JPEG/PNG)',
+  })
+  async registerPerson(@Body() body: HanetRegisterPersonInput) {
     const data = await this.hanetAdminService.registerPerson(body);
 
     return { success: true, data };

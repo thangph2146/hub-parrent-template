@@ -7,6 +7,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { HanetWebhookService } from './hanet-webhook.service';
 import { HanetSyncService } from './hanet-sync.service';
 import { HanetRealtimeService } from './hanet-realtime.service';
+import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
 import { EventRegistrationAttendanceService } from '../event-registrations/event-registration-attendance.service';
 
 describe('HanetWebhookService', () => {
@@ -34,6 +35,10 @@ describe('HanetWebhookService', () => {
         {
           provide: HanetRealtimeService,
           useValue: { emitWebhookResult: jest.fn() },
+        },
+        {
+          provide: HanetCheckinLiveBufferService,
+          useValue: { record: jest.fn().mockResolvedValue(undefined) },
         },
       ],
     }).compile();

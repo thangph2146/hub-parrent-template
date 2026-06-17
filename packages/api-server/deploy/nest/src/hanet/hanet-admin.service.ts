@@ -8,6 +8,8 @@ import { HanetPartnerService } from './hanet-partner.service';
 import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service';
 import { HanetSyncService } from './hanet-sync.service';
 import { HanetRealtimeService } from './hanet-realtime.service';
+import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
+import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
 import type { HanetPersonHubInput } from './hanet-partner-params';
 import {
   buildHanetDeviceSyncBody,
@@ -44,6 +46,10 @@ export class HanetAdminService {
     private readonly sync: HanetSyncService,
 
     private readonly realtime: HanetRealtimeService,
+
+    private readonly checkinLiveBuffer: HanetCheckinLiveBufferService,
+
+    private readonly webhookIngest: HanetWebhookIngestService,
   ) {}
 
   private async applyPlacePartnerSync(
@@ -80,6 +86,7 @@ export class HanetAdminService {
 
   getStatus(eventId?: string) {
     const config = getHanetConfig();
+    const urls = getHanetWebhookUrls(eventId);
 
     return {
       configured: isHanetConfigured(config),
@@ -98,8 +105,22 @@ export class HanetAdminService {
 
       defaultPlaceId: config.defaultPlaceId || null,
 
-      urls: getHanetWebhookUrls(eventId),
+      urls,
+
+      webhookLocalhost: /localhost|127\.0\.0\.1/i.test(urls.auto),
+
+      liveBuffer: this.checkinLiveBuffer.getStats(),
+
+      webhookIngest: this.webhookIngest.getStats(),
     };
+  }
+
+  getWebhookRecent(limit?: number) {
+    const parsed =
+      limit != null && Number.isFinite(limit)
+        ? Math.max(1, Math.min(100, Math.trunc(limit)))
+        : 20;
+    return this.webhookIngest.listRecent(parsed);
   }
 
   async testConnection() {
@@ -366,27 +387,42 @@ export class HanetAdminService {
     );
   }
 
-  getCheckinsByPlaceDay(placeId: string | undefined, date: string) {
-    return this.partner.getCheckinByPlaceIdInDay({
+  async getCheckinsByPlaceDay(placeId: string | undefined, date: string) {
+    const data = await this.partner.getCheckinByPlaceIdInDay({
       placeId: placeId ?? '',
       date,
     });
+    const rows = this.checkinLiveBuffer.mergeDayRows(
+      data.placeId,
+      data.date,
+      data.rows,
+    );
+    const total = Math.max(data.total, rows.length);
+    return { ...data, rows, total };
   }
 
-  getCheckinsByPlaceTimestamp(
+  async getCheckinsByPlaceTimestamp(
     placeId: string | undefined,
 
     from: string,
 
     to: string,
   ) {
-    return this.partner.getCheckinByPlaceIdInTimestamp({
+    const data = await this.partner.getCheckinByPlaceIdInTimestamp({
       placeId: placeId ?? '',
 
       from,
 
       to,
     });
+    const rows = this.checkinLiveBuffer.mergeTimestampRows(
+      data.placeId,
+      from,
+      to,
+      data.rows,
+    );
+    const total = Math.max(data.total, rows.length);
+    return { ...data, rows, total };
   }
 
   listPersonsFromHanet(

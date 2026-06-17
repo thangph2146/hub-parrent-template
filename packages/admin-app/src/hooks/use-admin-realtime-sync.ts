@@ -104,7 +104,10 @@ function invalidateHanetSyncQueries(
     void queryClient.invalidateQueries({ queryKey: ["hanet", "avatars"] })
   }
   if (isHanetCheckinSyncPayload(payload)) {
-    void queryClient.invalidateQueries({ queryKey: [...HANET_CHECKINS_QUERY_KEY] })
+    void queryClient.refetchQueries({
+      queryKey: [...HANET_CHECKINS_QUERY_KEY],
+      type: "active",
+    })
     dispatchHanetCheckinSyncEvent(payload)
   }
 }

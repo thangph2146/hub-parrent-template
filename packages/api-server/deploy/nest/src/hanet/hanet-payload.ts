@@ -1,4 +1,8 @@
-import type { HanetCameraRole, HanetWebhookBody } from './hanet.types';
+import type {
+  HanetCameraRole,
+  HanetWebhookBody,
+  HanetWebhookResult,
+} from './hanet.types';
 
 /** Mã thiết bị / camera trên payload HANET thực tế. */
 export const HANET_DEVICE_ID_KEYS = [
@@ -222,4 +226,40 @@ export function normalizeHanetBody(raw: unknown): HanetWebhookBody {
   }
 
   return obj as HanetWebhookBody;
+}
+
+/** Kết quả notify realtime khi chưa ghi attendance (không khớp đăng ký / thiếu event). */
+export function buildHanetAttendanceNotifyResult(
+  body: HanetWebhookBody,
+  overrides: {
+    eventId?: number;
+    cameraRole?: HanetCameraRole | null;
+  } = {},
+): HanetWebhookResult {
+  const kind =
+    pickHanetAttendanceKind(body) ?? overrides.cameraRole ?? 'checkin';
+  const at = pickHanetTimestamp(body);
+  const fullName = pickHanetString(body, HANET_PERSON_NAME_KEYS) || 'Khách';
+  const aliasId = pickHanetString(body, HANET_PERSON_ID_KEYS);
+  const emailFromBody = pickHanetString(body, ['email', 'personEmail']);
+  const email =
+    emailFromBody ||
+    (aliasId.includes('@') ? aliasId : `${aliasId || 'hanet'}@hanet.local`);
+
+  return {
+    kind,
+    eventId: overrides.eventId ?? 0,
+    email,
+    fullName,
+    registrationId: null,
+    checkinId: null,
+    at: at.toISOString(),
+    duplicate: false,
+    deviceId: pickHanetDeviceId(body) || undefined,
+    deviceName:
+      pickHanetString(body, ['deviceName', 'device_name']) || undefined,
+    placeId:
+      pickHanetString(body, ['placeID', 'placeId', 'place_id']) || undefined,
+    personId: aliasId || undefined,
+  };
 }

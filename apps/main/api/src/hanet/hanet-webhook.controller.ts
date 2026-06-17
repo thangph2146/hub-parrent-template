@@ -15,6 +15,7 @@ import { Public } from '../common';
 import { getHanetConfig, isHanetConfigured } from './hanet.config';
 import { normalizeHanetBody } from './hanet-payload';
 import { HanetWebhookService } from './hanet-webhook.service';
+import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
 import { getHanetWebhookUrls } from './hanet-webhook-urls';
 import type { HanetWebhookBody } from './hanet.types';
 
@@ -24,7 +25,10 @@ import type { HanetWebhookBody } from './hanet.types';
 export class HanetWebhookController {
   private readonly logger = new Logger(HanetWebhookController.name);
 
-  constructor(private readonly hanetWebhookService: HanetWebhookService) {}
+  constructor(
+    private readonly hanetWebhookService: HanetWebhookService,
+    private readonly webhookIngest: HanetWebhookIngestService,
+  ) {}
 
   @Get('info')
   @ApiOperation({
@@ -66,10 +70,21 @@ export class HanetWebhookController {
 
   private async handle(rawBody: HanetWebhookBody, eventId?: string) {
     const body = normalizeHanetBody(rawBody);
-    this.logger.debug(
-      `HANET webhook eventId=${eventId ?? 'auto'} keys=${Object.keys(body).join(',')} camera=${String(body.camera_id ?? body.deviceID ?? '-')}`,
+    const ingestEntry = this.webhookIngest.push(body, { eventId });
+    this.logger.log(
+      `HANET webhook ← device=${ingestEntry.deviceId || '—'} person=${ingestEntry.personName || '—'} place=${ingestEntry.placeId || '—'}`,
     );
-    const result = await this.hanetWebhookService.handleWebhook(eventId, body);
-    return { success: true, data: result };
+    try {
+      const result = await this.hanetWebhookService.handleWebhook(
+        eventId,
+        body,
+      );
+      this.webhookIngest.markProcessed(ingestEntry.id, null);
+      return { success: true, data: result };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.webhookIngest.markProcessed(ingestEntry.id, message);
+      throw error;
+    }
   }
 }
