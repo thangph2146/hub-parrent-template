@@ -26,11 +26,7 @@ const STACKS = {
 
 /** Tên process theo stack (đồng bộ create*Stack). */
 const STACK_PROCESS_NAMES = {
-  parent: [
-    "hub-parent-api",
-    "hub-parent-backend",
-    "hub-parent-frontend",
-  ],
+  parent: ["hub-parent-api", "hub-parent-frontend"],
   checkin: ["hub-checkin-api", "hub-checkin-frontend"],
   store: ["hub-store-api", "hub-store-frontend"],
 };

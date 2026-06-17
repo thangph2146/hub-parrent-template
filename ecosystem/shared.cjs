@@ -39,11 +39,10 @@ function createNextFrontendApp(name, cwd, port = 3000) {
   };
 }
 
-/** Site chính: hub-parent API + main admin + hub-parent storefront */
+/** Site chính: hub-parent API + hub-parent storefront (không chạy admin port 3001). */
 function createParentStack() {
   return [
     createApiApp("hub-parent-api", PRODUCT_LINES["hub-parent"].api.path),
-    createBackendApp("hub-parent-backend", PRODUCT_LINES.main.backend.path),
     createNextFrontendApp(
       "hub-parent-frontend",
       PRODUCT_LINES["hub-parent"].frontend.path,
