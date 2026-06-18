@@ -5,6 +5,7 @@
  *   pnpm pull:template
  *   pnpm pull:template --ref v1.0.0
  *   pnpm pull:template --dry-run
+ *   pnpm pull:template --full     # pull + post-pull-downstream (install + line sync)
  *
  * Upstream (repo này): báo skip — đây là nguồn template.
  */
@@ -37,12 +38,14 @@ function loadManifest() {
 function parseArgs(argv) {
   let ref = null
   let dryRun = false
+  let postSync = false
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === "--dry-run") dryRun = true
+    else if (arg === "--post-sync" || arg === "--full") postSync = true
     else if (arg === "--ref" && argv[i + 1]) ref = argv[++i]
   }
-  return { ref, dryRun }
+  return { ref, dryRun, postSync }
 }
 
 function runGit(args, { dryRun = false, label } = {}) {
@@ -83,10 +86,11 @@ function pullTemplate({ ref, dryRun }) {
   if (manifest.role === "upstream") {
     console.log(
       "[pull:template] Repo upstream (template) — không pull chính mình.\n" +
-        "  Downstream: clone repo sản phẩm → pnpm pull:template\n" +
+        "  Sửa packages/* + script-system → pnpm check → pnpm push\n" +
+        "  Downstream: pnpm sync (sau khi upstream đã push main)\n" +
         "  Doc: docs/TEMPLATE_MONOREPO.md",
     )
-    return
+    return null
   }
 
   const remote = ensureTemplateRemote(manifest, dryRun)
@@ -142,10 +146,31 @@ function pullTemplate({ ref, dryRun }) {
   } else {
     fs.writeFileSync(LOCK_PATH, `${JSON.stringify(lock, null, 2)}\n`, "utf8")
     console.log(`\n[pull:template] Đã ghi ${path.relative(ROOT, LOCK_PATH)}`)
-    console.log("[pull:template] Chạy tiếp: pnpm install && pnpm check")
+    console.log(
+      "[pull:template] Bước 2: pnpm sync\n" +
+        "  (= post-pull: install + build:packages + sync theo productLine)\n" +
+        "  Hoặc: node script-system/sync/post-pull-downstream.cjs",
+    )
   }
+
+  return manifest
 }
 
-const { ref, dryRun } = parseArgs(process.argv.slice(2))
+function runPostPull({ dryRun }) {
+  if (dryRun) {
+    console.log("[pull:template] dry-run: post-pull-downstream.cjs")
+    return
+  }
+  execFileSync(
+    process.execPath,
+    [path.join(ROOT, "script-system/sync/post-pull-downstream.cjs")],
+    { cwd: ROOT, stdio: "inherit" },
+  )
+}
+
+const { ref, dryRun, postSync } = parseArgs(process.argv.slice(2))
 console.log("[pull:template] mono-repo-template inheritance\n")
-pullTemplate({ ref, dryRun })
+const manifest = pullTemplate({ ref, dryRun })
+if (postSync && manifest?.role === "downstream") {
+  runPostPull({ dryRun })
+}

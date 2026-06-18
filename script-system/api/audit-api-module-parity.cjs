@@ -10,7 +10,7 @@ const { execSync } = require("node:child_process");
 const { ROOT } = require("../lib/monorepo-root.cjs");
 const { DEPLOY_CLI } = require("../lib/api-server-cli.cjs");
 
-const appRel = process.argv[2]?.trim() || "apps/hub-event/api";
+const appRel = process.argv[2]?.trim() || "apps/hub-checkin/api";
 const appRoot = path.resolve(ROOT, appRel);
 
 console.log(`[api:audit:modules] ${path.relative(ROOT, appRoot)}\n`);

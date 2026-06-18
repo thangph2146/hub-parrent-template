@@ -28,7 +28,7 @@ const STACKS = {
     apps: [
       PRODUCT_LINES.main.api.package,
       PRODUCT_LINES.main.backend.package,
-      PRODUCT_LINES["hub-event"].frontend.package,
+      PRODUCT_LINES["hub-checkin"].frontend.package,
     ],
     useWebpack: true,
     resourceGuard: true,
@@ -44,8 +44,8 @@ const STACKS = {
   checkin: {
     apiPort: 3002,
     apps: [
-      PRODUCT_LINES["hub-event"].api.package,
-      PRODUCT_LINES["hub-event"].frontend.package,
+      PRODUCT_LINES["hub-checkin"].api.package,
+      PRODUCT_LINES["hub-checkin"].frontend.package,
     ],
     useWebpack: true,
   },

@@ -17,7 +17,7 @@ const {
 } = require('../lib/render/resolve-render-module-set.cjs')
 const { resolveEntityClosureForModules } = require('../lib/graph/resolve-entity-closure.cjs')
 
-const APP_REL = (process.argv[2] ?? 'apps/hub-event/api').replace(/\\/g, '/')
+const APP_REL = (process.argv[2] ?? 'apps/hub-checkin/api').replace(/\\/g, '/')
 const appRoot = path.join(ROOT, APP_REL)
 
 if (!fs.existsSync(path.join(appRoot, 'api.app.config.json'))) {

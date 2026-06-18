@@ -14,6 +14,7 @@ const {
 const { resolveApiModules } = require('../../../config/render.config.cjs')
 const { resolveModuleClosure } = require('./resolve-module-closure.cjs')
 const { patchRenderAppModule, RENDER_BOOTSTRAP_MODULES } = require('./patch-render-app-module.cjs')
+const { patchDatabaseSeeder } = require('./patch-database-seeder.cjs')
 const { pruneThinModuleRedundantFiles } = require('../prune/prune-thin-module-runtime.cjs')
 const { pruneCommonRuntime } = require('../prune/prune-common-runtime.cjs')
 const { pruneModuleBasesRuntime } = require('../prune/prune-module-bases-runtime.cjs')
@@ -59,6 +60,7 @@ const SEED_FILE_MODULE_DEPS = {
   'seeds/orders-sample.runner.ts': ['orders', 'products'],
   'seeds/products-sample.runner.ts': ['products'],
   'seeds/promo-codes-sample.runner.ts': ['promo-codes'],
+  'seeds/storesync-sample.data.ts': ['products', 'orders'],
 }
 
 const ALLOWED_SRC_TOP = new Set([
@@ -247,7 +249,10 @@ function renderApiFromTemplate(appRel, opts = {}) {
 
   pruneModuleBasesRuntime(appRoot, moduleIds, { quiet: !opts.prune })
   pruneThinModuleRedundantFiles(appRoot, { quiet: false })
-  pruneCommonRuntime(appRoot, { quiet: true })
+  pruneCommonRuntime(appRoot, { quiet: true, moduleIds })
+  if (isPartialRender) {
+    patchDatabaseSeeder(appRoot, moduleIds, { quiet: false })
+  }
   const prunedTopLevel = opts.prune ? pruneExtraModules(appRoot, moduleIds) : []
 
   let entityGraph = null

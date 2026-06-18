@@ -12,6 +12,54 @@ const DEAD_COMMON_ROOT_FILES = new Set([
   'parse-setting-value.ts',
 ])
 
+const STORE_MODULE_IDS = ['products', 'orders', 'promo-codes', 'carts']
+const STORE_COMMON_FILES = [
+  'cart-types.ts',
+  'product-types.ts',
+  'product-units.ts',
+  'unit-pricing.ts',
+  'promo-checkout.ts',
+  'gift-rules.ts',
+]
+
+function pruneStoreCommonRuntime(destRoot, moduleIds, log) {
+  const keepStore = STORE_MODULE_IDS.some((id) => moduleIds.includes(id))
+  if (keepStore || !moduleIds.length) return 0
+
+  let removed = 0
+  const commonDir = path.join(destRoot, 'src/common')
+  for (const file of STORE_COMMON_FILES) {
+    const abs = path.join(commonDir, file)
+    if (!fs.existsSync(abs)) continue
+    fs.unlinkSync(abs)
+    removed++
+    log.detail('prune:common', `removed src/common/${file}`)
+  }
+
+  const commerceDir = path.join(commonDir, 'commerce')
+  if (fs.existsSync(commerceDir)) {
+    fs.rmSync(commerceDir, { recursive: true, force: true })
+    removed++
+    log.detail('prune:common', 'removed src/common/commerce/')
+  }
+
+  const seedFiles = [
+    'seeds/storesync-sample.data.ts',
+    'seeds/products-sample.runner.ts',
+    'seeds/promo-codes-sample.runner.ts',
+    'seeds/orders-sample.runner.ts',
+  ]
+  for (const rel of seedFiles) {
+    const abs = path.join(destRoot, 'src', rel)
+    if (!fs.existsSync(abs)) continue
+    fs.unlinkSync(abs)
+    removed++
+    log.detail('prune:common', `removed src/${rel}`)
+  }
+
+  return removed
+}
+
 function pruneCommonRuntime(destRoot, options = {}) {
   const log = options.log ?? createLogger(options)
   const commonDir = path.join(destRoot, 'src/common')
@@ -31,6 +79,8 @@ function pruneCommonRuntime(destRoot, options = {}) {
     removedFiles.push(file)
     log.detail('prune:common', `removed src/common/${file}`)
   }
+
+  removed += pruneStoreCommonRuntime(destRoot, options.moduleIds ?? [], log)
 
   if (removed > 0) {
     const { writeCommonBarrel } = require('../sync/sync-module-bases.cjs')

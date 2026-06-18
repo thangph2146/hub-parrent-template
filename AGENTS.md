@@ -139,6 +139,38 @@ docs/
 
 ## 5. Dev & sync (tóm tắt)
 
+### Quy tắc vàng: **template trước → downstream sau**
+
+```mermaid
+flowchart LR
+  subgraph upstream ["mono-repo-template (upstream)"]
+    PKG["packages/* + script-system"]
+    PUSH["pnpm check → pnpm push"]
+  end
+  subgraph downstream ["hub-*-monorepo (downstream)"]
+    PULL["pnpm pull:template"]
+    POST["pnpm post-pull:downstream"]
+    APPS["apps/* giữ local"]
+  end
+  PKG --> PUSH
+  PUSH --> PULL
+  PULL --> POST
+  POST --> APPS
+```
+
+| Bước | Repo | Lệnh |
+|------|------|------|
+| **1. Sửa thư viện** | `mono-repo-template` | `packages/*`, `script-system/*` |
+| **2. Verify + push** | upstream | `pnpm check` → `pnpm push -- "feat: ..."` |
+| **3. Đồng bộ** | downstream | `pnpm sync` (= `pull:template` + `post-pull:downstream`) |
+| **4. Verify deploy** | downstream | `pnpm check` hoặc `pnpm sync:full` |
+
+**Không** sửa `packages/` lâu dài trên downstream — PR lên template upstream.  
+**Không** chạy `pnpm sync` downstream trước khi upstream đã push `main`.
+
+Profile post-pull theo `productLine`: `script-system/sync/downstream-sync-profile.cjs`  
+(hub-event → `pull:checkin`; hub-parent → build; store-sync → `admin:generate:store`).
+
 | Mục đích | Lệnh |
 |----------|------|
 | Dev site chính | `pnpm dev` (main API + backend + hub-parent frontend) |
@@ -146,7 +178,7 @@ docs/
 | Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
 | Dev stack check-in deploy | `pnpm dev:checkin` |
 | **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
-| Downstream kéo **full packages/** | `pnpm pull:template` · catalog [`packages/README.md`](packages/README.md) |
+| Downstream kéo **full packages/** | `pnpm pull:template` · `pnpm sync` · catalog [`packages/README.md`](packages/README.md) |
 | Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
 | Sync check-in (verify + admin; API native đã commit) | `pnpm pull:checkin` |
 | Cập nhật hub-event API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-event/api` → commit |

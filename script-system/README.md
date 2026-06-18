@@ -114,9 +114,17 @@ Kiểm tra layout: **`pnpm verify:scripts`**
 
 | `sync-parent.cjs` | `pnpm pull:parent` |
 
-| `pull-template.cjs` | `pnpm pull:template` — downstream kéo packages/script-system |
+| `pull-template.cjs` | `pnpm pull:template` — bước 1: checkout packages/script-system |
+
+| `post-pull-downstream.cjs` | `pnpm post-pull:downstream` — bước 2: install + sync theo productLine |
+
+| `downstream-sync-profile.cjs` | Profile post-pull (hub-event / hub-parent / store-sync) |
 
 | `init-downstream.cjs` | `pnpm init:downstream hub-event ../path` |
+
+| `apply-sync-to-downstream.cjs` | Dev: copy sync core từ template → downstream local (trước khi push) |
+
+Downstream flow: **upstream push trước** → `pnpm sync` (= pull:template + post-pull).
 
 
 

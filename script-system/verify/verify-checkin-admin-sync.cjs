@@ -5,16 +5,15 @@
  */
 const fs = require("node:fs");
 const path = require("node:path");
-const { execSync  } = require("node:child_process");
 const {
   buildCheckinMenu,
   verifyMenuOrderAgainstMain,
 } = require("../sync/lib/build-checkin-menu.cjs")
+const { loadAdminMenuItems } = require("../sync/lib/load-admin-menu-items.cjs")
 const { ROOT, PRODUCT_LINES } = require("../lib/monorepo-root.cjs");
 const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
 
-const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)
-const MAIN_BACKEND = path.join(ROOT, PRODUCT_LINES.main.backend.path)
+const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-checkin"].frontend.path)
 const ADMIN_ROOT = path.join(CHECKIN_FRONT, "src/app/admin")
 const CONFIG_JSON = resolveAdminAppConfigFile(CHECKIN_FRONT)
 const CONFIG_LEGACY = path.join(CHECKIN_FRONT, "admin.sync-modules.json")
@@ -38,19 +37,6 @@ function moduleToHref(mod) {
   return MODULE_HREF_OVERRIDES[mod] ?? `/${mod}`
 }
 
-function loadMainMenuItems() {
-  const exportScript = path.join(
-    MAIN_BACKEND,
-    "scripts/export-menu-items.mts",
-  )
-  const apiDir = path.join(ROOT, PRODUCT_LINES.main.api.path)
-  const raw = execSync(`npx tsx "${exportScript}"`, {
-    cwd: apiDir,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "inherit"],
-  })
-  return JSON.parse(raw)
-}
 
 const {
   CHECKIN_NATIVE_LIB_MODULES,
@@ -257,7 +243,7 @@ function verify() {
       )
     } else {
       try {
-        const mainMenu = loadMainMenuItems()
+        const mainMenu = loadAdminMenuItems()
         const builtMenu = buildCheckinMenu(mainMenu, config, moduleToHref)
         errors.push(
           ...verifyMenuOrderAgainstMain(mainMenu, builtMenu, config).map(

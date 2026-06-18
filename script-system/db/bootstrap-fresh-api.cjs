@@ -235,7 +235,7 @@ function driver() {
 const devHint =
   arg === "store-sync" || pkg === "@store-sync/api"
     ? "pnpm dev:store"
-    : arg === "hub-event" || pkg === "@hub-event/api"
+    : arg === "hub-checkin" || arg === "hub-event" || pkg === "@hub-event/api"
       ? "pnpm dev:checkin"
       : arg === "hub-parent" || pkg === "@hub-parent/api"
         ? "pnpm dev:main"

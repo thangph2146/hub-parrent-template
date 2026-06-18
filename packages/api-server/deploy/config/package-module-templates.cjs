@@ -83,8 +83,7 @@ const SKIP_THIN_MODULE_IDS = new Set([
   'uploads',
 ])
 
-function resolveControllerPath(moduleId) {
-  const base = path.join(ROOT, MAIN_API_PATH, 'src', moduleId)
+function resolveControllerPathAt(base, moduleId) {
   const standard = path.join(base, `${moduleId}.controller.ts`)
   if (fs.existsSync(standard)) return standard
   const { MANUAL_PACKAGE_MODULE_OVERRIDES } = require('./manual-package-module-overrides.cjs')
@@ -93,11 +92,24 @@ function resolveControllerPath(moduleId) {
   return null
 }
 
+function resolveControllerPath(moduleId) {
+  return resolveControllerPathAt(path.join(ROOT, MAIN_API_PATH, 'src', moduleId), moduleId)
+}
+
+function hasStandardBindingPaths(moduleId) {
+  const candidates = [
+    path.join(ROOT, MAIN_API_PATH, 'src', moduleId),
+    path.join(PACKAGE_ROOT, 'deploy/nest/src', moduleId),
+  ]
+  for (const base of candidates) {
+    if (!fs.existsSync(path.join(base, `${moduleId}.service.ts`))) continue
+    if (resolveControllerPathAt(base, moduleId)) return true
+  }
+  return false
+}
+
 function mainHasStandardBindingPaths(moduleId) {
-  const base = path.join(ROOT, MAIN_API_PATH, 'src', moduleId)
-  const hasService = fs.existsSync(path.join(base, `${moduleId}.service.ts`))
-  if (!hasService) return false
-  return Boolean(resolveControllerPath(moduleId))
+  return hasStandardBindingPaths(moduleId)
 }
 
 function resolveMaterialize(moduleId, primary) {

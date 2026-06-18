@@ -9,4 +9,4 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const { PACKAGE_ROOT } = require('../lib/monorepo-root.cjs')
 const script = path.join(PACKAGE_ROOT, 'deploy/cli/verify/verify-render-api.mjs')
-execSync(`node ${script} apps/hub-event/api`, { stdio: 'inherit' })
+execSync(`node ${script} apps/hub-checkin/api`, { stdio: 'inherit' })

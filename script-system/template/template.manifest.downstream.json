@@ -33,6 +33,7 @@
     "package.json",
     "template.manifest.json",
     ".template-lock.json",
+    "README.md",
     "ecosystem",
     ".env",
     ".env.local"

@@ -1,16 +1,36 @@
 # hub-parent-monorepo — site chính HUB (packages-first)
 
-Monorepo **deploy site chính** — kế thừi **full** `packages/` từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
+Monorepo **deploy site chính** — kế thừa **full** `packages/` từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
 
-## Lớp compose
+> **Downstream:** sửa thư viện trên **template upstream trước** → `pnpm sync` ở đây.  
+> Agent: [`AGENTS.md`](AGENTS.md) · flow: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md)
 
-| Lớp | Package / app | Vai trò |
-|-----|----------------|---------|
-| **Storefront + admin** | `apps/hub-parent/hub-parent-frontend` | Site công khai + `/admin` |
-| **API** | `apps/hub-parent/api` | API deploy site chính |
-| **Thư viện** | `packages/*` | UI, api-client, api-server, … — `pnpm pull:template` |
+## Cấu trúc
 
-Feature dùng chung: sửa **`packages/*`** trên template upstream → tag → `pnpm pull:template` ở đây.
+```
+packages/                         # Thư viện — kéo từ template
+apps/hub-parent/
+├── api/                          # @hub-parent/api
+└── hub-parent-frontend/          # @frontend — storefront + /admin
+```
+
+## Đồng bộ (flow chuẩn)
+
+```bash
+# 1) Trên mono-repo-template — LUÔN TRƯỚC
+pnpm check && pnpm push -- "feat: ..."
+
+# 2) Trên hub-parent-monorepo
+pnpm sync              # pull:template + post-pull (install + build + verify)
+pnpm sync:full         # sync + pnpm check
+pnpm dev:parent
+```
+
+| Lệnh | Vai trò |
+|------|---------|
+| `pnpm pull:template` | Bước 1 — checkout packages/ + script-system |
+| `pnpm post-pull:downstream` | Bước 2 — install, build, verify API |
+| `pnpm sync` | Cả hai bước |
 
 ## Lệnh hàng ngày
 
@@ -21,18 +41,6 @@ pnpm dev:parent          # API :3002 + storefront :3000
 pnpm check
 ```
 
-## Cập nhật thư viện từ template
-
-```bash
-pnpm pull:template
-# hoặc pin tag:
-pnpm pull:template -- --ref template/v2026.06.18
-pnpm install
-pnpm build:packages
-pnpm check
-git push -- "chore: sync template"
-```
-
 ## Deploy
 
 ```bash
@@ -40,5 +48,3 @@ pnpm build
 pnpm pm2:start
 pnpm pm2:reload
 ```
-
-Chi tiết: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) · upstream dev: `mono-repo-template` (`apps/main`).

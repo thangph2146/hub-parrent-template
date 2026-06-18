@@ -83,6 +83,13 @@ git tag template/v2026.06.12 && git push origin template/v2026.06.12
 
 ## Downstream (repo sản phẩm)
 
+### Quy tắc: template upstream trước
+
+1. Sửa **`mono-repo-template`** (`packages/`, `script-system/`) → `pnpm check` → `pnpm push`
+2. Trên repo deploy → **`pnpm sync`** (không chỉ `pull:template`)
+
+`pnpm sync` = `pull:template` + `post-pull:downstream` (install, build packages, sync theo product line).
+
 ### Tạo mới
 
 ```bash
@@ -96,14 +103,21 @@ pnpm check
 ### Cập nhật thư viện
 
 ```bash
-pnpm pull:template
+# Trên mono-repo-template (upstream) — LUÔN TRƯỚC:
+pnpm check
+pnpm push -- "feat: ..."
+
+# Trên hub-*-monorepo (downstream):
+pnpm sync
 # hoặc pin tag:
 pnpm pull:template -- --ref template/v2026.06.12
-pnpm install
-pnpm verify:template-downstream
+pnpm post-pull:downstream
 pnpm check
 pnpm push -- "chore: sync template"
 ```
+
+`pull:template` chỉ checkout `packages/`, `script-system/`, docs — **không** đủ một mình.  
+`post-pull:downstream` chạy install + build + `pull:checkin` (hub-event) theo profile.
 
 `pull:template` luôn checkout **cả thư mục `packages/`** — không subset.
 

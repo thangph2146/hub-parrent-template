@@ -1,7 +1,0 @@
-{
-  "id": "hub-checkin-api",
-  "alignAdminApp": "../hub-event-checkin-frontend/config/admin.app.config.json",
-  "packageModuleTemplates": {
-    "enabled": true
-  }
-}

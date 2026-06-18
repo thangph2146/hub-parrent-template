@@ -44,7 +44,7 @@
     "prune:module-specs": "node deploy/cli/lib/prune/prune-pkg-module-specs.cjs",
     "render": "node deploy/cli/render.cjs",
     "render:matrix": "node deploy/cli/render-matrix.cjs",
-    "render:regenerate:checkin": "node deploy/cli/render.cjs apps/hub-event/api --skip-sync-template",
+    "render:regenerate:checkin": "node deploy/cli/render.cjs apps/hub-checkin/api --prune --prune-entities --skip-sync-template",
     "verify:template": "node deploy/cli/verify/template.mjs",
     "verify:entity-closure": "node deploy/cli/verify/verify-entity-closure.mjs",
     "verify:entity-links": "node deploy/cli/verify/verify-entity-links.mjs",

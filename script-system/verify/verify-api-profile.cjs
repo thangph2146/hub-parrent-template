@@ -101,7 +101,7 @@ function verify(productKey) {
   console.log(`[verify-api-profile] OK — ${productKey} profile + app.module khớp.`);
 }
 
-const arg = process.argv[2] ?? "hub-event";
+const arg = process.argv[2] ?? "hub-checkin";
 if (!API_INHERITS_FROM_MAIN.includes(arg)) {
   console.error(`Usage: node script-system/verify-api-profile.cjs <${API_INHERITS_FROM_MAIN.join("|")}>`);
   process.exit(1);

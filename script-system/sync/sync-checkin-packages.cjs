@@ -1,7 +1,7 @@
 /**
  * pull:checkin — packages-first (không copy API legacy từ main).
  *
- * Native API hub-event đã commit → chỉ verify + admin migrate/generate.
+ * Native API hub-checkin đã commit → chỉ verify + admin migrate/generate.
  * Regenerate API: pnpm api:regenerate:checkin
  *
  * Usage:
@@ -13,7 +13,7 @@ const { runStep } = require("../lib/run-step.cjs");
 
 const PREFIX = "pull:checkin";
 
-console.log(`[${PREFIX}] verify + admin (native hub-event/api — không sync-api legacy)\n`);
+console.log(`[${PREFIX}] verify + admin (native hub-checkin/api — không sync-api legacy)\n`);
 
 runStep(
   ROOT,
@@ -23,7 +23,7 @@ runStep(
 );
 runStep(
   ROOT,
-  "node script-system/verify/verify-api-profile.cjs hub-event",
+  "node script-system/verify/verify-api-profile.cjs hub-checkin",
   "2/7 verify API profile",
   PREFIX,
 );
@@ -42,7 +42,7 @@ runStep(
 );
 runStep(
   ROOT,
-  "node script-system/admin/generate-admin-routes.cjs apps/hub-event/hub-event-checkin-frontend --prune",
+  "node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-event-checkin-frontend --prune",
   "6/7 generate route + menu check-in",
   PREFIX,
 );

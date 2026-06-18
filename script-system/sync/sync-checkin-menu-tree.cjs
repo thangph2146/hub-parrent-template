@@ -1,11 +1,10 @@
 /**
- * Sinh checkin-admin-menu-tree.tsx từ main/backend — chỉ menu cần cho check-in.
+ * Sinh checkin-admin-menu-tree.tsx từ @workspace/admin-app — chỉ menu cần cho check-in.
  *
  * Usage: node script-system/sync/sync-checkin-menu-tree.cjs
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { execSync } = require("node:child_process")
 const { ROOT } = require("../lib/monorepo-root.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
@@ -13,8 +12,9 @@ const {
   buildCheckinMenu,
   verifyMenuOrderAgainstMain,
 } = require("./lib/build-checkin-menu.cjs")
+const { loadAdminMenuItems } = require("./lib/load-admin-menu-items.cjs")
 
-const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-event"].frontend.path)
+const CHECKIN_FRONT = path.join(ROOT, PRODUCT_LINES["hub-checkin"].frontend.path)
 const CONFIG_PATH =
   resolveAdminAppConfigFile(CHECKIN_FRONT) ??
   path.join(CHECKIN_FRONT, "admin.sync-modules.json")
@@ -22,13 +22,6 @@ const OUT_PATH = path.join(
   CHECKIN_FRONT,
   "src/config/admin/checkin-admin-menu-tree.tsx",
 )
-const EXPORT_SCRIPT = path.join(
-  ROOT,
-  PRODUCT_LINES.main.backend.path,
-  "scripts/export-menu-items.mts",
-)
-const API_DIR = path.join(ROOT, PRODUCT_LINES.main.api.path)
-
 /** Module admin.sync-modules → href main backend (không prefix /admin). */
 const MODULE_HREF_OVERRIDES = {
   "file-storage": "/file-storage",
@@ -36,15 +29,6 @@ const MODULE_HREF_OVERRIDES = {
 
 function moduleToHref(mod) {
   return MODULE_HREF_OVERRIDES[mod] ?? `/${mod}`
-}
-
-function loadMainMenuItems() {
-  const raw = execSync(`npx tsx "${EXPORT_SCRIPT}"`, {
-    cwd: API_DIR,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "inherit"],
-  })
-  return JSON.parse(raw)
 }
 
 function collectIcons(items) {
@@ -111,7 +95,7 @@ ${items},
 
 function main() {
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"))
-  const mainItems = loadMainMenuItems()
+  const mainItems = loadAdminMenuItems()
   const menu = buildCheckinMenu(mainItems, config, moduleToHref)
 
   const orderErrors = verifyMenuOrderAgainstMain(mainItems, menu, config)
@@ -140,4 +124,4 @@ function main() {
 }
 
 main()
-
+

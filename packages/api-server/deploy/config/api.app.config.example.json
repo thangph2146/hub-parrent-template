@@ -1,6 +1,8 @@
 {
   "id": "hub-checkin-api",
   "alignAdminApp": "../hub-event-checkin-frontend/config/admin.app.config.json",
+  "excludeModules": ["products", "orders", "promo-codes", "carts"],
+  "excludeEntities": ["Product", "Order", "PromoCode", "CustomerCart"],
   "packageModuleTemplates": {
     "enabled": true,
     "comment": "Render luôn copy src/common/module-bases + module-types từ template (sync từ packages/api-server/src/modules). Registry: deploy/config/package-module-templates.cjs · meta: deploy/nest/.pipeline/PACKAGE_MODULE_TEMPLATES.meta.json"

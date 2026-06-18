@@ -20,9 +20,17 @@ const PRODUCT_LINES = {
     },
   },
   "hub-event": {
-    api: { path: "apps/hub-event/api", package: "@hub-event/api", port: 3002 },
+    api: { path: "apps/hub-checkin/api", package: "@hub-event/api", port: 3002 },
     frontend: {
-      path: "apps/hub-event/hub-event-checkin-frontend",
+      path: "apps/hub-checkin/hub-event-checkin-frontend",
+      package: "@hub-event-checkin-frontend",
+      port: 3000,
+    },
+  },
+  "hub-checkin": {
+    api: { path: "apps/hub-checkin/api", package: "@hub-event/api", port: 3002 },
+    frontend: {
+      path: "apps/hub-checkin/hub-event-checkin-frontend",
       package: "@hub-event-checkin-frontend",
       port: 3000,
     },
@@ -38,13 +46,13 @@ const PRODUCT_LINES = {
 };
 
 /** Product line kế thừa source API từ main. */
-const API_INHERITS_FROM_MAIN = ["hub-event", "hub-parent", "store-sync"];
+const API_INHERITS_FROM_MAIN = ["hub-checkin", "hub-event", "hub-parent", "store-sync"];
 
 /** Next apps — kiểm tra sdk.http. */
 const NEXT_APP_PATHS = [
   PRODUCT_LINES.main.backend.path,
   PRODUCT_LINES["hub-parent"].frontend.path,
-  PRODUCT_LINES["hub-event"].frontend.path,
+  PRODUCT_LINES["hub-checkin"].frontend.path,
   PRODUCT_LINES["store-sync"].frontend.path,
 ];
 

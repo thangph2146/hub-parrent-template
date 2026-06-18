@@ -1,0 +1,9 @@
+{
+  "id": "hub-checkin-api",
+  "alignAdminApp": "../hub-event-checkin-frontend/config/admin.app.config.json",
+  "excludeModules": ["products", "orders", "promo-codes", "carts"],
+  "excludeEntities": ["Product", "Order", "PromoCode", "CustomerCart"],
+  "packageModuleTemplates": {
+    "enabled": true
+  }
+}

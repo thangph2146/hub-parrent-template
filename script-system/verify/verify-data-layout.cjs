@@ -92,7 +92,7 @@ if (fs.existsSync(dataRoot)) {
 
 const apiEnvExamples = [
   "apps/main/api/.env.example",
-  "apps/hub-event/api/.env.example",
+  "apps/hub-checkin/api/.env.example",
   "apps/hub-parent/api/.env.example",
   "apps/store-sync/api/.env.example",
 ];
@@ -106,7 +106,7 @@ for (const rel of apiEnvExamples) {
 }
 
 const LEGACY_META_AT_API_ROOT = "PACKAGE_MODULE_TEMPLATES.meta.json";
-const API_LINES = ["main", "hub-parent", "hub-event", "store-sync"];
+const API_LINES = ["main", "hub-parent", "hub-checkin", "store-sync"];
 
 for (const line of API_LINES) {
   const apiRoot = path.join(ROOT, "apps", line, "api");

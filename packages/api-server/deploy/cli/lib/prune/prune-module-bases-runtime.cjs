@@ -21,6 +21,14 @@ function pruneModuleBasesRuntime(appRoot, moduleIds, { quiet = false } = {}) {
   if (!fs.existsSync(baseRoot)) return 0
 
   const keep = resolveModuleBasePackageDirs(moduleIds)
+  if (keep.size === 0 && moduleIds.length > 0) {
+    if (!quiet) {
+      console.warn(
+        '[prune:module-bases] skip — không có thin template (downstream? chạy lại sau khi cập nhật package-module-templates)',
+      )
+    }
+    return 0
+  }
   let removed = 0
 
   for (const entry of fs.readdirSync(baseRoot, { withFileTypes: true })) {

@@ -102,7 +102,7 @@ async function resolveTargetApp() {
     assertTty()
     return pickApiAppTarget()
   }
-  throw new Error('[api:render] Thiếu repo. VD: pnpm api:render apps/hub-event/api')
+  throw new Error('[api:render] Thiếu repo. VD: pnpm api:render apps/hub-checkin/api')
 }
 
 async function resolveModuleList(appRel, wantAll = false, options = {}) {
@@ -216,7 +216,7 @@ async function main() {
     wantAll = false
   }
   if (
-    (appRel.includes('hub-event/') || appRel.includes('hub-parent/')) &&
+    appRel.includes('hub-parent/') &&
     !explicitModules?.length &&
     !hasFlag('--pick') &&
     args.length > 0
@@ -317,7 +317,7 @@ async function main() {
       `verify ${appRel}`,
     )
     pipelineSteps.push({ label: 'verify:render-api', ok: true })
-    if (!skipParity && appRel.includes('hub-event')) {
+    if (!skipParity && (appRel.includes('hub-checkin') || appRel.includes('hub-event'))) {
       runNode('deploy/cli/verify/endpoint-parity.mjs', 'verify endpoint parity')
       pipelineSteps.push({ label: 'endpoint parity (13 module)', ok: true })
     } else {

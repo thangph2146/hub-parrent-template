@@ -42,6 +42,9 @@ const SYNC_ROOT_SCRIPTS = new Set([
   "sync-checkin-packages.cjs",
   "sync-parent.cjs",
   "pull-template.cjs",
+  "post-pull-downstream.cjs",
+  "downstream-sync-profile.cjs",
+  "apply-sync-to-downstream.cjs",
   "init-downstream.cjs",
   "sync-checkin-menu-tree.cjs",
 ]);
