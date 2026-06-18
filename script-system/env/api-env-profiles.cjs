@@ -53,16 +53,16 @@ const API_ENV_PROFILES = {
     allowedOrigins:
       "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001",
   },
-  "api-hub-event": {
-    template: "api-hub-event",
+  "api-hub-checkin": {
+    template: "api-hub-checkin",
     envStack: "checkin",
-    title: "API (@hub-event/api) — apps/hub-checkin/api",
+    title: "API hub-checkin — apps/hub-checkin/api",
     appPath: "apps/hub-checkin/api",
     package: "@hub-event/api",
-    devHint: "pnpm --filter @hub-event/api dev",
+    devHint: "pnpm dev:checkin",
     stackHint:
-      "ecosystem/checkin — API :3002 + @hub-event-checkin-frontend :3000 (admin /admin)",
-    database: "hub_event",
+      "ecosystem/checkin — API :3002 + hub-checkin frontend :3000 (admin /admin)",
+    database: "hub_checkin",
     serviceName: "HUB API — Check-in sự kiện (hub-checkin)",
     storageDir: "D:/HUB/data/hub-checkin",
     allowedOrigins: "http://localhost:3000,http://127.0.0.1:3000",
@@ -167,7 +167,7 @@ EXTERNAL_API_URL=http://localhost:5000
 # SEED_EXPORT_PATH=data/seed/full-export-2026-06-10.json
 
 # ------------------------------------------------------------------------------
-# Demo check-in (pnpm db:demo:checkin trên @hub-event/api)
+# Demo check-in (pnpm db:demo:checkin trên API hub-checkin)
 # ------------------------------------------------------------------------------
 
 # CHECKIN_DEMO_POSTS_EXPORT=data/seed/full-export-2026-06-10.json

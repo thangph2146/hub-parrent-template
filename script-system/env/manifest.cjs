@@ -51,12 +51,12 @@ const ENV_STACKS = {
     ],
   },
   checkin: {
-    description: "Check-in sự kiện — hub-event API + check-in frontend (ecosystem.checkin)",
+    description: "Check-in sự kiện — hub-checkin API + check-in frontend (ecosystem.checkin)",
     apps: [
       {
         path: PRODUCT_LINES["hub-checkin"].api.path,
         package: PRODUCT_LINES["hub-checkin"].api.package,
-        template: "api-hub-event",
+        template: "api-hub-checkin",
         port: 3002,
       },
       {

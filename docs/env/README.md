@@ -50,8 +50,8 @@ pnpm dev:parent
 
 | App | File | Port |
 |-----|------|------|
-| `@hub-event/api` | `apps/hub-event/api/.env` | 3002 |
-| `@hub-event-checkin-frontend` | `apps/hub-event/hub-event-checkin-frontend/.env` | 3000 |
+| `hub-checkin API` | `apps/hub-checkin/api/.env` | 3002 |
+| `@hub-event-checkin-frontend` | `apps/hub-checkin/hub-event-checkin-frontend/.env` | 3000 |
 
 Admin gộp trong frontend tại `/admin` — **không** có `@backend` riêng.
 
@@ -105,12 +105,12 @@ Compose map biến vào container; API runtime dùng `ALLOWED_ORIGINS` giống c
 |----------------|----------|
 | `api-main` | `apps/main/api` |
 | `api-hub-parent` | `apps/hub-parent/api` |
-| `api-hub-event` | `apps/hub-event/api` |
+| `api-hub-checkin` | `apps/hub-checkin/api` |
 | `api-store-sync` | `apps/store-sync/api` |
 | `next-admin` | `apps/main/backend` |
 | `next-storefront-parent` | `apps/hub-parent/hub-parent-frontend` |
 | `next-storefront-store` | `apps/store-sync/store-sync-frontend` |
-| `next-checkin` | `apps/hub-event/hub-event-checkin-frontend` |
+| `next-checkin` | `apps/hub-checkin/hub-event-checkin-frontend` |
 
 ## Tên database mặc định (MySQL local)
 
@@ -118,14 +118,14 @@ Compose map biến vào container; API runtime dùng `ALLOWED_ORIGINS` giống c
 |-----|-------------------------|----------------|
 | `@api` (main) | `hub_parent` | `pnpm db:fresh` |
 | `@hub-parent/api` | `hub_parent` | — |
-| `@hub-event/api` | `hub_event` | `pnpm db:bootstrap:checkin` |
+| `hub-checkin API` | `hub_checkin` | `pnpm db:bootstrap:checkin` |
 | `@store-sync/api` | `hub_store` | `pnpm db:bootstrap:store` |
 
 Nguồn sự thật `.env.example` API deploy: `script-system/env/api-env-profiles.cjs` — sau `pnpm api:render` tự ghi lại; cập nhật tay: `pnpm env:sync-api-examples`.
 
 ### HANET (check-in / camera AI)
 
-Chỉ **`@api` (main)** và **`@hub-event/api`** — cùng khối biến, sinh từ `api-env-profiles.cjs`.
+Chỉ **`@api` (main)** và **hub-checkin API** — cùng khối biến, sinh từ `api-env-profiles.cjs`.
 
 **Hướng dẫn đầy đủ (Postman, endpoint, pitfall):** [`docs/api-pattern/HANET.md`](../api-pattern/HANET.md).
 
@@ -165,7 +165,7 @@ Chỉ **`@api` (main)** và **`@hub-event/api`** — cùng khối biến, sinh t
 | `POST /api/admin/hanet/persons/sync?placeId=` | Đồng bộ avatar → bảng `face_data` |
 | `GET /api/admin/hanet/avatars?page=&limit=&search=` | Danh sách avatar đã lưu local |
 
-**Dev `main-checkin`:** stack dùng `apps/main/api/.env` — copy khối HANET từ `hub-event` hoặc điền trực tiếp. **Deploy check-in:** `apps/hub-event/api/.env`.
+**Dev `main-checkin`:** stack dùng `apps/main/api/.env` — copy khối HANET từ `hub-checkin` hoặc điền trực tiếp. **Deploy check-in:** `apps/hub-checkin/api/.env`.
 
 Chi tiết từng biến: mở `.env.example` tương ứng trong từng app.
 
