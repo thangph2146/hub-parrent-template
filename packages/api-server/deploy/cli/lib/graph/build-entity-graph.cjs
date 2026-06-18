@@ -10,8 +10,9 @@ const { MAIN_API_PATH } = require('../../../config/product-lines.cjs')
 const ENTITY_IMPORT_RE =
   /import\s+\{([^}]+)\}\s+from\s+['"]\.\.?\/entities\/([^'"]+)['"]/g
 const RELATION_RE =
-  /@(?:ManyToOne|OneToMany|OneToOne|ManyToMany)\(\(\)\s*=>\s*(\w+)/g
+  /@(ManyToOne|OneToMany|OneToOne|ManyToMany)\(\(\)\s*=>\s*(\w+)/g
 const EXPORT_CLASS_RE = /export\s+class\s+(\w+)/
+const UNIQUE_PROPERTIES_RE = /@Unique\(\{\s*properties:\s*\[([^\]]+)\]/g
 
 /** Entity pivot / auth — luôn giữ khi closure chạm auth stack. */
 const AUTH_STACK_CLASSES = new Set([
@@ -45,19 +46,135 @@ function listEntityFiles(entitiesDir) {
     .filter((n) => n.endsWith('.entity.ts') && n !== 'base.entity.ts')
 }
 
+function parseUniquePropertySets(content) {
+  const uniquePropertySets = []
+  let m
+  UNIQUE_PROPERTIES_RE.lastIndex = 0
+  while ((m = UNIQUE_PROPERTIES_RE.exec(content))) {
+    const properties = m[1]
+      .split(',')
+      .map((part) => part.trim().replace(/^['"]|['"]$/g, ''))
+      .filter(Boolean)
+    if (properties.length) uniquePropertySets.push(properties)
+  }
+  return uniquePropertySets
+}
+
+function findDecoratorEnd(content, startIndex) {
+  const openIndex = content.indexOf('(', startIndex)
+  if (openIndex < 0) return startIndex
+
+  let depth = 0
+  let quote = null
+  for (let i = openIndex; i < content.length; i += 1) {
+    const ch = content[i]
+    const prev = content[i - 1]
+    if (quote) {
+      if (ch === quote && prev !== '\\') quote = null
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch
+      continue
+    }
+    if (ch === '(') depth += 1
+    if (ch === ')') {
+      depth -= 1
+      if (depth === 0) return i + 1
+    }
+  }
+  return content.length
+}
+
+function parseRelationDetails(content) {
+  const relationDetails = []
+  let m
+  RELATION_RE.lastIndex = 0
+  while ((m = RELATION_RE.exec(content))) {
+    const decoratorEnd = findDecoratorEnd(content, m.index)
+    const decoratorBlock = content.slice(m.index, decoratorEnd)
+    const propMatch = content.slice(decoratorEnd).match(/^\s*(\w+)[!?]?:/)
+    const fieldNameMatch = decoratorBlock.match(/fieldName:\s*['"]([^'"]+)['"]/)
+    relationDetails.push({
+      kind: m[1],
+      target: m[2],
+      propertyName: propMatch?.[1] ?? null,
+      fieldName: fieldNameMatch?.[1] ?? null,
+      primary: /primary:\s*true/.test(decoratorBlock),
+    })
+  }
+  return relationDetails
+}
+
+function isJoinEntity(relationDetails, uniquePropertySets) {
+  const manyToOneProps = relationDetails
+    .filter((rel) => rel.kind === 'ManyToOne' && rel.propertyName)
+    .map((rel) => rel.propertyName)
+  if (manyToOneProps.length < 2) return false
+
+  const primaryCount = relationDetails.filter(
+    (rel) => rel.kind === 'ManyToOne' && rel.primary,
+  ).length
+  if (primaryCount >= 2) return true
+
+  return uniquePropertySets.some((set) => {
+    const picked = set.filter((prop) => manyToOneProps.includes(prop))
+    return picked.length >= 2
+  })
+}
+
+function buildLinkRelations(joinEntities) {
+  const links = []
+  for (const joinEntity of joinEntities) {
+    const joins = joinEntity.joins.filter((join) => join.target)
+    for (let i = 0; i < joins.length; i += 1) {
+      for (let j = i + 1; j < joins.length; j += 1) {
+        const left = joins[i]
+        const right = joins[j]
+        links.push({
+          left: left.target,
+          right: right.target,
+          via: joinEntity.className,
+          viaFile: joinEntity.fileName,
+          leftProperty: left.propertyName,
+          rightProperty: right.propertyName,
+          leftFieldName: left.fieldName,
+          rightFieldName: right.fieldName,
+          primary: Boolean(left.primary && right.primary),
+          uniquePropertySets: joinEntity.uniquePropertySets,
+        })
+      }
+    }
+  }
+  return links.sort((a, b) =>
+    `${a.left}:${a.right}:${a.via}`.localeCompare(
+      `${b.left}:${b.right}:${b.via}`,
+    ),
+  )
+}
+
 function parseEntityFile(filePath, fileName) {
   const content = fs.readFileSync(filePath, 'utf8')
   const classMatch = content.match(EXPORT_CLASS_RE)
   const className = classMatch?.[1] ?? entityFileToClassName(fileName)
   const relations = new Set()
+  const uniquePropertySets = parseUniquePropertySets(content)
+  const relationDetails = parseRelationDetails(content)
 
   let m
   RELATION_RE.lastIndex = 0
   while ((m = RELATION_RE.exec(content))) {
-    relations.add(m[1])
+    relations.add(m[2])
   }
 
-  return { className, fileName, relations: [...relations] }
+  return {
+    className,
+    fileName,
+    relations: [...relations],
+    relationDetails,
+    uniquePropertySets,
+    isJoinEntity: isJoinEntity(relationDetails, uniquePropertySets),
+  }
 }
 
 function scanModuleEntityImports(apiRoot, moduleIds) {
@@ -108,7 +225,7 @@ function buildEntityGraph(apiRootRel = MAIN_API_PATH) {
   const entitiesDir = path.join(apiRoot, 'src', 'entities')
   const entityFiles = listEntityFiles(entitiesDir)
 
-  /** @type {Record<string, { fileName: string, relations: string[] }>} */
+  /** @type {Record<string, { fileName: string, relations: string[], relationDetails: object[], uniquePropertySets: string[][], isJoinEntity: boolean }>} */
   const entities = {}
 
   for (const fileName of entityFiles) {
@@ -116,6 +233,9 @@ function buildEntityGraph(apiRootRel = MAIN_API_PATH) {
     entities[parsed.className] = {
       fileName: parsed.fileName,
       relations: parsed.relations.sort(),
+      relationDetails: parsed.relationDetails,
+      uniquePropertySets: parsed.uniquePropertySets,
+      isJoinEntity: parsed.isJoinEntity,
     }
   }
 
@@ -136,14 +256,45 @@ function buildEntityGraph(apiRootRel = MAIN_API_PATH) {
 
   for (const row of Object.values(entities)) {
     row.relations = row.relations.filter((cls) => known.has(cls)).sort()
+    row.relationDetails = row.relationDetails.filter((rel) =>
+      known.has(rel.target),
+    )
   }
 
   const relationEdgesFiltered = []
+  const relationEdgesDetailed = []
   for (const [cls, row] of Object.entries(entities)) {
     for (const rel of row.relations) {
       relationEdgesFiltered.push([cls, rel])
     }
+    for (const rel of row.relationDetails) {
+      relationEdgesDetailed.push({
+        from: cls,
+        to: rel.target,
+        kind: rel.kind,
+        propertyName: rel.propertyName,
+        fieldName: rel.fieldName,
+        primary: rel.primary,
+      })
+    }
   }
+  const joinEntities = Object.entries(entities)
+    .filter(([, row]) => row.isJoinEntity)
+    .map(([cls, row]) => ({
+      className: cls,
+      fileName: row.fileName,
+      joins: row.relationDetails
+        .filter((rel) => rel.kind === 'ManyToOne')
+        .map((rel) => ({
+          propertyName: rel.propertyName,
+          target: rel.target,
+          fieldName: rel.fieldName,
+          primary: rel.primary,
+        })),
+      uniquePropertySets: row.uniquePropertySets,
+    }))
+    .sort((a, b) => a.className.localeCompare(b.className))
+  const linkRelations = buildLinkRelations(joinEntities)
 
   return {
     source: apiRootRel,
@@ -151,6 +302,9 @@ function buildEntityGraph(apiRootRel = MAIN_API_PATH) {
     entityCount: entityFiles.length,
     entities,
     relationEdges: relationEdgesFiltered,
+    relationEdgesDetailed,
+    joinEntities,
+    linkRelations,
     moduleEntities,
   }
 }

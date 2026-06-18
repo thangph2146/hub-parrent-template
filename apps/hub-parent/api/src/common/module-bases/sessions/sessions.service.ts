@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Sessions admin service — logic dùng chung; app binding entity.
  */
@@ -14,11 +13,7 @@ import {
   paginationMeta,
   ADMIN_TABLE_EXPORT_MAX_LIMIT,
 } from '../../pagination';
-import {
-  toEntityId,
-  toEntityIdList,
-  relationEntityId,
-} from '../../entity-id';
+import { toEntityId, toEntityIdList, relationEntityId } from '../../entity-id';
 import { safeIsoString, safeIsoStringNow } from '../../date-utils';
 
 export interface AuthRoleNamesBinding {
@@ -98,7 +93,10 @@ type SessionWithUser = Record<string, unknown> & {
   expiresAt: Date | string;
   lastActivity: Date | string;
   createdAt: Date | string;
-  user?: { id?: number; name?: string | null; email?: string | null } | string | null;
+  user?:
+    | { id?: number; name?: string | null; email?: string | null }
+    | string
+    | null;
 };
 
 function mapRow(s: SessionWithUser): SessionRowDto {
@@ -173,7 +171,9 @@ export abstract class BaseSessionsService {
   protected abstract getRoleEntity(): new () => Record<string, unknown>;
   protected abstract getAuthRoleNames(): AuthRoleNamesBinding;
 
-  protected resolveRelationEntity(model: string): (new () => object) | undefined {
+  protected resolveRelationEntity(
+    model: string,
+  ): (new () => object) | undefined {
     if (model === 'user') return this.getUserEntity();
     return undefined;
   }
@@ -244,10 +244,14 @@ export abstract class BaseSessionsService {
     if (search?.trim()) {
       where[optionColumn] = { $like: `%${search.trim()}%` };
     }
-    const rows = await this.getEm().find(this.getSessionEntity(), where as FilterQuery<object>, {
-      fields: [optionColumn] as never,
-      limit,
-    });
+    const rows = await this.getEm().find(
+      this.getSessionEntity(),
+      where as FilterQuery<object>,
+      {
+        fields: [optionColumn] as never,
+        limit,
+      },
+    );
     const seen = new Set<string>();
     return rows
       .map((r) => (r as Record<string, unknown>)[optionColumn])
@@ -268,10 +272,15 @@ export abstract class BaseSessionsService {
     userAgent?: string | null;
     ipAddress?: string | null;
   }): Promise<SessionRowDto | null> {
-    let user = await this.getEm().findOne(this.getUserEntity(), { id: data.userId });
+    let user = await this.getEm().findOne(this.getUserEntity(), {
+      id: data.userId,
+    });
 
     if (!user && data.email) {
-      const userRole = await this.getOrCreateRole(this.getAuthRoleNames().USER, 'User');
+      const userRole = await this.getOrCreateRole(
+        this.getAuthRoleNames().USER,
+        'User',
+      );
       const adminRole = await this.getOrCreateRole(
         this.getAuthRoleNames().ADMIN,
         'Admin',
@@ -306,7 +315,10 @@ export abstract class BaseSessionsService {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     const sessionObj = new (this.getSessionEntity())();
-    sessionObj.user = this.getEm().getReference(this.getUserEntity(), toEntityId(data.userId));
+    sessionObj.user = this.getEm().getReference(
+      this.getUserEntity(),
+      toEntityId(data.userId),
+    );
     sessionObj.accessToken = accessToken;
     sessionObj.refreshToken = refreshToken;
     sessionObj.userAgent = data.userAgent?.trim() ?? null;
@@ -343,7 +355,9 @@ export abstract class BaseSessionsService {
       ipAddress?: string | null;
     },
   ): Promise<SessionRowDto | null> {
-    const existing = await this.getEm().findOne(this.getSessionEntity(), { id: toEntityId(id) });
+    const existing = await this.getEm().findOne(this.getSessionEntity(), {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
 
     if (data.isActive !== undefined) existing.isActive = data.isActive;
@@ -358,7 +372,9 @@ export abstract class BaseSessionsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const s = await this.getEm().findOne(this.getSessionEntity(), { id: toEntityId(id) });
+    const s = await this.getEm().findOne(this.getSessionEntity(), {
+      id: toEntityId(id),
+    });
     if (!s || !s.isActive) return false;
     s.isActive = false;
     this.getEm().persist(s);
@@ -367,7 +383,9 @@ export abstract class BaseSessionsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const s = await this.getEm().findOne(this.getSessionEntity(), { id: toEntityId(id) });
+    const s = await this.getEm().findOne(this.getSessionEntity(), {
+      id: toEntityId(id),
+    });
     if (!s || s.isActive) return false;
     s.isActive = true;
     this.getEm().persist(s);
@@ -376,7 +394,9 @@ export abstract class BaseSessionsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const s = await this.getEm().findOne(this.getSessionEntity(), { id: toEntityId(id) });
+    const s = await this.getEm().findOne(this.getSessionEntity(), {
+      id: toEntityId(id),
+    });
     if (!s) return false;
     this.getEm().remove(s);
     await this.getEm().flush();
@@ -396,7 +416,8 @@ export abstract class BaseSessionsService {
     }
 
     if (action === 'delete') {
-      const result = await this.getEm().nativeUpdate(this.getSessionEntity(),
+      const result = await this.getEm().nativeUpdate(
+        this.getSessionEntity(),
         { id: { $in: toEntityIdList(ids) }, isActive: true },
         { isActive: false },
       );
@@ -408,7 +429,8 @@ export abstract class BaseSessionsService {
     }
 
     if (action === 'restore') {
-      const result = await this.getEm().nativeUpdate(this.getSessionEntity(),
+      const result = await this.getEm().nativeUpdate(
+        this.getSessionEntity(),
         { id: { $in: toEntityIdList(ids) }, isActive: false },
         { isActive: true },
       );
@@ -519,7 +541,8 @@ export abstract class BaseSessionsService {
     );
     if (!sessions.length) return { count: 0, sessionIds: [] };
     const ids = sessions.map((s) => s.id);
-    await this.getEm().nativeUpdate(this.getSessionEntity(),
+    await this.getEm().nativeUpdate(
+      this.getSessionEntity(),
       { id: { $in: toEntityIdList(ids) } },
       { isActive: false },
     );

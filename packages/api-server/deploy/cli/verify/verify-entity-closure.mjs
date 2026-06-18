@@ -13,6 +13,7 @@ const { ROOT } = require('../lib/monorepo-root.cjs')
 const { resolveApiModules } = require('../../config/render.config.cjs')
 const { resolveEntityClosureForModules } = require('../lib/graph/resolve-entity-closure.cjs')
 const { MANIFEST_REL } = require('../lib/graph/entity-graph-manifest.cjs')
+const { resolveRenderModuleSet } = require('../lib/render/resolve-render-module-set.cjs')
 
 const DEPLOY_APPS = [
   'apps/hub-event/api',
@@ -45,8 +46,25 @@ function main() {
       continue
     }
 
-    const { modules, renderAllModules } = resolveApiModules(appRel)
-    const result = resolveEntityClosureForModules(modules)
+    const { modules, renderAllModules, config } = resolveApiModules(appRel)
+    const moduleClosure = resolveRenderModuleSet(appRel)
+    let result = resolveEntityClosureForModules(moduleClosure, {
+      expandModuleClosure: false,
+    })
+    const excludeEntities = new Set(config?.excludeEntities ?? [])
+    if (excludeEntities.size) {
+      result = {
+        ...result,
+        classes: result.classes.filter((name) => !excludeEntities.has(name)),
+        files: result.files.filter((name) => {
+          const className = Object.entries(result.graph.entities).find(
+            ([, entity]) => entity.fileName === name,
+          )?.[0]
+          return !className || !excludeEntities.has(className)
+        }),
+        count: result.classes.filter((name) => !excludeEntities.has(name)).length,
+      }
+    }
 
     if (result.count > graph.entityCount) {
       fail(`${appRel}: closure ${result.count} > total ${graph.entityCount}`)

@@ -2,12 +2,12 @@ import {
   EVENT_CHECKIN_STAFF_PERMISSIONS,
   EVENT_STAFF_ROLE_TEMPLATE,
 } from '../config/role-templates/event-staff.template';
-import { hashSync } from 'bcryptjs';
 
-// Role data — mật khẩu seed mặc định cho tài khoản hệ thống.
-export const DEV_LOGIN_PASSWORD_PLAIN = 'Buhcm@2026';
+// Role data — mật khẩu plain `demo` (chỉ local / seed dev).
+export const DEV_LOGIN_PASSWORD_PLAIN = 'demo';
 
-export const DEV_LOGIN_PASSWORD_HASH = hashSync(DEV_LOGIN_PASSWORD_PLAIN, 10);
+export const DEV_LOGIN_PASSWORD_HASH =
+  '$2b$10$6gktuaAnT51RIaAhhkRozOYZpg664aG.B03tp/VQ0x7BlOVgXbE1y';
 
 export { EVENT_CHECKIN_STAFF_PERMISSIONS, EVENT_STAFF_ROLE_TEMPLATE };
 
@@ -408,7 +408,7 @@ export const SUPERADMIN_USERS_DATA = [
     isActive: true,
   },
   {
-    email: 'thang.ph246@gmail.com',
+    email: 'thang.ph2146@gmail.com',
     name: 'Thắng Phạm',
     password: DEV_LOGIN_PASSWORD_HASH,
     bio: '',
@@ -493,7 +493,7 @@ export const SUPERADMIN_USER_ROLES_DATA = [
   { userEmail: 'superadmin@hub.edu.vn', roleName: 'super_admin' },
   { userEmail: 'admin@hub.edu.vn', roleName: 'admin' },
   { userEmail: 'lamvtt@hub.edu.vn', roleName: 'editor' },
-  { userEmail: 'thang.ph246@gmail.com', roleName: 'super_admin' },
+  { userEmail: 'thang.ph2146@gmail.com', roleName: 'editor' },
   { userEmail: 'thangph@hub.edu.vn', roleName: 'editor' },
   { userEmail: 'student@hub.edu.vn', roleName: 'student' },
   { userEmail: 'demo.sv@st.buh.edu.vn', roleName: 'student' },

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Settings Service.
  *
@@ -10,7 +9,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { BaseCrudService } from '../../crud';
-import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../module-types';
+import type {
+  CrudRowDto,
+  CrudCreateData,
+  CrudUpdateData,
+} from '../../module-types';
 
 export type PublicSiteBranding = {
   siteName: string;
@@ -144,7 +147,9 @@ export abstract class BaseSettingsService extends BaseCrudService<
     };
   }
 
-  async listSettings(params: { group?: string; search?: string } = {}): Promise<SettingsRowDto[]> {
+  async listSettings(
+    params: { group?: string; search?: string } = {},
+  ): Promise<SettingsRowDto[]> {
     const em = this.getEm();
     const Entity = this.getEntity();
     const where: Record<string, unknown> = {};
@@ -193,7 +198,9 @@ export abstract class BaseSettingsService extends BaseCrudService<
     };
   }
 
-  async bulkUpdate(settings: Record<string, unknown>): Promise<SettingsRowDto[]> {
+  async bulkUpdate(
+    settings: Record<string, unknown>,
+  ): Promise<SettingsRowDto[]> {
     const em = this.getEm();
     const Entity = this.getEntity();
     const results: SettingsRowDto[] = [];
@@ -214,7 +221,7 @@ export abstract class BaseSettingsService extends BaseCrudService<
         continue;
       }
 
-      const created = new Entity() as Record<string, unknown>;
+      const created = new Entity();
       created.key = key;
       created.value = writeValue;
       created.group = 'general';
@@ -254,7 +261,7 @@ export abstract class BaseSettingsService extends BaseCrudService<
       return this.mapRow(existing as Record<string, unknown>);
     }
 
-    const created = new Entity() as Record<string, unknown>;
+    const created = new Entity();
     created.key = normalizedKey;
     created.value = writeValue;
     created.group = 'general';
@@ -271,8 +278,18 @@ export abstract class BaseSettingsService extends BaseCrudService<
     } as FilterQuery<Record<string, unknown>>);
     if (!found) return null;
 
-    if (typeof (em as EntityManager & { removeAndFlush?: (entity: unknown) => Promise<void> }).removeAndFlush === 'function') {
-      await (em as EntityManager & { removeAndFlush: (entity: unknown) => Promise<void> }).removeAndFlush(found);
+    if (
+      typeof (
+        em as EntityManager & {
+          removeAndFlush?: (entity: unknown) => Promise<void>;
+        }
+      ).removeAndFlush === 'function'
+    ) {
+      await (
+        em as EntityManager & {
+          removeAndFlush: (entity: unknown) => Promise<void>;
+        }
+      ).removeAndFlush(found);
     } else {
       em.remove(found);
       await em.flush();

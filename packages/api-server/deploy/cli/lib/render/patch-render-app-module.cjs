@@ -31,7 +31,11 @@ function patchRenderAppModule(appRoot, keepModuleIds, options = {}) {
   const filePath = path.join(appRoot, 'src/app.module.ts')
   if (!fs.existsSync(filePath)) return false
 
-  const keep = new Set([...RENDER_BOOTSTRAP_MODULES, ...keepModuleIds])
+  const excludedModules = new Set(options.excludeModules ?? [])
+  const bootstrapModules = RENDER_BOOTSTRAP_MODULES.filter((id) => !excludedModules.has(id))
+  const keep = new Set(
+    [...bootstrapModules, ...keepModuleIds].filter((id) => !excludedModules.has(id)),
+  )
   const keepNestModules = new Set(
     [...keep].map((id) => moduleIdToNestModuleName(id)),
   )

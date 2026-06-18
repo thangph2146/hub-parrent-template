@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { AdminColumnFiltersConfig } from '../crud/crud-apply-column-filters';
 
 const text = (path: string | string[]) => ({ type: 'text' as const, path });

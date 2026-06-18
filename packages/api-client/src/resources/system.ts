@@ -1,5 +1,5 @@
 import type { ApiClient, RequestOptions } from "../client";
-import { getData } from "./_shared";
+import { getData, postData } from "./_shared";
 
 export type SchemaColumn = {
   name: string;
@@ -77,6 +77,19 @@ export type ImportConfigResponse = {
   recommendedExportFile?: string;
 };
 
+export type SystemBootstrapResult = {
+  rolesInserted: number;
+  rolesUpdated: number;
+  rolesSkipped: number;
+  usersInserted: number;
+  usersUpdated: number;
+  usersSkipped: number;
+  userRolesInserted: number;
+  userRolesSkipped: number;
+  pageContentsInserted: number;
+  pageContentsSkipped: number;
+};
+
 export class SystemApi {
   constructor(private readonly http: ApiClient) {}
 
@@ -94,6 +107,17 @@ export class SystemApi {
     return getData<ImportConfigResponse>(
       this.http,
       "/admin/system/import-config",
+    );
+  }
+
+  async runSeedBootstrap(
+    options?: RequestOptions,
+  ): Promise<SystemBootstrapResult> {
+    return postData<SystemBootstrapResult>(
+      this.http,
+      "/admin/system/seed-bootstrap",
+      undefined,
+      options,
     );
   }
 }

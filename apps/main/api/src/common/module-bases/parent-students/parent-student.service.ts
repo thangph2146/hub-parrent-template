@@ -21,6 +21,7 @@ export interface ParentStudentsRowDto {
   parentEmail: string | null;
   parentName: string | null;
   parentPhone: string | null;
+  studentId: number | null;
   studentCode: string;
   studentName: string | null;
   note: string | null;
@@ -75,6 +76,19 @@ function mapRow(r: Record<string, unknown>): ParentStudentsRowDto {
     parent != null && typeof parent === 'object'
       ? (parent as Record<string, unknown>)
       : null;
+  const student = r.student;
+  const studentObj =
+    student != null && typeof student === 'object'
+      ? (student as Record<string, unknown>)
+      : null;
+  const studentCode =
+    typeof studentObj?.studentCode === 'string'
+      ? studentObj.studentCode
+      : String(r.studentCode ?? '');
+  const studentName =
+    typeof studentObj?.name === 'string'
+      ? studentObj.name
+      : ((r.studentName as string | null | undefined) ?? null);
   return {
     id: r.id as number,
     parentId: relationEntityId(r.parent) ?? relationEntityId(parentObj) ?? 0,
@@ -86,8 +100,10 @@ function mapRow(r: Record<string, unknown>): ParentStudentsRowDto {
           ? parentObj.name
           : null,
     parentPhone: typeof parentObj?.phone === 'string' ? parentObj.phone : null,
-    studentCode: String(r.studentCode ?? ''),
-    studentName: (r.studentName as string | null | undefined) ?? null,
+    studentId:
+      relationEntityId(r.student) ?? relationEntityId(studentObj) ?? null,
+    studentCode,
+    studentName,
     note: (r.note as string | null | undefined) ?? null,
     status: String(r.status ?? ''),
     reviewedBy: (r.reviewedBy as string | null | undefined) ?? null,
@@ -108,6 +124,7 @@ export abstract class BaseParentStudentsService {
   protected abstract getEm(): EntityManager;
   protected abstract getEntity(): new () => Record<string, unknown>;
   protected abstract getUserEntity(): new () => Record<string, unknown>;
+  protected abstract getStudentEntity(): new () => Record<string, unknown>;
   protected abstract getAdminRealtime(): ParentStudentsRealtimePort;
 
   async listByParent(parentId: string): Promise<ParentStudentsRowDto[]> {
@@ -117,7 +134,7 @@ export abstract class BaseParentStudentsService {
       Entity,
       { parent: toEntityId(parentId) },
       {
-        populate: ['parent'] as never,
+        populate: ['parent', 'student'] as never,
         orderBy: { createdAt: 'DESC' },
       },
     );
@@ -138,7 +155,7 @@ export abstract class BaseParentStudentsService {
     const where = { status: 'pending' } as FilterQuery<Record<string, unknown>>;
     const [rows, total] = await Promise.all([
       em.find(Entity, where, {
-        populate: ['parent'] as never,
+        populate: ['parent', 'student'] as never,
         orderBy: { createdAt: 'ASC' },
         offset: skip,
         limit,
@@ -206,7 +223,7 @@ export abstract class BaseParentStudentsService {
     const whereQuery = where as FilterQuery<Record<string, unknown>>;
     const [rows, total] = await Promise.all([
       em.find(Entity, whereQuery, {
-        populate: ['parent'] as never,
+        populate: ['parent', 'student'] as never,
         orderBy: { createdAt: 'DESC' },
         offset: skip,
         limit,
@@ -237,15 +254,62 @@ export abstract class BaseParentStudentsService {
     });
   }
 
+  private async resolveStudentForLink(data: AddParentStudentInput): Promise<{
+    student: Record<string, unknown>;
+    studentCode: string;
+    studentName: string | null;
+  }> {
+    const em = this.getEm();
+    const Student = this.getStudentEntity();
+    const studentCode = data.studentCode.trim();
+    if (!studentCode) {
+      throw new Error('Mã sinh viên không được để trống.');
+    }
+
+    const existing = (await em.findOne(Student, {
+      studentCode,
+      deletedAt: null,
+    })) as Record<string, unknown> | null;
+    const inputName = data.studentName?.trim() || null;
+    if (existing) {
+      if (inputName && !existing.name) {
+        existing.name = inputName;
+        await em.persistAndFlush(existing);
+      }
+      return {
+        student: existing,
+        studentCode,
+        studentName:
+          typeof existing.name === 'string' && existing.name.trim()
+            ? existing.name
+            : inputName,
+      };
+    }
+
+    const created = new Student();
+    created.studentCode = studentCode;
+    created.name = inputName;
+    created.email = null;
+    created.isActive = true;
+    created.deletedAt = null;
+    await em.persistAndFlush(created);
+    return {
+      student: created,
+      studentCode,
+      studentName: inputName,
+    };
+  }
+
   async addStudentRequest(
     data: AddParentStudentInput,
   ): Promise<ParentStudentsRowDto> {
     const em = this.getEm();
     const Entity = this.getEntity();
     const User = this.getUserEntity();
+    const resolvedStudent = await this.resolveStudentForLink(data);
     const existing = await em.findOne(Entity, {
       parent: toEntityId(String(data.parentId)),
-      studentCode: data.studentCode.trim(),
+      student: resolvedStudent.student,
     });
     if (existing) {
       throw new Error('Bạn đã gửi yêu cầu liên kết với mã sinh viên này rồi.');
@@ -253,8 +317,9 @@ export abstract class BaseParentStudentsService {
 
     const ps = new Entity();
     ps.parent = em.getReference(User, data.parentId);
-    ps.studentCode = data.studentCode.trim();
-    ps.studentName = data.studentName?.trim() ?? null;
+    ps.student = resolvedStudent.student;
+    ps.studentCode = resolvedStudent.studentCode;
+    ps.studentName = resolvedStudent.studentName;
     ps.note = data.note?.trim() ?? null;
     ps.status = 'pending';
     await em.persistAndFlush(ps);
@@ -332,7 +397,7 @@ export abstract class BaseParentStudentsService {
     const ps = await em.findOne(
       Entity,
       { id: toEntityId(id) },
-      { populate: ['parent'] as never },
+      { populate: ['parent', 'student'] as never },
     );
     return ps ? mapRow(ps as Record<string, unknown>) : null;
   }

@@ -7,6 +7,31 @@ import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 
 import type { StaffCreateInput, StaffUpdateInput } from "../staff-form.types"
 
+function formatStaffUpdateDetails(data: unknown, input: StaffUpdateInput): string {
+  const row =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : {}
+  const email = typeof row.email === "string" ? row.email : undefined
+  const fullName =
+    typeof row.fullName === "string"
+      ? row.fullName
+      : typeof row.name === "string"
+        ? row.name
+        : undefined
+  const changedFields = Object.entries(input)
+    .filter(([, value]) => value !== undefined)
+    .map(([key]) => key)
+
+  return [
+    email ? `Email: ${email}` : undefined,
+    fullName ? `Tên: ${fullName}` : undefined,
+    changedFields.length
+      ? `Trường cập nhật: ${changedFields.join(", ")}`
+      : undefined,
+  ]
+    .filter((line): line is string => Boolean(line))
+    .join("\n")
+}
+
 export interface UseStaffMutationsProps {
   api: StoreSyncSdk
 }
@@ -33,6 +58,8 @@ export function useStaffMutations({ api: apiClient }: UseStaffMutationsProps) {
     toast: {
       loading: "Đang thực hiện…",
       success: "Đã cập nhật nhân sự",
+      successDescription: (data, variables) =>
+        formatStaffUpdateDetails(data, variables.input),
       error: (error) =>
         error instanceof ApiError ? error.message : "Không lưu được",
     },

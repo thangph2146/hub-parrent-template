@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import sharp from 'sharp';
 
 export interface ImageProcessOptions {
@@ -107,8 +106,6 @@ export async function processFaceImageJpegBuffer(
     });
   }
 
-  const jpegBuffer = await image
-    .jpeg({ quality, mozjpeg: true })
-    .toBuffer();
+  const jpegBuffer = await image.jpeg({ quality, mozjpeg: true }).toBuffer();
   return { jpegBuffer, width, height };
 }

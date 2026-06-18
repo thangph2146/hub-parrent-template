@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import type { UseFormReturn } from "react-hook-form"
 import { toast } from "@ui/components/sonner"
+import { formatAdminOperationErrorDetails } from "@ui/lib/admin-operation-toast"
 import { getStudentCodeAvatarUploadBlockReason } from "@workspace/admin-app/lib/student-code-form"
 import { useAdminApi } from "@workspace/admin-app/runtime"
 
@@ -39,9 +40,17 @@ export function useStaffAvatarUpload(options: UseStaffAvatarUploadOptions) {
     try {
       const url = (await api.users.uploadAvatar(subjectUserId, file)).url
       form.setValue("avatar", url, { shouldDirty: true })
-      toast.success("Đã tải ảnh đại diện")
+      toast.success("Đã tải ảnh đại diện", {
+        description: [
+          `User ID: ${subjectUserId}`,
+          `File: ${file.name}`,
+          `URL: ${url}`,
+        ].join("\n"),
+      })
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Lỗi upload ảnh")
+      toast.error(error instanceof Error ? error.message : "Lỗi upload ảnh", {
+        description: formatAdminOperationErrorDetails(error),
+      })
     } finally {
       setUploadingAvatar(false)
     }

@@ -1,6 +1,6 @@
 # API — entity graph (MikroORM closure)
 
-> **Sinh tự động:** `2026-06-17T07:28:23.487Z` từ `apps/main/api`.
+> **Sinh tự động:** `2026-06-18T01:31:12.896Z` từ `apps/main/api`.
 > **Mục đích:** partial render / prune entity **bắt buộc** dùng closure từ manifest này — không cắt entity thủ công.
 
 ## Chính sách render
@@ -51,7 +51,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `Notification` | `notification.entity.ts` | `User` |
 | `Order` | `order.entity.ts` | `User` |
 | `PageContent` | `page-content.entity.ts` | — |
-| `ParentStudent` | `parent-student.entity.ts` | `User` |
+| `ParentStudent` | `parent-student.entity.ts` | `Student`, `User` |
 | `Post` | `post.entity.ts` | `Comment`, `PostCategory`, `PostTag`, `User` |
 | `PostCategory` | `post-category.entity.ts` | `Category`, `Post` |
 | `PostTag` | `post-tag.entity.ts` | `Post`, `Tag` |
@@ -64,14 +64,38 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `Setting` | `setting.entity.ts` | — |
 | `Speaker` | `speaker.entity.ts` | — |
 | `StorageFile` | `storage-file.entity.ts` | `User` |
-| `Student` | `student.entity.ts` | `User` |
+| `Student` | `student.entity.ts` | `ParentStudent`, `User` |
 | `Tag` | `tag.entity.ts` | `PostTag` |
 | `Template` | `template.entity.ts` | — |
 | `TrainingLevel` | `training-level.entity.ts` | — |
 | `TrainingSystem` | `training-system.entity.ts` | — |
-| `User` | `user.entity.ts` | `Account`, `Comment`, `Group`, `GroupMember`, `Message`, `MessageRead`, `Notification`, `Post`, `Session`, `Student`, `UserRole` |
+| `User` | `user.entity.ts` | `Account`, `Comment`, `Group`, `GroupMember`, `Message`, `MessageRead`, `Notification`, `ParentStudent`, `Post`, `Session`, `Student`, `UserRole` |
 | `UserRole` | `user-role.entity.ts` | `Role`, `User` |
 | `VerificationToken` | `verification-token.entity.ts` | — |
+
+## Join entities (7)
+
+| Entity | File | Joins | Unique/PK |
+|--------|------|-------|-----------|
+| `EventSpeaker` | `event-speaker.entity.ts` | `event→Event:eventId`, `speaker→Speaker:speakerId` | `event` + `speaker` |
+| `GroupMember` | `group-member.entity.ts` | `group→Group:groupId`, `user→User:userId` | `group` + `user` |
+| `MessageRead` | `message-read.entity.ts` | `message→Message:messageId`, `user→User:userId` | `message` + `user` |
+| `ParentStudent` | `parent-student.entity.ts` | `parent→User:parentId`, `student→Student:studentId` | `parent` + `student` |
+| `PostCategory` | `post-category.entity.ts` | `post→Post:postId primary`, `category→Category:categoryId primary` | composite primary |
+| `PostTag` | `post-tag.entity.ts` | `post→Post:postId primary`, `tag→Tag:tagId primary` | composite primary |
+| `UserRole` | `user-role.entity.ts` | `user→User:userId`, `role→Role:roleId` | `user` + `role` |
+
+## Linked through join table (7)
+
+| Left | Right | Via | Fields | Constraint |
+|------|-------|-----|--------|------------|
+| `Event` | `Speaker` | `EventSpeaker` | `event:eventId`, `speaker:speakerId` | `event` + `speaker` |
+| `Group` | `User` | `GroupMember` | `group:groupId`, `user:userId` | `group` + `user` |
+| `Message` | `User` | `MessageRead` | `message:messageId`, `user:userId` | `message` + `user` |
+| `Post` | `Category` | `PostCategory` | `post:postId`, `category:categoryId` | composite primary |
+| `Post` | `Tag` | `PostTag` | `post:postId`, `tag:tagId` | composite primary |
+| `User` | `Role` | `UserRole` | `user:userId`, `role:roleId` | `user` + `role` |
+| `User` | `Student` | `ParentStudent` | `parent:parentId`, `student:studentId` | `parent` + `student` |
 
 ## Module → entity (import trong domain)
 
@@ -107,7 +131,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `notifications` | `ContactRequest`, `Message`, `Notification`, `User`, `UserRole` |
 | `orders` | `Order`, `Product`, `User` |
 | `page-contents` | `PageContent` |
-| `parent-students` | `ParentStudent`, `User` |
+| `parent-students` | `ParentStudent`, `Student`, `User` |
 | `posts` | `Category`, `Post`, `PostCategory`, `PostTag`, `Tag`, `User` |
 | `products` | `Product` |
 | `promo-codes` | `PromoCode` |

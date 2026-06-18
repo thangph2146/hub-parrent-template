@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Mirror contract từ @workspace/admin-app/modules/posts (không import React/@ui).
  * Giữ đồng bộ với use-post-form.ts + utils.ts khi đổi payload edit bài viết.

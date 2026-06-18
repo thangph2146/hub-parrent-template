@@ -103,6 +103,7 @@ export { ParentStudentsApi } from "./resources/parent-students"
 export { SystemApi } from "./resources/system"
 export type {
   DatabaseSchemaResponse,
+  SystemBootstrapResult,
   SchemaColumn,
   SchemaRelation,
   SchemaTable,

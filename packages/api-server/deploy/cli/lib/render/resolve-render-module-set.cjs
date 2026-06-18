@@ -13,7 +13,8 @@ const { resolveModuleClosure } = require('./resolve-module-closure.cjs')
  * @param {{ expandClosure?: boolean }} [opts]
  */
 function resolveRenderModuleSet(appRel, opts = {}) {
-  const { modules, renderAllModules } = resolveApiModules(appRel)
+  const { modules, renderAllModules, config } = resolveApiModules(appRel)
+  const excludedModules = new Set(config?.excludeModules ?? [])
   const expandClosure = opts.expandClosure !== false && !renderAllModules
 
   if (renderAllModules) {
@@ -21,7 +22,7 @@ function resolveRenderModuleSet(appRel, opts = {}) {
     const srcDir = path.join(templateRoot, 'src')
     return fs
       .readdirSync(srcDir, { withFileTypes: true })
-      .filter((e) => e.isDirectory() && !SKIP_DIRS.has(e.name))
+      .filter((e) => e.isDirectory() && !SKIP_DIRS.has(e.name) && !excludedModules.has(e.name))
       .map((e) => e.name)
       .sort((a, b) => a.localeCompare(b))
   }
@@ -30,7 +31,7 @@ function resolveRenderModuleSet(appRel, opts = {}) {
   if (expandClosure) {
     set = resolveModuleClosure(modules, resolveTemplateRoot())
   }
-  return [...new Set(set.filter((id) => !SKIP_DIRS.has(id)))].sort((a, b) =>
+  return [...new Set(set.filter((id) => !SKIP_DIRS.has(id) && !excludedModules.has(id)))].sort((a, b) =>
     a.localeCompare(b),
   )
 }

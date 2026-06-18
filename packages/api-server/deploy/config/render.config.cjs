@@ -204,11 +204,16 @@ function resolveApiModules(appRel) {
       ? config.alignAdminApp
       : path.join(ROOT, appRel, config.alignAdminApp)
     if (!fs.existsSync(adminPath)) {
-      throw new Error(`alignAdminApp không tồn tại: ${adminPath}`)
+      if (config.alignAdminAppOptional && modules.length) {
+        console.warn(`alignAdminApp không tồn tại, dùng modules khai báo sẵn: ${adminPath}`)
+      } else {
+        throw new Error(`alignAdminApp không tồn tại: ${adminPath}`)
+      }
+    } else {
+      const adminConfig = readJson(adminPath)
+      const fromAdmin = expandAdminModules(adminConfig.modules, config.adminModuleMap)
+      modules = [...new Set([...fromAdmin, ...modules])]
     }
-    const adminConfig = readJson(adminPath)
-    const fromAdmin = expandAdminModules(adminConfig.modules, config.adminModuleMap)
-    modules = [...new Set([...fromAdmin, ...modules])]
   }
 
   if (isHubEventApi(appRel)) {
@@ -225,6 +230,11 @@ function resolveApiModules(appRel) {
 
   if (config.extraModules?.length) {
     modules = [...new Set([...modules, ...config.extraModules])]
+  }
+
+  if (config.excludeModules?.length) {
+    const excluded = new Set(config.excludeModules)
+    modules = modules.filter((moduleId) => !excluded.has(moduleId))
   }
 
   return {

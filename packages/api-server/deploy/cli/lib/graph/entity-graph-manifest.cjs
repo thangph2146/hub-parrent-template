@@ -65,6 +65,56 @@ function formatEntityGraphMarkdown(graph) {
   }
 
   lines.push('')
+  lines.push(`## Join entities (${graph.joinEntities?.length ?? 0})`)
+  lines.push('')
+  lines.push('| Entity | File | Joins | Unique/PK |')
+  lines.push('|--------|------|-------|-----------|')
+  for (const row of graph.joinEntities ?? []) {
+    const joins = row.joins
+      .map((join) => {
+        const field = join.fieldName ? `:${join.fieldName}` : ''
+        const primary = join.primary ? ' primary' : ''
+        return `\`${join.propertyName}→${join.target}${field}${primary}\``
+      })
+      .join(', ')
+    const unique =
+      row.uniquePropertySets?.length > 0
+        ? row.uniquePropertySets
+            .map((set) => set.map((prop) => `\`${prop}\``).join(' + '))
+            .join('; ')
+        : 'composite primary'
+    lines.push(`| \`${row.className}\` | \`${row.fileName}\` | ${joins} | ${unique} |`)
+  }
+
+  lines.push('')
+  lines.push(`## Linked through join table (${graph.linkRelations?.length ?? 0})`)
+  lines.push('')
+  lines.push('| Left | Right | Via | Fields | Constraint |')
+  lines.push('|------|-------|-----|--------|------------|')
+  for (const row of graph.linkRelations ?? []) {
+    const fields = [
+      row.leftFieldName ? `${row.leftProperty}:${row.leftFieldName}` : row.leftProperty,
+      row.rightFieldName
+        ? `${row.rightProperty}:${row.rightFieldName}`
+        : row.rightProperty,
+    ]
+      .filter(Boolean)
+      .map((field) => `\`${field}\``)
+      .join(', ')
+    const constraint =
+      row.uniquePropertySets?.length > 0
+        ? row.uniquePropertySets
+            .map((set) => set.map((prop) => `\`${prop}\``).join(' + '))
+            .join('; ')
+        : row.primary
+          ? 'composite primary'
+          : '—'
+    lines.push(
+      `| \`${row.left}\` | \`${row.right}\` | \`${row.via}\` | ${fields} | ${constraint} |`,
+    )
+  }
+
+  lines.push('')
   lines.push('## Module → entity (import trong domain)')
   lines.push('')
   lines.push('| Module | Entity classes |')

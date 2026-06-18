@@ -1,5 +1,6 @@
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
+import { ParentStudent } from './parent-student.entity';
 import { User } from './user.entity';
 
 @Entity({ tableName: 'students' })
@@ -30,4 +31,7 @@ export class Student extends BaseEntity {
     fieldName: 'userId',
   })
   user?: User | null;
+
+  @OneToMany(() => ParentStudent, (parentStudent) => parentStudent.student)
+  parentLinks!: ParentStudent[];
 }

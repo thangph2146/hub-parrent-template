@@ -125,12 +125,12 @@ function CheckinContent() {
     }),
     [effectivePlaceId, mode, date, fromAt, toAt],
   )
-  const { lastSyncAt, lastPayload, syncRevision, socketConnected, socketError } =
+  const { lastSyncAt, lastPayload, socketConnected, socketError } =
     useHanetCheckinLive(liveActive, checkinViewFilter)
 
   const livePollMs: number | false = useMemo(
     () => (liveActive ? resolveHanetCheckinLivePollMs(lastSyncAt) : false),
-    [liveActive, lastSyncAt, syncRevision],
+    [liveActive, lastSyncAt],
   )
 
   const liveQueryOptions = useMemo(
@@ -251,7 +251,7 @@ function CheckinContent() {
       type: "active",
     })
     return () => window.clearTimeout(timer)
-  }, [lastPayload, liveActive, queryClient, syncRevision])
+  }, [lastPayload, liveActive, queryClient])
 
   useEffect(() => {
     if (!fetchEnabled) {

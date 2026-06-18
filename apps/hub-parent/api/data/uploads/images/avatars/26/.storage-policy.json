@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "realm": "images",
+  "allowedExtensions": [
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".webp"
+  ]
+}

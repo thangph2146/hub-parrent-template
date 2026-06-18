@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Posts admin service — logic dùng chung; app binding entity và filter config.
  * App binding: extend BasePostsService + wire entity classes.
@@ -14,12 +13,15 @@ import {
   paginationMeta,
   ADMIN_TABLE_EXPORT_MAX_LIMIT,
 } from '../../pagination';
-import {
-  getOptionsFromModel,
-  type GetOptionsConfig,
-} from '../../get-options';
+import { getOptionsFromModel, type GetOptionsConfig } from '../../get-options';
 import { safeIsoString, safeIsoStringNow } from '../../date-utils';
 import { toEntityId, toEntityIdList } from '../../entity-id';
+import {
+  deletePostCategoryPivots,
+  deletePostTagPivots,
+  insertPostCategoryPivot,
+  insertPostTagPivot,
+} from '../../post-pivot-insert';
 
 export interface PostRowDto {
   id: number;
@@ -295,7 +297,9 @@ export abstract class BasePostsService {
   protected abstract getPostTagEntity(): new () => Record<string, unknown>;
   protected abstract getUserEntity(): new () => Record<string, unknown>;
 
-  protected resolveRelationEntity(model: string): (new () => object) | undefined {
+  protected resolveRelationEntity(
+    model: string,
+  ): (new () => object) | undefined {
     if (model === 'category') return this.getCategoryEntity();
     if (model === 'tag') return this.getTagEntity();
     if (model === 'user') return this.getUserEntity();
@@ -525,33 +529,28 @@ export abstract class BasePostsService {
       ? new Date(data.eventStartAt)
       : null;
     postObj.eventEndAt = data.eventEndAt ? new Date(data.eventEndAt) : null;
-    postObj.author = this.getEm().getReference(this.getUserEntity(), toEntityId(authorId));
+    postObj.author = this.getEm().getReference(
+      this.getUserEntity(),
+      toEntityId(authorId),
+    );
     this.getEm().persist(postObj);
     await this.getEm().flush();
 
-    if (categoryIds.length) {
-      for (const categoryId of categoryIds) {
-        const postCategory = new (this.getPostCategoryEntity())();
-        postCategory.post = this.getEm().getReference(this.getPostEntity(), postObj.id);
-        postCategory.category = this.getEm().getReference(this.getCategoryEntity(),
-          toEntityId(categoryId),
-        );
-        this.getEm().persist(postCategory);
-      }
+    const createdPostId = toEntityId(postObj.id as string | number);
+    for (const categoryId of categoryIds) {
+      await insertPostCategoryPivot(
+        this.getEm(),
+        createdPostId,
+        toEntityId(categoryId),
+      );
     }
-    if (tagIds.length) {
-      for (const tagId of tagIds) {
-        const postTag = new (this.getPostTagEntity())();
-        postTag.post = this.getEm().getReference(this.getPostEntity(), postObj.id);
-        postTag.tag = this.getEm().getReference(this.getTagEntity(), toEntityId(tagId));
-        this.getEm().persist(postTag);
-      }
+    for (const tagId of tagIds) {
+      await insertPostTagPivot(this.getEm(), createdPostId, toEntityId(tagId));
     }
-    await this.getEm().flush();
 
     const created = await this.getEm().findOne(
       this.getPostEntity(),
-      { id: postObj.id },
+      { id: createdPostId },
       {
         populate: POST_POPULATE,
       },
@@ -579,7 +578,9 @@ export abstract class BasePostsService {
       authorId?: string;
     },
   ): Promise<PostRowDto | null> {
-    const existing = await this.getEm().findOne(this.getPostEntity(), { id: toEntityId(id) });
+    const existing = await this.getEm().findOne(this.getPostEntity(), {
+      id: toEntityId(id),
+    });
     if (!existing) return null;
 
     if (data.title != null) existing.title = data.title;
@@ -605,7 +606,9 @@ export abstract class BasePostsService {
       if (!authorId) {
         throw new BadRequestException('authorId không hợp lệ');
       }
-      const author = await this.getEm().findOne(this.getUserEntity(), { id: toEntityId(authorId) });
+      const author = await this.getEm().findOne(this.getUserEntity(), {
+        id: toEntityId(authorId),
+      });
       if (!author) {
         throw new BadRequestException('Tác giả không tồn tại');
       }
@@ -634,18 +637,14 @@ export abstract class BasePostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateCategoryIds(categoryIds);
-      await this.getEm().nativeDelete(this.getPostCategoryEntity(), { post: existing.id });
-      if (categoryIds.length > 0) {
-        for (const categoryId of categoryIds) {
-          const postCategory = new (this.getPostCategoryEntity())();
-          postCategory.post = this.getEm().getReference(this.getPostEntity(), existing.id);
-          postCategory.category = this.getEm().getReference(this.getCategoryEntity(),
+      await deletePostCategoryPivots(this.getEm(), toEntityId(existing.id));
+      for (const categoryId of categoryIds) {
+        try {
+          await insertPostCategoryPivot(
+            this.getEm(),
+            toEntityId(existing.id),
             toEntityId(categoryId),
           );
-          this.getEm().persist(postCategory);
-        }
-        try {
-          await this.getEm().flush();
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new BadRequestException(`Lỗi lưu danh mục: ${msg}`);
@@ -657,16 +656,14 @@ export abstract class BasePostsService {
         (id) => id != null && String(id).trim() !== '',
       );
       await this.validateTagIds(tagIds);
-      await this.getEm().nativeDelete(this.getPostTagEntity(), { post: existing.id });
-      if (tagIds.length > 0) {
-        for (const tagId of tagIds) {
-          const postTag = new (this.getPostTagEntity())();
-          postTag.post = this.getEm().getReference(this.getPostEntity(), existing.id);
-          postTag.tag = this.getEm().getReference(this.getTagEntity(), toEntityId(tagId));
-          this.getEm().persist(postTag);
-        }
+      await deletePostTagPivots(this.getEm(), toEntityId(existing.id));
+      for (const tagId of tagIds) {
         try {
-          await this.getEm().flush();
+          await insertPostTagPivot(
+            this.getEm(),
+            toEntityId(existing.id),
+            toEntityId(tagId),
+          );
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new BadRequestException(`Lỗi lưu thẻ: ${msg}`);
@@ -686,7 +683,9 @@ export abstract class BasePostsService {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const r = await this.getEm().findOne(this.getPostEntity(), { id: toEntityId(id) });
+    const r = await this.getEm().findOne(this.getPostEntity(), {
+      id: toEntityId(id),
+    });
     if (!r || r.deletedAt) return false;
     r.deletedAt = new Date();
     this.getEm().persist(r);
@@ -695,7 +694,9 @@ export abstract class BasePostsService {
   }
 
   async restore(id: string): Promise<boolean> {
-    const r = await this.getEm().findOne(this.getPostEntity(), { id: toEntityId(id) });
+    const r = await this.getEm().findOne(this.getPostEntity(), {
+      id: toEntityId(id),
+    });
     if (!r || !r.deletedAt) return false;
     r.deletedAt = null;
     this.getEm().persist(r);
@@ -704,7 +705,9 @@ export abstract class BasePostsService {
   }
 
   async hardDelete(id: string): Promise<boolean> {
-    const r = await this.getEm().findOne(this.getPostEntity(), { id: toEntityId(id) });
+    const r = await this.getEm().findOne(this.getPostEntity(), {
+      id: toEntityId(id),
+    });
     if (!r) return false;
     this.getEm().remove(r);
     await this.getEm().flush();
@@ -737,15 +740,9 @@ export abstract class BasePostsService {
         affected += 1;
 
         if (mode === 'replace') {
-          await tx.nativeDelete(this.getPostCategoryEntity(), { post: post.id });
-          if (cats.length > 0) {
-            for (const categoryId of cats) {
-              const postCategory = new (this.getPostCategoryEntity())();
-              postCategory.post = tx.getReference(this.getPostEntity(), post.id);
-              postCategory.category = tx.getReference(this.getCategoryEntity(), categoryId);
-              tx.persist(postCategory);
-            }
-            await tx.flush();
+          await deletePostCategoryPivots(tx, post.id);
+          for (const categoryId of cats) {
+            await insertPostCategoryPivot(tx, post.id, categoryId);
           }
         } else {
           const existing = await tx.find(
@@ -765,14 +762,8 @@ export abstract class BasePostsService {
               .filter((id): id is number => id != null),
           );
           const toAdd = cats.filter((c) => !have.has(c));
-          if (toAdd.length > 0) {
-            for (const categoryId of toAdd) {
-              const postCategory = new (this.getPostCategoryEntity())();
-              postCategory.post = tx.getReference(this.getPostEntity(), post.id);
-              postCategory.category = tx.getReference(this.getCategoryEntity(), categoryId);
-              tx.persist(postCategory);
-            }
-            await tx.flush();
+          for (const categoryId of toAdd) {
+            await insertPostCategoryPivot(tx, post.id, categoryId);
           }
         }
       }
@@ -794,7 +785,8 @@ export abstract class BasePostsService {
     if (!uniquePostIds.length) {
       return { affected: 0, message: 'Không có bài viết nào' };
     }
-    const result = await this.getEm().nativeUpdate(this.getPostEntity(),
+    const result = await this.getEm().nativeUpdate(
+      this.getPostEntity(),
       {
         id: { $in: toEntityIdList(uniquePostIds) },
         deletedAt: null,
@@ -814,7 +806,8 @@ export abstract class BasePostsService {
   ): Promise<{ affected: number; message: string }> {
     if (!ids.length) return { affected: 0, message: 'Không có bản ghi nào' };
     if (action === 'delete') {
-      const result = await this.getEm().nativeUpdate(this.getPostEntity(),
+      const result = await this.getEm().nativeUpdate(
+        this.getPostEntity(),
         { id: { $in: toEntityIdList(ids) }, deletedAt: null },
         { deletedAt: new Date() },
       );
@@ -824,7 +817,8 @@ export abstract class BasePostsService {
       };
     }
     if (action === 'restore') {
-      const result = await this.getEm().nativeUpdate(this.getPostEntity(),
+      const result = await this.getEm().nativeUpdate(
+        this.getPostEntity(),
         { id: { $in: toEntityIdList(ids) }, deletedAt: { $ne: null } },
         { deletedAt: null },
       );

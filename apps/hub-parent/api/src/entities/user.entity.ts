@@ -1,14 +1,9 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, Property, OneToMany } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
 import { Account } from './account.entity';
-import { Comment } from './comment.entity';
 import { ContactRequest } from './contact-request.entity';
-import { GroupMember } from './group-member.entity';
-import { Group } from './group.entity';
-import { MessageRead } from './message-read.entity';
-import { Message } from './message.entity';
 import { Notification } from './notification.entity';
+import { ParentStudent } from './parent-student.entity';
 import { Post } from './post.entity';
 import { Session } from './session.entity';
 import { Student } from './student.entity';
@@ -61,20 +56,17 @@ export class User extends BaseEntity {
   @OneToMany(() => Session, (session) => session.user)
   sessions!: Session[];
 
-  @OneToMany(() => Comment, (comment) => comment.author)
-  comments!: Comment[];
 
-  @OneToMany(() => Message, (message) => message.sender)
-  messagesSent!: Message[];
 
-  @OneToMany(() => Message, (message) => message.receiver)
-  messagesReceived!: Message[];
 
   @OneToMany(() => Post, (post) => post.author)
   posts!: Post[];
 
   @OneToMany(() => Student, (student) => student.user)
   students!: Student[];
+
+  @OneToMany(() => ParentStudent, (parentStudent) => parentStudent.parent)
+  parentStudentLinks!: ParentStudent[];
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles!: UserRole[];
@@ -94,12 +86,6 @@ export class User extends BaseEntity {
   )
   contactRequestsAssigned!: ContactRequest[];
 
-  @OneToMany(() => Group, (group) => group.creator)
-  groupsCreated!: Group[];
 
-  @OneToMany(() => GroupMember, (groupMember) => groupMember.user)
-  groupMemberships!: GroupMember[];
 
-  @OneToMany(() => MessageRead, (messageRead) => messageRead.user)
-  messageReads!: MessageRead[];
 }

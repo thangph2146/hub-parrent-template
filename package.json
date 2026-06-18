@@ -104,7 +104,7 @@
     "main-api:oop:specs": "node packages/api-server/deploy/cli/apply-main-api-oop.cjs --specs-only --all",
     "main-api:common:reexport": "node packages/api-server/deploy/cli/apply-main-api-common-reexport.cjs",
     "main-api:common:structure": "node packages/api-server/deploy/cli/restructure-main-api-common.cjs",
-    "verify:api-template": "pnpm --filter @workspace/api-server run verify:template && pnpm --filter @workspace/api-server run verify:entity-closure && pnpm --filter @workspace/api-server run verify:module-graph",
+    "verify:api-template": "pnpm --filter @workspace/api-server run verify:template && pnpm --filter @workspace/api-server run verify:entity-closure && pnpm --filter @workspace/api-server run verify:entity-links && pnpm --filter @workspace/api-server run verify:module-graph",
     "api:render:help": "pnpm --filter @workspace/api-server run render -- --help",
     "api:audit:modules": "node script-system/api/audit-api-module-parity.cjs",
     "api:registry:sync": "node script-system/api/build-registry-from-package.cjs --write-ext",

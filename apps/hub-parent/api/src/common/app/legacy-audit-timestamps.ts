@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Bản ghi legacy có created_at / updated_at nullable. */
 export type LegacyAuditEntity = {
   createdAt?: Date | null;

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Chuẩn hóa user id để dùng trong tên file trên disk. */
 export function sanitizeUploadUserId(userId: string): string {
   const trimmed = userId.trim();

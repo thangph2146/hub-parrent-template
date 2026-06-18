@@ -926,8 +926,6 @@ export class BaseSystemService {
           row.parentId = parentId;
         }
       }
-      // MikroORM insert theo scalar field; giữ relation key `parent` sẽ phát sinh SQL cột `parent`.
-      delete row.parent;
 
       try {
         await em.insert(this.modelEntity('category'), row as object);

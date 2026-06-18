@@ -54,6 +54,7 @@ import {
   saveExportBlob,
   supportsExportDirectoryPicker,
 } from "@workspace/admin-app/lib/export-file-save"
+import { SystemOperationsPanel } from "./_component/system-operations-panel"
 
 function apiBase(): string {
   return (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(/\/$/, "")
@@ -356,6 +357,8 @@ function DataBackupPageInner() {
         title="Sao lưu & phục hồi dữ liệu"
         subtitle="Snapshot toàn hệ thống — chọn thư mục lưu, xuất hoặc import file export."
       />
+
+      <SystemOperationsPanel />
 
       {readAdminSession() == null ? (
         <Alert variant="destructive" className="py-3">

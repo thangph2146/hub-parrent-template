@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Roles Service — domain logic (materialize → apps/main/api module-bases).
  */
@@ -16,6 +15,7 @@ import {
   type GetOptionsConfig,
 } from '../../index';
 import { isSystemSuperAdminRoleName } from '../../../config/system-role';
+import { filterEnabledPermissions } from '../../../config/permissions';
 
 export interface RolesRowDto {
   id: number;
@@ -75,10 +75,14 @@ function mapRow(r: Record<string, unknown>): RolesRowDto {
     name: String(r.name ?? ''),
     displayName: String(r.displayName ?? ''),
     description: (r.description as string | null | undefined) ?? null,
-    permissions: r.permissions,
+    permissions: filterEnabledPermissions(r.permissions),
     isActive: Boolean(r.isActive),
-    createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      r.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      r.updatedAt as Date | string | null | undefined,
+    ),
     deletedAt: safeIsoString(r.deletedAt as Date | string | null | undefined),
   };
 }
@@ -143,7 +147,9 @@ export abstract class BaseRolesService {
     }
   }
 
-  private assertSuperAdminRoleNotDeletable(role: Record<string, unknown>): void {
+  private assertSuperAdminRoleNotDeletable(
+    role: Record<string, unknown>,
+  ): void {
     if (isSystemSuperAdminRoleName(String(role.name ?? ''))) {
       throw new ForbiddenException(
         'Vai trò Super Admin là vai trò hệ thống, không thể xóa.',
@@ -201,11 +207,11 @@ export abstract class BaseRolesService {
   async create(data: RolesCreateData): Promise<RolesRowDto> {
     const em = this.getEm();
     const Entity = this.getEntity();
-    const created = new Entity() as Record<string, unknown>;
+    const created = new Entity();
     created.name = data.name;
     created.displayName = data.displayName;
     created.description = data.description ?? null;
-    created.permissions = data.permissions;
+    created.permissions = filterEnabledPermissions(data.permissions);
     created.isActive = data.isActive ?? true;
     await em.persistAndFlush(created);
     return mapRow(created);
@@ -226,7 +232,10 @@ export abstract class BaseRolesService {
     if (
       isSystemSuperAdminRoleName(String(row.name ?? '')) &&
       data.name != null &&
-      data.name.trim().toLowerCase() !== String(row.name ?? '').trim().toLowerCase()
+      data.name.trim().toLowerCase() !==
+        String(row.name ?? '')
+          .trim()
+          .toLowerCase()
     ) {
       throw new ForbiddenException('Không thể đổi mã vai trò Super Admin.');
     }
@@ -234,7 +243,7 @@ export abstract class BaseRolesService {
     if (data.name != null) row.name = data.name;
     if (data.displayName != null) row.displayName = data.displayName;
     if (data.description !== undefined) row.description = data.description;
-    if (data.permissions !== undefined) row.permissions = data.permissions;
+    if (data.permissions !== undefined) row.permissions = filterEnabledPermissions(data.permissions);
     if (data.isActive !== undefined) row.isActive = data.isActive;
     await em.persistAndFlush(existing);
     return mapRow(row);

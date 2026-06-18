@@ -21,7 +21,13 @@ export type AdminOperationToastMessages<
 > = {
   loading: string
   success: string | ((data: TData, variables: TVariables) => string)
+  successDescription?:
+    | string
+    | ((data: TData, variables: TVariables) => string | undefined)
   error?: string | ((err: TError, variables: TVariables) => string)
+  errorDescription?:
+    | string
+    | ((err: TError, variables: TVariables) => string | undefined)
 }
 
 export const defaultAdminOperationToast: AdminOperationToastMessages = {
@@ -61,6 +67,19 @@ function resolveMessage(
   return typeof message === "function"
     ? (message as (...a: unknown[]) => string)(...args)
     : message
+}
+
+function resolveOptionalMessage(
+  message: string | ((...args: never[]) => string | undefined) | undefined,
+  ...args: unknown[]
+): string | undefined {
+  if (!message) return undefined
+  const resolved =
+    typeof message === "function"
+      ? (message as (...a: unknown[]) => string | undefined)(...args)
+      : message
+  const trimmed = resolved?.trim()
+  return trimmed || undefined
 }
 
 export function adminToastMeta<
@@ -103,10 +122,15 @@ export function createAdminMutationCache(): MutationCache {
       if (!adminToast) return
       const id = toastIds.get(mutation)
       const message = resolveMessage(adminToast.success, data, variables)
+      const description = resolveOptionalMessage(
+        adminToast.successDescription,
+        data,
+        variables
+      )
       if (id != null) {
-        toast.success(message, { id })
+        toast.success(message, { id, description })
       } else {
-        toast.success(message)
+        toast.success(message, description ? { description } : undefined)
       }
       toastIds.delete(mutation)
       const meta = getAdminMutationMeta(mutation)
@@ -124,10 +148,17 @@ export function createAdminMutationCache(): MutationCache {
       const title = adminToast.error
         ? resolveMessage(adminToast.error, error, variables)
         : resolveAdminOperationError(error)
-      const { message, description } = buildAdminOperationErrorToast(
+      const errorToast = buildAdminOperationErrorToast(
         error,
         title,
       )
+      const customDescription = resolveOptionalMessage(
+        adminToast.errorDescription,
+        error,
+        variables
+      )
+      const { message } = errorToast
+      const description = customDescription ?? errorToast.description
       const toastOptions = description ? { description } : undefined
       if (id != null) {
         toast.error(message, { id, ...toastOptions })

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { config } from 'dotenv';
 import * as path from 'path';
 import { APP_HEADERS } from './constants';

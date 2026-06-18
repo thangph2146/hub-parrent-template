@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { toEntityId } from '../common';
 /**
  * Notifications API cho admin (chuông thông báo + unread count).

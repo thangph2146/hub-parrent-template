@@ -1,9 +1,9 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { AdminRealtimeBroadcastService } from '../common/admin/realtime/broadcast.service';
 import { ParentStudent } from '../entities/parent-student.entity';
+import { Student } from '../entities/student.entity';
 import { User } from '../entities/user.entity';
 import {
   BaseParentStudentsService,
@@ -39,6 +39,10 @@ export class ParentStudentsService extends BaseParentStudentsService {
 
   protected getUserEntity() {
     return User as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getStudentEntity() {
+    return Student as unknown as new () => Record<string, unknown>;
   }
 
   protected getAdminRealtime(): ParentStudentsRealtimePort {

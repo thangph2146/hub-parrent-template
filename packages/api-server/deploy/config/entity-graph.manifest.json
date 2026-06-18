@@ -1,79 +1,234 @@
 {
   "source": "apps/main/api",
-  "generatedAt": "2026-06-17T07:28:23.487Z",
+  "generatedAt": "2026-06-18T01:31:12.896Z",
   "entityCount": 46,
   "entities": {
     "AcademicYear": {
       "fileName": "academic-year.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Account": {
       "fileName": "account.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "AdmissionResult": {
       "fileName": "admission-result.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Camera": {
       "fileName": "camera.entity.ts",
       "relations": [
         "Event"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Event",
+          "propertyName": "linkedEvent",
+          "fieldName": "linkedEventId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Category": {
       "fileName": "category.entity.ts",
       "relations": [
         "Category",
         "PostCategory"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Category",
+          "propertyName": "parent",
+          "fieldName": "parentId",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Category",
+          "propertyName": "children",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "PostCategory",
+          "propertyName": "posts",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Comment": {
       "fileName": "comment.entity.ts",
       "relations": [
         "Post",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "author",
+          "fieldName": "authorId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Post",
+          "propertyName": "post",
+          "fieldName": "postId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "ContactRequest": {
       "fileName": "contact-request.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "submittedBy",
+          "fieldName": "userId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "assignedTo",
+          "fieldName": "assignedToId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Course": {
       "fileName": "course.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "CustomerCart": {
       "fileName": "customer-cart.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Department": {
       "fileName": "department.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "EventCheckin": {
       "fileName": "event-checkin.entity.ts",
       "relations": [
         "Event",
         "EventRegistration"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Event",
+          "propertyName": "event",
+          "fieldName": "eventId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "EventRegistration",
+          "propertyName": "registration",
+          "fieldName": "registrationId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "EventRegistration": {
       "fileName": "event-registration.entity.ts",
       "relations": [
         "Event"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Event",
+          "propertyName": "event",
+          "fieldName": "eventId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "event",
+          "email"
+        ]
+      ],
+      "isJoinEntity": false
     },
     "EventSpeaker": {
       "fileName": "event-speaker.entity.ts",
       "relations": [
         "Event",
         "Speaker"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Event",
+          "propertyName": "event",
+          "fieldName": "eventId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Speaker",
+          "propertyName": "speaker",
+          "fieldName": "speakerId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "event",
+          "speaker"
+        ]
+      ],
+      "isJoinEntity": true
     },
     "Event": {
       "fileName": "event.entity.ts",
@@ -83,20 +238,100 @@
         "EventRegistration",
         "EventSpeaker",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Camera",
+          "propertyName": "checkinCamera",
+          "fieldName": "checkinCameraId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Camera",
+          "propertyName": "checkoutCamera",
+          "fieldName": "checkoutCameraId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "createdBy",
+          "fieldName": "createdById",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "EventSpeaker",
+          "propertyName": "speakers",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "EventRegistration",
+          "propertyName": "registrations",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "EventCheckin",
+          "propertyName": "checkins",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "FaceData": {
       "fileName": "face-data.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "GroupMember": {
       "fileName": "group-member.entity.ts",
       "relations": [
         "Group",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Group",
+          "propertyName": "group",
+          "fieldName": "groupId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "group",
+          "user"
+        ]
+      ],
+      "isJoinEntity": true
     },
     "Group": {
       "fileName": "group.entity.ts",
@@ -104,7 +339,32 @@
         "GroupMember",
         "Message",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "creator",
+          "fieldName": "createdById",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "GroupMember",
+          "propertyName": "members",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Message",
+          "propertyName": "messages",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "ImportedUser": {
       "fileName": "imported-user.entity.ts",
@@ -113,22 +373,83 @@
         "Major",
         "TrainingLevel",
         "TrainingSystem"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "AcademicYear",
+          "propertyName": "academicYear",
+          "fieldName": "academicYearId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "TrainingLevel",
+          "propertyName": "trainingLevel",
+          "fieldName": "trainingLevelId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "TrainingSystem",
+          "propertyName": "trainingSystem",
+          "fieldName": "trainingSystemId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Major",
+          "propertyName": "major",
+          "fieldName": "majorId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Location": {
       "fileName": "location.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Major": {
       "fileName": "major.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "MessageRead": {
       "fileName": "message-read.entity.ts",
       "relations": [
         "Message",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Message",
+          "propertyName": "message",
+          "fieldName": "messageId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "message",
+          "user"
+        ]
+      ],
+      "isJoinEntity": true
     },
     "Message": {
       "fileName": "message.entity.ts",
@@ -137,43 +458,186 @@
         "Message",
         "MessageRead",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Message",
+          "propertyName": "parent",
+          "fieldName": "parentId",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Message",
+          "propertyName": "replies",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "receiver",
+          "fieldName": "receiverId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "sender",
+          "fieldName": "senderId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Group",
+          "propertyName": "group",
+          "fieldName": "groupId",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "MessageRead",
+          "propertyName": "reads",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Notification": {
       "fileName": "notification.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Order": {
       "fileName": "order.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "customer",
+          "fieldName": "customerId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "assignedShipper",
+          "fieldName": "assignedShipperId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "PageContent": {
       "fileName": "page-content.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [
+        [
+          "pageKey",
+          "sectionKey"
+        ]
+      ],
+      "isJoinEntity": false
     },
     "ParentStudent": {
       "fileName": "parent-student.entity.ts",
       "relations": [
+        "Student",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "parent",
+          "fieldName": "parentId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Student",
+          "propertyName": "student",
+          "fieldName": "studentId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "parent",
+          "student"
+        ]
+      ],
+      "isJoinEntity": true
     },
     "PostCategory": {
       "fileName": "post-category.entity.ts",
       "relations": [
         "Category",
         "Post"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Post",
+          "propertyName": "post",
+          "fieldName": "postId",
+          "primary": true
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Category",
+          "propertyName": "category",
+          "fieldName": "categoryId",
+          "primary": true
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": true
     },
     "PostTag": {
       "fileName": "post-tag.entity.ts",
       "relations": [
         "Post",
         "Tag"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Post",
+          "propertyName": "post",
+          "fieldName": "postId",
+          "primary": true
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Tag",
+          "propertyName": "tag",
+          "fieldName": "tagId",
+          "primary": true
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": true
     },
     "Post": {
       "fileName": "post.entity.ts",
@@ -182,83 +646,243 @@
         "PostCategory",
         "PostTag",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "author",
+          "fieldName": "authorId",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Comment",
+          "propertyName": "comments",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "PostCategory",
+          "propertyName": "categories",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "PostTag",
+          "propertyName": "tags",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Product": {
       "fileName": "product.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "PromoCode": {
       "fileName": "promo-code.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Role": {
       "fileName": "role.entity.ts",
       "relations": [
         "UserRole"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "OneToMany",
+          "target": "UserRole",
+          "propertyName": "userRoles",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Screen": {
       "fileName": "screen.entity.ts",
       "relations": [
         "Camera",
         "Template"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "Camera",
+          "propertyName": "camera",
+          "fieldName": "cameraId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Template",
+          "propertyName": "template",
+          "fieldName": "templateId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "SeoMeta": {
       "fileName": "seo-meta.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Session": {
       "fileName": "session.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Setting": {
       "fileName": "setting.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Speaker": {
       "fileName": "speaker.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "StorageFile": {
       "fileName": "storage-file.entity.ts",
       "relations": [
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "uploadedBy",
+          "fieldName": "uploadedByUserId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Student": {
       "fileName": "student.entity.ts",
       "relations": [
+        "ParentStudent",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "ParentStudent",
+          "propertyName": "parentLinks",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Tag": {
       "fileName": "tag.entity.ts",
       "relations": [
         "PostTag"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "OneToMany",
+          "target": "PostTag",
+          "propertyName": "posts",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "Template": {
       "fileName": "template.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "TrainingLevel": {
       "fileName": "training-level.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "TrainingSystem": {
       "fileName": "training-system.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "UserRole": {
       "fileName": "user-role.entity.ts",
       "relations": [
         "Role",
         "User"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "ManyToOne",
+          "target": "User",
+          "propertyName": "user",
+          "fieldName": "userId",
+          "primary": false
+        },
+        {
+          "kind": "ManyToOne",
+          "target": "Role",
+          "propertyName": "role",
+          "fieldName": "roleId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "user",
+          "role"
+        ]
+      ],
+      "isJoinEntity": true
     },
     "User": {
       "fileName": "user.entity.ts",
@@ -270,15 +894,114 @@
         "Message",
         "MessageRead",
         "Notification",
+        "ParentStudent",
         "Post",
         "Session",
         "Student",
         "UserRole"
-      ]
+      ],
+      "relationDetails": [
+        {
+          "kind": "OneToMany",
+          "target": "Account",
+          "propertyName": "accounts",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Session",
+          "propertyName": "sessions",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Comment",
+          "propertyName": "comments",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Message",
+          "propertyName": "messagesSent",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Message",
+          "propertyName": "messagesReceived",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Post",
+          "propertyName": "posts",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Student",
+          "propertyName": "students",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "ParentStudent",
+          "propertyName": "parentStudentLinks",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "UserRole",
+          "propertyName": "userRoles",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Notification",
+          "propertyName": "notifications",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "Group",
+          "propertyName": "groupsCreated",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "GroupMember",
+          "propertyName": "groupMemberships",
+          "fieldName": null,
+          "primary": false
+        },
+        {
+          "kind": "OneToMany",
+          "target": "MessageRead",
+          "propertyName": "messageReads",
+          "fieldName": null,
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     },
     "VerificationToken": {
       "fileName": "verification-token.entity.ts",
-      "relations": []
+      "relations": [],
+      "relationDetails": [],
+      "uniquePropertySets": [],
+      "isJoinEntity": false
     }
   },
   "relationEdges": [
@@ -424,6 +1147,10 @@
     ],
     [
       "ParentStudent",
+      "Student"
+    ],
+    [
+      "ParentStudent",
       "User"
     ],
     [
@@ -480,6 +1207,10 @@
     ],
     [
       "Student",
+      "ParentStudent"
+    ],
+    [
+      "Student",
       "User"
     ],
     [
@@ -524,6 +1255,10 @@
     ],
     [
       "User",
+      "ParentStudent"
+    ],
+    [
+      "User",
       "Post"
     ],
     [
@@ -538,6 +1273,871 @@
       "User",
       "UserRole"
     ]
+  ],
+  "relationEdgesDetailed": [
+    {
+      "from": "Account",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "Camera",
+      "to": "Event",
+      "kind": "ManyToOne",
+      "propertyName": "linkedEvent",
+      "fieldName": "linkedEventId",
+      "primary": false
+    },
+    {
+      "from": "Category",
+      "to": "Category",
+      "kind": "ManyToOne",
+      "propertyName": "parent",
+      "fieldName": "parentId",
+      "primary": false
+    },
+    {
+      "from": "Category",
+      "to": "Category",
+      "kind": "OneToMany",
+      "propertyName": "children",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Category",
+      "to": "PostCategory",
+      "kind": "OneToMany",
+      "propertyName": "posts",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Comment",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "author",
+      "fieldName": "authorId",
+      "primary": false
+    },
+    {
+      "from": "Comment",
+      "to": "Post",
+      "kind": "ManyToOne",
+      "propertyName": "post",
+      "fieldName": "postId",
+      "primary": false
+    },
+    {
+      "from": "ContactRequest",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "submittedBy",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "ContactRequest",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "assignedTo",
+      "fieldName": "assignedToId",
+      "primary": false
+    },
+    {
+      "from": "EventCheckin",
+      "to": "Event",
+      "kind": "ManyToOne",
+      "propertyName": "event",
+      "fieldName": "eventId",
+      "primary": false
+    },
+    {
+      "from": "EventCheckin",
+      "to": "EventRegistration",
+      "kind": "ManyToOne",
+      "propertyName": "registration",
+      "fieldName": "registrationId",
+      "primary": false
+    },
+    {
+      "from": "EventRegistration",
+      "to": "Event",
+      "kind": "ManyToOne",
+      "propertyName": "event",
+      "fieldName": "eventId",
+      "primary": false
+    },
+    {
+      "from": "EventSpeaker",
+      "to": "Event",
+      "kind": "ManyToOne",
+      "propertyName": "event",
+      "fieldName": "eventId",
+      "primary": false
+    },
+    {
+      "from": "EventSpeaker",
+      "to": "Speaker",
+      "kind": "ManyToOne",
+      "propertyName": "speaker",
+      "fieldName": "speakerId",
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "Camera",
+      "kind": "ManyToOne",
+      "propertyName": "checkinCamera",
+      "fieldName": "checkinCameraId",
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "Camera",
+      "kind": "ManyToOne",
+      "propertyName": "checkoutCamera",
+      "fieldName": "checkoutCameraId",
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "createdBy",
+      "fieldName": "createdById",
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "EventSpeaker",
+      "kind": "OneToMany",
+      "propertyName": "speakers",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "EventRegistration",
+      "kind": "OneToMany",
+      "propertyName": "registrations",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Event",
+      "to": "EventCheckin",
+      "kind": "OneToMany",
+      "propertyName": "checkins",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "FaceData",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "GroupMember",
+      "to": "Group",
+      "kind": "ManyToOne",
+      "propertyName": "group",
+      "fieldName": "groupId",
+      "primary": false
+    },
+    {
+      "from": "GroupMember",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "Group",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "creator",
+      "fieldName": "createdById",
+      "primary": false
+    },
+    {
+      "from": "Group",
+      "to": "GroupMember",
+      "kind": "OneToMany",
+      "propertyName": "members",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Group",
+      "to": "Message",
+      "kind": "OneToMany",
+      "propertyName": "messages",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "ImportedUser",
+      "to": "AcademicYear",
+      "kind": "ManyToOne",
+      "propertyName": "academicYear",
+      "fieldName": "academicYearId",
+      "primary": false
+    },
+    {
+      "from": "ImportedUser",
+      "to": "TrainingLevel",
+      "kind": "ManyToOne",
+      "propertyName": "trainingLevel",
+      "fieldName": "trainingLevelId",
+      "primary": false
+    },
+    {
+      "from": "ImportedUser",
+      "to": "TrainingSystem",
+      "kind": "ManyToOne",
+      "propertyName": "trainingSystem",
+      "fieldName": "trainingSystemId",
+      "primary": false
+    },
+    {
+      "from": "ImportedUser",
+      "to": "Major",
+      "kind": "ManyToOne",
+      "propertyName": "major",
+      "fieldName": "majorId",
+      "primary": false
+    },
+    {
+      "from": "MessageRead",
+      "to": "Message",
+      "kind": "ManyToOne",
+      "propertyName": "message",
+      "fieldName": "messageId",
+      "primary": false
+    },
+    {
+      "from": "MessageRead",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "Message",
+      "kind": "ManyToOne",
+      "propertyName": "parent",
+      "fieldName": "parentId",
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "Message",
+      "kind": "OneToMany",
+      "propertyName": "replies",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "receiver",
+      "fieldName": "receiverId",
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "sender",
+      "fieldName": "senderId",
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "Group",
+      "kind": "ManyToOne",
+      "propertyName": "group",
+      "fieldName": "groupId",
+      "primary": false
+    },
+    {
+      "from": "Message",
+      "to": "MessageRead",
+      "kind": "OneToMany",
+      "propertyName": "reads",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Notification",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "Order",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "customer",
+      "fieldName": "customerId",
+      "primary": false
+    },
+    {
+      "from": "Order",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "assignedShipper",
+      "fieldName": "assignedShipperId",
+      "primary": false
+    },
+    {
+      "from": "ParentStudent",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "parent",
+      "fieldName": "parentId",
+      "primary": false
+    },
+    {
+      "from": "ParentStudent",
+      "to": "Student",
+      "kind": "ManyToOne",
+      "propertyName": "student",
+      "fieldName": "studentId",
+      "primary": false
+    },
+    {
+      "from": "PostCategory",
+      "to": "Post",
+      "kind": "ManyToOne",
+      "propertyName": "post",
+      "fieldName": "postId",
+      "primary": true
+    },
+    {
+      "from": "PostCategory",
+      "to": "Category",
+      "kind": "ManyToOne",
+      "propertyName": "category",
+      "fieldName": "categoryId",
+      "primary": true
+    },
+    {
+      "from": "PostTag",
+      "to": "Post",
+      "kind": "ManyToOne",
+      "propertyName": "post",
+      "fieldName": "postId",
+      "primary": true
+    },
+    {
+      "from": "PostTag",
+      "to": "Tag",
+      "kind": "ManyToOne",
+      "propertyName": "tag",
+      "fieldName": "tagId",
+      "primary": true
+    },
+    {
+      "from": "Post",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "author",
+      "fieldName": "authorId",
+      "primary": false
+    },
+    {
+      "from": "Post",
+      "to": "Comment",
+      "kind": "OneToMany",
+      "propertyName": "comments",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Post",
+      "to": "PostCategory",
+      "kind": "OneToMany",
+      "propertyName": "categories",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Post",
+      "to": "PostTag",
+      "kind": "OneToMany",
+      "propertyName": "tags",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Role",
+      "to": "UserRole",
+      "kind": "OneToMany",
+      "propertyName": "userRoles",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Screen",
+      "to": "Camera",
+      "kind": "ManyToOne",
+      "propertyName": "camera",
+      "fieldName": "cameraId",
+      "primary": false
+    },
+    {
+      "from": "Screen",
+      "to": "Template",
+      "kind": "ManyToOne",
+      "propertyName": "template",
+      "fieldName": "templateId",
+      "primary": false
+    },
+    {
+      "from": "Session",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "StorageFile",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "uploadedBy",
+      "fieldName": "uploadedByUserId",
+      "primary": false
+    },
+    {
+      "from": "Student",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "Student",
+      "to": "ParentStudent",
+      "kind": "OneToMany",
+      "propertyName": "parentLinks",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "Tag",
+      "to": "PostTag",
+      "kind": "OneToMany",
+      "propertyName": "posts",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "UserRole",
+      "to": "User",
+      "kind": "ManyToOne",
+      "propertyName": "user",
+      "fieldName": "userId",
+      "primary": false
+    },
+    {
+      "from": "UserRole",
+      "to": "Role",
+      "kind": "ManyToOne",
+      "propertyName": "role",
+      "fieldName": "roleId",
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Account",
+      "kind": "OneToMany",
+      "propertyName": "accounts",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Session",
+      "kind": "OneToMany",
+      "propertyName": "sessions",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Comment",
+      "kind": "OneToMany",
+      "propertyName": "comments",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Message",
+      "kind": "OneToMany",
+      "propertyName": "messagesSent",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Message",
+      "kind": "OneToMany",
+      "propertyName": "messagesReceived",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Post",
+      "kind": "OneToMany",
+      "propertyName": "posts",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Student",
+      "kind": "OneToMany",
+      "propertyName": "students",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "ParentStudent",
+      "kind": "OneToMany",
+      "propertyName": "parentStudentLinks",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "UserRole",
+      "kind": "OneToMany",
+      "propertyName": "userRoles",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Notification",
+      "kind": "OneToMany",
+      "propertyName": "notifications",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "Group",
+      "kind": "OneToMany",
+      "propertyName": "groupsCreated",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "GroupMember",
+      "kind": "OneToMany",
+      "propertyName": "groupMemberships",
+      "fieldName": null,
+      "primary": false
+    },
+    {
+      "from": "User",
+      "to": "MessageRead",
+      "kind": "OneToMany",
+      "propertyName": "messageReads",
+      "fieldName": null,
+      "primary": false
+    }
+  ],
+  "joinEntities": [
+    {
+      "className": "EventSpeaker",
+      "fileName": "event-speaker.entity.ts",
+      "joins": [
+        {
+          "propertyName": "event",
+          "target": "Event",
+          "fieldName": "eventId",
+          "primary": false
+        },
+        {
+          "propertyName": "speaker",
+          "target": "Speaker",
+          "fieldName": "speakerId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "event",
+          "speaker"
+        ]
+      ]
+    },
+    {
+      "className": "GroupMember",
+      "fileName": "group-member.entity.ts",
+      "joins": [
+        {
+          "propertyName": "group",
+          "target": "Group",
+          "fieldName": "groupId",
+          "primary": false
+        },
+        {
+          "propertyName": "user",
+          "target": "User",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "group",
+          "user"
+        ]
+      ]
+    },
+    {
+      "className": "MessageRead",
+      "fileName": "message-read.entity.ts",
+      "joins": [
+        {
+          "propertyName": "message",
+          "target": "Message",
+          "fieldName": "messageId",
+          "primary": false
+        },
+        {
+          "propertyName": "user",
+          "target": "User",
+          "fieldName": "userId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "message",
+          "user"
+        ]
+      ]
+    },
+    {
+      "className": "ParentStudent",
+      "fileName": "parent-student.entity.ts",
+      "joins": [
+        {
+          "propertyName": "parent",
+          "target": "User",
+          "fieldName": "parentId",
+          "primary": false
+        },
+        {
+          "propertyName": "student",
+          "target": "Student",
+          "fieldName": "studentId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "parent",
+          "student"
+        ]
+      ]
+    },
+    {
+      "className": "PostCategory",
+      "fileName": "post-category.entity.ts",
+      "joins": [
+        {
+          "propertyName": "post",
+          "target": "Post",
+          "fieldName": "postId",
+          "primary": true
+        },
+        {
+          "propertyName": "category",
+          "target": "Category",
+          "fieldName": "categoryId",
+          "primary": true
+        }
+      ],
+      "uniquePropertySets": []
+    },
+    {
+      "className": "PostTag",
+      "fileName": "post-tag.entity.ts",
+      "joins": [
+        {
+          "propertyName": "post",
+          "target": "Post",
+          "fieldName": "postId",
+          "primary": true
+        },
+        {
+          "propertyName": "tag",
+          "target": "Tag",
+          "fieldName": "tagId",
+          "primary": true
+        }
+      ],
+      "uniquePropertySets": []
+    },
+    {
+      "className": "UserRole",
+      "fileName": "user-role.entity.ts",
+      "joins": [
+        {
+          "propertyName": "user",
+          "target": "User",
+          "fieldName": "userId",
+          "primary": false
+        },
+        {
+          "propertyName": "role",
+          "target": "Role",
+          "fieldName": "roleId",
+          "primary": false
+        }
+      ],
+      "uniquePropertySets": [
+        [
+          "user",
+          "role"
+        ]
+      ]
+    }
+  ],
+  "linkRelations": [
+    {
+      "left": "Event",
+      "right": "Speaker",
+      "via": "EventSpeaker",
+      "viaFile": "event-speaker.entity.ts",
+      "leftProperty": "event",
+      "rightProperty": "speaker",
+      "leftFieldName": "eventId",
+      "rightFieldName": "speakerId",
+      "primary": false,
+      "uniquePropertySets": [
+        [
+          "event",
+          "speaker"
+        ]
+      ]
+    },
+    {
+      "left": "Group",
+      "right": "User",
+      "via": "GroupMember",
+      "viaFile": "group-member.entity.ts",
+      "leftProperty": "group",
+      "rightProperty": "user",
+      "leftFieldName": "groupId",
+      "rightFieldName": "userId",
+      "primary": false,
+      "uniquePropertySets": [
+        [
+          "group",
+          "user"
+        ]
+      ]
+    },
+    {
+      "left": "Message",
+      "right": "User",
+      "via": "MessageRead",
+      "viaFile": "message-read.entity.ts",
+      "leftProperty": "message",
+      "rightProperty": "user",
+      "leftFieldName": "messageId",
+      "rightFieldName": "userId",
+      "primary": false,
+      "uniquePropertySets": [
+        [
+          "message",
+          "user"
+        ]
+      ]
+    },
+    {
+      "left": "Post",
+      "right": "Category",
+      "via": "PostCategory",
+      "viaFile": "post-category.entity.ts",
+      "leftProperty": "post",
+      "rightProperty": "category",
+      "leftFieldName": "postId",
+      "rightFieldName": "categoryId",
+      "primary": true,
+      "uniquePropertySets": []
+    },
+    {
+      "left": "Post",
+      "right": "Tag",
+      "via": "PostTag",
+      "viaFile": "post-tag.entity.ts",
+      "leftProperty": "post",
+      "rightProperty": "tag",
+      "leftFieldName": "postId",
+      "rightFieldName": "tagId",
+      "primary": true,
+      "uniquePropertySets": []
+    },
+    {
+      "left": "User",
+      "right": "Role",
+      "via": "UserRole",
+      "viaFile": "user-role.entity.ts",
+      "leftProperty": "user",
+      "rightProperty": "role",
+      "leftFieldName": "userId",
+      "rightFieldName": "roleId",
+      "primary": false,
+      "uniquePropertySets": [
+        [
+          "user",
+          "role"
+        ]
+      ]
+    },
+    {
+      "left": "User",
+      "right": "Student",
+      "via": "ParentStudent",
+      "viaFile": "parent-student.entity.ts",
+      "leftProperty": "parent",
+      "rightProperty": "student",
+      "leftFieldName": "parentId",
+      "rightFieldName": "studentId",
+      "primary": false,
+      "uniquePropertySets": [
+        [
+          "parent",
+          "student"
+        ]
+      ]
+    }
   ],
   "moduleEntities": {
     "academic-years": [
@@ -699,6 +2299,7 @@
     ],
     "parent-students": [
       "ParentStudent",
+      "Student",
       "User"
     ],
     "posts": [

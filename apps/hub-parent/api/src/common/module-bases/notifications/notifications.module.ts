@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Notifications Module — NestJS wiring cho admin notifications.
  */
@@ -10,7 +9,10 @@ export class BaseNotificationsModule {
   static forRoot(metadata: ModuleMetadata = {}): ModuleMetadata {
     return {
       imports: metadata.imports ?? [],
-      controllers: [...(metadata.controllers ?? []), BaseNotificationsController],
+      controllers: [
+        ...(metadata.controllers ?? []),
+        BaseNotificationsController,
+      ],
       providers: metadata.providers ?? [],
       exports: metadata.exports ?? [],
     };

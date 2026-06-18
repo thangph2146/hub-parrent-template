@@ -148,12 +148,15 @@ function renderApiFromTemplate(appRel, opts = {}) {
   fs.mkdirSync(appRoot, { recursive: true })
 
   let moduleIds = opts.modules?.length ? [...opts.modules] : resolveApiModules(appRel).modules
+  const appConfig = resolveApiModules(appRel).config ?? {}
+  const excludedModules = new Set(appConfig.excludeModules ?? [])
   const requestedCount = moduleIds.length
   const explicitModules = Boolean(opts.modules?.length)
   const isPartialRenderEarly = explicitModules && !opts.allModules
 
   if (isPartialRenderEarly) {
-    moduleIds = [...new Set([...RENDER_BOOTSTRAP_MODULES, ...moduleIds])]
+    const bootstrapModules = RENDER_BOOTSTRAP_MODULES.filter((id) => !excludedModules.has(id))
+    moduleIds = [...new Set([...bootstrapModules, ...moduleIds])]
   }
 
   if (opts.allModules) moduleIds = listTemplateModuleIds(templateRoot)
@@ -168,7 +171,7 @@ function renderApiFromTemplate(appRel, opts = {}) {
       closureAdded = expanded.length - moduleIds.length
       console.log(`[render:template] +${closureAdded} module (closure)`)
     }
-    moduleIds = expanded
+    moduleIds = expanded.filter((id) => !excludedModules.has(id))
   }
 
   const isPartialRender =
@@ -208,7 +211,10 @@ function renderApiFromTemplate(appRel, opts = {}) {
   }
 
   if (isPartialRender) {
-    patchRenderAppModule(appRoot, moduleIds, { quiet: false })
+    patchRenderAppModule(appRoot, moduleIds, {
+      quiet: false,
+      excludeModules: [...excludedModules],
+    })
   }
 
   for (const dir of SRC_EXTRA_DIRS) {

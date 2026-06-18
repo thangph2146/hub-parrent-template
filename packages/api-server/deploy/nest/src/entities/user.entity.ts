@@ -8,6 +8,7 @@ import { Group } from './group.entity';
 import { MessageRead } from './message-read.entity';
 import { Message } from './message.entity';
 import { Notification } from './notification.entity';
+import { ParentStudent } from './parent-student.entity';
 import { Post } from './post.entity';
 import { Session } from './session.entity';
 import { Student } from './student.entity';
@@ -74,6 +75,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Student, (student) => student.user)
   students!: Student[];
+
+  @OneToMany(() => ParentStudent, (parentStudent) => parentStudent.parent)
+  parentStudentLinks!: ParentStudent[];
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles!: UserRole[];
