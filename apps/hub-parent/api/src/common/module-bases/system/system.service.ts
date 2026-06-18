@@ -446,6 +446,12 @@ export class BaseSystemService {
     for (const [key, rows] of Object.entries(data)) {
       const modelName = this.resolveModelName(key) ?? key;
       if (!Array.isArray(rows)) continue;
+      if (!this.entityByModelName[modelName]) {
+        this.logger.warn(
+          `Import: bỏ qua model "${key}" (${rows.length} bản ghi) vì API hiện tại không có entity tương ứng.`,
+        );
+        continue;
+      }
       normalized[modelName] = [...(normalized[modelName] ?? []), ...rows];
     }
     return normalized;
@@ -1650,20 +1656,31 @@ export class BaseSystemService {
   private async detachNullableUserForeignKeys(
     em: EntityManager,
   ): Promise<void> {
-    await em.nativeUpdate(
-      this.modelEntity('contactRequest'),
-      {},
-      {
-        submittedBy: null,
-        assignedTo: null,
-      },
-    );
-    await em.nativeUpdate(
-      this.modelEntity('message'),
-      {},
-      { receiver: null, sender: null },
-    );
-    await em.nativeUpdate(this.modelEntity('student'), {}, { user: null });
+    const contactRequestEntity = this.entityByModelName.contactRequest;
+    if (contactRequestEntity) {
+      await em.nativeUpdate(
+        contactRequestEntity,
+        {},
+        {
+          submittedBy: null,
+          assignedTo: null,
+        },
+      );
+    }
+
+    const messageEntity = this.entityByModelName.message;
+    if (messageEntity) {
+      await em.nativeUpdate(
+        messageEntity,
+        {},
+        { receiver: null, sender: null },
+      );
+    }
+
+    const studentEntity = this.entityByModelName.student;
+    if (studentEntity) {
+      await em.nativeUpdate(studentEntity, {}, { user: null });
+    }
   }
 
   /**
@@ -2168,6 +2185,9 @@ export class BaseSystemService {
       if (isManyToOneImportProperty(prop)) {
         val = coerceManyToOneScalar(val);
         if (val === null && raw !== null && raw !== undefined) continue;
+        const fkField = prop.fieldNames?.[0] ?? `${prop.name}Id`;
+        out[fkField] = val;
+        continue;
       }
       if (
         prop.name === 'content' &&
