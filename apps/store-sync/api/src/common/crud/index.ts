@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** CRUD runtime — template local (pnpm api:sync-template). */
 /** Barrel CRUD runtime — kế thừa local trong template NestJS. */
 export { BaseStandardAdminCrudService } from './base-standard-admin-crud.service';
@@ -12,7 +11,10 @@ export {
   type AdminCrudControllerConfig,
   type IAdminCrudControllerService,
 } from './base-admin-crud.controller';
-export { buildAdminListCrudParams, type AdminListQueryInput } from './build-admin-list-params';
+export {
+  buildAdminListCrudParams,
+  type AdminListQueryInput,
+} from './build-admin-list-params';
 export { BaseCrudService } from './base-crud.service';
 export {
   BaseCrudController,

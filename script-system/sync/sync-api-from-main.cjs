@@ -95,6 +95,7 @@ const MODULE_SCOPED_FILES = {
   "src/seeds/products-sample.runner.ts": ["products"],
   "src/seeds/promo-codes-sample.runner.ts": ["promo-codes"],
   "src/seeds/storesync-sample.data.ts": ["orders", "products"],
+  "src/common/student-user-binding.ts": ["students"],
   "src/common/commerce/index.ts": ["products"],
   "src/common/commerce/gift-rules.ts": ["products"],
   "src/common/commerce/product-units.ts": ["products"],
@@ -572,7 +573,10 @@ function patchExcludedEntityRelations(dest, profile) {
         (excluded.has("GroupMember") && line.includes("./group-member.entity")) ||
         (excluded.has("Message") && line.includes("./message.entity")) ||
         (excluded.has("MessageRead") && line.includes("./message-read.entity")) ||
-        (excluded.has("Comment") && line.includes("./comment.entity"))
+        (excluded.has("Comment") && line.includes("./comment.entity")) ||
+        (excluded.has("ContactRequest") && line.includes("./contact-request.entity")) ||
+        (excluded.has("ParentStudent") && line.includes("./parent-student.entity")) ||
+        (excluded.has("Student") && line.includes("./student.entity"))
       ) {
         continue;
       }
@@ -581,7 +585,9 @@ function patchExcludedEntityRelations(dest, profile) {
         (excluded.has("Group") && line.includes("@OneToMany(() => Group")) ||
         (excluded.has("GroupMember") && line.includes("@OneToMany(() => GroupMember")) ||
         (excluded.has("MessageRead") && line.includes("@OneToMany(() => MessageRead")) ||
-        (excluded.has("Comment") && line.includes("@OneToMany(() => Comment"))
+        (excluded.has("Comment") && line.includes("@OneToMany(() => Comment")) ||
+        (excluded.has("ParentStudent") && line.includes("@OneToMany(() => ParentStudent")) ||
+        (excluded.has("Student") && line.includes("@OneToMany(() => Student"))
       ) {
         skipNextProperty = true;
         continue;
@@ -595,7 +601,12 @@ function patchExcludedEntityRelations(dest, profile) {
       out.push(line);
     }
 
-    const after = out.join("\n");
+    let after = out.join("\n");
+    if (excluded.has("ContactRequest")) {
+      after = after
+        .replace(/\n\s+@OneToMany\(\n\s+\(\) => ContactRequest,[\s\S]*?\n\s+contactRequestsSubmitted!:\s+ContactRequest\[\];/s, "")
+        .replace(/\n\s+@OneToMany\(\n\s+\(\) => ContactRequest,[\s\S]*?\n\s+contactRequestsAssigned!:\s+ContactRequest\[\];/s, "");
+    }
     if (after !== before) {
       fs.writeFileSync(userPath, after.endsWith("\n") ? after : `${after}\n`);
       console.log("  patch src/entities/user.entity.ts (remove excluded relations)");
@@ -604,14 +615,18 @@ function patchExcludedEntityRelations(dest, profile) {
   }
 
   const postPath = path.join(dest, "src", "entities", "post.entity.ts");
-  if (excluded.has("Comment") && fs.existsSync(postPath)) {
+  if ((excluded.has("Comment") || excluded.has("PostTag")) && fs.existsSync(postPath)) {
     const before = fs.readFileSync(postPath, "utf8");
     const lines = before.split(/\r?\n/);
     const out = [];
     let skipNextProperty = false;
     for (const line of lines) {
-      if (line.includes("./comment.entity")) continue;
-      if (line.includes("@OneToMany(() => Comment")) {
+      if (excluded.has("Comment") && line.includes("./comment.entity")) continue;
+      if (excluded.has("PostTag") && line.includes("./post-tag.entity")) continue;
+      if (
+        (excluded.has("Comment") && line.includes("@OneToMany(() => Comment")) ||
+        (excluded.has("PostTag") && line.includes("@OneToMany(() => PostTag"))
+      ) {
         skipNextProperty = true;
         continue;
       }
@@ -626,7 +641,7 @@ function patchExcludedEntityRelations(dest, profile) {
     const after = out.join("\n");
     if (after !== before) {
       fs.writeFileSync(postPath, after.endsWith("\n") ? after : `${after}\n`);
-      console.log("  patch src/entities/post.entity.ts (remove excluded comment relations)");
+      console.log("  patch src/entities/post.entity.ts (remove excluded relations)");
       patched = true;
     }
   }
@@ -636,22 +651,359 @@ function patchExcludedEntityRelations(dest, profile) {
 
 function patchNotificationsWithoutMessages(dest, profile) {
   if (!profile.appConfig?.excludeEntities?.includes("Message")) return false;
+  const excludesContactRequest = profile.appConfig?.excludeEntities?.includes("ContactRequest");
   const filePath = path.join(dest, "src", "notifications", "notifications.service.ts");
   if (!fs.existsSync(filePath)) return false;
 
   const before = fs.readFileSync(filePath, "utf8");
   let after = before
     .split(/\r?\n/)
-    .filter((line) => !line.includes("../entities/message.entity"))
+    .filter((line) => {
+      if (line.includes("../entities/message.entity")) return false;
+      if (excludesContactRequest && line.includes("../entities/contact-request.entity")) return false;
+      return true;
+    })
     .join("\n");
+  const unreadCountsReplacement = excludesContactRequest
+    ? "\n  protected getMessageEntity() {\n    return Notification as unknown as new () => Record<string, unknown>;\n  }\n\n  protected getContactRequestEntity() {\n    return Notification as unknown as new () => Record<string, unknown>;\n  }\n\n  async getUnreadCounts(userId: string | number) {\n    const NotificationEntity = this.getNotificationEntity();\n    const uid = typeof userId === 'number' ? userId : Number.parseInt(userId, 10);\n    const unreadNotifications = await this.getEm().count(NotificationEntity, {\n      user: uid,\n      isRead: false,\n    });\n    return { unreadNotifications, unreadMessages: 0, contactRequests: 0 };\n  }\n"
+    : "\n  protected getMessageEntity() {\n    return Notification as unknown as new () => Record<string, unknown>;\n  }\n\n  async getUnreadCounts(userId: string | number) {\n    const NotificationEntity = this.getNotificationEntity();\n    const ContactRequestEntity = this.getContactRequestEntity();\n    const uid = typeof userId === 'number' ? userId : Number.parseInt(userId, 10);\n    const [unreadNotifications, contactRequests] = await Promise.all([\n      this.getEm().count(NotificationEntity, { user: uid, isRead: false }),\n      this.getEm().count(ContactRequestEntity, { isRead: false, deletedAt: null }),\n    ]);\n    return { unreadNotifications, unreadMessages: 0, contactRequests };\n  }\n";
   after = after.replace(
     /\n\s+protected getMessageEntity\(\) \{\n\s+return Message as unknown as new \(\) => Record<string, unknown>;\n\s+\}\n/s,
-    "\n  protected getMessageEntity() {\n    return Notification as unknown as new () => Record<string, unknown>;\n  }\n\n  async getUnreadCounts(userId: string | number) {\n    const NotificationEntity = this.getNotificationEntity();\n    const ContactRequestEntity = this.getContactRequestEntity();\n    const uid = typeof userId === 'number' ? userId : Number.parseInt(userId, 10);\n    const [unreadNotifications, contactRequests] = await Promise.all([\n      this.getEm().count(NotificationEntity, { user: uid, isRead: false }),\n      this.getEm().count(ContactRequestEntity, { isRead: false, deletedAt: null }),\n    ]);\n    return { unreadNotifications, unreadMessages: 0, contactRequests };\n  }\n",
+    unreadCountsReplacement,
   );
+  if (excludesContactRequest) {
+    after = after.replace(
+      /\n\s+protected getContactRequestEntity\(\) \{\n\s+return ContactRequest as unknown as new \(\) => Record<string, unknown>;\n\s+\}\n/s,
+      "\n",
+    );
+  }
   if (after === before) return false;
   fs.writeFileSync(filePath, after.endsWith("\n") ? after : `${after}\n`);
   console.log("  patch src/notifications/notifications.service.ts (disable message counts)");
   return true;
+}
+
+function patchStoreSyncWithoutStudentBindings(dest, profile) {
+  const excludesStudent = profile.appConfig?.excludeEntities?.includes("Student");
+  const excludesHanet = profile.appConfig?.excludeModules?.includes("hanet");
+  if (!excludesStudent && !excludesHanet) return false;
+
+  let patched = false;
+
+  const accountsModulePath = path.join(dest, "src", "accounts", "accounts.module.ts");
+  if (fs.existsSync(accountsModulePath) && excludesHanet) {
+    const before = fs.readFileSync(accountsModulePath, "utf8");
+    const after = before
+      .split(/\r?\n/)
+      .filter((line) => !line.includes("../hanet/hanet.module"))
+      .join("\n")
+      .replace(/imports:\s*\[UploadsModule,\s*HanetModule\]/g, "imports: [UploadsModule]");
+    if (after !== before) {
+      fs.writeFileSync(accountsModulePath, after.endsWith("\n") ? after : `${after}\n`);
+      console.log("  patch src/accounts/accounts.module.ts (remove hanet binding)");
+      patched = true;
+    }
+  }
+
+  const accountsServicePath = path.join(dest, "src", "accounts", "accounts.service.ts");
+  if (fs.existsSync(accountsServicePath)) {
+    const before = fs.readFileSync(accountsServicePath, "utf8");
+    const after =
+      excludesStudent || excludesHanet
+        ? `/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Injectable } from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/core';
+import { User } from '../entities/user.entity';
+import { UserRole } from '../entities/user-role.entity';
+import {
+  BaseAccountsService,
+  type UpdateAccountDto,
+  type UpdateAccountResult,
+} from '../common/module-bases/accounts/accounts.service';
+import { resolveAvatarFolderPath } from '../common/student-code-resolve';
+
+export type {
+  AccountProfileDto,
+  UpdateAccountDto,
+  UpdateAccountResult,
+} from '../common/module-bases/accounts/accounts.service';
+
+@Injectable()
+export class AccountsService extends BaseAccountsService {
+  constructor(private readonly em: EntityManager) {
+    super();
+  }
+
+  protected getEm(): EntityManager {
+    return this.em;
+  }
+
+  protected getUserEntity() {
+    return User as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getUserRoleEntity() {
+    return UserRole as unknown as new () => Record<string, unknown>;
+  }
+
+  protected override async resolveStudentCode(): Promise<string | null> {
+    return null;
+  }
+
+  override async resolveAvatarUploadFolder(userId: string): Promise<
+    { ok: true; folderPath: string } | { ok: false; message: string }
+  > {
+    const profile = await this.getProfile(userId);
+    if (!profile) {
+      return { ok: false, message: 'Không tìm thấy tài khoản' };
+    }
+
+    return {
+      ok: true,
+      folderPath: resolveAvatarFolderPath({
+        studentCode: profile.studentCode,
+        userId: profile.id,
+      }),
+    };
+  }
+
+  override async updateProfile(
+    userId: string,
+    dto: UpdateAccountDto,
+  ): Promise<UpdateAccountResult> {
+    const { studentCode: _studentCode, ...profileDto } = dto;
+    return super.updateProfile(userId, profileDto);
+  }
+}
+`
+        : before;
+    if (after !== before) {
+      fs.writeFileSync(accountsServicePath, after.endsWith("\n") ? after : `${after}\n`);
+      console.log("  patch src/accounts/accounts.service.ts (remove student/hanet binding)");
+      patched = true;
+    }
+  }
+
+  const usersServicePath = path.join(dest, "src", "users", "users.service.ts");
+  if (fs.existsSync(usersServicePath) && excludesStudent) {
+    const before = fs.readFileSync(usersServicePath, "utf8");
+    const after = `/** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
+import { Injectable } from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/core';
+import { User } from '../entities/user.entity';
+import { Role } from '../entities/role.entity';
+import { UserRole } from '../entities/user-role.entity';
+import { Setting } from '../entities/setting.entity';
+import { BaseUsersService } from '../common/module-bases/users/users.service';
+import { resolveAvatarFolderPath } from '../common/student-code-resolve';
+import type {
+  UserRowDto,
+  ListUsersParams,
+  PaginatedResult,
+  DevLoginOption,
+  DevLoginOptionsQuery,
+  DevLoginRole,
+  UpdateUserData,
+} from '../common/module-types';
+export type {
+  UserRowDto,
+  ListUsersParams,
+  PaginatedResult,
+  DevLoginOption,
+  DevLoginOptionsQuery,
+  DevLoginRole,
+};
+export type ListUsersResult = PaginatedResult<UserRowDto>;
+export type DevLoginOptionDto = DevLoginOption;
+export type DevLoginRoleDto = DevLoginRole;
+
+export { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common/module-bases/users/users.service';
+
+@Injectable()
+export class UsersService extends BaseUsersService {
+  constructor(private readonly em: EntityManager) {
+    super();
+  }
+
+  protected getEm(): EntityManager {
+    return this.em;
+  }
+
+  protected getUserEntity() {
+    return User as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getRoleEntity() {
+    return Role as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getUserRoleEntity() {
+    return UserRole as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getSettingEntity() {
+    return Setting as unknown as new () => Record<string, unknown>;
+  }
+
+  override async getById(id: string): Promise<UserRowDto | null> {
+    const row = await super.getById(id);
+    return row ? { ...row, studentCode: null } : null;
+  }
+
+  async resolveAvatarUploadFolder(
+    userId: string,
+  ): Promise<
+    { ok: true; folderPath: string } | { ok: false; message: string }
+  > {
+    const row = await this.getById(userId);
+    if (!row) {
+      return { ok: false, message: 'Không tìm thấy người dùng' };
+    }
+    return {
+      ok: true,
+      folderPath: resolveAvatarFolderPath({
+        studentCode: row.studentCode,
+        userId: row.id,
+      }),
+    };
+  }
+
+  override async update(
+    id: string,
+    data: UpdateUserData,
+    actorEmail?: string | null,
+  ): Promise<UserRowDto | null> {
+    const { studentCode: _studentCode, ...rest } = data;
+    const updated = await super.update(id, rest, actorEmail);
+    return updated ? { ...updated, studentCode: null } : null;
+  }
+}
+`;
+    if (after !== before) {
+      fs.writeFileSync(usersServicePath, after.endsWith("\n") ? after : `${after}\n`);
+      console.log("  patch src/users/users.service.ts (remove student binding)");
+      patched = true;
+    }
+  }
+
+  return patched;
+}
+
+function patchStoreSyncPublicDevLoginOptions(dest, profile) {
+  if (!profile.appConfig?.excludeModules?.includes("public")) return false;
+
+  let patched = false;
+  const controllerPath = path.join(dest, "src", "auth", "auth.controller.ts");
+  if (fs.existsSync(controllerPath)) {
+    const before = fs.readFileSync(controllerPath, "utf8");
+    let after = before;
+    if (!/\bQuery\b/.test(after.split("from '@nestjs/common';")[0] ?? "")) {
+      after = after.replace(
+        /(\r?\n\s*)Res,(\r?\n\} from '@nestjs\/common';)/,
+        "$1Query,$1Res,$2",
+      );
+    }
+    after = after.replace(
+      /import \{ ADMIN_ROUTES, APP_HEADERS \} from '\.\.\/config\/constants';/,
+      "import { ADMIN_ROUTES, APP_HEADERS, PUBLIC_ROUTES } from '../config/constants';",
+    );
+    const authControllerBody = after.split(/@Public\(\)\r?\n@ApiTags\('Public'\)/)[0] ?? after;
+    if (!authControllerBody.includes("@Get('dev-login-options')")) {
+      const adminDevLoginOptionsMethod = `
+  @Public()
+  @Get('dev-login-options')
+  async devLoginOptions(
+    @Query('role') role: string | undefined,
+    @Query('roles') roles: string | undefined,
+    @Query('excludeRoles') excludeRoles: string | undefined,
+    @Query('emailSuffix') emailSuffix: string | undefined,
+    @Query('activeOnly') activeOnly: string | undefined,
+    @Res() res: Response,
+  ): Promise<Response> {
+    if (process.env.NODE_ENV !== 'development') {
+      const { statusCode, body } = createSuccessResponse([]);
+      return res.status(statusCode).json(body);
+    }
+
+    const data = await this.service.listDevelopmentLoginOptions({
+      role,
+      roles,
+      excludeRoles,
+      emailSuffix,
+      activeOnly: activeOnly === 'false' ? false : undefined,
+    });
+    const { statusCode, body } = createSuccessResponse(data);
+    return res.status(statusCode).json(body);
+  }
+
+`;
+      after = after.replace(
+        /(\r?\n\s*)@Public\(\)(\r?\n\s*)@Get\('google\/config'\)/,
+        `$1${adminDevLoginOptionsMethod.trimEnd()}$1@Public()$2@Get('google/config')`,
+      );
+    }
+    if (!after.includes("StorePublicDevLoginOptionsController")) {
+      after = `${after.trimEnd()}
+
+@Public()
+@ApiTags('Public')
+@Controller(PUBLIC_ROUTES.BASE)
+export class StorePublicDevLoginOptionsController {
+  constructor(@Inject(AuthService) private readonly service: AuthService) {}
+
+  @Get('dev-login-options')
+  async devLoginOptions(
+    @Query('role') role: string | undefined,
+    @Query('roles') roles: string | undefined,
+    @Query('excludeRoles') excludeRoles: string | undefined,
+    @Query('emailSuffix') emailSuffix: string | undefined,
+    @Query('activeOnly') activeOnly: string | undefined,
+    @Res() res: Response,
+  ): Promise<Response> {
+    if (process.env.NODE_ENV !== 'development') {
+      const { statusCode, body } = createSuccessResponse([]);
+      return res.status(statusCode).json(body);
+    }
+
+    const data = await this.service.listDevelopmentLoginOptions({
+      role,
+      roles,
+      excludeRoles,
+      emailSuffix,
+      activeOnly: activeOnly === 'false' ? false : undefined,
+    });
+    const { statusCode, body } = createSuccessResponse(data);
+    return res.status(statusCode).json(body);
+  }
+}
+`;
+    }
+    if (after !== before) {
+      fs.writeFileSync(controllerPath, after.endsWith("\n") ? after : `${after}\n`);
+      console.log("  patch src/auth/auth.controller.ts (public dev-login options)");
+      patched = true;
+    }
+  }
+
+  const modulePath = path.join(dest, "src", "auth", "auth.module.ts");
+  if (fs.existsSync(modulePath)) {
+    const before = fs.readFileSync(modulePath, "utf8");
+    let after = before.replace(
+      /import \{ AuthController \} from '\.\/auth\.controller';/,
+      "import { AuthController, StorePublicDevLoginOptionsController } from './auth.controller';",
+    );
+    after = after.replace(
+      /controllers:\s*\[AuthController\]/,
+      "controllers: [AuthController, StorePublicDevLoginOptionsController]",
+    );
+    if (after !== before) {
+      fs.writeFileSync(modulePath, after.endsWith("\n") ? after : `${after}\n`);
+      console.log("  patch src/auth/auth.module.ts (public dev-login options)");
+      patched = true;
+    }
+  }
+
+  return patched;
 }
 
 function collectUsedPermissionKeys(dest) {
@@ -775,7 +1127,7 @@ export function filterEnabledPermissions(value: unknown): unknown {
     let after = before;
     if (!after.includes("filterEnabledPermissions")) {
       after = after.replace(
-        /import \{\n  SUPERADMIN_ROLES_DATA,/,
+        /import \{\r?\n  SUPERADMIN_ROLES_DATA,/,
         "import { filterEnabledPermissions, listEnabledPermissions } from '../config/permissions';\nimport {\n  SUPERADMIN_ROLES_DATA,",
       );
     } else if (!after.includes("listEnabledPermissions")) {
@@ -786,7 +1138,7 @@ export function filterEnabledPermissions(value: unknown): unknown {
     }
     if (!after.includes("const rolePermissions =")) {
       after = after.replace(
-        /for \(const roleData of SUPERADMIN_ROLES_DATA\) \{\n\s+const existing = await em\.findOne\(Role, \{ name: roleData\.name \}\);/,
+        /for \(const roleData of SUPERADMIN_ROLES_DATA\) \{\r?\n\s+const existing = await em\.findOne\(Role, \{ name: roleData\.name \}\);/,
         "for (const roleData of SUPERADMIN_ROLES_DATA) {\n    const rolePermissions =\n      roleData.name === 'super_admin'\n        ? listEnabledPermissions()\n        : filterEnabledPermissions(roleData.permissions);\n    const existing = await em.findOne(Role, { name: roleData.name });",
       );
     }
@@ -816,6 +1168,8 @@ function finalizeAppConfigSync(dest, profile) {
   const prunedModuleBases = pruneExcludedModuleBases(dest, profile);
   patchExcludedEntityRelations(dest, profile);
   patchNotificationsWithoutMessages(dest, profile);
+  patchStoreSyncWithoutStudentBindings(dest, profile);
+  patchStoreSyncPublicDevLoginOptions(dest, profile);
   const prunedEntities = pruneAppConfigEntityFiles(dest, profile);
   patchDatabaseSeeder(dest, profile);
   patchCommonIndex(dest, profile);

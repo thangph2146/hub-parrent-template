@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Products Service — commerce catalog (materialize → apps/main/api module-bases).
  */
@@ -96,8 +95,12 @@ function mapProduct(row: Record<string, unknown>): ProductRowDto {
     coupons: (row.coupons as string[] | null | undefined) ?? null,
     fulfillmentNote: (row.fulfillmentNote as string | null | undefined) ?? null,
     isActive: Boolean(row.isActive),
-    createdAt: safeIsoStringNow(row.createdAt as Date | string | null | undefined),
-    updatedAt: safeIsoStringNow(row.updatedAt as Date | string | null | undefined),
+    createdAt: safeIsoStringNow(
+      row.createdAt as Date | string | null | undefined,
+    ),
+    updatedAt: safeIsoStringNow(
+      row.updatedAt as Date | string | null | undefined,
+    ),
     deletedAt: safeIsoString(row.deletedAt as Date | string | null | undefined),
   };
 }

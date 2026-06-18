@@ -14,10 +14,62 @@
     "sessions",
     "accounts"
   ],
+  "excludeModules": [
+    "academic-years",
+    "admission-results",
+    "cameras",
+    "comments",
+    "contact-requests",
+    "courses",
+    "departments",
+    "event-checkins",
+    "event-checkouts",
+    "event-registrations",
+    "event-speakers",
+    "events",
+    "face-data",
+    "groups",
+    "hanet",
+    "imported-users",
+    "locations",
+    "majors",
+    "messages",
+    "page-contents",
+    "parent-students",
+    "public",
+    "speakers",
+    "students",
+    "tags",
+    "templates",
+    "training-levels",
+    "training-systems"
+  ],
+  "excludeEntities": [
+    "AdmissionResult",
+    "Camera",
+    "Comment",
+    "ContactRequest",
+    "Event",
+    "EventCheckin",
+    "EventRegistration",
+    "EventSpeaker",
+    "FaceData",
+    "Group",
+    "GroupMember",
+    "Location",
+    "Message",
+    "MessageRead",
+    "PageContent",
+    "ParentStudent",
+    "PostTag",
+    "Speaker",
+    "Student",
+    "Tag"
+  ],
   "packageModuleTemplates": {
     "enabled": true
   },
   "render": {
-    "pruneEntities": false
+    "pruneEntities": true
   }
 }

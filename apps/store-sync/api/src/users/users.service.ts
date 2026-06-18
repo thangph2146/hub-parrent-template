@@ -1,18 +1,12 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Setting } from '../entities/setting.entity';
 import { BaseUsersService } from '../common/module-bases/users/users.service';
-import { toEntityId } from '../common/entity-id';
 import { resolveAvatarFolderPath } from '../common/student-code-resolve';
-import {
-  resolveStudentCodeForUser,
-  upsertStudentCodeForUser,
-} from '../common/student-user-binding';
 import type {
   UserRowDto,
   ListUsersParams,
@@ -64,9 +58,7 @@ export class UsersService extends BaseUsersService {
 
   override async getById(id: string): Promise<UserRowDto | null> {
     const row = await super.getById(id);
-    if (!row) return null;
-    const studentCode = await resolveStudentCodeForUser(this.em, id, row.email);
-    return { ...row, studentCode };
+    return row ? { ...row, studentCode: null } : null;
   }
 
   async resolveAvatarUploadFolder(
@@ -92,31 +84,8 @@ export class UsersService extends BaseUsersService {
     data: UpdateUserData,
     actorEmail?: string | null,
   ): Promise<UserRowDto | null> {
-    if (data.studentCode !== undefined) {
-      const user = await this.em.findOne(User, { id: toEntityId(id) });
-      if (!user || user.deletedAt) {
-        return null;
-      }
-      const upsert = await upsertStudentCodeForUser(
-        this.em,
-        id,
-        data.studentCode ?? '',
-        data.name ?? user.name ?? null,
-        user.email ?? '',
-      );
-      if (!upsert.ok) {
-        throw new ForbiddenException(upsert.message);
-      }
-    }
-
     const { studentCode: _studentCode, ...rest } = data;
     const updated = await super.update(id, rest, actorEmail);
-    if (!updated) return null;
-    const studentCode = await resolveStudentCodeForUser(
-      this.em,
-      id,
-      updated.email,
-    );
-    return { ...updated, studentCode };
+    return updated ? { ...updated, studentCode: null } : null;
   }
 }

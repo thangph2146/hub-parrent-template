@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Module, type ModuleMetadata } from '@nestjs/common';
 import { BaseAuthController } from './auth.controller';
 import { BasePublicAuthController } from './public-auth.controller';

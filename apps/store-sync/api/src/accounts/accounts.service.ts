@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
@@ -9,17 +8,7 @@ import {
   type UpdateAccountDto,
   type UpdateAccountResult,
 } from '../common/module-bases/accounts/accounts.service';
-import { HanetPersonRegisterService } from '../hanet/hanet-person-register.service';
-import { toEntityId } from '../common/entity-id';
-import {
-  normalizeNumericStudentCode,
-  resolveAvatarFolderPath,
-  studentCodeFromSchoolEmail,
-} from '../common/student-code-resolve';
-import {
-  resolveStudentCodeForUser,
-  upsertStudentCodeForUser,
-} from '../common/student-user-binding';
+import { resolveAvatarFolderPath } from '../common/student-code-resolve';
 
 export type {
   AccountProfileDto,
@@ -29,10 +18,7 @@ export type {
 
 @Injectable()
 export class AccountsService extends BaseAccountsService {
-  constructor(
-    private readonly em: EntityManager,
-    private readonly hanetPersonRegister: HanetPersonRegisterService,
-  ) {
+  constructor(private readonly em: EntityManager) {
     super();
   }
 
@@ -48,11 +34,8 @@ export class AccountsService extends BaseAccountsService {
     return UserRole as unknown as new () => Record<string, unknown>;
   }
 
-  protected override async resolveStudentCode(
-    userId: string,
-    email: string,
-  ): Promise<string | null> {
-    return resolveStudentCodeForUser(this.em, userId, email);
+  protected override async resolveStudentCode(): Promise<string | null> {
+    return null;
   }
 
   override async resolveAvatarUploadFolder(userId: string): Promise<
@@ -72,58 +55,11 @@ export class AccountsService extends BaseAccountsService {
     };
   }
 
-  private async upsertStudentCode(
-    userId: string,
-    rawCode: string,
-    name: string | null,
-    email: string,
-  ): Promise<{ ok: true } | { ok: false; message: string }> {
-    return upsertStudentCodeForUser(
-      this.em,
-      userId,
-      rawCode,
-      name,
-      email,
-    );
-  }
-
   override async updateProfile(
     userId: string,
     dto: UpdateAccountDto,
   ): Promise<UpdateAccountResult> {
-    if (dto.studentCode !== undefined) {
-      const user = await this.em.findOne(User, { id: toEntityId(userId) });
-      if (!user || user.deletedAt || !user.isActive) {
-        return { ok: false, reason: 'not_found' };
-      }
-      const upsert = await this.upsertStudentCode(
-        userId,
-        dto.studentCode ?? '',
-        dto.name ?? user.name ?? null,
-        user.email ?? '',
-      );
-      if (!upsert.ok) {
-        return { ok: false, reason: 'invalid_student_code' };
-      }
-    }
-
-    const result = await super.updateProfile(userId, dto);
-    if (!result.ok || dto.avatar === undefined) {
-      return result;
-    }
-
-    const avatar = result.profile.avatar?.trim();
-    if (!avatar) {
-      return result;
-    }
-
-    void this.hanetPersonRegister.syncUserFaceToHanet({
-      userId: result.profile.id,
-      email: result.profile.email,
-      name: result.profile.name?.trim() || result.profile.email,
-      avatarUrl: avatar,
-    });
-
-    return result;
+    const { studentCode: _studentCode, ...profileDto } = dto;
+    return super.updateProfile(userId, profileDto);
   }
 }

@@ -221,7 +221,7 @@ export function AdminShell({
 
   return (
     <>
-      <div className="flex h-screen w-full flex-col bg-background font-sans text-foreground md:flex-row">
+      <div className="fixed inset-0 flex min-h-0 w-full flex-col overflow-hidden bg-background font-sans text-foreground md:flex-row">
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetContent
             id="admin-mobile-nav"
@@ -238,7 +238,7 @@ export function AdminShell({
 
         {isSidebar && <Sidebar collapsed={sidebarCollapsed} />}
 
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <header
             data-admin-header="true"
             className="sticky top-0 z-10 flex min-h-16 shrink-0 items-center justify-between border-b border-border/70 bg-background/85 px-3 shadow-[0_1px_0_0_hsl(var(--border)/0.4)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/75 sm:min-h-[4.5rem] sm:px-5 lg:px-6"

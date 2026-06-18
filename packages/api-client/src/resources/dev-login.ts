@@ -22,8 +22,18 @@ export async function fetchDevLoginOptions(
   http: ApiClient,
   params?: DevLoginOptionsQuery,
 ): Promise<DevLoginOption[]> {
-  return getData<DevLoginOption[]>(http, "/public/dev-login-options", {
+  const options = {
     query: buildDevLoginQuery(params),
     cache: "no-store",
-  })
+  } as const
+
+  try {
+    return await getData<DevLoginOption[]>(
+      http,
+      "/auth/admin/dev-login-options",
+      options,
+    )
+  } catch {
+    return getData<DevLoginOption[]>(http, "/public/dev-login-options", options)
+  }
 }

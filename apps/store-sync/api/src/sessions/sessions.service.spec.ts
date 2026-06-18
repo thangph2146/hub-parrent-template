@@ -1,5 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
-/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
 /**
  * SessionsService Unit Tests — binding OOP extends @workspace/api-server BaseSessionsService.
  */

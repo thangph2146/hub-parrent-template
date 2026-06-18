@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   EVENT_CHECKIN_STAFF_PERMISSIONS,
   EVENT_STAFF_ROLE_TEMPLATE,

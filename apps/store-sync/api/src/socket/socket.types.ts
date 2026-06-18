@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Socket.IO event types tương thích với tuyen-sinh-admin
  */
@@ -105,6 +104,7 @@ export type EventHanetSyncSocketPayload = {
   at: string;
   summary: string;
   deviceId?: string;
+  deviceName?: string;
   placeId?: string;
   personId?: string;
   personName?: string;

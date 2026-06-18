@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Trích URL poster thuần; chuẩn hóa metadata `{ url }` khi lưu/đọc DB. */
 export function unwrapPosterUrl(value: unknown): string | null {
   if (value == null) return null;

@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { Role } from '../../entities/role.entity';
 import type { User } from '../../entities/user.entity';
 import type { UserRole } from '../../entities/user-role.entity';

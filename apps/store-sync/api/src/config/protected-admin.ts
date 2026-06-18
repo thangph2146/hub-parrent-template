@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import 'dotenv/config';
 
 const RAW = process.env.PROTECTED_ADMIN_EMAILS ?? '';

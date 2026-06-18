@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export const NUMERIC_STUDENT_CODE_PATTERN = /^\d{5,12}$/;
 
 export const STUDENT_SCHOOL_EMAIL_SUFFIX = '@st.buh.edu.vn';

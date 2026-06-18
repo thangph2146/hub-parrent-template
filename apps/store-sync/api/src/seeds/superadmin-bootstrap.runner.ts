@@ -1,11 +1,8 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
-import * as fs from 'fs';
-import * as path from 'path';
 import type { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
-import { PageContent } from '../entities/page-content.entity';
+import { filterEnabledPermissions, listEnabledPermissions } from '../config/permissions';
 import {
   SUPERADMIN_ROLES_DATA,
   SUPERADMIN_USERS_DATA,
@@ -87,43 +84,6 @@ export type SuperadminBootstrapResult = {
   pageContentsSkipped: number;
 };
 
-type PageContentSeedRow = {
-  id?: number;
-  pageKey?: string;
-  sectionKey?: string;
-  title?: string;
-  content?: string;
-  type?: string;
-  order?: number;
-  imageUrl?: string | null;
-  metadata?: Record<string, unknown>;
-  isActive?: boolean;
-};
-
-function loadOptionalPageContent(): PageContentSeedRow[] {
-  const candidates = [
-    path.join(process.cwd(), 'src/export-pageContent-2026-04-28.json'),
-    path.join(
-      process.cwd(),
-      'apps/tuyen-sinh-api/src/export-pageContent-2026-04-28.json',
-    ),
-    path.join(__dirname, '..', 'export-pageContent-2026-04-28.json'),
-  ];
-  for (const filePath of candidates) {
-    if (!fs.existsSync(filePath)) continue;
-    try {
-      const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as {
-        pageContent?: unknown;
-      };
-      return Array.isArray(parsed.pageContent)
-        ? (parsed.pageContent as PageContentSeedRow[])
-        : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
-}
 
 /**
  * Idempotent: giống `pnpm run seed:superadmin` (roles, users, user_roles, page_contents tùy file JSON).
@@ -149,13 +109,17 @@ export async function runSuperadminBootstrap(
 
   L('Seeding roles...');
   for (const roleData of SUPERADMIN_ROLES_DATA) {
+    const rolePermissions =
+      roleData.name === 'super_admin'
+        ? listEnabledPermissions()
+        : filterEnabledPermissions(roleData.permissions);
     const existing = await em.findOne(Role, { name: roleData.name });
     if (!existing) {
       const role = new Role();
       role.name = roleData.name;
       role.displayName = roleData.displayName;
       role.description = roleData.description;
-      role.permissions = roleData.permissions;
+      role.permissions = rolePermissions;
       role.isActive = roleData.isActive;
       em.persist(role);
       out.rolesInserted++;
@@ -163,7 +127,7 @@ export async function runSuperadminBootstrap(
     } else {
       existing.displayName = roleData.displayName;
       existing.description = roleData.description;
-      existing.permissions = roleData.permissions;
+      existing.permissions = rolePermissions;
       existing.isActive = roleData.isActive;
       em.persist(existing);
       out.rolesUpdated++;
@@ -230,34 +194,6 @@ export async function runSuperadminBootstrap(
 
   await em.flush();
   L('User roles committed.');
-
-  const pageContentData = loadOptionalPageContent();
-  L('Seeding page contents...');
-  for (const pc of pageContentData) {
-    if (!pc.pageKey || !pc.sectionKey) continue;
-    const existing = await em.findOne(PageContent, {
-      pageKey: pc.pageKey,
-      sectionKey: pc.sectionKey,
-    });
-    if (!existing) {
-      const pageContent = new PageContent();
-      pageContent.pageKey = pc.pageKey;
-      pageContent.sectionKey = pc.sectionKey;
-      pageContent.content =
-        pc.metadata ??
-        (typeof pc.content === 'string' && pc.content.trim()
-          ? { value: pc.content }
-          : {});
-      pageContent.isVisible = pc.isActive ?? true;
-      em.persist(pageContent);
-      out.pageContentsInserted++;
-    } else {
-      out.pageContentsSkipped++;
-    }
-  }
-
-  await em.flush();
-  L('Page contents committed.');
 
   return out;
 }

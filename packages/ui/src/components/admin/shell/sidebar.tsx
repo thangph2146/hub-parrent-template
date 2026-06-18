@@ -432,7 +432,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-[#1A2D65] bg-primary text-white transition-[width] duration-300 ease-out md:flex",
+        "hidden h-full shrink-0 flex-col overflow-hidden border-r border-[#1A2D65] bg-primary text-white transition-[width] duration-300 ease-out md:flex",
         collapsed ? "w-[4.5rem]" : "w-80"
       )}
     >

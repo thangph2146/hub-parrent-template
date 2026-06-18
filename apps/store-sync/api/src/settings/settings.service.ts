@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
@@ -14,6 +13,7 @@ export type { PublicSiteBranding } from '../common/module-bases/settings/setting
 const PUBLIC_BRANDING_DEFAULTS: PublicSiteBranding = {
   siteName: 'HUB',
   siteDescription: 'Quản trị hệ thống',
+  authHeroImage: null,
 };
 
 @Injectable()
@@ -31,10 +31,15 @@ export class SettingsService extends BaseSettingsService {
   }
 
   async getPublicBranding(): Promise<PublicSiteBranding> {
-    const [nameRow, descRow] = await Promise.all([
+    const [nameRow, descRow, heroRow] = await Promise.all([
       this.getByKey('site_name'),
       this.getByKey('site_description'),
+      this.getByKey('admin_login_hero_image'),
     ]);
+
+    const heroValue = heroRow?.value
+      ? parseSettingValue(heroRow.value, '')
+      : '';
 
     return {
       siteName: parseSettingValue(
@@ -45,6 +50,7 @@ export class SettingsService extends BaseSettingsService {
         descRow?.value,
         PUBLIC_BRANDING_DEFAULTS.siteDescription,
       ),
+      authHeroImage: heroValue.trim() || null,
     };
   }
 }

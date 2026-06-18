@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { rename, rm, unlink } from 'fs/promises';
 
 const RETRYABLE_CODES = new Set(['EBUSY', 'EPERM', 'EACCES']);

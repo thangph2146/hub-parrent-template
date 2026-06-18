@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { OrderItemSnapshot } from '../../commerce/product-types';
 import { effectiveLineUnitPrice } from '../../commerce/unit-pricing';
 import {

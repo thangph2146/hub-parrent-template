@@ -1,4 +1,3 @@
-/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { PromoCode } from '../entities/promo-code.entity';
 
