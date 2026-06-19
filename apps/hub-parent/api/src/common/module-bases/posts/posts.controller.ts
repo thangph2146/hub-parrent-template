@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * BasePostsController — HTTP admin posts (@workspace/api-server).
  *
@@ -33,7 +34,7 @@ import {
   type BulkAction,
 } from '../../index';
 import { ADMIN_ROUTES } from '../../../config/constants';
-import { PERMISSIONS } from '../../../config/permissions';
+import { PERMISSIONS } from '../../../config/permissions';;
 import type {
   BasePostsService,
   ListPostsParams,
@@ -60,7 +61,10 @@ export type IPostsControllerService = Pick<
 /** @deprecated Dùng `IPostsControllerService`. */
 export type IPostsAdminControllerService = IPostsControllerService;
 
-type PostBulkAction = BulkAction | 'set-categories' | 'clear-images';
+type PostBulkAction =
+  | BulkAction
+  | 'set-categories'
+  | 'clear-images';
 
 const POST_EXTRA_BULK = new Set<PostBulkAction>([
   'set-categories',
@@ -185,7 +189,8 @@ export class BasePostsController extends BaseAdminCrudController<
 
     try {
       const updated = await this.service.update(id, {
-        title: typeof body.title === 'string' ? body.title.trim() : undefined,
+        title:
+          typeof body.title === 'string' ? body.title.trim() : undefined,
         slug: typeof body.slug === 'string' ? body.slug.trim() : undefined,
         content: body.content,
         excerpt: body.excerpt as string | null | undefined,
@@ -234,8 +239,9 @@ export class BasePostsController extends BaseAdminCrudController<
 
     if (action === 'set-categories') {
       const categoryIds =
-        normalizeRelationIds((body as { categoryIds?: unknown }).categoryIds) ??
-        [];
+        normalizeRelationIds(
+          (body as { categoryIds?: unknown }).categoryIds,
+        ) ?? [];
       const modeRaw = (body as { mode?: string }).mode;
       const mode = modeRaw === 'add' ? ('add' as const) : ('replace' as const);
       const result = await this.service.bulkSetCategories(

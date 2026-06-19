@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { toEntityId } from '../common';
 /**
  * Roles Admin API Controller.
@@ -34,7 +35,7 @@ import { NotificationKind } from '../entities/notification.entity';
 import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common';
-import { RESOURCES, ACTIONS, PERMISSIONS, listEnabledPermissions } from '../config/permissions';
+import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
 import { parseAdminListLimit } from '../common';
 
 type RoleListStatus = 'active' | 'deleted' | 'all';
@@ -197,7 +198,7 @@ export class RolesController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const items = listEnabledPermissions()
+    const items = Object.values(PERMISSIONS)
       .map((code, index) => ({
         id: index + 1,
         code,

@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Tags Controller.
  *
@@ -15,8 +16,15 @@
  *   POST   /tags/bulk         - bulk action
  */
 import { ApiTags } from '@nestjs/swagger';
-import { BaseCrudController, type ICrudControllerService } from '../../crud';
-import type { TagsRowDto, TagsCreateData, TagsUpdateData } from './tag.service';
+import {
+  BaseCrudController,
+  type ICrudControllerService,
+} from '../../crud';
+import type {
+  TagsRowDto,
+  TagsCreateData,
+  TagsUpdateData,
+} from './tag.service';
 
 export type ITagsControllerService = ICrudControllerService<
   TagsRowDto,

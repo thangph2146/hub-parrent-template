@@ -3,6 +3,7 @@ import {
   $isListItemNode,
   $isListNode,
   $insertList,
+  type ListType,
 } from "@lexical/list"
 import { $findMatchingParent } from "@lexical/utils"
 import {
@@ -24,7 +25,7 @@ import { SelectItem } from "../../../ui/select"
 
 interface FormatBulletMarkerProps {
   blockFormatValue: string
-  listType: "bullet"
+  listType: Extract<ListType, "bullet" | "number">
   /** Preset từ `LIST_MARKER_PRESET` — đồng bộ `data-list-marker` / theme. */
   markerType: ListMarkerPresetValue
 }
@@ -55,11 +56,11 @@ export function FormatBulletMarker({
           return
         }
 
-        // Bỏ qua nếu type đang là list cùng kiểu, tránh việc insertList tự remove list
-        const isCurrentlyBullet =
-          blockType === "bullet" || blockType.startsWith("bullet-")
+        // Bỏ qua nếu đang là list cùng kiểu, tránh việc insertList tự remove list.
+        const isCurrentlySameListType =
+          blockType === listType || blockType.startsWith(`${listType}-`)
 
-        if (!isCurrentlyBullet) {
+        if (!isCurrentlySameListType) {
           $insertList(listType)
           // Lấy lại vùng chọn mới sau khi insertList (đồng bộ)
           const newSel = $getSelection()

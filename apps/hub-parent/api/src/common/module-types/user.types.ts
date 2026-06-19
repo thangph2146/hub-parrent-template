@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * User Types and DTOs
  * Shared types for user management across API servers
@@ -100,12 +101,7 @@ export interface UpdateUserData {
 /**
  * Bulk action types for user management
  */
-export type BulkAction =
-  | 'delete'
-  | 'restore'
-  | 'hard-delete'
-  | 'active'
-  | 'unactive';
+export type BulkAction = 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive';
 
 /**
  * Bulk operation result

@@ -29,11 +29,11 @@ import { FloatingLinkEditorPlugin } from "../plugins/floating-link-editor-plugin
 import { FloatingTextFormatToolbarPlugin } from "../plugins/floating-text-format-plugin"
 import { ImagesPlugin } from "../plugins/images-plugin"
 import { LayoutPlugin } from "../plugins/layout-plugin"
-import { LIST_TOOLBAR_BULLET_MARKER_ITEMS } from "../config/editor-list-config"
 import {
-  ListFormatDropDown,
-  ListLevelDropDown,
-} from "../plugins/list/list-format-toolbar-dropdown"
+  LIST_TOOLBAR_BULLET_MARKER_ITEMS,
+  LIST_TOOLBAR_ORDERED_MARKER_ITEMS,
+} from "../config/editor-list-config"
+import { ListFormatDropDown } from "../plugins/list/list-format-toolbar-dropdown"
 import { LinkPlugin } from "../plugins/link-plugin"
 import { EditorListPlugins } from "../plugins/list/editor-list-plugins"
 import { MentionsPlugin } from "../plugins/mentions-plugin"
@@ -46,6 +46,7 @@ import { DividerPickerPlugin } from "../plugins/picker/divider-picker-plugin"
 import { EmbedsPickerPlugin } from "../plugins/picker/embeds-picker-plugin"
 import { HeadingPickerPlugin } from "../plugins/picker/heading-picker-plugin"
 import { ImagePickerPlugin } from "../plugins/picker/image-picker-plugin"
+import { NumberedListPickerPlugin } from "../plugins/picker/numbered-list-picker-plugin"
 import { ParagraphPickerPlugin } from "../plugins/picker/paragraph-picker-plugin"
 import { QuotePickerPlugin } from "../plugins/picker/quote-picker-plugin"
 import {
@@ -61,6 +62,7 @@ import { FormatCheckList } from "../plugins/toolbar/block-format/format-check-li
 import { FormatCodeBlock } from "../plugins/toolbar/block-format/format-code-block"
 import { FormatHeading } from "../plugins/toolbar/block-format/format-heading"
 import { FormatBulletMarker } from "../plugins/toolbar/block-format/format-bullet-marker"
+import { FormatNumberedList } from "../plugins/toolbar/block-format/format-numbered-list"
 import { FormatParagraph } from "../plugins/toolbar/block-format/format-paragraph"
 import { FormatQuote } from "../plugins/toolbar/block-format/format-quote"
 import { BlockInsertPlugin } from "../plugins/toolbar/block-insert-plugin"
@@ -152,9 +154,17 @@ export function Plugins({
                           markerType={item.markerType}
                         />
                       ))}
+                      <FormatNumberedList />
+                      {LIST_TOOLBAR_ORDERED_MARKER_ITEMS.map((item) => (
+                        <FormatBulletMarker
+                          key={item.blockFormatValue}
+                          blockFormatValue={item.blockFormatValue}
+                          listType={item.listType}
+                          markerType={item.markerType}
+                        />
+                      ))}
                       <FormatCheckList />
                     </ListFormatDropDown>
-                    <ListLevelDropDown />
                     <NodeOptionsToolbarPlugin />
                   </div>
                   <Separator
@@ -295,6 +305,7 @@ export function Plugins({
                 TablePickerPlugin(),
                 CheckListPickerPlugin(),
                 BulletedListPickerPlugin(),
+                NumberedListPickerPlugin(),
                 QuotePickerPlugin(),
                 CodePickerPlugin(),
                 ColumnsLayoutPickerPlugin(),

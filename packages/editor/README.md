@@ -44,6 +44,28 @@ function MyEditor() {
 }
 ```
 
+## List trong Lexical
+
+List không lưu dạng HTML. Editor nhận và trả về `SerializedEditorState`
+JSON, trong đó list là node `list` hoặc `listwithcolor` với `listType`:
+
+- `bullet`: danh sách bullet.
+- `number`: danh sách đánh số.
+- `check`: task list.
+
+Toolbar dùng `@lexical/list` command để chuyển block hiện tại:
+`INSERT_UNORDERED_LIST_COMMAND`, `INSERT_ORDERED_LIST_COMMAND`,
+`INSERT_CHECK_LIST_COMMAND`, và `REMOVE_LIST_COMMAND`. Không parse DOM thủ công.
+
+Thụt lề list chỉ dùng `Tab` / `Shift+Tab`. Toolbar list chỉ đổi kiểu list
+hoặc marker hiện tại (`-`, `+`, `a`, `A`, `i`, `I`, `1.1`); việc thụt lề hoặc
+`Backspace` không tự đổi marker/icon theo cấp và theme không gắn class depth
+để đổi kiểu hiển thị.
+
+Khoảng cách list/text dùng chung nhịp ngang qua CSS variables:
+`--editor-text-indent-width` và `--editor-tab-indent-width`. Mặc định text
+không thụt (`0px`), list marker/tab dùng `1.5rem`.
+
 ## Giấy phép
 
 MIT

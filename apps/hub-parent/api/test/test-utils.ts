@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Test, TestingModule } from '@nestjs/testing';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { SqliteDriver } from '@mikro-orm/sqlite';

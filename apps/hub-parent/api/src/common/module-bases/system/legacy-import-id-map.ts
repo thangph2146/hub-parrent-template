@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { coerceImportPrimaryKey } from '../../index';
 
@@ -50,7 +51,7 @@ export class LegacyImportIdMap {
     let row = await em.findOne(Setting, { key } as never);
     const now = new Date();
     if (!row) {
-      row = new Setting();
+      row = new Setting() as Record<string, unknown>;
       row.key = key;
       row.group = IMPORT_ID_MAP_GROUP;
       row.value = newId;

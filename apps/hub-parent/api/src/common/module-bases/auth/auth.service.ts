@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Auth Service — login / OAuth / dev options (materialize → apps/main/api module-bases).
  */
@@ -6,8 +7,15 @@ import { compare, hash } from 'bcryptjs';
 import { randomBytes } from 'node:crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { parseEntityId } from '../../index';
-import type { DevLoginOptionsQuery } from '../../module-types';
-import { AUTH_ROLE_NAMES } from '../../../config/constants';
+import {
+  filterDevLoginOptions,
+  mapUserToDevLoginOption,
+  type DevLoginOptionDto,
+  type DevLoginOptionsQuery,
+} from '../../app/dev-login-options';
+import { AUTH_ROLE_NAMES } from '../../../config/constants';;
+
+export type { DevLoginOptionDto } from '../../app/dev-login-options';
 
 export type AuthRolePayload = {
   id: number;
@@ -28,13 +36,6 @@ export type AuthLoginPayload = {
   image: string | null;
   permissions: string[];
   roles: AuthRolePayload[];
-};
-
-export type DevLoginOptionDto = {
-  id: number;
-  email: string;
-  name: string | null;
-  roleNames: string[];
 };
 
 type UserRoleRecord = {
@@ -79,13 +80,6 @@ function normalizePermissionValues(value: unknown): string[] {
   return [...new Set(visit(value))];
 }
 
-function normalizeRoleNamesCsv(value: string | undefined): string[] {
-  return String(value ?? '')
-    .split(/[,\s;]+/)
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
-
 export abstract class BaseAuthService {
   protected abstract getEm(): EntityManager;
 
@@ -127,10 +121,7 @@ export abstract class BaseAuthService {
         const role = entry.role;
         if (!role?.id || !role.name) return null;
         return {
-          id:
-            typeof role.id === 'number'
-              ? role.id
-              : Number.parseInt(String(role.id), 10),
+          id: typeof role.id === 'number' ? role.id : Number.parseInt(String(role.id), 10),
           name: String(role.name),
           displayName: String(role.displayName ?? role.name),
         };
@@ -139,9 +130,7 @@ export abstract class BaseAuthService {
 
     const permissions = [
       ...new Set(
-        activeRoles.flatMap((entry) =>
-          normalizePermissionValues(entry.role?.permissions),
-        ),
+        activeRoles.flatMap((entry) => normalizePermissionValues(entry.role?.permissions)),
       ),
     ];
 
@@ -226,9 +215,7 @@ export abstract class BaseAuthService {
     return { payload };
   }
 
-  async getAuthPayloadByUserId(
-    userId: string,
-  ): Promise<AuthLoginPayload | null> {
+  async getAuthPayloadByUserId(userId: string): Promise<AuthLoginPayload | null> {
     const { payload } = await this.tryAuthPayloadByUserId(userId);
     return payload;
   }
@@ -237,18 +224,14 @@ export abstract class BaseAuthService {
     return Promise.resolve({ ok: true });
   }
 
-  async loginAsDevelopmentUser(
-    userId: string,
-  ): Promise<AuthLoginPayload | null> {
-    if (process.env.NODE_ENV !== 'development') {
+  async loginAsDevelopmentUser(userId: string): Promise<AuthLoginPayload | null> {
+    if (process.env.NODE_ENV === 'production') {
       return null;
     }
     return this.getAuthPayloadByUserId(userId.trim());
   }
 
-  async verifyGoogleToken(
-    credential: string,
-  ): Promise<GoogleProfileDto | null> {
+  async verifyGoogleToken(credential: string): Promise<GoogleProfileDto | null> {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     if (!clientId) {
       return null;
@@ -273,9 +256,7 @@ export abstract class BaseAuthService {
     }
   }
 
-  async loginWithGoogleAsStudent(
-    profile: GoogleProfileDto,
-  ): Promise<AuthLoginPayload | null> {
+  async loginWithGoogleAsStudent(profile: GoogleProfileDto): Promise<AuthLoginPayload | null> {
     const Role = this.getRoleEntity();
     const UserRole = this.getUserRoleEntity();
     if (!Role || !UserRole) {
@@ -285,43 +266,29 @@ export abstract class BaseAuthService {
     const payload = await this.loginWithGoogle(profile);
     if (!payload) return null;
 
-    const hasStudent = payload.roles.some(
-      (role) => role.name === AUTH_ROLE_NAMES.STUDENT,
-    );
+    const hasStudent = payload.roles.some((role) => role.name === AUTH_ROLE_NAMES.STUDENT);
     if (hasStudent) return payload;
 
-    const roleId = await this.getOrCreateRole(
-      AUTH_ROLE_NAMES.STUDENT,
-      'Sinh viên',
-    );
+    const roleId = await this.getOrCreateRole(AUTH_ROLE_NAMES.STUDENT, 'Sinh viên');
     await this.assignRoleIfMissing(payload.id, roleId);
     return await this.getAuthPayloadByUserId(String(payload.id));
   }
 
-  protected async getDefaultNewUserRole(): Promise<{
-    name: string;
-    displayName: string;
-  }> {
+  protected async getDefaultNewUserRole(): Promise<{ name: string; displayName: string }> {
     const Setting = this.getSettingEntity();
     if (Setting) {
       const setting = (await this.getEm().findOne(Setting, {
         key: 'default_new_user_role',
       } as never)) as Record<string, unknown> | null;
       if (setting?.value && typeof setting.value === 'string') {
-        const roleName = setting.value
-          .trim()
-          .toLowerCase()
-          .replace(/^"|"$/g, '');
+        const roleName = setting.value.trim().toLowerCase().replace(/^"|"$/g, '');
         if (roleName) return { name: roleName, displayName: roleName };
       }
     }
     return { name: AUTH_ROLE_NAMES.PARENT, displayName: 'Phu huynh' };
   }
 
-  protected async getOrCreateRole(
-    name: string,
-    displayName: string,
-  ): Promise<number> {
+  protected async getOrCreateRole(name: string, displayName: string): Promise<number> {
     const Role = this.getRoleEntity();
     if (!Role) {
       throw new Error('Role entity not configured');
@@ -332,15 +299,12 @@ export abstract class BaseAuthService {
       flush: () => Promise<void>;
     };
 
-    const existing = (await em.findOne(Role, { name } as never)) as Record<
-      string,
-      unknown
-    > | null;
+    const existing = (await em.findOne(Role, { name } as never)) as Record<string, unknown> | null;
     if (existing?.id != null) {
       return parseEntityId(existing.id as string | number);
     }
 
-    const created = new Role();
+    const created = new Role() as Record<string, unknown>;
     created.name = name;
     created.displayName = displayName;
     created.isActive = true;
@@ -349,10 +313,7 @@ export abstract class BaseAuthService {
     return parseEntityId(created.id as string | number);
   }
 
-  protected async assignRoleIfMissing(
-    userId: number,
-    roleId: number,
-  ): Promise<void> {
+  protected async assignRoleIfMissing(userId: number, roleId: number): Promise<void> {
     const UserRole = this.getUserRoleEntity();
     const Role = this.getRoleEntity();
     const User = this.getUserEntity();
@@ -373,22 +334,16 @@ export abstract class BaseAuthService {
     } as never);
     if (existing) return;
 
-    const ur = new UserRole();
-    const userRef = emAny.getReference
-      ? emAny.getReference(User, userId)
-      : ({ id: userId } as unknown);
-    const roleRef = emAny.getReference
-      ? emAny.getReference(Role, roleId)
-      : ({ id: roleId } as unknown);
+    const ur = new UserRole() as Record<string, unknown>;
+    const userRef = emAny.getReference ? emAny.getReference(User, userId) : ({ id: userId } as unknown);
+    const roleRef = emAny.getReference ? emAny.getReference(Role, roleId) : ({ id: roleId } as unknown);
     ur.user = userRef as never;
     ur.role = roleRef as never;
     emAny.persist(ur);
     await emAny.flush();
   }
 
-  async loginWithGoogle(
-    profile: GoogleProfileDto,
-  ): Promise<AuthLoginPayload | null> {
+  async loginWithGoogle(profile: GoogleProfileDto): Promise<AuthLoginPayload | null> {
     const email = profile.email?.trim().toLowerCase();
     if (!email) return null;
 
@@ -399,9 +354,11 @@ export abstract class BaseAuthService {
     };
     const User = this.getUserEntity();
 
-    let user = (await emAny.findOne(User, { email } as never, {
-      populate: ['userRoles', 'userRoles.role'],
-    })) as Record<string, unknown> | null;
+    let user = (await emAny.findOne(
+      User,
+      { email } as never,
+      { populate: ['userRoles', 'userRoles.role'] },
+    )) as Record<string, unknown> | null;
 
     if (user) {
       if (user.isActive !== true || user.deletedAt != null) return null;
@@ -416,13 +373,10 @@ export abstract class BaseAuthService {
     }
 
     const defaultRole = await this.getDefaultNewUserRole();
-    const roleId = await this.getOrCreateRole(
-      defaultRole.name,
-      defaultRole.displayName,
-    );
+    const roleId = await this.getOrCreateRole(defaultRole.name, defaultRole.displayName);
 
     const password = await hash(randomBytes(16).toString('hex'), 10);
-    const newUser = new User();
+    const newUser = new User() as Record<string, unknown>;
     newUser.email = email;
     newUser.name = profile.name ?? null;
     newUser.password = password;
@@ -430,14 +384,13 @@ export abstract class BaseAuthService {
     emAny.persist(newUser);
     await emAny.flush();
 
-    await this.assignRoleIfMissing(
-      parseEntityId(newUser.id as string | number),
-      roleId,
-    );
+    await this.assignRoleIfMissing(parseEntityId(newUser.id as string | number), roleId);
 
-    user = (await emAny.findOne(User, { email } as never, {
-      populate: ['userRoles', 'userRoles.role'],
-    })) as Record<string, unknown> | null;
+    user = (await emAny.findOne(
+      User,
+      { email } as never,
+      { populate: ['userRoles', 'userRoles.role'] },
+    )) as Record<string, unknown> | null;
 
     if (!user) return null;
     const payload = this.mapUserToPayload(user);
@@ -471,10 +424,9 @@ export abstract class BaseAuthService {
     };
     const User = this.getUserEntity();
 
-    const existing = (await emAny.findOne(User, { email } as never)) as Record<
-      string,
-      unknown
-    > | null;
+    const existing = (await emAny.findOne(User, { email } as never)) as
+      | Record<string, unknown>
+      | null;
     if (existing) {
       throw new Error('Email da ton tai.');
     }
@@ -482,7 +434,7 @@ export abstract class BaseAuthService {
     const role = await this.getDefaultNewUserRole();
     const roleId = await this.getOrCreateRole(role.name, role.displayName);
 
-    const newUser = new User();
+    const newUser = new User() as Record<string, unknown>;
     newUser.email = email;
     newUser.name = fullName;
     newUser.password = await hash(password, 10);
@@ -509,72 +461,15 @@ export abstract class BaseAuthService {
       this.getUserEntity(),
       { deletedAt: null } as never,
       {
-        populate: ['userRoles', 'userRoles.role'],
+        populate: ['userRoles', 'userRoles.role'] as never,
         orderBy: [{ name: 'ASC' }, { email: 'ASC' }],
       },
-    )) as Array<Record<string, unknown>>;
+    )) as Parameters<typeof mapUserToDevLoginOption>[0][];
 
     const options = rows
-      .map((user) => {
-        const email = String(user.email ?? '')
-          .trim()
-          .toLowerCase();
-        if (!email) return null;
-        return {
-          id: parseEntityId(user.id as string | number),
-          email,
-          name: (user.name as string | null | undefined) ?? null,
-          roleNames: this.listUserRoles(user)
-            .map((entry) =>
-              String(entry.role?.name ?? '')
-                .trim()
-                .toLowerCase(),
-            )
-            .filter(Boolean),
-        };
-      })
+      .map((user) => mapUserToDevLoginOption(user))
       .filter((value): value is DevLoginOptionDto => Boolean(value));
 
-    let filtered = options;
-
-    if (query.role?.trim()) {
-      const wanted = query.role.trim().toLowerCase();
-      filtered = filtered.filter((option) => option.roleNames.includes(wanted));
-    }
-
-    const includeRoles = normalizeRoleNamesCsv(query.roles);
-    if (includeRoles.length) {
-      filtered = filtered.filter((option) =>
-        includeRoles.some((role) => option.roleNames.includes(role)),
-      );
-    }
-
-    const excludeRoles = normalizeRoleNamesCsv(query.excludeRoles);
-    if (excludeRoles.length) {
-      filtered = filtered.filter(
-        (option) =>
-          !excludeRoles.some((role) => option.roleNames.includes(role)),
-      );
-    }
-
-    if (query.search?.trim()) {
-      const search = query.search.trim().toLowerCase();
-      filtered = filtered.filter(
-        (option) =>
-          option.email.includes(search) ||
-          (option.name ? option.name.toLowerCase().includes(search) : false),
-      );
-    }
-
-    if (query.emailSuffix?.trim()) {
-      const suffix = query.emailSuffix.trim().toLowerCase();
-      filtered = filtered.filter((option) => option.email.endsWith(suffix));
-    }
-
-    if (query.activeOnly === false) {
-      return filtered;
-    }
-
-    return filtered;
+    return filterDevLoginOptions(options, query);
   }
 }

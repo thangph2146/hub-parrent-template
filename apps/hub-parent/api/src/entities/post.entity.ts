@@ -1,5 +1,7 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Entity, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
+import { Comment } from './comment.entity';
 import { PostCategory } from './post-category.entity';
 import { PostTag } from './post-tag.entity';
 import { User } from './user.entity';
@@ -48,6 +50,8 @@ export class Post extends BaseEntity {
   })
   author!: User;
 
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments!: Comment[];
 
   @OneToMany(() => PostCategory, (postCategory) => postCategory.post)
   categories!: PostCategory[];

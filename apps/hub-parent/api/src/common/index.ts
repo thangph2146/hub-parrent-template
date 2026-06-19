@@ -1,33 +1,28 @@
-/** Main API common — local utilities + app modules + CRUD/module bases. */
-/** AUTO: pnpm main-api:materialize-bases */
+/** Barrel common — template local (pnpm api:sync-template). */
+/**
+ * Common Barrel Export.
+ *
+ * Bám sát pattern `apps/main/api/src/common/`.
+ *
+ * Export tất cả common utilities, decorators, guards, configs.
+ */
 export * from './api-response';
-export * from './bulk-actions';
-export * from './column-filter-builders';
-export * from './date-utils';
 export * from './entity-id';
-export * from './event-time-status';
-export * from './fs-unlink-retry';
-export * from './get-options';
-export * from './image-processor';
-export * from './normalize-relation-ids';
 export * from './pagination';
-export * from './parse-column-filters';
+export * from './date-utils';
+export * from './bulk-actions';
+
 export * from './parse-list-query';
+export * from './parse-column-filters';
+export * from './normalize-relation-ids';
+
 export * from './permissions.decorator';
 export * from './permissions.guard';
-export * from './poster-normalize';
+export * from './get-options';
 export * from './resolve-relation-filters';
-export {
-  buildAdminListCrudParams,
-  type AdminListQueryInput,
-  type StandardAdminListParams,
-  type StandardAdminListResult,
-  type AdminCrudControllerConfig,
-  type IAdminCrudControllerService,
-  type ICrudControllerService,
-  type CrudRowDto,
-  type ListCrudParams,
-} from './crud';
-export * from './admin';
-export * from './infra';
-export * from './app';
+export * from './image-processor';
+export * from './fs-unlink-retry';
+export * from './poster-normalize';
+export * from './event-time-status';
+
+export { buildAdminListCrudParams, type AdminListQueryInput } from './crud/build-admin-list-params';

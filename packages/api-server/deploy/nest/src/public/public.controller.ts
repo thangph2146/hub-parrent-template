@@ -182,7 +182,7 @@ export class PublicController {
     this.logger.log(
       `${logLabel} role=${query.role ?? '-'} roles=${query.roles ?? '-'} emailSuffix=${query.emailSuffix ?? '-'}`,
     );
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -496,7 +496,7 @@ export class PublicController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ) {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -596,7 +596,7 @@ export class PublicController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ) {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -687,7 +687,7 @@ export class PublicController {
   /** Storefront B2B — dev only, chọn user theo id (không cần mật khẩu). */
   @Post('auth/store-dev-login')
   async storeDevLogin(@Body() body: { userId?: string }, @Res() res: Response) {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });

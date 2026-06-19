@@ -126,7 +126,8 @@ function $splitBulletToNumber(
   parentList: ListNode,
   before: ListItemNode[],
   middle: ListItemNode[],
-  after: ListItemNode[]
+  after: ListItemNode[],
+  markerType: string | undefined
 ): void {
   const listColor = $isListWithColorNode(parentList)
     ? parentList.getListColor()
@@ -142,7 +143,7 @@ function $splitBulletToNumber(
     parentList
   )
   if (listColor) newNumber.setListColor(listColor)
-  newNumber.setMarkerType(undefined)
+  newNumber.setMarkerType(markerType)
 
   for (const li of middle) {
     newNumber.append(li)
@@ -232,7 +233,14 @@ export function $tryPartialListTypeConversion(
   }
 
   if (targetListType === "number" && sourceType === "bullet") {
-    $splitBulletToNumber(editor, parentList, before, middle, after)
+    $splitBulletToNumber(
+      editor,
+      parentList,
+      before,
+      middle,
+      after,
+      options?.markerType
+    )
     return true
   }
 

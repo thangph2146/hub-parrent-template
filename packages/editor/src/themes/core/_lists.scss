@@ -54,6 +54,19 @@
       list-style-type: upper-roman;
     }
 
+    &[data-list-marker="alpha"] .editor-ol:not([data-list-marker]) {
+      list-style-type: lower-alpha;
+    }
+    &[data-list-marker="alpha-upper"] .editor-ol:not([data-list-marker]) {
+      list-style-type: upper-alpha;
+    }
+    &[data-list-marker="roman"] .editor-ol:not([data-list-marker]) {
+      list-style-type: lower-roman;
+    }
+    &[data-list-marker="roman-upper"] .editor-ol:not([data-list-marker]) {
+      list-style-type: upper-roman;
+    }
+
     &[data-list-marker]:not([data-list-marker="alpha"]):not(
         [data-list-marker="alpha-upper"]
       ):not([data-list-marker="roman"]):not(
@@ -98,6 +111,18 @@
       content: counters(item, ".") ". ";
     }
 
+    // Khi outline list nằm bên trong một bullet item, dùng số thứ tự bullet cha làm cấp đầu.
+    .editor-ul > .editor-listitem > &[data-list-marker="multi-level"] {
+      counter-reset: item;
+    }
+
+    .editor-ul
+      > .editor-listitem
+      > &[data-list-marker="multi-level"]
+      > li:not(.editor-nested-listitem)::marker {
+      content: counter(editor-ul-item) "." counter(item) ". ";
+    }
+
     &[data-list-color] {
       li::marker {
         color: var(--list-marker-color, currentColor);
@@ -119,6 +144,14 @@
     margin-inline: 0;
   }
 
+  .editor-listitem .editor-ol:not([data-list-marker]) {
+    list-style-type: decimal;
+  }
+
+  .editor-listitem .editor-ul:not(.editor-checklist):not([data-list-marker]) {
+    list-style-type: disc;
+  }
+
   // ==========================================
   // 4. UNORDERED LISTS
   // ==========================================
@@ -126,6 +159,7 @@
   .editor-ul:not(.editor-checklist) {
     display: flow-root;
     list-style-position: outside;
+    counter-reset: editor-ul-item;
     padding-inline-start: calc(
       #{$editor-list-padding-left} + #{$editor-ul-marker-align-extra}
     );
@@ -150,6 +184,20 @@
       }
     }
 
+    &[data-list-marker="-"] .editor-ul:not([data-list-marker]) {
+      list-style-type: none;
+      > li:not(.editor-nested-listitem)::marker {
+        content: "- ";
+      }
+    }
+
+    &[data-list-marker="+"] .editor-ul:not([data-list-marker]) {
+      list-style-type: none;
+      > li:not(.editor-nested-listitem)::marker {
+        content: "+ ";
+      }
+    }
+
     &[data-list-marker]:not([data-list-marker="-"]):not(
         [data-list-marker="+"]
       ) {
@@ -164,6 +212,10 @@
         color: var(--list-marker-color, currentColor);
       }
     }
+
+    > .editor-listitem {
+      counter-increment: editor-ul-item;
+    }
   }
 
   // ==========================================
@@ -172,7 +224,7 @@
 
   .editor-listitem {
     margin-bottom: $editor-list-item-margin-bottom;
-    line-height: $editor-line-height-relaxed;
+    line-height: $editor-line-height-base;
     font-family: var(--listitem-marker-font-family, inherit);
     font-size: var(--listitem-marker-font-size, inherit);
 
@@ -251,135 +303,5 @@
     }
   }
 
-  // ==========================================
-  // 7. OL DEPTH STYLES
-  // ==========================================
-
-  $ol-depth-styles: (
-    1: decimal,
-    2: lower-alpha,
-    3: lower-roman,
-    4: decimal,
-    5: lower-alpha,
-  );
-
-  @each $depth, $style in $ol-depth-styles {
-    .editor-ol-depth-#{$depth} {
-      list-style-type: $style;
-      &[data-list-marker="alpha"] {
-        list-style-type: lower-alpha;
-      }
-      &[data-list-marker="alpha-upper"] {
-        list-style-type: upper-alpha;
-      }
-    }
-  }
-
-  // ==========================================
-  // 8. ROMAN LIST MARKERS
-  // ==========================================
-
-  ol.editor-ol-depth-1[data-list-marker="roman"] {
-    list-style-type: lower-roman;
-  }
-  ol.editor-ol-depth-1[data-list-marker="roman-upper"] {
-    list-style-type: upper-roman;
-  }
-  ol[data-list-marker="roman"] > li.editor-nested-listitem {
-    list-style-type: lower-roman;
-  }
-  ol[data-list-marker="roman-upper"] > li.editor-nested-listitem {
-    list-style-type: upper-roman;
-  }
-  ol[data-list-marker="roman"] ol.editor-ol-depth-2,
-  ol[data-list-marker="roman-upper"] ol.editor-ol-depth-2 {
-    list-style-type: decimal;
-  }
-
-  // ==========================================
-  // 9. MULTI-LEVEL OUTLINE LISTS
-  // ==========================================
-
-  ol[data-list-marker="multi-level"] {
-    list-style-type: none;
-    counter-reset: item;
-  }
-
-  ol[data-list-marker="multi-level"] > li:not(.editor-nested-listitem) {
-    counter-increment: item;
-  }
-  ol[data-list-marker="multi-level"] > li.editor-nested-listitem {
-    counter-increment: none;
-  }
-  ol[data-list-marker="multi-level"] > li:not(.editor-nested-listitem)::marker {
-    content: counters(item, ".") ". ";
-  }
-
-  ol[data-list-marker="multi-level"] ol {
-    list-style-type: none;
-    counter-reset: item;
-  }
-
-  ol[data-list-marker="multi-level"] ol > li:not(.editor-nested-listitem) {
-    counter-increment: item;
-  }
-  ol[data-list-marker="multi-level"] ol > li.editor-nested-listitem {
-    counter-increment: none;
-  }
-  ol[data-list-marker="multi-level"]
-    ol
-    > li:not(.editor-nested-listitem)::marker {
-    content: counters(item, ".") ". ";
-  }
-
-  // ==========================================
-  // 10. UL DEPTH STYLES
-  // ==========================================
-
-  $ul-depth-styles: (
-    1: disc,
-    2: circle,
-    3: square,
-    4: disc,
-    5: circle,
-  );
-
-  @each $depth, $style in $ul-depth-styles {
-    .editor-ul-depth-#{$depth}:not(.editor-checklist) {
-      padding-inline-start: calc(
-        #{$editor-list-padding-left} +
-          #{if(
-            sass($depth == 1): $editor-ol-marker-align-extra;
-            else: $editor-ul-marker-align-extra
-          )}
-      );
-
-      &[data-list-marker="-"] {
-        list-style-type: none;
-        > li:not(.editor-nested-listitem)::marker {
-          content: "- ";
-        }
-      }
-
-      &[data-list-marker="+"] {
-        list-style-type: none;
-        > li:not(.editor-nested-listitem)::marker {
-          content: "+ ";
-        }
-      }
-
-      &[data-list-marker]:not([data-list-marker="-"]):not(
-          [data-list-marker="+"]
-        ) {
-        list-style-type: none;
-        > li:not(.editor-nested-listitem)::marker {
-          content: attr(data-list-marker);
-        }
-      }
-
-      &:not([data-list-marker]) {
-        list-style-type: $style;
-      }
-    }
-  }
+  // Tab/Shift+Tab chỉ đổi cấu trúc lồng; marker/icon giữ nguyên.
 }

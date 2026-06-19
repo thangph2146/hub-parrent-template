@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Permission System Configuration
  * Defines resources, actions, and the full set of permissions for the API.
@@ -326,78 +327,3 @@ export const PERMISSIONS: Record<string, Permission> = {
 
   ...generateResourcePermissions(RESOURCES.PROMO_CODES),
 } as const;
-
-// Profile-aware permission catalog
-export const ENABLED_PERMISSION_KEYS = new Set<keyof typeof PERMISSIONS>([
-  'CATEGORIES_CREATE',
-  'CATEGORIES_DELETE',
-  'CATEGORIES_HARD_DELETE',
-  'CATEGORIES_MANAGE',
-  'CATEGORIES_RESTORE',
-  'CATEGORIES_UPDATE',
-  'CATEGORIES_VIEW',
-  'CONTACT_REQUESTS_VIEW',
-  'DASHBOARD_VIEW',
-  'NOTIFICATIONS_MANAGE',
-  'NOTIFICATIONS_VIEW',
-  'PARENT_STUDENTS_DELETE',
-  'PARENT_STUDENTS_MANAGE',
-  'PARENT_STUDENTS_UPDATE',
-  'PARENT_STUDENTS_VIEW',
-  'POSTS_CREATE',
-  'POSTS_DELETE',
-  'POSTS_MANAGE',
-  'POSTS_RESTORE',
-  'POSTS_UPDATE',
-  'POSTS_VIEW',
-  'ROLES_CREATE',
-  'ROLES_DELETE',
-  'ROLES_MANAGE',
-  'ROLES_RESTORE',
-  'ROLES_UPDATE',
-  'ROLES_VIEW',
-  'SEO_METAS_VIEW',
-  'SESSIONS_CREATE',
-  'SESSIONS_DELETE',
-  'SESSIONS_MANAGE',
-  'SESSIONS_RESTORE',
-  'SESSIONS_UPDATE',
-  'SESSIONS_VIEW',
-  'SETTINGS_DELETE',
-  'SETTINGS_EXPORT',
-  'SETTINGS_IMPORT',
-  'SETTINGS_MANAGE',
-  'SETTINGS_UPDATE',
-  'SETTINGS_VIEW',
-  'STUDENTS_VIEW',
-  'SYSTEM_IMPORT',
-  'SYSTEM_MANAGE',
-  'SYSTEM_VIEW',
-  'TAGS_VIEW',
-  'TEMPLATES_VIEW',
-  'UPLOADS_CREATE',
-  'UPLOADS_DELETE',
-  'UPLOADS_MANAGE',
-  'UPLOADS_VIEW',
-  'USERS_VIEW',
-]);
-
-export const ENABLED_PERMISSION_CODES = new Set<Permission>(
-  Array.from(ENABLED_PERMISSION_KEYS).map((key) => PERMISSIONS[key]),
-);
-
-export function isEnabledPermission(permission: string): permission is Permission {
-  return ENABLED_PERMISSION_CODES.has(permission as Permission);
-}
-
-export function listEnabledPermissions(): Permission[] {
-  return Object.values(PERMISSIONS).filter(isEnabledPermission);
-}
-
-export function filterEnabledPermissions(value: unknown): unknown {
-  if (!Array.isArray(value)) return value;
-  return value.filter(
-    (permission): permission is Permission =>
-      typeof permission === 'string' && isEnabledPermission(permission),
-  );
-}

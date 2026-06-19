@@ -1,8 +1,8 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
-import { filterEnabledPermissions, listEnabledPermissions } from '../config/permissions';
 import {
   SUPERADMIN_ROLES_DATA,
   SUPERADMIN_USERS_DATA,
@@ -84,9 +84,8 @@ export type SuperadminBootstrapResult = {
   pageContentsSkipped: number;
 };
 
-
 /**
- * Idempotent: giống `pnpm run seed:superadmin` (roles, users, user_roles, page_contents tùy file JSON).
+ * Idempotent: giống `pnpm run seed:superadmin` (roles, users, user_roles).
  */
 export async function runSuperadminBootstrap(
   em: EntityManager,
@@ -109,17 +108,13 @@ export async function runSuperadminBootstrap(
 
   L('Seeding roles...');
   for (const roleData of SUPERADMIN_ROLES_DATA) {
-    const rolePermissions =
-      roleData.name === 'super_admin'
-        ? listEnabledPermissions()
-        : filterEnabledPermissions(roleData.permissions);
     const existing = await em.findOne(Role, { name: roleData.name });
     if (!existing) {
       const role = new Role();
       role.name = roleData.name;
       role.displayName = roleData.displayName;
       role.description = roleData.description;
-      role.permissions = rolePermissions;
+      role.permissions = roleData.permissions;
       role.isActive = roleData.isActive;
       em.persist(role);
       out.rolesInserted++;
@@ -127,7 +122,7 @@ export async function runSuperadminBootstrap(
     } else {
       existing.displayName = roleData.displayName;
       existing.description = roleData.description;
-      existing.permissions = rolePermissions;
+      existing.permissions = roleData.permissions;
       existing.isActive = roleData.isActive;
       em.persist(existing);
       out.rolesUpdated++;

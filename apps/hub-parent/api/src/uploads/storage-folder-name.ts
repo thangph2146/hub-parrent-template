@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 const INVALID_FOLDER_SEGMENT = /^\.{1,2}$/;
 
 /** Ký tự cấm trên Windows / path traversal — giữ Unicode (tiếng Việt) khi nhập label. */

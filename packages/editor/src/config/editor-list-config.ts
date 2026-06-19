@@ -7,7 +7,7 @@
  * - Gom plugin trong `EditorListPlugins` để đăng ký đúng một lần trong `LexicalComposer`.
  *
  * Semantic / quốc tế:
- * - ol/ul/li; kiểu lồng mặc định theo theme `_lists.scss` (gần ISO 2145 cho ol).
+ * - ol/ul/li; Tab chỉ đổi cấp lồng, theme không gắn depth class đổi marker/icon theo cấp.
  * - RTL: `padding-inline-start` trong theme.
  * - WCAG: checklist dùng pseudo-checkbox (::before); không tự ý gắn role/aria lên DOM Lexical.
  */
@@ -42,6 +42,11 @@ export const LIST_ORDERED_NUMBERING_RESET_AT_HEADING = false as const
 export const LIST_MARKER_PRESET = {
   DASH: "-",
   PLUS: "+",
+  ALPHA: "alpha",
+  ALPHA_UPPER: "alpha-upper",
+  ROMAN: "roman",
+  ROMAN_UPPER: "roman-upper",
+  MULTI_LEVEL: "multi-level",
 } as const
 
 export type ListMarkerPresetValue =
@@ -52,6 +57,12 @@ export const LIST_BLOCK_FORMAT_KEY = {
   BULLET: "bullet",
   BULLET_DASH: "bullet-dash",
   BULLET_PLUS: "bullet-plus",
+  NUMBER: "number",
+  NUMBER_ALPHA: "number-alpha",
+  NUMBER_ALPHA_UPPER: "number-alpha-upper",
+  NUMBER_ROMAN: "number-roman",
+  NUMBER_ROMAN_UPPER: "number-roman-upper",
+  NUMBER_MULTI_LEVEL: "number-multi-level",
   CHECK: "check",
 } as const
 
@@ -63,6 +74,12 @@ export const LIST_BLOCK_FORMAT_LABELS: Record<
   [LIST_BLOCK_FORMAT_KEY.BULLET]: "Bullet list",
   [LIST_BLOCK_FORMAT_KEY.BULLET_DASH]: "Hyphen bullets (-)",
   [LIST_BLOCK_FORMAT_KEY.BULLET_PLUS]: "Plus bullets (+)",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER]: "Numbered list",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA]: "Lower alpha list (a)",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER]: "Upper alpha list (A)",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN]: "Lower roman list (i)",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER]: "Upper roman list (I)",
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL]: "Outline list (1.1)",
   [LIST_BLOCK_FORMAT_KEY.CHECK]: "Task list",
 }
 
@@ -86,6 +103,44 @@ export const LIST_TOOLBAR_BULLET_MARKER_ITEMS: ReadonlyArray<{
   },
 ]
 
+/** Ordered-list marker presets. Selecting these changes marker only, not indent. */
+export const LIST_TOOLBAR_ORDERED_MARKER_ITEMS: ReadonlyArray<{
+  blockFormatValue:
+    | typeof LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA
+    | typeof LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER
+    | typeof LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN
+    | typeof LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER
+    | typeof LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL
+  listType: "number"
+  markerType: ListMarkerPresetValue
+}> = [
+  {
+    blockFormatValue: LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA,
+    listType: "number",
+    markerType: LIST_MARKER_PRESET.ALPHA,
+  },
+  {
+    blockFormatValue: LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER,
+    listType: "number",
+    markerType: LIST_MARKER_PRESET.ALPHA_UPPER,
+  },
+  {
+    blockFormatValue: LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN,
+    listType: "number",
+    markerType: LIST_MARKER_PRESET.ROMAN,
+  },
+  {
+    blockFormatValue: LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER,
+    listType: "number",
+    markerType: LIST_MARKER_PRESET.ROMAN_UPPER,
+  },
+  {
+    blockFormatValue: LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL,
+    listType: "number",
+    markerType: LIST_MARKER_PRESET.MULTI_LEVEL,
+  },
+]
+
 /** Ánh xạ trạng thái list trong editor → value Select toolbar. */
 export function listStateToToolbarBlockType(
   listType: "bullet" | "number",
@@ -100,8 +155,22 @@ export function listStateToToolbarBlockType(
     }
     return LIST_BLOCK_FORMAT_KEY.BULLET
   }
-  // Ordered lists (number type) are no longer supported
-  return LIST_BLOCK_FORMAT_KEY.BULLET
+  if (markerType === LIST_MARKER_PRESET.ALPHA) {
+    return LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA
+  }
+  if (markerType === LIST_MARKER_PRESET.ALPHA_UPPER) {
+    return LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER
+  }
+  if (markerType === LIST_MARKER_PRESET.ROMAN) {
+    return LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN
+  }
+  if (markerType === LIST_MARKER_PRESET.ROMAN_UPPER) {
+    return LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER
+  }
+  if (markerType === LIST_MARKER_PRESET.MULTI_LEVEL) {
+    return LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL
+  }
+  return LIST_BLOCK_FORMAT_KEY.NUMBER
 }
 
 /** Các value block format thuộc dropdown list (toolbar). */
@@ -109,6 +178,12 @@ export const LIST_TOOLBAR_BLOCK_TYPES = [
   LIST_BLOCK_FORMAT_KEY.BULLET,
   LIST_BLOCK_FORMAT_KEY.BULLET_DASH,
   LIST_BLOCK_FORMAT_KEY.BULLET_PLUS,
+  LIST_BLOCK_FORMAT_KEY.NUMBER,
+  LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA,
+  LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER,
+  LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN,
+  LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER,
+  LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL,
   LIST_BLOCK_FORMAT_KEY.CHECK,
 ] as const
 

@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { EntityRepository, type FilterQuery } from '@mikro-orm/core';
 
 export interface GetOptionsColumnConfig {

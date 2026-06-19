@@ -19,6 +19,8 @@ import { useEditorModal } from "../../editor-hooks/use-modal"
 import { useHeaderHeight } from "../../hooks/use-header-height"
 import { cn } from "../../lib/utils"
 import { blockTypeToBlockName } from "../../plugins/toolbar/block-format/block-format-data"
+import { listStateToToolbarBlockType } from "../../config/editor-list-config"
+import { $isListWithColorNode } from "../../nodes/list-with-color-node"
 
 export function ToolbarPlugin({
   children,
@@ -72,7 +74,20 @@ export function ToolbarPlugin({
               const elementType = element.getType()
 
               if ($isListNode(element)) {
-                setBlockType(elementType)
+                const listType = element.getListType()
+                if (
+                  $isListWithColorNode(element) &&
+                  (listType === "bullet" || listType === "number")
+                ) {
+                  setBlockType(
+                    listStateToToolbarBlockType(
+                      listType,
+                      element.getMarkerType()
+                    )
+                  )
+                } else {
+                  setBlockType(listType)
+                }
               } else if ($isCodeNode(element)) {
                 setBlockType("code")
               } else if ($isHeadingNode(element)) {

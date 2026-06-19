@@ -4,6 +4,7 @@ import {
   Heading2Icon,
   Heading3Icon,
   ListIcon,
+  ListOrderedIcon,
   ListTodoIcon,
   QuoteIcon,
   TextIcon,
@@ -74,6 +75,54 @@ export const blockTypeToBlockName: Record<
     icon: (
       <IconSize size="sm">
         <ListPlusIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER_ALPHA_UPPER],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER_ROMAN_UPPER],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL]: {
+    label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.NUMBER_MULTI_LEVEL],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
       </IconSize>
     ),
   },

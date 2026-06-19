@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import * as path from 'path';
 
 export type StorageRealmDir = 'images' | 'files' | 'videos' | 'audio';

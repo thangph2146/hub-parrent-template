@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Body,
   Controller,
@@ -91,7 +92,7 @@ export class AuthController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: responseBody } = createErrorResponse(
         'Not Found',
         {

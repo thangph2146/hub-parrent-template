@@ -23,21 +23,9 @@ export const editorTheme: EditorThemeClasses = {
       listitem: "editor-nested-listitem",
     },
     ol: "editor-ol",
-    olDepth: [
-      "editor-ol-depth-1",
-      "editor-ol-depth-2",
-      "editor-ol-depth-3",
-      "editor-ol-depth-4",
-      "editor-ol-depth-5",
-    ],
+    olDepth: [],
     ul: "editor-ul",
-    ulDepth: [
-      "editor-ul-depth-1",
-      "editor-ul-depth-2",
-      "editor-ul-depth-3",
-      "editor-ul-depth-4",
-      "editor-ul-depth-5",
-    ],
+    ulDepth: [],
   },
   hashtag: "editor-hashtag",
   text: {

@@ -67,8 +67,6 @@ Sau `git pull`, khi cần đưa thay đổi main sang line deploy hub-parent:
 
 ```bash
 pnpm pull:parent
-# hoặc
-pnpm sync:parent
 ```
 
 Sync **full API** `main/api` → `hub-parent/api` (giữ `app.module.ts` local). Thường gộp trong `pnpm push:deploy`.

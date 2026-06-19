@@ -1,0 +1,72 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import type { PromoCode } from '../entities/promo-code.entity';
+
+export type PromoDiscountResult = {
+  discountAmount: number;
+  code: string;
+  label: string;
+};
+
+export function computePromoDiscount(
+  subtotal: number,
+  promo: Pick<
+    PromoCode,
+    | 'code'
+    | 'label'
+    | 'discountKind'
+    | 'discountFixed'
+    | 'discountPercent'
+    | 'discountCapVnd'
+    | 'minOrderSubtotal'
+  >,
+): PromoDiscountResult {
+  const base = Math.max(0, Math.floor(subtotal));
+  const minSub = Math.max(0, Math.floor(promo.minOrderSubtotal || 0));
+  if (base < minSub) {
+    return { discountAmount: 0, code: promo.code, label: promo.label };
+  }
+
+  let discount = 0;
+  if (promo.discountKind === 'percent') {
+    const pct = Math.max(
+      0,
+      Math.min(100, Math.floor(promo.discountPercent || 0)),
+    );
+    discount = Math.floor((base * pct) / 100);
+    const cap =
+      promo.discountCapVnd !== undefined && promo.discountCapVnd !== null
+        ? Math.max(0, Math.floor(promo.discountCapVnd))
+        : null;
+    if (cap !== null) discount = Math.min(discount, cap);
+  } else {
+    discount = Math.max(0, Math.floor(promo.discountFixed || 0));
+  }
+
+  return {
+    discountAmount: Math.min(discount, base),
+    code: promo.code,
+    label: promo.label,
+  };
+}
+
+export function isPromoRedeemable(
+  promo: PromoCode,
+  at: Date = new Date(),
+): { ok: true } | { ok: false; reason: string } {
+  if (promo.deletedAt) return { ok: false, reason: 'Mã đã bị xóa' };
+  if (!promo.isActive) return { ok: false, reason: 'Mã không còn hiệu lực' };
+  if (promo.validFrom && at < promo.validFrom) {
+    return { ok: false, reason: 'Mã chưa đến thời gian áp dụng' };
+  }
+  if (promo.validUntil && at > promo.validUntil) {
+    return { ok: false, reason: 'Mã đã hết hạn' };
+  }
+  if (
+    promo.usageLimit !== undefined &&
+    promo.usageLimit !== null &&
+    promo.usageCount >= promo.usageLimit
+  ) {
+    return { ok: false, reason: 'Mã đã hết lượt sử dụng' };
+  }
+  return { ok: true };
+}

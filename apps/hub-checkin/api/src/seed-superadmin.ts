@@ -8,7 +8,6 @@ import { MySqlDriver } from '@mikro-orm/mysql';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { UserRole } from './entities/user-role.entity';
-import { PageContent } from './entities/page-content.entity';
 import { runSuperadminBootstrap } from './seeds/superadmin-bootstrap.runner';
 
 config();
@@ -24,7 +23,7 @@ async function seedData() {
   const orm = await MikroORM.init({
     driver: getDriver() as any,
     clientUrl: process.env.DATABASE_URL,
-    entities: [User, Role, UserRole, PageContent],
+    entities: [User, Role, UserRole],
     namingStrategy: EntityCaseNamingStrategy,
     debug: false,
   });

@@ -210,7 +210,7 @@ export class BasePublicAuthController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -303,7 +303,7 @@ export class BasePublicAuthController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -386,7 +386,7 @@ export class BasePublicAuthController {
     @Body() body: { userId?: string },
     @Res() res: Response,
   ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body: errBody } = createErrorResponse('Not Found', {
         status: 404,
       });
@@ -464,7 +464,7 @@ export class BasePublicAuthController {
       activeOnly?: string;
     },
   ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       const { statusCode, body } = createErrorResponse('Not Found', {
         status: 404,
       });

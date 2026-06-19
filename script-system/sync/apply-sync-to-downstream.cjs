@@ -102,6 +102,7 @@ const APP_SYNC = {
       "apps/hub-parent/api/api.app.config.json",
       "apps/hub-parent/hub-parent-frontend/package.json",
       "apps/hub-parent/hub-parent-frontend/admin.app.config.json",
+      "apps/hub-parent/hub-parent-frontend/src/app/api/graphify/route.ts",
       "apps/hub-parent/hub-parent-frontend/src/components/shared/header.tsx",
       "apps/hub-parent/hub-parent-frontend/src/features/auth/admin-bridge.ts",
     ],
@@ -128,6 +129,7 @@ const APP_SYNC = {
       "apps/store-sync/api/api.app.config.json",
       "apps/store-sync/store-sync-frontend/package.json",
       "apps/store-sync/store-sync-frontend/admin.app.config.json",
+      "apps/store-sync/store-sync-frontend/src/app/api/graphify/route.ts",
     ],
     dirs: [
       "apps/store-sync/store-sync-frontend/src/app/admin/dashboard",

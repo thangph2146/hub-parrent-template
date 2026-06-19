@@ -6,8 +6,14 @@ import { compare, hash } from 'bcryptjs';
 import { randomBytes } from 'node:crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { parseEntityId } from '../../common';
-import type { DevLoginOptionsQuery } from '../../types';
+import type { DevLoginOption, DevLoginOptionsQuery } from '../../types';
+import {
+  filterDevLoginOptions,
+  mapUserToDevLoginOption,
+} from '../users/users.mapper';
 import { AUTH_ROLE_NAMES } from '../../config';
+
+export type DevLoginOptionDto = DevLoginOption;
 
 export type AuthRolePayload = {
   id: number;
@@ -28,13 +34,6 @@ export type AuthLoginPayload = {
   image: string | null;
   permissions: string[];
   roles: AuthRolePayload[];
-};
-
-export type DevLoginOptionDto = {
-  id: number;
-  email: string;
-  name: string | null;
-  roleNames: string[];
 };
 
 type UserRoleRecord = {
@@ -77,13 +76,6 @@ function normalizePermissionValues(value: unknown): string[] {
   };
 
   return [...new Set(visit(value))];
-}
-
-function normalizeRoleNamesCsv(value: string | undefined): string[] {
-  return String(value ?? '')
-    .split(/[,\s;]+/)
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
 }
 
 export abstract class BaseAuthService {
@@ -231,7 +223,7 @@ export abstract class BaseAuthService {
   }
 
   async loginAsDevelopmentUser(userId: string): Promise<AuthLoginPayload | null> {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'production') {
       return null;
     }
     return this.getAuthPayloadByUserId(userId.trim());
@@ -467,65 +459,15 @@ export abstract class BaseAuthService {
       this.getUserEntity(),
       { deletedAt: null } as never,
       {
-        populate: ['userRoles', 'userRoles.role'],
+        populate: ['userRoles', 'userRoles.role'] as never,
         orderBy: [{ name: 'ASC' }, { email: 'ASC' }],
       },
-    )) as Array<Record<string, unknown>>;
+    )) as Parameters<typeof mapUserToDevLoginOption>[0][];
 
     const options = rows
-      .map((user) => {
-        const email = String(user.email ?? '').trim().toLowerCase();
-        if (!email) return null;
-        return {
-          id: parseEntityId(user.id as string | number),
-          email,
-          name: (user.name as string | null | undefined) ?? null,
-          roleNames: this.listUserRoles(user)
-            .map((entry) => String(entry.role?.name ?? '').trim().toLowerCase())
-            .filter(Boolean),
-        };
-      })
+      .map((user) => mapUserToDevLoginOption(user))
       .filter((value): value is DevLoginOptionDto => Boolean(value));
 
-    let filtered = options;
-
-    if (query.role?.trim()) {
-      const wanted = query.role.trim().toLowerCase();
-      filtered = filtered.filter((option) => option.roleNames.includes(wanted));
-    }
-
-    const includeRoles = normalizeRoleNamesCsv(query.roles);
-    if (includeRoles.length) {
-      filtered = filtered.filter((option) =>
-        includeRoles.some((role) => option.roleNames.includes(role)),
-      );
-    }
-
-    const excludeRoles = normalizeRoleNamesCsv(query.excludeRoles);
-    if (excludeRoles.length) {
-      filtered = filtered.filter(
-        (option) => !excludeRoles.some((role) => option.roleNames.includes(role)),
-      );
-    }
-
-    if (query.search?.trim()) {
-      const search = query.search.trim().toLowerCase();
-      filtered = filtered.filter(
-        (option) =>
-          option.email.includes(search) ||
-          (option.name ? option.name.toLowerCase().includes(search) : false),
-      );
-    }
-
-    if (query.emailSuffix?.trim()) {
-      const suffix = query.emailSuffix.trim().toLowerCase();
-      filtered = filtered.filter((option) => option.email.endsWith(suffix));
-    }
-
-    if (query.activeOnly === false) {
-      return filtered;
-    }
-
-    return filtered;
+    return filterDevLoginOptions(options, query);
   }
 }

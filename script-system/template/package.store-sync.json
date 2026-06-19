@@ -9,7 +9,7 @@
     "sync:full": "pnpm sync && pnpm check",
     "verify:template-downstream": "node script-system/verify/verify-downstream-template.cjs",
     "build": "turbo build",
-    "build:packages": "pnpm --filter @workspace/api-server run build",
+    "build:packages": "pnpm --filter @workspace/api-server run build && node script-system/dev/ensure-lexical-built.cjs",
     "check": "pnpm verify:template-downstream && pnpm verify:apps && pnpm verify:imports && pnpm verify:env && pnpm verify:bounds && pnpm verify:api-profile && pnpm verify:store-admin && pnpm lint && pnpm typecheck",
     "check:downstream-safe": "pnpm verify:downstream-safe && pnpm check",
     "lint": "turbo lint",

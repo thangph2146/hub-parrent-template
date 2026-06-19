@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import 'reflect-metadata';
 import 'dotenv/config';
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
