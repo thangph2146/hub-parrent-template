@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-15T03:40:51.372Z",
-  "projectRoot": "D:/HUB/working/2026/hub-parrent-template/apps/hub-parent/hub-parent-frontend",
+  "generatedAt": "2026-06-19T01:42:22.702Z",
+  "projectRoot": "D:/HUB/working/2026/monorepo-template/apps/hub-parent/hub-parent-frontend",
   "summary": {
-    "totalFiles": 128,
-    "clientComponents": 39,
+    "totalFiles": 317,
+    "clientComponents": 46,
     "pages": [
       "src/app/(public)/(store-sync)/cart/page.tsx",
       "src/app/(public)/(store-sync)/catalog/page.tsx",
@@ -25,6 +25,111 @@
       "src/app/(public)/lien-he/page.tsx",
       "src/app/(public)/page.tsx",
       "src/app/(public)/ve-chung-toi/page.tsx",
+      "src/app/admin/academic-years/new/page.tsx",
+      "src/app/admin/academic-years/page.tsx",
+      "src/app/admin/academic-years/[id]/edit/page.tsx",
+      "src/app/admin/academic-years/[id]/page.tsx",
+      "src/app/admin/cameras/new/page.tsx",
+      "src/app/admin/cameras/page.tsx",
+      "src/app/admin/cameras/[id]/edit/page.tsx",
+      "src/app/admin/cameras/[id]/page.tsx",
+      "src/app/admin/categories/new/page.tsx",
+      "src/app/admin/categories/page.tsx",
+      "src/app/admin/categories/[id]/edit/page.tsx",
+      "src/app/admin/categories/[id]/page.tsx",
+      "src/app/admin/contact-requests/page.tsx",
+      "src/app/admin/contact-requests/[id]/page.tsx",
+      "src/app/admin/courses/new/page.tsx",
+      "src/app/admin/courses/page.tsx",
+      "src/app/admin/courses/[id]/edit/page.tsx",
+      "src/app/admin/courses/[id]/page.tsx",
+      "src/app/admin/dashboard/page.tsx",
+      "src/app/admin/data/page.tsx",
+      "src/app/admin/departments/new/page.tsx",
+      "src/app/admin/departments/page.tsx",
+      "src/app/admin/departments/[id]/edit/page.tsx",
+      "src/app/admin/departments/[id]/page.tsx",
+      "src/app/admin/events/new/page.tsx",
+      "src/app/admin/events/page.tsx",
+      "src/app/admin/events/[id]/edit/page.tsx",
+      "src/app/admin/events/[id]/page.tsx",
+      "src/app/admin/file-storage/page.tsx",
+      "src/app/admin/guides/new/page.tsx",
+      "src/app/admin/guides/page.tsx",
+      "src/app/admin/guides/[id]/edit/page.tsx",
+      "src/app/admin/guides/[id]/page.tsx",
+      "src/app/admin/hanet/avatar/page.tsx",
+      "src/app/admin/hanet/checkin/page.tsx",
+      "src/app/admin/hanet/dia-diem/page.tsx",
+      "src/app/admin/hanet/ket-noi/page.tsx",
+      "src/app/admin/hanet/nguoi/page.tsx",
+      "src/app/admin/hanet/page.tsx",
+      "src/app/admin/hanet/thiet-bi/page.tsx",
+      "src/app/admin/locations/new/page.tsx",
+      "src/app/admin/locations/page.tsx",
+      "src/app/admin/locations/[id]/edit/page.tsx",
+      "src/app/admin/locations/[id]/page.tsx",
+      "src/app/admin/login/page.tsx",
+      "src/app/admin/majors/new/page.tsx",
+      "src/app/admin/majors/page.tsx",
+      "src/app/admin/majors/[id]/edit/page.tsx",
+      "src/app/admin/majors/[id]/page.tsx",
+      "src/app/admin/my-students/page.tsx",
+      "src/app/admin/orders/page.tsx",
+      "src/app/admin/orders/[id]/edit/page.tsx",
+      "src/app/admin/orders/[id]/page.tsx",
+      "src/app/admin/page.tsx",
+      "src/app/admin/parent-students/page.tsx",
+      "src/app/admin/posts/new/page.tsx",
+      "src/app/admin/posts/page.tsx",
+      "src/app/admin/posts/[id]/edit/page.tsx",
+      "src/app/admin/posts/[id]/page.tsx",
+      "src/app/admin/products/new/page.tsx",
+      "src/app/admin/products/page.tsx",
+      "src/app/admin/products/[id]/edit/page.tsx",
+      "src/app/admin/products/[id]/page.tsx",
+      "src/app/admin/profile/page.tsx",
+      "src/app/admin/promo-codes/new/page.tsx",
+      "src/app/admin/promo-codes/page.tsx",
+      "src/app/admin/promo-codes/[id]/edit/page.tsx",
+      "src/app/admin/promo-codes/[id]/page.tsx",
+      "src/app/admin/rbac/page.tsx",
+      "src/app/admin/rbac/[id]/edit/page.tsx",
+      "src/app/admin/rbac/[id]/page.tsx",
+      "src/app/admin/register/page.tsx",
+      "src/app/admin/screens/new/page.tsx",
+      "src/app/admin/screens/page.tsx",
+      "src/app/admin/screens/[id]/edit/page.tsx",
+      "src/app/admin/screens/[id]/page.tsx",
+      "src/app/admin/seo-metas/new/page.tsx",
+      "src/app/admin/seo-metas/page.tsx",
+      "src/app/admin/seo-metas/[id]/edit/page.tsx",
+      "src/app/admin/seo-metas/[id]/page.tsx",
+      "src/app/admin/settings/page.tsx",
+      "src/app/admin/speakers/new/page.tsx",
+      "src/app/admin/speakers/page.tsx",
+      "src/app/admin/speakers/[id]/edit/page.tsx",
+      "src/app/admin/speakers/[id]/page.tsx",
+      "src/app/admin/staff/new/page.tsx",
+      "src/app/admin/staff/page.tsx",
+      "src/app/admin/staff/[id]/edit/page.tsx",
+      "src/app/admin/staff/[id]/page.tsx",
+      "src/app/admin/tags/new/page.tsx",
+      "src/app/admin/tags/page.tsx",
+      "src/app/admin/tags/[id]/edit/page.tsx",
+      "src/app/admin/tags/[id]/page.tsx",
+      "src/app/admin/templates/new/page.tsx",
+      "src/app/admin/templates/page.tsx",
+      "src/app/admin/templates/[id]/edit/page.tsx",
+      "src/app/admin/templates/[id]/page.tsx",
+      "src/app/admin/training-levels/new/page.tsx",
+      "src/app/admin/training-levels/page.tsx",
+      "src/app/admin/training-levels/[id]/edit/page.tsx",
+      "src/app/admin/training-levels/[id]/page.tsx",
+      "src/app/admin/training-systems/new/page.tsx",
+      "src/app/admin/training-systems/page.tsx",
+      "src/app/admin/training-systems/[id]/edit/page.tsx",
+      "src/app/admin/training-systems/[id]/page.tsx",
       "src/app/graph/page.tsx"
     ],
     "layouts": [
@@ -44,6 +149,7 @@
       "src/app/(public)/(store-sync)/support/layout.tsx",
       "src/app/(public)/(store-sync)/terms/layout.tsx",
       "src/app/(public)/layout.tsx",
+      "src/app/admin/layout.tsx",
       "src/app/graph/layout.tsx",
       "src/app/layout.tsx"
     ],
@@ -741,6 +847,2168 @@
       ],
       "content": "import type { Metadata } from \"next\"\r\nimport { About } from \"@/features/pages/about-page\"\r\nimport { buildSeoMetadata } from \"@/lib/seo\"\r\n\r\nexport const metadata: Metadata = buildSeoMetadata({\r\n  title: \"Về HUB Parent\",\r\n  description:\r\n    \"Giới thiệu HUB Parent - cổng thông tin kết nối phụ huynh với Trường Đại học Ngân hàng TP.HCM, hỗ trợ đồng hành cùng sinh viên trong quá trình học tập.\",\r\n  path: \"/ve-chung-toi\",\r\n})\r\n\r\nexport default function AboutPage() {\r\n  return <About />\r\n}\r\n"
     },
+    "src/app/admin/academic-years/new/loading.tsx": {
+      "id": "file_src_app_admin_academic_years_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/new/loading\"\n"
+    },
+    "src/app/admin/academic-years/new/page.tsx": {
+      "id": "file_src_app_admin_academic_years_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/new/page\"\n"
+    },
+    "src/app/admin/academic-years/page.tsx": {
+      "id": "file_src_app_admin_academic_years_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/page\"\n"
+    },
+    "src/app/admin/academic-years/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_academic_years__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/academic-years/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_academic_years__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/[id]/edit/page\"\n"
+    },
+    "src/app/admin/academic-years/[id]/loading.tsx": {
+      "id": "file_src_app_admin_academic_years__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/[id]/loading\"\n"
+    },
+    "src/app/admin/academic-years/[id]/page.tsx": {
+      "id": "file_src_app_admin_academic_years__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/academic-years/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/academic-years/[id]/page\"\n"
+    },
+    "src/app/admin/admin-runtime-bridge.tsx": {
+      "id": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "AdminRuntimeBridge"
+      ],
+      "imports": [
+        "src/providers/admin/auth-provider.tsx",
+        "src/lib/admin/api.ts"
+      ],
+      "importedBy": [
+        "src/app/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useMemo } from \"react\"\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\nimport type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\nimport { AdminAppRuntimeProvider } from \"@workspace/admin-app/runtime\"\r\nimport {\r\n  useAuth as useAppAuth,\r\n  useClientReady,\r\n} from \"@/providers/admin/auth-provider\"\r\nimport { api } from \"@/lib/admin/api\"\r\n\r\nfunction useAdminAppAuthAdapter() {\r\n  const clientReady = useClientReady()\r\n  const session = useAppAuth()\r\n  return useMemo(\r\n    () => ({\r\n      ...session,\r\n      isLoading: !clientReady,\r\n      isAuthenticated: clientReady && session.user !== null,\r\n    }),\r\n    [clientReady, session],\r\n  )\r\n}\r\n\r\nexport function AdminRuntimeBridge({\r\n  children,\r\n}: {\r\n  children: React.ReactNode\r\n}) {\r\n  return (\r\n    <AdminAppRuntimeProvider\r\n      config={adminAppConfig as AdminAppConfig}\r\n      adapters={{ useAuth: useAdminAppAuthAdapter, api }}\r\n    >\r\n      {children}\r\n    </AdminAppRuntimeProvider>\r\n  )\r\n}\r\n\r\n"
+    },
+    "src/app/admin/cameras/new/loading.tsx": {
+      "id": "file_src_app_admin_cameras_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/new/loading\"\n"
+    },
+    "src/app/admin/cameras/new/page.tsx": {
+      "id": "file_src_app_admin_cameras_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/new/page\"\n"
+    },
+    "src/app/admin/cameras/page.tsx": {
+      "id": "file_src_app_admin_cameras_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/page\"\n"
+    },
+    "src/app/admin/cameras/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_cameras__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/cameras/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_cameras__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/[id]/edit/page\"\n"
+    },
+    "src/app/admin/cameras/[id]/loading.tsx": {
+      "id": "file_src_app_admin_cameras__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/[id]/loading\"\n"
+    },
+    "src/app/admin/cameras/[id]/page.tsx": {
+      "id": "file_src_app_admin_cameras__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/cameras/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/cameras/[id]/page\"\n"
+    },
+    "src/app/admin/categories/new/loading.tsx": {
+      "id": "file_src_app_admin_categories_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/new/loading\"\n"
+    },
+    "src/app/admin/categories/new/page.tsx": {
+      "id": "file_src_app_admin_categories_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/new/page\"\n"
+    },
+    "src/app/admin/categories/page.tsx": {
+      "id": "file_src_app_admin_categories_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/page\"\n"
+    },
+    "src/app/admin/categories/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/categories/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_categories__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/edit/page\"\n"
+    },
+    "src/app/admin/categories/[id]/loading.tsx": {
+      "id": "file_src_app_admin_categories__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/loading\"\n"
+    },
+    "src/app/admin/categories/[id]/page.tsx": {
+      "id": "file_src_app_admin_categories__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/categories/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/page\"\n"
+    },
+    "src/app/admin/contact-requests/page.tsx": {
+      "id": "file_src_app_admin_contact_requests_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/contact-requests"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/contact-requests/page\"\n"
+    },
+    "src/app/admin/contact-requests/[id]/loading.tsx": {
+      "id": "file_src_app_admin_contact_requests__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/contact-requests/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/contact-requests/[id]/loading\"\n"
+    },
+    "src/app/admin/contact-requests/[id]/page.tsx": {
+      "id": "file_src_app_admin_contact_requests__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/contact-requests/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/contact-requests/[id]/page\"\n"
+    },
+    "src/app/admin/courses/new/loading.tsx": {
+      "id": "file_src_app_admin_courses_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/new/loading\"\n"
+    },
+    "src/app/admin/courses/new/page.tsx": {
+      "id": "file_src_app_admin_courses_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/new/page\"\n"
+    },
+    "src/app/admin/courses/page.tsx": {
+      "id": "file_src_app_admin_courses_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/page\"\n"
+    },
+    "src/app/admin/courses/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_courses__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/courses/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_courses__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/[id]/edit/page\"\n"
+    },
+    "src/app/admin/courses/[id]/loading.tsx": {
+      "id": "file_src_app_admin_courses__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/[id]/loading\"\n"
+    },
+    "src/app/admin/courses/[id]/page.tsx": {
+      "id": "file_src_app_admin_courses__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/courses/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/courses/[id]/page\"\n"
+    },
+    "src/app/admin/dashboard/page.tsx": {
+      "id": "file_src_app_admin_dashboard_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/dashboard"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/dashboard/page\"\n"
+    },
+    "src/app/admin/data/page.tsx": {
+      "id": "file_src_app_admin_data_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/data"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/data/page\"\n"
+    },
+    "src/app/admin/departments/new/loading.tsx": {
+      "id": "file_src_app_admin_departments_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/new/loading\"\n"
+    },
+    "src/app/admin/departments/new/page.tsx": {
+      "id": "file_src_app_admin_departments_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/new/page\"\n"
+    },
+    "src/app/admin/departments/page.tsx": {
+      "id": "file_src_app_admin_departments_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/page\"\n"
+    },
+    "src/app/admin/departments/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_departments__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/departments/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_departments__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/[id]/edit/page\"\n"
+    },
+    "src/app/admin/departments/[id]/loading.tsx": {
+      "id": "file_src_app_admin_departments__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/[id]/loading\"\n"
+    },
+    "src/app/admin/departments/[id]/page.tsx": {
+      "id": "file_src_app_admin_departments__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/departments/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/departments/[id]/page\"\n"
+    },
+    "src/app/admin/events/new/loading.tsx": {
+      "id": "file_src_app_admin_events_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/new/loading\"\n"
+    },
+    "src/app/admin/events/new/page.tsx": {
+      "id": "file_src_app_admin_events_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/new/page\"\n"
+    },
+    "src/app/admin/events/page.tsx": {
+      "id": "file_src_app_admin_events_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/page\"\n"
+    },
+    "src/app/admin/events/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_events__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/events/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_events__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/[id]/edit/page\"\n"
+    },
+    "src/app/admin/events/[id]/loading.tsx": {
+      "id": "file_src_app_admin_events__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/[id]/loading\"\n"
+    },
+    "src/app/admin/events/[id]/page.tsx": {
+      "id": "file_src_app_admin_events__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/events/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/events/[id]/page\"\n"
+    },
+    "src/app/admin/file-storage/page.tsx": {
+      "id": "file_src_app_admin_file_storage_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/file-storage"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/file-storage/page\"\n"
+    },
+    "src/app/admin/guides/new/loading.tsx": {
+      "id": "file_src_app_admin_guides_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/new/loading\"\n"
+    },
+    "src/app/admin/guides/new/page.tsx": {
+      "id": "file_src_app_admin_guides_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/new/page\"\n"
+    },
+    "src/app/admin/guides/page.tsx": {
+      "id": "file_src_app_admin_guides_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/page\"\n"
+    },
+    "src/app/admin/guides/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/guides/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_guides__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/edit/page\"\n"
+    },
+    "src/app/admin/guides/[id]/loading.tsx": {
+      "id": "file_src_app_admin_guides__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/loading\"\n"
+    },
+    "src/app/admin/guides/[id]/page.tsx": {
+      "id": "file_src_app_admin_guides__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/guides/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/guides/[id]/page\"\n"
+    },
+    "src/app/admin/hanet/avatar/page.tsx": {
+      "id": "file_src_app_admin_hanet_avatar_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/avatar"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/avatar/page\"\n"
+    },
+    "src/app/admin/hanet/checkin/page.tsx": {
+      "id": "file_src_app_admin_hanet_checkin_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/checkin"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/checkin/page\"\n"
+    },
+    "src/app/admin/hanet/dia-diem/page.tsx": {
+      "id": "file_src_app_admin_hanet_dia_diem_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/dia-diem"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/dia-diem/page\"\n"
+    },
+    "src/app/admin/hanet/ket-noi/page.tsx": {
+      "id": "file_src_app_admin_hanet_ket_noi_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/ket-noi"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/ket-noi/page\"\n"
+    },
+    "src/app/admin/hanet/nguoi/page.tsx": {
+      "id": "file_src_app_admin_hanet_nguoi_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/nguoi"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/nguoi/page\"\n"
+    },
+    "src/app/admin/hanet/page.tsx": {
+      "id": "file_src_app_admin_hanet_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/page\"\n"
+    },
+    "src/app/admin/hanet/thiet-bi/page.tsx": {
+      "id": "file_src_app_admin_hanet_thiet_bi_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/hanet/thiet-bi"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/hanet/thiet-bi/page\"\n"
+    },
+    "src/app/admin/layout.tsx": {
+      "id": "file_src_app_admin_layout_tsx",
+      "type": "layout",
+      "client": false,
+      "exports": [
+        "ParentAdminLayout"
+      ],
+      "imports": [
+        "src/app/admin/page.tsx",
+        "src/providers/admin/query-provider.tsx",
+        "src/providers/admin/auth-provider.tsx",
+        "src/providers/admin/parent-admin-layout.tsx",
+        "src/app/admin/admin-runtime-bridge.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin"
+      ],
+      "content": "import { ThemeProvider } from \"@ui/components/theme-provider\"\r\nimport { TextSizeProvider } from \"@ui/components/text-size-provider\"\r\nimport { AdminRootProviders } from \"@ui/components/admin\"\r\nimport { QueryProvider } from \"@/providers/admin/query-provider\"\r\nimport { AuthProvider } from \"@/providers/admin/auth-provider\"\r\nimport { ParentAdminLayoutProvider } from \"@/providers/admin/parent-admin-layout\"\r\nimport { AdminRuntimeBridge } from \"./admin-runtime-bridge\"\r\n\r\nexport default function ParentAdminLayout({\r\n  children,\r\n}: Readonly<{\r\n  children: React.ReactNode\r\n}>) {\r\n  return (\r\n    <AdminRootProviders>\r\n      <ThemeProvider>\r\n        <TextSizeProvider>\r\n          <QueryProvider>\r\n            <AuthProvider>\r\n              <AdminRuntimeBridge>\r\n                <ParentAdminLayoutProvider>{children}</ParentAdminLayoutProvider>\r\n              </AdminRuntimeBridge>\r\n            </AuthProvider>\r\n          </QueryProvider>\r\n        </TextSizeProvider>\r\n      </ThemeProvider>\r\n    </AdminRootProviders>\r\n  )\r\n}\r\n\r\n"
+    },
+    "src/app/admin/locations/new/loading.tsx": {
+      "id": "file_src_app_admin_locations_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/new/loading\"\n"
+    },
+    "src/app/admin/locations/new/page.tsx": {
+      "id": "file_src_app_admin_locations_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/new/page\"\n"
+    },
+    "src/app/admin/locations/page.tsx": {
+      "id": "file_src_app_admin_locations_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/page\"\n"
+    },
+    "src/app/admin/locations/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_locations__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/locations/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_locations__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/[id]/edit/page\"\n"
+    },
+    "src/app/admin/locations/[id]/loading.tsx": {
+      "id": "file_src_app_admin_locations__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/[id]/loading\"\n"
+    },
+    "src/app/admin/locations/[id]/page.tsx": {
+      "id": "file_src_app_admin_locations__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/locations/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/locations/[id]/page\"\n"
+    },
+    "src/app/admin/login/page.tsx": {
+      "id": "file_src_app_admin_login_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "ParentAdminLoginPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/sign-in-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/login"
+      ],
+      "content": "import { SignInForm } from \"@/features/admin-auth/sign-in-form\"\r\n\r\nexport default function ParentAdminLoginPage() {\r\n  return <SignInForm />\r\n}\r\n\r\n"
+    },
+    "src/app/admin/majors/new/loading.tsx": {
+      "id": "file_src_app_admin_majors_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/new/loading\"\n"
+    },
+    "src/app/admin/majors/new/page.tsx": {
+      "id": "file_src_app_admin_majors_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/new/page\"\n"
+    },
+    "src/app/admin/majors/page.tsx": {
+      "id": "file_src_app_admin_majors_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/page\"\n"
+    },
+    "src/app/admin/majors/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_majors__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/majors/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_majors__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/[id]/edit/page\"\n"
+    },
+    "src/app/admin/majors/[id]/loading.tsx": {
+      "id": "file_src_app_admin_majors__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/[id]/loading\"\n"
+    },
+    "src/app/admin/majors/[id]/page.tsx": {
+      "id": "file_src_app_admin_majors__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/majors/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/majors/[id]/page\"\n"
+    },
+    "src/app/admin/my-students/page.tsx": {
+      "id": "file_src_app_admin_my_students_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/my-students"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/my-students/page\"\n"
+    },
+    "src/app/admin/orders/page.tsx": {
+      "id": "file_src_app_admin_orders_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/page\"\n"
+    },
+    "src/app/admin/orders/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_orders__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/[id]/edit/page\"\n"
+    },
+    "src/app/admin/orders/[id]/page.tsx": {
+      "id": "file_src_app_admin_orders__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/orders/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/orders/[id]/page\"\n"
+    },
+    "src/app/admin/page.tsx": {
+      "id": "file_src_app_admin_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "ParentAdminIndexPage"
+      ],
+      "imports": [
+        "src/config/admin/parent-admin-access.ts"
+      ],
+      "importedBy": [
+        "src/app/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "import { redirect } from \"next/navigation\"\r\nimport { PARENT_ADMIN_HOME_PATH } from \"@/config/admin/parent-admin-access\"\r\n\r\nexport default function ParentAdminIndexPage() {\r\n  redirect(PARENT_ADMIN_HOME_PATH)\r\n}\r\n\r\n"
+    },
+    "src/app/admin/parent-students/page.tsx": {
+      "id": "file_src_app_admin_parent_students_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/parent-students"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/parent-students/page\"\n"
+    },
+    "src/app/admin/posts/loading.tsx": {
+      "id": "file_src_app_admin_posts_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/loading\"\n"
+    },
+    "src/app/admin/posts/new/loading.tsx": {
+      "id": "file_src_app_admin_posts_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/new/loading\"\n"
+    },
+    "src/app/admin/posts/new/page.tsx": {
+      "id": "file_src_app_admin_posts_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/new/page\"\n"
+    },
+    "src/app/admin/posts/page.tsx": {
+      "id": "file_src_app_admin_posts_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/page\"\n"
+    },
+    "src/app/admin/posts/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_posts__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/posts/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_posts__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/[id]/edit/page\"\n"
+    },
+    "src/app/admin/posts/[id]/loading.tsx": {
+      "id": "file_src_app_admin_posts__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/[id]/loading\"\n"
+    },
+    "src/app/admin/posts/[id]/page.tsx": {
+      "id": "file_src_app_admin_posts__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/posts/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/posts/[id]/page\"\n"
+    },
+    "src/app/admin/products/new/page.tsx": {
+      "id": "file_src_app_admin_products_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/new/page\"\n"
+    },
+    "src/app/admin/products/page.tsx": {
+      "id": "file_src_app_admin_products_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/page\"\n"
+    },
+    "src/app/admin/products/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_products__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/[id]/edit/page\"\n"
+    },
+    "src/app/admin/products/[id]/page.tsx": {
+      "id": "file_src_app_admin_products__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/products/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/products/[id]/page\"\n"
+    },
+    "src/app/admin/profile/page.tsx": {
+      "id": "file_src_app_admin_profile_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "ParentAdminProfilePage"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/profile"
+      ],
+      "content": "import { AdminProfilePage } from \"@workspace/admin-app/modules/profile/_component/admin-profile-page\"\r\n\r\nconst PARENT_ADMIN_PROFILE_CONFIG = {\r\n  subtitle: \"Cap nhat thong tin tai khoan quan tri HUB Parent.\",\r\n} as const\r\n\r\nexport default function ParentAdminProfilePage() {\r\n  return <AdminProfilePage config={PARENT_ADMIN_PROFILE_CONFIG} />\r\n}\r\n\r\n"
+    },
+    "src/app/admin/promo-codes/new/page.tsx": {
+      "id": "file_src_app_admin_promo_codes_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/new/page\"\n"
+    },
+    "src/app/admin/promo-codes/page.tsx": {
+      "id": "file_src_app_admin_promo_codes_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/page\"\n"
+    },
+    "src/app/admin/promo-codes/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/[id]/edit/page\"\n"
+    },
+    "src/app/admin/promo-codes/[id]/page.tsx": {
+      "id": "file_src_app_admin_promo_codes__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/promo-codes/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/promo-codes/[id]/page\"\n"
+    },
+    "src/app/admin/rbac/page.tsx": {
+      "id": "file_src_app_admin_rbac_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/page\"\n"
+    },
+    "src/app/admin/rbac/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/rbac/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/edit/page\"\n"
+    },
+    "src/app/admin/rbac/[id]/loading.tsx": {
+      "id": "file_src_app_admin_rbac__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/loading\"\n"
+    },
+    "src/app/admin/rbac/[id]/page.tsx": {
+      "id": "file_src_app_admin_rbac__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/rbac/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/page\"\n"
+    },
+    "src/app/admin/register/page.tsx": {
+      "id": "file_src_app_admin_register_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "ParentAdminRegisterPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/register-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/register"
+      ],
+      "content": "import { RegisterForm } from \"@/features/admin-auth/register-form\"\r\n\r\nexport default function ParentAdminRegisterPage() {\r\n  return <RegisterForm />\r\n}\r\n\r\n"
+    },
+    "src/app/admin/screens/new/loading.tsx": {
+      "id": "file_src_app_admin_screens_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/new/loading\"\n"
+    },
+    "src/app/admin/screens/new/page.tsx": {
+      "id": "file_src_app_admin_screens_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/new/page\"\n"
+    },
+    "src/app/admin/screens/page.tsx": {
+      "id": "file_src_app_admin_screens_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/page\"\n"
+    },
+    "src/app/admin/screens/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_screens__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/screens/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_screens__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/[id]/edit/page\"\n"
+    },
+    "src/app/admin/screens/[id]/loading.tsx": {
+      "id": "file_src_app_admin_screens__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/[id]/loading\"\n"
+    },
+    "src/app/admin/screens/[id]/page.tsx": {
+      "id": "file_src_app_admin_screens__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/screens/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/screens/[id]/page\"\n"
+    },
+    "src/app/admin/seo-metas/new/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/new/loading\"\n"
+    },
+    "src/app/admin/seo-metas/new/page.tsx": {
+      "id": "file_src_app_admin_seo_metas_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/new/page\"\n"
+    },
+    "src/app/admin/seo-metas/page.tsx": {
+      "id": "file_src_app_admin_seo_metas_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/page\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/edit/page\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/loading.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/loading\"\n"
+    },
+    "src/app/admin/seo-metas/[id]/page.tsx": {
+      "id": "file_src_app_admin_seo_metas__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/seo-metas/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/seo-metas/[id]/page\"\n"
+    },
+    "src/app/admin/settings/page.tsx": {
+      "id": "file_src_app_admin_settings_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/settings"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/settings/page\"\n"
+    },
+    "src/app/admin/speakers/new/loading.tsx": {
+      "id": "file_src_app_admin_speakers_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/new/loading\"\n"
+    },
+    "src/app/admin/speakers/new/page.tsx": {
+      "id": "file_src_app_admin_speakers_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/new/page\"\n"
+    },
+    "src/app/admin/speakers/page.tsx": {
+      "id": "file_src_app_admin_speakers_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/page\"\n"
+    },
+    "src/app/admin/speakers/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_speakers__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/speakers/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_speakers__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/[id]/edit/page\"\n"
+    },
+    "src/app/admin/speakers/[id]/loading.tsx": {
+      "id": "file_src_app_admin_speakers__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/[id]/loading\"\n"
+    },
+    "src/app/admin/speakers/[id]/page.tsx": {
+      "id": "file_src_app_admin_speakers__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/speakers/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/speakers/[id]/page\"\n"
+    },
+    "src/app/admin/staff/new/loading.tsx": {
+      "id": "file_src_app_admin_staff_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/new/loading\"\n"
+    },
+    "src/app/admin/staff/new/page.tsx": {
+      "id": "file_src_app_admin_staff_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/new/page\"\n"
+    },
+    "src/app/admin/staff/page.tsx": {
+      "id": "file_src_app_admin_staff_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/page\"\n"
+    },
+    "src/app/admin/staff/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/staff/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_staff__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/edit/page\"\n"
+    },
+    "src/app/admin/staff/[id]/loading.tsx": {
+      "id": "file_src_app_admin_staff__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/loading\"\n"
+    },
+    "src/app/admin/staff/[id]/page.tsx": {
+      "id": "file_src_app_admin_staff__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/staff/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/page\"\n"
+    },
+    "src/app/admin/tags/new/loading.tsx": {
+      "id": "file_src_app_admin_tags_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/new/loading\"\n"
+    },
+    "src/app/admin/tags/new/page.tsx": {
+      "id": "file_src_app_admin_tags_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/new/page\"\n"
+    },
+    "src/app/admin/tags/page.tsx": {
+      "id": "file_src_app_admin_tags_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/page\"\n"
+    },
+    "src/app/admin/tags/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_tags__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/tags/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_tags__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/[id]/edit/page\"\n"
+    },
+    "src/app/admin/tags/[id]/loading.tsx": {
+      "id": "file_src_app_admin_tags__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/[id]/loading\"\n"
+    },
+    "src/app/admin/tags/[id]/page.tsx": {
+      "id": "file_src_app_admin_tags__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/tags/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/tags/[id]/page\"\n"
+    },
+    "src/app/admin/templates/new/loading.tsx": {
+      "id": "file_src_app_admin_templates_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/new/loading\"\n"
+    },
+    "src/app/admin/templates/new/page.tsx": {
+      "id": "file_src_app_admin_templates_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/new/page\"\n"
+    },
+    "src/app/admin/templates/page.tsx": {
+      "id": "file_src_app_admin_templates_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/page\"\n"
+    },
+    "src/app/admin/templates/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_templates__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/templates/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_templates__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/[id]/edit/page\"\n"
+    },
+    "src/app/admin/templates/[id]/loading.tsx": {
+      "id": "file_src_app_admin_templates__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/[id]/loading\"\n"
+    },
+    "src/app/admin/templates/[id]/page.tsx": {
+      "id": "file_src_app_admin_templates__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/templates/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/templates/[id]/page\"\n"
+    },
+    "src/app/admin/training-levels/new/loading.tsx": {
+      "id": "file_src_app_admin_training_levels_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/new/loading\"\n"
+    },
+    "src/app/admin/training-levels/new/page.tsx": {
+      "id": "file_src_app_admin_training_levels_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/new/page\"\n"
+    },
+    "src/app/admin/training-levels/page.tsx": {
+      "id": "file_src_app_admin_training_levels_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/page\"\n"
+    },
+    "src/app/admin/training-levels/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_training_levels__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/training-levels/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_training_levels__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/[id]/edit/page\"\n"
+    },
+    "src/app/admin/training-levels/[id]/loading.tsx": {
+      "id": "file_src_app_admin_training_levels__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/[id]/loading\"\n"
+    },
+    "src/app/admin/training-levels/[id]/page.tsx": {
+      "id": "file_src_app_admin_training_levels__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-levels/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-levels/[id]/page\"\n"
+    },
+    "src/app/admin/training-systems/new/loading.tsx": {
+      "id": "file_src_app_admin_training_systems_new_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/new/loading\"\n"
+    },
+    "src/app/admin/training-systems/new/page.tsx": {
+      "id": "file_src_app_admin_training_systems_new_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/new"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/new/page\"\n"
+    },
+    "src/app/admin/training-systems/page.tsx": {
+      "id": "file_src_app_admin_training_systems_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/page\"\n"
+    },
+    "src/app/admin/training-systems/[id]/edit/loading.tsx": {
+      "id": "file_src_app_admin_training_systems__id__edit_loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/[id]/edit/loading\"\n"
+    },
+    "src/app/admin/training-systems/[id]/edit/page.tsx": {
+      "id": "file_src_app_admin_training_systems__id__edit_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/[id]/edit"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/[id]/edit/page\"\n"
+    },
+    "src/app/admin/training-systems/[id]/loading.tsx": {
+      "id": "file_src_app_admin_training_systems__id__loading_tsx",
+      "type": "loading",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/[id]/loading\"\n"
+    },
+    "src/app/admin/training-systems/[id]/page.tsx": {
+      "id": "file_src_app_admin_training_systems__id__page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "default"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/app/admin/training-systems/[id]"
+      ],
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/training-systems/[id]/page\"\n"
+    },
     "src/app/api/graphify/route.ts": {
       "id": "file_src_app_api_graphify_route_ts",
       "type": "api-route",
@@ -943,7 +3211,6 @@
         "src/hooks/use-cart.ts",
         "src/components/shared/cart-drawer.tsx",
         "src/hooks/use-session.ts",
-        "src/features/auth/admin-bridge.ts",
         "src/lib/store-feature.ts",
         "src/components/icons/logo.tsx"
       ],
@@ -951,7 +3218,7 @@
         "src/components/shared",
         "src/app/(public)/layout.tsx"
       ],
-      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { usePathname } from \"next/navigation\";\r\nimport {\r\n  FileText,\r\n  Home,\r\n  Info,\r\n  Mail,\r\n  CircleHelp,\r\n  Settings2,\r\n  Type,\r\n  ShoppingCart,\r\n  Package,\r\n  ShieldCheck,\r\n  UserPlus,\r\n  Store,\r\n  ChevronDown,\r\n  ExternalLink,\r\n} from \"lucide-react\";\r\nimport { Badge } from \"@ui/components/badge\";\r\nimport { useCart } from \"@/hooks/use-cart\";\r\nimport { useOpenCartDrawer } from \"@/components/shared/cart-drawer\";\r\nimport { useSession } from \"@/hooks/use-session\";\r\nimport { Button, buttonVariants } from \"@ui/components/button\";\r\nimport {\r\n  NavigationMenu,\r\n  NavigationMenuItem,\r\n  NavigationMenuList,\r\n} from \"@ui/components/navigation-menu\";\r\nimport {\r\n  DropdownMenu,\r\n  DropdownMenuContent,\r\n  DropdownMenuItem,\r\n  DropdownMenuTrigger,\r\n} from \"@ui/components/dropdown-menu\";\r\nimport { useTextSize } from \"@ui/components/text-size-provider\";\r\nimport { cn } from \"@ui/lib/utils\";\r\nimport { getAdminLoginUrl, getAdminRegisterUrl } from \"@/features/auth/admin-bridge\";\r\nimport { STORE_ENABLED } from \"@/lib/store-feature\";\r\nimport { Logo } from \"../icons/logo\";\r\n\r\nconst basePrimaryLinks = [\r\n  {\r\n    label: \"Trang chủ\",\r\n    href: \"/\",\r\n    icon: Home,\r\n  },\r\n  {\r\n    label: \"Cửa hàng\",\r\n    href: \"/catalog\",\r\n    icon: ShoppingCart,\r\n    storeOnly: true,\r\n  },\r\n  {\r\n    label: \"Bài viết\",\r\n    href: \"/bai-viet\",\r\n    icon: FileText,\r\n  },\r\n] as const;\r\n\r\nconst primaryLinks = basePrimaryLinks.filter(\r\n  (item) => STORE_ENABLED || !(\"storeOnly\" in item && item.storeOnly),\r\n);\r\n\r\nconst supportLinks = [\r\n  {\r\n    label: \"Giới thiệu\",\r\n    href: \"/ve-chung-toi\",\r\n    icon: Info,\r\n    description: \"Thông tin về tổ chức\",\r\n  },\r\n  {\r\n    label: \"Liên hệ hỗ trợ\",\r\n    href: \"/lien-he\",\r\n    icon: Mail,\r\n    description: \"Gửi yêu cầu hỗ trợ trực tiếp\",\r\n  },\r\n  {\r\n    label: \"Trợ giúp\",\r\n    href: \"/huong-dan-su-dung\",\r\n    icon: CircleHelp,\r\n    description: \"Hướng dẫn sử dụng\",\r\n  },\r\n];\r\n\r\nconst isExactOrNestedPath = (pathname: string, href: string) => {\r\n  if (href === \"/\") return pathname === \"/\";\r\n  return pathname === href || pathname.startsWith(`${href}/`);\r\n};\r\n\r\n/** Chỉ mount khi STORE_ENABLED — phải nằm trong CartDrawerHost. */\r\nfunction HeaderStoreChrome({ pathname }: { pathname: string }) {\r\n  const session = useSession();\r\n  const { unitCount } = useCart();\r\n  const openCart = useOpenCartDrawer();\r\n  const isOrdersActive = isExactOrNestedPath(pathname, \"/orders\");\r\n\r\n  return (\r\n    <>\r\n      {session ? (\r\n        <Link\r\n          href=\"/orders\"\r\n          className={cn(\r\n            buttonVariants({\r\n              variant: isOrdersActive ? \"default\" : \"outline\",\r\n              size: \"sm\",\r\n            }),\r\n            \"hidden sm:inline-flex\"\r\n          )}\r\n        >\r\n          <Package className=\"mr-1.5 size-4\" />\r\n          Đơn hàng\r\n        </Link>\r\n      ) : null}\r\n      <Button\r\n        type=\"button\"\r\n        variant=\"outline\"\r\n        size=\"icon\"\r\n        className=\"relative\"\r\n        onClick={openCart}\r\n        aria-label={`Giỏ hàng${unitCount > 0 ? `, ${unitCount} món` : \"\"}`}\r\n      >\r\n        <ShoppingCart className=\"size-4\" />\r\n        {unitCount > 0 ? (\r\n          <Badge className=\"absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px]\">\r\n            {unitCount > 99 ? \"99+\" : unitCount}\r\n          </Badge>\r\n        ) : null}\r\n      </Button>\r\n    </>\r\n  );\r\n}\r\n\r\nconst TEXT_SIZE_OPTIONS = [\r\n  { value: \"sm\", label: \"Nhỏ\", sampleClass: \"text-[11px]\" },\r\n  { value: \"base\", label: \"Vừa\", sampleClass: \"text-sm\" },\r\n  { value: \"lg\", label: \"Lớn\", sampleClass: \"text-base\" },\r\n] as const;\r\n\r\ntype TextSizeValue = (typeof TEXT_SIZE_OPTIONS)[number][\"value\"];\r\n\r\nfunction HeaderOptionsMenu({\r\n  size,\r\n  setSize,\r\n  adminLoginUrl,\r\n  adminRegisterUrl,\r\n  isLoginActive,\r\n  isRegisterActive,\r\n}: {\r\n  size: TextSizeValue;\r\n  setSize: (value: TextSizeValue) => void;\r\n  adminLoginUrl: string;\r\n  adminRegisterUrl: string;\r\n  isLoginActive: boolean;\r\n  isRegisterActive: boolean;\r\n}) {\r\n  return (\r\n    <DropdownMenu>\r\n      <DropdownMenuTrigger\r\n        render={\r\n          <button\r\n            type=\"button\"\r\n            className={cn(\r\n              \"group/settings inline-flex h-9 shrink-0 cursor-pointer items-stretch overflow-hidden rounded-xl border border-border/80 bg-card text-left shadow-sm outline-none transition-all duration-200\",\r\n              \"hover:-translate-y-px hover:border-primary/35 hover:shadow-md\",\r\n              \"focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50\",\r\n              \"data-popup-open:border-primary/45 data-popup-open:bg-primary/[0.04] data-popup-open:shadow-md data-popup-open:ring-2 data-popup-open:ring-primary/15\"\r\n            )}\r\n            aria-label=\"Mở tùy chọn hiển thị và tài khoản\"\r\n          />\r\n        }\r\n      >\r\n        <span className=\"relative flex w-9 shrink-0 items-center justify-center bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground\">\r\n          <span\r\n            className=\"pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.28),transparent_55%)]\"\r\n            aria-hidden\r\n          />\r\n          <Settings2 className=\"relative size-4\" aria-hidden />\r\n        </span>\r\n        <span className=\"hidden min-w-[5.5rem] items-center justify-between gap-2 border-l border-border/70 px-3 sm:flex\">\r\n          <span className=\"flex flex-col leading-none\">\r\n            <span className=\"text-sm font-semibold text-foreground\">Cài đặt</span>\r\n            <span className=\"mt-0.5 text-[10px] font-medium text-muted-foreground\">\r\n              Hiển thị · Tài khoản\r\n            </span>\r\n          </span>\r\n          <ChevronDown\r\n            className=\"size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-popup-open/settings:rotate-180\"\r\n            aria-hidden\r\n          />\r\n        </span>\r\n      </DropdownMenuTrigger>\r\n      <DropdownMenuContent\r\n        align=\"end\"\r\n        sideOffset={8}\r\n        className=\"w-[min(100vw-1.5rem,20rem)] overflow-hidden rounded-xl p-0 shadow-lg ring-1 ring-border/60\"\r\n      >\r\n        <div className=\"border-b border-border/60 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3\">\r\n          <p className=\"text-sm font-semibold text-foreground\">Tùy chọn</p>\r\n          <p className=\"text-xs text-muted-foreground\">\r\n            Cỡ chữ và truy cập hệ thống\r\n          </p>\r\n        </div>\r\n\r\n        <div className=\"space-y-4 p-3\">\r\n          <section className=\"rounded-lg border border-border/60 bg-muted/20 p-3\">\r\n            <div className=\"mb-3 flex items-center gap-2\">\r\n              <span className=\"flex size-8 items-center justify-center rounded-lg border border-border/70 bg-background text-primary\">\r\n                <Type className=\"size-4\" aria-hidden />\r\n              </span>\r\n              <div>\r\n                <p className=\"text-sm font-semibold text-foreground\">Cỡ chữ</p>\r\n                <p className=\"text-xs text-muted-foreground\">\r\n                  Chọn kích thước dễ đọc\r\n                </p>\r\n              </div>\r\n            </div>\r\n            <div\r\n              role=\"radiogroup\"\r\n              aria-label=\"Cỡ chữ\"\r\n              className=\"grid grid-cols-3 gap-2\"\r\n            >\r\n              {TEXT_SIZE_OPTIONS.map((option) => {\r\n                const isActive = size === option.value;\r\n\r\n                return (\r\n                  <button\r\n                    key={option.value}\r\n                    type=\"button\"\r\n                    role=\"radio\"\r\n                    aria-checked={isActive}\r\n                    onClick={() => setSize(option.value)}\r\n                    className={cn(\r\n                      \"flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5 transition-all\",\r\n                      isActive\r\n                        ? \"border-primary bg-primary text-primary-foreground shadow-sm\"\r\n                        : \"border-border/70 bg-background text-foreground hover:border-primary/30 hover:bg-primary/5\"\r\n                    )}\r\n                  >\r\n                    <span\r\n                      className={cn(\r\n                        \"font-bold leading-none\",\r\n                        option.sampleClass,\r\n                        isActive ? \"text-primary-foreground\" : \"text-foreground\"\r\n                      )}\r\n                    >\r\n                      Aa\r\n                    </span>\r\n                    <span className=\"text-[10px] font-medium uppercase tracking-wide opacity-90\">\r\n                      {option.label}\r\n                    </span>\r\n                  </button>\r\n                );\r\n              })}\r\n            </div>\r\n          </section>\r\n\r\n          <section>\r\n            <p className=\"mb-2 px-1 text-xs font-semibold text-muted-foreground\">\r\n              Tài khoản\r\n            </p>\r\n            <div className=\"space-y-1.5\">\r\n              {STORE_ENABLED ? (\r\n                <HeaderStoreAccountMenuItem isLoginActive={isLoginActive} />\r\n              ) : null}\r\n              <HeaderAccountLink\r\n                label=\"Cổng quản trị\"\r\n                description=\"Đăng nhập khu vực quản trị\"\r\n                icon={ShieldCheck}\r\n                href={adminLoginUrl}\r\n                external\r\n              />\r\n              <HeaderAccountLink\r\n                label=\"Đăng ký quản trị\"\r\n                description=\"Tạo tài khoản quản trị mới\"\r\n                icon={UserPlus}\r\n                href={adminRegisterUrl}\r\n                external\r\n                active={isRegisterActive}\r\n              />\r\n            </div>\r\n          </section>\r\n        </div>\r\n      </DropdownMenuContent>\r\n    </DropdownMenu>\r\n  );\r\n}\r\n\r\nfunction HeaderAccountLink({\r\n  label,\r\n  description,\r\n  icon: Icon,\r\n  href,\r\n  external = false,\r\n  active = false,\r\n  onClick,\r\n}: {\r\n  label: string;\r\n  description: string;\r\n  icon: typeof ShieldCheck;\r\n  href?: string;\r\n  external?: boolean;\r\n  active?: boolean;\r\n  onClick?: () => void;\r\n}) {\r\n  const content = (\r\n    <>\r\n      <span\r\n        className={cn(\r\n          \"flex size-9 shrink-0 items-center justify-center rounded-lg border\",\r\n          active\r\n            ? \"border-primary/30 bg-primary/10 text-primary\"\r\n            : \"border-border/70 bg-background text-muted-foreground\"\r\n        )}\r\n      >\r\n        <Icon className=\"size-4\" aria-hidden />\r\n      </span>\r\n      <span className=\"min-w-0 flex-1\">\r\n        <span className=\"flex items-center gap-1.5 text-sm font-medium text-foreground\">\r\n          {label}\r\n          {external ? <ExternalLink className=\"size-3 text-muted-foreground\" /> : null}\r\n        </span>\r\n        <span className=\"block text-xs text-muted-foreground\">{description}</span>\r\n      </span>\r\n    </>\r\n  );\r\n\r\n  const className = cn(\r\n    \"flex w-full items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition-colors\",\r\n    active ? \"bg-primary/5\" : \"hover:border-border/60 hover:bg-muted/40\"\r\n  );\r\n\r\n  if (onClick) {\r\n    return (\r\n      <button type=\"button\" onClick={onClick} className={className}>\r\n        {content}\r\n      </button>\r\n    );\r\n  }\r\n\r\n  return (\r\n    <a\r\n      href={href}\r\n      className={className}\r\n      {...(external ? { target: \"_blank\", rel: \"noopener noreferrer\" } : {})}\r\n    >\r\n      {content}\r\n    </a>\r\n  );\r\n}\r\n\r\nfunction HeaderStoreAccountMenuItem({\r\n  isLoginActive,\r\n}: {\r\n  isLoginActive: boolean;\r\n}) {\r\n  const session = useSession();\r\n\r\n  return (\r\n    <HeaderAccountLink\r\n      label={session ? \"Hồ sơ cửa hàng\" : \"Đăng nhập cửa hàng\"}\r\n      description={\r\n        session ? \"Quản lý thông tin đại lý\" : \"Truy cập tài khoản cửa hàng\"\r\n      }\r\n      icon={Store}\r\n      active={isLoginActive}\r\n      onClick={() => {\r\n        window.location.assign(session ? \"/profile\" : \"/login\");\r\n      }}\r\n    />\r\n  );\r\n}\r\n\r\nexport function Header() {\r\n  const pathname = usePathname();\r\n  const { size, setSize } = useTextSize();\r\n  const adminLoginUrl = getAdminLoginUrl();\r\n  const adminRegisterUrl = getAdminRegisterUrl();\r\n  const isSupportActive = supportLinks.some((link) => isExactOrNestedPath(pathname, link.href));\r\n  const isLoginActive = isExactOrNestedPath(pathname, \"/login\");\r\n  const isRegisterActive = isExactOrNestedPath(pathname, \"/register\");\r\n\r\n  return (\r\n    <header className=\"sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur\">\r\n      <div className=\"mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-3 px-6 md:px-12\">\r\n        <div className=\"flex w-full items-center justify-start gap-3\">\r\n          <Link href=\"/\" className=\"flex shrink-0 items-center gap-2\">\r\n            <Logo className=\"h-8 w-8 sm:h-10 sm:w-10\" />\r\n            <div className=\"hidden leading-tight sm:block\">\r\n              <div className=\"text-xs font-semibold\">Trường Đại học Ngân hàng</div>\r\n              <div className=\"text-[11px] text-muted-foreground\">Thành Phố Hồ Chí Minh</div>\r\n            </div>\r\n          </Link>\r\n\r\n          <NavigationMenu className=\"hidden md:flex\">\r\n            <NavigationMenuList className=\"gap-1\">\r\n              {primaryLinks.map((item) => {\r\n                const isActive = isExactOrNestedPath(pathname, item.href);\r\n\r\n                return (\r\n                  <NavigationMenuItem key={item.href}>\r\n                    <Link\r\n                      href={item.href}\r\n                      prefetch={item.href === \"/bai-viet\" ? false : undefined}\r\n                      aria-current={isActive ? \"page\" : undefined}\r\n                      className={cn(\r\n                        \"inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors\",\r\n                        isActive\r\n                          ? \"bg-primary text-primary-foreground shadow-sm\"\r\n                          : \"text-muted-foreground hover:bg-muted hover:text-foreground\"\r\n                      )}\r\n                    >\r\n                      <item.icon className=\"size-4\" />\r\n                      {item.label}\r\n                    </Link>\r\n                  </NavigationMenuItem>\r\n                );\r\n              })}\r\n\r\n              <NavigationMenuItem>\r\n                <DropdownMenu>\r\n                  <DropdownMenuTrigger\r\n                    render={\r\n                      <button\r\n                        className={cn(\r\n                          \"inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors\",\r\n                          isSupportActive\r\n                            ? \"bg-primary text-primary-foreground shadow-sm\"\r\n                            : \"text-foreground hover:bg-muted/80\"\r\n                        )}\r\n                      />\r\n                    }\r\n                  >\r\n                    Hỗ trợ\r\n                  </DropdownMenuTrigger>\r\n                  <DropdownMenuContent className=\"w-[360px] p-2\">\r\n                    <div className=\"grid grid-cols-2 gap-2\">\r\n                      {supportLinks.map((item) => {\r\n                        const isActive = isExactOrNestedPath(pathname, item.href);\r\n\r\n                        return (\r\n                          <DropdownMenuItem key={item.href} className=\"p-0\">\r\n                            <Link\r\n                              href={item.href}\r\n                              aria-current={isActive ? \"page\" : undefined}\r\n                              className={cn(\r\n                                \"flex w-full items-start gap-2 rounded-md px-2 py-2 transition-colors\",\r\n                                isActive ? \"bg-muted\" : \"hover:bg-muted/70\"\r\n                              )}\r\n                            >\r\n                              <span\r\n                                className={cn(\r\n                                  \"rounded-md border p-1.5\",\r\n                                  isActive\r\n                                    ? \"border-primary/30 bg-primary/10 text-primary\"\r\n                                    : \"border-border\"\r\n                                )}\r\n                              >\r\n                                <item.icon className=\"size-4\" />\r\n                              </span>\r\n                              <span className=\"min-w-0\">\r\n                                <span className=\"block text-sm font-medium\">{item.label}</span>\r\n                                <span className=\"block text-xs text-muted-foreground\">\r\n                                  {item.description}\r\n                                </span>\r\n                              </span>\r\n                            </Link>\r\n                          </DropdownMenuItem>\r\n                        );\r\n                      })}\r\n                    </div>\r\n                  </DropdownMenuContent>\r\n                </DropdownMenu>\r\n              </NavigationMenuItem>\r\n            </NavigationMenuList>\r\n          </NavigationMenu>\r\n        </div>\r\n\r\n        <div className=\"flex shrink-0 items-center gap-2\">\r\n          {STORE_ENABLED ? <HeaderStoreChrome pathname={pathname} /> : null}\r\n          <HeaderOptionsMenu\r\n            size={size}\r\n            setSize={setSize}\r\n            adminLoginUrl={adminLoginUrl}\r\n            adminRegisterUrl={adminRegisterUrl}\r\n            isLoginActive={isLoginActive}\r\n            isRegisterActive={isRegisterActive}\r\n          />\r\n        </div>\r\n      </div>\r\n    </header>\r\n  );\r\n}\r\n"
+      "content": "\"use client\";\r\n\r\nimport Link from \"next/link\";\r\nimport { usePathname } from \"next/navigation\";\r\nimport {\r\n  FileText,\r\n  Home,\r\n  Info,\r\n  Mail,\r\n  CircleHelp,\r\n  Settings2,\r\n  Type,\r\n  ShoppingCart,\r\n  Package,\r\n  ShieldCheck,\r\n  UserPlus,\r\n  Store,\r\n  ChevronDown,\r\n  ExternalLink,\r\n} from \"lucide-react\";\r\nimport { Badge } from \"@ui/components/badge\";\r\nimport { useCart } from \"@/hooks/use-cart\";\r\nimport { useOpenCartDrawer } from \"@/components/shared/cart-drawer\";\r\nimport { useSession } from \"@/hooks/use-session\";\r\nimport { Button, buttonVariants } from \"@ui/components/button\";\r\nimport {\r\n  NavigationMenu,\r\n  NavigationMenuItem,\r\n  NavigationMenuList,\r\n} from \"@ui/components/navigation-menu\";\r\nimport {\r\n  DropdownMenu,\r\n  DropdownMenuContent,\r\n  DropdownMenuItem,\r\n  DropdownMenuTrigger,\r\n} from \"@ui/components/dropdown-menu\";\r\nimport { useTextSize } from \"@ui/components/text-size-provider\";\r\nimport { cn } from \"@ui/lib/utils\";\r\nimport { STORE_ENABLED } from \"@/lib/store-feature\";\r\nimport { Logo } from \"../icons/logo\";\r\n\r\nconst basePrimaryLinks = [\r\n  {\r\n    label: \"Trang chủ\",\r\n    href: \"/\",\r\n    icon: Home,\r\n  },\r\n  {\r\n    label: \"Cửa hàng\",\r\n    href: \"/catalog\",\r\n    icon: ShoppingCart,\r\n    storeOnly: true,\r\n  },\r\n  {\r\n    label: \"Bài viết\",\r\n    href: \"/bai-viet\",\r\n    icon: FileText,\r\n  },\r\n] as const;\r\n\r\nconst primaryLinks = basePrimaryLinks.filter(\r\n  (item) => STORE_ENABLED || !(\"storeOnly\" in item && item.storeOnly),\r\n);\r\n\r\nconst supportLinks = [\r\n  {\r\n    label: \"Giới thiệu\",\r\n    href: \"/ve-chung-toi\",\r\n    icon: Info,\r\n    description: \"Thông tin về tổ chức\",\r\n  },\r\n  {\r\n    label: \"Liên hệ hỗ trợ\",\r\n    href: \"/lien-he\",\r\n    icon: Mail,\r\n    description: \"Gửi yêu cầu hỗ trợ trực tiếp\",\r\n  },\r\n  {\r\n    label: \"Trợ giúp\",\r\n    href: \"/huong-dan-su-dung\",\r\n    icon: CircleHelp,\r\n    description: \"Hướng dẫn sử dụng\",\r\n  },\r\n];\r\n\r\nconst isExactOrNestedPath = (pathname: string, href: string) => {\r\n  if (href === \"/\") return pathname === \"/\";\r\n  return pathname === href || pathname.startsWith(`${href}/`);\r\n};\r\n\r\n/** Chỉ mount khi STORE_ENABLED — phải nằm trong CartDrawerHost. */\r\nfunction HeaderStoreChrome({ pathname }: { pathname: string }) {\r\n  const session = useSession();\r\n  const { unitCount } = useCart();\r\n  const openCart = useOpenCartDrawer();\r\n  const isOrdersActive = isExactOrNestedPath(pathname, \"/orders\");\r\n\r\n  return (\r\n    <>\r\n      {session ? (\r\n        <Link\r\n          href=\"/orders\"\r\n          className={cn(\r\n            buttonVariants({\r\n              variant: isOrdersActive ? \"default\" : \"outline\",\r\n              size: \"sm\",\r\n            }),\r\n            \"hidden sm:inline-flex\"\r\n          )}\r\n        >\r\n          <Package className=\"mr-1.5 size-4\" />\r\n          Đơn hàng\r\n        </Link>\r\n      ) : null}\r\n      <Button\r\n        type=\"button\"\r\n        variant=\"outline\"\r\n        size=\"icon\"\r\n        className=\"relative\"\r\n        onClick={openCart}\r\n        aria-label={`Giỏ hàng${unitCount > 0 ? `, ${unitCount} món` : \"\"}`}\r\n      >\r\n        <ShoppingCart className=\"size-4\" />\r\n        {unitCount > 0 ? (\r\n          <Badge className=\"absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px]\">\r\n            {unitCount > 99 ? \"99+\" : unitCount}\r\n          </Badge>\r\n        ) : null}\r\n      </Button>\r\n    </>\r\n  );\r\n}\r\n\r\nconst TEXT_SIZE_OPTIONS = [\r\n  { value: \"sm\", label: \"Nhỏ\", sampleClass: \"text-[11px]\" },\r\n  { value: \"base\", label: \"Vừa\", sampleClass: \"text-sm\" },\r\n  { value: \"lg\", label: \"Lớn\", sampleClass: \"text-base\" },\r\n] as const;\r\n\r\ntype TextSizeValue = (typeof TEXT_SIZE_OPTIONS)[number][\"value\"];\r\n\r\nfunction HeaderOptionsMenu({\r\n  size,\r\n  setSize,\r\n  adminPortalPath,\r\n  adminRegisterPath,\r\n  isStoreAuthActive,\r\n  isAdminPortalActive,\r\n  isAdminRegisterActive,\r\n}: {\r\n  size: TextSizeValue;\r\n  setSize: (value: TextSizeValue) => void;\r\n  adminPortalPath: string;\r\n  adminRegisterPath: string;\r\n  isStoreAuthActive: boolean;\r\n  isAdminPortalActive: boolean;\r\n  isAdminRegisterActive: boolean;\r\n}) {\r\n  return (\r\n    <DropdownMenu>\r\n      <DropdownMenuTrigger\r\n        render={\r\n          <button\r\n            type=\"button\"\r\n            className={cn(\r\n              \"group/settings inline-flex h-9 shrink-0 cursor-pointer items-stretch overflow-hidden rounded-xl border border-border/80 bg-card text-left shadow-sm outline-none transition-all duration-200\",\r\n              \"hover:-translate-y-px hover:border-primary/35 hover:shadow-md\",\r\n              \"focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50\",\r\n              \"data-popup-open:border-primary/45 data-popup-open:bg-primary/[0.04] data-popup-open:shadow-md data-popup-open:ring-2 data-popup-open:ring-primary/15\"\r\n            )}\r\n            aria-label=\"Mở tùy chọn hiển thị và tài khoản\"\r\n          />\r\n        }\r\n      >\r\n        <span className=\"relative flex w-9 shrink-0 items-center justify-center bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground\">\r\n          <span\r\n            className=\"pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.28),transparent_55%)]\"\r\n            aria-hidden\r\n          />\r\n          <Settings2 className=\"relative size-4\" aria-hidden />\r\n        </span>\r\n        <span className=\"hidden min-w-[5.5rem] items-center justify-between gap-2 border-l border-border/70 px-3 sm:flex\">\r\n          <span className=\"flex flex-col leading-none\">\r\n            <span className=\"text-sm font-semibold text-foreground\">Cài đặt</span>\r\n            <span className=\"mt-0.5 text-[10px] font-medium text-muted-foreground\">\r\n              Hiển thị · Tài khoản\r\n            </span>\r\n          </span>\r\n          <ChevronDown\r\n            className=\"size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-popup-open/settings:rotate-180\"\r\n            aria-hidden\r\n          />\r\n        </span>\r\n      </DropdownMenuTrigger>\r\n      <DropdownMenuContent\r\n        align=\"end\"\r\n        sideOffset={8}\r\n        className=\"w-[min(100vw-1.5rem,20rem)] overflow-hidden rounded-xl p-0 shadow-lg ring-1 ring-border/60\"\r\n      >\r\n        <div className=\"border-b border-border/60 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3\">\r\n          <p className=\"text-sm font-semibold text-foreground\">Tùy chọn</p>\r\n          <p className=\"text-xs text-muted-foreground\">\r\n            Cỡ chữ và truy cập hệ thống\r\n          </p>\r\n        </div>\r\n\r\n        <div className=\"space-y-3 p-2.5\">\r\n          <section className=\"rounded-lg border border-border/60 bg-muted/20 p-2.5\">\r\n            <div className=\"mb-2.5 flex items-center gap-2\">\r\n              <span className=\"flex size-8 items-center justify-center rounded-lg border border-border/70 bg-background text-primary\">\r\n                <Type className=\"size-4\" aria-hidden />\r\n              </span>\r\n              <div>\r\n                <p className=\"text-sm font-semibold text-foreground\">Cỡ chữ</p>\r\n                <p className=\"text-xs text-muted-foreground\">\r\n                  Chọn kích thước dễ đọc\r\n                </p>\r\n              </div>\r\n            </div>\r\n            <div\r\n              role=\"radiogroup\"\r\n              aria-label=\"Cỡ chữ\"\r\n              className=\"grid grid-cols-3 gap-2\"\r\n            >\r\n              {TEXT_SIZE_OPTIONS.map((option) => {\r\n                const isActive = size === option.value;\r\n\r\n                return (\r\n                  <button\r\n                    key={option.value}\r\n                    type=\"button\"\r\n                    role=\"radio\"\r\n                    aria-checked={isActive}\r\n                    onClick={() => setSize(option.value)}\r\n                    className={cn(\r\n                      \"flex flex-col items-center gap-1 rounded-lg border px-2 py-2 transition-all\",\r\n                      isActive\r\n                        ? \"border-primary bg-primary text-primary-foreground shadow-sm\"\r\n                        : \"border-border/70 bg-background text-foreground hover:border-primary/30 hover:bg-primary/5\"\r\n                    )}\r\n                  >\r\n                    <span\r\n                      className={cn(\r\n                        \"font-bold leading-none\",\r\n                        option.sampleClass,\r\n                        isActive ? \"text-primary-foreground\" : \"text-foreground\"\r\n                      )}\r\n                    >\r\n                      Aa\r\n                    </span>\r\n                    <span className=\"text-[10px] font-medium uppercase tracking-wide opacity-90\">\r\n                      {option.label}\r\n                    </span>\r\n                  </button>\r\n                );\r\n              })}\r\n            </div>\r\n          </section>\r\n\r\n          <section>\r\n            <p className=\"mb-1.5 px-1 text-xs font-semibold text-muted-foreground\">\r\n              Tài khoản\r\n            </p>\r\n            <div className=\"space-y-1\">\r\n              {STORE_ENABLED ? (\r\n                <HeaderStoreAccountMenuItem isStoreAuthActive={isStoreAuthActive} />\r\n              ) : null}\r\n              <HeaderAccountLink\r\n                label=\"Cổng quản trị\"\r\n                description=\"Truy cập khu vực quản trị\"\r\n                icon={ShieldCheck}\r\n                href={adminPortalPath}\r\n                active={isAdminPortalActive}\r\n              />\r\n              <HeaderAccountLink\r\n                label=\"Đăng ký quản trị\"\r\n                description=\"Tạo tài khoản quản trị mới\"\r\n                icon={UserPlus}\r\n                href={adminRegisterPath}\r\n                active={isAdminRegisterActive}\r\n              />\r\n            </div>\r\n          </section>\r\n        </div>\r\n      </DropdownMenuContent>\r\n    </DropdownMenu>\r\n  );\r\n}\r\n\r\nfunction HeaderAccountLink({\r\n  label,\r\n  description,\r\n  icon: Icon,\r\n  href,\r\n  external = false,\r\n  active = false,\r\n  onClick,\r\n}: {\r\n  label: string;\r\n  description: string;\r\n  icon: typeof ShieldCheck;\r\n  href?: string;\r\n  external?: boolean;\r\n  active?: boolean;\r\n  onClick?: () => void;\r\n}) {\r\n  const content = (\r\n    <>\r\n      <span\r\n        className={cn(\r\n          \"flex size-9 shrink-0 items-center justify-center rounded-lg border\",\r\n          active\r\n            ? \"border-primary/30 bg-primary/10 text-primary\"\r\n            : \"border-border/70 bg-background text-muted-foreground\"\r\n        )}\r\n      >\r\n        <Icon className=\"size-4\" aria-hidden />\r\n      </span>\r\n      <span className=\"min-w-0 flex-1\">\r\n        <span className=\"flex items-center gap-1.5 text-sm font-medium text-foreground\">\r\n          {label}\r\n          {external ? <ExternalLink className=\"size-3 text-muted-foreground\" /> : null}\r\n        </span>\r\n        <span className=\"block text-xs text-muted-foreground\">{description}</span>\r\n      </span>\r\n    </>\r\n  );\r\n\r\n  const className = cn(\r\n    \"flex w-full items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition-colors\",\r\n    active ? \"bg-primary/5\" : \"hover:border-border/60 hover:bg-muted/40\"\r\n  );\r\n\r\n  if (onClick) {\r\n    return (\r\n      <button type=\"button\" onClick={onClick} className={className}>\r\n        {content}\r\n      </button>\r\n    );\r\n  }\r\n\r\n  return (\r\n    <a\r\n      href={href}\r\n      className={className}\r\n      {...(external ? { target: \"_blank\", rel: \"noopener noreferrer\" } : {})}\r\n    >\r\n      {content}\r\n    </a>\r\n  );\r\n}\r\n\r\nfunction HeaderStoreAccountMenuItem({\r\n  isStoreAuthActive,\r\n}: {\r\n  isStoreAuthActive: boolean;\r\n}) {\r\n  const session = useSession();\r\n\r\n  return (\r\n    <HeaderAccountLink\r\n      label={session ? \"Hồ sơ cửa hàng\" : \"Đăng nhập cửa hàng\"}\r\n      description={\r\n        session ? \"Quản lý thông tin đại lý\" : \"Truy cập tài khoản cửa hàng\"\r\n      }\r\n      icon={Store}\r\n      active={isStoreAuthActive}\r\n      onClick={() => {\r\n        window.location.assign(session ? \"/profile\" : \"/login\");\r\n      }}\r\n    />\r\n  );\r\n}\r\n\r\nexport function Header() {\r\n  const pathname = usePathname();\r\n  const { size, setSize } = useTextSize();\r\n  const adminPortalPath = \"/admin\"\r\n  const adminRegisterPath = \"/admin/register\"\r\n  const isSupportActive = supportLinks.some((link) => isExactOrNestedPath(pathname, link.href));\r\n  const isStoreAuthActive = isExactOrNestedPath(pathname, \"/login\");\r\n  const isAdminPortalActive =\r\n    pathname === adminPortalPath || pathname === \"/admin/login\"\r\n  const isAdminRegisterActive = isExactOrNestedPath(pathname, adminRegisterPath)\r\n\r\n  return (\r\n    <header className=\"sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur\">\r\n      <div className=\"mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-3 px-6 md:px-12\">\r\n        <div className=\"flex w-full items-center justify-start gap-3\">\r\n          <Link href=\"/\" className=\"flex shrink-0 items-center gap-2\">\r\n            <Logo className=\"h-8 w-8 sm:h-10 sm:w-10\" />\r\n            <div className=\"hidden leading-tight sm:block\">\r\n              <div className=\"text-xs font-semibold\">Trường Đại học Ngân hàng</div>\r\n              <div className=\"text-[11px] text-muted-foreground\">Thành Phố Hồ Chí Minh</div>\r\n            </div>\r\n          </Link>\r\n\r\n          <NavigationMenu className=\"hidden md:flex\">\r\n            <NavigationMenuList className=\"gap-1\">\r\n              {primaryLinks.map((item) => {\r\n                const isActive = isExactOrNestedPath(pathname, item.href);\r\n\r\n                return (\r\n                  <NavigationMenuItem key={item.href}>\r\n                    <Link\r\n                      href={item.href}\r\n                      prefetch={item.href === \"/bai-viet\" ? false : undefined}\r\n                      aria-current={isActive ? \"page\" : undefined}\r\n                      className={cn(\r\n                        \"inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors\",\r\n                        isActive\r\n                          ? \"bg-primary text-primary-foreground shadow-sm\"\r\n                          : \"text-muted-foreground hover:bg-muted hover:text-foreground\"\r\n                      )}\r\n                    >\r\n                      <item.icon className=\"size-4\" />\r\n                      {item.label}\r\n                    </Link>\r\n                  </NavigationMenuItem>\r\n                );\r\n              })}\r\n\r\n              <NavigationMenuItem>\r\n                <DropdownMenu>\r\n                  <DropdownMenuTrigger\r\n                    render={\r\n                      <button\r\n                        className={cn(\r\n                          \"inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors\",\r\n                          isSupportActive\r\n                            ? \"bg-primary text-primary-foreground shadow-sm\"\r\n                            : \"text-foreground hover:bg-muted/80\"\r\n                        )}\r\n                      />\r\n                    }\r\n                  >\r\n                    Hỗ trợ\r\n                  </DropdownMenuTrigger>\r\n                  <DropdownMenuContent className=\"w-[360px] p-2\">\r\n                    <div className=\"grid grid-cols-2 gap-2\">\r\n                      {supportLinks.map((item) => {\r\n                        const isActive = isExactOrNestedPath(pathname, item.href);\r\n\r\n                        return (\r\n                          <DropdownMenuItem key={item.href} className=\"p-0\">\r\n                            <Link\r\n                              href={item.href}\r\n                              aria-current={isActive ? \"page\" : undefined}\r\n                              className={cn(\r\n                                \"flex w-full items-start gap-2 rounded-md px-2 py-2 transition-colors\",\r\n                                isActive ? \"bg-muted\" : \"hover:bg-muted/70\"\r\n                              )}\r\n                            >\r\n                              <span\r\n                                className={cn(\r\n                                  \"rounded-md border p-1.5\",\r\n                                  isActive\r\n                                    ? \"border-primary/30 bg-primary/10 text-primary\"\r\n                                    : \"border-border\"\r\n                                )}\r\n                              >\r\n                                <item.icon className=\"size-4\" />\r\n                              </span>\r\n                              <span className=\"min-w-0\">\r\n                                <span className=\"block text-sm font-medium\">{item.label}</span>\r\n                                <span className=\"block text-xs text-muted-foreground\">\r\n                                  {item.description}\r\n                                </span>\r\n                              </span>\r\n                            </Link>\r\n                          </DropdownMenuItem>\r\n                        );\r\n                      })}\r\n                    </div>\r\n                  </DropdownMenuContent>\r\n                </DropdownMenu>\r\n              </NavigationMenuItem>\r\n            </NavigationMenuList>\r\n          </NavigationMenu>\r\n        </div>\r\n\r\n        <div className=\"flex shrink-0 items-center gap-2\">\r\n          {STORE_ENABLED ? <HeaderStoreChrome pathname={pathname} /> : null}\r\n          <HeaderOptionsMenu\r\n            size={size}\r\n            setSize={setSize}\r\n            adminPortalPath={adminPortalPath}\r\n            adminRegisterPath={adminRegisterPath}\r\n            isStoreAuthActive={isStoreAuthActive}\r\n            isAdminPortalActive={isAdminPortalActive}\r\n            isAdminRegisterActive={isAdminRegisterActive}\r\n          />\r\n        </div>\r\n      </div>\r\n    </header>\r\n  );\r\n}\r\n"
     },
     "src/components/shared/order-status-table.tsx": {
       "id": "file_src_components_shared_order_status_table_tsx",
@@ -1133,12 +3400,118 @@
       ],
       "content": "\"use client\";\r\n\r\nimport { useEffect, type ReactNode } from \"react\";\r\nimport { usePathname, useRouter } from \"next/navigation\";\r\nimport { Loader2 } from \"lucide-react\";\r\nimport { useSession } from \"@/hooks/use-session\";\r\nimport { useClientReady } from \"@/hooks/use-client-ready\";\r\nimport { isStoreAuthPath, safeRelativeNext } from \"@/lib/auth-routes\";\r\n\r\nfunction AuthRoutePlaceholder({ message }: { message: string }) {\r\n  return (\r\n    <div className=\"flex min-h-[min(70vh,calc(100vh-12rem))] w-full flex-1 flex-col items-center justify-center gap-3 text-muted-foreground\">\r\n      <Loader2 className=\"size-10 animate-spin text-primary\" aria-hidden />\r\n      <p className=\"text-sm\">{message}</p>\r\n    </div>\r\n  );\r\n}\r\n\r\n/**\r\n * Chặn người đã đăng nhập quay lại /login hoặc /register (kể cả nút Back / gõ URL).\r\n * Giữ tham số `next` hợp lệ khi rời /login.\r\n */\r\nexport function StoreAuthGate({ children }: { children: ReactNode }) {\r\n  const pathname = usePathname();\r\n  const router = useRouter();\r\n  const session = useSession();\r\n  const clientReady = useClientReady();\r\n  const onAuthRoute = isStoreAuthPath(pathname);\r\n\r\n  useEffect(() => {\r\n    if (!clientReady || !onAuthRoute || !session) return;\r\n    const raw =\r\n      typeof window !== \"undefined\"\r\n        ? new URLSearchParams(window.location.search).get(\"next\")\r\n        : null;\r\n    router.replace(safeRelativeNext(raw));\r\n  }, [clientReady, onAuthRoute, session, router]);\r\n\r\n  if (!onAuthRoute) {\r\n    return <>{children}</>;\r\n  }\r\n\r\n  if (!clientReady) {\r\n    return <AuthRoutePlaceholder message=\"Đang tải…\" />;\r\n  }\r\n\r\n  if (session) {\r\n    return <AuthRoutePlaceholder message=\"Đang chuyển vào hệ thống…\" />;\r\n  }\r\n\r\n  return <>{children}</>;\r\n}\r\n"
     },
+    "src/config/admin/parent-admin-access.ts": {
+      "id": "file_src_config_admin_parent_admin_access_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "PARENT_ADMIN_BASE_PATH",
+        "PARENT_ADMIN_HOME_PATH",
+        "PARENT_ADMIN_LOGIN_PATH",
+        "PARENT_ADMIN_PROFILE_PATH",
+        "PARENT_ADMIN_REGISTER_PATH",
+        "PARENT_ADMIN_INDEX_PATH",
+        "canAccessParentAdmin",
+        "isParentAdminShellPath"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/config/admin",
+        "src/app/admin/page.tsx",
+        "src/config/admin/parent-admin-layout-static.ts",
+        "src/features/admin-auth/sign-in-form.tsx",
+        "src/lib/admin/auth-routes.ts",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import { canAccessStaffAdmin, type AuthUser } from \"@workspace/api-client\"\r\nimport type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\nimport {\r\n  buildAdminShellPaths,\r\n  isPathUnderAdminBase,\r\n} from \"@workspace/admin-app/config/admin-access-paths\"\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\n\r\nconst PARENT_ADMIN_PATHS = buildAdminShellPaths(adminAppConfig as AdminAppConfig)\r\n\r\nexport const PARENT_ADMIN_BASE_PATH = PARENT_ADMIN_PATHS.basePath\r\nexport const PARENT_ADMIN_HOME_PATH = PARENT_ADMIN_PATHS.homePath\r\nexport const PARENT_ADMIN_LOGIN_PATH = PARENT_ADMIN_PATHS.loginPath\r\nexport const PARENT_ADMIN_PROFILE_PATH = PARENT_ADMIN_PATHS.profilePath\r\nexport const PARENT_ADMIN_REGISTER_PATH = PARENT_ADMIN_PATHS.registerPath\r\nexport const PARENT_ADMIN_INDEX_PATH = PARENT_ADMIN_PATHS.indexPath\r\n\r\nexport function canAccessParentAdmin(user: AuthUser): boolean {\r\n  return canAccessStaffAdmin(user)\r\n}\r\n\r\nexport function isParentAdminShellPath(\r\n  pathname: string | null | undefined,\r\n): boolean {\r\n  return isPathUnderAdminBase(pathname, PARENT_ADMIN_BASE_PATH)\r\n}\r\n\r\n"
+    },
+    "src/config/admin/parent-admin-layout-static.ts": {
+      "id": "file_src_config_admin_parent_admin_layout_static_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "PARENT_ADMIN_LAYOUT_STATIC"
+      ],
+      "imports": [
+        "src/config/admin/parent-admin-menu-tree.tsx",
+        "src/config/admin/parent-admin-access.ts",
+        "src/lib/admin/auth-session.ts",
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/config/admin",
+        "src/providers/admin/parent-admin-layout.tsx"
+      ],
+      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\"\r\nimport { PARENT_ADMIN_MENU_TREE } from \"@/config/admin/parent-admin-menu-tree\"\r\nimport {\r\n  PARENT_ADMIN_HOME_PATH,\r\n  PARENT_ADMIN_LOGIN_PATH,\r\n  PARENT_ADMIN_PROFILE_PATH,\r\n  PARENT_ADMIN_REGISTER_PATH,\r\n  canAccessParentAdmin,\r\n} from \"@/config/admin/parent-admin-access\"\r\nimport { ADMIN_SESSION_EVENT, clearAdminSession } from \"@/lib/admin/auth-session\"\r\nimport { isParentAdminAuthPath } from \"@/lib/admin/auth-routes\"\r\n\r\nexport const PARENT_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: PARENT_ADMIN_MENU_TREE,\r\n  loginPath: PARENT_ADMIN_LOGIN_PATH,\r\n  registerPath: PARENT_ADMIN_REGISTER_PATH,\r\n  isAuthPath: isParentAdminAuthPath,\r\n  canAccessApp: canAccessParentAdmin,\r\n  clearSession: clearAdminSession,\r\n  sessionEventName: ADMIN_SESSION_EVENT,\r\n  mobileHeaderTitle: \"HUB Parent Admin\",\r\n  homePath: PARENT_ADMIN_HOME_PATH,\r\n  profilePath: PARENT_ADMIN_PROFILE_PATH,\r\n  publicSitePath: \"/\",\r\n  publicSiteLabel: \"Trang chu HUB Parent\",\r\n}\r\n\r\n"
+    },
+    "src/config/admin/parent-admin-menu-tree.tsx": {
+      "id": "file_src_config_admin_parent_admin_menu_tree_tsx",
+      "type": "tsx",
+      "client": false,
+      "exports": [
+        "PARENT_ADMIN_MENU_TREE"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/config/admin",
+        "src/config/admin/parent-admin-layout-static.ts"
+      ],
+      "content": "import type { AdminAppConfig } from \"@workspace/admin-app/config\"\r\nimport {\r\n  buildAdminMenuFromConfig,\r\n  resolveAdminMenuIcons,\r\n} from \"@workspace/admin-app/menu\"\r\nimport type { AdminMenuTreeItem } from \"@ui/components/admin\"\r\nimport adminAppConfig from \"../../../admin.app.config.json\"\r\n\r\nexport const PARENT_ADMIN_MENU_TREE: AdminMenuTreeItem[] = resolveAdminMenuIcons(\r\n  buildAdminMenuFromConfig(adminAppConfig as AdminAppConfig),\r\n)\r\n\r\n"
+    },
+    "src/features/admin-auth/auth-api.ts": {
+      "id": "file_src_features_admin_auth_auth_api_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [
+        "src/lib/admin/api-base-url.ts"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import { createAuthAdminApi, type DevLoginOption } from \"@workspace/api-client\"\r\nimport { getApiBaseUrl } from \"@/lib/admin/api-base-url\"\r\n\r\nexport * from \"@workspace/admin-app/modules/auth/_lib/auth-api\"\r\n\r\nexport async function fetchDevLoginOptions(): Promise<DevLoginOption[]> {\r\n  if (process.env.NODE_ENV !== \"development\") {\r\n    return []\r\n  }\r\n\r\n  try {\r\n    return await createAuthAdminApi({\r\n      baseUrl: getApiBaseUrl(),\r\n      devLogTag: \"HUB_PARENT_ADMIN\",\r\n    }).fetchDevLoginOptions({\r\n      excludeRoles: \"student,parent,user\",\r\n      activeOnly: true,\r\n    })\r\n  } catch (error) {\r\n    console.warn(\"[HUB_PARENT_ADMIN] fetchDevLoginOptions failed:\", error)\r\n    return []\r\n  }\r\n}\r\n\r\n"
+    },
+    "src/features/admin-auth/register-form.tsx": {
+      "id": "file_src_features_admin_auth_register_form_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "RegisterForm"
+      ],
+      "imports": [
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/app/admin/register/page.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { AUTH_LOGIN_PATH } from \"@/lib/admin/auth-routes\"\r\nimport { AdminRegisterForm } from \"@workspace/admin-app/modules/auth/_component/register-form\"\r\n\r\nexport function RegisterForm() {\r\n  return <AdminRegisterForm config={{ loginPath: AUTH_LOGIN_PATH }} />\r\n}\r\n\r\n"
+    },
+    "src/features/admin-auth/sign-in-form.tsx": {
+      "id": "file_src_features_admin_auth_sign_in_form_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "SignInForm"
+      ],
+      "imports": [
+        "src/config/admin/parent-admin-access.ts",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "importedBy": [
+        "src/features/admin-auth",
+        "src/app/admin/login/page.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport {\r\n  PARENT_ADMIN_HOME_PATH,\r\n  canAccessParentAdmin,\r\n} from \"@/config/admin/parent-admin-access\"\r\nimport { useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport {\r\n  AdminSignInForm,\r\n  type AdminSignInFormConfig,\r\n} from \"@workspace/admin-app/modules/auth/_component/sign-in-form\"\r\n\r\nconst PARENT_ADMIN_SIGN_IN_CONFIG: AdminSignInFormConfig = {\r\n  canAccessAdmin: canAccessParentAdmin,\r\n  homePath: PARENT_ADMIN_HOME_PATH,\r\n  staffOnlyMessage: \"Tai khoan khong co quyen truy cap cong quan tri HUB Parent.\",\r\n  staffOnlyDevMessage: \"Tai khoan development khong co quyen truy cap admin.\",\r\n  staffOnlyGoogleMessage: \"Tai khoan Google khong co quyen truy cap admin.\",\r\n}\r\n\r\nexport function SignInForm() {\r\n  const clientReady = useClientReady()\r\n\r\n  return (\r\n    <AdminSignInForm\r\n      config={PARENT_ADMIN_SIGN_IN_CONFIG}\r\n      loginLock={clientReady ? { ok: true as const } : { ok: true as const }}\r\n    />\r\n  )\r\n}\r\n\r\n"
+    },
     "src/features/auth/admin-bridge.ts": {
       "id": "file_src_features_auth_admin_bridge_ts",
       "type": "ts",
       "client": false,
       "exports": [
         "getAdminBaseUrl",
+        "getAdminHomeUrl",
         "getAdminLoginUrl",
         "getAdminRegisterUrl"
       ],
@@ -1146,11 +3519,10 @@
       "importedBy": [
         "src/features/auth",
         "src/components/shared/footer.tsx",
-        "src/components/shared/header.tsx",
         "src/features/pages/home-page/constants.ts",
         "src/features/pages/home-page/sub-sections/hero-section.tsx"
       ],
-      "content": "const DEFAULT_ADMIN_URL = \"http://localhost:3001\";\r\nconst ADMIN_LOGIN_SEGMENT = \"/admin/login\";\r\nconst ADMIN_REGISTER_SEGMENT = \"/admin/register\";\r\n\r\nexport function getAdminBaseUrl() {\r\n  return (process.env.NEXT_PUBLIC_ADMIN_URL ?? DEFAULT_ADMIN_URL).replace(/\\/$/, \"\");\r\n}\r\n\r\nfunction buildAdminUrl(pathname: string) {\r\n  const baseUrl = getAdminBaseUrl();\r\n  const normalizedPath = pathname.startsWith(\"/\") ? pathname : `/${pathname}`;\r\n\r\n  if (baseUrl.endsWith(\"/admin\") && normalizedPath.startsWith(\"/admin/\")) {\r\n    return `${baseUrl}${normalizedPath.slice(\"/admin\".length)}`;\r\n  }\r\n\r\n  return `${baseUrl}${normalizedPath}`;\r\n}\r\n\r\nexport function getAdminLoginUrl() {\r\n  return buildAdminUrl(ADMIN_LOGIN_SEGMENT);\r\n}\r\n\r\nexport function getAdminRegisterUrl() {\r\n  return buildAdminUrl(ADMIN_REGISTER_SEGMENT);\r\n}\r\n"
+      "content": "const DEFAULT_ADMIN_URL = \"\"\r\nconst ADMIN_HOME_SEGMENT = \"/admin\"\r\nconst ADMIN_LOGIN_SEGMENT = \"/admin/login\"\r\nconst ADMIN_REGISTER_SEGMENT = \"/admin/register\"\r\n\r\nexport function getAdminBaseUrl() {\r\n  return (process.env.NEXT_PUBLIC_ADMIN_URL ?? DEFAULT_ADMIN_URL).replace(/\\/$/, \"\")\r\n}\r\n\r\nfunction buildAdminUrl(pathname: string) {\r\n  const baseUrl = getAdminBaseUrl()\r\n  const normalizedPath = pathname.startsWith(\"/\") ? pathname : `/${pathname}`\r\n\r\n  if (baseUrl.endsWith(\"/admin\") && normalizedPath.startsWith(\"/admin/\")) {\r\n    return `${baseUrl}${normalizedPath.slice(\"/admin\".length)}`\r\n  }\r\n\r\n  return `${baseUrl}${normalizedPath}`\r\n}\r\n\r\nexport function getAdminHomeUrl() {\r\n  return buildAdminUrl(ADMIN_HOME_SEGMENT)\r\n}\r\n\r\nexport function getAdminLoginUrl() {\r\n  return buildAdminUrl(ADMIN_LOGIN_SEGMENT)\r\n}\r\n\r\nexport function getAdminRegisterUrl() {\r\n  return buildAdminUrl(ADMIN_REGISTER_SEGMENT)\r\n}\r\n"
     },
     "src/features/pages/about-page/about-client.tsx": {
       "id": "file_src_features_pages_about_page_about_client_tsx",
@@ -1705,6 +4077,107 @@
       ],
       "content": "\"use client\";\r\n\r\nimport type { MouseEvent } from \"react\";\r\nimport { useEffect, useState } from \"react\";\r\nimport { ChevronDown } from \"lucide-react\";\r\nimport { cn } from \"@ui/lib/utils\";\r\nimport { scrollToYWithHeaderOffset } from \"@/lib/scroll\";\r\n\r\nexport interface ScrollIndicatorProps {\r\n  onScroll?: () => void;\r\n  containerRef?: React.RefObject<HTMLElement | null>;\r\n  variant?: \"light\" | \"dark\";\r\n  className?: string;\r\n}\r\n\r\nexport const ScrollIndicator = ({ onScroll, containerRef, variant = \"dark\", className }: ScrollIndicatorProps) => {\r\n  const [isMounted, setIsMounted] = useState(false);\r\n  const isLight = variant === \"light\";\r\n\r\n  useEffect(() => {\r\n    setIsMounted(true);\r\n  }, []);\r\n\r\n  const getCurrentSection = (event: MouseEvent<HTMLButtonElement>) => {\r\n    if (containerRef?.current) {\r\n      return containerRef.current;\r\n    }\r\n\r\n    const closestSection = event.currentTarget.closest(\"section\");\r\n    return closestSection instanceof HTMLElement ? closestSection : null;\r\n  };\r\n\r\n  const handleScroll = (event: MouseEvent<HTMLButtonElement>) => {\r\n    if (onScroll) {\r\n      onScroll();\r\n      return;\r\n    }\r\n\r\n    const currentSection = getCurrentSection(event);\r\n\r\n    if (currentSection) {\r\n      const nextSection = currentSection.nextElementSibling as HTMLElement;\r\n\r\n      if (nextSection) {\r\n        const top = nextSection.getBoundingClientRect().top + window.scrollY;\r\n        scrollToYWithHeaderOffset(top, \"smooth\");\r\n      }\r\n    }\r\n  };\r\n\r\n  if (!isMounted) return null;\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"absolute bottom-0 sm:bottom-4 left-1/2 -translate-x-1/2 z-[60] block animate-in fade-in slide-in-from-top-2 duration-[500ms] delay-[1000ms]\",\r\n        className\r\n      )}\r\n    >\r\n      <button\r\n        type=\"button\"\r\n        className={cn(\r\n          \"flex flex-col items-center gap-1.5 transition-colors cursor-pointer group\",\r\n          isLight ? \"text-white/70 hover:text-white\" : \"text-foreground/70 hover:text-foreground\"\r\n        )}\r\n        onClick={handleScroll}\r\n        aria-label=\"Cuộn xuống section tiếp theo\"\r\n      >\r\n        <div\r\n          className={cn(\r\n            \"relative px-3 py-1.5 rounded-full backdrop-blur-xl transition-all duration-300 shadow-md group-hover:shadow-lg\",\r\n            isLight\r\n              ? \"bg-white/10 border border-white/30 group-hover:bg-white/20 group-hover:border-white/40\"\r\n              : \"bg-background/80 border border-border/50 group-hover:bg-background group-hover:border-border\"\r\n          )}\r\n        >\r\n          <span\r\n            className={cn(\r\n              \"text-xs lg:text-base tracking-[0.15em] uppercase font-semibold whitespace-nowrap\",\r\n              isLight ? \"drop-shadow-md\" : \"\"\r\n            )}\r\n          >\r\n            Cuộn xuống\r\n          </span>\r\n        </div>\r\n        <div className=\"relative\">\r\n          <div\r\n            className={cn(\r\n              \"absolute inset-0 rounded-full blur-md animate-pulse\",\r\n              isLight ? \"bg-primary/30\" : \"bg-primary/20\"\r\n            )}\r\n            style={{\r\n              animationDuration: \"2s\",\r\n              animationTimingFunction: \"ease-in-out\",\r\n            }}\r\n          />\r\n          <ChevronDown\r\n            className={cn(\r\n              \"relative w-5 h-5 transition-all\",\r\n              isLight\r\n                ? \"drop-shadow-md group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]\"\r\n                : \"drop-shadow-lg group-hover:drop-shadow-[0_0_12px_rgba(0,0,0,0.3)]\"\r\n            )}\r\n          />\r\n        </div>\r\n      </button>\r\n    </div>\r\n  );\r\n};\r\n"
     },
+    "src/hooks/admin/index.ts": {
+      "id": "file_src_hooks_admin_index_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useDebouncedValue",
+        "useAdminEditFormHydration",
+        "useAdminFormDraftPersistence",
+        "useAdminTableState"
+      ],
+      "imports": [
+        "src/hooks/admin/use-debounced-value.ts",
+        "src/hooks/admin/use-admin-edit-form-hydration.ts",
+        "src/hooks/admin/use-admin-table-state.ts"
+      ],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export { useDebouncedValue } from \"./use-debounced-value\"\r\nexport {\r\n  useAdminEditFormHydration,\r\n  useAdminFormDraftPersistence,\r\n  type UseAdminEditFormHydrationOptions,\r\n} from \"./use-admin-edit-form-hydration\"\r\nexport {\r\n  useAdminTableState,\r\n  type UseAdminTableStateOptions,\r\n  type UseAdminTableStateReturn,\r\n  type AdminTableTab,\r\n} from \"./use-admin-table-state\"\r\n\r\n"
+    },
+    "src/hooks/admin/queries.ts": {
+      "id": "file_src_hooks_admin_queries_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/hooks/queries\"\r\n\r\n"
+    },
+    "src/hooks/admin/use-admin-edit-form-hydration.ts": {
+      "id": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminEditFormHydration",
+        "useAdminFormDraftPersistence"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export {\r\n  useAdminEditFormHydration,\r\n  useAdminFormDraftPersistence,\r\n  type UseAdminEditFormHydrationOptions,\r\n} from \"@workspace/admin-app/hooks/use-admin-edit-form-hydration\"\r\n\r\n"
+    },
+    "src/hooks/admin/use-admin-mutation.ts": {
+      "id": "file_src_hooks_admin_use_admin_mutation_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminMutation"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin"
+      ],
+      "content": "export { useAdminMutation } from \"@ui/hooks/use-admin-mutation\"\r\n\r\n"
+    },
+    "src/hooks/admin/use-admin-realtime-sync.ts": {
+      "id": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminRealtimeSync"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/providers/admin/admin-realtime-sync.tsx"
+      ],
+      "content": "export { useAdminRealtimeSync } from \"@workspace/admin-app/hooks/use-admin-realtime-sync\"\r\n\r\n"
+    },
+    "src/hooks/admin/use-admin-table-state.ts": {
+      "id": "file_src_hooks_admin_use_admin_table_state_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useAdminTableState"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export {\r\n  useAdminTableState,\r\n  type UseAdminTableStateOptions,\r\n  type UseAdminTableStateReturn,\r\n  type AdminTableTab,\r\n} from \"@workspace/admin-app/hooks/use-admin-table-state\"\r\n\r\n"
+    },
+    "src/hooks/admin/use-debounced-value.ts": {
+      "id": "file_src_hooks_admin_use_debounced_value_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "useDebouncedValue"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/hooks/admin",
+        "src/hooks/admin/index.ts"
+      ],
+      "content": "export { useDebouncedValue } from \"@workspace/admin-app/hooks/use-debounced-value\"\r\n\r\n"
+    },
     "src/hooks/queries.ts": {
       "id": "file_src_hooks_queries_ts",
       "type": "ts",
@@ -1847,6 +4320,99 @@
         "src/hooks"
       ],
       "content": "import { useCallback, useMemo, useSyncExternalStore, useState } from \"react\";\r\nimport { Todo } from \"@/types/todo\";\r\nimport { generateId } from \"@/lib/utils\";\r\nimport { StorageLib } from \"@/lib/storage\";\r\n\r\nconst STORAGE_KEY = \"demo_todos_state\";\r\n\r\nexport type TodoFilter = \"all\" | \"active\" | \"completed\";\r\n\r\nexport interface TodoStats {\r\n  total: number;\r\n  completed: number;\r\n  active: number;\r\n}\r\n\r\n/* External store for SSR-safe localStorage subscription */\r\nlet lastRaw: string | null = null;\r\nlet lastParsed: Todo[] = [];\r\n\r\nfunction getClientSnapshot(): Todo[] {\r\n  try {\r\n    const raw = window.localStorage.getItem(STORAGE_KEY);\r\n    if (raw === lastRaw) return lastParsed;\r\n    lastRaw = raw;\r\n    lastParsed = raw ? (JSON.parse(raw) as Todo[]) : [];\r\n    return lastParsed;\r\n  } catch {\r\n    return lastParsed;\r\n  }\r\n}\r\n\r\nfunction subscribe(callback: () => void) {\r\n  const handler = () => {\r\n    // invalidate cache so next getClientSnapshot re-reads\r\n    lastRaw = null;\r\n    callback();\r\n  };\r\n  window.addEventListener(\"storage\", handler);\r\n  return () => window.removeEventListener(\"storage\", handler);\r\n}\r\n\r\nfunction notify() {\r\n  // invalidate cache before dispatching so subscribers pick up new data\r\n  lastRaw = null;\r\n  window.dispatchEvent(new StorageEvent(\"storage\"));\r\n}\r\n\r\nexport function useTodos(initialTodos: Todo[] = []) {\r\n  const storeTodos = useSyncExternalStore(\r\n    subscribe,\r\n    getClientSnapshot,\r\n    () => initialTodos\r\n  );\r\n\r\n  /* Filter is local UI state, not persisted */\r\n  const [filter, setFilter] = useState<TodoFilter>(\"all\");\r\n\r\n  const setTodos = useCallback((updater: (prev: Todo[]) => Todo[]) => {\r\n    const current = StorageLib.get<Todo[]>(STORAGE_KEY, []);\r\n    const next = updater(current);\r\n    StorageLib.set(STORAGE_KEY, next);\r\n    notify();\r\n  }, []);\r\n\r\n  const addTodo = useCallback((title: string) => {\r\n    const trimmed = title.trim();\r\n    if (!trimmed) return;\r\n    const newTodo: Todo = {\r\n      id: generateId(),\r\n      title: trimmed,\r\n      completed: false,\r\n      createdAt: Date.now(),\r\n    };\r\n    setTodos((prev) => [newTodo, ...prev]);\r\n  }, [setTodos]);\r\n\r\n  const toggleTodo = useCallback((id: string) => {\r\n    setTodos((prev) =>\r\n      prev.map((todo) =>\r\n        todo.id === id ? { ...todo, completed: !todo.completed } : todo\r\n      )\r\n    );\r\n  }, [setTodos]);\r\n\r\n  const removeTodo = useCallback((id: string) => {\r\n    setTodos((prev) => prev.filter((todo) => todo.id !== id));\r\n  }, [setTodos]);\r\n\r\n  const editTodo = useCallback((id: string, newTitle: string) => {\r\n    const trimmed = newTitle.trim();\r\n    if (!trimmed) return;\r\n    setTodos((prev) =>\r\n      prev.map((todo) =>\r\n        todo.id === id ? { ...todo, title: trimmed } : todo\r\n      )\r\n    );\r\n  }, [setTodos]);\r\n\r\n  const clearCompleted = useCallback(() => {\r\n    setTodos((prev) => prev.filter((todo) => !todo.completed));\r\n  }, [setTodos]);\r\n\r\n  const filteredTodos = useMemo(() => {\r\n    switch (filter) {\r\n      case \"active\":\r\n        return storeTodos.filter((t) => !t.completed);\r\n      case \"completed\":\r\n        return storeTodos.filter((t) => t.completed);\r\n      default:\r\n        return storeTodos;\r\n    }\r\n  }, [storeTodos, filter]);\r\n\r\n  const stats: TodoStats = useMemo(\r\n    () => ({\r\n      total: storeTodos.length,\r\n      completed: storeTodos.filter((t) => t.completed).length,\r\n      active: storeTodos.filter((t) => !t.completed).length,\r\n    }),\r\n    [storeTodos]\r\n  );\r\n\r\n  return {\r\n    todos: filteredTodos,\r\n    allTodos: storeTodos,\r\n    isLoaded: true,\r\n    filter,\r\n    setFilter,\r\n    stats,\r\n    addTodo,\r\n    toggleTodo,\r\n    removeTodo,\r\n    editTodo,\r\n    clearCompleted,\r\n  };\r\n}\r\n"
+    },
+    "src/lib/admin/admin-navigation.ts": {
+      "id": "file_src_lib_admin_admin_navigation_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/admin-navigation\"\r\n\r\n"
+    },
+    "src/lib/admin/api-base-url.ts": {
+      "id": "file_src_lib_admin_api_base_url_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin",
+        "src/features/admin-auth/auth-api.ts",
+        "src/lib/admin/api.ts"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/api-base-url\"\r\n\r\n"
+    },
+    "src/lib/admin/api.ts": {
+      "id": "file_src_lib_admin_api_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "api",
+        "ApiError"
+      ],
+      "imports": [
+        "src/lib/admin/api-base-url.ts",
+        "src/lib/admin/auth-session.ts"
+      ],
+      "importedBy": [
+        "src/lib/admin",
+        "src/app/admin/admin-runtime-bridge.tsx",
+        "src/providers/admin/parent-admin-layout.tsx"
+      ],
+      "content": "import { createStoreSyncSdk } from \"@workspace/api-client\"\r\nimport { getApiBaseUrl } from \"@/lib/admin/api-base-url\"\r\nimport { getAdminDevAuthLogContext, getAdminUserId } from \"./auth-session\"\r\n\r\nexport const api = createStoreSyncSdk({\r\n  baseUrl: getApiBaseUrl(),\r\n  getUserId: () => {\r\n    if (typeof window === \"undefined\") return null\r\n    return getAdminUserId()\r\n  },\r\n  devLogging: process.env.NODE_ENV === \"development\",\r\n  devLogTag: \"HUB_PARENT_ADMIN\",\r\n  getDevAuthContext: () => getAdminDevAuthLogContext(),\r\n})\r\n\r\nexport type {\r\n  AccountProfile,\r\n  AuthUser,\r\n  ChangeAccountPasswordInput,\r\n  ChangePasswordInput,\r\n  UpdateAccountInput,\r\n  CreateUserInput,\r\n  RbacPermission,\r\n  RbacRole,\r\n  User,\r\n  UserRoleRef,\r\n  Category,\r\n  CategoryUsage,\r\n  CreateCategoryInput,\r\n  UpdateCategoryInput,\r\n  UpdateProfileInput,\r\n  UpdateUserInput,\r\n} from \"@workspace/api-client\"\r\nexport { ApiError } from \"@workspace/api-client\"\r\n\r\n"
+    },
+    "src/lib/admin/auth-routes.ts": {
+      "id": "file_src_lib_admin_auth_routes_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [
+        "AUTH_LOGIN_PATH",
+        "AUTH_REGISTER_PATH",
+        "isParentAdminAuthPath",
+        "getAdminAppHomeExternalPath",
+        "getAdminLoginExternalPath",
+        "PARENT_ADMIN_HOME_PATH",
+        "PARENT_ADMIN_LOGIN_PATH"
+      ],
+      "imports": [
+        "src/config/admin/parent-admin-access.ts"
+      ],
+      "importedBy": [
+        "src/lib/admin",
+        "src/config/admin/parent-admin-layout-static.ts",
+        "src/features/admin-auth/register-form.tsx",
+        "src/providers/admin/auth-provider.tsx"
+      ],
+      "content": "import {\r\n  PARENT_ADMIN_HOME_PATH,\r\n  PARENT_ADMIN_LOGIN_PATH,\r\n  PARENT_ADMIN_REGISTER_PATH,\r\n} from \"@/config/admin/parent-admin-access\"\r\n\r\nexport { PARENT_ADMIN_HOME_PATH, PARENT_ADMIN_LOGIN_PATH }\r\n\r\nexport const AUTH_LOGIN_PATH = PARENT_ADMIN_LOGIN_PATH\r\nexport const AUTH_REGISTER_PATH = PARENT_ADMIN_REGISTER_PATH\r\n\r\nconst PARENT_ADMIN_AUTH_PATHS = [\r\n  PARENT_ADMIN_LOGIN_PATH,\r\n  AUTH_REGISTER_PATH,\r\n] as const\r\n\r\nconst AUTH_SET = new Set<string>(PARENT_ADMIN_AUTH_PATHS)\r\n\r\nexport function isParentAdminAuthPath(\r\n  pathname: string | null | undefined,\r\n): boolean {\r\n  if (!pathname) return false\r\n  const normalized = pathname.replace(/\\/+$/, \"\") || \"/\"\r\n  return AUTH_SET.has(normalized)\r\n}\r\n\r\nexport function getAdminAppHomeExternalPath(): string {\r\n  return PARENT_ADMIN_HOME_PATH\r\n}\r\n\r\nexport function getAdminLoginExternalPath(): string {\r\n  return PARENT_ADMIN_LOGIN_PATH\r\n}\r\n\r\n"
+    },
+    "src/lib/admin/auth-session.ts": {
+      "id": "file_src_lib_admin_auth_session_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin",
+        "src/config/admin/parent-admin-layout-static.ts",
+        "src/lib/admin/api.ts",
+        "src/providers/admin/auth-provider.tsx",
+        "src/providers/admin/parent-admin-layout.tsx"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/auth-session\"\r\n\r\n"
+    },
+    "src/lib/admin/index.ts": {
+      "id": "file_src_lib_admin_index_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/lib/admin"
+      ],
+      "content": "export * from \"@workspace/admin-app/lib/index\"\r\n\r\n"
     },
     "src/lib/api.ts": {
       "id": "file_src_lib_api_ts",
@@ -2140,6 +4706,83 @@
       ],
       "content": "import { clsx, type ClassValue } from \"clsx\"\r\nimport { twMerge } from \"@ui/lib/tw-merge\"\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n\r\n/**\r\n * Generates a unique identifier.\r\n */\r\nexport const generateId = (): string => {\r\n  return Math.random().toString(36).substring(2, 9);\r\n};\r\n"
     },
+    "src/providers/admin/admin-realtime-sync.tsx": {
+      "id": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "AdminRealtimeSync"
+      ],
+      "imports": [
+        "src/providers/admin/auth-provider.tsx",
+        "src/hooks/admin/use-admin-realtime-sync.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/providers/admin/parent-admin-layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useQueryClient } from \"@tanstack/react-query\"\r\nimport { useAuth } from \"@/providers/admin/auth-provider\"\r\nimport { useAdminRealtimeSync } from \"@/hooks/admin/use-admin-realtime-sync\"\r\n\r\nexport function AdminRealtimeSync() {\r\n  const { user } = useAuth()\r\n  const queryClient = useQueryClient()\r\n  useAdminRealtimeSync(!!user, queryClient)\r\n  return null\r\n}\r\n\r\n"
+    },
+    "src/providers/admin/auth-provider.tsx": {
+      "id": "file_src_providers_admin_auth_provider_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "StaffLoginResult",
+        "AuthProvider",
+        "useAuth",
+        "useClientReady"
+      ],
+      "imports": [
+        "src/config/admin/parent-admin-access.ts",
+        "src/features/admin-auth/auth-api.ts",
+        "src/lib/admin/auth-session.ts",
+        "src/lib/admin/auth-routes.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/app/admin/admin-runtime-bridge.tsx",
+        "src/app/admin/layout.tsx",
+        "src/features/admin-auth/sign-in-form.tsx",
+        "src/providers/admin/admin-realtime-sync.tsx",
+        "src/providers/admin/parent-admin-layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useMemo,\r\n  useSyncExternalStore,\r\n  type ReactNode,\r\n} from \"react\"\r\nimport { useRouter } from \"next/navigation\"\r\nimport type { AuthUser } from \"@workspace/api-client\"\r\nimport { canAccessParentAdmin } from \"@/config/admin/parent-admin-access\"\r\nimport {\r\n  loginWithDevelopmentUser,\r\n  loginWithEmail,\r\n  loginWithGoogle,\r\n  toAdminSessionUser,\r\n} from \"@/features/admin-auth/auth-api\"\r\nimport {\r\n  ADMIN_SESSION_EVENT,\r\n  ADMIN_SESSION_KEY,\r\n  clearAdminSession,\r\n  readAdminSession,\r\n  writeAdminSession,\r\n} from \"@/lib/admin/auth-session\"\r\nimport { AUTH_LOGIN_PATH } from \"@/lib/admin/auth-routes\"\r\n\r\nfunction subscribe(callback: () => void) {\r\n  if (typeof window === \"undefined\") return () => {}\r\n  const onStorage = (e: StorageEvent) => {\r\n    if (e.key === null || e.key === ADMIN_SESSION_KEY) callback()\r\n  }\r\n  const onCustom = () => callback()\r\n  window.addEventListener(\"storage\", onStorage)\r\n  window.addEventListener(ADMIN_SESSION_EVENT, onCustom)\r\n  return () => {\r\n    window.removeEventListener(\"storage\", onStorage)\r\n    window.removeEventListener(ADMIN_SESSION_EVENT, onCustom)\r\n  }\r\n}\r\n\r\nfunction getSessionSnapshot(): AuthUser | null {\r\n  return readAdminSession()\r\n}\r\n\r\nfunction getServerSnapshot(): null {\r\n  return null\r\n}\r\n\r\nexport type StaffLoginResult = \"success\" | \"invalid_credentials\" | \"staff_only\"\r\n\r\ntype AuthContextValue = {\r\n  user: AuthUser | null\r\n  login: (email: string, password: string) => Promise<StaffLoginResult>\r\n  loginDevelopment: (userId: string) => Promise<StaffLoginResult>\r\n  loginGoogle: (credential: string) => Promise<StaffLoginResult>\r\n  logout: () => void\r\n}\r\n\r\nconst AuthContext = createContext<AuthContextValue | null>(null)\r\n\r\nexport function AuthProvider({ children }: { children: ReactNode }) {\r\n  const router = useRouter()\r\n  const user = useSyncExternalStore(\r\n    subscribe,\r\n    getSessionSnapshot,\r\n    getServerSnapshot,\r\n  )\r\n\r\n  const login = useCallback(async (email: string, password: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithEmail({\r\n        email: email.trim(),\r\n        password,\r\n      })\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessParentAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const loginDevelopment = useCallback(async (userId: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithDevelopmentUser({\r\n        userId: userId.trim(),\r\n      })\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessParentAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const loginGoogle = useCallback(async (credential: string) => {\r\n    let u: AuthUser\r\n    try {\r\n      const payload = await loginWithGoogle(credential)\r\n      u = toAdminSessionUser(payload)\r\n    } catch {\r\n      return \"invalid_credentials\"\r\n    }\r\n    if (!canAccessParentAdmin(u)) return \"staff_only\"\r\n    writeAdminSession(u)\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    return \"success\"\r\n  }, [])\r\n\r\n  const logout = useCallback(() => {\r\n    clearAdminSession()\r\n    window.dispatchEvent(new Event(ADMIN_SESSION_EVENT))\r\n    router.replace(AUTH_LOGIN_PATH)\r\n  }, [router])\r\n\r\n  const value = useMemo(\r\n    () => ({ user, login, loginDevelopment, loginGoogle, logout }),\r\n    [user, login, loginDevelopment, loginGoogle, logout],\r\n  )\r\n\r\n  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>\r\n}\r\n\r\nexport function useAuth(): AuthContextValue {\r\n  const ctx = useContext(AuthContext)\r\n  if (!ctx) {\r\n    throw new Error(\"useAuth phai dung ben trong AuthProvider\")\r\n  }\r\n  return ctx\r\n}\r\n\r\nconst noopSubscribe = () => () => {}\r\n\r\nexport function useClientReady(): boolean {\r\n  return useSyncExternalStore(\r\n    noopSubscribe,\r\n    () => true,\r\n    () => false,\r\n  )\r\n}\r\n\r\n"
+    },
+    "src/providers/admin/parent-admin-layout.tsx": {
+      "id": "file_src_providers_admin_parent_admin_layout_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "ParentAdminLayoutProvider"
+      ],
+      "imports": [
+        "src/lib/admin/api.ts",
+        "src/config/admin/parent-admin-layout-static.ts",
+        "src/providers/admin/admin-realtime-sync.tsx",
+        "src/providers/admin/auth-provider.tsx",
+        "src/lib/admin/auth-session.ts"
+      ],
+      "importedBy": [
+        "src/providers/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useEffect, useMemo, type ReactNode } from \"react\"\r\nimport {\r\n  ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n  ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n  ADMIN_SITE_SEO_PAGE_KEY,\r\n  AdminLayoutBridge,\r\n  buildAdminLayoutValue,\r\n  useAdminDocumentHeadOverride,\r\n  useAdminDocumentTitle,\r\n  useAdminSiteBranding,\r\n  useAdminPublicSiteSeo,\r\n} from \"@ui/components/admin\"\r\nimport { api } from \"@/lib/admin/api\"\r\nimport { PARENT_ADMIN_LAYOUT_STATIC } from \"@/config/admin/parent-admin-layout-static\"\r\nimport { AdminRealtimeSync } from \"@/providers/admin/admin-realtime-sync\"\r\nimport { useAuth, useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport { syncAdminSessionIfCurrentUser } from \"@/lib/admin/auth-session\"\r\n\r\nexport function ParentAdminLayoutProvider({\r\n  children,\r\n}: {\r\n  children: ReactNode\r\n}) {\r\n  const clientReady = useClientReady()\r\n  const { user, logout } = useAuth()\r\n\r\n  useEffect(() => {\r\n    if (!clientReady || user?.id == null) return\r\n    void syncAdminSessionIfCurrentUser(user.id)\r\n  }, [clientReady, user?.id])\r\n\r\n  const branding = useAdminSiteBranding({\r\n    queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n    fetchBranding: ({ signal }) => api.settings.getPublicBranding({ signal }),\r\n  })\r\n\r\n  const siteSeo = useAdminPublicSiteSeo({\r\n    queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n    page: ADMIN_SITE_SEO_PAGE_KEY,\r\n    fetchSiteSeo: ({ signal, page }) =>\r\n      api.seoMetas.getPublicByPage(page, { signal }),\r\n  })\r\n\r\n  const documentHeadOverride = useAdminDocumentHeadOverride()\r\n\r\n  useAdminDocumentTitle({\r\n    siteName: documentHeadOverride?.siteName ?? branding.siteName,\r\n    siteDescription:\r\n      documentHeadOverride?.siteDescription ?? branding.siteDescription,\r\n    metaTitle:\r\n      documentHeadOverride?.metaTitle ??\r\n      (siteSeo.isReady ? siteSeo.data?.title : undefined),\r\n    metaDescription:\r\n      documentHeadOverride?.metaDescription ??\r\n      (siteSeo.isReady ? siteSeo.data?.description : undefined),\r\n    titleFallback: \"HUB Parent Admin\",\r\n    descriptionFallback: \"Cong quan tri cho he thong HUB Parent\",\r\n  })\r\n\r\n  const value = useMemo(\r\n    () =>\r\n      buildAdminLayoutValue({\r\n        user: user ?? null,\r\n        clientReady,\r\n        logout,\r\n        branding,\r\n        siteSeo,\r\n        static: PARENT_ADMIN_LAYOUT_STATIC,\r\n      }),\r\n    [branding, clientReady, logout, siteSeo, user],\r\n  )\r\n\r\n  return (\r\n    <AdminLayoutBridge value={value}>\r\n      <AdminRealtimeSync />\r\n      {children}\r\n    </AdminLayoutBridge>\r\n  )\r\n}\r\n\r\n"
+    },
+    "src/providers/admin/query-provider.tsx": {
+      "id": "file_src_providers_admin_query_provider_tsx",
+      "type": "tsx",
+      "client": true,
+      "exports": [
+        "QueryProvider"
+      ],
+      "imports": [],
+      "importedBy": [
+        "src/providers/admin",
+        "src/app/admin/layout.tsx"
+      ],
+      "content": "\"use client\"\r\n\r\nimport { useState } from \"react\"\r\nimport { QueryClientProvider } from \"@tanstack/react-query\"\r\nimport {\r\n  createHubQueryClient,\r\n  hubAdminQueryClientDefaultOptions,\r\n} from \"@workspace/query-client\"\r\nimport { createAdminMutationCache } from \"@ui/lib/admin-operation-toast\"\r\n\r\nexport function QueryProvider({ children }: { children: React.ReactNode }) {\r\n  const [client] = useState(() =>\r\n    createHubQueryClient({\r\n      mutationCache: createAdminMutationCache(),\r\n      defaultOptions: hubAdminQueryClientDefaultOptions,\r\n    }),\r\n  )\r\n\r\n  return <QueryClientProvider client={client}>{children}</QueryClientProvider>\r\n}\r\n\r\n"
+    },
     "src/providers/query-provider.tsx": {
       "id": "file_src_providers_query_provider_tsx",
       "type": "tsx",
@@ -2170,6 +4813,17 @@
       ],
       "content": "import type { NextRequest } from \"next/server\";\r\nimport { NextResponse } from \"next/server\";\r\nimport { isStoreRoute, STORE_ENABLED } from \"@/lib/store-feature\";\r\n\r\nexport function proxy(request: NextRequest) {\r\n  if (!STORE_ENABLED && isStoreRoute(request.nextUrl.pathname)) {\r\n    return NextResponse.redirect(new URL(\"/\", request.url));\r\n  }\r\n\r\n  if (process.env.NODE_ENV === \"development\") {\r\n    const { pathname, search } = request.nextUrl;\r\n    console.log(\r\n      `[frontend] ${request.method} ${pathname}${search ? search : \"\"}`,\r\n    );\r\n  }\r\n\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [\r\n    \"/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)\",\r\n  ],\r\n};\r\n"
     },
+    "src/types/google-gsi.d.ts": {
+      "id": "file_src_types_google_gsi_d_ts",
+      "type": "ts",
+      "client": false,
+      "exports": [],
+      "imports": [],
+      "importedBy": [
+        "src/types"
+      ],
+      "content": "declare global {\r\n  interface Window {\r\n    google?: {\r\n      maps?: typeof google.maps\r\n      accounts?: {\r\n        id?: {\r\n          initialize: (config: {\r\n            client_id: string\r\n            callback: (response: { credential?: string }) => void | Promise<void>\r\n          }) => void\r\n          renderButton: (\r\n            element: HTMLElement,\r\n            config: Record<string, unknown>,\r\n          ) => void\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n\r\nexport {}\r\n\r\n"
+    },
     "src/types/todo.ts": {
       "id": "file_src_types_todo_ts",
       "type": "ts",
@@ -2186,15 +4840,15 @@
     },
     "tsconfig.json": {
       "type": "config",
-      "content": "{\r\n  \"compilerOptions\": {\r\n    \"target\": \"ES2017\",\r\n    \"lib\": [\"dom\", \"dom.iterable\", \"esnext\"],\r\n    \"allowJs\": true,\r\n    \"skipLibCheck\": true,\r\n    \"strict\": true,\r\n    \"noEmit\": true,\r\n    \"esModuleInterop\": true,\r\n    \"module\": \"esnext\",\r\n    \"moduleResolution\": \"bundler\",\r\n    \"resolveJsonModule\": true,\r\n    \"isolatedModules\": true,\r\n    \"jsx\": \"react-jsx\",\r\n    \"incremental\": true,\r\n    \"plugins\": [\r\n      {\r\n        \"name\": \"next\"\r\n      }\r\n    ],\r\n    \"paths\": {\r\n      \"@/*\": [\"./src/*\"],\r\n      \"@ui/globals.css\": [\"../../../packages/ui/src/styles/globals.css\"],\r\n      \"@ui/components/*\": [\"../../../packages/ui/src/components/*\"],\r\n      \"@ui/*\": [\"../../../packages/ui/src/*\"]\r\n    }\r\n  },\r\n  \"include\": [\r\n    \"next-env.d.ts\",\r\n    \"**/*.ts\",\r\n    \"**/*.tsx\",\r\n    \".next/types/**/*.ts\",\r\n    \".next/dev/types/**/*.ts\",\r\n    \"**/*.mts\"\r\n  ],\r\n  \"exclude\": [\"node_modules\"]\r\n}\r\n"
+      "content": "{\r\n  \"compilerOptions\": {\r\n    \"target\": \"ES2017\",\r\n    \"lib\": [\"dom\", \"dom.iterable\", \"esnext\"],\r\n    \"allowJs\": true,\r\n    \"skipLibCheck\": true,\r\n    \"strict\": true,\r\n    \"noEmit\": true,\r\n    \"esModuleInterop\": true,\r\n    \"module\": \"esnext\",\r\n    \"moduleResolution\": \"bundler\",\r\n    \"resolveJsonModule\": true,\r\n    \"isolatedModules\": true,\r\n    \"jsx\": \"react-jsx\",\r\n    \"incremental\": true,\r\n    \"plugins\": [\r\n      {\r\n        \"name\": \"next\"\r\n      }\r\n    ],\r\n    \"paths\": {\r\n      \"@/*\": [\"./src/*\"],\r\n      \"@ui/globals.css\": [\"../../../packages/ui/src/styles/globals.css\"],\r\n      \"@ui/components/*\": [\"../../../packages/ui/src/components/*\"],\r\n      \"@ui/*\": [\"../../../packages/ui/src/*\"],\r\n      \"@workspace/admin-app\": [\"../../../packages/admin-app/src/index.ts\"],\r\n      \"@workspace/admin-app/*\": [\"../../../packages/admin-app/src/*\"]\r\n    }\r\n  },\r\n  \"include\": [\r\n    \"next-env.d.ts\",\r\n    \"**/*.ts\",\r\n    \"**/*.tsx\",\r\n    \".next/types/**/*.ts\",\r\n    \".next/dev/types/**/*.ts\",\r\n    \"**/*.mts\"\r\n  ],\r\n  \"exclude\": [\"node_modules\"]\r\n}\r\n"
     },
     "package.json": {
       "type": "config",
-      "content": "{\r\n  \"name\": \"@frontend\",\r\n  \"version\": \"0.1.0\",\r\n  \"private\": true,\r\n  \"scripts\": {\r\n    \"dev\": \"node ../../../script-system/dev/dev-next.cjs 3000\",\r\n    \"predev\": \"node ../../../script-system/dev/dev-prep-next.cjs 3000 apps/hub-parent/hub-parent-frontend\",\r\n    \"kill\": \"node ../../../script-system/dev/kill-ports.cjs 3000\",\r\n    \"build\": \"next build\",\r\n    \"start\": \"next start\",\r\n    \"typecheck\": \"tsc --noEmit\",\r\n    \"lint\": \"eslint --max-warnings=0\",\r\n    \"lint:fix\": \"eslint --fix\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@base-ui/react\": \"^1.4.1\",\r\n    \"@lexical/react\": \"^0.38.2\",\r\n    \"@react-google-maps/api\": \"^2.20.8\",\r\n    \"@react-three/drei\": \"^10.7.7\",\r\n    \"@react-three/fiber\": \"^9.6.0\",\r\n    \"@tanstack/react-query\": \"^5.100.9\",\r\n    \"@tanstack/react-query-devtools\": \"^5.100.9\",\r\n    \"@thangph2146/lexical-editor\": \"workspace:*\",\r\n    \"@workspace/api-client\": \"workspace:*\",\r\n    \"@workspace/promo-codes\": \"workspace:*\",\r\n    \"@workspace/dealer-support\": \"workspace:*\",\r\n    \"@workspace/site-config\": \"workspace:*\",\r\n    \"@workspace/query-client\": \"workspace:*\",\r\n    \"@workspace/ui\": \"workspace:*\",\r\n    \"class-variance-authority\": \"^0.7.1\",\r\n    \"clsx\": \"^2.1.1\",\r\n    \"cmdk\": \"^1.1.1\",\r\n    \"date-fns\": \"^4.1.0\",\r\n    \"input-otp\": \"^1.4.2\",\r\n    \"lucide-react\": \"^1.8.0\",\r\n    \"maath\": \"^0.10.8\",\r\n    \"next\": \"16.2.4\",\r\n    \"next-themes\": \"^0.4.6\",\r\n    \"nextjs-toploader\": \"^3.9.17\",\r\n    \"lexical\": \"^0.38.2\",\r\n    \"react\": \"19.2.4\",\r\n    \"react-day-picker\": \"^9.14.0\",\r\n    \"react-dom\": \"19.2.4\",\r\n    \"react-force-graph-3d\": \"^1.29.1\",\r\n    \"react-resizable-panels\": \"^4.10.0\",\r\n    \"recharts\": \"3.8.0\",\r\n    \"shadcn\": \"^4.4.0\",\r\n    \"sonner\": \"^2.0.7\",\r\n    \"tailwind-merge\": \"^3.5.0\",\r\n    \"three\": \"^0.184.0\",\r\n    \"three-forcegraph\": \"^1.43.4\",\r\n    \"tw-animate-css\": \"^1.4.0\",\r\n    \"vaul\": \"^1.1.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@workspace/eslint-config\": \"workspace:*\",\r\n    \"@tailwindcss/postcss\": \"^4\",\r\n    \"@types/node\": \"^20\",\r\n    \"@types/react\": \"^19\",\r\n    \"@types/react-dom\": \"^19\",\r\n    \"@types/three\": \"^0.184.0\",\r\n    \"babel-plugin-react-compiler\": \"1.0.0\",\r\n    \"eslint\": \"^9\",\r\n    \"eslint-config-next\": \"16.2.4\",\r\n    \"graphifyy\": \"^0.4.25\",\r\n    \"sass\": \"^1.83.0\",\r\n    \"tailwindcss\": \"^4\",\r\n    \"typescript\": \"^5\"\r\n  }\r\n}\r\n"
+      "content": "{\r\n  \"name\": \"@frontend\",\r\n  \"version\": \"0.1.0\",\r\n  \"private\": true,\r\n  \"scripts\": {\r\n    \"dev\": \"node ../../../script-system/dev/dev-next.cjs 3000\",\r\n    \"predev\": \"node ../../../script-system/dev/dev-prep-next.cjs 3000 apps/hub-parent/hub-parent-frontend\",\r\n    \"kill\": \"node ../../../script-system/dev/kill-ports.cjs 3000\",\r\n    \"build\": \"next build\",\r\n    \"start\": \"next start\",\r\n    \"typecheck\": \"tsc --noEmit\",\r\n    \"lint\": \"eslint --max-warnings=0\",\r\n    \"lint:fix\": \"eslint --fix\"\r\n  },\r\n  \"dependencies\": {\r\n    \"@base-ui/react\": \"^1.4.1\",\r\n    \"@lexical/react\": \"^0.38.2\",\r\n    \"@react-google-maps/api\": \"^2.20.8\",\r\n    \"@react-three/drei\": \"^10.7.7\",\r\n    \"@react-three/fiber\": \"^9.6.0\",\r\n    \"@tanstack/react-query\": \"^5.100.9\",\r\n    \"@tanstack/react-query-devtools\": \"^5.100.9\",\r\n    \"@thangph2146/lexical-editor\": \"workspace:*\",\r\n    \"@workspace/admin-app\": \"workspace:*\",\r\n    \"@workspace/api-client\": \"workspace:*\",\r\n    \"@workspace/promo-codes\": \"workspace:*\",\r\n    \"@workspace/dealer-support\": \"workspace:*\",\r\n    \"@workspace/site-config\": \"workspace:*\",\r\n    \"@workspace/query-client\": \"workspace:*\",\r\n    \"@workspace/ui\": \"workspace:*\",\r\n    \"class-variance-authority\": \"^0.7.1\",\r\n    \"clsx\": \"^2.1.1\",\r\n    \"cmdk\": \"^1.1.1\",\r\n    \"date-fns\": \"^4.1.0\",\r\n    \"input-otp\": \"^1.4.2\",\r\n    \"lucide-react\": \"^1.8.0\",\r\n    \"maath\": \"^0.10.8\",\r\n    \"next\": \"16.2.4\",\r\n    \"next-themes\": \"^0.4.6\",\r\n    \"nextjs-toploader\": \"^3.9.17\",\r\n    \"lexical\": \"^0.38.2\",\r\n    \"react\": \"19.2.4\",\r\n    \"react-day-picker\": \"^9.14.0\",\r\n    \"react-dom\": \"19.2.4\",\r\n    \"react-force-graph-3d\": \"^1.29.1\",\r\n    \"react-resizable-panels\": \"^4.10.0\",\r\n    \"recharts\": \"3.8.0\",\r\n    \"shadcn\": \"^4.4.0\",\r\n    \"sonner\": \"^2.0.7\",\r\n    \"tailwind-merge\": \"^3.5.0\",\r\n    \"three\": \"^0.184.0\",\r\n    \"three-forcegraph\": \"^1.43.4\",\r\n    \"tw-animate-css\": \"^1.4.0\",\r\n    \"vaul\": \"^1.1.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@workspace/eslint-config\": \"workspace:*\",\r\n    \"@tailwindcss/postcss\": \"^4\",\r\n    \"@types/node\": \"^20\",\r\n    \"@types/react\": \"^19\",\r\n    \"@types/react-dom\": \"^19\",\r\n    \"@types/three\": \"^0.184.0\",\r\n    \"babel-plugin-react-compiler\": \"1.0.0\",\r\n    \"eslint\": \"^9\",\r\n    \"eslint-config-next\": \"16.2.4\",\r\n    \"graphifyy\": \"^0.4.25\",\r\n    \"sass\": \"^1.83.0\",\r\n    \"tailwindcss\": \"^4\",\r\n    \"typescript\": \"^5\"\r\n  }\r\n}\r\n"
     },
     "next.config.ts": {
       "type": "config",
-      "content": "import type { NextConfig } from \"next\";\r\n\r\nconst nextConfig: NextConfig = {\r\n  reactCompiler: true,\r\n  /** Cho phép `next/image` tối ưu ảnh từ domain HUB (có thể bỏ `unoptimized` từng bước sau QA). */\r\n  images: {\r\n    remotePatterns: [\r\n      { protocol: \"https\", hostname: \"fileserver2.hub.edu.vn\", pathname: \"/**\" },\r\n      { protocol: \"https\", hostname: \"hub.edu.vn\", pathname: \"/**\" },\r\n    ],\r\n  },\r\n  transpilePackages: [\r\n    \"@workspace/ui\",\r\n    \"@workspace/api-client\",\r\n    \"@workspace/query-client\",\r\n    \"@thangph2146/lexical-editor\",\r\n  ],\r\n};\r\n\r\nexport default nextConfig;\r\n"
+      "content": "import type { NextConfig } from \"next\";\r\n\r\ntype RemotePattern = NonNullable<\r\n  NonNullable<NextConfig[\"images\"]>[\"remotePatterns\"]\r\n>[number];\r\n\r\nfunction buildImageRemotePatterns(): RemotePattern[] {\r\n  const patterns: RemotePattern[] = [\r\n    { protocol: \"https\", hostname: \"fileserver2.hub.edu.vn\", pathname: \"/**\" },\r\n    { protocol: \"https\", hostname: \"hub.edu.vn\", pathname: \"/**\" },\r\n    /** API / uploads trên subdomain HUB (vd. tuyensinh.hub.edu.vn). */\r\n    { protocol: \"https\", hostname: \"*.hub.edu.vn\", pathname: \"/**\" },\r\n    {\r\n      protocol: \"http\",\r\n      hostname: \"localhost\",\r\n      port: \"3002\",\r\n      pathname: \"/api/**\",\r\n    },\r\n    {\r\n      protocol: \"http\",\r\n      hostname: \"127.0.0.1\",\r\n      port: \"3002\",\r\n      pathname: \"/api/**\",\r\n    },\r\n  ];\r\n\r\n  const apiRaw =\r\n    process.env.INTERNAL_API_URL?.trim() ||\r\n    process.env.NEXT_PUBLIC_API_URL?.trim();\r\n  if (apiRaw) {\r\n    try {\r\n      const origin = new URL(apiRaw.replace(/\\/api\\/?$/i, \"\"));\r\n      const protocol = origin.protocol.replace(\":\", \"\") as \"http\" | \"https\";\r\n      const fromEnv: RemotePattern = {\r\n        protocol,\r\n        hostname: origin.hostname,\r\n        pathname: \"/**\",\r\n      };\r\n      if (origin.port) fromEnv.port = origin.port;\r\n      const exists = patterns.some(\r\n        (p) => p.hostname === fromEnv.hostname && p.protocol === fromEnv.protocol,\r\n      );\r\n      if (!exists) patterns.push(fromEnv);\r\n    } catch {\r\n      // bỏ qua URL env không hợp lệ\r\n    }\r\n  }\r\n\r\n  return patterns;\r\n}\r\n\r\nconst nextConfig: NextConfig = {\r\n  reactCompiler: true,\r\n  /** Cho phép `next/image` tối ưu ảnh từ domain HUB (có thể bỏ `unoptimized` từng bước sau QA). */\r\n  images: {\r\n    remotePatterns: buildImageRemotePatterns(),\r\n  },\r\n  transpilePackages: [\r\n    \"@workspace/ui\",\r\n    \"@workspace/api-client\",\r\n    \"@workspace/query-client\",\r\n    \"@thangph2146/lexical-editor\",\r\n  ],\r\n};\r\n\r\nexport default nextConfig;\r\n"
     },
     "components.json": {
       "type": "config",

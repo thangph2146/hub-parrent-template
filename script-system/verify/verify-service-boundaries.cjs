@@ -13,7 +13,7 @@ const { ROOT: root } = require("../lib/monorepo-root.cjs");
 
 const API_PACKAGES = new Set([
   "@api",
-  "@hub-event/api",
+  "@hub-checkin/api",
   "@hub-parent/api",
   "@store-sync/api",
 ]);
@@ -28,7 +28,7 @@ const API_FORBIDDEN = [
 /** @type {Record<string, readonly string[]>} */
 const FORBIDDEN_DEPS = {
   "@api": API_FORBIDDEN,
-  "@hub-event/api": API_FORBIDDEN,
+  "@hub-checkin/api": API_FORBIDDEN,
   "@hub-parent/api": API_FORBIDDEN,
   "@store-sync/api": API_FORBIDDEN,
   "@frontend": [
@@ -43,7 +43,7 @@ const FORBIDDEN_DEPS = {
     "@frontend",
   ],
   "@backend": ["@frontend", ...API_PACKAGES, "@store-sync-frontend"],
-  "@hub-event-checkin-frontend": [
+  "@hub-checkin/frontend": [
     "@backend",
     "@frontend",
     ...API_PACKAGES,

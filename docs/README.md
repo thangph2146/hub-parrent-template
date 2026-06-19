@@ -63,10 +63,10 @@ Agent nên dùng các file step-by-step này làm lộ trình chính:
 
 | Vai trò | Dev (source of truth) | Deploy / line khác |
 |---------|----------------------|---------------------|
-| API Nest | `apps/main/api` (`@api`) | `apps/hub-parent/api`, `apps/hub-event/api`, `apps/store-sync/api` |
+| API Nest | `apps/main/api` (`@api`) | `apps/hub-parent/api`, `apps/hub-checkin/api`, `apps/store-sync/api` |
 | Admin Next | `apps/main/backend` (`@backend`) | generate + native pages trên từng frontend admin |
 | Storefront | — | `apps/hub-parent/hub-parent-frontend` (`@frontend`) |
-| Check-in UI | `pnpm dev:main:checkin` | `apps/hub-event/hub-event-checkin-frontend` |
+| Check-in UI | `pnpm dev:main:checkin` | `apps/hub-checkin/hub-checkin-frontend` |
 
 ## Cách dùng
 

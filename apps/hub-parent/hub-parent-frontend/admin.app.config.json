@@ -23,13 +23,13 @@
       "layout.tsx",
       "admin-runtime-bridge.tsx",
       "page.tsx",
-      "dang-nhap/page.tsx",
-      "dang-ky/page.tsx",
+      "login/page.tsx",
+      "register/page.tsx",
       "profile/page.tsx"
     ]
   },
   "dashboard": {
-    "relativePath": "tong-quan/page.tsx",
+    "relativePath": "dashboard/page.tsx",
     "subtitle": "Đây là bảng điều khiển quản trị HUB Parent (parent line)."
   },
   "menu": {
@@ -53,7 +53,7 @@
     "settings": "SETTINGS",
     "data": "SETTINGS",
     "hanet": "EVENTS",
-    "tong-quan": "DASHBOARD"
+    "dashboard": "DASHBOARD"
   },
   "pageGuardRoleModulesSkip": ["settings", "parent-students"]
 }

@@ -6,7 +6,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { SCRIPT_SYSTEM, ROOT } = require("../lib/monorepo-root.cjs");
 
-const ALLOWED_TOP_DIRS = new Set([
+const MANIFEST_PATH = path.join(ROOT, "template.manifest.json");
+const manifest = fs.existsSync(MANIFEST_PATH)
+  ? JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"))
+  : {};
+const isDownstream = manifest.role === "downstream";
+
+const UPSTREAM_TOP_DIRS = [
   "lib",
   "dev",
   "sync",
@@ -18,15 +24,27 @@ const ALLOWED_TOP_DIRS = new Set([
   "admin",
   "api",
   "template",
-]);
+];
 
-const ALLOWED_CJS_DIRS = new Set([
+const DOWNSTREAM_TOP_DIRS = [
+  "lib",
+  "dev",
+  "sync",
+  "git",
+  "verify",
+  "db",
+  "env",
+  "admin",
+];
+
+const ALLOWED_TOP_DIRS = new Set(isDownstream ? DOWNSTREAM_TOP_DIRS : UPSTREAM_TOP_DIRS);
+
+const UPSTREAM_CJS_DIRS = [
   "lib",
   "lib/layout",
   "dev",
   "sync",
   "sync/lib",
-  "sync/deprecated",
   "git",
   "verify",
   "graphify",
@@ -35,9 +53,25 @@ const ALLOWED_CJS_DIRS = new Set([
   "admin",
   "admin/lib",
   "api",
-]);
+];
 
-const SYNC_ROOT_SCRIPTS = new Set([
+const DOWNSTREAM_CJS_DIRS = [
+  "lib",
+  "lib/layout",
+  "dev",
+  "sync",
+  "sync/lib",
+  "git",
+  "verify",
+  "db",
+  "env",
+  "admin",
+  "admin/lib",
+];
+
+const ALLOWED_CJS_DIRS = new Set(isDownstream ? DOWNSTREAM_CJS_DIRS : UPSTREAM_CJS_DIRS);
+
+const UPSTREAM_SYNC_ROOT_SCRIPTS = [
   "sync-api-from-main.cjs",
   "sync-checkin-packages.cjs",
   "sync-parent.cjs",
@@ -47,7 +81,26 @@ const SYNC_ROOT_SCRIPTS = new Set([
   "apply-sync-to-downstream.cjs",
   "init-downstream.cjs",
   "sync-checkin-menu-tree.cjs",
-]);
+];
+
+const DOWNSTREAM_SYNC_ROOT_SCRIPTS = [
+  "sync-checkin-packages.cjs",
+  "sync-parent.cjs",
+  "pull-template.cjs",
+  "post-pull-downstream.cjs",
+  "downstream-sync-profile.cjs",
+  "sync-checkin-menu-tree.cjs",
+];
+
+const SYNC_ROOT_SCRIPTS = new Set(
+  isDownstream ? DOWNSTREAM_SYNC_ROOT_SCRIPTS : UPSTREAM_SYNC_ROOT_SCRIPTS,
+);
+
+const GIT_ROOT_SCRIPTS = new Set(
+  isDownstream
+    ? ["commit-and-push.cjs"]
+    : ["commit-and-push.cjs", "push-deploy-branches.cjs"],
+);
 
 /** @type {string[]} */
 const errors = [];
@@ -68,8 +121,18 @@ if (fs.existsSync(syncRoot)) {
     if (!entry.isFile() || !entry.name.endsWith(".cjs")) continue;
     if (!SYNC_ROOT_SCRIPTS.has(entry.name)) {
       fail(
-        `script-system/sync/${entry.name} — chuyển sang sync/deprecated/ hoặc cập nhật allowlist`,
+        `script-system/sync/${entry.name} — xóa file legacy hoặc cập nhật allowlist`,
       );
+    }
+  }
+}
+
+const gitRoot = path.join(SCRIPT_SYSTEM, "git");
+if (fs.existsSync(gitRoot)) {
+  for (const entry of fs.readdirSync(gitRoot, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".cjs")) continue;
+    if (!GIT_ROOT_SCRIPTS.has(entry.name)) {
+      fail(`script-system/git/${entry.name} — upstream-only hoặc cập nhật allowlist`);
     }
   }
 }

@@ -22,7 +22,7 @@ if (verifyOnly || (!regenerate && !args.some((a) => a.startsWith('--')))) {
 }
 
 const renderArgs = [
-  `node ${path.join(PACKAGE_ROOT, 'deploy/cli/render.cjs')} apps/hub-event/api --prune`,
+  `node ${path.join(PACKAGE_ROOT, 'deploy/cli/render.cjs')} apps/hub-checkin/api --prune`,
   ...forward,
   regenerate ? '' : '--skip-verify',
 ]

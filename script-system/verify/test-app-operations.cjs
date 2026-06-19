@@ -8,8 +8,8 @@
  *   all        — mọi product line (mặc định)
  *   main       — @api + @backend
  *   hub-parent — @hub-parent/api + @frontend
- *   hub-event  — API profile + admin sync state
- *   checkin    — alias hub-event
+ *   hub-checkin — API profile + admin sync state
+ *   checkin     — alias hub-checkin
  *   store-sync — @store-sync/api + frontend
  *   api-all    — verify API profile mọi line kế thừa (có profile)
  */
@@ -35,25 +35,25 @@ const typecheck = (pkg, label) => {
 };
 
 /** @param {string} lineKey */
-function testHubEvent() {
+function testHubCheckin() {
   run(
     "pnpm --filter @workspace/api-server run verify:checkin-api",
-    "hub-event API — template materialize",
+    "hub-checkin API — template materialize",
   );
   run(
     "pnpm --filter @workspace/api-server run verify:endpoint-parity",
-    "hub-event API — route parity vs main",
+    "hub-checkin API — route parity vs main",
   );
   run(
-    "node script-system/verify/verify-api-profile.cjs hub-event",
-    "hub-event API — profile + app.module",
+    "node script-system/verify/verify-api-profile.cjs hub-checkin",
+    "hub-checkin API — profile + app.module",
   );
   run(
     "node script-system/verify/verify-checkin-admin-sync.cjs",
-    "hub-event frontend — admin sync state",
+    "hub-checkin frontend — admin sync state",
   );
-  typecheck("@hub-event/api", "typecheck @hub-event/api");
-  typecheck("@hub-event-checkin-frontend", "typecheck @hub-event-checkin-frontend");
+  typecheck("@hub-checkin/api", "typecheck @hub-checkin/api");
+  typecheck("@hub-checkin/frontend", "typecheck @hub-checkin/frontend");
 }
 
 /** @param {string} lineKey */
@@ -72,8 +72,8 @@ function testProductLine(lineKey) {
     process.exit(1);
   }
 
-  if (lineKey === "hub-event") {
-    testHubEvent();
+  if (lineKey === "hub-checkin") {
+    testHubCheckin();
     return;
   }
 
@@ -118,8 +118,8 @@ switch (target) {
     testApiAll();
     break;
   case "checkin":
-  case "hub-event":
-    testHubEvent();
+  case "hub-checkin":
+    testHubCheckin();
     break;
   case "main":
   case "hub-parent":
@@ -129,7 +129,7 @@ switch (target) {
   default:
     console.error(
       `[test:apps] target không hợp lệ: ${target}\n` +
-        `  Hợp lệ: all | main | hub-parent | hub-event | checkin | store-sync | api-all`,
+        `  Hợp lệ: all | main | hub-parent | hub-checkin | checkin | store-sync | api-all`,
     );
     process.exit(1);
 }

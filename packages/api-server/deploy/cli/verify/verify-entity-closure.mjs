@@ -16,7 +16,7 @@ const { MANIFEST_REL } = require('../lib/graph/entity-graph-manifest.cjs')
 const { resolveRenderModuleSet } = require('../lib/render/resolve-render-module-set.cjs')
 
 const DEPLOY_APPS = [
-  'apps/hub-event/api',
+  'apps/hub-checkin/api',
   'apps/hub-parent/api',
   'apps/store-sync/api',
 ]

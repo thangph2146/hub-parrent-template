@@ -7,7 +7,7 @@ description: Use ONLY when the user requests any coding task, feature implementa
 
 This skill enforces the **mandatory workflow** from `AGENTS.md` before any code change in the `hub-parent-template` monorepo.
 
-**Entry point:** `AGENTS.md` (Vietnamese, UTF-8). **Real app paths** — dev: `apps/main/*`; deploy lines under `apps/hub-parent/*`, `apps/hub-event/*`, `apps/store-sync/*`. Legacy shorthand `apps/api` / `apps/backend` / `apps/frontend` must not be used for new work.
+**Entry point:** `AGENTS.md` (Vietnamese, UTF-8). **Real app paths** ï¿½ dev: `apps/main/*`; deploy lines under `apps/hub-parent/*`, `apps/hub-checkin/*`, `apps/store-sync/*`. Legacy shorthand `apps/api` / `apps/backend` / `apps/frontend` must not be used for new work.
 
 ## Trigger
 
@@ -25,7 +25,7 @@ Before editing **any** source file, the agent MUST follow this sequence:
 
 1. Read `docs/admin-pattern/PRE_CODE_PROTOCOL.md`
 2. Read any additional documents referenced inside that protocol file
-3. Read `AGENTS.md` — task ? doc ? folder table
+3. Read `AGENTS.md` ï¿½ task ? doc ? folder table
 
 ### Step 2: Read Required Docs (in order)
 
@@ -45,8 +45,8 @@ Before making changes, read these files:
 | API dev (`@api`) | `apps/main/api/.graphify/markdown/` |
 | Admin dev (`@backend`) | `apps/main/backend/.graphify/markdown/` |
 | Storefront (`@frontend`) | `apps/hub-parent/hub-parent-frontend/.graphify/markdown/` |
-| Check-in API | `apps/hub-event/api/.graphify/markdown/` |
-| Check-in UI | `apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/` |
+| Check-in API | `apps/hub-checkin/api/.graphify/markdown/` |
+| Check-in UI | `apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/` |
 | Store Sync | `apps/store-sync/*/.graphify/markdown/` |
 
 After reading summaries, use **Ch? d?n theo ch? ??** ? `FOLDER_TREE.md`, `GRAPH_STATS.md`, `API_DOMAIN_IMPORTS.md`, `WORKSPACE_DEPS.md`.
@@ -65,7 +65,7 @@ After reading summaries, use **Ch? d?n theo ch? ??** ? `FOLDER_TREE.md`, `GRAPH_
 
 ### Step 4: Read Step Docs (relevant ones)
 
-Primary roadmap: `docs/steps/step1` … `step10`. At minimum: `step1_system_overview.md`, `step2_clean_code_guidelines.md`.
+Primary roadmap: `docs/steps/step1` ï¿½ `step10`. At minimum: `step1_system_overview.md`, `step2_clean_code_guidelines.md`.
 
 ### Step 5: Admin / API generate
 
@@ -91,8 +91,8 @@ pnpm check:full
 - **NO cross-imports** between `apps/*`
 - Next apps ? API **only** via `@workspace/api-client` (no raw `fetch` to API)
 - Shared logic in `packages/*` when genuinely reused
-- Admin UI from `@ui/components/...` — not local in `apps/main/backend`
-- API Nest: `@workspace/*` only — no React / `@ui`
+- Admin UI from `@ui/components/...` ï¿½ not local in `apps/main/backend`
+- API Nest: `@workspace/*` only ï¿½ no React / `@ui`
 - Dev daily: edit `apps/main/` + `packages/*`; deploy lines via `pnpm pull:checkin` / sync
 - Boundaries: `packages/eslint-config/service-boundaries.js`, `pnpm verify:bounds`
 
@@ -107,5 +107,5 @@ pnpm check:full
 ## Notes
 
 - Docs language: **Vietnamese UTF-8** in `docs/` and `AGENTS.md`
-- Do not create random `.md` files — follow `AGENTS.md` section 4
+- Do not create random `.md` files ï¿½ follow `AGENTS.md` section 4
 - Only open `snapshot/context.json` when a specific excerpt is needed

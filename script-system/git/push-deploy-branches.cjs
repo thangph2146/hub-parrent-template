@@ -4,8 +4,8 @@
  * Template upstream: dùng --legacy-deploy hoặc pnpm push:legacy / push:checkin / push:parent.
  *
  * Usage:
- *   node push-deploy-branches.cjs --only hub-event
- *   node push-deploy-branches.cjs --only hub-event,hub-parent
+ *   node push-deploy-branches.cjs --only hub-checkin
+ *   node push-deploy-branches.cjs --only hub-checkin,hub-parent
  *   node push-deploy-branches.cjs --skip-sync --only hub-parent
  */
 const fs = require("node:fs")
@@ -15,10 +15,10 @@ const { execFileSync, execSync } = require("node:child_process")
 const { ROOT } = require("../lib/monorepo-root.cjs")
 
 const LINE_CONFIG = {
-  "hub-event": {
-    branch: "hub-event",
+  "hub-checkin": {
+    branch: "hub-checkin",
     sync: "node script-system/sync/sync-checkin-packages.cjs",
-    label: "hub-event (pull:checkin)",
+    label: "hub-checkin (pull:checkin)",
   },
   "hub-parent": {
     branch: "hub-parent",
@@ -29,7 +29,7 @@ const LINE_CONFIG = {
 
 function parseArgs(argv) {
   const flags = new Set()
-  let only = ["hub-event", "hub-parent"]
+  let only = ["hub-checkin", "hub-parent"]
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === "--only" && argv[i + 1]) {

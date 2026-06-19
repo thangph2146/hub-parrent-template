@@ -1,6 +1,6 @@
 # Pattern clusters — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.553Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-19T01:42:38.677Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
@@ -9,13 +9,13 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 ### AUTO-GENERATED re-export → @workspace/admin-app/modules/*/page (12 file)
 
 - `src/app/admin/categories/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
 - `src/app/admin/data/page.tsx`
 - `src/app/admin/file-storage/page.tsx`
 - `src/app/admin/guides/page.tsx`
 - `src/app/admin/orders/page.tsx`
 - `src/app/admin/products/page.tsx`
 - `src/app/admin/promo-codes/page.tsx`
-- `src/app/admin/rbac/page.tsx`
 - … và 4 file tương tự
 
 ### AUTO-GENERATED re-export → @workspace/admin-app/modules/*/[id]/edit/page (8 file)

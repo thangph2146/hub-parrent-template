@@ -1,12 +1,12 @@
 # Pattern clusters — apps/main/backend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.285Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-19T01:42:38.446Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
 ## Theo signature nội dung (count ≥ 2)
 
-### AUTO-GENERATED re-export → @workspace/admin-app/modules/*/page (29 file)
+### AUTO-GENERATED re-export → @workspace/admin-app/modules/*/page (30 file)
 
 - `src/app/academic-years/page.tsx`
 - `src/app/cameras/page.tsx`
@@ -16,7 +16,7 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 - `src/app/data/page.tsx`
 - `src/app/departments/page.tsx`
 - `src/app/events/page.tsx`
-- … và 21 file tương tự
+- … và 22 file tương tự
 
 ### AUTO-GENERATED re-export → @workspace/admin-app/modules/*/[id]/page (23 file)
 
@@ -100,7 +100,7 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 
 | Basename | Số file | Gợi ý |
 |----------|---------|--------|
-| `page.tsx` | 99 | CRUD page — logic trong `packages/admin-app` |
+| `page.tsx` | 107 | CRUD page — logic trong `packages/admin-app` |
 | `loading.tsx` | 59 | Sửa `AdminRouteLoading` trong `@ui` hoặc module `admin-app` |
 
 ## Làm mới

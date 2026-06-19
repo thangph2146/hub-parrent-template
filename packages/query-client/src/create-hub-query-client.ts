@@ -21,7 +21,7 @@ export function hubDefaultQueryRetry(failureCount: number, error: unknown): bool
   return failureCount < 2;
 }
 
-/** Cấu hình mặc định dùng chung cho @frontend và @hub-event-checkin-frontend. */
+/** Cấu hình mặc định dùng chung cho @frontend và @hub-checkin/frontend. */
 export const hubQueryClientDefaultOptions: DefaultOptions = {
   queries: {
     staleTime: 60_000,

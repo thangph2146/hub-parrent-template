@@ -7,7 +7,7 @@ const { getApiRenderHelpShort } = require('./lib/render/render-help.cjs')
 
 function assertTty() {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    throw new Error('[api:render] Cần TTY. Dùng: pnpm api:render apps/hub-event/api')
+    throw new Error('[api:render] Cần TTY. Dùng: pnpm api:render apps/hub-checkin/api')
   }
 }
 

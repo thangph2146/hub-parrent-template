@@ -17,7 +17,7 @@ Tài liệu ghi **cách gửi request**, **body đính kèm** theo [Postman HANE
 | SDK admin / check-in UI | `packages/api-client/src/resources/hanet.ts` |
 | Biến môi trường | [`docs/env/README.md`](../env/README.md) (mục HANET) |
 
-**Product line:** `@api` (main dev) + `@hub-event/api` (deploy check-in). Sửa ưu tiên `apps/main/api` → `pnpm api:regenerate:checkin` nếu cần đồng bộ hub-event.
+**Product line:** `@api` (main dev) + `@hub-checkin/api` (deploy check-in). Sửa ưu tiên `apps/main/api` → `pnpm api:regenerate:checkin` nếu cần đồng bộ hub-event.
 
 ---
 
@@ -336,7 +336,7 @@ Webhook: `person_type` `0`/`1`. API list check-in: field `type` (`2` = chưa nh�
 ## 8. Checklist agent
 
 1. Đọc mục 3 — **đúng body** (`personID` ≠ `aliasID`).  
-2. Product line: `main/api` vs `hub-event/api`.  
+2. Product line: `main/api` vs `hub-checkin/api`.  
 3. Sửa `hanet-partner.service.ts` / `hanet-admin.service.ts`.  
 4. Cập nhật `hanet-postman.ts` + `api-client` nếu đổi Hub route.  
 5. Purge `face_data` sau delete person.  

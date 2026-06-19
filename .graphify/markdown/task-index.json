@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T03:40:54.717Z",
+  "generatedAt": "2026-06-19T01:42:38.855Z",
   "productLines": {
     "main": {
       "api": {
@@ -25,15 +25,15 @@
         "port": 3000
       }
     },
-    "hub-event": {
+    "hub-checkin": {
       "api": {
-        "path": "apps/hub-event/api",
-        "package": "@hub-event/api",
+        "path": "apps/hub-checkin/api",
+        "package": "@hub-checkin/api",
         "port": 3002
       },
       "frontend": {
-        "path": "apps/hub-event/hub-event-checkin-frontend",
-        "package": "@hub-event-checkin-frontend",
+        "path": "apps/hub-checkin/hub-checkin-frontend",
+        "package": "@hub-checkin/frontend",
         "port": 3000
       }
     },
@@ -278,6 +278,39 @@
         "mainBackendPage": "apps/main/backend/src/app/cameras/page.tsx",
         "mainApi": "apps/main/api/src/cameras/",
         "apiClient": "packages/api-client/src/resources/cameras.ts"
+      },
+      "lines": {
+        "main": true,
+        "checkinAdmin": true,
+        "checkinApi": true
+      },
+      "verify": [
+        "pnpm check",
+        "pnpm verify:main-admin",
+        "pnpm verify:permissions",
+        "pnpm verify:api-contract",
+        "pnpm pull:checkin",
+        "pnpm verify:checkin-api",
+        "pnpm verify:api-profile",
+        "pnpm verify:checkin-admin"
+      ],
+      "docs": [
+        "docs/admin-pattern/ADMIN_PAGE_PATTERN.md",
+        "docs/api-pattern/README.md"
+      ]
+    },
+    {
+      "id": "hanet",
+      "keywords": [
+        "hanet",
+        "hanet"
+      ],
+      "permissionPrefix": "EVENTS",
+      "paths": {
+        "adminApp": "packages/admin-app/src/modules/hanet/",
+        "mainBackendPage": "apps/main/backend/src/app/hanet/page.tsx",
+        "mainApi": "apps/main/api/src/hanet/",
+        "apiClient": "packages/api-client/src/resources/hanet.ts"
       },
       "lines": {
         "main": true,
@@ -1078,7 +1111,7 @@
       ],
       "paths": {
         "package": "packages/api-server/src/",
-        "checkinConfig": "apps/hub-event/api/api.app.config.json",
+        "checkinConfig": "apps/hub-checkin/api/api.app.config.json",
         "doc": "packages/api-server/README.md"
       },
       "verify": [
@@ -1123,20 +1156,20 @@
       "apps/main/backend/src/app/database-schema/page.tsx"
     ],
     "checkin": [
-      "apps/hub-event/hub-event-checkin-frontend/src/app/layout.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/dang-nhap/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/dang-ky/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/profile/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/check-in-ky-tuc-xa/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/new/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/new/loading.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/loading.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/page.tsx",
-      "apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/loading.tsx"
+      "apps/hub-checkin/hub-checkin-frontend/src/app/layout.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/login/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/register/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/profile/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/dormitory-checkin/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/new/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/new/loading.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/[id]/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/[id]/loading.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/[id]/edit/page.tsx",
+      "apps/hub-checkin/hub-checkin-frontend/src/app/[id]/edit/loading.tsx"
     ]
   },
   "syncExclude": [],
-  "devRule": "Dev hàng ngày: sửa apps/main/* + packages/*; hub-event cập nhật qua pnpm pull:checkin."
+  "devRule": "Dev hàng ngày: sửa apps/main/* + packages/*; hub-checkin cập nhật qua pnpm pull:checkin."
 }

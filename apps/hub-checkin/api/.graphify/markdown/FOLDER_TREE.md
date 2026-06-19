@@ -1,6 +1,6 @@
-# Cây thư mục — apps/hub-event/api (Graphify)
+# Cây thư mục — apps/hub-checkin/api (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.403Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-19T01:42:38.558Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -117,4 +117,4 @@ src/
 
 ## Làm mới
 
-Chạy `node script-system/graphify/graphify-update.cjs apps/hub-event/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/hub-checkin/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

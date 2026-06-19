@@ -1,7 +1,7 @@
 /**
  * Kiểm tra apps/<line>/api khớp api.sync-profile.json và app.module.ts.
  *
- * Usage: node script-system/verify-api-profile.cjs hub-event
+ * Usage: node script-system/verify/verify-api-profile.cjs hub-checkin
  */
 const fs = require("node:fs");
 const path = require("node:path");

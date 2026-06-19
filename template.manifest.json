@@ -14,10 +14,24 @@
     },
     "note": "Downstream luôn kéo toàn bộ packages/ — không subset."
   },
-  "primaryProductLine": "hub-event",
+  "primaryProductLine": "hub-checkin",
   "inheritPaths": [
     "packages",
-    "script-system",
+    "script-system/admin",
+    "script-system/db",
+    "script-system/dev",
+    "script-system/env",
+    "script-system/git",
+    "script-system/lib",
+    "script-system/README.md",
+    "script-system/sync/lib",
+    "script-system/sync/downstream-sync-profile.cjs",
+    "script-system/sync/post-pull-downstream.cjs",
+    "script-system/sync/pull-template.cjs",
+    "script-system/sync/sync-checkin-menu-tree.cjs",
+    "script-system/sync/sync-checkin-packages.cjs",
+    "script-system/sync/sync-parent.cjs",
+    "script-system/verify",
     "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
@@ -25,13 +39,13 @@
     "docs/ui-pattern",
     "docs/env",
     "docs/steps",
-    "docs/TEMPLATE_MONOREPO.md",
-    ".graphify",
-    "packages/.graphify"
+    "docs/TEMPLATE_MONOREPO.md"
   ],
   "inheritRootFiles": [
+    ".gitignore",
     "turbo.json",
     "AGENTS.md",
+    "apps/README.md",
     "packages/README.md"
   ],
   "keepPaths": [
@@ -45,15 +59,8 @@
     ".env.local"
   ],
   "productLines": {
-    "hub-event": {
-      "appsPath": "apps/hub-checkin",
-      "ecosystem": "ecosystem/checkin.cjs",
-      "pm2Start": "pnpm pm2:start:checkin",
-      "packages": ["ui", "admin-app", "api-client", "api-server", "query-client", "logger", "site-config", "editor"]
-    },
     "hub-checkin": {
       "appsPath": "apps/hub-checkin",
-      "manifestProductLine": "hub-event",
       "ecosystem": "ecosystem/checkin.cjs",
       "pm2Start": "pnpm pm2:start:checkin",
       "packages": ["ui", "admin-app", "api-client", "api-server", "query-client", "logger", "site-config", "editor"]

@@ -50,7 +50,7 @@ function remapHref(href, overrides) {
   if (Object.prototype.hasOwnProperty.call(overrides, href)) {
     return overrides[href]
   }
-  if (href === "/") return "/admin/tong-quan"
+  if (href === "/") return "/admin/dashboard"
   return `/admin${href}`
 }
 
@@ -80,7 +80,7 @@ function applyAppendToGroup(menu, config) {
 function buildCheckinMenu(mainItems, config, moduleToHref) {
   const includeHrefs = buildIncludeHrefs(config, moduleToHref)
   const overrides = config.menu?.hrefOverrides ?? {
-    "/": "/admin/tong-quan",
+    "/": "/admin/dashboard",
     "/events": "/admin",
   }
   const nativeGroups = config.menu?.nativeGroups ?? []

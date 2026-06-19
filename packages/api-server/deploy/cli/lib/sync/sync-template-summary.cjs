@@ -47,7 +47,7 @@ function printSyncTemplateSummary(ctx) {
   }
 
   lines.push('', '  Tiếp theo:')
-  lines.push('    pnpm api:render apps/hub-event/api --prune')
+  lines.push('    pnpm api:render apps/hub-checkin/api --prune')
   lines.push('    pnpm verify:api-template')
   lines.push('    pnpm verify:entity-closure')
   lines.push('    pnpm --filter @workspace/api-server run test:nest-contract')

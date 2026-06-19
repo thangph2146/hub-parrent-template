@@ -1,7 +1,7 @@
 /**
  * Verify API deploy materialize từ template (check-in / parent / store).
  *
- * Usage: node deploy/cli/verify/verify-render-api.mjs [apps/hub-event/api]
+ * Usage: node deploy/cli/verify/verify-render-api.mjs [apps/hub-checkin/api]
  */
 import fs from 'node:fs'
 import path from 'node:path'

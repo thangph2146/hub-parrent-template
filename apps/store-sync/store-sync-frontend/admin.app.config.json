@@ -20,13 +20,13 @@
       "layout.tsx",
       "admin-runtime-bridge.tsx",
       "page.tsx",
-      "dang-nhap/page.tsx",
-      "dang-ky/page.tsx",
+      "login/page.tsx",
+      "register/page.tsx",
       "profile/page.tsx"
     ]
   },
   "dashboard": {
-    "relativePath": "tong-quan/page.tsx",
+    "relativePath": "dashboard/page.tsx",
     "subtitle": "Đây là bảng điều khiển quản trị StoreSync B2B."
   },
   "menu": {
@@ -66,7 +66,7 @@
     "guides": "PAGE_CONTENTS",
     "seo-metas": "SEO_METAS",
     "file-storage": "UPLOADS",
-    "tong-quan": "DASHBOARD"
+    "dashboard": "DASHBOARD"
   },
   "pageGuardRoleModulesSkip": ["settings"]
 }

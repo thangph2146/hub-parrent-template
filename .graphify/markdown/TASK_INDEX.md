@@ -1,6 +1,6 @@
 # TASK_INDEX — module/feature → file (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.717Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
+> **Sinh tự động:** `2026-06-19T01:42:38.855Z` — từ `admin.app.config.json`, `api.sync-profile.json`, `packages/api-client`. Đọc kèm [`AGENTS.md`](../AGENTS.md).
 
 ## Brief nhanh (agent)
 
@@ -8,7 +8,7 @@
 pnpm graphify:brief --task "mô tả task ngắn"
 ```
 
-> Dev hàng ngày: sửa apps/main/* + packages/*; hub-event cập nhật qua pnpm pull:checkin.
+> Dev hàng ngày: sửa apps/main/* + packages/*; hub-checkin cập nhật qua pnpm pull:checkin.
 
 ## Admin modules (main)
 
@@ -21,6 +21,7 @@ pnpm graphify:brief --task "mô tả task ngắn"
 | `guides` | `page-contents` | `packages/admin-app/src/modules/guides/` | `apps/main/backend/src/app/guides/page.tsx` | `apps/main/api/src/page-contents/` | `packages/api-client/src/resources/guides.ts` | ✓ |
 | `posts` | `posts` | `packages/admin-app/src/modules/posts/` | `apps/main/backend/src/app/posts/page.tsx` | `apps/main/api/src/posts/` | `packages/api-client/src/resources/posts.ts` | ✓ |
 | `cameras` | `cameras` | `packages/admin-app/src/modules/cameras/` | `apps/main/backend/src/app/cameras/page.tsx` | `apps/main/api/src/cameras/` | `packages/api-client/src/resources/cameras.ts` | ✓ |
+| `hanet` | `hanet` | `packages/admin-app/src/modules/hanet/` | `apps/main/backend/src/app/hanet/page.tsx` | `apps/main/api/src/hanet/` | `packages/api-client/src/resources/hanet.ts` | ✓ |
 | `templates` | `templates` | `packages/admin-app/src/modules/templates/` | `apps/main/backend/src/app/templates/page.tsx` | `apps/main/api/src/templates/` | `packages/api-client/src/resources/templates.ts` | ✓ |
 | `screens` | `screens` | `packages/admin-app/src/modules/screens/` | `apps/main/backend/src/app/screens/page.tsx` | `apps/main/api/src/screens/` | `packages/api-client/src/resources/screens.ts` | ✓ |
 | `locations` | `locations` | `packages/admin-app/src/modules/locations/` | `apps/main/backend/src/app/locations/page.tsx` | `apps/main/api/src/locations/` | `packages/api-client/src/resources/locations.ts` | ✓ |
@@ -63,18 +64,18 @@ pnpm graphify:brief --task "mô tả task ngắn"
 - `apps/main/backend/src/app/database-schema/page.tsx`
 
 **Check-in frontend:**
-- `apps/hub-event/hub-event-checkin-frontend/src/app/layout.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/dang-nhap/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/dang-ky/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/profile/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/check-in-ky-tuc-xa/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/new/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/new/loading.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/loading.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/page.tsx`
-- `apps/hub-event/hub-event-checkin-frontend/src/app/[id]/edit/loading.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/layout.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/login/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/register/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/profile/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/dormitory-checkin/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/new/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/new/loading.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/[id]/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/[id]/loading.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/[id]/edit/page.tsx`
+- `apps/hub-checkin/hub-checkin-frontend/src/app/[id]/edit/loading.tsx`
 
 ## Hub-event — domain loại trừ khi sync từ main
 

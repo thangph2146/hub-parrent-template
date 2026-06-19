@@ -3,7 +3,7 @@
  *
  * Usage:
  *   pnpm api:audit:modules
- *   node script-system/api/audit-api-module-parity.cjs apps/hub-event/api
+ *   node script-system/api/audit-api-module-parity.cjs apps/hub-checkin/api
  */
 const path = require("node:path");
 const { execSync } = require("node:child_process");

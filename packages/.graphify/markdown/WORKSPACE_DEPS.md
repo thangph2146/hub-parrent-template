@@ -1,6 +1,6 @@
 # Phụ thuộc workspace (`workspace:*`)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.571Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
+> **Sinh tự động:** `2026-06-19T01:42:38.694Z` — quét `package.json` trong `packages/*` và `apps/*` (chỉ liên kết nội bộ monorepo).
 
 ## `packages/*`
 
@@ -49,6 +49,7 @@
 | `@backend` | `@workspace/site-config` | `workspace:*` | `apps/main/backend/` |
 | `@backend` | `@workspace/ui` | `workspace:*` | `apps/main/backend/` |
 | `@frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
+| `@frontend` | `@workspace/admin-app` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
 | `@frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
 | `@frontend` | `@workspace/dealer-support` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
 | `@frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
@@ -56,17 +57,17 @@
 | `@frontend` | `@workspace/query-client` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
 | `@frontend` | `@workspace/site-config` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
 | `@frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-parent/hub-parent-frontend/` |
-| `@hub-event-checkin-frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/admin-app` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/logger` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/query-client` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/site-config` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event-checkin-frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-event/hub-event-checkin-frontend/` |
-| `@hub-event/api` | `@workspace/api-client` | `workspace:*` | `apps/hub-event/api/` |
-| `@hub-event/api` | `@workspace/api-server` | `workspace:*` | `apps/hub-event/api/` |
-| `@hub-event/api` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-event/api/` |
+| `@hub-checkin/frontend` | `@thangph2146/lexical-editor` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/admin-app` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/api-client` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/logger` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/query-client` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/site-config` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/frontend` | `@workspace/ui` | `workspace:*` | `apps/hub-checkin/hub-checkin-frontend/` |
+| `@hub-checkin/api` | `@workspace/api-client` | `workspace:*` | `apps/hub-checkin/api/` |
+| `@hub-checkin/api` | `@workspace/api-server` | `workspace:*` | `apps/hub-checkin/api/` |
+| `@hub-checkin/api` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-checkin/api/` |
 | `@hub-parent/api` | `@workspace/api-client` | `workspace:*` | `apps/hub-parent/api/` |
 | `@hub-parent/api` | `@workspace/api-server` | `workspace:*` | `apps/hub-parent/api/` |
 | `@hub-parent/api` | `@workspace/eslint-config` | `workspace:*` | `apps/hub-parent/api/` |

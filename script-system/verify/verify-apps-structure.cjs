@@ -22,10 +22,11 @@ const MAIN_ONLY_API_SCRIPTS = [
 
 /** Deploy line không được có archive migration. */
 const MAIN_ONLY_API_SCRIPT_DIRS = ["scripts/archive"];
+const DEPLOY_API_ALLOWED_SCRIPT_FILES = new Set(["ensure-dist.mjs"]);
 
 /** Monorepo sync scripts thuộc script-system/, không apps/.../scripts/. */
 const FORBIDDEN_APP_SCRIPT_DIRS = [
-  "apps/hub-event/hub-event-checkin-frontend/scripts",
+  "apps/hub-checkin/hub-checkin-frontend/scripts",
 ];
 
 const LEGACY_TOP_LEVEL = ["api", "backend", "frontend"];
@@ -37,6 +38,37 @@ function readPackageName(appDir) {
   const pkgPath = path.join(appDir, "package.json");
   if (!fs.existsSync(pkgPath)) return null;
   return JSON.parse(fs.readFileSync(pkgPath, "utf8")).name ?? null;
+}
+
+function listFilesRecursive(dir, prefix = "") {
+  if (!fs.existsSync(dir)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listFilesRecursive(abs, rel));
+      continue;
+    }
+    files.push(rel);
+  }
+  return files;
+}
+
+function listFilesByName(dir, filename) {
+  if (!fs.existsSync(dir)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listFilesByName(abs, filename));
+      continue;
+    }
+    if (entry.name === filename) {
+      files.push(path.relative(ROOT, abs).replace(/\\/g, "/"));
+    }
+  }
+  return files;
 }
 
 function verify() {
@@ -73,6 +105,10 @@ function verify() {
     }
   }
 
+  for (const rel of listFilesByName(APPS, "pnpm-lock.yaml")) {
+    errors.push(`${rel}: không dùng lockfile cục bộ trong apps/ — chỉ giữ root pnpm-lock.yaml`);
+  }
+
   for (const lineKey of API_INHERITS_FROM_MAIN) {
     const apiPath = PRODUCT_LINES[lineKey]?.api?.path;
     if (!apiPath) continue;
@@ -84,6 +120,11 @@ function verify() {
     for (const dirRel of MAIN_ONLY_API_SCRIPT_DIRS) {
       if (fs.existsSync(path.join(ROOT, apiPath, dirRel))) {
         errors.push(`${apiPath}/${dirRel}: chỉ giữ trên ${MAIN_API_PATH}`);
+      }
+    }
+    for (const scriptRel of listFilesRecursive(path.join(ROOT, apiPath, "scripts"))) {
+      if (!DEPLOY_API_ALLOWED_SCRIPT_FILES.has(scriptRel)) {
+        errors.push(`${apiPath}/scripts/${scriptRel}: deploy line chỉ giữ scripts/ensure-dist.mjs`);
       }
     }
   }

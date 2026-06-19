@@ -6,22 +6,13 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("../lib/monorepo-root.cjs");
-const { allEnvApps } = require("../env/manifest.cjs");
+const { envAppsForCurrentRepo } = require("../env/manifest.cjs");
 const { API_ENV_PROFILES } = require("../env/api-env-profiles.cjs");
 
 const REQUIRED_MARKERS = ["ENV_TEMPLATE=", "ENV_STACK="]
 
-function loadRepoManifest() {
-  const manifestPath = path.join(ROOT, "template.manifest.json")
-  if (!fs.existsSync(manifestPath)) return null
-  return JSON.parse(fs.readFileSync(manifestPath, "utf8"))
-}
-
 function envAppsForRepo() {
-  const apps = allEnvApps()
-  const manifest = loadRepoManifest()
-  if (manifest?.role !== "downstream") return apps
-  return apps.filter((app) => fs.existsSync(path.join(ROOT, app.path)))
+  return envAppsForCurrentRepo()
 }
 
 function verify() {

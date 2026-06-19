@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/store-sync/store-sync-frontend`
-- **context.generatedAt:** 2026-06-15T03:40:52.675Z
+- **projectRoot:** `D:/HUB/working/2026/monorepo-template/apps/store-sync/store-sync-frontend`
+- **context.generatedAt:** 2026-06-19T01:42:22.785Z
 
 ## Mục lục artefact Graphify
 
@@ -21,8 +21,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **@backend:** [SUMMARY](../../../../../apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/main/backend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/main/backend/.graphify/markdown/GRAPH_STATS.md)
 - **@hub-parent/api:** [SUMMARY](../../../../../apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-parent/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-parent/api/.graphify/markdown/GRAPH_STATS.md)
 - **@frontend:** [SUMMARY](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/GRAPH_STATS.md)
-- **@hub-event/api:** [SUMMARY](../../../../../apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/api/.graphify/markdown/GRAPH_STATS.md)
-- **@hub-event-checkin-frontend:** [SUMMARY](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-checkin/api:** [SUMMARY](../../../../../apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-checkin/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-checkin/api/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-checkin/frontend:** [SUMMARY](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/GRAPH_STATS.md)
 - **@store-sync/api:** [SUMMARY](../../../../../apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/store-sync/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/store-sync/api/.graphify/markdown/GRAPH_STATS.md)
 - **packages:** [SUMMARY](../../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md) · [WORKSPACE_DEPS](../../../../../packages/.graphify/markdown/WORKSPACE_DEPS.md)
 - **monorepo (chỉ mục + chủ đề):** [SUMMARY gốc](../../../../../.graphify/markdown/SUMMARY_FOR_AI.md)
@@ -65,14 +65,14 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/admin/categories/page.tsx`
 - `src/app/admin/categories/[id]/edit/page.tsx`
 - `src/app/admin/categories/[id]/page.tsx`
-- `src/app/admin/dang-ky/page.tsx`
-- `src/app/admin/dang-nhap/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
 - `src/app/admin/data/page.tsx`
 - `src/app/admin/file-storage/page.tsx`
 - `src/app/admin/guides/new/page.tsx`
 - `src/app/admin/guides/page.tsx`
 - `src/app/admin/guides/[id]/edit/page.tsx`
 - `src/app/admin/guides/[id]/page.tsx`
+- `src/app/admin/login/page.tsx`
 - `src/app/admin/orders/page.tsx`
 - `src/app/admin/orders/[id]/edit/page.tsx`
 - `src/app/admin/orders/[id]/page.tsx`
@@ -89,6 +89,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/admin/rbac/page.tsx`
 - `src/app/admin/rbac/[id]/edit/page.tsx`
 - `src/app/admin/rbac/[id]/page.tsx`
+- `src/app/admin/register/page.tsx`
 - `src/app/admin/seo-metas/new/page.tsx`
 - `src/app/admin/seo-metas/page.tsx`
 - `src/app/admin/seo-metas/[id]/edit/page.tsx`
@@ -98,7 +99,6 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/admin/staff/page.tsx`
 - `src/app/admin/staff/[id]/edit/page.tsx`
 - `src/app/admin/staff/[id]/page.tsx`
-- `src/app/admin/tong-quan/page.tsx`
 - `src/app/graph/page.tsx`
 - `src/app/page.tsx`
 - `src/app/store/orders/page.tsx`
@@ -185,8 +185,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/admin/categories/new/loading.tsx` | loading | no | default |  |
 | `src/app/admin/categories/new/page.tsx` | page | no | default |  |
 | `src/app/admin/categories/page.tsx` | page | no | default |  |
-| `src/app/admin/dang-ky/page.tsx` | page | no | StoreAdminRegisterPage | src/features/admin-auth/register-form.tsx |
-| `src/app/admin/dang-nhap/page.tsx` | page | no | StoreAdminLoginPage | src/features/admin-auth/sign-in-form.tsx |
+| `src/app/admin/dashboard/page.tsx` | page | no | default |  |
 | `src/app/admin/data/page.tsx` | page | no | default |  |
 | `src/app/admin/file-storage/page.tsx` | page | no | default |  |
 | `src/app/admin/guides/[id]/edit/loading.tsx` | loading | no | default |  |
@@ -197,6 +196,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/admin/guides/new/page.tsx` | page | no | default |  |
 | `src/app/admin/guides/page.tsx` | page | no | default |  |
 | `src/app/admin/layout.tsx` | layout | no | StoreAdminLayout | src/app/admin/page.tsx, src/providers/admin/query-provider.tsx, src/providers/admin/auth-provider.tsx, src/providers/admin/store-admin-layout.tsx, src/app/admin/admin-runtime-bridge.tsx |
+| `src/app/admin/login/page.tsx` | page | no | StoreAdminLoginPage | src/features/admin-auth/sign-in-form.tsx |
 | `src/app/admin/orders/[id]/edit/page.tsx` | page | no | default |  |
 | `src/app/admin/orders/[id]/page.tsx` | page | no | default |  |
 | `src/app/admin/orders/page.tsx` | page | no | default |  |
@@ -215,6 +215,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/admin/rbac/[id]/loading.tsx` | loading | no | default |  |
 | `src/app/admin/rbac/[id]/page.tsx` | page | no | default |  |
 | `src/app/admin/rbac/page.tsx` | page | no | default |  |
+| `src/app/admin/register/page.tsx` | page | no | StoreAdminRegisterPage | src/features/admin-auth/register-form.tsx |
 | `src/app/admin/seo-metas/[id]/edit/loading.tsx` | loading | no | default |  |
 | `src/app/admin/seo-metas/[id]/edit/page.tsx` | page | no | default |  |
 | `src/app/admin/seo-metas/[id]/loading.tsx` | loading | no | default |  |
@@ -230,7 +231,6 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/admin/staff/new/loading.tsx` | loading | no | default |  |
 | `src/app/admin/staff/new/page.tsx` | page | no | default |  |
 | `src/app/admin/staff/page.tsx` | page | no | default |  |
-| `src/app/admin/tong-quan/page.tsx` | page | no | default |  |
 | `src/app/api/graphify/route.ts` | api-route | no |  | src/lib/graphify-context.ts |
 | `src/app/graph/layout.tsx` | layout | no | metadata, GraphLayout | src/app/graph/page.tsx |
 | `src/app/graph/loading.tsx` | loading | no | GraphLoading | src/components/shared/route-loading.tsx |

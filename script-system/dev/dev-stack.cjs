@@ -40,7 +40,7 @@ const STACKS = {
       PRODUCT_LINES["hub-parent"].frontend.package,
     ],
   },
-  /** hub-event API + check-in UI — không chạy tsup watch lexical (xem predev:checkin + ensure-lexical-built) */
+  /** hub-checkin API + check-in UI — không chạy tsup watch lexical (xem predev:checkin + ensure-lexical-built) */
   checkin: {
     apiPort: 3002,
     apps: [

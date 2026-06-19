@@ -1,6 +1,6 @@
 # ROUTE_SURFACE — Admin URL ↔ API ↔ api-client (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.719Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
+> **Sinh tự động:** `2026-06-19T01:42:38.858Z` — ghép `admin.app.config.json`, Nest `@Controller`, `packages/api-client/src/resources/*.ts`.
 
 Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.tsx`); bảng dưới lấy **module id** từ config admin. Chi tiết file: `apps/*/backend/.graphify/markdown/ENTRY_POINTS.md`.
 
@@ -8,20 +8,21 @@ Lưu ý: Next App Router còn route theo **file convention** (`src/app/**/page.t
 
 | Module | Admin URL (base) | API domain | API prefix (Nest) | api-client | HTTP mẫu (client) |
 |--------|------------------|------------|-------------------|------------|-------------------|
-| `staff` | `/staff` | `users` | `/admin/users` | `users.ts` | /admin/roles; /admin/users; /admin/users/${id}; /admin/users/${id}/hard-delete; …+2 |
+| `staff` | `/staff` | `users` | `/admin/users` | `users.ts` | /admin/roles; /admin/users; /admin/users/${id}; /admin/users/${id}/avatar; …+4 |
 | `rbac` | `/rbac` | `roles` | `/admin/roles` | `rbac.ts` | /admin/roles; /admin/roles/permissions |
 | `categories` | `/categories` | `categories` | `/admin/categories` | `categories.ts` | /admin/categories; /admin/categories/${id}; /admin/categories/${id}/hard-delete; /admin/categories/${id}/restore; …+2 |
 | `tags` | `/tags` | `tags` | `/admin/tags` | `tags.ts` | /admin/tags; /admin/tags/${id}; /admin/tags/${id}/hard-delete; /admin/tags/${id}/restore; …+1 |
 | `guides` | `/guides` | `page-contents` | `/admin/page-contents` | `guides.ts` | /admin/page-contents; /admin/page-contents/${id}; /admin/page-contents/${id}/hard-delete; /admin/page-contents/${id}/restore; …+1 |
 | `posts` | `/posts` | `posts` | `/admin/posts` | `posts.ts` | /admin/posts; /admin/posts/${id}; /admin/posts/${id}/hard-delete; /admin/posts/${id}/restore; …+1 |
 | `cameras` | `/cameras` | `cameras` | `/admin/cameras` | `cameras.ts` | /admin/cameras; /admin/cameras/${id}; /admin/cameras/${id}/hard-delete; /admin/cameras/${id}/restore; …+1 |
+| `hanet` | `/hanet` | `hanet` | `//admin/hanet, /public/hanet/webhook` | `hanet.ts` | /admin/hanet/avatars${q ? ; /admin/hanet/cameras/ensure; /admin/hanet/checkins${q ? ; /admin/hanet/checkins/timestamp?${search.toString()}; …+36 |
 | `templates` | `/templates` | `templates` | `/admin/templates` | `templates.ts` | /admin/templates; /admin/templates/${id}; /admin/templates/${id}/hard-delete; /admin/templates/${id}/restore; …+1 |
 | `screens` | `/screens` | `screens` | `/admin/screens` | `screens.ts` | /admin/screens; /admin/screens/${id}; /admin/screens/${id}/hard-delete; /admin/screens/${id}/restore; …+1 |
 | `locations` | `/locations` | `locations` | `/admin/locations` | `locations.ts` | /admin/locations; /admin/locations/${id}; /admin/locations/${id}/hard-delete; /admin/locations/${id}/restore; …+1 |
 | `speakers` | `/speakers` | `speakers` | `/admin/speakers` | `speakers.ts` | /admin/speakers; /admin/speakers/${id}; /admin/speakers/${id}/hard-delete; /admin/speakers/${id}/restore; …+1 |
 | `settings` | `/settings` | `settings` | `/admin/settings` | `settings.ts` | /admin/settings; /admin/settings/${id}; /admin/settings/${key}; /public/site-branding |
 | `file-storage` | `/file-storage` | `uploads` | `//uploads, /admin/uploads` | `uploads.ts` | /admin/uploads; /admin/uploads/bulk-delete; /admin/uploads/bulk-move; /admin/uploads/export; …+2 |
-| `data` | `/data` | `system` | `/admin/system` | `system.ts` | /admin/system/database-schema; /admin/system/import-config |
+| `data` | `/data` | `system` | `/admin/system` | `system.ts` | /admin/system/database-schema; /admin/system/import-config; /admin/system/seed-bootstrap |
 | `events` | `/events` | `events` | `/admin/events` | `events.ts` | /admin/events; /admin/events/${id}; /admin/events/${id}/hard-delete; /admin/events/${id}/restore; …+1 |
 | `departments` | `/departments` | `departments` | `/admin/departments` | `departments.ts` | /admin/departments; /admin/departments/${id}; /admin/departments/${id}/hard-delete; /admin/departments/${id}/restore; …+1 |
 | `academic-years` | `/academic-years` | `academic-years` | `/admin/academic-years` | `academic-years.ts` | /admin/academic-years; /admin/academic-years/${id}; /admin/academic-years/${id}/hard-delete; /admin/academic-years/${id}/restore; …+1 |
@@ -48,7 +49,7 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `auth` | `src/auth/auth.controller.ts` | GET /auth/admin/google/config; GET /auth/admin/me; POST /auth/admin/dev-login; POST /auth/admin/google; POST /auth/admin/login; POST /auth/admin/logout |
 | `carts` | `src/carts/carts.controller.ts` | DELETE /public/cart; GET /public/cart; PUT /public/cart |
 | `comments` | `src/comments/comments.controller.ts` | — |
-| `common` | `src/common/crud/base-crud.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; DELETE /admin/event-registrations/:id; DELETE /admin/event-registrations/:id/hard-delete; …+108 |
+| `common` | `src/common/crud/base-crud.controller.ts` | DELETE /admin/comments/:id; DELETE /admin/comments/:id/hard-delete; DELETE /admin/event-checkins/:id; DELETE /admin/event-checkins/:id/hard-delete; DELETE /admin/event-registrations/:id; DELETE /admin/event-registrations/:id/hard-delete; …+109 |
 | `dashboard` | `src/dashboard/dashboard.controller.ts` | — |
 | `event-checkins` | `src/event-checkins/event-checkins.controller.ts` | — |
 | `event-checkouts` | `src/event-checkouts/event-checkouts.controller.ts` | — |
@@ -56,7 +57,6 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `event-speakers` | `src/event-speakers/event-speakers.controller.ts` | — |
 | `face-data` | `src/face-data/face-data.controller.ts` | — |
 | `groups` | `src/groups/groups.controller.ts` | DELETE /admin/groups/:id; DELETE /admin/groups/:id/hard-delete; DELETE /admin/groups/:id/members/:userId; GET /admin/groups; GET /admin/groups/:id; GET /admin/groups/:id/messages; …+6 |
-| `hanet` | `src/hanet/hanet-webhook.controller.ts` | POST /public/hanet/webhook; POST /public/hanet/webhook/:eventId |
 | `imported-users` | `src/imported-users/imported-users.controller.ts` | — |
 | `messages` | `src/messages/conversations.controller.ts` | GET /admin/conversations; PATCH /admin/messages/:id; POST /admin/conversations/:otherUserId/mark-read; POST /admin/messages |
 | `notifications` | `src/notifications/notifications.controller.ts` | DELETE /admin/notifications/:id; GET /admin/notifications; GET /admin/notifications/options; GET /admin/notifications/table; GET /admin/unread-counts; PATCH /admin/notifications/:id; …+2 |
@@ -64,7 +64,7 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `public` | `src/public/public.controller.ts` | GET /public/admission-results/lookup; GET /public/auth/dev-login-options; GET /public/auth/google/config; GET /public/categories; GET /public/dev-login-options; GET /public/event-categories; …+21 |
 | `sessions` | `src/sessions/sessions.controller.ts` | — |
 
-## Check-in admin modules (`hub-event-checkin-frontend`)
+## Check-in admin modules (`hub-checkin-frontend`)
 
 | Module | Admin URL | Có trên main API |
 |--------|-----------|------------------|
@@ -75,6 +75,7 @@ Các domain có controller nhưng **không** nằm trong `admin.app.config.json`
 | `guides` | `/guides` | ✓ |
 | `posts` | `/posts` | ✓ |
 | `cameras` | `/cameras` | ✓ |
+| `hanet` | `/hanet` | ✓ |
 | `templates` | `/templates` | ✓ |
 | `screens` | `/screens` | ✓ |
 | `locations` | `/locations` | ✓ |

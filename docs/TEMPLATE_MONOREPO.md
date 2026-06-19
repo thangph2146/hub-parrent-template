@@ -1,7 +1,7 @@
 # Monorepo template — full thư viện `packages/`
 
 Repo **`mono-repo-template`** cung cấp **toàn bộ thư viện** trong `packages/`.  
-Monorepo sản phẩm (hub-event, hub-parent, …) **chỉ giữ `apps/<line>/`** + kéo `packages/` qua `pnpm pull:template`.
+Monorepo sản phẩm (hub-checkin, hub-parent, …) **chỉ giữ `apps/<line>/`** + kéo `packages/` qua `pnpm pull:template`.
 
 ## Nguyên tắc
 
@@ -14,7 +14,7 @@ flowchart LR
     SRV["@workspace/api-server"]
   end
 
-  subgraph app ["apps/hub-event — lớp mỏng"]
+  subgraph app ["apps/hub-checkin — lớp mỏng"]
     API["api: entities, app.module, seed"]
     WEB["frontend: native routes, admin.app.config"]
   end
@@ -28,33 +28,33 @@ flowchart LR
 | **`apps/<line>/api`** | Entity, migration, `app.module.ts`, controller đặc thù | Copy logic CRUD từ main |
 | **`apps/<line>/*-frontend`** | Native pages, `admin.app.config.json`, re-export generate | Component admin local |
 
-**Cấm trên downstream:** `apps/main/`, sync copy `main/api` → `hub-event/api` (`pull:checkin` legacy).
+**Cấm trên downstream:** `apps/main/`, sync copy `main/api` → `hub-checkin/api` (`pull:checkin` legacy).
 
 Catalog package: [`packages/README.md`](../packages/README.md).
 
 ---
 
-## Repo code chính: **hub-event-monorepo**
+## Repo code chính: **hub-checkin-monorepo**
 
-Sản phẩm check-in là **primary** (`primaryProductLine: hub-event`):
+Sản phẩm check-in là **primary** (`primaryProductLine: hub-checkin`):
 
 | Repo | Vai trò |
 |------|---------|
-| **hub-event-monorepo** | Dev + deploy hàng ngày — `apps/hub-event` + full `packages/` |
+| **hub-checkin-monorepo** | Dev + deploy hàng ngày — `apps/hub-checkin` + full `packages/` |
 | **mono-repo-template** | Cập nhật thư viện — sửa `packages/admin-app`, `packages/api-server` → tag → `pull:template` |
 
 ### Compose
 
 - **`@workspace/admin-app`** → frontend admin (kéo ui, api-client, query-client, editor, …)
-- **`@workspace/api-server`** → API Nest scaffold (generate vào `apps/hub-event/api`)
+- **`@workspace/api-server`** → API Nest scaffold (generate vào `apps/hub-checkin/api`)
 
 Apps chỉ: entities, `app.module.ts`, route native, config JSON.
 
 ### Bootstrap (một lần)
 
 ```bash
-pnpm init:downstream hub-event ../hub-event-monorepo
-cd ../hub-event-monorepo
+pnpm init:downstream hub-checkin ../hub-checkin-monorepo
+cd ../hub-checkin-monorepo
 pnpm install
 pnpm build:packages
 pnpm env:init checkin
@@ -77,7 +77,7 @@ git tag template/v2026.06.12 && git push origin template/v2026.06.12
 |---------|---------|
 | `packages/` | **Source of truth** — thư viện đầy đủ |
 | `apps/main/` | Sandbox dev API + admin đầy đủ |
-| `apps/hub-event`, `hub-parent` | Reference để `init:downstream` — không deploy từ đây |
+| `apps/hub-checkin`, `hub-parent` | Reference để `init:downstream` — không deploy từ đây |
 
 ---
 
@@ -93,8 +93,8 @@ git tag template/v2026.06.12 && git push origin template/v2026.06.12
 ### Tạo mới
 
 ```bash
-node script-system/sync/init-downstream.cjs hub-event ../hub-event-monorepo
-cd ../hub-event-monorepo
+node script-system/sync/init-downstream.cjs hub-checkin ../hub-checkin-monorepo
+cd ../hub-checkin-monorepo
 pnpm install
 pnpm verify:template-downstream
 pnpm check
@@ -116,10 +116,30 @@ pnpm check
 pnpm push -- "chore: sync template"
 ```
 
-`pull:template` chỉ checkout `packages/`, `script-system/`, docs — **không** đủ một mình.  
-`post-pull:downstream` chạy install + build + `pull:checkin` (hub-event) theo profile.
+`pull:template` chỉ checkout `packages/`, **script-system runtime subset**, docs — **không** đủ một mình.  
+`post-pull:downstream` chạy install + build + `pull:checkin` (hub-checkin) theo profile.
 
 `pull:template` luôn checkout **cả thư mục `packages/`** — không subset.
+`script-system` trên downstream là allowlist để chạy dev/sync/verify/env/db/git; không kéo `graphify`, `template`, `api` tooling hay `sync/deprecated`.
+`apps/*` là product-specific và downstream giữ local; template chỉ dùng app reference để bootstrap/migration có chủ đích.
+`.graphify` là generated cache, không kéo qua template sync mặc định; khi cần thì chạy `pnpm graphify:refresh` tại repo hiện tại.
+
+Local dev helper `apply-sync-to-downstream.cjs` mặc định chỉ copy shared boundary. Flag hiếm dùng:
+
+```bash
+node script-system/sync/apply-sync-to-downstream.cjs hub-checkin ../hub-checkin-monorepo
+node script-system/sync/apply-sync-to-downstream.cjs hub-checkin ../hub-checkin-monorepo --with-apps
+node script-system/sync/apply-sync-to-downstream.cjs hub-checkin ../hub-checkin-monorepo --with-graphify
+```
+
+### Sau sync: phân tích rồi mới sửa
+
+Sau `pnpm sync`, không tạo code mới ngay. Bắt buộc:
+
+1. Xem diff/source vừa đồng bộ vào downstream.
+2. Kiểm tra trong `packages/`, `script-system/`, `apps/<line>/` xem tính năng/helper/component/API đã có sẵn chưa.
+3. Ưu tiên reuse hoặc bật bằng config (`api.app.config.json`, `admin.app.config.json`, env, script hiện có).
+4. Chỉ viết code mới khi đã xác định còn thiếu hành vi thật sự; nếu thiếu ở lớp dùng chung, quay lại sửa `mono-repo-template` trước.
 
 ### API check-in (packages-first)
 
@@ -144,7 +164,7 @@ Module CRUD từ `@workspace/admin-app`.
 
 ## So sánh legacy vs packages-first
 
-| | Legacy (1 repo, sync main→hub-event) | Packages-first (template) |
+| | Legacy (1 repo, sync main→hub-checkin) | Packages-first (template) |
 |---|--------------------------------------|---------------------------|
 | Thư viện | Trùng lặp qua sync API | `packages/` một nguồn |
 | Deploy | Branch full monorepo | Repo nhỏ: apps + packages |
@@ -166,7 +186,7 @@ pnpm push:checkin -- "..."     # một line — deprecated
 
 - `library.root` = `"packages"`, `pullMode` = `"full"`
 - `inheritPaths` — luôn có `"packages"` đầu tiên
-- Downstream: `"role": "downstream"`, `"productLine": "hub-event"`
+- Downstream: `"role": "downstream"`, `"productLine": "hub-checkin"`
 
 Verify: `pnpm verify:template-downstream`
 

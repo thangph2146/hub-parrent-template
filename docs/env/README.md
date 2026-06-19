@@ -51,7 +51,7 @@ pnpm dev:parent
 | App | File | Port |
 |-----|------|------|
 | `hub-checkin API` | `apps/hub-checkin/api/.env` | 3002 |
-| `@hub-event-checkin-frontend` | `apps/hub-checkin/hub-event-checkin-frontend/.env` | 3000 |
+| `@hub-checkin/frontend` | `apps/hub-checkin/hub-checkin-frontend/.env` | 3000 |
 
 Admin gộp trong frontend tại `/admin` — **không** có `@backend` riêng.
 
@@ -110,7 +110,7 @@ Compose map biến vào container; API runtime dùng `ALLOWED_ORIGINS` giống c
 | `next-admin` | `apps/main/backend` |
 | `next-storefront-parent` | `apps/hub-parent/hub-parent-frontend` |
 | `next-storefront-store` | `apps/store-sync/store-sync-frontend` |
-| `next-checkin` | `apps/hub-checkin/hub-event-checkin-frontend` |
+| `next-checkin` | `apps/hub-checkin/hub-checkin-frontend` |
 
 ## Tên database mặc định (MySQL local)
 

@@ -1,6 +1,6 @@
 # Cây thư mục — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.605Z`
+> **Sinh tự động:** `2026-06-19T01:42:38.729Z`
 
 ```text
 src/
@@ -103,6 +103,14 @@ src/
 │   │   ├── [id]/
 │   │   │   └── edit/
 │   │   └── new/
+│   ├── hanet/
+│   │   ├── _component/
+│   │   ├── avatar/
+│   │   ├── checkin/
+│   │   ├── dia-diem/
+│   │   ├── ket-noi/
+│   │   ├── nguoi/
+│   │   └── thiet-bi/
 │   ├── locations/
 │   │   ├── _component/
 │   │   │   ├── _alert-dialog/

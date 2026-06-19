@@ -1,6 +1,6 @@
 # `packages/*` — tóm tắt workspace cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.715Z` — liệt kê package trong `packages/` (không nhúng source).
+> **Sinh tự động:** `2026-06-19T01:42:38.853Z` — liệt kê package trong `packages/` (không nhúng source).
 
 ## Vai trò trong kiến trúc microservice
 
@@ -45,8 +45,8 @@ Artefact Graphify cho **workspace packages** nằm dưới `packages/.graphify/m
 - [@backend — SUMMARY](../../apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@hub-parent/api — SUMMARY](../../apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@frontend — SUMMARY](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
-- [@hub-event/api — SUMMARY](../../apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md)
-- [@hub-event-checkin-frontend — SUMMARY](../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@hub-checkin/api — SUMMARY](../../apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md)
+- [@hub-checkin/frontend — SUMMARY](../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@store-sync/api — SUMMARY](../../apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [@store-sync-frontend — SUMMARY](../../apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md)
 - [Chỉ mục monorepo](../../.graphify/markdown/SUMMARY_FOR_AI.md)

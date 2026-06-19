@@ -27,7 +27,7 @@
     "pm2:reload": "node ecosystem/pm2-stack.cjs reload parent",
     "pm2:stop": "node ecosystem/pm2-stack.cjs stop parent",
     "push": "node script-system/git/commit-and-push.cjs",
-    "env:init": "node script-system/env/env-init.cjs parent",
+    "env:init": "node script-system/env/init-env.cjs parent",
     "db:bootstrap": "node script-system/db/bootstrap-fresh-api.cjs hub-parent",
     "storage:init": "node script-system/db/init-storage-dirs.cjs hub-parent"
   },

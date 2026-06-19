@@ -347,6 +347,16 @@
       "client": false
     },
     {
+      "id": "file_src_lib_build_event_submit_payload_ts",
+      "label": "build-event-submit-payload.ts",
+      "path": "src/lib/build-event-submit-payload.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_lib_build_product_storage_picker_config_ts",
       "label": "build-product-storage-picker-config.ts",
       "path": "src/lib/build-product-storage-picker-config.ts",
@@ -427,6 +437,156 @@
       "client": false
     },
     {
+      "id": "file_src_lib_hanet_checkin_errors_ts",
+      "label": "hanet-checkin-errors.ts",
+      "path": "src/lib/hanet-checkin-errors.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_checkin_parse_ts",
+      "label": "hanet-checkin-parse.ts",
+      "path": "src/lib/hanet-checkin-parse.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_checkin_realtime_ts",
+      "label": "hanet-checkin-realtime.ts",
+      "path": "src/lib/hanet-checkin-realtime.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_device_parse_ts",
+      "label": "hanet-device-parse.ts",
+      "path": "src/lib/hanet-device-parse.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_face_actions_ts",
+      "label": "hanet-face-actions.ts",
+      "path": "src/lib/hanet-face-actions.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_image_url_ts",
+      "label": "hanet-image-url.ts",
+      "path": "src/lib/hanet-image-url.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_local_date_ts",
+      "label": "hanet-local-date.ts",
+      "path": "src/lib/hanet-local-date.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_partner_api_format_ts",
+      "label": "hanet-partner-api-format.ts",
+      "path": "src/lib/hanet-partner-api-format.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_person_api_actions_ts",
+      "label": "hanet-person-api-actions.ts",
+      "path": "src/lib/hanet-person-api-actions.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_person_parse_ts",
+      "label": "hanet-person-parse.ts",
+      "path": "src/lib/hanet-person-parse.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_place_parse_ts",
+      "label": "hanet-place-parse.ts",
+      "path": "src/lib/hanet-place-parse.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_place_storage_ts",
+      "label": "hanet-place-storage.ts",
+      "path": "src/lib/hanet-place-storage.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_postman_ts",
+      "label": "hanet-postman.ts",
+      "path": "src/lib/hanet-postman.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_time_format_ts",
+      "label": "hanet-time-format.ts",
+      "path": "src/lib/hanet-time-format.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_hanet_user_pick_ts",
+      "label": "hanet-user-pick.ts",
+      "path": "src/lib/hanet-user-pick.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_lib_hanet_webhook_url_ts",
       "label": "hanet-webhook-url.ts",
       "path": "src/lib/hanet-webhook-url.ts",
@@ -485,6 +645,16 @@
       "community": "src/lib",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_lib_student_code_form_ts",
+      "label": "student-code-form.ts",
+      "path": "src/lib/student-code-form.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "dir_src_menu",
@@ -891,6 +1061,66 @@
       "type": "directory"
     },
     {
+      "id": "file_src_modules_auth__component_admin_auth_dev_panel_tsx",
+      "label": "admin-auth-dev-panel.tsx",
+      "path": "src/modules/auth/_component/admin-auth-dev-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_auth__component_admin_auth_form_header_tsx",
+      "label": "admin-auth-form-header.tsx",
+      "path": "src/modules/auth/_component/admin-auth-form-header.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_auth__component_admin_auth_form_hero_tsx",
+      "label": "admin-auth-form-hero.tsx",
+      "path": "src/modules/auth/_component/admin-auth-form-hero.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_auth__component_admin_auth_form_skeleton_tsx",
+      "label": "admin-auth-form-skeleton.tsx",
+      "path": "src/modules/auth/_component/admin-auth-form-skeleton.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_auth__component_admin_auth_google_button_tsx",
+      "label": "admin-auth-google-button.tsx",
+      "path": "src/modules/auth/_component/admin-auth-google-button.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_auth__component_admin_auth_split_layout_tsx",
+      "label": "admin-auth-split-layout.tsx",
+      "path": "src/modules/auth/_component/admin-auth-split-layout.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_modules_auth__component_register_form_tsx",
       "label": "register-form.tsx",
       "path": "src/modules/auth/_component/register-form.tsx",
@@ -929,6 +1159,16 @@
       "community": "src/modules/auth/_component",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_modules_auth__component_use_admin_auth_page_display_ts",
+      "label": "use-admin-auth-page-display.ts",
+      "path": "src/modules/auth/_component/use-admin-auth-page-display.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/auth/_component",
+      "type": "ts",
+      "client": true
     },
     {
       "id": "dir_src_modules_auth__config",
@@ -2210,6 +2450,26 @@
       "client": false
     },
     {
+      "id": "file_src_modules_data__component_system_operation_result_ts",
+      "label": "system-operation-result.ts",
+      "path": "src/modules/data/_component/system-operation-result.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/data/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_data__component_system_operations_panel_tsx",
+      "label": "system-operations-panel.tsx",
+      "path": "src/modules/data/_component/system-operations-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/data/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_modules_data__component_types_ts",
       "label": "types.ts",
       "path": "src/modules/data/_component/types.ts",
@@ -2909,9 +3169,29 @@
       "client": false
     },
     {
+      "id": "file_src_modules_events__component__live_event_hanet_avatar_panel_tsx",
+      "label": "event-hanet-avatar-panel.tsx",
+      "path": "src/modules/events/_component/_live/event-hanet-avatar-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/events/_component/_live",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_modules_events__component__live_event_hanet_config_card_tsx",
       "label": "event-hanet-config-card.tsx",
       "path": "src/modules/events/_component/_live/event-hanet-config-card.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/events/_component/_live",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_events__component__live_event_hanet_sync_log_tsx",
+      "label": "event-hanet-sync-log.tsx",
+      "path": "src/modules/events/_component/_live/event-hanet-sync-log.tsx",
       "color": "#00ddff",
       "size": 10,
       "community": "src/modules/events/_component/_live",
@@ -2986,6 +3266,16 @@
       "community": "src/modules/events/_component/_query",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_modules_events__component__query_use_hanet_status_ts",
+      "label": "use-hanet-status.ts",
+      "path": "src/modules/events/_component/_query/use-hanet-status.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/events/_component/_query",
+      "type": "ts",
+      "client": true
     },
     {
       "id": "dir_src_modules_events__component__table",
@@ -3185,6 +3475,16 @@
       "client": true
     },
     {
+      "id": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "label": "file-storage-scoped-browse.tsx",
+      "path": "src/modules/file-storage/_component/file-storage-scoped-browse.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/file-storage/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_modules_file_storage__component_file_storage_upload_dialog_tsx",
       "label": "file-storage-upload-dialog.tsx",
       "path": "src/modules/file-storage/_component/file-storage-upload-dialog.tsx",
@@ -3193,6 +3493,16 @@
       "community": "src/modules/file-storage/_component",
       "type": "tsx",
       "client": true
+    },
+    {
+      "id": "file_src_modules_file_storage__component_folder_domain_ts",
+      "label": "folder-domain.ts",
+      "path": "src/modules/file-storage/_component/folder-domain.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/file-storage/_component",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_modules_file_storage__component_index_ts",
@@ -3277,6 +3587,16 @@
       "id": "file_src_modules_file_storage__component__hooks_use_file_storage_list_ts",
       "label": "use-file-storage-list.ts",
       "path": "src/modules/file-storage/_component/_hooks/use-file-storage-list.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/file-storage/_component/_hooks",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "label": "use-folder-nav-search.ts",
+      "path": "src/modules/file-storage/_component/_hooks/use-folder-nav-search.ts",
       "color": "#00ddff",
       "size": 10,
       "community": "src/modules/file-storage/_component/_hooks",
@@ -3717,6 +4037,498 @@
       "color": "#00ff41",
       "size": 10,
       "community": "src/modules/guides/_component/_table",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "dir_src_modules_hanet",
+      "label": "hanet/",
+      "path": "src/modules/hanet",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_modules_hanet_avatar",
+      "label": "avatar/",
+      "path": "src/modules/hanet/avatar",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_avatar_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/avatar/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/avatar",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet_checkin",
+      "label": "checkin/",
+      "path": "src/modules/hanet/checkin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_checkin_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/checkin/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/checkin",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet_dia_diem",
+      "label": "dia-diem/",
+      "path": "src/modules/hanet/dia-diem",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_dia_diem_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/dia-diem/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/dia-diem",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet_hanet_avatars_redirect_page_tsx",
+      "label": "hanet-avatars-redirect-page.tsx",
+      "path": "src/modules/hanet/hanet-avatars-redirect-page.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet_ket_noi",
+      "label": "ket-noi/",
+      "path": "src/modules/hanet/ket-noi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_ket_noi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/ket-noi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/ket-noi",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet_nguoi",
+      "label": "nguoi/",
+      "path": "src/modules/hanet/nguoi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_nguoi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/nguoi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/nguoi",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet_thiet_bi",
+      "label": "thiet-bi/",
+      "path": "src/modules/hanet/thiet-bi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/modules/hanet/thiet-bi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/modules/hanet/thiet-bi",
+      "type": "page",
+      "client": true
+    },
+    {
+      "id": "dir_src_modules_hanet__component",
+      "label": "_component/",
+      "path": "src/modules/hanet/_component",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/modules/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_avatar_card_tsx",
+      "label": "hanet-avatar-card.tsx",
+      "path": "src/modules/hanet/_component/hanet-avatar-card.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_avatar_utils_ts",
+      "label": "hanet-avatar-utils.ts",
+      "path": "src/modules/hanet/_component/hanet-avatar-utils.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "label": "hanet-avatars-tab.tsx",
+      "path": "src/modules/hanet/_component/hanet-avatars-tab.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_checkin_live_bar_tsx",
+      "label": "hanet-checkin-live-bar.tsx",
+      "path": "src/modules/hanet/_component/hanet-checkin-live-bar.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_checkins_columns_tsx",
+      "label": "hanet-checkins-columns.tsx",
+      "path": "src/modules/hanet/_component/hanet-checkins-columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_checkins_table_tsx",
+      "label": "hanet-checkins-table.tsx",
+      "path": "src/modules/hanet/_component/hanet-checkins-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_device_connection_panel_tsx",
+      "label": "hanet-device-connection-panel.tsx",
+      "path": "src/modules/hanet/_component/hanet-device-connection-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_device_row_actions_tsx",
+      "label": "hanet-device-row-actions.tsx",
+      "path": "src/modules/hanet/_component/hanet-device-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_devices_tab_tsx",
+      "label": "hanet-devices-tab.tsx",
+      "path": "src/modules/hanet/_component/hanet-devices-tab.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_devices_table_tsx",
+      "label": "hanet-devices-table.tsx",
+      "path": "src/modules/hanet/_component/hanet-devices-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_disk_avatars_tab_tsx",
+      "label": "hanet-disk-avatars-tab.tsx",
+      "path": "src/modules/hanet/_component/hanet-disk-avatars-tab.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_face_action_dialog_tsx",
+      "label": "hanet-face-action-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-face-action-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_json_preview_tsx",
+      "label": "hanet-json-preview.tsx",
+      "path": "src/modules/hanet/_component/hanet-json-preview.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "label": "hanet-module-shell.tsx",
+      "path": "src/modules/hanet/_component/hanet-module-shell.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_overview_tab_tsx",
+      "label": "hanet-overview-tab.tsx",
+      "path": "src/modules/hanet/_component/hanet-overview-tab.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_partner_api_dialog_tsx",
+      "label": "hanet-partner-api-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-partner-api-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_partner_api_list_tsx",
+      "label": "hanet-partner-api-list.tsx",
+      "path": "src/modules/hanet/_component/hanet-partner-api-list.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_person_action_dialog_tsx",
+      "label": "hanet-person-action-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-person-action-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_person_lookup_panel_tsx",
+      "label": "hanet-person-lookup-panel.tsx",
+      "path": "src/modules/hanet/_component/hanet-person-lookup-panel.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_person_row_actions_tsx",
+      "label": "hanet-person-row-actions.tsx",
+      "path": "src/modules/hanet/_component/hanet-person-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "label": "hanet-persons-table.tsx",
+      "path": "src/modules/hanet/_component/hanet-persons-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_place_delete_dialog_tsx",
+      "label": "hanet-place-delete-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-place-delete-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_place_form_dialog_tsx",
+      "label": "hanet-place-form-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-place-form-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_place_row_actions_tsx",
+      "label": "hanet-place-row-actions.tsx",
+      "path": "src/modules/hanet/_component/hanet-place-row-actions.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_place_select_tsx",
+      "label": "hanet-place-select.tsx",
+      "path": "src/modules/hanet/_component/hanet-place-select.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_places_columns_tsx",
+      "label": "hanet-places-columns.tsx",
+      "path": "src/modules/hanet/_component/hanet-places-columns.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_places_table_tsx",
+      "label": "hanet-places-table.tsx",
+      "path": "src/modules/hanet/_component/hanet-places-table.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_register_face_dialog_tsx",
+      "label": "hanet-register-face-dialog.tsx",
+      "path": "src/modules/hanet/_component/hanet-register-face-dialog.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_hanet_stored_avatars_tab_tsx",
+      "label": "hanet-stored-avatars-tab.tsx",
+      "path": "src/modules/hanet/_component/hanet-stored-avatars-tab.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_index_ts",
+      "label": "index.ts",
+      "path": "src/modules/hanet/_component/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_hanet__component_use_hanet_avatars_query_ts",
+      "label": "use-hanet-avatars-query.ts",
+      "path": "src/modules/hanet/_component/use-hanet-avatars-query.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_hanet__component_use_hanet_checkin_live_ts",
+      "label": "use-hanet-checkin-live.ts",
+      "path": "src/modules/hanet/_component/use-hanet-checkin-live.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "ts",
+      "client": true
+    },
+    {
+      "id": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
+      "label": "use-hanet-devices-query.ts",
+      "path": "src/modules/hanet/_component/use-hanet-devices-query.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_hanet__component_use_hanet_places_query_ts",
+      "label": "use-hanet-places-query.ts",
+      "path": "src/modules/hanet/_component/use-hanet-places-query.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/hanet/_component",
       "type": "ts",
       "client": false
     },
@@ -7108,6 +7920,16 @@
       "client": true
     },
     {
+      "id": "file_src_modules_staff__component_staff_form_types_ts",
+      "label": "staff-form.types.ts",
+      "path": "src/modules/staff/_component/staff-form.types.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/staff/_component",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_modules_staff__component_staff_personnel_info_section_tsx",
       "label": "staff-personnel-info-section.tsx",
       "path": "src/modules/staff/_component/staff-personnel-info-section.tsx",
@@ -7196,6 +8018,16 @@
       "client": true
     },
     {
+      "id": "file_src_modules_staff__component__form_staff_student_code_field_tsx",
+      "label": "staff-student-code-field.tsx",
+      "path": "src/modules/staff/_component/_form/staff-student-code-field.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/staff/_component/_form",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "dir_src_modules_staff__component__hooks",
       "label": "_hooks/",
       "path": "src/modules/staff/_component/_hooks",
@@ -7213,6 +8045,26 @@
       "community": "src/modules/staff/_component/_hooks",
       "type": "ts",
       "client": false
+    },
+    {
+      "id": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "label": "staff-form.schema.ts",
+      "path": "src/modules/staff/_component/_hooks/staff-form.schema.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/modules/staff/_component/_hooks",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_modules_staff__component__hooks_use_staff_avatar_upload_ts",
+      "label": "use-staff-avatar-upload.ts",
+      "path": "src/modules/staff/_component/_hooks/use-staff-avatar-upload.ts",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/modules/staff/_component/_hooks",
+      "type": "ts",
+      "client": true
     },
     {
       "id": "file_src_modules_staff__component__hooks_use_staff_form_ts",
@@ -8801,6 +9653,11 @@
     },
     {
       "source": "dir_src_lib",
+      "target": "file_src_lib_build_event_submit_payload_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
       "target": "file_src_lib_build_product_storage_picker_config_ts",
       "relation": "contains"
     },
@@ -8841,6 +9698,81 @@
     },
     {
       "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_checkin_errors_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_checkin_parse_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_checkin_realtime_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_device_parse_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_face_actions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_image_url_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_local_date_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_partner_api_format_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_person_api_actions_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_person_parse_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_place_parse_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_place_storage_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_postman_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_time_format_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_hanet_user_pick_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
       "target": "file_src_lib_hanet_webhook_url_ts",
       "relation": "contains"
     },
@@ -8867,6 +9799,11 @@
     {
       "source": "dir_src_lib",
       "target": "file_src_lib_storage_image_picker_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "file_src_lib_student_code_form_ts",
       "relation": "contains"
     },
     {
@@ -9081,6 +10018,36 @@
     },
     {
       "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_dev_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_form_header_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_form_hero_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_form_skeleton_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_google_button_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_admin_auth_split_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
       "target": "file_src_modules_auth__component_register_form_tsx",
       "relation": "contains"
     },
@@ -9097,6 +10064,11 @@
     {
       "source": "dir_src_modules_auth__component",
       "target": "file_src_modules_auth__component_sign_in_form_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_auth__component",
+      "target": "file_src_modules_auth__component_use_admin_auth_page_display_ts",
       "relation": "contains"
     },
     {
@@ -9761,6 +10733,16 @@
     },
     {
       "source": "dir_src_modules_data__component",
+      "target": "file_src_modules_data__component_system_operation_result_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_data__component",
+      "target": "file_src_modules_data__component_system_operations_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_data__component",
       "target": "file_src_modules_data__component_types_ts",
       "relation": "contains"
     },
@@ -10121,7 +11103,17 @@
     },
     {
       "source": "dir_src_modules_events__component__live",
+      "target": "file_src_modules_events__component__live_event_hanet_avatar_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events__component__live",
       "target": "file_src_modules_events__component__live_event_hanet_config_card_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events__component__live",
+      "target": "file_src_modules_events__component__live_event_hanet_sync_log_tsx",
       "relation": "contains"
     },
     {
@@ -10157,6 +11149,11 @@
     {
       "source": "dir_src_modules_events__component__query",
       "target": "file_src_modules_events__component__query_use_events_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_events__component__query",
+      "target": "file_src_modules_events__component__query_use_hanet_status_ts",
       "relation": "contains"
     },
     {
@@ -10261,7 +11258,17 @@
     },
     {
       "source": "dir_src_modules_file_storage__component",
+      "target": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_file_storage__component",
       "target": "file_src_modules_file_storage__component_file_storage_upload_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_file_storage__component",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
       "relation": "contains"
     },
     {
@@ -10307,6 +11314,11 @@
     {
       "source": "dir_src_modules_file_storage__component__hooks",
       "target": "file_src_modules_file_storage__component__hooks_use_file_storage_list_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_file_storage__component__hooks",
+      "target": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
       "relation": "contains"
     },
     {
@@ -10532,6 +11544,256 @@
     {
       "source": "dir_src_modules_guides__component__table",
       "target": "file_src_modules_guides__component__table_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules",
+      "target": "dir_src_modules_hanet",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_avatar",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_avatar",
+      "target": "file_src_modules_hanet_avatar_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_checkin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_checkin",
+      "target": "file_src_modules_hanet_checkin_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_dia_diem",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_dia_diem",
+      "target": "file_src_modules_hanet_dia_diem_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "file_src_modules_hanet_hanet_avatars_redirect_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_ket_noi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_ket_noi",
+      "target": "file_src_modules_hanet_ket_noi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_nguoi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_nguoi",
+      "target": "file_src_modules_hanet_nguoi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "file_src_modules_hanet_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet_thiet_bi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet_thiet_bi",
+      "target": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet",
+      "target": "dir_src_modules_hanet__component",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_avatar_card_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_avatar_utils_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_checkin_live_bar_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_checkins_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_checkins_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_device_connection_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_device_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_devices_tab_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_devices_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_disk_avatars_tab_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_face_action_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_json_preview_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_overview_tab_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_partner_api_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_partner_api_list_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_person_action_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_person_lookup_panel_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_person_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_place_delete_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_place_form_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_place_row_actions_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_place_select_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_places_columns_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_places_table_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_register_face_dialog_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_hanet_stored_avatars_tab_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_use_hanet_avatars_query_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_use_hanet_checkin_live_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_hanet__component",
+      "target": "file_src_modules_hanet__component_use_hanet_places_query_ts",
       "relation": "contains"
     },
     {
@@ -12281,6 +13543,11 @@
     },
     {
       "source": "dir_src_modules_staff__component",
+      "target": "file_src_modules_staff__component_staff_form_types_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_staff__component",
       "target": "file_src_modules_staff__component_staff_personnel_info_section_tsx",
       "relation": "contains"
     },
@@ -12325,6 +13592,11 @@
       "relation": "contains"
     },
     {
+      "source": "dir_src_modules_staff__component__form",
+      "target": "file_src_modules_staff__component__form_staff_student_code_field_tsx",
+      "relation": "contains"
+    },
+    {
       "source": "dir_src_modules_staff__component",
       "target": "dir_src_modules_staff__component__hooks",
       "relation": "contains"
@@ -12332,6 +13604,16 @@
     {
       "source": "dir_src_modules_staff__component__hooks",
       "target": "file_src_modules_staff__component__hooks_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_staff__component__hooks",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_modules_staff__component__hooks",
+      "target": "file_src_modules_staff__component__hooks_use_staff_avatar_upload_ts",
       "relation": "contains"
     },
     {
@@ -13355,6 +14637,41 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_auth__component_admin_auth_google_button_tsx",
+      "target": "file_src_modules_auth__lib_auth_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_header_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_hero_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_skeleton_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_google_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_split_layout_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_register_form_tsx",
+      "target": "file_src_modules_auth__component_use_admin_auth_page_display_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_auth__component_register_form_tsx",
       "target": "file_src_modules_auth__lib_auth_api_ts",
       "relation": "imports"
@@ -13362,6 +14679,41 @@
     {
       "source": "file_src_modules_auth__component_register_form_tsx",
       "target": "file_src_modules_auth__component_register_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_dev_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_skeleton_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_google_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_use_admin_auth_page_display_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_header_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_form_hero_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_auth__component_sign_in_form_tsx",
+      "target": "file_src_modules_auth__component_admin_auth_split_layout_tsx",
       "relation": "imports"
     },
     {
@@ -13900,6 +15252,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_data_page_tsx",
+      "target": "file_src_modules_data__component_system_operations_panel_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_data__component_columns_tsx",
       "target": "file_src_modules_data__component_types_ts",
       "relation": "imports"
@@ -13966,6 +15323,21 @@
     },
     {
       "source": "file_src_modules_data__component_index_ts",
+      "target": "file_src_modules_data__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_data__component_system_operation_result_ts",
+      "target": "file_src_modules_data__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_data__component_system_operations_panel_tsx",
+      "target": "file_src_modules_data__component_system_operation_result_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_data__component_system_operations_panel_tsx",
       "target": "file_src_modules_data__component_utils_ts",
       "relation": "imports"
     },
@@ -14136,6 +15508,11 @@
     },
     {
       "source": "file_src_modules_events__id__page_tsx",
+      "target": "file_src_modules_events__component__live_event_hanet_config_card_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events__id__page_tsx",
       "target": "file_src_modules_events__component_utils_ts",
       "relation": "imports"
     },
@@ -14271,6 +15648,11 @@
     },
     {
       "source": "file_src_modules_events__component__form_event_form_shell_tsx",
+      "target": "file_src_modules_events__component__query_use_hanet_status_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events__component__form_event_form_shell_tsx",
       "target": "file_src_modules_events__component_types_ts",
       "relation": "imports"
     },
@@ -14335,6 +15717,16 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_events__component__live_event_hanet_config_card_tsx",
+      "target": "file_src_modules_events__component__query_use_hanet_status_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events__component__live_event_hanet_sync_log_tsx",
+      "target": "file_src_modules_events__component__live_use_event_attendance_socket_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_events__component__live_event_live_monitor_tab_tsx",
       "target": "file_src_modules_events__component_types_ts",
       "relation": "imports"
@@ -14361,6 +15753,11 @@
     },
     {
       "source": "file_src_modules_events__component__live_event_live_monitor_tab_tsx",
+      "target": "file_src_modules_events__component__live_event_hanet_sync_log_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events__component__live_event_live_monitor_tab_tsx",
       "target": "file_src_modules_events__component_live_activity_columns_tsx",
       "relation": "imports"
     },
@@ -14382,6 +15779,11 @@
     {
       "source": "file_src_modules_events__component__query_index_ts",
       "target": "file_src_modules_events__component__query_use_event_sub_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_events__component__query_index_ts",
+      "target": "file_src_modules_events__component__query_use_hanet_status_ts",
       "relation": "imports"
     },
     {
@@ -14422,11 +15824,6 @@
     {
       "source": "file_src_modules_file_storage_page_tsx",
       "target": "dir_src_modules_file_storage__component",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_file_storage_page_tsx",
-      "target": "file_src_modules_file_storage__component_utils_ts",
       "relation": "imports"
     },
     {
@@ -14506,17 +15903,17 @@
     },
     {
       "source": "file_src_modules_file_storage__component_file_storage_folder_nav_tsx",
-      "target": "file_src_modules_file_storage__component__hooks_use_storage_folders_ts",
+      "target": "dir_src_modules_file_storage__component__hooks",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_folder_nav_tsx",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_file_storage__component_file_storage_folder_nav_tsx",
       "target": "file_src_modules_file_storage__component_types_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_modules_file_storage__component_file_storage_folder_nav_tsx",
-      "target": "file_src_modules_file_storage__component_utils_ts",
       "relation": "imports"
     },
     {
@@ -14551,6 +15948,61 @@
     },
     {
       "source": "file_src_modules_file_storage__component_file_storage_reorganize_dialog_tsx",
+      "target": "file_src_modules_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_file_storage_create_folder_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_file_storage_delete_folder_button_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_file_storage_folder_nav_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_file_storage_upload_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_storage_video_preview_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "dir_src_modules_file_storage__component__table",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "dir_src_modules_file_storage__component__hooks",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
       "target": "file_src_modules_file_storage__component_utils_ts",
       "relation": "imports"
     },
@@ -14577,6 +16029,21 @@
     {
       "source": "file_src_modules_file_storage__component_file_storage_upload_dialog_tsx",
       "target": "file_src_modules_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_folder_domain_ts",
+      "target": "file_src_modules_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_folder_domain_ts",
+      "target": "file_src_modules_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_index_ts",
+      "target": "file_src_modules_file_storage__component_file_storage_scoped_browse_tsx",
       "relation": "imports"
     },
     {
@@ -14661,12 +16128,27 @@
     },
     {
       "source": "file_src_modules_file_storage__component_index_ts",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_index_ts",
       "target": "file_src_modules_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_index_ts",
+      "target": "file_src_modules_file_storage__component_storage_upload_policy_ts",
       "relation": "imports"
     },
     {
       "source": "file_src_modules_file_storage__component_storage_upload_policy_ts",
       "target": "file_src_modules_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component_storage_upload_policy_ts",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
       "relation": "imports"
     },
     {
@@ -14700,6 +16182,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_file_storage__component__hooks_index_ts",
+      "target": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_file_storage__component__hooks_use_file_storage_actions_ts",
       "target": "file_src_modules_file_storage__component_file_storage_import_confirm_dialogs_tsx",
       "relation": "imports"
@@ -14722,6 +16209,26 @@
     {
       "source": "file_src_modules_file_storage__component__hooks_use_file_storage_list_ts",
       "target": "file_src_modules_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "target": "file_src_modules_file_storage__component_folder_domain_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "target": "file_src_modules_file_storage__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "target": "file_src_modules_file_storage__component_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_file_storage__component__hooks_use_folder_nav_search_ts",
+      "target": "file_src_modules_file_storage__component__hooks_use_storage_folders_ts",
       "relation": "imports"
     },
     {
@@ -14957,6 +16464,271 @@
     {
       "source": "file_src_modules_guides__component__table_index_ts",
       "target": "file_src_modules_guides__component__table_guides_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_avatar_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_avatar_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_disk_avatars_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_avatar_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_avatar_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_stored_avatars_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_checkin_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_checkins_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_checkin_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_checkin_live_bar_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_checkin_page_tsx",
+      "target": "file_src_modules_hanet__component_use_hanet_checkin_live_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_checkin_page_tsx",
+      "target": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_checkin_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_dia_diem_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_dia_diem_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_place_delete_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_dia_diem_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_place_form_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_dia_diem_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_places_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_ket_noi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_json_preview_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_ket_noi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_nguoi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_nguoi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_person_action_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_nguoi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_person_lookup_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_nguoi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_nguoi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_register_face_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_devices_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_device_connection_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "target": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet_thiet_bi_page_tsx",
+      "target": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_avatar_card_tsx",
+      "target": "file_src_modules_hanet__component_hanet_avatar_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "target": "file_src_modules_hanet__component_hanet_face_action_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "target": "file_src_modules_hanet__component_hanet_register_face_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_checkins_table_tsx",
+      "target": "file_src_modules_hanet__component_hanet_checkins_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_device_connection_panel_tsx",
+      "target": "file_src_modules_hanet__component_hanet_json_preview_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_devices_tab_tsx",
+      "target": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_devices_table_tsx",
+      "target": "file_src_modules_hanet__component_hanet_device_connection_panel_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_devices_table_tsx",
+      "target": "file_src_modules_hanet__component_hanet_device_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_face_action_dialog_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_module_shell_tsx",
+      "target": "file_src_modules_hanet__component_hanet_partner_api_dialog_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_partner_api_dialog_tsx",
+      "target": "file_src_modules_hanet__component_hanet_partner_api_list_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_person_action_dialog_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_person_lookup_panel_tsx",
+      "target": "file_src_modules_hanet__component_hanet_json_preview_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_person_lookup_panel_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_person_row_actions_tsx",
+      "target": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_persons_table_tsx",
+      "target": "file_src_modules_hanet__component_hanet_person_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_place_select_tsx",
+      "target": "file_src_modules_hanet__component_use_hanet_places_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_places_columns_tsx",
+      "target": "file_src_modules_hanet__component_hanet_place_row_actions_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_hanet_places_table_tsx",
+      "target": "file_src_modules_hanet__component_hanet_places_columns_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_avatars_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_devices_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_overview_tab_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_avatar_card_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_place_select_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_use_hanet_avatars_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_hanet_avatar_utils_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_use_hanet_places_query_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_hanet__component_index_ts",
+      "target": "file_src_modules_hanet__component_use_hanet_devices_query_ts",
       "relation": "imports"
     },
     {
@@ -16591,6 +18363,11 @@
     },
     {
       "source": "file_src_modules_staff__component_index_ts",
+      "target": "file_src_modules_staff__component_staff_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component_index_ts",
       "target": "file_src_modules_staff__component_utils_ts",
       "relation": "imports"
     },
@@ -16630,6 +18407,11 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_staff__component_staff_form_types_ts",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_staff__component__alert_dialog_index_ts",
       "target": "file_src_modules_staff__component__alert_dialog_staff_confirm_dialog_tsx",
       "relation": "imports"
@@ -16646,7 +18428,22 @@
     },
     {
       "source": "file_src_modules_staff__component__form_staff_form_shell_tsx",
-      "target": "file_src_modules_staff__component__hooks_use_staff_form_ts",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__form_staff_form_shell_tsx",
+      "target": "file_src_modules_staff__component__hooks_use_staff_avatar_upload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__form_staff_form_shell_tsx",
+      "target": "file_src_modules_staff__component__form_staff_student_code_field_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__form_staff_student_code_field_tsx",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
       "relation": "imports"
     },
     {
@@ -16655,8 +18452,38 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_modules_staff__component__hooks_index_ts",
+      "target": "file_src_modules_staff__component__hooks_use_staff_avatar_upload_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__hooks_use_staff_avatar_upload_ts",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__hooks_use_staff_form_ts",
+      "target": "file_src_modules_staff__component_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__hooks_use_staff_form_ts",
+      "target": "file_src_modules_staff__component_staff_form_types_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__hooks_use_staff_form_ts",
+      "target": "file_src_modules_staff__component__hooks_staff_form_schema_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_modules_staff__component__query_index_ts",
       "target": "file_src_modules_staff__component__query_use_staff_queries_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_modules_staff__component__query_use_staff_queries_ts",
+      "target": "file_src_modules_staff__component_staff_form_types_ts",
       "relation": "imports"
     },
     {

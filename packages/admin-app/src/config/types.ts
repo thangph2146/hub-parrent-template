@@ -18,7 +18,7 @@ export type AdminAppMenuConfig = {
 }
 
 export type AdminNativeRoutePreserve = {
-  /** Đường dẫn tương đối dưới `basePath` — không generate từ package (vd. `check-in-ky-tuc-xa`). */
+  /** Đường dẫn tương đối dưới `basePath` — không generate từ package (vd. `dormitory-checkin`). */
   paths: string[]
 }
 

@@ -1,5 +1,5 @@
 /**
- * Bootstrap DB trống cho API deploy line (store-sync, hub-event, …).
+ * Bootstrap DB trống cho API deploy line (store-sync, hub-checkin, …).
  *
  * DB mới không có schema legacy → `migration:up` fail ở migration đổi tên bảng cũ.
  * Luồng an toàn: schema:create (entities hiện tại) → seed → đánh dấu migrations đã chạy.
@@ -235,7 +235,7 @@ function driver() {
 const devHint =
   arg === "store-sync" || pkg === "@store-sync/api"
     ? "pnpm dev:store"
-    : arg === "hub-checkin" || arg === "hub-event" || pkg === "@hub-event/api"
+    : arg === "hub-checkin" || pkg === "@hub-checkin/api"
       ? "pnpm dev:checkin"
       : arg === "hub-parent" || pkg === "@hub-parent/api"
         ? "pnpm dev:main"

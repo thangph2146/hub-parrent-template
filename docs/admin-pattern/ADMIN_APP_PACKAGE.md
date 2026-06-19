@@ -1,6 +1,6 @@
 # `@workspace/admin-app` — Admin dùng chung theo cấu hình
 
-Thay pipeline **copy/sync** `main/backend` → `hub-event-checkin-frontend`, admin CRUD sống trong **`packages/admin-app`**. Mỗi app Next chỉ khai báo **module bật** + route native, rồi **generate** page mỏng.
+Thay pipeline **copy/sync** `main/backend` → `hub-checkin-frontend`, admin CRUD sống trong **`packages/admin-app`**. Mỗi app Next chỉ khai báo **module bật** + route native, rồi **generate** page mỏng.
 
 ## Mô hình
 
@@ -16,7 +16,7 @@ apps/main/backend/
   admin.app.config.json          # basePath: "" — full admin
   src/app/{module}/page.tsx      # AUTO-GENERATED re-export
 
-apps/hub-event/hub-event-checkin-frontend/
+apps/hub-checkin/hub-checkin-frontend/
   admin.app.config.json          # basePath: "/admin" + danh sách module
   src/app/admin/{module}/page.tsx  # AUTO-GENERATED (trừ native)
   src/app/admin/page.tsx         # native — sự kiện check-in
@@ -31,7 +31,7 @@ apps/hub-event/hub-event-checkin-frontend/
 | `modules` | Module CRUD bật — package + menu tự lọc |
 | `native.files` | File giữ local, **không** ghi đè khi generate |
 | `menu` | Subset menu, hrefOverrides, nativeGroups |
-| `dashboard.relativePath` | Trang tổng quan (vd. `tong-quan/page.tsx`) |
+| `dashboard.relativePath` | Trang tổng quan (vd. `dashboard/page.tsx`) |
 
 ## Lệnh
 
@@ -72,7 +72,7 @@ Module trong package dùng `useAdminAuth`, `useAdminApi`, `useAdminModuleNavigat
 | **2** ✅ | `main/backend` + check-in dùng generate; prune duplicate |
 | **3** ✅ | `copy-checkin-admin-modules.cjs` deprecated; `admin.sync-modules.json` xóa |
 | **4** ✅ | Toàn bộ module CRUD main → package (28 modules) |
-| **5** ✅ | App host: `lib/api` + thin re-export package; `hooks/queries` re-export; check-in `/admin/dang-ky` |
+| **5** ✅ | App host: `lib/api` + thin re-export package; `hooks/queries` re-export; check-in `/admin/register` |
 | **6** ✅ | `migrate-admin` không ghi đè package từ app generated; verify lib/hooks host |
 | **7** ✅ | `pull:checkin` E2E; retry ghi file Windows; `pnpm check` gồm `verify:main-admin` |
 | **8** ✅ | `AdminProfilePage` trong package; app re-export / config subtitle |

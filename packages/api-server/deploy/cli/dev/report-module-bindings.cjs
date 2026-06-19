@@ -12,7 +12,7 @@ const {
   listThinMaterializeModuleIds,
 } = require('../../config/package-module-templates.cjs')
 
-const appRoot = path.resolve(ROOT, process.argv[2] ?? 'apps/hub-event/api')
+const appRoot = path.resolve(ROOT, process.argv[2] ?? 'apps/hub-checkin/api')
 const srcRoot = path.join(appRoot, 'src')
 
 function listModuleDirs() {

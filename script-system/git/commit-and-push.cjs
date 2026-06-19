@@ -3,12 +3,12 @@
  *
  * Upstream template: chỉ push main (mặc định).
  * Downstream: chỉ push main.
- * Legacy (cùng repo, branch deploy): --legacy-deploy [--only hub-event]
+ * Legacy (cùng repo, branch deploy): --legacy-deploy [--only hub-checkin]
  *
  * Usage:
  *   pnpm push -- "feat: ..."
  *   pnpm push:legacy -- "feat: ..."
- *   pnpm push -- --legacy-deploy --only hub-event "feat: ..."
+ *   pnpm push -- --legacy-deploy --only hub-checkin "feat: ..."
  */
 const fs = require("node:fs")
 const path = require("node:path")
@@ -101,7 +101,12 @@ console.log(
 ensureMainBranch()
 commitDevChanges(message, dryRun)
 
-if (legacyDeploy || (!isUpstream && forward.includes("--deploy-lines"))) {
+if (!isUpstream && (legacyDeploy || forward.includes("--deploy-lines"))) {
+  console.error("[push] deploy branch legacy chỉ chạy ở mono-repo-template upstream.")
+  process.exit(1)
+}
+
+if (legacyDeploy) {
   const deployScript = path.join(__dirname, "push-deploy-branches.cjs")
   const deployArgs = ["node", deployScript, ...forward.filter((a) => a !== "--legacy-deploy")]
   if (dryRun) console.log(`[push] dry-run: ${deployArgs.join(" ")}`)

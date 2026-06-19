@@ -89,7 +89,7 @@ function migrateLib() {
   const destLib = path.join(PACKAGE_SRC, "lib")
   const stubSrc = path.join(
     ROOT,
-    "apps/hub-event/hub-event-checkin-frontend/src/lib/admin/product-image-storage-stub.ts",
+    "apps/hub-checkin/hub-checkin-frontend/src/lib/admin/product-image-storage-stub.ts",
   )
   if (fs.existsSync(stubSrc)) {
     fs.copyFileSync(

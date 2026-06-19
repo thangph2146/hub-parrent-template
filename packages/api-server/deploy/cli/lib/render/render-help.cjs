@@ -3,7 +3,7 @@ api:render — materialize deploy/nest → app API deploy
 
 CÁCH CHẠY
   pnpm api:render                              Menu: repo → chọn mẫu → (module) → render + .env
-  pnpm api:render apps/hub-event/api --prune   Render full check-in + dọn module thừa
+  pnpm api:render apps/hub-checkin/api --prune Render full check-in + dọn module thừa
   pnpm api:sync-template                       Sync main/api → deploy/nest
 
 FLAGS
@@ -26,7 +26,7 @@ TỰ ĐIỀU CHỈNH
   • OOP main → copy binding (tránh duplicate export type)
   • Prune helper → patch import sang module-bases
   • --modules=… → closure + cắt app.module + bỏ seed phụ thuộc
-  • Partial → bỏ verify; full hub-event → verify + parity
+  • Partial → bỏ verify; full hub-checkin → verify + parity
   • Entity: mặc định full copy; --prune-entities dùng entity-graph.manifest.json
   • Module dư: verify graph closure — pnpm verify:module-graph · render subset auto --prune
   • pnpm verify:entity-closure — kiểm closure entity theo graph cho mọi line deploy

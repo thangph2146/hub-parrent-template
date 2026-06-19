@@ -1,6 +1,6 @@
-# Pattern clusters — apps/hub-event/api (Graphify)
+# Pattern clusters — apps/hub-checkin/api (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.403Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
+> **Sinh tự động:** `2026-06-19T01:42:38.558Z` — nhóm file **cùng boilerplate** (re-export AUTO-GENERATED, `AdminRouteLoading`, v.v.).
 
 Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay vì lặp từng file host.
 
@@ -12,8 +12,8 @@ Mục tiêu: agent biết chỗ **sửa một lần** (admin-app / `@ui`) thay v
 
 | Basename | Số file | Gợi ý |
 |----------|---------|--------|
-| `index.ts` | 8 | — |
+| `index.ts` | 7 | — |
 
 ## Làm mới
 
-`node script-system/graphify/graphify-update.cjs apps/hub-event/api` → `pnpm graphify:ai-summary`.
+`node script-system/graphify/graphify-update.cjs apps/hub-checkin/api` → `pnpm graphify:ai-summary`.

@@ -1,4 +1,4 @@
-# Báo cáo module binding — apps\hub-event\api
+# Báo cáo module binding — apps\hub-checkin\api
 
 Thời điểm: 2026-06-13T19:43:26.914Z
 

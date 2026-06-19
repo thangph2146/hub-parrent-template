@@ -12,8 +12,8 @@ Cấu trúc product line: `docs/MONOREPO_STRUCTURE.md`.
 | `@backend`                    | `apps/main/backend`                                  | Admin Next, route/page theo domain, query hooks, wiring auth         | Entity, MikroORM, component admin generic |
 | `@hub-parent/api`             | `apps/hub-parent/api`                                | API deploy site chính (sync từ main)                                 | Giống `@api`                              |
 | `@frontend`                   | `apps/hub-parent/hub-parent-frontend`                | Storefront Next (HUB công khai), SSR/SEO trang public                | DB, entity, admin CRUD logic              |
-| `@hub-event/api`              | `apps/hub-event/api`                                 | API check-in (sync từ main, cắt module)                              | Giống `@api`                              |
-| `@hub-event-checkin-frontend` | `apps/hub-event/hub-event-checkin-frontend`          | Storefront + admin check-in sự kiện                                  | Cùng ranh giới như `@frontend`            |
+| `@hub-checkin/api`              | `apps/hub-checkin/api`                               | API check-in (sync từ main, cắt module)                              | Giống `@api`                              |
+| `@hub-checkin/frontend` | `apps/hub-checkin/hub-checkin-frontend`        | Storefront + admin check-in sự kiện                                  | Cùng ranh giới như `@frontend`            |
 | `@store-sync/api`             | `apps/store-sync/api`                                | API Store Sync (sync từ main)                                        | Giống `@api`                              |
 | `@store-sync-frontend`        | `apps/store-sync/store-sync-frontend`                | Storefront Store Sync (catalog, giỏ, checkout)                       | Cùng ranh giới như `@frontend`            |
 

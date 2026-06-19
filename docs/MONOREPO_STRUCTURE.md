@@ -14,9 +14,9 @@ apps/
 ├── hub-parent/                    # Site HUB công khai (deploy)
 │   ├── api/          @hub-parent/api      ← sync từ main/api
 │   └── hub-parent-frontend/  @frontend
-├── hub-event/                     # Check-in sự kiện (deploy)
-│   ├── api/          @hub-event/api      ← sync từ main/api
-│   └── hub-event-checkin-frontend/  @hub-event-checkin-frontend
+├── hub-checkin/                   # Check-in sự kiện (deploy)
+│   ├── api/          @hub-checkin/api      ← sync từ main/api
+│   └── hub-checkin-frontend/  @hub-checkin/frontend
 │                                   (storefront + admin check-in)
 └── store-sync/                    # Store Sync (deploy)
     ├── api/          @store-sync/api     ← sync từ main/api
@@ -29,7 +29,7 @@ apps/
 |------|----------|---------|----------|
 | **main** | Source of truth — API đầy đủ + admin pages | `@api`, `@backend` | 3002, 3001 |
 | **hub-parent** | Storefront site chính + API deploy | `@hub-parent/api`, `@frontend` | 3002, 3000 |
-| **hub-event** | Check-in: frontend + admin gộp một app | `@hub-event/api`, `@hub-event-checkin-frontend` | 3002, 3000 |
+| **hub-checkin** | Check-in: frontend + admin gộp một app | `@hub-checkin/api`, `@hub-checkin/frontend` | 3002, 3000 |
 | **store-sync** | Catalog / giỏ / checkout | `@store-sync/api`, `@store-sync-frontend` | 3002, 3000 |
 
 ## Kế thừa từ main
@@ -41,7 +41,7 @@ apps/
 - Commit trên **`main`**, push:
 
 ```bash
-git push origin main          # CI tự sync + cập nhật branch hub-event, hub-parent
+git push origin main          # CI tự sync + cập nhật branch hub-checkin, hub-parent
 # hoặc một lệnh (commit + sync + push):
 pnpm push -- "feat: mô tả thay đổi"
 pnpm push:deploy              # đã commit sẵn — chỉ sync + push branch
@@ -52,12 +52,12 @@ pnpm push:deploy              # đã commit sẵn — chỉ sync + push branch
 | Branch | Dùng cho | Server |
 |--------|----------|--------|
 | **`main`** | Dev — source of truth đầy đủ | Team phát triển |
-| **`hub-event`** | Deploy check-in (sau sync) | `git pull origin hub-event` → PM2 compo 2 |
+| **`hub-checkin`** | Deploy check-in (sau sync) | `git pull origin hub-checkin` → PM2 compo 2 |
 | **`hub-parent`** | Deploy site chính (sau sync API) | `git pull origin hub-parent` → PM2 compo 1 |
 
 Ba branch trỏ **cùng commit** sau sync (full monorepo; server chỉ build app của line mình).
 
-**Local:** `pnpm push -- "feat: ..."` — commit (nếu có diff) + `pull:checkin` + `pull:parent` + push `main` + `hub-event` + `hub-parent`. Chỉ sync/push: `pnpm push:deploy`.
+**Local:** `pnpm push -- "feat: ..."` — commit (nếu có diff) + `pull:checkin` + `pull:parent` + push `main` + `hub-checkin` + `hub-parent`. Chỉ sync/push: `pnpm push:deploy`.
 
 **CI:** workflow `.github/workflows/deploy-branches.yml` chạy sau mỗi push `main` (bỏ qua commit `chore(sync):` / `[skip ci]`).
 
@@ -75,9 +75,9 @@ Sync **full API** `main/api` → `hub-parent/api` (giữ `app.module.ts` local).
 
 Test stack deploy: **`pnpm dev:parent`**.
 
-### Cập nhật deploy check-in (`hub-event`)
+### Cập nhật deploy check-in (`hub-checkin`)
 
-**Native đã commit (`materialize.committed: true`):** `hub-event/api` là bản copy từ `apps/main/api` — **commit trong git**. `pnpm pull:checkin` **không** regenerate API; chỉ verify + admin generate.
+**Native đã commit (`materialize.committed: true`):** `hub-checkin/api` là bản copy từ `apps/main/api` — **commit trong git**. `pnpm pull:checkin` **không** regenerate API; chỉ verify + admin generate.
 
 ```bash
 pnpm pull:checkin
@@ -87,17 +87,11 @@ pnpm pull:checkin
 **Cập nhật logic API** (dev monorepo có `apps/main/api`):
 
 ```bash
-pnpm api:render apps/hub-event/api --mode=native   # hoặc pnpm api:regenerate:checkin
-git add apps/hub-event/api && git commit ...
+pnpm api:render apps/hub-checkin/api --mode=native   # hoặc pnpm api:regenerate:checkin
+git add apps/hub-checkin/api && git commit ...
 ```
 
 **Legacy packages-first** (bỏ `materialize.committed` hoặc `committed: false`): generate từ `@workspace/api-server`.
-
-**Legacy copy main → hub-event (deprecated):**
-
-```bash
-pnpm pull:checkin:legacy
-```
 
 Test stack deploy: **`pnpm dev:checkin`**. Verify: **`pnpm test:checkin:full`**.
 
@@ -105,9 +99,9 @@ Test stack deploy: **`pnpm dev:checkin`**. Verify: **`pnpm test:checkin:full`**.
 
 | File | Vai trò |
 |------|---------|
-| `apps/hub-event/api/api.app.config.json` | `materialize.committed: true` — pull skip generate |
-| `apps/hub-event/api/src/**` | Native main-port — **commit**, cập nhật qua `pnpm api:render` |
-| `apps/hub-event/hub-event-checkin-frontend/admin.app.config.json` | Admin modules |
+| `apps/hub-checkin/api/api.app.config.json` | `materialize.committed: true` — pull skip generate |
+| `apps/hub-checkin/api/src/**` | Native main-port — **commit**, cập nhật qua `pnpm api:render` |
+| `apps/hub-checkin/hub-checkin-frontend/admin.app.config.json` | Admin modules |
 
 Lệnh: `pnpm pull:checkin` (verify + admin) · Regenerate API: `pnpm api:regenerate:checkin` · Parity: `pnpm verify:main-api-endpoint-parity`
 
@@ -133,7 +127,7 @@ Các line khác (`hub-parent`, `store-sync`): `pnpm sync:api` — copy full tr�
 - **`pnpm admin:migrate`** — đưa module từ `main/backend` vào package.
 - **`pnpm admin:generate:checkin`** — sinh page re-export dưới `src/app/admin/{module}` (không copy source).
 - Menu: vẫn `sync-checkin-menu-tree.cjs` (sẽ gộp vào generate).
-- Legacy copy `sync/deprecated/` — **deprecated** (`pnpm pull:checkin`; copy API: `pull:checkin:legacy`).
+- Legacy copy `sync/deprecated/` đã upstream-only; downstream không sync lại nhóm này.
 
 Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
 
@@ -146,7 +140,7 @@ Chi tiết: `docs/admin-pattern/ADMIN_APP_PACKAGE.md`.
 | Lệnh | Apps chạy |
 |------|-----------|
 | `pnpm dev:main` | `@api` + `@backend` (phát triển chính) |
-| `pnpm dev:main:checkin` | `@api` + `@backend` + `@hub-event-checkin-frontend` — không chạy `tsup --watch` lexical; Next dùng `--webpack`; **resource guard** tự dừng khi CPU/GPU tràn |
+| `pnpm dev:main:checkin` | `@api` + `@backend` + `@hub-checkin/frontend` — không chạy `tsup --watch` lexical; Next dùng `--webpack`; **resource guard** tự dừng khi CPU/GPU tràn |
 
 ### Resource guard (CPU/GPU)
 
@@ -164,7 +158,7 @@ Mặc định bật trên `dev:main:checkin`. Vượt ngưỡng liên tục → 
 
 Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCENT=94 pnpm dev:main:checkin`
 | `pnpm dev:parent` | `@api` + `@backend` + `@frontend` |
-| `pnpm dev:checkin` | `@hub-event/api` + `@hub-event-checkin-frontend` — không `tsup --watch` lexical; Next `--webpack` (giảm process/GPU) |
+| `pnpm dev:checkin` | `@hub-checkin/api` + `@hub-checkin/frontend` — không `tsup --watch` lexical; Next `--webpack` (giảm process/GPU) |
 | `pnpm dev:store` | `@store-sync/api` + `@store-sync-frontend` |
 
 ## PM2 production
@@ -181,16 +175,16 @@ Ví dụ nới ngưỡng: `HUB_DEV_CPU_LIMIT_PERCENT=96 HUB_DEV_GPU_LIMIT_PERCEN
 
 ## Giữ cấu trúc `apps/` sạch
 
-- Chỉ **4 product line** dưới `apps/`: `main`, `hub-parent`, `hub-event`, `store-sync` — không tạo `apps/api` phẳng (legacy).
+- Chỉ **4 product line** dưới `apps/`: `main`, `hub-parent`, `hub-checkin`, `store-sync` — không tạo `apps/api` phẳng (legacy).
 - Dev feature → **`apps/main/`** hoặc **`packages/*`**; line deploy cập nhật qua **`pnpm pull:checkin`** (generate) hoặc **`pnpm pull:template`** (downstream), không copy thủ công.
 - Artifact build (`dist/`, `.next/`) không commit.
 - Export JSON / backup / scratch: **`data/`** tại repo root (`seed/`, `exports/`, `local/`) — không đặt trong `apps/*/api/src/`. Kiểm tra: `pnpm verify:data-layout`.
 - Pipeline meta API: **`apps/*/api/.pipeline/`** — commit `main` + `deploy/nest`; deploy line khác gitignore, tái tạo bằng `pnpm api:registry:sync`.
 - PM2 production: **`ecosystem/`** — không file `ecosystem.*.cjs` ở root; xem [`ecosystem/README.md`](../ecosystem/README.md).
 - Upload media runtime: **`STORAGE_DIR`** ngoài repo — xem [`docs/storage/README.md`](storage/README.md).
-- Kiểm tra: `pnpm verify:apps` (registry + tên package); hub-event API: `pnpm verify:api-profile`.
+- Kiểm tra: `pnpm verify:apps` (registry + tên package); hub-checkin API: `pnpm verify:api-profile`.
 
-Quy tắc ngắn cho dev/agent: [`apps/README.md`](../apps/README.md) · hub-event native vs sync: [`apps/hub-event/README.md`](../apps/hub-event/README.md).
+Quy tắc ngắn cho dev/agent: [`apps/README.md`](../apps/README.md) · hub-checkin native vs sync: [`apps/hub-checkin/README.md`](../apps/hub-checkin/README.md).
 
 ## Ranh giới (không đổi)
 

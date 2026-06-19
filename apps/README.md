@@ -8,7 +8,7 @@ Monorepo template tổ chức theo **product line** — mỗi line là một th�
 apps/
 ├── main/              ← source of truth (dev hàng ngày)
 ├── hub-parent/        ← deploy site chính
-├── hub-event/         ← deploy check-in
+├── hub-checkin/       ← deploy check-in
 └── store-sync/        ← deploy store
 ```
 
@@ -19,9 +19,8 @@ Chi tiết workflow: [`docs/MONOREPO_STRUCTURE.md`](../docs/MONOREPO_STRUCTURE.m
 | Việc | Nơi làm | Không làm |
 |------|---------|-----------|
 | Feature API / admin mới | `apps/main/api`, `apps/main/backend` | Copy thủ công sang line deploy |
-| Dev check-in UI + main API | `pnpm dev:main:checkin` | Sửa `hub-event/api` khi chưa cần deploy |
+| Dev check-in UI + main API | `pnpm dev:main:checkin` | Sửa `hub-checkin/api` khi chưa cần deploy |
 | Cập nhật deploy check-in (template upstream) | `pnpm pull:checkin` — generate từ packages |
-| Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
 | Logic dùng chung | `packages/*` | Import chéo `apps/*` |
 | Component admin | `@workspace/ui` | Tạo component admin local trong từng app |
 
@@ -29,17 +28,20 @@ Chi tiết workflow: [`docs/MONOREPO_STRUCTURE.md`](../docs/MONOREPO_STRUCTURE.m
 
 | Line | Giữ tại chỗ |
 |------|-------------|
-| **hub-event** API | `api.sync-profile.json`, `src/app.module.ts`, `src/seeders/DatabaseSeeder.ts`, `package.json` |
-| **hub-event** frontend | Mọi route **không** nằm trong `admin.sync-modules.json` — xem [`hub-event/README.md`](./hub-event/README.md) |
+| **hub-checkin** API | `api.sync-profile.json`, `src/app.module.ts`, `src/seeders/DatabaseSeeder.ts`, `package.json` |
+| **hub-checkin** frontend | Mọi route native ngoài generated admin — xem [`hub-checkin/README.md`](./hub-checkin/README.md) |
 
 ### Script — ranh giới
 
 | Vị trí | Được phép |
 |--------|-----------|
-| `script-system/` | Dev, sync, verify, graphify, deploy — xem `script-system/README.md` |
+| `script-system/` | Downstream chỉ runtime subset: dev, sync, verify, env, db, git |
+| `script-system/graphify`, `script-system/template`, `script-system/api` | Upstream-only trong `monorepo-template` |
 | `apps/main/api/scripts/` | `ensure-dist.mjs`, `test-live-admin-api.ts`; migration một lần trong `scripts/archive/` |
 | `apps/*/api/scripts/` (line deploy) | Chỉ `ensure-dist.mjs` |
+| `apps/*/api/src/scripts/` (line deploy) | **Không** — đưa lên `script-system/db` hoặc `script-system/verify` nếu còn cần |
 | `apps/*/.../scripts/` (frontend) | **Không** — dùng `script-system/` |
+| `apps/**/pnpm-lock.yaml` | **Không** — monorepo chỉ dùng root `pnpm-lock.yaml` |
 
 ### Artifact build (không commit)
 
@@ -72,7 +74,7 @@ Chi tiết stack, biến, marker: [`docs/env/README.md`](../docs/env/README.md) 
 pnpm verify:env           # đủ .env.example + marker ENV_TEMPLATE
 pnpm verify:apps          # cấu trúc product line + package registry
 pnpm verify:imports       # alias @ui/* + cấm @workspace/ui trong app Next
-pnpm verify:api-profile   # hub-event API khớp sync profile
+pnpm verify:api-profile   # hub-checkin API khớp sync profile
 pnpm verify:checkin-admin # admin check-in sau sync (modules, native, imports)
 pnpm verify:bounds        # không import chéo apps/*
 ```
@@ -82,7 +84,7 @@ pnpm verify:bounds        # không import chéo apps/*
 | Sync | Test |
 |------|------|
 | `pnpm pull:checkin` | `pnpm test:checkin` (nhanh) · `pnpm test:checkin:full` (+ typecheck) |
-| `pnpm sync:api:hub-event` | `pnpm test:api:hub-event` |
+| `pnpm sync:api:hub-checkin` | `pnpm test:api:hub-checkin` |
 | `pnpm sync:api` | `pnpm test:api:all` |
 | — | `pnpm test:apps` (mọi line) · `pnpm test:apps:quick` (bỏ typecheck) |
 
@@ -94,5 +96,5 @@ pnpm verify:bounds        # không import chéo apps/*
 |------|-------------|-------------|
 | main | `@api` | `@backend` |
 | hub-parent | `@hub-parent/api` | `@frontend` |
-| hub-event | `@hub-event/api` | `@hub-event-checkin-frontend` |
+| hub-checkin | `@hub-checkin/api` | `@hub-checkin/frontend` |
 | store-sync | `@store-sync/api` | `@store-sync-frontend` |

@@ -2,7 +2,7 @@
  * Đồng bộ source API từ apps/main/api → product line API (kế thừa).
  *
  * Usage:
- *   node script-system/sync-api-from-main.cjs hub-event
+ *   node script-system/sync-api-from-main.cjs hub-checkin
  *   node script-system/sync-api-from-main.cjs all
  *
  * Profile (tùy chọn): apps/<line>/api/api.sync-profile.json
@@ -1282,7 +1282,7 @@ function syncProduct(productKey) {
 
 const arg = process.argv[2];
 if (!arg) {
-  console.error("Usage: node script-system/sync-api-from-main.cjs <hub-event|hub-parent|store-sync|all>");
+  console.error("Usage: node script-system/sync-api-from-main.cjs <hub-checkin|hub-parent|store-sync|all>");
   process.exit(1);
 }
 

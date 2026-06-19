@@ -1,7 +1,7 @@
 import type { AdminAppConfig } from "./types"
 
-const DEFAULT_LOGIN_SEGMENT = "dang-nhap"
-const DEFAULT_REGISTER_SEGMENT = "dang-ky"
+const DEFAULT_LOGIN_SEGMENT = "login"
+const DEFAULT_REGISTER_SEGMENT = "register"
 const DEFAULT_PROFILE_SEGMENT = "profile"
 
 /** Chuẩn hóa `basePath` từ config (bỏ slash thừa). */
@@ -11,7 +11,7 @@ export function normalizeAdminBasePath(basePath: string | undefined): string {
 
 /** Thư mục dashboard dưới basePath (bỏ hậu tố `/page.tsx`). */
 export function resolveAdminDashboardDir(relativePath?: string): string {
-  return (relativePath ?? "tong-quan/page.tsx").replace(/\/page\.tsx$/, "")
+  return (relativePath ?? "dashboard/page.tsx").replace(/\/page\.tsx$/, "")
 }
 
 function joinAdminSegments(...segments: Array<string | undefined>): string {

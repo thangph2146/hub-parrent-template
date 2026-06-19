@@ -16,7 +16,7 @@ const { ROOT: root } = require("../lib/monorepo-root.cjs")
 const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
 const MAIN_API = PRODUCT_LINES.main.api.path
-const CHECKIN_API = PRODUCT_LINES["hub-event"].api.path
+const CHECKIN_API = PRODUCT_LINES["hub-checkin"].api.path
 
 function normPath(p) {
   return String(p).replace(/\\/g, "/")
@@ -342,7 +342,7 @@ export function writeSyncDeltaMd() {
   const profile = readJson(`${CHECKIN_API}/api.sync-profile.json`)
 
   const lines = [
-    "# SYNC_DELTA — main API ↔ hub-event API (Graphify)",
+    "# SYNC_DELTA — main API ↔ hub-checkin API (Graphify)",
     "",
     `> **Sinh tự động:** \`${generatedAt}\` — so sánh domain \`src/<tên>/\` giữa \`${MAIN_API}\` và \`${CHECKIN_API}\`, theo \`api.sync-profile.json\`.`,
     "",
@@ -371,7 +371,7 @@ export function writeSyncDeltaMd() {
 
   if (onlyCheckin.length) {
     lines.push("")
-    lines.push("## Domain chỉ hub-event (native check-in, không từ main)")
+    lines.push("## Domain chỉ hub-checkin (native check-in, không từ main)")
     lines.push("")
     for (const d of onlyCheckin) lines.push(`- \`${d}\``)
   }
@@ -382,7 +382,7 @@ export function writeSyncDeltaMd() {
   lines.push("1. Sửa logic API dùng chung → `apps/main/api` hoặc `packages/api-server`.")
   lines.push("2. Chạy `pnpm pull:checkin` trước khi test/deploy line check-in.")
   lines.push(
-    "3. File AUTO-GENERATED trên hub-event → xem [`apps/hub-event/api/.graphify/markdown/ENTRY_POINTS.md`](../apps/hub-event/api/.graphify/markdown/ENTRY_POINTS.md)."
+    "3. File AUTO-GENERATED trên hub-checkin → xem [`apps/hub-checkin/api/.graphify/markdown/ENTRY_POINTS.md`](../apps/hub-checkin/api/.graphify/markdown/ENTRY_POINTS.md)."
   )
   lines.push(
     "4. Bảng module admin ↔ API: [`TASK_INDEX.md`](TASK_INDEX.md)."

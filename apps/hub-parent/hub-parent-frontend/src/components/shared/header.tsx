@@ -376,11 +376,11 @@ export function Header() {
   const pathname = usePathname();
   const { size, setSize } = useTextSize();
   const adminPortalPath = "/admin"
-  const adminRegisterPath = "/admin/dang-ky"
+  const adminRegisterPath = "/admin/register"
   const isSupportActive = supportLinks.some((link) => isExactOrNestedPath(pathname, link.href));
   const isStoreAuthActive = isExactOrNestedPath(pathname, "/login");
   const isAdminPortalActive =
-    pathname === adminPortalPath || pathname === "/admin/dang-nhap"
+    pathname === adminPortalPath || pathname === "/admin/login"
   const isAdminRegisterActive = isExactOrNestedPath(pathname, adminRegisterPath)
 
   return (

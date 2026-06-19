@@ -1,5 +1,6 @@
 /**
- * Đường dẫn CLI @workspace/api-server/deploy — wrapper script-system/api/*.cjs
+ * Đường dẫn CLI @workspace/api-server/deploy.
+ * Wrapper script-system/api/*.cjs là upstream-only, không sync xuống downstream.
  */
 const path = require("node:path");
 const { ROOT } = require("./monorepo-root.cjs");

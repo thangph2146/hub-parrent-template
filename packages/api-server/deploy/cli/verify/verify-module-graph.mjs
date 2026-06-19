@@ -11,7 +11,7 @@ const { ROOT } = require('../lib/monorepo-root.cjs')
 const { auditRenderModuleGraph } = require('../lib/render/resolve-render-module-set.cjs')
 
 const DEPLOY_APPS = [
-  'apps/hub-event/api',
+  'apps/hub-checkin/api',
   'apps/hub-parent/api',
   'apps/store-sync/api',
 ]

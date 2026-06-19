@@ -638,6 +638,2601 @@
       "client": false
     },
     {
+      "id": "dir_src_app_admin",
+      "label": "admin/",
+      "path": "src/app/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_academic_years",
+      "label": "academic-years/",
+      "path": "src/app/admin/academic-years",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_academic_years_new",
+      "label": "new/",
+      "path": "src/app/admin/academic-years/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/academic-years",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_academic_years_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/academic-years/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/academic-years/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_academic_years_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/academic-years/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/academic-years/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_academic_years_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/academic-years/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/academic-years",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_academic_years__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/academic-years/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/academic-years",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_academic_years__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/academic-years/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/academic-years/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_academic_years__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/academic-years/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/academic-years/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_academic_years__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/academic-years/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/academic-years/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_academic_years__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/academic-years/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/academic-years/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_academic_years__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/academic-years/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/academic-years/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "label": "admin-runtime-bridge.tsx",
+      "path": "src/app/admin/admin-runtime-bridge.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/app/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "dir_src_app_admin_cameras",
+      "label": "cameras/",
+      "path": "src/app/admin/cameras",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_cameras_new",
+      "label": "new/",
+      "path": "src/app/admin/cameras/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/cameras",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_cameras_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/cameras/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/cameras/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_cameras_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/cameras/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/cameras/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_cameras_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/cameras/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/cameras",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_cameras__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/cameras/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/cameras",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_cameras__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/cameras/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/cameras/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_cameras__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/cameras/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/cameras/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_cameras__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/cameras/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/cameras/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_cameras__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/cameras/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/cameras/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_cameras__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/cameras/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/cameras/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_categories",
+      "label": "categories/",
+      "path": "src/app/admin/categories",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_categories_new",
+      "label": "new/",
+      "path": "src/app/admin/categories/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_categories_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_categories__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/categories/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_categories__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/categories/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/categories/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/categories/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/categories/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_categories__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/categories/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/categories/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_contact_requests",
+      "label": "contact-requests/",
+      "path": "src/app/admin/contact-requests",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_contact_requests_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/contact-requests/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/contact-requests",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_contact_requests__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/contact-requests/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/contact-requests",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_contact_requests__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/contact-requests/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/contact-requests/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_contact_requests__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/contact-requests/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/contact-requests/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_courses",
+      "label": "courses/",
+      "path": "src/app/admin/courses",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_courses_new",
+      "label": "new/",
+      "path": "src/app/admin/courses/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/courses",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_courses_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/courses/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/courses/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_courses_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/courses/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/courses/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_courses_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/courses/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/courses",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_courses__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/courses/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/courses",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_courses__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/courses/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/courses/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_courses__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/courses/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/courses/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_courses__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/courses/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/courses/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_courses__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/courses/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/courses/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_courses__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/courses/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/courses/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_dashboard",
+      "label": "dashboard/",
+      "path": "src/app/admin/dashboard",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_dashboard_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/dashboard/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/dashboard",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_data",
+      "label": "data/",
+      "path": "src/app/admin/data",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_data_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/data/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/data",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_departments",
+      "label": "departments/",
+      "path": "src/app/admin/departments",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_departments_new",
+      "label": "new/",
+      "path": "src/app/admin/departments/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/departments",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_departments_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/departments/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/departments/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_departments_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/departments/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/departments/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_departments_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/departments/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/departments",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_departments__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/departments/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/departments",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_departments__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/departments/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/departments/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_departments__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/departments/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/departments/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_departments__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/departments/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/departments/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_departments__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/departments/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/departments/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_departments__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/departments/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/departments/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_events",
+      "label": "events/",
+      "path": "src/app/admin/events",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_events_new",
+      "label": "new/",
+      "path": "src/app/admin/events/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/events",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_events_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/events/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/events/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_events_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/events/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/events/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_events_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/events/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/events",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_events__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/events/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/events",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_events__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/events/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/events/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_events__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/events/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/events/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_events__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/events/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/events/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_events__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/events/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/events/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_events__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/events/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/events/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_file_storage",
+      "label": "file-storage/",
+      "path": "src/app/admin/file-storage",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_file_storage_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/file-storage/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/file-storage",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_guides",
+      "label": "guides/",
+      "path": "src/app/admin/guides",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_guides_new",
+      "label": "new/",
+      "path": "src/app/admin/guides/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_guides_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_guides__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/guides/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_guides__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/guides/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/guides/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/guides/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/guides/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_guides__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/guides/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/guides/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet",
+      "label": "hanet/",
+      "path": "src/app/admin/hanet",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_hanet_avatar",
+      "label": "avatar/",
+      "path": "src/app/admin/hanet/avatar",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_avatar_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/avatar/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/avatar",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet_checkin",
+      "label": "checkin/",
+      "path": "src/app/admin/hanet/checkin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_checkin_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/checkin/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/checkin",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet_dia_diem",
+      "label": "dia-diem/",
+      "path": "src/app/admin/hanet/dia-diem",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_dia_diem_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/dia-diem/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/dia-diem",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet_ket_noi",
+      "label": "ket-noi/",
+      "path": "src/app/admin/hanet/ket-noi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_ket_noi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/ket-noi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/ket-noi",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet_nguoi",
+      "label": "nguoi/",
+      "path": "src/app/admin/hanet/nguoi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_nguoi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/nguoi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/nguoi",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_hanet_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_hanet_thiet_bi",
+      "label": "thiet-bi/",
+      "path": "src/app/admin/hanet/thiet-bi",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/hanet",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_hanet_thiet_bi_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/hanet/thiet-bi/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/hanet/thiet-bi",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_layout_tsx",
+      "label": "layout.tsx",
+      "path": "src/app/admin/layout.tsx",
+      "color": "#ff6b35",
+      "size": 20,
+      "community": "src/app/admin",
+      "type": "layout",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_locations",
+      "label": "locations/",
+      "path": "src/app/admin/locations",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_locations_new",
+      "label": "new/",
+      "path": "src/app/admin/locations/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/locations",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_locations_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/locations/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/locations/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_locations_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/locations/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/locations/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_locations_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/locations/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/locations",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_locations__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/locations/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/locations",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_locations__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/locations/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/locations/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_locations__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/locations/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/locations/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_locations__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/locations/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/locations/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_locations__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/locations/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/locations/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_locations__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/locations/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/locations/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_login",
+      "label": "login/",
+      "path": "src/app/admin/login",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_login_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/login/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/login",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_majors",
+      "label": "majors/",
+      "path": "src/app/admin/majors",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_majors_new",
+      "label": "new/",
+      "path": "src/app/admin/majors/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/majors",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_majors_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/majors/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/majors/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_majors_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/majors/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/majors/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_majors_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/majors/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/majors",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_majors__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/majors/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/majors",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_majors__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/majors/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/majors/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_majors__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/majors/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/majors/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_majors__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/majors/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/majors/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_majors__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/majors/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/majors/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_majors__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/majors/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/majors/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_my_students",
+      "label": "my-students/",
+      "path": "src/app/admin/my-students",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_my_students_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/my-students/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/my-students",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_orders",
+      "label": "orders/",
+      "path": "src/app/admin/orders",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_orders_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_orders__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/orders/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/orders",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_orders__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/orders/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/orders/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_orders__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_orders__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/orders/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/orders/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_parent_students",
+      "label": "parent-students/",
+      "path": "src/app/admin/parent-students",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_parent_students_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/parent-students/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/parent-students",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_posts",
+      "label": "posts/",
+      "path": "src/app/admin/posts",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_posts_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/posts/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/posts",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_posts_new",
+      "label": "new/",
+      "path": "src/app/admin/posts/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/posts",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_posts_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/posts/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/posts/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_posts_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/posts/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/posts/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_posts_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/posts/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/posts",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_posts__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/posts/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/posts",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_posts__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/posts/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/posts/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_posts__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/posts/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/posts/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_posts__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/posts/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/posts/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_posts__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/posts/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/posts/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_posts__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/posts/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/posts/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_products",
+      "label": "products/",
+      "path": "src/app/admin/products",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_products_new",
+      "label": "new/",
+      "path": "src/app/admin/products/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_products_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_products_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_products__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/products/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_products__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/products/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/products/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_products__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_products__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/products/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/products/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_profile",
+      "label": "profile/",
+      "path": "src/app/admin/profile",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_profile_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/profile/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/profile",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes",
+      "label": "promo-codes/",
+      "path": "src/app/admin/promo-codes",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes_new",
+      "label": "new/",
+      "path": "src/app/admin/promo-codes/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_promo_codes_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_promo_codes_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/promo-codes/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_promo_codes__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/promo-codes/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/promo-codes/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_promo_codes__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/promo-codes/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/promo-codes/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_rbac",
+      "label": "rbac/",
+      "path": "src/app/admin/rbac",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_rbac_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_rbac__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/rbac/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/rbac",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_rbac__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/rbac/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/rbac/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/rbac/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/rbac/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_rbac__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/rbac/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/rbac/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_register",
+      "label": "register/",
+      "path": "src/app/admin/register",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_register_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/register/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/register",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_screens",
+      "label": "screens/",
+      "path": "src/app/admin/screens",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_screens_new",
+      "label": "new/",
+      "path": "src/app/admin/screens/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/screens",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_screens_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/screens/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/screens/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_screens_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/screens/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/screens/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_screens_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/screens/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/screens",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_screens__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/screens/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/screens",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_screens__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/screens/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/screens/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_screens__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/screens/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/screens/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_screens__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/screens/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/screens/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_screens__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/screens/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/screens/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_screens__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/screens/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/screens/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas",
+      "label": "seo-metas/",
+      "path": "src/app/admin/seo-metas",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas_new",
+      "label": "new/",
+      "path": "src/app/admin/seo-metas/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/seo-metas/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_seo_metas__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/seo-metas/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/seo-metas/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_seo_metas__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/seo-metas/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/seo-metas/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_settings",
+      "label": "settings/",
+      "path": "src/app/admin/settings",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_settings_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/settings/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/settings",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_speakers",
+      "label": "speakers/",
+      "path": "src/app/admin/speakers",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_speakers_new",
+      "label": "new/",
+      "path": "src/app/admin/speakers/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/speakers",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_speakers_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/speakers/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/speakers/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_speakers_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/speakers/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/speakers/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_speakers_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/speakers/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/speakers",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_speakers__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/speakers/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/speakers",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_speakers__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/speakers/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/speakers/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_speakers__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/speakers/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/speakers/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_speakers__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/speakers/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/speakers/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_speakers__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/speakers/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/speakers/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_speakers__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/speakers/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/speakers/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_staff",
+      "label": "staff/",
+      "path": "src/app/admin/staff",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_staff_new",
+      "label": "new/",
+      "path": "src/app/admin/staff/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_staff_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_staff__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/staff/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_staff__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/staff/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/staff/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/staff/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/staff/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_staff__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/staff/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/staff/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_tags",
+      "label": "tags/",
+      "path": "src/app/admin/tags",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_tags_new",
+      "label": "new/",
+      "path": "src/app/admin/tags/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/tags",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_tags_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/tags/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/tags/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_tags_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/tags/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/tags/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_tags_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/tags/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/tags",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_tags__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/tags/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/tags",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_tags__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/tags/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/tags/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_tags__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/tags/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/tags/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_tags__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/tags/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/tags/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_tags__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/tags/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/tags/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_tags__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/tags/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/tags/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_templates",
+      "label": "templates/",
+      "path": "src/app/admin/templates",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_templates_new",
+      "label": "new/",
+      "path": "src/app/admin/templates/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/templates",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_templates_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/templates/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/templates/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_templates_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/templates/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/templates/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_templates_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/templates/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/templates",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_templates__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/templates/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/templates",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_templates__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/templates/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/templates/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_templates__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/templates/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/templates/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_templates__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/templates/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/templates/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_templates__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/templates/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/templates/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_templates__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/templates/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/templates/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_training_levels",
+      "label": "training-levels/",
+      "path": "src/app/admin/training-levels",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_training_levels_new",
+      "label": "new/",
+      "path": "src/app/admin/training-levels/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-levels",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_training_levels_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-levels/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-levels/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_levels_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-levels/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-levels/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_levels_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-levels/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-levels",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_training_levels__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/training-levels/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-levels",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_training_levels__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/training-levels/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-levels/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_training_levels__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-levels/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-levels/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_levels__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-levels/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-levels/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_levels__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-levels/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-levels/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_levels__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-levels/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-levels/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_training_systems",
+      "label": "training-systems/",
+      "path": "src/app/admin/training-systems",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_training_systems_new",
+      "label": "new/",
+      "path": "src/app/admin/training-systems/new",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-systems",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_training_systems_new_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-systems/new/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-systems/new",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_systems_new_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-systems/new/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-systems/new",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_systems_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-systems/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-systems",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_training_systems__id_",
+      "label": "[id]/",
+      "path": "src/app/admin/training-systems/[id]",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-systems",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_app_admin_training_systems__id__edit",
+      "label": "edit/",
+      "path": "src/app/admin/training-systems/[id]/edit",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin/training-systems/[id]",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_training_systems__id__edit_loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-systems/[id]/edit/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-systems/[id]/edit",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_systems__id__edit_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-systems/[id]/edit/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-systems/[id]/edit",
+      "type": "page",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_systems__id__loading_tsx",
+      "label": "loading.tsx",
+      "path": "src/app/admin/training-systems/[id]/loading.tsx",
+      "color": "#888800",
+      "size": 10,
+      "community": "src/app/admin/training-systems/[id]",
+      "type": "loading",
+      "client": false
+    },
+    {
+      "id": "file_src_app_admin_training_systems__id__page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/training-systems/[id]/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/training-systems/[id]",
+      "type": "page",
+      "client": false
+    },
+    {
       "id": "dir_src_app_api",
       "label": "api/",
       "path": "src/app/api",
@@ -932,6 +3527,54 @@
       "client": true
     },
     {
+      "id": "dir_src_config",
+      "label": "config/",
+      "path": "src/config",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src",
+      "type": "directory"
+    },
+    {
+      "id": "dir_src_config_admin",
+      "label": "admin/",
+      "path": "src/config/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/config",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_config_admin_parent_admin_access_ts",
+      "label": "parent-admin-access.ts",
+      "path": "src/config/admin/parent-admin-access.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_config_admin_parent_admin_layout_static_ts",
+      "label": "parent-admin-layout-static.ts",
+      "path": "src/config/admin/parent-admin-layout-static.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_config_admin_parent_admin_menu_tree_tsx",
+      "label": "parent-admin-menu-tree.tsx",
+      "path": "src/config/admin/parent-admin-menu-tree.tsx",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/config/admin",
+      "type": "tsx",
+      "client": false
+    },
+    {
       "id": "dir_src_features",
       "label": "features/",
       "path": "src/features",
@@ -939,6 +3582,45 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "dir_src_features_admin_auth",
+      "label": "admin-auth/",
+      "path": "src/features/admin-auth",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/features",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_features_admin_auth_auth_api_ts",
+      "label": "auth-api.ts",
+      "path": "src/features/admin-auth/auth-api.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_features_admin_auth_register_form_tsx",
+      "label": "register-form.tsx",
+      "path": "src/features/admin-auth/register-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_features_admin_auth_sign_in_form_tsx",
+      "label": "sign-in-form.tsx",
+      "path": "src/features/admin-auth/sign-in-form.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/features/admin-auth",
+      "type": "tsx",
+      "client": true
     },
     {
       "id": "dir_src_features_auth",
@@ -1324,6 +4006,85 @@
       "type": "directory"
     },
     {
+      "id": "dir_src_hooks_admin",
+      "label": "admin/",
+      "path": "src/hooks/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/hooks",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_hooks_admin_index_ts",
+      "label": "index.ts",
+      "path": "src/hooks/admin/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_queries_ts",
+      "label": "queries.ts",
+      "path": "src/hooks/admin/queries.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "label": "use-admin-edit-form-hydration.ts",
+      "path": "src/hooks/admin/use-admin-edit-form-hydration.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_mutation_ts",
+      "label": "use-admin-mutation.ts",
+      "path": "src/hooks/admin/use-admin-mutation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "label": "use-admin-realtime-sync.ts",
+      "path": "src/hooks/admin/use-admin-realtime-sync.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_admin_table_state_ts",
+      "label": "use-admin-table-state.ts",
+      "path": "src/hooks/admin/use-admin-table-state.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_hooks_admin_use_debounced_value_ts",
+      "label": "use-debounced-value.ts",
+      "path": "src/hooks/admin/use-debounced-value.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/hooks/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
       "id": "file_src_hooks_queries_ts",
       "label": "queries.ts",
       "path": "src/hooks/queries.ts",
@@ -1401,6 +4162,75 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "dir_src_lib_admin",
+      "label": "admin/",
+      "path": "src/lib/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/lib",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_lib_admin_admin_navigation_ts",
+      "label": "admin-navigation.ts",
+      "path": "src/lib/admin/admin-navigation.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_api_base_url_ts",
+      "label": "api-base-url.ts",
+      "path": "src/lib/admin/api-base-url.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_api_ts",
+      "label": "api.ts",
+      "path": "src/lib/admin/api.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_auth_routes_ts",
+      "label": "auth-routes.ts",
+      "path": "src/lib/admin/auth-routes.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_auth_session_ts",
+      "label": "auth-session.ts",
+      "path": "src/lib/admin/auth-session.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
+    },
+    {
+      "id": "file_src_lib_admin_index_ts",
+      "label": "index.ts",
+      "path": "src/lib/admin/index.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/lib/admin",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_lib_api_ts",
@@ -1572,6 +4402,55 @@
       "type": "directory"
     },
     {
+      "id": "dir_src_providers_admin",
+      "label": "admin/",
+      "path": "src/providers/admin",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/providers",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "label": "admin-realtime-sync.tsx",
+      "path": "src/providers/admin/admin-realtime-sync.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_auth_provider_tsx",
+      "label": "auth-provider.tsx",
+      "path": "src/providers/admin/auth-provider.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_parent_admin_layout_tsx",
+      "label": "parent-admin-layout.tsx",
+      "path": "src/providers/admin/parent-admin-layout.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
+      "id": "file_src_providers_admin_query_provider_tsx",
+      "label": "query-provider.tsx",
+      "path": "src/providers/admin/query-provider.tsx",
+      "color": "#00ddff",
+      "size": 10,
+      "community": "src/providers/admin",
+      "type": "tsx",
+      "client": true
+    },
+    {
       "id": "file_src_providers_query_provider_tsx",
       "label": "query-provider.tsx",
       "path": "src/providers/query-provider.tsx",
@@ -1599,6 +4478,16 @@
       "size": 22,
       "community": "src",
       "type": "directory"
+    },
+    {
+      "id": "file_src_types_google_gsi_d_ts",
+      "label": "google-gsi.d.ts",
+      "path": "src/types/google-gsi.d.ts",
+      "color": "#00ff41",
+      "size": 10,
+      "community": "src/types",
+      "type": "ts",
+      "client": false
     },
     {
       "id": "file_src_types_todo_ts",
@@ -1948,6 +4837,1356 @@
     },
     {
       "source": "dir_src_app",
+      "target": "dir_src_app_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_academic_years",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years",
+      "target": "dir_src_app_admin_academic_years_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years_new",
+      "target": "file_src_app_admin_academic_years_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years_new",
+      "target": "file_src_app_admin_academic_years_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years",
+      "target": "file_src_app_admin_academic_years_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years",
+      "target": "dir_src_app_admin_academic_years__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years__id_",
+      "target": "dir_src_app_admin_academic_years__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years__id__edit",
+      "target": "file_src_app_admin_academic_years__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years__id__edit",
+      "target": "file_src_app_admin_academic_years__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years__id_",
+      "target": "file_src_app_admin_academic_years__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_academic_years__id_",
+      "target": "file_src_app_admin_academic_years__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_cameras",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras",
+      "target": "dir_src_app_admin_cameras_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras_new",
+      "target": "file_src_app_admin_cameras_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras_new",
+      "target": "file_src_app_admin_cameras_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras",
+      "target": "file_src_app_admin_cameras_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras",
+      "target": "dir_src_app_admin_cameras__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras__id_",
+      "target": "dir_src_app_admin_cameras__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras__id__edit",
+      "target": "file_src_app_admin_cameras__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras__id__edit",
+      "target": "file_src_app_admin_cameras__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras__id_",
+      "target": "file_src_app_admin_cameras__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_cameras__id_",
+      "target": "file_src_app_admin_cameras__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_categories",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "dir_src_app_admin_categories_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories_new",
+      "target": "file_src_app_admin_categories_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories_new",
+      "target": "file_src_app_admin_categories_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "file_src_app_admin_categories_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories",
+      "target": "dir_src_app_admin_categories__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "dir_src_app_admin_categories__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id__edit",
+      "target": "file_src_app_admin_categories__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id__edit",
+      "target": "file_src_app_admin_categories__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "file_src_app_admin_categories__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_categories__id_",
+      "target": "file_src_app_admin_categories__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_contact_requests",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_contact_requests",
+      "target": "file_src_app_admin_contact_requests_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_contact_requests",
+      "target": "dir_src_app_admin_contact_requests__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_contact_requests__id_",
+      "target": "file_src_app_admin_contact_requests__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_contact_requests__id_",
+      "target": "file_src_app_admin_contact_requests__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_courses",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses",
+      "target": "dir_src_app_admin_courses_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses_new",
+      "target": "file_src_app_admin_courses_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses_new",
+      "target": "file_src_app_admin_courses_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses",
+      "target": "file_src_app_admin_courses_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses",
+      "target": "dir_src_app_admin_courses__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses__id_",
+      "target": "dir_src_app_admin_courses__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses__id__edit",
+      "target": "file_src_app_admin_courses__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses__id__edit",
+      "target": "file_src_app_admin_courses__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses__id_",
+      "target": "file_src_app_admin_courses__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_courses__id_",
+      "target": "file_src_app_admin_courses__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_dashboard",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_dashboard",
+      "target": "file_src_app_admin_dashboard_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_data",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_data",
+      "target": "file_src_app_admin_data_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_departments",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments",
+      "target": "dir_src_app_admin_departments_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments_new",
+      "target": "file_src_app_admin_departments_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments_new",
+      "target": "file_src_app_admin_departments_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments",
+      "target": "file_src_app_admin_departments_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments",
+      "target": "dir_src_app_admin_departments__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments__id_",
+      "target": "dir_src_app_admin_departments__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments__id__edit",
+      "target": "file_src_app_admin_departments__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments__id__edit",
+      "target": "file_src_app_admin_departments__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments__id_",
+      "target": "file_src_app_admin_departments__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_departments__id_",
+      "target": "file_src_app_admin_departments__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_events",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events",
+      "target": "dir_src_app_admin_events_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events_new",
+      "target": "file_src_app_admin_events_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events_new",
+      "target": "file_src_app_admin_events_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events",
+      "target": "file_src_app_admin_events_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events",
+      "target": "dir_src_app_admin_events__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events__id_",
+      "target": "dir_src_app_admin_events__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events__id__edit",
+      "target": "file_src_app_admin_events__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events__id__edit",
+      "target": "file_src_app_admin_events__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events__id_",
+      "target": "file_src_app_admin_events__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_events__id_",
+      "target": "file_src_app_admin_events__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_file_storage",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_file_storage",
+      "target": "file_src_app_admin_file_storage_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_guides",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "dir_src_app_admin_guides_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides_new",
+      "target": "file_src_app_admin_guides_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides_new",
+      "target": "file_src_app_admin_guides_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "file_src_app_admin_guides_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides",
+      "target": "dir_src_app_admin_guides__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "dir_src_app_admin_guides__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id__edit",
+      "target": "file_src_app_admin_guides__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id__edit",
+      "target": "file_src_app_admin_guides__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "file_src_app_admin_guides__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_guides__id_",
+      "target": "file_src_app_admin_guides__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_hanet",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_avatar",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_avatar",
+      "target": "file_src_app_admin_hanet_avatar_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_checkin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_checkin",
+      "target": "file_src_app_admin_hanet_checkin_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_dia_diem",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_dia_diem",
+      "target": "file_src_app_admin_hanet_dia_diem_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_ket_noi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_ket_noi",
+      "target": "file_src_app_admin_hanet_ket_noi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_nguoi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_nguoi",
+      "target": "file_src_app_admin_hanet_nguoi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "file_src_app_admin_hanet_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet",
+      "target": "dir_src_app_admin_hanet_thiet_bi",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_hanet_thiet_bi",
+      "target": "file_src_app_admin_hanet_thiet_bi_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_locations",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations",
+      "target": "dir_src_app_admin_locations_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations_new",
+      "target": "file_src_app_admin_locations_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations_new",
+      "target": "file_src_app_admin_locations_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations",
+      "target": "file_src_app_admin_locations_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations",
+      "target": "dir_src_app_admin_locations__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations__id_",
+      "target": "dir_src_app_admin_locations__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations__id__edit",
+      "target": "file_src_app_admin_locations__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations__id__edit",
+      "target": "file_src_app_admin_locations__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations__id_",
+      "target": "file_src_app_admin_locations__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_locations__id_",
+      "target": "file_src_app_admin_locations__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_login",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_login",
+      "target": "file_src_app_admin_login_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_majors",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors",
+      "target": "dir_src_app_admin_majors_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors_new",
+      "target": "file_src_app_admin_majors_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors_new",
+      "target": "file_src_app_admin_majors_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors",
+      "target": "file_src_app_admin_majors_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors",
+      "target": "dir_src_app_admin_majors__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors__id_",
+      "target": "dir_src_app_admin_majors__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors__id__edit",
+      "target": "file_src_app_admin_majors__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors__id__edit",
+      "target": "file_src_app_admin_majors__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors__id_",
+      "target": "file_src_app_admin_majors__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_majors__id_",
+      "target": "file_src_app_admin_majors__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_my_students",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_my_students",
+      "target": "file_src_app_admin_my_students_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_orders",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders",
+      "target": "file_src_app_admin_orders_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders",
+      "target": "dir_src_app_admin_orders__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id_",
+      "target": "dir_src_app_admin_orders__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id__edit",
+      "target": "file_src_app_admin_orders__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_orders__id_",
+      "target": "file_src_app_admin_orders__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "file_src_app_admin_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_parent_students",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_parent_students",
+      "target": "file_src_app_admin_parent_students_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_posts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts",
+      "target": "file_src_app_admin_posts_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts",
+      "target": "dir_src_app_admin_posts_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts_new",
+      "target": "file_src_app_admin_posts_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts_new",
+      "target": "file_src_app_admin_posts_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts",
+      "target": "file_src_app_admin_posts_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts",
+      "target": "dir_src_app_admin_posts__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts__id_",
+      "target": "dir_src_app_admin_posts__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts__id__edit",
+      "target": "file_src_app_admin_posts__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts__id__edit",
+      "target": "file_src_app_admin_posts__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts__id_",
+      "target": "file_src_app_admin_posts__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_posts__id_",
+      "target": "file_src_app_admin_posts__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_products",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "dir_src_app_admin_products_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products_new",
+      "target": "file_src_app_admin_products_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "file_src_app_admin_products_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products",
+      "target": "dir_src_app_admin_products__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id_",
+      "target": "dir_src_app_admin_products__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id__edit",
+      "target": "file_src_app_admin_products__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_products__id_",
+      "target": "file_src_app_admin_products__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_profile",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_profile",
+      "target": "file_src_app_admin_profile_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_promo_codes",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "dir_src_app_admin_promo_codes_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes_new",
+      "target": "file_src_app_admin_promo_codes_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "file_src_app_admin_promo_codes_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes",
+      "target": "dir_src_app_admin_promo_codes__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id_",
+      "target": "dir_src_app_admin_promo_codes__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id__edit",
+      "target": "file_src_app_admin_promo_codes__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_promo_codes__id_",
+      "target": "file_src_app_admin_promo_codes__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_rbac",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac",
+      "target": "file_src_app_admin_rbac_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac",
+      "target": "dir_src_app_admin_rbac__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "dir_src_app_admin_rbac__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id__edit",
+      "target": "file_src_app_admin_rbac__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id__edit",
+      "target": "file_src_app_admin_rbac__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "file_src_app_admin_rbac__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_rbac__id_",
+      "target": "file_src_app_admin_rbac__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_register",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_register",
+      "target": "file_src_app_admin_register_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_screens",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens",
+      "target": "dir_src_app_admin_screens_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens_new",
+      "target": "file_src_app_admin_screens_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens_new",
+      "target": "file_src_app_admin_screens_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens",
+      "target": "file_src_app_admin_screens_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens",
+      "target": "dir_src_app_admin_screens__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens__id_",
+      "target": "dir_src_app_admin_screens__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens__id__edit",
+      "target": "file_src_app_admin_screens__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens__id__edit",
+      "target": "file_src_app_admin_screens__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens__id_",
+      "target": "file_src_app_admin_screens__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_screens__id_",
+      "target": "file_src_app_admin_screens__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_seo_metas",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "dir_src_app_admin_seo_metas_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas_new",
+      "target": "file_src_app_admin_seo_metas_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas_new",
+      "target": "file_src_app_admin_seo_metas_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "file_src_app_admin_seo_metas_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas",
+      "target": "dir_src_app_admin_seo_metas__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "dir_src_app_admin_seo_metas__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id__edit",
+      "target": "file_src_app_admin_seo_metas__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id__edit",
+      "target": "file_src_app_admin_seo_metas__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "file_src_app_admin_seo_metas__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_seo_metas__id_",
+      "target": "file_src_app_admin_seo_metas__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_settings",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_settings",
+      "target": "file_src_app_admin_settings_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_speakers",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers",
+      "target": "dir_src_app_admin_speakers_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers_new",
+      "target": "file_src_app_admin_speakers_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers_new",
+      "target": "file_src_app_admin_speakers_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers",
+      "target": "file_src_app_admin_speakers_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers",
+      "target": "dir_src_app_admin_speakers__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers__id_",
+      "target": "dir_src_app_admin_speakers__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers__id__edit",
+      "target": "file_src_app_admin_speakers__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers__id__edit",
+      "target": "file_src_app_admin_speakers__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers__id_",
+      "target": "file_src_app_admin_speakers__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_speakers__id_",
+      "target": "file_src_app_admin_speakers__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_staff",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "dir_src_app_admin_staff_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff_new",
+      "target": "file_src_app_admin_staff_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff_new",
+      "target": "file_src_app_admin_staff_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "file_src_app_admin_staff_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff",
+      "target": "dir_src_app_admin_staff__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "dir_src_app_admin_staff__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id__edit",
+      "target": "file_src_app_admin_staff__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id__edit",
+      "target": "file_src_app_admin_staff__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "file_src_app_admin_staff__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_staff__id_",
+      "target": "file_src_app_admin_staff__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_tags",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags",
+      "target": "dir_src_app_admin_tags_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags_new",
+      "target": "file_src_app_admin_tags_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags_new",
+      "target": "file_src_app_admin_tags_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags",
+      "target": "file_src_app_admin_tags_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags",
+      "target": "dir_src_app_admin_tags__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags__id_",
+      "target": "dir_src_app_admin_tags__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags__id__edit",
+      "target": "file_src_app_admin_tags__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags__id__edit",
+      "target": "file_src_app_admin_tags__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags__id_",
+      "target": "file_src_app_admin_tags__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_tags__id_",
+      "target": "file_src_app_admin_tags__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_templates",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates",
+      "target": "dir_src_app_admin_templates_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates_new",
+      "target": "file_src_app_admin_templates_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates_new",
+      "target": "file_src_app_admin_templates_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates",
+      "target": "file_src_app_admin_templates_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates",
+      "target": "dir_src_app_admin_templates__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates__id_",
+      "target": "dir_src_app_admin_templates__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates__id__edit",
+      "target": "file_src_app_admin_templates__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates__id__edit",
+      "target": "file_src_app_admin_templates__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates__id_",
+      "target": "file_src_app_admin_templates__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_templates__id_",
+      "target": "file_src_app_admin_templates__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_training_levels",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels",
+      "target": "dir_src_app_admin_training_levels_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels_new",
+      "target": "file_src_app_admin_training_levels_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels_new",
+      "target": "file_src_app_admin_training_levels_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels",
+      "target": "file_src_app_admin_training_levels_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels",
+      "target": "dir_src_app_admin_training_levels__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels__id_",
+      "target": "dir_src_app_admin_training_levels__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels__id__edit",
+      "target": "file_src_app_admin_training_levels__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels__id__edit",
+      "target": "file_src_app_admin_training_levels__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels__id_",
+      "target": "file_src_app_admin_training_levels__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_levels__id_",
+      "target": "file_src_app_admin_training_levels__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_training_systems",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems",
+      "target": "dir_src_app_admin_training_systems_new",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems_new",
+      "target": "file_src_app_admin_training_systems_new_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems_new",
+      "target": "file_src_app_admin_training_systems_new_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems",
+      "target": "file_src_app_admin_training_systems_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems",
+      "target": "dir_src_app_admin_training_systems__id_",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems__id_",
+      "target": "dir_src_app_admin_training_systems__id__edit",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems__id__edit",
+      "target": "file_src_app_admin_training_systems__id__edit_loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems__id__edit",
+      "target": "file_src_app_admin_training_systems__id__edit_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems__id_",
+      "target": "file_src_app_admin_training_systems__id__loading_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_training_systems__id_",
+      "target": "file_src_app_admin_training_systems__id__page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app",
       "target": "dir_src_app_api",
       "relation": "contains"
     },
@@ -2098,7 +6337,52 @@
     },
     {
       "source": "dir_src",
+      "target": "dir_src_config",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config",
+      "target": "dir_src_config_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_parent_admin_layout_static_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_config_admin",
+      "target": "file_src_config_admin_parent_admin_menu_tree_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src",
       "target": "dir_src_features",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features",
+      "target": "dir_src_features_admin_auth",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_auth_api_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_register_form_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_features_admin_auth",
+      "target": "file_src_features_admin_auth_sign_in_form_tsx",
       "relation": "contains"
     },
     {
@@ -2298,6 +6582,46 @@
     },
     {
       "source": "dir_src_hooks",
+      "target": "dir_src_hooks_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_index_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_queries_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_mutation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_admin_table_state_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks_admin",
+      "target": "file_src_hooks_admin_use_debounced_value_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_hooks",
       "target": "file_src_hooks_queries_ts",
       "relation": "contains"
     },
@@ -2334,6 +6658,41 @@
     {
       "source": "dir_src",
       "target": "dir_src_lib",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib",
+      "target": "dir_src_lib_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_admin_navigation_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_lib_admin",
+      "target": "file_src_lib_admin_index_ts",
       "relation": "contains"
     },
     {
@@ -2423,6 +6782,31 @@
     },
     {
       "source": "dir_src_providers",
+      "target": "dir_src_providers_admin",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_parent_admin_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers_admin",
+      "target": "file_src_providers_admin_query_provider_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_providers",
       "target": "file_src_providers_query_provider_tsx",
       "relation": "contains"
     },
@@ -2434,6 +6818,11 @@
     {
       "source": "dir_src",
       "target": "dir_src_types",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_types",
+      "target": "file_src_types_google_gsi_d_ts",
       "relation": "contains"
     },
     {
@@ -2514,6 +6903,11 @@
     {
       "source": "file_src_app__public__layout_tsx",
       "target": "file_src_app__public__page_tsx",
+      "relation": "renders"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_app_admin_page_tsx",
       "relation": "renders"
     },
     {
@@ -2867,6 +7261,51 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_query_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_providers_admin_parent_admin_layout_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_layout_tsx",
+      "target": "file_src_app_admin_admin_runtime_bridge_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_login_page_tsx",
+      "target": "file_src_features_admin_auth_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_page_tsx",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_register_page_tsx",
+      "target": "file_src_features_admin_auth_register_form_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_graph_loading_tsx",
       "target": "file_src_components_shared_route_loading_tsx",
       "relation": "imports"
@@ -2953,11 +7392,6 @@
     },
     {
       "source": "file_src_components_shared_header_tsx",
-      "target": "file_src_features_auth_admin_bridge_ts",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_components_shared_header_tsx",
       "target": "file_src_lib_store_feature_ts",
       "relation": "imports"
     },
@@ -3039,6 +7473,46 @@
     {
       "source": "file_src_components_shared_store_auth_gate_tsx",
       "target": "file_src_lib_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_parent_admin_layout_static_ts",
+      "target": "file_src_config_admin_parent_admin_menu_tree_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_parent_admin_layout_static_ts",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_parent_admin_layout_static_ts",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_config_admin_parent_admin_layout_static_ts",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_auth_api_ts",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_register_form_tsx",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_sign_in_form_tsx",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_features_admin_auth_sign_in_form_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
       "relation": "imports"
     },
     {
@@ -3317,6 +7791,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_debounced_value_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_admin_edit_form_hydration_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_hooks_admin_index_ts",
+      "target": "file_src_hooks_admin_use_admin_table_state_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_hooks_queries_ts",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -3347,6 +7836,21 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_lib_admin_api_ts",
+      "target": "file_src_lib_admin_api_base_url_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_api_ts",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_lib_admin_auth_routes_ts",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_lib_catalog_filters_ts",
       "target": "file_src_lib_api_ts",
       "relation": "imports"
@@ -3359,6 +7863,61 @@
     {
       "source": "file_src_lib_public_posts_ts",
       "target": "file_src_lib_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "target": "file_src_hooks_admin_use_admin_realtime_sync_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_config_admin_parent_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_features_admin_auth_auth_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_lib_admin_auth_session_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_auth_provider_tsx",
+      "target": "file_src_lib_admin_auth_routes_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_parent_admin_layout_tsx",
+      "target": "file_src_lib_admin_api_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_parent_admin_layout_tsx",
+      "target": "file_src_config_admin_parent_admin_layout_static_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_parent_admin_layout_tsx",
+      "target": "file_src_providers_admin_admin_realtime_sync_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_parent_admin_layout_tsx",
+      "target": "file_src_providers_admin_auth_provider_tsx",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_providers_admin_parent_admin_layout_tsx",
+      "target": "file_src_lib_admin_auth_session_ts",
       "relation": "imports"
     },
     {

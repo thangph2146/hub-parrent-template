@@ -22,21 +22,21 @@ const VERIFY_RENDER = path.join(PACKAGE_ROOT, 'deploy/cli/verify/verify-render-a
 
 const LINES = {
   checkin: {
-    app: 'apps/hub-event/api',
+    app: 'apps/hub-checkin/api',
     scenarios: [
       {
         id: 'checkin-full',
         label: 'check-in full 48 module + prune',
-        cmd: `node "${RENDER_CLI}" apps/hub-event/api --prune --skip-env --skip-sync-template`,
+        cmd: `node "${RENDER_CLI}" apps/hub-checkin/api --prune --skip-env --skip-sync-template`,
         verifyAfter: true,
       },
       {
         id: 'checkin-partial',
         label: 'check-in partial events+orders',
-        cmd: `node "${RENDER_CLI}" apps/hub-event/api --modules=events,orders --prune --skip-env --skip-sync-template`,
+        cmd: `node "${RENDER_CLI}" apps/hub-checkin/api --modules=events,orders --prune --skip-env --skip-sync-template`,
       },
     ],
-    restoreAfterLine: `node "${RENDER_CLI}" apps/hub-event/api --prune --skip-env --skip-sync-template`,
+    restoreAfterLine: `node "${RENDER_CLI}" apps/hub-checkin/api --prune --skip-env --skip-sync-template`,
   },
   parent: {
     app: 'apps/hub-parent/api',

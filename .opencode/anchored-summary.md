@@ -51,7 +51,7 @@ GET   /api/uploads/files/*path    (public serve)
 - **`apps/main/api`** (`@api`) — NestJS dev source of truth
 - **`apps/main/backend`** (`@backend`) — Admin Next.js dev
 - **`apps/hub-parent/hub-parent-frontend`** (`@frontend`) — Storefront deploy
-- Deploy lines: `hub-parent/api`, `hub-event/api`, `store-sync/*` — xem `docs/MONOREPO_STRUCTURE.md`
+- Deploy lines: `hub-parent/api`, `hub-checkin/api`, `store-sync/*` — xem `docs/MONOREPO_STRUCTURE.md`
 - **`packages/api-client`** — HTTP SDK
 - Boundaries: `pnpm verify:bounds`, `packages/eslint-config/service-boundaries.js`
 

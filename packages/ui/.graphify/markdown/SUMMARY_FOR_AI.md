@@ -3,7 +3,7 @@
 > Package `@workspace/ui` · `packages/ui/`
 
 - **context.generatedAt:** 2026-06-15T03:40:53.092Z
-- **summary sinh:** `2026-06-15T03:40:54.597Z`
+- **summary sinh:** `2026-06-19T01:42:38.721Z`
 
 ## Mục lục artefact
 

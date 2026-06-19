@@ -29,7 +29,7 @@
     "pm2:reload:store": "node ecosystem/pm2-stack.cjs reload store",
     "pm2:stop:store": "node ecosystem/pm2-stack.cjs stop store",
     "push": "node script-system/git/commit-and-push.cjs",
-    "env:init": "node script-system/env/env-init.cjs store",
+    "env:init": "node script-system/env/init-env.cjs store",
     "db:bootstrap": "node script-system/db/bootstrap-fresh-api.cjs store-sync",
     "storage:init": "node script-system/db/init-storage-dirs.cjs store-sync"
   },

@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation"
-import { PARENT_ADMIN_LOGIN_PATH } from "@/config/admin/parent-admin-access"
+import { SignInForm } from "@/features/admin-auth/sign-in-form"
 
-export default function ParentAdminLoginEntryPage() {
-  redirect(PARENT_ADMIN_LOGIN_PATH)
+export default function ParentAdminLoginPage() {
+  return <SignInForm />
 }
 

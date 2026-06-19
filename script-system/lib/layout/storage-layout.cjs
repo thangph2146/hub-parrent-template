@@ -38,7 +38,7 @@ const STORAGE_DIR_BY_LINE = {
 
   "hub-parent": "D:/HUB/data/hub-parent",
 
-  "hub-event": "D:/HUB/data/hub-event",
+  "hub-checkin": "D:/HUB/data/hub-checkin",
 
   "store-sync": "D:/HUB/data/store-sync",
 

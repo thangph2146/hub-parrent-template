@@ -1,6 +1,6 @@
-# Graphify — `apps/hub-event/api`
+# Graphify — `apps/hub-checkin/api`
 
-Package **@hub-event/api**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
+Package **@hub-checkin/api**. Thư mục `.graphify/` giữ **snapshot** (`snapshot/`) và **Markdown cho AI** (`markdown/`).
 
 ## API endpoints (đọc trước khi sửa HTTP)
 
@@ -36,7 +36,7 @@ Package **@hub-event/api**. Thư mục `.graphify/` giữ **snapshot** (`snapsho
 ## Làm mới
 
 ```bash
-node script-system/graphify/graphify-update.cjs apps/hub-event/api
+node script-system/graphify/graphify-update.cjs apps/hub-checkin/api
 pnpm graphify:ai-summary
 ```
 

@@ -3,7 +3,7 @@
  *
  * Usage:
  *   pnpm storage:init              # @api (main)
- *   pnpm storage:init:checkin      # @hub-event/api
+ *   pnpm storage:init:checkin      # check-in API
  *   node script-system/db/init-storage-dirs.cjs store-sync
  *   node script-system/db/init-storage-dirs.cjs --dir D:/HUB/data/custom
  */

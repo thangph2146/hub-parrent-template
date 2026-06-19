@@ -9,7 +9,6 @@
     "sync:full": "pnpm sync && pnpm check",
     "pull:checkin": "node script-system/sync/sync-checkin-packages.cjs",
     "sync:checkin": "pnpm pull:checkin",
-    "pull:checkin:legacy": "node script-system/sync/deprecated/sync-checkin-api-copy.cjs",
     "verify:template-downstream": "node script-system/verify/verify-downstream-template.cjs",
     "build": "turbo build",
     "build:packages": "pnpm --filter @workspace/api-server run build",
@@ -26,7 +25,7 @@
     "verify:checkin-api": "pnpm --filter @workspace/api-server run verify:checkin-api",
     "verify:downstream-safe": "node script-system/verify/verify-downstream-safe-flow.cjs",
     "admin:fix-package": "node script-system/admin/fix-admin-package-imports.cjs && node script-system/admin/fix-package-api-imports.cjs && node script-system/admin/fix-use-client-order.cjs && node script-system/admin/fix-package-post-migrate.cjs",
-    "admin:generate:checkin": "node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-event-checkin-frontend --prune",
+    "admin:generate:checkin": "node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-checkin-frontend --prune",
     "api:regenerate:checkin": "pnpm --filter @workspace/api-server run render:regenerate:checkin",
     "test:checkin": "node script-system/verify/test-app-operations.cjs checkin --quick",
     "test:checkin:full": "node script-system/verify/test-app-operations.cjs checkin",
@@ -40,7 +39,7 @@
     "pm2:stop:checkin": "node ecosystem/pm2-stack.cjs stop checkin",
     "pm2:delete:checkin": "node ecosystem/pm2-stack.cjs delete checkin",
     "push": "node script-system/git/commit-and-push.cjs",
-    "env:init": "node script-system/env/env-init.cjs checkin"
+    "env:init": "node script-system/env/init-env.cjs checkin"
   },
   "devDependencies": {
     "tsx": "^4.22.3",

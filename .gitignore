@@ -74,7 +74,7 @@ apps/*/api/MODULE_*_AUDIT.md
 # Pipeline meta — chỉ commit main + nest template (xem apps/main/api/.pipeline/README.md)
 **/tsc-errors.txt
 apps/*/api/PACKAGE_MODULE_TEMPLATES.meta.json
-apps/hub-event/api/.pipeline/**
+apps/hub-checkin/api/.pipeline/**
 apps/hub-parent/api/.pipeline/**
 apps/store-sync/api/.pipeline/**
 !apps/main/api/.pipeline/**

@@ -21,8 +21,8 @@ const { readAdminAppConfig } = require("../lib/admin-app-config-path.cjs")
 
 const MAIN_BACKEND = PRODUCT_LINES.main.backend.path
 const MAIN_API = PRODUCT_LINES.main.api.path
-const CHECKIN_API = PRODUCT_LINES["hub-event"].api.path
-const CHECKIN_FRONT = PRODUCT_LINES["hub-event"].frontend.path
+const CHECKIN_API = PRODUCT_LINES["hub-checkin"].api.path
+const CHECKIN_FRONT = PRODUCT_LINES["hub-checkin"].frontend.path
 const ADMIN_APP = "packages/admin-app"
 
 /** Admin module id → API domain folder (khi khác tên). */
@@ -136,7 +136,7 @@ export function buildTaskCatalog() {
   for (const moduleId of mainModules) {
     const apiDomain = apiDomainForAdminModule(moduleId)
     const onMainApi = mainApiDomains.has(apiDomain)
-    // hub-event kế thừa main API — domain có trên check-in nếu không nằm exclude sync
+    // hub-checkin kế thừa main API — domain có trên check-in nếu không nằm exclude sync
     const checkinApiAvailable = onMainApi && !syncExclude.has(apiDomain)
 
     modules.push({
@@ -231,7 +231,7 @@ export function buildTaskCatalog() {
     native: { main: nativeMain, checkin: nativeCheckin },
     syncExclude: [...syncExclude],
     devRule:
-      "Dev hàng ngày: sửa apps/main/* + packages/*; hub-event cập nhật qua pnpm pull:checkin.",
+      "Dev hàng ngày: sửa apps/main/* + packages/*; hub-checkin cập nhật qua pnpm pull:checkin.",
   }
 }
 
@@ -316,7 +316,7 @@ export function matchTaskToBrief(catalog, taskText) {
     topModule?.lines?.checkinApi && topModule?.paths?.mainApi
       ? "Sửa apps/main/api → chạy pnpm pull:checkin sau khi xong."
       : topModule?.paths?.mainApi
-        ? "Xem .graphify/markdown/SYNC_DELTA.md — domain main vs hub-event."
+        ? "Xem .graphify/markdown/SYNC_DELTA.md — domain main vs hub-checkin."
         : null
 
   const graphify = []
@@ -370,10 +370,10 @@ export function matchTaskToBrief(catalog, taskText) {
 }
 
 function inferProductLine(normalizedTask, pick) {
-  if (/checkin|check-in|hub-event|su kien/.test(normalizedTask)) return "hub-event"
+  if (/checkin|check-in|hub-checkin|su kien/.test(normalizedTask)) return "hub-checkin"
   if (/store-sync|store sync|cua hang/.test(normalizedTask)) return "store-sync"
   if (/storefront|hub-parent|frontend/.test(normalizedTask)) return "hub-parent"
-  if (pick?.id === "api-server" || pick?.lines?.checkinApi) return "main + hub-event (sync)"
+  if (pick?.id === "api-server" || pick?.lines?.checkinApi) return "main + hub-checkin (sync)"
   return "main (apps/main/* + packages/*)"
 }
 

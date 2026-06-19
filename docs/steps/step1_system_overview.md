@@ -10,7 +10,7 @@ Chi tiết product line: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md
 |------|---------|---------|
 | **main** (dev) | `apps/main/api`, `apps/main/backend` | Source of truth — sửa hàng ngày |
 | **hub-parent** | `apps/hub-parent/api`, `apps/hub-parent/hub-parent-frontend` | Deploy site chính |
-| **hub-event** | `apps/hub-event/api`, `apps/hub-event/hub-event-checkin-frontend` | Deploy check-in sự kiện |
+| **hub-checkin** | `apps/hub-checkin/api`, `apps/hub-checkin/hub-checkin-frontend` | Deploy check-in sự kiện |
 | **store-sync** | `apps/store-sync/api`, `apps/store-sync/store-sync-frontend` | Line đồng bộ cửa hàng |
 
 ## Dịch vụ chính (theo package npm)
@@ -18,7 +18,7 @@ Chi tiết product line: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md
 - `@api` — `apps/main/api`: NestJS + MikroORM (entities, migrations, controllers, services).
 - `@backend` — `apps/main/backend`: Admin Next.js.
 - `@frontend` — `apps/hub-parent/hub-parent-frontend`: Storefront Next.js (public).
-- `@hub-event/api`, `@hub-event-checkin-frontend` — line check-in (subset sync từ main + generate).
+- `@hub-checkin/api`, `@hub-checkin/frontend` — line check-in (subset sync từ main + generate).
 
 ## Packages chia sẻ (`packages/`)
 
@@ -57,13 +57,15 @@ Chi tiết product line: [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md
 pnpm check
 ```
 
-6. Nếu thay đổi kiến trúc/module/routes lớn:
+6. Nếu thay đổi kiến trúc/module/routes lớn trong `monorepo-template`:
 
 ```bash
 node script-system/graphify/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 pnpm check:full
 ```
+
+Downstream không sync `script-system/graphify`; đọc artifact có sẵn hoặc regenerate ở upstream.
 
 7. Đẩy remote và cập nhật branch deploy (`main`, `hub-event`, `hub-parent`):
 

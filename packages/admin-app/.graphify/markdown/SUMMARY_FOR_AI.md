@@ -2,8 +2,8 @@
 
 > Package `@workspace/admin-app` · `packages/admin-app/`
 
-- **context.generatedAt:** 2026-06-15T03:40:53.290Z
-- **summary sinh:** `2026-06-15T03:40:54.665Z`
+- **context.generatedAt:** 2026-06-19T01:42:37.796Z
+- **summary sinh:** `2026-06-19T01:42:38.785Z`
 
 ## Mục lục artefact
 
@@ -23,11 +23,11 @@
 
 ## Thống kê snapshot
 
-- **totalFiles:** 636
-- **clientComponents:** 275
-- **pages (module):** 101 file
+- **totalFiles:** 712
+- **clientComponents:** 323
+- **pages (module):** 108 file
 
-## Admin modules (`35`)
+## Admin modules (`36`)
 
 - `src/modules/academic-years/`
 - `src/modules/auth/`
@@ -43,6 +43,7 @@
 - `src/modules/file-storage/`
 - `src/modules/graph/`
 - `src/modules/guides/`
+- `src/modules/hanet/`
 - `src/modules/locations/`
 - `src/modules/majors/`
 - `src/modules/my-registered-events/`

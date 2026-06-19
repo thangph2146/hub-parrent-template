@@ -1,6 +1,6 @@
 # Deploy line — `@workspace/api-server`
 
-Materialize API check-in: `apps/main/api` → `deploy/nest` → `apps/hub-event/api`.
+Materialize API check-in: `apps/main/api` → `deploy/nest` → `apps/hub-checkin/api`.
 
 ## Cấu trúc chuẩn
 
@@ -38,7 +38,7 @@ Script nội bộ (sync/prune/render pipeline) nằm trong `cli/lib/{sync,prune,
 pnpm api:render
 pnpm api:sync-template
 pnpm verify:api-template
-pnpm api:render apps/hub-event/api --prune
+pnpm api:render apps/hub-checkin/api --prune
 ```
 
 Chi tiết CLI: [`cli/README.md`](cli/README.md).

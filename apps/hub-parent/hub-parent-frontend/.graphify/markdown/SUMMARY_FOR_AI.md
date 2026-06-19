@@ -2,8 +2,8 @@
 
 > Tự động sinh từ `../snapshot/context.json` — **đọc file này trước**; tránh mở toàn bộ JSON snapshot (nhúng source đầy đủ).
 
-- **projectRoot:** `D:/HUB/working/2026/hub-parrent-template/apps/hub-parent/hub-parent-frontend`
-- **context.generatedAt:** 2026-06-15T03:40:51.372Z
+- **projectRoot:** `D:/HUB/working/2026/monorepo-template/apps/hub-parent/hub-parent-frontend`
+- **context.generatedAt:** 2026-06-19T01:42:22.702Z
 
 ## Mục lục artefact Graphify
 
@@ -20,8 +20,8 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **@api:** [SUMMARY](../../../../../apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/main/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/main/api/.graphify/markdown/GRAPH_STATS.md)
 - **@backend:** [SUMMARY](../../../../../apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/main/backend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/main/backend/.graphify/markdown/GRAPH_STATS.md)
 - **@hub-parent/api:** [SUMMARY](../../../../../apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-parent/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-parent/api/.graphify/markdown/GRAPH_STATS.md)
-- **@hub-event/api:** [SUMMARY](../../../../../apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/api/.graphify/markdown/GRAPH_STATS.md)
-- **@hub-event-checkin-frontend:** [SUMMARY](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-checkin/api:** [SUMMARY](../../../../../apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-checkin/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-checkin/api/.graphify/markdown/GRAPH_STATS.md)
+- **@hub-checkin/frontend:** [SUMMARY](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/GRAPH_STATS.md)
 - **@store-sync/api:** [SUMMARY](../../../../../apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/store-sync/api/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/store-sync/api/.graphify/markdown/GRAPH_STATS.md)
 - **@store-sync-frontend:** [SUMMARY](../../../../../apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) · [FOLDER_TREE](../../../../../apps/store-sync/store-sync-frontend/.graphify/markdown/FOLDER_TREE.md) · [GRAPH_STATS](../../../../../apps/store-sync/store-sync-frontend/.graphify/markdown/GRAPH_STATS.md)
 - **packages:** [SUMMARY](../../../../../packages/.graphify/markdown/SUMMARY_FOR_AI.md) · [WORKSPACE_DEPS](../../../../../packages/.graphify/markdown/WORKSPACE_DEPS.md)
@@ -43,10 +43,10 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - **Pattern lặp:** [`PATTERN_CLUSTERS.md`](PATTERN_CLUSTERS.md) — boilerplate (loading, re-export generate).
 
 ## Thống kê
-- **totalFiles:** 128
-- **clientComponents:** 39
+- **totalFiles:** 317
+- **clientComponents:** 46
 
-## Trang (pages) (21)
+## Trang (pages) (126)
 - `src/app/(public)/(store-sync)/cart/page.tsx`
 - `src/app/(public)/(store-sync)/catalog/page.tsx`
 - `src/app/(public)/(store-sync)/catalog/[productId]/page.tsx`
@@ -67,9 +67,114 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/(public)/lien-he/page.tsx`
 - `src/app/(public)/page.tsx`
 - `src/app/(public)/ve-chung-toi/page.tsx`
+- `src/app/admin/academic-years/new/page.tsx`
+- `src/app/admin/academic-years/page.tsx`
+- `src/app/admin/academic-years/[id]/edit/page.tsx`
+- `src/app/admin/academic-years/[id]/page.tsx`
+- `src/app/admin/cameras/new/page.tsx`
+- `src/app/admin/cameras/page.tsx`
+- `src/app/admin/cameras/[id]/edit/page.tsx`
+- `src/app/admin/cameras/[id]/page.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/contact-requests/page.tsx`
+- `src/app/admin/contact-requests/[id]/page.tsx`
+- `src/app/admin/courses/new/page.tsx`
+- `src/app/admin/courses/page.tsx`
+- `src/app/admin/courses/[id]/edit/page.tsx`
+- `src/app/admin/courses/[id]/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
+- `src/app/admin/data/page.tsx`
+- `src/app/admin/departments/new/page.tsx`
+- `src/app/admin/departments/page.tsx`
+- `src/app/admin/departments/[id]/edit/page.tsx`
+- `src/app/admin/departments/[id]/page.tsx`
+- `src/app/admin/events/new/page.tsx`
+- `src/app/admin/events/page.tsx`
+- `src/app/admin/events/[id]/edit/page.tsx`
+- `src/app/admin/events/[id]/page.tsx`
+- `src/app/admin/file-storage/page.tsx`
+- `src/app/admin/guides/new/page.tsx`
+- `src/app/admin/guides/page.tsx`
+- `src/app/admin/guides/[id]/edit/page.tsx`
+- `src/app/admin/guides/[id]/page.tsx`
+- `src/app/admin/hanet/avatar/page.tsx`
+- `src/app/admin/hanet/checkin/page.tsx`
+- `src/app/admin/hanet/dia-diem/page.tsx`
+- `src/app/admin/hanet/ket-noi/page.tsx`
+- `src/app/admin/hanet/nguoi/page.tsx`
+- `src/app/admin/hanet/page.tsx`
+- `src/app/admin/hanet/thiet-bi/page.tsx`
+- `src/app/admin/locations/new/page.tsx`
+- `src/app/admin/locations/page.tsx`
+- `src/app/admin/locations/[id]/edit/page.tsx`
+- `src/app/admin/locations/[id]/page.tsx`
+- `src/app/admin/login/page.tsx`
+- `src/app/admin/majors/new/page.tsx`
+- `src/app/admin/majors/page.tsx`
+- `src/app/admin/majors/[id]/edit/page.tsx`
+- `src/app/admin/majors/[id]/page.tsx`
+- `src/app/admin/my-students/page.tsx`
+- `src/app/admin/orders/page.tsx`
+- `src/app/admin/orders/[id]/edit/page.tsx`
+- `src/app/admin/orders/[id]/page.tsx`
+- `src/app/admin/page.tsx`
+- `src/app/admin/parent-students/page.tsx`
+- `src/app/admin/posts/new/page.tsx`
+- `src/app/admin/posts/page.tsx`
+- `src/app/admin/posts/[id]/edit/page.tsx`
+- `src/app/admin/posts/[id]/page.tsx`
+- `src/app/admin/products/new/page.tsx`
+- `src/app/admin/products/page.tsx`
+- `src/app/admin/products/[id]/edit/page.tsx`
+- `src/app/admin/products/[id]/page.tsx`
+- `src/app/admin/profile/page.tsx`
+- `src/app/admin/promo-codes/new/page.tsx`
+- `src/app/admin/promo-codes/page.tsx`
+- `src/app/admin/promo-codes/[id]/edit/page.tsx`
+- `src/app/admin/promo-codes/[id]/page.tsx`
+- `src/app/admin/rbac/page.tsx`
+- `src/app/admin/rbac/[id]/edit/page.tsx`
+- `src/app/admin/rbac/[id]/page.tsx`
+- `src/app/admin/register/page.tsx`
+- `src/app/admin/screens/new/page.tsx`
+- `src/app/admin/screens/page.tsx`
+- `src/app/admin/screens/[id]/edit/page.tsx`
+- `src/app/admin/screens/[id]/page.tsx`
+- `src/app/admin/seo-metas/new/page.tsx`
+- `src/app/admin/seo-metas/page.tsx`
+- `src/app/admin/seo-metas/[id]/edit/page.tsx`
+- `src/app/admin/seo-metas/[id]/page.tsx`
+- `src/app/admin/settings/page.tsx`
+- `src/app/admin/speakers/new/page.tsx`
+- `src/app/admin/speakers/page.tsx`
+- `src/app/admin/speakers/[id]/edit/page.tsx`
+- `src/app/admin/speakers/[id]/page.tsx`
+- `src/app/admin/staff/new/page.tsx`
+- `src/app/admin/staff/page.tsx`
+- `src/app/admin/staff/[id]/edit/page.tsx`
+- `src/app/admin/staff/[id]/page.tsx`
+- `src/app/admin/tags/new/page.tsx`
+- `src/app/admin/tags/page.tsx`
+- `src/app/admin/tags/[id]/edit/page.tsx`
+- `src/app/admin/tags/[id]/page.tsx`
+- `src/app/admin/templates/new/page.tsx`
+- `src/app/admin/templates/page.tsx`
+- `src/app/admin/templates/[id]/edit/page.tsx`
+- `src/app/admin/templates/[id]/page.tsx`
+- `src/app/admin/training-levels/new/page.tsx`
+- `src/app/admin/training-levels/page.tsx`
+- `src/app/admin/training-levels/[id]/edit/page.tsx`
+- `src/app/admin/training-levels/[id]/page.tsx`
+- `src/app/admin/training-systems/new/page.tsx`
+- `src/app/admin/training-systems/page.tsx`
+- `src/app/admin/training-systems/[id]/edit/page.tsx`
+- `src/app/admin/training-systems/[id]/page.tsx`
 - `src/app/graph/page.tsx`
 
-## Layout (18)
+## Layout (19)
 - `src/app/(public)/(store-sync)/cart/layout.tsx`
 - `src/app/(public)/(store-sync)/catalog/layout.tsx`
 - `src/app/(public)/(store-sync)/catalog/[productId]/layout.tsx`
@@ -86,6 +191,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 - `src/app/(public)/(store-sync)/support/layout.tsx`
 - `src/app/(public)/(store-sync)/terms/layout.tsx`
 - `src/app/(public)/layout.tsx`
+- `src/app/admin/layout.tsx`
 - `src/app/graph/layout.tsx`
 - `src/app/layout.tsx`
 
@@ -146,6 +252,171 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/app/(public)/lien-he/page.tsx` | page | no | metadata, ContactPage | src/features/pages/home-page/sub-sections/contact-section.tsx, src/lib/seo.ts |
 | `src/app/(public)/page.tsx` | page | no | metadata, PublicHomePage | src/features/pages/home-page, src/lib/seo.ts |
 | `src/app/(public)/ve-chung-toi/page.tsx` | page | no | metadata, AboutPage | src/features/pages/about-page, src/lib/seo.ts |
+| `src/app/admin/academic-years/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/academic-years/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/academic-years/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/academic-years/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/academic-years/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/academic-years/new/page.tsx` | page | no | default |  |
+| `src/app/admin/academic-years/page.tsx` | page | no | default |  |
+| `src/app/admin/admin-runtime-bridge.tsx` | tsx | yes | AdminRuntimeBridge | src/providers/admin/auth-provider.tsx, src/lib/admin/api.ts |
+| `src/app/admin/cameras/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/cameras/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/cameras/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/cameras/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/cameras/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/cameras/new/page.tsx` | page | no | default |  |
+| `src/app/admin/cameras/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/categories/new/page.tsx` | page | no | default |  |
+| `src/app/admin/categories/page.tsx` | page | no | default |  |
+| `src/app/admin/contact-requests/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/contact-requests/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/contact-requests/page.tsx` | page | no | default |  |
+| `src/app/admin/courses/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/courses/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/courses/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/courses/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/courses/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/courses/new/page.tsx` | page | no | default |  |
+| `src/app/admin/courses/page.tsx` | page | no | default |  |
+| `src/app/admin/dashboard/page.tsx` | page | no | default |  |
+| `src/app/admin/data/page.tsx` | page | no | default |  |
+| `src/app/admin/departments/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/departments/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/departments/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/departments/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/departments/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/departments/new/page.tsx` | page | no | default |  |
+| `src/app/admin/departments/page.tsx` | page | no | default |  |
+| `src/app/admin/events/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/events/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/events/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/events/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/events/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/events/new/page.tsx` | page | no | default |  |
+| `src/app/admin/events/page.tsx` | page | no | default |  |
+| `src/app/admin/file-storage/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/guides/new/page.tsx` | page | no | default |  |
+| `src/app/admin/guides/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/avatar/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/checkin/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/dia-diem/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/ket-noi/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/nguoi/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/page.tsx` | page | no | default |  |
+| `src/app/admin/hanet/thiet-bi/page.tsx` | page | no | default |  |
+| `src/app/admin/layout.tsx` | layout | no | ParentAdminLayout | src/app/admin/page.tsx, src/providers/admin/query-provider.tsx, src/providers/admin/auth-provider.tsx, src/providers/admin/parent-admin-layout.tsx, src/app/admin/admin-runtime-bridge.tsx |
+| `src/app/admin/locations/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/locations/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/locations/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/locations/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/locations/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/locations/new/page.tsx` | page | no | default |  |
+| `src/app/admin/locations/page.tsx` | page | no | default |  |
+| `src/app/admin/login/page.tsx` | page | no | ParentAdminLoginPage | src/features/admin-auth/sign-in-form.tsx |
+| `src/app/admin/majors/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/majors/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/majors/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/majors/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/majors/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/majors/new/page.tsx` | page | no | default |  |
+| `src/app/admin/majors/page.tsx` | page | no | default |  |
+| `src/app/admin/my-students/page.tsx` | page | no | default |  |
+| `src/app/admin/orders/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/orders/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/orders/page.tsx` | page | no | default |  |
+| `src/app/admin/page.tsx` | page | no | ParentAdminIndexPage | src/config/admin/parent-admin-access.ts |
+| `src/app/admin/parent-students/page.tsx` | page | no | default |  |
+| `src/app/admin/posts/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/posts/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/posts/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/posts/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/posts/loading.tsx` | loading | no | default |  |
+| `src/app/admin/posts/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/posts/new/page.tsx` | page | no | default |  |
+| `src/app/admin/posts/page.tsx` | page | no | default |  |
+| `src/app/admin/products/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/products/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/products/new/page.tsx` | page | no | default |  |
+| `src/app/admin/products/page.tsx` | page | no | default |  |
+| `src/app/admin/profile/page.tsx` | page | no | ParentAdminProfilePage |  |
+| `src/app/admin/promo-codes/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/new/page.tsx` | page | no | default |  |
+| `src/app/admin/promo-codes/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/rbac/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/rbac/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/rbac/page.tsx` | page | no | default |  |
+| `src/app/admin/register/page.tsx` | page | no | ParentAdminRegisterPage | src/features/admin-auth/register-form.tsx |
+| `src/app/admin/screens/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/screens/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/screens/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/screens/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/screens/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/screens/new/page.tsx` | page | no | default |  |
+| `src/app/admin/screens/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/seo-metas/new/page.tsx` | page | no | default |  |
+| `src/app/admin/seo-metas/page.tsx` | page | no | default |  |
+| `src/app/admin/settings/page.tsx` | page | no | default |  |
+| `src/app/admin/speakers/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/speakers/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/speakers/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/speakers/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/speakers/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/speakers/new/page.tsx` | page | no | default |  |
+| `src/app/admin/speakers/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/staff/new/page.tsx` | page | no | default |  |
+| `src/app/admin/staff/page.tsx` | page | no | default |  |
+| `src/app/admin/tags/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/tags/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/tags/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/tags/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/tags/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/tags/new/page.tsx` | page | no | default |  |
+| `src/app/admin/tags/page.tsx` | page | no | default |  |
+| `src/app/admin/templates/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/templates/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/templates/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/templates/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/templates/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/templates/new/page.tsx` | page | no | default |  |
+| `src/app/admin/templates/page.tsx` | page | no | default |  |
+| `src/app/admin/training-levels/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-levels/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/training-levels/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-levels/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/training-levels/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-levels/new/page.tsx` | page | no | default |  |
+| `src/app/admin/training-levels/page.tsx` | page | no | default |  |
+| `src/app/admin/training-systems/[id]/edit/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-systems/[id]/edit/page.tsx` | page | no | default |  |
+| `src/app/admin/training-systems/[id]/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-systems/[id]/page.tsx` | page | no | default |  |
+| `src/app/admin/training-systems/new/loading.tsx` | loading | no | default |  |
+| `src/app/admin/training-systems/new/page.tsx` | page | no | default |  |
+| `src/app/admin/training-systems/page.tsx` | page | no | default |  |
 | `src/app/api/graphify/route.ts` | api-route | no |  |  |
 | `src/app/graph/layout.tsx` | layout | no | metadata, GraphLayout | src/app/graph/page.tsx |
 | `src/app/graph/loading.tsx` | loading | no | GraphLoading | src/components/shared/route-loading.tsx |
@@ -158,7 +429,7 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/cart-line-item.tsx` | tsx | yes | cartLineMaxQty, CartLineItem | src/hooks/use-cart.ts, src/lib/format.ts, src/lib/gift-rules-from-fulfillment-note.ts |
 | `src/components/shared/cart-order-summary.tsx` | tsx | yes | CartOrderSummary, CheckoutPromoField | src/hooks/use-cart.ts, src/lib/format.ts |
 | `src/components/shared/footer.tsx` | tsx | no | Footer | src/features/auth/admin-bridge.ts, src/components/icons/logo.tsx |
-| `src/components/shared/header.tsx` | tsx | yes | Header | src/hooks/use-cart.ts, src/components/shared/cart-drawer.tsx, src/hooks/use-session.ts, src/features/auth/admin-bridge.ts, src/lib/store-feature.ts, src/components/icons/logo.tsx |
+| `src/components/shared/header.tsx` | tsx | yes | Header | src/hooks/use-cart.ts, src/components/shared/cart-drawer.tsx, src/hooks/use-session.ts, src/lib/store-feature.ts, src/components/icons/logo.tsx |
 | `src/components/shared/order-status-table.tsx` | tsx | no | OrderStatusTableRow, OrderStatusTable |  |
 | `src/components/shared/post-content-renderer.tsx` | tsx | yes | PostContentRenderer |  |
 | `src/components/shared/post-content.tsx` | tsx | yes | PostContent | src/components/shared/post-content-renderer.tsx |
@@ -170,7 +441,13 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/components/shared/route-loading.tsx` | tsx | no | RouteLoading |  |
 | `src/components/shared/scroll-to-top.tsx` | tsx | yes | ScrollToTop | src/lib/scroll.ts |
 | `src/components/shared/store-auth-gate.tsx` | tsx | yes | StoreAuthGate | src/hooks/use-session.ts, src/hooks/use-client-ready.ts, src/lib/auth-routes.ts |
-| `src/features/auth/admin-bridge.ts` | ts | no | getAdminBaseUrl, getAdminLoginUrl, getAdminRegisterUrl |  |
+| `src/config/admin/parent-admin-access.ts` | ts | no | PARENT_ADMIN_BASE_PATH, PARENT_ADMIN_HOME_PATH, PARENT_ADMIN_LOGIN_PATH, PARENT_ADMIN_PROFILE_PATH, PARENT_ADMIN_REGISTER_PATH, PARENT_ADMIN_INDEX_PATH, canAccessParentAdmin, isParentAdminShellPath |  |
+| `src/config/admin/parent-admin-layout-static.ts` | ts | no | PARENT_ADMIN_LAYOUT_STATIC | src/config/admin/parent-admin-menu-tree.tsx, src/config/admin/parent-admin-access.ts, src/lib/admin/auth-session.ts, src/lib/admin/auth-routes.ts |
+| `src/config/admin/parent-admin-menu-tree.tsx` | tsx | no | PARENT_ADMIN_MENU_TREE |  |
+| `src/features/admin-auth/auth-api.ts` | ts | no |  | src/lib/admin/api-base-url.ts |
+| `src/features/admin-auth/register-form.tsx` | tsx | yes | RegisterForm | src/lib/admin/auth-routes.ts |
+| `src/features/admin-auth/sign-in-form.tsx` | tsx | yes | SignInForm | src/config/admin/parent-admin-access.ts, src/providers/admin/auth-provider.tsx |
+| `src/features/auth/admin-bridge.ts` | ts | no | getAdminBaseUrl, getAdminHomeUrl, getAdminLoginUrl, getAdminRegisterUrl |  |
 | `src/features/pages/about-page/about-client.tsx` | tsx | yes | AboutClient | src/features/pages/about-page/sub-sections/overview-section.tsx, src/features/pages/about-page/sub-sections/about-hub-section.tsx, src/features/pages/about-page/sub-sections/history-section.tsx, src/f |
 | `src/features/pages/about-page/about.tsx` | tsx | no | AboutProps, About | src/features/pages/about-page/about-client.tsx |
 | `src/features/pages/about-page/constants.tsx` | tsx | no | CORE_VALUES, EDUCATION_PHILOSOPHY, FACILITIES_STATS, FACILITY_IMAGES, FACILITIES, DEPARTMENTS, HISTORY_TIMELINE, LEADER_GENERATIONS, getTimelineData |  |
@@ -202,6 +479,13 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/features/pages/home-page/sub-sections/index.ts` | ts | no | HeroSection, AboutHubSection, OverviewSection, GuideRegisterSection, FeaturedPostsSection, ContactSection, ScrollIndicator | src/features/pages/home-page/sub-sections/hero-section.tsx, src/features/pages/home-page/sub-sections/about-hub-section.tsx, src/features/pages/home-page/sub-sections/overview-section.tsx, src/feature |
 | `src/features/pages/home-page/sub-sections/overview-section.tsx` | tsx | yes | OverviewSection | src/features/pages/home-page/sub-sections/scroll-indicator.tsx |
 | `src/features/pages/home-page/sub-sections/scroll-indicator.tsx` | tsx | yes | ScrollIndicatorProps, ScrollIndicator | src/lib/scroll.ts |
+| `src/hooks/admin/index.ts` | ts | no | useDebouncedValue, useAdminEditFormHydration, useAdminFormDraftPersistence, useAdminTableState | src/hooks/admin/use-debounced-value.ts, src/hooks/admin/use-admin-edit-form-hydration.ts, src/hooks/admin/use-admin-table-state.ts |
+| `src/hooks/admin/queries.ts` | ts | no |  |  |
+| `src/hooks/admin/use-admin-edit-form-hydration.ts` | ts | no | useAdminEditFormHydration, useAdminFormDraftPersistence |  |
+| `src/hooks/admin/use-admin-mutation.ts` | ts | no | useAdminMutation |  |
+| `src/hooks/admin/use-admin-realtime-sync.ts` | ts | no | useAdminRealtimeSync |  |
+| `src/hooks/admin/use-admin-table-state.ts` | ts | no | useAdminTableState |  |
+| `src/hooks/admin/use-debounced-value.ts` | ts | no | useDebouncedValue |  |
 | `src/hooks/queries.ts` | ts | yes | queryKeys, useProducts, useCatalogProducts, useCategoryUsage, useProduct, useProductBySku, useCategories, useCategoryBySlug, useOrders, useOrder, useCreateOrder | src/lib/api.ts |
 | `src/hooks/use-cart.ts` | ts | yes | CartLine, cartLineKey, cartLineQuantity, mergeLinesForCreateOrder, cartStore, CartSummary, useCart | src/lib/promo-rules-registry.ts, src/lib/api.ts |
 | `src/hooks/use-client-ready.ts` | ts | yes | useClientReady |  |
@@ -209,6 +493,12 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/hooks/use-mobile.ts` | ts | no | useIsMobile |  |
 | `src/hooks/use-session.ts` | ts | yes | MockSession, useSession |  |
 | `src/hooks/useTodos.ts` | ts | no | TodoFilter, TodoStats, useTodos | src/types/todo.ts, src/lib/utils.ts, src/lib/storage.ts |
+| `src/lib/admin/admin-navigation.ts` | ts | no |  |  |
+| `src/lib/admin/api-base-url.ts` | ts | no |  |  |
+| `src/lib/admin/api.ts` | ts | no | api, ApiError | src/lib/admin/api-base-url.ts, src/lib/admin/auth-session.ts |
+| `src/lib/admin/auth-routes.ts` | ts | no | AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, isParentAdminAuthPath, getAdminAppHomeExternalPath, getAdminLoginExternalPath, PARENT_ADMIN_HOME_PATH, PARENT_ADMIN_LOGIN_PATH | src/config/admin/parent-admin-access.ts |
+| `src/lib/admin/auth-session.ts` | ts | no |  |  |
+| `src/lib/admin/index.ts` | ts | no |  |  |
 | `src/lib/api.ts` | ts | no | api, ApiError |  |
 | `src/lib/auth-routes.ts` | ts | no | STORE_AUTH_PATHS, isStoreAuthPath, safeRelativeNext |  |
 | `src/lib/catalog-filters.ts` | ts | no | getProductUnits, scoreProductSearchMatch, productMatchesCatalogFilters | src/lib/api.ts |
@@ -225,8 +515,13 @@ App **không** import chéo source `apps/*`; giao tiếp qua **HTTP** + `@worksp
 | `src/lib/store-feature.ts` | ts | no | STORE_ENABLED, isStoreRoute |  |
 | `src/lib/store-ui.ts` | ts | no | STORE_AUTH_FORM_CARD_CLASS |  |
 | `src/lib/utils.ts` | ts | no | cn, generateId |  |
+| `src/providers/admin/admin-realtime-sync.tsx` | tsx | yes | AdminRealtimeSync | src/providers/admin/auth-provider.tsx, src/hooks/admin/use-admin-realtime-sync.ts |
+| `src/providers/admin/auth-provider.tsx` | tsx | yes | StaffLoginResult, AuthProvider, useAuth, useClientReady | src/config/admin/parent-admin-access.ts, src/features/admin-auth/auth-api.ts, src/lib/admin/auth-session.ts, src/lib/admin/auth-routes.ts |
+| `src/providers/admin/parent-admin-layout.tsx` | tsx | yes | ParentAdminLayoutProvider | src/lib/admin/api.ts, src/config/admin/parent-admin-layout-static.ts, src/providers/admin/admin-realtime-sync.tsx, src/providers/admin/auth-provider.tsx, src/lib/admin/auth-session.ts |
+| `src/providers/admin/query-provider.tsx` | tsx | yes | QueryProvider |  |
 | `src/providers/query-provider.tsx` | tsx | yes | QueryProvider |  |
 | `src/proxy.ts` | ts | no | proxy, config | src/lib/store-feature.ts |
+| `src/types/google-gsi.d.ts` | ts | no |  |  |
 | `src/types/todo.ts` | ts | no | Todo |  |
 | `tsconfig.json` | config | — | — | — |
 ## File Markdown trong scope app

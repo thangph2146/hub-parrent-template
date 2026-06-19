@@ -50,11 +50,11 @@ function verify() {
 
   for (const pkg of COMPOSITION_PACKAGES) {
     if (!fs.existsSync(path.join(ROOT, pkg, "package.json"))) {
-      errors.push(`thiếu lớp compose ${pkg} — bắt buộc cho hub-event template`)
+      errors.push(`thiếu lớp compose ${pkg} — bắt buộc cho hub-checkin template`)
     }
   }
 
-  if (manifest.productLine === "hub-event" || manifest.primary) {
+  if (manifest.productLine === "hub-checkin" || manifest.primary) {
     const adminPkg = path.join(ROOT, "packages/admin-app/package.json")
     const apiPkg = path.join(ROOT, "packages/api-server/package.json")
     if (fs.existsSync(adminPkg) && fs.existsSync(apiPkg)) {

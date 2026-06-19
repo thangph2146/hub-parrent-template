@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/hub-parent/api (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.316Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-19T01:42:38.476Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -85,7 +85,7 @@
 - `src/common/module-bases/event-registrations/event-registrations.controller.ts`
 - … và 72 controller khác
 
-## AUTO-GENERATED (không sửa tay) — 23 file
+## AUTO-GENERATED (không sửa tay) — 16 file
 
 Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
 
@@ -100,18 +100,11 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/common/crud/common.types.spec.ts`
 - `src/common/crud/crud-apply-column-filters.spec.ts`
 - `src/common/database-http-exception.filter.ts`
-- `src/common/gift-rules.ts`
 - `src/common/logging.interceptor.ts`
 - `src/common/product-types.ts`
-- `src/common/product-units.ts`
-- `src/common/promo-checkout.ts`
 - `src/common/public.decorator.ts`
 - `src/common/request-id.middleware.ts`
 - `src/common/unit-pricing.ts`
-- `src/data-test/fake-em.spec.ts`
-- `src/data-test/fake-em.ts`
-- `src/data-test/fixture.spec.ts`
-- `src/data-test/fixture.ts`
 
 ## Làm mới
 

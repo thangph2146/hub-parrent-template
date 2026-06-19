@@ -1,6 +1,6 @@
-# API endpoints — @hub-event/api (`apps/hub-event/api`)
+# API endpoints — check-in API (`apps/hub-checkin/api`)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.750Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
+> **Sinh tự động:** `2026-06-19T01:42:38.887Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
 
 Deploy line check-in — controller/service AUTO-GENERATED từ `@workspace/api-server` + `api.app.config.json`. Native giữ tay: `public.controller.ts`, `system.module.ts`, `public-uploads.controller.ts`. Render: `pnpm api:render:checkin`.
 
@@ -36,6 +36,7 @@ Verify: `pnpm verify:checkin-api` · `pnpm verify:main-api-endpoint-parity` (28 
 | `EVENTS` | `/admin/events` |
 | `FACE_DATA` | `/admin/face-data` |
 | `GROUPS` | `/admin/groups` |
+| `HANET` | `/admin/hanet` |
 | `IMPORTED_USERS` | `/admin/imported-users` |
 | `LOCATIONS` | `/admin/locations` |
 | `MAJORS` | `/admin/majors` |
@@ -137,17 +138,6 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 - **Base:** `/admin/cameras`
 
 _Không trích được `@Get`/`@Post` — kiểm tra decorator._
-
-### `carts`
-
-- **Controller:** `src/carts/carts.controller.ts`
-- **Base:** `/public/cart`
-
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/public/cart` | `/api/public/cart` |
-| `GET` | `/public/cart` | `/api/public/cart` |
-| `PUT` | `/public/cart` | `/api/public/cart` |
 
 ### `categories`
 
@@ -283,6 +273,7 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 | `POST` | `/public/contact-requests` | `/api/public/contact-requests` |
 | `POST` | `/public/register` | `/api/public/register` |
 | `POST` | `/users` | `/api/users` |
+| `POST` | `/users/:id/avatar` | `/api/users/:id/avatar` |
 | `POST` | `/users/:id/restore` | `/api/users/:id/restore` |
 | `POST` | `/users/bulk` | `/api/users/bulk` |
 | `PUT` | `/admin/accounts` | `/api/admin/accounts` |
@@ -387,11 +378,57 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `hanet`
 
-- **Controller:** `src/hanet/hanet-webhook.controller.ts`
-- **Base:** `/public/hanet/webhook`
+- **Controller:** `src/hanet/hanet-admin.controller.ts`
+- **Base:** `/admin/hanet, /public/hanet/webhook`
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|
+| `DELETE` | `/admin/hanet/partner/users` | `/api/admin/hanet/partner/users` |
+| `DELETE` | `/admin/hanet/person` | `/api/admin/hanet/person` |
+| `DELETE` | `/admin/hanet/person/by-id` | `/api/admin/hanet/person/by-id` |
+| `DELETE` | `/admin/hanet/person/by-place` | `/api/admin/hanet/person/by-place` |
+| `DELETE` | `/admin/hanet/person/in-place` | `/api/admin/hanet/person/in-place` |
+| `DELETE` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `GET` | `/admin/hanet/avatars` | `/api/admin/hanet/avatars` |
+| `GET` | `/admin/hanet/checkins` | `/api/admin/hanet/checkins` |
+| `GET` | `/admin/hanet/checkins/timestamp` | `/api/admin/hanet/checkins/timestamp` |
+| `GET` | `/admin/hanet/devices` | `/api/admin/hanet/devices` |
+| `GET` | `/admin/hanet/devices/connection-status` | `/api/admin/hanet/devices/connection-status` |
+| `GET` | `/admin/hanet/devices/info` | `/api/admin/hanet/devices/info` |
+| `GET` | `/admin/hanet/partner/users` | `/api/admin/hanet/partner/users` |
+| `GET` | `/admin/hanet/person/by-alias` | `/api/admin/hanet/person/by-alias` |
+| `GET` | `/admin/hanet/person/by-alias-all` | `/api/admin/hanet/person/by-alias-all` |
+| `GET` | `/admin/hanet/person/user-by-alias` | `/api/admin/hanet/person/user-by-alias` |
+| `GET` | `/admin/hanet/person/user-by-id` | `/api/admin/hanet/person/user-by-id` |
+| `GET` | `/admin/hanet/persons` | `/api/admin/hanet/persons` |
+| `GET` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `GET` | `/admin/hanet/places/info` | `/api/admin/hanet/places/info` |
+| `GET` | `/admin/hanet/profile` | `/api/admin/hanet/profile` |
+| `GET` | `/admin/hanet/status` | `/api/admin/hanet/status` |
+| `GET` | `/admin/hanet/webhook/recent` | `/api/admin/hanet/webhook/recent` |
+| `GET` | `/public/hanet/webhook/info` | `/api/public/hanet/webhook/info` |
+| `PATCH` | `/admin/hanet/devices` | `/api/admin/hanet/devices` |
+| `PATCH` | `/admin/hanet/person` | `/api/admin/hanet/person` |
+| `PATCH` | `/admin/hanet/person/alias-id` | `/api/admin/hanet/person/alias-id` |
+| `PATCH` | `/admin/hanet/person/info` | `/api/admin/hanet/person/info` |
+| `PATCH` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `POST` | `/admin/hanet/cameras/ensure` | `/api/admin/hanet/cameras/ensure` |
+| `POST` | `/admin/hanet/devices/mqtt` | `/api/admin/hanet/devices/mqtt` |
+| `POST` | `/admin/hanet/partner/update-token` | `/api/admin/hanet/partner/update-token` |
+| `POST` | `/admin/hanet/person/face/take-picture` | `/api/admin/hanet/person/face/take-picture` |
+| `POST` | `/admin/hanet/person/face/update-by-image` | `/api/admin/hanet/person/face/update-by-image` |
+| `POST` | `/admin/hanet/person/face/update-by-image-by-alias-id` | `/api/admin/hanet/person/face/update-by-image-by-alias-id` |
+| `POST` | `/admin/hanet/person/face/update-by-image-by-person-id` | `/api/admin/hanet/person/face/update-by-image-by-person-id` |
+| `POST` | `/admin/hanet/person/face/update-by-url` | `/api/admin/hanet/person/face/update-by-url` |
+| `POST` | `/admin/hanet/person/face/update-by-url-by-alias-id` | `/api/admin/hanet/person/face/update-by-url-by-alias-id` |
+| `POST` | `/admin/hanet/person/face/update-by-url-by-person-id` | `/api/admin/hanet/person/face/update-by-url-by-person-id` |
+| `POST` | `/admin/hanet/person/register` | `/api/admin/hanet/person/register` |
+| `POST` | `/admin/hanet/person/register-by-url` | `/api/admin/hanet/person/register-by-url` |
+| `POST` | `/admin/hanet/person/remove-by-alias-ids` | `/api/admin/hanet/person/remove-by-alias-ids` |
+| `POST` | `/admin/hanet/persons/sync` | `/api/admin/hanet/persons/sync` |
+| `POST` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `POST` | `/admin/hanet/test-connection` | `/api/admin/hanet/test-connection` |
+| `POST` | `/admin/hanet/test-partner` | `/api/admin/hanet/test-partner` |
 | `POST` | `/public/hanet/webhook` | `/api/public/hanet/webhook` |
 | `POST` | `/public/hanet/webhook/:eventId` | `/api/public/hanet/webhook/:eventId` |
 
@@ -444,23 +481,6 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 | `POST` | `/admin/notifications/bulk` | `/api/admin/notifications/bulk` |
 | `POST` | `/admin/notifications/mark-all-read` | `/api/admin/notifications/mark-all-read` |
 
-### `orders`
-
-- **Controller:** `src/orders/orders.controller.ts`
-- **Base:** `/admin/orders, /public/orders`
-
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/orders/:id` | `/api/admin/orders/:id` |
-| `GET` | `/admin/orders` | `/api/admin/orders` |
-| `GET` | `/admin/orders/:id` | `/api/admin/orders/:id` |
-| `GET` | `/admin/orders/staff/status-counts` | `/api/admin/orders/staff/status-counts` |
-| `GET` | `/public/orders` | `/api/public/orders` |
-| `GET` | `/public/orders/:id` | `/api/public/orders/:id` |
-| `POST` | `/admin/orders` | `/api/admin/orders` |
-| `POST` | `/public/orders` | `/api/public/orders` |
-| `PUT` | `/admin/orders/:id/status` | `/api/admin/orders/:id/status` |
-
 ### `page-contents`
 
 - **Controller:** `src/page-contents/page-contents.controller.ts`
@@ -470,22 +490,10 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `parent-students`
 
-- **Controller:** `src/parent-students/parent-students.controller.ts (multi @Controller)`
-- **Base:** `/parent/my-students, /admin/parent-students`
+- **Controller:** `src/parent-students/parent-students.controller.ts`
+- **Base:** `/admin/parent-students`
 
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/parent-students/:id` | `/api/admin/parent-students/:id` |
-| `DELETE` | `/parent/my-students/:id` | `/api/parent/my-students/:id` |
-| `GET` | `/admin/parent-students` | `/api/admin/parent-students` |
-| `GET` | `/parent/my-students` | `/api/parent/my-students` |
-| `GET` | `/parent/my-students/averages/overall/:studentCode` | `/api/parent/my-students/averages/overall/:studentCode` |
-| `GET` | `/parent/my-students/averages/terms/:studentCode` | `/api/parent/my-students/averages/terms/:studentCode` |
-| `GET` | `/parent/my-students/averages/year/:studentCode` | `/api/parent/my-students/averages/year/:studentCode` |
-| `GET` | `/parent/my-students/grades/:studentCode` | `/api/parent/my-students/grades/:studentCode` |
-| `GET` | `/parent/my-students/scores/detailed/:studentCode` | `/api/parent/my-students/scores/detailed/:studentCode` |
-| `PATCH` | `/admin/parent-students/:id/review` | `/api/admin/parent-students/:id/review` |
-| `POST` | `/parent/my-students` | `/api/parent/my-students` |
+_Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `posts`
 
@@ -493,32 +501,6 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 - **Base:** `/admin/posts`
 
 _Không trích được `@Get`/`@Post` — kiểm tra decorator._
-
-### `products`
-
-- **Controller:** `src/products/products.controller.ts`
-- **Base:** `/admin/products, /public/products`
-
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `DELETE` | `/admin/products/:id` | `/api/admin/products/:id` |
-| `GET` | `/admin/products` | `/api/admin/products` |
-| `GET` | `/admin/products/:id` | `/api/admin/products/:id` |
-| `GET` | `/public/products` | `/api/public/products` |
-| `GET` | `/public/products/:id` | `/api/public/products/:id` |
-| `GET` | `/public/products/sku/:sku` | `/api/public/products/sku/:sku` |
-| `POST` | `/admin/products` | `/api/admin/products` |
-| `POST` | `/admin/products/:id/restore` | `/api/admin/products/:id/restore` |
-| `PUT` | `/admin/products/:id` | `/api/admin/products/:id` |
-
-### `promo-codes`
-
-- **Controller:** `src/promo-codes/promo-codes.controller.ts`
-- **Base:** `/admin/promo-codes, /public/promo-codes`
-
-| Method | Path (relative, chưa `/api`) | Full URL mẫu |
-|--------|------------------------------|--------------|
-| `GET` | `/public/promo-codes` | `/api/public/promo-codes` |
 
 ### `proxy-image`
 
@@ -710,6 +692,6 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 ## Làm mới
 
 ```bash
-pnpm api:render:checkin && node script-system/graphify/graphify-update.cjs apps/hub-event/api
+pnpm api:render:checkin && node script-system/graphify/graphify-update.cjs apps/hub-checkin/api
 pnpm graphify:ai-summary
 ```

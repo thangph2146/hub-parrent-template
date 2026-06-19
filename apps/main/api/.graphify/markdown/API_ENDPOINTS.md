@@ -1,6 +1,6 @@
 # API endpoints — @api (`apps/main/api`)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.737Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
+> **Sinh tự động:** `2026-06-19T01:42:38.875Z` — quét `src/**/*.controller.ts` + route từ `Base*Controller` / `BaseCrudController` trong `@workspace/api-server` khi app extend mỏng.
 
 ## Global prefix
 
@@ -34,6 +34,7 @@ Verify contract: `pnpm verify:api-contract` · parity package: `pnpm verify:main
 | `EVENTS` | `/admin/events` |
 | `FACE_DATA` | `/admin/face-data` |
 | `GROUPS` | `/admin/groups` |
+| `HANET` | `/admin/hanet` |
 | `IMPORTED_USERS` | `/admin/imported-users` |
 | `LOCATIONS` | `/admin/locations` |
 | `MAJORS` | `/admin/majors` |
@@ -281,6 +282,7 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 | `POST` | `/public/contact-requests` | `/api/public/contact-requests` |
 | `POST` | `/public/register` | `/api/public/register` |
 | `POST` | `/users` | `/api/users` |
+| `POST` | `/users/:id/avatar` | `/api/users/:id/avatar` |
 | `POST` | `/users/:id/restore` | `/api/users/:id/restore` |
 | `POST` | `/users/bulk` | `/api/users/bulk` |
 | `PUT` | `/admin/accounts` | `/api/admin/accounts` |
@@ -385,11 +387,57 @@ _Không trích được `@Get`/`@Post` — kiểm tra decorator._
 
 ### `hanet`
 
-- **Controller:** `src/hanet/hanet-webhook.controller.ts`
-- **Base:** `/public/hanet/webhook`
+- **Controller:** `src/hanet/hanet-admin.controller.ts`
+- **Base:** `/admin/hanet, /public/hanet/webhook`
 
 | Method | Path (relative, chưa `/api`) | Full URL mẫu |
 |--------|------------------------------|--------------|
+| `DELETE` | `/admin/hanet/partner/users` | `/api/admin/hanet/partner/users` |
+| `DELETE` | `/admin/hanet/person` | `/api/admin/hanet/person` |
+| `DELETE` | `/admin/hanet/person/by-id` | `/api/admin/hanet/person/by-id` |
+| `DELETE` | `/admin/hanet/person/by-place` | `/api/admin/hanet/person/by-place` |
+| `DELETE` | `/admin/hanet/person/in-place` | `/api/admin/hanet/person/in-place` |
+| `DELETE` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `GET` | `/admin/hanet/avatars` | `/api/admin/hanet/avatars` |
+| `GET` | `/admin/hanet/checkins` | `/api/admin/hanet/checkins` |
+| `GET` | `/admin/hanet/checkins/timestamp` | `/api/admin/hanet/checkins/timestamp` |
+| `GET` | `/admin/hanet/devices` | `/api/admin/hanet/devices` |
+| `GET` | `/admin/hanet/devices/connection-status` | `/api/admin/hanet/devices/connection-status` |
+| `GET` | `/admin/hanet/devices/info` | `/api/admin/hanet/devices/info` |
+| `GET` | `/admin/hanet/partner/users` | `/api/admin/hanet/partner/users` |
+| `GET` | `/admin/hanet/person/by-alias` | `/api/admin/hanet/person/by-alias` |
+| `GET` | `/admin/hanet/person/by-alias-all` | `/api/admin/hanet/person/by-alias-all` |
+| `GET` | `/admin/hanet/person/user-by-alias` | `/api/admin/hanet/person/user-by-alias` |
+| `GET` | `/admin/hanet/person/user-by-id` | `/api/admin/hanet/person/user-by-id` |
+| `GET` | `/admin/hanet/persons` | `/api/admin/hanet/persons` |
+| `GET` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `GET` | `/admin/hanet/places/info` | `/api/admin/hanet/places/info` |
+| `GET` | `/admin/hanet/profile` | `/api/admin/hanet/profile` |
+| `GET` | `/admin/hanet/status` | `/api/admin/hanet/status` |
+| `GET` | `/admin/hanet/webhook/recent` | `/api/admin/hanet/webhook/recent` |
+| `GET` | `/public/hanet/webhook/info` | `/api/public/hanet/webhook/info` |
+| `PATCH` | `/admin/hanet/devices` | `/api/admin/hanet/devices` |
+| `PATCH` | `/admin/hanet/person` | `/api/admin/hanet/person` |
+| `PATCH` | `/admin/hanet/person/alias-id` | `/api/admin/hanet/person/alias-id` |
+| `PATCH` | `/admin/hanet/person/info` | `/api/admin/hanet/person/info` |
+| `PATCH` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `POST` | `/admin/hanet/cameras/ensure` | `/api/admin/hanet/cameras/ensure` |
+| `POST` | `/admin/hanet/devices/mqtt` | `/api/admin/hanet/devices/mqtt` |
+| `POST` | `/admin/hanet/partner/update-token` | `/api/admin/hanet/partner/update-token` |
+| `POST` | `/admin/hanet/person/face/take-picture` | `/api/admin/hanet/person/face/take-picture` |
+| `POST` | `/admin/hanet/person/face/update-by-image` | `/api/admin/hanet/person/face/update-by-image` |
+| `POST` | `/admin/hanet/person/face/update-by-image-by-alias-id` | `/api/admin/hanet/person/face/update-by-image-by-alias-id` |
+| `POST` | `/admin/hanet/person/face/update-by-image-by-person-id` | `/api/admin/hanet/person/face/update-by-image-by-person-id` |
+| `POST` | `/admin/hanet/person/face/update-by-url` | `/api/admin/hanet/person/face/update-by-url` |
+| `POST` | `/admin/hanet/person/face/update-by-url-by-alias-id` | `/api/admin/hanet/person/face/update-by-url-by-alias-id` |
+| `POST` | `/admin/hanet/person/face/update-by-url-by-person-id` | `/api/admin/hanet/person/face/update-by-url-by-person-id` |
+| `POST` | `/admin/hanet/person/register` | `/api/admin/hanet/person/register` |
+| `POST` | `/admin/hanet/person/register-by-url` | `/api/admin/hanet/person/register-by-url` |
+| `POST` | `/admin/hanet/person/remove-by-alias-ids` | `/api/admin/hanet/person/remove-by-alias-ids` |
+| `POST` | `/admin/hanet/persons/sync` | `/api/admin/hanet/persons/sync` |
+| `POST` | `/admin/hanet/places` | `/api/admin/hanet/places` |
+| `POST` | `/admin/hanet/test-connection` | `/api/admin/hanet/test-connection` |
+| `POST` | `/admin/hanet/test-partner` | `/api/admin/hanet/test-partner` |
 | `POST` | `/public/hanet/webhook` | `/api/public/hanet/webhook` |
 | `POST` | `/public/hanet/webhook/:eventId` | `/api/public/hanet/webhook/:eventId` |
 

@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.553Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-19T01:42:38.677Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -44,8 +44,7 @@
 - `src/app/admin/categories/[id]/page.tsx`
 - `src/app/admin/categories/new/page.tsx`
 - `src/app/admin/categories/page.tsx`
-- `src/app/admin/dang-ky/page.tsx`
-- `src/app/admin/dang-nhap/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
 - `src/app/admin/data/page.tsx`
 - `src/app/admin/file-storage/page.tsx`
 - `src/app/admin/guides/[id]/edit/page.tsx`
@@ -53,6 +52,7 @@
 - `src/app/admin/guides/new/page.tsx`
 - `src/app/admin/guides/page.tsx`
 - `src/app/admin/layout.tsx`
+- `src/app/admin/login/page.tsx`
 - `src/app/admin/orders/[id]/edit/page.tsx`
 - `src/app/admin/orders/[id]/page.tsx`
 - `src/app/admin/orders/page.tsx`
@@ -93,6 +93,7 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/app/admin/categories/new/loading.tsx`
 - `src/app/admin/categories/new/page.tsx`
 - `src/app/admin/categories/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
 - `src/app/admin/data/page.tsx`
 - `src/app/admin/file-storage/page.tsx`
 - `src/app/admin/guides/[id]/edit/loading.tsx`
@@ -120,7 +121,6 @@ Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm 
 - `src/app/admin/rbac/page.tsx`
 - `src/app/admin/seo-metas/[id]/edit/loading.tsx`
 - `src/app/admin/seo-metas/[id]/edit/page.tsx`
-- `src/app/admin/seo-metas/[id]/loading.tsx`
 - … và 13 file khác
 
 ## Làm mới

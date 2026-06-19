@@ -54,10 +54,10 @@ function createParentStack() {
 /** Check-in: API + frontend (admin gộp trong check-in frontend) */
 function createCheckinStack() {
   return [
-    createApiApp("hub-checkin-api", PRODUCT_LINES["hub-event"].api.path),
+    createApiApp("hub-checkin-api", PRODUCT_LINES["hub-checkin"].api.path),
     createNextFrontendApp(
       "hub-checkin-frontend",
-      PRODUCT_LINES["hub-event"].frontend.path,
+      PRODUCT_LINES["hub-checkin"].frontend.path,
       3000,
     ),
   ];

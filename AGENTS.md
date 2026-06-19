@@ -8,6 +8,33 @@ Tài liệu này là **chỉ mục điều hướng** cho agent: hiểu hệ th�
 
 ---
 
+## 0. Ponytail mode — lazy senior dev
+
+Luôn chọn cách đơn giản nhất chạy được. “Lazy” nghĩa là hiệu quả, không cẩu thả: code tốt nhất là code không cần viết.
+
+Trước khi viết code, dừng ở nấc đầu tiên đủ dùng:
+
+1. Có thật sự cần build không? YAGNI.
+2. Standard library đã có chưa? Dùng nó.
+3. Native platform feature đã cover chưa? Dùng nó.
+4. Dependency đã cài sẵn có giải quyết được không? Dùng nó.
+5. Có thể là một dòng không? Làm một dòng.
+6. Sau cùng mới viết lượng code tối thiểu chạy được.
+
+Quy tắc:
+
+- Không thêm abstraction nếu không được yêu cầu rõ.
+- Không thêm dependency mới nếu có thể tránh.
+- Không viết boilerplate không ai hỏi.
+- Ưu tiên xóa hơn thêm. Boring hơn clever. Ít file nhất có thể.
+- Với request phức tạp, hỏi lại: “Có thật sự cần X không, hay Y đã đủ cover?”
+- Nếu hai cách standard library ngắn tương đương, chọn cách đúng edge-case hơn; lazy là ít code, không phải thuật toán yếu hơn.
+- Đánh dấu shortcut có chủ đích bằng comment `ponytail:`. Nếu shortcut có trần đã biết như global lock, scan O(n²), heuristic đơn giản, comment phải nêu trần và hướng nâng cấp.
+
+Không được lazy với: validation ở trust boundary, error handling tránh mất dữ liệu, security, accessibility, calibration với phần cứng thật, và bất cứ điều gì user yêu cầu rõ. Logic không tầm thường phải để lại đúng **một** runnable check nhỏ nhất có thể fail khi logic hỏng: assert demo/self-check hoặc một test nhỏ, không thêm framework/fixture. One-liner tầm thường không cần test.
+
+---
+
 ## 1. Bản đồ monorepo (đường dẫn thật)
 
 ```
@@ -18,15 +45,15 @@ apps/
 ├── hub-parent/                    # Deploy site chính
 │   ├── api/          @hub-parent/api
 │   └── hub-parent-frontend/       @frontend
-├── hub-event/                     # Deploy check-in
-│   ├── api/          @hub-event/api
-│   └── hub-event-checkin-frontend/ @hub-event-checkin-frontend
+├── hub-checkin/                   # Deploy check-in
+│   ├── api/          @hub-checkin/api
+│   └── hub-checkin-frontend/ @hub-checkin/frontend
 └── store-sync/
     ├── api/          @store-sync/api
     └── store-sync-frontend/       @store-sync-frontend
 
 packages/                          # Logic dùng chung (@workspace/*)
-script-system/                     # sync, verify, graphify, generate — xem script-system/README.md
+script-system/                     # Upstream đầy đủ; downstream chỉ runtime subset
 ```
 
 | Shorthand cũ (trong doc legacy) | Đường dẫn hiện tại | Package npm |
@@ -58,7 +85,7 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 | **Admin page (main)** | `PRE_CODE_PROTOCOL` → `ADMIN_PAGE_PATTERN.md` → `docs/pages/README.md` → graphify `apps/main/backend` | `apps/main/backend/` |
 | **API Nest (main, dev)** | `PRE_CODE_PROTOCOL` → `docs/api-pattern/README.md` → graphify `apps/main/api` | `apps/main/api/` |
 | **Storefront HUB** | `FRONTEND_UX.md` → graphify `apps/hub-parent/hub-parent-frontend` | `apps/hub-parent/hub-parent-frontend/` |
-| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → mục **api-server** bên dưới | `apps/hub-event/api/`, `apps/hub-event/hub-event-checkin-frontend/` |
+| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → mục **api-server** bên dưới | `apps/hub-checkin/api/`, `apps/hub-checkin/hub-checkin-frontend/` |
 | **HANET Partner API** | [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → `docs/env/README.md` (mục HANET) → `hanet-postman.ts` | `apps/main/api/src/hanet/`, `packages/api-client/src/resources/hanet.ts` |
 | **Store Sync** | `MONOREPO_STRUCTURE.md` → graphify `apps/store-sync/*` | `apps/store-sync/` |
 | **Package UI** | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` | `packages/ui/` |
@@ -77,8 +104,8 @@ Index tài liệu: [`docs/README.md`](docs/README.md).
 | Main API | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Main admin | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Hub storefront | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Check-in API | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Check-in frontend | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Check-in API | [`apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| Check-in frontend | [`apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
 
 Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `IMPACT_RADIUS.md` / `ENTRY_POINTS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
@@ -90,8 +117,8 @@ Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm m�
 |-----------------|--------------|
 | [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md) | Biết module X → folder/file (`admin-app`, `main/api`, `api-client`) |
 | `pnpm graphify:brief --task "..."` | Đầu task — brief đọc/verify/sync (sinh từ `task-index.json`) |
-| `TASK_INDEX` cột Check-in API | Domain có trên hub-event sau `pull:checkin` hay chỉ main |
-| [`.graphify/markdown/SYNC_DELTA.md`](.graphify/markdown/SYNC_DELTA.md) | So sánh domain `main/api` ↔ `hub-event/api` (exclude + native) |
+| `TASK_INDEX` cột Check-in API | Domain có trên hub-checkin sau `pull:checkin` hay chỉ main |
+| [`.graphify/markdown/SYNC_DELTA.md`](.graphify/markdown/SYNC_DELTA.md) | So sánh domain `main/api` ↔ `hub-checkin/api` (exclude + native) |
 | `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md` | Sửa helper/shared — xem ai import file đó |
 | `apps/<app>/.graphify/markdown/ENTRY_POINTS.md` | Bootstrap, route Next, file AUTO-GENERATED |
 | [`.graphify/markdown/ROUTE_SURFACE.md`](.graphify/markdown/ROUTE_SURFACE.md) | Admin URL ↔ Nest API ↔ api-client HTTP |
@@ -163,13 +190,60 @@ flowchart LR
 | **1. Sửa thư viện** | `mono-repo-template` | `packages/*`, `script-system/*` |
 | **2. Verify + push** | upstream | `pnpm check` → `pnpm push -- "feat: ..."` |
 | **3. Đồng bộ** | downstream | `pnpm sync` (= `pull:template` + `post-pull:downstream`) |
-| **4. Verify deploy** | downstream | `pnpm check` hoặc `pnpm sync:full` |
+| **4. Phân tích sau sync** | downstream | đọc diff/source đã sync, kiểm tra tính năng đã có chưa |
+| **5. Verify deploy** | downstream | `pnpm check` hoặc `pnpm sync:full` |
 
 **Không** sửa `packages/` lâu dài trên downstream — PR lên template upstream.  
 **Không** chạy `pnpm sync` downstream trước khi upstream đã push `main`.
+**Không** sync generated cache mặc định: `.graphify` regenerate bằng `pnpm graphify:refresh`; `apps/*` downstream giữ local, chỉ dùng `apply-sync-to-downstream --with-apps` khi migration/bootstrap có chủ đích.
+**Không** giả định downstream có toàn bộ `script-system`: chỉ sync runtime subset cho dev/sync/verify/env/db/git; tooling upstream như `graphify`, `template`, `api`, `sync/deprecated` ở lại template.
+
+### 5.1 `script-system` boundary — chống phình sau sync
+
+`script-system` trong `mono-repo-template` là toolbox đầy đủ. `script-system` trong downstream là **runtime subset**, không phải bản copy nguyên cây.
+
+| Nhóm | Downstream sync? | Lý do |
+|------|------------------|-------|
+| `admin/`, `db/`, `dev/`, `env/`, `git/`, `lib/`, `verify/` | Có | Lệnh runtime để dev, env, db bootstrap, verify, push |
+| `sync/lib/` + file `sync/*.cjs` được allowlist | Có | `pull:template`, `post-pull:downstream`, profile sync |
+| `api/`, `graphify/`, `template/`, `sync/deprecated/` | Không | Tooling upstream/generate/cache/legacy, không chạy trực tiếp ở downstream |
+| `.graphify/`, `packages/.graphify/`, app `.graphify/` | Không mặc định | Generated artifact; regenerate ở upstream hoặc copy có chủ đích |
+
+Khi thêm hoặc sửa script:
+
+1. Trước tiên tìm script/helper đã có trong `script-system/*` và `packages/*`; ưu tiên reuse.
+2. Nếu script chỉ phục vụ generate, audit, graphify, template bootstrap, migration một lần, hoặc legacy, giữ **upstream-only**.
+3. Nếu script thật sự cần ở downstream, thêm đúng path cụ thể vào allowlist của `template.manifest.json`, `script-system/template/template.manifest.downstream.json`, và `script-system/sync/apply-sync-to-downstream.cjs`.
+4. Nếu bỏ một nhóm khỏi downstream, thêm stale path vào `post-pull-downstream.cjs` để `pnpm sync` tự prune.
+5. Không thêm lại `"script-system"` nguyên thư mục vào `inheritPaths`; đây là nguyên nhân chính làm downstream phình và khó quản lý microservice.
+
+Windows note: khi `apply-sync-to-downstream --with-apps` gặp `EBUSY/EPERM` ở app frontend do Next/dev server/indexer giữ handle, không retry ồn hoặc xóa cưỡng bức. Core dirs (`packages/`, `script-system/`) phải prune strict; app dirs được merge vào folder hiện có và sau đó bắt buộc chạy verify product line.
+
+### 5.2 App source scripts — không nhét tooling vào deploy line
+
+`apps/<line>/api/scripts/` trong deploy line (`hub-parent`, `hub-checkin`, `store-sync`) chỉ được giữ file runtime tối thiểu `ensure-dist.mjs`. Không đặt codemod, migration một lần, live-test, graph/export, hay helper sync trong app source.
+Trong `apps/` cũng không giữ lockfile cục bộ như `pnpm-lock.yaml`; monorepo chỉ dùng root lockfile.
+
+| Vị trí | Được phép |
+|--------|-----------|
+| `apps/main/api/scripts/` | Dev/test tooling chính; migration một lần để trong `scripts/archive/` |
+| `apps/<deploy-line>/api/scripts/` | Chỉ `ensure-dist.mjs` |
+| `apps/<deploy-line>/api/src/scripts/` | Không; chuyển sang root `script-system/db` hoặc `script-system/verify` nếu còn cần |
+| `apps/<frontend>/scripts/` | Không; dùng root `script-system` hoặc package script |
+
+Nếu một script app deploy line không được gọi trong `package.json` hoặc chỉ chạy một lần, xóa thay vì giữ lại. Nếu còn cần dùng lại cho nhiều line, đưa lên `script-system` hoặc `packages/*` trước rồi sync xuống.
+
+### Quy tắc sau sync: phân tích trước, reuse trước
+
+Sau khi chạy `pnpm sync` hoặc `pnpm pull:template --full`, agent phải:
+
+1. Xem diff/source vừa đồng bộ để hiểu tính năng đã được đưa vào đâu.
+2. Tìm trong `packages/*`, `script-system` subset, `apps/<line>/*` xem helper/component/API/script tương ứng đã tồn tại chưa.
+3. Ưu tiên dùng lại hoặc cấu hình lại tính năng có sẵn; chỉ tạo code mới khi chứng minh còn thiếu hành vi thật sự.
+4. Nếu cần chỉnh downstream, chỉ chỉnh phần product-specific (`apps/`, `.env`, config app); thay đổi dùng chung phải quay lại `mono-repo-template` trước.
 
 Profile post-pull theo `productLine`: `script-system/sync/downstream-sync-profile.cjs`  
-(hub-event → `pull:checkin`; hub-parent → build; store-sync → `admin:generate:store`).
+(hub-checkin → `pull:checkin`; hub-parent → build; store-sync → `admin:generate:store`).
 
 | Mục đích | Lệnh |
 |----------|------|
@@ -181,14 +255,13 @@ Profile post-pull theo `productLine`: `script-system/sync/downstream-sync-profil
 | Downstream kéo **full packages/** | `pnpm pull:template` · `pnpm sync` · catalog [`packages/README.md`](packages/README.md) |
 | Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
 | Sync check-in (verify + admin; API native đã commit) | `pnpm pull:checkin` |
-| Cập nhật hub-event API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-event/api` → commit |
-| Copy API main → hub-event (deprecated) | `pnpm pull:checkin:legacy` |
+| Cập nhật hub-checkin API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-checkin/api` → commit |
 | Env | `pnpm env:init` · `pnpm verify:env` |
 
 **`pnpm dev:parent` (quan trọng):** chỉ chạy **2 app** của parent line: `apps/hub-parent/api` + `apps/hub-parent/hub-parent-frontend`. Frontend parent có route `/admin` (redirect sang admin URL), nên chỉ hiển thị/chạy chức năng liên quan parent line; không dùng để kiểm tra toàn bộ admin cross-line như `apps/main/backend` hoặc check-in.  
 
 **Dev hàng ngày (upstream):** sửa `packages/admin-app` / `packages/api-server` / `packages/*`, tag template.  
-**Repo chính deploy:** **hub-event-monorepo** — `pnpm dev:checkin`, `pnpm pull:template`.
+**Repo chính deploy:** **hub-checkin-monorepo** — `pnpm dev:checkin`, `pnpm pull:template`.
 
 ---
 
@@ -196,8 +269,7 @@ Profile post-pull theo `productLine`: `script-system/sync/downstream-sync-profil
 
 ```bash
 pnpm check                    # verify + lint + typecheck
-pnpm check:full               # check + graphify:ai-summary (sau đổi kiến trúc lớn)
-pnpm graphify:brief --task "..."  # định vị task (trước khi sửa)
+pnpm check:full               # upstream: check + graphify:ai-summary
 pnpm verify:bounds            # không import chéo apps/*
 pnpm verify:imports           # alias @ui
 ```
@@ -211,10 +283,10 @@ pnpm verify:imports           # alias @ui
 | Ranh giới service | `pnpm verify:bounds` (trong `pnpm check`) |
 | API ↔ client khớp | `pnpm verify:api-contract` khi đổi API hoặc `@workspace/api-client` |
 | Admin generate khớp | `pnpm verify:main-admin` / `verify:checkin-admin` |
-| Check-in API materialize | `pnpm verify:api-template` + `pnpm verify:checkin-api` · cập nhật: `pnpm api:sync-template && pnpm api:render apps/hub-event/api` |
+| Check-in API materialize | `pnpm verify:api-template` + `pnpm verify:checkin-api` · cập nhật: `pnpm api:sync-template && pnpm api:render apps/hub-checkin/api` |
 | Unified module parity | `pnpm verify:main-api-endpoint-parity` khi đổi `Base*Controller` trong package |
 | Build sạch | `pnpm check` pass |
-| Graph còn mới | `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
+| Graph còn mới | Upstream-only: `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
 | Deploy branch cập nhật | Downstream: `pnpm pull:template` · Legacy: `pnpm push:legacy` |
 
 ### Push (template upstream)
@@ -225,13 +297,15 @@ pnpm push -- "feat: mô tả"
 
 Chỉ push **`main`**. Downstream kéo packages: `pnpm pull:template` — xem [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
 
-Sau đổi route/module đáng kể:
+Sau đổi route/module đáng kể ở `monorepo-template`:
 
 ```bash
 node script-system/graphify/graphify-update.cjs apps/<app>
 pnpm graphify:ai-summary
 # hoặc: pnpm graphify:refresh
 ```
+
+Downstream không sync `script-system/graphify`; chỉ đọc artifact đã có hoặc regenerate ở upstream khi cần.
 
 ---
 
@@ -248,7 +322,7 @@ pnpm verify:checkin-admin
 ```
 
 Main: `apps/main/backend/admin.app.config.json`  
-Check-in: `apps/hub-event/hub-event-checkin-frontend/admin.app.config.json`  
+Check-in: `apps/hub-checkin/hub-checkin-frontend/admin.app.config.json`  
 Chi tiết: [`docs/admin-pattern/ADMIN_APP_PACKAGE.md`](docs/admin-pattern/ADMIN_APP_PACKAGE.md).
 
 ---
@@ -259,12 +333,12 @@ Pattern song song admin-app:
 
 | Admin (Next) | API (Nest) |
 |--------------|------------|
-| `admin.app.config.json` | `api.app.config.json` (`apps/hub-event/api/`) |
+| `admin.app.config.json` | `api.app.config.json` (`apps/hub-checkin/api/`) |
 | `pnpm admin:generate:checkin` | **`pnpm api:render:checkin`** (verify) · config trong `packages/api-server/deploy/config/` |
 
 ```bash
 pnpm api:sync-template              # @workspace/api-server/deploy/cli/sync-template.cjs
-pnpm api:render apps/hub-event/api
+pnpm api:render apps/hub-checkin/api
 pnpm verify:api-template            # packages/api-server/deploy/cli/verify/
 pnpm verify:checkin-api
 pnpm verify:main-api-endpoint-parity
@@ -274,7 +348,7 @@ pnpm verify:main-api-endpoint-parity
 
 1. Định vị product line + module scope bằng graph:
    - `pnpm graphify:brief --task "api render <line>"`
-   - đọc `.graphify/markdown/TASK_INDEX.md` + `SYNC_DELTA.md` (nếu sync main ↔ hub-event).
+   - đọc `.graphify/markdown/TASK_INDEX.md` + `SYNC_DELTA.md` (nếu sync main ↔ hub-checkin).
 2. Sync template trước khi render line:
    - `pnpm api:sync-template`
 3. Render theo `api.app.config.json` của từng app (không render mù toàn module):
@@ -315,7 +389,7 @@ Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-p
 
 - Mutation admin: `useAdminMutation` (`packages/ui`) — không toast thủ công trong `onSuccess`/`onError`
 - Realtime: `docs/api-client-pattern/REALTIME.md`
-- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemService` (main + hub-event binding)
+- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemService` (main + hub-checkin binding)
 
 ---
 
@@ -327,21 +401,21 @@ Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-p
 |------|---------------------------|-------------------------------------|
 | CRUD admin UI | `packages/admin-app` | `admin.app.config.json` + page AUTO-GENERATED re-export |
 | HTTP admin + service logic (unified) | `packages/api-server` (`Base*Service`, `Base*Controller`) | Subclass: `getEm()`, `getEntity()`, `mapRow`, inject constructor |
-| HTTP/service chưa unified | `apps/main/api` (dev) → port vào package trước khi generate hub-event | Không copy ngược từ hub-event sang main |
+| HTTP/service chưa unified | `apps/main/api` (dev) → port vào package trước khi generate hub-checkin | Không copy ngược từ hub-checkin sang main |
 | Entity / migration / seed | App API tương ứng | Không đưa entity vào `packages/` |
 | Component UI | `packages/ui` (`@ui/components/...`) | Không tạo admin component local |
 | API HTTP từ Next | `packages/api-client` | Không `fetch` / `sdk.http` trực tiếp |
 
 **Luồng quyết định (agent):**
 
-1. Feature dùng trên **hub-event** → implement trong `packages/api-server` hoặc `packages/admin-app` trước.
-2. Chạy generate: **`pnpm api:render:checkin`** (hub-event API) / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
+1. Feature dùng trên **hub-checkin** → implement trong `packages/api-server` hoặc `packages/admin-app` trước.
+2. Chạy generate: **`pnpm api:render:checkin`** (hub-checkin API) / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
 3. **Main API:** `system` + `auth` đã extend package; CRUD còn lại native — khi port, xóa bản copy trong `apps/main/api`, không giữ song song.
-4. **Downstream** (`hub-event-monorepo`): `pnpm pull:template` — không chạy `pull:checkin:legacy`.
+4. **Downstream** (`hub-checkin-monorepo`): `pnpm pull:template` — không chạy `pull:checkin:legacy`.
 
 **Cấm:** file dump/export JSON trong `src/`, duplicate type (`StorageMediaKind`…), controller `*-admin.controller.ts` song song với unified `*.controller.ts`, doc mới trùng nội dung mục 3–9.
 
-Chi tiết check-in: [`apps/hub-event/README.md`](apps/hub-event/README.md) · template: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
+Chi tiết check-in: [`apps/hub-checkin/README.md`](apps/hub-checkin/README.md) · template: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
 
 ---
 

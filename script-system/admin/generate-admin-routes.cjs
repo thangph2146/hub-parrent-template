@@ -4,7 +4,7 @@
  * Tùy chọn --prune: xóa source duplicate trước khi generate (check-in).
  *
  * Usage:
- *   node script-system/admin/generate-admin-routes.cjs apps/hub-event/hub-event-checkin-frontend --prune
+ *   node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-checkin-frontend --prune
  *   node script-system/admin/generate-admin-routes.cjs apps/main/backend
  */
 const fs = require("node:fs")
@@ -91,9 +91,9 @@ function routeRootFor(appRel, config) {
   return path.join(appRoot, "src/app", basePath.replace(/^\//, ""))
 }
 
-/** `page.tsx` (root), `tong-quan/page.tsx` → dir rỗng hoặc `tong-quan`. */
+/** `page.tsx` (root), `dashboard/page.tsx` → dir rỗng hoặc `dashboard`. */
 function resolveDashboardRelDir(relativePath) {
-  const withoutPage = (relativePath ?? "tong-quan/page.tsx").replace(
+  const withoutPage = (relativePath ?? "dashboard/page.tsx").replace(
     /\/page\.tsx$/,
     "",
   )
@@ -257,7 +257,7 @@ function generateRoutes(appRel, config) {
 }
 
 function generateMenuIfCheckin(appRel) {
-  if (!appRel.includes("hub-event-checkin-frontend")) return
+  if (!appRel.includes("hub-checkin-frontend")) return
   execSync("node script-system/sync/sync-checkin-menu-tree.cjs", {
     cwd: ROOT,
     stdio: "inherit",

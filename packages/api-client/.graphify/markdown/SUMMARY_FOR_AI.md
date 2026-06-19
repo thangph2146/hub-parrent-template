@@ -3,7 +3,7 @@
 > Package `@workspace/api-client` · `packages/api-client/`
 
 - **context.generatedAt:** 2026-06-15T03:40:53.368Z
-- **summary sinh:** `2026-06-15T03:40:54.684Z`
+- **summary sinh:** `2026-06-19T01:42:38.823Z`
 
 ## Mục lục artefact
 
@@ -25,7 +25,7 @@
 - **totalFiles:** 68
 - **clientComponents:** 0
 
-## API resources (`40` file)
+## API resources (`41` file)
 
 - `src/resources/academic-years.ts`
 - `src/resources/accounts.ts`
@@ -45,6 +45,7 @@
 - `src/resources/events.ts`
 - `src/resources/face-data.ts`
 - `src/resources/guides.ts`
+- `src/resources/hanet.ts`
 - `src/resources/locations.ts`
 - `src/resources/majors.ts`
 - `src/resources/my-students.ts`

@@ -1,6 +1,6 @@
 # Điểm vào (entry) — apps/hub-parent/hub-parent-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.374Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-19T01:42:38.516Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -9,7 +9,7 @@
 ## Nest modules (`*.module.ts`) — 0 file
 
 
-## Next App Router (`page` / `layout` / `route`) — 40 file
+## Next App Router (`page` / `layout` / `route`) — 146 file
 
 - `src/app/(public)/(store-sync)/cart/layout.tsx`
 - `src/app/(public)/(store-sync)/cart/page.tsx`
@@ -47,27 +47,81 @@
 - `src/app/(public)/lien-he/page.tsx`
 - `src/app/(public)/page.tsx`
 - `src/app/(public)/ve-chung-toi/page.tsx`
-- `src/app/api/graphify/route.ts`
-- `src/app/graph/layout.tsx`
-- `src/app/graph/page.tsx`
-- `src/app/layout.tsx`
+- `src/app/admin/academic-years/[id]/edit/page.tsx`
+- `src/app/admin/academic-years/[id]/page.tsx`
+- `src/app/admin/academic-years/new/page.tsx`
+- `src/app/admin/academic-years/page.tsx`
+- `src/app/admin/cameras/[id]/edit/page.tsx`
+- `src/app/admin/cameras/[id]/page.tsx`
+- `src/app/admin/cameras/new/page.tsx`
+- `src/app/admin/cameras/page.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/contact-requests/[id]/page.tsx`
+- `src/app/admin/contact-requests/page.tsx`
+- … và 96 route file khác
 
-## `loading.tsx` (pattern skeleton) — 7 file
+## `loading.tsx` (pattern skeleton) — 65 file
 
 Nhiều trang admin dùng cùng pattern loading; ưu tiên sửa shared UI (`@ui`) thay vì từng file.
 
-- Tổng: **7** file `loading.tsx` trong graph
+- Tổng: **65** file `loading.tsx` trong graph
   - `src/app/(public)/(store-sync)/cart/loading.tsx`
   - `src/app/(public)/(store-sync)/catalog/[productId]/loading.tsx`
   - `src/app/(public)/(store-sync)/catalog/loading.tsx`
   - `src/app/(public)/(store-sync)/checkout/loading.tsx`
   - `src/app/(public)/(store-sync)/orders/[orderId]/loading.tsx`
   - `src/app/(public)/(store-sync)/orders/loading.tsx`
-  - `src/app/graph/loading.tsx`
+  - `src/app/admin/academic-years/[id]/edit/loading.tsx`
+  - `src/app/admin/academic-years/[id]/loading.tsx`
+  - `src/app/admin/academic-years/new/loading.tsx`
+  - `src/app/admin/cameras/[id]/edit/loading.tsx`
+  - `src/app/admin/cameras/[id]/loading.tsx`
+  - `src/app/admin/cameras/new/loading.tsx`
+  - … và 53 file khác
 
-## AUTO-GENERATED (không sửa tay) — 0 file
+## AUTO-GENERATED (không sửa tay) — 159 file
 
-- (không phát hiện marker `AUTO-GENERATED` trong header file)
+Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
+
+- `src/app/admin/academic-years/[id]/edit/loading.tsx`
+- `src/app/admin/academic-years/[id]/edit/page.tsx`
+- `src/app/admin/academic-years/[id]/loading.tsx`
+- `src/app/admin/academic-years/[id]/page.tsx`
+- `src/app/admin/academic-years/new/loading.tsx`
+- `src/app/admin/academic-years/new/page.tsx`
+- `src/app/admin/academic-years/page.tsx`
+- `src/app/admin/cameras/[id]/edit/loading.tsx`
+- `src/app/admin/cameras/[id]/edit/page.tsx`
+- `src/app/admin/cameras/[id]/loading.tsx`
+- `src/app/admin/cameras/[id]/page.tsx`
+- `src/app/admin/cameras/new/loading.tsx`
+- `src/app/admin/cameras/new/page.tsx`
+- `src/app/admin/cameras/page.tsx`
+- `src/app/admin/categories/[id]/edit/loading.tsx`
+- `src/app/admin/categories/[id]/edit/page.tsx`
+- `src/app/admin/categories/[id]/loading.tsx`
+- `src/app/admin/categories/[id]/page.tsx`
+- `src/app/admin/categories/new/loading.tsx`
+- `src/app/admin/categories/new/page.tsx`
+- `src/app/admin/categories/page.tsx`
+- `src/app/admin/contact-requests/[id]/loading.tsx`
+- `src/app/admin/contact-requests/[id]/page.tsx`
+- `src/app/admin/contact-requests/page.tsx`
+- `src/app/admin/courses/[id]/edit/loading.tsx`
+- `src/app/admin/courses/[id]/edit/page.tsx`
+- `src/app/admin/courses/[id]/loading.tsx`
+- `src/app/admin/courses/[id]/page.tsx`
+- `src/app/admin/courses/new/loading.tsx`
+- `src/app/admin/courses/new/page.tsx`
+- `src/app/admin/courses/page.tsx`
+- `src/app/admin/dashboard/page.tsx`
+- `src/app/admin/data/page.tsx`
+- `src/app/admin/departments/[id]/edit/loading.tsx`
+- `src/app/admin/departments/[id]/edit/page.tsx`
+- … và 124 file khác
 
 ## Làm mới
 

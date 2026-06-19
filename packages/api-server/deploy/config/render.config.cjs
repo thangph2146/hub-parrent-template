@@ -108,7 +108,7 @@ const STORE_SYNC_API_INFRA = [
 
 const HUB_CHECKIN_API_PRESET = {
   id: 'hub-checkin-api',
-  alignAdminApp: '../hub-event-checkin-frontend/config/admin.app.config.json',
+  alignAdminApp: '../hub-checkin-frontend/config/admin.app.config.json',
   excludeModules: HUB_CHECKIN_EXCLUDED_STORE_MODULES,
   excludeEntities: HUB_CHECKIN_EXCLUDED_STORE_ENTITIES,
 }
@@ -167,7 +167,7 @@ function normalizeAppRel(appRel) {
 
 function isHubCheckinApi(appRel) {
   const norm = normalizeAppRel(appRel)
-  return norm.includes('apps/hub-checkin/api') || norm.includes('apps/hub-event/api')
+  return norm.includes('apps/hub-checkin/api')
 }
 
 /** @deprecated dùng isHubCheckinApi */

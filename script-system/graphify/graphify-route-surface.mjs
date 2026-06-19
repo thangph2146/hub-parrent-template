@@ -18,8 +18,8 @@ const { readAdminAppConfig } = require("../lib/admin-app-config-path.cjs")
 
 const MAIN_API = PRODUCT_LINES.main.api.path
 const MAIN_BACKEND = PRODUCT_LINES.main.backend.path
-const CHECKIN_API = PRODUCT_LINES["hub-event"].api.path
-const CHECKIN_FRONT = PRODUCT_LINES["hub-event"].frontend.path
+const CHECKIN_API = PRODUCT_LINES["hub-checkin"].api.path
+const CHECKIN_FRONT = PRODUCT_LINES["hub-checkin"].frontend.path
 const API_CLIENT = "packages/api-client"
 
 const ADMIN_TO_API_DOMAIN = {
@@ -397,7 +397,7 @@ export function writeRouteSurfaceMd() {
   }
 
   lines.push("")
-  lines.push("## Check-in admin modules (`hub-event-checkin-frontend`)")
+  lines.push("## Check-in admin modules (`hub-checkin-frontend`)")
   lines.push("")
   if (checkinModules.length) {
     lines.push("| Module | Admin URL | Có trên main API |")
@@ -581,16 +581,16 @@ export function writeMainApiEndpointsMd() {
   })
 }
 
-/** Bản đồ endpoint deploy line check-in (`apps/hub-event/api`). */
+/** Bản đồ endpoint deploy line check-in (`apps/hub-checkin/api`). */
 export function writeCheckinApiEndpointsMd() {
   writeApiEndpointsMd(CHECKIN_API, {
-    title: "API endpoints — @hub-event/api (`apps/hub-event/api`)",
+    title: "API endpoints — check-in API (`apps/hub-checkin/api`)",
     intro:
       "Deploy line check-in — controller/service AUTO-GENERATED từ `@workspace/api-server` + `api.app.config.json`. Native giữ tay: `public.controller.ts`, `system.module.ts`, `public-uploads.controller.ts`. Render: `pnpm api:render:checkin`.",
     verifyLine:
       "Verify: `pnpm verify:checkin-api` · `pnpm verify:main-api-endpoint-parity` (28 module vs `apps/main/api`) · `pnpm verify:api-contract`.",
     refreshCmd:
-      "pnpm api:render:checkin && node script-system/graphify/graphify-update.cjs apps/hub-event/api",
+      "pnpm api:render:checkin && node script-system/graphify/graphify-update.cjs apps/hub-checkin/api",
     monorepoLinks: [
       "- Main dev API: [`../../main/api/.graphify/markdown/API_ENDPOINTS.md`](../../main/api/.graphify/markdown/API_ENDPOINTS.md)",
       "- Monorepo: [ROUTE_SURFACE.md](../../../../.graphify/markdown/ROUTE_SURFACE.md)",

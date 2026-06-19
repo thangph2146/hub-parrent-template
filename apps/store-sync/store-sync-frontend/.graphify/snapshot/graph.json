@@ -629,40 +629,21 @@
       "client": false
     },
     {
-      "id": "dir_src_app_admin_dang_ky",
-      "label": "dang-ky/",
-      "path": "src/app/admin/dang-ky",
+      "id": "dir_src_app_admin_dashboard",
+      "label": "dashboard/",
+      "path": "src/app/admin/dashboard",
       "color": "#ff9d00",
       "size": 22,
       "community": "src/app/admin",
       "type": "directory"
     },
     {
-      "id": "file_src_app_admin_dang_ky_page_tsx",
+      "id": "file_src_app_admin_dashboard_page_tsx",
       "label": "page.tsx",
-      "path": "src/app/admin/dang-ky/page.tsx",
+      "path": "src/app/admin/dashboard/page.tsx",
       "color": "#00ff41",
       "size": 14,
-      "community": "src/app/admin/dang-ky",
-      "type": "page",
-      "client": false
-    },
-    {
-      "id": "dir_src_app_admin_dang_nhap",
-      "label": "dang-nhap/",
-      "path": "src/app/admin/dang-nhap",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/app/admin",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_app_admin_dang_nhap_page_tsx",
-      "label": "page.tsx",
-      "path": "src/app/admin/dang-nhap/page.tsx",
-      "color": "#00ff41",
-      "size": 14,
-      "community": "src/app/admin/dang-nhap",
+      "community": "src/app/admin/dashboard",
       "type": "page",
       "client": false
     },
@@ -818,6 +799,25 @@
       "size": 20,
       "community": "src/app/admin",
       "type": "layout",
+      "client": false
+    },
+    {
+      "id": "dir_src_app_admin_login",
+      "label": "login/",
+      "path": "src/app/admin/login",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_login_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/login/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/login",
+      "type": "page",
       "client": false
     },
     {
@@ -1136,6 +1136,25 @@
       "client": false
     },
     {
+      "id": "dir_src_app_admin_register",
+      "label": "register/",
+      "path": "src/app/admin/register",
+      "color": "#ff9d00",
+      "size": 22,
+      "community": "src/app/admin",
+      "type": "directory"
+    },
+    {
+      "id": "file_src_app_admin_register_page_tsx",
+      "label": "page.tsx",
+      "path": "src/app/admin/register/page.tsx",
+      "color": "#00ff41",
+      "size": 14,
+      "community": "src/app/admin/register",
+      "type": "page",
+      "client": false
+    },
+    {
       "id": "dir_src_app_admin_seo_metas",
       "label": "seo-metas/",
       "path": "src/app/admin/seo-metas",
@@ -1363,25 +1382,6 @@
       "color": "#00ff41",
       "size": 14,
       "community": "src/app/admin/staff/[id]",
-      "type": "page",
-      "client": false
-    },
-    {
-      "id": "dir_src_app_admin_tong_quan",
-      "label": "tong-quan/",
-      "path": "src/app/admin/tong-quan",
-      "color": "#ff9d00",
-      "size": 22,
-      "community": "src/app/admin",
-      "type": "directory"
-    },
-    {
-      "id": "file_src_app_admin_tong_quan_page_tsx",
-      "label": "page.tsx",
-      "path": "src/app/admin/tong-quan/page.tsx",
-      "color": "#00ff41",
-      "size": 14,
-      "community": "src/app/admin/tong-quan",
       "type": "page",
       "client": false
     },
@@ -2885,22 +2885,12 @@
     },
     {
       "source": "dir_src_app_admin",
-      "target": "dir_src_app_admin_dang_ky",
+      "target": "dir_src_app_admin_dashboard",
       "relation": "contains"
     },
     {
-      "source": "dir_src_app_admin_dang_ky",
-      "target": "file_src_app_admin_dang_ky_page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_admin",
-      "target": "dir_src_app_admin_dang_nhap",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_admin_dang_nhap",
-      "target": "file_src_app_admin_dang_nhap_page_tsx",
+      "source": "dir_src_app_admin_dashboard",
+      "target": "file_src_app_admin_dashboard_page_tsx",
       "relation": "contains"
     },
     {
@@ -2981,6 +2971,16 @@
     {
       "source": "dir_src_app_admin",
       "target": "file_src_app_admin_layout_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_login",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_login",
+      "target": "file_src_app_admin_login_page_tsx",
       "relation": "contains"
     },
     {
@@ -3150,6 +3150,16 @@
     },
     {
       "source": "dir_src_app_admin",
+      "target": "dir_src_app_admin_register",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin_register",
+      "target": "file_src_app_admin_register_page_tsx",
+      "relation": "contains"
+    },
+    {
+      "source": "dir_src_app_admin",
       "target": "dir_src_app_admin_seo_metas",
       "relation": "contains"
     },
@@ -3266,16 +3276,6 @@
     {
       "source": "dir_src_app_admin_staff__id_",
       "target": "file_src_app_admin_staff__id__page_tsx",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_admin",
-      "target": "dir_src_app_admin_tong_quan",
-      "relation": "contains"
-    },
-    {
-      "source": "dir_src_app_admin_tong_quan",
-      "target": "file_src_app_admin_tong_quan_page_tsx",
       "relation": "contains"
     },
     {
@@ -4169,16 +4169,6 @@
       "relation": "imports"
     },
     {
-      "source": "file_src_app_admin_dang_ky_page_tsx",
-      "target": "file_src_features_admin_auth_register_form_tsx",
-      "relation": "imports"
-    },
-    {
-      "source": "file_src_app_admin_dang_nhap_page_tsx",
-      "target": "file_src_features_admin_auth_sign_in_form_tsx",
-      "relation": "imports"
-    },
-    {
       "source": "file_src_app_admin_layout_tsx",
       "target": "file_src_providers_admin_query_provider_tsx",
       "relation": "imports"
@@ -4199,8 +4189,18 @@
       "relation": "imports"
     },
     {
+      "source": "file_src_app_admin_login_page_tsx",
+      "target": "file_src_features_admin_auth_sign_in_form_tsx",
+      "relation": "imports"
+    },
+    {
       "source": "file_src_app_admin_page_tsx",
       "target": "file_src_config_admin_store_admin_access_ts",
+      "relation": "imports"
+    },
+    {
+      "source": "file_src_app_admin_register_page_tsx",
+      "target": "file_src_features_admin_auth_register_form_tsx",
       "relation": "imports"
     },
     {

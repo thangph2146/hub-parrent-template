@@ -24,7 +24,7 @@ function resolveTsxCli() {
     if (fs.existsSync(cli)) return cli
   }
   throw new Error(
-    "[load-admin-menu-items] thiếu tsx — chạy pnpm install (root hoặc @hub-event/api)",
+    "[load-admin-menu-items] thiếu tsx — chạy pnpm install (root hoặc @hub-checkin/api)",
   )
 }
 

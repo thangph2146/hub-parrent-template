@@ -10,7 +10,21 @@
   },
   "inheritPaths": [
     "packages",
-    "script-system",
+    "script-system/admin",
+    "script-system/db",
+    "script-system/dev",
+    "script-system/env",
+    "script-system/git",
+    "script-system/lib",
+    "script-system/README.md",
+    "script-system/sync/lib",
+    "script-system/sync/downstream-sync-profile.cjs",
+    "script-system/sync/post-pull-downstream.cjs",
+    "script-system/sync/pull-template.cjs",
+    "script-system/sync/sync-checkin-menu-tree.cjs",
+    "script-system/sync/sync-checkin-packages.cjs",
+    "script-system/sync/sync-parent.cjs",
+    "script-system/verify",
     "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
@@ -18,13 +32,13 @@
     "docs/ui-pattern",
     "docs/env",
     "docs/steps",
-    "docs/TEMPLATE_MONOREPO.md",
-    ".graphify",
-    "packages/.graphify"
+    "docs/TEMPLATE_MONOREPO.md"
   ],
   "inheritRootFiles": [
+    ".gitignore",
     "turbo.json",
     "AGENTS.md",
+    "apps/README.md",
     "packages/README.md"
   ],
   "keepPaths": [

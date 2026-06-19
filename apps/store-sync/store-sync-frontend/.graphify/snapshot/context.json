@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-15T03:40:52.675Z",
-  "projectRoot": "D:/HUB/working/2026/hub-parrent-template/apps/store-sync/store-sync-frontend",
+  "generatedAt": "2026-06-19T01:42:22.785Z",
+  "projectRoot": "D:/HUB/working/2026/monorepo-template/apps/store-sync/store-sync-frontend",
   "summary": {
     "totalFiles": 189,
     "clientComponents": 52,
@@ -23,14 +23,14 @@
       "src/app/admin/categories/page.tsx",
       "src/app/admin/categories/[id]/edit/page.tsx",
       "src/app/admin/categories/[id]/page.tsx",
-      "src/app/admin/dang-ky/page.tsx",
-      "src/app/admin/dang-nhap/page.tsx",
+      "src/app/admin/dashboard/page.tsx",
       "src/app/admin/data/page.tsx",
       "src/app/admin/file-storage/page.tsx",
       "src/app/admin/guides/new/page.tsx",
       "src/app/admin/guides/page.tsx",
       "src/app/admin/guides/[id]/edit/page.tsx",
       "src/app/admin/guides/[id]/page.tsx",
+      "src/app/admin/login/page.tsx",
       "src/app/admin/orders/page.tsx",
       "src/app/admin/orders/[id]/edit/page.tsx",
       "src/app/admin/orders/[id]/page.tsx",
@@ -47,6 +47,7 @@
       "src/app/admin/rbac/page.tsx",
       "src/app/admin/rbac/[id]/edit/page.tsx",
       "src/app/admin/rbac/[id]/page.tsx",
+      "src/app/admin/register/page.tsx",
       "src/app/admin/seo-metas/new/page.tsx",
       "src/app/admin/seo-metas/page.tsx",
       "src/app/admin/seo-metas/[id]/edit/page.tsx",
@@ -56,7 +57,6 @@
       "src/app/admin/staff/page.tsx",
       "src/app/admin/staff/[id]/edit/page.tsx",
       "src/app/admin/staff/[id]/page.tsx",
-      "src/app/admin/tong-quan/page.tsx",
       "src/app/graph/page.tsx",
       "src/app/page.tsx",
       "src/app/store/orders/page.tsx",
@@ -760,35 +760,18 @@
       ],
       "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/categories/[id]/page\"\n"
     },
-    "src/app/admin/dang-ky/page.tsx": {
-      "id": "file_src_app_admin_dang_ky_page_tsx",
+    "src/app/admin/dashboard/page.tsx": {
+      "id": "file_src_app_admin_dashboard_page_tsx",
       "type": "page",
       "client": false,
       "exports": [
-        "StoreAdminRegisterPage"
+        "default"
       ],
-      "imports": [
-        "src/features/admin-auth/register-form.tsx"
-      ],
+      "imports": [],
       "importedBy": [
-        "src/app/admin/dang-ky"
+        "src/app/admin/dashboard"
       ],
-      "content": "import { RegisterForm } from \"@/features/admin-auth/register-form\"\r\n\r\nexport default function StoreAdminRegisterPage() {\r\n  return <RegisterForm />\r\n}\r\n"
-    },
-    "src/app/admin/dang-nhap/page.tsx": {
-      "id": "file_src_app_admin_dang_nhap_page_tsx",
-      "type": "page",
-      "client": false,
-      "exports": [
-        "StoreAdminLoginPage"
-      ],
-      "imports": [
-        "src/features/admin-auth/sign-in-form.tsx"
-      ],
-      "importedBy": [
-        "src/app/admin/dang-nhap"
-      ],
-      "content": "import { SignInForm } from \"@/features/admin-auth/sign-in-form\"\r\n\r\nexport default function StoreAdminLoginPage() {\r\n  return <SignInForm />\r\n}\r\n"
+      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/dashboard/page\"\n"
     },
     "src/app/admin/data/page.tsx": {
       "id": "file_src_app_admin_data_page_tsx",
@@ -925,6 +908,21 @@
         "src/app/admin"
       ],
       "content": "import { QueryProvider } from \"@/providers/admin/query-provider\"\r\nimport { AuthProvider } from \"@/providers/admin/auth-provider\"\r\nimport { StoreAdminLayoutProvider } from \"@/providers/admin/store-admin-layout\"\r\nimport { AdminRuntimeBridge } from \"./admin-runtime-bridge\"\r\n\r\nexport default function StoreAdminLayout({\r\n  children,\r\n}: Readonly<{\r\n  children: React.ReactNode\r\n}>) {\r\n  return (\r\n    <QueryProvider>\r\n      <AuthProvider>\r\n        <AdminRuntimeBridge>\r\n          <StoreAdminLayoutProvider>{children}</StoreAdminLayoutProvider>\r\n        </AdminRuntimeBridge>\r\n      </AuthProvider>\r\n    </QueryProvider>\r\n  )\r\n}\r\n"
+    },
+    "src/app/admin/login/page.tsx": {
+      "id": "file_src_app_admin_login_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminLoginPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/sign-in-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/login"
+      ],
+      "content": "import { SignInForm } from \"@/features/admin-auth/sign-in-form\"\r\n\r\nexport default function StoreAdminLoginPage() {\r\n  return <SignInForm />\r\n}\r\n"
     },
     "src/app/admin/orders/page.tsx": {
       "id": "file_src_app_admin_orders_page_tsx",
@@ -1163,6 +1161,21 @@
       ],
       "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/rbac/[id]/page\"\n"
     },
+    "src/app/admin/register/page.tsx": {
+      "id": "file_src_app_admin_register_page_tsx",
+      "type": "page",
+      "client": false,
+      "exports": [
+        "StoreAdminRegisterPage"
+      ],
+      "imports": [
+        "src/features/admin-auth/register-form.tsx"
+      ],
+      "importedBy": [
+        "src/app/admin/register"
+      ],
+      "content": "import { RegisterForm } from \"@/features/admin-auth/register-form\"\r\n\r\nexport default function StoreAdminRegisterPage() {\r\n  return <RegisterForm />\r\n}\r\n"
+    },
     "src/app/admin/seo-metas/new/loading.tsx": {
       "id": "file_src_app_admin_seo_metas_new_loading_tsx",
       "type": "loading",
@@ -1357,19 +1370,6 @@
         "src/app/admin/staff/[id]"
       ],
       "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/staff/[id]/page\"\n"
-    },
-    "src/app/admin/tong-quan/page.tsx": {
-      "id": "file_src_app_admin_tong_quan_page_tsx",
-      "type": "page",
-      "client": false,
-      "exports": [
-        "default"
-      ],
-      "imports": [],
-      "importedBy": [
-        "src/app/admin/tong-quan"
-      ],
-      "content": "/** AUTO-GENERATED — chạy pnpm admin:generate */\nexport { default } from \"@workspace/admin-app/modules/dashboard/page\"\n"
     },
     "src/app/api/graphify/route.ts": {
       "id": "file_src_app_api_graphify_route_ts",
@@ -2208,7 +2208,7 @@
         "src/config/admin",
         "src/providers/admin/store-admin-layout.tsx"
       ],
-      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\"\r\nimport { STORE_ADMIN_MENU_TREE } from \"@/config/admin/store-admin-menu-tree\"\r\nimport {\r\n  STORE_ADMIN_HOME_PATH,\r\n  STORE_ADMIN_LOGIN_PATH,\r\n  STORE_ADMIN_PROFILE_PATH,\r\n  canAccessStoreAdmin,\r\n} from \"@/config/admin/store-admin-access\"\r\nimport { ADMIN_SESSION_EVENT, clearAdminSession } from \"@/lib/admin/auth-session\"\r\nimport { isStoreAdminAuthPath } from \"@/lib/admin/auth-routes\"\r\n\r\nexport const STORE_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_ADMIN_MENU_TREE,\r\n  loginPath: STORE_ADMIN_LOGIN_PATH,\r\n  isAuthPath: isStoreAdminAuthPath,\r\n  canAccessApp: canAccessStoreAdmin,\r\n  clearSession: clearAdminSession,\r\n  sessionEventName: ADMIN_SESSION_EVENT,\r\n  mobileHeaderTitle: \"StoreSync Admin\",\r\n  homePath: STORE_ADMIN_HOME_PATH,\r\n  profilePath: STORE_ADMIN_PROFILE_PATH,\r\n  publicSitePath: \"/\",\r\n  publicSiteLabel: \"Trang chủ B2B\",\r\n}\r\n"
+      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\"\r\nimport { STORE_ADMIN_MENU_TREE } from \"@/config/admin/store-admin-menu-tree\"\r\nimport {\r\n  STORE_ADMIN_HOME_PATH,\r\n  STORE_ADMIN_LOGIN_PATH,\r\n  STORE_ADMIN_PROFILE_PATH,\r\n  STORE_ADMIN_REGISTER_PATH,\r\n  canAccessStoreAdmin,\r\n} from \"@/config/admin/store-admin-access\"\r\nimport { ADMIN_SESSION_EVENT, clearAdminSession } from \"@/lib/admin/auth-session\"\r\nimport { isStoreAdminAuthPath } from \"@/lib/admin/auth-routes\"\r\n\r\nexport const STORE_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_ADMIN_MENU_TREE,\r\n  loginPath: STORE_ADMIN_LOGIN_PATH,\r\n  registerPath: STORE_ADMIN_REGISTER_PATH,\r\n  isAuthPath: isStoreAdminAuthPath,\r\n  canAccessApp: canAccessStoreAdmin,\r\n  clearSession: clearAdminSession,\r\n  sessionEventName: ADMIN_SESSION_EVENT,\r\n  mobileHeaderTitle: \"StoreSync Admin\",\r\n  homePath: STORE_ADMIN_HOME_PATH,\r\n  profilePath: STORE_ADMIN_PROFILE_PATH,\r\n  publicSitePath: \"/\",\r\n  publicSiteLabel: \"Trang chủ B2B\",\r\n}\r\n"
     },
     "src/config/admin/store-admin-menu-tree.tsx": {
       "id": "file_src_config_admin_store_admin_menu_tree_tsx",
@@ -2245,7 +2245,7 @@
         "src/app/store/page.tsx",
         "src/providers/store-portal-layout.tsx"
       ],
-      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\";\r\nimport type { AuthUser } from \"@workspace/api-client\";\r\nimport { isStoreAuthPath } from \"@/lib/auth-routes\";\r\nimport {\r\n  STORE_SESSION_EVENT,\r\n  STORE_SESSION_STORAGE_KEY,\r\n} from \"@/lib/store-auth\";\r\nimport { STORE_PORTAL_MENU_TREE } from \"./store-portal-menu-tree\";\r\n\r\nexport const STORE_PORTAL_HOME = \"/store/orders\";\r\n\r\nexport function canAccessStorePortal(user: AuthUser): boolean {\r\n  return typeof user?.id === \"number\" && Number.isFinite(user.id) && user.id > 0;\r\n}\r\n\r\nexport function clearStorePortalSession(): void {\r\n  if (typeof window === \"undefined\") return;\r\n  localStorage.removeItem(STORE_SESSION_STORAGE_KEY);\r\n}\r\n\r\n/** Cấu hình layout admin shell cho cổng cửa hàng. */\r\nexport const STORE_PORTAL_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_PORTAL_MENU_TREE,\r\n  loginPath: \"/login\",\r\n  isAuthPath: isStoreAuthPath,\r\n  canAccessApp: canAccessStorePortal,\r\n  clearSession: clearStorePortalSession,\r\n  sessionEventName: STORE_SESSION_EVENT,\r\n  mobileHeaderTitle: \"Cửa hàng\",\r\n  homePath: STORE_PORTAL_HOME,\r\n  profilePath: \"/store/profile\",\r\n  accessDeniedReason: \"store_denied\",\r\n};\r\n"
+      "content": "import type { AdminLayoutStaticConfig } from \"@ui/components/admin\";\r\nimport type { AuthUser } from \"@workspace/api-client\";\r\nimport { isStoreAuthPath } from \"@/lib/auth-routes\";\r\nimport {\r\n  STORE_SESSION_EVENT,\r\n  STORE_SESSION_STORAGE_KEY,\r\n} from \"@/lib/store-auth\";\r\nimport { STORE_PORTAL_MENU_TREE } from \"./store-portal-menu-tree\";\r\n\r\nexport const STORE_PORTAL_HOME = \"/store/orders\";\r\n\r\nexport function canAccessStorePortal(user: AuthUser): boolean {\r\n  return typeof user?.id === \"number\" && Number.isFinite(user.id) && user.id > 0;\r\n}\r\n\r\nexport function clearStorePortalSession(): void {\r\n  if (typeof window === \"undefined\") return;\r\n  localStorage.removeItem(STORE_SESSION_STORAGE_KEY);\r\n}\r\n\r\n/** Cấu hình layout admin shell cho cổng cửa hàng. */\r\nexport const STORE_PORTAL_LAYOUT_STATIC: AdminLayoutStaticConfig = {\r\n  menuTree: STORE_PORTAL_MENU_TREE,\r\n  loginPath: \"/login\",\r\n  registerPath: \"/register\",\r\n  isAuthPath: isStoreAuthPath,\r\n  canAccessApp: canAccessStorePortal,\r\n  clearSession: clearStorePortalSession,\r\n  sessionEventName: STORE_SESSION_EVENT,\r\n  mobileHeaderTitle: \"Cửa hàng\",\r\n  homePath: STORE_PORTAL_HOME,\r\n  profilePath: \"/store/profile\",\r\n  accessDeniedReason: \"store_denied\",\r\n};\r\n"
     },
     "src/config/store-portal-menu-tree.tsx": {
       "id": "file_src_config_store_portal_menu_tree_tsx",
@@ -2287,7 +2287,7 @@
       ],
       "importedBy": [
         "src/features/admin-auth",
-        "src/app/admin/dang-ky/page.tsx"
+        "src/app/admin/register/page.tsx"
       ],
       "content": "\"use client\"\r\n\r\nimport { AUTH_LOGIN_PATH } from \"@/lib/admin/auth-routes\"\r\nimport { AdminRegisterForm } from \"@workspace/admin-app/modules/auth/_component/register-form\"\r\n\r\nexport function RegisterForm() {\r\n  return <AdminRegisterForm config={{ loginPath: AUTH_LOGIN_PATH }} />\r\n}\r\n"
     },
@@ -2304,7 +2304,7 @@
       ],
       "importedBy": [
         "src/features/admin-auth",
-        "src/app/admin/dang-nhap/page.tsx"
+        "src/app/admin/login/page.tsx"
       ],
       "content": "\"use client\"\r\n\r\nimport { canAccessStoreAdmin } from \"@/config/admin/store-admin-access\"\r\nimport { STORE_ADMIN_HOME_PATH } from \"@/config/admin/store-admin-access\"\r\nimport { useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport {\r\n  AdminSignInForm,\r\n  type AdminSignInFormConfig,\r\n} from \"@workspace/admin-app/modules/auth/_component/sign-in-form\"\r\n\r\nconst STORE_ADMIN_SIGN_IN_CONFIG: AdminSignInFormConfig = {\r\n  canAccessAdmin: canAccessStoreAdmin,\r\n  homePath: STORE_ADMIN_HOME_PATH,\r\n  staffOnlyMessage:\r\n    \"Tài khoản không có quyền quản trị cửa hàng (dashboard / products / orders).\",\r\n  staffOnlyDevMessage:\r\n    \"Tài khoản development không có quyền quản trị store.\",\r\n  staffOnlyGoogleMessage:\r\n    \"Tài khoản không có quyền quản trị cửa hàng B2B.\",\r\n}\r\n\r\nexport function SignInForm() {\r\n  const clientReady = useClientReady()\r\n\r\n  return (\r\n    <AdminSignInForm\r\n      config={STORE_ADMIN_SIGN_IN_CONFIG}\r\n      loginLock={clientReady ? { ok: true as const } : { ok: true as const }}\r\n    />\r\n  )\r\n}\r\n"
     },
@@ -2724,7 +2724,7 @@
       "importedBy": [
         "src/lib/admin"
       ],
-      "content": "import { resolveStorageFolderSlugPath } from \"@workspace/api-client\"\r\nimport {\r\n  createStorageFolder,\r\n  fetchStorageFolders,\r\n  type FolderItem,\r\n} from \"@workspace/admin-app/lib/admin-uploads\"\r\nimport { resolveFolderPathAfterCreate } from \"@workspace/admin-app/modules/file-storage/_component/utils\"\r\nimport {\r\n  extensionsFromGroupIds,\r\n  getRealmDefaultGroupIds,\r\n} from \"@workspace/admin-app/modules/file-storage/_component/storage-upload-policy\"\r\n\r\nexport const PRODUCT_IMAGE_PARENT_LABEL = \"Sản phẩm\"\r\nexport const PRODUCT_IMAGE_PARENT_SLUG = \"san-pham\"\r\n\r\nexport type ProductImageUploadInput = {\r\n  productName?: string\r\n  productSlug?: string\r\n  productSku?: string\r\n}\r\n\r\nexport type ProductImageUploadContext = {\r\n  productName: string\r\n  productSlug: string\r\n  productSku?: string\r\n  folderLabel: string\r\n}\r\n\r\nfunction leafSlugFromText(input: string): string {\r\n  const from = resolveStorageFolderSlugPath(input.trim())\r\n  if (!from?.slugPath) return \"\"\r\n  const parts = from.slugPath.split(\"/\").filter(Boolean)\r\n  return parts[parts.length - 1] ?? \"\"\r\n}\r\n\r\nexport function resolveProductImageSlug(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): string {\r\n  const explicit = productSlug?.trim()\r\n  if (explicit) return explicit\r\n\r\n  const fromName = leafSlugFromText(productName)\r\n  if (fromName) return fromName\r\n\r\n  return leafSlugFromText(productSku ?? \"\")\r\n}\r\n\r\nexport function buildProductImageUploadContext(\r\n  input: ProductImageUploadInput,\r\n): ProductImageUploadContext | null {\r\n  const name = input.productName?.trim() ?? \"\"\r\n  const sku = input.productSku?.trim() ?? \"\"\r\n  const folderLabel = name || sku\r\n  const slug = resolveProductImageSlug(name, input.productSlug, sku)\r\n\r\n  if (!folderLabel || !slug) return null\r\n\r\n  return {\r\n    productName: name || folderLabel,\r\n    productSlug: slug,\r\n    productSku: sku || undefined,\r\n    folderLabel,\r\n  }\r\n}\r\n\r\nexport function resolveProductImageFolderNav(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): { navPath: string; slug: string; label: string } | null {\r\n  const ctx = buildProductImageUploadContext({\r\n    productName,\r\n    productSlug,\r\n    productSku,\r\n  })\r\n  if (!ctx) return null\r\n  return {\r\n    navPath: `${PRODUCT_IMAGE_PARENT_SLUG}/${ctx.productSlug}`,\r\n    slug: ctx.productSlug,\r\n    label: ctx.folderLabel,\r\n  }\r\n}\r\n\r\nfunction folderNavPath(folder: FolderItem): string {\r\n  return resolveFolderPathAfterCreate(folder.path.replace(/\\\\/g, \"/\"), \"images\")\r\n}\r\n\r\nexport function folderMatchesProductImage(\r\n  folder: FolderItem,\r\n  slug: string,\r\n): boolean {\r\n  const nav = folderNavPath(folder)\r\n  if (nav === `${PRODUCT_IMAGE_PARENT_SLUG}/${slug}`) return true\r\n  if (!nav.startsWith(`${PRODUCT_IMAGE_PARENT_SLUG}/`)) return false\r\n  const leaf = nav.split(\"/\").pop()\r\n  return leaf === slug\r\n}\r\n\r\nexport function findProductImageFolder(\r\n  folders: FolderItem[],\r\n  input: ProductImageUploadInput,\r\n): { navPath: string; uploadFolderPath: string } | null {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) return null\r\n  const match = folders.find((folder) =>\r\n    folderMatchesProductImage(folder, resolved.slug),\r\n  )\r\n  if (!match) return null\r\n  const navPath = folderNavPath(match)\r\n  return { navPath, uploadFolderPath: navPath }\r\n}\r\n\r\nasync function ensureProductImageParentFolder(\r\n  folders: FolderItem[],\r\n): Promise<void> {\r\n  const parentExists = folders.some((folder) => {\r\n    const nav = folderNavPath(folder)\r\n    return nav === PRODUCT_IMAGE_PARENT_SLUG\r\n  })\r\n  if (parentExists) return\r\n\r\n  await createStorageFolder({\r\n    folderName: PRODUCT_IMAGE_PARENT_LABEL,\r\n    parentPath: \"images\",\r\n    resourceType: \"images\",\r\n    allowedExtensions: extensionsFromGroupIds(\r\n      \"images\",\r\n      getRealmDefaultGroupIds(\"images\"),\r\n    ),\r\n  })\r\n}\r\n\r\nexport async function ensureProductImageFolder(\r\n  input: ProductImageUploadInput,\r\n): Promise<{ navPath: string; uploadFolderPath: string; created: boolean }> {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) {\r\n    throw new Error(\r\n      \"Nhập tên hoặc SKU sản phẩm ở form — hệ thống cần tạo slug folder lưu ảnh\",\r\n    )\r\n  }\r\n\r\n  let folders = await fetchStorageFolders()\r\n  const existing = findProductImageFolder(folders, input)\r\n  if (existing) {\r\n    return { ...existing, created: false }\r\n  }\r\n\r\n  await ensureProductImageParentFolder(folders)\r\n  folders = await fetchStorageFolders()\r\n\r\n  const parentFolder = folders.find(\r\n    (folder) => folderNavPath(folder) === PRODUCT_IMAGE_PARENT_SLUG,\r\n  )\r\n  const parentDisk =\r\n    parentFolder?.path.replace(/\\\\/g, \"/\") ??\r\n    `images/${PRODUCT_IMAGE_PARENT_SLUG}`\r\n\r\n  const created = await createStorageFolder({\r\n    folderName: resolved.label,\r\n    parentPath: parentDisk,\r\n    resourceType: \"images\",\r\n  })\r\n\r\n  const navPath = resolveFolderPathAfterCreate(created.folderPath, \"images\")\r\n  return {\r\n    navPath,\r\n    uploadFolderPath: navPath,\r\n    created: true,\r\n  }\r\n}\r\n"
+      "content": "import { resolveStorageFolderSlugPath } from \"@workspace/api-client\"\r\nimport {\r\n  createStorageFolder,\r\n  fetchStorageFolders,\r\n  type FolderItem,\r\n} from \"@workspace/admin-app/lib/admin-uploads\"\r\nimport {\r\n  extensionsFromGroupIds,\r\n  getRealmDefaultGroupIds,\r\n  resolveFolderPathAfterCreate,\r\n} from \"@workspace/admin-app/modules/file-storage/_component\"\r\n\r\nexport const PRODUCT_IMAGE_PARENT_LABEL = \"Sản phẩm\"\r\nexport const PRODUCT_IMAGE_PARENT_SLUG = \"san-pham\"\r\n\r\nexport type ProductImageUploadInput = {\r\n  productName?: string\r\n  productSlug?: string\r\n  productSku?: string\r\n}\r\n\r\nexport type ProductImageUploadContext = {\r\n  productName: string\r\n  productSlug: string\r\n  productSku?: string\r\n  folderLabel: string\r\n}\r\n\r\nfunction leafSlugFromText(input: string): string {\r\n  const from = resolveStorageFolderSlugPath(input.trim())\r\n  if (!from?.slugPath) return \"\"\r\n  const parts = from.slugPath.split(\"/\").filter(Boolean)\r\n  return parts[parts.length - 1] ?? \"\"\r\n}\r\n\r\nexport function resolveProductImageSlug(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): string {\r\n  const explicit = productSlug?.trim()\r\n  if (explicit) return explicit\r\n\r\n  const fromName = leafSlugFromText(productName)\r\n  if (fromName) return fromName\r\n\r\n  return leafSlugFromText(productSku ?? \"\")\r\n}\r\n\r\nexport function buildProductImageUploadContext(\r\n  input: ProductImageUploadInput,\r\n): ProductImageUploadContext | null {\r\n  const name = input.productName?.trim() ?? \"\"\r\n  const sku = input.productSku?.trim() ?? \"\"\r\n  const folderLabel = name || sku\r\n  const slug = resolveProductImageSlug(name, input.productSlug, sku)\r\n\r\n  if (!folderLabel || !slug) return null\r\n\r\n  return {\r\n    productName: name || folderLabel,\r\n    productSlug: slug,\r\n    productSku: sku || undefined,\r\n    folderLabel,\r\n  }\r\n}\r\n\r\nexport function resolveProductImageFolderNav(\r\n  productName: string,\r\n  productSlug?: string,\r\n  productSku?: string,\r\n): { navPath: string; slug: string; label: string } | null {\r\n  const ctx = buildProductImageUploadContext({\r\n    productName,\r\n    productSlug,\r\n    productSku,\r\n  })\r\n  if (!ctx) return null\r\n  return {\r\n    navPath: `${PRODUCT_IMAGE_PARENT_SLUG}/${ctx.productSlug}`,\r\n    slug: ctx.productSlug,\r\n    label: ctx.folderLabel,\r\n  }\r\n}\r\n\r\nfunction folderNavPath(folder: FolderItem): string {\r\n  return resolveFolderPathAfterCreate(folder.path.replace(/\\\\/g, \"/\"), \"images\")\r\n}\r\n\r\nexport function folderMatchesProductImage(\r\n  folder: FolderItem,\r\n  slug: string,\r\n): boolean {\r\n  const nav = folderNavPath(folder)\r\n  if (nav === `${PRODUCT_IMAGE_PARENT_SLUG}/${slug}`) return true\r\n  if (!nav.startsWith(`${PRODUCT_IMAGE_PARENT_SLUG}/`)) return false\r\n  const leaf = nav.split(\"/\").pop()\r\n  return leaf === slug\r\n}\r\n\r\nexport function findProductImageFolder(\r\n  folders: FolderItem[],\r\n  input: ProductImageUploadInput,\r\n): { navPath: string; uploadFolderPath: string } | null {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) return null\r\n  const match = folders.find((folder) =>\r\n    folderMatchesProductImage(folder, resolved.slug),\r\n  )\r\n  if (!match) return null\r\n  const navPath = folderNavPath(match)\r\n  return { navPath, uploadFolderPath: navPath }\r\n}\r\n\r\nasync function ensureProductImageParentFolder(\r\n  folders: FolderItem[],\r\n): Promise<void> {\r\n  const parentExists = folders.some((folder) => {\r\n    const nav = folderNavPath(folder)\r\n    return nav === PRODUCT_IMAGE_PARENT_SLUG\r\n  })\r\n  if (parentExists) return\r\n\r\n  await createStorageFolder({\r\n    folderName: PRODUCT_IMAGE_PARENT_LABEL,\r\n    parentPath: \"images\",\r\n    resourceType: \"images\",\r\n    allowedExtensions: extensionsFromGroupIds(\r\n      \"images\",\r\n      getRealmDefaultGroupIds(\"images\"),\r\n    ),\r\n  })\r\n}\r\n\r\nexport async function ensureProductImageFolder(\r\n  input: ProductImageUploadInput,\r\n): Promise<{ navPath: string; uploadFolderPath: string; created: boolean }> {\r\n  const resolved = resolveProductImageFolderNav(\r\n    input.productName ?? \"\",\r\n    input.productSlug,\r\n    input.productSku,\r\n  )\r\n  if (!resolved) {\r\n    throw new Error(\r\n      \"Nhập tên hoặc SKU sản phẩm ở form — hệ thống cần tạo slug folder lưu ảnh\",\r\n    )\r\n  }\r\n\r\n  let folders = await fetchStorageFolders()\r\n  const existing = findProductImageFolder(folders, input)\r\n  if (existing) {\r\n    return { ...existing, created: false }\r\n  }\r\n\r\n  await ensureProductImageParentFolder(folders)\r\n  folders = await fetchStorageFolders()\r\n\r\n  const parentFolder = folders.find(\r\n    (folder) => folderNavPath(folder) === PRODUCT_IMAGE_PARENT_SLUG,\r\n  )\r\n  const parentDisk =\r\n    parentFolder?.path.replace(/\\\\/g, \"/\") ??\r\n    `images/${PRODUCT_IMAGE_PARENT_SLUG}`\r\n\r\n  const created = await createStorageFolder({\r\n    folderName: resolved.label,\r\n    parentPath: parentDisk,\r\n    resourceType: \"images\",\r\n  })\r\n\r\n  const navPath = resolveFolderPathAfterCreate(created.folderPath, \"images\")\r\n  return {\r\n    navPath,\r\n    uploadFolderPath: navPath,\r\n    created: true,\r\n  }\r\n}\r\n"
     },
     "src/lib/api.ts": {
       "id": "file_src_lib_api_ts",
@@ -3089,7 +3089,7 @@
         "src/providers/admin",
         "src/app/admin/layout.tsx"
       ],
-      "content": "\"use client\"\r\n\r\nimport { useEffect, useMemo, type ReactNode } from \"react\"\r\nimport {\r\n  ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n  ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n  ADMIN_SITE_SEO_PAGE_KEY,\r\n  AdminLayoutBridge,\r\n  buildAdminLayoutValue,\r\n  useAdminDocumentHeadOverride,\r\n  useAdminDocumentTitle,\r\n  useAdminSiteBranding,\r\n  useAdminPublicSiteSeo,\r\n} from \"@ui/components/admin\"\r\nimport { api } from \"@/lib/admin/api\"\r\nimport { STORE_ADMIN_LAYOUT_STATIC } from \"@/config/admin/store-admin-layout-static\"\r\nimport { AdminRealtimeSync } from \"@/providers/admin/admin-realtime-sync\"\r\nimport { useAuth, useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport { syncAdminSessionIfCurrentUser } from \"@/lib/admin/auth-session\"\r\n\r\nexport function StoreAdminLayoutProvider({\r\n  children,\r\n}: {\r\n  children: ReactNode\r\n}) {\r\n  const clientReady = useClientReady()\r\n  const { user, logout } = useAuth()\r\n\r\n  useEffect(() => {\r\n    if (!clientReady || user?.id == null) return\r\n    void syncAdminSessionIfCurrentUser(user.id)\r\n  }, [clientReady, user?.id])\r\n\r\n  const branding = useAdminSiteBranding({\r\n    queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n    fetchBranding: ({ signal }) => api.settings.getPublicBranding({ signal }),\r\n  })\r\n\r\n  const siteSeo = useAdminPublicSiteSeo({\r\n    queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n    page: ADMIN_SITE_SEO_PAGE_KEY,\r\n    fetchSiteSeo: ({ signal, page }) =>\r\n      api.seoMetas.getPublicByPage(page, { signal }),\r\n  })\r\n\r\n  const documentHeadOverride = useAdminDocumentHeadOverride()\r\n\r\n  useAdminDocumentTitle({\r\n    siteName: documentHeadOverride?.siteName ?? branding.siteName,\r\n    siteDescription:\r\n      documentHeadOverride?.siteDescription ?? branding.siteDescription,\r\n    metaTitle:\r\n      documentHeadOverride?.metaTitle ??\r\n      (siteSeo.isReady ? siteSeo.data?.title : undefined),\r\n    metaDescription:\r\n      documentHeadOverride?.metaDescription ??\r\n      (siteSeo.isReady ? siteSeo.data?.description : undefined),\r\n    titleFallback: \"Quản trị StoreSync\",\r\n    descriptionFallback: \"Quản lý sản phẩm, đơn hàng và cửa hàng B2B\",\r\n  })\r\n\r\n  const value = useMemo(\r\n    () =>\r\n      buildAdminLayoutValue({\r\n        user: user ?? null,\r\n        clientReady,\r\n        logout,\r\n        branding,\r\n        static: STORE_ADMIN_LAYOUT_STATIC,\r\n      }),\r\n    [branding, clientReady, logout, user],\r\n  )\r\n\r\n  return (\r\n    <AdminLayoutBridge value={value}>\r\n      <AdminRealtimeSync />\r\n      {children}\r\n    </AdminLayoutBridge>\r\n  )\r\n}\r\n"
+      "content": "\"use client\"\r\n\r\nimport { useEffect, useMemo, type ReactNode } from \"react\"\r\nimport {\r\n  ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n  ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n  ADMIN_SITE_SEO_PAGE_KEY,\r\n  AdminLayoutBridge,\r\n  buildAdminLayoutValue,\r\n  useAdminDocumentHeadOverride,\r\n  useAdminDocumentTitle,\r\n  useAdminSiteBranding,\r\n  useAdminPublicSiteSeo,\r\n} from \"@ui/components/admin\"\r\nimport { api } from \"@/lib/admin/api\"\r\nimport { STORE_ADMIN_LAYOUT_STATIC } from \"@/config/admin/store-admin-layout-static\"\r\nimport { AdminRealtimeSync } from \"@/providers/admin/admin-realtime-sync\"\r\nimport { useAuth, useClientReady } from \"@/providers/admin/auth-provider\"\r\nimport { syncAdminSessionIfCurrentUser } from \"@/lib/admin/auth-session\"\r\n\r\nexport function StoreAdminLayoutProvider({\r\n  children,\r\n}: {\r\n  children: ReactNode\r\n}) {\r\n  const clientReady = useClientReady()\r\n  const { user, logout } = useAuth()\r\n\r\n  useEffect(() => {\r\n    if (!clientReady || user?.id == null) return\r\n    void syncAdminSessionIfCurrentUser(user.id)\r\n  }, [clientReady, user?.id])\r\n\r\n  const branding = useAdminSiteBranding({\r\n    queryKey: ADMIN_PUBLIC_BRANDING_QUERY_KEY,\r\n    fetchBranding: ({ signal }) => api.settings.getPublicBranding({ signal }),\r\n  })\r\n\r\n  const siteSeo = useAdminPublicSiteSeo({\r\n    queryKey: ADMIN_PUBLIC_SITE_SEO_QUERY_KEY,\r\n    page: ADMIN_SITE_SEO_PAGE_KEY,\r\n    fetchSiteSeo: ({ signal, page }) =>\r\n      api.seoMetas.getPublicByPage(page, { signal }),\r\n  })\r\n\r\n  const documentHeadOverride = useAdminDocumentHeadOverride()\r\n\r\n  useAdminDocumentTitle({\r\n    siteName: documentHeadOverride?.siteName ?? branding.siteName,\r\n    siteDescription:\r\n      documentHeadOverride?.siteDescription ?? branding.siteDescription,\r\n    metaTitle:\r\n      documentHeadOverride?.metaTitle ??\r\n      (siteSeo.isReady ? siteSeo.data?.title : undefined),\r\n    metaDescription:\r\n      documentHeadOverride?.metaDescription ??\r\n      (siteSeo.isReady ? siteSeo.data?.description : undefined),\r\n    titleFallback: \"Quản trị StoreSync\",\r\n    descriptionFallback: \"Quản lý sản phẩm, đơn hàng và cửa hàng B2B\",\r\n  })\r\n\r\n  const value = useMemo(\r\n    () =>\r\n      buildAdminLayoutValue({\r\n        user: user ?? null,\r\n        clientReady,\r\n        logout,\r\n        branding,\r\n        siteSeo,\r\n        static: STORE_ADMIN_LAYOUT_STATIC,\r\n      }),\r\n    [branding, clientReady, logout, siteSeo, user],\r\n  )\r\n\r\n  return (\r\n    <AdminLayoutBridge value={value}>\r\n      <AdminRealtimeSync />\r\n      {children}\r\n    </AdminLayoutBridge>\r\n  )\r\n}\r\n"
     },
     "src/providers/query-provider.tsx": {
       "id": "file_src_providers_query_provider_tsx",

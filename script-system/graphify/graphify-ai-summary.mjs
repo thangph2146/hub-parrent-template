@@ -22,7 +22,7 @@ const { PRODUCT_LINES } = require("../lib/monorepo-apps.cjs")
 
 const API_ENDPOINTS_APP_PATHS = new Set([
   PRODUCT_LINES.main.api.path,
-  PRODUCT_LINES["hub-event"].api.path,
+  PRODUCT_LINES["hub-checkin"].api.path,
 ])
 
 import {
@@ -1044,7 +1044,7 @@ function getMonorepoAiTopicGuideLines() {
     `| Cây \`src/\` một app | [\`../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md\`](../../${hubFrontend}/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | \`SUMMARY_FOR_AI.md\` cùng app |`,
     `| Quy mô graph, điểm nóng import | [\`../../${mainApi}/.graphify/markdown/GRAPH_STATS.md\`](../../${mainApi}/.graphify/markdown/GRAPH_STATS.md) | \`FOLDER_TREE.md\`, \`snapshot/context.json\` (khi cần) |`,
     `| **Endpoint Nest (@api main)** | [\`../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md\`](../../${mainApi}/.graphify/markdown/API_ENDPOINTS.md) | [\`ROUTE_SURFACE.md\`](ROUTE_SURFACE.md), \`pnpm verify:main-api-endpoint-parity\` |`,
-    `| **Endpoint Nest (check-in)** | [\`../../${PRODUCT_LINES["hub-event"].api.path}/.graphify/markdown/API_ENDPOINTS.md\`](../../${PRODUCT_LINES["hub-event"].api.path}/.graphify/markdown/API_ENDPOINTS.md) | \`pnpm api:render:checkin\`, \`pnpm verify:checkin-api\` |`,
+    `| **Endpoint Nest (check-in)** | [\`../../${PRODUCT_LINES["hub-checkin"].api.path}/.graphify/markdown/API_ENDPOINTS.md\`](../../${PRODUCT_LINES["hub-checkin"].api.path}/.graphify/markdown/API_ENDPOINTS.md) | \`pnpm api:render:checkin\`, \`pnpm verify:checkin-api\` |`,
     `| Domain Nest import lẫn nhau | [\`../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md\`](../../${mainApi}/.graphify/markdown/API_DOMAIN_IMPORTS.md) | \`GRAPH_STATS.md\`, bảng controller trong \`SUMMARY\` |`,
     "| Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |",
     `| UX storefront (Next công khai) | [\`../../docs/admin-pattern/FRONTEND_UX.md\`](../../docs/admin-pattern/FRONTEND_UX.md) | [\`../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md\`](../../${hubFrontend}/.graphify/markdown/SUMMARY_FOR_AI.md) |`,
@@ -1411,7 +1411,7 @@ function writeAppGraphifyReadme(app) {
   const monorepoRel = `${"../".repeat(app.path.split("/").length + 1)}`
   const isApi = isNestApiApp(app)
   const isMainApi = app.pkg === "@api"
-  const isCheckinApi = app.pkg === "@hub-event/api"
+  const isCheckinApi = app.pkg === "@hub-checkin/api"
   const hasApiEndpointsDoc = isMainApi || isCheckinApi
   const lines = [
     `# Graphify — \`${app.path}\``,

@@ -18,38 +18,32 @@ console.log(`[${PREFIX}] verify + admin (native hub-checkin/api — không sync-
 runStep(
   ROOT,
   "pnpm --filter @workspace/api-server run build",
-  "1/7 build @workspace/api-server",
+  "1/6 build @workspace/api-server",
   PREFIX,
 );
 runStep(
   ROOT,
   "node script-system/verify/verify-api-profile.cjs hub-checkin",
-  "2/7 verify API profile",
+  "2/6 verify API profile",
   PREFIX,
 );
 runStep(
   ROOT,
   "node script-system/admin/migrate-admin-modules.cjs",
-  "3/7 admin package migrate",
+  "3/6 admin package migrate",
   PREFIX,
 );
-runStep(ROOT, "pnpm admin:fix-package", "4/7 chuẩn hóa import package", PREFIX);
+runStep(ROOT, "pnpm admin:fix-package", "4/6 chuẩn hóa import package", PREFIX);
 runStep(
   ROOT,
-  "node script-system/admin/fix-package-post-migrate.cjs",
-  "5/7 normalize mutation + lib imports",
-  PREFIX,
-);
-runStep(
-  ROOT,
-  "node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-event-checkin-frontend --prune",
-  "6/7 generate route + menu check-in",
+  "node script-system/admin/generate-admin-routes.cjs apps/hub-checkin/hub-checkin-frontend --prune",
+  "5/6 generate route + menu check-in",
   PREFIX,
 );
 runStep(
   ROOT,
   "node script-system/verify/verify-checkin-admin-sync.cjs",
-  "7/7 verify admin check-in",
+  "6/6 verify admin check-in",
   PREFIX,
 );
 runStep(

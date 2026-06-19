@@ -10,14 +10,14 @@
 const fs = require("node:fs")
 const path = require("node:path")
 const { ROOT } = require("../lib/monorepo-root.cjs")
-const { ENV_STACKS, allEnvApps } = require("./manifest.cjs")
+const { ENV_STACKS, envAppsForCurrentRepo } = require("./manifest.cjs")
 
 const args = process.argv.slice(2)
 const force = args.includes("--force")
 const stackKey = args.find((a) => !a.startsWith("-")) ?? "all"
 
 function resolveApps(key) {
-  if (key === "all") return allEnvApps()
+  if (key === "all") return envAppsForCurrentRepo()
   const stack = ENV_STACKS[key]
   if (!stack) {
     console.error(
@@ -26,7 +26,7 @@ function resolveApps(key) {
     )
     process.exit(1)
   }
-  return stack.apps
+  return envAppsForCurrentRepo(key)
 }
 
 let created = 0

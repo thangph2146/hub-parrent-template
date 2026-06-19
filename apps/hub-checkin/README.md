@@ -1,6 +1,6 @@
-# hub-event — repo code chính (check-in)
+# hub-checkin — repo code chính (check-in)
 
-Line **`hub-event`** là **repo sản phẩm chính** trong mô hình template: full `packages/` + `apps/hub-event/` mỏng.
+Line **`hub-checkin`** là **repo sản phẩm chính** trong mô hình template: full `packages/` + `apps/hub-checkin/` mỏng.
 
 ## Compose từ packages
 
@@ -8,28 +8,28 @@ Line **`hub-event`** là **repo sản phẩm chính** trong mô hình template: 
 packages/admin-app  ──► admin CRUD, generate route
        │ uses: ui, api-client, query-client, editor, logger, site-config
        ▼
-apps/hub-event/hub-event-checkin-frontend  (native routes + admin.app.config)
+apps/hub-checkin/hub-checkin-frontend  (native routes + admin.app.config)
 
-packages/api-server ──► shared types / dev tooling (hub-event API = native copy đã commit)
+packages/api-server ──► shared types / dev tooling (hub-checkin API = native copy đã commit)
        ▼
-apps/hub-event/api  (native main-port từ main — commit, không regenerate khi pull)
+apps/hub-checkin/api  (native main-port từ main — commit, không regenerate khi pull)
 ```
 
-**Cập nhật API:** sửa `apps/main/api` → `pnpm api:render apps/hub-event/api --mode=native` → commit. **`pnpm pull:checkin`** chỉ verify + admin (không cần regenerate trên server).
+**Cập nhật API:** sửa `apps/main/api` → `pnpm api:render apps/hub-checkin/api --mode=native` → commit. **`pnpm pull:checkin`** chỉ verify + admin (không cần regenerate trên server).
 
 ## Dev
 
 | Mục đích | Lệnh |
 |----------|------|
-| **Repo chính (khuyến nghị)** | Clone `hub-event-monorepo` → `pnpm dev:checkin` |
+| **Repo chính (khuyến nghị)** | Clone `hub-checkin-monorepo` → `pnpm dev:checkin` |
 | Sandbox template upstream | `pnpm dev:main:checkin` (main API + check-in UI) |
-| Test stack hub-event | `pnpm dev:checkin` |
+| Test stack hub-checkin | `pnpm dev:checkin` |
 | Cập nhật packages (downstream) | `pnpm pull:template` |
 | Regenerate check-in (template upstream) | `pnpm pull:checkin` (verify + admin; API đã commit) |
 | Cập nhật API sau sửa main | `pnpm api:regenerate:checkin` → commit |
 | Verify | `pnpm test:checkin:full` |
 
-## API (`apps/hub-event/api`) — native committed
+## API (`apps/hub-checkin/api`) — native committed
 
 Logic nằm trong repo (`main-port` từ `apps/main/api`). **`materialize.committed: true`** — không generate lại khi `pull:checkin`.
 
@@ -40,9 +40,9 @@ pnpm verify:checkin-api
 pnpm verify:main-api-endpoint-parity
 ```
 
-**Quy trình dev (monorepo có main):** sửa `apps/main/api` → `pnpm api:regenerate:checkin` → commit `apps/hub-event/api`.
+**Quy trình dev (monorepo có main):** sửa `apps/main/api` → `pnpm api:regenerate:checkin` → commit `apps/hub-checkin/api`.
 
-## Frontend (`hub-event-checkin-frontend`)
+## Frontend (`hub-checkin-frontend`)
 
 **Admin:** `@workspace/admin-app` + `admin.app.config.json`:
 
@@ -59,7 +59,7 @@ pnpm verify:checkin-admin
 ## Bootstrap repo mới
 
 ```bash
-pnpm init:downstream hub-event ../hub-event-monorepo
+pnpm init:downstream hub-checkin ../hub-checkin-monorepo
 ```
 
 ## PM2

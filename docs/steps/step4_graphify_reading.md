@@ -19,8 +19,8 @@ Bảng đường dẫn app đầy đủ: [`AGENTS.md`](../../AGENTS.md) mục 3 
 | Storefront | `apps/hub-parent/hub-parent-frontend/.graphify/markdown/` |
 | Admin (dev) | `apps/main/backend/.graphify/markdown/` |
 | API (dev) | `apps/main/api/.graphify/markdown/` |
-| Check-in API | `apps/hub-event/api/.graphify/markdown/` |
-| Check-in frontend | `apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/` |
+| Check-in API | `apps/hub-checkin/api/.graphify/markdown/` |
+| Check-in frontend | `apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/` |
 | Store Sync | `apps/store-sync/api/.graphify/markdown/` (hoặc frontend tương ứng) |
 
 ## Dùng mục "Chỉ dẫn theo chủ đề"
@@ -39,7 +39,7 @@ Chọn tiếp theo dựa theo mục tiêu:
 - Điều tra domain API / import NestJS: mở `API_DOMAIN_IMPORTS.md`.
 - Xác nhận phụ thuộc package workspace: mở `WORKSPACE_DEPS.md`.
 
-## Làm mới snapshot (khi đổi cấu trúc)
+## Làm mới snapshot (upstream-only, khi đổi cấu trúc)
 
 ```bash
 node script-system/graphify/graphify-update.cjs apps/main/api
@@ -49,6 +49,7 @@ pnpm graphify:ai-summary
 ```
 
 Hoặc: `pnpm graphify:refresh` (sau khi đã chạy `graphify-update` cho app bị ảnh hưởng).
+Downstream không sync `script-system/graphify`; chỉ đọc snapshot đã có hoặc refresh ở `monorepo-template`.
 
 ## Mục tiêu bước này
 

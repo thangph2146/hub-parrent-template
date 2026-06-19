@@ -1,7 +1,7 @@
 const DEFAULT_ADMIN_URL = ""
 const ADMIN_HOME_SEGMENT = "/admin"
-const ADMIN_LOGIN_SEGMENT = "/admin/dang-nhap"
-const ADMIN_REGISTER_SEGMENT = "/admin/dang-ky"
+const ADMIN_LOGIN_SEGMENT = "/admin/login"
+const ADMIN_REGISTER_SEGMENT = "/admin/register"
 
 export function getAdminBaseUrl() {
   return (process.env.NEXT_PUBLIC_ADMIN_URL ?? DEFAULT_ADMIN_URL).replace(/\/$/, "")

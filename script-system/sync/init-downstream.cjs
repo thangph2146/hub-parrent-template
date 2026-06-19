@@ -3,7 +3,6 @@
  *
  * Usage:
  *   node script-system/sync/init-downstream.cjs hub-checkin ../hub-checkin-monorepo
- *   node script-system/sync/init-downstream.cjs hub-event ../hub-event-monorepo
  *   node script-system/sync/init-downstream.cjs hub-parent ../hub-parent-monorepo
  */
 const fs = require("node:fs")
@@ -46,7 +45,7 @@ const destArg = process.argv[3]
 
 if (!lineKey || !destArg) {
   console.error(
-    "Usage: node init-downstream.cjs <hub-checkin|hub-event|hub-parent|store-sync> <dest-dir>",
+    "Usage: node init-downstream.cjs <hub-checkin|hub-parent|store-sync> <dest-dir>",
   )
   process.exit(1)
 }
@@ -77,10 +76,7 @@ fs.mkdirSync(destRoot, { recursive: true })
 const workspaceTpl = path.join(TEMPLATE_DIR, `pnpm-workspace.${lineKey}.yaml`)
 const packageTpl = path.join(TEMPLATE_DIR, `package.${lineKey}.json`)
 const manifestProductLine = line.manifestProductLine ?? lineKey
-const manifestTpl =
-  manifestProductLine === "hub-event"
-    ? path.join(TEMPLATE_DIR, "template.manifest.hub-event.json")
-    : path.join(TEMPLATE_DIR, "template.manifest.downstream.json")
+const manifestTpl = path.join(TEMPLATE_DIR, "template.manifest.downstream.json")
 const readmeTpl = path.join(TEMPLATE_DIR, `README.${lineKey}.md`)
 
 if (fs.existsSync(workspaceTpl)) {

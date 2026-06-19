@@ -1,6 +1,6 @@
-# Điểm vào (entry) — apps/hub-event/api (Graphify)
+# Điểm vào (entry) — apps/hub-checkin/api (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.403Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-19T01:42:38.558Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -85,34 +85,47 @@
 - `src/common/module-bases/event-speakers/event-speakers.controller.ts`
 - … và 71 controller khác
 
-## AUTO-GENERATED (không sửa tay) — 23 file
+## AUTO-GENERATED (không sửa tay) — 464 file
 
 Sửa generator / config (`api.app.config.json`, `admin.app.config.json`, `pnpm api:generate:*`, `pnpm admin:generate:*`).
 
+- `src/academic-years/academic-years.controller.ts`
+- `src/academic-years/academic-years.module.ts`
+- `src/academic-years/academic-years.service.spec.ts`
+- `src/academic-years/academic-years.service.ts`
+- `src/accounts/accounts.controller.ts`
+- `src/accounts/accounts.module.ts`
+- `src/accounts/accounts.service.spec.ts`
+- `src/accounts/accounts.service.ts`
+- `src/admission-results/admission-results.controller.ts`
+- `src/admission-results/admission-results.module.ts`
+- `src/admission-results/admission-results.service.spec.ts`
+- `src/admission-results/admission-results.service.ts`
 - `src/app.module.ts`
+- `src/auth/auth.controller.ts`
+- `src/auth/auth.module.ts`
+- `src/auth/auth.service.spec.ts`
+- `src/auth/auth.service.ts`
+- `src/cameras/cameras.controller.ts`
+- `src/cameras/cameras.module.ts`
+- `src/cameras/cameras.service.spec.ts`
+- `src/cameras/cameras.service.ts`
+- `src/categories/categories.controller.ts`
+- `src/categories/categories.module.ts`
+- `src/categories/categories.service.spec.ts`
+- `src/categories/categories.service.ts`
+- `src/comments/comments.controller.ts`
+- `src/comments/comments.module.ts`
+- `src/comments/comments.service.spec.ts`
+- `src/comments/comments.service.ts`
 - `src/common/admin-realtime-broadcast.service.ts`
 - `src/common/admin-realtime.interceptor.ts`
 - `src/common/admin-realtime.util.ts`
-- `src/common/api-access.middleware.ts`
-- `src/common/cart-types.ts`
-- `src/common/crud/base-crud.controller.spec.ts`
-- `src/common/crud/base-crud.service.spec.ts`
-- `src/common/crud/common.types.spec.ts`
-- `src/common/crud/crud-apply-column-filters.spec.ts`
-- `src/common/database-http-exception.filter.ts`
-- `src/common/gift-rules.ts`
-- `src/common/logging.interceptor.ts`
-- `src/common/product-types.ts`
-- `src/common/product-units.ts`
-- `src/common/promo-checkout.ts`
-- `src/common/public.decorator.ts`
-- `src/common/request-id.middleware.ts`
-- `src/common/unit-pricing.ts`
-- `src/data-test/fake-em.spec.ts`
-- `src/data-test/fake-em.ts`
-- `src/data-test/fixture.spec.ts`
-- `src/data-test/fixture.ts`
+- `src/common/admin/filter-configs.ts`
+- `src/common/admin/index.ts`
+- `src/common/admin/realtime/broadcast.service.ts`
+- … và 429 file khác
 
 ## Làm mới
 
-`node script-system/graphify/graphify-update.cjs apps/hub-event/api` → `pnpm graphify:ai-summary`.
+`node script-system/graphify/graphify-update.cjs apps/hub-checkin/api` → `pnpm graphify:ai-summary`.

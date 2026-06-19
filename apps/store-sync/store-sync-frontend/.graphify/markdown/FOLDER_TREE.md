@@ -1,6 +1,6 @@
 # Cây thư mục — apps/store-sync/store-sync-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.553Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
+> **Sinh tự động:** `2026-06-19T01:42:38.677Z` từ `snapshot/graph.json` (node `directory` / `route-group` dưới `src/`).
 
 ```text
 src/
@@ -25,14 +25,14 @@ src/
 │   │   │   ├── [id]/
 │   │   │   │   └── edit/
 │   │   │   └── new/
-│   │   ├── dang-ky/
-│   │   ├── dang-nhap/
+│   │   ├── dashboard/
 │   │   ├── data/
 │   │   ├── file-storage/
 │   │   ├── guides/
 │   │   │   ├── [id]/
 │   │   │   │   └── edit/
 │   │   │   └── new/
+│   │   ├── login/
 │   │   ├── orders/
 │   │   │   └── [id]/
 │   │   │       └── edit/
@@ -48,16 +48,16 @@ src/
 │   │   ├── rbac/
 │   │   │   └── [id]/
 │   │   │       └── edit/
+│   │   ├── register/
 │   │   ├── seo-metas/
 │   │   │   ├── [id]/
 │   │   │   │   └── edit/
 │   │   │   └── new/
 │   │   ├── settings/
-│   │   ├── staff/
-│   │   │   ├── [id]/
-│   │   │   │   └── edit/
-│   │   │   └── new/
-│   │   └── tong-quan/
+│   │   └── staff/
+│   │       ├── [id]/
+│   │       │   └── edit/
+│   │       └── new/
 │   ├── api/
 │   │   └── graphify/
 │   ├── graph/

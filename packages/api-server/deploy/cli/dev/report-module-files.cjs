@@ -11,7 +11,7 @@ const {
   SKIP_THIN_MODULE_IDS,
 } = require('../../config/package-module-templates.cjs')
 
-const appRoot = path.resolve(ROOT, process.argv[2] ?? 'apps/hub-event/api')
+const appRoot = path.resolve(ROOT, process.argv[2] ?? 'apps/hub-checkin/api')
 const srcRoot = path.join(appRoot, 'src')
 const FAT_SERVICE_LINES = 80
 const FAT_CONTROLLER_LINES = 60
@@ -161,7 +161,7 @@ function main() {
     '',
     '## Xác minh pipeline',
     '',
-    '- `pnpm api:render apps/hub-event/api --prune` — pass',
+    '- `pnpm api:render apps/hub-checkin/api --prune` — pass',
     '- Typecheck, check-in API, endpoint parity — pass (xem log render)',
     '',
     '## Chi tiết từng module',

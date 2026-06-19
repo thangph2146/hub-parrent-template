@@ -1,6 +1,6 @@
 # Điểm vào (entry) — packages/admin-app (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.605Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
+> **Sinh tự động:** `2026-06-19T01:42:38.729Z` — bootstrap, module Nest, route Next, file AUTO-GENERATED (đọc header).
 
 ## Bootstrap / root
 
@@ -9,7 +9,7 @@
 ## Nest modules (`*.module.ts`) — 0 file
 
 
-## Next App Router (`page` / `layout` / `route`) — 101 file
+## Next App Router (`page` / `layout` / `route`) — 108 file
 
 - `src/modules/academic-years/[id]/edit/page.tsx`
 - `src/modules/academic-years/[id]/page.tsx`
@@ -48,20 +48,20 @@
 - `src/modules/guides/[id]/page.tsx`
 - `src/modules/guides/new/page.tsx`
 - `src/modules/guides/page.tsx`
+- `src/modules/hanet/avatar/page.tsx`
+- `src/modules/hanet/checkin/page.tsx`
+- `src/modules/hanet/dia-diem/page.tsx`
+- `src/modules/hanet/ket-noi/page.tsx`
+- `src/modules/hanet/nguoi/page.tsx`
+- `src/modules/hanet/page.tsx`
+- `src/modules/hanet/thiet-bi/page.tsx`
 - `src/modules/locations/[id]/edit/page.tsx`
 - `src/modules/locations/[id]/page.tsx`
 - `src/modules/locations/new/page.tsx`
 - `src/modules/locations/page.tsx`
 - `src/modules/majors/[id]/edit/page.tsx`
 - `src/modules/majors/[id]/page.tsx`
-- `src/modules/majors/new/page.tsx`
-- `src/modules/majors/page.tsx`
-- `src/modules/my-registered-events/page.tsx`
-- `src/modules/my-students/page.tsx`
-- `src/modules/orders/[id]/edit/page.tsx`
-- `src/modules/orders/[id]/page.tsx`
-- `src/modules/orders/page.tsx`
-- … và 51 route file khác
+- … và 58 route file khác
 
 ## `loading.tsx` (pattern skeleton) — 58 file
 

@@ -19,8 +19,8 @@ pnpm install
 | `apps/main/backend` | `@backend` | Admin Next.js dev — thường **3001** |
 | `apps/hub-parent/hub-parent-frontend` | `@frontend` | Storefront deploy — thường **3000** |
 | `apps/hub-parent/api` | `@hub-parent/api` | API deploy site chính |
-| `apps/hub-event/api` | `@hub-event/api` | API deploy check-in |
-| `apps/hub-event/hub-event-checkin-frontend` | `@hub-event-checkin-frontend` | Frontend check-in |
+| `apps/hub-checkin/api` | `@hub-checkin/api` | API deploy check-in |
+| `apps/hub-checkin/hub-checkin-frontend` | `@hub-checkin/frontend` | Frontend check-in |
 | `packages/api-client` | — | SDK HTTP cho app Next |
 | `packages/ui` | — | Component UI dùng chung |
 | `docker-compose.yml` | — | Postgres + build (tuỳ chọn) |
@@ -42,7 +42,7 @@ Ví dụ đường dẫn:
 - API: `apps/main/api/.env` (dev) · `apps/hub-parent/api/.env` (deploy parent)
 - Admin: `apps/main/backend/.env`
 - Storefront: `apps/hub-parent/hub-parent-frontend/.env`
-- Check-in: `apps/hub-event/api/.env` + `apps/hub-event/hub-event-checkin-frontend/.env`
+- Check-in: `apps/hub-checkin/api/.env` + `apps/hub-checkin/hub-checkin-frontend/.env`
 
 Biến quan trọng:
 

@@ -1,6 +1,6 @@
 # Bán kính ảnh hưởng import — apps/hub-parent/hub-parent-frontend (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.374Z` từ `../snapshot/graph.json` — file **in-degree cao** = nhiều nơi import; sửa cần kiểm tra downstream.
+> **Sinh tự động:** `2026-06-19T01:42:38.516Z` từ `../snapshot/graph.json` — file **in-degree cao** = nhiều nơi import; sửa cần kiểm tra downstream.
 
 Graphify chỉ quét **import tĩnh** trong `src/`; không thấy Nest DI, dynamic import, hay route Next theo convention.
 
@@ -16,10 +16,14 @@ Graphify chỉ quét **import tĩnh** trong `src/`; không thấy Nest DI, dynam
 | `src/features/pages/about-page/constants.tsx` | 6 | `src/features/pages/about-page/sub-sections/core-values-section.tsx`, `src/features/pages/about-page/sub-sections/departments-section.tsx`, `src/features/pages/about-page/sub-sections/education-philosophy-section.tsx`, `src/features/pages/about-page/sub-sections/facilities-section.tsx`, `src/features/pages/about-page/sub-sections/history-section.tsx`, `src/features/pages/about-page/sub-sections/leaders-section.tsx` |
 | `src/hooks/queries.ts` | 6 | `src/app/(public)/(store-sync)/catalog/page.tsx`, `src/app/(public)/(store-sync)/catalog/[productId]/page.tsx`, `src/app/(public)/(store-sync)/checkout/page.tsx`, `src/app/(public)/(store-sync)/orders/page.tsx`, `src/app/(public)/(store-sync)/orders/[orderId]/page.tsx`, `src/components/shared/product-detail.tsx` |
 | `src/hooks/use-session.ts` | 6 | `src/app/(public)/(store-sync)/checkout/page.tsx`, `src/app/(public)/(store-sync)/orders/page.tsx`, `src/app/(public)/(store-sync)/orders/[orderId]/page.tsx`, `src/app/(public)/(store-sync)/profile/page.tsx`, `src/components/shared/header.tsx`, `src/components/shared/store-auth-gate.tsx` |
+| `src/config/admin/parent-admin-access.ts` | 5 | `src/app/admin/page.tsx`, `src/config/admin/parent-admin-layout-static.ts`, `src/features/admin-auth/sign-in-form.tsx`, `src/lib/admin/auth-routes.ts`, `src/providers/admin/auth-provider.tsx` |
 | `src/features/pages/home-page/sub-sections/scroll-indicator.tsx` | 5 | `src/features/pages/home-page/sub-sections/about-hub-section.tsx`, `src/features/pages/home-page/sub-sections/guide-register-section.tsx`, `src/features/pages/home-page/sub-sections/hero-section.tsx`, `src/features/pages/home-page/sub-sections/index.ts`, `src/features/pages/home-page/sub-sections/overview-section.tsx` |
-| `src/features/auth/admin-bridge.ts` | 4 | `src/components/shared/footer.tsx`, `src/components/shared/header.tsx`, `src/features/pages/home-page/constants.ts`, `src/features/pages/home-page/sub-sections/hero-section.tsx` |
+| `src/providers/admin/auth-provider.tsx` | 5 | `src/app/admin/admin-runtime-bridge.tsx`, `src/app/admin/layout.tsx`, `src/features/admin-auth/sign-in-form.tsx`, `src/providers/admin/admin-realtime-sync.tsx`, `src/providers/admin/parent-admin-layout.tsx` |
 | `src/features/pages/home-page/constants.ts` | 4 | `src/features/pages/home-page/data.tsx`, `src/features/pages/home-page/sub-sections/about-hub-section.tsx`, `src/features/pages/home-page/sub-sections/featured-posts-section.tsx`, `src/features/pages/home-page/sub-sections/guide-register-section.tsx` |
+| `src/lib/admin/auth-session.ts` | 4 | `src/config/admin/parent-admin-layout-static.ts`, `src/lib/admin/api.ts`, `src/providers/admin/auth-provider.tsx`, `src/providers/admin/parent-admin-layout.tsx` |
+| `src/features/auth/admin-bridge.ts` | 3 | `src/components/shared/footer.tsx`, `src/features/pages/home-page/constants.ts`, `src/features/pages/home-page/sub-sections/hero-section.tsx` |
 | `src/features/pages/home-page/sub-sections/contact-section.tsx` | 3 | `src/app/(public)/lien-he/page.tsx`, `src/features/pages/home-page/home-client.tsx`, `src/features/pages/home-page/sub-sections/index.ts` |
+| `src/lib/admin/auth-routes.ts` | 3 | `src/config/admin/parent-admin-layout-static.ts`, `src/features/admin-auth/register-form.tsx`, `src/providers/admin/auth-provider.tsx` |
 | `src/lib/gift-rules-from-fulfillment-note.ts` | 3 | `src/components/shared/cart-drawer.tsx`, `src/components/shared/cart-line-item.tsx`, `src/components/shared/product-detail.tsx` |
 | `src/lib/store-feature.ts` | 3 | `src/app/(public)/layout.tsx`, `src/components/shared/header.tsx`, `src/proxy.ts` |
 | `src/components/icons/logo.tsx` | 2 | `src/components/shared/footer.tsx`, `src/components/shared/header.tsx` |
@@ -29,10 +33,6 @@ Graphify chỉ quét **import tĩnh** trong `src/`; không thấy Nest DI, dynam
 | `src/components/shared/store-auth-gate.tsx` | 2 | `src/app/(public)/(store-sync)/layout.tsx`, `src/app/(public)/layout.tsx` |
 | `src/features/pages/about-page/about-client.tsx` | 2 | `src/features/pages/about-page/about.tsx`, `src/features/pages/about-page/sub-sections/index.ts` |
 | `src/features/pages/about-page/utils.tsx` | 2 | `src/features/pages/about-page/sub-sections/core-values-section.tsx`, `src/features/pages/about-page/sub-sections/education-philosophy-section.tsx` |
-| `src/features/pages/home-page/data.tsx` | 2 | `src/features/pages/home-page/home-client.tsx`, `src/features/pages/home-page/index.ts` |
-| `src/features/pages/home-page/home-client.tsx` | 2 | `src/features/pages/home-page/home.tsx`, `src/features/pages/home-page/index.ts` |
-| `src/features/pages/home-page/sub-sections/about-hub-section.tsx` | 2 | `src/features/pages/home-page/home-client.tsx`, `src/features/pages/home-page/sub-sections/index.ts` |
-| `src/features/pages/home-page/sub-sections/content-card.tsx` | 2 | `src/features/pages/home-page/sub-sections/hero-section.tsx`, `src/features/pages/home-page/sub-sections/index.ts` |
 
 ## `src/common/` — tiện ích dùng chung
 

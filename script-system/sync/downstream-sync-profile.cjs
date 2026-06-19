@@ -22,25 +22,6 @@ const PROFILES = {
       },
     ],
   },
-  /** @deprecated alias hub-checkin */
-  "hub-event": {
-    label: "check-in (hub-checkin)",
-    steps: [
-      { cmd: "pnpm install", label: "1/N install workspace" },
-      {
-        cmd: "pnpm --filter @workspace/api-server run build",
-        label: "2/N build @workspace/api-server",
-      },
-      {
-        cmd: "node script-system/sync/sync-checkin-packages.cjs",
-        label: "3/N pull:checkin (verify + admin)",
-      },
-      {
-        cmd: "node script-system/verify/verify-downstream-safe-flow.cjs",
-        label: "4/N verify downstream-safe",
-      },
-    ],
-  },
   "hub-parent": {
     label: "site chính (hub-parent)",
     steps: [

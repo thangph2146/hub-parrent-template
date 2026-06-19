@@ -1,6 +1,6 @@
 # Hub parent template — bản đồ monorepo cho AI (Graphify)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.761Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
+> **Sinh tự động:** `2026-06-19T01:42:38.898Z` — chỉ mục dẫn đường; chi tiết module nằm ở từng app/package bên dưới.
 
 ## Chỉ dẫn theo chủ đề (đọc trước khi mở sâu)
 
@@ -13,7 +13,7 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | Cây `src/` một app | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/FOLDER_TREE.md) (đổi sang app tương ứng) | `SUMMARY_FOR_AI.md` cùng app |
 | Quy mô graph, điểm nóng import | [`../../apps/main/api/.graphify/markdown/GRAPH_STATS.md`](../../apps/main/api/.graphify/markdown/GRAPH_STATS.md) | `FOLDER_TREE.md`, `snapshot/context.json` (khi cần) |
 | **Endpoint Nest (@api main)** | [`../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/main/api/.graphify/markdown/API_ENDPOINTS.md) | [`ROUTE_SURFACE.md`](ROUTE_SURFACE.md), `pnpm verify:main-api-endpoint-parity` |
-| **Endpoint Nest (check-in)** | [`../../apps/hub-event/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/hub-event/api/.graphify/markdown/API_ENDPOINTS.md) | `pnpm api:render:checkin`, `pnpm verify:checkin-api` |
+| **Endpoint Nest (check-in)** | [`../../apps/hub-checkin/api/.graphify/markdown/API_ENDPOINTS.md`](../../apps/hub-checkin/api/.graphify/markdown/API_ENDPOINTS.md) | `pnpm api:render:checkin`, `pnpm verify:checkin-api` |
 | Domain Nest import lẫn nhau | [`../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md`](../../apps/main/api/.graphify/markdown/API_DOMAIN_IMPORTS.md) | `GRAPH_STATS.md`, bảng controller trong `SUMMARY` |
 | Phụ thuộc `workspace:*` | [`../../packages/.graphify/markdown/WORKSPACE_DEPS.md`](../../packages/.graphify/markdown/WORKSPACE_DEPS.md) | [`../../packages/.graphify/README.md`](../../packages/.graphify/README.md), `SUMMARY_FOR_AI.md` packages |
 | UX storefront (Next công khai) | [`../../docs/admin-pattern/FRONTEND_UX.md`](../../docs/admin-pattern/FRONTEND_UX.md) | [`../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](../../apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
@@ -37,8 +37,8 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | `@backend` | Admin Next (main) | `apps/main/backend/.graphify/` (`markdown/`, `snapshot/`) |
 | `@hub-parent/api` | API Nest (hub-parent) | `apps/hub-parent/api/.graphify/` (`markdown/`, `snapshot/`) |
 | `@frontend` | Next frontend (hub-parent) | `apps/hub-parent/hub-parent-frontend/.graphify/` (`markdown/`, `snapshot/`) |
-| `@hub-event/api` | API Nest (hub-event) | `apps/hub-event/api/.graphify/` (`markdown/`, `snapshot/`) |
-| `@hub-event-checkin-frontend` | Next frontend (hub-event) | `apps/hub-event/hub-event-checkin-frontend/.graphify/` (`markdown/`, `snapshot/`) |
+| `@hub-checkin/api` | API Nest (hub-checkin) | `apps/hub-checkin/api/.graphify/` (`markdown/`, `snapshot/`) |
+| `@hub-checkin/frontend` | Next frontend (hub-checkin) | `apps/hub-checkin/hub-checkin-frontend/.graphify/` (`markdown/`, `snapshot/`) |
 | `@store-sync/api` | API Nest (store-sync) | `apps/store-sync/api/.graphify/` (`markdown/`, `snapshot/`) |
 | `@store-sync-frontend` | Next frontend (store-sync) | `apps/store-sync/store-sync-frontend/.graphify/` (`markdown/`, `snapshot/`) |
 
@@ -79,11 +79,11 @@ Bảng dưới giúp agent mở **đúng file Graphify** trước khi đào `sna
 | `@api` | 515 | 2026-06-15T03:40:50.667Z | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@backend` | 202 | 2026-06-15T03:40:50.754Z | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@hub-parent/api` | 538 | 2026-06-15T03:40:51.288Z | [`apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@frontend` | 128 | 2026-06-15T03:40:51.372Z | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@hub-event/api` | 537 | 2026-06-15T03:40:51.917Z | [`apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@hub-event-checkin-frontend` | 278 | 2026-06-15T03:40:52.041Z | [`apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@frontend` | 317 | 2026-06-19T01:42:22.702Z | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@hub-checkin/api` | 537 | 2026-06-15T03:40:51.917Z | [`apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@hub-checkin/frontend` | 286 | 2026-06-19T01:42:22.602Z | [`apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 | `@store-sync/api` | 538 | 2026-06-15T03:40:52.591Z | [`apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| `@store-sync-frontend` | 189 | 2026-06-15T03:40:52.675Z | [`apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
+| `@store-sync-frontend` | 189 | 2026-06-19T01:42:22.785Z | [`apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/store-sync/store-sync-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
 
 ## Artefact từ `snapshot/graph.json` / package scan (`pnpm graphify:ai-summary`)
 
@@ -103,8 +103,8 @@ node script-system/graphify/graphify-update.cjs apps/main/api
 node script-system/graphify/graphify-update.cjs apps/main/backend
 node script-system/graphify/graphify-update.cjs apps/hub-parent/api
 node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend
-node script-system/graphify/graphify-update.cjs apps/hub-event/api
-node script-system/graphify/graphify-update.cjs apps/hub-event/hub-event-checkin-frontend
+node script-system/graphify/graphify-update.cjs apps/hub-checkin/api
+node script-system/graphify/graphify-update.cjs apps/hub-checkin/hub-checkin-frontend
 node script-system/graphify/graphify-update.cjs apps/store-sync/api
 node script-system/graphify/graphify-update.cjs apps/store-sync/store-sync-frontend
 # (Tùy) snapshot graph cấp monorepo — ít node nếu không scan deep

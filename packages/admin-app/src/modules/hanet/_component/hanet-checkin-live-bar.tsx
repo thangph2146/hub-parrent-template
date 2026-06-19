@@ -49,7 +49,7 @@ function buildHanetLiveIssueReport(options: {
       "",
       "Cách khắc phục:",
       "1. Chạy tunnel public tới API (vd. ngrok http 3002)",
-      "2. .env API (apps/hub-event/api hoặc hub-parent/api):",
+      "2. .env API (apps/hub-checkin/api hoặc hub-parent/api):",
       "   API_PUBLIC_URL=https://<tunnel-host>",
       "   (có thể thêm /api — Hub tự chuẩn hóa URL webhook)",
       "3. Restart API (pnpm dev:checkin hoặc pnpm dev:parent)",

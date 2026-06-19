@@ -325,12 +325,12 @@ async function main() {
     }
   } else if (renderResult.partialRender) {
     pipelineSteps.push({
-      label: 'verify hub-event',
+      label: 'verify hub-checkin',
       skipped: true,
       detail: 'partial render (--modules)',
     })
   } else if (skipVerify) {
-    pipelineSteps.push({ label: 'verify hub-event', skipped: true, detail: '--skip-verify' })
+    pipelineSteps.push({ label: 'verify hub-checkin', skipped: true, detail: '--skip-verify' })
   }
 
   const { outroLine } = printApiRenderSummary({

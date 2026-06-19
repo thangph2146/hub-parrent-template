@@ -18,13 +18,13 @@ const STACK_NEXT_PATHS = {
   main: [PRODUCT_LINES.main.backend.path],
   "main-checkin": [
     PRODUCT_LINES.main.backend.path,
-    PRODUCT_LINES["hub-event"].frontend.path,
+    PRODUCT_LINES["hub-checkin"].frontend.path,
   ],
   parent: [
     PRODUCT_LINES.main.backend.path,
     PRODUCT_LINES["hub-parent"].frontend.path,
   ],
-  checkin: [PRODUCT_LINES["hub-event"].frontend.path],
+  checkin: [PRODUCT_LINES["hub-checkin"].frontend.path],
   store: [PRODUCT_LINES["store-sync"].frontend.path],
 }
 

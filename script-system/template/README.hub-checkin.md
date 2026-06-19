@@ -9,9 +9,9 @@ Monorepo **sản phẩm check-in** — kế thừa **full** `packages/` từ [mo
 
 ```
 packages/                    # Thư viện — kéo từ template (không sửa lâu dài)
-apps/hub-event/
-├── api/                     # @hub-event/api
-└── hub-event-checkin-frontend/
+apps/hub-checkin/
+├── api/                     # check-in API
+└── hub-checkin-frontend/
 ```
 
 ## Đồng bộ (flow chuẩn)

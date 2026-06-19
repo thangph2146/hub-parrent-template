@@ -31,9 +31,9 @@ flowchart TB
 
   API --> CLI
 
-  subgraph apps ["apps/hub-event — mỏng"]
-    FE["hub-event-checkin-frontend"]
-    AP["hub-event/api"]
+  subgraph apps ["apps/hub-checkin — mỏng"]
+    FE["hub-checkin-frontend"]
+    AP["hub-checkin/api"]
   end
 
   ADM --> FE
@@ -72,8 +72,8 @@ Graph: [`packages/.graphify/markdown/PACKAGE_INDEX.md`](.graphify/markdown/PACKA
 | Page CRUD admin | `packages/admin-app` | `admin.app.config.json` |
 | Gọi API | `packages/api-client` | không fetch trực tiếp |
 | Service CRUD Nest | `packages/api-server` | extend + generate |
-| Entity, migration | — | `apps/hub-event/api` |
-| Route native check-in | — | `apps/hub-event/...-frontend` |
+| Entity, migration | — | `apps/hub-checkin/api` |
+| Route native check-in | — | `apps/hub-checkin/...-frontend` |
 
 ## Workflow
 

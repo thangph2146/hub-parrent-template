@@ -1,6 +1,6 @@
 # API — phụ thuộc giữa các domain (`src/`)
 
-> **Sinh tự động:** `2026-06-15T03:40:54.403Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
+> **Sinh tự động:** `2026-06-19T01:42:38.558Z` từ `snapshot/graph.json` (cạnh `relation: "imports"`).
 > **Domain** = thư mục cấp một dưới `src/` (ví dụ `posts`, `users`). File trực tiếp trong `src/*.ts` gom vào domain `_root`.
 
 Ý nghĩa: **domain hàng gọi (import) domain cột** — Nest module/controller/service trong một feature đang dùng code của feature khác hoặc layer dùng chung (`entities`, `common`, …).
@@ -442,4 +442,4 @@ flowchart LR
 
 ## Làm mới
 
-Chạy `node script-system/graphify/graphify-update.cjs apps/hub-event/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).
+Chạy `node script-system/graphify/graphify-update.cjs apps/hub-checkin/api` rồi `pnpm graphify:ai-summary` (hoặc `pnpm graphify:refresh`).

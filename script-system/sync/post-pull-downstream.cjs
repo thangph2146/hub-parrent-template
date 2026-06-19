@@ -17,6 +17,15 @@ const { resolveProfile } = require("./downstream-sync-profile.cjs")
 
 const PREFIX = "post-pull"
 const MANIFEST_PATH = path.join(ROOT, "template.manifest.json")
+const STALE_SCRIPT_PATHS = [
+  "script-system/api",
+  "script-system/graphify",
+  "script-system/template",
+  "script-system/sync/apply-sync-to-downstream.cjs",
+  ["script-system", "sync", "deprecated"].join("/"),
+  "script-system/sync/init-downstream.cjs",
+  "script-system/sync/sync-api-from-main.cjs",
+]
 
 function loadManifest() {
   if (!fs.existsSync(MANIFEST_PATH)) {
@@ -28,6 +37,15 @@ function loadManifest() {
 
 function parseArgs(argv) {
   return { withCheck: argv.includes("--check") }
+}
+
+function pruneStaleScriptSystem() {
+  for (const rel of STALE_SCRIPT_PATHS) {
+    const target = path.join(ROOT, rel)
+    if (!fs.existsSync(target)) continue
+    fs.rmSync(target, { recursive: true, force: true })
+    console.log(`[${PREFIX}] pruned stale ${rel}`)
+  }
 }
 
 function main() {
@@ -52,6 +70,8 @@ function main() {
   console.log(
     `[${PREFIX}] ${manifest.id ?? "downstream"} · ${profile.label} (productLine=${manifest.productLine})\n`,
   )
+
+  pruneStaleScriptSystem()
 
   for (const step of profile.steps) {
     runStep(ROOT, step.cmd, step.label, PREFIX)

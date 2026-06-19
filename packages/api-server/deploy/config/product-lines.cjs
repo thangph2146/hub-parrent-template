@@ -8,11 +8,8 @@ const PRODUCT_LINES = {
   'hub-parent': {
     api: { path: 'apps/hub-parent/api', package: '@hub-parent/api', port: 3002 },
   },
-  'hub-event': {
-    api: { path: 'apps/hub-checkin/api', package: '@hub-event/api', port: 3002 },
-  },
   'hub-checkin': {
-    api: { path: 'apps/hub-checkin/api', package: '@hub-event/api', port: 3002 },
+    api: { path: 'apps/hub-checkin/api', package: '@hub-checkin/api', port: 3002 },
   },
   'store-sync': {
     api: { path: 'apps/store-sync/api', package: '@store-sync/api', port: 3002 },

@@ -5,7 +5,7 @@ Tài liệu này là quy trình bắt buộc trước khi agent sửa code trong
 Mục tiêu: agent phải hiểu kiến trúc microservice, docs feature, graph hiện tại, và boundary rule trước khi chỉnh source.
 
 **Entry point:** [`AGENTS.md`](../../AGENTS.md) (bản đồ task → doc → folder).  
-**Đường dẫn app:** dev hàng ngày `apps/main/*`; deploy qua `apps/hub-parent/*`, `apps/hub-event/*`, `apps/store-sync/*` — xem [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md).
+**Đường dẫn app:** dev hàng ngày `apps/main/*`; deploy qua `apps/hub-parent/*`, `apps/hub-checkin/*`, `apps/store-sync/*` — xem [`docs/MONOREPO_STRUCTURE.md`](../MONOREPO_STRUCTURE.md).
 
 ## 1. Luật bắt buộc
 
@@ -14,6 +14,8 @@ Trước khi sửa bất kỳ file code nào, agent phải đọc tài liệu th
 Nếu task liên quan một page/feature cụ thể, agent phải đọc docs feature trong `docs/pages/` trước khi mở hoặc sửa source chính của feature đó.
 
 Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đọc hoặc sẽ đọc những tài liệu liên quan nào.
+
+Nếu vừa đồng bộ từ template xuống downstream (`pnpm sync`, `pnpm pull:template --full`, hoặc script sync local), agent phải phân tích source sau sync trước khi sửa code: xem diff, tìm tính năng/helper/component/API đã có, và ưu tiên reuse/cấu hình lại thay vì tạo code mới.
 
 ## 2. Thứ tự đọc tối thiểu
 
@@ -35,8 +37,8 @@ Agent phải thông báo ngắn gọn trong update đầu tiên rằng đã đ�
 | Admin main (`@backend`) | `apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md` |
 | API main dev (`@api`) | `apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md` |
 | Hub-parent API deploy | `apps/hub-parent/api/.graphify/markdown/SUMMARY_FOR_AI.md` |
-| Check-in API | `apps/hub-event/api/.graphify/markdown/SUMMARY_FOR_AI.md` |
-| Check-in frontend | `apps/hub-event/hub-event-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (nếu có graphify) |
+| Check-in API | `apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md` |
+| Check-in frontend | `apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md` (nếu có graphify) |
 | Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
 
 8. File Graphify chi tiết theo chủ đề nếu cần:
@@ -81,15 +83,18 @@ Trước khi code, agent phải tự đối chiếu:
 ## 6. Quy trình khi bắt đầu một task code
 
 1. Xác định task thuộc app/package/feature nào (dùng bảng task trong `AGENTS.md` mục 3).
-2. Đọc docs theo thứ tự trong tài liệu này.
-3. Đọc docs feature trong `docs/pages/` nếu task là admin page/module.
-4. Nếu task liên quan một package cụ thể, đọc tài liệu bổ trợ tương ứng (xem `AGENTS.md` mục 3 — Package doc).
-5. Đọc Graphify files đúng chủ đề.
-6. Trace import của file target và các API-client method liên quan.
-7. Chỉ sửa code sau khi đã hiểu luồng dữ liệu đúng.
-8. Sau khi sửa, chạy `pnpm check`.
-9. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
-10. Khi hoàn tất trên template upstream: `pnpm push -- "feat: ..."`. Downstream: `pnpm pull:template` (full `packages/`).
+2. Nếu đang ở downstream, chạy/kiểm tra sync theo flow template trước khi sửa phần dùng chung.
+3. Đọc diff/source sau sync và tìm tính năng đã có bằng `rg`, Graphify, hoặc source package liên quan.
+4. Chỉ tạo code mới nếu tính năng chưa tồn tại hoặc không thể cấu hình/reuse an toàn.
+5. Đọc docs theo thứ tự trong tài liệu này.
+6. Đọc docs feature trong `docs/pages/` nếu task là admin page/module.
+7. Nếu task liên quan một package cụ thể, đọc tài liệu bổ trợ tương ứng (xem `AGENTS.md` mục 3 — Package doc).
+8. Đọc Graphify files đúng chủ đề.
+9. Trace import của file target và các API-client method liên quan.
+10. Chỉ sửa code sau khi đã hiểu luồng dữ liệu đúng.
+11. Sau khi sửa, chạy `pnpm check`.
+12. Nếu đổi kiến trúc/module/routes đáng kể, chạy graphify update theo `AGENTS.md` rồi chạy `pnpm check:full`.
+13. Khi hoàn tất trên template upstream: `pnpm push -- "feat: ..."`. Downstream: `pnpm pull:template` (full `packages/`).
 
 ## 7. Khi làm việc với `parent-students`
 

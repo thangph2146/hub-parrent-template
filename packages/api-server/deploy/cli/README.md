@@ -32,7 +32,7 @@
 
 ```bash
 node packages/api-server/deploy/cli/dev/audit-common-usage.cjs
-node packages/api-server/deploy/cli/dev/report-module-bindings.cjs apps/hub-event/api
-node packages/api-server/deploy/cli/dev/report-module-files.cjs apps/hub-event/api
+node packages/api-server/deploy/cli/dev/report-module-bindings.cjs apps/hub-checkin/api
+node packages/api-server/deploy/cli/dev/report-module-files.cjs apps/hub-checkin/api
 node packages/api-server/deploy/cli/dev/gzip-test-fixture.cjs path/to/export.json
 ```

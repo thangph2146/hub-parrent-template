@@ -1,4 +1,4 @@
-# Báo cáo kiểm tra từng file — apps\hub-event\api
+# Báo cáo kiểm tra từng file — apps\hub-checkin\api
 
 Thời điểm: 2026-06-13T17:52:27.383Z
 
@@ -15,7 +15,7 @@ Thời điểm: 2026-06-13T17:52:27.383Z
 
 ## Xác minh pipeline
 
-- `pnpm api:render apps/hub-event/api --prune` — pass
+- `pnpm api:render apps/hub-checkin/api --prune` — pass
 - Typecheck, check-in API, endpoint parity — pass (xem log render)
 
 ## Chi tiết từng module

@@ -6,7 +6,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("../lib/monorepo-root.cjs");
-const { allEnvApps } = require("./manifest.cjs");
+const { allEnvApps, envAppsForCurrentRepo } = require("./manifest.cjs");
 
 /** @typedef {{
  *   template: string;
@@ -58,7 +58,7 @@ const API_ENV_PROFILES = {
     envStack: "checkin",
     title: "API hub-checkin — apps/hub-checkin/api",
     appPath: "apps/hub-checkin/api",
-    package: "@hub-event/api",
+    package: "@hub-checkin/api",
     devHint: "pnpm dev:checkin",
     stackHint:
       "ecosystem/checkin — API :3002 + hub-checkin frontend :3000 (admin /admin)",
@@ -378,7 +378,7 @@ function writeApiEnvExampleForAppPath(appPathRel) {
 /** Ghi lại .env.example cho mọi API trong manifest. */
 function writeAllApiEnvExamples() {
   let count = 0;
-  for (const app of allEnvApps()) {
+  for (const app of envAppsForCurrentRepo()) {
     if (!app.template.startsWith("api-")) continue;
     if (writeApiEnvExampleForAppPath(app.path)) count += 1;
   }

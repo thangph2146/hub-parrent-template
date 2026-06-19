@@ -11,7 +11,7 @@ Bản đồ đường dẫn app: [`AGENTS.md`](../AGENTS.md) mục 1 và 3.
 | **`README.md`** | Hướng dẫn người + agent (file này; không sinh bởi script). |
 | **`markdown/SUMMARY_FOR_AI.md`** | Chỉ mục monorepo + **mục "Chỉ dẫn theo chủ đề"** (bảng mục tiêu → đường dẫn); sinh bởi `pnpm graphify:ai-summary`. |
 | **`markdown/TASK_INDEX.md`** | Module/feature → file path (`admin-app`, API, api-client); sinh cùng `graphify:ai-summary`. |
-| **`markdown/SYNC_DELTA.md`** | So sánh domain `apps/main/api` ↔ `apps/hub-event/api` (sync profile). |
+| **`markdown/SYNC_DELTA.md`** | So sánh domain `apps/main/api` ↔ `apps/hub-checkin/api` (sync profile). |
 | **`markdown/ROUTE_SURFACE.md`** | Admin URL ↔ Nest API ↔ api-client. |
 | **`packages/.graphify/markdown/PACKAGE_INDEX.md`** | Graphify per-package (`ui`, `admin-app`, `api-client`, `api-server`). |
 | **`markdown/ROUTE_SURFACE.md`** | Admin URL ↔ Nest controller ↔ api-client HTTP paths. |
@@ -43,7 +43,7 @@ node script-system/graphify/graphify-update.cjs apps/main/backend
 node script-system/graphify/graphify-update.cjs apps/hub-parent/hub-parent-frontend
 
 # Check-in / store-sync — khi sửa line đó:
-node script-system/graphify/graphify-update.cjs apps/hub-event/api
+node script-system/graphify/graphify-update.cjs apps/hub-checkin/api
 node script-system/graphify/graphify-update.cjs apps/store-sync/api
 
 pnpm graphify:ai-summary
