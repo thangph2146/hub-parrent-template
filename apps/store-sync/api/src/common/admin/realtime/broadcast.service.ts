@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Injectable } from '@nestjs/common';
 import { SocketGateway } from '../../../socket/socket.gateway';
 import type {

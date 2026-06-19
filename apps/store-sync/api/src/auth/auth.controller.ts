@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import {
   Body,
   Controller,
@@ -5,14 +6,13 @@ import {
   Headers,
   Inject,
   Post,
-  Query,
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { Public } from '../common';
 import { createErrorResponse, createSuccessResponse } from '../common';
-import { ADMIN_ROUTES, APP_HEADERS, PUBLIC_ROUTES } from '../config/constants';
+import { ADMIN_ROUTES, APP_HEADERS } from '../config/constants';
 import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
@@ -126,32 +126,6 @@ export class AuthController {
   }
 
   @Public()
-  @Get('dev-login-options')
-  async devLoginOptions(
-    @Query('role') role: string | undefined,
-    @Query('roles') roles: string | undefined,
-    @Query('excludeRoles') excludeRoles: string | undefined,
-    @Query('emailSuffix') emailSuffix: string | undefined,
-    @Query('activeOnly') activeOnly: string | undefined,
-    @Res() res: Response,
-  ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
-      const { statusCode, body } = createSuccessResponse([]);
-      return res.status(statusCode).json(body);
-    }
-
-    const data = await this.service.listDevelopmentLoginOptions({
-      role,
-      roles,
-      excludeRoles,
-      emailSuffix,
-      activeOnly: activeOnly === 'false' ? false : undefined,
-    });
-    const { statusCode, body } = createSuccessResponse(data);
-    return res.status(statusCode).json(body);
-  }
-
-  @Public()
   @Get('google/config')
   getGoogleConfig(@Res() res: Response): Response {
     const { statusCode, body } = createSuccessResponse({
@@ -208,37 +182,5 @@ export class AuthController {
       message: 'Dang xuat thanh cong',
     });
     return res.status(statusCode).json(responseBody);
-  }
-}
-
-@Public()
-@ApiTags('Public')
-@Controller(PUBLIC_ROUTES.BASE)
-export class StorePublicDevLoginOptionsController {
-  constructor(@Inject(AuthService) private readonly service: AuthService) {}
-
-  @Get('dev-login-options')
-  async devLoginOptions(
-    @Query('role') role: string | undefined,
-    @Query('roles') roles: string | undefined,
-    @Query('excludeRoles') excludeRoles: string | undefined,
-    @Query('emailSuffix') emailSuffix: string | undefined,
-    @Query('activeOnly') activeOnly: string | undefined,
-    @Res() res: Response,
-  ): Promise<Response> {
-    if (process.env.NODE_ENV !== 'development') {
-      const { statusCode, body } = createSuccessResponse([]);
-      return res.status(statusCode).json(body);
-    }
-
-    const data = await this.service.listDevelopmentLoginOptions({
-      role,
-      roles,
-      excludeRoles,
-      emailSuffix,
-      activeOnly: activeOnly === 'false' ? false : undefined,
-    });
-    const { statusCode, body } = createSuccessResponse(data);
-    return res.status(statusCode).json(body);
   }
 }

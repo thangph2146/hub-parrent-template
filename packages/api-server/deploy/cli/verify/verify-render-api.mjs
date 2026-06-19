@@ -25,7 +25,8 @@ if (!fs.existsSync(path.join(appRoot, 'api.app.config.json'))) {
   process.exit(1)
 }
 
-const { modules, renderAllModules, config } = resolveApiModules(APP_REL)
+const { modules, renderAllModules, config, disableEntityPrune } =
+  resolveApiModules(APP_REL)
 const expected = resolveRenderModuleSet(APP_REL)
 const errors = []
 
@@ -63,18 +64,19 @@ if (missing.length) {
   errors.push(`Module thiếu so với closure: ${missing.join(', ')}`)
 }
 
-if (!renderAllModules) {
+if (!renderAllModules && !disableEntityPrune) {
   const entityClosure = resolveEntityClosureForModules(expected, {
     expandModuleClosure: false,
   })
   const excludeEntities = new Set(config?.excludeEntities ?? [])
-  const expectedClosureFiles = entityClosure.files.filter((name) => {
+  const expectedOrmFiles = entityClosure.files.filter((name) => {
     const className = Object.entries(entityClosure.graph.entities).find(
       ([, entity]) => entity.fileName === name,
     )?.[0]
     return !className || !excludeEntities.has(className)
   })
-  const expectedEntityFiles = new Set(['base.entity.ts', ...expectedClosureFiles])
+  const expectedEntityFiles = new Set(['base.entity.ts', ...entityClosure.files])
+  const expectedOrmEntityFiles = new Set(expectedOrmFiles)
   const entitiesDir = path.join(appRoot, 'src/entities')
   const actualEntityFiles = fs.existsSync(entitiesDir)
     ? fs.readdirSync(entitiesDir).filter((name) => name.endsWith('.entity.ts')).sort()
@@ -94,8 +96,8 @@ if (!renderAllModules) {
   const ormEntityFiles = [
     ...ormSrc.matchAll(/from ['"]\.\.\/entities\/([^'"]+)['"]/g),
   ].map((match) => `${match[1]}.ts`)
-  const extraOrmEntities = ormEntityFiles.filter((name) => !expectedEntityFiles.has(name))
-  const missingOrmEntities = expectedClosureFiles.filter((name) => !ormEntityFiles.includes(name))
+  const extraOrmEntities = ormEntityFiles.filter((name) => !expectedOrmEntityFiles.has(name))
+  const missingOrmEntities = expectedOrmFiles.filter((name) => !ormEntityFiles.includes(name))
 
   if (extraOrmEntities.length) {
     errors.push(`orm-entities.ts còn entity dư: ${extraOrmEntities.join(', ')}`)

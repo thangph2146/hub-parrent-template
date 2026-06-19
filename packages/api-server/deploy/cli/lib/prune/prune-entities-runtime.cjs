@@ -34,7 +34,8 @@ function patchOrmEntities(appRoot, classNames, keepFiles = []) {
       const shouldKeepImport =
         className != null &&
         importEntityFile != null &&
-        (strictByFiles ? keepFileSet.has(importEntityFile) : keep.has(className))
+        keep.has(className) &&
+        (!strictByFiles || keepFileSet.has(importEntityFile))
       if (shouldKeepImport) {
         out.push(line)
         keptImports.add(className)
@@ -96,23 +97,31 @@ function pruneEntityFiles(appRoot, keepFiles, { quiet = false } = {}) {
 /**
  * @param {string} appRoot
  * @param {string[]} moduleIds Sau module closure
- * @param {{ quiet?: boolean }} [opts]
+ * @param {{ quiet?: boolean, excludeEntities?: string[] }} [opts]
  */
 function pruneEntitiesRuntime(appRoot, moduleIds, opts = {}) {
   const result = resolveEntityClosureForModules(moduleIds, {
     expandModuleClosure: false,
   })
-  const prunedFiles = pruneEntityFiles(appRoot, result.files, opts)
-  const orm = patchOrmEntities(appRoot, result.classes, result.files)
+  const excludeEntities = new Set(opts.excludeEntities ?? [])
+  // Files stay on disk when needed by TypeScript relation imports; ORM exposure
+  // is controlled by class list below.
+  const keepFiles = result.files
+  const keepClasses = result.classes.filter((name) => !excludeEntities.has(name))
+  const prunedFiles = pruneEntityFiles(appRoot, keepFiles, opts)
+  const orm = patchOrmEntities(appRoot, keepClasses, keepFiles)
 
   if (!opts.quiet) {
     console.log(
-      `[render:entity-graph] ${result.count}/${result.totalEntities} entities (graph closure)`,
+      `[render:entity-graph] ${keepClasses.length}/${result.totalEntities} ORM entities (${result.count} files in graph closure)`,
     )
   }
 
   return {
     ...result,
+    files: keepFiles,
+    classes: keepClasses,
+    count: keepClasses.length,
     prunedFiles,
     orm,
   }

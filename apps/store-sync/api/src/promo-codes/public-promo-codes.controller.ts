@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Controller, Get, Res, Logger } from '@nestjs/common';
 import type { Response } from 'express';
 import { PromoCodesService } from './promo-codes.service';

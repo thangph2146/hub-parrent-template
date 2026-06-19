@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export const APP_HEADERS = {
   USER_ID: 'x-user-id',
   VIEW_ALL: 'x-view-all',

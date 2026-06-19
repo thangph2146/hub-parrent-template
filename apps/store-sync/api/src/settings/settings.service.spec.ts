@@ -1,3 +1,5 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+/** AUTO-SYNC — tham chiếu từ apps/main/api; binding nest extends Base* (module-bases). */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
 import { SettingsService } from './settings.service';

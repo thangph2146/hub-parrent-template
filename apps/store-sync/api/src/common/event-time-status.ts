@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export type EventTimeStatus = 'upcoming' | 'ongoing' | 'past';
 
 function toValidDate(value: Date | string | null | undefined): Date | null {

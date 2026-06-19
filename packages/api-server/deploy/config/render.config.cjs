@@ -108,6 +108,7 @@ const APP_CONFIG_PRESETS = {
       'uploads',
       'categories',
       'settings',
+      'seo-metas',
       'users',
       'roles',
       'sessions',

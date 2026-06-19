@@ -32,6 +32,7 @@
     "storage:init": "node script-system/db/init-storage-dirs.cjs hub-parent"
   },
   "devDependencies": {
+    "@clack/prompts": "^0.11.0",
     "turbo": "^2.9.9"
   },
   "packageManager": "pnpm@9.15.4"

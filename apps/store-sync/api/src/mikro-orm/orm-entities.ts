@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Account } from '../entities/account.entity';
 import { Category } from '../entities/category.entity';
 import { Notification } from '../entities/notification.entity';
@@ -8,6 +9,7 @@ import { Product } from '../entities/product.entity';
 import { PromoCode } from '../entities/promo-code.entity';
 import { Role } from '../entities/role.entity';
 import { Session } from '../entities/session.entity';
+import { SeoMeta } from '../entities/seo-meta.entity';
 import { Setting } from '../entities/setting.entity';
 import { StorageFile } from '../entities/storage-file.entity';
 import { User } from '../entities/user.entity';
@@ -25,6 +27,7 @@ export const ormEntities = [
   PromoCode,
   Role,
   Session,
+  SeoMeta,
   Setting,
   StorageFile,
   User,

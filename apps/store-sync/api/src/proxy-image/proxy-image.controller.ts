@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * GET /api/admin/proxy-image?url=... - Proxy ảnh từ URL ngoài (tránh CORS).
  * Chấp nhận cả /proxy-image và /proxy-image/ (trailing slash).

@@ -5,27 +5,97 @@ import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 import { Alert, AlertDescription, AlertTitle } from "@ui/components/alert"
 import { Badge } from "@ui/components/badge"
+import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@ui/components/data-table"
 import {
   FieldSectionLegend,
   FieldSet,
   FieldSetContent,
 } from "@ui/components/field"
+import { toast } from "@ui/components/sonner"
 import { Tabs, TabsContent } from "@ui/components/tabs"
-import { GitBranch, Loader2, TableProperties } from "lucide-react"
+import { Check, Copy, GitBranch, Loader2, TableProperties } from "lucide-react"
 import { getEntityRelationColumns, getEntitySchemaColumns } from "./columns"
 import { useDatabaseSchema } from "./_hooks"
+import { copyTextToClipboard } from "./system-operation-result"
 import {
   buildEntityRelationRows,
   buildEntitySchemaRows,
   formatEntityRowCount,
 } from "./utils"
 
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {}
+}
+
+function getColumnId(column: unknown): string | null {
+  const record = asRecord(column)
+  if (typeof record.id === "string" && record.id.trim()) return record.id
+  if (typeof record.accessorKey === "string" && record.accessorKey.trim()) {
+    return record.accessorKey
+  }
+  return null
+}
+
+function getColumnLabel(column: unknown): string {
+  const header = asRecord(column).header
+  return typeof header === "string" && header.trim()
+    ? header
+    : (getColumnId(column) ?? "unknown")
+}
+
+function readJsonRecord(storageKey: string): Record<string, unknown> {
+  if (typeof window === "undefined") return {}
+  try {
+    const raw = window.localStorage.getItem(storageKey)
+    const parsed = raw ? (JSON.parse(raw) as unknown) : null
+    return parsed && typeof parsed === "object"
+      ? (parsed as Record<string, unknown>)
+      : {}
+  } catch {
+    return {}
+  }
+}
+
+function getColumnConfig(
+  columns: readonly unknown[],
+  storageKey: string
+) {
+  const saved = readJsonRecord(storageKey)
+  const items = columns
+    .map((column) => {
+      const id = getColumnId(column)
+      if (!id) return null
+      const meta = asRecord(asRecord(column).meta)
+      const defaultHidden = meta.defaultHidden === true
+      const savedValue = saved[id]
+      const visible =
+        typeof savedValue === "boolean" ? savedValue : !defaultHidden
+      return {
+        id,
+        label: getColumnLabel(column),
+        visible,
+      }
+    })
+    .filter((item): item is { id: string; label: string; visible: boolean } =>
+      Boolean(item)
+    )
+
+  return {
+    visible: items.filter((item) => item.visible),
+    hidden: items.filter((item) => !item.visible),
+    storage: saved,
+  }
+}
+
 export function EntitySchemaPanel() {
   const { schema, loading, error } = useDatabaseSchema(true)
   const [schemaTab, setSchemaTab] = useState<"tables" | "relations">("tables")
   const [globalFilter, setGlobalFilter] = useState("")
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [copiedConfig, setCopiedConfig] = useState(false)
 
   const entityRows = useMemo(
     () => (schema ? buildEntitySchemaRows(schema) : []),
@@ -38,6 +108,48 @@ export function EntitySchemaPanel() {
 
   const entityColumns = useMemo(() => getEntitySchemaColumns(), [])
   const relationColumns = useMemo(() => getEntityRelationColumns(), [])
+
+  const copyCurrentTableConfig = async () => {
+    if (!schema) return
+    const isTablesTab = schemaTab === "tables"
+    const tableScope = isTablesTab
+      ? "data-entity-tables"
+      : "data-entity-relations"
+    const rows = isTablesTab ? entityRows : relationRows
+    const columns = isTablesTab ? entityColumns : relationColumns
+    const columnConfig = getColumnConfig(columns, `${tableScope}-table-columns`)
+    const payload = {
+      title: "Bảng entity (MikroORM)",
+      copiedAt: new Date().toISOString(),
+      tableScope,
+      activeTab: schemaTab,
+      rowCount: rows.length,
+      globalFilter,
+      columnFilters,
+      showIndexColumn: true,
+      columns: {
+        visible: columnConfig.visible,
+        hidden: columnConfig.hidden,
+        localStorageKey: `${tableScope}-table-columns`,
+        localStorageValue: columnConfig.storage,
+      },
+      summary: {
+        tables: schema.tables.length,
+        relations: schema.relations.length,
+        totalRows: schema.totalRows,
+        totalActiveRows: schema.totalActiveRows,
+        verification: schema.verification ?? null,
+      },
+    }
+    const ok = await copyTextToClipboard(JSON.stringify(payload, null, 2))
+    if (!ok) {
+      toast.error("Không copy được cấu hình table.")
+      return
+    }
+    setCopiedConfig(true)
+    toast.success("Đã copy cấu hình table hiện tại.")
+    window.setTimeout(() => setCopiedConfig(false), 1600)
+  }
 
   return (
     <FieldSet variant="section">
@@ -130,22 +242,32 @@ export function EntitySchemaPanel() {
             value={schemaTab}
             onValueChange={(v) => setSchemaTab(v as "tables" | "relations")}
           >
-            <AdminListTabsList>
-              <AdminListTabsTrigger
-                value="tables"
-                
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <AdminListTabsList>
+                <AdminListTabsTrigger value="tables">
+                  <TableProperties className="size-4" />
+                  Bảng ({entityRows.length})
+                </AdminListTabsTrigger>
+                <AdminListTabsTrigger value="relations">
+                  <GitBranch className="size-4" />
+                  Quan hệ FK ({relationRows.length})
+                </AdminListTabsTrigger>
+              </AdminListTabsList>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5"
+                onClick={() => void copyCurrentTableConfig()}
               >
-                <TableProperties className="size-4" />
-                Bảng ({entityRows.length})
-              </AdminListTabsTrigger>
-              <AdminListTabsTrigger
-                value="relations"
-                
-              >
-                <GitBranch className="size-4" />
-                Quan hệ FK ({relationRows.length})
-              </AdminListTabsTrigger>
-            </AdminListTabsList>
+                {copiedConfig ? (
+                  <Check className="size-3.5" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+                {copiedConfig ? "Đã copy" : "Copy cấu hình table"}
+              </Button>
+            </div>
 
             <TabsContent value="tables">
               <AdminDataTable

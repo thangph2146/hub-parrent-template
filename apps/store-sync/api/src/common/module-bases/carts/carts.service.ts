@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import { Injectable, Logger } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 
@@ -37,28 +38,18 @@ export abstract class BaseCartsService {
 
   async getForCustomer(customerId: string): Promise<CartDto> {
     const em = this.getEm();
-    const rows = await em
-      .getConnection()
-      .execute(
-        `SELECT lines, appliedPromoCode, updatedAt FROM customer_carts WHERE customerId = ? LIMIT 1`,
-        [customerId],
-      );
+    const rows = await em.getConnection().execute(
+      `SELECT \`lines\`, \`appliedPromoCode\`, \`updatedAt\` FROM customer_carts WHERE \`customerId\` = ? LIMIT 1`,
+      [customerId],
+    );
     const row = (rows as Array<Record<string, unknown>>)[0];
     if (!row) {
-      return {
-        lines: [],
-        appliedPromoCode: null,
-        updatedAt: new Date(0).toISOString(),
-      };
+      return { lines: [], appliedPromoCode: null, updatedAt: new Date(0).toISOString() };
     }
     return {
       lines: this.parseLines(row.lines),
-      appliedPromoCode: row.appliedPromoCode
-        ? String(row.appliedPromoCode)
-        : null,
-      updatedAt: row.updatedAt
-        ? new Date(row.updatedAt as string).toISOString()
-        : new Date(0).toISOString(),
+      appliedPromoCode: row.appliedPromoCode ? String(row.appliedPromoCode) : null,
+      updatedAt: row.updatedAt ? new Date(row.updatedAt as string).toISOString() : new Date(0).toISOString(),
     };
   }
 
@@ -66,50 +57,45 @@ export abstract class BaseCartsService {
     const em = this.getEm();
     const payload = this.sanitizePayload(raw);
     const linesJson = JSON.stringify(payload.lines);
-    const existing = await em
-      .getConnection()
-      .execute(`SELECT id FROM customer_carts WHERE customerId = ? LIMIT 1`, [
-        customerId,
-      ]);
+    const existing = await em.getConnection().execute(
+      `SELECT \`id\` FROM customer_carts WHERE \`customerId\` = ? LIMIT 1`,
+      [customerId],
+    );
     const exists = (existing as Array<Record<string, unknown>>).length > 0;
     if (exists) {
-      await em
-        .getConnection()
-        .execute(
-          `UPDATE customer_carts SET lines = ?, appliedPromoCode = ?, updatedAt = NOW() WHERE customerId = ?`,
-          [linesJson, payload.appliedPromoCode, customerId],
-        );
+      await em.getConnection().execute(
+        `UPDATE customer_carts SET \`lines\` = ?, \`appliedPromoCode\` = ?, \`updatedAt\` = NOW() WHERE \`customerId\` = ?`,
+        [linesJson, payload.appliedPromoCode, customerId],
+      );
     } else {
-      await em
-        .getConnection()
-        .execute(
-          `INSERT INTO customer_carts (customerId, lines, appliedPromoCode, createdAt, updatedAt) VALUES (?, ?, ?, NOW(), NOW())`,
-          [customerId, linesJson, payload.appliedPromoCode],
-        );
+      await em.getConnection().execute(
+        `INSERT INTO customer_carts (\`customerId\`, \`lines\`, \`appliedPromoCode\`, \`createdAt\`, \`updatedAt\`) VALUES (?, ?, ?, NOW(), NOW())`,
+        [customerId, linesJson, payload.appliedPromoCode],
+      );
     }
     return this.getForCustomer(customerId);
   }
 
   async clearForCustomer(customerId: string): Promise<void> {
     const em = this.getEm();
-    await em
-      .getConnection()
-      .execute(`DELETE FROM customer_carts WHERE customerId = ?`, [customerId]);
+    await em.getConnection().execute(
+      `DELETE FROM customer_carts WHERE \`customerId\` = ?`,
+      [customerId],
+    );
   }
 
   private parseLines(raw: unknown): CartLineItem[] {
     if (!raw) return [];
     try {
       const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      return Array.isArray(parsed) ? (parsed as CartLineItem[]) : [];
+      return Array.isArray(parsed) ? parsed as CartLineItem[] : [];
     } catch {
       return [];
     }
   }
 
   private sanitizePayload(raw: unknown): CartPayload {
-    const body =
-      raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+    const body = raw && typeof raw === 'object' ? raw as Record<string, unknown> : {};
     const linesIn = Array.isArray(body.lines) ? body.lines : [];
     const maxLines = 50;
     const lines: CartLineItem[] = [];
@@ -128,29 +114,19 @@ export abstract class BaseCartsService {
         unitType: String(o.unitType ?? '').trim(),
         unitLabel: String(o.unitLabel ?? '').trim(),
         unitPrice: Math.max(0, Math.floor(Number(o.unitPrice) || 0)),
-        listUnitPrice: Math.max(
-          0,
-          Math.floor(Number(o.listUnitPrice) || Number(o.unitPrice) || 0),
-        ),
-        promoUnitPrice:
-          o.promoUnitPrice == null
-            ? null
-            : Math.max(0, Math.floor(Number(o.promoUnitPrice))),
+        listUnitPrice: Math.max(0, Math.floor(Number(o.listUnitPrice) || Number(o.unitPrice) || 0)),
+        promoUnitPrice: o.promoUnitPrice == null ? null : Math.max(0, Math.floor(Number(o.promoUnitPrice))),
         minPromoQty: Math.max(0, Math.floor(Number(o.minPromoQty) || 0)),
         qtyPerUnit: Math.max(1, Math.floor(Number(o.qtyPerUnit) || 1)),
         quantity: Math.max(1, Math.floor(Number(o.quantity) || 1)),
         isWholesale: o.isWholesale === true,
-        fulfillmentNote:
-          typeof o.fulfillmentNote === 'string' ? o.fulfillmentNote : null,
+        fulfillmentNote: typeof o.fulfillmentNote === 'string' ? o.fulfillmentNote : null,
         giftRules: Array.isArray(o.giftRules) ? o.giftRules : undefined,
       });
       if (lines.length >= maxLines) break;
     }
     let appliedPromoCode: string | null = null;
-    if (
-      typeof body.appliedPromoCode === 'string' &&
-      body.appliedPromoCode.trim()
-    ) {
+    if (typeof body.appliedPromoCode === 'string' && body.appliedPromoCode.trim()) {
       appliedPromoCode = body.appliedPromoCode.trim().toUpperCase();
     }
     return { lines, appliedPromoCode };

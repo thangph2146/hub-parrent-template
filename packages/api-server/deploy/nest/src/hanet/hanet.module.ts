@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { EventRegistrationsModule } from '../event-registrations/event-registrations.module';
 import { SocketModule } from '../socket/socket.module';
 import { HanetApiClient } from './hanet-api.client';
@@ -14,6 +14,9 @@ import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service
 import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
 import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
 
+const HANET_PERSON_REGISTER = 'HANET_PERSON_REGISTER';
+
+@Global()
 @Module({
   imports: [EventRegistrationsModule, SocketModule],
   controllers: [HanetWebhookController, HanetAdminController],
@@ -25,6 +28,10 @@ import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
     HanetRealtimeService,
     HanetPartnerService,
     HanetPersonRegisterService,
+    {
+      provide: HANET_PERSON_REGISTER,
+      useExisting: HanetPersonRegisterService,
+    },
     HanetPersonAvatarSyncService,
     HanetCheckinLiveBufferService,
     HanetWebhookIngestService,
@@ -34,6 +41,7 @@ import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
     HanetApiClient,
     HanetAdminService,
     HanetPersonRegisterService,
+    HANET_PERSON_REGISTER,
     HanetPersonAvatarSyncService,
     HanetCheckinLiveBufferService,
     HanetWebhookIngestService,

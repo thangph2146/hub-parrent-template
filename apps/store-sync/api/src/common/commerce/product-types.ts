@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /** Khớp types trong `@workspace/api-client` — API không import api-client. */
 
 export type QuantityCountMode = 'sell_unit' | 'base_unit';

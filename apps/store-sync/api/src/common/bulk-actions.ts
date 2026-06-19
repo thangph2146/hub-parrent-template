@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Bulk Actions.
  *
@@ -6,19 +7,10 @@
  * Cung cấp `applyBulkAction<T>()` - helper chung để xử lý bulk delete /
  * restore / hard-delete cho MỌI entity.
  */
-import {
-  type EntityManager,
-  type EntityName,
-  type FilterQuery,
-} from '@mikro-orm/core';
+import { type EntityManager, type EntityName, type FilterQuery } from '@mikro-orm/core';
 import { isEntityId } from './entity-id';
 
-export type BulkAction =
-  | 'delete'
-  | 'restore'
-  | 'hard-delete'
-  | 'active'
-  | 'unactive';
+export type BulkAction = 'delete' | 'restore' | 'hard-delete' | 'active' | 'unactive';
 
 export interface BulkResult {
   affected: number;
@@ -91,8 +83,7 @@ export async function applyBulkAction<T extends object>(
   const idFilter = { id: { $in: [...numericIds, ...stringIds] } };
 
   const field = options.deletedAtField ?? 'deletedAt';
-  const activeField =
-    options.activeField === undefined ? 'isActive' : options.activeField;
+  const activeField = options.activeField === undefined ? 'isActive' : options.activeField;
   const { label } = options;
 
   if (action === 'delete') {

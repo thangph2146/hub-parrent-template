@@ -42,6 +42,7 @@
     "env:init": "node script-system/env/init-env.cjs checkin"
   },
   "devDependencies": {
+    "@clack/prompts": "^0.11.0",
     "tsx": "^4.22.3",
     "turbo": "^2.9.9"
   },

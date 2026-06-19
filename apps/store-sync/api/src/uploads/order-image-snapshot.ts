@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 import * as path from 'path';
 
 const UPLOADS_PATH_MARKERS = ['/api/uploads/', '/uploads/'] as const;

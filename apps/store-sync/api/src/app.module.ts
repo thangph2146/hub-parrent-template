@@ -18,6 +18,7 @@ import { ProxyImageModule } from './proxy-image/proxy-image.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { SettingsModule } from './settings/settings.module';
 import { SystemModule } from './system/system.module';
+import { SeoMetasModule } from './seo-metas/seo-metas.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { PromoCodesModule } from './promo-codes/promo-codes.module';
@@ -45,6 +46,7 @@ import { CartsModule } from './carts/carts.module';
     DashboardModule,
     SettingsModule,
     SystemModule,
+    SeoMetasModule,
     ProductsModule,
     OrdersModule,
     PromoCodesModule,

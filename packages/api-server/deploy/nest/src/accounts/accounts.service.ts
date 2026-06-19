@@ -1,5 +1,5 @@
 /** NestJS OOP — extends local Base* (src/common/module-bases); binding tại apps/main/api. */
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
@@ -8,7 +8,6 @@ import {
   type UpdateAccountDto,
   type UpdateAccountResult,
 } from '../common/module-bases/accounts/accounts.service';
-import { HanetPersonRegisterService } from '../hanet/hanet-person-register.service';
 import { toEntityId } from '../common/entity-id';
 import {
   normalizeNumericStudentCode,
@@ -20,6 +19,17 @@ import {
   upsertStudentCodeForUser,
 } from '../common/student-user-binding';
 
+const HANET_PERSON_REGISTER = 'HANET_PERSON_REGISTER';
+
+type HanetPersonRegister = {
+  syncUserFaceToHanet(input: {
+    userId: string | number;
+    email: string;
+    name: string;
+    avatarUrl: string;
+  }): Promise<unknown>;
+};
+
 export type {
   AccountProfileDto,
   UpdateAccountDto,
@@ -30,7 +40,9 @@ export type {
 export class AccountsService extends BaseAccountsService {
   constructor(
     private readonly em: EntityManager,
-    private readonly hanetPersonRegister: HanetPersonRegisterService,
+    @Optional()
+    @Inject(HANET_PERSON_REGISTER)
+    private readonly hanetPersonRegister?: HanetPersonRegister,
   ) {
     super();
   }
@@ -116,7 +128,7 @@ export class AccountsService extends BaseAccountsService {
       return result;
     }
 
-    void this.hanetPersonRegister.syncUserFaceToHanet({
+    void this.hanetPersonRegister?.syncUserFaceToHanet({
       userId: result.profile.id,
       email: result.profile.email,
       name: result.profile.name?.trim() || result.profile.email,

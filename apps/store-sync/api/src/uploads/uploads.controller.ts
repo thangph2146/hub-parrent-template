@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * Uploads Controller - Admin API: list images/folders, upload, create folder, delete, serve file.
  * Header: X-User-Id (bắt buộc). Serve base URL có thể truyền qua query hoặc header để build URL ảnh.

@@ -56,7 +56,11 @@ const SRC_EXTRA_FILES = [
 
 /** Seed cần module cụ thể — partial render bỏ qua nếu thiếu dependency. */
 const SEED_FILE_MODULE_DEPS = {
-  'seed-full-export.ts': ['system'],
+  'seed-demo.ts': ['events', 'event-registrations'],
+  'seed-guides.ts': ['page-contents'],
+  'seed-checkin-demo.ts': ['events', 'event-registrations'],
+  'seed-full-export.ts': ['system', 'posts', 'tags', 'page-contents'],
+  'seeds/checkin-demo.runner.ts': ['events', 'event-registrations'],
   'seeds/orders-sample.runner.ts': ['orders', 'products'],
   'seeds/products-sample.runner.ts': ['products'],
   'seeds/promo-codes-sample.runner.ts': ['promo-codes'],
@@ -140,6 +144,15 @@ function shouldCopySeedFile(rel, moduleIds, isPartialRender) {
   return deps.every((id) => moduleIds.includes(id))
 }
 
+function pruneDeployScripts(appRoot) {
+  const scriptsDir = path.join(appRoot, 'scripts')
+  if (!fs.existsSync(scriptsDir)) return
+  for (const entry of fs.readdirSync(scriptsDir, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name === 'ensure-dist.mjs') continue
+    fs.rmSync(path.join(scriptsDir, entry.name), { recursive: true, force: true })
+  }
+}
+
 function renderApiFromTemplate(appRel, opts = {}) {
   const templateRoot = resolveTemplateRoot()
   if (!fs.existsSync(path.join(templateRoot, 'src', 'main.ts'))) {
@@ -200,6 +213,7 @@ function renderApiFromTemplate(appRel, opts = {}) {
     if (fs.existsSync(archiveDir)) {
       fs.rmSync(archiveDir, { recursive: true, force: true })
     }
+    pruneDeployScripts(appRoot)
   }
   for (const rel of SHELL_DIRS) {
     const src = path.join(templateRoot, rel)
@@ -223,6 +237,11 @@ function renderApiFromTemplate(appRel, opts = {}) {
     copyTree(path.join(templateRoot, 'src', dir), path.join(appRoot, 'src', dir), `src/${dir}`)
   }
   for (const file of SRC_EXTRA_FILES) {
+    if (!shouldCopySeedFile(file, moduleIds, isPartialRender)) {
+      const dest = path.join(appRoot, 'src', file)
+      if (fs.existsSync(dest)) fs.unlinkSync(dest)
+      continue
+    }
     const src = path.join(templateRoot, 'src', file)
     if (fs.existsSync(src)) copyFile(src, path.join(appRoot, 'src', file), `src/${file}`)
   }
@@ -257,7 +276,10 @@ function renderApiFromTemplate(appRel, opts = {}) {
 
   let entityGraph = null
   if (opts.pruneEntities) {
-    entityGraph = pruneEntitiesRuntime(appRoot, moduleIds, { quiet: false })
+    entityGraph = pruneEntitiesRuntime(appRoot, moduleIds, {
+      quiet: false,
+      excludeEntities: appConfig.excludeEntities ?? [],
+    })
   } else if (isPartialRender) {
     entityGraph = logEntityFootprint(moduleIds)
   }

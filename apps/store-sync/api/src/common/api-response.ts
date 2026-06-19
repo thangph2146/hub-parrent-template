@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 /**
  * API Response Formatter.
  *
@@ -54,7 +55,10 @@ export function ok<T>(data: T, message?: string): ApiResponsePayload<T> {
   };
 }
 
-export function fail(message: string, data?: unknown): ApiResponsePayload {
+export function fail(
+  message: string,
+  data?: unknown,
+): ApiResponsePayload {
   return {
     success: false,
     message,

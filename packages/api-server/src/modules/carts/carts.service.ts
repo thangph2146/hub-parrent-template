@@ -38,7 +38,7 @@ export abstract class BaseCartsService {
   async getForCustomer(customerId: string): Promise<CartDto> {
     const em = this.getEm();
     const rows = await em.getConnection().execute(
-      `SELECT lines, appliedPromoCode, updatedAt FROM customer_carts WHERE customerId = ? LIMIT 1`,
+      `SELECT \`lines\`, \`appliedPromoCode\`, \`updatedAt\` FROM customer_carts WHERE \`customerId\` = ? LIMIT 1`,
       [customerId],
     );
     const row = (rows as Array<Record<string, unknown>>)[0];
@@ -57,18 +57,18 @@ export abstract class BaseCartsService {
     const payload = this.sanitizePayload(raw);
     const linesJson = JSON.stringify(payload.lines);
     const existing = await em.getConnection().execute(
-      `SELECT id FROM customer_carts WHERE customerId = ? LIMIT 1`,
+      `SELECT \`id\` FROM customer_carts WHERE \`customerId\` = ? LIMIT 1`,
       [customerId],
     );
     const exists = (existing as Array<Record<string, unknown>>).length > 0;
     if (exists) {
       await em.getConnection().execute(
-        `UPDATE customer_carts SET lines = ?, appliedPromoCode = ?, updatedAt = NOW() WHERE customerId = ?`,
+        `UPDATE customer_carts SET \`lines\` = ?, \`appliedPromoCode\` = ?, \`updatedAt\` = NOW() WHERE \`customerId\` = ?`,
         [linesJson, payload.appliedPromoCode, customerId],
       );
     } else {
       await em.getConnection().execute(
-        `INSERT INTO customer_carts (customerId, lines, appliedPromoCode, createdAt, updatedAt) VALUES (?, ?, ?, NOW(), NOW())`,
+        `INSERT INTO customer_carts (\`customerId\`, \`lines\`, \`appliedPromoCode\`, \`createdAt\`, \`updatedAt\`) VALUES (?, ?, ?, NOW(), NOW())`,
         [customerId, linesJson, payload.appliedPromoCode],
       );
     }
@@ -78,7 +78,7 @@ export abstract class BaseCartsService {
   async clearForCustomer(customerId: string): Promise<void> {
     const em = this.getEm();
     await em.getConnection().execute(
-      `DELETE FROM customer_carts WHERE customerId = ?`,
+      `DELETE FROM customer_carts WHERE \`customerId\` = ?`,
       [customerId],
     );
   }

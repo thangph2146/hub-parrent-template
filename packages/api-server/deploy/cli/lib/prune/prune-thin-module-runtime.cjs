@@ -17,6 +17,7 @@ const BINDING_SUFFIXES = ['.service.ts', '.module.ts']
 function isBindingFile(moduleId, fileName) {
   if (fileName.endsWith('.spec.ts')) return true
   if (fileName === `${moduleId}.controller.ts`) return true
+  if (moduleId === 'auth' && fileName === 'public-auth.controller.ts') return true
 
   const manual = MANUAL_PACKAGE_MODULE_OVERRIDES[moduleId] ?? {}
   if (manual.controllerOutputFile && fileName === manual.controllerOutputFile) return true
