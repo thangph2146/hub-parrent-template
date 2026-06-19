@@ -109,7 +109,7 @@
     "api:registry:sync": "node script-system/api/build-registry-from-package.cjs --write-ext",
     "api:render:checkin": "pnpm --filter @workspace/api-server run render:checkin",
     "api:render:matrix": "pnpm --filter @workspace/api-server run render:matrix",
-    "api:regenerate:checkin": "pnpm --filter @workspace/api-server run render:regenerate:checkin",
+    "api:regenerate:checkin": "node packages/api-server/deploy/cli/render.cjs apps/hub-checkin/api --prune --prune-entities --skip-sync-template",
     "verify:checkin-api": "pnpm --filter @workspace/api-server run verify:checkin-api",
     "verify:main-api-endpoint-parity": "pnpm --filter @workspace/api-server run verify:endpoint-parity",
     "api:generate:unified-specs": "node script-system/api/generate-unified-controller-specs.cjs && node script-system/api/generate-unified-service-specs.cjs",

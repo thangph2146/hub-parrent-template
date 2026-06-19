@@ -2,8 +2,8 @@
  * @workspace/api-server
  *
  * Shared NestJS types, interfaces, base classes, common utilities, configs
- * and module implementations for building API servers in the hub-parent
- * template ecosystem.
+ * and module implementations for building API servers in the template
+ * ecosystem.
  *
  * Bám sát pattern `apps/main/api/src/`:
  *   - `common/*`  — utilities, decorators, guards, response formatters

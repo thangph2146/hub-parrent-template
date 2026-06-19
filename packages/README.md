@@ -1,10 +1,12 @@
-# `packages/` — thư viện đầy đủ (mono-repo-template)
+# `packages/` — shared platform packages
 
-Downstream (**hub-event-monorepo** — repo code chính) kéo **toàn bộ** thư mục này qua `pnpm pull:template`.
+Downstream (**hub-checkin-monorepo**, **hub-parent-monorepo**, **store-sync-monorepo**) kéo **toàn bộ** thư mục này qua `pnpm pull:template`.
 
-## Lớp compose — 2 package gốc
+`packages/` không phải nơi đặt source deploy line. Package chỉ giữ runtime/shared library và tooling render dùng chung; cấu hình riêng từng app nằm trong `apps/*`.
 
-Hầu hết tính năng template đi qua **`admin-app`** (Next admin) và **`api-server`** (Nest API):
+## Lớp Compose
+
+Hầu hết tính năng template đi qua **`admin-app`** (Next admin) và **`api-server`** (Nest API). App cụ thể chỉ compose/generate phần cần dùng.
 
 ```mermaid
 flowchart TB
@@ -31,7 +33,7 @@ flowchart TB
 
   API --> CLI
 
-  subgraph apps ["apps/hub-checkin — mỏng"]
+  subgraph apps ["App binding — apps/hub-checkin"]
     FE["hub-checkin-frontend"]
     AP["hub-checkin/api"]
   end
@@ -40,7 +42,7 @@ flowchart TB
   API --> AP
 ```
 
-| Package compose | App hub-event dùng qua |
+| Package compose | App dùng qua |
 |-----------------|-------------------------|
 | **`@workspace/admin-app`** | `admin.app.config.json` + `pnpm admin:generate:checkin` |
 | **`@workspace/api-server`** | `api.app.config.json` + `pnpm api:generate:checkin` |
@@ -66,7 +68,7 @@ Graph: [`packages/.graphify/markdown/PACKAGE_INDEX.md`](.graphify/markdown/PACKA
 
 ## Ranh giới
 
-| Việc | Package | App hub-event |
+| Việc | Package | App binding |
 |------|---------|---------------|
 | Component admin | `packages/ui` | re-export generate |
 | Page CRUD admin | `packages/admin-app` | `admin.app.config.json` |
@@ -74,6 +76,18 @@ Graph: [`packages/.graphify/markdown/PACKAGE_INDEX.md`](.graphify/markdown/PACKA
 | Service CRUD Nest | `packages/api-server` | extend + generate |
 | Entity, migration | — | `apps/hub-checkin/api` |
 | Route native check-in | — | `apps/hub-checkin/...-frontend` |
+
+## Boundary `api-server`
+
+`@workspace/api-server` có 3 lớp, không trộn lẫn:
+
+| Lớp | Đường dẫn | Quy tắc |
+|-----|-----------|---------|
+| Runtime shared | `packages/api-server/src/**` | Không hard-code deploy line như `hub-checkin`, `hub-parent`, `store-sync`, không trỏ `apps/hub-*` hoặc `apps/store-*` |
+| Deploy/render tooling | `packages/api-server/deploy/**` | Được đọc `api.app.config.json`, materialize app binding |
+| App binding | `apps/*/api/api.app.config.json` + `apps/*/api/src/**` | Khai báo product line: modules, extraModules, excludeModules, native overrides |
+
+Nếu cần bật/tắt module theo deploy line, ưu tiên sửa `apps/<line>/api/api.app.config.json`. Không thêm nhánh product line vào `packages/api-server/src/**`.
 
 ## Workflow
 
@@ -85,7 +99,7 @@ pnpm check && pnpm push -- "feat: ..."
 git tag template/vX && git push origin template/vX
 ```
 
-**Hub-event-monorepo** (repo chính):
+**Hub-checkin-monorepo** (repo chính):
 
 ```bash
 pnpm pull:template

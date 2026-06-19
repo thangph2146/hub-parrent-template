@@ -99,6 +99,7 @@ const APP_SYNC = {
   "hub-parent": {
     files: [
       "apps/hub-parent/api/package.json",
+      "apps/hub-parent/api/api.app.config.json",
       "apps/hub-parent/hub-parent-frontend/package.json",
       "apps/hub-parent/hub-parent-frontend/admin.app.config.json",
       "apps/hub-parent/hub-parent-frontend/src/components/shared/header.tsx",
@@ -124,6 +125,7 @@ const APP_SYNC = {
   "store-sync": {
     files: [
       "apps/store-sync/api/package.json",
+      "apps/store-sync/api/api.app.config.json",
       "apps/store-sync/store-sync-frontend/package.json",
       "apps/store-sync/store-sync-frontend/admin.app.config.json",
     ],

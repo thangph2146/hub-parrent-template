@@ -8,7 +8,7 @@
  * Chạy: pnpm verify:bounds
  */
 const { existsSync, readFileSync, readdirSync } = require("node:fs");
-const { join } = require("node:path");
+const { join, relative } = require("node:path");
 const { ROOT: root } = require("../lib/monorepo-root.cjs");
 
 const API_PACKAGES = new Set([
@@ -70,6 +70,10 @@ const DEP_FIELDS = [
   "optionalDependencies",
 ];
 
+const API_SERVER_RUNTIME_DIR = join(root, "packages", "api-server", "src");
+const API_SERVER_RUNTIME_FORBIDDEN_RE =
+  /\b(hub-checkin|hub-parent|store-sync|PRODUCT_LINES|productLine)\b|apps[\\/](hub|store)-/;
+
 /** @returns {string[]} */
 function readWorkspacePackageJsonPaths() {
   const out = [];
@@ -99,6 +103,32 @@ function readWorkspacePackageJsonPaths() {
   return out;
 }
 
+function walkFiles(dir, out = []) {
+  if (!existsSync(dir)) return out;
+  for (const ent of readdirSync(dir, { withFileTypes: true })) {
+    const abs = join(dir, ent.name);
+    if (ent.isDirectory()) {
+      if (ent.name === "node_modules" || ent.name === "dist") continue;
+      walkFiles(abs, out);
+      continue;
+    }
+    if (/\.(ts|tsx|js|cjs|mjs)$/.test(ent.name)) out.push(abs);
+  }
+  return out;
+}
+
+function verifyApiServerRuntimeBoundary(errors) {
+  for (const file of walkFiles(API_SERVER_RUNTIME_DIR)) {
+    const content = readFileSync(file, "utf8");
+    if (API_SERVER_RUNTIME_FORBIDDEN_RE.test(content)) {
+      const rel = relative(root, file).replace(/\\/g, "/");
+      errors.push(
+        `${rel}: api-server runtime không được hard-code product line; đưa vào api.app.config.json hoặc deploy tooling.`,
+      );
+    }
+  }
+}
+
 function main() {
   const errors = [];
   for (const pjPath of readWorkspacePackageJsonPaths()) {
@@ -122,6 +152,8 @@ function main() {
       }
     }
   }
+
+  verifyApiServerRuntimeBoundary(errors);
 
   if (errors.length) {
     console.error("[verify-service-boundaries] Vi phạm ranh giới package.json:\n");

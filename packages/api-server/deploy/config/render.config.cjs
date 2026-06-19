@@ -37,12 +37,12 @@ const DEFAULT_ADMIN_MODULE_MAP = {
   'my-students': ['parent-students'],
 }
 
-/** Store modules — chỉ dùng cho hub-parent / store-sync, không cho hub-checkin. */
+/** Store modules — preset scaffold cho app mới, không dùng để nhận diện path runtime. */
 const HUB_CHECKIN_EXCLUDED_STORE_MODULES = ['products', 'orders', 'promo-codes', 'carts']
 const HUB_CHECKIN_EXCLUDED_STORE_ENTITIES = ['Product', 'Order', 'PromoCode', 'CustomerCart']
 
-/** Infra check-in — bổ sung ngoài admin menu (không gồm store). */
-const HUB_EVENT_API_INFRA = [
+/** Infra check-in — preset scaffold; app thật khai báo trong api.app.config.json. */
+const HUB_CHECKIN_API_INFRA = [
   'public',
   'socket',
   'auth',
@@ -73,31 +73,8 @@ const HUB_EVENT_API_INFRA = [
   'hanet',
 ]
 
-/** Infra parent full site — ngoài admin map. */
-const HUB_PARENT_API_INFRA = [
-  'public',
-  'socket',
-  'auth',
-  'notifications',
-  'students',
-  'admission-results',
-  'proxy-image',
-  'dashboard',
-  'messages',
-  'groups',
-  'imported-users',
-  'event-registrations',
-  'event-checkins',
-  'event-checkouts',
-  'face-data',
-  'event-speakers',
-  'hanet',
-  'carts',
-]
-
-/** Store Sync — catalog / giỏ / checkout (+ auth stack). */
+/** Store Sync — preset scaffold cho catalog / giỏ / checkout (+ auth stack). */
 const STORE_SYNC_API_INFRA = [
-  'public',
   'socket',
   'auth',
   'notifications',
@@ -109,6 +86,7 @@ const STORE_SYNC_API_INFRA = [
 const HUB_CHECKIN_API_PRESET = {
   id: 'hub-checkin-api',
   alignAdminApp: '../hub-checkin-frontend/config/admin.app.config.json',
+  extraModules: HUB_CHECKIN_API_INFRA,
   excludeModules: HUB_CHECKIN_EXCLUDED_STORE_MODULES,
   excludeEntities: HUB_CHECKIN_EXCLUDED_STORE_ENTITIES,
 }
@@ -135,6 +113,7 @@ const APP_CONFIG_PRESETS = {
       'sessions',
       'accounts',
     ],
+    extraModules: STORE_SYNC_API_INFRA,
   },
   main: {
     id: 'main-api',
@@ -159,28 +138,6 @@ function expandAdminModules(adminModules, adminModuleMap) {
     else out.push(mapped)
   }
   return out
-}
-
-function normalizeAppRel(appRel) {
-  return appRel.replace(/\\/g, '/')
-}
-
-function isHubCheckinApi(appRel) {
-  const norm = normalizeAppRel(appRel)
-  return norm.includes('apps/hub-checkin/api')
-}
-
-/** @deprecated dùng isHubCheckinApi */
-function isHubEventApi(appRel) {
-  return isHubCheckinApi(appRel)
-}
-
-function isHubParentApi(appRel) {
-  return normalizeAppRel(appRel).includes('apps/hub-parent/api')
-}
-
-function isStoreSyncApi(appRel) {
-  return normalizeAppRel(appRel).includes('apps/store-sync/api')
 }
 
 function resolveApiModules(appRel) {
@@ -226,18 +183,6 @@ function resolveApiModules(appRel) {
     }
   }
 
-  if (isHubCheckinApi(appRel)) {
-    modules = [...new Set([...modules, ...HUB_EVENT_API_INFRA])]
-  }
-
-  if (isHubParentApi(appRel) && !config.renderAllModules) {
-    modules = [...new Set([...modules, ...HUB_PARENT_API_INFRA])]
-  }
-
-  if (isStoreSyncApi(appRel)) {
-    modules = [...new Set([...modules, ...STORE_SYNC_API_INFRA])]
-  }
-
   if (config.extraModules?.length) {
     modules = [...new Set([...modules, ...config.extraModules])]
   }
@@ -267,15 +212,10 @@ module.exports = {
   DEFAULT_ADMIN_MODULE_MAP,
   HUB_CHECKIN_EXCLUDED_STORE_MODULES,
   HUB_CHECKIN_EXCLUDED_STORE_ENTITIES,
-  HUB_EVENT_API_INFRA,
-  HUB_PARENT_API_INFRA,
+  HUB_CHECKIN_API_INFRA,
   STORE_SYNC_API_INFRA,
   APP_CONFIG_PRESETS,
   expandAdminModules,
   resolveApiModules,
   presetForProductLine,
-  isHubCheckinApi,
-  isHubEventApi,
-  isHubParentApi,
-  isStoreSyncApi,
 }

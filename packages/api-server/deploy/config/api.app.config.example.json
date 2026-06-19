@@ -1,6 +1,21 @@
 {
   "id": "hub-checkin-api",
   "alignAdminApp": "../hub-checkin-frontend/config/admin.app.config.json",
+  "extraModules": [
+    "public",
+    "socket",
+    "auth",
+    "notifications",
+    "dashboard",
+    "events",
+    "event-registrations",
+    "event-checkins",
+    "event-checkouts",
+    "face-data",
+    "event-speakers",
+    "seo-metas",
+    "hanet"
+  ],
   "excludeModules": ["products", "orders", "promo-codes", "carts"],
   "excludeEntities": ["Product", "Order", "PromoCode", "CustomerCart"],
   "packageModuleTemplates": {
