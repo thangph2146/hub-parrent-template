@@ -77,13 +77,12 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
  * Accepts callback refs and RefObject(s)
  */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to memoize by all values
   return React.useCallback(
     (value: T) => {
       composeRefs(...refs)(value)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    refs
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo -- radix composeRefs pattern
+    refs,
   )
 }
 

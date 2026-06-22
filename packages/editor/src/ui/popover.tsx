@@ -77,7 +77,6 @@ export function PopoverTrigger({
       children as React.ReactElement<
         React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }
       >,
-      // eslint-disable-next-line react-hooks/refs
       {
         ref: triggerRef,
         onClick: handleClick,

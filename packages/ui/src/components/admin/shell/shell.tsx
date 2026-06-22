@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "../../dropdown-menu"
 import { AdminProfileMenuPanel } from "./admin-profile-menu-panel"
+import { AdminSessionLoginCopyButton } from "./admin-session-login-copy-button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../../sheet"
 import { MobileSidebarPanel, Sidebar } from "./sidebar"
 import { ThemeToggle } from "../../theme-toggle"
@@ -260,6 +261,12 @@ export function AdminShell({
             </div>
             <div className="flex-1" />
             <div className="flex items-center gap-2 sm:gap-3">
+              <AdminSessionLoginCopyButton
+                user={user}
+                pagePath={pathname}
+                loginPath={loginPath}
+                portalLabel={siteName}
+              />
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
@@ -303,6 +310,10 @@ export function AdminShell({
                   className="w-[min(100vw-1.5rem,21rem)] overflow-hidden rounded-xl p-0 shadow-lg ring-1 ring-border/60"
                 >
                   <AdminProfileMenuPanel
+                    user={user}
+                    pagePath={pathname}
+                    loginPath={loginPath}
+                    portalLabel={siteName}
                     displayName={displayName}
                     rolesDisplay={rolesDisplay}
                     avatarUrl={avatarUrl}

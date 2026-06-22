@@ -21,7 +21,9 @@ import {
   AdminListPageHeader,
   AdminPageGuard,
   AdminPageSection,
+  AdminPermissionDeniedNotice,
 } from "@ui/components/admin"
+import { canUserAccess, PERMISSION_CODES } from "@workspace/api-client"
 import {
   useAdminAuth as useAuth,
   useAdminApi,
@@ -148,6 +150,138 @@ function ProfileAvatarPicker({
   )
 }
 
+const PROFILE_CONTACT_GRID_CLASS =
+  "grid grid-cols-1 gap-x-5 gap-y-4 pt-1 sm:grid-cols-2"
+
+type ProfileContactFormFieldsProps = {
+  idPrefix: "stack" | "split"
+  showStudentCode: boolean
+  studentCodeEditable: boolean
+  studentCode: string
+  onStudentCodeChange: (value: string) => void
+  studentCodeError: string | null
+  fullName: string
+  onFullNameChange: (value: string) => void
+  phone: string
+  onPhoneChange: (value: string) => void
+  address: string
+  onAddressChange: (value: string) => void
+  showAddress: boolean
+  addressFieldLabel: string
+  isLoading: boolean
+  hasProfile: boolean
+}
+
+function ProfileContactFormFields({
+  idPrefix,
+  showStudentCode,
+  studentCodeEditable,
+  studentCode,
+  onStudentCodeChange,
+  studentCodeError,
+  fullName,
+  onFullNameChange,
+  phone,
+  onPhoneChange,
+  address,
+  onAddressChange,
+  showAddress,
+  addressFieldLabel,
+  isLoading,
+  hasProfile,
+}: ProfileContactFormFieldsProps) {
+  const fieldId = (name: string) => {
+    if (idPrefix === "stack") return `admin-${name}-stack`
+    if (name === "studentCode") return "admin-studentCode-split"
+    return `admin-${name}`
+  }
+
+  return (
+    <div className={PROFILE_CONTACT_GRID_CLASS}>
+      {showStudentCode ? (
+        <Field className="min-w-0 sm:col-span-2">
+          <FieldLabel htmlFor={fieldId("studentCode")}>
+            Mã số sinh viên
+          </FieldLabel>
+          <FieldContent>
+            <Input
+              id={fieldId("studentCode")}
+              value={studentCode}
+              onChange={(e) => {
+                if (!studentCodeEditable) return
+                onStudentCodeChange(
+                  e.target.value.replace(/\D/g, "").slice(0, 12),
+                )
+              }}
+              readOnly={!studentCodeEditable}
+              disabled={isLoading || !hasProfile || !studentCodeEditable}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="VD: 202600001"
+              className={`${PROFILE_FIELD_CLASS} font-mono`}
+              aria-invalid={Boolean(studentCodeError)}
+            />
+            {studentCodeError ? (
+              <p className="mt-1 text-xs text-destructive">{studentCodeError}</p>
+            ) : studentCodeEditable ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                MSSV là số (5–12 chữ số), dùng làm thư mục lưu ảnh khuôn mặt HANET.
+              </p>
+            ) : null}
+          </FieldContent>
+        </Field>
+      ) : null}
+
+      <Field className="min-w-0">
+        <FieldLabel htmlFor={fieldId("fullName")}>Họ và tên</FieldLabel>
+        <FieldContent>
+          <Input
+            id={fieldId("fullName")}
+            value={fullName}
+            onChange={(e) => onFullNameChange(e.target.value)}
+            disabled={isLoading || !hasProfile}
+            className={PROFILE_FIELD_CLASS}
+          />
+        </FieldContent>
+      </Field>
+
+      <Field className="min-w-0">
+        <FieldLabel htmlFor={fieldId("phone")}>Số điện thoại</FieldLabel>
+        <FieldContent>
+          <Input
+            id={fieldId("phone")}
+            type="tel"
+            value={phone}
+            onChange={(e) => onPhoneChange(e.target.value)}
+            disabled={isLoading || !hasProfile}
+            placeholder="VD: 0901234567"
+            className={PROFILE_FIELD_CLASS}
+          />
+        </FieldContent>
+      </Field>
+
+      {showAddress ? (
+        <Field className="min-w-0 sm:col-span-2">
+          <FieldLabel htmlFor={fieldId("address")}>
+            {addressFieldLabel}
+          </FieldLabel>
+          <FieldContent>
+            <Textarea
+              id={fieldId("address")}
+              value={address}
+              onChange={(e) => onAddressChange(e.target.value)}
+              disabled={isLoading || !hasProfile}
+              placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
+              rows={3}
+              className={PROFILE_TEXTAREA_CLASS}
+            />
+          </FieldContent>
+        </Field>
+      ) : null}
+    </div>
+  )
+}
+
 export function AdminProfilePageInner({
   config,
 }: {
@@ -159,21 +293,35 @@ export function AdminProfilePageInner({
   const maxAvatarChanges = normalizeMaxAvatarChanges(config.maxAvatarChanges)
   const showAddress = config.showAddress !== false
   const showChangePassword = config.showChangePassword !== false
-  const showStudentCode =
-    config.showStudentCode === true && profileSource === "account"
-  const studentCodeEditable =
-    showStudentCode && config.studentCodeEditable === true
   const contactSectionTitle =
-    config.contactSectionTitle ?? "Thông tin liên hệ & địa chỉ"
+    config.contactSectionTitle ??
+    (profileSource === "account"
+      ? "Thông tin cá nhân"
+      : "Thông tin liên hệ & địa chỉ")
   const contactSectionDescription =
     config.contactSectionDescription ??
-    "Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các màn nội bộ liên quan."
+    (profileSource === "account"
+      ? "Cập nhật họ tên, số điện thoại và địa chỉ liên hệ của bạn."
+      : "Cập nhật thông tin liên hệ để đồng bộ cho hồ sơ quản trị và các màn nội bộ liên quan.")
+  const addressFieldLabel =
+    profileSource === "account" ? "Địa chỉ liên hệ" : "Địa chỉ / văn phòng"
   const layout = config.layout ?? "split"
   const showAvatarUrl = config.showAvatarUrl !== false
   const isStackLayout = layout === "stack"
 
   const { user: sessionUser } = useAuth()
   const userId = sessionUser?.id
+
+  const studentCodeRoles = config.studentCodeRoles ?? ["student"]
+  const hasStudentCodeRole =
+    sessionUser?.roles?.some((role) => studentCodeRoles.includes(role.name)) ??
+    false
+  const showStudentCode =
+    config.showStudentCode === true &&
+    profileSource === "account" &&
+    hasStudentCodeRole
+  const studentCodeEditable =
+    showStudentCode && config.studentCodeEditable === true
 
   const staffQuery = useStaffProfile(
     profileSource === "staff" ? userId : undefined,
@@ -487,8 +635,48 @@ export function AdminProfilePageInner({
     !savingProfile &&
     (!showStudentCode || !studentCodeError)
 
+  const profileViewPermission =
+    profileSource === "account"
+      ? PERMISSION_CODES.ACCOUNTS_VIEW
+      : PERMISSION_CODES.USERS_VIEW
+  const profileUpdatePermission =
+    profileSource === "account"
+      ? PERMISSION_CODES.ACCOUNTS_UPDATE
+      : PERMISSION_CODES.USERS_UPDATE
+  const profileViewActionLabel =
+    profileSource === "account"
+      ? "Xem hồ sơ tài khoản"
+      : "Xem hồ sơ nhân sự"
+  const profileUpdateActionLabel =
+    profileSource === "account"
+      ? "Cập nhật hồ sơ tài khoản"
+      : "Cập nhật hồ sơ nhân sự"
+
+  const canViewProfile = sessionUser
+    ? canUserAccess(sessionUser, profileViewPermission)
+    : false
+  const canUpdateProfile = sessionUser
+    ? canUserAccess(sessionUser, profileUpdatePermission)
+    : false
+
   if (!sessionUser) {
     return null
+  }
+
+  if (!canViewProfile) {
+    return (
+      <AdminPageSection>
+        <AdminListPageHeader
+          title="Hồ sơ tài khoản"
+          subtitle={config.subtitle}
+        />
+        <AdminPermissionDeniedNotice
+          user={sessionUser}
+          actionLabel={profileViewActionLabel}
+          requiredPermission={profileViewPermission}
+        />
+      </AdminPageSection>
+    )
   }
 
   return (
@@ -498,18 +686,30 @@ export function AdminProfilePageInner({
         subtitle={config.subtitle}
       />
 
-      {isError && (
-        <p className="text-sm text-destructive">
-          {error instanceof Error ? error.message : "Không tải được hồ sơ"}
-        </p>
-      )}
+      {isError ? (
+        <AdminPermissionDeniedNotice
+          user={sessionUser}
+          error={error}
+          actionLabel={profileViewActionLabel}
+          requiredPermission={profileViewPermission}
+        />
+      ) : null}
 
+      {!canUpdateProfile && !isError ? (
+        <AdminPermissionDeniedNotice
+          user={sessionUser}
+          actionLabel={profileUpdateActionLabel}
+          requiredPermission={profileUpdatePermission}
+        />
+      ) : null}
+
+      {!isError ? (
       <div
         className={
           showChangePassword
-            ? "grid gap-6 xl:grid-cols-[minmax(0,1.20fr)_minmax(0,0.80fr)]"
+            ? "grid w-full gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]"
             : isStackLayout
-              ? "grid w-full gap-6"
+              ? "mx-auto w-full max-w-3xl"
               : "grid max-w-3xl gap-6"
         }
       >
@@ -570,91 +770,24 @@ export function AdminProfilePageInner({
                     </div>
                   </div>
 
-                  <div className="grid gap-4 pt-1 sm:grid-cols-2">
-                    {showStudentCode ? (
-                      <Field>
-                        <FieldLabel htmlFor="admin-studentCode">
-                          Mã số sinh viên
-                        </FieldLabel>
-                        <FieldContent>
-                          <Input
-                            id="admin-studentCode"
-                            value={studentCode}
-                            onChange={(e) => {
-                              if (!studentCodeEditable) return
-                              setStudentCode(
-                                e.target.value.replace(/\D/g, "").slice(0, 12),
-                              )
-                            }}
-                            readOnly={!studentCodeEditable}
-                            disabled={isLoading || !profile || !studentCodeEditable}
-                            inputMode="numeric"
-                            autoComplete="off"
-                            placeholder="VD: 202600001"
-                            className={`${PROFILE_FIELD_CLASS} font-mono`}
-                            aria-invalid={Boolean(studentCodeError)}
-                          />
-                          {studentCodeError ? (
-                            <p className="mt-1 text-xs text-destructive">
-                              {studentCodeError}
-                            </p>
-                          ) : showStudentCode && studentCodeEditable ? (
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              MSSV là số (5–12 chữ số), dùng làm thư mục lưu ảnh
-                              khuôn mặt HANET.
-                            </p>
-                          ) : null}
-                        </FieldContent>
-                      </Field>
-                    ) : null}
-                    <Field>
-                      <FieldLabel htmlFor="admin-fullName-stack">
-                        Họ và tên
-                      </FieldLabel>
-                      <FieldContent>
-                        <Input
-                          id="admin-fullName-stack"
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          disabled={isLoading || !profile}
-                          className={PROFILE_FIELD_CLASS}
-                        />
-                      </FieldContent>
-                    </Field>
-                    <Field className="sm:col-span-2">
-                      <FieldLabel htmlFor="admin-phone-stack">
-                        Số điện thoại
-                      </FieldLabel>
-                      <FieldContent>
-                        <Input
-                          id="admin-phone-stack"
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          disabled={isLoading || !profile}
-                          placeholder="VD: 0901234567"
-                          className={PROFILE_FIELD_CLASS}
-                        />
-                      </FieldContent>
-                    </Field>
-                    {showAddress ? (
-                      <Field className="sm:col-span-2">
-                        <FieldLabel htmlFor="admin-address-stack">
-                          Địa chỉ / văn phòng
-                        </FieldLabel>
-                        <FieldContent>
-                          <Textarea
-                            id="admin-address-stack"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            disabled={isLoading || !profile}
-                            placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
-                            className={PROFILE_TEXTAREA_CLASS}
-                          />
-                        </FieldContent>
-                      </Field>
-                    ) : null}
-                  </div>
+                  <ProfileContactFormFields
+                    idPrefix="stack"
+                    showStudentCode={showStudentCode}
+                    studentCodeEditable={studentCodeEditable}
+                    studentCode={studentCode}
+                    onStudentCodeChange={setStudentCode}
+                    studentCodeError={studentCodeError}
+                    fullName={fullName}
+                    onFullNameChange={setFullName}
+                    phone={phone}
+                    onPhoneChange={setPhone}
+                    address={address}
+                    onAddressChange={setAddress}
+                    showAddress={showAddress}
+                    addressFieldLabel={addressFieldLabel}
+                    isLoading={isLoading}
+                    hasProfile={Boolean(profile)}
+                  />
 
                   <div className={PROFILE_ACTION_BAR_CLASS}>
                     <Button
@@ -740,80 +873,24 @@ export function AdminProfilePageInner({
                     Email đăng nhập đang được quản trị tập trung từ hệ thống và
                     không chỉnh trực tiếp ở màn này.
                   </p>
-                  {showStudentCode ? (
-                    <Field>
-                      <FieldLabel htmlFor="admin-studentCode-split">
-                        Mã số sinh viên
-                      </FieldLabel>
-                      <FieldContent>
-                        <Input
-                          id="admin-studentCode-split"
-                          value={studentCode}
-                          onChange={(e) => {
-                            if (!studentCodeEditable) return
-                            setStudentCode(
-                              e.target.value.replace(/\D/g, "").slice(0, 12),
-                            )
-                          }}
-                          readOnly={!studentCodeEditable}
-                          disabled={isLoading || !profile || !studentCodeEditable}
-                          inputMode="numeric"
-                          autoComplete="off"
-                          placeholder="VD: 202600001"
-                          className={`${PROFILE_FIELD_CLASS} font-mono`}
-                          aria-invalid={Boolean(studentCodeError)}
-                        />
-                        {studentCodeError ? (
-                          <p className="mt-1 text-xs text-destructive">
-                            {studentCodeError}
-                          </p>
-                        ) : null}
-                      </FieldContent>
-                    </Field>
-                  ) : null}
-                  <Field>
-                    <FieldLabel htmlFor="admin-fullName">Họ và tên</FieldLabel>
-                    <FieldContent>
-                      <Input
-                        id="admin-fullName"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        disabled={isLoading || !profile}
-                        className={PROFILE_FIELD_CLASS}
-                      />
-                    </FieldContent>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="admin-phone">Số điện thoại</FieldLabel>
-                    <FieldContent>
-                      <Input
-                        id="admin-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        disabled={isLoading || !profile}
-                        placeholder="VD: 0901234567"
-                        className={PROFILE_FIELD_CLASS}
-                      />
-                    </FieldContent>
-                  </Field>
-                  {showAddress ? (
-                    <Field>
-                      <FieldLabel htmlFor="admin-address">
-                        Địa chỉ / văn phòng
-                      </FieldLabel>
-                      <FieldContent>
-                        <Textarea
-                          id="admin-address"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value)}
-                          disabled={isLoading || !profile}
-                          placeholder="Địa chỉ liên hệ khi cần (không bắt buộc)"
-                          className={PROFILE_TEXTAREA_CLASS}
-                        />
-                      </FieldContent>
-                    </Field>
-                  ) : null}
+                  <ProfileContactFormFields
+                    idPrefix="split"
+                    showStudentCode={showStudentCode}
+                    studentCodeEditable={studentCodeEditable}
+                    studentCode={studentCode}
+                    onStudentCodeChange={setStudentCode}
+                    studentCodeError={studentCodeError}
+                    fullName={fullName}
+                    onFullNameChange={setFullName}
+                    phone={phone}
+                    onPhoneChange={setPhone}
+                    address={address}
+                    onAddressChange={setAddress}
+                    showAddress={showAddress}
+                    addressFieldLabel={addressFieldLabel}
+                    isLoading={isLoading}
+                    hasProfile={Boolean(profile)}
+                  />
                   <div className={PROFILE_ACTION_BAR_CLASS}>
                     <Button
                       type="button"
@@ -911,6 +988,7 @@ export function AdminProfilePageInner({
         </div>
         ) : null}
       </div>
+      ) : null}
     </AdminPageSection>
   )
 }

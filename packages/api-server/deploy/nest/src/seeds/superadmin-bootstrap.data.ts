@@ -5,6 +5,7 @@ import {
 import { type Permission } from '../config/permissions';
 import {
   ACTIVE_PERMISSIONS,
+  ACTIVE_END_USER_PERMISSION_CODES,
   ACTIVE_ROLE_PRESETS,
 } from '../config/active-permissions';
 
@@ -57,7 +58,11 @@ const SELF_SERVICE_PERMISSIONS = pickPermissionsByCode(
   'accounts:update',
 );
 
-const STAFF_DIRECTORY_PERMISSIONS = pickPermissionsByResource('users', 'sessions');
+const STAFF_DIRECTORY_PERMISSIONS = pickPermissionsByResource('users');
+
+const END_USER_SELF_SERVICE_PERMISSIONS = pickPermissionsByCode(
+  ...ACTIVE_END_USER_PERMISSION_CODES,
+);
 
 const RBAC_READ_PERMISSIONS = pickPermissionsByCode('roles:view', 'roles:export');
 
@@ -183,25 +188,28 @@ const SHIPPER_PERMISSIONS = uniquePermissions(
   ),
 );
 
-const PARENT_PERMISSIONS = pickPermissionsByCode(
-  'dashboard:view',
-  'parent_students:view',
-  'parent_students:create',
-  'notifications:view_own',
-  'messages:view_own',
-  'posts:view',
-  'accounts:view',
-  'accounts:update',
+const PARENT_PERMISSIONS = uniquePermissions(
+  pickPermissionsByCode(
+    'dashboard:view',
+    'students:view_own',
+    'parent_students:view',
+    'parent_students:create',
+    'posts:view',
+    'accounts:view',
+    'accounts:update',
+  ),
+  END_USER_SELF_SERVICE_PERMISSIONS,
 );
 
-const STUDENT_PERMISSIONS = pickPermissionsByCode(
-  'dashboard:view',
-  'students:view_own',
-  'notifications:view_own',
-  'messages:view_own',
-  'posts:view',
-  'accounts:view',
-  'accounts:update',
+const STUDENT_PERMISSIONS = uniquePermissions(
+  pickPermissionsByCode(
+    'dashboard:view',
+    'students:view_own',
+    'posts:view',
+    'accounts:view',
+    'accounts:update',
+  ),
+  END_USER_SELF_SERVICE_PERMISSIONS,
 );
 
 const SUPERADMIN_ROLES_DATA_BASE = [
@@ -536,6 +544,7 @@ const SUPERADMIN_ROLES_DATA_BASE = [
     description: 'Tài khoản phụ huynh — liên kết và theo dõi học sinh',
     permissions: [
       'dashboard:view',
+      'students:view_own',
       'parent_students:view',
       'parent_students:create',
       'notifications:view_own',

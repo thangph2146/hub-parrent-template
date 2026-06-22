@@ -9,6 +9,9 @@ import {
   adminToastMeta,
   defaultAdminOperationToast,
   inferAdminToastFromMutationKey,
+  adminApiMeta,
+  inferAdminApiFromMutationKey,
+  type AdminApiMeta,
   type AdminOperationToastMessages,
 } from "../lib/admin-operation-toast"
 import {
@@ -56,6 +59,8 @@ export type UseAdminMutationOptions<
       | false
     /** Chặn toast socket trùng sau khi API trả 2xx (mặc định suy từ mutationKey[0]/[1]). */
     suppressRealtime?: AdminToastSuppressMeta | false
+    /** Endpoint HTTP cho báo cáo copy (dev) — mặc định suy từ mutationKey. */
+    adminApi?: AdminApiMeta | false
   }
 
 export function useAdminMutation<
@@ -69,6 +74,7 @@ export function useAdminMutation<
   const {
     toast: toastOverride,
     suppressRealtime,
+    adminApi: adminApiOverride,
     meta,
     mutationKey,
     onSuccess: userOnSuccess,
@@ -119,6 +125,14 @@ export function useAdminMutation<
         defaultAdminOperationToast.error,
     }
     mergedMeta = { ...meta, ...adminToastMeta(messages) }
+  }
+
+  if (adminApiOverride !== false) {
+    const inferredApi =
+      adminApiOverride ?? inferAdminApiFromMutationKey(mutationKey)
+    if (inferredApi) {
+      mergedMeta = { ...mergedMeta, ...adminApiMeta(inferredApi) }
+    }
   }
 
   const mutation = useMutation<TData, TError, TVariables, TContext>({

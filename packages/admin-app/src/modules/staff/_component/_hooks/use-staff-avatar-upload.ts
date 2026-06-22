@@ -3,7 +3,10 @@
 import { useRef, useState } from "react"
 import type { UseFormReturn } from "react-hook-form"
 import { toast } from "@ui/components/sonner"
-import { formatAdminOperationErrorDetails } from "@ui/lib/admin-operation-toast"
+import {
+  showAdminOperationErrorToast,
+  showAdminOperationSuccessToast,
+} from "@ui/lib/admin-operation-toast"
 import { getStudentCodeAvatarUploadBlockReason } from "@workspace/admin-app/lib/student-code-form"
 import { useAdminApi } from "@workspace/admin-app/runtime"
 
@@ -40,17 +43,20 @@ export function useStaffAvatarUpload(options: UseStaffAvatarUploadOptions) {
     try {
       const url = (await api.users.uploadAvatar(subjectUserId, file)).url
       form.setValue("avatar", url, { shouldDirty: true })
-      toast.success("Đã tải ảnh đại diện", {
-        description: [
-          `User ID: ${subjectUserId}`,
-          `File: ${file.name}`,
-          `URL: ${url}`,
-        ].join("\n"),
+      showAdminOperationSuccessToast("Đã tải ảnh đại diện", {
+        operationLabel: "users / uploadAvatar",
+        variables: { userId: subjectUserId, fileName: file.name },
+        data: { url },
       })
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Lỗi upload ảnh", {
-        description: formatAdminOperationErrorDetails(error),
-      })
+      showAdminOperationErrorToast(
+        error instanceof Error ? error.message : "Lỗi upload ảnh",
+        {
+          operationLabel: "users / uploadAvatar",
+          variables: { userId: subjectUserId, fileName: file.name },
+          error,
+        }
+      )
     } finally {
       setUploadingAvatar(false)
     }

@@ -15,6 +15,7 @@ import {
   type GetOptionsConfig,
 } from '../../index';
 import { isSystemSuperAdminRoleName } from '../../../config/system-role';
+import { parseRolePermissions } from '../../../config/active-permissions';
 
 export interface RolesRowDto {
   id: number;
@@ -74,12 +75,16 @@ function mapRow(r: Record<string, unknown>): RolesRowDto {
     name: String(r.name ?? ''),
     displayName: String(r.displayName ?? ''),
     description: (r.description as string | null | undefined) ?? null,
-    permissions: r.permissions,
+    permissions: parseRolePermissions(r.permissions),
     isActive: Boolean(r.isActive),
     createdAt: safeIsoStringNow(r.createdAt as Date | string | null | undefined),
     updatedAt: safeIsoStringNow(r.updatedAt as Date | string | null | undefined),
     deletedAt: safeIsoString(r.deletedAt as Date | string | null | undefined),
   };
+}
+
+function normalizeRolePermissionsInput(input: unknown): string[] {
+  return parseRolePermissions(input);
 }
 
 function buildWhere(params: ListRolesParams): Record<string, unknown> {
@@ -204,7 +209,7 @@ export abstract class BaseRolesService {
     created.name = data.name;
     created.displayName = data.displayName;
     created.description = data.description ?? null;
-    created.permissions = data.permissions;
+    created.permissions = normalizeRolePermissionsInput(data.permissions);
     created.isActive = data.isActive ?? true;
     await em.persistAndFlush(created);
     return mapRow(created);
@@ -233,7 +238,9 @@ export abstract class BaseRolesService {
     if (data.name != null) row.name = data.name;
     if (data.displayName != null) row.displayName = data.displayName;
     if (data.description !== undefined) row.description = data.description;
-    if (data.permissions !== undefined) row.permissions = data.permissions;
+    if (data.permissions !== undefined) {
+      row.permissions = normalizeRolePermissionsInput(data.permissions);
+    }
     if (data.isActive !== undefined) row.isActive = data.isActive;
     await em.persistAndFlush(existing);
     return mapRow(row);

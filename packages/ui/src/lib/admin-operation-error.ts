@@ -43,6 +43,10 @@ export function formatAdminOperationErrorDetails(err: unknown): string {
 
   if (err instanceof ApiError) {
     lines.push("Loại: ApiError")
+    if (err.request) {
+      lines.push(`API: ${err.request.method} ${err.request.path}`)
+      lines.push(`URL: ${err.request.url}`)
+    }
     lines.push(`HTTP: ${err.status} ${err.statusText}`)
     if (err.message.trim()) {
       lines.push(`Thông báo: ${err.message.trim()}`)
@@ -84,16 +88,4 @@ export function resolveAdminOperationError(err: unknown): string {
     if (typeof message === "string" && message.trim()) return message.trim()
   }
   return "Không thực hiện được thao tác"
-}
-
-export function buildAdminOperationErrorToast(
-  err: unknown,
-  title?: string,
-): { message: string; description?: string } {
-  const message = title?.trim() || resolveAdminOperationError(err)
-  const description = formatAdminOperationErrorDetails(err)
-  if (!description || description === message) {
-    return { message }
-  }
-  return { message, description }
 }

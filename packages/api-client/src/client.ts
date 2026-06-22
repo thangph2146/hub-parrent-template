@@ -13,6 +13,7 @@ import {
   printDevApiNetworkError,
   isAbortLikeError,
 } from "@workspace/logger"
+import { recordAdminApiCall, setAdminApiBaseUrl } from "./admin-api-call-trace"
 
 function readNodeEnv(): string | undefined {
   // Node / SSR: process.env có sẵn. Browser: nhiều bundler (Next, Vite) vẫn thay
@@ -96,7 +97,12 @@ export class ApiError extends Error {
     public readonly status: number,
     public readonly statusText: string,
     public readonly body: unknown,
-    message?: string
+    message?: string,
+    public readonly request?: {
+      method: string
+      path: string
+      url: string
+    }
   ) {
     super(message ?? `${status} ${statusText}`)
     this.name = "ApiError"
@@ -141,6 +147,9 @@ export class ApiClient {
     this.devLogging = defaultDevLogging(options)
     this.devLogTag = options.devLogTag ?? "api-client"
     this.getDevAuthContext = options.getDevAuthContext
+    if (typeof globalThis !== "undefined") {
+      setAdminApiBaseUrl(this.baseUrl)
+    }
   }
 
   private async formatDevAuthSuffix(): Promise<string> {
@@ -289,6 +298,8 @@ export class ApiClient {
       typeof performance.now === "function"
         ? performance.now()
         : Date.now()
+    const startedAt = Date.now()
+    const requestMeta = { method, path, url }
 
     const authSuffix = this.devLogging ? await this.formatDevAuthSuffix() : ""
     const reqBodyLog =
@@ -313,11 +324,24 @@ export class ApiClient {
       })
     } catch (err) {
       if (didTimeout) {
+        recordAdminApiCall({
+          method,
+          path,
+          url,
+          status: 408,
+          statusText: "Request Timeout",
+          ok: false,
+          startedAt,
+          completedAt: Date.now(),
+          ms: Date.now() - startedAt,
+          requestBody: summarizeRequestBodyForTrace(body),
+        })
         throw new ApiError(
           408,
           "Request Timeout",
           null,
-          `Yeu cau API qua han sau ${timeoutMs}ms`
+          `Yeu cau API qua han sau ${timeoutMs}ms`,
+          requestMeta
         )
       }
       if (this.devLogging && !isAbortLikeError(err)) {
@@ -334,6 +358,18 @@ export class ApiClient {
           ms,
           authSuffix,
           err,
+        })
+      }
+      if (!isAbortLikeError(err)) {
+        recordAdminApiCall({
+          method,
+          path,
+          url,
+          ok: false,
+          startedAt,
+          completedAt: Date.now(),
+          ms: Date.now() - startedAt,
+          requestBody: summarizeRequestBodyForTrace(body),
         })
       }
       throw err
@@ -359,6 +395,18 @@ export class ApiClient {
           respSummary: "204 — không có body",
         })
       }
+      recordAdminApiCall({
+        method,
+        path,
+        url,
+        status: 204,
+        statusText: response.statusText,
+        ok: true,
+        startedAt,
+        completedAt: Date.now(),
+        ms: Date.now() - startedAt,
+        requestBody: summarizeRequestBodyForTrace(body),
+      })
       return undefined as T
     }
 
@@ -402,16 +450,58 @@ export class ApiClient {
     }
 
     if (!response.ok) {
+      recordAdminApiCall({
+        method,
+        path,
+        url,
+        status: response.status,
+        statusText: response.statusText,
+        ok: false,
+        startedAt,
+        completedAt: Date.now(),
+        ms: Date.now() - startedAt,
+        requestBody: summarizeRequestBodyForTrace(body),
+      })
       throw new ApiError(
         response.status,
         response.statusText,
         payload,
-        extractMessage(payload) ?? `${response.status} ${response.statusText}`
+        extractMessage(payload) ?? `${response.status} ${response.statusText}`,
+        requestMeta
       )
     }
 
+    recordAdminApiCall({
+      method,
+      path,
+      url,
+      status: response.status,
+      statusText: response.statusText,
+      ok: true,
+      startedAt,
+      completedAt: Date.now(),
+      ms: Date.now() - startedAt,
+      requestBody: summarizeRequestBodyForTrace(body),
+    })
+
     return payload as T
   }
+}
+
+function summarizeRequestBodyForTrace(body: unknown): unknown {
+  if (body === undefined) return undefined
+  if (body instanceof FormData) {
+    const fields: string[] = []
+    body.forEach((value, key) => {
+      if (value instanceof File) {
+        fields.push(`${key}: File(${value.name}, ${value.size}b)`)
+      } else {
+        fields.push(`${key}: ${String(value)}`)
+      }
+    })
+    return { _formData: fields }
+  }
+  return body
 }
 
 const extractMessage = (payload: unknown): string | undefined => {

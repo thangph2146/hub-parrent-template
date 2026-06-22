@@ -157,10 +157,14 @@ function verifyAdminConfig(profile, errors) {
     errors.push(`admin config có module ngoài profile: ${extraModules.join(", ")}`)
   }
 
+  const adminModuleMap = {
+    ...DEFAULT_ADMIN_MODULE_MAP,
+    ...(profile.admin?.adminModuleMap ?? {}),
+  }
   const apiModules = new Set(profile.api.modules ?? [])
   const excludedApiModules = new Set(profile.api.excludeModules ?? [])
   for (const moduleId of config.modules ?? []) {
-    const deps = DEFAULT_ADMIN_MODULE_MAP[moduleId] ?? [moduleId]
+    const deps = adminModuleMap[moduleId] ?? [moduleId]
     for (const dep of Array.isArray(deps) ? deps : [deps]) {
       if (!apiModules.has(dep) || excludedApiModules.has(dep)) {
         errors.push(`admin module ${moduleId} cần API module bị thiếu/loại: ${dep}`)

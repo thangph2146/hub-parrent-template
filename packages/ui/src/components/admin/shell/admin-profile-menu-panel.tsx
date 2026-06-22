@@ -1,6 +1,7 @@
 "use client"
 
 import type { LucideIcon } from "lucide-react"
+import type { AuthUser } from "@workspace/api-client"
 import {
   ExternalLink,
   Home,
@@ -14,6 +15,7 @@ import {
 import { cn } from "../../../lib/utils"
 import { useTextSize } from "../../text-size-provider"
 import { useTheme } from "../../theme-provider"
+import { AdminSessionLoginCopyButton } from "./admin-session-login-copy-button"
 
 const TEXT_SIZE_OPTIONS = [
   { value: "sm", label: "Nhỏ", sampleClass: "text-[11px]" },
@@ -95,6 +97,10 @@ function MenuAccountLink({
 }
 
 export function AdminProfileMenuPanel({
+  user,
+  pagePath,
+  loginPath,
+  portalLabel,
   displayName,
   rolesDisplay,
   avatarUrl,
@@ -106,6 +112,10 @@ export function AdminProfileMenuPanel({
   onNavigate,
   onLogout,
 }: {
+  user: AuthUser
+  pagePath?: string | null
+  loginPath?: string | null
+  portalLabel?: string | null
   displayName: string
   rolesDisplay: string
   avatarUrl: string | null
@@ -167,6 +177,15 @@ export function AdminProfileMenuPanel({
               destructive
               onClick={onLogout}
             />
+            <div className="pt-1">
+              <AdminSessionLoginCopyButton
+                user={user}
+                pagePath={pagePath}
+                loginPath={loginPath}
+                portalLabel={portalLabel}
+                layout="sm"
+              />
+            </div>
           </div>
         </section>
 

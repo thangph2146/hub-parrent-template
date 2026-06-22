@@ -1,7 +1,10 @@
 "use client"
 
 import type { ReactNode } from "react"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 
+import { useAdminLayout } from "@ui/components/admin"
 import { Card, CardContent } from "@ui/components/card"
 import { cn } from "@ui/lib/utils"
 
@@ -16,6 +19,8 @@ export function AdminAuthSplitLayout({
   visual,
   className,
 }: AdminAuthSplitLayoutProps) {
+  const { publicSitePath, publicSiteLabel = "Trang chủ" } = useAdminLayout()
+
   return (
     <div
       className={cn(
@@ -24,6 +29,16 @@ export function AdminAuthSplitLayout({
       )}
     >
       <div className="w-full max-w-6xl">
+        {publicSitePath ? (
+          <Link
+            href={publicSitePath}
+            className="mb-4 inline-flex items-center gap-2 rounded-lg px-1 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-4 shrink-0" aria-hidden />
+            {publicSiteLabel}
+          </Link>
+        ) : null}
+
         <Card className="overflow-hidden rounded-2xl border-0 p-0 shadow-xl ring-1 ring-foreground/10">
           <CardContent className="grid min-h-[min(100svh-2rem,52rem)] grid-cols-1 p-0 lg:grid-cols-2">
             <div className="flex flex-col justify-center bg-card px-6 py-8 sm:px-8 lg:px-10 lg:py-12">

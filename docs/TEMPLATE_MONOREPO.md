@@ -41,9 +41,24 @@ pnpm push -- "feat: mô tả"
 ```bash
 pnpm sync
 pnpm dev
+
+# Push repo product + cập nhật packages lên mono-repo-template
+pnpm push -- "feat: mô tả"
+
+# Chỉ push repo product (apps/scripts local)
+pnpm push -- --skip-template "feat: hub-parent only"
+
+# Chỉ đẩy packages → template (không push repo product)
+pnpm push:template -- "feat: shared packages"
 ```
 
-Downstream giữ `apps/`, `scripts/` qua `keepPaths` khi pull template.
+`pnpm push` (downstream):
+
+1. Commit + push `origin main` repo product (apps, scripts, …).
+2. Copy `inheritPaths` sang checkout `../monorepo-template` (hoặc `TEMPLATE_REPO_PATH`).
+3. `pnpm check` trên template → commit → push `origin main` upstream.
+
+Downstream giữ `apps/`, `scripts/` qua `keepPaths` khi pull/push template.
 
 ## Manifest
 

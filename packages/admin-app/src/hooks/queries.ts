@@ -82,6 +82,13 @@ export const useUpdateAccountProfile = (): UseMutationResult<
 > => {
   const qc = useQueryClient()
   return useAdminMutation({
+    mutationKey: ["account", "update"],
+    adminApi: { method: "PUT", path: "/admin/accounts" },
+    toast: {
+      loading: "Đang lưu hồ sơ…",
+      success: "Đã cập nhật hồ sơ",
+      error: (err) => (err instanceof Error ? err.message : "Lỗi lưu hồ sơ"),
+    },
     mutationFn: (input) => api.accounts.update(input),
     onSuccess: async () => {
       await qc.refetchQueries({ queryKey: queryKeys.accountProfile() })
@@ -97,6 +104,7 @@ export const useChangeAccountPassword = (): UseMutationResult<
   const qc = useQueryClient()
   return useAdminMutation({
     mutationFn: (input) => api.accounts.changePassword(input),
+    adminApi: { method: "PUT", path: "/admin/accounts" },
     onSuccess: async () => {
       await qc.refetchQueries({ queryKey: queryKeys.accountProfile() })
     },
@@ -138,6 +146,10 @@ export const useUpdateStaffProfile = (): UseMutationResult<
   const qc = useQueryClient()
   return useAdminMutation({
     mutationKey: ["profile", "update"],
+    adminApi: {
+      method: "PUT",
+      path: (vars) => `/admin/users/${(vars as { id: string | number }).id}`,
+    },
     toast: {
       loading: "Đang lưu hồ sơ…",
       success: "Đã cập nhật hồ sơ",

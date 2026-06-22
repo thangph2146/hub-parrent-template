@@ -7,6 +7,9 @@ import {
   SUPERADMIN_USERS_DATA,
   SUPERADMIN_USER_ROLES_DATA,
 } from './superadmin-bootstrap.data';
+import { ACTIVE_ROLE_PRESETS } from '../config/active-permissions';
+
+const ACTIVE_ROLE_PRESET_SET = new Set<string>(ACTIVE_ROLE_PRESETS);
 
 async function resolveUserRoleLink(
   em: EntityManager,
@@ -131,6 +134,18 @@ export async function runSuperadminBootstrap(
 
   await em.flush();
   L('Roles committed.');
+
+  L('Deactivating roles outside product-line presets...');
+  const orphanRoles = await em.find(Role, {
+    name: { $nin: [...ACTIVE_ROLE_PRESET_SET] },
+    isActive: true,
+  });
+  for (const role of orphanRoles) {
+    role.isActive = false;
+    em.persist(role);
+    L(`Deactivated orphan role: ${role.name}`);
+  }
+  await em.flush();
 
   L('Seeding users...');
   for (const userData of SUPERADMIN_USERS_DATA) {

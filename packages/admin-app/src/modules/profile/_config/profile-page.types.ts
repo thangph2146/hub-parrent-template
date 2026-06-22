@@ -17,10 +17,12 @@ export type AdminProfilePageConfig = {
   showAddress?: boolean
   /** Hiện khối đổi mật khẩu. Mặc định `true`. */
   showChangePassword?: boolean
-  /** Hiện mã số sinh viên. Cổng SV: cho phép nhập (chỉ số). */
+  /** Bật trường MSSV trên cổng account — chỉ hiện khi user thuộc `studentCodeRoles`. */
   showStudentCode?: boolean
   /** Cho phép chỉnh MSSV trên form. Mặc định theo `showStudentCode`. */
   studentCodeEditable?: boolean
+  /** Role được hiện/nhập MSSV khi `showStudentCode` bật. Mặc định chỉ `student`. */
+  studentCodeRoles?: string[]
   contactSectionTitle?: string
   contactSectionDescription?: string
   /**

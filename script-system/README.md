@@ -6,7 +6,7 @@ Orchestration monorepo — sync template, bootstrap downstream, verify repo-leve
 
 | Nhóm | Vai trò |
 |------|---------|
-| `sync/` | `pull:template`, `post-pull-downstream`, `init:downstream` (upstream) |
+| `sync/` | `pull:template`, `post-pull-downstream`, `push-template`, `push-product`, `init:downstream` (upstream) |
 | `git/` | Push template (upstream) |
 | `lib/` | `monorepo-root`, `run-step` |
 | `verify/` | Layout repo, downstream-safe, template manifest |

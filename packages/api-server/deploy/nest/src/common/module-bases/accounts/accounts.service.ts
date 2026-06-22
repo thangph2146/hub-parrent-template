@@ -133,7 +133,7 @@ export abstract class BaseAccountsService {
 
     const profile = mapToProfile(user as UserWithProfile, userRoles);
     const studentCode = await this.resolveStudentCode(userId, profile.email);
-    return studentCode ? { ...profile, studentCode } : profile;
+    return { ...profile, studentCode: studentCode ?? null };
   }
 
   async updateProfile(

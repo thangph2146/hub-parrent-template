@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useCallback, useMemo, useState, type ReactNode } from "react"
 import type { ColumnFiltersState, OnChangeFn, RowSelectionState } from "@tanstack/react-table"
 import { Button, buttonVariants } from "@ui/components/button"
-import { AdminPageLoading } from "@ui/components/admin"
+import { AdminPageLoading, AdminPermissionDeniedNotice } from "@ui/components/admin"
 import { ImageLightbox } from "@ui/components/image-lightbox"
 import type { DataTableUserSearchHandlers } from "@ui/components/data-table"
 import { ExternalLink, Loader2, Upload } from "lucide-react"
@@ -285,10 +285,18 @@ export function FileStorageScopedBrowse({
   )
 
   if (!canView) {
+    if (!user) return null
     return (
-      <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
-        Bạn không có quyền xem kho lưu trữ (`uploads:view`).
-      </p>
+      <AdminPermissionDeniedNotice
+        user={user}
+        actionLabel="Xem kho lưu trữ tệp"
+        requiredPermission={PERMISSION_CODES.UPLOADS_VIEW}
+        fallback={
+          <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+            Bạn không có quyền xem kho lưu trữ.
+          </p>
+        }
+      />
     )
   }
 

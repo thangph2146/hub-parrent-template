@@ -97,6 +97,7 @@ function apiPresetFromProfile(profile) {
     excludeEntities: profile.api.excludeEntities ?? [],
     alignAdminApp: profile.api.alignAdminApp,
     alignAdminAppOptional: profile.api.alignAdminAppOptional,
+    adminModuleMap: profile.admin?.adminModuleMap ?? {},
     packageModuleTemplates: { enabled: true },
     render: { pruneEntities: true },
   }

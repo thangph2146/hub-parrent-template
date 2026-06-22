@@ -252,6 +252,34 @@ export function Plugins({
         />
 
         <ClickableLinkPlugin />
+        <EditorListPlugins />
+        <HashtagPlugin />
+
+        <MentionsPlugin />
+        {!readOnly && <DraggableBlockPlugin anchorElem={floatingAnchorElem} />}
+        <ImagesPlugin />
+        {!readOnly && <LayoutPlugin />}
+
+        {readOnly ? (
+          <>
+            <HorizontalRulePlugin />
+            <TablePlugin
+              hasHorizontalScroll={false}
+              hasCellMerge
+              hasCellBackgroundColor
+              hasTabHandler={false}
+            />
+          </>
+        ) : null}
+
+        {!readOnly && (
+          <>
+            <AutoEmbedPlugin />
+            <TwitterPlugin />
+            <YouTubePlugin />
+          </>
+        )}
+
         {!readOnly && (
           <>
             <AlignPlugin />
@@ -266,23 +294,8 @@ export function Plugins({
             <TableColumnResizerPlugin
               anchorElem={floatingAnchorElem ?? document.body}
             />
-            <EditorListPlugins />
             <TabIndentationPlugin />
             <HistoryPlugin />
-          </>
-        )}
-        <HashtagPlugin />
-
-        <MentionsPlugin />
-        {!readOnly && <DraggableBlockPlugin anchorElem={floatingAnchorElem} />}
-        {!readOnly && <ImagesPlugin />}
-        {!readOnly && <LayoutPlugin />}
-
-        {!readOnly && (
-          <>
-            <AutoEmbedPlugin />
-            <TwitterPlugin />
-            <YouTubePlugin />
           </>
         )}
 

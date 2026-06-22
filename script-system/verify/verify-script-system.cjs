@@ -32,6 +32,8 @@ const DOWNSTREAM_SYNC_ROOT_SCRIPTS = [
   "pull-template.cjs",
   "post-pull-downstream.cjs",
   "downstream-sync-profile.cjs",
+  "push-template.cjs",
+  "push-product.cjs",
 ]
 
 const SYNC_ROOT_SCRIPTS = new Set(

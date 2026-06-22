@@ -83,6 +83,7 @@ export class BaseAccountsController extends BaseAdminHttpController {
       'address',
       'citizenId',
       'avatar',
+      'studentCode',
       'currentPassword',
       'password',
     ] as const;

@@ -68,6 +68,16 @@ export {
 } from "./role-templates/event-staff"
 export { ApiClient, ApiError } from "./client"
 export {
+  getAdminApiCallsSince,
+  getLastAdminApiCall,
+  recordAdminApiCall,
+  clearAdminApiCallTrace,
+  buildAdminApiUrl,
+  getAdminApiBaseUrl,
+  setAdminApiBaseUrl,
+  type AdminApiCallRecord,
+} from "./admin-api-call-trace"
+export {
   summarizeAuthUser,
   printDevApiCall,
   formatDevRequestBody,

@@ -13,10 +13,25 @@ export {
 } from "./shell/admin-page-transition"
 export * from "./shell/page-guard"
 export {
+  AdminActionGuard,
+} from "./shell/action-guard"
+export {
   AdminAccessDeniedPanel,
+  AdminPermissionDeniedNotice,
   buildAdminAccessDeniedCopyText,
+  ADMIN_FORBIDDEN_ACTION_MESSAGE,
+  isAdminForbiddenPermissionError,
   type AdminAccessDeniedPanelProps,
+  type AdminPermissionDeniedNoticeProps,
+  type AdminAccessDeniedScope,
 } from "./shell/access-denied-panel"
+export {
+  AdminSessionLoginCopyButton,
+  buildAdminSessionLoginCopyText,
+  buildAdminSessionDevLoginOption,
+  type AdminSessionLoginCopyButtonProps,
+  type AdminSessionLoginCopyContext,
+} from "./shell/admin-session-login-copy-button"
 export { ScrollToTop } from "../scroll-to-top"
 export {
   AdminLayoutBridge,

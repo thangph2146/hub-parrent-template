@@ -82,7 +82,16 @@ const PARENT_ADMIN_MODULES = [
 ]
 
 const PARENT_API_MODULES = [
-  ...COMMON_API_MODULES,
+  'users',
+  'roles',
+  'accounts',
+  'auth',
+  'dashboard',
+  'notifications',
+  'proxy-image',
+  'settings',
+  'uploads',
+  'system',
   'socket',
   'categories',
   'tags',
@@ -245,6 +254,7 @@ const PROFILES = {
         'products',
         'promo-codes',
         'screens',
+        'sessions',
         'speakers',
         'training-levels',
         'training-systems',
@@ -255,13 +265,15 @@ const PROFILES = {
       configPath: 'apps/hub-parent/hub-parent-frontend/admin.app.config.json',
       modules: PARENT_ADMIN_MODULES,
       alwaysIncludeHrefs: ['/'],
+      adminModuleMap: {
+        rbac: ['roles', 'accounts'],
+      },
     },
     permissions: {
       resources: [
         'dashboard',
         'users',
         'roles',
-        'sessions',
         'accounts',
         'settings',
         'uploads',
@@ -273,10 +285,10 @@ const PROFILES = {
         'contact_requests',
         'parent_students',
         'students',
-        'notifications',
         'system',
       ],
-      rolePresets: ['super_admin', 'admin', 'manager', 'editor', 'support_staff', 'parent', 'student'],
+      endUserPermissionCodes: ['notifications:view_own'],
+      rolePresets: ['super_admin', 'admin', 'manager', 'editor', 'parent', 'student'],
     },
   },
   'store-sync': {

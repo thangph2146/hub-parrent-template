@@ -158,6 +158,8 @@ function writeProductLineArtifacts(appRoot, appRel) {
   const profile = profileForApiApp(appRel)
   if (!profile) return
 
+  const endUserCodes = profile.permissions.endUserPermissionCodes ?? []
+
   const activePermissionsSrc = `import { PERMISSIONS, type Permission } from './permissions';\n\nexport const PRODUCT_LINE_PROFILE = ${JSON.stringify(
     { id: profile.id, label: profile.label },
     null,
@@ -166,11 +168,17 @@ function writeProductLineArtifacts(appRoot, appRel) {
     profile.permissions.resources ?? [],
     null,
     2,
+  )} as const;\n\nexport const ACTIVE_END_USER_PERMISSION_CODES = ${JSON.stringify(
+    endUserCodes,
+    null,
+    2,
   )} as const;\n\nexport const ACTIVE_ROLE_PRESETS = ${JSON.stringify(
     profile.permissions.rolePresets ?? [],
     null,
     2,
-  )} as const;\n\nconst ACTIVE_PERMISSION_RESOURCE_SET = new Set<string>(ACTIVE_PERMISSION_RESOURCES);\n\nexport const ACTIVE_PERMISSIONS: Permission[] = Object.values(PERMISSIONS).filter(\n  (permission) => {\n    const [resource] = permission.split(':');\n    return resource ? ACTIVE_PERMISSION_RESOURCE_SET.has(resource) : false;\n  },\n);\n`
+  )} as const;\n\nconst ACTIVE_PERMISSION_RESOURCE_SET = new Set<string>(ACTIVE_PERMISSION_RESOURCES);\n\nconst RESOURCE_PERMISSIONS: Permission[] = Object.values(PERMISSIONS).filter(\n  (permission) => {\n    const [resource] = permission.split(':');\n    return resource ? ACTIVE_PERMISSION_RESOURCE_SET.has(resource) : false;\n  },\n);\n\nconst END_USER_PERMISSIONS = ACTIVE_END_USER_PERMISSION_CODES.filter((code) =>
+  Object.values(PERMISSIONS).includes(code as Permission),
+) as Permission[];\n\nexport const ACTIVE_PERMISSIONS: Permission[] = [\n  ...RESOURCE_PERMISSIONS,\n  ...END_USER_PERMISSIONS,\n];\n\nexport const ACTIVE_PERMISSION_SET = new Set<string>(ACTIVE_PERMISSIONS);\n\nexport function parseRolePermissions(input: unknown): string[] {\n  let raw = input;\n  if (typeof raw === 'string') {\n    try {\n      raw = JSON.parse(raw);\n    } catch {\n      return [];\n    }\n  }\n  if (!Array.isArray(raw)) return [];\n  return raw.filter(\n    (permission): permission is string =>\n      typeof permission === 'string' && ACTIVE_PERMISSION_SET.has(permission),\n  );\n}\n`
 
   writeFileWithRetry(
     path.join(appRoot, 'src/config/active-permissions.ts'),

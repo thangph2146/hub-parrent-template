@@ -259,6 +259,7 @@ const ROLE_PRESETS: RolePreset[] = [
     description: "Tài khoản phụ huynh — liên kết và theo dõi học sinh",
     permissions: permissionsByCode(
       "dashboard:view",
+      "students:view_own",
       "parent_students:view",
       "parent_students:create",
       "notifications:view_own",
@@ -358,7 +359,7 @@ const ROLE_PRESET_REQUIRED_PERMISSIONS: Record<string, string[]> = {
   event_staff: ["events:view", "event_checkins:view", "event_registrations:view"],
   sales: ["products:view", "orders:view", "promo_codes:view"],
   shipper: ["orders:view", "orders:update"],
-  parent: ["parent_students:view"],
+  parent: ["parent_students:view", "students:view_own"],
   student: ["students:view_own", "students:view"],
 }
 

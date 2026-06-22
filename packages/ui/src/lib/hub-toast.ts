@@ -2,10 +2,15 @@
 
 import { toast as baseToast, type ExternalToast } from "sonner"
 import { suppressRealtimeToastForEntity } from "./admin-toast-suppress"
+import {
+  type HubToastOptions,
+  toSonnerToastOptions,
+} from "./hub-toast-types"
 
 type ToastMessage = Parameters<typeof baseToast>[0]
 
-function extractCopyText(message: ToastMessage, data?: ExternalToast): string {
+function extractCopyText(message: ToastMessage, data?: HubToastOptions): string {
+  if (data?.copyReport?.trim()) return data.copyReport.trim()
   const parts: string[] = []
   if (typeof message === "string") parts.push(message)
   else if (message != null) parts.push(String(message))
@@ -18,7 +23,7 @@ async function copyToastText(text: string): Promise<void> {
   if (!text) return
   try {
     await navigator.clipboard.writeText(text)
-    baseToast.success("Đã sao chép", { duration: 1500 })
+    baseToast.success("Đã sao chép báo cáo", { duration: 1500 })
   } catch {
     baseToast.error("Không sao chép được", { duration: 2000 })
   }
@@ -26,13 +31,14 @@ async function copyToastText(text: string): Promise<void> {
 
 function withCopyAction(
   message: ToastMessage,
-  data?: ExternalToast
+  data?: HubToastOptions,
 ): ExternalToast | undefined {
-  if (data?.action) return data
+  if (data?.action) return toSonnerToastOptions(data)
   const copyText = extractCopyText(message, data)
-  if (!copyText) return data
+  if (!copyText) return toSonnerToastOptions(data)
+  const sonnerData = toSonnerToastOptions(data)
   return {
-    ...data,
+    ...sonnerData,
     action: {
       label: "Sao chép",
       onClick: (event) => {
@@ -55,7 +61,7 @@ export type MutationSuccessSuppress = {
  */
 export function mutationSuccess(
   message: ToastMessage,
-  data?: ExternalToast,
+  data?: HubToastOptions,
   suppress?: MutationSuccessSuppress
 ): string | number {
   if (suppress?.resource) {
@@ -72,22 +78,24 @@ export type HubToast = typeof baseToast & {
   mutationSuccess: typeof mutationSuccess
 }
 
-/** Toast Sonner — mọi loại đều có nút Sao chép (trừ khi đã có action khác). */
+/** Toast Sonner — nút Sao chép (dev: `copyReport` = báo cáo đầy đủ, UI chỉ hiện message). */
 export const toast: HubToast = Object.assign(
-  (message: ToastMessage, data?: ExternalToast) =>
+  (message: ToastMessage, data?: HubToastOptions) =>
     baseToast(message, withCopyAction(message, data)),
   {
     ...baseToast,
-    success: (message: ToastMessage, data?: ExternalToast) =>
+    success: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.success(message, withCopyAction(message, data)),
-    error: (message: ToastMessage, data?: ExternalToast) =>
+    error: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.error(message, withCopyAction(message, data)),
-    warning: (message: ToastMessage, data?: ExternalToast) =>
+    warning: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.warning(message, withCopyAction(message, data)),
-    info: (message: ToastMessage, data?: ExternalToast) =>
+    info: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.info(message, withCopyAction(message, data)),
-    loading: (message: ToastMessage, data?: ExternalToast) =>
+    loading: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.loading(message, withCopyAction(message, data)),
     mutationSuccess,
   }
 )
+
+export type { HubToastOptions } from "./hub-toast-types"
