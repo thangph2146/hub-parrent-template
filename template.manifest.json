@@ -1,7 +1,7 @@
 {
   "id": "mono-repo-template",
   "role": "upstream",
-  "description": "Template upstream — packages/ là thư viện đầy đủ; apps/main = sandbox dev; apps/* khác = reference bootstrap downstream.",
+  "description": "Feature-template upstream — packages/ + feature profiles + generic generators là nguồn dùng chung; apps/ và deploy scripts thuộc từng downstream product.",
   "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
   "defaultRef": "main",
   "remoteName": "template",
@@ -18,26 +18,16 @@
   "inheritPaths": [
     "packages",
     "script-system/admin",
-    "script-system/db",
-    "script-system/dev",
-    "script-system/env",
-    "script-system/git",
     "script-system/lib",
     "script-system/README.md",
-    "script-system/sync/lib",
     "script-system/sync/downstream-sync-profile.cjs",
     "script-system/sync/post-pull-downstream.cjs",
     "script-system/sync/pull-template.cjs",
-    "script-system/sync/sync-checkin-menu-tree.cjs",
-    "script-system/sync/sync-checkin-packages.cjs",
-    "script-system/sync/sync-parent.cjs",
     "script-system/verify",
-    "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
     "docs/api-client-pattern",
     "docs/ui-pattern",
-    "docs/env",
     "docs/steps",
     "docs/TEMPLATE_MONOREPO.md"
   ],
@@ -45,40 +35,43 @@
     ".gitignore",
     "turbo.json",
     "AGENTS.md",
-    "apps/README.md",
     "packages/README.md"
   ],
   "keepPaths": [
-    "apps",
     "pnpm-workspace.yaml",
     "package.json",
     "template.manifest.json",
     ".template-lock.json",
-    "ecosystem",
     ".env",
     ".env.local"
   ],
   "productLines": {
     "hub-checkin": {
-      "appsPath": "apps/hub-checkin",
-      "ecosystem": "ecosystem/checkin.cjs",
-      "pm2Start": "pnpm pm2:start:checkin",
+      "featureProfile": "hub-checkin",
+      "appTargets": {
+        "root": "apps/hub-checkin",
+        "api": "apps/hub-checkin/api",
+        "frontend": "apps/hub-checkin/hub-checkin-frontend"
+      },
       "packages": ["ui", "admin-app", "api-client", "api-server", "query-client", "logger", "site-config", "editor"]
     },
     "hub-parent": {
-      "appsPath": "apps/hub-parent",
-      "ecosystem": "ecosystem/main.cjs",
-      "pm2Start": "pnpm pm2:start",
+      "featureProfile": "hub-parent",
+      "appTargets": {
+        "root": "apps/hub-parent",
+        "api": "apps/hub-parent/api",
+        "frontend": "apps/hub-parent/hub-parent-frontend"
+      },
       "packages": ["ui", "api-client", "api-server", "query-client", "logger", "site-config", "editor", "promo-codes"]
     },
     "store-sync": {
-      "appsPath": "apps/store-sync",
-      "ecosystem": "ecosystem/store.cjs",
-      "pm2Start": "pnpm pm2:start:store",
+      "featureProfile": "store-sync",
+      "appTargets": {
+        "root": "apps/store-sync",
+        "api": "apps/store-sync/api",
+        "frontend": "apps/store-sync/store-sync-frontend"
+      },
       "packages": ["ui", "api-client", "api-server", "query-client", "promo-codes"]
     }
-  },
-  "deprecated": {
-    "syncFromMain": "Không dùng pull:checkin / sync-api-from-main trên downstream — dùng pull:template + packages/api-server generate."
   }
 }

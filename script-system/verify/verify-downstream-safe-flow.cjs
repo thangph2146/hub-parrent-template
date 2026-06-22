@@ -8,6 +8,9 @@
 const fs = require("node:fs")
 const path = require("node:path")
 const { ROOT } = require("../lib/monorepo-root.cjs")
+const {
+  PRODUCT_LINE_PROFILES,
+} = require("../../packages/api-server/deploy/config/product-line-profiles.cjs")
 
 function readJson(file) {
   if (!fs.existsSync(file)) return null
@@ -34,18 +37,20 @@ function main() {
   const productLine = manifest.productLine
   if (!productLine) {
     errors.push("template.manifest.json thiếu productLine")
+  } else if (!PRODUCT_LINE_PROFILES[productLine]) {
+    errors.push(`productLine=${productLine} chưa có feature profile`)
   } else {
+    const profile = PRODUCT_LINE_PROFILES[productLine]
+    const apiAppPath = profile.targets?.api ?? profile.api?.appPath ?? path.join("apps", productLine, "api")
     const moduleBasesRoot = path.join(
       ROOT,
-      "apps",
-      productLine,
-      "api",
+      apiAppPath,
       "src",
       "common",
       "module-bases",
     )
     if (!fs.existsSync(moduleBasesRoot)) {
-      errors.push(`thiếu apps/${productLine}/api/src/common/module-bases`)
+      errors.push(`thiếu ${apiAppPath}/src/common/module-bases`)
     } else {
       const baseDirs = fs
         .readdirSync(moduleBasesRoot, { withFileTypes: true })

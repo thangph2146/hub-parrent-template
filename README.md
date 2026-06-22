@@ -1,355 +1,48 @@
-# Store Sync
+# mono-repo-template
 
-Monorepo ứng dụng B2B/store theo **product line** (`apps/main`, `hub-parent`, `hub-event`, `store-sync`) + gói dùng chung (`packages/*`). Dev hàng ngày: `apps/main/api` + `apps/main/backend`. Chi tiết: [`AGENTS.md`](AGENTS.md), [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md).
+Feature-template upstream cho các product HUB.
 
-## Yêu cầu môi trường
+Repo này chỉ giữ code dùng chung:
 
-- **Node.js** ≥ 20 (xem `.nvmrc`)
-- **pnpm** 9.x (xem `packageManager` trong `package.json`)
+- `packages/`: thư viện và generator source dùng chung.
+- `packages/api-server/deploy/config/product-line-profiles.cjs`: cấu hình tính năng theo product line.
+- `script-system/`: tooling generic tối thiểu để pull template, post-pull và verify shared boundary.
+- `docs/`: pattern dùng chung.
+
+Repo này **không chứa `apps/`**. Product apps, env runtime, PM2, database bootstrap và deploy scripts thuộc từng downstream product.
+
+## Cài Đặt
 
 ```bash
 pnpm install
+pnpm check
 ```
 
-## Cấu trúc thư mục
-
-| Đường dẫn | Package | Mô tả |
-| --------- | ------- | ----- |
-| `apps/main/api` | `@api` | API NestJS dev (source of truth) — cổng **3002**, prefix `/api` |
-| `apps/main/backend` | `@backend` | Admin Next.js dev — thường **3001** |
-| `apps/hub-parent/hub-parent-frontend` | `@frontend` | Storefront deploy — thường **3000** |
-| `apps/hub-parent/api` | `@hub-parent/api` | API deploy site chính |
-| `apps/hub-checkin/api` | `@hub-checkin/api` | API deploy check-in |
-| `apps/hub-checkin/hub-checkin-frontend` | `@hub-checkin/frontend` | Frontend check-in |
-| `packages/api-client` | — | SDK HTTP cho app Next |
-| `packages/ui` | — | Component UI dùng chung |
-| `docker-compose.yml` | — | Postgres + build (tuỳ chọn) |
-
-> Shorthand cũ `apps/api` / `apps/backend` / `apps/frontend` = legacy; không tạo lại — xem [`apps/README.md`](apps/README.md).
-
-## Biến môi trường
-
-Monorepo tổ chức theo **product line** — mỗi app có `.env.example` riêng. Xem [`docs/env/README.md`](docs/env/README.md).
-
-```bash
-pnpm env:init parent    # site chính (hub-parent API + admin + storefront)
-pnpm env:init checkin   # check-in sự kiện
-pnpm env:init main      # source of truth API + admin
-```
-
-Ví dụ đường dẫn:
-
-- API: `apps/main/api/.env` (dev) · `apps/hub-parent/api/.env` (deploy parent)
-- Admin: `apps/main/backend/.env`
-- Storefront: `apps/hub-parent/hub-parent-frontend/.env`
-- Check-in: `apps/hub-checkin/api/.env` + `apps/hub-checkin/hub-checkin-frontend/.env`
-
-Biến quan trọng:
-
-- `DATABASE_URL`, `JWT_SECRET` — trên app **API** tương ứng
-- `NEXT_PUBLIC_API_URL` — trên app Next (phải có suffix `/api`)
-- `ALLOWED_ORIGINS` — CORS trên API (không dùng `CORS_ORIGINS`)
-
-## Chạy phát triển
-
-```bash
-# Toàn bộ app qua Turbo (API + backend + frontend)
-pnpm dev
-```
-
-Script `predev` có thể giải phóng cổng (xem `package.json`). Giải phóng tay:
-
-```bash
-pnpm kill
-```
-
-Chạy riêng một package:
-
-```bash
-pnpm --filter @api dev
-pnpm --filter @backend dev
-pnpm --filter @frontend dev
-```
-
-## Lệnh cơ sở dữ liệu và migration (MikroORM)
-
-Mọi lệnh CLI MikroORM nên chạy **trong ngữ cảnh package `@api`** để đúng `mikro-orm.config.ts` và `DATABASE_URL`.
-
-### Cách gọi nhanh từ gốc repo
-
-```bash
-pnpm db -- <lệnh mikro-orm và tham số>
-```
-
-Các lệnh tắt thường dùng từ root:
-
-```bash
-pnpm db:fresh            # schema:fresh --run --seed
-pnpm db:migration:fresh  # migration:fresh --seed
-pnpm db:seed             # seeder:run
-```
-
-Ví dụ:
-
-```bash
-pnpm db -- migration:list
-pnpm db -- migration:up
-pnpm db -- seeder:run
-pnpm db:fresh
-```
-
-Tương đương:
-
-```bash
-pnpm --filter @api exec mikro-orm migration:up
-```
-
-### Hai hướng làm schema (cần phân biệt)
-
-| Cách                 | Lệnh (trong `apps/main/api` hoặc qua `pnpm db --`)                  | Khi nào dùng                                                                                                               |
-| -------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| **Schema từ entity** | `schema:fresh --run --seed` (script: `pnpm db:fresh` trong `@api`) | Local: xóa DB, tạo lại bảng theo **entity**, chạy **seeder**. **Không** chạy file migration `.ts` trong `src/migrations/`. |
-| **Chuỗi migration**  | `migration:up` / `migration:list` / `migration:down`               | Môi trường có lịch sử thay đổi qua file migration; CI/production.                                                          |
-
-**Lưu ý quan trọng**
-
-- Sau `schema:fresh --seed`, dữ liệu RBAC (roles, permissions) được **bổ sung trong `DatabaseSeeder.ensureRbacBaseline()`**. Nếu chỉ tạo bảng mà không chạy seeder, bảng role có thể trống → đăng nhập không có quyền.
-- `migration:fresh --seed` (script `db:migration:fresh`) xóa DB và chạy lại **toàn bộ migration** rồi seed — phù hợp khi bạn duy trì đủ file migration từ đầu project.
-- Trên **MySQL**, tránh gom nhiều câu lệnh SQL không tương thích trong một lần `addSql` nếu driver không hỗ trợ multi-statement; trong repo các migration đã tách từng câu khi cần.
-- Nếu `migration:fresh` báo **`users` doesn’t exist** ở bước thêm `cartJson`: chuỗi migration đã có bản **`Migration20260508180500`** tạo bảng `users` trước — kéo code mới rồi chạy lại `migration:fresh` (hoặc dùng `pnpm --filter @api run db:fresh` nếu không cần đúng từng file migration).
-- Nếu seed báo **`products` doesn’t exist**: chuỗi migration gồm **`Migration20260508204000`** tạo `products` và `orders` (FK `customerId` → `users`) trước khi seeder chèn catalog/đơn mẫu.
-
-### Các lệnh migration thường dùng
-
-```bash
-# Liệt kê migration đã/ chưa chạy
-pnpm db -- migration:list
-
-# Áp dụng batch migration tiếp theo
-pnpm db -- migration:up
-
-# Hoàn tác một bước (cẩn thận dữ liệu)
-pnpm db -- migration:down
-
-# Tạo file migration mới từ diff schema (sau khi sửa entity)
-pnpm db -- migration:create
-
-# Snapshot / migration khởi tạo (ít dùng khi đã có lịch sử)
-pnpm db -- migration:create --initial
-```
-
-Sau khi thêm migration mới: commit file trong `apps/main/api/src/migrations/`, trên môi trường khác chạy `migration:up` (hoặc pipeline deploy tương đương).
-
-### Seeder
-
-```bash
-pnpm db:fresh
-pnpm --filter @api run db:fresh
-
-pnpm db -- seeder:run
-pnpm db:seed
-pnpm --filter @api run db:seed
-```
-
-Seeder mặc định: `DatabaseSeeder` (cấu hình trong `mikro-orm.config.ts`). Có thể bật log chi tiết bằng `DB_SEED_VERBOSE=1`.
-
-Tài khoản demo (sau seed): ví dụ `super@storesync.local` / `demo` (siêu quản trị), `admin@storesync.local`, … — xem `apps/main/api/src/seeders/database.seeder.ts`.
-
-### Schema không qua migration (chỉ dev)
-
-```bash
-pnpm --filter @api run db:update    # schema:update --run --safe
-pnpm --filter @api run db:create     # schema:create --run
-pnpm --filter @api run db:drop       # schema:drop --run
-```
-
-Chỉ dùng khi bạn hiểu rõ: có thể lệch so với chuỗi migration trên môi trường khác.
-
-## Docker
-
-```bash
-docker compose up -d
-```
-
-API mặc định nối Postgres trong compose. Điều chỉnh biến môi trường trong `docker-compose.yml` hoặc file `.env` bên cạnh compose.
-
-## Build production
+## Lệnh Chính
 
 ```bash
 pnpm build
+pnpm lint
+pnpm typecheck
+pnpm check
+pnpm push -- "feat: mô tả"
 ```
 
-Từng app có `Dockerfile` riêng (multi-stage) nếu cần đóng gói image.
+## Downstream Pull
 
-## Gói `@workspace/api-client`
-
-- Cấu hình `baseUrl` trỏ tới API (có prefix `/api`).
-- Admin gửi header `X-User-Id` sau đăng nhập (lấy từ session).
-- Ở `NODE_ENV=development` có thể bật log request/response (xem tùy chọn SDK trong code).
-
-## Deploy Ubuntu + Nginx + PM2
-
-### 1) Chuẩn bị server
+Product repo kéo code dùng chung bằng:
 
 ```bash
-sudo apt update && sudo apt -y upgrade
-sudo apt -y install curl git nginx
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt -y install nodejs
-sudo corepack enable
-corepack prepare pnpm@9 --activate
+pnpm pull:template
+pnpm post-pull:downstream
 ```
 
-Kiểm tra:
+Downstream tự giữ `apps/` và các scripts vận hành riêng. Template không sync app code.
 
-```bash
-node -v
-pnpm -v
-nginx -v
-```
+## Tài Liệu
 
-### 2) Clone code và cài dependencies
-
-```bash
-cd /var/www
-sudo mkdir -p store-sync && sudo chown -R $USER:$USER store-sync
-git clone <YOUR_GIT_URL> /var/www/store-sync
-cd /var/www/store-sync
-pnpm install --frozen-lockfile
-```
-
-### 3) Cấu hình biến môi trường production
-
-Theo stack deploy — copy từ `.env.example` trong từng app (hoặc `pnpm env:init parent` trên server). Chi tiết: [`docs/env/README.md`](docs/env/README.md).
-
-Site chính (ví dụ):
-
-- `apps/hub-parent/api/.env` — `DATABASE_URL`, `JWT_SECRET`, `ALLOWED_ORIGINS`
-- `apps/main/backend/.env` — `NEXT_PUBLIC_API_URL=https://<domain>/api`
-- `apps/hub-parent/hub-parent-frontend/.env` — `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`
-
-### 4) Build và migrate DB
-
-```bash
-cd /var/www/store-sync
-pnpm build
-pnpm db -- migration:up
-```
-
-Nếu cần seed lần đầu:
-
-```bash
-pnpm db -- seeder:run
-```
-
-### 5) Chạy app bằng PM2
-
-Cấu hình PM2 trong thư mục `ecosystem/` (store: `ecosystem/store.cjs`).
-
-```bash
-cd /var/www/store-sync
-pnpm add -g pm2
-pm2 start ecosystem/store.cjs
-pm2 status
-pm2 save
-pm2 startup systemd -u $USER --hp /home/$USER
-```
-
-Log:
-
-```bash
-pm2 logs
-pm2 logs store-sync-api
-pm2 logs store-sync-backend
-pm2 logs store-sync-frontend
-```
-
-### 6) Cấu hình Nginx reverse proxy
-
-Tạo file `/etc/nginx/sites-available/store-sync`:
-
-```nginx
-server {
-  listen 80;
-  server_name <domain>;
-
-  client_max_body_size 20m;
-
-  location /api/ {
-    proxy_pass http://127.0.0.1:3002/api/;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-
-  location /admin/ {
-    proxy_pass http://127.0.0.1:3001/;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-
-  location / {
-    proxy_pass http://127.0.0.1:3000/;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-}
-```
-
-Enable site:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/store-sync /etc/nginx/sites-enabled/store-sync
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-### 7) Bật HTTPS (Let's Encrypt)
-
-```bash
-sudo apt -y install certbot python3-certbot-nginx
-sudo certbot --nginx -d <domain> -d www.<domain>
-```
-
-Gia hạn tự động:
-
-```bash
-sudo systemctl status certbot.timer
-```
-
-### 8) Quy trình update bản mới
-
-```bash
-cd /var/www/store-sync
-git pull
-pnpm install --frozen-lockfile
-pnpm build
-pnpm db -- migration:up
-pm2 reload ecosystem/store.cjs --update-env
-```
-
-### 9) Checklist nhanh khi lỗi
-
-- `pm2 status` phải online đủ 3 process.
-- `pm2 logs <name>` kiểm tra lỗi env/DB.
-- `sudo nginx -t` phải ok.
-- `curl -I http://127.0.0.1:3002/api/health` (hoặc endpoint health tương đương) phải phản hồi.
-- Kiểm tra `NEXT_PUBLIC_API_URL` đúng domain `/api`.
-
-## Tài liệu thêm
-
-- Chi tiết env: `docs/env/README.md`
-- Entity & registry: `apps/main/api/src/entities/`
-- RBAC: `apps/main/api/src/auth/`, permissions: `apps/main/api/src/config/permissions.ts`
+- `AGENTS.md`
+- `docs/TEMPLATE_MONOREPO.md`
+- `docs/MONOREPO_STRUCTURE.md`
+- `packages/README.md`
+- `packages/api-server/README.md`

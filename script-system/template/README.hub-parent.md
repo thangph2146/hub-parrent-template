@@ -1,6 +1,6 @@
-# hub-parent-monorepo — site chính HUB (packages-first)
+# hub-parent-monorepo — downstream product
 
-Monorepo **deploy site chính** — kế thừa **full** `packages/` từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
+Monorepo **site chính HUB** tự sở hữu `apps/hub-parent/` và scripts vận hành riêng. Repo này chỉ pull shared `packages/`, feature profiles và generic generators từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
 
 > **Downstream:** sửa thư viện trên **template upstream trước** → `pnpm sync` ở đây.  
 > Agent: [`AGENTS.md`](AGENTS.md) · flow: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md)
@@ -8,8 +8,8 @@ Monorepo **deploy site chính** — kế thừa **full** `packages/` từ [mono-
 ## Cấu trúc
 
 ```
-packages/                         # Thư viện — kéo từ template
-apps/hub-parent/
+packages/                         # Kéo từ template
+apps/hub-parent/                  # Product-owned
 ├── api/                          # @hub-parent/api
 └── hub-parent-frontend/          # @frontend — storefront + /admin
 ```
@@ -21,9 +21,9 @@ apps/hub-parent/
 pnpm check && pnpm push -- "feat: ..."
 
 # 2) Trên hub-parent-monorepo
-pnpm sync              # pull:template + post-pull (install + build + verify)
+pnpm sync              # pull:template + post-pull generic
 pnpm sync:full         # sync + pnpm check
-pnpm dev:parent
+# thêm dev/deploy scripts riêng trong repo product
 ```
 
 | Lệnh | Vai trò |
@@ -36,15 +36,13 @@ pnpm dev:parent
 
 ```bash
 pnpm install
-pnpm env:init parent
-pnpm dev:parent          # API :3002 + storefront :3000
+pnpm sync
+pnpm check
 pnpm check
 ```
 
 ## Deploy
 
 ```bash
-pnpm build
-pnpm pm2:start
-pnpm pm2:reload
+Tự cấu hình trong repo product.
 ```

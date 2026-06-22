@@ -1,6 +1,6 @@
-# store-sync-monorepo — HUB Store (packages-first)
+# store-sync-monorepo — downstream product
 
-Monorepo deploy **HUB Store** — kế thừa full `packages/` từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
+Monorepo **HUB Store** tự sở hữu `apps/store-sync/` và scripts vận hành riêng. Repo này chỉ pull shared `packages/`, feature profiles và generic generators từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
 
 > **Downstream:** sửa thư viện trên **template upstream trước** → `pnpm sync` ở đây.  
 > Agent: [`AGENTS.md`](AGENTS.md) · flow: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md)
@@ -8,8 +8,8 @@ Monorepo deploy **HUB Store** — kế thừa full `packages/` từ [mono-repo-t
 ## Cấu trúc
 
 ```
-packages/
-apps/store-sync/
+packages/                   # Kéo từ template
+apps/store-sync/            # Product-owned
 ├── api/                    # @store-sync/api
 └── store-sync-frontend/    # storefront + /admin
 ```
@@ -21,9 +21,9 @@ apps/store-sync/
 pnpm check && pnpm push -- "feat: ..."
 
 # 2) Trên store-sync-monorepo
-pnpm sync              # pull:template + post-pull (install + build + admin generate)
+pnpm sync              # pull:template + post-pull generic
 pnpm sync:full         # sync + pnpm check
-pnpm dev:store
+# thêm dev/deploy scripts riêng trong repo product
 ```
 
 | Lệnh | Vai trò |
@@ -36,15 +36,13 @@ pnpm dev:store
 
 ```bash
 pnpm install
-pnpm env:init
-pnpm dev:store
+pnpm sync
+pnpm check
 pnpm check
 ```
 
 ## Deploy
 
 ```bash
-pnpm build
-pnpm pm2:start:store
-pnpm pm2:reload:store
+Tự cấu hình trong repo product.
 ```

@@ -18,16 +18,11 @@ function formatStep(step) {
 }
 
 function nextStepsForApp(appRel, pkgName) {
-  const rel = appRel.replace(/\\/g, '/')
   const steps = []
   if (pkgName) {
     steps.push(`pnpm --filter ${pkgName} run dev`)
   }
-  if (rel.includes('hub-event/')) {
-    steps.push('pnpm dev:checkin          # API + admin check-in (port 3000/3001/3002)')
-    steps.push('pnpm pull:checkin         # sau git pull — sync template + admin từ main')
-  }
-  steps.push('pnpm api:sync-template    # cập nhật deploy/nest từ apps/main/api')
+  steps.push('pnpm check                # product repo tự verify app/deploy config')
   return steps
 }
 

@@ -6,6 +6,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("../lib/monorepo-root.cjs");
+const {
+  PRODUCT_LINE_PROFILES,
+} = require("../../packages/api-server/deploy/config/product-line-profiles.cjs")
 const MANIFEST = path.join(ROOT, "template.manifest.json");
 const REQUIRED_PACKAGES = [
   "packages/ui",
@@ -66,19 +69,17 @@ function verify() {
     errors.push("thiếu .template-lock.json — chạy pnpm pull:template")
   }
 
-  const appsDir = path.join(ROOT, "apps")
-  if (!fs.existsSync(appsDir)) {
-    errors.push("thiếu apps/")
+  const profile = manifest.productLine
+    ? PRODUCT_LINE_PROFILES[manifest.productLine]
+    : null
+  if (!manifest.productLine) {
+    errors.push("template.manifest.json thiếu productLine")
+  } else if (!profile) {
+    errors.push(`productLine=${manifest.productLine} chưa có feature profile`)
   } else {
-    const lines = fs
-      .readdirSync(appsDir, { withFileTypes: true })
-      .filter((e) => e.isDirectory())
-      .map((e) => e.name)
-    if (lines.length === 0) {
-      errors.push("apps/ trống — cần ít nhất một product line")
-    }
-    if (manifest.productLine && !lines.includes(manifest.productLine)) {
-      errors.push(`productLine=${manifest.productLine} không có trong apps/`)
+    const appRoot = profile.targets?.appRoot ?? profile.appsPath ?? `apps/${manifest.productLine}`
+    if (!fs.existsSync(path.join(ROOT, appRoot))) {
+      errors.push(`thiếu ${appRoot}/ — apps thuộc downstream, hãy tạo app product local`)
     }
   }
 
@@ -91,7 +92,7 @@ function verify() {
   }
 
   console.log(
-    `[verify:template-downstream] OK — packages-first downstream (${manifest.id ?? "unknown"})`,
+    `[verify:template-downstream] OK — feature-template downstream (${manifest.id ?? "unknown"})`,
   )
 }
 

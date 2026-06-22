@@ -12,6 +12,7 @@ const {
   SKIP_DIRS,
 } = require('../../../config/template.config.cjs')
 const { resolveApiModules } = require('../../../config/render.config.cjs')
+const { profileForApiApp } = require('../../../config/product-line-profiles.cjs')
 const { resolveModuleClosure } = require('./resolve-module-closure.cjs')
 const { patchRenderAppModule, RENDER_BOOTSTRAP_MODULES } = require('./patch-render-app-module.cjs')
 const { patchDatabaseSeeder } = require('./patch-database-seeder.cjs')
@@ -59,7 +60,7 @@ const SEED_FILE_MODULE_DEPS = {
   'seed-demo.ts': ['events', 'event-registrations'],
   'seed-guides.ts': ['page-contents'],
   'seed-checkin-demo.ts': ['events', 'event-registrations'],
-  'seed-full-export.ts': ['system', 'posts', 'tags', 'page-contents'],
+  'seed-full-export.ts': ['system', 'posts', 'tags', 'page-contents', 'admission-results'],
   'seeds/checkin-demo.runner.ts': ['events', 'event-registrations'],
   'seeds/orders-sample.runner.ts': ['orders', 'products'],
   'seeds/products-sample.runner.ts': ['products'],
@@ -153,6 +154,31 @@ function pruneDeployScripts(appRoot) {
   }
 }
 
+function writeProductLineArtifacts(appRoot, appRel) {
+  const profile = profileForApiApp(appRel)
+  if (!profile) return
+
+  const activePermissionsSrc = `import { PERMISSIONS, type Permission } from './permissions';\n\nexport const PRODUCT_LINE_PROFILE = ${JSON.stringify(
+    { id: profile.id, label: profile.label },
+    null,
+    2,
+  )} as const;\n\nexport const ACTIVE_PERMISSION_RESOURCES = ${JSON.stringify(
+    profile.permissions.resources ?? [],
+    null,
+    2,
+  )} as const;\n\nexport const ACTIVE_ROLE_PRESETS = ${JSON.stringify(
+    profile.permissions.rolePresets ?? [],
+    null,
+    2,
+  )} as const;\n\nconst ACTIVE_PERMISSION_RESOURCE_SET = new Set<string>(ACTIVE_PERMISSION_RESOURCES);\n\nexport const ACTIVE_PERMISSIONS: Permission[] = Object.values(PERMISSIONS).filter(\n  (permission) => {\n    const [resource] = permission.split(':');\n    return resource ? ACTIVE_PERMISSION_RESOURCE_SET.has(resource) : false;\n  },\n);\n`
+
+  writeFileWithRetry(
+    path.join(appRoot, 'src/config/active-permissions.ts'),
+    withBanner('src/config/active-permissions.ts', activePermissionsSrc),
+  )
+  console.log(`[render:template] active-permissions ← productLine=${profile.id}`)
+}
+
 function renderApiFromTemplate(appRel, opts = {}) {
   const templateRoot = resolveTemplateRoot()
   if (!fs.existsSync(path.join(templateRoot, 'src', 'main.ts'))) {
@@ -225,6 +251,7 @@ function renderApiFromTemplate(appRel, opts = {}) {
     const src = path.join(templateRoot, rel)
     if (fs.existsSync(src)) copyFile(src, path.join(appRoot, rel), rel)
   }
+  writeProductLineArtifacts(appRoot, appRel)
 
   if (isPartialRender) {
     patchRenderAppModule(appRoot, moduleIds, {
@@ -285,17 +312,6 @@ function renderApiFromTemplate(appRel, opts = {}) {
   }
 
   console.log(`[render:template] xong → ${appRel}`)
-
-  const normalizedRel = appRel.replace(/\\/g, '/')
-  if (normalizedRel !== MAIN_API_PATH) {
-    const { writeApiEnvExampleForAppPath } = require(path.join(
-      ROOT,
-      'script-system/env/api-env-profiles.cjs',
-    ))
-    if (writeApiEnvExampleForAppPath(normalizedRel)) {
-      console.log(`[render:template] .env.example ← env profile (${normalizedRel})`)
-    }
-  }
 
   return {
     moduleIds,

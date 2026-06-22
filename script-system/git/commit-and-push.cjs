@@ -3,12 +3,9 @@
  *
  * Upstream template: chỉ push main (mặc định).
  * Downstream: chỉ push main.
- * Legacy (cùng repo, branch deploy): --legacy-deploy [--only hub-checkin]
  *
  * Usage:
  *   pnpm push -- "feat: ..."
- *   pnpm push:legacy -- "feat: ..."
- *   pnpm push -- --legacy-deploy --only hub-checkin "feat: ..."
  */
 const fs = require("node:fs")
 const path = require("node:path")
@@ -90,33 +87,26 @@ function pushMainOnly(dryRun) {
 const argv = process.argv.slice(2)
 const { message, forward } = parseArgs(argv)
 const dryRun = forward.includes("--dry-run")
-const legacyDeploy = forward.includes("--legacy-deploy")
 const manifest = loadManifest()
 const isUpstream = manifest.role === "upstream"
 
 console.log(
-  `[push] role=${manifest.role ?? "upstream"}${legacyDeploy ? " legacy-deploy" : ""}\n`,
+  `[push] role=${manifest.role ?? "upstream"}\n`,
 )
 
 ensureMainBranch()
 commitDevChanges(message, dryRun)
 
-if (!isUpstream && (legacyDeploy || forward.includes("--deploy-lines"))) {
-  console.error("[push] deploy branch legacy chỉ chạy ở mono-repo-template upstream.")
+if (forward.includes("--legacy-deploy") || forward.includes("--deploy-lines")) {
+  console.error("[push] Legacy deploy branches đã bỏ. Chỉ push main.")
   process.exit(1)
 }
 
-if (legacyDeploy) {
-  const deployScript = path.join(__dirname, "push-deploy-branches.cjs")
-  const deployArgs = ["node", deployScript, ...forward.filter((a) => a !== "--legacy-deploy")]
-  if (dryRun) console.log(`[push] dry-run: ${deployArgs.join(" ")}`)
-  else execFileSync(deployArgs[0], deployArgs.slice(1), { cwd: ROOT, stdio: "inherit" })
-} else if (isUpstream && !legacyDeploy) {
+if (isUpstream) {
   pushMainOnly(dryRun)
   console.log(
     "\n[push] Template upstream — không sync branch deploy.\n" +
-      "  Downstream: pnpm pull:template\n" +
-      "  Legacy 1-repo: pnpm push:legacy -- \"...\"",
+      "  Downstream: pnpm pull:template",
   )
 } else {
   pushMainOnly(dryRun)

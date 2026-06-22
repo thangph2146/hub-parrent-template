@@ -98,7 +98,7 @@ function patchTemplatePackageJson(destRoot) {
     delete pkg.dependencies['@workspace/api-server']
   }
   if (pkg.scripts?.predev) {
-    pkg.scripts.predev = 'node ../../../../script-system/dev/dev-prep-api.cjs 3002'
+    delete pkg.scripts.predev
   }
   writeFileWithRetry(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
 }

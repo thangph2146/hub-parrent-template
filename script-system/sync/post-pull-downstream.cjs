@@ -19,12 +19,22 @@ const PREFIX = "post-pull"
 const MANIFEST_PATH = path.join(ROOT, "template.manifest.json")
 const STALE_SCRIPT_PATHS = [
   "script-system/api",
+  "script-system/db",
+  "script-system/dev",
+  "script-system/env",
+  "script-system/git",
   "script-system/graphify",
   "script-system/template",
+  "script-system/sync/lib",
+  "script-system/sync/products",
   "script-system/sync/apply-sync-to-downstream.cjs",
   ["script-system", "sync", "deprecated"].join("/"),
   "script-system/sync/init-downstream.cjs",
   "script-system/sync/sync-api-from-main.cjs",
+  "script-system/sync/sync-checkin-menu-tree.cjs",
+  "script-system/sync/sync-checkin-packages.cjs",
+  "script-system/sync/sync-parent.cjs",
+  "ecosystem",
 ]
 
 function loadManifest() {
@@ -46,6 +56,23 @@ function pruneStaleScriptSystem() {
     fs.rmSync(target, { recursive: true, force: true })
     console.log(`[${PREFIX}] pruned stale ${rel}`)
   }
+}
+
+function resolveRunnableSteps(profile) {
+  const steps = profile.steps ?? []
+  const ids = new Set()
+  return steps.map((step, index) => {
+    if (!step?.id || !step?.name || !step?.cmd) {
+      throw new Error(
+        `[${PREFIX}] downstream-sync-profile step #${index + 1} thiếu id/name/cmd`,
+      )
+    }
+    if (ids.has(step.id)) {
+      throw new Error(`[${PREFIX}] downstream-sync-profile trùng step id=${step.id}`)
+    }
+    ids.add(step.id)
+    return { ...step, index: index + 1, total: steps.length }
+  })
 }
 
 function main() {
@@ -73,16 +100,31 @@ function main() {
 
   pruneStaleScriptSystem()
 
-  for (const step of profile.steps) {
-    runStep(ROOT, step.cmd, step.label, PREFIX)
+  const steps = resolveRunnableSteps(profile)
+  console.log(
+    `[${PREFIX}] pipeline: ${steps.map((step) => step.id).join(" → ")}\n`,
+  )
+
+  for (const step of steps) {
+    runStep(ROOT, step, PREFIX)
   }
 
   if (withCheck) {
-    runStep(ROOT, "pnpm check", "verify + lint + typecheck", PREFIX)
+    runStep(
+      ROOT,
+      {
+        id: "check",
+        name: "Verify + lint + typecheck",
+        cmd: "pnpm check",
+        index: steps.length + 1,
+        total: steps.length + 1,
+      },
+      PREFIX,
+    )
   }
 
   console.log(
-    `\n[${PREFIX}] xong — dev: xem package.json (dev:* / pm2:*) · commit apps nếu generate đổi`,
+    `\n[${PREFIX}] xong — product repo tự kiểm tra app/deploy scripts local nếu có generate đổi`,
   )
   if (!withCheck) {
     console.log(`[${PREFIX}] gợi ý: pnpm check`)

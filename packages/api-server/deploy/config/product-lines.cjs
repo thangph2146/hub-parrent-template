@@ -1,5 +1,6 @@
 /**
- * Product line API paths — dùng bởi render/sync trong @workspace/api-server.
+ * Product line API target paths — dùng bởi render/sync trong @workspace/api-server.
+ * Downstream tự sở hữu apps/; template chỉ render vào các target này.
  */
 const PRODUCT_LINES = {
   main: {

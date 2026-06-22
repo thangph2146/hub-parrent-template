@@ -1,6 +1,9 @@
 /**
  * Bootstrap monorepo downstream (một product line) từ template upstream.
  *
+ * Template không còn copy app source. Downstream tự sở hữu apps/<line>/,
+ * còn packages/script-system/feature profiles được kéo từ template.
+ *
  * Usage:
  *   node script-system/sync/init-downstream.cjs hub-checkin ../hub-checkin-monorepo
  *   node script-system/sync/init-downstream.cjs hub-parent ../hub-parent-monorepo
@@ -63,12 +66,6 @@ if (fs.existsSync(destRoot) && fs.readdirSync(destRoot).length > 0) {
   process.exit(1)
 }
 
-const appsSrc = path.join(ROOT, line.appsPath)
-if (!fs.existsSync(appsSrc)) {
-  console.error(`[init:downstream] Thiếu ${line.appsPath} trên template`)
-  process.exit(1)
-}
-
 console.log(`[init:downstream] ${lineKey} → ${destRoot}\n`)
 
 fs.mkdirSync(destRoot, { recursive: true })
@@ -107,23 +104,27 @@ if (fs.existsSync(turboSrc)) {
   fs.copyFileSync(turboSrc, path.join(destRoot, "turbo.json"))
 }
 
-fs.mkdirSync(path.join(destRoot, "apps"), { recursive: true })
-copyDir(appsSrc, path.join(destRoot, line.appsPath))
-
-const ecoDir = path.join(ROOT, "ecosystem")
-if (fs.existsSync(ecoDir)) {
-  copyDir(ecoDir, path.join(destRoot, "ecosystem"))
-}
+const appRoot = line.appTargets?.root ?? `apps/${lineKey}`
+fs.mkdirSync(path.join(destRoot, appRoot), { recursive: true })
+fs.writeFileSync(
+  path.join(destRoot, "apps", "README.md"),
+  [
+    "# Product apps",
+    "",
+    "`apps/` thuộc repo sản phẩm downstream.",
+    "Template upstream chỉ cung cấp `packages/`, `script-system` và feature profiles.",
+    "",
+    `Product line hiện tại: \`${lineKey}\`.`,
+    `App root dự kiến: \`${appRoot}\`.`,
+    "",
+  ].join("\n"),
+  "utf8",
+)
 
 fs.copyFileSync(
   path.join(ROOT, ".gitignore"),
   path.join(destRoot, ".gitignore"),
 )
-
-const appsReadme = path.join(ROOT, "apps/README.md")
-if (fs.existsSync(appsReadme)) {
-  fs.copyFileSync(appsReadme, path.join(destRoot, "apps/README.md"))
-}
 
 execFileSync("git", ["init"], { cwd: destRoot, stdio: "inherit" })
 execFileSync(
@@ -143,6 +144,7 @@ console.log(
   `\n[init:downstream] Hoàn tất.\n` +
     `  cd ${destRoot}\n` +
     `  pnpm install\n` +
+    `  # thêm hoặc generate app code tại ${appRoot}\n` +
     `  pnpm check\n` +
     `  git remote add origin <repo-sản-phẩm>\n`,
 )

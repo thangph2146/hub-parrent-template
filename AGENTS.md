@@ -1,449 +1,73 @@
-﻿# AGENTS — Entry point (mono-repo-template)
+﻿# AGENTS — mono-repo-template
 
-Tài liệu này là **chỉ mục điều hướng** cho agent: hiểu hệ thống → chọn đúng folder → mở đúng doc → làm việc.  
-**Mô hình template:** [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md) — **`packages/` = thư viện đầy đủ**; downstream kéo qua `pnpm pull:template`; apps chỉ compose.  
-**Không** nhân bản chi tiết dài ở đây; mỗi chủ đề có file riêng trong `docs/` hoặc `packages/*/README.md`.
+Repo này là **feature-template upstream**. Nó không chứa product apps.
 
-**Ngôn ngữ & encoding:** tài liệu agent dùng **tiếng Việt**, file Markdown lưu **UTF-8** (không mojibake kiểu `M?c tiêu`, `Ðây`). Khi sửa doc, giữ UTF-8; không tạo file `.md` mới ngoài cây `docs/` / README package trừ khi có chủ đề lặp lại (mục 4).
+## Vai trò
+- `packages/`: source dùng chung cho UI, admin app, API client, API server, query/logger/config/editor.
+- `packages/api-server/deploy/config/product-line-profiles.cjs`: cấu hình tính năng theo product line: API modules, admin modules, permissions, target paths.
+- `script-system/`: chỉ giữ generic tooling tối thiểu để downstream pull template, render/generate và verify shared boundary.
+- `docs/`: mô tả pattern dùng chung.
 
----
+`apps/`, deploy scripts, PM2, env runtime, db bootstrap và script vận hành product thuộc từng downstream repo. Không thêm lại `apps/` vào template.
 
-## 0. Ponytail mode — lazy senior dev
+## Cấu trúc Chuẩn
 
-Luôn chọn cách đơn giản nhất chạy được. “Lazy” nghĩa là hiệu quả, không cẩu thả: code tốt nhất là code không cần viết.
-
-Trước khi viết code, dừng ở nấc đầu tiên đủ dùng:
-
-1. Có thật sự cần build không? YAGNI.
-2. Standard library đã có chưa? Dùng nó.
-3. Native platform feature đã cover chưa? Dùng nó.
-4. Dependency đã cài sẵn có giải quyết được không? Dùng nó.
-5. Có thể là một dòng không? Làm một dòng.
-6. Sau cùng mới viết lượng code tối thiểu chạy được.
-
-Quy tắc:
-
-- Không thêm abstraction nếu không được yêu cầu rõ.
-- Không thêm dependency mới nếu có thể tránh.
-- Không viết boilerplate không ai hỏi.
-- Ưu tiên xóa hơn thêm. Boring hơn clever. Ít file nhất có thể.
-- Với request phức tạp, hỏi lại: “Có thật sự cần X không, hay Y đã đủ cover?”
-- Nếu hai cách standard library ngắn tương đương, chọn cách đúng edge-case hơn; lazy là ít code, không phải thuật toán yếu hơn.
-- Đánh dấu shortcut có chủ đích bằng comment `ponytail:`. Nếu shortcut có trần đã biết như global lock, scan O(n²), heuristic đơn giản, comment phải nêu trần và hướng nâng cấp.
-
-Không được lazy với: validation ở trust boundary, error handling tránh mất dữ liệu, security, accessibility, calibration với phần cứng thật, và bất cứ điều gì user yêu cầu rõ. Logic không tầm thường phải để lại đúng **một** runnable check nhỏ nhất có thể fail khi logic hỏng: assert demo/self-check hoặc một test nhỏ, không thêm framework/fixture. One-liner tầm thường không cần test.
-
----
-
-## 1. Bản đồ monorepo (đường dẫn thật)
-
-```
-apps/
-├── main/                          # Source of truth — dev hàng ngày
-│   ├── api/          @api
-│   └── backend/      @backend
-├── hub-parent/                    # Deploy site chính
-│   ├── api/          @hub-parent/api
-│   └── hub-parent-frontend/       @frontend
-├── hub-checkin/                   # Deploy check-in
-│   ├── api/          @hub-checkin/api
-│   └── hub-checkin-frontend/ @hub-checkin/frontend
-└── store-sync/
-    ├── api/          @store-sync/api
-    └── store-sync-frontend/       @store-sync-frontend
-
-packages/                          # Logic dùng chung (@workspace/*)
-script-system/                     # Upstream đầy đủ; downstream chỉ runtime subset
+```text
+monorepo-template/
+├── packages/
+├── script-system/
+├── docs/
+├── template.manifest.json
+├── package.json
+└── pnpm-workspace.yaml
 ```
 
-| Shorthand cũ (trong doc legacy) | Đường dẫn hiện tại | Package npm |
-|--------------------------------|---------------------|-------------|
-| `apps/api` | `apps/main/api` | `@api` |
-| `apps/backend` | `apps/main/backend` | `@backend` |
-| `apps/frontend` | `apps/hub-parent/hub-parent-frontend` | `@frontend` |
+Workspace upstream chỉ include `packages/*`.
 
-Chi tiết workflow product line: [`docs/MONOREPO_STRUCTURE.md`](docs/MONOREPO_STRUCTURE.md) · quy tắc `apps/`: [`apps/README.md`](apps/README.md).
+## Quy Tắc Làm Việc
 
----
+- Tính năng dùng chung sửa trong `packages/*`.
+- Cấu hình bật/tắt theo product sửa trong product-line profiles.
+- Generator dùng chung nằm trong `script-system/admin` hoặc `packages/api-server/deploy/cli`.
+- Không copy code từ product app về template.
+- Không tạo script sync app, PM2, db, env, dev stack trong template.
+- Nếu downstream cần vận hành riêng, cấu hình trong repo product rồi pull template để lấy packages/config mới.
 
-## 2. Quy trình bắt buộc trước khi sửa code
+## Sync Flow
 
-1. [`docs/admin-pattern/PRE_CODE_PROTOCOL.md`](docs/admin-pattern/PRE_CODE_PROTOCOL.md)
-2. **Brief task (khuyến nghị):** `pnpm graphify:brief --task "mô tả ngắn"` — reading list + file ưu tiên
-3. Các doc theo **loại task** (mục 3 + [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md))
-4. Sau khi sửa: `pnpm check` + DoD (mục 6)
+```text
+mono-repo-template
+  pnpm check
+  pnpm push -- "feat: ..."
 
-Lộ trình step-by-step đầy đủ: [`docs/steps/`](docs/steps/) (`step1` → `step10`).  
-Index tài liệu: [`docs/README.md`](docs/README.md).
+downstream product
+  pnpm pull:template
+  pnpm post-pull:downstream
+```
 
----
+`pull:template` chỉ kéo shared packages, docs, generic script-system và feature profiles. Product apps luôn giữ local ở downstream.
 
-## 3. Chọn tài liệu theo task
-
-| Loại task | Đọc trước (theo thứ tự) | Sửa code tại |
-|-----------|-------------------------|--------------|
-| **Admin page (main)** | `PRE_CODE_PROTOCOL` → `ADMIN_PAGE_PATTERN.md` → `docs/pages/README.md` → graphify `apps/main/backend` | `apps/main/backend/` |
-| **API Nest (main, dev)** | `PRE_CODE_PROTOCOL` → `docs/api-pattern/README.md` → graphify `apps/main/api` | `apps/main/api/` |
-| **Storefront HUB** | `FRONTEND_UX.md` → graphify `apps/hub-parent/hub-parent-frontend` | `apps/hub-parent/hub-parent-frontend/` |
-| **Check-in (deploy line)** | `MONOREPO_STRUCTURE.md` → `ADMIN_APP_PACKAGE.md` → [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → mục **api-server** bên dưới | `apps/hub-checkin/api/`, `apps/hub-checkin/hub-checkin-frontend/` |
-| **HANET Partner API** | [`docs/api-pattern/HANET.md`](docs/api-pattern/HANET.md) → `docs/env/README.md` (mục HANET) → `hanet-postman.ts` | `apps/main/api/src/hanet/`, `packages/api-client/src/resources/hanet.ts` |
-| **Store Sync** | `MONOREPO_STRUCTURE.md` → graphify `apps/store-sync/*` | `apps/store-sync/` |
-| **Package UI** | `docs/ui-pattern/README.md` + `ADMIN_PAGE_PATTERN.md` | `packages/ui/` |
-| **API client** | `docs/api-client-pattern/README.md` (+ `REALTIME.md` nếu socket) | `packages/api-client/` |
-| **API server (logic chung)** | `packages/api-server/README.md` + `docs/api-pattern/README.md` | `packages/api-server/` |
-| **Admin CRUD dùng chung** | `docs/admin-pattern/ADMIN_APP_PACKAGE.md` | `packages/admin-app/` + generate ở app |
-| **Env / deploy** | `docs/env/README.md` · PM2: `README.md` (mục PM2) | `.env.example` từng app |
-| **Upload / disk / seed JSON** | `docs/storage/README.md` · `data/README.md` | `STORAGE_DIR`, `data/seed/` |
-
-### Graphify — mở đúng app
-
-| App | `SUMMARY_FOR_AI.md` |
-|-----|---------------------|
-| Monorepo (chỉ mục) | [`.graphify/markdown/SUMMARY_FOR_AI.md`](.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Packages | [`packages/.graphify/markdown/SUMMARY_FOR_AI.md`](packages/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Main API | [`apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Main admin | [`apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/main/backend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Hub storefront | [`apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-parent/hub-parent-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Check-in API | [`apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/api/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Check-in frontend | [`apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md`](apps/hub-checkin/hub-checkin-frontend/.graphify/markdown/SUMMARY_FOR_AI.md) |
-| Store Sync | `apps/store-sync/*/.graphify/markdown/SUMMARY_FOR_AI.md` |
-
-Sau `SUMMARY_FOR_AI.md`, dùng **Chỉ dẫn theo chủ đề** trong cùng file → `FOLDER_TREE.md` / `GRAPH_STATS.md` / `IMPACT_RADIUS.md` / `ENTRY_POINTS.md` / `API_DOMAIN_IMPORTS.md` / `WORKSPACE_DEPS.md`.  
-Chỉ mở `snapshot/context.json` khi cần trích đoạn cụ thể. Làm mới: `pnpm graphify:refresh` · skill: [`.cursor/skills/hub-graphify-standardize-loop/SKILL.md`](.cursor/skills/hub-graphify-standardize-loop/SKILL.md).
-
-### 3.1 Graph + task — file cụ thể
-
-| Artefact / lệnh | Khi nào dùng |
-|-----------------|--------------|
-| [`.graphify/markdown/TASK_INDEX.md`](.graphify/markdown/TASK_INDEX.md) | Biết module X → folder/file (`admin-app`, `main/api`, `api-client`) |
-| `pnpm graphify:brief --task "..."` | Đầu task — brief đọc/verify/sync (sinh từ `task-index.json`) |
-| `TASK_INDEX` cột Check-in API | Domain có trên hub-checkin sau `pull:checkin` hay chỉ main |
-| [`.graphify/markdown/SYNC_DELTA.md`](.graphify/markdown/SYNC_DELTA.md) | So sánh domain `main/api` ↔ `hub-checkin/api` (exclude + native) |
-| `apps/<app>/.graphify/markdown/IMPACT_RADIUS.md` | Sửa helper/shared — xem ai import file đó |
-| `apps/<app>/.graphify/markdown/ENTRY_POINTS.md` | Bootstrap, route Next, file AUTO-GENERATED |
-| [`.graphify/markdown/ROUTE_SURFACE.md`](.graphify/markdown/ROUTE_SURFACE.md) | Admin URL ↔ Nest API ↔ api-client HTTP |
-| `apps/<app>/.graphify/markdown/PATTERN_CLUSTERS.md` | Boilerplate lặp (loading, re-export generate) |
-| [`packages/.graphify/markdown/PACKAGE_INDEX.md`](packages/.graphify/markdown/PACKAGE_INDEX.md) | Graphify `ui`, `admin-app`, `api-client`, `api-server` |
+## Lệnh Chính
 
 ```bash
-pnpm graphify:brief --task "sửa filter admin screens"
-pnpm graphify:brief --task "API events check-in"
-```
-
-### Package — doc bổ trợ
-
-| Package | Doc |
-|---------|-----|
-| `@workspace/ui` | `docs/ui-pattern/README.md` |
-| `@workspace/api-client` | `docs/api-client-pattern/README.md` |
-| `@workspace/api-server` | `packages/api-server/README.md` |
-| `@workspace/admin-app` | `docs/admin-pattern/ADMIN_APP_PACKAGE.md` |
-| `@workspace/query-client` | `docs/query-client-pattern/README.md` |
-| `@workspace/logger` | `docs/logger-pattern/README.md` |
-| `@thangph2146/lexical-editor` | `packages/editor/README.md` |
-
----
-
-## 4. Cây tài liệu `docs/` (không tạo file md lung tung)
-
-```
-docs/
-├── README.md                 # Index docs/
-├── MONOREPO_STRUCTURE.md     # Product lines, sync, dev stacks
-├── steps/step1..step10.md    # Lộ trình agent (đọc tuần tự khi mới vào repo)
-├── admin-pattern/            # Kiến trúc, protocol, admin UX, microservice map
-├── pages/                    # Guide implementation theo feature admin
-├── api-pattern/              # Nest API (pattern — áp dụng main + api-server)
-├── api-client-pattern/       # SDK + realtime
-├── ui-pattern/               # packages/ui
-├── env/                      # Biến môi trường, pnpm env:init
-└── logger-pattern/, query-client-pattern/
-```
-
-**Quy tắc:** thêm doc mới chỉ khi có **chủ đề lặp lại** hoặc **ranh giới kiến trúc**; feature một lần → `docs/pages/<feature>.md` hoặc README package, không duplicate vào `AGENTS.md`.
-
----
-
-## 5. Dev & sync (tóm tắt)
-
-### Quy tắc vàng: **template trước → downstream sau**
-
-```mermaid
-flowchart LR
-  subgraph upstream ["mono-repo-template (upstream)"]
-    PKG["packages/* + script-system"]
-    PUSH["pnpm check → pnpm push"]
-  end
-  subgraph downstream ["hub-*-monorepo (downstream)"]
-    PULL["pnpm pull:template"]
-    POST["pnpm post-pull:downstream"]
-    APPS["apps/* giữ local"]
-  end
-  PKG --> PUSH
-  PUSH --> PULL
-  PULL --> POST
-  POST --> APPS
-```
-
-| Bước | Repo | Lệnh |
-|------|------|------|
-| **1. Sửa thư viện** | `mono-repo-template` | `packages/*`, `script-system/*` |
-| **2. Verify + push** | upstream | `pnpm check` → `pnpm push -- "feat: ..."` |
-| **3. Đồng bộ** | downstream | `pnpm sync` (= `pull:template` + `post-pull:downstream`) |
-| **4. Phân tích sau sync** | downstream | đọc diff/source đã sync, kiểm tra tính năng đã có chưa |
-| **5. Verify deploy** | downstream | `pnpm check` hoặc `pnpm sync:full` |
-
-**Không** sửa `packages/` lâu dài trên downstream — PR lên template upstream.  
-**Không** chạy `pnpm sync` downstream trước khi upstream đã push `main`.
-**Không** sync generated cache mặc định: `.graphify` regenerate bằng `pnpm graphify:refresh`; `apps/*` downstream giữ local, chỉ dùng `apply-sync-to-downstream --with-apps` khi migration/bootstrap có chủ đích.
-**Không** giả định downstream có toàn bộ `script-system`: chỉ sync runtime subset cho dev/sync/verify/env/db/git; tooling upstream như `graphify`, `template`, `api`, `sync/deprecated` ở lại template.
-
-### 5.1 `script-system` boundary — chống phình sau sync
-
-`script-system` trong `mono-repo-template` là toolbox đầy đủ. `script-system` trong downstream là **runtime subset**, không phải bản copy nguyên cây.
-
-| Nhóm | Downstream sync? | Lý do |
-|------|------------------|-------|
-| `admin/`, `db/`, `dev/`, `env/`, `git/`, `lib/`, `verify/` | Có | Lệnh runtime để dev, env, db bootstrap, verify, push |
-| `sync/lib/` + file `sync/*.cjs` được allowlist | Có | `pull:template`, `post-pull:downstream`, profile sync |
-| `api/`, `graphify/`, `template/`, `sync/deprecated/` | Không | Tooling upstream/generate/cache/legacy, không chạy trực tiếp ở downstream |
-| `.graphify/`, `packages/.graphify/`, app `.graphify/` | Không mặc định | Generated artifact; regenerate ở upstream hoặc copy có chủ đích |
-
-Khi thêm hoặc sửa script:
-
-1. Trước tiên tìm script/helper đã có trong `script-system/*` và `packages/*`; ưu tiên reuse.
-2. Nếu script chỉ phục vụ generate, audit, graphify, template bootstrap, migration một lần, hoặc legacy, giữ **upstream-only**.
-3. Nếu script thật sự cần ở downstream, thêm đúng path cụ thể vào allowlist của `template.manifest.json`, `script-system/template/template.manifest.downstream.json`, và `script-system/sync/apply-sync-to-downstream.cjs`.
-4. Nếu bỏ một nhóm khỏi downstream, thêm stale path vào `post-pull-downstream.cjs` để `pnpm sync` tự prune.
-5. Không thêm lại `"script-system"` nguyên thư mục vào `inheritPaths`; đây là nguyên nhân chính làm downstream phình và khó quản lý microservice.
-
-Windows note: khi `apply-sync-to-downstream --with-apps` gặp `EBUSY/EPERM` ở app frontend do Next/dev server/indexer giữ handle, không retry ồn hoặc xóa cưỡng bức. Core dirs (`packages/`, `script-system/`) phải prune strict; app dirs được merge vào folder hiện có và sau đó bắt buộc chạy verify product line.
-
-### 5.2 App source scripts — không nhét tooling vào deploy line
-
-`apps/<line>/api/scripts/` trong deploy line (`hub-parent`, `hub-checkin`, `store-sync`) chỉ được giữ file runtime tối thiểu `ensure-dist.mjs`. Không đặt codemod, migration một lần, live-test, graph/export, hay helper sync trong app source.
-Trong `apps/` cũng không giữ lockfile cục bộ như `pnpm-lock.yaml`; monorepo chỉ dùng root lockfile.
-
-| Vị trí | Được phép |
-|--------|-----------|
-| `apps/main/api/scripts/` | Dev/test tooling chính; migration một lần để trong `scripts/archive/` |
-| `apps/<deploy-line>/api/scripts/` | Chỉ `ensure-dist.mjs` |
-| `apps/<deploy-line>/api/src/scripts/` | Không; chuyển sang root `script-system/db` hoặc `script-system/verify` nếu còn cần |
-| `apps/<frontend>/scripts/` | Không; dùng root `script-system` hoặc package script |
-
-Nếu một script app deploy line không được gọi trong `package.json` hoặc chỉ chạy một lần, xóa thay vì giữ lại. Nếu còn cần dùng lại cho nhiều line, đưa lên `script-system` hoặc `packages/*` trước rồi sync xuống.
-
-### Quy tắc sau sync: phân tích trước, reuse trước
-
-Sau khi chạy `pnpm sync` hoặc `pnpm pull:template --full`, agent phải:
-
-1. Xem diff/source vừa đồng bộ để hiểu tính năng đã được đưa vào đâu.
-2. Tìm trong `packages/*`, `script-system` subset, `apps/<line>/*` xem helper/component/API/script tương ứng đã tồn tại chưa.
-3. Ưu tiên dùng lại hoặc cấu hình lại tính năng có sẵn; chỉ tạo code mới khi chứng minh còn thiếu hành vi thật sự.
-4. Nếu cần chỉnh downstream, chỉ chỉnh phần product-specific (`apps/`, `.env`, config app); thay đổi dùng chung phải quay lại `mono-repo-template` trước.
-
-Profile post-pull theo `productLine`: `script-system/sync/downstream-sync-profile.cjs`  
-(hub-checkin → `pull:checkin`; hub-parent → build; store-sync → `admin:generate:store`).
-
-| Mục đích | Lệnh |
-|----------|------|
-| Dev site chính | `pnpm dev` (main API + backend + hub-parent frontend) |
-| Dev parent line (hub-parent API + frontend) | `pnpm dev:parent` |
-| Dev check-in UI + **main API** | `pnpm dev:main:checkin` |
-| Dev stack check-in deploy | `pnpm dev:checkin` |
-| **Push template upstream** | `pnpm push -- "feat: ..."` (chỉ `main`) |
-| Downstream kéo **full packages/** | `pnpm pull:template` · `pnpm sync` · catalog [`packages/README.md`](packages/README.md) |
-| Legacy branch deploy | `pnpm push:legacy` / `push:checkin` / `push:parent` |
-| Sync check-in (verify + admin; API native đã commit) | `pnpm pull:checkin` |
-| Cập nhật hub-checkin API từ main (dev) | `pnpm api:sync-template` rồi `pnpm api:render apps/hub-checkin/api` → commit |
-| Env | `pnpm env:init` · `pnpm verify:env` |
-
-**`pnpm dev:parent` (quan trọng):** chỉ chạy **2 app** của parent line: `apps/hub-parent/api` + `apps/hub-parent/hub-parent-frontend`. Frontend parent có route `/admin` (redirect sang admin URL), nên chỉ hiển thị/chạy chức năng liên quan parent line; không dùng để kiểm tra toàn bộ admin cross-line như `apps/main/backend` hoặc check-in.  
-
-**Dev hàng ngày (upstream):** sửa `packages/admin-app` / `packages/api-server` / `packages/*`, tag template.  
-**Repo chính deploy:** **hub-checkin-monorepo** — `pnpm dev:checkin`, `pnpm pull:template`.
-
----
-
-## 6. Lệnh kiểm tra bắt buộc
-
-```bash
-pnpm check                    # verify + lint + typecheck
-pnpm check:full               # upstream: check + graphify:ai-summary
-pnpm verify:bounds            # không import chéo apps/*
-pnpm verify:imports           # alias @ui
-```
-
-### Definition of Done (agent)
-
-| Tiêu chí | Cách kiểm |
-|----------|-----------|
-| Đúng product line | `graphify:brief` hoặc mục 3 — dev: `apps/main/*`; check-in: + `pnpm pull:checkin` |
-| Đúng chỗ sửa | `TASK_INDEX` / brief — không sửa generated trừ khi chạy lại generate |
-| Ranh giới service | `pnpm verify:bounds` (trong `pnpm check`) |
-| API ↔ client khớp | `pnpm verify:api-contract` khi đổi API hoặc `@workspace/api-client` |
-| Admin generate khớp | `pnpm verify:main-admin` / `verify:checkin-admin` |
-| Check-in API materialize | `pnpm verify:api-template` + `pnpm verify:checkin-api` · cập nhật: `pnpm api:sync-template && pnpm api:render apps/hub-checkin/api` |
-| Unified module parity | `pnpm verify:main-api-endpoint-parity` khi đổi `Base*Controller` trong package |
-| Build sạch | `pnpm check` pass |
-| Graph còn mới | Upstream-only: `generatedAt` trong SUMMARY / TASK_INDEX sau đổi cấu trúc → `pnpm graphify:refresh` |
-| Deploy branch cập nhật | Downstream: `pnpm pull:template` · Legacy: `pnpm push:legacy` |
-
-### Push (template upstream)
-
-```bash
+pnpm check
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm pull:template --dry-run
 pnpm push -- "feat: mô tả"
 ```
 
-Chỉ push **`main`**. Downstream kéo packages: `pnpm pull:template` — xem [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
+## Ranh Giới
 
-Sau đổi route/module đáng kể ở `monorepo-template`:
+- Không import chéo từ `apps/*` vì upstream không có `apps`.
+- Không đưa entity/runtime deploy-specific vào `packages/` nếu chỉ thuộc một product.
+- Không phục hồi `script-system/dev`, `script-system/db`, `script-system/env`, `script-system/graphify`, `script-system/sync/products` trong template.
+- Downstream có thể giữ scripts riêng, nhưng không yêu cầu upstream sync các scripts đó.
 
-```bash
-node script-system/graphify/graphify-update.cjs apps/<app>
-pnpm graphify:ai-summary
-# hoặc: pnpm graphify:refresh
-```
+## Tài Liệu
 
-Downstream không sync `script-system/graphify`; chỉ đọc artifact đã có hoặc regenerate ở upstream khi cần.
-
----
-
-## 7. `@workspace/admin-app` (admin frontend)
-
-Logic CRUD admin → **`packages/admin-app`**. App chỉ `admin.app.config.json` + generate.
-
-```bash
-pnpm admin:migrate
-pnpm admin:generate:main
-pnpm admin:generate:checkin
-pnpm verify:main-admin
-pnpm verify:checkin-admin
-```
-
-Main: `apps/main/backend/admin.app.config.json`  
-Check-in: `apps/hub-checkin/hub-checkin-frontend/admin.app.config.json`  
-Chi tiết: [`docs/admin-pattern/ADMIN_APP_PACKAGE.md`](docs/admin-pattern/ADMIN_APP_PACKAGE.md).
-
----
-
-## 8. `@workspace/api-server` (API Nest dùng chung)
-
-Pattern song song admin-app:
-
-| Admin (Next) | API (Nest) |
-|--------------|------------|
-| `admin.app.config.json` | `api.app.config.json` (`apps/hub-checkin/api/`) |
-| `pnpm admin:generate:checkin` | **`pnpm api:render:checkin`** (verify) · config trong `packages/api-server/deploy/config/` |
-
-```bash
-pnpm api:sync-template              # @workspace/api-server/deploy/cli/sync-template.cjs
-pnpm api:render apps/hub-checkin/api
-pnpm verify:api-template            # packages/api-server/deploy/cli/verify/
-pnpm verify:checkin-api
-pnpm verify:main-api-endpoint-parity
-```
-
-### API render theo graph/config chuẩn (bắt buộc)
-
-1. Định vị product line + module scope bằng graph:
-   - `pnpm graphify:brief --task "api render <line>"`
-   - đọc `.graphify/markdown/TASK_INDEX.md` + `SYNC_DELTA.md` (nếu sync main ↔ hub-checkin).
-2. Sync template trước khi render line:
-   - `pnpm api:sync-template`
-3. Render theo `api.app.config.json` của từng app (không render mù toàn module):
-   - mặc định: `pnpm api:render apps/<line>/api --prune`
-   - cần khóa entity theo closure graph: `pnpm api:render apps/<line>/api --prune --prune-entities`
-4. Verify bắt buộc sau render:
-   - `pnpm verify:api-template`
-   - `pnpm --filter @workspace/api-server run verify:entity-closure`
-
-Nếu gặp lỗi Windows kiểu `UNKNOWN: unknown error, open ...PACKAGE_MODULE_TEMPLATES.meta.json`:
-- chạy lại `pnpm api:sync-template` (pipeline đã có retry ghi file meta),
-- tránh chạy đồng thời nhiều lệnh render/sync vào cùng `deploy/nest/.pipeline/`.
-
-- **Template OOP:** `packages/api-server/deploy/nest/` · **Config:** `packages/api-server/deploy/config/`
-- **Base* template:** `src/modules/` (registry) → `module-bases/` (active thin, copy khi render) · `package-module-templates.cjs` · `.pipeline/PACKAGE_MODULE_TEMPLATES.meta.json`
-- **Materialize:** `thin` (extends Base* module-bases, vd. `users`) · `crud` (`common/crud`, 13 module) · `mirror` (copy `main/api`)
-- **`main/api`:** auth/system native — app deploy **không** import runtime `@workspace/api-server/modules/*`
-
-Chi tiết: [`packages/api-server/README.md`](packages/api-server/README.md).
-
-```bash
-pnpm test:api-server
-pnpm verify:api-contract
-```
-
----
-
-## 9. Ranh giới & import (tóm tắt)
-
-- Không import chéo `apps/*` · Next ↔ API qua `@workspace/api-client`
-- Admin UI: `@ui/components/...` — không tạo component admin local trong app
-- API Nest: `@workspace/*` — không `@ui` / React
-- Nguồn alias: `script-system/lib/import-alias-rules.cjs` · ESLint: `packages/eslint-config/service-boundaries.js`
-
-Map đầy đủ: [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md).
-
-### Pattern bắt buộc
-
-- Mutation admin: `useAdminMutation` (`packages/ui`) — không toast thủ công trong `onSuccess`/`onError`
-- Realtime: `docs/api-client-pattern/REALTIME.md`
-- Import `/admin/data`: client `apps/main/backend/src/app/data/_component/` · API `BaseSystemService` (main + hub-checkin binding)
-
----
-
-## 10. Quy tắc chống duplicate (đọc trước khi thêm file)
-
-**Một nguồn sự thật — không copy logic giữa app và package.**
-
-| Loại | Sửa tại (source of truth) | App (`apps/*/api` hoặc backend) chỉ |
-|------|---------------------------|-------------------------------------|
-| CRUD admin UI | `packages/admin-app` | `admin.app.config.json` + page AUTO-GENERATED re-export |
-| HTTP admin + service logic (unified) | `packages/api-server` (`Base*Service`, `Base*Controller`) | Subclass: `getEm()`, `getEntity()`, `mapRow`, inject constructor |
-| HTTP/service chưa unified | `apps/main/api` (dev) → port vào package trước khi generate hub-checkin | Không copy ngược từ hub-checkin sang main |
-| Entity / migration / seed | App API tương ứng | Không đưa entity vào `packages/` |
-| Component UI | `packages/ui` (`@ui/components/...`) | Không tạo admin component local |
-| API HTTP từ Next | `packages/api-client` | Không `fetch` / `sdk.http` trực tiếp |
-
-**Luồng quyết định (agent):**
-
-1. Feature dùng trên **hub-checkin** → implement trong `packages/api-server` hoặc `packages/admin-app` trước.
-2. Chạy generate: **`pnpm api:render:checkin`** (hub-checkin API) / `pnpm admin:generate:checkin` — **không** sửa tay file có banner `AUTO-GENERATED` (override qua `api.app.config.json` → `native.*` hoặc registry).
-3. **Main API:** `system` + `auth` đã extend package; CRUD còn lại native — khi port, xóa bản copy trong `apps/main/api`, không giữ song song.
-4. **Downstream** (`hub-checkin-monorepo`): `pnpm pull:template` — không chạy `pull:checkin:legacy`.
-
-**Cấm:** file dump/export JSON trong `src/`, duplicate type (`StorageMediaKind`…), controller `*-admin.controller.ts` song song với unified `*.controller.ts`, doc mới trùng nội dung mục 3–9.
-
-Chi tiết check-in: [`apps/hub-checkin/README.md`](apps/hub-checkin/README.md) · template: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md).
-
----
-
-## 11. PM2 production (3 stack — không chạy cùng lúc)
-
-Nguồn sự thật: [`ecosystem/`](ecosystem/README.md) — CLI: `node ecosystem/pm2-stack.cjs`.
-
-| Stack | File PM2 | Apps |
-|-------|----------|------|
-| Site chính | `ecosystem/main.cjs` | hub-parent-api :3002, hub-parent-backend :3001, hub-parent-frontend :3000 |
-| Check-in | `ecosystem/checkin.cjs` | hub-checkin-api :3002, hub-checkin-frontend :3000 |
-| Store sync | `ecosystem/store.cjs` | hub-store-api :3002, hub-store-frontend :3000 |
-
-```bash
-pnpm pm2:start          # site chính
-pnpm pm2:start:checkin  # check-in
-pnpm pm2:start:store    # store sync
-pnpm pm2:reload         # sau pull code
-pnpm pm2:delete         # dừng stack tương ứng
-```
-
-Kiểm tra layout: `pnpm verify:ecosystem`. Chi tiết deploy, xóa process, chuyển stack: [`README.md`](README.md) (mục PM2).
-
----
-
-## 12. Đọc thêm (theo thứ tự khi onboarding)
-
-1. [`docs/admin-pattern/README.md`](docs/admin-pattern/README.md)
-2. [`docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`](docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md)
-3. [`docs/admin-pattern/AGENTS_GUIDE.md`](docs/admin-pattern/AGENTS_GUIDE.md)
-4. [`docs/steps/step1_system_overview.md`](docs/steps/step1_system_overview.md)
+- `docs/TEMPLATE_MONOREPO.md`: flow pull template.
+- `docs/MONOREPO_STRUCTURE.md`: kiến trúc feature-template.
+- `packages/README.md`: catalog packages.
+- `packages/api-server/README.md`: API server generator/template.

@@ -1,6 +1,6 @@
 {
   "role": "downstream",
-  "description": "Monorepo sản phẩm — kế thừa FULL packages/ + script-system + ecosystem từ mono-repo-template.",
+  "description": "Monorepo sản phẩm — tự sở hữu apps/deploy scripts và kế thừa FULL packages/ + feature profiles + generic generators từ mono-repo-template.",
   "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
   "defaultRef": "main",
   "remoteName": "template",
@@ -11,26 +11,16 @@
   "inheritPaths": [
     "packages",
     "script-system/admin",
-    "script-system/db",
-    "script-system/dev",
-    "script-system/env",
-    "script-system/git",
     "script-system/lib",
     "script-system/README.md",
-    "script-system/sync/lib",
     "script-system/sync/downstream-sync-profile.cjs",
     "script-system/sync/post-pull-downstream.cjs",
     "script-system/sync/pull-template.cjs",
-    "script-system/sync/sync-checkin-menu-tree.cjs",
-    "script-system/sync/sync-checkin-packages.cjs",
-    "script-system/sync/sync-parent.cjs",
     "script-system/verify",
-    "ecosystem",
     "docs/admin-pattern",
     "docs/api-pattern",
     "docs/api-client-pattern",
     "docs/ui-pattern",
-    "docs/env",
     "docs/steps",
     "docs/TEMPLATE_MONOREPO.md"
   ],
@@ -38,7 +28,6 @@
     ".gitignore",
     "turbo.json",
     "AGENTS.md",
-    "apps/README.md",
     "packages/README.md"
   ],
   "keepPaths": [
@@ -48,7 +37,6 @@
     "template.manifest.json",
     ".template-lock.json",
     "README.md",
-    "ecosystem",
     ".env",
     ".env.local"
   ]

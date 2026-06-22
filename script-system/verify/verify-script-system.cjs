@@ -14,26 +14,17 @@ const isDownstream = manifest.role === "downstream";
 
 const UPSTREAM_TOP_DIRS = [
   "lib",
-  "dev",
   "sync",
   "git",
   "verify",
-  "graphify",
-  "db",
-  "env",
   "admin",
-  "api",
   "template",
 ];
 
 const DOWNSTREAM_TOP_DIRS = [
   "lib",
-  "dev",
   "sync",
-  "git",
   "verify",
-  "db",
-  "env",
   "admin",
 ];
 
@@ -42,29 +33,18 @@ const ALLOWED_TOP_DIRS = new Set(isDownstream ? DOWNSTREAM_TOP_DIRS : UPSTREAM_T
 const UPSTREAM_CJS_DIRS = [
   "lib",
   "lib/layout",
-  "dev",
   "sync",
-  "sync/lib",
   "git",
   "verify",
-  "graphify",
-  "db",
-  "env",
   "admin",
   "admin/lib",
-  "api",
 ];
 
 const DOWNSTREAM_CJS_DIRS = [
   "lib",
   "lib/layout",
-  "dev",
   "sync",
-  "sync/lib",
-  "git",
   "verify",
-  "db",
-  "env",
   "admin",
   "admin/lib",
 ];
@@ -72,24 +52,16 @@ const DOWNSTREAM_CJS_DIRS = [
 const ALLOWED_CJS_DIRS = new Set(isDownstream ? DOWNSTREAM_CJS_DIRS : UPSTREAM_CJS_DIRS);
 
 const UPSTREAM_SYNC_ROOT_SCRIPTS = [
-  "sync-api-from-main.cjs",
-  "sync-checkin-packages.cjs",
-  "sync-parent.cjs",
   "pull-template.cjs",
   "post-pull-downstream.cjs",
   "downstream-sync-profile.cjs",
-  "apply-sync-to-downstream.cjs",
   "init-downstream.cjs",
-  "sync-checkin-menu-tree.cjs",
 ];
 
 const DOWNSTREAM_SYNC_ROOT_SCRIPTS = [
-  "sync-checkin-packages.cjs",
-  "sync-parent.cjs",
   "pull-template.cjs",
   "post-pull-downstream.cjs",
   "downstream-sync-profile.cjs",
-  "sync-checkin-menu-tree.cjs",
 ];
 
 const SYNC_ROOT_SCRIPTS = new Set(
@@ -97,9 +69,7 @@ const SYNC_ROOT_SCRIPTS = new Set(
 );
 
 const GIT_ROOT_SCRIPTS = new Set(
-  isDownstream
-    ? ["commit-and-push.cjs"]
-    : ["commit-and-push.cjs", "push-deploy-branches.cjs"],
+  isDownstream ? [] : ["commit-and-push.cjs"],
 );
 
 /** @type {string[]} */
@@ -111,7 +81,7 @@ function fail(msg) {
 
 if (fs.existsSync(path.join(SCRIPT_SYSTEM, "deploy"))) {
   fail(
-    "script-system/deploy/ đã bỏ — dùng ecosystem/pm2-stack.cjs (xóa thư mục deploy)",
+    "script-system/deploy/ đã bỏ — deploy script thuộc downstream product",
   );
 }
 
@@ -180,6 +150,9 @@ walkCjs(SCRIPT_SYSTEM);
 
 const LEGACY_LIB_REQUIRE_RE =
   /require\s*\(\s*['"][^'"]*lib\/(paths|data-paths|storage-layout|pipeline-paths)\.cjs['"]\s*\)/;
+const LEGACY_RUN_STEP_RE = /runStep\s*\(\s*ROOT\s*,\s*["'`]/;
+const MANUAL_STEP_ORDER_RE = /["'`]\d+\/(?:\d+|N)\b/;
+const PACKAGE_SCRIPT_NAME_RE = /^(?:pre)?[a-z][a-z0-9-]*(?::[a-z0-9-]+)*$/;
 
 function scanLegacyImports(dir) {
   if (!fs.existsSync(dir)) return;
@@ -202,6 +175,29 @@ function scanLegacyImports(dir) {
 
 scanLegacyImports(SCRIPT_SYSTEM);
 
+function scanStepNaming(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name === "node_modules" || entry.name === "template") continue;
+      scanStepNaming(abs);
+      continue;
+    }
+    if (!/\.(cjs|mjs)$/.test(entry.name)) continue;
+    const rel = path.relative(ROOT, abs).replace(/\\/g, "/");
+    const content = fs.readFileSync(abs, "utf8");
+    if (LEGACY_RUN_STEP_RE.test(content)) {
+      fail(`${rel} gọi runStep kiểu cũ — truyền step object { id, name, cmd }`);
+    }
+    if (rel !== "script-system/lib/run-step.cjs" && MANUAL_STEP_ORDER_RE.test(content)) {
+      fail(`${rel} còn label thứ tự thủ công kiểu 1/N — dùng runStep index/total`);
+    }
+  }
+}
+
+scanStepNaming(SCRIPT_SYSTEM);
+
 const pkg = JSON.parse(
   fs.readFileSync(path.join(ROOT, "package.json"), "utf8"),
 );
@@ -209,6 +205,9 @@ const scripts = pkg.scripts ?? {};
 
 for (const [name, cmd] of Object.entries(scripts)) {
   if (typeof cmd !== "string") continue;
+  if (!PACKAGE_SCRIPT_NAME_RE.test(name)) {
+    fail(`package.json scripts.${name} — tên script phải kebab/colon-case rõ nhóm thao tác`);
+  }
   const matches = [...cmd.matchAll(/node\s+(script-system\/[^\s"']+)/g)];
   for (const m of matches) {
     const rel = m[1].replace(/\//g, path.sep);

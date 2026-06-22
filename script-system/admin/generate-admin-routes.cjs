@@ -9,12 +9,8 @@
  */
 const fs = require("node:fs")
 const path = require("node:path")
-const { execSync } = require("node:child_process")
 const { ROOT } = require("../lib/monorepo-root.cjs")
 const { resolveAdminAppConfigFile } = require("../lib/admin-app-config-path.cjs")
-const {
-  consolidateAdminModuleLoading,
-} = require("./consolidate-admin-loading.cjs")
 
 const PACKAGE_MODULES = path.join(ROOT, "packages/admin-app/src/modules")
 const GENERATED_BANNER = `/** AUTO-GENERATED — chạy pnpm admin:generate */\n`
@@ -164,9 +160,43 @@ function restorePreserveFiles(routeRoot, backups) {
   }
 }
 
+function isGeneratedRouteTree(absPath) {
+  if (!fs.existsSync(absPath)) return false
+  const stat = fs.statSync(absPath)
+  if (stat.isFile()) {
+    if (!ROUTE_FILES.has(path.basename(absPath))) return false
+    return fs.readFileSync(absPath, "utf8").includes("AUTO-GENERATED")
+  }
+  if (!stat.isDirectory()) return false
+  const entries = fs.readdirSync(absPath)
+  if (entries.length === 0) return true
+  return entries.every((entry) => isGeneratedRouteTree(path.join(absPath, entry)))
+}
+
+function pruneGeneratedModulesOutsideConfig(routeRoot, config) {
+  if (!fs.existsSync(routeRoot)) return
+  const keepDirs = new Set(config.modules ?? [])
+  const dashboardRel = resolveDashboardRelDir(config.dashboard?.relativePath)
+  if (dashboardRel) keepDirs.add(dashboardRel.split(/[\\/]/)[0])
+  for (const file of config.native?.files ?? []) {
+    const [top] = file.split("/")
+    if (top && top !== "page.tsx") keepDirs.add(top)
+  }
+
+  for (const entry of fs.readdirSync(routeRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory() || keepDirs.has(entry.name)) continue
+    const modDir = path.join(routeRoot, entry.name)
+    if (!isGeneratedRouteTree(modDir)) continue
+    fs.rmSync(modDir, { recursive: true, force: true })
+    console.log(`[admin:generate] pruned stale generated module: ${path.relative(ROOT, modDir)}`)
+  }
+}
+
 function pruneModuleDuplicates(routeRoot, config) {
   const preserveInModules = config.nativePreserveInModules ?? config.native?.preserveInModules ?? []
   const backups = backupPreserveFiles(routeRoot, preserveInModules)
+
+  pruneGeneratedModulesOutsideConfig(routeRoot, config)
 
   for (const mod of config.modules ?? []) {
     const modDir = path.join(routeRoot, mod)
@@ -256,14 +286,6 @@ function generateRoutes(appRel, config) {
   return count
 }
 
-function generateMenuIfCheckin(appRel) {
-  if (!appRel.includes("hub-checkin-frontend")) return
-  execSync("node script-system/sync/sync-checkin-menu-tree.cjs", {
-    cwd: ROOT,
-    stdio: "inherit",
-  })
-}
-
 const appRel = process.argv[2]
 const shouldPrune = process.argv.includes("--prune")
 
@@ -282,6 +304,4 @@ if (shouldPrune) {
   sleepSync(150)
 }
 
-consolidateAdminModuleLoading({ silent: true })
 generateRoutes(appRel, config)
-generateMenuIfCheckin(appRel)
