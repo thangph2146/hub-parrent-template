@@ -1,12 +1,13 @@
 /**
  * Ghi đè module product-owned sau api:render (hub-parent).
+ * Nằm trong product-overrides để không bị render xóa.
  *
  * Usage: pnpm --filter @hub-parent/api run apply-overrides
  */
 const fs = require("node:fs")
 const path = require("node:path")
 
-const API_ROOT = path.resolve(__dirname, "..")
+const API_ROOT = path.resolve(__dirname, "../..")
 const OVERRIDES = path.join(API_ROOT, "product-overrides")
 const DEST_SRC = path.join(API_ROOT, "src")
 

@@ -27,7 +27,7 @@
     "seed:superadmin": "ts-node -r tsconfig-paths/register src/seed-superadmin.ts",
     "seed:demo": "ts-node -r tsconfig-paths/register src/seed-demo.ts",
     "orm": "mikro-orm",
-    "apply-overrides": "node scripts/apply-product-overrides.cjs",
+    "apply-overrides": "node product-overrides/_cli/apply-product-overrides.cjs",
     "db:create": "mikro-orm schema:create --run",
     "db:create:dump": "mikro-orm schema:create --dump",
     "db:update": "mikro-orm schema:update --run --safe",
