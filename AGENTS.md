@@ -2,6 +2,33 @@
 
 Repo này là **feature-template upstream**. Nó không chứa product apps.
 
+## 0. Ponytail mode — lazy senior dev
+
+Luôn chọn cách đơn giản nhất chạy được. “Lazy” nghĩa là hiệu quả, không cẩu thả: code tốt nhất là code không cần viết.
+
+Trước khi viết code, dừng ở nấc đầu tiên đủ dùng:
+
+1. Có thật sự cần build không? YAGNI.
+2. Standard library đã có chưa? Dùng nó.
+3. Native platform feature đã cover chưa? Dùng nó.
+4. Dependency đã cài sẵn có giải quyết được không? Dùng nó.
+5. Có thể là một dòng không? Làm một dòng.
+6. Sau cùng mới viết lượng code tối thiểu chạy được.
+
+Quy tắc:
+
+- Không thêm abstraction nếu không được yêu cầu rõ.
+- Không thêm dependency mới nếu có thể tránh.
+- Không viết boilerplate không ai hỏi.
+- Ưu tiên xóa hơn thêm. Boring hơn clever. Ít file nhất có thể.
+- Với request phức tạp, hỏi lại: “Có thật sự cần X không, hay Y đã đủ cover?”
+- Nếu hai cách standard library ngắn tương đương, chọn cách đúng edge-case hơn; lazy là ít code, không phải thuật toán yếu hơn.
+- Đánh dấu shortcut có chủ đích bằng comment `ponytail:`. Nếu shortcut có trần đã biết như global lock, scan O(n²), heuristic đơn giản, comment phải nêu trần và hướng nâng cấp.
+
+Không được lazy với: validation ở trust boundary, error handling tránh mất dữ liệu, security, accessibility, calibration với phần cứng thật, và bất cứ điều gì user yêu cầu rõ. Logic không tầm thường phải để lại đúng **một** runnable check nhỏ nhất có thể fail khi logic hỏng: assert demo/self-check hoặc một test nhỏ, không thêm framework/fixture. One-liner tầm thường không cần test.
+
+---
+
 ## Vai trò
 - `packages/`: source dùng chung cho UI, admin app, API client, API server, query/logger/config/editor.
 - `packages/api-server/deploy/config/product-line-profiles.cjs`: cấu hình tính năng theo product line: API modules, admin modules, permissions, target paths.
