@@ -28,6 +28,27 @@ function listTrackedPaths(repoRoot, relPath) {
   }
 }
 
+function listUntrackedPaths(repoRoot, relPath) {
+  try {
+    const out = gitExec(
+      ["ls-files", "--others", "--exclude-standard", "--", relPath],
+      repoRoot,
+    )
+    return out ? out.split(/\r?\n/).filter(Boolean) : []
+  } catch {
+    return []
+  }
+}
+
+function listPathsToSync(repoRoot, relPath) {
+  return [
+    ...new Set([
+      ...listTrackedPaths(repoRoot, relPath),
+      ...listUntrackedPaths(repoRoot, relPath),
+    ]),
+  ]
+}
+
 function ensureDirForFile(filePath, dryRun) {
   const dir = path.dirname(filePath)
   if (dryRun || fs.existsSync(dir)) return
@@ -60,15 +81,15 @@ function syncInheritPaths({ sourceRoot, targetRoot, manifest, dryRun }) {
   const paths = inheritPathsToSync(manifest)
   let copied = 0
   for (const rel of paths) {
-    const tracked = listTrackedPaths(sourceRoot, rel)
-    if (tracked.length === 0) {
+    const files = listPathsToSync(sourceRoot, rel)
+    if (files.length === 0) {
       const abs = path.join(sourceRoot, rel)
       if (fs.existsSync(abs) && fs.statSync(abs).isFile()) {
         if (copyTrackedFile(sourceRoot, targetRoot, rel, dryRun)) copied += 1
       }
       continue
     }
-    for (const file of tracked) {
+    for (const file of files) {
       if (copyTrackedFile(sourceRoot, targetRoot, file, dryRun)) copied += 1
     }
   }
