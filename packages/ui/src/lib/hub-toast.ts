@@ -77,12 +77,27 @@ export function mutationSuccess(
   return baseToast.success(message, withCopyAction(message, data))
 }
 
-export type HubToast = typeof baseToast & {
+type HubToastMethod = (
+  message: ToastMessage,
+  data?: HubToastOptions,
+) => string | number
+
+/** Toast Sonner — dev: nút Sao chép (`copyReport` = báo cáo đầy đủ, UI chỉ hiện message). */
+export type HubToast = Omit<
+  typeof baseToast,
+  "success" | "error" | "warning" | "info" | "loading"
+> & {
+  (message: ToastMessage, data?: HubToastOptions): string | number
+  success: HubToastMethod
+  error: HubToastMethod
+  warning: HubToastMethod
+  info: HubToastMethod
+  loading: HubToastMethod
   mutationSuccess: typeof mutationSuccess
 }
 
 /** Toast Sonner — dev: nút Sao chép (`copyReport` = báo cáo đầy đủ, UI chỉ hiện message). */
-export const toast: HubToast = Object.assign(
+export const toast = Object.assign(
   (message: ToastMessage, data?: HubToastOptions) =>
     baseToast(message, withCopyAction(message, data)),
   {
@@ -98,7 +113,7 @@ export const toast: HubToast = Object.assign(
     loading: (message: ToastMessage, data?: HubToastOptions) =>
       baseToast.loading(message, withCopyAction(message, data)),
     mutationSuccess,
-  }
-)
+  },
+) as HubToast
 
 export type { HubToastOptions } from "./hub-toast-types"

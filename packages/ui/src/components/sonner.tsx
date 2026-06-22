@@ -47,4 +47,4 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
 export { Toaster, toast }
 export type { ToasterProps } from "sonner"
-export type { HubToastOptions } from "../lib/hub-toast-types"
+export type { HubToast, HubToastOptions } from "../lib/hub-toast"
