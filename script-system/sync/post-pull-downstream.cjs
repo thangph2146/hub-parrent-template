@@ -18,6 +18,8 @@ const { resolveProfile } = require("./downstream-sync-profile.cjs")
 const PREFIX = "post-pull"
 const MANIFEST_PATH = path.join(ROOT, "template.manifest.json")
 const STALE_SCRIPT_PATHS = [
+  "script-system/admin",
+  "script-system/hub-parent",
   "script-system/api",
   "script-system/db",
   "script-system/dev",

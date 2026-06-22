@@ -39,7 +39,7 @@
 
 - Feature mới: `docs/admin-pattern/ADMIN_PAGE_PATTERN.md` + `docs/pages/README.md`.
 - Thay đổi kiến trúc: `docs/admin-pattern/MICROSERVICE_SYSTEM_MAP.md`.
-- Thay đổi boundary: `packages/eslint-config/service-boundaries.js` + `script-system/verify/verify-service-boundaries.mjs`.
+- Thay đổi boundary: `packages/eslint-config/service-boundaries.js` + `packages/eslint-config/verify/service-boundaries.cjs`.
 
 ## Hoàn thành bước này
 

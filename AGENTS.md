@@ -55,7 +55,7 @@ Workspace upstream chỉ include `packages/*`.
 
 - Tính năng dùng chung sửa trong `packages/*`.
 - Cấu hình bật/tắt theo product sửa trong product-line profiles.
-- Generator dùng chung nằm trong `script-system/admin` hoặc `packages/api-server/deploy/cli`.
+- Generator dùng chung nằm trong `packages/admin-app/deploy/cli` hoặc `packages/api-server/deploy/cli`.
 - Không copy code từ product app về template.
 - Không tạo script sync app, PM2, db, env, dev stack trong template.
 - Nếu downstream cần vận hành riêng, cấu hình trong repo product rồi pull template để lấy packages/config mới.

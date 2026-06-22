@@ -5,7 +5,7 @@ Tài liệu này mô tả pha tách package vật lý sau khi profile-based rend
 ## Điều Kiện Bắt Đầu
 
 - `pnpm --filter @workspace/api-server run render -- --line=<line>` chạy ổn cho `hub-parent`, `hub-checkin`, `store-sync`.
-- `node script-system/verify/verify-api-profile.cjs <line>` pass sau render.
+- `pnpm --filter @workspace/api-server run verify:api-profile -- <line>` pass sau render.
 - RBAC catalog của từng app chỉ chứa resource trong profile.
 - Admin menu không trỏ tới module hoặc href bị profile loại.
 - Không còn import runtime từ package ngoài `packages.required` của line.

@@ -42,7 +42,7 @@ function copyProductStarter(lineKey, destRoot = ROOT) {
   }
 
   let copied = false
-  for (const rel of ["apps", "scripts", "script-system"]) {
+  for (const rel of ["apps", "scripts"]) {
     const src = path.join(starterRoot, rel)
     const dest = path.join(destRoot, rel)
     if (copyDir(src, dest)) {

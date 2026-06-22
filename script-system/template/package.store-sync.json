@@ -13,9 +13,9 @@
     "check": "pnpm verify:template-downstream && pnpm verify:downstream-safe && pnpm lint && pnpm typecheck",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "verify:api-profile": "node script-system/verify/verify-api-profile.cjs store-sync",
+    "verify:api-profile": "pnpm --filter @workspace/api-server run verify:api-profile -- store-sync",
     "verify:downstream-safe": "node script-system/verify/verify-downstream-safe-flow.cjs",
-    "admin:generate": "node script-system/admin/generate-admin-routes.cjs",
+    "admin:generate": "pnpm --filter @workspace/admin-app run generate:routes --",
     "api:render": "node packages/api-server/deploy/cli/render.cjs"
   },
   "devDependencies": {

@@ -50,6 +50,7 @@
     "verify:module-graph": "node deploy/cli/verify/verify-module-graph.mjs",
     "verify:checkin-api": "node deploy/cli/verify/checkin-api.mjs",
     "verify:endpoint-parity": "node deploy/cli/verify/endpoint-parity.mjs",
+    "verify:api-profile": "node deploy/cli/verify/verify-api-profile.cjs",
     "test:nest-contract": "jest --config deploy/jest.nest-contract.config.cjs",
     "test:nest-module-specs": "jest --config deploy/jest.nest-module-specs.config.cjs",
     "test": "jest",

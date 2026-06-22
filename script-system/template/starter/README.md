@@ -4,7 +4,7 @@ Thư mục `starter/<productLine>/` được copy vào repo downstream khi chạ
 
 | Product line | Nội dung |
 |--------------|----------|
-| `hub-parent/` | `apps/hub-parent/`, `scripts/dev`, `scripts/pm2`, `script-system/hub-parent/` |
+| `hub-parent/` | `apps/hub-parent/`, `scripts/dev`, `scripts/pm2` |
 
 Upstream **không chạy** starter — chỉ dùng khi bootstrap product repo mới.
 

@@ -10,7 +10,6 @@
   },
   "inheritPaths": [
     "packages",
-    "script-system/admin",
     "script-system/lib",
     "script-system/README.md",
     "script-system/sync/downstream-sync-profile.cjs",
@@ -32,7 +31,6 @@
   "keepPaths": [
     "apps",
     "scripts",
-    "script-system/hub-parent",
     "pnpm-workspace.yaml",
     "package.json",
     "template.manifest.json",

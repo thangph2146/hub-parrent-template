@@ -22,6 +22,6 @@ export const PARENT_ADMIN_LAYOUT_STATIC: AdminLayoutStaticConfig = {
   homePath: PARENT_ADMIN_HOME_PATH,
   profilePath: PARENT_ADMIN_PROFILE_PATH,
   publicSitePath: "/",
-  publicSiteLabel: "Trang chu HUB Parent",
+  publicSiteLabel: "Trang chủ HUB Parent",
 }
 

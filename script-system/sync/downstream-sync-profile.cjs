@@ -46,7 +46,7 @@ const PROFILES = {
       {
         id: "apply-api-overrides",
         name: "Apply hub-parent API overrides",
-        cmd: "node script-system/hub-parent/apply-api-overrides.cjs",
+        cmd: "pnpm --filter @hub-parent/api run apply-overrides",
       },
       {
         id: "ensure-api-env",

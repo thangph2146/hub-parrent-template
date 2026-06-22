@@ -22,7 +22,8 @@
   },
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:routes": "node deploy/cli/generate-routes.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

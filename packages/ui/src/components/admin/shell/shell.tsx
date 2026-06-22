@@ -2,37 +2,21 @@
 
 import { useEffect, useState, type ReactNode } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import {
-  ChevronDown,
-  Home,
-  Menu,
-  Monitor,
-  Moon,
-  PanelLeftClose,
-  PanelLeft,
-  Sun,
-  UserCircle2,
-} from "lucide-react"
+import { ChevronDown, Menu, PanelLeftClose, PanelLeft } from "lucide-react"
 import { Button } from "../../button"
 import { cn } from "../../../lib/utils"
 import { useAdminRouteProgress } from "../../../lib/admin-route-progress"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../dropdown-menu"
+import { AdminProfileMenuPanel } from "./admin-profile-menu-panel"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../../sheet"
 import { MobileSidebarPanel, Sidebar } from "./sidebar"
 import { ThemeToggle } from "../../theme-toggle"
 import { Page, PageContent } from "../../layout"
 import { TypographyH2 } from "../../typography"
-import { useTextSize } from "../../text-size-provider"
-import { useTheme } from "../../theme-provider"
 import { ScrollToTop } from "../../scroll-to-top"
 import { useAdminLayout } from "./layout-context"
 import { AdminAuthLoadingScreen } from "./admin-auth-loading-screen"
@@ -112,8 +96,6 @@ export function AdminShell({
     publicSiteLabel = "Trang chủ",
     accessDeniedReason = "staff_only",
   } = useAdminLayout()
-  const { theme, setTheme } = useTheme()
-  const { size, setSize } = useTextSize()
   const displayName = user?.name?.trim() || user?.email || "Người dùng HUB"
   const avatarUrl = user?.image?.trim() || null
   const onAuthRoute = isAuthPath(pathname)
@@ -315,121 +297,30 @@ export function AdminShell({
                   </div>
                   <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-aria-expanded:rotate-180 sm:block" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64 p-2">
-                  <div className="px-2 py-1.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-xs font-bold text-primary">
-                        {avatarUrl ? (
-                          <img
-                            src={avatarUrl}
-                            alt=""
-                            className="size-full rounded-lg object-cover"
-                          />
-                        ) : (
-                          initials(displayName)
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-foreground">
-                          {displayName}
-                        </p>
-                        <p
-                          className="truncate text-xs text-muted-foreground"
-                          title={rolesDisplay}
-                        >
-                          {rolesDisplay}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    {publicSitePath ? (
-                      <DropdownMenuItem
-                        className="cursor-pointer rounded-md px-2 py-1.5"
-                        onClick={() => {
-                          startIfNavigating(publicSitePath)
-                          router.push(publicSitePath)
-                        }}
-                      >
-                        <Home className="size-4 text-muted-foreground" />
-                        {publicSiteLabel}
-                      </DropdownMenuItem>
-                    ) : null}
-                    <DropdownMenuItem
-                      className="cursor-pointer rounded-md px-2 py-1.5"
-                      onClick={() => {
-                        startIfNavigating(profilePath)
-                        router.push(profilePath)
-                      }}
-                    >
-                      <UserCircle2 className="size-4 text-muted-foreground" />
-                      Hồ sơ
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <div className="space-y-2 px-2 py-1">
-                    <p className="text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-                      Tuỳ chỉnh
-                    </p>
-                    <DropdownMenuRadioGroup
-                      value={theme}
-                      onValueChange={(value) =>
-                        setTheme(value as "light" | "dark" | "system")
-                      }
-                    >
-                      <div className="grid grid-cols-3 gap-1">
-                        <DropdownMenuRadioItem
-                          value="light"
-                          title="Sáng"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
-                        >
-                          <Sun className="size-4 text-muted-foreground" />
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="dark"
-                          title="Tối"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
-                        >
-                          <Moon className="size-4 text-muted-foreground" />
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="system"
-                          title="Theo hệ thống"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5"
-                        >
-                          <Monitor className="size-4 text-muted-foreground" />
-                        </DropdownMenuRadioItem>
-                      </div>
-                    </DropdownMenuRadioGroup>
-                    <DropdownMenuRadioGroup
-                      value={size}
-                      onValueChange={(value) =>
-                        setSize(value as "sm" | "base" | "lg")
-                      }
-                    >
-                      <div className="grid grid-cols-3 gap-1">
-                        <DropdownMenuRadioItem
-                          value="sm"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
-                        >
-                          S
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="base"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
-                        >
-                          M
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="lg"
-                          className="cursor-pointer justify-center rounded-md border border-border px-2 py-1.5 text-xs font-bold"
-                        >
-                          L
-                        </DropdownMenuRadioItem>
-                      </div>
-                    </DropdownMenuRadioGroup>
-                  </div>
+                <DropdownMenuContent
+                  align="end"
+                  sideOffset={8}
+                  className="w-[min(100vw-1.5rem,21rem)] overflow-hidden rounded-xl p-0 shadow-lg ring-1 ring-border/60"
+                >
+                  <AdminProfileMenuPanel
+                    displayName={displayName}
+                    rolesDisplay={rolesDisplay}
+                    avatarUrl={avatarUrl}
+                    avatarFallback={initials(displayName)}
+                    publicSitePath={publicSitePath}
+                    publicSiteLabel={publicSiteLabel}
+                    profilePath={profilePath}
+                    profileActive={pathname === profilePath}
+                    onNavigate={(path) => {
+                      startIfNavigating(path)
+                      router.push(path)
+                    }}
+                    onLogout={() => {
+                      clearSession()
+                      window.dispatchEvent(new Event(sessionEventName))
+                      router.replace(loginPath)
+                    }}
+                  />
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

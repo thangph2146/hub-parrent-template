@@ -5,10 +5,16 @@ Không sync từ template. Dev local + PM2 production.
 ```text
 scripts/
 ├── dev/          # pnpm dev — turbo watch (Windows + Ubuntu)
+├── setup/        # postinstall — tạo .env từ .env.example
 └── pm2/          # pnpm pm2 — production trên Ubuntu
 ```
 
-## Dev
+## Clone GitHub → dev
+
+```bash
+pnpm install    # postinstall tạo .env
+pnpm dev
+```
 
 ```bash
 pnpm dev              # API :3002 + frontend :3000

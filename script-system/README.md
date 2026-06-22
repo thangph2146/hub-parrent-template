@@ -1,28 +1,30 @@
 # script-system
 
-Tooling generic tối thiểu cho feature-template upstream.
+Orchestration monorepo — sync template, bootstrap downstream, verify repo-level.
 
-## Nhóm Giữ Lại
+## Giữ lại
 
 | Nhóm | Vai trò |
 |------|---------|
-| `admin/` | Generator admin route/config dùng chung |
-| `git/` | Push template upstream |
-| `lib/` | Helper chung (`monorepo-root`, product line registry) |
-| `sync/` | `pull:template`, `init:downstream`, sync profile generic |
-| `template/` | File bootstrap downstream tối thiểu |
-| `verify/` | Verify shared boundary + template layout |
+| `sync/` | `pull:template`, `post-pull-downstream`, `init:downstream` (upstream) |
+| `git/` | Push template (upstream) |
+| `lib/` | `monorepo-root`, `run-step` |
+| `verify/` | Layout repo, downstream-safe, template manifest |
+| `template/` | Bootstrap manifests + starter pack (upstream) |
 
-## Không Thuộc Template
+## Script thuộc package — không nằm đây
 
-Các nhóm sau thuộc **downstream product** — không sync từ upstream:
+| Package | Script |
+|---------|--------|
+| `@workspace/admin-app` | `deploy/cli/generate-routes.cjs` → `pnpm --filter @workspace/admin-app run generate:routes` |
+| `@workspace/api-server` | `deploy/cli/render.cjs`, `deploy/cli/verify/verify-api-profile.cjs` |
+| `@workspace/eslint-config` | `verify/service-boundaries.cjs` |
 
-- `dev/`, `db/`, `env/`, `graphify/`, `api/` wrappers
-- PM2 / deploy / docker-compose
-- `data/`, seed runtime, `.env.docker*`
-- App-specific verify (api-profile, data-layout, …)
+Product app (hub-parent): `apps/hub-parent/api/scripts/apply-product-overrides.cjs`
 
-## Kiểm Tra
+Dev/PM2 → `scripts/` ở downstream.
+
+## Kiểm tra
 
 ```bash
 pnpm verify:scripts
