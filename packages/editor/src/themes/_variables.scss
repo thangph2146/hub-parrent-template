@@ -202,11 +202,14 @@ $editor-tab-indent-width: var(--editor-tab-indent-width, 1.5rem) !default;
 $editor-list-padding-left: $editor-text-indent-width !default;
 $editor-ol-marker-align-extra: $editor-tab-indent-width !default;
 $editor-ul-marker-align-extra: $editor-tab-indent-width !default;
+// Cột marker preset (- / +) — ~1em khớp cột bullet disc native (không dùng full tab indent).
+$editor-ul-preset-marker-gutter: 1em !default;
 $editor-list-item-margin-bottom: 0 !default;
 $editor-list-margin-vertical: 0.25rem !default;
 $editor-checklist-gap: 12px !default;
 $editor-checklist-item-padding-vertical: 4px !default;
-$editor-checklist-icon-size: 18px !default;
+// 0.9em khớp Lexical Playground — gap marker→text ≈ gutter − icon (0.6em).
+$editor-checklist-icon-size: 0.9em !default;
 $editor-checklist-icon-margin-top: 3px !default;
 $editor-checklist-icon-border-radius: 4px !default;
 $editor-checklist-icon-checkmark-size: 16px !default;

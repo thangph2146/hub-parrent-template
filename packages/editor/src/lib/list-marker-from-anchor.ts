@@ -13,29 +13,71 @@ import {
   type ListType,
 } from "@lexical/list"
 
+import { LIST_MARKER_PRESET } from "../config/editor-list-config"
 import { createListWithColorNodeFromRegistry } from "../editor-x/nodes"
 import {
   $createListWithColorNode,
   $isListWithColorNode,
 } from "../nodes/list-with-color-node"
 
+function $hasAncestorListWithMarker(listNode: ListNode): boolean {
+  const listType = listNode.getListType()
+  let parent = listNode.getParent()
+
+  while (parent) {
+    if ($isListItemNode(parent)) {
+      const ancestorList = parent.getParent()
+      if (
+        $isListNode(ancestorList) &&
+        ancestorList.getListType() === listType
+      ) {
+        const marker = $isListWithColorNode(ancestorList)
+          ? ancestorList.getMarkerType()
+          : undefined
+        if (marker && marker !== LIST_MARKER_PRESET.DISC) {
+          return true
+        }
+      }
+    }
+    parent = parent.getParent()
+  }
+
+  return false
+}
+
+function $resolveBulletMarkerType(
+  listNode: ListNode,
+  markerType: string | undefined
+): string | undefined {
+  if (markerType !== undefined) return markerType
+  if (listNode.getListType() !== "bullet") return undefined
+  return $hasAncestorListWithMarker(listNode)
+    ? LIST_MARKER_PRESET.DISC
+    : undefined
+}
+
 function setListMarkerType(
   editor: LexicalEditor,
   listNode: ListNode,
   markerType: string | undefined
 ): void {
+  const resolvedMarker =
+    listNode.getListType() === "bullet"
+      ? $resolveBulletMarkerType(listNode, markerType)
+      : markerType
+
   if ($isListWithColorNode(listNode)) {
-    listNode.setMarkerType(markerType)
+    listNode.setMarkerType(resolvedMarker)
     return
   }
-  if (markerType === undefined) return
+  if (resolvedMarker === undefined) return
   const newList = createListWithColorNodeFromRegistry(
     editor,
     listNode.getListType(),
     listNode.getStart(),
     listNode
   )
-  newList.setMarkerType(markerType)
+  newList.setMarkerType(resolvedMarker)
   const children = listNode.getChildren()
   for (const child of children) newList.append(child)
   listNode.replace(newList)

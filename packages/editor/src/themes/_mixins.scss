@@ -277,6 +277,37 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+// ==========================================
+// 14. LIST MARKERS
+// ==========================================
+
+/**
+ * Preset ul marker (- / +): đặt glyph trong cột gutter ul (1.5rem mặc định),
+ * căn phải cột — cùng nhịp marker→text với bullet disc (list-style outside).
+ */
+@mixin editor-ul-preset-marker($symbol) {
+  list-style: none;
+
+  > li:not(.editor-nested-listitem) {
+    position: relative;
+    list-style: none;
+
+    &::marker {
+      content: none;
+    }
+
+    &::before {
+      content: $symbol;
+      position: absolute;
+      inset-inline-start: calc(-1 * #{$editor-ul-preset-marker-gutter});
+      inline-size: $editor-ul-preset-marker-gutter;
+      text-align: start;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+  }
+}
+
 @keyframes editor-dialog-zoom-in {
   from {
     opacity: 0;

@@ -39,7 +39,9 @@ export const LIST_ORDERED_NUMBERING_RESET_AT_HEADING = false as const
  * Giá trị `data-list-marker` / `setMarkerType` — đồng bộ `_lists.scss` và export HTML.
  * Không đổi chuỗi để tránh gãy nội dung đã lưu.
  */
+/** Marker tường minh cho bullet mặc định (disc) — dùng khi list lồng dưới list có preset marker. */
 export const LIST_MARKER_PRESET = {
+  DISC: "disc",
   DASH: "-",
   PLUS: "+",
   ALPHA: "alpha",
@@ -51,6 +53,10 @@ export const LIST_MARKER_PRESET = {
 
 export type ListMarkerPresetValue =
   (typeof LIST_MARKER_PRESET)[keyof typeof LIST_MARKER_PRESET]
+
+/** Tag Lexical update khi user đổi marker qua toolbar — tắt kế thừa marker tự động. */
+export const EDITOR_LIST_MARKER_TOOLBAR_TAG =
+  "editor-list-marker-toolbar" as const
 
 /** Khóa block format (toolbar Select) — đồng bộ `blockTypeToBlockName` và toolbar state. */
 export const LIST_BLOCK_FORMAT_KEY = {
@@ -152,6 +158,12 @@ export function listStateToToolbarBlockType(
     }
     if (markerType === LIST_MARKER_PRESET.PLUS) {
       return LIST_BLOCK_FORMAT_KEY.BULLET_PLUS
+    }
+    if (
+      markerType === undefined ||
+      markerType === LIST_MARKER_PRESET.DISC
+    ) {
+      return LIST_BLOCK_FORMAT_KEY.BULLET
     }
     return LIST_BLOCK_FORMAT_KEY.BULLET
   }

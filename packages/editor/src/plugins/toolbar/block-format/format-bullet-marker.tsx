@@ -2,6 +2,7 @@ import { $insertList, type ListType } from "@lexical/list"
 import { $getSelection, $isRangeSelection } from "lexical"
 
 import type { ListMarkerPresetValue } from "../../../config/editor-list-config"
+import { EDITOR_LIST_MARKER_TOOLBAR_TAG } from "../../../config/editor-list-config"
 import { useToolbarContext } from "../../../context/toolbar-context"
 import {
   $applyListMarkerToKey,
@@ -31,82 +32,88 @@ export function FormatBulletMarker({
       blockType === blockFormatValue ? undefined : markerType
 
     if (activeListTarget?.listType === listType) {
-      activeEditor.update(() => {
-        const selection = $getSelection()
-        const changed = $isRangeSelection(selection)
-          ? $applyListMarkerToSelection(
+      activeEditor.update(
+        () => {
+          const selection = $getSelection()
+          const changed = $isRangeSelection(selection)
+            ? $applyListMarkerToSelection(
+                activeEditor,
+                selection,
+                listType,
+                nextMarkerType
+              )
+            : false
+          if (!changed) {
+            $applyListMarkerToKey(
               activeEditor,
-              selection,
-              listType,
-              nextMarkerType
-            )
-          : false
-        if (!changed) {
-          $applyListMarkerToKey(
-            activeEditor,
-            activeListTarget.key,
-            listType,
-            nextMarkerType
-          )
-        }
-      })
-      return
-    }
-
-    if (blockType !== blockFormatValue) {
-      activeEditor.update(() => {
-        const selection = $getSelection()
-
-        if (
-          $isRangeSelection(selection) &&
-          $tryPartialListTypeConversion(activeEditor, selection, listType, {
-            markerType: nextMarkerType,
-          })
-        ) {
-          // If conversion was handled, the marker was also set. We just need to exit.
-          return
-        }
-
-        // Bỏ qua nếu đang là list cùng kiểu, tránh việc insertList tự remove list.
-        const isCurrentlySameListType =
-          blockType === listType || blockType.startsWith(`${listType}-`)
-
-        if (!isCurrentlySameListType) {
-          $insertList(listType)
-          // Lấy lại vùng chọn mới sau khi insertList (đồng bộ)
-          const newSel = $getSelection()
-          if ($isRangeSelection(newSel)) {
-            $applyListMarkerToSelection(
-              activeEditor,
-              newSel,
+              activeListTarget.key,
               listType,
               nextMarkerType
             )
           }
-          return // Đã xử lý xong việc insert list và set marker mới
-        }
+        },
+        { tag: EDITOR_LIST_MARKER_TOOLBAR_TAG }
+      )
+      return
+    }
 
-        const sel = $getSelection()
-        const changed = $isRangeSelection(sel)
-          ? $applyListMarkerToSelection(
+    if (blockType !== blockFormatValue) {
+      activeEditor.update(
+        () => {
+          const selection = $getSelection()
+
+          if (
+            $isRangeSelection(selection) &&
+            $tryPartialListTypeConversion(activeEditor, selection, listType, {
+              markerType: nextMarkerType,
+            })
+          ) {
+            // If conversion was handled, the marker was also set. We just need to exit.
+            return
+          }
+
+          // Bỏ qua nếu đang là list cùng kiểu, tránh việc insertList tự remove list.
+          const isCurrentlySameListType =
+            blockType === listType || blockType.startsWith(`${listType}-`)
+
+          if (!isCurrentlySameListType) {
+            $insertList(listType)
+            // Lấy lại vùng chọn mới sau khi insertList (đồng bộ)
+            const newSel = $getSelection()
+            if ($isRangeSelection(newSel)) {
+              $applyListMarkerToSelection(
+                activeEditor,
+                newSel,
+                listType,
+                nextMarkerType
+              )
+            }
+            return // Đã xử lý xong việc insert list và set marker mới
+          }
+
+          const sel = $getSelection()
+          const changed = $isRangeSelection(sel)
+            ? $applyListMarkerToSelection(
+                activeEditor,
+                sel,
+                listType,
+                nextMarkerType
+              )
+            : false
+          if (
+            !changed &&
+            activeListTarget?.listType === listType
+          ) {
+            $applyListMarkerToKey(
               activeEditor,
-              sel,
+              activeListTarget.key,
               listType,
               nextMarkerType
             )
-          : false
-        if (
-          !changed &&
-          activeListTarget?.listType === listType
-        ) {
-          $applyListMarkerToKey(
-            activeEditor,
-            activeListTarget.key,
-            listType,
-            nextMarkerType
-          )
-        }
-      })
+          }
+        },
+        { tag: EDITOR_LIST_MARKER_TOOLBAR_TAG }
+      )
     }
   }
 

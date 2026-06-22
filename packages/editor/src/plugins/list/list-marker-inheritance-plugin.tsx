@@ -10,6 +10,7 @@ import {
   type LexicalNode,
 } from "lexical"
 
+import { EDITOR_LIST_MARKER_TOOLBAR_TAG } from "../../config/editor-list-config"
 import { createListWithColorNodeFromRegistry } from "../../editor-x/nodes"
 import { $isListWithColorNode } from "../../nodes/list-with-color-node"
 
@@ -104,6 +105,7 @@ export function ListMarkerInheritancePlugin(): null {
   useEffect(() => {
     return editor.registerUpdateListener(({ tags }) => {
       if (tags.has(LIST_MARKER_INHERITANCE_TAG)) return
+      if (tags.has(EDITOR_LIST_MARKER_TOOLBAR_TAG)) return
 
       editor.update(
         () => {

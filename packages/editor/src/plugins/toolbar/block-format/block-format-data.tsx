@@ -16,6 +16,10 @@ import {
   LIST_BLOCK_FORMAT_KEY,
   LIST_BLOCK_FORMAT_LABELS,
 } from "../../../config/editor-list-config"
+import {
+  LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY,
+  LEXICAL_NATIVE_LIST_BLOCK_FORMAT_LABELS,
+} from "../../../config/editor-list-native-config"
 import { IconSize } from "../../../ui/typography"
 
 export const blockTypeToBlockName: Record<
@@ -128,6 +132,36 @@ export const blockTypeToBlockName: Record<
   },
   [LIST_BLOCK_FORMAT_KEY.CHECK]: {
     label: LIST_BLOCK_FORMAT_LABELS[LIST_BLOCK_FORMAT_KEY.CHECK],
+    icon: (
+      <IconSize size="sm">
+        <ListTodoIcon />
+      </IconSize>
+    ),
+  },
+  [LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.BULLET]: {
+    label: LEXICAL_NATIVE_LIST_BLOCK_FORMAT_LABELS[
+      LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.BULLET
+    ],
+    icon: (
+      <IconSize size="sm">
+        <ListIcon />
+      </IconSize>
+    ),
+  },
+  [LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.NUMBER]: {
+    label: LEXICAL_NATIVE_LIST_BLOCK_FORMAT_LABELS[
+      LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.NUMBER
+    ],
+    icon: (
+      <IconSize size="sm">
+        <ListOrderedIcon />
+      </IconSize>
+    ),
+  },
+  [LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.CHECK]: {
+    label: LEXICAL_NATIVE_LIST_BLOCK_FORMAT_LABELS[
+      LEXICAL_NATIVE_LIST_BLOCK_FORMAT_KEY.CHECK
+    ],
     icon: (
       <IconSize size="sm">
         <ListTodoIcon />

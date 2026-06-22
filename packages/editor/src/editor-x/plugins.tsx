@@ -34,6 +34,7 @@ import {
   LIST_TOOLBAR_ORDERED_MARKER_ITEMS,
 } from "../config/editor-list-config"
 import { ListFormatDropDown } from "../plugins/list/list-format-toolbar-dropdown"
+import { ListNativeFormatToolbarPlugin } from "../plugins/list/list-native-format-toolbar-plugin"
 import { LinkPlugin } from "../plugins/link-plugin"
 import { EditorListPlugins } from "../plugins/list/editor-list-plugins"
 import { MentionsPlugin } from "../plugins/mentions-plugin"
@@ -165,6 +166,11 @@ export function Plugins({
                       ))}
                       <FormatCheckList />
                     </ListFormatDropDown>
+                    <Separator
+                      orientation="vertical"
+                      className="editor-toolbar-separator"
+                    />
+                    <ListNativeFormatToolbarPlugin />
                     <NodeOptionsToolbarPlugin />
                   </div>
                   <Separator

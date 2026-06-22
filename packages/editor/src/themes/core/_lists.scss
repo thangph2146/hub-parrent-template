@@ -170,40 +170,36 @@
       list-style-type: disc;
     }
 
+    &[data-list-marker="disc"] {
+      list-style-type: disc;
+    }
+
     &[data-list-marker="-"] {
-      list-style-type: none;
-      > li:not(.editor-nested-listitem)::marker {
-        content: "- ";
-      }
+      @include editor-ul-preset-marker("-");
     }
 
     &[data-list-marker="+"] {
-      list-style-type: none;
-      > li:not(.editor-nested-listitem)::marker {
-        content: "+ ";
-      }
+      @include editor-ul-preset-marker("+");
     }
 
-    &[data-list-marker="-"] .editor-ul:not([data-list-marker]) {
-      list-style-type: none;
-      > li:not(.editor-nested-listitem)::marker {
-        content: "- ";
-      }
+    &[data-list-marker="-"]
+      .editor-ul:not([data-list-marker]):not([data-list-marker="disc"]) {
+      @include editor-ul-preset-marker("-");
     }
 
-    &[data-list-marker="+"] .editor-ul:not([data-list-marker]) {
-      list-style-type: none;
-      > li:not(.editor-nested-listitem)::marker {
-        content: "+ ";
-      }
+    &[data-list-marker="+"]
+      .editor-ul:not([data-list-marker]):not([data-list-marker="disc"]) {
+      @include editor-ul-preset-marker("+");
     }
 
     &[data-list-marker]:not([data-list-marker="-"]):not(
         [data-list-marker="+"]
-      ) {
-      list-style-type: none;
+      ):not([data-list-marker="disc"]) {
+      list-style-type: disc;
+
       > li:not(.editor-nested-listitem)::marker {
         content: attr(data-list-marker);
+        font-variant-numeric: tabular-nums;
       }
     }
 
@@ -251,21 +247,42 @@
     outline: none;
     box-shadow: none;
 
-    .editor-listitem-checked,
-    .editor-listitem-unchecked {
-      @include flex-center;
-      align-items: flex-start;
+    > .editor-nested-listitem {
+      padding: 0;
+      margin-block: 0;
+      list-style: none;
+    }
+
+    .editor-nested-listitem > & {
+      padding-inline-start: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .editor-listitem-checked:not(.editor-nested-listitem),
+    .editor-listitem-unchecked:not(.editor-nested-listitem) {
+      position: relative;
       margin-inline-start: 0;
-      padding: $editor-checklist-item-padding-vertical 0;
+      padding-block: 0;
+      padding-inline-end: 0;
+      padding-inline-start: $editor-ul-marker-align-extra;
       list-style: none;
       outline: none;
-      gap: $editor-checklist-gap;
+      min-block-size: $editor-checklist-icon-size;
+
+      &::marker {
+        content: none;
+      }
 
       &::before {
         content: "";
+        position: absolute;
+        inset-inline-start: 0;
+        top: 50%;
+        transform: translateY(-50%);
         @include control-size($editor-checklist-icon-size);
         flex-shrink: 0;
-        margin-top: $editor-checklist-icon-margin-top;
+        margin-top: 0;
         cursor: pointer;
         display: block;
         border: $editor-border-width-thick solid
@@ -279,7 +296,7 @@
       }
     }
 
-    .editor-listitem-checked {
+    .editor-listitem-checked:not(.editor-nested-listitem) {
       text-decoration: line-through;
       color: $editor-muted-foreground-color;
 
@@ -297,6 +314,7 @@
 
   .editor-nested-listitem {
     list-style: none;
+
     &::before,
     &::after {
       display: none;

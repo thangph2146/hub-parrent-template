@@ -1,7 +1,10 @@
 import { INSERT_ORDERED_LIST_COMMAND } from "@lexical/list"
 import { $getSelection, $isRangeSelection } from "lexical"
 
-import { LIST_BLOCK_FORMAT_KEY } from "../../../config/editor-list-config"
+import {
+  EDITOR_LIST_MARKER_TOOLBAR_TAG,
+  LIST_BLOCK_FORMAT_KEY,
+} from "../../../config/editor-list-config"
 import { useToolbarContext } from "../../../context/toolbar-context"
 import {
   $applyListMarkerToKey,
@@ -19,29 +22,33 @@ export function FormatNumberedList() {
 
   const formatNumberedList = () => {
     if (activeListTarget?.listType === "number") {
-      activeEditor.update(() => {
-        const selection = $getSelection()
-        const changed = $isRangeSelection(selection)
-          ? $applyListMarkerToSelection(
+      activeEditor.update(
+        () => {
+          const selection = $getSelection()
+          const changed = $isRangeSelection(selection)
+            ? $applyListMarkerToSelection(
+                activeEditor,
+                selection,
+                "number",
+                undefined
+              )
+            : false
+          if (!changed) {
+            $applyListMarkerToKey(
               activeEditor,
-              selection,
+              activeListTarget.key,
               "number",
               undefined
             )
-          : false
-        if (!changed) {
-          $applyListMarkerToKey(
-            activeEditor,
-            activeListTarget.key,
-            "number",
-            undefined
-          )
-        }
-      })
+          }
+        },
+        { tag: EDITOR_LIST_MARKER_TOOLBAR_TAG }
+      )
       return
     }
 
-    activeEditor.update(() => {
+    activeEditor.update(
+      () => {
       const selection = $getSelection()
       const isAnyNumberList =
         blockType === LIST_BLOCK_FORMAT_KEY.NUMBER ||
@@ -83,7 +90,9 @@ export function FormatNumberedList() {
         return
       }
       activeEditor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)
-    })
+    },
+      { tag: EDITOR_LIST_MARKER_TOOLBAR_TAG }
+    )
   }
 
   return (
