@@ -5,29 +5,21 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable"
 import {
   $getNodeByKey,
-  $getRoot,
-  $isElementNode,
   $isNodeSelection,
   ElementFormatType,
-  ElementNode,
   FORMAT_ELEMENT_COMMAND,
   LexicalEditor,
-  LexicalNode,
   NodeKey,
 } from "lexical"
 
 import { ImageResizer } from "../editor-ui/image-resizer"
-import { $isImageNode, ImageNode } from "../nodes/image-node"
+import { $isImageNode } from "../nodes/image-node"
 import { cn } from "../lib/utils"
 import { useEditorContainer } from "../context/editor-container-context"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { InsertImageDialog } from "./dialogs"
 import type { InsertImagePayload } from "./dialogs"
 import { usePriorityImage } from "../context/priority-image-context"
-import {
-  ImageLightboxDialog,
-  type LightboxImage,
-} from "./image-lightbox-dialog"
 
 // Sub-components
 import { LazyImage } from "./lazy-image"
@@ -42,25 +34,9 @@ import {
 } from "./hooks/use-responsive-image-dimensions"
 import { useImageCaptionControls } from "./hooks/use-image-caption-controls"
 import { useImageNodeInteractions } from "./hooks/use-image-node-interactions"
+import { ReadOnlyImageComponent } from "./read-only-image-component"
 
 const RESIZE_HANDLE_HIDE_DELAY = 200
-
-const collectImages = (node: LexicalNode, images: LightboxImage[]) => {
-  if ($isImageNode(node)) {
-    const imageNode = node as ImageNode
-    images.push({
-      key: imageNode.getKey(),
-      src: imageNode.getSrc(),
-      altText: imageNode.getAltText(),
-    })
-    return
-  }
-  if ($isElementNode(node)) {
-    ;(node as ElementNode)
-      .getChildren()
-      .forEach((child) => collectImages(child, images))
-  }
-}
 
 interface ImageComponentProps {
   altText: string
@@ -77,10 +53,20 @@ interface ImageComponentProps {
 }
 
 /**
- * ImageComponent - The main component for image nodes in the Lexical editor.
- * Orchestrates image rendering, resizing, captions, and interactions.
+ * ImageComponent - routes read-only vs editable rendering.
  */
-export default function ImageComponent({
+export default function ImageComponent(props: ImageComponentProps): JSX.Element {
+  const isEditable = useLexicalEditable()
+  if (!isEditable) {
+    return <ReadOnlyImageComponent {...props} />
+  }
+  return <EditableImageComponent {...props} />
+}
+
+/**
+ * Editable image — resize, LazyImage, responsive dimensions.
+ */
+function EditableImageComponent({
   altText,
   caption,
   captionsEnabled,
@@ -106,19 +92,13 @@ export default function ImageComponent({
   const [editor] = useLexicalComposerContext()
   const [isLoadError, setIsLoadError] = useState<boolean>(false)
   const [isReplaceDialogOpen, setIsReplaceDialogOpen] = useState(false)
-  const isEditable = useLexicalEditable()
-  const [lightbox, setLightbox] = useState<null | {
-    images: LightboxImage[]
-    index: number
-  }>(null)
   const editorContainer = useEditorContainer()
 
   const prioritySrc = usePriorityImage()
   const isPriority = src === prioritySrc
 
   // Custom hooks for logic separation
-  const { hasCaptionContent, localShowCaption, setShowCaption } =
-    useImageCaptionControls({
+  const { localShowCaption, setShowCaption } = useImageCaptionControls({
       caption,
       editor,
       nodeKey,
@@ -145,18 +125,6 @@ export default function ImageComponent({
     nodeKey,
     showCaption,
   })
-
-  useEffect(() => {
-    setIsLoadError(false)
-  }, [src])
-
-  useEffect(() => {
-    if (!isEditable && isReplaceDialogOpen) {
-      setTimeout(() => {
-        setIsReplaceDialogOpen(false)
-      }, 0)
-    }
-  }, [isEditable, isReplaceDialogOpen])
 
   useEffect(() => {
     return () => {
@@ -253,10 +221,9 @@ export default function ImageComponent({
   }, [editor, nodeKey])
 
   const draggable = isSelected && $isNodeSelection(selection) && !isResizing
-  const isFocused = (isSelected || isResizing) && isEditable
+  const isFocused = isSelected || isResizing
   const shouldRenderCaption =
-    showCaption &&
-    (isEditable ? localShowCaption && captionsEnabled : hasCaptionContent)
+    showCaption && localShowCaption && captionsEnabled
 
   const imageClassName = cn(
     "editor-image",
@@ -265,25 +232,7 @@ export default function ImageComponent({
     fullWidth && "full-width"
   )
 
-  const captionWrapperClass = cn(
-    "editor-image-caption",
-    isEditable ? "editable" : "readonly"
-  )
-
-  const openLightbox = useCallback(() => {
-    if (isEditable) return
-    const images = editor.getEditorState().read(() => {
-      const list: LightboxImage[] = []
-      collectImages($getRoot(), list)
-      return list
-    })
-    if (images.length === 0) return
-    const index = Math.max(
-      0,
-      images.findIndex((img) => img.key === nodeKey)
-    )
-    setLightbox({ images, index })
-  }, [editor, isEditable, nodeKey])
+  const captionWrapperClass = cn("editor-image-caption", "editable")
 
   return (
     <Suspense
@@ -300,34 +249,6 @@ export default function ImageComponent({
         <div draggable={draggable} style={{ display: "inline-block" }}>
           {isLoadError ? (
             <BrokenImage />
-          ) : !isEditable ? (
-            <button
-              type="button"
-              className="editor-image-link"
-              aria-label="Xem ảnh lớn"
-              onPointerDown={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-              }}
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                openLightbox()
-              }}
-            >
-              <LazyImage
-                key={src}
-                className={imageClassName}
-                src={src}
-                altText={altText}
-                imageRef={imageRef}
-                width={responsiveDimensions.width}
-                height={responsiveDimensions.height}
-                maxWidth={maxWidth}
-                onError={() => setIsLoadError(true)}
-                fetchPriority={isPriority ? "high" : "auto"}
-              />
-            </button>
           ) : (
             <LazyImage
               key={src}
@@ -346,7 +267,7 @@ export default function ImageComponent({
 
         {shouldRenderCaption && (
           <div className={captionWrapperClass}>
-            <CaptionComposer caption={caption} isEditable={isEditable} />
+            <CaptionComposer caption={caption} isEditable={true} />
           </div>
         )}
 
@@ -368,7 +289,7 @@ export default function ImageComponent({
           />
         )}
 
-        {isEditable && isReplaceDialogOpen && (
+        {isReplaceDialogOpen && (
           <Dialog
             open={isReplaceDialogOpen}
             onOpenChange={setIsReplaceDialogOpen}
@@ -393,20 +314,6 @@ export default function ImageComponent({
             </DialogContent>
           </Dialog>
         )}
-
-        {!isEditable && lightbox ? (
-          <ImageLightboxDialog
-            open={true}
-            images={lightbox.images}
-            index={lightbox.index}
-            onIndexChange={(nextIndex) =>
-              setLightbox((prev) =>
-                prev ? { ...prev, index: nextIndex } : prev
-              )
-            }
-            onClose={() => setLightbox(null)}
-          />
-        ) : null}
       </>
     </Suspense>
   )

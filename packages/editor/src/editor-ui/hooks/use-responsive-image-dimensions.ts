@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { LexicalEditor } from "lexical"
 import { getContainerWidth, getImageAspectRatio } from "../image-sizing"
 
@@ -50,13 +50,20 @@ export function useResponsiveImageDimensions({
     width,
     height,
   })
+  const dimensionsRef = useRef(dimensions)
+  dimensionsRef.current = dimensions
+
+  useEffect(() => {
+    setDimensions((prev) => {
+      if (prev.width === width && prev.height === height) return prev
+      return { width, height }
+    })
+  }, [src, width, height])
 
   useEffect(() => {
     if (isResizing) {
       return
     }
-
-    setDimensions({ width, height })
 
     let cancelScheduledUpdate: null | (() => void) = null
     const cleanupTasks: Array<() => void> = []
@@ -65,6 +72,11 @@ export function useResponsiveImageDimensions({
       width: DimensionValue
       height: DimensionValue
     }) => {
+      const current = dimensionsRef.current
+      if (current.width === next.width && current.height === next.height) {
+        return
+      }
+
       if (cancelScheduledUpdate) {
         cancelScheduledUpdate()
       }
@@ -168,10 +180,19 @@ export function useResponsiveImageDimensions({
       scheduleDimensionsUpdate({ width: nextWidth, height: nextHeight })
     }
 
+    let resizeFrameId: number | null = null
+    const scheduleResizeUpdate = () => {
+      if (resizeFrameId != null) return
+      resizeFrameId = window.requestAnimationFrame(() => {
+        resizeFrameId = null
+        updateDimensions()
+      })
+    }
+
     updateDimensions()
 
     if (typeof ResizeObserver !== "undefined") {
-      const resizeObserver = new ResizeObserver(updateDimensions)
+      const resizeObserver = new ResizeObserver(scheduleResizeUpdate)
       if (editorRoot) {
         resizeObserver.observe(editorRoot)
       }
@@ -182,13 +203,16 @@ export function useResponsiveImageDimensions({
         resizeObserver.disconnect()
       })
     } else if (typeof window !== "undefined") {
-      window.addEventListener("resize", updateDimensions)
+      window.addEventListener("resize", scheduleResizeUpdate)
       cleanupTasks.push(() => {
-        window.removeEventListener("resize", updateDimensions)
+        window.removeEventListener("resize", scheduleResizeUpdate)
       })
     }
 
     return () => {
+      if (resizeFrameId != null) {
+        window.cancelAnimationFrame(resizeFrameId)
+      }
       cancelScheduledUpdate?.()
       cleanupTasks.forEach((task) => task())
     }

@@ -61,7 +61,17 @@ export function LazyImage({
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setActualDimensions(imageCache.get(src) ?? DEFAULT_DIMENSIONS)
+    setActualDimensions((prev) => {
+      const next = imageCache.get(src) ?? DEFAULT_DIMENSIONS
+      if (
+        prev.width === next.width &&
+        prev.height === next.height &&
+        prev.ratio === next.ratio
+      ) {
+        return prev
+      }
+      return next
+    })
   }, [src])
 
   useEffect(() => {
