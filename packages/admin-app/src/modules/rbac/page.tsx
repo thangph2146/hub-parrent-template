@@ -263,8 +263,6 @@ const ROLE_PRESETS: RolePreset[] = [
       "parent_students:view",
       "parent_students:create",
       "notifications:view_own",
-      "messages:view_own",
-      "posts:view",
       "accounts:view",
       "accounts:update"
     ),

@@ -1,7 +1,6 @@
 "use client"
 
 import type { LucideIcon } from "lucide-react"
-import type { AuthUser } from "@workspace/api-client"
 import {
   ExternalLink,
   Home,
@@ -15,7 +14,6 @@ import {
 import { cn } from "../../../lib/utils"
 import { useTextSize } from "../../text-size-provider"
 import { useTheme } from "../../theme-provider"
-import { AdminSessionLoginCopyButton } from "./admin-session-login-copy-button"
 
 const TEXT_SIZE_OPTIONS = [
   { value: "sm", label: "Nhỏ", sampleClass: "text-[11px]" },
@@ -97,10 +95,6 @@ function MenuAccountLink({
 }
 
 export function AdminProfileMenuPanel({
-  user,
-  pagePath,
-  loginPath,
-  portalLabel,
   displayName,
   rolesDisplay,
   avatarUrl,
@@ -112,10 +106,6 @@ export function AdminProfileMenuPanel({
   onNavigate,
   onLogout,
 }: {
-  user: AuthUser
-  pagePath?: string | null
-  loginPath?: string | null
-  portalLabel?: string | null
   displayName: string
   rolesDisplay: string
   avatarUrl: string | null
@@ -151,44 +141,6 @@ export function AdminProfileMenuPanel({
       </div>
 
       <div className="space-y-2 p-2">
-        <section>
-          <MenuSectionTitle>Tài khoản</MenuSectionTitle>
-          <div className="space-y-0.5">
-            {publicSitePath ? (
-              <MenuAccountLink
-                label={publicSiteLabel}
-                description="Quay về trang công khai"
-                icon={Home}
-                external
-                onClick={() => onNavigate(publicSitePath)}
-              />
-            ) : null}
-            <MenuAccountLink
-              label="Hồ sơ"
-              description="Cập nhật thông tin cá nhân"
-              icon={UserCircle2}
-              active={profileActive}
-              onClick={() => onNavigate(profilePath)}
-            />
-            <MenuAccountLink
-              label="Đăng xuất"
-              description="Kết thúc phiên làm việc"
-              icon={LogOut}
-              destructive
-              onClick={onLogout}
-            />
-            <div className="pt-1">
-              <AdminSessionLoginCopyButton
-                user={user}
-                pagePath={pagePath}
-                loginPath={loginPath}
-                portalLabel={portalLabel}
-                layout="sm"
-              />
-            </div>
-          </div>
-        </section>
-
         <section className="rounded-lg border border-border/60 bg-muted/20 p-2">
           <div className="mb-2 flex items-center gap-2">
             <span className="flex size-7 items-center justify-center rounded-md border border-border/70 bg-background text-primary">
@@ -279,6 +231,35 @@ export function AdminProfileMenuPanel({
                 </button>
               )
             })}
+          </div>
+        </section>
+
+        <section>
+          <MenuSectionTitle>Tài khoản</MenuSectionTitle>
+          <div className="space-y-0.5">
+            {publicSitePath ? (
+              <MenuAccountLink
+                label={publicSiteLabel}
+                description="Quay về trang công khai"
+                icon={Home}
+                external
+                onClick={() => onNavigate(publicSitePath)}
+              />
+            ) : null}
+            <MenuAccountLink
+              label="Hồ sơ"
+              description="Cập nhật thông tin cá nhân"
+              icon={UserCircle2}
+              active={profileActive}
+              onClick={() => onNavigate(profilePath)}
+            />
+            <MenuAccountLink
+              label="Đăng xuất"
+              description="Kết thúc phiên làm việc"
+              icon={LogOut}
+              destructive
+              onClick={onLogout}
+            />
           </div>
         </section>
       </div>

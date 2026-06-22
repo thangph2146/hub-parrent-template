@@ -1,7 +1,7 @@
 /**
  * ParentStudents Service — domain logic (materialize → apps/main/api module-bases).
  */
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import type { EntityManager, FilterQuery } from '@mikro-orm/core';
 import { applyColumnFilters } from '../../crud/crud-apply-column-filters';
 import {
@@ -106,7 +106,32 @@ export abstract class BaseParentStudentsService {
   protected abstract getEm(): EntityManager;
   protected abstract getEntity(): new () => Record<string, unknown>;
   protected abstract getUserEntity(): new () => Record<string, unknown>;
+  protected abstract getStudentEntity(): new () => Record<string, unknown>;
   protected abstract getAdminRealtime(): ParentStudentsRealtimePort;
+
+  protected async resolveStudentForRequest(
+    em: EntityManager,
+    studentCode: string,
+    studentName: string | null,
+  ): Promise<Record<string, unknown>> {
+    const Student = this.getStudentEntity();
+    const where = {
+      studentCode,
+      deletedAt: null,
+    } as FilterQuery<Record<string, unknown>>;
+    const existing = await em.findOne(Student, where);
+    if (existing) {
+      return existing as Record<string, unknown>;
+    }
+
+    const created = em.create(Student, {
+      studentCode,
+      name: studentName,
+      isActive: true,
+    }) as Record<string, unknown>;
+    await em.persistAndFlush(created);
+    return created;
+  }
 
   async listByParent(parentId: string): Promise<ParentStudentsRowDto[]> {
     const em = this.getEm();
@@ -241,18 +266,35 @@ export abstract class BaseParentStudentsService {
     const em = this.getEm();
     const Entity = this.getEntity();
     const User = this.getUserEntity();
+    const trimmedCode = data.studentCode.trim();
+    if (!trimmedCode) {
+      throw new BadRequestException('Mã sinh viên không được để trống');
+    }
+
+    const student = await this.resolveStudentForRequest(
+      em,
+      trimmedCode,
+      data.studentName?.trim() ?? null,
+    );
+    const studentId = student.id as number;
+
     const existing = await em.findOne(Entity, {
       parent: toEntityId(String(data.parentId)),
-      studentCode: data.studentCode.trim(),
+      studentCode: trimmedCode,
     });
     if (existing) {
-      throw new Error('Bạn đã gửi yêu cầu liên kết với mã sinh viên này rồi.');
+      throw new BadRequestException(
+        'Bạn đã gửi yêu cầu liên kết với mã sinh viên này rồi.',
+      );
     }
 
     const ps = new Entity() as Record<string, unknown>;
     ps.parent = em.getReference(User, data.parentId);
-    ps.studentCode = data.studentCode.trim();
-    ps.studentName = data.studentName?.trim() ?? null;
+    ps.student = em.getReference(this.getStudentEntity(), studentId);
+    ps.studentCode = trimmedCode;
+    ps.studentName =
+      data.studentName?.trim() ??
+      (typeof student.name === 'string' ? student.name : null);
     ps.note = data.note?.trim() ?? null;
     ps.status = 'pending';
     await em.persistAndFlush(ps);

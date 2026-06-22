@@ -73,7 +73,6 @@ const PARENT_ADMIN_MODULES = [
   ...COMMON_ADMIN_MODULES,
   'my-students',
   'parent-students',
-  'posts',
   'guides',
   'categories',
   'tags',

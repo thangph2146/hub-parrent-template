@@ -30,7 +30,7 @@
     "db:create:dump": "mikro-orm schema:create --dump",
     "db:update": "mikro-orm schema:update --run --safe",
     "db:fix-categories": "pnpm run build && mikro-orm migration:up",
-    "db:fresh": "mikro-orm schema:fresh --run --seed",
+    "db:fresh": "mikro-orm schema:fresh --run --seed --drop-db",
     "db:drop": "mikro-orm schema:drop --run",
     "db:migration:create": "mikro-orm migration:create",
     "db:migration:create:initial": "mikro-orm migration:create --initial",
