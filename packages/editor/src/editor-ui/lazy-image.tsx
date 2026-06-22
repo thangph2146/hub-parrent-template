@@ -61,6 +61,10 @@ export function LazyImage({
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    setActualDimensions(imageCache.get(src) ?? DEFAULT_DIMENSIONS)
+  }, [src])
+
+  useEffect(() => {
     if (wrapperRef.current) {
       const imgElement = wrapperRef.current.querySelector(
         "img"

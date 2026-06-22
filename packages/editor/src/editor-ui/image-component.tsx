@@ -147,6 +147,10 @@ export default function ImageComponent({
   })
 
   useEffect(() => {
+    setIsLoadError(false)
+  }, [src])
+
+  useEffect(() => {
     if (!isEditable && isReplaceDialogOpen) {
       setTimeout(() => {
         setIsReplaceDialogOpen(false)
@@ -312,6 +316,7 @@ export default function ImageComponent({
               }}
             >
               <LazyImage
+                key={src}
                 className={imageClassName}
                 src={src}
                 altText={altText}
@@ -325,6 +330,7 @@ export default function ImageComponent({
             </button>
           ) : (
             <LazyImage
+              key={src}
               className={imageClassName}
               src={src}
               altText={altText}

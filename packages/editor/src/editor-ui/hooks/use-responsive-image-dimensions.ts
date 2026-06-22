@@ -56,6 +56,8 @@ export function useResponsiveImageDimensions({
       return
     }
 
+    setDimensions({ width, height })
+
     let cancelScheduledUpdate: null | (() => void) = null
     const cleanupTasks: Array<() => void> = []
 
