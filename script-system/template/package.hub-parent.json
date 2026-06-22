@@ -29,7 +29,9 @@
     "pm2:stop": "node scripts/pm2/stack.cjs stop",
     "pm2:reload": "node scripts/pm2/stack.cjs reload",
     "pm2:restart": "node scripts/pm2/stack.cjs restart",
-    "pm2:delete": "node scripts/pm2/stack.cjs delete"
+    "pm2:delete": "node scripts/pm2/stack.cjs delete",
+    "push": "node script-system/sync/push-product.cjs",
+    "push:template": "node script-system/sync/push-template.cjs"
   },
   "devDependencies": {
     "@clack/prompts": "^0.11.0",

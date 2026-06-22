@@ -4,6 +4,10 @@
   "defaultRemote": "https://github.com/thangph2146/mono-repo-template.git",
   "defaultRef": "main",
   "remoteName": "template",
+  "templatePush": {
+    "localPath": "../monorepo-template",
+    "runCheck": true
+  },
   "library": {
     "root": "packages",
     "pullMode": "full"
@@ -15,6 +19,8 @@
     "script-system/sync/downstream-sync-profile.cjs",
     "script-system/sync/post-pull-downstream.cjs",
     "script-system/sync/pull-template.cjs",
+    "script-system/sync/push-template.cjs",
+    "script-system/sync/push-product.cjs",
     "script-system/verify",
     "docs/admin-pattern",
     "docs/api-pattern",
