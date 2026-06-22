@@ -9,12 +9,13 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import { $findMatchingParent } from "@lexical/utils"
-import { $isListNode } from "@lexical/list"
+import { $isListNode, type ListNode } from "@lexical/list"
 import { $isCodeNode } from "@lexical/code"
 import { $isHeadingNode } from "@lexical/rich-text"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { ToolbarContext } from "../../context/toolbar-context"
+import type { ActiveListTarget } from "../../context/toolbar-context"
 import { useEditorModal } from "../../editor-hooks/use-modal"
 import { useHeaderHeight } from "../../hooks/use-header-height"
 import { cn } from "../../lib/utils"
@@ -37,6 +38,8 @@ export function ToolbarPlugin({
   const { headerHeight } = useHeaderHeight()
 
   const [activeEditor, setActiveEditor] = useState(editor)
+  const [activeListTarget, setActiveListTarget] =
+    useState<ActiveListTarget>(null)
   const [blockType, setBlockType] = useState<string>("paragraph")
 
   const [modal, showModal] = useEditorModal()
@@ -72,32 +75,45 @@ export function ToolbarPlugin({
               }
 
               const elementType = element.getType()
+              const nearestList = $isListNode(anchorNode)
+                ? anchorNode
+                : $findMatchingParent(anchorNode, $isListNode)
 
-              if ($isListNode(element)) {
-                const listType = element.getListType()
+              if ($isListNode(nearestList)) {
+                const listNode = nearestList as ListNode
+                const listType = listNode.getListType()
+                setActiveListTarget({
+                  key: listNode.getKey(),
+                  listType,
+                })
                 if (
-                  $isListWithColorNode(element) &&
+                  $isListWithColorNode(listNode) &&
                   (listType === "bullet" || listType === "number")
                 ) {
                   setBlockType(
                     listStateToToolbarBlockType(
                       listType,
-                      element.getMarkerType()
+                      listNode.getMarkerType()
                     )
                   )
                 } else {
                   setBlockType(listType)
                 }
               } else if ($isCodeNode(element)) {
+                setActiveListTarget(null)
                 setBlockType("code")
               } else if ($isHeadingNode(element)) {
+                setActiveListTarget(null)
                 setBlockType(element.getTag())
               } else if (elementType in blockTypeToBlockName) {
+                setActiveListTarget(null)
                 setBlockType(elementType)
               } else {
+                setActiveListTarget(null)
                 setBlockType("paragraph")
               }
             } catch {
+              setActiveListTarget(null)
               setBlockType("paragraph")
             }
           }
@@ -114,6 +130,7 @@ export function ToolbarPlugin({
   return (
     <ToolbarContext
       activeEditor={activeEditor}
+      activeListTarget={activeListTarget}
       $updateToolbar={$updateToolbar}
       blockType={blockType}
       setBlockType={setBlockType}

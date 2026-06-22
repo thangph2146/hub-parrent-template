@@ -5,6 +5,10 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { ROOT } = require('../cli/lib/monorepo-root.cjs')
 const { listTemplateModuleIds, resolveTemplateRoot } = require('./template.config.cjs')
+const {
+  PRODUCT_LINE_PROFILES,
+  profileForApiApp,
+} = require('./product-line-profiles.cjs')
 
 const DEFAULT_ADMIN_MODULE_MAP = {
   staff: ['users'],
@@ -83,39 +87,25 @@ const STORE_SYNC_API_INFRA = [
   'system',
 ]
 
-const HUB_CHECKIN_API_PRESET = {
-  id: 'hub-checkin-api',
-  alignAdminApp: '../hub-checkin-frontend/config/admin.app.config.json',
-  extraModules: HUB_CHECKIN_API_INFRA,
-  excludeModules: HUB_CHECKIN_EXCLUDED_STORE_MODULES,
-  excludeEntities: HUB_CHECKIN_EXCLUDED_STORE_ENTITIES,
+function apiPresetFromProfile(profile) {
+  return {
+    id: `${profile.id}-api`,
+    description: `${profile.label} API — generated from product-line profile`,
+    modules: profile.api.modules ?? [],
+    extraModules: profile.api.extraModules ?? [],
+    excludeModules: profile.api.excludeModules ?? [],
+    excludeEntities: profile.api.excludeEntities ?? [],
+    alignAdminApp: profile.api.alignAdminApp,
+    alignAdminAppOptional: profile.api.alignAdminAppOptional,
+    packageModuleTemplates: { enabled: true },
+    render: { pruneEntities: true },
+  }
 }
 
 const APP_CONFIG_PRESETS = {
-  'hub-checkin': HUB_CHECKIN_API_PRESET,
-  'hub-parent': {
-    id: 'hub-parent-api',
-    renderAllModules: true,
-    alignAdminApp: '../../main/backend/admin.app.config.json',
-  },
-  'store-sync': {
-    id: 'store-sync-api',
-    modules: [
-      'products',
-      'orders',
-      'promo-codes',
-      'carts',
-      'uploads',
-      'categories',
-      'settings',
-      'seo-metas',
-      'users',
-      'roles',
-      'sessions',
-      'accounts',
-    ],
-    extraModules: STORE_SYNC_API_INFRA,
-  },
+  'hub-checkin': apiPresetFromProfile(PRODUCT_LINE_PROFILES['hub-checkin']),
+  'hub-parent': apiPresetFromProfile(PRODUCT_LINE_PROFILES['hub-parent']),
+  'store-sync': apiPresetFromProfile(PRODUCT_LINE_PROFILES['store-sync']),
   main: {
     id: 'main-api',
     description: 'Main API (source of truth). Không render vào apps/main/api.',
@@ -147,6 +137,8 @@ function resolveApiModules(appRel) {
     throw new Error(`Không tìm thấy api.app.config.json tại ${appRel}`)
   }
   const config = readJson(configPath)
+  const profile = profileForApiApp(appRel)
+  const profileApi = profile?.api
 
   if (config.renderAllModules) {
     const templateRoot = resolveTemplateRoot()
@@ -165,14 +157,19 @@ function resolveApiModules(appRel) {
 
   let modules = []
   if (config.modules?.length) modules = [...config.modules]
+  else if (profileApi?.modules?.length) modules = [...profileApi.modules]
   else if (config.scaffoldModules?.length) modules = [...config.scaffoldModules]
 
-  if (config.alignAdminApp) {
-    const adminPath = path.isAbsolute(config.alignAdminApp)
-      ? config.alignAdminApp
-      : path.join(ROOT, appRel, config.alignAdminApp)
+  const alignAdminApp = config.alignAdminApp ?? profileApi?.alignAdminApp
+  const alignAdminAppOptional =
+    config.alignAdminAppOptional ?? profileApi?.alignAdminAppOptional
+
+  if (alignAdminApp) {
+    const adminPath = path.isAbsolute(alignAdminApp)
+      ? alignAdminApp
+      : path.join(ROOT, appRel, alignAdminApp)
     if (!fs.existsSync(adminPath)) {
-      if (config.alignAdminAppOptional && modules.length) {
+      if (alignAdminAppOptional && modules.length) {
         console.warn(`alignAdminApp không tồn tại, dùng modules khai báo sẵn: ${adminPath}`)
       } else {
         throw new Error(`alignAdminApp không tồn tại: ${adminPath}`)
@@ -184,17 +181,32 @@ function resolveApiModules(appRel) {
     }
   }
 
-  if (config.extraModules?.length) {
-    modules = [...new Set([...modules, ...config.extraModules])]
+  const extraModules = [
+    ...(profileApi?.extraModules ?? []),
+    ...(config.extraModules ?? []),
+  ]
+  if (extraModules.length) {
+    modules = [...new Set([...modules, ...extraModules])]
   }
 
-  if (config.excludeModules?.length) {
-    const excluded = new Set(config.excludeModules)
+  const excludeModules = [
+    ...(profileApi?.excludeModules ?? []),
+    ...(config.excludeModules ?? []),
+  ]
+  if (excludeModules.length) {
+    const excluded = new Set(excludeModules)
     modules = modules.filter((moduleId) => !excluded.has(moduleId))
   }
 
   return {
-    config,
+    config: {
+      ...config,
+      productLine: profile?.id ?? config.productLine,
+      excludeEntities: [
+        ...(profileApi?.excludeEntities ?? []),
+        ...(config.excludeEntities ?? []),
+      ],
+    },
     modules: [...new Set(modules)],
     renderAllModules: false,
     disableEntityPrune: config.render?.pruneEntities === false,
@@ -216,6 +228,7 @@ module.exports = {
   HUB_CHECKIN_API_INFRA,
   STORE_SYNC_API_INFRA,
   APP_CONFIG_PRESETS,
+  PRODUCT_LINE_PROFILES,
   expandAdminModules,
   resolveApiModules,
   presetForProductLine,

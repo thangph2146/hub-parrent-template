@@ -57,6 +57,8 @@ export function SelectTrigger({
   className,
   children,
   size = "default",
+  onClick,
+  onMouseDown,
   ...props
 }: SelectTriggerProps) {
   const context = React.useContext(SelectContext)
@@ -76,7 +78,14 @@ export function SelectTrigger({
       aria-expanded={open}
       aria-haspopup="listbox"
       data-state={open ? "open" : "closed"}
-      onClick={() => !disabled && setOpen(!open)}
+      onMouseDown={(event) => {
+        event.preventDefault()
+        onMouseDown?.(event)
+      }}
+      onClick={(event) => {
+        onClick?.(event)
+        if (!disabled && !event.defaultPrevented) setOpen(!open)
+      }}
       disabled={disabled || props.disabled}
       {...props}
     >
@@ -173,6 +182,9 @@ export function SelectItem({
   icon,
   children,
   className,
+  onClick,
+  onMouseDown,
+  onPointerDown,
   ...props
 }: SelectItemProps) {
   const context = React.useContext(SelectContext)
@@ -190,9 +202,19 @@ export function SelectItem({
         className
       )}
       data-selected={isSelected}
-      onClick={() => {
-        context.onValueChange?.(value)
-        context.setOpen(false)
+      onPointerDown={(event) => {
+        onPointerDown?.(event)
+      }}
+      onMouseDown={(event) => {
+        event.preventDefault()
+        onMouseDown?.(event)
+      }}
+      onClick={(event) => {
+        onClick?.(event)
+        if (!event.defaultPrevented) {
+          context.onValueChange?.(value)
+          context.setOpen(false)
+        }
       }}
       {...props}
     >

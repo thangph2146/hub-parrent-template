@@ -81,6 +81,7 @@ const RESOURCE_LABEL_VI: Record<string, string> = {
   parent_students: "phụ huynh–sinh viên",
   products: "sản phẩm",
   orders: "đơn hàng",
+  promo_codes: "mã khuyến mãi",
 }
 
 const ACTION_LABEL_VI: Record<string, string> = {
@@ -101,6 +102,7 @@ const ACTION_LABEL_VI: Record<string, string> = {
   unactive: "Vô hiệu hóa",
   "hard-delete": "Xóa vĩnh viễn",
   "revoke-by-user": "Thu hồi theo người dùng",
+  revoke_by_user: "Thu hồi theo người dùng",
   checkout: "Đặt hàng",
 }
 

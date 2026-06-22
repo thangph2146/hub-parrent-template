@@ -13,6 +13,7 @@ const {
   resolveTemplateRoot,
 } = require('../config/template.config.cjs')
 const { resolveApiModules } = require('../config/render.config.cjs')
+const { getProductLineProfile } = require('../config/product-line-profiles.cjs')
 const { prepareInteractiveStdin } = require('./lib/render/prepare-interactive-stdin.cjs')
 const { ensureApiAppConfig, hasApiAppConfig } = require('./scaffold-api-app-config.cjs')
 const { pickApiAppTarget, pickPackageModules, assertTty } = require('./render-prompts.cjs')
@@ -94,6 +95,8 @@ async function pickRenderPreset() {
 }
 
 async function resolveTargetApp() {
+  const line = getArgValue('--line=')
+  if (line) return getProductLineProfile(line).api.appPath
   const positional = args.find((a) => !a.startsWith('--') && a.includes('/'))
   if (positional) return positional.replace(/\\/g, '/')
   const fromFlag = getArgValue('--app=')
@@ -215,15 +218,6 @@ async function main() {
   if (preset === 'closure-entities') {
     wantAll = false
   }
-  if (
-    appRel.includes('hub-parent/') &&
-    !explicitModules?.length &&
-    !hasFlag('--pick') &&
-    args.length > 0
-  ) {
-    wantAll = true
-  }
-
   const prune =
     !hasFlag('--no-prune') &&
     (hasFlag('--prune') || wantFull || subsetLine)
@@ -325,12 +319,12 @@ async function main() {
     }
   } else if (renderResult.partialRender) {
     pipelineSteps.push({
-      label: 'verify hub-checkin',
+      label: 'verify:render-api',
       skipped: true,
       detail: 'partial render (--modules)',
     })
   } else if (skipVerify) {
-    pipelineSteps.push({ label: 'verify hub-checkin', skipped: true, detail: '--skip-verify' })
+    pipelineSteps.push({ label: 'verify:render-api', skipped: true, detail: '--skip-verify' })
   }
 
   const { outroLine } = printApiRenderSummary({

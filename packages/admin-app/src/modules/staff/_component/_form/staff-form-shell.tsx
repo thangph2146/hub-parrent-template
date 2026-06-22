@@ -47,6 +47,11 @@ export function StaffFormShell(props: StaffFormShellProps) {
   const { isEdit, form, roles, subjectUserId, onSubmit, onCancel, submitting } =
     props
 
+  const roleOptions = roles.filter((role, index, source) => {
+    const code = role.code.trim()
+    return code.length > 0 && source.findIndex((item) => item.code.trim() === code) === index
+  })
+
   const { uploadingAvatar, avatarInputRef, avatarValue, handleUploadAvatar } =
     useStaffAvatarUpload({ form, subjectUserId })
 
@@ -338,12 +343,12 @@ export function StaffFormShell(props: StaffFormShellProps) {
                 render={({ field: { value, onChange }, fieldState }) => (
                   <div className="space-y-2">
                     <div className="max-h-[220px] space-y-3 overflow-y-auto rounded-lg border border-border p-3">
-                      {roles.length === 0 ? (
+                      {roleOptions.length === 0 ? (
                         <p className="flex items-center gap-2 text-xs text-muted-foreground">
                           Chưa tải được danh sách vai trò.
                         </p>
                       ) : (
-                        roles.map((r) => (
+                        roleOptions.map((r) => (
                           <div
                             key={r.code}
                             className="flex cursor-pointer items-start gap-3 rounded-lg p-2 hover:bg-muted/60"

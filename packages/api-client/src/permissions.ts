@@ -414,6 +414,7 @@ export function canUserAccess(user: AuthUser, code: PermissionCode): boolean {
 export const STAFF_ADMIN_ROLE_CODES = [
   "super_admin",
   "admin",
+  "event_staff",
   "manager",
   "sales",
   "shipper",

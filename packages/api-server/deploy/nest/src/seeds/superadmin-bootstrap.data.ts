@@ -2,6 +2,11 @@ import {
   EVENT_CHECKIN_STAFF_PERMISSIONS,
   EVENT_STAFF_ROLE_TEMPLATE,
 } from '../config/role-templates/event-staff.template';
+import { type Permission } from '../config/permissions';
+import {
+  ACTIVE_PERMISSIONS,
+  ACTIVE_ROLE_PRESETS,
+} from '../config/active-permissions';
 
 // Role data — mật khẩu plain `demo` (chỉ local / seed dev).
 export const DEV_LOGIN_PASSWORD_PLAIN = 'demo';
@@ -11,7 +16,195 @@ export const DEV_LOGIN_PASSWORD_HASH =
 
 export { EVENT_CHECKIN_STAFF_PERMISSIONS, EVENT_STAFF_ROLE_TEMPLATE };
 
-export const SUPERADMIN_ROLES_DATA = [
+const ACTIVE_PERMISSION_SET = new Set<Permission>(ACTIVE_PERMISSIONS);
+const ACTIVE_ROLE_PRESET_SET = new Set<string>(ACTIVE_ROLE_PRESETS);
+const ALL_PERMISSIONS = ACTIVE_PERMISSIONS;
+
+function uniquePermissions(
+  ...groups: ReadonlyArray<readonly Permission[]>
+): Permission[] {
+  return [...new Set(groups.flat())];
+}
+
+function pickPermissionsByResource(
+  ...resources: ReadonlyArray<string>
+): Permission[] {
+  const allowed = new Set(resources);
+  return ALL_PERMISSIONS.filter((permission) => {
+    const [resource] = permission.split(':');
+    return allowed.has(resource);
+  });
+}
+
+function pickPermissionsByCode(
+  ...permissions: ReadonlyArray<Permission>
+): Permission[] {
+  const allowed = new Set(permissions);
+  return ALL_PERMISSIONS.filter((permission) => allowed.has(permission));
+}
+
+function excludePermissionCodes(
+  permissions: readonly Permission[],
+  ...blocked: ReadonlyArray<Permission>
+): Permission[] {
+  const blockedSet = new Set(blocked);
+  return permissions.filter((permission) => !blockedSet.has(permission));
+}
+
+const SELF_SERVICE_PERMISSIONS = pickPermissionsByCode(
+  'dashboard:view',
+  'accounts:view',
+  'accounts:update',
+);
+
+const STAFF_DIRECTORY_PERMISSIONS = pickPermissionsByResource('users', 'sessions');
+
+const RBAC_READ_PERMISSIONS = pickPermissionsByCode('roles:view', 'roles:export');
+
+const CONTENT_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'posts',
+  'categories',
+  'tags',
+  'comments',
+  'page_contents',
+  'seo_metas',
+  'uploads',
+);
+
+const COMMUNICATION_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'contact_requests',
+  'groups',
+  'messages',
+  'notifications',
+);
+
+const ACADEMIC_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'students',
+  'parent_students',
+  'admission_results',
+  'imported_users',
+  'training_levels',
+  'training_systems',
+  'majors',
+  'courses',
+  'academic_years',
+  'departments',
+);
+
+const EVENT_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'events',
+  'event_registrations',
+  'event_checkins',
+  'event_checkouts',
+  'event_speakers',
+  'speakers',
+  'locations',
+  'cameras',
+  'templates',
+  'screens',
+  'face_data',
+);
+
+const STORE_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'products',
+  'orders',
+  'promo_codes',
+);
+
+const SYSTEM_OPERATIONS_PERMISSIONS = pickPermissionsByResource(
+  'settings',
+  'system',
+);
+
+const ADMIN_PERMISSIONS = excludePermissionCodes(
+  uniquePermissions(
+    SELF_SERVICE_PERMISSIONS,
+    STAFF_DIRECTORY_PERMISSIONS,
+    RBAC_READ_PERMISSIONS,
+    CONTENT_OPERATIONS_PERMISSIONS,
+    COMMUNICATION_OPERATIONS_PERMISSIONS,
+    ACADEMIC_OPERATIONS_PERMISSIONS,
+    EVENT_OPERATIONS_PERMISSIONS,
+    STORE_OPERATIONS_PERMISSIONS,
+    SYSTEM_OPERATIONS_PERMISSIONS,
+  ),
+  'users:hard-delete',
+  'roles:delete',
+  'roles:manage',
+  'roles:restore',
+  'system:delete',
+);
+
+const MANAGER_PERMISSIONS = excludePermissionCodes(
+  uniquePermissions(
+    SELF_SERVICE_PERMISSIONS,
+    pickPermissionsByCode('users:view', 'users:export'),
+    CONTENT_OPERATIONS_PERMISSIONS,
+    COMMUNICATION_OPERATIONS_PERMISSIONS,
+    ACADEMIC_OPERATIONS_PERMISSIONS,
+    EVENT_OPERATIONS_PERMISSIONS,
+    STORE_OPERATIONS_PERMISSIONS,
+    pickPermissionsByCode('settings:view', 'settings:update', 'settings:export'),
+  ),
+  'comments:approve',
+  'users:delete',
+  'users:hard-delete',
+  'students:delete',
+  'parent_students:delete',
+  'system:delete',
+  'face_data:hard-delete',
+  'event_registrations:hard-delete',
+  'event_checkins:hard-delete',
+  'seo_metas:hard-delete',
+  'categories:hard-delete',
+  'groups:hard-delete',
+);
+
+const EDITOR_PERMISSIONS = uniquePermissions(
+  SELF_SERVICE_PERMISSIONS,
+  CONTENT_OPERATIONS_PERMISSIONS,
+  pickPermissionsByResource('contact_requests'),
+);
+
+const SALES_PERMISSIONS = uniquePermissions(
+  SELF_SERVICE_PERMISSIONS,
+  pickPermissionsByCode('users:view'),
+  pickPermissionsByResource('products', 'orders', 'promo_codes', 'contact_requests'),
+);
+
+const SHIPPER_PERMISSIONS = uniquePermissions(
+  SELF_SERVICE_PERMISSIONS,
+  pickPermissionsByCode(
+    'orders:view',
+    'orders:update',
+    'orders:export',
+    'products:view',
+    'contact_requests:view',
+  ),
+);
+
+const PARENT_PERMISSIONS = pickPermissionsByCode(
+  'dashboard:view',
+  'parent_students:view',
+  'parent_students:create',
+  'notifications:view_own',
+  'messages:view_own',
+  'posts:view',
+  'accounts:view',
+  'accounts:update',
+);
+
+const STUDENT_PERMISSIONS = pickPermissionsByCode(
+  'dashboard:view',
+  'students:view_own',
+  'notifications:view_own',
+  'messages:view_own',
+  'posts:view',
+  'accounts:view',
+  'accounts:update',
+);
+
+const SUPERADMIN_ROLES_DATA_BASE = [
   {
     name: 'super_admin',
     displayName: 'Super Admin',
@@ -371,6 +564,73 @@ export const SUPERADMIN_ROLES_DATA = [
   },
   { ...EVENT_STAFF_ROLE_TEMPLATE },
 ];
+
+const ROLE_PERMISSION_OVERRIDES = {
+  super_admin: {
+    description:
+      'Toàn quyền hệ thống — tự động bao phủ toàn bộ catalog permission hiện tại',
+    permissions: ALL_PERMISSIONS,
+  },
+  admin: {
+    description:
+      'Quản trị vận hành — đủ quyền nghiệp vụ, hạn chế thao tác phá hủy cấp hệ thống/RBAC',
+    permissions: ADMIN_PERMISSIONS,
+  },
+  editor: {
+    description:
+      'Biên tập nội dung — bài viết, trang nội dung, SEO, danh mục, media và liên hệ',
+    permissions: EDITOR_PERMISSIONS,
+  },
+  parent: {
+    permissions: PARENT_PERMISSIONS,
+  },
+  student: {
+    permissions: STUDENT_PERMISSIONS,
+  },
+} as const;
+
+const ADDITIONAL_ROLE_TEMPLATES = [
+  {
+    name: 'manager',
+    displayName: 'Quản lý vận hành',
+    description:
+      'Quản lý nội dung, học vụ, sự kiện và thương mại; không có quyền RBAC nhạy cảm',
+    permissions: MANAGER_PERMISSIONS,
+    isActive: true,
+  },
+  {
+    name: 'sales',
+    displayName: 'Kinh doanh',
+    description:
+      'Vận hành sản phẩm, đơn hàng, mã khuyến mãi và liên hệ khách hàng',
+    permissions: SALES_PERMISSIONS,
+    isActive: true,
+  },
+  {
+    name: 'shipper',
+    displayName: 'Giao vận',
+    description: 'Theo dõi và cập nhật đơn hàng được giao',
+    permissions: SHIPPER_PERMISSIONS,
+    isActive: true,
+  },
+] as const;
+
+export const SUPERADMIN_ROLES_DATA = [
+  ...SUPERADMIN_ROLES_DATA_BASE.map((role) => ({
+    ...role,
+    ...(ROLE_PERMISSION_OVERRIDES[
+      role.name as keyof typeof ROLE_PERMISSION_OVERRIDES
+    ] ?? {}),
+  })),
+  ...ADDITIONAL_ROLE_TEMPLATES,
+]
+  .filter((role) => ACTIVE_ROLE_PRESET_SET.has(role.name))
+  .map((role) => ({
+    ...role,
+    permissions: (role.permissions ?? []).filter((permission) =>
+      ACTIVE_PERMISSION_SET.has(permission),
+    ),
+  }));
 
 // User data
 export const SUPERADMIN_USERS_DATA = [

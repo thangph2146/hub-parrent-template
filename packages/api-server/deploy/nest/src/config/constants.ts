@@ -9,6 +9,10 @@ export const AUTH_ROLE_NAMES = {
   STUDENT: 'student',
   ADMIN: 'admin',
   SUPER_ADMIN: 'super_admin',
+  MANAGER: 'manager',
+  SALES: 'sales',
+  SHIPPER: 'shipper',
+  EVENT_STAFF: 'event_staff',
 } as const;
 
 export type AuthRoleName =

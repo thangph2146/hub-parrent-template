@@ -35,6 +35,7 @@ import { createSuccessResponse, createErrorResponse } from '../common';
 import { APP_HEADERS, ADMIN_ROUTES } from '../config/constants';
 import { Permissions } from '../common';
 import { RESOURCES, ACTIONS, PERMISSIONS } from '../config/permissions';
+import { ACTIVE_PERMISSIONS } from '../config/active-permissions';
 import { parseAdminListLimit } from '../common';
 
 type RoleListStatus = 'active' | 'deleted' | 'all';
@@ -197,7 +198,7 @@ export class RolesController {
     if (!userId) {
       return this.unauthorized(res);
     }
-    const items = Object.values(PERMISSIONS)
+    const items = ACTIVE_PERMISSIONS
       .map((code, index) => ({
         id: index + 1,
         code,

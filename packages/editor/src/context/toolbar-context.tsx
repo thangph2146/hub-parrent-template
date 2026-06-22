@@ -1,10 +1,17 @@
 "use client"
 
 import { createContext, JSX, useContext } from "react"
-import { LexicalEditor } from "lexical"
+import { LexicalEditor, type NodeKey } from "lexical"
+import type { ListType } from "@lexical/list"
+
+export type ActiveListTarget = {
+  key: NodeKey
+  listType: ListType
+} | null
 
 const Context = createContext<{
   activeEditor: LexicalEditor
+  activeListTarget: ActiveListTarget
   $updateToolbar: () => void
   blockType: string
   setBlockType: (blockType: string) => void
@@ -16,6 +23,7 @@ const Context = createContext<{
   ) => void
 }>({
   activeEditor: {} as LexicalEditor,
+  activeListTarget: null,
   $updateToolbar: () => {},
   blockType: "paragraph",
   setBlockType: () => {},
@@ -24,6 +32,7 @@ const Context = createContext<{
 
 export function ToolbarContext({
   activeEditor,
+  activeListTarget,
   $updateToolbar,
   blockType,
   setBlockType,
@@ -31,6 +40,7 @@ export function ToolbarContext({
   children,
 }: {
   activeEditor: LexicalEditor
+  activeListTarget: ActiveListTarget
   $updateToolbar: () => void
   blockType: string
   setBlockType: (blockType: string) => void
@@ -46,6 +56,7 @@ export function ToolbarContext({
     <Context.Provider
       value={{
         activeEditor,
+        activeListTarget,
         $updateToolbar,
         blockType,
         setBlockType,

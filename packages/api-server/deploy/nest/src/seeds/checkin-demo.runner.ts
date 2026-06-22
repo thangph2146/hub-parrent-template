@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import type { EntityManager } from '@mikro-orm/core';
 import { Event, EventFormat } from '../entities/event.entity';
@@ -5,6 +6,7 @@ import {
   EventRegistration,
   RegistrationStatus,
 } from '../entities/event-registration.entity';
+import { Post } from '../entities/post.entity';
 import { User } from '../entities/user.entity';
 import { Student } from '../entities/student.entity';
 import { runSuperadminBootstrap } from './superadmin-bootstrap.runner';
@@ -55,6 +57,49 @@ const DEMO_LOCATIONS = [
 
 const ORGANIZER = 'Trường Đại học Ngân hàng TP. HCM';
 
+const FALLBACK_DEMO_POSTS: ExportPostSeedSource[] = [
+  {
+    title: 'Ngày hội Check-in HUB 2026',
+    slug: 'ngay-hoi-checkin-hub-2026',
+    excerpt:
+      'Sự kiện demo giúp kiểm thử luồng đăng ký, cấp QR và check-in tại cổng HUB Events.',
+    image: null,
+    published: true,
+    content:
+      'Sinh viên và khách mời đăng ký tham dự, nhận mã QR và xác nhận tham gia tại khu vực check-in.',
+  },
+  {
+    title: 'Workshop kỹ năng số cho sinh viên',
+    slug: 'workshop-ky-nang-so-cho-sinh-vien',
+    excerpt:
+      'Buổi workshop demo cho chức năng danh sách sự kiện, đăng ký và quản lý lượt tham dự.',
+    image: null,
+    published: true,
+    content:
+      'Nội dung tập trung vào kỹ năng sử dụng công cụ số trong học tập và hoạt động ngoại khóa.',
+  },
+  {
+    title: 'Tọa đàm hướng nghiệp ngành tài chính ngân hàng',
+    slug: 'toa-dam-huong-nghiep-tai-chinh-ngan-hang',
+    excerpt:
+      'Sự kiện mô phỏng có nhiều lượt đăng ký để kiểm thử báo cáo check-in theo thời gian thực.',
+    image: null,
+    published: true,
+    content:
+      'Khách mời chia sẻ lộ trình nghề nghiệp, yêu cầu kỹ năng và kinh nghiệm thực tập.',
+  },
+  {
+    title: 'Hội thảo chuyển đổi số trong giáo dục',
+    slug: 'hoi-thao-chuyen-doi-so-trong-giao-duc',
+    excerpt:
+      'Dữ liệu demo cho kịch bản sự kiện hybrid, có địa điểm offline và thông tin họp trực tuyến.',
+    image: null,
+    published: true,
+    content:
+      'Chương trình thảo luận về hạ tầng dữ liệu, quản trị học tập và trải nghiệm người học.',
+  },
+];
+
 function mulberry32(seed: number): () => number {
   let state = seed >>> 0;
   return () => {
@@ -103,9 +148,19 @@ function eventSlugForPost(postSlug: string): string {
   return `demo-${base}`;
 }
 
+function normalizeVietnameseText(value: string | null | undefined): string {
+  return String(value ?? '')
+    .normalize('NFC')
+    .replace(/\uFFFD/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildDescription(post: ExportPostSeedSource): string {
-  if (post.excerpt?.trim()) return post.excerpt.trim().slice(0, 500);
-  return `Sự kiện demo được tạo từ bài viết «${post.title}» — phục vụ kiểm thử đăng ký và check-in HUB Events.`;
+  const excerpt = normalizeVietnameseText(post.excerpt);
+  if (excerpt) return excerpt.slice(0, 500);
+  const title = normalizeVietnameseText(post.title) || 'HUB';
+  return `Sự kiện demo được tạo từ bài viết "${title}" - phục vụ kiểm thử đăng ký và check-in HUB Events.`;
 }
 
 function resolveEventContent(post: ExportPostSeedSource): unknown {
@@ -141,6 +196,54 @@ function resolveDefaultExportPath(log?: (message: string) => void): string {
   }
 
   return resolveSeedExportPath({ legacyDir: path.join(__dirname, '..') });
+}
+
+async function loadDbPosts(
+  em: EntityManager,
+): Promise<ExportPostSeedSource[]> {
+  const rows = await em.find(
+    Post,
+    { published: true, deletedAt: null },
+    {
+      orderBy: [{ eventStartAt: 'ASC' }, { publishedAt: 'DESC' }, { createdAt: 'DESC' }],
+      limit: 40,
+    },
+  );
+
+  return rows.map((post) => ({
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt ?? null,
+    image: post.image ?? null,
+    published: post.published,
+    content: post.content,
+  }));
+}
+
+async function loadDemoPosts(
+  em: EntityManager,
+  explicitPath: string | undefined,
+  log: (message: string) => void,
+): Promise<{ posts: ExportPostSeedSource[]; source: string }> {
+  try {
+    const exportPath = explicitPath ?? resolveDefaultExportPath(log);
+    if (!fs.existsSync(exportPath)) {
+      throw new Error(`Không tìm thấy file export bài viết: ${exportPath}`);
+    }
+    return { posts: loadExportPosts(exportPath), source: exportPath };
+  } catch (error) {
+    const dbPosts = await loadDbPosts(em);
+    if (dbPosts.length > 0) {
+      log(
+        `Không có full-export seed (${(error as Error).message}) — dùng ${dbPosts.length} bài viết published trong DB.`,
+      );
+      return { posts: dbPosts, source: 'database:posts' };
+    }
+    log(
+      `Không có full-export seed (${(error as Error).message}) — dùng dữ liệu demo check-in tối thiểu.`,
+    );
+    return { posts: FALLBACK_DEMO_POSTS, source: 'fallback:checkin-demo' };
+  }
 }
 
 async function applyDemoEventContent(
@@ -194,8 +297,9 @@ async function createDemoEvent(
         : EventFormat.OFFLINE;
 
   const event = new Event();
+  const title = normalizeVietnameseText(post.title) || 'Sự kiện HUB';
   event.title =
-    post.title.length > 180 ? `${post.title.slice(0, 177)}…` : post.title;
+    title.length > 180 ? `${title.slice(0, 177).trimEnd()}...` : title;
   event.slug = slug;
   event.description = buildDescription(post);
   event.content = resolveEventContent(post);
@@ -342,7 +446,6 @@ export async function runCheckinDemoSeed(
   options: CheckinDemoSeedOptions = {},
 ): Promise<CheckinDemoSeedResult> {
   const log = options.log ?? (() => undefined);
-  const exportPath = options.postsExportPath ?? resolveDefaultExportPath(log);
   const rawCount =
     options.eventCount ?? Number(process.env.CHECKIN_DEMO_EVENT_COUNT ?? '15');
   const eventCount = Math.max(
@@ -356,13 +459,13 @@ export async function runCheckinDemoSeed(
   );
 
   log('=== Check-in demo seed ===');
-  log(`Posts export: ${exportPath}`);
+  const { posts, source } = await loadDemoPosts(em, options.postsExportPath, log);
+  log(`Posts export: ${source}`);
   log(`Target events: ${eventCount}`);
 
   const bootstrap = await runSuperadminBootstrap(em, log);
   await seedDemoStudentRecords(em, log);
 
-  const posts = loadExportPosts(exportPath);
   if (!posts.length) {
     throw new Error('Export không có bài viết published để tạo sự kiện demo.');
   }
