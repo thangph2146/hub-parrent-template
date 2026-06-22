@@ -26,7 +26,6 @@
   ],
   "inheritRootFiles": [
     ".gitignore",
-    "turbo.json",
     "AGENTS.md",
     "packages/README.md"
   ],

@@ -92,6 +92,7 @@ const PARENT_API_MODULES = [
   'contact-requests',
   'parent-students',
   'students',
+  'public',
 ]
 
 const STORE_ADMIN_MODULES = [
@@ -243,7 +244,6 @@ const PROFILES = {
         'orders',
         'products',
         'promo-codes',
-        'public',
         'screens',
         'speakers',
         'training-levels',
