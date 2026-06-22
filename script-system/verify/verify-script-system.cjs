@@ -32,7 +32,6 @@ const ALLOWED_TOP_DIRS = new Set(isDownstream ? DOWNSTREAM_TOP_DIRS : UPSTREAM_T
 
 const UPSTREAM_CJS_DIRS = [
   "lib",
-  "lib/layout",
   "sync",
   "git",
   "verify",
@@ -42,7 +41,6 @@ const UPSTREAM_CJS_DIRS = [
 
 const DOWNSTREAM_CJS_DIRS = [
   "lib",
-  "lib/layout",
   "sync",
   "verify",
   "admin",
@@ -56,6 +54,7 @@ const UPSTREAM_SYNC_ROOT_SCRIPTS = [
   "post-pull-downstream.cjs",
   "downstream-sync-profile.cjs",
   "init-downstream.cjs",
+  "copy-product-starter.cjs",
 ];
 
 const DOWNSTREAM_SYNC_ROOT_SCRIPTS = [

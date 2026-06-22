@@ -1,6 +1,6 @@
 # script-system
 
-Tooling generic tối thiểu cho feature-template.
+Tooling generic tối thiểu cho feature-template upstream.
 
 ## Nhóm Giữ Lại
 
@@ -8,23 +8,19 @@ Tooling generic tối thiểu cho feature-template.
 |------|---------|
 | `admin/` | Generator admin route/config dùng chung |
 | `git/` | Push template upstream |
-| `lib/` | Helper chung cho script |
-| `sync/` | `pull:template`, `post-pull:downstream`, sync profile generic |
+| `lib/` | Helper chung (`monorepo-root`, product line registry) |
+| `sync/` | `pull:template`, `init:downstream`, sync profile generic |
 | `template/` | File bootstrap downstream tối thiểu |
-| `verify/` | Verify shared boundary/template |
+| `verify/` | Verify shared boundary + template layout |
 
-## Không Giữ Trong Template
+## Không Thuộc Template
 
-- `dev/`
-- `db/`
-- `env/`
-- `graphify/`
-- `api/` script wrappers
-- `sync/products/`
-- PM2/deploy scripts
-- App-specific verify scripts
+Các nhóm sau thuộc **downstream product** — không sync từ upstream:
 
-Các nhóm trên thuộc downstream product hoặc package chuyên trách.
+- `dev/`, `db/`, `env/`, `graphify/`, `api/` wrappers
+- PM2 / deploy / docker-compose
+- `data/`, seed runtime, `.env.docker*`
+- App-specific verify (api-profile, data-layout, …)
 
 ## Kiểm Tra
 

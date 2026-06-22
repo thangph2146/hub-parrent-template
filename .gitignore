@@ -5,7 +5,7 @@ node_modules
 .pnp
 .pnp.js
 
-# Local env files (.env.example được commit — xem docs/env/README.md)
+# Local env (runtime .env thuộc downstream product)
 .env
 .env.bak
 .env.local
@@ -29,53 +29,21 @@ build
 dist
 *.tsbuildinfo
 
-
 # Debug
 npm-debug.log*
-
-# PM2 generated ecosystem JSON (ecosystem/pm2-stack.cjs)
-ecosystem/.pm2-ecosystem-*.json
-.pm2-ecosystem-*.json
 
 # Misc
 .DS_Store
 *.pem
 
-# Graphify auto-generated artifacts (platform-specific paths)
+# Graphify auto-generated artifacts
 **/.graphify/worktree.json
 **/.graphify/branch.json
 **/.graphify/manifest.json
-apps/*/api/eslint-report.json
 
-
-another-template
-
-# Monorepo data/ — xem data/README.md
-/data/local/**
-/data/exports/**
-!/data/local/.gitkeep
-!/data/exports/.gitkeep
-/data/seed/*.json
-/data/seed/*.json.gz
-/data/seed/*.gz
-!/data/seed/.gitkeep
-
-# File dữ liệu lẻ tại data/ root (phải nằm trong seed|exports|local)
-/data/*.json
-/data/*.json.gz
-/data/*.gz
-
-# Export / audit legacy (không đặt trong apps/*/api/src)
+# Export / audit legacy (downstream apps — giữ rule khi sync sang product)
 **/full-export-*.json
 **/hub-system-export-*.json
 **/hub-system-export-*.json.gz
-apps/*/api/MODULE_*_AUDIT.md
 
-# Pipeline meta — chỉ commit main + nest template (xem apps/main/api/.pipeline/README.md)
-**/tsc-errors.txt
-apps/*/api/PACKAGE_MODULE_TEMPLATES.meta.json
-apps/hub-checkin/api/.pipeline/**
-apps/hub-parent/api/.pipeline/**
-apps/store-sync/api/.pipeline/**
-!apps/main/api/.pipeline/**
-!packages/api-server/deploy/nest/.pipeline/**
+another-template

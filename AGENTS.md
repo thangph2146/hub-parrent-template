@@ -35,7 +35,7 @@ Không được lazy với: validation ở trust boundary, error handling tránh
 - `script-system/`: chỉ giữ generic tooling tối thiểu để downstream pull template, render/generate và verify shared boundary.
 - `docs/`: mô tả pattern dùng chung.
 
-`apps/`, deploy scripts, PM2, env runtime, db bootstrap và script vận hành product thuộc từng downstream repo. Không thêm lại `apps/` vào template.
+Repo này **không chạy app** — không có `apps/`, `data/`, Docker, PM2, dev stack hay env runtime.
 
 ## Cấu trúc Chuẩn
 

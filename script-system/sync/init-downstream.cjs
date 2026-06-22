@@ -1,41 +1,19 @@
 /**
  * Bootstrap monorepo downstream (một product line) từ template upstream.
  *
- * Template không còn copy app source. Downstream tự sở hữu apps/<line>/,
- * còn packages/script-system/feature profiles được kéo từ template.
- *
  * Usage:
- *   node script-system/sync/init-downstream.cjs hub-checkin ../hub-checkin-monorepo
- *   node script-system/sync/init-downstream.cjs hub-parent ../hub-parent-monorepo
+ *   node script-system/sync/init-downstream.cjs hub-parent ../my-hub-site
+ *
+ * Sau init: đổi `name` trong package.json → pnpm install → pnpm dev
  */
 const fs = require("node:fs")
 const path = require("node:path")
 const { execFileSync, execSync } = require("node:child_process")
 
 const { ROOT } = require("../lib/monorepo-root.cjs")
+const { copyProductStarter } = require("./copy-product-starter.cjs")
 
 const TEMPLATE_DIR = path.join(ROOT, "script-system/template")
-
-const SKIP_DIRS = new Set([
-  "node_modules",
-  "dist",
-  ".next",
-  ".turbo",
-  ".cache",
-  "coverage",
-  ".graphify",
-])
-
-function copyDir(src, dest, { skipDirs = SKIP_DIRS } = {}) {
-  fs.mkdirSync(dest, { recursive: true })
-  for (const ent of fs.readdirSync(src, { withFileTypes: true })) {
-    if (skipDirs.has(ent.name)) continue
-    const from = path.join(src, ent.name)
-    const to = path.join(dest, ent.name)
-    if (ent.isDirectory()) copyDir(from, to, { skipDirs })
-    else fs.copyFileSync(from, to)
-  }
-}
 
 function loadUpstreamManifest() {
   return JSON.parse(
@@ -75,6 +53,7 @@ const packageTpl = path.join(TEMPLATE_DIR, `package.${lineKey}.json`)
 const manifestProductLine = line.manifestProductLine ?? lineKey
 const manifestTpl = path.join(TEMPLATE_DIR, "template.manifest.downstream.json")
 const readmeTpl = path.join(TEMPLATE_DIR, `README.${lineKey}.md`)
+const turboTpl = path.join(TEMPLATE_DIR, "turbo.downstream.json")
 
 if (fs.existsSync(workspaceTpl)) {
   fs.copyFileSync(workspaceTpl, path.join(destRoot, "pnpm-workspace.yaml"))
@@ -99,32 +78,23 @@ if (fs.existsSync(readmeTpl)) {
   fs.copyFileSync(readmeTpl, path.join(destRoot, "README.md"))
 }
 
-const turboSrc = path.join(ROOT, "turbo.json")
-if (fs.existsSync(turboSrc)) {
-  fs.copyFileSync(turboSrc, path.join(destRoot, "turbo.json"))
+if (fs.existsSync(turboTpl)) {
+  fs.copyFileSync(turboTpl, path.join(destRoot, "turbo.json"))
+} else if (fs.existsSync(path.join(ROOT, "turbo.json"))) {
+  fs.copyFileSync(path.join(ROOT, "turbo.json"), path.join(destRoot, "turbo.json"))
 }
-
-const appRoot = line.appTargets?.root ?? `apps/${lineKey}`
-fs.mkdirSync(path.join(destRoot, appRoot), { recursive: true })
-fs.writeFileSync(
-  path.join(destRoot, "apps", "README.md"),
-  [
-    "# Product apps",
-    "",
-    "`apps/` thuộc repo sản phẩm downstream.",
-    "Template upstream chỉ cung cấp `packages/`, `script-system` và feature profiles.",
-    "",
-    `Product line hiện tại: \`${lineKey}\`.`,
-    `App root dự kiến: \`${appRoot}\`.`,
-    "",
-  ].join("\n"),
-  "utf8",
-)
 
 fs.copyFileSync(
   path.join(ROOT, ".gitignore"),
   path.join(destRoot, ".gitignore"),
 )
+
+console.log("[init:downstream] Copy starter pack (apps + scripts)…")
+if (!copyProductStarter(lineKey, destRoot)) {
+  console.warn(
+    `[init:downstream] Chưa có starter/${lineKey} — thêm apps/scripts thủ công trước khi dev.`,
+  )
+}
 
 execFileSync("git", ["init"], { cwd: destRoot, stdio: "inherit" })
 execFileSync(
@@ -133,18 +103,20 @@ execFileSync(
   { cwd: destRoot, stdio: "inherit" },
 )
 
-console.log("\n[init:downstream] Chạy pull:template trong repo mới…\n")
+console.log("\n[init:downstream] pull:template + post-pull…\n")
 execFileSync(
   "node",
-  [path.join(ROOT, "script-system/sync/pull-template.cjs")],
+  [path.join(ROOT, "script-system/sync/pull-template.cjs"), "--full"],
   { cwd: destRoot, stdio: "inherit" },
 )
 
+const appRoot = line.appTargets?.root ?? `apps/${lineKey}`
 console.log(
   `\n[init:downstream] Hoàn tất.\n` +
     `  cd ${destRoot}\n` +
+    `  # 1) Đổi tên: sửa "name" trong package.json\n` +
     `  pnpm install\n` +
-    `  # thêm hoặc generate app code tại ${appRoot}\n` +
-    `  pnpm check\n` +
-    `  git remote add origin <repo-sản-phẩm>\n`,
+    `  pnpm dev\n` +
+    `  git remote add origin <repo-sản-phẩm>\n` +
+    `\n  App root: ${appRoot}\n`,
 )

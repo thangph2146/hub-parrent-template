@@ -1,0 +1,13 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
+import { Module } from '@nestjs/common';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { TagsController } from './tags.controller';
+import { TagsService } from './tags.service';
+
+@Module({
+  imports: [NotificationsModule],
+  controllers: [TagsController],
+  providers: [TagsService],
+  exports: [TagsService],
+})
+export class TagsModule {}

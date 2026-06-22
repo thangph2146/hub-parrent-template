@@ -1,22 +1,32 @@
 # Template Monorepo
 
-`monorepo-template` là upstream dùng chung. Product repo pull code mới từ template nhưng tự giữ app/deploy config riêng.
+`monorepo-template` là upstream dùng chung. Product repo pull `packages/` + generators; **apps và dev scripts** đi kèm starter pack khi bootstrap.
 
 ## Template Cung Cấp
 
 - `packages/`: thư viện, UI, API client, API server, admin app.
 - Feature profiles: cấu hình module/API/admin/permissions theo product line.
-- Generic generators: admin route generator và API render CLI.
-- Generic sync: `pull-template.cjs`, `post-pull-downstream.cjs`.
+- Generators: admin route generator, API render CLI.
+- Sync: `pull-template`, `post-pull-downstream`, `init-downstream`.
+- **Starter pack** (`script-system/template/starter/<line>/`): apps + scripts dev/pm2 (hub-parent).
 
-## Template Không Cung Cấp
+## Template Không Chạy App
 
-- `apps/`
-- PM2/deploy scripts
-- env runtime
-- db bootstrap
-- dev stack product
-- script sync app/product-specific
+Upstream chỉ `pnpm check` trên packages. Dev stack chạy trên **downstream** sau bootstrap.
+
+## Bootstrap Product Mới (hub-parent)
+
+```bash
+# Trên mono-repo-template
+node script-system/sync/init-downstream.cjs hub-parent ../my-hub-site
+cd ../my-hub-site
+
+# Đổi tên (tuỳ chọn): sửa "name" trong package.json
+pnpm install
+pnpm dev
+```
+
+`init-downstream` tự: copy starter → pull template → post-pull (render API, .env, overrides).
 
 ## Flow Upstream
 
@@ -26,23 +36,15 @@ pnpm check
 pnpm push -- "feat: mô tả"
 ```
 
-## Flow Downstream
+## Flow Downstream (repo đã có apps)
 
 ```bash
-pnpm pull:template
-pnpm post-pull:downstream
+pnpm sync
+pnpm dev
 ```
 
-Downstream tự quyết định scripts như `dev`, `pm2`, `db`, `env`, `deploy`. Nếu cần thêm tính năng dùng chung, sửa ở template rồi push; product pull lại code mới.
+Downstream giữ `apps/`, `scripts/` qua `keepPaths` khi pull template.
 
 ## Manifest
 
-`template.manifest.json` chỉ allowlist shared paths. Không thêm `apps/`, `ecosystem/`, hoặc product sync scripts vào `inheritPaths`.
-
-## Bootstrap Product Mới
-
-```bash
-node script-system/sync/init-downstream.cjs hub-checkin ../hub-checkin-monorepo
-```
-
-Sau bootstrap, product repo cần tự thêm app code và scripts vận hành riêng.
+`template.manifest.json` allowlist shared paths. Starter không sync — đã copy vào repo product lúc init.

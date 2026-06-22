@@ -1,4 +1,4 @@
-﻿# Tài Liệu
+# Tài Liệu
 
 Tài liệu cho feature-template upstream.
 

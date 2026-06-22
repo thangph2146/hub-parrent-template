@@ -15,7 +15,7 @@ Tài liệu ghi **cách gửi request**, **body đính kèm** theo [Postman HANE
 | Envelope `returnCode` | `apps/*/api/src/hanet/hanet-partner.response.ts` |
 | Admin proxy Nest | `apps/*/api/src/hanet/hanet-admin.controller.ts` |
 | SDK admin / check-in UI | `packages/api-client/src/resources/hanet.ts` |
-| Biến môi trường | [`docs/env/README.md`](../env/README.md) (mục HANET) |
+| Biến môi trường | `packages/api-server/deploy/nest/.env.example` (mục HANET) |
 
 **Product line:** `@api` (main dev) + `@hub-checkin/api` (deploy check-in). Sửa ưu tiên `apps/main/api` → `pnpm api:regenerate:checkin` nếu cần đồng bộ hub-event.
 
@@ -282,7 +282,7 @@ curl 'https://partner.hanet.ai/person/getCheckinByPlaceIdInTimestamp' \
 
 **Test:** `POST /api/admin/hanet/test-partner` → `/profile/getProfile`.
 
-Chi tiết biến: [`docs/env/README.md`](../env/README.md).
+Chi tiết biến: `packages/api-server/deploy/nest/.env.example`.
 
 ---
 

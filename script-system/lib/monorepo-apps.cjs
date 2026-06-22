@@ -1,8 +1,6 @@
 /**
- * Registry target app trong monorepo (product line → deployable).
- * Trên upstream feature-template, các path này là target/dev sandbox tùy chọn.
- * Trên downstream, apps/ là code product-owned và được verify theo productLine.
- * Dùng bởi PM2, dev-stack, verify scripts, sync API legacy.
+ * Registry target app theo product line (metadata cho generator/verify).
+ * Template upstream không chứa apps/ — các path là convention cho downstream.
  */
 
 /** @typedef {{ path: string; package: string; port?: number }} AppEntry */

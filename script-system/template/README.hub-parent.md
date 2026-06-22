@@ -1,48 +1,47 @@
-# hub-parent-monorepo — downstream product
+# hub-parent-monorepo
 
-Monorepo **site chính HUB** tự sở hữu `apps/hub-parent/` và scripts vận hành riêng. Repo này chỉ pull shared `packages/`, feature profiles và generic generators từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
+Site HUB Parent — bootstrap từ [mono-repo-template](https://github.com/thangph2146/mono-repo-template.git).
 
-> **Downstream:** sửa thư viện trên **template upstream trước** → `pnpm sync` ở đây.  
-> Agent: [`AGENTS.md`](AGENTS.md) · flow: [`docs/TEMPLATE_MONOREPO.md`](docs/TEMPLATE_MONOREPO.md)
+## Khởi tạo repo mới
+
+```bash
+# Trên mono-repo-template (upstream)
+node script-system/sync/init-downstream.cjs hub-parent ../my-hub-site
+cd ../my-hub-site
+```
+
+## Chạy dev (3 bước)
+
+```bash
+# 1) Đổi tên project (tuỳ chọn)
+#    Sửa field "name" trong package.json
+
+pnpm install
+pnpm dev          # API :3002 + storefront :3000
+```
+
+Cần MySQL local — chỉnh `apps/hub-parent/api/.env` (`DATABASE_URL`) nếu chưa có (post-pull tạo từ `.env.example`).
+
+## Đồng bộ packages từ template
+
+```bash
+pnpm sync              # pull:template + post-pull (render API, overrides, …)
+pnpm sync:full         # + pnpm check
+```
 
 ## Cấu trúc
 
 ```
-packages/                         # Kéo từ template
-apps/hub-parent/                  # Product-owned
-├── api/                          # @hub-parent/api
-└── hub-parent-frontend/          # @frontend — storefront + /admin
+apps/hub-parent/
+├── api/                 @hub-parent/api
+└── hub-parent-frontend/ @frontend
+packages/                ← kéo từ template
+scripts/dev/             ← dev stack product-owned
 ```
 
-## Đồng bộ (flow chuẩn)
+## Production (Ubuntu)
 
 ```bash
-# 1) Trên mono-repo-template — LUÔN TRƯỚC
-pnpm check && pnpm push -- "feat: ..."
-
-# 2) Trên hub-parent-monorepo
-pnpm sync              # pull:template + post-pull generic
-pnpm sync:full         # sync + pnpm check
-# thêm dev/deploy scripts riêng trong repo product
-```
-
-| Lệnh | Vai trò |
-|------|---------|
-| `pnpm pull:template` | Bước 1 — checkout packages/ + script-system |
-| `pnpm post-pull:downstream` | Bước 2 — install, build, verify API |
-| `pnpm sync` | Cả hai bước |
-
-## Lệnh hàng ngày
-
-```bash
-pnpm install
-pnpm sync
-pnpm check
-pnpm check
-```
-
-## Deploy
-
-```bash
-Tự cấu hình trong repo product.
+pnpm build:prod
+pnpm pm2:start
 ```

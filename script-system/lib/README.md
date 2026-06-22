@@ -1,31 +1,20 @@
-# Lib (`script-system/lib/`)
+# lib/
 
-Module dùng chung — **luôn** `require("../lib/monorepo-root.cjs")` cho `ROOT` / `SCRIPT_SYSTEM`.
+Helper dùng chung bởi script-system.
 
-## Cấu trúc
-
-```
+```text
 lib/
-├── monorepo-root.cjs       # Entry chuẩn — ROOT, PRODUCT_LINES, …
-├── monorepo-apps.cjs       # Registry product line
-├── run-step.cjs            # runStep() orchestrator
-├── api-server-cli.cjs      # Đường dẫn packages/api-server/deploy/cli
+├── monorepo-root.cjs       # ROOT, SCRIPT_SYSTEM, PRODUCT_LINES
+├── monorepo-apps.cjs       # Registry path target theo product line (metadata)
+├── run-step.cjs            # Pipeline step runner (post-pull downstream)
 ├── admin-app-config-path.cjs
-├── import-alias-rules.cjs  # @ui / workspace imports (verify:imports)
-└── layout/                 # Đường dẫn disk / data / pipeline
-    ├── data-paths.cjs      # data/seed, data/exports
-    ├── storage-layout.cjs  # STORAGE_DIR/uploads/*
-    └── pipeline-paths.cjs  # apps/*/api/.pipeline/
+└── README.md
 ```
 
-## Quy ước import
+| Cần | Dùng |
+|-----|------|
+| Root repo / script-system | `monorepo-root.cjs` |
+| Target app theo product line | `monorepo-apps.cjs` hoặc `product-line-profiles.cjs` trong package |
+| Admin config path | `admin-app-config-path.cjs` |
 
-| Nhu cầu | Import |
-|---------|--------|
-| ROOT, product lines | `monorepo-root.cjs` |
-| data/seed, verify layout | `layout/data-paths.cjs` |
-| STORAGE_DIR subdirs | `layout/storage-layout.cjs` |
-| `.pipeline/` meta | `layout/pipeline-paths.cjs` |
-| API deploy CLI | `api-server-cli.cjs` |
-
-Không dùng `paths.cjs` (đã bỏ) — không tự `path.resolve(__dirname, '../../..')`.
+Layout `data/`, storage, env runtime — downstream product tự quản lý.

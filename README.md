@@ -1,15 +1,17 @@
 # mono-repo-template
 
-Feature-template upstream cho các product HUB.
+Feature-template upstream cho các product HUB — **chỉ packages + generators**, không chạy app.
 
-Repo này chỉ giữ code dùng chung:
+## Cung Cấp
 
-- `packages/`: thư viện và generator source dùng chung.
-- `packages/api-server/deploy/config/product-line-profiles.cjs`: cấu hình tính năng theo product line.
-- `script-system/`: tooling generic tối thiểu để pull template, post-pull và verify shared boundary.
+- `packages/`: thư viện, UI, API client, API server, admin app.
+- `packages/api-server/deploy/config/product-line-profiles.cjs`: profile theo product line.
+- `script-system/`: pull template, init downstream, verify boundary, admin generator.
 - `docs/`: pattern dùng chung.
 
-Repo này **không chứa `apps/`**. Product apps, env runtime, PM2, database bootstrap và deploy scripts thuộc từng downstream product.
+## Không Cung Cấp (thuộc downstream)
+
+- `apps/`, `data/`, `.env` runtime, Docker/PM2, dev stack, db bootstrap.
 
 ## Cài Đặt
 
@@ -21,7 +23,7 @@ pnpm check
 ## Lệnh Chính
 
 ```bash
-pnpm build
+pnpm build          # packages/*
 pnpm lint
 pnpm typecheck
 pnpm check
@@ -30,19 +32,15 @@ pnpm push -- "feat: mô tả"
 
 ## Downstream Pull
 
-Product repo kéo code dùng chung bằng:
-
 ```bash
 pnpm pull:template
-pnpm post-pull:downstream
+pnpm post-pull:downstream   # trong repo product
 ```
 
-Downstream tự giữ `apps/` và các scripts vận hành riêng. Template không sync app code.
+Product repo tự thêm `dev`, `pm2`, `env`, `data/` và deploy scripts.
 
 ## Tài Liệu
 
 - `AGENTS.md`
 - `docs/TEMPLATE_MONOREPO.md`
-- `docs/MONOREPO_STRUCTURE.md`
 - `packages/README.md`
-- `packages/api-server/README.md`

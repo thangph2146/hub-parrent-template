@@ -1,47 +1,32 @@
 # Lưu trữ file (upload + disk)
 
-Nguồn sự thật code: `apps/main/api/src/uploads/` (`UploadsService`, `storage-upload-policy.ts`, `storage-media.ts`).
+Pattern dùng chung — implementation trong `packages/api-server/deploy/nest` (UploadsService, storage policy).
 
-## Biến môi trường
+**Runtime** (`STORAGE_DIR`, init thư mục disk, `.env`) thuộc downstream product app sau `api:render`.
+
+## Biến môi trường (downstream)
 
 | Biến | Mô tả |
 |------|--------|
-| `STORAGE_DIR` | Thư mục gốc trên disk (vd. `D:/HUB/data/main`) |
-| `STORAGE_LEGACY_DIR` | (tuỳ chọn) Quét import file cũ ngoài `uploads/` |
+| `STORAGE_DIR` | Thư mục gốc trên disk |
+| `STORAGE_LEGACY_DIR` | (tuỳ chọn) Quét import file cũ |
 
-Xem `.env.example` từng API (`ENV_TEMPLATE=api-*`).
+Mẫu: `packages/api-server/deploy/nest/.env.example` (copy vào app API product).
 
 ## Cấu trúc disk chuẩn
 
 ```text
 {STORAGE_DIR}/
 ├── uploads/
-│   ├── images/          # Realm: images
-│   │   ├── avatars/     # Avatar user
-│   │   ├── posts/       # Ảnh bài viết
-│   │   ├── events/      # Banner / check-in
-│   │   ├── guides/      # Page content
-│   │   ├── san-pham/    # Store catalog
-│   │   └── admincp/     # Asset admin
-│   ├── files/           # Realm: files (document + archive)
+│   ├── images/
+│   ├── files/
 │   ├── videos/
 │   └── audio/
 └── cache/
-    └── resized/         # Sharp — có thể xóa, tái tạo được
+    └── resized/
 ```
 
-Metadata: bảng `storage_files` (MikroORM `StorageFile`). Disk là nơi chứa byte thật; DB giữ path, mime, owner.
-
-## Khởi tạo thư mục disk
-
-```bash
-pnpm storage:init           # @api — đọc STORAGE_DIR từ apps/main/api/.env
-pnpm storage:init:checkin   # hub-event
-pnpm storage:init:store     # store-sync
-node script-system/db/init-storage-dirs.cjs --dir D:/HUB/data/custom
-```
-
-Tạo đủ `uploads/images/*`, `uploads/files`, `cache/resized`, … — xem `script-system/lib/layout/storage-layout.cjs`.
+Metadata: bảng `storage_files`. Disk chứa byte; DB giữ path, mime, owner.
 
 ## Realm & extension
 
@@ -52,28 +37,11 @@ Tạo đủ `uploads/images/*`, `uploads/files`, `cache/resized`, … — xem `s
 | `videos` | Video | mp4, mov, webm… |
 | `audio` | Âm thanh | mp3, wav |
 
-Policy từng folder con: file `.storage-policy.json` (slug path ASCII, nhãn tiếng Việt trong `label`).
+## Export / seed JSON
 
-## Quy ước đặt tên
-
-- Upload ảnh: `{ownerId}_{slug}_{timestamp}.{ext}` (`upload-filename.ts`)
-- Folder tab: slug ASCII (`san-pham`, `avatars`); nhãn UI trong policy hoặc `STORAGE_TAB_LABELS` (`storage-media.ts`)
-
-## Export / seed JSON (không phải upload)
-
-Export hệ thống (admin import/export) và file seed DB đặt tại [`data/`](../../data/README.md) — **không** commit vào `apps/*/api/src/`.
-
-## Root mỗi API app (gọn)
-
-| Thư mục / file | Vai trò |
-|----------------|---------|
-| `src/` | Source Nest |
-| `.pipeline/` | Artifact pipeline (`PACKAGE_MODULE_TEMPLATES.meta.json`) — commit **main** + **nest** |
-| `scripts/` | Chỉ `apps/main/api` (seed, demo) |
-
-Không để ở root API: `full-export-*.json`, `MODULE_*_AUDIT.md`, `tsc-errors.txt`, meta JSON lẻ. Kiểm tra: `pnpm verify:data-layout`.
+Export hệ thống và seed DB đặt tại `data/` trong **downstream repo** — không commit vào `apps/*/api/src/`.
 
 ## Liên quan
 
-- [`docs/env/README.md`](../env/README.md) — stack `.env`
-- [`data/README.md`](../../data/README.md) — `data/seed`, `data/exports`
+- `packages/api-server/README.md` — render API, uploads module
+- Downstream product — script `storage:init`, verify data layout

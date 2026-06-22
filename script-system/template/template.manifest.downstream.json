@@ -32,6 +32,8 @@
   ],
   "keepPaths": [
     "apps",
+    "scripts",
+    "script-system/hub-parent",
     "pnpm-workspace.yaml",
     "package.json",
     "template.manifest.json",
