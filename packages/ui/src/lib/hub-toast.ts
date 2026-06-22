@@ -9,6 +9,8 @@ import {
 
 type ToastMessage = Parameters<typeof baseToast>[0]
 
+const showToastCopyAction = process.env.NODE_ENV === "development"
+
 function extractCopyText(message: ToastMessage, data?: HubToastOptions): string {
   if (data?.copyReport?.trim()) return data.copyReport.trim()
   const parts: string[] = []
@@ -33,6 +35,7 @@ function withCopyAction(
   message: ToastMessage,
   data?: HubToastOptions,
 ): ExternalToast | undefined {
+  if (!showToastCopyAction) return toSonnerToastOptions(data)
   if (data?.action) return toSonnerToastOptions(data)
   const copyText = extractCopyText(message, data)
   if (!copyText) return toSonnerToastOptions(data)
@@ -78,7 +81,7 @@ export type HubToast = typeof baseToast & {
   mutationSuccess: typeof mutationSuccess
 }
 
-/** Toast Sonner — nút Sao chép (dev: `copyReport` = báo cáo đầy đủ, UI chỉ hiện message). */
+/** Toast Sonner — dev: nút Sao chép (`copyReport` = báo cáo đầy đủ, UI chỉ hiện message). */
 export const toast: HubToast = Object.assign(
   (message: ToastMessage, data?: HubToastOptions) =>
     baseToast(message, withCopyAction(message, data)),

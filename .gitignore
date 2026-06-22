@@ -28,6 +28,7 @@ out/
 build
 dist
 *.tsbuildinfo
+**/.pipeline/
 
 # Debug
 npm-debug.log*
