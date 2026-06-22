@@ -53,6 +53,27 @@ function extractIdFromVariables(variables: unknown): string | undefined {
   return undefined
 }
 
+function extractIdsFromVariables(variables: unknown): string[] {
+  if (typeof variables === "string" && variables.trim()) {
+    return [variables.trim()]
+  }
+  if (variables == null || typeof variables !== "object") return []
+  const v = variables as Record<string, unknown>
+  if (typeof v.id === "string" && v.id.trim()) return [v.id.trim()]
+  if (!Array.isArray(v.ids)) return []
+  return v.ids
+    .map((id) => (typeof id === "string" || typeof id === "number" ? String(id).trim() : ""))
+    .filter(Boolean)
+}
+
+function extractBulkActionFromVariables(variables: unknown): string | undefined {
+  if (variables == null || typeof variables !== "object") return undefined
+  const action = (variables as { action?: unknown }).action
+  if (typeof action !== "string") return undefined
+  const trimmed = action.trim()
+  return trimmed || undefined
+}
+
 /**
  * Đăng ký suppress socket sau toast mutation UI (tab đang thao tác).
  * Bổ sung cho registerLocalMutationFromApiPath khi path/response không đủ metadata.
@@ -75,16 +96,22 @@ export function registerLocalMutationFromMeta(
     options?.id?.trim() ||
     extractEntityId(options?.data) ||
     extractIdFromVariables(options?.variables)
-  const action = options?.action?.trim() || "mutate"
+  const bulkIds = extractIdsFromVariables(options?.variables)
+  const action =
+    options?.action?.trim() ||
+    extractBulkActionFromVariables(options?.variables) ||
+    "mutate"
   const ttlMs = options?.ttlMs ?? DEFAULT_LOCAL_TTL_MS
 
-  if (id) {
+  const idsToRegister = bulkIds.length > 0 ? bulkIds : id ? [id] : []
+
+  for (const entityId of idsToRegister) {
     registerLocalAdminMutation(
-      buildMutationToastKey(normalizedResource, id),
+      buildMutationToastKey(normalizedResource, entityId),
       ttlMs,
     )
     registerLocalAdminMutation(
-      buildMutationToastKey(normalizedResource, id, action),
+      buildMutationToastKey(normalizedResource, entityId, action),
       ttlMs,
     )
   }
@@ -135,13 +162,25 @@ export function registerLocalMutationFromApiPath(
   )
   if (adminMatch) {
     const resource = (adminMatch[1] ?? "").toLowerCase()
-    const seg2 = adminMatch[2]
+    const seg2 = adminMatch[2]?.toLowerCase()
     const seg3 = adminMatch[3]?.toLowerCase()
     const reserved = new Set(["bulk", "options", "restore"])
+
+    if (seg2 === "bulk" && verb === "POST") {
+      registerLocalAdminMutation(buildMutationToastKey(resource, "*", "bulk"))
+      return
+    }
+
     let id: string | undefined = responseId
     let action = "mutate"
 
-    if (seg2 && !reserved.has(seg2.toLowerCase())) {
+    if (seg3 === "restore") {
+      id = seg2
+      action = "restore"
+    } else if (seg3 === "hard-delete") {
+      id = seg2
+      action = "hard-delete"
+    } else if (seg2 && !reserved.has(seg2)) {
       if (seg3 === "approve") {
         id = seg2
         action = "approved"
@@ -151,8 +190,11 @@ export function registerLocalMutationFromApiPath(
       } else if (seg3 === "review") {
         id = seg2
         action = "review"
-      } else if (seg3 !== "hard-delete") {
+      } else if (!seg3) {
         id = id ?? seg2
+        if (verb === "DELETE") {
+          action = "delete"
+        }
       }
     }
 
@@ -178,17 +220,6 @@ export function shouldShowRealtimeSyncToast(
 ): boolean {
   if (!shouldShowAdminRealtimeToast(payload, currentUserId)) return false
 
-  // Activity log SYSTEM gửi cho chính user — toast đã hiện từ mutation onSuccess.
-  const toUserId = normalizeSocketId(payload.toUserId)
-  if (
-    String(payload.kind ?? "").toLowerCase() === "system" &&
-    toUserId &&
-    currentUserId &&
-    toUserId === currentUserId
-  ) {
-    return false
-  }
-
   pruneExpired(localMutations)
   pruneExpired(recentRealtimeToasts)
 
@@ -198,16 +229,51 @@ export function shouldShowRealtimeSyncToast(
   const meta = payload.metadata
   if (meta && typeof meta.resource === "string") {
     const resource = meta.resource.toLowerCase()
+    const metaAction =
+      typeof meta.action === "string" ? meta.action.toLowerCase() : undefined
+    const bulkIds = Array.isArray(meta.ids)
+      ? meta.ids
+          .map((id) => normalizeSocketId(id))
+          .filter((id): id is string => Boolean(id))
+      : []
+
+    if (metaAction) {
+      const wildcardKey = buildMutationToastKey(resource, "*", metaAction)
+      if (isKeyActive(localMutations, wildcardKey)) return false
+    }
+
+    if (bulkIds.length > 0) {
+      const allSuppressed = bulkIds.every((entityId) => {
+        if (isKeyActive(localMutations, buildMutationToastKey(resource, entityId))) {
+          return true
+        }
+        if (
+          metaAction &&
+          isKeyActive(
+            localMutations,
+            buildMutationToastKey(resource, entityId, metaAction),
+          )
+        ) {
+          return true
+        }
+        return false
+      })
+      if (allSuppressed) return false
+    }
+
     const resourceId = normalizeSocketId(meta.resourceId)
+    if (!resourceId) return true
+
     const status =
       typeof meta.status === "string" ? meta.status : undefined
-
-    if (!resourceId) return true
 
     const keys = [
       buildMutationToastKey(resource, resourceId),
       status
         ? buildMutationToastKey(resource, resourceId, status)
+        : undefined,
+      metaAction
+        ? buildMutationToastKey(resource, resourceId, metaAction)
         : undefined,
     ].filter((key): key is string => Boolean(key))
     if (keys.some((key) => isKeyActive(localMutations, key))) return false

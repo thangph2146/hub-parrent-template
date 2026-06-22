@@ -2,10 +2,11 @@ import type {
   SocketNotificationPayload,
   SocketNotificationKind,
 } from './socket.types';
+import { normalizeSocketId } from './normalize-id';
 
 export type NotificationLike = {
   id: number;
-  userId?: string;
+  userId?: string | number;
   kind: string;
   title: string;
   description?: string | null;
@@ -13,7 +14,7 @@ export type NotificationLike = {
   actionUrl?: string | null;
   metadata?: unknown;
   createdAt: Date;
-  user?: { id?: string; email: string; name: string | null };
+  user?: { id?: string | number; email: string; name: string | null };
 };
 
 function extractMetadata(
@@ -39,6 +40,9 @@ export function mapNotificationToPayload(
   notification: NotificationLike,
 ): SocketNotificationPayload {
   const metadata = extractMetadata(notification.metadata);
+  const toUserId =
+    normalizeSocketId(notification.userId) ??
+    normalizeSocketId(notification.user?.id);
 
   return {
     id: notification.id,
@@ -49,7 +53,7 @@ export function mapNotificationToPayload(
       typeof metadata?.fromUserId === 'string'
         ? metadata.fromUserId
         : undefined,
-    toUserId: notification.userId,
+    toUserId,
     replyToId:
       typeof metadata?.replyToId === 'string' ? metadata.replyToId : undefined,
     timestamp: notification.createdAt.getTime(),

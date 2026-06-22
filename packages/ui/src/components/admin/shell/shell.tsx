@@ -96,6 +96,8 @@ export function AdminShell({
     publicSitePath,
     publicSiteLabel = "Trang chủ",
     accessDeniedReason = "staff_only",
+    menuTree,
+    enabledAdminModules,
   } = useAdminLayout()
   const displayName = user?.name?.trim() || user?.email || "Người dùng HUB"
   const avatarUrl = user?.image?.trim() || null
@@ -327,6 +329,8 @@ export function AdminShell({
                     pagePath={pathname}
                     loginPath={loginPath}
                     portalLabel={siteName}
+                    menuTree={menuTree}
+                    enabledAdminModules={enabledAdminModules}
                   />
                 </DropdownMenuContent>
               </DropdownMenu>

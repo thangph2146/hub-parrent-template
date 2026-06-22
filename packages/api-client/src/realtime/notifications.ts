@@ -18,6 +18,17 @@ export function shouldShowAdminRealtimeToast(
   currentUserId: string | null,
 ): boolean {
   if (!payload?.title?.trim()) return false
+
+  const toUserId = normalizeSocketId(payload.toUserId)
+  if (
+    String(payload.kind ?? "").toLowerCase() === "system" &&
+    toUserId &&
+    currentUserId &&
+    toUserId === currentUserId
+  ) {
+    return false
+  }
+
   const actorId =
     normalizeSocketId(payload.metadata?.actorUserId) ??
     normalizeSocketId(payload.fromUserId)

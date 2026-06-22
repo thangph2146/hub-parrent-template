@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { toast } from "@ui/components/sonner"
+import { toast, type HubToastOptions } from "@ui/components/sonner"
 import { Eye, EyeOff } from "lucide-react"
 import type { AuthUser } from "@workspace/api-client"
 import { Button } from "@ui/components/button"
@@ -35,7 +35,9 @@ import {
   fetchDevLoginOptions,
 } from "@workspace/admin-app/modules/auth/_lib/auth-api"
 import { useAdminLayout } from "@ui/components/admin"
-import { ADMIN_SESSION_EVENT, writeAdminSession } from "@workspace/admin-app/lib/auth-session"
+import { resolveDevLoginOption } from "@ui/components/auth"
+import { ADMIN_SESSION_EVENT, readAdminSession, writeAdminSession } from "@workspace/admin-app/lib/auth-session"
+import { buildAdminDevLoginCopyReport } from "@workspace/admin-app/modules/auth/_lib/dev-login-copy-report"
 import { MAIN_ADMIN_SIGN_IN_CONFIG } from "../_config/sign-in-form.main-config"
 import type {
   AdminLoginResult,
@@ -213,14 +215,18 @@ export function AdminSignInForm({
     result: AdminLoginResult | unknown,
     mode: "email" | "dev",
     successToast: string,
+    toastOptions?: Pick<HubToastOptions, "copyReport">,
   ) => {
     const message = resolveLoginFailure(result, config, mode, loginLock)
+    const toastData: HubToastOptions | undefined = toastOptions?.copyReport
+      ? { copyReport: toastOptions.copyReport }
+      : undefined
     if (message) {
       setError(message)
-      toast.error(message)
+      toast.error(message, toastData)
       return
     }
-    toast.success(successToast)
+    toast.success(successToast, toastData)
     router.replace(config.homePath)
   }
 
@@ -250,11 +256,37 @@ export function AdminSignInForm({
           return
         }
         const result = await loginDevelopment(selectedDevLoginId)
-        await finishLogin(
-          result,
-          "dev",
-          "Đăng nhập development thành công.",
-        )
+        const devOption = resolveDevLoginOption(devLoginOptions, selectedDevLoginId)
+        const devCopyBase = {
+          userId: selectedDevLoginId,
+          devOption,
+          loginPath,
+          portalLabel: siteName,
+        }
+        if (result === "success") {
+          const sessionUser = readAdminSession()
+          await finishLogin(
+            result,
+            "dev",
+            "Đăng nhập development thành công.",
+            {
+              copyReport: buildAdminDevLoginCopyReport({
+                ...devCopyBase,
+                message: "Đăng nhập development thành công.",
+                user: sessionUser,
+              }),
+            },
+          )
+          return
+        }
+        const failureMessage = resolveLoginFailure(result, config, "dev", loginLock)
+        await finishLogin(result, "dev", "Đăng nhập development thành công.", {
+          copyReport: buildAdminDevLoginCopyReport({
+            ...devCopyBase,
+            message: failureMessage ?? "Đăng nhập development thất bại.",
+            error: failureMessage ?? result,
+          }),
+        })
       } finally {
         setBusy(false)
       }

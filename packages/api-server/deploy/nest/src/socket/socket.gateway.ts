@@ -8,8 +8,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { EntityManager } from '@mikro-orm/core';
-import { toEntityId } from '../common';
-import { SessionsService } from '../sessions/sessions.service';
+import { toEntityId, relationEntityId } from '../common';
+import { Session } from '../entities/session.entity';
 import { Notification } from '../entities/notification.entity';
 import { User } from '../entities/user.entity';
 import { NotificationKind } from '../entities/notification.entity';
@@ -68,10 +68,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
-  constructor(
-    private readonly em: EntityManager,
-    private readonly sessionsService: SessionsService,
-  ) {}
+  constructor(private readonly em: EntityManager) {}
 
   emitSessionRevoked(sessionId: string, reason?: 'account_locked'): void {
     if (!this.server) return;
@@ -259,16 +256,16 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (userId) {
       void client.join(userRoom(userId));
       if (sessionId && typeof sessionId === 'string') {
-        try {
-          const session = await this.sessionsService.getById(sessionId);
-          if (session && session.userId === userId && session.isActive) {
-            void client.join(sessionRoom(sessionId));
-            this.logger.debug(
-              `Socket ${socketId} joined session room ${sessionRoom(sessionId)}`,
-            );
-          }
-        } catch (err) {
-          this.logger.warn('Failed to validate sessionId for socket join', err);
+        const sessionValid = await this.isActiveSessionForUser(
+          em,
+          sessionId,
+          userId,
+        );
+        if (sessionValid) {
+          void client.join(sessionRoom(sessionId));
+          this.logger.debug(
+            `Socket ${socketId} joined session room ${sessionRoom(sessionId)}`,
+          );
         }
       }
       try {
@@ -299,6 +296,28 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
           `Socket ${socketId} joined role room role:ADMIN (normalized from role:${role})`,
         );
       }
+    }
+  }
+
+  private async isActiveSessionForUser(
+    em: EntityManager,
+    sessionId: string,
+    userId: string | number,
+  ): Promise<boolean> {
+    try {
+      const session = await em.findOne(
+        Session,
+        { id: toEntityId(sessionId) },
+        { populate: ['user'] },
+      );
+      if (!session?.isActive) return false;
+      const sessionUserId = relationEntityId(session.user);
+      return (
+        sessionUserId != null && String(sessionUserId) === String(userId)
+      );
+    } catch (err) {
+      this.logger.warn('Failed to validate sessionId for socket join', err);
+      return false;
     }
   }
 

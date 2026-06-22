@@ -77,7 +77,10 @@ export class RolesController {
         title,
         description,
         actionUrl: actionUrl ?? null,
-        metadata: metadata ?? undefined,
+        metadata: {
+          ...(metadata ?? {}),
+          actorUserId: toEntityId(userId),
+        },
       })
       .catch(() => {});
   }

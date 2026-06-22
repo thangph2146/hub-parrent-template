@@ -156,7 +156,7 @@ export function useDeleteRoleMutation() {
       error: (error) => `Lỗi xóa vai trò: ${error.message}`,
     },
     mutationFn: async (id: string) => {
-      await api.roles.bulk({ action: "delete", ids: [id] })
+      await api.roles.remove(id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.catalog() })

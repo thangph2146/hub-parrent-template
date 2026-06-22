@@ -41,12 +41,14 @@ import {
   useRoleDetail,
   useRbacCatalog,
 } from "../_component/_query/use-rbac-queries"
-import type { RbacPermission } from "@workspace/api-client"
+import { permissionLabelVi } from "@workspace/admin-app/lib/permission-labels"
+import { RoleCopyActions } from "../_component/role-copy-actions"
 import {
-  permissionGroupKey,
-  permissionGroupLabelVi,
-  permissionLabelVi,
-} from "@workspace/admin-app/lib/permission-labels"
+  buildPermissionGroups,
+  buildReportMenuSectionGroups,
+  filterReportPermissionCodes,
+  filterReportPermissions,
+} from "../_component/permission-report-groups"
 
 function formatDateTime(value?: string | null) {
   if (!value) return "Chưa có dữ liệu"
@@ -72,13 +74,26 @@ function RoleDetailPageInner() {
     session != null && canUserAccess(session, PERMISSION_CODES.USERS_MANAGE)
 
   const allPermissions = useMemo(
-    () => catalogQuery.data?.permissions ?? [],
-    [catalogQuery.data?.permissions]
+    () => filterReportPermissions(catalogQuery.data?.permissions ?? []),
+    [catalogQuery.data?.permissions],
+  )
+
+  const reportableAssignedCount = useMemo(
+    () =>
+      filterReportPermissionCodes(role?.permissions ?? []).filter((code) =>
+        allPermissions.some((perm) => perm.code === code),
+      ).length,
+    [allPermissions, role?.permissions],
   )
 
   const selectedCodes = useMemo(
     () => new Set(role?.permissions ?? []),
     [role?.permissions]
+  )
+
+  const allPermissionGroups = useMemo(
+    () => buildPermissionGroups(allPermissions),
+    [allPermissions],
   )
 
   const visiblePermissions = useMemo(() => {
@@ -98,41 +113,39 @@ function RoleDetailPageInner() {
     return filtered
   }, [permissionSearch, allPermissions, showSelectedOnly, selectedCodes])
 
-  const permissionGroups = useMemo(() => {
-    const buckets = new Map<string, RbacPermission[]>()
-    for (const perm of visiblePermissions) {
-      const key = permissionGroupKey(perm.code)
-      const arr = buckets.get(key)
-      if (arr) arr.push(perm)
-      else buckets.set(key, [perm])
-    }
-    return Array.from(buckets.entries())
-      .map(([key, items]) => ({
-        key,
-        label: permissionGroupLabelVi(key),
-        items: [...items].sort((a, b) => a.code.localeCompare(b.code)),
+  const menuSectionGroups = useMemo(
+    () => buildReportMenuSectionGroups(allPermissions),
+    [allPermissions],
+  )
+
+  const visibleMenuSections = useMemo(() => {
+    const visibleCodes = new Set(visiblePermissions.map((p) => p.code))
+    return menuSectionGroups
+      .map(({ section, resourceGroups }) => ({
+        section,
+        resourceGroups: resourceGroups
+          .map((group) => ({
+            ...group,
+            items: group.items.filter((p) => visibleCodes.has(p.code)),
+          }))
+          .filter((group) => group.items.length > 0),
       }))
-      .sort((a, b) => a.key.localeCompare(b.key))
-  }, [visiblePermissions])
+      .filter((entry) => entry.resourceGroups.length > 0)
+  }, [menuSectionGroups, visiblePermissions])
+
+  const visibleGroupsForCopy = useMemo(
+    () => visibleMenuSections.flatMap((entry) => entry.resourceGroups),
+    [visibleMenuSections],
+  )
 
   const overviewGroups = useMemo(() => {
-    const buckets = new Map<string, RbacPermission[]>()
-    for (const perm of allPermissions) {
-      if (selectedCodes.has(perm.code)) {
-        const key = permissionGroupKey(perm.code)
-        const arr = buckets.get(key)
-        if (arr) arr.push(perm)
-        else buckets.set(key, [perm])
-      }
-    }
-    return Array.from(buckets.entries())
-      .map(([key, items]) => ({
-        key,
-        label: permissionGroupLabelVi(key),
-        items: [...items].sort((a, b) => a.code.localeCompare(b.code)),
+    return allPermissionGroups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((p) => selectedCodes.has(p.code)),
       }))
-      .sort((a, b) => a.key.localeCompare(b.key))
-  }, [allPermissions, selectedCodes])
+      .filter((group) => group.items.length > 0)
+  }, [allPermissionGroups, selectedCodes])
 
   if (roleQuery.isLoading) {
     return (
@@ -196,17 +209,31 @@ function RoleDetailPageInner() {
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
               <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Mã vai trò" icon={ShieldHalf}>
+                <FieldSectionField
+                  label="Mã vai trò"
+                  icon={ShieldHalf}
+                  copyable
+                  copyText={role.code}
+                >
                   <span className="font-mono font-medium">{role.code}</span>
                 </FieldSectionField>
-                <FieldSectionField label="Tên hiển thị" icon={User}>
+                <FieldSectionField
+                  label="Tên hiển thị"
+                  icon={User}
+                  copyable
+                  copyText={role.name}
+                >
                   <span className="font-medium">{role.name}</span>
                 </FieldSectionField>
               </div>
 
               <FieldSectionDivider />
 
-              <FieldSectionField label="Mô tả">
+              <FieldSectionField
+                label="Mô tả"
+                copyable
+                copyText={role.description?.trim() || ""}
+              >
                 {role.description ? (
                   <span>{role.description}</span>
                 ) : (
@@ -221,6 +248,8 @@ function RoleDetailPageInner() {
               <FieldSectionField
                 label="Trạng thái"
                 icon={role.isActive ? CheckCircle2 : Lock}
+                copyable
+                copyText={role.isActive ? "active" : "inactive"}
               >
                 <Badge
                   variant="outline"
@@ -239,13 +268,21 @@ function RoleDetailPageInner() {
           <FieldSet variant="section">
             <FieldSectionLegend
               icon={FileText}
-              title={`Quyền hạn (${role.permissions.length})`}
-              description="Danh sách quyền được gán cho vai trò này."
+              title={`Quyền hạn (${reportableAssignedCount})`}
+              description="Danh sách quyền được gán cho vai trò này — sao chép để so sánh preset hub-parent."
+              badge={
+                <RoleCopyActions
+                  role={role}
+                  allPermissions={allPermissions}
+                  visibleGroups={visibleGroupsForCopy}
+                  compact
+                />
+              }
             />
             <FieldSetContent variant="section" className="space-y-4 pt-0">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs text-muted-foreground">
-                  Đã chọn {role.permissions.length}/{allPermissions.length}
+                  Đã chọn {reportableAssignedCount}/{allPermissions.length}
                 </p>
                 <button
                   type="button"
@@ -261,64 +298,71 @@ function RoleDetailPageInner() {
                 placeholder="Tìm quyền..."
                 className="h-9"
               />
-              <ScrollArea className="h-[calc(100vh-520px)] rounded-lg border border-border/60 bg-muted/10">
+              <ScrollArea className="min-h-[480px] h-[calc(100vh-340px)] rounded-lg border border-border/60 bg-muted/10">
                 <div className="space-y-3 p-3">
-                  {permissionGroups.length === 0 ? (
+                  {visibleMenuSections.length === 0 ? (
                     <p className="py-8 text-center text-sm text-muted-foreground">
                       Không có quyền khớp tìm kiếm.
                     </p>
                   ) : (
-                    permissionGroups.map((group) => {
-                      const selectedInGroup = group.items.filter((p) =>
-                        selectedCodes.has(p.code)
-                      ).length
-                      return (
-                        <section
-                          key={group.key}
-                          className="overflow-hidden rounded-lg border border-border/50 bg-card shadow-sm"
-                        >
-                          <header className="flex items-center justify-between gap-3 border-b border-border/50 bg-muted/25 px-3 py-2">
-                            <div className="flex min-w-0 items-center gap-2">
-                              <div className="min-w-0">
-                                <p className="truncate font-mono text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                                  {group.key}
-                                </p>
-                                <p className="truncate text-sm font-semibold text-foreground">
-                                  {group.label}
-                                </p>
-                              </div>
-                            </div>
-                            <span className="rounded-md border border-border/60 bg-background/90 px-2 py-0.5 text-xs text-muted-foreground tabular-nums">
-                              {selectedInGroup}/{group.items.length}
-                            </span>
-                          </header>
-                          <div className="grid gap-1.5 p-2 sm:grid-cols-2 lg:grid-cols-3">
-                            {group.items.map((perm) => {
-                              const isSelected = selectedCodes.has(perm.code)
-                              return (
-                                <div
-                                  key={perm.code}
-                                  className={`flex items-center gap-2 rounded-md border px-2.5 py-1.5 transition-colors ${
-                                    isSelected
-                                      ? "border-primary/40 bg-primary/5"
-                                      : "border-border/60 bg-background/90"
-                                  }`}
-                                >
-                                  <span className="min-w-0 leading-tight">
-                                    <span className="block text-sm font-medium">
-                                      {permissionLabelVi(perm.code)}
-                                    </span>
-                                    <span className="block truncate font-mono text-[11px] text-muted-foreground">
-                                      {perm.code}
-                                    </span>
-                                  </span>
+                    visibleMenuSections.map(({ section, resourceGroups }) => (
+                      <div key={section.key} className="space-y-3">
+                        <p className="px-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                          {section.label}
+                        </p>
+                        {resourceGroups.map((group) => {
+                          const selectedInGroup = group.items.filter((p) =>
+                            selectedCodes.has(p.code)
+                          ).length
+                          return (
+                            <section
+                              key={group.key}
+                              className="overflow-hidden rounded-lg border border-border/50 bg-card shadow-sm"
+                            >
+                              <header className="flex items-center justify-between gap-3 border-b border-border/50 bg-muted/25 px-3 py-2">
+                                <div className="flex min-w-0 items-center gap-2">
+                                  <div className="min-w-0">
+                                    <p className="truncate font-mono text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+                                      {group.key}
+                                    </p>
+                                    <p className="truncate text-sm font-semibold text-foreground">
+                                      {group.label}
+                                    </p>
+                                  </div>
                                 </div>
-                              )
-                            })}
-                          </div>
-                        </section>
-                      )
-                    })
+                                <span className="rounded-md border border-border/60 bg-background/90 px-2 py-0.5 text-xs text-muted-foreground tabular-nums">
+                                  {selectedInGroup}/{group.items.length}
+                                </span>
+                              </header>
+                              <div className="grid gap-1.5 p-2 sm:grid-cols-2 lg:grid-cols-3">
+                                {group.items.map((perm) => {
+                                  const isSelected = selectedCodes.has(perm.code)
+                                  return (
+                                    <div
+                                      key={perm.code}
+                                      className={`flex items-center gap-2 rounded-md border px-2.5 py-1.5 transition-colors ${
+                                        isSelected
+                                          ? "border-primary/40 bg-primary/5"
+                                          : "border-border/60 bg-background/90"
+                                      }`}
+                                    >
+                                      <span className="min-w-0 leading-tight">
+                                        <span className="block text-sm font-medium">
+                                          {permissionLabelVi(perm.code)}
+                                        </span>
+                                        <span className="block truncate font-mono text-[11px] text-muted-foreground">
+                                          {perm.code}
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </section>
+                          )
+                        })}
+                      </div>
+                    ))
                   )}
                 </div>
               </ScrollArea>
@@ -366,7 +410,7 @@ function RoleDetailPageInner() {
             <FieldSectionLegend
               icon={ShieldHalf}
               title="Tổng quan quyền"
-              description={`${role.permissions.length} quyền được chọn.`}
+              description={`${reportableAssignedCount} quyền được chọn.`}
             />
             <FieldSetContent variant="section" className="pt-0">
               <ScrollArea className="h-[calc(100vh-520px)] rounded-lg border border-border/60 bg-muted/10">

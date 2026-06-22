@@ -16,6 +16,10 @@ import {
   type SocketNotificationPayload,
 } from "@workspace/api-client/realtime"
 import {
+  adminOperationToastConfig,
+  formatRealtimeNotificationCopyReport,
+} from "@ui/lib/admin-operation-toast-config"
+import {
   ADMIN_SOCKET_PATH,
   getAdminSocketOrigin,
   resolveAdminSocketAuth,
@@ -72,11 +76,19 @@ function showRealtimeToast(
   if (!shouldShowRealtimeSyncToast(payload, currentUserId)) return
   const { method, title, description } =
     resolveRealtimeNotificationToast(payload)
-  const data = description ? { description } : undefined
-  if (method === "success") toast.success(title, data)
-  else if (method === "warning") toast.warning(title, data)
-  else if (method === "error") toast.error(title, data)
-  else toast.info(title, data)
+  const copyReport =
+    adminOperationToastConfig.devFullCopyReport
+      ? formatRealtimeNotificationCopyReport(payload)
+      : undefined
+  const data = {
+    ...(description ? { description } : {}),
+    ...(copyReport ? { copyReport } : {}),
+  }
+  const hasData = Object.keys(data).length > 0
+  if (method === "success") toast.success(title, hasData ? data : undefined)
+  else if (method === "warning") toast.warning(title, hasData ? data : undefined)
+  else if (method === "error") toast.error(title, hasData ? data : undefined)
+  else toast.info(title, hasData ? data : undefined)
   markRealtimeToastShown(payload)
 }
 

@@ -23,6 +23,8 @@ export function AdminSessionLoginCopyButton({
   loginPath,
   sessionStorageKey,
   portalLabel,
+  menuTree,
+  enabledAdminModules,
   className,
 }: AdminSessionLoginCopyButtonProps) {
   const [copied, setCopied] = useState(false)
@@ -34,8 +36,18 @@ export function AdminSessionLoginCopyButton({
         loginPath,
         sessionStorageKey,
         portalLabel,
+        menuTree,
+        enabledAdminModules,
       }),
-    [user, pagePath, loginPath, sessionStorageKey, portalLabel],
+    [
+      user,
+      pagePath,
+      loginPath,
+      sessionStorageKey,
+      portalLabel,
+      menuTree,
+      enabledAdminModules,
+    ],
   )
 
   const onCopy = useCallback(async () => {
@@ -82,7 +94,7 @@ export function AdminSessionLoginCopyButton({
           {copied ? "Đã sao chép cấu hình" : "Sao chép cấu hình đăng nhập"}
         </span>
         <span className="block text-xs text-muted-foreground">
-          Dev — email, role và gợi ý dev-login để paste
+          Dev — email, role, menu sidebar và gợi ý dev-login để paste
         </span>
       </span>
     </button>

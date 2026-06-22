@@ -74,7 +74,7 @@ import {
   type RoleRow,
 } from "./_component/utils"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
-import { defaultBulkOperationToast } from "@ui/lib/admin-operation-toast"
+import { createBulkOperationToast } from "@ui/lib/admin-operation-toast"
 type PagedResult<T> = {
   items: T[]
   total: number
@@ -590,23 +590,42 @@ export default function RbacPage() {
 
   const deleteMutation = useAdminMutation({
     mutationKey: ["rbac", "delete"],
-    mutationFn: async (id: string) =>
-      api.roles.bulk({ action: "delete", ids: [id] }),
+    toast: {
+      loading: "Đang xóa vai trò…",
+      success: "Đã xóa vai trò thành công",
+      error: (error) =>
+        error instanceof Error ? error.message : "Không xóa được vai trò",
+    },
+    mutationFn: async (id: string) => api.roles.remove(id),
     onSuccess: invalidateRoles,
   })
   const restoreMutation = useAdminMutation({
     mutationKey: ["rbac", "restore"],
+    toast: {
+      loading: "Đang khôi phục vai trò…",
+      success: "Đã khôi phục vai trò thành công",
+      error: (error) =>
+        error instanceof Error ? error.message : "Không khôi phục được vai trò",
+    },
     mutationFn: async (id: string) => api.roles.restore(id),
     onSuccess: invalidateRoles,
   })
   const purgeMutation = useAdminMutation({
     mutationKey: ["rbac", "purge"],
+    toast: {
+      loading: "Đang xóa vĩnh viễn vai trò…",
+      success: "Đã xóa vĩnh viễn vai trò thành công",
+      error: (error) =>
+        error instanceof Error
+          ? error.message
+          : "Không xóa vĩnh viễn được vai trò",
+    },
     mutationFn: async (id: string) => api.roles.purge(id),
     onSuccess: invalidateRoles,
   })
   const bulkMutation = useAdminMutation({
     mutationKey: ["rbac", "bulk"],
-    toast: defaultBulkOperationToast,
+    toast: createBulkOperationToast("vai trò"),
     mutationFn: async ({ action, ids }: { action: string; ids: string[] }) =>
       api.roles.bulk({ action, ids }),
     onSuccess: invalidateRoles,

@@ -59,6 +59,9 @@ export class NotificationsService extends BaseNotificationsService {
     notification: Record<string, unknown>,
   ): void {
     const payload = mapNotificationToPayload(notification as never);
+    if (!payload.toUserId) {
+      payload.toUserId = String(recipientUserId);
+    }
     this.socketGateway.emitNotificationToUser(recipientUserId, payload);
   }
 }

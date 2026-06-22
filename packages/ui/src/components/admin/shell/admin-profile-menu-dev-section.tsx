@@ -16,6 +16,8 @@ export function AdminProfileMenuDevSection({
   loginPath,
   sessionStorageKey,
   portalLabel,
+  menuTree,
+  enabledAdminModules,
 }: AdminProfileMenuDevSectionProps) {
   if (!IS_DEV) return null
 
@@ -33,6 +35,8 @@ export function AdminProfileMenuDevSection({
         loginPath={loginPath}
         sessionStorageKey={sessionStorageKey}
         portalLabel={portalLabel}
+        menuTree={menuTree}
+        enabledAdminModules={enabledAdminModules}
       />
     </section>
   )

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { AlertCircle, Check, Copy } from "lucide-react"
 import type { AuthUser, PermissionCode } from "@workspace/api-client"
 import { resolveAdminOperationError } from "../../../lib/admin-operation-error"
+import { resolveAdminPortalLabel } from "../../../lib/admin-operation-report-branding"
 import { permissionLabelVi } from "../../../lib/permission-label-vi"
 import { Badge } from "../../badge"
 import { Button } from "../../button"
@@ -72,10 +73,11 @@ export function buildAdminAccessDeniedCopyText({
 }: AdminAccessDeniedPanelProps): string {
   const path = pagePath?.trim() || "(không xác định)"
   const isAction = scope === "action"
+  const portalLabel = resolveAdminPortalLabel()
   const lines: string[] = [
     isAction
-      ? "YÊU CẦU CẤP QUYỀN THAO TÁC — HUB ADMIN"
-      : "YÊU CẦU CẤP QUYỀN TRUY CẬP — HUB ADMIN",
+      ? `YÊU CẦU CẤP QUYỀN THAO TÁC — ${portalLabel}`
+      : `YÊU CẦU CẤP QUYỀN TRUY CẬP — ${portalLabel}`,
     "",
     `Trang: ${path}`,
   ]

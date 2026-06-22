@@ -71,6 +71,8 @@ export type AdminLayoutContextValue = {
   publicSiteLabel?: string
   /** Query `reason` khi từ chối quyền — mặc định `staff_only`. */
   accessDeniedReason?: string
+  /** Module admin bật theo `admin.app.config.json` — dùng dev copy session. */
+  enabledAdminModules?: string[]
 }
 
 /** Cấu hình cố định mỗi app admin (menu, auth routes, …). */

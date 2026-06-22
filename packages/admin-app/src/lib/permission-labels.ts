@@ -142,6 +142,13 @@ export function permissionGroupKey(code: string): string {
   return code.slice(0, i)
 }
 
+/** Phần action sau dấu `:`, ví dụ `accounts:manage` -> `manage`. */
+export function permissionActionKey(code: string): string {
+  const i = code.indexOf(":")
+  if (i <= 0) return "other"
+  return code.slice(i + 1).trim() || "other"
+}
+
 /** Tiêu đề nhóm (resource) cho UI ma trận quyền. */
 export function permissionGroupLabelVi(groupKey: string): string {
   const mapped = RESOURCE_LABEL_VI[groupKey]
@@ -149,4 +156,9 @@ export function permissionGroupLabelVi(groupKey: string): string {
     return mapped.charAt(0).toUpperCase() + mapped.slice(1)
   }
   return titleCaseToken(groupKey)
+}
+
+/** Nhãn thao tác (action) cho báo cáo copy / so sánh quyền. */
+export function permissionActionLabelVi(actionKey: string): string {
+  return ACTION_LABEL_VI[actionKey] ?? titleCaseToken(actionKey)
 }

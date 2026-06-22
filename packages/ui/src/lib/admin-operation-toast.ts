@@ -14,6 +14,7 @@ import {
   buildAdminOperationErrorToastPayload,
   buildAdminOperationSuccessToast,
   inferAdminApiFromMutationKey,
+  resolveBulkOperationToastMessage,
   type AdminOperationReviewContext,
 } from "./admin-operation-toast-config"
 import {
@@ -27,14 +28,21 @@ export {
   formatAdminOperationErrorDetails,
 } from "./admin-operation-error"
 export {
+  syncAdminOperationReportBranding,
+  resolveAdminOperationReportHeader,
+  resolveAdminPortalLabel,
+} from "./admin-operation-report-branding"
+export {
   adminOperationToastConfig,
   buildAdminOperationErrorToast,
   buildAdminOperationErrorToastPayload,
   buildAdminOperationSuccessToast,
   formatAdminOperationReviewReport,
+  formatRealtimeNotificationCopyReport,
   adminOperationToastPayloadToOptions,
   adminApiMeta,
   inferAdminApiFromMutationKey,
+  resolveBulkOperationToastMessage,
   type AdminApiMeta,
   type AdminOperationReviewContext,
   type AdminOperationToastPayload,
@@ -63,23 +71,21 @@ export const defaultAdminOperationToast: AdminOperationToastMessages = {
 }
 
 /** Toast mặc định cho bulk delete / restore / hard-delete. */
-export const defaultBulkOperationToast: AdminOperationToastMessages<
+export function createBulkOperationToast(
+  unitLabel = "mục",
+): AdminOperationToastMessages<
   unknown,
   { action: string; ids: string[] }
-> = {
-  loading: "Đang xử lý hàng loạt…",
-  success: (_data, variables) => {
-    const count = variables.ids?.length ?? 0
-    if (variables.action === "delete") {
-      return `Đã đưa ${count} mục vào thùng rác`
-    }
-    if (variables.action === "restore") {
-      return `Đã khôi phục ${count} mục`
-    }
-    return `Đã xóa vĩnh viễn ${count} mục`
-  },
-  error: (err) => resolveAdminOperationError(err),
+> {
+  return {
+    loading: "Bulk: Đang xử lý hàng loạt…",
+    success: (_data, variables) =>
+      resolveBulkOperationToastMessage(variables, unitLabel),
+    error: (err) => resolveAdminOperationError(err),
+  }
 }
+
+export const defaultBulkOperationToast = createBulkOperationToast()
 
 const toastIds = new WeakMap<
   Mutation<unknown, unknown, unknown, unknown>,
@@ -213,9 +219,6 @@ export function createAdminMutationCache(): MutationCache {
         payload,
         id != null ? { id } : undefined
       )
-      toast.success(payload.message, toastOptions)
-      toastIds.delete(mutation)
-      mutationStartedAt.delete(mutation)
       const meta = getAdminMutationMeta(mutation)
       suppressRealtimeToastAfterMutation(
         mutation.options.mutationKey,
@@ -223,6 +226,9 @@ export function createAdminMutationCache(): MutationCache {
         data,
         variables
       )
+      toast.success(payload.message, toastOptions)
+      toastIds.delete(mutation)
+      mutationStartedAt.delete(mutation)
     },
     onError: (error, variables, _context, mutation) => {
       const adminToast = getAdminToastMeta(mutation)
@@ -245,6 +251,13 @@ export function createAdminMutationCache(): MutationCache {
         payload,
         id != null ? { id } : undefined
       )
+      const meta = getAdminMutationMeta(mutation)
+      suppressRealtimeToastAfterMutation(
+        mutation.options.mutationKey,
+        meta?.adminToastSuppress,
+        undefined,
+        variables
+      )
       toast.error(payload.message, toastOptions)
       toastIds.delete(mutation)
       mutationStartedAt.delete(mutation)
@@ -258,6 +271,9 @@ export function inferAdminToastFromMutationKey(
 ): Partial<AdminOperationToastMessages> | undefined {
   if (!key || !Array.isArray(key) || key.length === 0) return undefined
   const action = String(key[1] ?? "mutate")
+  if (action === "bulk") {
+    return createBulkOperationToast() as Partial<AdminOperationToastMessages>
+  }
   const labels: Record<string, string> = {
     create: "tạo",
     update: "cập nhật",

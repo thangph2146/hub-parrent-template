@@ -124,7 +124,7 @@ export function useAdminMutation<
         inferred?.error ??
         defaultAdminOperationToast.error,
     }
-    mergedMeta = { ...meta, ...adminToastMeta(messages) }
+    mergedMeta = { ...mergedMeta, ...adminToastMeta(messages) }
   }
 
   if (adminApiOverride !== false) {

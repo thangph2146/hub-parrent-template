@@ -11,6 +11,17 @@ export type AdminToastSuppressMeta = {
   action?: string
 }
 
+/** Mutation key (UI module) → resource metadata socket/API. */
+const SUPPRESS_RESOURCE_ALIASES: Record<string, string> = {
+  rbac: "roles",
+}
+
+function resolveSuppressResource(resource: string | undefined): string | undefined {
+  if (!resource) return undefined
+  const normalized = resource.toLowerCase().trim()
+  return SUPPRESS_RESOURCE_ALIASES[normalized] ?? normalized
+}
+
 function inferResourceFromMutationKey(
   key: MutationKey | undefined
 ): string | undefined {
@@ -27,6 +38,14 @@ function inferActionFromMutationKey(
   return action || undefined
 }
 
+function inferActionFromVariables(variables: unknown): string | undefined {
+  if (variables == null || typeof variables !== "object") return undefined
+  const action = (variables as { action?: unknown }).action
+  if (typeof action !== "string") return undefined
+  const trimmed = action.trim()
+  return trimmed || undefined
+}
+
 export function adminToastSuppressMeta(meta: AdminToastSuppressMeta): {
   adminToastSuppress: AdminToastSuppressMeta
 } {
@@ -40,12 +59,18 @@ export function suppressRealtimeToastAfterMutation(
   data: unknown,
   variables: unknown
 ): void {
-  const resource =
+  const rawResource =
     suppressMeta?.resource?.trim() || inferResourceFromMutationKey(mutationKey)
+  const resource = resolveSuppressResource(rawResource)
   if (!resource) return
 
+  const action =
+    suppressMeta?.action?.trim() ||
+    inferActionFromVariables(variables) ||
+    inferActionFromMutationKey(mutationKey)
+
   registerLocalMutationFromMeta(resource, {
-    action: suppressMeta?.action ?? inferActionFromMutationKey(mutationKey),
+    action,
     data,
     variables,
   })
