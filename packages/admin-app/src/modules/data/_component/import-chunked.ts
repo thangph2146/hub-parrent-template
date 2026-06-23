@@ -2,15 +2,22 @@ import type {
   ImportModelProgress,
   ImportProgressState,
 } from "../import-progress-panel"
+import { ApiError } from "@workspace/api-client"
+import type { ImportConfigResponse } from "@workspace/api-client"
+import type { AdminSdk } from "@workspace/admin-app/lib/api"
 import {
   buildImportJobFailureMessage,
+  buildImportProgressReportFromState,
   buildModelImportErrorSummary,
   formatImportErrorMessage,
+  formatImportNetworkError,
   type ImportRowError,
 } from "./import-error-message"
 import {
   createEmptyModelTiming,
   formatImportDuration,
+  resolveWallClockElapsedMs,
+  type ImportCurrentJobTiming,
   type ImportJobTimingEntry,
   type ImportModelTimingStats,
 } from "./import-timing"
@@ -46,16 +53,27 @@ function applyRowErrorsToModel(
   }
 }
 
-export type ImportConfig = {
-  modelOrder: string[]
-  bundles: Record<string, readonly string[]>
-  rowChunkSize: number
-  /** Kích thước lô riêng (vd. post JSON nhỏ để chạy song song). */
-  modelChunkSizes?: Record<string, number>
-  /** Số lô skipClear cùng bảng chạy song song (mặc định 3). */
-  parallelChunkConcurrency?: number
-  /** Ghi đè song song theo bảng (vd. post=1 tránh lock DB). */
-  modelParallelConcurrency?: Record<string, number>
+export type ImportConfig = ImportConfigResponse
+
+function formatImportRequestError(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 401) {
+      return (
+        error.message.trim() ||
+        "API từ chối: thiếu hoặc sai X-User-Id — hãy đăng nhập lại admin."
+      )
+    }
+    if (error.status === 403) {
+      return (
+        error.message.trim() ||
+        "Không đủ quyền xuất nhập hệ thống cho tài khoản hiện tại."
+      )
+    }
+    const msg = error.message.trim()
+    if (msg) return formatImportErrorMessage(msg)
+    return `Lỗi ${error.status}`
+  }
+  return formatImportNetworkError(error)
 }
 
 export type ImportChunkJob = {
@@ -68,34 +86,27 @@ export type ImportChunkJob = {
   isLastChunkForModel: boolean
 }
 
-type ApiEnvelope<T> = {
-  success: boolean
-  message?: string
-  error?: string | null
-  data?: T
-}
-
-type ImportResultPayload = {
-  success?: boolean
-  message?: string
-  rowErrors?: Array<{ model: string; index: number; message: string }>
-  timing?: ApiImportTiming
-}
-
+/** Wall-clock ms — luôn dùng Date.now() để so sánh với báo cáo copy / UI. */
 function nowMs(): number {
-  return typeof performance !== "undefined" &&
-    typeof performance.now === "function"
-    ? performance.now()
-    : Date.now()
+  return Date.now()
 }
 
 function attachTimingsToModels(
   models: ImportModelProgress[],
-  timingByName: Map<string, ImportModelTimingStats>
+  timingByName: Map<string, ImportModelTimingStats>,
+  atMs: number = nowMs()
 ): ImportModelProgress[] {
   return models.map((model) => {
     const timing = timingByName.get(model.name)
-    return timing ? { ...model, timing: { ...timing } } : model
+    if (!timing) return model
+    const snapshot = { ...timing }
+    if (snapshot.startedAtMs != null && snapshot.completedAtMs == null) {
+      const elapsed = resolveWallClockElapsedMs(snapshot.startedAtMs, atMs)
+      if (elapsed != null) {
+        snapshot.wallMs = elapsed
+      }
+    }
+    return { ...model, timing: snapshot }
   })
 }
 
@@ -137,6 +148,50 @@ function markModelImportEnd(
   }
 }
 
+function chunkArray<T>(items: T[], size: number): T[][] {
+  if (items.length <= size) return [items]
+  const chunks: T[][] = []
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size))
+  }
+  return chunks
+}
+
+/** Khóa RBAC — import cuối để tránh TRUNCATE roles/user_roles làm mất quyền giữa các lô HTTP. */
+const RBAC_IMPORT_KEY_GROUPS = [
+  ["role", "roles"],
+  ["user", "users"],
+  ["userRole", "user_roles"],
+] as const
+
+const RBAC_IMPORT_KEYS = new Set<string>(
+  RBAC_IMPORT_KEY_GROUPS.flatMap((group) => [...group])
+)
+
+function isRbacImportKey(key: string): boolean {
+  return RBAC_IMPORT_KEYS.has(key)
+}
+
+function resolveClientModelName(
+  serverModel: string,
+  models: ImportModelProgress[]
+): string {
+  const direct = models.find((m) => m.name === serverModel)
+  if (direct) return direct.name
+
+  const aliasGroups = RBAC_IMPORT_KEY_GROUPS
+  for (const group of aliasGroups) {
+    if ((group as readonly string[]).includes(serverModel)) {
+      const match = models.find((m) =>
+        (group as readonly string[]).includes(m.name)
+      )
+      if (match) return match.name
+    }
+  }
+
+  return serverModel
+}
+
 function applyServerTimings(
   timingByName: Map<string, ImportModelTimingStats>,
   models: ImportModelProgress[],
@@ -144,10 +199,11 @@ function applyServerTimings(
 ): void {
   if (!serverTimings?.length) return
   for (const entry of serverTimings) {
-    const model = models.find((m) => m.name === entry.model)
+    const clientModel = resolveClientModelName(entry.model, models)
+    const model = models.find((m) => m.name === clientModel)
     const timing = touchModelTiming(
       timingByName,
-      entry.model,
+      clientModel,
       model?.records ?? entry.imported
     )
     timing.serverClearMs += entry.clearMs
@@ -169,16 +225,7 @@ function addHttpJobDuration(
   }
 }
 
-function chunkArray<T>(items: T[], size: number): T[][] {
-  if (items.length <= size) return [items]
-  const chunks: T[][] = []
-  for (let i = 0; i < items.length; i += size) {
-    chunks.push(items.slice(i, i + size))
-  }
-  return chunks
-}
-
-/** Khớp `orderModelsForDependencySafeImport` trên API. */
+/** Khớp thứ tự an toàn trên client — RBAC (role/user/userRole) luôn cuối, giống JSON export. */
 export function orderModelsForImport(
   keys: string[],
   modelOrder: string[]
@@ -192,16 +239,47 @@ export function orderModelsForImport(
     }
   }
 
-  take("role")
-  take("user")
-  take("userRole")
   for (const model of [...modelOrder].reverse()) {
-    take(model)
+    if (!isRbacImportKey(model)) {
+      take(model)
+    }
+  }
+  for (const model of [...set]) {
+    if (!isRbacImportKey(model)) {
+      out.push(model)
+      set.delete(model)
+    }
+  }
+  for (const group of RBAC_IMPORT_KEY_GROUPS) {
+    for (const alias of group) {
+      take(alias)
+    }
   }
   for (const model of set) {
     out.push(model)
   }
   return out
+}
+
+/** Excel dùng khóa model (role); JSON export dùng khóa bảng (roles) — chuẩn hóa về khóa bảng. */
+export function normalizeImportDataToTableKeys(
+  data: Record<string, unknown[]>,
+  modelTableNames?: Record<string, string>
+): {
+  data: Record<string, unknown[]>
+  modelTableNames: Record<string, string>
+} {
+  const normalized: Record<string, unknown[]> = {}
+  const tableNames: Record<string, string> = {}
+
+  for (const [key, rows] of Object.entries(data)) {
+    if (!Array.isArray(rows)) continue
+    const tableKey = modelTableNames?.[key]?.trim() || key
+    normalized[tableKey] = rows
+    tableNames[tableKey] = tableKey
+  }
+
+  return { data: normalized, modelTableNames: tableNames }
 }
 
 export function buildChunkedImportJobs(
@@ -222,11 +300,13 @@ export function buildChunkedImportJobs(
     const rows = data[primary]
     if (!Array.isArray(rows) || rows.length === 0) return
 
-    const bundleExtras = (config.bundles[primary] ?? []).filter((extra) => {
-      if (skipBundled.has(extra)) return false
-      const extraRows = data[extra]
-      return Array.isArray(extraRows) && extraRows.length > 0
-    })
+    const bundleExtras = isRbacImportKey(primary)
+      ? []
+      : (config.bundles[primary] ?? []).filter((extra) => {
+          if (skipBundled.has(extra)) return false
+          const extraRows = data[extra]
+          return Array.isArray(extraRows) && extraRows.length > 0
+        })
     bundleExtras.forEach((extra) => skipBundled.add(extra))
 
     const chunkSize = config.modelChunkSizes?.[primary] ?? config.rowChunkSize
@@ -314,10 +394,58 @@ export function buildChunkedImportJobs(
   return jobs
 }
 
+/** Gộp roles + users + user_roles thành 1 request — tránh mất quyền giữa các lô HTTP. */
+const RBAC_TABLE_IMPORT_ORDER = ["roles", "users", "user_roles"] as const
+
+export function mergeRbacImportJobs(
+  jobs: ImportChunkJob[],
+  data: Record<string, unknown[]>
+): ImportChunkJob[] {
+  const rbacPresent = RBAC_TABLE_IMPORT_ORDER.filter((key) => {
+    const rows = data[key]
+    return Array.isArray(rows) && rows.length > 0
+  })
+  if (rbacPresent.length === 0) return jobs
+
+  const rbacJobs = jobs.filter((job) => isRbacImportKey(job.primaryModel))
+  if (rbacJobs.length === 0) return jobs
+
+  const rbacChunked = rbacJobs.some(
+    (job) => job.skipClear || job.label.includes("lô")
+  )
+  if (rbacChunked) return jobs
+
+  const nonRbac = jobs.filter((job) => !isRbacImportKey(job.primaryModel))
+
+  const payload: Record<string, unknown[]> = {}
+  let recordCount = 0
+  for (const key of rbacPresent) {
+    payload[key] = data[key] as unknown[]
+    recordCount += (data[key] as unknown[]).length
+  }
+
+  const primary = rbacPresent[0]!
+  const bundled = rbacPresent.slice(1)
+
+  return [
+    ...nonRbac,
+    {
+      label: bundled.length > 0 ? rbacPresent.join(" + ") : primary,
+      primaryModel: primary,
+      skipClear: false,
+      payload,
+      recordCount,
+      bundledModels: bundled,
+      isLastChunkForModel: true,
+    },
+  ]
+}
+
 export function buildInitialImportProgress(
   data: Record<string, unknown[]>,
   config: ImportConfig,
-  jobs: ImportChunkJob[]
+  jobs: ImportChunkJob[],
+  modelTableNames?: Record<string, string>
 ): Pick<ImportProgressState, "models" | "total" | "totalRecords"> {
   const keys = Object.keys(data).filter(
     (key) => Array.isArray(data[key]) && data[key].length > 0
@@ -330,7 +458,12 @@ export function buildInitialImportProgress(
   const addModel = (name: string) => {
     const rows = data[name]
     if (!Array.isArray(rows) || rows.length === 0) return
-    models.push({ name, records: rows.length, status: "pending" })
+    models.push({
+      name,
+      tableName: modelTableNames?.[name] ?? name,
+      records: rows.length,
+      status: "pending",
+    })
     totalRecords += rows.length
   }
 
@@ -358,35 +491,21 @@ export function buildInitialImportProgress(
   }
 }
 
-export async function fetchImportConfig(
-  apiBase: string,
-  authHeaders: () => HeadersInit
-): Promise<ImportConfig> {
-  const res = await fetch(`${apiBase}/admin/system/import-config`, {
-    headers: authHeaders(),
-  })
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(
-      text.length > 200
-        ? `${text.slice(0, 200)}…`
-        : text || `HTTP ${res.status}`
-    )
-  }
-  const json = (await res.json()) as ApiEnvelope<ImportConfig>
-  if (!json.success || !json.data) {
-    throw new Error(json.message || "API không trả cấu hình import hợp lệ.")
-  }
-  return json.data
+export type RunChunkedImportResult = {
+  success: boolean
+  message: string
+  /** Báo cáo đầy đủ — đồng bộ với nút Copy trong panel + toast Sao chép (dev). */
+  copyReport?: string
 }
 
 export type RunChunkedImportOptions = {
-  apiBase: string
-  authHeaders: () => HeadersInit
+  api: AdminSdk
   config: ImportConfig
   data: Record<string, unknown[]>
+  sourceFormat?: ImportProgressState["sourceFormat"]
+  sourceFileName?: string
+  modelTableNames?: Record<string, string>
   onProgress: (state: ImportProgressState) => void
-  toastFetchError: (res: Response) => Promise<string>
 }
 
 async function runImportJobsInPool<T>(
@@ -409,19 +528,40 @@ async function runImportJobsInPool<T>(
 }
 
 export async function runChunkedImport({
-  apiBase,
-  authHeaders,
+  api,
   config,
   data,
+  sourceFormat,
+  sourceFileName,
+  modelTableNames,
   onProgress,
-  toastFetchError,
-}: RunChunkedImportOptions): Promise<{ success: boolean; message: string }> {
-  const jobs = buildChunkedImportJobs(data, config)
+}: RunChunkedImportOptions): Promise<RunChunkedImportResult> {
+  const normalized = normalizeImportDataToTableKeys(data, modelTableNames)
+  data = normalized.data
+  modelTableNames = normalized.modelTableNames
+
+  const jobs = mergeRbacImportJobs(
+    buildChunkedImportJobs(data, config),
+    data
+  )
   if (jobs.length === 0) {
     return { success: false, message: "Không có dữ liệu để import." }
   }
 
-  const initial = buildInitialImportProgress(data, config, jobs)
+  const initial = buildInitialImportProgress(
+    data,
+    config,
+    jobs,
+    modelTableNames
+  )
+  const jobsPerPrimary = new Map<string, number>()
+  for (const job of jobs) {
+    jobsPerPrimary.set(
+      job.primaryModel,
+      (jobsPerPrimary.get(job.primaryModel) ?? 0) + 1
+    )
+  }
+  const completedJobsPerPrimary = new Map<string, number>()
   let cumulativeImported = 0
   let modelStates: ImportModelProgress[] = initial.models.map((model) => ({
     ...model,
@@ -429,6 +569,19 @@ export async function runChunkedImport({
   const timingByName = new Map<string, ImportModelTimingStats>()
   const jobTimings: ImportJobTimingEntry[] = []
   const importWallStarted = nowMs()
+  let currentJob: ImportCurrentJobTiming | undefined
+  const runningJobs = new Map<number, ImportCurrentJobTiming>()
+  let lastProgressState: ImportProgressState | null = null
+
+  const syncCurrentJob = () => {
+    if (runningJobs.size === 0) {
+      currentJob = undefined
+      return
+    }
+    currentJob = [...runningJobs.values()].sort(
+      (a, b) => a.startedAtMs - b.startedAtMs
+    )[0]
+  }
 
   const emitProgress = (
     patch: Partial<ImportProgressState> & { models?: ImportModelProgress[] }
@@ -438,7 +591,7 @@ export async function runChunkedImport({
     } else {
       modelStates = attachTimingsToModels(modelStates, timingByName)
     }
-    onProgress({
+    lastProgressState = {
       active: true,
       models: modelStates,
       currentIndex: patch.currentIndex ?? 0,
@@ -447,10 +600,28 @@ export async function runChunkedImport({
       cumulativeImported: patch.cumulativeImported ?? cumulativeImported,
       status: patch.status ?? "importing",
       message: patch.message,
-      totalDurationMs: patch.totalDurationMs,
-      jobTimings: patch.jobTimings ?? jobTimings,
-    })
+      sourceFormat,
+      sourceFileName,
+      totalDurationMs:
+        patch.totalDurationMs ?? Math.round(nowMs() - importWallStarted),
+      importStartedAtMs: importWallStarted,
+      currentJob,
+      jobTimings: patch.jobTimings ?? [...jobTimings],
+    }
+    onProgress(lastProgressState)
   }
+
+  const buildCopyReport = (): string | undefined =>
+    lastProgressState
+      ? buildImportProgressReportFromState(lastProgressState)
+      : undefined
+
+  const finishImport = (
+    result: Omit<RunChunkedImportResult, "copyReport">
+  ): RunChunkedImportResult => ({
+    ...result,
+    copyReport: buildCopyReport(),
+  })
 
   const parallelConcurrency = Math.max(1, config.parallelChunkConcurrency ?? 3)
 
@@ -471,6 +642,13 @@ export async function runChunkedImport({
     const jobStarted = nowMs()
     const primaryRecords =
       modelStates.find((m) => m.name === job.primaryModel)?.records ?? 0
+    const runningJob: ImportCurrentJobTiming = {
+      label: job.label,
+      primaryModel: job.primaryModel,
+      bundledModels: job.bundledModels,
+      recordCount: job.recordCount,
+      startedAtMs: jobStarted,
+    }
 
     markModelImportStart(
       timingByName,
@@ -484,9 +662,13 @@ export async function runChunkedImport({
       markModelImportStart(timingByName, bundled, bundledRecords, jobStarted)
     }
 
+    runningJobs.set(jobIndex, runningJob)
+    syncCurrentJob()
+
     emitProgress({
       models: modelStates.map((model) => {
         if (model.name === job.primaryModel) {
+          if (model.status === "done") return model
           return {
             ...model,
             status: "importing" as const,
@@ -507,22 +689,28 @@ export async function runChunkedImport({
       message: `Đang gửi ${job.label}…`,
     })
 
-    const query = new URLSearchParams({
-      model: job.primaryModel,
-      skipClear: String(job.skipClear),
-      stream: "false",
-    })
-    const res = await fetch(`${apiBase}/admin/system/import?${query}`, {
-      method: "POST",
-      headers: {
-        ...authHeaders(),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(job.payload),
-    })
-
-    if (!res.ok) {
-      const errMsg = formatImportErrorMessage(await toastFetchError(res))
+    let result: Awaited<ReturnType<AdminSdk["system"]["importData"]>>
+    const heartbeat = setInterval(() => {
+      syncCurrentJob()
+      emitProgress({
+        currentIndex: jobIndex,
+        cumulativeImported,
+        status: "importing",
+        message: `Đang gửi ${job.label}…`,
+      })
+    }, 1000)
+    try {
+      result = await api.system.importData({
+        model: job.primaryModel,
+        skipClear: job.skipClear,
+        payload: job.payload,
+      })
+    } catch (error) {
+      const raw =
+        error instanceof Error ? error.message.trim() : "Import thất bại"
+      const errMsg = formatImportRequestError(error)
+      runningJobs.delete(jobIndex)
+      syncCurrentJob()
       emitProgress({
         models: modelStates.map((model) =>
           model.name === job.primaryModel ||
@@ -532,8 +720,9 @@ export async function runChunkedImport({
                 ...model,
                 status: "error" as const,
                 error: errMsg,
+                errorTitle: raw !== errMsg ? raw : errMsg,
               }
-            : model.status === "importing"
+            : model.status === "pending" || model.status === "importing"
               ? { ...model, status: "skipped" as const }
               : model
         ),
@@ -543,10 +732,10 @@ export async function runChunkedImport({
         message: errMsg,
       })
       return { success: false, message: errMsg }
+    } finally {
+      clearInterval(heartbeat)
     }
 
-    const envelope = (await res.json()) as ApiEnvelope<ImportResultPayload>
-    const result = envelope.data ?? (envelope as ImportResultPayload)
     const httpMs = nowMs() - jobStarted
     const jobModelNames = [job.primaryModel, ...job.bundledModels]
     addHttpJobDuration(timingByName, modelStates, jobModelNames, httpMs)
@@ -561,10 +750,7 @@ export async function runChunkedImport({
     })
 
     const rowErrors = result.rowErrors ?? []
-    const importOk =
-      envelope.success !== false &&
-      result.success !== false &&
-      rowErrors.length === 0
+    const importOk = result.success !== false && rowErrors.length === 0
     const errMsg = buildImportJobFailureMessage({
       jobLabel: job.label,
       primaryModel: job.primaryModel,
@@ -573,6 +759,8 @@ export async function runChunkedImport({
     })
 
     if (!importOk) {
+      runningJobs.delete(jobIndex)
+      syncCurrentJob()
       emitProgress({
         models: modelStates.map((model) => {
           const modelRowErrors = rowErrors.filter(
@@ -586,6 +774,7 @@ export async function runChunkedImport({
               ...model,
               status: "error" as const,
               error: errMsg,
+              errorTitle: errMsg,
             }
           }
           if (
@@ -596,6 +785,7 @@ export async function runChunkedImport({
               ...model,
               status: "error" as const,
               error: errMsg,
+              errorTitle: errMsg,
             }
           }
           if (model.status === "pending" || model.status === "importing") {
@@ -617,7 +807,13 @@ export async function runChunkedImport({
     cumulativeImported += job.recordCount
     const jobEnded = nowMs()
 
-    if (job.isLastChunkForModel) {
+    const primaryJobsDone =
+      (completedJobsPerPrimary.get(job.primaryModel) ?? 0) + 1
+    completedJobsPerPrimary.set(job.primaryModel, primaryJobsDone)
+    const primaryAllChunksDone =
+      primaryJobsDone >= (jobsPerPrimary.get(job.primaryModel) ?? 1)
+
+    if (job.isLastChunkForModel || primaryAllChunksDone) {
       markModelImportEnd(
         timingByName,
         job.primaryModel,
@@ -631,10 +827,13 @@ export async function runChunkedImport({
       markModelImportEnd(timingByName, bundled, bundledRecords, jobEnded)
     }
 
+    runningJobs.delete(jobIndex)
+    syncCurrentJob()
+
     emitProgress({
       models: modelStates.map((model) => {
         if (model.name === job.primaryModel) {
-          if (job.isLastChunkForModel) {
+          if (primaryAllChunksDone || model.status === "done") {
             return { ...model, status: "done" as const, detail: undefined }
           }
           return {
@@ -644,7 +843,7 @@ export async function runChunkedImport({
           }
         }
         if (job.bundledModels.includes(model.name)) {
-          return { ...model, status: "done" as const }
+          return { ...model, status: "done" as const, detail: undefined }
         }
         return model
       }),
@@ -708,7 +907,7 @@ export async function runChunkedImport({
   }
 
   if (importFailed) {
-    return importFailed
+    return finishImport(importFailed)
   }
 
   const totalDurationMs = Math.round(nowMs() - importWallStarted)
@@ -716,8 +915,8 @@ export async function runChunkedImport({
     .filter(([, t]) => t.wallMs > 0)
     .sort((a, b) => b[1].wallMs - a[1].wallMs)[0]
   const doneMessage = slowest
-    ? `Import hoàn tất — ${cumulativeImported.toLocaleString("vi-VN")} bản ghi qua ${jobs.length} lô · chậm nhất: ${slowest[0]} (${formatImportDuration(slowest[1].wallMs)}).`
-    : `Import hoàn tất — ${cumulativeImported.toLocaleString("vi-VN")} bản ghi qua ${jobs.length} lô.`
+    ? `${cumulativeImported.toLocaleString("vi-VN")} bản ghi qua ${jobs.length} lô · chậm nhất: ${slowest[0]} (${formatImportDuration(slowest[1].wallMs)}).`
+    : `${cumulativeImported.toLocaleString("vi-VN")} bản ghi qua ${jobs.length} lô.`
   emitProgress({
     models: modelStates.map((model) =>
       model.status === "pending" || model.status === "importing"
@@ -731,5 +930,5 @@ export async function runChunkedImport({
     totalDurationMs,
   })
 
-  return { success: true, message: doneMessage }
+  return finishImport({ success: true, message: doneMessage })
 }

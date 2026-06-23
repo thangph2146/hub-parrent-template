@@ -77,6 +77,37 @@ export type ImportConfigResponse = {
   recommendedExportFile?: string;
 };
 
+export type ImportRowError = {
+  model: string;
+  index: number;
+  message: string;
+};
+
+export type ImportModelTiming = {
+  model: string;
+  clearMs: number;
+  insertMs: number;
+  imported: number;
+};
+
+export type ImportTiming = {
+  requestMs: number;
+  models: ImportModelTiming[];
+};
+
+export type ImportDataResult = {
+  success?: boolean;
+  message?: string;
+  rowErrors?: ImportRowError[];
+  timing?: ImportTiming;
+};
+
+export type ImportDataParams = {
+  model: string;
+  skipClear: boolean;
+  payload: Record<string, unknown[]>;
+};
+
 export type SystemBootstrapResult = {
   rolesInserted: number;
   rolesUpdated: number;
@@ -107,6 +138,26 @@ export class SystemApi {
     return getData<ImportConfigResponse>(
       this.http,
       "/admin/system/import-config",
+    );
+  }
+
+  async importData(
+    params: ImportDataParams,
+    options?: RequestOptions,
+  ): Promise<ImportDataResult> {
+    return postData<ImportDataResult>(
+      this.http,
+      "/admin/system/import",
+      params.payload,
+      {
+        query: {
+          model: params.model,
+          skipClear: params.skipClear ? "true" : "false",
+          stream: "false",
+        },
+        timeoutMs: 120_000,
+        ...options,
+      },
     );
   }
 

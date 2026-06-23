@@ -309,7 +309,10 @@ export const FIELD_SECTION_VALUE_CLASS =
   "rounded-md border border-solid border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-foreground dark:border-border dark:bg-muted/30"
 
 function isCopyPlaceholder(text: string): boolean {
-  return text === "" || text === "—" || text === "-"
+  if (text === "" || text === "—" || text === "-") return true
+  if (/^chưa chọn/i.test(text)) return true
+  if (/^hộp thoại lưu/i.test(text)) return true
+  return false
 }
 
 function readCopyTextFromProps(props: Record<string, unknown>): string | null {

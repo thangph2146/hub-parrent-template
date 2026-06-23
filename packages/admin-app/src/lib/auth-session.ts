@@ -117,6 +117,21 @@ function notifyAdminSessionChanged(): void {
 }
 
 /**
+ * Làm mới roles/permissions từ API sau thao tác thay đổi RBAC (vd. import).
+ */
+export async function refreshAdminSessionFromServer(): Promise<void> {
+  const prev = readAdminSession()
+  if (!prev) return
+
+  const payload = await fetchAdminSessionPayload(
+    String(prev.id),
+    prev.email?.trim() || null,
+  )
+  writeAdminSession(toAdminSessionUser(payload))
+  notifyAdminSessionChanged()
+}
+
+/**
  * Sau khi sửa nhân sự trùng tài khoản đang đăng nhập: làm mới permissions/roles
  * từ API và đồng bộ hồ sơ (tên, SĐT, ảnh…) lên header/sidebar ngay.
  */
@@ -134,7 +149,10 @@ export async function syncAdminSessionIfCurrentUser(
 
   const prev = readAdminSession()
   try {
-    const payload = await fetchAdminSessionPayload(String(sessionId))
+    const payload = await fetchAdminSessionPayload(
+      String(updatedUserId),
+      prev?.email?.trim() || null,
+    )
     writeAdminSession({
       ...toAdminSessionUser(payload),
       phone: profileFromUpdate?.phone ?? prev?.phone ?? null,

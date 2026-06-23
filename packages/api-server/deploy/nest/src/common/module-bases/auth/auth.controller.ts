@@ -20,6 +20,7 @@ export type IAuthControllerService = Pick<
   BaseAuthService,
   | 'login'
   | 'tryAuthPayloadByUserId'
+  | 'tryAuthPayloadByEmail'
   | 'loginAsDevelopmentUser'
   | 'verifyGoogleToken'
   | 'loginWithGoogle'
@@ -41,6 +42,7 @@ export class BaseAuthController {
     @Headers() headers: Record<string, string | undefined>,
   ): Promise<Response> {
     const userId = headers[APP_HEADERS.USER_ID]?.trim();
+    const userEmail = headers[APP_HEADERS.USER_EMAIL]?.trim().toLowerCase();
     if (!userId) {
       const { statusCode, body } = createErrorResponse(
         `Thieu header ${APP_HEADERS.USER_ID}`,
@@ -49,7 +51,20 @@ export class BaseAuthController {
       return res.status(statusCode).json(body);
     }
 
-    const { payload, reason } = await this.service.tryAuthPayloadByUserId(userId);
+    let { payload, reason } = await this.service.tryAuthPayloadByUserId(userId);
+    if (!payload && userEmail) {
+      const byEmail = await this.service.tryAuthPayloadByEmail(userEmail);
+      if (byEmail.payload) {
+        payload = byEmail.payload;
+        reason = undefined;
+      } else if (
+        reason === 'not_found' ||
+        reason === 'no_roles' ||
+        reason === 'inactive'
+      ) {
+        reason = byEmail.reason ?? reason;
+      }
+    }
     if (!payload) {
       const byReason: Record<
         NonNullable<typeof reason>,

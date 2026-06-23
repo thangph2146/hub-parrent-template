@@ -12,6 +12,7 @@
 
 export const APP_HEADERS = {
   USER_ID: 'x-user-id',
+  USER_EMAIL: 'x-user-email',
   VIEW_ALL: 'x-view-all',
 } as const;
 

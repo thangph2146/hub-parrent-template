@@ -231,6 +231,7 @@ export class BaseSystemController {
             skipClear === 'true',
             onProgress,
             headers[APP_HEADERS.USER_ID],
+            headers[APP_HEADERS.USER_EMAIL],
           );
           onProgress({ type: 'complete', ...result });
         } catch (error) {
@@ -253,6 +254,7 @@ export class BaseSystemController {
         skipClear === 'true',
         undefined,
         headers[APP_HEADERS.USER_ID],
+        headers[APP_HEADERS.USER_EMAIL],
       );
       const { statusCode, body } = createSuccessResponse(result);
       return res.status(statusCode).json(body);

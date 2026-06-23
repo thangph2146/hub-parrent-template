@@ -1,3 +1,4 @@
+/** AUTO-GENERATED — materialize từ @workspace/api-server/deploy/nest. Chạy: pnpm api:render */
 export interface ExportDataResult {
   modelOrder: string[];
   data: Record<string, unknown[]>;
@@ -228,8 +229,16 @@ function coerceManyToOneScalar(raw: unknown): unknown {
   return null;
 }
 
+function coerceImportNullMarker(raw: unknown): unknown {
+  if (raw === EXCEL_NULL_MARKER) return null;
+  if (typeof raw === 'string' && raw.trim() === EXCEL_NULL_MARKER) return null;
+  return raw;
+}
+
 function normalizeImportScalar(prop: EntityProperty, raw: unknown): unknown {
-  if (raw === null) return null;
+  const unmarked = coerceImportNullMarker(raw);
+  if (unmarked === null) return null;
+  raw = unmarked;
   if (!isTemporalColumn(prop)) return raw;
   if (raw instanceof Date) return raw;
   if (typeof raw === 'number' && Number.isFinite(raw)) {
@@ -753,6 +762,7 @@ export class BaseSystemService {
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
     actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
   ) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(fileBuffer as unknown as ExcelWorkbookLoadInput);
@@ -831,6 +841,7 @@ export class BaseSystemService {
       skipClear,
       onProgress,
       actingUserIdHeader,
+      actingUserEmailHeader,
     );
   }
 
@@ -1567,6 +1578,25 @@ export class BaseSystemService {
     }
   }
 
+  private parseImportActingUserEmail(
+    actingUserEmailHeader?: string,
+  ): string | undefined {
+    const email = actingUserEmailHeader?.trim().toLowerCase();
+    return email || undefined;
+  }
+
+  private async ensureActingUserRoleAfterImportFromHeaders(
+    em: EntityManager,
+    actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
+  ): Promise<void> {
+    await this.bootstrap.ensureActingUserRoleAfterImport(
+      em,
+      this.parseImportActingUserId(actingUserIdHeader),
+      this.parseImportActingUserEmail(actingUserEmailHeader),
+    );
+  }
+
   /** Giữ user đang import để các lô HTTP tiếp theo không bị 401 (PermissionsGuard). */
   private resolvePreserveUserIdForImport(
     skipClear: boolean,
@@ -1620,7 +1650,7 @@ export class BaseSystemService {
     em: EntityManager,
     preserveUserId?: number,
   ): Promise<void> {
-    await this.detachNullableUserForeignKeys(em);
+    await this.detachUserForeignKeysBeforeImportClear(em, preserveUserId);
     if (preserveUserId != null) {
       const deleted = await em.nativeDelete(this.modelEntity('user'), {
         id: { $ne: preserveUserId },
@@ -1632,6 +1662,85 @@ export class BaseSystemService {
       await em.nativeDelete(this.modelEntity('user'), {});
     }
     em.clear();
+  }
+
+  /**
+   * Trước khi xóa users: gỡ FK nullable + tránh CASCADE xóa dữ liệu đã import
+   * (posts, sessions, notifications…) khi giữ user đang thao tác import.
+   */
+  private async detachUserForeignKeysBeforeImportClear(
+    em: EntityManager,
+    preserveUserId?: number,
+  ): Promise<void> {
+    await this.detachNullableUserForeignKeys(em);
+    if (preserveUserId == null) return;
+
+    const notPreserved = { $ne: preserveUserId };
+
+    const reassignUserFk = async (
+      modelKey: string,
+      relation: string,
+      label: string,
+    ): Promise<void> => {
+      const entity = this.entityByModelName[modelKey];
+      if (!entity) return;
+      const count = await em.nativeUpdate(
+        entity,
+        { [relation]: notPreserved },
+        { [relation]: preserveUserId },
+      );
+      if (count > 0) {
+        this.logger.log(
+          `Import user: chuyển ${count} ${label} sang user #${preserveUserId}.`,
+        );
+      }
+    };
+
+    await reassignUserFk('post', 'author', 'bài viết');
+    await reassignUserFk('comment', 'author', 'bình luận');
+    await reassignUserFk('group', 'creator', 'nhóm');
+
+    const sessionEntity = this.entityByModelName.session;
+    if (sessionEntity) {
+      const deleted = await em.nativeDelete(sessionEntity, {
+        user: notPreserved,
+      });
+      if (deleted > 0) {
+        this.logger.log(
+          `Import user: xóa ${deleted} session của user sẽ thay thế (import lại sau).`,
+        );
+      }
+    }
+
+    const notificationEntity = this.entityByModelName.notification;
+    if (notificationEntity) {
+      const deleted = await em.nativeDelete(notificationEntity, {
+        user: notPreserved,
+      });
+      if (deleted > 0) {
+        this.logger.log(
+          `Import user: xóa ${deleted} notification của user sẽ thay thế.`,
+        );
+      }
+    }
+
+    const storageFileEntity = this.entityByModelName.storageFile;
+    if (storageFileEntity) {
+      await em.nativeUpdate(
+        storageFileEntity,
+        { uploadedBy: notPreserved },
+        { uploadedBy: null },
+      );
+    }
+
+    const eventEntity = this.entityByModelName.event;
+    if (eventEntity) {
+      await em.nativeUpdate(
+        eventEntity,
+        { createdBy: notPreserved },
+        { createdBy: null },
+      );
+    }
   }
 
   /**
@@ -1687,6 +1796,66 @@ export class BaseSystemService {
       .getConnection()
       .execute(`UPDATE \`${table}\` SET \`${parentCol}\` = NULL`);
     await em.nativeDelete(this.modelEntity('category'), {});
+  }
+
+  /** Thứ tự xóa trước import — RBAC bundle: role TRUNCATE user_roles, bỏ clear userRole riêng. */
+  private resolveImportClearOrder(modelNames: string[]): string[] {
+    const set = new Set(modelNames);
+    const hasRbacBundle =
+      set.has('role') && set.has('user') && set.has('userRole');
+    if (hasRbacBundle) {
+      const out: string[] = [];
+      if (set.has('role')) out.push('role');
+      if (set.has('user')) out.push('user');
+      for (const m of this.modelOrder) {
+        if (set.has(m) && m !== 'role' && m !== 'user' && m !== 'userRole') {
+          out.push(m);
+        }
+      }
+      return out;
+    }
+    return this.modelOrder.filter((m) => set.has(m));
+  }
+
+  /** Excel/JSON export dùng __HUB_NULL__ — sửa cột date nullable bị ghi literal sau import. */
+  private async repairImportNullMarkerValues(
+    em: EntityManager,
+  ): Promise<void> {
+    const conn = em.getConnection();
+    const driverName = em.getDriver().constructor.name;
+    if (!/mysql|mariadb/i.test(driverName)) return;
+
+    const tablesWithSoftDelete = [
+      'roles',
+      'users',
+      'categories',
+      'tags',
+      'posts',
+      'comments',
+      'contact_requests',
+      'seo_metas',
+      'page_contents',
+    ];
+    for (const table of tablesWithSoftDelete) {
+      try {
+        const updated = await conn.execute(
+          `UPDATE \`${table}\` SET \`deletedAt\` = NULL WHERE \`deletedAt\` = ?`,
+          [EXCEL_NULL_MARKER],
+        );
+        const count =
+          typeof updated === 'number'
+            ? updated
+            : Number((updated as { affectedRows?: number })?.affectedRows ?? 0);
+        if (count > 0) {
+          this.logger.log(
+            `Import repair: ${table}.deletedAt — đã chuyển ${count} giá trị ${EXCEL_NULL_MARKER} → NULL.`,
+          );
+        }
+      } catch {
+        /* bảng/cột có thể không tồn tại trên product line */
+      }
+    }
+    em.clear();
   }
 
   /** Xóa sạch bảng trước import — role cần xóa user_roles trước để tránh FK / dữ liệu còn sót. */
@@ -1766,6 +1935,7 @@ export class BaseSystemService {
     modelNames: string[],
     skipClear: boolean,
     actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
   ): Promise<{
     rowErrors: Array<{ model: string; index: number; message: string }>;
     modelTimings: Array<{
@@ -1801,9 +1971,7 @@ export class BaseSystemService {
       );
 
       try {
-        const clearOrder = this.modelOrder.filter((m) =>
-          modelNames.includes(m),
-        );
+        const clearOrder = this.resolveImportClearOrder(modelNames);
 
         const preserveUserId = this.resolvePreserveUserIdForImport(
           skipClear,
@@ -1822,10 +1990,14 @@ export class BaseSystemService {
               mName === 'user' ? preserveUserId : undefined,
             );
             clearMsByModel.set(mName, Date.now() - clearStart);
+            this.logger.debug(
+              `Import clear ${mName}: ${Date.now() - clearStart}ms`,
+            );
           }
         }
 
-        const importOrder = [...clearOrder].reverse();
+        const importOrder =
+          this.orderModelsForDependencySafeImport(modelNames);
         for (const mName of importOrder) {
           const records = data[mName];
           if (!records?.length) continue;
@@ -1871,10 +2043,22 @@ export class BaseSystemService {
         }
 
         if (!skipClear && modelNames.includes('role')) {
+          await this.repairImportNullMarkerValues(em);
           await this.bootstrap.ensureSeedUserRoleLinks(em);
-          await this.bootstrap.ensureActingUserRoleAfterImport(
+          await this.ensureActingUserRoleAfterImportFromHeaders(
             em,
-            this.parseImportActingUserId(actingUserIdHeader),
+            actingUserIdHeader,
+            actingUserEmailHeader,
+          );
+        } else if (
+          !skipClear &&
+          modelNames.includes('user') &&
+          modelNames.includes('userRole')
+        ) {
+          await this.ensureActingUserRoleAfterImportFromHeaders(
+            em,
+            actingUserIdHeader,
+            actingUserEmailHeader,
           );
         }
       } finally {
@@ -1896,6 +2080,7 @@ export class BaseSystemService {
     skipClear: boolean,
     onRowError?: (model: string, index: number, message: string) => void,
     actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
   ): Promise<void> {
     await this.em.transactional(async (em) => {
       const conn = em.getConnection();
@@ -1974,8 +2159,15 @@ export class BaseSystemService {
           );
         }
         // Chỉ bổ sung seed khi file không có userRole — tránh chèn link seed (id cũ) sau khi đã xóa users.
-        if (userRows.length > 0 && userRoleRows.length === 0) {
-          await this.bootstrap.ensureSeedUserRoleLinks(em);
+        if (!skipClear) {
+          if (userRows.length > 0 && userRoleRows.length === 0) {
+            await this.bootstrap.ensureSeedUserRoleLinks(em);
+          }
+          await this.ensureActingUserRoleAfterImportFromHeaders(
+            em,
+            actingUserIdHeader,
+            actingUserEmailHeader,
+          );
         }
       } finally {
         if (isMysqlFamily) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
@@ -2706,6 +2898,7 @@ export class BaseSystemService {
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
     actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
   ) {
     const resolvedTargetModel =
       this.resolveModelName(targetModel) ?? targetModel;
@@ -2731,6 +2924,7 @@ export class BaseSystemService {
         skipClear,
         onProgress,
         actingUserIdHeader,
+        actingUserEmailHeader,
       );
     }
 
@@ -2759,6 +2953,7 @@ export class BaseSystemService {
           (model, idx, msg) =>
             userRowErrors.push({ model, index: idx, message: msg }),
           actingUserIdHeader,
+          actingUserEmailHeader,
         );
         return {
           success: userRowErrors.length === 0,
@@ -2779,6 +2974,7 @@ export class BaseSystemService {
         ordered,
         skipClear,
         actingUserIdHeader,
+        actingUserEmailHeader,
       );
       return {
         success: bundleResult.rowErrors.length === 0,
@@ -2921,10 +3117,12 @@ export class BaseSystemService {
           this.logger.debug(
             'Sau import role: bổ sung lại user_roles seed (nếu user + role tồn tại).',
           );
+          await this.repairImportNullMarkerValues(em);
           await this.bootstrap.ensureSeedUserRoleLinks(em);
-          await this.bootstrap.ensureActingUserRoleAfterImport(
+          await this.ensureActingUserRoleAfterImportFromHeaders(
             em,
-            this.parseImportActingUserId(actingUserIdHeader),
+            actingUserIdHeader,
+            actingUserEmailHeader,
           );
         }
       } finally {
@@ -2974,6 +3172,7 @@ export class BaseSystemService {
     skipClear: boolean = false,
     onProgress?: (event: object) => void,
     actingUserIdHeader?: string,
+    actingUserEmailHeader?: string,
   ) {
     this.logger.log(
       'Importing data theo từng model (một request HTTP / model từ client)…',
@@ -3047,6 +3246,7 @@ export class BaseSystemService {
             skipClear,
             undefined,
             actingUserIdHeader,
+            actingUserEmailHeader,
           );
           const rowErrors = (result as any)?.rowErrors as
             | Array<{ model: string; index: number; message: string }>

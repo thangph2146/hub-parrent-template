@@ -117,6 +117,12 @@ export type {
   SchemaColumn,
   SchemaRelation,
   SchemaTable,
+  ImportConfigResponse,
+  ImportDataResult,
+  ImportDataParams,
+  ImportRowError,
+  ImportTiming,
+  ImportModelTiming,
 } from "./resources/system"
 export { SpeakersApi } from "./resources/speakers"
 export { LocationsApi } from "./resources/locations"

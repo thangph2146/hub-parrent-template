@@ -53,6 +53,12 @@ export interface ApiClientOptions {
     | null
     | undefined
     | Promise<string | number | null | undefined>
+  /** Email user hiện tại — gửi `X-User-Email` (bootstrap RBAC sau import). */
+  getUserEmail?: () =>
+    | string
+    | null
+    | undefined
+    | Promise<string | null | undefined>
   /** Default timeout in milliseconds. Defaults to 15s. */
   timeoutMs?: number
   /** Custom fetch implementation (e.g. for SSR / Node 18 stubs). */
@@ -133,6 +139,7 @@ export class ApiClient {
   private readonly fetcher: typeof globalThis.fetch
   private readonly getAuthToken?: ApiClientOptions["getAuthToken"]
   private readonly getUserId?: ApiClientOptions["getUserId"]
+  private readonly getUserEmail?: ApiClientOptions["getUserEmail"]
   private readonly devLogging: boolean
   private readonly devLogTag: string
   private readonly getDevAuthContext?: ApiClientOptions["getDevAuthContext"]
@@ -144,6 +151,7 @@ export class ApiClient {
     this.fetcher = options.fetch ?? globalThis.fetch.bind(globalThis)
     this.getAuthToken = options.getAuthToken
     this.getUserId = options.getUserId
+    this.getUserEmail = options.getUserEmail
     this.devLogging = defaultDevLogging(options)
     this.devLogTag = options.devLogTag ?? "api-client"
     this.getDevAuthContext = options.getDevAuthContext
@@ -161,6 +169,27 @@ export class ApiClient {
       return ` | auth: ${text}`
     } catch {
       return " | auth: ?"
+    }
+  }
+
+  private async applySessionHeaders(
+    headers: Record<string, string>,
+  ): Promise<void> {
+    const userId = this.getUserId ? await this.getUserId() : undefined
+    if (
+      userId !== undefined &&
+      userId !== null &&
+      String(userId).trim() !== ""
+    ) {
+      headers["X-User-Id"] = String(userId).trim()
+    }
+    const userEmail = this.getUserEmail ? await this.getUserEmail() : undefined
+    if (
+      userEmail !== undefined &&
+      userEmail !== null &&
+      String(userEmail).trim() !== ""
+    ) {
+      headers["X-User-Email"] = String(userEmail).trim()
     }
   }
 
@@ -200,14 +229,7 @@ export class ApiClient {
     const token = this.getAuthToken ? await this.getAuthToken() : undefined
     if (token) headers.Authorization = `Bearer ${token}`
 
-    const userId = this.getUserId ? await this.getUserId() : undefined
-    if (
-      userId !== undefined &&
-      userId !== null &&
-      String(userId).trim() !== ""
-    ) {
-      headers["X-User-Id"] = String(userId).trim()
-    }
+    await this.applySessionHeaders(headers)
 
     const controller = new AbortController()
     const timeoutMs = options?.timeoutMs ?? this.timeoutMs
@@ -267,14 +289,7 @@ export class ApiClient {
     const token = this.getAuthToken ? await this.getAuthToken() : undefined
     if (token) headers.Authorization = `Bearer ${token}`
 
-    const userId = this.getUserId ? await this.getUserId() : undefined
-    if (
-      userId !== undefined &&
-      userId !== null &&
-      String(userId).trim() !== ""
-    ) {
-      headers["X-User-Id"] = String(userId).trim()
-    }
+    await this.applySessionHeaders(headers)
 
     if (body !== undefined && !(body instanceof FormData)) {
       headers["Content-Type"] = headers["Content-Type"] ?? "application/json"

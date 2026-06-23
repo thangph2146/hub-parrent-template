@@ -3,7 +3,12 @@
 import { useMemo, useState } from "react"
 import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import type { ColumnFiltersState } from "@tanstack/react-table"
-import { Alert, AlertDescription, AlertTitle } from "@ui/components/alert"
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@ui/components/alert"
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { AdminDataTable } from "@ui/components/data-table"
@@ -17,6 +22,7 @@ import { Tabs, TabsContent } from "@ui/components/tabs"
 import { Check, Copy, GitBranch, Loader2, TableProperties } from "lucide-react"
 import { getEntityRelationColumns, getEntitySchemaColumns } from "./columns"
 import { useDatabaseSchema } from "./_hooks"
+import { buildDatabaseSchemaErrorCopyText } from "./schema-error-report"
 import { copyTextToClipboard } from "./system-operation-result"
 import {
   buildEntityRelationRows,
@@ -90,12 +96,18 @@ function getColumnConfig(
   }
 }
 
-export function EntitySchemaPanel() {
-  const { schema, loading, error } = useDatabaseSchema(true)
+export function EntitySchemaPanel({
+  schemaEnabled = true,
+}: {
+  schemaEnabled?: boolean
+}) {
+  const { schema, loading, error, queryError } =
+    useDatabaseSchema(schemaEnabled)
   const [schemaTab, setSchemaTab] = useState<"tables" | "relations">("tables")
   const [globalFilter, setGlobalFilter] = useState("")
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [copiedConfig, setCopiedConfig] = useState(false)
+  const [copiedSchemaError, setCopiedSchemaError] = useState(false)
 
   const entityRows = useMemo(
     () => (schema ? buildEntitySchemaRows(schema) : []),
@@ -151,6 +163,19 @@ export function EntitySchemaPanel() {
     window.setTimeout(() => setCopiedConfig(false), 1600)
   }
 
+  const copySchemaError = async () => {
+    if (!error) return
+    const report = buildDatabaseSchemaErrorCopyText(queryError ?? error, error)
+    const ok = await copyTextToClipboard(report)
+    if (!ok) {
+      toast.error("Không copy được báo cáo lỗi.")
+      return
+    }
+    setCopiedSchemaError(true)
+    toast.success("Đã copy báo cáo lỗi schema.")
+    window.setTimeout(() => setCopiedSchemaError(false), 1600)
+  }
+
   return (
     <FieldSet variant="section">
       <FieldSectionLegend
@@ -202,7 +227,23 @@ export function EntitySchemaPanel() {
         {error ? (
           <Alert variant="destructive">
             <AlertTitle className="text-sm">Không tải được schema</AlertTitle>
-            <AlertDescription className="text-xs">{error}</AlertDescription>
+            <AlertDescription className="pr-20 text-xs">{error}</AlertDescription>
+            <AlertAction>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="h-7 gap-1.5"
+                onClick={() => void copySchemaError()}
+              >
+                {copiedSchemaError ? (
+                  <Check className="size-3.5" aria-hidden />
+                ) : (
+                  <Copy className="size-3.5" aria-hidden />
+                )}
+                {copiedSchemaError ? "Đã copy" : "Copy lỗi"}
+              </Button>
+            </AlertAction>
           </Alert>
         ) : null}
 

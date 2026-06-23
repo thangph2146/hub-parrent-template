@@ -1,3 +1,4 @@
+/** AUTO-GENERATED ? materialize t? @workspace/api-server/deploy/nest. Ch?y: pnpm api:render */
 import type { EntityManager } from '@mikro-orm/core';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
@@ -10,6 +11,21 @@ import {
 import { ACTIVE_ROLE_PRESETS } from '../config/active-permissions';
 
 const ACTIVE_ROLE_PRESET_SET = new Set<string>(ACTIVE_ROLE_PRESETS);
+
+function listUserRoleLinks(user: User): UserRole[] {
+  const userRoles = user.userRoles;
+  if (!userRoles) return [];
+  if (Array.isArray(userRoles)) return userRoles;
+  if (
+    typeof userRoles === 'object' &&
+    userRoles !== null &&
+    'getItems' in userRoles &&
+    typeof (userRoles as { getItems: () => unknown }).getItems === 'function'
+  ) {
+    return (userRoles as { getItems: () => UserRole[] }).getItems();
+  }
+  return [];
+}
 
 async function resolveUserRoleLink(
   em: EntityManager,
@@ -32,7 +48,7 @@ async function resolveUserRoleLink(
 }
 
 /**
- * Đảm bảo các cặp (user, role) trong seed tồn tại trong user_roles nếu user + role đã có.
+ * ??m b?o c?c c?p (user, role) trong seed t?n t?i trong user_roles n?u user + role ?? c?.
  */
 export async function ensureSeedUserRoleLinks(
   em: EntityManager,
@@ -49,17 +65,81 @@ export async function ensureSeedUserRoleLinks(
   if (isMysql) await conn.execute('SET FOREIGN_KEY_CHECKS = 1');
 }
 
-/** Sau import role (TRUNCATE user_roles), gán lại role cho admin đang thao tác import. */
+function isPopulatedImportRole(role: Role | null | undefined): role is Role {
+  return (
+    role != null &&
+    typeof role === 'object' &&
+    typeof role.name === 'string' &&
+    role.name.trim().length > 0
+  );
+}
+
+/** Kh?p mapUserToPayload ? role ph?i c? id + name v? ch?a x?a m?m. */
+function isAuthUsableImportRole(role: Role | null | undefined): role is Role {
+  if (!isPopulatedImportRole(role)) return false;
+  if (isEntitySoftDeleted(role.deletedAt)) return false;
+  return role.id != null && String(role.id).trim() !== '';
+}
+
+function isEntitySoftDeleted(deletedAt: unknown): boolean {
+  if (deletedAt == null) return false;
+  if (
+    typeof deletedAt === 'string' &&
+    deletedAt.trim() === '__HUB_NULL__'
+  ) {
+    return false;
+  }
+  return true;
+}
+
+async function resolveActingUserForImport(
+  em: EntityManager,
+  actingUserId?: number,
+  actingUserEmail?: string,
+): Promise<User | null> {
+  const email = actingUserEmail?.trim().toLowerCase();
+  if (email) {
+    const byEmail = await em.findOne(User, { email });
+    if (byEmail) return byEmail;
+  }
+  if (actingUserId != null) {
+    return em.findOne(User, { id: actingUserId });
+  }
+  return null;
+}
+
+/** Sau import role (TRUNCATE user_roles), g?n l?i role cho admin ?ang thao t?c import. */
 export async function ensureActingUserRoleAfterImport(
   em: EntityManager,
   actingUserId?: number,
+  actingUserEmail?: string,
 ): Promise<void> {
-  if (actingUserId == null) return;
-  const existing = await em.count(UserRole, { user: actingUserId });
-  if (existing > 0) return;
-
-  const user = await em.findOne(User, { id: actingUserId });
+  const user = await resolveActingUserForImport(
+    em,
+    actingUserId,
+    actingUserEmail,
+  );
   if (!user) return;
+
+  const roleLinks = await em.find(
+    UserRole,
+    { user: user.id },
+    { populate: ['role'] },
+  );
+  const authUsableLinks = roleLinks.filter((link) =>
+    isAuthUsableImportRole(link.role),
+  );
+
+  if (authUsableLinks.length > 0) return;
+
+  for (const link of roleLinks) {
+    if (!isAuthUsableImportRole(link.role)) {
+      em.remove(link);
+    }
+  }
+  if (roleLinks.length > authUsableLinks.length) {
+    await em.flush();
+  }
 
   const role =
     (await em.findOne(Role, { name: 'super_admin' })) ??
@@ -87,7 +167,7 @@ export type SuperadminBootstrapResult = {
 };
 
 /**
- * Idempotent: giống `pnpm run seed:superadmin` (roles, users, user_roles).
+ * Idempotent: gi?ng `pnpm run seed:superadmin` (roles, users, user_roles).
  */
 export async function runSuperadminBootstrap(
   em: EntityManager,

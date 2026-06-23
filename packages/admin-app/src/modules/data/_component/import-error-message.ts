@@ -1,10 +1,21 @@
 import {
+  formatAdminOperationReportBrandingSection,
+  resolveAdminOperationReportHeader,
+} from "@ui/lib/admin-operation-report-branding"
+import {
   formatImportDuration,
   formatImportThroughput,
+  formatInProgressModelTiming,
   formatModelTimingSummary,
+  resolveModelElapsedMs,
+  resolveWallClockElapsedMs,
+  type ImportCurrentJobTiming,
   type ImportJobTimingEntry,
   type ImportModelTimingStats,
 } from "./import-timing"
+
+const IMPORT_REPORT_FOOTER =
+  "Ghi chú: Báo cáo dùng cho review/debug — không chứa mật khẩu (đã redact)."
 
 const MAX_IMPORT_ERROR_LENGTH = 220
 
@@ -176,6 +187,8 @@ export function buildModelImportErrorSummary(
   return { summary, details, fullTitle }
 }
 
+export type ImportSourceFormat = "json" | "xlsx"
+
 export type ImportProgressReportInput = {
   status: string
   message?: string
@@ -183,10 +196,15 @@ export type ImportProgressReportInput = {
   totalRecords: number
   currentIndex: number
   total: number
+  sourceFormat?: ImportSourceFormat
+  sourceFileName?: string
   totalDurationMs?: number
+  importStartedAtMs?: number
+  currentJob?: ImportCurrentJobTiming
   jobTimings?: ImportJobTimingEntry[]
   models: Array<{
     name: string
+    tableName?: string
     records: number
     status: string
     detail?: string
@@ -195,6 +213,64 @@ export type ImportProgressReportInput = {
     errorTitle?: string
     timing?: ImportModelTimingStats
   }>
+}
+
+function formatModelDisplayName(model: {
+  name: string
+  tableName?: string
+}): string {
+  return model.tableName?.trim() || model.name
+}
+
+function formatJobTimingLabel(
+  job: Pick<ImportJobTimingEntry, "label" | "primaryModel">,
+  models: ImportProgressReportInput["models"]
+): string {
+  const model = models.find((entry) => entry.name === job.primaryModel)
+  const display = formatModelDisplayName(
+    model ?? { name: job.primaryModel }
+  )
+  if (job.label === job.primaryModel) return display
+  if (job.label.startsWith(`${job.primaryModel} `)) {
+    return job.label.replace(job.primaryModel, display)
+  }
+  return job.label
+}
+
+const IMPORT_SOURCE_FORMAT_LABEL: Record<ImportSourceFormat, string> = {
+  json: "JSON (.json)",
+  xlsx: "Excel (.xlsx)",
+}
+
+const IMPORT_OPERATION_BY_FORMAT: Record<ImportSourceFormat, string> = {
+  json: "data / import-json",
+  xlsx: "data / import-xlsx",
+}
+
+function formatImportSourceSection(
+  progress: ImportProgressReportInput,
+): string[] {
+  if (!progress.sourceFormat && !progress.sourceFileName?.trim()) return []
+
+  const lines = ["", "── Nguồn file import ──"]
+  if (progress.sourceFormat) {
+    lines.push(
+      `Định dạng: ${IMPORT_SOURCE_FORMAT_LABEL[progress.sourceFormat]}`,
+    )
+  }
+  if (progress.sourceFileName?.trim()) {
+    lines.push(`Tên file: ${progress.sourceFileName.trim()}`)
+  }
+  return lines
+}
+
+function resolveImportOperationLabel(
+  progress: ImportProgressReportInput,
+): string {
+  if (progress.sourceFormat) {
+    return IMPORT_OPERATION_BY_FORMAT[progress.sourceFormat]
+  }
+  return "data / import"
 }
 
 const IMPORT_PROGRESS_STATUS_LABEL: Record<string, string> = {
@@ -213,14 +289,22 @@ const IMPORT_MODEL_STATUS_LABEL: Record<string, string> = {
 }
 
 function formatModelStatusLine(
-  model: ImportProgressReportInput["models"][number]
+  model: ImportProgressReportInput["models"][number],
+  reportNowMs: number
 ): string {
   const statusLabel = IMPORT_MODEL_STATUS_LABEL[model.status] ?? model.status
+  const label = formatModelDisplayName(model)
   const parts = [
-    `- ${model.name} (${model.records.toLocaleString("vi-VN")} bản ghi): ${statusLabel}`,
+    `- ${label} (${model.records.toLocaleString("vi-VN")} bản ghi): ${statusLabel}`,
   ]
-  if (model.timing && model.timing.wallMs > 0) {
-    parts.push(`  Thời gian: ${formatModelTimingSummary(model.timing)}`)
+  if (model.timing) {
+    if (model.status === "importing" && model.timing.startedAtMs != null) {
+      parts.push(
+        `  Thời gian: ${formatInProgressModelTiming(model.timing, reportNowMs)}`
+      )
+    } else if (model.timing.wallMs > 0) {
+      parts.push(`  Thời gian: ${formatModelTimingSummary(model.timing)}`)
+    }
   }
   if (model.detail) parts.push(`  Lô: ${model.detail}`)
   if (model.error) parts.push(`  Lỗi: ${model.error}`)
@@ -230,67 +314,164 @@ function formatModelStatusLine(
   return parts.join("\n")
 }
 
-/** Văn bản đầy đủ để copy báo cáo import (tiến độ + lỗi + SQL gốc nếu có). */
+function formatJobBundledSuffix(job: {
+  label: string
+  primaryModel: string
+  bundledModels: string[]
+}): string {
+  if (job.bundledModels.length === 0) return ""
+  if (job.label !== job.primaryModel) return ""
+  return ` + ${job.bundledModels.join(", ")}`
+}
+
+/** Map state panel import → input báo cáo copy. */
+export function buildImportProgressReportFromState(progress: {
+  status: ImportProgressReportInput["status"]
+  message?: string
+  cumulativeImported: number
+  totalRecords: number
+  currentIndex: number
+  total: number
+  models: ImportProgressReportInput["models"]
+  sourceFormat?: ImportSourceFormat
+  sourceFileName?: string
+  totalDurationMs?: number
+  importStartedAtMs?: number
+  currentJob?: ImportCurrentJobTiming
+  jobTimings?: ImportJobTimingEntry[]
+}): string {
+  return buildImportProgressReport(progress)
+}
+
+/** Văn bản đầy đủ để copy báo cáo import — cùng format báo cáo thao tác admin. */
 export function buildImportProgressReport(
   progress: ImportProgressReportInput
 ): string {
+  const reportNowMs = Date.now()
   const statusLabel =
     IMPORT_PROGRESS_STATUS_LABEL[progress.status] ?? progress.status
   const lines: string[] = [
-    "=== Báo cáo import ===",
+    resolveAdminOperationReportHeader(),
+    ...formatAdminOperationReportBrandingSection(),
+    "",
+    `Thời gian: ${new Date().toISOString()}`,
+    `Thao tác: ${resolveImportOperationLabel(progress)}`,
+    ...formatImportSourceSection(progress),
+    "",
+    "── Tổng quan import ──",
     `Trạng thái: ${statusLabel}`,
     `Tiến độ: ${progress.cumulativeImported.toLocaleString("vi-VN")} / ${progress.totalRecords.toLocaleString("vi-VN")} bản ghi`,
   ]
 
   if (progress.total > 0) {
+    const jobsCompleted = progress.jobTimings?.length ?? 0
+    const stillRunning =
+      progress.status === "importing" && jobsCompleted < progress.total
     lines.push(
-      `Lô HTTP: ${Math.min(progress.currentIndex + 1, progress.total)} / ${progress.total}`
+      stillRunning
+        ? `Lô HTTP: ${jobsCompleted} hoàn tất / ${progress.total} (đang chạy lô ${jobsCompleted + 1})`
+        : `Lô HTTP: ${Math.min(Math.max(jobsCompleted, progress.currentIndex + 1), progress.total)} / ${progress.total}`
     )
+  }
+
+  if (progress.status === "importing") {
+    const pendingRecords = progress.models
+      .filter((m) => m.status === "importing" || m.status === "pending")
+      .reduce((sum, m) => sum + m.records, 0)
+    if (
+      pendingRecords > 0 &&
+      progress.cumulativeImported + pendingRecords === progress.totalRecords
+    ) {
+      lines.push(
+        `Chưa ghi tiến độ: ${pendingRecords.toLocaleString("vi-VN")} bản ghi (đang xử lý)`
+      )
+    }
   }
   if (progress.message?.trim()) {
     lines.push(`Hoạt động: ${progress.message.trim()}`)
   }
 
-  if (progress.totalDurationMs != null && progress.totalDurationMs > 0) {
+  if (progress.status === "importing" && progress.currentJob) {
+    const jobElapsedMs = resolveWallClockElapsedMs(
+      progress.currentJob.startedAtMs,
+      reportNowMs
+    )
+    if (jobElapsedMs != null && jobElapsedMs >= 3000) {
+      lines.push(
+        `Lô hiện tại đã chờ: ${formatImportDuration(jobElapsedMs)} (roles/users thường < 5s)`
+      )
+    }
+  }
+
+  const elapsedTotalMs =
+    resolveWallClockElapsedMs(progress.importStartedAtMs, reportNowMs) ??
+    progress.totalDurationMs
+  if (elapsedTotalMs != null && elapsedTotalMs > 0) {
     const throughput = formatImportThroughput(
       progress.cumulativeImported,
-      progress.totalDurationMs
+      elapsedTotalMs
     )
+    const durationLabel =
+      progress.status === "importing" ? "Thời gian đã chạy" : "Tổng thời gian"
     lines.push(
-      `Tổng thời gian: ${formatImportDuration(progress.totalDurationMs)}${throughput !== "—" ? ` (${throughput})` : ""}`
+      `${durationLabel}: ${formatImportDuration(elapsedTotalMs)}${throughput !== "—" ? ` (${throughput})` : ""}`
     )
   }
 
   if (progress.models.length > 0) {
-    lines.push("", "=== Trạng thái từng bảng ===")
+    lines.push("", "── Trạng thái từng bảng ──")
     for (const model of progress.models) {
-      lines.push(formatModelStatusLine(model))
+      lines.push(formatModelStatusLine(model, reportNowMs))
     }
 
     const timedModels = progress.models
-      .filter((m) => m.timing && m.timing.wallMs > 0)
-      .sort((a, b) => (b.timing?.wallMs ?? 0) - (a.timing?.wallMs ?? 0))
-    if (timedModels.length > 0) {
-      lines.push("", "=== Thời gian từng bảng (chậm → nhanh) ===")
-      for (const model of timedModels) {
-        lines.push(
-          `- ${model.name}: ${formatModelTimingSummary(model.timing!)}`
+      .filter((m) => {
+        if (m.timing && m.timing.wallMs > 0) return true
+        return (
+          m.status === "importing" &&
+          m.timing?.startedAtMs != null &&
+          resolveModelElapsedMs(m.timing, reportNowMs) > 0
         )
+      })
+      .sort(
+        (a, b) =>
+          resolveModelElapsedMs(b.timing!, reportNowMs) -
+          resolveModelElapsedMs(a.timing!, reportNowMs)
+      )
+    if (timedModels.length > 0) {
+      lines.push("", "── Thời gian từng bảng (chậm → nhanh) ──")
+      for (const model of timedModels) {
+        const timingText =
+          model.status === "importing" && model.timing?.completedAtMs == null
+            ? formatInProgressModelTiming(model.timing!, reportNowMs)
+            : formatModelTimingSummary(model.timing!)
+        lines.push(`- ${formatModelDisplayName(model)}: ${timingText}`)
       }
     }
   }
 
-  if (progress.jobTimings && progress.jobTimings.length > 0) {
-    lines.push("", "=== Chi tiết từng lô HTTP ===")
-    for (const job of progress.jobTimings) {
-      const bundled =
-        job.bundledModels.length > 0 ? ` + ${job.bundledModels.join(", ")}` : ""
+  if (
+    (progress.jobTimings && progress.jobTimings.length > 0) ||
+    (progress.currentJob && progress.status === "importing")
+  ) {
+    lines.push("", "── Chi tiết từng lô HTTP ──")
+    for (const job of progress.jobTimings ?? []) {
+      const bundled = formatJobBundledSuffix(job)
       const server =
         job.serverRequestMs != null
           ? ` · server ${formatImportDuration(job.serverRequestMs)}`
           : ""
       lines.push(
-        `- ${job.label}: ${job.recordCount.toLocaleString("vi-VN")} bản ghi · HTTP ${formatImportDuration(job.httpMs)}${server}${bundled}`
+        `- ${formatJobTimingLabel(job, progress.models)}: ${job.recordCount.toLocaleString("vi-VN")} bản ghi · HTTP ${formatImportDuration(job.httpMs)}${server}${bundled}`
+      )
+    }
+    if (progress.currentJob && progress.status === "importing") {
+      const runningMs =
+        resolveWallClockElapsedMs(progress.currentJob.startedAtMs, reportNowMs) ??
+        0
+      const bundled = formatJobBundledSuffix(progress.currentJob)
+      lines.push(
+        `- ${formatJobTimingLabel(progress.currentJob, progress.models)}: ${progress.currentJob.recordCount.toLocaleString("vi-VN")} bản ghi · HTTP đang chạy ${formatImportDuration(runningMs)}${bundled}`
       )
     }
   }
@@ -299,38 +480,53 @@ export function buildImportProgressReport(
   const skippedModels = progress.models.filter((m) => m.status === "skipped")
 
   if (errorModels.length > 0) {
-    lines.push("", "=== Chi tiết lỗi (SQL gốc) ===")
+    lines.push("", "── Chi tiết lỗi ──")
     for (const model of errorModels) {
+      const label = formatModelDisplayName(model)
+      lines.push("")
+      lines.push(`[${label}]`)
       if (model.errorTitle?.trim()) {
-        lines.push("")
-        lines.push(`[${model.name}]`)
         lines.push(model.errorTitle.trim())
+      } else if (model.error?.trim()) {
+        lines.push(model.error.trim())
+      }
+      for (const detail of model.rowErrorDetails ?? []) {
+        lines.push(`  ${detail}`)
       }
     }
+  } else if (
+    progress.status === "error" &&
+    progress.message?.trim()
+  ) {
+    lines.push("", "── Chi tiết lỗi ──", progress.message.trim())
   }
 
   if (skippedModels.length > 0) {
-    lines.push("", "=== Bảng bỏ qua ===")
+    lines.push("", "── Bảng bỏ qua ──")
     for (const model of skippedModels) {
       lines.push(
-        `- ${model.name} (${model.records.toLocaleString("vi-VN")} bản ghi)`
+        `- ${formatModelDisplayName(model)} (${model.records.toLocaleString("vi-VN")} bản ghi)`
       )
     }
   }
+
+  lines.push("", IMPORT_REPORT_FOOTER)
 
   return lines.join("\n")
 }
 
 export function buildModelImportCopyText(model: {
   name: string
+  tableName?: string
   records: number
   detail?: string
   error?: string
   rowErrorDetails?: string[]
   errorTitle?: string
 }): string {
+  const label = formatModelDisplayName(model)
   const lines = [
-    `[${model.name}] ${model.records.toLocaleString("vi-VN")} bản ghi`,
+    `[${label}] ${model.records.toLocaleString("vi-VN")} bản ghi`,
   ]
   if (model.detail) lines.push(`Lô: ${model.detail}`)
   if (model.error) lines.push(model.error)
@@ -372,4 +568,16 @@ export function buildImportJobFailureMessage(options: {
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
   return `${text.slice(0, maxLength)}…`
+}
+
+/** Chuẩn hóa lỗi mạng fetch (Failed to fetch) thành tiếng Việt. */
+export function formatImportNetworkError(error: unknown): string {
+  const raw =
+    error instanceof Error
+      ? error.message.trim()
+      : String(error ?? "").trim()
+  if (!raw || raw === "Failed to fetch" || /failed to fetch/i.test(raw)) {
+    return "Lỗi mạng — không kết nối được API. Kiểm tra server đang chạy."
+  }
+  return formatImportErrorMessage(raw)
 }

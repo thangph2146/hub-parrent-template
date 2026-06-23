@@ -19,5 +19,7 @@ export function useDatabaseSchema(enabled = true) {
     schema: query.data ?? null,
     loading: query.isLoading,
     error,
+    queryError:
+      query.error && !isAbortLikeError(query.error) ? query.error : null,
   }
 }

@@ -2,6 +2,12 @@ import * as XLSX from "xlsx"
 
 const EXCEL_META_SHEET = "__meta"
 
+export type ExcelImportParseResult = {
+  data: Record<string, unknown[]>
+  /** modelName (camelCase) → tableName (snake/plural) từ sheet __meta. */
+  modelTableNames: Record<string, string>
+}
+
 function parseCellValue(value: unknown): unknown {
   if (value == null || value === "") return undefined
   if (value instanceof Date) return value.toISOString()
@@ -14,7 +20,7 @@ function parseCellValue(value: unknown): unknown {
  */
 export function parseExcelToImportData(
   arrayBuffer: ArrayBuffer
-): Record<string, unknown[]> {
+): ExcelImportParseResult {
   const workbook = XLSX.read(arrayBuffer, {
     type: "array",
     cellDates: true,
@@ -23,6 +29,7 @@ export function parseExcelToImportData(
 
   const sheetMap = new Map<string, string>()
   const modelNamesFromMeta: string[] = []
+  const modelTableNames: Record<string, string> = {}
   const metaSheet = workbook.Sheets[EXCEL_META_SHEET]
   if (metaSheet) {
     const metaRows = XLSX.utils.sheet_to_json<(string | number | null)[]>(
@@ -38,6 +45,7 @@ export function parseExcelToImportData(
       if (modelName && sheetName) {
         sheetMap.set(modelName, sheetName)
         modelNamesFromMeta.push(modelName)
+        modelTableNames[modelName] = tableName || modelName
         if (tableName) sheetMap.set(tableName, sheetName)
       }
     }
@@ -55,6 +63,10 @@ export function parseExcelToImportData(
 
     const worksheet = workbook.Sheets[sheetName]
     if (!worksheet) continue
+
+    if (!modelTableNames[rawModelName]) {
+      modelTableNames[rawModelName] = rawModelName
+    }
 
     const matrix = XLSX.utils.sheet_to_json<(string | number | null)[]>(
       worksheet,
@@ -97,5 +109,5 @@ export function parseExcelToImportData(
     data[rawModelName] = rows
   }
 
-  return data
+  return { data, modelTableNames }
 }

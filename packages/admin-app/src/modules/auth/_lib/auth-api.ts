@@ -53,8 +53,11 @@ function normalizePermissionValues(value: unknown): string[] {
   return [...new Set(visit(value))]
 }
 
-export async function fetchAdminSessionPayload(userId: string) {
-  return getAuthAdminApi().fetchAdminSession(userId)
+export async function fetchAdminSessionPayload(
+  userId: string,
+  userEmail?: string | null,
+) {
+  return getAuthAdminApi().fetchAdminSession(userId, userEmail)
 }
 
 export async function loginWithEmail(body: {

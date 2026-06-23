@@ -23,6 +23,15 @@ export type ImportJobTimingEntry = {
   serverRequestMs?: number
 }
 
+/** Lô HTTP đang chạy — chưa có httpMs (dùng startedAtMs tính elapsed khi copy báo cáo). */
+export type ImportCurrentJobTiming = {
+  label: string
+  primaryModel: string
+  bundledModels: string[]
+  recordCount: number
+  startedAtMs: number
+}
+
 export function createEmptyModelTiming(
   records: number
 ): ImportModelTimingStats {
@@ -57,6 +66,43 @@ export function formatImportThroughput(
     return `${Math.round(perSec).toLocaleString("vi-VN")} bản ghi/s`
   if (perSec >= 10) return `${perSec.toFixed(1)} bản ghi/s`
   return `${perSec.toFixed(2)} bản ghi/s`
+}
+
+/** Epoch ms (Date.now) — loại timestamp performance.now() (~ vài nghìn ms). */
+export function isWallClockTimestampMs(value: number): boolean {
+  return Number.isFinite(value) && value >= 1_000_000_000_000
+}
+
+export function resolveWallClockElapsedMs(
+  startedAtMs: number | undefined,
+  nowMs: number = Date.now()
+): number | undefined {
+  if (startedAtMs == null || !isWallClockTimestampMs(startedAtMs)) {
+    return undefined
+  }
+  return Math.max(0, nowMs - startedAtMs)
+}
+
+/** Thời gian đã trôi của bảng — dùng startedAt khi chưa hoàn tất. */
+export function resolveModelElapsedMs(
+  stats: ImportModelTimingStats,
+  nowMs: number = Date.now()
+): number {
+  if (stats.completedAtMs != null) {
+    return stats.wallMs
+  }
+  const elapsed = resolveWallClockElapsedMs(stats.startedAtMs, nowMs)
+  if (elapsed != null) {
+    return elapsed
+  }
+  return stats.wallMs
+}
+
+export function formatInProgressModelTiming(
+  stats: ImportModelTimingStats,
+  nowMs: number = Date.now()
+): string {
+  return `${formatImportDuration(resolveModelElapsedMs(stats, nowMs))} · đang chạy`
 }
 
 export function formatModelTimingSummary(

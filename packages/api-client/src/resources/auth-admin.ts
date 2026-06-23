@@ -59,9 +59,14 @@ export class AuthAdminApi {
     return getData<{ clientId: string }>(this.http, "/auth/admin/google/config")
   }
 
-  fetchAdminSession(userId: string) {
+  fetchAdminSession(userId: string, userEmail?: string | null) {
+    const headers: Record<string, string> = { "X-User-Id": userId.trim() }
+    const email = userEmail?.trim()
+    if (email) {
+      headers["X-User-Email"] = email
+    }
     return getData<AuthLoginPayload>(this.http, "/auth/admin/me", {
-      headers: { "X-User-Id": userId.trim() },
+      headers,
     })
   }
 

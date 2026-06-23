@@ -78,6 +78,19 @@ function normalizePermissionValues(value: unknown): string[] {
   return [...new Set(visit(value))];
 }
 
+const IMPORT_NULL_MARKER = '__HUB_NULL__';
+
+function isEntitySoftDeleted(deletedAt: unknown): boolean {
+  if (deletedAt == null) return false;
+  if (
+    typeof deletedAt === 'string' &&
+    deletedAt.trim() === IMPORT_NULL_MARKER
+  ) {
+    return false;
+  }
+  return true;
+}
+
 export abstract class BaseAuthService {
   protected abstract getEm(): EntityManager;
 
@@ -112,7 +125,7 @@ export abstract class BaseAuthService {
 
   protected mapUserToPayload(user: Record<string, unknown>): AuthLoginPayload {
     const activeRoles = this.listUserRoles(user).filter(
-      (entry) => entry.role && entry.role.deletedAt == null,
+      (entry) => entry.role && !isEntitySoftDeleted(entry.role.deletedAt),
     );
     const roles = activeRoles
       .map((entry) => {
@@ -194,6 +207,37 @@ export abstract class BaseAuthService {
     const user = await this.getEm().findOne(
       this.getUserEntity(),
       { id: parsedId } as never,
+      { populate: ['userRoles', 'userRoles.role'] },
+    );
+
+    const row = user as Record<string, unknown> | null;
+    if (!row) {
+      return { payload: null, reason: 'not_found' };
+    }
+    if (row.isActive !== true || row.deletedAt != null) {
+      return { payload: null, reason: 'inactive' };
+    }
+
+    const payload = this.mapUserToPayload(row);
+    if (!payload.roles.length) {
+      return { payload: null, reason: 'no_roles' };
+    }
+
+    return { payload };
+  }
+
+  async tryAuthPayloadByEmail(email: string): Promise<{
+    payload: AuthLoginPayload | null;
+    reason?: 'not_found' | 'inactive' | 'no_roles';
+  }> {
+    const normalized = email?.trim().toLowerCase();
+    if (!normalized) {
+      return { payload: null, reason: 'not_found' };
+    }
+
+    const user = await this.getEm().findOne(
+      this.getUserEntity(),
+      { email: normalized } as never,
       { populate: ['userRoles', 'userRoles.role'] },
     );
 

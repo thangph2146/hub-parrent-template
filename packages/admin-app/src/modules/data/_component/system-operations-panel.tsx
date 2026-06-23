@@ -174,7 +174,10 @@ export function SystemOperationsPanel() {
           trong database.
         </FieldDescription>
 
-        <FieldSectionValue className="flex flex-wrap items-center gap-2 px-4 py-3">
+        <FieldSectionValue
+          copyable={false}
+          className="flex flex-wrap items-center gap-2 px-3 py-2.5"
+        >
           <Button
             type="button"
             size="sm"

@@ -49,6 +49,10 @@ export interface AuthPayloadResolver {
   tryAuthPayloadByUserId(
     userId: string,
   ): Promise<{ payload: AuthPayload | null; reason?: AuthFailureReason }>;
+  /** Fallback sau import RBAC khi X-User-Id trong session lệch id thật trong DB. */
+  tryAuthPayloadByEmail?(
+    email: string,
+  ): Promise<{ payload: AuthPayload | null; reason?: AuthFailureReason }>;
 }
 
 const FAILURE_MESSAGES: Record<AuthFailureReason, string> = {
@@ -95,7 +99,7 @@ export class PermissionsGuard implements CanActivate {
     if (!requiredPermissions?.length) return true;
 
     const { payload, reason } =
-      await this.authService.tryAuthPayloadByUserId(userId);
+      await this.resolveAuthPayload(request, userId);
     if (!payload) {
       throw new UnauthorizedException(
         reason ? FAILURE_MESSAGES[reason] : FAILURE_MESSAGES.unknown,
@@ -116,5 +120,38 @@ export class PermissionsGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private async resolveAuthPayload(
+    request: { headers: Record<string, string | string[] | undefined> },
+    userId: string,
+  ): Promise<{ payload: AuthPayload | null; reason?: AuthFailureReason }> {
+    let { payload, reason } =
+      await this.authService.tryAuthPayloadByUserId(userId);
+    if (payload) return { payload, reason };
+
+    const rawEmail = request.headers[APP_HEADERS.USER_EMAIL];
+    const userEmail =
+      typeof rawEmail === 'string'
+        ? rawEmail.trim().toLowerCase()
+        : Array.isArray(rawEmail)
+          ? rawEmail[0]?.trim().toLowerCase()
+          : undefined;
+    if (!userEmail || !this.authService.tryAuthPayloadByEmail) {
+      return { payload, reason };
+    }
+
+    const byEmail = await this.authService.tryAuthPayloadByEmail(userEmail);
+    if (byEmail.payload) {
+      return { payload: byEmail.payload, reason: undefined };
+    }
+    if (
+      reason === 'not_found' ||
+      reason === 'no_roles' ||
+      reason === 'inactive'
+    ) {
+      return { payload: null, reason: byEmail.reason ?? reason };
+    }
+    return { payload, reason };
   }
 }

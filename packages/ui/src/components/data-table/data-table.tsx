@@ -2212,20 +2212,29 @@ export function AdminDataTable<TData>({
                             })}
                           </DataTableRowContextMenu>
                         </DataTableRowActionsRowProvider>
-                          {renderExpandedRow &&
-                          row.depth === 0 &&
-                          row.getIsExpanded() ? (
+                          {(() => {
+                            if (
+                              !renderExpandedRow ||
+                              row.depth !== 0 ||
+                              !row.getIsExpanded()
+                            ) {
+                              return null
+                            }
+                            const expandedContent = renderExpandedRow(row)
+                            if (!expandedContent) return null
+                            return (
                             <TableRow className="border-b hover:bg-transparent">
                               <TableCell
                                 colSpan={tableColumns.length}
                                 className="p-0 align-top"
                               >
                                 <div className="border-t border-primary/10 bg-muted/10 px-2 py-2 sm:px-4 sm:py-3">
-                                  {renderExpandedRow(row)}
+                                  {expandedContent}
                                 </div>
                               </TableCell>
                             </TableRow>
-                          ) : null}
+                            )
+                          })()}
                         </Fragment>
                       ))
                     )}
