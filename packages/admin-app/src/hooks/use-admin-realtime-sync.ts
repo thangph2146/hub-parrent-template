@@ -76,13 +76,12 @@ function showRealtimeToast(
   if (!shouldShowRealtimeSyncToast(payload, currentUserId)) return
   const { method, title, description } =
     resolveRealtimeNotificationToast(payload)
-  const copyReport =
-    adminOperationToastConfig.devFullCopyReport
-      ? formatRealtimeNotificationCopyReport(payload)
-      : undefined
+  const copyReportBuilder = adminOperationToastConfig.devFullCopyReport
+    ? () => formatRealtimeNotificationCopyReport(payload)
+    : undefined
   const data = {
     ...(description ? { description } : {}),
-    ...(copyReport ? { copyReport } : {}),
+    ...(copyReportBuilder ? { copyReportBuilder } : {}),
   }
   const hasData = Object.keys(data).length > 0
   if (method === "success") toast.success(title, hasData ? data : undefined)
@@ -120,6 +119,10 @@ function invalidateHanetSyncQueries(
       queryKey: [...HANET_CHECKINS_QUERY_KEY],
       type: "active",
     })
+    if (payload.eventId != null) {
+      const eventKey = String(payload.eventId)
+      void queryClient.invalidateQueries({ queryKey: ["events", eventKey] })
+    }
     dispatchHanetCheckinSyncEvent(payload)
   }
 }

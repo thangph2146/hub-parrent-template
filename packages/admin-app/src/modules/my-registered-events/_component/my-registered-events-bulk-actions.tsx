@@ -1,5 +1,6 @@
 "use client"
 
+import { api } from "@workspace/admin-app/lib/api"
 import type { Dispatch, SetStateAction } from "react"
 import { XCircle } from "lucide-react"
 import { toast } from "@ui/components/sonner"

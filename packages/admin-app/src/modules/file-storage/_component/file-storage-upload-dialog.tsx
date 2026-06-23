@@ -12,6 +12,7 @@ import {
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 import { Tabs, TabsContent } from "@ui/components/tabs"
 import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 import {
@@ -265,7 +266,17 @@ export function FileStorageUploadDialog({
       if (!files.length) return
       setUploading(true)
       onUploadingChange?.(true)
-      const pending = toast.loading(`Đang tải lên ${files.length} file…`)
+      const startedAt = Date.now()
+      const operationLabel = `File storage — tải lên ${files.length} file`
+      const pending = toast.loading(
+        `Đang tải lên ${files.length} file…`,
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { fileCount: files.length },
+          adminApi: { method: "POST", path: "/admin/uploads" },
+        }),
+      )
       try {
         const { folderPath, isExistingFolder } = await resolveUploadFolder()
         let success = 0
@@ -278,20 +289,35 @@ export function FileStorageUploadDialog({
             fail++
           }
         }
+        const result = { folderPath, success, fail, isExistingFolder }
+        const finishOpts = storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { fileCount: files.length, folderPath },
+          data: result,
+          adminApi: { method: "POST", path: "/admin/uploads" },
+          extra: { id: pending },
+        })
         if (success > 0) {
-          toast.success(`Đã lưu ${success} file vào «${folderPath}»`, {
-            id: pending,
-          })
+          toast.success(`Đã lưu ${success} file vào «${folderPath}»`, finishOpts)
         }
         if (fail > 0) {
-          toast.error(`${fail} file tải lên thất bại`, { id: pending })
+          toast.error(`${fail} file tải lên thất bại`, finishOpts)
         }
         await onUploaded()
         onOpenChange(false)
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi tải lên", {
-          id: pending,
-        })
+        toast.error(
+          err instanceof Error ? err.message : "Lỗi tải lên",
+          storageOperationToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { fileCount: files.length },
+            error: err,
+            adminApi: { method: "POST", path: "/admin/uploads" },
+            extra: { id: pending },
+          }),
+        )
       } finally {
         setUploading(false)
         onUploadingChange?.(false)

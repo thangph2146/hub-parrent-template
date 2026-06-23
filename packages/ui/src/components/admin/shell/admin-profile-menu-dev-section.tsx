@@ -18,6 +18,7 @@ export function AdminProfileMenuDevSection({
   portalLabel,
   menuTree,
   enabledAdminModules,
+  activePermissionResources,
 }: AdminProfileMenuDevSectionProps) {
   if (!IS_DEV) return null
 
@@ -37,6 +38,7 @@ export function AdminProfileMenuDevSection({
         portalLabel={portalLabel}
         menuTree={menuTree}
         enabledAdminModules={enabledAdminModules}
+        activePermissionResources={activePermissionResources}
       />
     </section>
   )

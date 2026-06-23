@@ -30,6 +30,7 @@ import {
 import {
   buildDatabaseVerificationReport,
   buildSeedBootstrapReport,
+  buildSystemOperationCopyReport,
   copyTextToClipboard,
   toastSystemOperationResult,
 } from "./system-operation-result"
@@ -93,6 +94,12 @@ export function SystemOperationsPanel() {
         success: true,
         title: "Seed hệ thống hoàn tất",
         description: "Đang kiểm tra lại cơ sở dữ liệu sau seed.",
+        copyReport: buildSystemOperationCopyReport({
+          title: "Seed hệ thống",
+          success: true,
+          description: "Đang kiểm tra lại cơ sở dữ liệu sau seed.",
+          detailReport: buildSeedBootstrapReport(result),
+        }),
       })
 
       setMessage("Đang kiểm tra cơ sở dữ liệu sau seed…")
@@ -114,6 +121,15 @@ export function SystemOperationsPanel() {
             ? "Seed xong nhưng dữ liệu chưa khớp"
             : "Seed xong và DB đã được kiểm tra",
         description: summary,
+        copyReport: buildSystemOperationCopyReport({
+          title: "Seed hệ thống + kiểm tra DB",
+          success: schema.verification?.isComplete !== false,
+          description: summary,
+          detailReport: buildFullOperationReport({
+            seedResult: result,
+            schema,
+          }),
+        }),
       })
     } catch (error) {
       const errorMessage = getErrorMessage(error)
@@ -123,6 +139,11 @@ export function SystemOperationsPanel() {
         success: false,
         title: "Thao tác hệ thống thất bại",
         description: errorMessage,
+        copyReport: buildSystemOperationCopyReport({
+          title: "Seed hệ thống + kiểm tra DB",
+          success: false,
+          description: errorMessage,
+        }),
       })
     }
   }

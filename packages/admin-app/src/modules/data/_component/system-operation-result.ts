@@ -1,4 +1,8 @@
 import { toast } from "@ui/components/sonner"
+import {
+  formatAdminOperationReportBrandingSection,
+  resolveAdminOperationReportHeader,
+} from "@ui/lib/admin-operation-report-branding"
 import type {
   DatabaseSchemaResponse,
   SystemBootstrapResult,
@@ -31,16 +35,48 @@ export function toastSystemOperationResult(options: {
   success: boolean
   title: string
   description?: string
+  copyReport?: string
 }) {
+  const toastOpts = options.copyReport
+    ? { description: options.description, copyReport: options.copyReport }
+    : options.description
+      ? { description: options.description }
+      : undefined
+
   if (options.success) {
-    toast.success(options.title, {
-      description: options.description,
-    })
+    toast.success(options.title, toastOpts)
     return
   }
-  toast.error(options.title, {
-    description: options.description,
-  })
+  toast.error(options.title, toastOpts)
+}
+
+export function buildSystemOperationCopyReport(input: {
+  title: string
+  description?: string
+  success: boolean
+  detailReport?: string
+}): string {
+  const lines = [
+    resolveAdminOperationReportHeader(),
+    ...formatAdminOperationReportBrandingSection(),
+    "",
+    `Thao tác: ${input.title}`,
+    `Kết quả: ${input.success ? "Thành công" : "Lỗi"}`,
+  ]
+  if (input.description?.trim()) {
+    lines.push(`Mô tả: ${input.description.trim()}`)
+  }
+  if (input.detailReport?.trim()) {
+    lines.push("", input.detailReport.trim())
+  }
+  if (typeof window !== "undefined") {
+    lines.push("", `URL: ${window.location.href}`)
+  }
+  lines.push(
+    "",
+    "Ghi chú: Báo cáo thao tác hệ thống — không chứa mật khẩu.",
+  )
+  return lines.join("\n")
 }
 
 export function buildSeedBootstrapReport(

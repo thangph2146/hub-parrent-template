@@ -2,8 +2,7 @@
 
 import { useCallback, useRef, useState } from "react"
 import { toast, type ToastOptions } from "@ui/components/sonner"
-import { formatStorageOperationCopyReport } from "@ui/lib/admin-operation-toast-config"
-import { getAdminApiCallsSince } from "@workspace/api-client"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 import {
   deleteUploadedFilesBulk,
   exportFileStorageArchive,
@@ -39,22 +38,7 @@ function buildFileStorageToastOptions(input: {
   adminApi?: { method: string; path: string }
   extra?: Pick<ToastOptions, "id" | "duration">
 }): ToastOptions {
-  const reportInput = {
-    operationLabel: input.operationLabel,
-    variables: input.variables,
-    data: input.data,
-    error: input.error,
-    adminApi: input.adminApi,
-  }
-  return {
-    copyStartedAt: input.startedAt,
-    copyReportBuilder: () =>
-      formatStorageOperationCopyReport({
-        ...reportInput,
-        apiCalls: getAdminApiCallsSince(input.startedAt),
-      }),
-    ...input.extra,
-  }
+  return storageOperationToastOptions(input)
 }
 
 type UseFileStorageActionsOptions = {
@@ -102,30 +86,58 @@ export function useFileStorageActions({
   const handleDownloadAll = useCallback(async () => {
     if (downloadingAll || downloadingPath) return
     setDownloadingAll(true)
+    const startedAt = Date.now()
     const listToast = toast.loading(
-      "Đang xuất toàn bộ kho lưu trữ trên server…"
+      "Đang xuất toàn bộ kho lưu trữ trên server…",
+      buildFileStorageToastOptions({
+        startedAt,
+        operationLabel: "File storage — xuất toàn bộ kho",
+        variables: {},
+        adminApi: { method: "GET", path: "/admin/uploads/export" },
+      }),
     )
     try {
       const { blob, meta } = await exportFileStorageArchive()
       if (!blob.size) {
-        toast.error("Không có file để tải về", { id: listToast })
+        toast.error("Không có file để tải về", {
+          id: listToast,
+          copyContext: {
+            storageOperation: true,
+            operationLabel: "File storage — xuất toàn bộ kho",
+            data: meta,
+          },
+        })
         return
       }
       triggerBrowserDownload(blob, "kho-luu-tru.zip")
+      const toastOpts = buildFileStorageToastOptions({
+        startedAt,
+        operationLabel: "File storage — xuất toàn bộ kho",
+        variables: {},
+        data: meta,
+        adminApi: { method: "GET", path: "/admin/uploads/export" },
+        extra: { id: listToast },
+      })
       if (meta.skipped > 0) {
         toast.success(
           `Đã xuất ${meta.fileCount} file (${meta.skipped} file bỏ qua)`,
-          { id: listToast }
+          toastOpts,
         )
       } else {
-        toast.success(`Đã xuất toàn bộ ${meta.fileCount} file`, {
-          id: listToast,
-        })
+        toast.success(`Đã xuất toàn bộ ${meta.fileCount} file`, toastOpts)
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lỗi tải về tất cả", {
-        id: listToast,
-      })
+      toast.error(
+        err instanceof Error ? err.message : "Lỗi tải về tất cả",
+        buildFileStorageToastOptions({
+          startedAt,
+          operationLabel: "File storage — xuất toàn bộ kho",
+          variables: {},
+          error: err,
+          adminApi: { method: "GET", path: "/admin/uploads/export" },
+          extra: { id: listToast },
+        }),
+      )
     } finally {
       setDownloadingAll(false)
     }
@@ -233,7 +245,21 @@ export function useFileStorageActions({
   )
 
   const handleDeleteAllInTab = useCallback(async () => {
-    const listToast = toast.loading("Đang lấy danh sách file trong tab…")
+    const startedAt = Date.now()
+    const operationLabel = "File storage — liệt kê file trong tab để xóa"
+    const listToast = toast.loading(
+      "Đang lấy danh sách file trong tab…",
+      storageOperationToastOptions({
+        startedAt,
+        operationLabel,
+        variables: {
+          realm: activeRealm,
+          folderPath: activeFolderPath || undefined,
+          includeDescendants,
+        },
+        adminApi: { method: "GET", path: "/admin/uploads" },
+      }),
+    )
     try {
       const allRows = await fetchAllFileStorageRows(
         activeRealm,
@@ -244,15 +270,31 @@ export function useFileStorageActions({
         }
       )
       if (!allRows.length) {
-        toast.error("Không có file để xóa", { id: listToast })
+        toast.error(
+          "Không có file để xóa",
+          storageOperationToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { count: 0 },
+            adminApi: { method: "GET", path: "/admin/uploads" },
+            extra: { id: listToast },
+          }),
+        )
         return
       }
       toast.dismiss(listToast)
       await runBulkDeletePaths(allRows.map((r) => r.relativePath))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lỗi xóa toàn tab", {
-        id: listToast,
-      })
+      toast.error(
+        err instanceof Error ? err.message : "Lỗi xóa toàn tab",
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          error: err,
+          adminApi: { method: "GET", path: "/admin/uploads" },
+          extra: { id: listToast },
+        }),
+      )
       throw err
     }
   }, [
@@ -278,7 +320,17 @@ export function useFileStorageActions({
   const runImportArchive = useCallback(
     async (file: File, overwrite: boolean) => {
       setImporting(true)
-      const importToast = toast.loading("Đang khôi phục kho lưu trữ…")
+      const startedAt = Date.now()
+      const operationLabel = "File storage — khôi phục kho từ ZIP"
+      const importToast = toast.loading(
+        "Đang khôi phục kho lưu trữ…",
+        buildFileStorageToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { fileName: file.name, overwrite },
+          adminApi: { method: "POST", path: "/admin/uploads/import" },
+        }),
+      )
       try {
         const result = await importFileStorageArchive(file, { overwrite })
         const total =
@@ -297,16 +349,40 @@ export function useFileStorageActions({
         if ((result.listedTotal ?? 0) > 0) {
           parts.push(`${result.listedTotal} file trong kho`)
         }
-        toast.success(parts.join(" · "), { id: importToast })
+        toast.success(
+          parts.join(" · "),
+          buildFileStorageToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { fileName: file.name, overwrite },
+            data: result,
+            adminApi: { method: "POST", path: "/admin/uploads/import" },
+            extra: { id: importToast },
+          }),
+        )
         if (result.failed > 0 && result.errors.length) {
-          toast.error(result.errors.slice(0, 3).join("\n"))
+          toast.error(result.errors.slice(0, 3).join("\n"), {
+            copyContext: {
+              storageOperation: true,
+              operationLabel,
+              error: result.errors,
+              data: result,
+            },
+          })
         }
         setImportConfirm(null)
         await reload()
       } catch (err) {
         toast.error(
           err instanceof Error ? err.message : "Lỗi khôi phục kho lưu trữ",
-          { id: importToast }
+          buildFileStorageToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { fileName: file.name, overwrite },
+            error: err,
+            adminApi: { method: "POST", path: "/admin/uploads/import" },
+            extra: { id: importToast },
+          }),
         )
       } finally {
         setImporting(false)

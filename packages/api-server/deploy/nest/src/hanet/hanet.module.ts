@@ -13,6 +13,7 @@ import { HanetPersonRegisterService } from './hanet-person-register.service';
 import { HanetPersonAvatarSyncService } from './hanet-person-avatar-sync.service';
 import { HanetCheckinLiveBufferService } from './hanet-checkin-live-buffer.service';
 import { HanetWebhookIngestService } from './hanet-webhook-ingest.service';
+import { EventHanetReconcileService } from './event-hanet-reconcile.service';
 
 const HANET_PERSON_REGISTER = 'HANET_PERSON_REGISTER';
 
@@ -35,6 +36,7 @@ const HANET_PERSON_REGISTER = 'HANET_PERSON_REGISTER';
     HanetPersonAvatarSyncService,
     HanetCheckinLiveBufferService,
     HanetWebhookIngestService,
+    EventHanetReconcileService,
   ],
   exports: [
     HanetWebhookService,

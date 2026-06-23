@@ -9,7 +9,10 @@ export type AdminSessionLoginCopyContext = {
   sessionStorageKey?: string | null
   portalLabel?: string | null
   menuTree?: AdminMenuTreeItem[]
+  /** Module admin bật theo `admin.app.config.json`. */
   enabledAdminModules?: string[]
+  /** Resource permission áp dụng cho product line — lọc báo cáo copy session. */
+  activePermissionResources?: readonly string[]
 }
 
 type MenuLeafRef = {
@@ -161,7 +164,26 @@ export function buildAdminSessionDevLoginOption(user: AuthUser): DevLoginOption 
   }
 }
 
-function buildSessionSnapshot(user: AuthUser) {
+function filterSessionPermissions(
+  permissions: string[],
+  activeResources?: readonly string[],
+): string[] {
+  if (!activeResources?.length) return permissions
+  const allowed = new Set(activeResources)
+  return permissions.filter((code) => {
+    const resource = code.split(":")[0]
+    return resource ? allowed.has(resource) : false
+  })
+}
+
+function buildSessionSnapshot(
+  user: AuthUser,
+  activePermissionResources?: readonly string[],
+) {
+  const permissions = filterSessionPermissions(
+    user.permissions ?? [],
+    activePermissionResources,
+  )
   return {
     id: user.id,
     email: user.email,
@@ -171,7 +193,7 @@ function buildSessionSnapshot(user: AuthUser) {
     address: user.address ?? null,
     updatedAt: user.updatedAt ?? null,
     roles: user.roles ?? [],
-    permissions: user.permissions ?? [],
+    permissions,
   }
 }
 
@@ -200,10 +222,23 @@ export function buildAdminSessionLoginCopyText(
     lines.push(`Session storage key: ${context.sessionStorageKey.trim()}`)
   }
 
-  const permissions = user.permissions ?? []
+  const rawPermissions = user.permissions ?? []
+  const permissions = filterSessionPermissions(
+    rawPermissions,
+    context.activePermissionResources,
+  )
   if (permissions.length > 0) {
     lines.push("", `Quyền đang có (${permissions.length} mã):`)
     lines.push(permissions.join(", "))
+    if (
+      context.activePermissionResources?.length &&
+      rawPermissions.length > permissions.length
+    ) {
+      lines.push(
+        "",
+        `Ghi chú: Đã lọc ${rawPermissions.length - permissions.length} mã thuộc module không dùng trong product line này.`,
+      )
+    }
   }
 
   appendMenuCopyLines(lines, user, context)
@@ -215,7 +250,11 @@ export function buildAdminSessionLoginCopyText(
     JSON.stringify(devOption, null, 2),
     "",
     "── Session snapshot (JSON, không mật khẩu) ──",
-    JSON.stringify(buildSessionSnapshot(user), null, 2),
+    JSON.stringify(
+      buildSessionSnapshot(user, context.activePermissionResources),
+      null,
+      2,
+    ),
     "",
     "Ghi chú: Dùng email trên với dev-login hoặc POST /auth/admin/dev-login (development).",
   )

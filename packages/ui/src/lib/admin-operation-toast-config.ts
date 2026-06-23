@@ -973,11 +973,16 @@ export type AdminOperationToastPayload = {
 
 export function adminOperationToastPayloadToOptions(
   payload: AdminOperationToastPayload,
-  extra?: Pick<ToastOptions, "id" | "duration" | "copyStartedAt">,
+  extra?: Pick<
+    ToastOptions,
+    "id" | "duration" | "copyStartedAt" | "copyReportBuilder" | "copyVariant"
+  >,
 ): ToastOptions {
   const opts: ToastOptions = { ...extra }
   if (payload.description) opts.description = payload.description
-  if (payload.copyReport) opts.copyReport = payload.copyReport
+  if (payload.copyReport && !opts.copyReportBuilder) {
+    opts.copyReport = payload.copyReport
+  }
   return opts
 }
 

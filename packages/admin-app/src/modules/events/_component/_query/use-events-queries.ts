@@ -11,6 +11,7 @@ import type { EventDetail, EventRow } from "../types"
 export type EventLiveQueryOptions = {
   enabled?: boolean
   refetchInterval?: number | false
+  staleTime?: number
 }
 
 export const eventDetailQueryKey = (id: string) =>

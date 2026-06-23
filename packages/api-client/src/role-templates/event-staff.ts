@@ -1,7 +1,7 @@
 /**
  * Mẫu role `event_staff` (ban tổ chức / BTC) — mirror server template.
  *
- * Source of truth: `apps/main/api/src/config/role-templates/event-staff.template.ts`
+ * Source of truth: `apps/hub-checkin/api/src/config/role-templates/event-staff.template.ts`
  * Kiểm tra parity: `pnpm verify:permissions`
  */
 import type { PermissionCode } from "../permissions"
@@ -11,7 +11,7 @@ export const EVENT_STAFF_ROLE_CODE = "event_staff" as const
 export const EVENT_STAFF_ROLE_DISPLAY_NAME = "Ban tổ chức sự kiện"
 
 export const EVENT_STAFF_ROLE_DESCRIPTION =
-  "Vận hành check-in — sự kiện, camera, màn hình, địa điểm (cổng HUB Events)"
+  "Vận hành check-in — sự kiện, màn hình, diễn giả (cổng HUB Events)"
 
 /** Toàn bộ permission của role BTC — khớp `EVENT_CHECKIN_STAFF_PERMISSIONS` (API). */
 export const EVENT_CHECKIN_STAFF_PERMISSION_CODES = [
@@ -59,27 +59,6 @@ export const EVENT_CHECKIN_STAFF_PERMISSION_CODES = [
   "speakers:manage",
   "speakers:export",
   "speakers:restore",
-  "locations:view",
-  "locations:create",
-  "locations:update",
-  "locations:delete",
-  "locations:manage",
-  "locations:export",
-  "locations:restore",
-  "cameras:view",
-  "cameras:create",
-  "cameras:update",
-  "cameras:delete",
-  "cameras:manage",
-  "cameras:export",
-  "cameras:restore",
-  "templates:view",
-  "templates:create",
-  "templates:update",
-  "templates:delete",
-  "templates:manage",
-  "templates:export",
-  "templates:restore",
   "screens:view",
   "screens:create",
   "screens:update",
@@ -102,12 +81,6 @@ export const EVENT_CHECKIN_STAFF_PERMISSION_CODES = [
   "tags:manage",
   "tags:export",
   "tags:restore",
-  "page_contents:view",
-  "page_contents:create",
-  "page_contents:update",
-  "page_contents:delete",
-  "page_contents:manage",
-  "page_contents:export",
   "posts:view",
   "posts:create",
   "posts:update",

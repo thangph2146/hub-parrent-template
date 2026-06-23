@@ -25,6 +25,7 @@ export function AdminSessionLoginCopyButton({
   portalLabel,
   menuTree,
   enabledAdminModules,
+  activePermissionResources,
   className,
 }: AdminSessionLoginCopyButtonProps) {
   const [copied, setCopied] = useState(false)
@@ -38,6 +39,7 @@ export function AdminSessionLoginCopyButton({
         portalLabel,
         menuTree,
         enabledAdminModules,
+        activePermissionResources,
       }),
     [
       user,
@@ -47,6 +49,7 @@ export function AdminSessionLoginCopyButton({
       portalLabel,
       menuTree,
       enabledAdminModules,
+      activePermissionResources,
     ],
   )
 

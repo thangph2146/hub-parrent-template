@@ -1,3 +1,9 @@
+import { getAdminApiCallsSince } from "@workspace/api-client"
+import {
+  adminOperationToastConfig,
+  formatAdminOperationReviewReport,
+  formatStorageOperationCopyReport,
+} from "./admin-operation-toast-config"
 import {
   formatAdminOperationReportBrandingSection,
   resolveAdminOperationReportHeader,
@@ -7,7 +13,7 @@ import {
   formatCopyTimingSection,
   type CopyTimingInput,
 } from "./toast-copy-timing"
-import type { ToastOptions, ToastVariant } from "./toast-types"
+import type { ToastCopyContext, ToastOptions, ToastVariant } from "./toast-types"
 
 const VARIANT_LABEL_VI: Record<ToastVariant, string> = {
   success: "Thành công",
@@ -22,6 +28,106 @@ export function resolveToastMessageText(message: unknown): string {
   if (typeof message === "string") return message.trim()
   if (message == null) return ""
   return String(message).trim()
+}
+
+function isStorageCopyContext(
+  ctx: ToastCopyContext | undefined,
+  apiCalls: ReturnType<typeof getAdminApiCallsSince>,
+): boolean {
+  if (ctx?.storageOperation) return true
+  return apiCalls.some((call) => /\/admin\/uploads/i.test(call.path))
+}
+
+function mergeCopyContext(
+  base: ToastCopyContext | undefined,
+  patch: ToastCopyContext | undefined,
+): ToastCopyContext | undefined {
+  if (!base && !patch) return undefined
+  return {
+    ...base,
+    ...patch,
+    data: patch?.data !== undefined ? patch.data : base?.data,
+    error: patch?.error !== undefined ? patch.error : base?.error,
+    variables:
+      patch?.variables !== undefined ? patch.variables : base?.variables,
+  }
+}
+
+/** Báo cáo copy đầy đủ từ HTTP trace + ngữ cảnh thao tác. */
+export function buildAutoOperationCopyReport(input: {
+  message: unknown
+  data?: ToastOptions
+  variant: ToastVariant
+  startedAt: number
+}): string | undefined {
+  if (!adminOperationToastConfig.devFullCopyReport) return undefined
+
+  const { message, data, variant, startedAt } = input
+  const apiCalls = getAdminApiCallsSince(startedAt)
+  const ctx = data?.copyContext
+  const operationLabel =
+    ctx?.operationLabel?.trim() || resolveToastMessageText(message) || "Thao tác"
+
+  const hasTrace = apiCalls.length > 0
+  const hasContext =
+    ctx != null &&
+    (ctx.variables !== undefined ||
+      ctx.data !== undefined ||
+      ctx.error !== undefined ||
+      ctx.mutationKey != null ||
+      ctx.adminApi != null ||
+      ctx.storageOperation === true)
+
+  const isOperationVariant =
+    variant === "loading" ||
+    variant === "success" ||
+    variant === "error" ||
+    variant === "warning"
+
+  const isTrackedOperation =
+    hasTrace ||
+    hasContext ||
+    typeof data?.copyStartedAt === "number" ||
+    isOperationVariant
+
+  if (!isTrackedOperation) return undefined
+
+  if (isStorageCopyContext(ctx, apiCalls)) {
+    return formatStorageOperationCopyReport({
+      operationLabel,
+      variables: ctx?.variables,
+      data: ctx?.data,
+      error:
+        ctx?.error ??
+        (variant === "error" ? resolveToastMessageText(message) : undefined),
+      adminApi:
+        ctx?.adminApi &&
+        typeof ctx.adminApi.path === "string"
+          ? { method: ctx.adminApi.method, path: ctx.adminApi.path }
+          : ctx?.adminApi
+            ? {
+                method: ctx.adminApi.method,
+                path:
+                  typeof ctx.adminApi.path === "function"
+                    ? ctx.adminApi.path(ctx.variables)
+                    : ctx.adminApi.path,
+              }
+            : undefined,
+      apiCalls,
+    })
+  }
+
+  return formatAdminOperationReviewReport({
+    operationLabel,
+    mutationKey: ctx?.mutationKey,
+    variables: ctx?.variables,
+    data: ctx?.data,
+    error:
+      ctx?.error ??
+      (variant === "error" ? resolveToastMessageText(message) : undefined),
+    adminApi: ctx?.adminApi,
+    apiCalls,
+  })
 }
 
 /** Báo cáo copy mặc định khi toast không truyền `copyReport`. */
@@ -87,5 +193,17 @@ export function buildToastCopyText(input: {
     return appendOrReplaceCopyTimingSection(report, timing)
   }
 
+  const autoReport = buildAutoOperationCopyReport({
+    message,
+    data,
+    variant,
+    startedAt,
+  })
+  if (autoReport) {
+    return appendOrReplaceCopyTimingSection(autoReport, timing)
+  }
+
   return buildToastFallbackCopyReport(message, data, variant, timing)
 }
+
+export { mergeCopyContext }

@@ -4,7 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 import { CalendarDays } from "lucide-react"
 import {
-  formatEventDateTime,
   formatEventScheduleText,
   formatEventTimeDateLine,
   getEventLocationLabel,
@@ -48,7 +47,7 @@ export function getMyRegisteredEventColumns({
         const posterUrl = getPosterUrl(event.poster)
         return (
           <div className="flex gap-3">
-            <div className="aspect-[4/3] w-20 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border">
+            <div className="aspect-[4/3] w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
               {posterUrl ? (
                 <img
                   src={posterUrl}
@@ -195,24 +194,38 @@ export function getMyRegisteredEventColumns({
       },
     },
     {
-      accessorKey: "event.endDate",
+      id: "eventEndDate",
+      accessorFn: (row) => row.event.endDate,
       header: "Thời gian kết thúc",
+      enableColumnFilter: true,
+      cell: ({ row }) => (
+        <DateTimeTableCell value={row.original.event.endDate} />
+      ),
       meta: {
-        hideInTable: true,
+        className: "min-w-[120px]",
+        filterVariant: "date-range",
+        filterPlaceholder: "Khoảng thời gian kết thúc",
         exportHeader: "Thời gian kết thúc",
         exportValue: (row: MyRegisteredEventRow) =>
-          formatEventDateTime(row.event.endDate) ?? "",
+          formatEventTimeDateLine(row.event.endDate) ?? "",
         exportWidth: 22,
       },
     },
     {
-      accessorKey: "event.registrationEnd",
+      id: "eventRegistrationEnd",
+      accessorFn: (row) => row.event.registrationEnd,
       header: "Hạn đăng ký",
+      enableColumnFilter: true,
+      cell: ({ row }) => (
+        <DateTimeTableCell value={row.original.event.registrationEnd} />
+      ),
       meta: {
-        hideInTable: true,
+        className: "min-w-[120px]",
+        filterVariant: "date-range",
+        filterPlaceholder: "Khoảng hạn đăng ký",
         exportHeader: "Hạn đăng ký",
         exportValue: (row: MyRegisteredEventRow) =>
-          formatEventDateTime(row.event.registrationEnd) ?? "",
+          formatEventTimeDateLine(row.event.registrationEnd) ?? "",
         exportWidth: 22,
       },
     },

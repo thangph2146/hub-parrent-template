@@ -1,3 +1,4 @@
+import { api } from "@workspace/admin-app/lib/api"
 import type { createStoreSyncSdk } from "@workspace/api-client"
 import { computeEventStatus } from "./event-display"
 import { getRegistrationPeriodState } from "./registration-period"

@@ -13,6 +13,7 @@ import {
   type DevLoginOptionsQuery,
 } from '../../app/dev-login-options';
 import { AUTH_ROLE_NAMES } from '../../../config/constants';;
+import { parseRolePermissions } from '../../../config/active-permissions';
 
 export type { DevLoginOptionDto } from '../../app/dev-login-options';
 
@@ -142,7 +143,9 @@ export abstract class BaseAuthService {
 
     const permissions = [
       ...new Set(
-        activeRoles.flatMap((entry) => normalizePermissionValues(entry.role?.permissions)),
+        activeRoles.flatMap((entry) =>
+          parseRolePermissions(entry.role?.permissions),
+        ),
       ),
     ];
 

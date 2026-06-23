@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -32,12 +33,16 @@ import type {
 } from './hanet-partner.types';
 import type { HanetPersonHubInput } from './hanet-partner-params';
 import { formatHanetCheckinDayDate } from './hanet-partner.response';
+import { EventHanetReconcileService } from './event-hanet-reconcile.service';
 
 @ApiTags('HANET Admin')
 @Permissions(PERMISSIONS.EVENTS_VIEW)
 @Controller(ADMIN_ROUTES.HANET)
 export class HanetAdminController {
-  constructor(private readonly hanetAdminService: HanetAdminService) {}
+  constructor(
+    private readonly hanetAdminService: HanetAdminService,
+    private readonly eventHanetReconcile: EventHanetReconcileService,
+  ) {}
 
   @Get('status')
   @ApiOperation({ summary: 'Trạng thái cấu hình HANET + URL webhook' })
@@ -502,6 +507,26 @@ export class HanetAdminController {
       day,
     );
 
+    return { success: true, data };
+  }
+
+  @Post('events/:eventId/reconcile-checkins')
+  @Permissions(PERMISSIONS.EVENT_REGISTRATIONS_UPDATE)
+  @ApiOperation({
+    summary:
+      'Đối soát check-in/out HANET theo sự kiện — cập nhật đăng ký + socket realtime',
+  })
+  async reconcileEventCheckins(
+    @Param('eventId') eventId: string,
+    @Body()
+    body: {
+      placeId?: string;
+      date?: string;
+      from?: string;
+      to?: string;
+    },
+  ) {
+    const data = await this.eventHanetReconcile.reconcile(eventId.trim(), body);
     return { success: true, data };
   }
 

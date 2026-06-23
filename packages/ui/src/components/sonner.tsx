@@ -51,13 +51,21 @@ const toastIcons = {
   ),
 }
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = ({
+  position = "top-right",
+  richColors = true,
+  closeButton = true,
+  ...props
+}: ToasterProps) => {
   const { theme = "system" } = useTheme()
 
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      position={position}
+      richColors={richColors}
+      closeButton={closeButton}
       icons={toastIcons}
       style={
         {

@@ -98,6 +98,7 @@ export function AdminShell({
     accessDeniedReason = "staff_only",
     menuTree,
     enabledAdminModules,
+    activePermissionResources,
   } = useAdminLayout()
   const displayName = user?.name?.trim() || user?.email || "Người dùng HUB"
   const avatarUrl = user?.image?.trim() || null
@@ -331,6 +332,7 @@ export function AdminShell({
                     portalLabel={siteName}
                     menuTree={menuTree}
                     enabledAdminModules={enabledAdminModules}
+                    activePermissionResources={activePermissionResources}
                   />
                 </DropdownMenuContent>
               </DropdownMenu>

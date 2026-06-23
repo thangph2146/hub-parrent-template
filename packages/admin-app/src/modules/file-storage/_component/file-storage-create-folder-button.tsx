@@ -6,6 +6,7 @@ import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover"
 import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 import { resolveStorageFolderSlugPath } from "@workspace/api-client"
 import { createStorageFolder } from "@workspace/admin-app/lib/admin-uploads"
 import { FolderPlus, Loader2 } from "lucide-react"
@@ -57,6 +58,17 @@ export function FileStorageCreateFolderButton({
     )
 
     setCreating(true)
+    const startedAt = Date.now()
+    const operationLabel = `File storage — tạo thư mục «${folderName}»`
+    const pending = toast.loading(
+      "Đang tạo thư mục…",
+      storageOperationToastOptions({
+        startedAt,
+        operationLabel,
+        variables: { folderName, parentPath, resourceType },
+        adminApi: { method: "POST", path: "/admin/uploads/folders" },
+      }),
+    )
     try {
       const result = await createStorageFolder({
         folderName,
@@ -67,13 +79,31 @@ export function FileStorageCreateFolderButton({
           : undefined,
       })
       toast.success(
-        `Đã tạo thư mục «${result.folderLabel ?? result.folderName}»`
+        `Đã tạo thư mục «${result.folderLabel ?? result.folderName}»`,
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { folderName, parentPath, resourceType },
+          data: result,
+          adminApi: { method: "POST", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
       )
       setName("")
       setOpen(false)
       await onCreated(result.folderPath)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Không tạo được thư mục")
+      toast.error(
+        err instanceof Error ? err.message : "Không tạo được thư mục",
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { folderName, parentPath, resourceType },
+          error: err,
+          adminApi: { method: "POST", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
+      )
     } finally {
       setCreating(false)
     }

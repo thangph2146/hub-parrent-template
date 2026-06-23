@@ -31,7 +31,7 @@ export function SiteRootProviders({
   children,
   showTopLoader = true,
   topLoaderProps,
-  toaster = { position: "top-center", richColors: true },
+  toaster = { position: "top-right", richColors: true },
 }: SiteRootProvidersProps) {
   return (
     <>

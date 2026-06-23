@@ -15,6 +15,7 @@ const { resolveApiModules } = require('../../../config/render.config.cjs')
 const { profileForApiApp } = require('../../../config/product-line-profiles.cjs')
 const { resolveModuleClosure } = require('./resolve-module-closure.cjs')
 const { patchRenderAppModule, RENDER_BOOTSTRAP_MODULES } = require('./patch-render-app-module.cjs')
+const { patchRenderPublicModule } = require('./patch-render-public-module.cjs')
 const { patchDatabaseSeeder } = require('./patch-database-seeder.cjs')
 const { pruneThinModuleRedundantFiles } = require('../prune/prune-thin-module-runtime.cjs')
 const { pruneCommonRuntime } = require('../prune/prune-common-runtime.cjs')
@@ -300,6 +301,11 @@ function renderApiFromTemplate(appRel, opts = {}) {
     }
     copyTree(src, path.join(appRoot, 'src', moduleId), `src/${moduleId}`)
   }
+
+  patchRenderPublicModule(appRoot, {
+    quiet: false,
+    excludeModules: [...excludedModules],
+  })
 
   pruneModuleBasesRuntime(appRoot, moduleIds, { quiet: !opts.prune })
   pruneThinModuleRedundantFiles(appRoot, { quiet: false })

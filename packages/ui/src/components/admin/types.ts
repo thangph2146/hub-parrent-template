@@ -73,6 +73,8 @@ export type AdminLayoutContextValue = {
   accessDeniedReason?: string
   /** Module admin bật theo `admin.app.config.json` — dùng dev copy session. */
   enabledAdminModules?: string[]
+  /** Resource permission của product line — lọc báo cáo copy session. */
+  activePermissionResources?: readonly string[]
 }
 
 /** Cấu hình cố định mỗi app admin (menu, auth routes, …). */

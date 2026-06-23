@@ -9,12 +9,14 @@ import {
   type ReactNode,
 } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useEventRegistrationsQuery } from "../_query"
+import { useEventRegistrationsQuery, useEventDetailQuery } from "../_query"
 import { syncEventAttendanceUi } from "./event-attendance-sync"
 import {
   eventRegistrationsPollInterval,
   useEventAttendanceSocket,
 } from "./use-event-attendance-socket"
+import { useEventHanetReconcile } from "./use-event-hanet-reconcile"
+import { useHanetStatusQuery } from "../_query/use-hanet-status"
 import type {
   EventAttendanceSocketPayload,
   EventHanetSyncSocketPayload,
@@ -30,6 +32,8 @@ type EventAttendanceContextValue = {
   /** Tăng mỗi lần check-in/out — ép bảng re-render tức thì. */
   liveRevision: number
   applyAttendance: (payload: EventAttendanceSocketPayload) => void
+  reconcileHanet: () => void
+  isReconcilingHanet: boolean
 }
 
 const EventAttendanceContext =
@@ -62,9 +66,32 @@ export function EventAttendanceProvider({
     [queryClient, eventId]
   )
 
-  const appendHanetSync = useCallback((payload: EventHanetSyncSocketPayload) => {
-    setHanetSyncLog((prev) => [payload, ...prev].slice(0, MAX_HANET_SYNC_LOG))
-  }, [])
+  const appendHanetSync = useCallback(
+    (payload: EventHanetSyncSocketPayload) => {
+      setHanetSyncLog((prev) => [payload, ...prev].slice(0, MAX_HANET_SYNC_LOG))
+
+      if (
+        payload.eventId != null &&
+        String(payload.eventId) === eventId &&
+        (payload.kind === "checkin" || payload.kind === "checkout") &&
+        payload.registrationId
+      ) {
+        applyAttendance({
+          kind: payload.kind,
+          eventId,
+          at: payload.at,
+          email: String(payload.email ?? ""),
+          fullName: String(payload.fullName ?? payload.personName ?? ""),
+          source: "hanet",
+          registrationId: String(payload.registrationId),
+          deviceId: payload.deviceId ?? null,
+          deviceName: payload.deviceName ?? null,
+          duplicate: payload.duplicate,
+        })
+      }
+    },
+    [applyAttendance, eventId],
+  )
 
   const { connected, socketError } = useEventAttendanceSocket(
     eventId,
@@ -72,6 +99,19 @@ export function EventAttendanceProvider({
     applyAttendance,
     appendHanetSync
   )
+
+  const { data: hanetStatus } = useHanetStatusQuery(eventId)
+  const { data: eventDetail } = useEventDetailQuery(api, eventId, {
+    enabled: enabled && !!eventId,
+    staleTime: 120_000,
+    refetchInterval: false,
+  })
+  const { reconcile, isReconciling } = useEventHanetReconcile({
+    eventId,
+    enabled: enabled && !!eventId,
+    placeId: hanetStatus?.defaultPlaceId,
+    eventDay: eventDetail?.startDate ?? eventDetail?.checkinStart ?? null,
+  })
 
   const pollMs = eventRegistrationsPollInterval(connected)
 
@@ -88,13 +128,17 @@ export function EventAttendanceProvider({
       hanetSyncLog,
       liveRevision,
       applyAttendance,
+      reconcileHanet: reconcile,
+      isReconcilingHanet: isReconciling,
     }),
     [
       applyAttendance,
       connected,
       hanetSyncLog,
+      isReconciling,
       lastPayload,
       liveRevision,
+      reconcile,
       socketError,
     ]
   )
@@ -116,6 +160,8 @@ export function useEventAttendanceContext(): EventAttendanceContextValue {
       hanetSyncLog: [],
       liveRevision: 0,
       applyAttendance: () => {},
+      reconcileHanet: () => {},
+      isReconcilingHanet: false,
     }
   }
   return ctx

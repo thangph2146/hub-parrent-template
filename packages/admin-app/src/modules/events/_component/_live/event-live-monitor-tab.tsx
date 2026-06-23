@@ -6,6 +6,7 @@ import {
   LogOut,
   Pause,
   Play,
+  PlugZap,
   Radio,
   RefreshCw,
   UserCheck,
@@ -65,6 +66,8 @@ export function EventLiveMonitorTab({
     lastPayload,
     liveRevision,
     hanetSyncLog,
+    reconcileHanet,
+    isReconcilingHanet,
   } = useEventAttendanceContext()
 
   const pollOptions = useMemo<EventLiveQueryOptions>(
@@ -233,6 +236,22 @@ export function EventLiveMonitorTab({
           {isFetching && liveEnabled ? (
             <RefreshCw className="size-4 animate-spin text-muted-foreground" />
           ) : null}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            disabled={!liveEnabled || isReconcilingHanet}
+            onClick={reconcileHanet}
+          >
+            <PlugZap
+              className={cn(
+                "size-3.5",
+                isReconcilingHanet && "animate-pulse",
+              )}
+            />
+            Đồng bộ HANET
+          </Button>
           <Button
             type="button"
             variant="outline"

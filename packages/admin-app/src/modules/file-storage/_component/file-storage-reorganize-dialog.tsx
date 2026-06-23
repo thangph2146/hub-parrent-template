@@ -9,6 +9,7 @@ import { PanelDialog, PanelDialogInfoCard } from "@ui/components/dialogs"
 import { ScrollArea } from "@ui/components/scroll-area"
 
 import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 
 import { reorganizeDateStorageFolders } from "@workspace/admin-app/lib/admin-uploads"
 
@@ -79,8 +80,18 @@ export function FileStorageReorganizeDialog({
     async (dryRun: boolean) => {
       setLoading(true)
 
+      const startedAt = Date.now()
+      const operationLabel = dryRun
+        ? "File storage — xem trước cấu trúc lại folder"
+        : "File storage — cấu trúc lại folder theo ngày"
       const pending = toast.loading(
-        dryRun ? "Đang xem trước cấu trúc lại…" : "Đang cấu trúc lại folder…"
+        dryRun ? "Đang xem trước cấu trúc lại…" : "Đang cấu trúc lại folder…",
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { scopePath, dryRun },
+          adminApi: { method: "POST", path: "/admin/uploads/reorganize-date-folders" },
+        }),
       )
 
       try {
@@ -92,11 +103,22 @@ export function FileStorageReorganizeDialog({
 
         setPreview(result)
 
+        const finishOpts = storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { scopePath, dryRun },
+          data: result,
+          adminApi: {
+            method: "POST",
+            path: "/admin/uploads/reorganize-date-folders",
+          },
+          extra: { id: pending },
+        })
+
         if (dryRun) {
           toast.success(
             `Tìm thấy ${result.candidates} file cần gom về folder chính`,
-
-            { id: pending }
+            finishOpts,
           )
 
           return
@@ -113,14 +135,22 @@ export function FileStorageReorganizeDialog({
 
         if (result.skipped > 0) parts.push(`${result.skipped} bỏ qua`)
 
-        toast.success(parts.join(" · "), { id: pending })
+        toast.success(parts.join(" · "), finishOpts)
 
         if (result.errors.length > 0) {
           toast.error(
             result.errors
               .slice(0, 2)
               .map((e) => e.message)
-              .join("; ")
+              .join("; "),
+            {
+              copyContext: {
+                storageOperation: true,
+                operationLabel,
+                error: result.errors,
+                data: result,
+              },
+            },
           )
         }
 
@@ -130,8 +160,17 @@ export function FileStorageReorganizeDialog({
       } catch (err) {
         toast.error(
           err instanceof Error ? err.message : "Lỗi cấu trúc lại folder",
-
-          { id: pending }
+          storageOperationToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { scopePath, dryRun },
+            error: err,
+            adminApi: {
+              method: "POST",
+              path: "/admin/uploads/reorganize-date-folders",
+            },
+            extra: { id: pending },
+          }),
         )
       } finally {
         setLoading(false)

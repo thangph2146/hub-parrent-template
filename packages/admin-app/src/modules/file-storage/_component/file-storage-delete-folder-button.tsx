@@ -4,6 +4,7 @@ import { useCallback, useState } from "react"
 import { Button } from "@ui/components/button"
 import { ConfirmActionDialog } from "@ui/components/dialogs"
 import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 import { deleteStorageFolder } from "@workspace/admin-app/lib/admin-uploads"
 import { FolderX, Loader2 } from "lucide-react"
 import type { StorageRealm } from "./types"
@@ -32,17 +33,42 @@ export function FileStorageDeleteFolderButton({
     if (!diskPath) return
 
     setDeleting(true)
-    const pending = toast.loading("Đang xóa thư mục…")
+    const startedAt = Date.now()
+    const operationLabel = `File storage — xóa thư mục «${folderLabel}»`
+    const pending = toast.loading(
+      "Đang xóa thư mục…",
+      storageOperationToastOptions({
+        startedAt,
+        operationLabel,
+        variables: { diskPath },
+        adminApi: { method: "DELETE", path: "/admin/uploads/folders" },
+      }),
+    )
     try {
       await deleteStorageFolder(diskPath)
-      toast.success(`Đã xóa thư mục «${folderLabel}»`, { id: pending })
+      toast.success(
+        `Đã xóa thư mục «${folderLabel}»`,
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { diskPath },
+          data: { folderLabel, diskPath },
+          adminApi: { method: "DELETE", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
+      )
       await onDeleted()
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Không xóa được thư mục",
-        {
-          id: pending,
-        }
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { diskPath },
+          error: err,
+          adminApi: { method: "DELETE", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
       )
     } finally {
       setDeleting(false)

@@ -18,6 +18,7 @@ import {
   AdminListTabsTrigger,
 } from "../admin-list-tabs"
 import { toast } from "../../sonner"
+import { buildManualOperationToastOptions } from "../../../lib/admin-operation-toast"
 import {
   FileText,
   FolderOpen,
@@ -213,7 +214,18 @@ export function AdminStoragePickerPanel({
       if (!canDelete || !normalized.length || deletingBulk) return
       setDeletingBulk(true)
       onDeletingBulkChange?.(true)
-      const pending = toast.loading(`Đang xóa ${normalized.length} file…`)
+      const startedAt = Date.now()
+      const operationLabel = `Storage picker — xóa ${normalized.length} file`
+      const pending = toast.loading(
+        `Đang xóa ${normalized.length} file…`,
+        buildManualOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths: normalized },
+          storageOperation: true,
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+        }),
+      )
       try {
         const result = await adapters.bulkDeleteFiles(normalized)
         const failedPaths = new Set(result.errors.map((entry) => entry.path))
@@ -234,20 +246,38 @@ export function AdminStoragePickerPanel({
         const errorHint = result.errors[0]
           ? formatStorageDeleteError(result.errors[0].message)
           : ""
+        const finishOpts = buildManualOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths: normalized },
+          data: result,
+          storageOperation: true,
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+          extra: { id: pending },
+        })
         if (result.deleted > 0 && result.failed === 0) {
-          toast.success(`Đã xóa ${result.deleted} file`, { id: pending })
+          toast.success(`Đã xóa ${result.deleted} file`, finishOpts)
         } else if (result.deleted > 0 && result.failed > 0) {
           toast.warning(
             `Đã xóa ${result.deleted}/${normalized.length} file. ${result.failed} file lỗi${errorHint ? `: ${errorHint}` : ""}`,
-            { id: pending }
+            finishOpts,
           )
         } else {
-          toast.error(errorHint || "Không xóa được file nào", { id: pending })
+          toast.error(errorHint || "Không xóa được file nào", finishOpts)
         }
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi xóa hàng loạt", {
-          id: pending,
-        })
+        toast.error(
+          err instanceof Error ? err.message : "Lỗi xóa hàng loạt",
+          buildManualOperationToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { paths: normalized },
+            error: err,
+            storageOperation: true,
+            adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+            extra: { id: pending },
+          }),
+        )
       } finally {
         setDeletingBulk(false)
         onDeletingBulkChange?.(false)
@@ -407,12 +437,32 @@ export function AdminStoragePickerPanel({
         return
       }
       setUploading(true)
-      const pending = toast.loading(`Đang tải lên ${files.length} ảnh…`)
+      const startedAt = Date.now()
+      const operationLabel = `Storage picker — tải lên ${files.length} ảnh`
+      const pending = toast.loading(
+        `Đang tải lên ${files.length} ảnh…`,
+        buildManualOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { fileCount: files.length },
+          storageOperation: true,
+          adminApi: { method: "POST", path: "/admin/uploads" },
+        }),
+      )
       try {
         const uploadedUrls = await upload.uploadFiles(files)
         await reload()
+        const finishOpts = buildManualOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { fileCount: files.length },
+          data: { urls: uploadedUrls },
+          storageOperation: true,
+          adminApi: { method: "POST", path: "/admin/uploads" },
+          extra: { id: pending },
+        })
         if (uploadedUrls.length > 0) {
-          toast.success(`Đã lưu ${uploadedUrls.length} ảnh`, { id: pending })
+          toast.success(`Đã lưu ${uploadedUrls.length} ảnh`, finishOpts)
           if (multiSelect) {
             setPickedMap((prev) => {
               const next = new Map(prev)
@@ -427,12 +477,21 @@ export function AdminStoragePickerPanel({
             onPick(uploadedUrls)
           }
         } else {
-          toast.error("Không tải được ảnh nào", { id: pending })
+          toast.error("Không tải được ảnh nào", finishOpts)
         }
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi tải ảnh", {
-          id: pending,
-        })
+        toast.error(
+          err instanceof Error ? err.message : "Lỗi tải ảnh",
+          buildManualOperationToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { fileCount: files.length },
+            error: err,
+            storageOperation: true,
+            adminApi: { method: "POST", path: "/admin/uploads" },
+            extra: { id: pending },
+          }),
+        )
       } finally {
         setUploading(false)
         if (fileInputRef.current) fileInputRef.current.value = ""

@@ -87,6 +87,17 @@ export type HanetSyncAvatarsResult = {
   listLimited?: boolean;
 };
 
+export type EventHanetReconcileResult = {
+  eventId: string;
+  placeId: string;
+  mode: "day" | "timestamp";
+  total: number;
+  applied: number;
+  duplicates: number;
+  unmatched: number;
+  errors: number;
+};
+
 export type HanetPersonListPage = {
   placeId: string;
   pageIndex: number;
@@ -506,6 +517,22 @@ export class HanetAdminApi {
     return getData<unknown>(
       this.http,
       `/admin/hanet/checkins/timestamp?${search.toString()}`,
+    );
+  }
+
+  reconcileEventCheckins(
+    eventId: string,
+    body?: {
+      placeId?: string;
+      date?: string;
+      from?: string;
+      to?: string;
+    },
+  ): Promise<EventHanetReconcileResult> {
+    return postData<EventHanetReconcileResult>(
+      this.http,
+      `/admin/hanet/events/${encodeURIComponent(eventId)}/reconcile-checkins`,
+      body ?? {},
     );
   }
 

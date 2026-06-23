@@ -1,7 +1,7 @@
 "use client"
 import { api } from "@workspace/admin-app/lib/api"
 import { useEffect, useMemo, useState } from "react"
-import { AlertTriangle, Radio, RefreshCw } from "lucide-react"
+import { AlertTriangle, PlugZap, Radio, RefreshCw } from "lucide-react"
 import { AdminDataTable } from "@ui/components/data-table"
 import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
@@ -25,8 +25,14 @@ export function EventRegistrationsLiveTable({
   eventId: string
   eventTitle: string
 }) {
-  const { connected, socketError, lastPayload, liveRevision } =
-    useEventAttendanceContext()
+  const {
+    connected,
+    socketError,
+    lastPayload,
+    liveRevision,
+    reconcileHanet,
+    isReconcilingHanet,
+  } = useEventAttendanceContext()
 
   const {
     data: registrations,
@@ -107,6 +113,23 @@ export function EventRegistrationsLiveTable({
             variant="outline"
             size="sm"
             className="h-8 gap-1"
+            disabled={isFetching || isReconcilingHanet}
+            onClick={reconcileHanet}
+          >
+            <PlugZap
+              className={cn(
+                "size-3.5",
+                isReconcilingHanet && "animate-pulse",
+              )}
+              aria-hidden
+            />
+            Đồng bộ HANET
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1"
             disabled={isFetching}
             onClick={() => void refetch()}
           >
@@ -131,7 +154,10 @@ export function EventRegistrationsLiveTable({
         isLoading,
       }}
       footer={
-        <span>Cập nhật khi check-in/check-out (socket hoặc thủ công).</span>
+        <span>
+          Cập nhật qua webhook/socket HANET hoặc nút Đồng bộ HANET (API
+          getCheckinByPlaceIdInDay).
+        </span>
       }
     />
   )

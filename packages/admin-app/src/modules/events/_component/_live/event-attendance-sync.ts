@@ -170,11 +170,6 @@ export function syncEventAttendanceUi(
   if (regs?.length) {
     patchEventDetailCounts(queryClient, eventId, regs)
   }
-
-  void queryClient.invalidateQueries({
-    queryKey: ["events", eventId],
-    refetchType: "active",
-  })
 }
 
 export function applyOptimisticRegistrationAttendance(

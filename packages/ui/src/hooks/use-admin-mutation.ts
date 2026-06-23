@@ -105,7 +105,9 @@ export function useAdminMutation<
     }
   }
 
-  if (toastOverride !== false) {
+  if (toastOverride === false) {
+    mergedMeta = { ...mergedMeta, adminToast: false }
+  } else {
     const inferred = inferAdminToastFromMutationKey(mutationKey)
     const messages: AdminOperationToastMessages<TData, TVariables, TError> = {
       ...defaultAdminOperationToast,

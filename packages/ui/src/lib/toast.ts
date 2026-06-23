@@ -2,11 +2,18 @@
 
 import { toast as baseToast, type ExternalToast } from "sonner"
 import { suppressRealtimeToastForEntity } from "./admin-toast-suppress"
-import { buildToastCopyText } from "./toast-copy-report"
+import {
+  buildToastCopyText,
+  mergeCopyContext,
+} from "./toast-copy-report"
 import { resolveCopyStartedAt } from "./toast-copy-timing"
 import {
+  type ToastCopyContext,
   type ToastOptions,
   type ToastVariant,
+  TOAST_COPY_HINT_DONE,
+  TOAST_COPY_HINT_ERROR,
+  TOAST_COPY_HINT_LOADING,
   toSonnerToastOptions,
 } from "./toast-types"
 
@@ -14,6 +21,13 @@ type ToastMessage = Parameters<typeof baseToast>[0]
 
 /** Bật nút Sao chép trên mọi toast (tắt bằng NEXT_PUBLIC_TOAST_COPY=false). */
 const showToastCopyAction = process.env.NEXT_PUBLIC_TOAST_COPY !== "false"
+
+type OperationToastState = {
+  startedAt: number
+  copyContext?: ToastCopyContext
+}
+
+const operationStateByToastId = new Map<string | number, OperationToastState>()
 
 async function copyToastText(text: string): Promise<void> {
   if (!text) return
@@ -25,6 +39,80 @@ async function copyToastText(text: string): Promise<void> {
   }
 }
 
+function resolveOperationStartedAt(
+  data?: ToastOptions,
+): number | undefined {
+  if (typeof data?.copyStartedAt === "number") return data.copyStartedAt
+  if (data?.id != null) return operationStateByToastId.get(data.id)?.startedAt
+  return undefined
+}
+
+function mergeOperationToastOptions(
+  message: ToastMessage,
+  data: ToastOptions | undefined,
+  variant: ToastVariant,
+): ToastOptions {
+  const loadingState =
+    data?.id != null ? operationStateByToastId.get(data.id) : undefined
+  const startedAt = resolveOperationStartedAt(data)
+  const copyContext = mergeCopyContext(
+    loadingState?.copyContext,
+    data?.copyContext,
+  )
+
+  const merged: ToastOptions = {
+    ...data,
+    ...(startedAt != null ? { copyStartedAt: startedAt } : {}),
+    ...(copyContext ? { copyContext } : {}),
+  }
+
+  if (variant === "loading") {
+    merged.copyStartedAt = merged.copyStartedAt ?? Date.now()
+    merged.copyVariant = merged.copyVariant ?? "loading"
+    merged.description = merged.description ?? TOAST_COPY_HINT_LOADING
+    if (merged.duration == null) merged.duration = Number.POSITIVE_INFINITY
+  } else if (startedAt != null) {
+    if (!merged.description) {
+      merged.description =
+        variant === "error" ? TOAST_COPY_HINT_ERROR : TOAST_COPY_HINT_DONE
+    }
+    if (variant === "success" && merged.duration == null) {
+      merged.duration = 6000
+    }
+    if (variant === "error" && merged.duration == null) {
+      merged.duration = 8000
+    }
+    if (
+      copyContext &&
+      !copyContext.operationLabel &&
+      typeof message === "string" &&
+      message.trim()
+    ) {
+      merged.copyContext = {
+        ...copyContext,
+        operationLabel: message.trim(),
+      }
+    }
+  }
+
+  return merged
+}
+
+function rememberLoadingToastState(
+  id: string | number,
+  data?: ToastOptions,
+): void {
+  const startedAt = data?.copyStartedAt ?? Date.now()
+  operationStateByToastId.set(id, {
+    startedAt,
+    copyContext: data?.copyContext,
+  })
+}
+
+function forgetOperationToastState(id: string | number | undefined): void {
+  if (id != null) operationStateByToastId.delete(id)
+}
+
 function withCopyAction(
   message: ToastMessage,
   data?: ToastOptions,
@@ -33,8 +121,9 @@ function withCopyAction(
   if (!showToastCopyAction) return toSonnerToastOptions(data)
   if (data?.action) return toSonnerToastOptions(data)
 
-  const startedAt = resolveCopyStartedAt(data?.copyStartedAt)
-  const sonnerData = toSonnerToastOptions(data)
+  const merged = mergeOperationToastOptions(message, data, variant)
+  const startedAt = resolveCopyStartedAt(merged.copyStartedAt)
+  const sonnerData = toSonnerToastOptions(merged)
 
   return {
     ...sonnerData,
@@ -45,7 +134,7 @@ function withCopyAction(
         const copiedAt = Date.now()
         const copyText = buildToastCopyText({
           message,
-          data,
+          data: merged,
           variant,
           startedAt,
           copiedAt,
@@ -79,7 +168,9 @@ export function mutationSuccess(
       suppress.action
     )
   }
-  return baseToast.success(message, withCopyAction(message, data, "success"))
+  const merged = mergeOperationToastOptions(message, data, "success")
+  forgetOperationToastState(merged.id)
+  return baseToast.success(message, withCopyAction(message, merged, "success"))
 }
 
 type ToastMethod = (
@@ -106,22 +197,53 @@ export const toast = Object.assign(
     baseToast(message, withCopyAction(message, data)),
   {
     ...baseToast,
-    success: (message: ToastMessage, data?: ToastOptions) =>
-      baseToast.success(message, withCopyAction(message, data, "success")),
-    error: (message: ToastMessage, data?: ToastOptions) =>
-      baseToast.error(message, withCopyAction(message, data, "error")),
-    warning: (message: ToastMessage, data?: ToastOptions) =>
-      baseToast.warning(message, withCopyAction(message, data, "warning")),
+    success: (message: ToastMessage, data?: ToastOptions) => {
+      const merged = mergeOperationToastOptions(message, data, "success")
+      forgetOperationToastState(merged.id)
+      return baseToast.success(
+        message,
+        withCopyAction(message, merged, "success"),
+      )
+    },
+    error: (message: ToastMessage, data?: ToastOptions) => {
+      const merged = mergeOperationToastOptions(message, data, "error")
+      forgetOperationToastState(merged.id)
+      return baseToast.error(message, withCopyAction(message, merged, "error"))
+    },
+    warning: (message: ToastMessage, data?: ToastOptions) => {
+      const merged = mergeOperationToastOptions(message, data, "warning")
+      forgetOperationToastState(merged.id)
+      return baseToast.warning(
+        message,
+        withCopyAction(message, merged, "warning"),
+      )
+    },
     info: (message: ToastMessage, data?: ToastOptions) =>
       baseToast.info(message, withCopyAction(message, data, "info")),
-    loading: (message: ToastMessage, data?: ToastOptions) =>
-      baseToast.loading(message, withCopyAction(message, data, "loading")),
+    loading: (message: ToastMessage, data?: ToastOptions) => {
+      const merged = mergeOperationToastOptions(message, data, "loading")
+      const id = baseToast.loading(
+        message,
+        withCopyAction(message, merged, "loading"),
+      )
+      rememberLoadingToastState(id, merged)
+      return id
+    },
     mutationSuccess,
   },
 ) as AppToast
 
-export type { ToastOptions, ToastVariant } from "./toast-types"
-export { buildToastCopyText, buildToastFallbackCopyReport } from "./toast-copy-report"
+export type { ToastOptions, ToastVariant, ToastCopyContext } from "./toast-types"
+export {
+  TOAST_COPY_HINT_DONE,
+  TOAST_COPY_HINT_ERROR,
+  TOAST_COPY_HINT_LOADING,
+} from "./toast-types"
+export {
+  buildToastCopyText,
+  buildToastFallbackCopyReport,
+  buildAutoOperationCopyReport,
+} from "./toast-copy-report"
 export {
   appendOrReplaceCopyTimingSection,
   formatCopyTimingSection,

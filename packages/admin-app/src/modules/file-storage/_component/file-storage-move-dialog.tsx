@@ -18,6 +18,7 @@ import { Tabs } from "@ui/components/tabs"
 import { AdminListTabsList, AdminListTabsTrigger } from "@ui/components/admin"
 
 import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 
 import {
   bulkMoveStorageFiles,
@@ -132,12 +133,22 @@ export function FileStorageMoveDialog({
 
     setMoving(true)
 
-    const pending = toast.loading(`Đang di chuyển ${selectedRows.length} file…`)
+    const startedAt = Date.now()
+    const paths = selectedRows.map((row) => row.relativePath)
+    const operationLabel = `File storage — di chuyển ${paths.length} file`
+    const pending = toast.loading(
+      `Đang di chuyển ${selectedRows.length} file…`,
+      storageOperationToastOptions({
+        startedAt,
+        operationLabel,
+        variables: { paths, destination: selectedPath.trim() },
+        adminApi: { method: "POST", path: "/admin/uploads/bulk-move" },
+      }),
+    )
 
     try {
       const result = await bulkMoveStorageFiles(
-        selectedRows.map((row) => row.relativePath),
-
+        paths,
         selectedPath.trim()
       )
 
@@ -149,14 +160,32 @@ export function FileStorageMoveDialog({
 
       if (result.skipped > 0) parts.push(`${result.skipped} bỏ qua`)
 
-      toast.success(parts.join(" · "), { id: pending })
+      toast.success(
+        parts.join(" · "),
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths, destination: selectedPath.trim() },
+          data: result,
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-move" },
+          extra: { id: pending },
+        }),
+      )
 
       if (result.errors.length > 0) {
         toast.error(
           result.errors
             .slice(0, 2)
             .map((e) => e.message)
-            .join("; ")
+            .join("; "),
+          {
+            copyContext: {
+              storageOperation: true,
+              operationLabel,
+              error: result.errors,
+              data: result,
+            },
+          },
         )
       }
 
@@ -164,9 +193,17 @@ export function FileStorageMoveDialog({
 
       onOpenChange(false)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lỗi di chuyển file", {
-        id: pending,
-      })
+      toast.error(
+        err instanceof Error ? err.message : "Lỗi di chuyển file",
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths, destination: selectedPath.trim() },
+          error: err,
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-move" },
+          extra: { id: pending },
+        }),
+      )
     } finally {
       setMoving(false)
     }
