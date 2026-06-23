@@ -152,6 +152,14 @@ function chunkArray<T>(items: T[], size: number): T[][] {
   return chunks
 }
 
+/** Lô RBAC (xóa user + roles) có thể chờ lock MySQL lâu hơn các bảng thường. */
+const RBAC_IMPORT_TIMEOUT_MS = 300_000
+
+function isRbacImportJob(job: ImportChunkJob): boolean {
+  if (isRbacImportKey(job.primaryModel)) return true
+  return job.bundledModels.some((model) => isRbacImportKey(model))
+}
+
 /** Khóa RBAC — import cuối để tránh TRUNCATE roles/user_roles làm mất quyền giữa các lô HTTP. */
 const RBAC_IMPORT_KEY_GROUPS = [
   ["role", "roles"],
@@ -695,11 +703,14 @@ export async function runChunkedImport({
       })
     }, 1000)
     try {
-      result = await api.system.importData({
-        model: job.primaryModel,
-        skipClear: job.skipClear,
-        payload: job.payload,
-      })
+      result = await api.system.importData(
+        {
+          model: job.primaryModel,
+          skipClear: job.skipClear,
+          payload: job.payload,
+        },
+        isRbacImportJob(job) ? { timeoutMs: RBAC_IMPORT_TIMEOUT_MS } : undefined
+      )
     } catch (error) {
       const raw =
         error instanceof Error ? error.message.trim() : "Import thất bại"

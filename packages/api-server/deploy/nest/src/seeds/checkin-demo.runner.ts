@@ -21,8 +21,14 @@ import {
   lexicalFromPlainText,
 } from './lexical-plain-text';
 
+export type CheckinPostsSource = 'auto' | 'database' | 'export';
+
 export type CheckinDemoSeedOptions = {
   postsExportPath?: string;
+  /** `database` — lấy bài published trong DB (pnpm db:event). Mặc định `auto`. */
+  postsSource?: CheckinPostsSource;
+  skipBootstrap?: boolean;
+  skipStudents?: boolean;
   eventCount?: number;
   randomSeed?: string;
   log?: (message: string) => void;
@@ -224,7 +230,26 @@ async function loadDemoPosts(
   em: EntityManager,
   explicitPath: string | undefined,
   log: (message: string) => void,
+  postsSource: CheckinPostsSource = 'auto',
 ): Promise<{ posts: ExportPostSeedSource[]; source: string }> {
+  if (postsSource === 'database') {
+    const dbPosts = await loadDbPosts(em);
+    if (dbPosts.length === 0) {
+      throw new Error(
+        'Không có bài viết published trong DB. Import posts hoặc chạy db:demo trước.',
+      );
+    }
+    return { posts: dbPosts, source: 'database:posts' };
+  }
+
+  if (postsSource === 'export') {
+    const exportPath = explicitPath ?? resolveDefaultExportPath(log);
+    if (!fs.existsSync(exportPath)) {
+      throw new Error(`Không tìm thấy file export bài viết: ${exportPath}`);
+    }
+    return { posts: loadExportPosts(exportPath), source: exportPath };
+  }
+
   try {
     const exportPath = explicitPath ?? resolveDefaultExportPath(log);
     if (!fs.existsSync(exportPath)) {
@@ -459,12 +484,40 @@ export async function runCheckinDemoSeed(
   );
 
   log('=== Check-in demo seed ===');
-  const { posts, source } = await loadDemoPosts(em, options.postsExportPath, log);
-  log(`Posts export: ${source}`);
+  const postsSource = options.postsSource ?? 'auto';
+  const { posts, source } = await loadDemoPosts(
+    em,
+    options.postsExportPath,
+    log,
+    postsSource,
+  );
+  log(`Posts source: ${source}`);
   log(`Target events: ${eventCount}`);
 
-  const bootstrap = await runSuperadminBootstrap(em, log);
-  await seedDemoStudentRecords(em, log);
+  const bootstrap = options.skipBootstrap
+    ? {
+        rolesInserted: 0,
+        rolesUpdated: 0,
+        rolesSkipped: 0,
+        usersInserted: 0,
+        usersUpdated: 0,
+        usersSkipped: 0,
+        userRolesInserted: 0,
+        userRolesSkipped: 0,
+        pageContentsInserted: 0,
+        pageContentsSkipped: 0,
+      }
+    : await runSuperadminBootstrap(em, log);
+
+  if (!options.skipBootstrap) {
+    log('Bootstrap superadmin + tài khoản dev.');
+  } else {
+    log('Skip bootstrap (db:seed đã chạy).');
+  }
+
+  if (!options.skipStudents) {
+    await seedDemoStudentRecords(em, log);
+  }
 
   if (!posts.length) {
     throw new Error('Export không có bài viết published để tạo sự kiện demo.');
@@ -521,4 +574,16 @@ export async function runCheckinDemoSeed(
     eventsBackfilled,
     registrationsCreated,
   };
+}
+
+/** Seed sự kiện + đăng ký demo từ bài viết published trong DB (`pnpm db:event`). */
+export async function runCheckinEventSeedFromPosts(
+  em: EntityManager,
+  options: Omit<CheckinDemoSeedOptions, 'postsSource' | 'skipBootstrap'> = {},
+): Promise<CheckinDemoSeedResult> {
+  return runCheckinDemoSeed(em, {
+    ...options,
+    postsSource: 'database',
+    skipBootstrap: true,
+  });
 }

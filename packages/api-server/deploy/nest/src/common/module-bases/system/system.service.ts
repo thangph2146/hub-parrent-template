@@ -179,6 +179,39 @@ function shouldSkipImportProperty(prop: EntityProperty): boolean {
   return false;
 }
 
+/** Excel ô trống → thiếu key; NOT NULL không default → lỗi MySQL khi insert. */
+function fillRequiredImportScalarDefaults(
+  meta: { properties: Record<string, EntityProperty> },
+  row: Record<string, unknown>,
+): Record<string, unknown> {
+  const out = { ...row };
+  for (const prop of Object.values(meta.properties)) {
+    if (shouldSkipImportProperty(prop)) continue;
+    if (isManyToOneImportProperty(prop)) continue;
+    if (prop.primary && (prop as { autoincrement?: boolean }).autoincrement) {
+      continue;
+    }
+    if (prop.nullable) continue;
+    if (prop.default != null) continue;
+
+    const key = prop.name;
+    const current = out[key];
+    if (current !== undefined && current !== null) continue;
+
+    const typeStr = String(prop.type ?? '').toLowerCase();
+    const colType = String(prop.columnTypes?.[0] ?? '').toLowerCase();
+    if (
+      typeStr.includes('string') ||
+      typeStr.includes('text') ||
+      colType.includes('char') ||
+      colType.includes('text')
+    ) {
+      out[key] = '';
+    }
+  }
+  return out;
+}
+
 const IMPORT_DATE_SCALAR_PROP_NAMES = new Set([
   'createdAt',
   'updatedAt',
@@ -1646,20 +1679,43 @@ export class BaseSystemService {
     return filtered;
   }
 
+  /** MySQL + FOREIGN_KEY_CHECKS=0: xóa user rồi insert lại cùng transaction — FK tạm orphan, không cần UPDATE hàng loạt. */
+  private shouldFastClearUsersForImport(
+    isMysqlFamily: boolean,
+    skipClear: boolean,
+  ): boolean {
+    return isMysqlFamily && !skipClear;
+  }
+
   private async clearUsersTableForImport(
     em: EntityManager,
     preserveUserId?: number,
+    options?: { fastPath?: boolean },
   ): Promise<void> {
-    await this.detachUserForeignKeysBeforeImportClear(em, preserveUserId);
+    const started = Date.now();
+    if (!options?.fastPath) {
+      await this.detachUserForeignKeysBeforeImportClear(em, preserveUserId);
+      this.logger.log(
+        `Import user clear: detach FK ${Date.now() - started}ms`,
+      );
+    } else {
+      this.logger.log(
+        'Import user clear: fast path (MySQL FK_CHECKS=0, bỏ qua detach FK hàng loạt).',
+      );
+    }
+    const deleteStarted = Date.now();
     if (preserveUserId != null) {
       const deleted = await em.nativeDelete(this.modelEntity('user'), {
         id: { $ne: preserveUserId },
       });
       this.logger.log(
-        `Import user: giữ user #${preserveUserId} cho phiên import; đã xóa ${deleted} user khác.`,
+        `Import user: giữ user #${preserveUserId} cho phiên import; đã xóa ${deleted} user khác (${Date.now() - deleteStarted}ms).`,
       );
     } else {
       await em.nativeDelete(this.modelEntity('user'), {});
+      this.logger.debug(
+        `Import user clear: nativeDelete all ${Date.now() - deleteStarted}ms`,
+      );
     }
     em.clear();
   }
@@ -1672,7 +1728,7 @@ export class BaseSystemService {
     em: EntityManager,
     preserveUserId?: number,
   ): Promise<void> {
-    await this.detachNullableUserForeignKeys(em);
+    await this.detachNullableUserForeignKeys(em, preserveUserId);
     if (preserveUserId == null) return;
 
     const notPreserved = { $ne: preserveUserId };
@@ -1744,37 +1800,44 @@ export class BaseSystemService {
   }
 
   /**
-   * Trước khi xóa toàn bộ users: bỏ liên kết nullable tới users (FK thường là NO ACTION).
-   * Import `?model=user` không xóa contact_requests/messages/students trước — cần bước này.
+   * Trước khi xóa users: bỏ liên kết nullable tới users (FK thường là NO ACTION).
+   * Khi giữ user đang import (`preserveUserId`), chỉ gỡ FK trỏ tới user sẽ bị xóa —
+   * tránh UPDATE toàn bảng (vd. contact_requests hàng nghìn dòng) gây lock chậm.
    */
   private async detachNullableUserForeignKeys(
     em: EntityManager,
+    preserveUserId?: number,
   ): Promise<void> {
-    const contactRequestEntity = this.entityByModelName.contactRequest;
-    if (contactRequestEntity) {
-      await em.nativeUpdate(
-        contactRequestEntity,
-        {},
-        {
-          submittedBy: null,
-          assignedTo: null,
-        },
-      );
-    }
+    const nullifyNullableUserFk = async (
+      modelKey: string,
+      relations: string[],
+    ): Promise<void> => {
+      const entity = this.entityByModelName[modelKey];
+      if (!entity) return;
 
-    const messageEntity = this.entityByModelName.message;
-    if (messageEntity) {
-      await em.nativeUpdate(
-        messageEntity,
-        {},
-        { receiver: null, sender: null },
-      );
-    }
+      if (preserveUserId == null) {
+        const patch: Record<string, null> = {};
+        for (const relation of relations) patch[relation] = null;
+        await em.nativeUpdate(entity, {}, patch);
+        return;
+      }
 
-    const studentEntity = this.entityByModelName.student;
-    if (studentEntity) {
-      await em.nativeUpdate(studentEntity, {}, { user: null });
-    }
+      const notPreserved = { $ne: preserveUserId };
+      for (const relation of relations) {
+        await em.nativeUpdate(
+          entity,
+          { [relation]: notPreserved },
+          { [relation]: null },
+        );
+      }
+    };
+
+    await nullifyNullableUserFk('contactRequest', [
+      'submittedBy',
+      'assignedTo',
+    ]);
+    await nullifyNullableUserFk('message', ['receiver', 'sender']);
+    await nullifyNullableUserFk('student', ['user']);
   }
 
   /**
@@ -1798,7 +1861,7 @@ export class BaseSystemService {
     await em.nativeDelete(this.modelEntity('category'), {});
   }
 
-  /** Thứ tự xóa trước import — RBAC bundle: role TRUNCATE user_roles, bỏ clear userRole riêng. */
+  /** Thứ tự xóa trước import — RBAC bundle: role xóa user_roles trước, bỏ clear userRole riêng. */
   private resolveImportClearOrder(modelNames: string[]): string[] {
     const set = new Set(modelNames);
     const hasRbacBundle =
@@ -1818,37 +1881,77 @@ export class BaseSystemService {
   }
 
   /** Excel/JSON export dùng __HUB_NULL__ — sửa cột date nullable bị ghi literal sau import. */
+  private resolveRepairNullMarkerTables(importedModelNames?: string[]): string[] {
+    const repairableModels = new Set([
+      'role',
+      'user',
+      'category',
+      'tag',
+      'post',
+      'contactRequest',
+      'seoMeta',
+      'pageContent',
+    ]);
+    if (!importedModelNames?.length) {
+      return [
+        'roles',
+        'users',
+        'categories',
+        'tags',
+        'posts',
+        'contact_requests',
+        'seo_metas',
+        'page_contents',
+      ];
+    }
+    return [
+      ...new Set(
+        importedModelNames
+          .filter((m) => repairableModels.has(m))
+          .map((m) => this.getModelTableName(m)),
+      ),
+    ];
+  }
+
   private async repairImportNullMarkerValues(
     em: EntityManager,
+    importedModelNames?: string[],
   ): Promise<void> {
     const conn = em.getConnection();
     const driverName = em.getDriver().constructor.name;
     if (!/mysql|mariadb/i.test(driverName)) return;
 
-    const tablesWithSoftDelete = [
-      'roles',
-      'users',
-      'categories',
-      'tags',
-      'posts',
-      'comments',
-      'contact_requests',
-      'seo_metas',
-      'page_contents',
-    ];
-    for (const table of tablesWithSoftDelete) {
+    const tables = this.resolveRepairNullMarkerTables(importedModelNames);
+    for (const table of tables) {
       try {
+        const tableStarted = Date.now();
+        const countRows = await conn.execute(
+          `SELECT COUNT(*) AS cnt FROM \`${table}\` WHERE \`deletedAt\` = ? LIMIT 1`,
+          [EXCEL_NULL_MARKER],
+        );
+        const needRepair = Number(
+          (countRows as { cnt?: number }[] | { cnt?: number })?.[0]?.cnt ??
+            (countRows as { cnt?: number })?.cnt ??
+            0,
+        );
+        if (needRepair <= 0) continue;
+
         const updated = await conn.execute(
           `UPDATE \`${table}\` SET \`deletedAt\` = NULL WHERE \`deletedAt\` = ?`,
           [EXCEL_NULL_MARKER],
         );
+        const elapsed = Date.now() - tableStarted;
         const count =
           typeof updated === 'number'
             ? updated
             : Number((updated as { affectedRows?: number })?.affectedRows ?? 0);
         if (count > 0) {
           this.logger.log(
-            `Import repair: ${table}.deletedAt — đã chuyển ${count} giá trị ${EXCEL_NULL_MARKER} → NULL.`,
+            `Import repair: ${table}.deletedAt — đã chuyển ${count} giá trị ${EXCEL_NULL_MARKER} → NULL (${elapsed}ms).`,
+          );
+        } else if (elapsed > 200) {
+          this.logger.warn(
+            `Import repair: ${table}.deletedAt — 0 dòng, nhưng mất ${elapsed}ms (có thể chờ lock).`,
           );
         }
       } catch {
@@ -1865,9 +1968,12 @@ export class BaseSystemService {
     isMysqlFamily: boolean,
     isSqlite: boolean,
     preserveUserId?: number,
+    skipClear: boolean = false,
   ): Promise<void> {
     if (mName === 'user') {
-      await this.clearUsersTableForImport(em, preserveUserId);
+      await this.clearUsersTableForImport(em, preserveUserId, {
+        fastPath: this.shouldFastClearUsersForImport(isMysqlFamily, skipClear),
+      });
       return;
     }
     if (mName === 'category') {
@@ -1876,17 +1982,9 @@ export class BaseSystemService {
       return;
     }
     if (mName === 'role') {
-      const conn = em.getConnection();
-      if (isMysqlFamily) {
-        await conn.execute('TRUNCATE TABLE `user_roles`');
-        await conn.execute('TRUNCATE TABLE `roles`');
-      } else if (isSqlite) {
-        await conn.execute('DELETE FROM user_roles');
-        await conn.execute('DELETE FROM roles');
-      } else {
-        await em.nativeDelete(this.modelEntity('userRole'), {});
-        await em.nativeDelete(this.modelEntity('role'), {});
-      }
+      // DELETE trong transaction — TRUNCATE là DDL (implicit commit + metadata lock mạnh trên MySQL).
+      await em.nativeDelete(this.modelEntity('userRole'), {});
+      await em.nativeDelete(this.modelEntity('role'), {});
       em.clear();
       return;
     }
@@ -1988,9 +2086,10 @@ export class BaseSystemService {
               isMysqlFamily,
               isSqlite,
               mName === 'user' ? preserveUserId : undefined,
+              skipClear,
             );
             clearMsByModel.set(mName, Date.now() - clearStart);
-            this.logger.debug(
+            this.logger.log(
               `Import clear ${mName}: ${Date.now() - clearStart}ms`,
             );
           }
@@ -2043,12 +2142,20 @@ export class BaseSystemService {
         }
 
         if (!skipClear && modelNames.includes('role')) {
-          await this.repairImportNullMarkerValues(em);
+          // JSON RBAC cuối phiên: deletedAt đã null — bỏ repair (UPDATE users/roles hay chờ lock ~50s/lần).
+          const seedLinksStarted = Date.now();
           await this.bootstrap.ensureSeedUserRoleLinks(em);
+          this.logger.log(
+            `Import RBAC: ensureSeedUserRoleLinks ${Date.now() - seedLinksStarted}ms`,
+          );
+          const actingRoleStarted = Date.now();
           await this.ensureActingUserRoleAfterImportFromHeaders(
             em,
             actingUserIdHeader,
             actingUserEmailHeader,
+          );
+          this.logger.log(
+            `Import RBAC: ensureActingUserRole ${Date.now() - actingRoleStarted}ms`,
           );
         } else if (
           !skipClear &&
@@ -2104,8 +2211,10 @@ export class BaseSystemService {
 
         if (!skipClear) {
           const startTime = Date.now();
-          await this.clearUsersTableForImport(em, preserveUserId);
-          this.logger.debug(
+          await this.clearUsersTableForImport(em, preserveUserId, {
+            fastPath: this.shouldFastClearUsersForImport(isMysqlFamily, skipClear),
+          });
+          this.logger.log(
             `Cleared data from user in ${Date.now() - startTime}ms`,
           );
         }
@@ -2368,7 +2477,7 @@ export class BaseSystemService {
       }
       out[prop.name] = val;
     }
-    return out;
+    return fillRequiredImportScalarDefaults(meta, out);
   }
 
   getModels() {
@@ -3040,10 +3149,11 @@ export class BaseSystemService {
                 isMysqlFamily,
                 isSqlite,
                 mName === 'user' ? preserveUserId : undefined,
+                skipClear,
               );
               const clearMs = Date.now() - startTime;
               clearMsByModel.set(mName, clearMs);
-              this.logger.debug(`Cleared data from ${mName} in ${clearMs}ms`);
+              this.logger.log(`Cleared data from ${mName} in ${clearMs}ms`);
             } catch (error) {
               this.logger.error(`Error clearing model ${mName}:`, error);
               throw error;
@@ -3117,7 +3227,7 @@ export class BaseSystemService {
           this.logger.debug(
             'Sau import role: bổ sung lại user_roles seed (nếu user + role tồn tại).',
           );
-          await this.repairImportNullMarkerValues(em);
+          await this.repairImportNullMarkerValues(em, [resolvedTargetModel]);
           await this.bootstrap.ensureSeedUserRoleLinks(em);
           await this.ensureActingUserRoleAfterImportFromHeaders(
             em,

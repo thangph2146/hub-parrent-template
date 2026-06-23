@@ -7,12 +7,6 @@ const { TEMPLATE_BANNER } = require('../../../config/template.config.cjs')
 const { writeFileWithRetry } = require('../fs-write-retry.cjs')
 
 const SEED_RUNNERS = [
-  {
-    moduleIds: ['events', 'event-registrations'],
-    importPath: '../seeds/checkin-demo.runner',
-    fn: 'runCheckinDemoSeed',
-    includesBootstrap: true,
-  },
   { moduleId: 'products', importPath: '../seeds/products-sample.runner', fn: 'seedSampleProducts' },
   { moduleId: 'promo-codes', importPath: '../seeds/promo-codes-sample.runner', fn: 'seedSamplePromoCodes' },
   { moduleId: 'orders', importPath: '../seeds/orders-sample.runner', fn: 'seedSampleOrders' },
