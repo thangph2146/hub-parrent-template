@@ -71,6 +71,7 @@ export {
   getAdminApiCallsSince,
   getLastAdminApiCall,
   recordAdminApiCall,
+  recordAdminApiCallPending,
   clearAdminApiCallTrace,
   buildAdminApiUrl,
   getAdminApiBaseUrl,

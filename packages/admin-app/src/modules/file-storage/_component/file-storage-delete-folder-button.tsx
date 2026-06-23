@@ -36,7 +36,6 @@ export function FileStorageDeleteFolderButton({
     try {
       await deleteStorageFolder(diskPath)
       toast.success(`Đã xóa thư mục «${folderLabel}»`, { id: pending })
-      setConfirmOpen(false)
       await onDeleted()
     } catch (err) {
       toast.error(
@@ -90,7 +89,6 @@ export function FileStorageDeleteFolderButton({
         confirmLabel="Xóa thư mục"
         cancelLabel="Huỷ"
         confirmDestructive
-        confirmLoading={deleting}
         onConfirm={runDelete}
       />
     </>

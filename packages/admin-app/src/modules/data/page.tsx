@@ -312,6 +312,7 @@ function DataBackupPageInner() {
       }
       importProgressRef.current = pendingState
       setImportProgress(pendingState)
+      const importStartedAt = Date.now()
 
       try {
         const config = await api.system.getImportConfig()
@@ -328,6 +329,7 @@ function DataBackupPageInner() {
           },
         })
         const toastOpts = {
+          copyStartedAt: importStartedAt,
           copyReport:
             result.copyReport ??
             buildImportProgressReportFromState(importProgressRef.current),
@@ -363,11 +365,12 @@ function DataBackupPageInner() {
         importProgressRef.current = errorState
         setImportProgress(errorState)
         toast.error(message, {
+          copyStartedAt: importStartedAt,
           copyReport: buildImportProgressReportFromState(errorState),
         })
       }
     },
-    [api, queryClient, resetImportProgress]
+    [api, queryClient]
   )
 
   const importJsonFile = async (file: File | null): Promise<void> => {

@@ -24,7 +24,13 @@ export type ConfirmActionDialogProps = {
   icon?: ReactNode
   confirmDestructive?: boolean
   confirmDisabled?: boolean
+  /** Chỉ dùng khi `dismissOnConfirm={false}` — spinner trên nút xác nhận. */
   confirmLoading?: boolean
+  /**
+   * Đóng dialog ngay khi bấm xác nhận; handler / `useAdminMutation` hiển thị toast loading.
+   * Mặc định `true`. Đặt `false` cho bước wizard (chuyển sang dialog khác trước khi gọi API).
+   */
+  dismissOnConfirm?: boolean
   contentClassName?: string
   footerClassName?: string
   titleClassName?: string
@@ -41,6 +47,7 @@ export function ConfirmActionDialog({
   confirmDestructive = false,
   confirmDisabled = false,
   confirmLoading = false,
+  dismissOnConfirm = true,
   onConfirm,
   contentClassName,
   footerClassName,
@@ -72,11 +79,15 @@ export function ConfirmActionDialog({
             }
             onClick={(event) => {
               event.preventDefault()
+              if (confirmDisabled) return
+              if (dismissOnConfirm) {
+                onOpenChange(false)
+              }
               void Promise.resolve(onConfirm())
             }}
-            disabled={confirmDisabled}
+            disabled={confirmDisabled || (!dismissOnConfirm && confirmLoading)}
           >
-            {confirmLoading ? (
+            {!dismissOnConfirm && confirmLoading ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
               confirmLabel

@@ -50,6 +50,8 @@ function deleteConfirm(row: FileStorageRow) {
     confirmLabel: "Xóa",
 
     destructive: true,
+
+    dismissOnConfirm: true,
   }
 }
 

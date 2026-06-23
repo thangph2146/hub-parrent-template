@@ -149,6 +149,7 @@ import {
   DataTableRowActionsRowProvider,
   DataTableScopeProvider,
 } from "./data-table-row-actions-registry"
+import { resolveActionDismissOnConfirm } from "./row-action-confirm"
 export type AdminDataTableBulkAction<TData> = {
   id: string
   label: string
@@ -178,6 +179,8 @@ export type AdminDataTableBulkAction<TData> = {
         description?: string | ((selectedRows: TData[]) => ReactNode)
         confirmLabel?: string
         destructive?: boolean
+        /** Đóng dialog ngay khi bấm xác nhận — handler tự hiển thị toast loading/kết quả. */
+        dismissOnConfirm?: boolean
       }
 }
 
@@ -1554,17 +1557,30 @@ export function AdminDataTable<TData>({
 
   const handleConfirmAction = useCallback(async () => {
     if (!confirmAction) return
-    setRunningBulkActionId(confirmAction.id)
+    const dismissOnConfirm = resolveActionDismissOnConfirm(
+      typeof confirmAction.confirm === "object"
+        ? confirmAction.confirm.dismissOnConfirm
+        : undefined,
+    )
+    const action = confirmAction
+
+    if (dismissOnConfirm) {
+      setConfirmAction(null)
+    }
+
+    setRunningBulkActionId(action.id)
     try {
-      await confirmAction.onAction(selectedRows)
-      if (confirmAction.clearSelectionOnSuccess ?? true) {
+      await action.onAction(selectedRows)
+      if (action.clearSelectionOnSuccess ?? true) {
         table.resetRowSelection()
       }
     } catch {
       // Caller handles user-facing errors (toast, etc.)
     } finally {
       setRunningBulkActionId(null)
-      setConfirmAction(null)
+      if (!dismissOnConfirm) {
+        setConfirmAction(null)
+      }
     }
   }, [confirmAction, selectedRows, table])
 

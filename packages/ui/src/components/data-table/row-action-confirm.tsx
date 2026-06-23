@@ -26,6 +26,8 @@ export type DataTableRowActionConfirm =
       description?: ReactNode
       confirmLabel?: string
       destructive?: boolean
+      /** Đóng dialog ngay khi bấm xác nhận — handler tự hiển thị toast loading/kết quả. */
+      dismissOnConfirm?: boolean
     }
 
 export type ResolvedDataTableRowActionConfirm = {
@@ -33,6 +35,12 @@ export type ResolvedDataTableRowActionConfirm = {
   description?: ReactNode
   confirmLabel: string
   destructive?: boolean
+  dismissOnConfirm?: boolean
+}
+
+/** Mặc định đóng dialog khi xác nhận — toast loading/kết quả do handler hoặc mutation. */
+export function resolveActionDismissOnConfirm(explicit?: boolean): boolean {
+  return explicit !== false
 }
 
 const DANGER_ACTION_KEYS = new Set([
@@ -57,6 +65,7 @@ function defaultConfirmForAction(
         "Bản ghi sẽ được chuyển vào thùng rác và có thể khôi phục sau.",
       confirmLabel: action.label || "Xóa tạm",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
 
@@ -66,6 +75,7 @@ function defaultConfirmForAction(
       description: action.hint ?? "Hành động này không thể hoàn tác.",
       confirmLabel: action.label || "Xóa vĩnh viễn",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
 
@@ -74,6 +84,7 @@ function defaultConfirmForAction(
       title: "Khôi phục bản ghi?",
       description: action.hint ?? "Bản ghi sẽ trở lại danh sách chính.",
       confirmLabel: action.label || "Khôi phục",
+      dismissOnConfirm: true,
     }
   }
 
@@ -85,6 +96,7 @@ function defaultConfirmForAction(
         "Tài khoản sẽ bị vô hiệu hóa và phiên đăng nhập hiện tại có thể bị thu hồi.",
       confirmLabel: action.label || "Khoá",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
 
@@ -93,6 +105,7 @@ function defaultConfirmForAction(
       title: "Kích hoạt tài khoản?",
       description: action.hint ?? "Cho phép đăng nhập và sử dụng lại.",
       confirmLabel: action.label || "Kích hoạt",
+      dismissOnConfirm: true,
     }
   }
 
@@ -102,6 +115,7 @@ function defaultConfirmForAction(
       description: action.hint ?? "Thao tác này có thể không hoàn tác.",
       confirmLabel: action.label || "Xác nhận",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
 
@@ -128,6 +142,7 @@ export function buildAdminRowActionConfirm(
         "Bản ghi sẽ được chuyển vào thùng rác và có thể khôi phục sau.",
       confirmLabel: labels?.softDelete ?? "Xóa tạm",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
   if (key === "purge") {
@@ -136,6 +151,7 @@ export function buildAdminRowActionConfirm(
       description: "Hành động này không thể hoàn tác.",
       confirmLabel: labels?.purge ?? "Xóa vĩnh viễn",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
   if (key === "restore") {
@@ -143,6 +159,7 @@ export function buildAdminRowActionConfirm(
       title: `Khôi phục ${quoted}?`,
       description: "Bản ghi sẽ trở lại danh sách chính.",
       confirmLabel: labels?.restore ?? "Khôi phục",
+      dismissOnConfirm: true,
     }
   }
   if (key === "toggle-inactive" || key === "deactivate") {
@@ -152,6 +169,7 @@ export function buildAdminRowActionConfirm(
         "Tài khoản sẽ bị vô hiệu hóa và phiên đăng nhập hiện tại có thể bị thu hồi.",
       confirmLabel: labels?.lock ?? "Khoá",
       destructive: true,
+      dismissOnConfirm: true,
     }
   }
   if (key === "toggle-active" || key === "activate") {
@@ -159,6 +177,7 @@ export function buildAdminRowActionConfirm(
       title: `Kích hoạt ${quoted}?`,
       description: "Cho phép đăng nhập và sử dụng lại.",
       confirmLabel: labels?.activate ?? "Kích hoạt",
+      dismissOnConfirm: true,
     }
   }
   return defaultConfirmForAction({
@@ -213,6 +232,7 @@ export function normalizeResolvedRowActionConfirm(
       confirmLabel: action.label || "Xác nhận",
       destructive:
         action.menuVariant === "destructive" || action.group === "danger",
+      dismissOnConfirm: true,
     }
   }
 
@@ -221,6 +241,7 @@ export function normalizeResolvedRowActionConfirm(
     description: resolved.description ?? action.hint,
     confirmLabel: resolved.confirmLabel ?? action.label ?? "Xác nhận",
     destructive: resolved.destructive,
+    dismissOnConfirm: resolveActionDismissOnConfirm(resolved.dismissOnConfirm),
   }
 }
 
@@ -287,14 +308,29 @@ export function useRowActionConfirm(
 
   const handleConfirm = useCallback(async () => {
     if (!pendingAction) return
-    setRunning(true)
-    try {
-      await pendingAction.action.onClick()
+    const { action, confirm } = pendingAction
+    const dismissOnConfirm = resolveActionDismissOnConfirm(
+      confirm.dismissOnConfirm,
+    )
+
+    if (dismissOnConfirm) {
       setPendingAction(null)
+    } else {
+      setRunning(true)
+    }
+
+    try {
+      await action.onClick()
+      if (!dismissOnConfirm) {
+        setPendingAction(null)
+      }
     } catch {
-      // Giữ dialog mở; handler thường đã toast lỗi.
+      // dismissOnConfirm: handler đã toast lỗi; dialog đã đóng.
+      // Mặc định: giữ dialog mở khi lỗi.
     } finally {
-      setRunning(false)
+      if (!dismissOnConfirm) {
+        setRunning(false)
+      }
     }
   }, [pendingAction])
 

@@ -22,6 +22,9 @@ import type { FileStorageRow } from "./types"
 import {
   formatFileSize,
   formatUploadOwnerCell,
+  FILE_STORAGE_PREVIEW_COL_CLASS,
+  FILE_STORAGE_PREVIEW_THUMB_CLASS,
+  FILE_STORAGE_PREVIEW_THUMB_PX,
   isImageStorageRow,
   isVideoStorageRow,
   resolveStorageAssetUrl,
@@ -73,9 +76,9 @@ export function getFileStorageColumns({
 
       enableColumnFilter: false,
 
-      size: 80,
+      size: 76,
 
-      meta: { className: "w-[180px] min-w-[180px] max-w-[180px]" },
+      meta: { className: FILE_STORAGE_PREVIEW_COL_CLASS },
 
       cell: ({ row }) => {
         const item = row.original
@@ -85,10 +88,10 @@ export function getFileStorageColumns({
             <button
               type="button"
               onClick={() => onPreviewImage(item)}
-              className="flex size-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-border bg-muted"
+              className={`flex ${FILE_STORAGE_PREVIEW_THUMB_CLASS} cursor-pointer items-center justify-center overflow-hidden rounded-md border border-border bg-muted`}
             >
               <img
-                src={storageThumbnailUrl(item)}
+                src={storageThumbnailUrl(item, FILE_STORAGE_PREVIEW_THUMB_PX)}
                 alt={item.originalName}
                 className="size-full object-cover"
                 loading="lazy"
@@ -103,12 +106,12 @@ export function getFileStorageColumns({
             <button
               type="button"
               onClick={() => onPreviewVideo(item)}
-              className="relative flex size-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-border bg-muted"
+              className={`relative flex ${FILE_STORAGE_PREVIEW_THUMB_CLASS} cursor-pointer items-center justify-center overflow-hidden rounded-md border border-border bg-muted`}
             >
-              <Film className="size-8 text-muted-foreground" />
+              <Film className="size-5 text-muted-foreground" />
 
               <span className="absolute inset-0 flex items-center justify-center bg-black/25">
-                <Play className="size-6 fill-white text-white" />
+                <Play className="size-4 fill-white text-white" />
               </span>
             </button>
           )
@@ -213,18 +216,13 @@ export function getFileStorageColumns({
             </span>
           )
         }
-        const id = row.original.uploadOwnerId?.trim()
         return (
-          <div className="min-w-0 space-y-0.5" title={title}>
-            <span className="block truncate text-xs font-medium text-foreground">
-              {primary}
-            </span>
-            {id ? (
-              <code className="block truncate text-[10px] text-muted-foreground">
-                {id.length > 22 ? `${id.slice(0, 10)}…${id.slice(-6)}` : id}
-              </code>
-            ) : null}
-          </div>
+          <span
+            className="block truncate text-xs font-medium text-foreground"
+            title={title}
+          >
+            {primary}
+          </span>
         )
       },
     },

@@ -5,7 +5,7 @@ import {
   type Mutation,
   type MutationKey,
 } from "@tanstack/react-query"
-import { toast } from "./hub-toast"
+import { toast } from "./toast"
 import { suppressRealtimeToastAfterMutation } from "./admin-toast-suppress"
 import { resolveAdminOperationError } from "./admin-operation-error"
 import {
@@ -38,6 +38,7 @@ export {
   buildAdminOperationErrorToastPayload,
   buildAdminOperationSuccessToast,
   formatAdminOperationReviewReport,
+  formatStorageOperationCopyReport,
   formatRealtimeNotificationCopyReport,
   adminOperationToastPayloadToOptions,
   adminApiMeta,
@@ -46,6 +47,7 @@ export {
   type AdminApiMeta,
   type AdminOperationReviewContext,
   type AdminOperationToastPayload,
+  type StorageOperationCopyReportInput,
 } from "./admin-operation-toast-config"
 
 export type AdminOperationToastMessages<
@@ -192,18 +194,20 @@ function getAdminToastMeta(
 export function createAdminMutationCache(): MutationCache {
   return new MutationCache({
     onMutate: (_variables, mutation) => {
-      if (getAdminToastMeta(mutation)) {
-        mutationStartedAt.set(mutation, Date.now())
-      }
       const adminToast = getAdminToastMeta(mutation)
+      const startedAt = Date.now()
+      if (adminToast) {
+        mutationStartedAt.set(mutation, startedAt)
+      }
       if (!adminToast?.loading) return
-      const id = toast.loading(adminToast.loading)
+      const id = toast.loading(adminToast.loading, { copyStartedAt: startedAt })
       toastIds.set(mutation, id)
     },
     onSuccess: (data, variables, _context, mutation) => {
       const adminToast = getAdminToastMeta(mutation)
       if (!adminToast) return
       const id = toastIds.get(mutation)
+      const startedAt = mutationStartedAt.get(mutation)
       const message = resolveMessage(adminToast.success, data, variables)
       const customDescription = resolveOptionalMessage(
         adminToast.successDescription,
@@ -215,10 +219,10 @@ export function createAdminMutationCache(): MutationCache {
         buildReviewContext(mutation, { variables, data }),
         customDescription
       )
-      const toastOptions = adminOperationToastPayloadToOptions(
-        payload,
-        id != null ? { id } : undefined
-      )
+      const toastOptions = adminOperationToastPayloadToOptions(payload, {
+        ...(id != null ? { id } : {}),
+        ...(startedAt != null ? { copyStartedAt: startedAt } : {}),
+      })
       const meta = getAdminMutationMeta(mutation)
       suppressRealtimeToastAfterMutation(
         mutation.options.mutationKey,
@@ -234,6 +238,7 @@ export function createAdminMutationCache(): MutationCache {
       const adminToast = getAdminToastMeta(mutation)
       if (!adminToast) return
       const id = toastIds.get(mutation)
+      const startedAt = mutationStartedAt.get(mutation)
       const title = adminToast.error
         ? resolveMessage(adminToast.error, error, variables)
         : resolveAdminOperationError(error)
@@ -247,10 +252,10 @@ export function createAdminMutationCache(): MutationCache {
         buildReviewContext(mutation, { variables, error }),
         customDescription
       )
-      const toastOptions = adminOperationToastPayloadToOptions(
-        payload,
-        id != null ? { id } : undefined
-      )
+      const toastOptions = adminOperationToastPayloadToOptions(payload, {
+        ...(id != null ? { id } : {}),
+        ...(startedAt != null ? { copyStartedAt: startedAt } : {}),
+      })
       const meta = getAdminMutationMeta(mutation)
       suppressRealtimeToastAfterMutation(
         mutation.options.mutationKey,
@@ -296,7 +301,7 @@ export function showAdminOperationSuccessToast(
   message: string,
   ctx: AdminOperationReviewContext,
   customDescription?: string,
-  extra?: { id?: string | number; duration?: number }
+  extra?: { id?: string | number; duration?: number; copyStartedAt?: number }
 ): string | number {
   const payload = buildAdminOperationSuccessToast(
     message,
@@ -313,7 +318,7 @@ export function showAdminOperationErrorToast(
   message: string,
   ctx: AdminOperationReviewContext,
   customDescription?: string,
-  extra?: { id?: string | number; duration?: number }
+  extra?: { id?: string | number; duration?: number; copyStartedAt?: number }
 ): string | number {
   const payload = buildAdminOperationErrorToastPayload(
     message,

@@ -15,7 +15,7 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { Textarea } from "@ui/components/textarea"
-import { AlertTriangle, Camera, GraduationCap, KeyRound, Loader2, MapPin, Save } from "lucide-react"
+import { AlertTriangle, Camera, GraduationCap, KeyRound, Loader2, MapPin, Save, X } from "lucide-react"
 import { Badge } from "@ui/components/badge"
 import {
   AdminListPageHeader,
@@ -85,12 +85,14 @@ type ProfileAvatarPickerProps = {
   avatarPreviewSrc: string
   fullName: string
   avatarInputRef: RefObject<HTMLInputElement | null>
-  uploadingAvatar: boolean
+  busy: boolean
   canChangeAvatar: boolean
   isLoading: boolean
   hasProfile: boolean
   avatarAccept?: string
   onFileSelected: (file: File) => void
+  onRemoveAvatar?: () => void
+  showRemoveButton?: boolean
   compact?: boolean
 }
 
@@ -98,12 +100,14 @@ function ProfileAvatarPicker({
   avatarPreviewSrc,
   fullName,
   avatarInputRef,
-  uploadingAvatar,
+  busy,
   canChangeAvatar,
   isLoading,
   hasProfile,
   avatarAccept,
   onFileSelected,
+  onRemoveAvatar,
+  showRemoveButton = false,
   compact = false,
 }: ProfileAvatarPickerProps) {
   const frameClass = compact
@@ -123,14 +127,26 @@ function ProfileAvatarPicker({
           {fullName ? formatPersonInitials(fullName) : "?"}
         </div>
       )}
+      {showRemoveButton && avatarPreviewSrc && onRemoveAvatar ? (
+        <button
+          type="button"
+          onClick={onRemoveAvatar}
+          disabled={busy || !canChangeAvatar || isLoading || !hasProfile}
+          className="absolute top-1 right-1 flex size-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-50"
+          aria-label="Xóa ảnh đại diện"
+          title="Xóa ảnh đại diện"
+        >
+          <X className="size-3.5" />
+        </button>
+      ) : null}
       <button
         type="button"
         onClick={() => avatarInputRef.current?.click()}
-        disabled={uploadingAvatar || !canChangeAvatar || isLoading || !hasProfile}
+        disabled={busy || !canChangeAvatar || isLoading || !hasProfile}
         className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full border border-border bg-background shadow-sm hover:bg-accent disabled:opacity-50"
-        title="Tải ảnh đại diện"
+        title="Chọn ảnh đại diện"
       >
-        {uploadingAvatar ? (
+        {busy ? (
           <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
         ) : (
           <Camera className="size-3.5 text-muted-foreground" />
@@ -144,6 +160,7 @@ function ProfileAvatarPicker({
         onChange={(e) => {
           const file = e.target.files?.[0]
           if (file) onFileSelected(file)
+          e.target.value = ""
         }}
       />
     </div>
@@ -347,6 +364,11 @@ export function AdminProfilePageInner({
   const [address, setAddress] = useState("")
   const [avatar, setAvatar] = useState("")
   const [studentCode, setStudentCode] = useState("")
+  const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null)
+  const [localAvatarPreviewUrl, setLocalAvatarPreviewUrl] = useState<string | null>(
+    null,
+  )
+  const [avatarMarkedForRemoval, setAvatarMarkedForRemoval] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [avatarChangesUsed, setAvatarChangesUsed] = useState(0)
   const avatarInputRef = useRef<HTMLInputElement>(null)
@@ -355,6 +377,21 @@ export function AdminProfilePageInner({
   const [confirmPassword, setConfirmPassword] = useState("")
 
   const initialAvatarRef = useRef<string | null>(null)
+  const localAvatarPreviewUrlRef = useRef<string | null>(null)
+
+  const revokeLocalAvatarPreview = () => {
+    if (localAvatarPreviewUrlRef.current) {
+      URL.revokeObjectURL(localAvatarPreviewUrlRef.current)
+      localAvatarPreviewUrlRef.current = null
+    }
+    setLocalAvatarPreviewUrl(null)
+  }
+
+  const resetPendingAvatarState = () => {
+    revokeLocalAvatarPreview()
+    setPendingAvatarFile(null)
+    setAvatarMarkedForRemoval(false)
+  }
 
   const email = profile?.email ?? sessionUser?.email ?? ""
 
@@ -384,9 +421,18 @@ export function AdminProfilePageInner({
     [avatarLimit],
   )
 
-  const avatarPreviewSrc = avatar.trim()
-    ? resolveMediaUrl(avatar.trim(), 480)
-    : ""
+  const avatarPreviewSrc = avatarMarkedForRemoval
+    ? localAvatarPreviewUrl ?? ""
+    : localAvatarPreviewUrl ??
+      (avatar.trim() ? resolveMediaUrl(avatar.trim(), 480) : "")
+
+  useEffect(() => {
+    return () => {
+      if (localAvatarPreviewUrlRef.current) {
+        URL.revokeObjectURL(localAvatarPreviewUrlRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!profile || userId == null) return
@@ -396,8 +442,9 @@ export function AdminProfilePageInner({
         ? (profile as { avatar?: string | null }).avatar ?? ""
         : (profile as { avatar?: string | null }).avatar ?? ""
 
+    const normalizedAvatar = profileAvatar.trim() || null
     if (initialAvatarRef.current === null) {
-      initialAvatarRef.current = profileAvatar.trim() || null
+      initialAvatarRef.current = normalizedAvatar
       setAvatarChangesUsed(
         resolveInitialAvatarChangesUsed(
           userId,
@@ -444,77 +491,48 @@ export function AdminProfilePageInner({
     return payload
   }
 
-  const ensureStudentCodeSavedForUpload = async (): Promise<boolean> => {
-    if (!showStudentCode) return true
-    const err = validateNumericStudentCode(studentCode)
-    if (err) {
-      toast.error(err)
-      return false
+  const resolveAvatarForSave = async (): Promise<
+    string | null | undefined
+  > => {
+    if (avatarMarkedForRemoval && !pendingAvatarFile) {
+      return null
     }
-    if (savedStudentCode === studentCode.trim()) return true
-
-    try {
-      const u = await updateAccountProfile.mutateAsync(
-        buildAccountProfilePayload(),
-      )
-      patchSessionProfile({
-        name: u.name ?? fullName.trim(),
-        phone: u.phone,
-        address: u.address,
-        image: u.avatar,
-        updatedAt: u.updatedAt,
-      })
-      return true
-    } catch {
-      return false
+    if (pendingAvatarFile) {
+      if (profileSource === "account") {
+        return (await api.accounts.uploadAvatar(pendingAvatarFile)).url
+      }
+      return (await api.users.uploadAvatar(userId!, pendingAvatarFile)).url
     }
+    const trimmed = avatar.trim()
+    const saved = initialAvatarRef.current ?? ""
+    if (trimmed !== saved) {
+      return trimmed || null
+    }
+    return undefined
   }
 
-  const persistAccountAvatarAfterUpload = async (url: string) => {
-    const payload = buildAccountProfilePayload({ avatar: url })
-    if (!payload.name) {
-      throw new Error("Vui lòng nhập họ tên trước khi lưu ảnh")
-    }
-    const u = await updateAccountProfile.mutateAsync(payload)
-    patchSessionProfile({
-      name: u.name ?? payload.name,
-      phone: u.phone,
-      address: u.address,
-      image: u.avatar,
-      updatedAt: u.updatedAt,
-    })
-  }
-
-  const handleUploadAvatar = async (file: File) => {
+  const handleSelectAvatarFile = (file: File) => {
     if (!userId || !avatarLimit.canChangeAvatar) return
     if (showStudentCode && studentCodeError) {
-      toast.error(`${studentCodeError} Lưu hồ sơ trước khi tải ảnh.`)
+      toast.error(`${studentCodeError} Lưu MSSV hợp lệ trước khi chọn ảnh.`)
       return
     }
-    setUploadingAvatar(true)
-    try {
-      if (profileSource === "account" && showStudentCode) {
-        const ready = await ensureStudentCodeSavedForUpload()
-        if (!ready) return
-      }
 
-      const url = (await api.accounts.uploadAvatar(file)).url
-      setAvatar(url)
+    revokeLocalAvatarPreview()
+    const previewUrl = URL.createObjectURL(file)
+    localAvatarPreviewUrlRef.current = previewUrl
+    setLocalAvatarPreviewUrl(previewUrl)
+    setPendingAvatarFile(file)
+    setAvatarMarkedForRemoval(false)
+    toast.info("Đã chọn ảnh — nhấn Lưu hồ sơ để áp dụng")
+  }
 
-      if (profileSource === "account" && maxAvatarChanges !== null) {
-        await persistAccountAvatarAfterUpload(url)
-        const nextUsed = recordAvatarChange(userId)
-        setAvatarChangesUsed(nextUsed)
-        toast.success("Đã tải và lưu ảnh đại diện")
-        return
-      }
-
-      toast.success("Đã tải ảnh đại diện — nhấn Lưu hồ sơ để áp dụng")
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Lỗi upload ảnh")
-    } finally {
-      setUploadingAvatar(false)
-    }
+  const handleRemoveAvatar = () => {
+    if (!avatarLimit.canChangeAvatar) return
+    revokeLocalAvatarPreview()
+    setPendingAvatarFile(null)
+    setAvatar("")
+    setAvatarMarkedForRemoval(true)
   }
 
   const patchSessionProfile = (fields: {
@@ -548,11 +566,48 @@ export function AdminProfilePageInner({
       toast.error(studentCodeError)
       return
     }
+    if (pendingAvatarFile && !avatarLimit.canChangeAvatar) {
+      toast.error("Không thể đổi ảnh đại diện trên cổng này.")
+      return
+    }
+
+    const avatarWillChange =
+      pendingAvatarFile !== null ||
+      avatarMarkedForRemoval ||
+      avatar.trim() !== (initialAvatarRef.current ?? "")
+
+    setUploadingAvatar(avatarWillChange && pendingAvatarFile !== null)
     try {
+      if (
+        profileSource === "account" &&
+        pendingAvatarFile &&
+        showStudentCode &&
+        studentCodeEditable &&
+        savedStudentCode !== studentCode.trim()
+      ) {
+        await updateAccountProfile.mutateAsync({
+          ...buildAccountProfilePayload(),
+          avatar: initialAvatarRef.current,
+        })
+      }
+
+      let avatarOverride: string | null | undefined
+      if (avatarWillChange) {
+        avatarOverride = await resolveAvatarForSave()
+      }
+
       if (profileSource === "account") {
-        const u = await updateAccountProfile.mutateAsync(
-          buildAccountProfilePayload(),
+        const payload = buildAccountProfilePayload(
+          avatarOverride !== undefined ? { avatar: avatarOverride } : undefined,
         )
+        const u = await updateAccountProfile.mutateAsync(payload)
+        if (avatarWillChange && maxAvatarChanges !== null) {
+          const nextUsed = recordAvatarChange(userId)
+          setAvatarChangesUsed(nextUsed)
+        }
+        initialAvatarRef.current = u.avatar?.trim() || null
+        setAvatar(u.avatar ?? "")
+        resetPendingAvatarState()
         patchSessionProfile({
           name: u.name ?? name,
           phone: u.phone,
@@ -563,15 +618,26 @@ export function AdminProfilePageInner({
         return
       }
 
+      const staffAvatar =
+        avatarOverride !== undefined
+          ? avatarOverride
+          : avatar.trim() || null
       const u = await updateStaffProfile.mutateAsync({
         id: userId,
         input: {
           fullName: name,
           phone: phone.trim() || undefined,
           address: address.trim() || undefined,
-          avatar: avatar.trim() || null,
+          avatar: staffAvatar,
         },
       })
+      if (avatarWillChange && maxAvatarChanges !== null) {
+        const nextUsed = recordAvatarChange(userId)
+        setAvatarChangesUsed(nextUsed)
+      }
+      initialAvatarRef.current = u.avatar?.trim() || null
+      setAvatar(u.avatar ?? "")
+      resetPendingAvatarState()
       patchSessionProfile({
         name: u.fullName ?? name,
         phone: u.phone,
@@ -579,8 +645,13 @@ export function AdminProfilePageInner({
         image: u.avatar,
         updatedAt: u.updatedAt,
       })
-    } catch {
+    } catch (e) {
+      if (pendingAvatarFile) {
+        toast.error(e instanceof Error ? e.message : "Lỗi upload ảnh")
+      }
       /* toast: MutationCache */
+    } finally {
+      setUploadingAvatar(false)
     }
   }
 
@@ -625,6 +696,7 @@ export function AdminProfilePageInner({
     profileSource === "account"
       ? updateAccountProfile.isPending
       : updateStaffProfile.isPending
+  const avatarBusy = uploadingAvatar || savingProfile
   const changingPassword =
     profileSource === "account"
       ? changeAccountPw.isPending
@@ -632,7 +704,7 @@ export function AdminProfilePageInner({
 
   const canUploadAvatar =
     avatarLimit.canChangeAvatar &&
-    !savingProfile &&
+    !avatarBusy &&
     (!showStudentCode || !studentCodeError)
 
   const profileViewPermission =
@@ -728,12 +800,14 @@ export function AdminProfilePageInner({
                       avatarPreviewSrc={avatarPreviewSrc}
                       fullName={fullName}
                       avatarInputRef={avatarInputRef}
-                      uploadingAvatar={uploadingAvatar}
+                      busy={avatarBusy}
                       canChangeAvatar={canUploadAvatar}
                       isLoading={isLoading}
                       hasProfile={Boolean(profile)}
                       avatarAccept={config.avatarAccept}
-                      onFileSelected={(file) => void handleUploadAvatar(file)}
+                      onFileSelected={handleSelectAvatarFile}
+                      onRemoveAvatar={handleRemoveAvatar}
+                      showRemoveButton
                       compact
                     />
                     <div className="min-w-0 flex-1 space-y-3">
@@ -794,9 +868,9 @@ export function AdminProfilePageInner({
                       type="button"
                       className="min-w-32 rounded-lg sm:min-w-40"
                       onClick={() => void handleSaveProfile()}
-                      disabled={isLoading || !profile || savingProfile}
+                      disabled={isLoading || !profile || avatarBusy}
                     >
-                      {savingProfile ? (
+                      {avatarBusy ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
                         <Save className="size-4" />
@@ -812,12 +886,14 @@ export function AdminProfilePageInner({
                     avatarPreviewSrc={avatarPreviewSrc}
                     fullName={fullName}
                     avatarInputRef={avatarInputRef}
-                    uploadingAvatar={uploadingAvatar}
+                    busy={avatarBusy}
                     canChangeAvatar={canUploadAvatar}
                     isLoading={isLoading}
                     hasProfile={Boolean(profile)}
                     avatarAccept={config.avatarAccept}
-                    onFileSelected={(file) => void handleUploadAvatar(file)}
+                    onFileSelected={handleSelectAvatarFile}
+                    onRemoveAvatar={handleRemoveAvatar}
+                    showRemoveButton
                   />
                   {profile && (
                     <div className="flex w-full flex-col gap-2.5">
@@ -896,9 +972,9 @@ export function AdminProfilePageInner({
                       type="button"
                       className="min-w-32 rounded-lg"
                       onClick={() => void handleSaveProfile()}
-                      disabled={isLoading || !profile || savingProfile}
+                      disabled={isLoading || !profile || avatarBusy}
                     >
-                      {savingProfile ? (
+                      {avatarBusy ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
                         <Save className="size-4" />

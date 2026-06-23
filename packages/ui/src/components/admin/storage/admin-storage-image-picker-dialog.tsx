@@ -202,11 +202,8 @@ export function AdminStorageImagePickerDialog({
           confirmLabel="Xóa khỏi kho"
           cancelLabel="Hủy"
           confirmDestructive
-          confirmLoading={deletingBulk}
           onConfirm={async () => {
             await bulkDeleteRef.current?.()
-
-            setBulkDeleteConfirmOpen(false)
           }}
         />
       ) : null}

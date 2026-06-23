@@ -37,6 +37,11 @@ export function resolveStorageAssetUrl(row: StorageAssetRef): string {
 }
 
 /** Thumbnail nhỏ qua `/api/uploads/resized/*` — giảm băng thông trong bảng. */
+export const FILE_STORAGE_PREVIEW_COL_CLASS =
+  "w-[76px] min-w-[76px] max-w-[76px]"
+export const FILE_STORAGE_PREVIEW_THUMB_CLASS = "size-14 shrink-0"
+export const FILE_STORAGE_PREVIEW_THUMB_PX = 56
+
 export function storageThumbnailUrl(row: StorageAssetRef, width = 120): string {
   const base = resolveStorageAssetUrl(row)
   const marker = STORAGE_UPLOADS_PREFIX
@@ -177,7 +182,7 @@ export function formatUploadOwnerCell(row: {
   if (name) {
     return {
       primary: name,
-      title: id ? `${name} (${id})` : name,
+      title: name,
     }
   }
   return {

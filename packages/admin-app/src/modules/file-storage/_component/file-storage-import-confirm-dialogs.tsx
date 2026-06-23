@@ -20,7 +20,7 @@ type FileStorageImportConfirmDialogsProps = {
 
 export function FileStorageImportConfirmDialogs({
   state,
-  importing,
+  importing: _importing,
   onClose,
   onConfirmRestore,
   onConfirmOverwrite,
@@ -50,7 +50,7 @@ export function FileStorageImportConfirmDialogs({
         }
         confirmLabel="Tiếp tục"
         cancelLabel="Huỷ"
-        confirmLoading={importing}
+        dismissOnConfirm={false}
         onConfirm={onConfirmRestore}
       />
 
@@ -76,7 +76,6 @@ export function FileStorageImportConfirmDialogs({
         confirmLabel="Ghi đè tất cả"
         cancelLabel="Chỉ thêm file mới"
         confirmDestructive
-        confirmLoading={importing}
         onConfirm={onConfirmOverwrite}
       />
     </>

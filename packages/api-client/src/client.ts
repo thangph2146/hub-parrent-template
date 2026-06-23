@@ -13,7 +13,7 @@ import {
   printDevApiNetworkError,
   isAbortLikeError,
 } from "@workspace/logger"
-import { recordAdminApiCall, setAdminApiBaseUrl } from "./admin-api-call-trace"
+import { recordAdminApiCall, recordAdminApiCallPending, setAdminApiBaseUrl } from "./admin-api-call-trace"
 
 function readNodeEnv(): string | undefined {
   // Node / SSR: process.env có sẵn. Browser: nhiều bundler (Next, Vite) vẫn thay
@@ -315,6 +315,14 @@ export class ApiClient {
         : Date.now()
     const startedAt = Date.now()
     const requestMeta = { method, path, url }
+
+    recordAdminApiCallPending({
+      method,
+      path,
+      url,
+      startedAt,
+      requestBody: summarizeRequestBodyForTrace(body),
+    })
 
     const authSuffix = this.devLogging ? await this.formatDevAuthSuffix() : ""
     const reqBodyLog =

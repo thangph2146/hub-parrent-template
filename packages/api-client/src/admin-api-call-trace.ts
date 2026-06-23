@@ -12,6 +12,8 @@ export type AdminApiCallRecord = {
   ms: number
   /** Body gửi lên (JSON / FormData summary). */
   requestBody?: unknown
+  /** Request đang chờ response — hiển thị trong báo cáo copy khi toast loading. */
+  pending?: boolean
 }
 
 const MAX_BUFFER = 16
@@ -39,18 +41,49 @@ export function getAdminApiBaseUrl(): string | undefined {
 
 export function recordAdminApiCall(record: AdminApiCallRecord): void {
   const buffer = getBuffer()
-  buffer.push(record)
+  const pendingIdx = buffer.findIndex(
+    (item) =>
+      item.pending &&
+      item.url === record.url &&
+      item.startedAt === record.startedAt,
+  )
+  if (pendingIdx >= 0) {
+    buffer[pendingIdx] = { ...record, pending: undefined }
+  } else {
+    buffer.push(record)
+  }
   while (buffer.length > MAX_BUFFER) buffer.shift()
 }
 
-/** Các request hoàn tất sau `sinceMs` (mặc định: toàn bộ buffer). */
+/** Ghi nhận request vừa gửi — cập nhật khi hoàn tất qua `recordAdminApiCall`. */
+export function recordAdminApiCallPending(
+  record: Pick<
+    AdminApiCallRecord,
+    "method" | "path" | "url" | "startedAt" | "requestBody"
+  >,
+): void {
+  const buffer = getBuffer()
+  buffer.push({
+    ...record,
+    pending: true,
+    completedAt: record.startedAt,
+    ms: 0,
+  })
+  while (buffer.length > MAX_BUFFER) buffer.shift()
+}
+
+/** Các request hoàn tất (hoặc đang pending) sau `sinceMs`. */
 export function getAdminApiCallsSince(sinceMs?: number): AdminApiCallRecord[] {
   const buffer = getBuffer()
   if (sinceMs == null || !Number.isFinite(sinceMs)) {
     return [...buffer]
   }
   const slackMs = 50
-  return buffer.filter((item) => item.completedAt >= sinceMs - slackMs)
+  return buffer.filter((item) =>
+    item.pending
+      ? item.startedAt >= sinceMs - slackMs
+      : item.completedAt >= sinceMs - slackMs,
+  )
 }
 
 export function getLastAdminApiCall(): AdminApiCallRecord | undefined {

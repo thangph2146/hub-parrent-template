@@ -11,6 +11,7 @@ export {
   RowActionConfirmDialog,
   buildAdminRowActionConfirm,
   normalizeResolvedRowActionConfirm,
+  resolveActionDismissOnConfirm,
   resolveRowActionConfirm,
   useDataTableRowActionRunnerOptional,
   useRowActionConfirm,

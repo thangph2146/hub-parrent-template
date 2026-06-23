@@ -158,6 +158,7 @@ export function FileStorageTable({
                 `Bạn đã chọn ${rows.length} file. Các file sẽ bị xóa vĩnh viễn khỏi kho lưu trữ.`,
               confirmLabel: "Xóa",
               destructive: true,
+              dismissOnConfirm: true,
             },
             onAction: onBulkDelete,
           },
@@ -175,6 +176,7 @@ export function FileStorageTable({
                       `Toàn bộ ${total} ${itemLabel} trong tab hiện tại sẽ bị xóa vĩnh viễn. Thao tác chạy trên server (một request), không gửi hàng ngàn request riêng lẻ.`,
                     confirmLabel: "Xóa tất cả",
                     destructive: true,
+                    dismissOnConfirm: true,
                   },
                   onAction: async () => {
                     await onDeleteAllInTab()

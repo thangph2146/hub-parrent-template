@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { toast, type HubToastOptions } from "@ui/components/sonner"
+import { toast, type ToastOptions } from "@ui/components/sonner"
 import { Eye, EyeOff } from "lucide-react"
 import type { AuthUser } from "@workspace/api-client"
 import { Button } from "@ui/components/button"
@@ -215,10 +215,10 @@ export function AdminSignInForm({
     result: AdminLoginResult | unknown,
     mode: "email" | "dev",
     successToast: string,
-    toastOptions?: Pick<HubToastOptions, "copyReport">,
+    toastOptions?: Pick<ToastOptions, "copyReport">,
   ) => {
     const message = resolveLoginFailure(result, config, mode, loginLock)
-    const toastData: HubToastOptions | undefined = toastOptions?.copyReport
+    const toastData: ToastOptions | undefined = toastOptions?.copyReport
       ? { copyReport: toastOptions.copyReport }
       : undefined
     if (message) {

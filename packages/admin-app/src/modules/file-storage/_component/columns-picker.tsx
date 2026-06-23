@@ -10,6 +10,9 @@ import { formatAdminDateTime } from "@workspace/admin-app/lib/format-admin-datet
 import type { FileStorageRow } from "./types"
 import {
   formatFileSize,
+  FILE_STORAGE_PREVIEW_COL_CLASS,
+  FILE_STORAGE_PREVIEW_THUMB_CLASS,
+  FILE_STORAGE_PREVIEW_THUMB_PX,
   isImageStorageRow,
   isVideoStorageRow,
   resolveStorageAssetUrl,
@@ -35,8 +38,8 @@ export function getFileStoragePickerColumns({
       header: "Xem trước",
       enableSorting: false,
       enableColumnFilter: false,
-      size: 80,
-      meta: { className: "w-[180px] min-w-[180px] max-w-[180px]" },
+      size: 76,
+      meta: { className: FILE_STORAGE_PREVIEW_COL_CLASS },
       cell: ({ row }) => {
         const item = row.original
         const pickable = canPick(item)
@@ -49,14 +52,14 @@ export function getFileStoragePickerColumns({
               disabled={!pickable}
               onClick={() => pickable && onPick(item)}
               className={[
-                "flex size-full cursor-pointer items-center justify-center overflow-hidden rounded-md border bg-muted disabled:cursor-not-allowed disabled:opacity-50",
+                `flex ${FILE_STORAGE_PREVIEW_THUMB_CLASS} cursor-pointer items-center justify-center overflow-hidden rounded-md border bg-muted disabled:cursor-not-allowed disabled:opacity-50`,
                 selected
                   ? "ring-2 ring-primary ring-offset-1"
                   : "border-border",
               ].join(" ")}
             >
               <img
-                src={storageThumbnailUrl(item)}
+                src={storageThumbnailUrl(item, FILE_STORAGE_PREVIEW_THUMB_PX)}
                 alt={item.originalName}
                 className="size-full object-cover"
                 loading="lazy"
@@ -68,10 +71,12 @@ export function getFileStoragePickerColumns({
 
         if (isVideoStorageRow(item)) {
           return (
-            <div className="relative flex size-full items-center justify-center overflow-hidden rounded-md border border-border bg-muted">
-              <Film className="size-8 text-muted-foreground" />
+            <div
+              className={`relative flex ${FILE_STORAGE_PREVIEW_THUMB_CLASS} items-center justify-center overflow-hidden rounded-md border border-border bg-muted`}
+            >
+              <Film className="size-5 text-muted-foreground" />
               <span className="absolute inset-0 flex items-center justify-center bg-black/25">
-                <Play className="size-6 fill-white text-white" />
+                <Play className="size-4 fill-white text-white" />
               </span>
             </div>
           )

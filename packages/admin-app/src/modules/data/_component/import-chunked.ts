@@ -29,11 +29,6 @@ type ApiModelTiming = {
   imported: number
 }
 
-type ApiImportTiming = {
-  requestMs: number
-  models: ApiModelTiming[]
-}
-
 function applyRowErrorsToModel(
   model: ImportModelProgress,
   modelName: string,

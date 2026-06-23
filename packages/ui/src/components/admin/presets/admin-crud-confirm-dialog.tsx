@@ -88,12 +88,6 @@ export function AdminCrudConfirmDialog<T>({
     (kind === "purge" && purgeMutation?.isPending) ||
     false
 
-  const anyPending =
-    deleteMutation?.isPending ||
-    restoreMutation?.isPending ||
-    purgeMutation?.isPending ||
-    false
-
   return (
     <AdminConfirmActionDialog
       open
@@ -105,8 +99,7 @@ export function AdminCrudConfirmDialog<T>({
       description={description[kind]}
       confirmLabel={confirmLabel[kind]}
       confirmDestructive={kind !== "restore"}
-      confirmDisabled={anyPending}
-      confirmLoading={isPending}
+      confirmDisabled={isPending}
       onConfirm={() => {
         void handleConfirm()
       }}

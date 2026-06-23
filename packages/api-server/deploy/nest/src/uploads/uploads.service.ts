@@ -7,7 +7,7 @@ import { toEntityId, toEntityIdList } from '../common';
  * (đường dẫn tuyệt đối hoặc tương đối với process.cwd()).
  * VD: STORAGE_DIR=D:/HUB/data hoặc STORAGE_DIR=../shared-data
  */
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { StorageFile } from '../entities/storage-file.entity';
 import { User } from '../entities/user.entity';
@@ -27,7 +27,7 @@ import type { ReadStream } from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
 import { appConfig } from '../config/app.config';
-import { unlinkWithRetry } from '../common';
+import { unlinkWithRetry, isRetryableDeleteError } from '../common';
 import { parseAdminListLimit } from '../common';
 import { ADMIN_TABLE_EXPORT_MAX_LIMIT } from '../common';
 
@@ -98,6 +98,14 @@ import {
 } from './order-image-snapshot';
 import { assertStoragePathMutable } from './storage-protected-paths';
 import {
+  addStorageDeleteTombstone,
+  initStorageDeleteTombstones,
+  isStoragePathTombstoned,
+  preloadStorageDeleteTombstones,
+  removeStorageDeleteTombstone,
+  scheduleStoragePhysicalDelete,
+} from './storage-delete-tombstone';
+import {
   buildStoredUploadFileName,
   resolveImageFileOwnerId,
   storedUploadFilePrefix,
@@ -110,6 +118,7 @@ import {
 
 const STORAGE_DIR = path.normalize(appConfig.storageDir);
 const UPLOADS_DIR = path.normalize(path.join(STORAGE_DIR, 'uploads'));
+const HUB_STORAGE_TRASH_DIR = path.join(STORAGE_DIR, '.hub-trash');
 const IMAGES_DIR = path.normalize(path.join(UPLOADS_DIR, 'images'));
 const FILES_DIR = path.normalize(path.join(UPLOADS_DIR, 'files'));
 const VIDEOS_DIR = path.normalize(path.join(UPLOADS_DIR, 'videos'));
@@ -348,11 +357,17 @@ const STORAGE_LEGACY_SKIP_DIRS = new Set([
   'cache',
   '.git',
   'node_modules',
+  '.hub-trash',
 ]);
 
 @Injectable()
-export class UploadsService {
+export class UploadsService implements OnModuleInit {
   constructor(private readonly em: EntityManager) {}
+
+  async onModuleInit(): Promise<void> {
+    initStorageDeleteTombstones(STORAGE_DIR);
+    await preloadStorageDeleteTombstones();
+  }
 
   private getImagesDir(): string {
     return IMAGES_DIR;
@@ -645,8 +660,12 @@ export class UploadsService {
       const entries = await readdir(dirPath, { withFileTypes: true });
       for (const entry of entries) {
         if (entry.name.endsWith('.meta.json')) continue;
+        if (entry.name.includes('.pending-') && entry.name.endsWith('.tmp')) {
+          continue;
+        }
         const full = path.join(dirPath, entry.name);
         const rel = baseRelative ? `${baseRelative}/${entry.name}` : entry.name;
+        if (isStoragePathTombstoned(rel)) continue;
         if (entry.isDirectory()) {
           const sub = await this.scanImagesInDir(full, rel, serveBaseUrl);
           result.push(...sub);
@@ -1762,8 +1781,26 @@ export class UploadsService {
   async deleteFile(relativePath: string): Promise<void> {
     assertStoragePathMutable(relativePath);
     const { fullPath } = this.resolvePath(relativePath);
-    await this.deleteResizedCacheFor(relativePath);
-    await unlinkWithRetry(fullPath);
+    const st = await stat(fullPath).catch(() => null);
+    if (!st?.isFile()) {
+      throw new Error(`File không tồn tại: ${relativePath}`);
+    }
+    void this.deleteResizedCacheFor(relativePath).catch(() => undefined);
+    try {
+      await unlinkWithRetry(fullPath, {
+        quarantineDirectory: HUB_STORAGE_TRASH_DIR,
+        maxWaitMs: 4_000,
+      });
+      await removeStorageDeleteTombstone(relativePath);
+    } catch (err) {
+      if (!isRetryableDeleteError(err)) throw err;
+      await addStorageDeleteTombstone(relativePath);
+      scheduleStoragePhysicalDelete(
+        fullPath,
+        relativePath,
+        HUB_STORAGE_TRASH_DIR,
+      );
+    }
     await this.deleteStorageFileMeta(relativePath);
   }
 

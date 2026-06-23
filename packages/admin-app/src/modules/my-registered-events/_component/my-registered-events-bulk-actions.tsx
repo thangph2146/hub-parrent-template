@@ -2,7 +2,7 @@
 
 import type { Dispatch, SetStateAction } from "react"
 import { XCircle } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@ui/components/sonner"
 import type { AdminDataTableBulkAction } from "@ui/components/data-table"
 import type { createStoreSyncSdk } from "@workspace/api-client"
 import {

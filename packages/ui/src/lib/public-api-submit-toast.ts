@@ -106,7 +106,7 @@ export function buildPublicApiSubmitCopyReport(
 
   lines.push(
     "",
-    "Ghi chú: Nút Sao chép chỉ hiện trong development.",
+    "Ghi chú: Báo cáo API public — thời lượng xử lý được gắn khi bấm Sao chép.",
   )
 
   return lines.join("\n")

@@ -1,9 +1,10 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
-import { toast } from "@ui/components/sonner"
+import { toast, type ToastOptions } from "@ui/components/sonner"
+import { formatStorageOperationCopyReport } from "@ui/lib/admin-operation-toast-config"
+import { getAdminApiCallsSince } from "@workspace/api-client"
 import {
-  deleteUploadedFile,
   deleteUploadedFilesBulk,
   exportFileStorageArchive,
   fetchAllFileStorageRows,
@@ -27,6 +28,33 @@ function triggerBrowserDownload(blob: Blob, filename: string): void {
   anchor.click()
   anchor.remove()
   URL.revokeObjectURL(url)
+}
+
+function buildFileStorageToastOptions(input: {
+  startedAt: number
+  operationLabel: string
+  variables: unknown
+  data?: unknown
+  error?: unknown
+  adminApi?: { method: string; path: string }
+  extra?: Pick<ToastOptions, "id" | "duration">
+}): ToastOptions {
+  const reportInput = {
+    operationLabel: input.operationLabel,
+    variables: input.variables,
+    data: input.data,
+    error: input.error,
+    adminApi: input.adminApi,
+  }
+  return {
+    copyStartedAt: input.startedAt,
+    copyReportBuilder: () =>
+      formatStorageOperationCopyReport({
+        ...reportInput,
+        apiCalls: getAdminApiCallsSince(input.startedAt),
+      }),
+    ...input.extra,
+  }
 }
 
 type UseFileStorageActionsOptions = {
@@ -53,24 +81,6 @@ export function useFileStorageActions({
   const [downloadingAll, setDownloadingAll] = useState(false)
   const [importConfirm, setImportConfirm] =
     useState<FileStorageImportConfirmState | null>(null)
-
-  const handleDelete = useCallback(
-    async (row: FileStorageRow) => {
-      if (deletingPath) return
-      setDeletingPath(row.relativePath)
-      try {
-        await deleteUploadedFile(row.relativePath)
-        toast.success("Đã xóa file")
-        await reload()
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi xóa file")
-        throw err
-      } finally {
-        setDeletingPath(null)
-      }
-    },
-    [deletingPath, reload]
-  )
 
   const handleDownload = useCallback(
     async (row: FileStorageRow) => {
@@ -147,26 +157,54 @@ export function useFileStorageActions({
   const runBulkDeletePaths = useCallback(
     async (paths: string[]) => {
       if (!paths.length) return
-      const pending = toast.loading(`Đang xóa ${paths.length} file…`)
+      const startedAt = Date.now()
+      const operationLabel = `File storage — xóa ${paths.length} file`
+      const pending = toast.loading(
+        `Đang xóa ${paths.length} file…`,
+        buildFileStorageToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths },
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+        })
+      )
       try {
         const result = await deleteUploadedFilesBulk(paths)
+        const toastOpts = buildFileStorageToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { paths },
+          data: result,
+          adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+          extra: { id: pending },
+        })
         if (result.failed > 0) {
           const sample = result.errors
             .slice(0, 2)
             .map((entry) => entry.message)
             .join("; ")
-          toast.warning(
-            `Đã xóa ${result.deleted}/${paths.length} file (${result.failed} lỗi)${sample ? `: ${sample}` : ""}`,
-            { id: pending }
-          )
+          const message =
+            result.deleted > 0
+              ? `Đã xóa ${result.deleted}/${paths.length} file (${result.failed} lỗi)${sample ? `: ${sample}` : ""}`
+              : `Không xóa được file${sample ? `: ${sample}` : ""}`
+          const notify = result.deleted > 0 ? toast.warning : toast.error
+          notify(message, toastOpts)
         } else {
-          toast.success(`Đã xóa ${result.deleted} file`, { id: pending })
+          toast.success(`Đã xóa ${result.deleted} file`, toastOpts)
         }
         await reload()
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Lỗi xóa hàng loạt", {
-          id: pending,
-        })
+        toast.error(
+          err instanceof Error ? err.message : "Lỗi xóa hàng loạt",
+          buildFileStorageToastOptions({
+            startedAt,
+            operationLabel,
+            variables: { paths },
+            error: err,
+            adminApi: { method: "POST", path: "/admin/uploads/bulk-delete" },
+            extra: { id: pending },
+          })
+        )
         throw err
       }
     },
@@ -179,6 +217,19 @@ export function useFileStorageActions({
       await runBulkDeletePaths(paths)
     },
     [runBulkDeletePaths]
+  )
+
+  const handleDelete = useCallback(
+    async (row: FileStorageRow) => {
+      if (deletingPath) return
+      setDeletingPath(row.relativePath)
+      try {
+        await runBulkDeletePaths([row.relativePath])
+      } finally {
+        setDeletingPath(null)
+      }
+    },
+    [deletingPath, runBulkDeletePaths]
   )
 
   const handleDeleteAllInTab = useCallback(async () => {

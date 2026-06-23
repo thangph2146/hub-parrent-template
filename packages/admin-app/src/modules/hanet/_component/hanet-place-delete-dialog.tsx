@@ -1,16 +1,7 @@
 "use client"
 
-import { Loader2, Trash2 } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@ui/components/alert-dialog"
+import { Trash2 } from "lucide-react"
+import { AdminConfirmActionDialog } from "@ui/components/admin"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { api } from "@workspace/admin-app/lib/api"
 import type { HanetPlaceOption } from "@workspace/admin-app/lib/hanet-place-parse"
@@ -42,44 +33,29 @@ export function HanetPlaceDeleteDialog({
     },
     onSuccess: () => {
       onSuccess()
-      onClose()
     },
   })
 
   return (
-    <AlertDialog
+    <AdminConfirmActionDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) onClose()
       }}
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center justify-center gap-2 sm:justify-start">
-            <Trash2 className="size-5 text-destructive" aria-hidden />
-            Xóa địa điểm?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Xóa vĩnh viễn{" "}
-            <strong>{place?.name || place?.placeId}</strong> (
-            <code className="text-xs">{place?.placeId}</code>) trên HANET và gỡ
-            khỏi app partner. Thao tác không hoàn tác.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={mutation.isPending}>Hủy</AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            disabled={mutation.isPending}
-            onClick={() => mutation.mutate()}
-          >
-            {mutation.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : null}
-            Xóa
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      title="Xóa địa điểm?"
+      icon={<Trash2 className="size-5 text-destructive" aria-hidden />}
+      description={
+        <>
+          Xóa vĩnh viễn{" "}
+          <strong>{place?.name || place?.placeId}</strong> (
+          <code className="text-xs">{place?.placeId}</code>) trên HANET và gỡ
+          khỏi app partner. Thao tác không hoàn tác.
+        </>
+      }
+      confirmLabel="Xóa"
+      confirmDestructive
+      confirmDisabled={mutation.isPending}
+      onConfirm={() => mutation.mutate()}
+    />
   )
 }

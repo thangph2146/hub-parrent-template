@@ -1303,11 +1303,9 @@ export default function RbacPage() {
           icon={<Trash2 className="size-4 text-destructive" />}
           confirmLabel="Xóa tạm"
           confirmDestructive
-          confirmLoading={deleteMutation.isPending}
           onConfirm={async () => {
             if (!deleteTarget) return
             await deleteMutation.mutateAsync(deleteTarget.id)
-            setDeleteTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         />
@@ -1323,11 +1321,9 @@ export default function RbacPage() {
           }
           icon={<ArchiveRestore className="size-4 text-primary" />}
           confirmLabel="Khôi phục"
-          confirmLoading={restoreMutation.isPending}
           onConfirm={async () => {
             if (!restoreTarget) return
             await restoreMutation.mutateAsync(restoreTarget.id)
-            setRestoreTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         />
@@ -1344,11 +1340,9 @@ export default function RbacPage() {
           icon={<Trash2 className="size-4 text-destructive" />}
           confirmLabel="Xóa vĩnh viễn"
           confirmDestructive
-          confirmLoading={purgeMutation.isPending}
           onConfirm={async () => {
             if (!purgeTarget) return
             await purgeMutation.mutateAsync(purgeTarget.id)
-            setPurgeTarget(null)
           }}
           contentClassName={ADMIN_ALERT_DIALOG_CONTENT_CLASS}
         />

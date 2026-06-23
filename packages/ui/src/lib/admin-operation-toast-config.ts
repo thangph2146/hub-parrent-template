@@ -8,16 +8,17 @@ import {
   formatAdminOperationErrorDetails,
   resolveAdminOperationError,
 } from "./admin-operation-error"
-import type { HubToastOptions } from "./hub-toast-types"
+import type { ToastOptions } from "./toast-types"
 import {
   formatAdminOperationReportBrandingSection,
   resolveAdminOperationReportHeader,
 } from "./admin-operation-report-branding"
+import { formatDurationMs } from "./toast-copy-timing"
 
 /** Cấu hình chung toast thao tác admin — chỉnh một chỗ cho mọi mutation/query. */
 export const adminOperationToastConfig = {
-  /** Development: gắn báo cáo đầy đủ vào nút Sao chép (không hiển thị trong toast). */
-  devFullCopyReport: process.env.NODE_ENV === "development",
+  /** Gắn báo cáo đầy đủ vào nút Sao chép (không hiển thị trong toast UI). */
+  devFullCopyReport: true,
   /** Giới hạn ký tự JSON trong báo cáo copy. */
   maxJsonChars: 12_000,
 } as const
@@ -174,7 +175,18 @@ function extractMutationIds(variables: unknown): string[] {
   if (typeof v.id === "string" || typeof v.id === "number") {
     return [String(v.id)]
   }
-  if (!Array.isArray(v.ids)) return []
+  if (!Array.isArray(v.ids)) {
+    if (Array.isArray(v.paths)) {
+      return v.paths
+        .map((path) =>
+          typeof path === "string" || typeof path === "number"
+            ? String(path).trim()
+            : "",
+        )
+        .filter(Boolean)
+    }
+    return []
+  }
   return v.ids
     .map((id) => (typeof id === "string" || typeof id === "number" ? String(id).trim() : ""))
     .filter(Boolean)
@@ -205,8 +217,18 @@ type AdminOperationScopeInfo = {
 }
 
 function isBulkApiPath(path: string): boolean {
-  return /\/bulk\/?$/i.test(path.split("?")[0] ?? path)
+  const normalized = path.split("?")[0] ?? path
+  return (
+    /\/bulk\/?$/i.test(normalized) || /\/bulk-delete\/?$/i.test(normalized)
+  )
 }
+
+const RESERVED_ADMIN_PATH_SEGMENTS = new Set([
+  "bulk",
+  "bulk-delete",
+  "options",
+  "permissions",
+])
 
 function parseAdminResourceFromPath(path: string): string | undefined {
   const match = path.match(/\/admin\/([a-z0-9-]+)/i)
@@ -236,17 +258,14 @@ function resolveOperationScope(
   const primaryCall = apiCalls[0]
   if (primaryCall && isBulkApiPath(primaryCall.path)) {
     const bodyIds = extractMutationIds(primaryCall.requestBody)
+    const varIds = extractMutationIds(ctx.variables)
+    const ids = bodyIds.length > 0 ? bodyIds : varIds
+    const isUploadsBulkDelete = /\/uploads\/bulk-delete/i.test(primaryCall.path)
     return {
       scope: "bulk",
-      action:
-        action ??
-        (primaryCall.requestBody != null &&
-        typeof primaryCall.requestBody === "object"
-          ? String((primaryCall.requestBody as { action?: unknown }).action ?? "").trim() ||
-            undefined
-          : undefined),
-      ids: bodyIds.length > 0 ? bodyIds : idsFromVars,
-      source: "apiCall=/bulk",
+      action: action ?? (isUploadsBulkDelete ? "delete" : undefined),
+      ids,
+      source: isUploadsBulkDelete ? "apiCall=/uploads/bulk-delete" : "apiCall=/bulk",
     }
   }
 
@@ -295,7 +314,11 @@ function resolveOperationScope(
       inferredAction = "delete"
     }
     const idFromPath =
-      seg2 && seg2 !== "bulk" && seg2 !== "options" && seg2 !== "permissions"
+      seg2 &&
+      !RESERVED_ADMIN_PATH_SEGMENTS.has(seg2) &&
+      seg2 !== "bulk" &&
+      seg2 !== "options" &&
+      seg2 !== "permissions"
         ? seg2
         : undefined
     return {
@@ -592,7 +615,10 @@ export type AdminOperationReviewContext = {
   adminApi?: AdminApiMeta
 }
 
-function formatApiCallStatus(call: AdminApiCallRecord): string {
+function formatApiCallStatus(call: AdminApiCallRecord, now = Date.now()): string {
+  if (call.pending) {
+    return `đang chờ response (${formatDurationMs(Math.max(0, now - call.startedAt))})`
+  }
   if (call.status == null) return "—"
   const text = call.statusText?.trim()
   return text ? `${call.status} ${text}` : String(call.status)
@@ -600,6 +626,7 @@ function formatApiCallStatus(call: AdminApiCallRecord): string {
 
 function formatAdminApiCallsSection(calls: AdminApiCallRecord[]): string[] {
   if (calls.length === 0) return []
+  const now = Date.now()
   const lines: string[] = [
     "",
     calls.length === 1 ? "── API call ──" : `── API calls (${calls.length}) ──`,
@@ -608,8 +635,8 @@ function formatAdminApiCallsSection(calls: AdminApiCallRecord[]): string[] {
     if (calls.length > 1) lines.push(``, `#${index + 1}`)
     lines.push(`${call.method} ${call.path}`)
     lines.push(`URL: ${call.url}`)
-    lines.push(`Status: ${formatApiCallStatus(call)}`)
-    if (call.ms > 0) lines.push(`Duration: ${call.ms}ms`)
+    lines.push(`Status: ${formatApiCallStatus(call, now)}`)
+    if (!call.pending && call.ms > 0) lines.push(`Duration: ${call.ms}ms`)
     if (call.requestBody !== undefined) {
       lines.push("Request body:", safeJsonStringify(call.requestBody))
     }
@@ -666,14 +693,134 @@ function normalizeVariablesForReviewReport(
   return ctx.variables
 }
 
+function extractStoragePaths(variables: unknown): string[] {
+  if (typeof variables === "string" && variables.trim()) {
+    return [variables.trim()]
+  }
+  if (variables == null || typeof variables !== "object") return []
+  const v = variables as Record<string, unknown>
+  if (typeof v.path === "string" && v.path.trim()) return [v.path.trim()]
+  if (!Array.isArray(v.paths)) return []
+  return v.paths
+    .map((path) =>
+      typeof path === "string" || typeof path === "number"
+        ? String(path).trim()
+        : "",
+    )
+    .filter(Boolean)
+}
+
+function pickStorageApiCalls(
+  calls: AdminApiCallRecord[],
+  adminApi?: { method: string; path: string },
+): AdminApiCallRecord[] {
+  if (!calls.length) return []
+  if (adminApi) {
+    const matched = calls.filter(
+      (call) =>
+        call.method.toUpperCase() === adminApi.method.toUpperCase() &&
+        call.path.replace(/\?.*$/, "") === adminApi.path,
+    )
+    if (matched.length) return matched
+  }
+  const uploadMutations = calls.filter(
+    (call) =>
+      /\/admin\/uploads/i.test(call.path) &&
+      ["POST", "DELETE", "PUT", "PATCH"].includes(call.method.toUpperCase()),
+  )
+  return uploadMutations.length ? uploadMutations : calls.slice(-1)
+}
+
+export type StorageOperationCopyReportInput = {
+  operationLabel: string
+  variables?: unknown
+  data?: unknown
+  error?: unknown
+  adminApi?: { method: string; path: string }
+  apiCalls?: AdminApiCallRecord[]
+}
+
+/** Báo cáo copy cho thao tác file storage — không dùng heuristics CRUD bulk. */
+export function formatStorageOperationCopyReport(
+  input: StorageOperationCopyReportInput,
+): string {
+  const lines: string[] = [
+    resolveAdminOperationReportHeader(),
+    ...formatAdminOperationReportBrandingSection(),
+    "",
+    `Thao tác: ${input.operationLabel}`,
+  ]
+
+  const paths = extractStoragePaths(input.variables)
+  lines.push("", "── File storage ──")
+  if (paths.length === 1) {
+    lines.push(`Đường dẫn: ${paths[0]}`)
+  } else if (paths.length > 1) {
+    lines.push(`Số file: ${paths.length}`)
+    lines.push("Paths:", safeJsonStringify(paths))
+  } else if (input.variables !== undefined) {
+    lines.push("Request:", safeJsonStringify(input.variables))
+  } else {
+    lines.push("Không có path trong request.")
+  }
+
+  if (input.adminApi) {
+    lines.push(
+      "",
+      "── API ──",
+      `${input.adminApi.method.toUpperCase()} ${input.adminApi.path}`,
+    )
+  }
+
+  const apiCalls = pickStorageApiCalls(input.apiCalls ?? [], input.adminApi)
+  if (apiCalls.length > 0) {
+    lines.push(...formatAdminApiCallsSection(apiCalls))
+    if (apiCalls.some((call) => call.pending)) {
+      lines.push(
+        "",
+        "Gợi ý: Sao chép lại sau khi toast success/error để có response đầy đủ.",
+      )
+    }
+  } else if (input.error === undefined && input.data === undefined) {
+    lines.push(
+      "",
+      "── HTTP trace ──",
+      "Trạng thái: Toast loading — chưa ghi nhận request (có thể chưa gửi API).",
+      "Gợi ý: Sao chép lại sau khi toast chuyển success/error.",
+    )
+  } else {
+    lines.push(
+      "",
+      "── HTTP trace ──",
+      "⚠ Không ghi nhận được HTTP trace cho thao tác này.",
+    )
+  }
+
+  if (input.error !== undefined) {
+    lines.push("", "── Lỗi ──", formatAdminOperationErrorDetails(input.error))
+    if (input.error instanceof ApiError) {
+      lines.push("", "── API error body ──", safeJsonStringify(input.error.body))
+    }
+  }
+
+  if (input.data !== undefined) {
+    lines.push("", "── Response ──", safeJsonStringify(input.data))
+  }
+
+  lines.push(
+    "",
+    "Ghi chú: Báo cáo file storage — không chứa mật khẩu (đã redact).",
+  )
+
+  return lines.join("\n")
+}
+
 export function formatAdminOperationReviewReport(
   ctx: AdminOperationReviewContext,
 ): string {
   const lines: string[] = [
     resolveAdminOperationReportHeader(),
     ...formatAdminOperationReportBrandingSection(),
-    "",
-    `Thời gian: ${new Date().toISOString()}`,
   ]
 
   const apiCalls = resolveAdminApiCallsForReview(ctx)
@@ -797,8 +944,6 @@ export function formatRealtimeNotificationCopyReport(
   const lines = [
     `${resolveAdminOperationReportHeader()} — REALTIME SOCKET`,
     ...formatAdminOperationReportBrandingSection(),
-    "",
-    `Thời gian: ${new Date().toISOString()}`,
     `Loại: ${payload.kind}`,
     `Tiêu đề: ${payload.title}`,
   ]
@@ -820,7 +965,7 @@ export function formatRealtimeNotificationCopyReport(
 export type AdminOperationToastPayload = {
   /** Dòng hiển thị trên toast — kết quả ngắn gọn. */
   message: string
-  /** Báo cáo copy (dev) — không render trong toast. */
+  /** Báo cáo copy — không render trong toast. */
   copyReport?: string
   /** Mô tả hiển thị (prod hoặc override tùy chỉnh ngắn). */
   description?: string
@@ -828,9 +973,9 @@ export type AdminOperationToastPayload = {
 
 export function adminOperationToastPayloadToOptions(
   payload: AdminOperationToastPayload,
-  extra?: Pick<HubToastOptions, "id" | "duration">,
-): HubToastOptions {
-  const opts: HubToastOptions = { ...extra }
+  extra?: Pick<ToastOptions, "id" | "duration" | "copyStartedAt">,
+): ToastOptions {
+  const opts: ToastOptions = { ...extra }
   if (payload.description) opts.description = payload.description
   if (payload.copyReport) opts.copyReport = payload.copyReport
   return opts

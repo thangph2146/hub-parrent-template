@@ -1931,7 +1931,7 @@ export class BaseSystemService {
     em: EntityManager,
     mName: string,
     isMysqlFamily: boolean,
-    isSqlite: boolean,
+    _isSqlite: boolean,
     preserveUserId?: number,
   ): Promise<void> {
     if (mName === 'user') {
@@ -2273,7 +2273,7 @@ export class BaseSystemService {
     const userRecords = (data.user ?? []) as Record<string, unknown>[];
     await runImportPhase(
       'users',
-      async ({ em, isMysqlFamily, isSqlite, clearMsByModel }) => {
+      async ({ em, clearMsByModel }) => {
         preserveUserId = await this.resolvePreserveUserIdForImport(
           em,
           skipClear,
