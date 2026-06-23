@@ -1536,12 +1536,14 @@ export class BaseSystemService {
     );
     const jsonChunkSize = Math.max(
       1,
-      parseInt(process.env.SYSTEM_IMPORT_JSON_BATCH_SIZE || '40', 10) || 40,
+      parseInt(process.env.SYSTEM_IMPORT_JSON_BATCH_SIZE || '10', 10) || 10,
+    );
+    const postBatchSize = Math.max(
+      1,
+      parseInt(process.env.SYSTEM_IMPORT_POST_BATCH_SIZE || '5', 10) || 5,
     );
     const proactiveChunkSize = JSON_HEAVY_IMPORT_MODELS.has(mName)
-      ? rows.length <= 200
-        ? rows.length
-        : Math.min(jsonChunkSize, rows.length)
+      ? Math.min(mName === 'post' ? postBatchSize : jsonChunkSize, rows.length)
       : rows.length;
 
     const insertManyChunks = async (
@@ -1552,6 +1554,9 @@ export class BaseSystemService {
         const chunk = chunkRows.slice(i, i + batchSize);
         try {
           await em.insertMany(entity, chunk);
+          if (JSON_HEAVY_IMPORT_MODELS.has(mName)) {
+            await em.flush();
+          }
           imported += chunk.length;
         } catch (inner: unknown) {
           const innerMsg = getErrorMessage(inner);
@@ -1576,9 +1581,14 @@ export class BaseSystemService {
       }
     };
 
-    if (proactiveChunkSize < rows.length) {
+    if (JSON_HEAVY_IMPORT_MODELS.has(mName)) {
       this.logger.debug(
         `${mName}: insertMany theo lô ${proactiveChunkSize} (JSON-heavy)…`,
+      );
+      await insertManyChunks(rows as object[], proactiveChunkSize);
+    } else if (proactiveChunkSize < rows.length) {
+      this.logger.debug(
+        `${mName}: insertMany theo lô ${proactiveChunkSize}…`,
       );
       await insertManyChunks(rows as object[], proactiveChunkSize);
     } else {
@@ -2511,7 +2521,7 @@ export class BaseSystemService {
     const postChunkRaw = process.env.SYSTEM_IMPORT_CLIENT_CHUNK_POST?.trim();
     const postChunk = postChunkRaw
       ? Math.max(1, parseInt(postChunkRaw, 10) || rowChunkSize)
-      : rowChunkSize;
+      : Math.max(1, parseInt(process.env.SYSTEM_IMPORT_POST_BATCH_SIZE || '5', 10) || 5);
     const contactChunk = Math.max(
       1,
       parseInt(process.env.SYSTEM_IMPORT_CLIENT_CHUNK_CONTACT || '800', 10) ||
@@ -2539,7 +2549,7 @@ export class BaseSystemService {
       bundles: { ...IMPORT_MODEL_BUNDLES },
       rowChunkSize,
       modelChunkSizes: {
-        ...(postChunkRaw ? { post: postChunk } : {}),
+        post: postChunk,
         contactRequest: contactChunk,
         notification: notificationChunk,
         session: sessionChunk,
