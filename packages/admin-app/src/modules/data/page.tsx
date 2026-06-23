@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "@ui/components/sonner"
 import { Button } from "@ui/components/button"
@@ -91,7 +91,9 @@ function DataBackupPageInner() {
     status: "idle",
   })
   const importProgressRef = useRef(importProgress)
-  importProgressRef.current = importProgress
+  useEffect(() => {
+    importProgressRef.current = importProgress
+  }, [importProgress])
   const [pickingDirectory, setPickingDirectory] = useState(false)
   const [exportDirectory, setExportDirectory] =
     useState<FileSystemDirectoryHandle | null>(null)

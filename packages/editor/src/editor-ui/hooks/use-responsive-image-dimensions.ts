@@ -51,7 +51,9 @@ export function useResponsiveImageDimensions({
     height,
   })
   const dimensionsRef = useRef(dimensions)
-  dimensionsRef.current = dimensions
+  useEffect(() => {
+    dimensionsRef.current = dimensions
+  }, [dimensions])
 
   useEffect(() => {
     setDimensions((prev) => {
