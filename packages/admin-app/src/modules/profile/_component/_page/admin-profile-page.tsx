@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react"
+import { useEffect, useMemo, useRef, useState, type LegacyRef, type RefObject } from "react"
 import { toast } from "@ui/components/sonner"
 import {
   Field,
@@ -153,7 +153,7 @@ function ProfileAvatarPicker({
         )}
       </button>
       <input
-        ref={avatarInputRef}
+        ref={avatarInputRef as LegacyRef<HTMLInputElement>}
         type="file"
         accept={avatarAccept ?? "image/*"}
         className="hidden"
